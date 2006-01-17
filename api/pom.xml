@@ -1,410 +1,209 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.apache.myfaces</groupId>
-  <artifactId>myfaces</artifactId>
-  <packaging>pom</packaging>
-  <version>1.1.2-SNAPSHOT</version>
-  <name>MyFaces</name>
-  <url>http://myfaces.apache.org/projects</url>
 
-  <issueManagement>
-    <system>jira</system>
-    <url>http://issues.apache.org/jira/secure/BrowseProject.jspa?id=10600</url>
-  </issueManagement>
+  <groupId>org.apache.myfaces.core</groupId>
+  <artifactId>myfaces-api</artifactId>
+  <packaging>jar</packaging>
+  <name>MyFaces API</name>
+  <description>
+    This is the MyFaces API Subproject Description [INSERT MORE STUFF HERE]
+  </description>
 
-  <modules>
-    <module>api</module>
-  </modules>
+  <parent>
+    <groupId>org.apache.myfaces.core</groupId>
+    <artifactId>myfaces-core-project</artifactId>
+    <version>1.1.2-SNAPSHOT</version>
+  </parent>
 
-  <build>
+  <dependencies>
 
-    <defaultGoal>install</defaultGoal>
+    <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
+      <version>1.7.0</version>
+      <scope>compile</scope>
+    </dependency>
 
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.1.2</version>
-        <!--configuration>
-          <testFailureIgnore>true</testFailureIgnore>
-        </configuration-->
-      </plugin>
-    </plugins>
+    <dependency>
+      <groupId>commons-digester</groupId>
+      <artifactId>commons-digester</artifactId>
+      <version>1.6</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>xml-apis</groupId>
+          <artifactId>xml-apis</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
 
-    <extensions>
-      <!--  Note: We're using scpexe protocol instead of scp because
-        jsch has an issue (already reported) that makes it fail.
-        Once it works switch back to scp protocol.
-        Maybe solved with the maven 2.0.2 release -->
-      <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-ssh-external</artifactId>
-        <version>1.0-alpha-5</version>
-      </extension>
-    </extensions>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.1</version>
+      <scope>compile</scope>
+    </dependency>
 
-  </build>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.0.4</version>
+      <scope>compile</scope>
+    </dependency>
 
-  <mailingLists>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+      <version>1.1.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.servlet</groupId>
+          <artifactId>jsp-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
 
-    <mailingList>
-      <name>Myfaces User List</name>
-      <subscribe>users-subscribe@myfaces.apache.org</subscribe>
-      <unsubscribe>users-unsubscribe@myfaces.apache.org</unsubscribe>
-      <post>users@myfaces.apache.org</post>
-      <archive>http://mail-archives.apache.org/mod_mbox/myfaces-users</archive>
-    </mailingList>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jsp-api</artifactId>
+      <version>2.0</version>
+      <scope>provided</scope>
+    </dependency>
 
-    <mailingList>
-      <name>Myfaces Developer List</name>
-      <subscribe>dev-subscribe@myfaces.apache.org</subscribe>
-      <unsubscribe>dev-unsubscribe@myfaces.apache.org</unsubscribe>
-      <post>dev@myfaces.apache.org</post>
-      <archive>http://mail-archives.apache.org/mod_mbox/myfaces-dev</archive>
-    </mailingList>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.3</version>
+      <scope>provided</scope>
+    </dependency>
 
-    <mailingList>
-      <name>Myfaces Commits List</name>
-      <subscribe>commits-subscribe@myfaces.apache.org</subscribe>
-      <unsubscribe>commits-unsubscribe@myfaces.apache.org</unsubscribe>
-      <post>do not post</post>
-      <archive>http://mail-archives.apache.org/mod_mbox/myfaces-commits</archive>
-    </mailingList>
+    <dependency>
+      <groupId>easymock</groupId>
+      <artifactId>easymock</artifactId>
+      <version>1.1</version>
+      <scope>test</scope>
+    </dependency>
 
-    <mailingList>
-      <name>Myfaces Announcements List</name>
-      <subscribe>announce-subscribe@myfaces.apache.org</subscribe>
-      <unsubscribe>announce-unsubscribe@myfaces.apache.org</unsubscribe>
-      <post>do not post</post>
-      <archive>http://mail-archives.apache.org/mod_mbox/myfaces-announce</archive>
-    </mailingList>
+    <dependency>
+      <groupId>easymock</groupId>
+      <artifactId>easymockclassextension</artifactId>
+      <version>1.1</version>
+      <scope>test</scope>
+    </dependency>
 
-  </mailingLists>
 
-  <developers>
+    <dependency>
+      <groupId>cactus</groupId>
+      <artifactId>cactus</artifactId>
+      <version>13-1.7.1</version>
+      <scope>test</scope>
+    </dependency>
 
-    <developer>
-      <id>koinov</id>
-      <name>Anton Koinov</name>
-      <email>koinov@apache.org</email>
-      <organization></organization>
-      <roles>
-        <role>PMC</role>
-      </roles>
-      <timezone></timezone>
-    </developer>
-    <developer>
-      <id>bdudney</id>
-      <name>Bill Dudney</name>
-      <email>bdudney@apache.org</email>
-      <organization></organization>
-      <roles>
-        <role>PMC</role>
-      </roles>
-      <timezone></timezone>
-    </developer>
-    <developer>
-      <id>grantsmith</id>
-      <name>Grant Smith</name>
-      <email>grantsmith@apache.org</email>
-      <organization>Marathon Computer Systems, USA</organization>
-      <roles>
-        <role>PMC</role>
-      </roles>
-      <timezone></timezone>
-    </developer>
-    <developer>
-      <id>manolito</id>
-      <name>Manfred Geiler</name>
-      <email>manolito@apache.org</email>
-      <organization>Oesterreichische Kontrollbank AG, Austria</organization>
-      <organizationUrl>http://www.oekb.at/</organizationUrl>
-      <roles>
-        <role>Founder of MyFaces</role>
-        <role>PMC Chair</role>
-        <role>JSR-252 JSF 1.2 EG member</role>
-      </roles>
-      <timezone>+1</timezone>
-    </developer>
-    <developer>
-      <id>mmarinschek</id>
-      <name>Martin Marinschek</name>
-      <email>mmarinschek@apache.org</email>
-      <organization>Irian, Austria</organization>
-      <organizationUrl>http://www.irian.at/index.jsp?lang=en</organizationUrl>
-      <roles>
-        <role>PMC</role>
-      </roles>
-      <timezone>+1</timezone>
-    </developer>
-    <developer>
-      <id>matzew</id>
-      <name>Matthias Weßendorf</name>
-      <email>matzew@apache.org</email>
-      <organization>Pironet NDH AG, Germany</organization>
-      <organizationUrl>http://www.pironet-ndh.com/</organizationUrl>
-      <roles>
-        <role>PMC</role>
-      </roles>
-      <timezone>+1</timezone>
-    </developer>
-    <developer>
-      <id>oros</id>
-      <name>Oliver Rossmüller</name>
-      <email>oros@apache.org</email>
-      <organization>Pironet NDH AG, Germany</organization>
-      <roles>
-        <role>PMC</role>
-      </roles>
-      <timezone>+1</timezone>
-    </developer>
-    <developer>
-      <id>schof</id>
-      <name>Sean Schofield</name>
-      <email>schof@apache.org</email>
-      <organization></organization>
-      <roles>
-        <role>PMC</role>
-      </roles>
-      <timezone>-5</timezone>
-    </developer>
-    <developer>
-      <id>svieujot</id>
-      <name>Sylvain Vieujot</name>
-      <email>svieujot@apache.org</email>
-      <organization></organization>
-      <roles>
-        <role>PMC</role>
-      </roles>
-      <timezone>-4</timezone>
-    </developer>
-    <developer>
-      <id>husted</id>
-      <name>Ted Husted</name>
-      <email>husted@apache.org</email>
-      <organization></organization>
-      <roles>
-        <role>PMC</role>
-        <role>ASF Member</role>
-        <role>Struts PMC</role>
-        <role>Jakarta PMC</role>
-      </roles>
-      <timezone></timezone>
-    </developer>
-    <developer>
-      <id>tomsp</id>
-      <name>Thomas Spiegl</name>
-      <email>tomsp@apache.org</email>
-      <organization>Irian, Austria</organization>
-      <organizationUrl>http://www.irian.at/index.jsp?lang=en</organizationUrl>
-      <roles>
-        <role>PMC</role>
-      </roles>
-      <timezone>+1</timezone>
-    </developer>
-    <developer>
-      <id>prophecy</id>
-      <name>Travis Reeder</name>
-      <email>prophecy@apache.org</email>
-      <organization></organization>
-      <roles>
-        <role>PMC</role>
-      </roles>
-      <timezone></timezone>
-    </developer>
-    <developer>
-      <id>baranda</id>
-      <name>Bruno Aranda</name>
-      <email>baranda@apache.org</email>
-      <organization>Ebiointel, Spain</organization>
-      <organizationUrl>www.ebiointel.com</organizationUrl>
-      <timezone>+1</timezone>
-    </developer>
-    <developer>
-      <id>jmitchell</id>
-      <name>James Mitchell</name>
-      <email>jmitchell@apache.org</email>
-      <organization>EdgeTech, Inc.,United States of America</organization>
-      <organizationUrl>www.edgetechservices.net</organizationUrl>
-      <timezone>-5</timezone>
-    </developer>
-    <developer>
-      <id>mbr</id>
-      <name>Mathias Brökelmann</name>
-      <email>mbr@apache.org</email>
-      <organization>PSI Information Management GmbH, Germany</organization>
-      <organizationUrl>http://www.psi-im.de</organizationUrl>
-      <timezone>+1</timezone>
-    </developer>
-    <developer>
-      <id>werpu</id>
-      <name>Werner Punz</name>
-      <email>werpu@apache.org</email>
-      <organization>Media Data GmbH, Austria</organization>
-      <roles>
-        <role>Mister "Ajax"</role>
-      </roles>
-      <timezone>+1</timezone>
-    </developer>
-    <developer>
-      <id>ssilvert</id>
-      <name>Stan Silvert</name>
-      <email>ssilvert@apache.org</email>
-      <organization>JBoss/Blog/organization</organization>
-      <organizationUrl>http://jboss.org/jbossBlog/blog/Stan%20Silvert/</organizationUrl>
-      <roles>
-        <role>Portlets Guru</role>
-      </roles>
-      <timezone></timezone>
-    </developer>
-    <developer>
-      <id>mkienenb</id>
-      <name>Mike Kienenberger</name>
-      <email>mkienenb@apache.org</email>
-      <organization></organization>
-      <timezone></timezone>
-    </developer>
-    <developer>
-      <id>skitching</id>
-      <name>Simon Kitching</name>
-      <email>skitching@apache.org</email>
-      <organization></organization>
-      <timezone>+12</timezone>
-    </developer>
+    <dependency>
+      <groupId>aspectj</groupId>
+      <artifactId>aspectjrt</artifactId>
+      <version>1.2.1</version>
+      <scope>test</scope>
+    </dependency>
 
-  </developers>
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+      <version>2.0.2</version>
+      <scope>test</scope>
+    </dependency>
 
-  <contributors>
-    <contributor>
-      <name>Matt Blum</name>
-      <roles>
-        <role>Portlets Guru</role>
-      </roles>
-    </contributor>
-    <contributor>
-      <name>Jiri Zaloudek</name>
-      <roles>
-        <role>WML RenderKit</role>
-      </roles>
-    </contributor>
-    <contributor>
-      <name>Jurgen Lust</name>
-      <roles>
-        <role>Schedule</role>
-      </roles>
-    </contributor>
-    <contributor>
-      <name>Jörg Artaker</name>
-      <roles>
-        <role>AutoupdateDataTable</role>
-      </roles>
-    </contributor>
-    <contributor>
-      <name>Thomas Huber</name>
-      <roles>
-        <role>AutoupdateDataTable</role>
-      </roles>
-    </contributor>
-    <contributor>
-      <name>Gerald Müllan</name>
-      <roles>
-        <role>InputSuggestAjax</role>
-      </roles>
-    </contributor>
-    <contributor>
-      <name>Thomas Obereder</name>
-      <roles>
-        <role>InputTextHelp</role>
-      </roles>
-    </contributor>
-    <contributor>
-      <name>Jesse Wilson</name>
-      <roles>
-        <role>NewspaperDataTable</role>
-      </roles>
-    </contributor>
-  </contributors>
+    <dependency>
+      <groupId>httpunit</groupId>
+      <artifactId>httpunit</artifactId>
+      <version>1.6</version>
+      <scope>test</scope>
+    </dependency>
 
-  <licenses>
-    <license>
-      <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
+    <dependency>
+      <groupId>nekohtml</groupId>
+      <artifactId>nekohtml</artifactId>
+      <version>0.9.1</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
 
   <reporting>
 
     <plugins>
 
       <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>changelog-maven-plugin</artifactId>
+        <version>2.0-beta-1</version>
+        <reportSets>
+          <reportSet>
+            <id>dual-report</id>
+            <configuration>
+              <type>range</type>
+              <range>30</range>
+            </configuration>
+            <reports>
+              <report>changelog</report>
+              <report>file-activity</report>
+              <report>dev-activity</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.0-beta-3</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jxr-maven-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>taglist-maven-plugin</artifactId>
+        <version>2.0-beta-1</version>
+        <configuration>
+          <tags>TODO, FIXME, XXX, @deprecated</tags>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>surefire-report-maven-plugin</artifactId>
       </plugin>
 
     </plugins>
 
   </reporting>
 
-  <dependencies>
+  <profiles>
+    <profile>
+      <id>generate-assembly</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+             <artifactId>maven-javadoc-plugin</artifactId>
+             <executions>
+               <execution>
+                 <id>attach-javadoc</id>
+                 <goals><goal>jar</goal></goals>
+               </execution>
+             </executions>
+           </plugin>
+         </plugins>
+       </build>
+     </profile>
+   </profiles>
 
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-
-    </dependency>
-  </dependencies>
-
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/api/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/api/trunk</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/myfaces/api/trunk</url>
-  </scm>
-
-  <organization>
-    <name>Apache Software Foundation</name>
-    <url>http://www.apache.org/</url>
-  </organization>
-
-  <pluginRepositories>
-    <pluginRepository>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <id>atanion</id>
-      <url>http://www.atanion.com/maven2</url>
-    </pluginRepository>
-  </pluginRepositories>
-
-  <distributionManagement>
-    <!--  NOTE: We're using scpexe protocol instead of scp because
-    jsch has an issue (already
-    reported) that makes it fail. Once it works switch back to scp protocol.
-    Maybe solved with the maven 2.0.2 release -->
-
-    <repository>
-      <id>apache-maven</id>
-      <name>Apache Maven Repository</name>
-      <url>scpexe://people.apache.org/www/www.apache.org/dist/maven-repository</url>
-    </repository>
-    <snapshotRepository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>apache-maven-snapshots</id>
-      <name>Apache Maven Snapshot Repository</name>
-      <url>scpexe://people.apache.org/www/cvs.apache.org/maven-snapshot-repository</url>
-    </snapshotRepository>
-    <site>
-      <id>apache.site</id>
-      <name>Apache Website</name>
-      <!-- NOTE: I'm using my public html dir for testing -->
-      <url>scpexe://minotaur.apache.org/home/bommel/public_html/projects</url>
-      <!--url>scpexe://minotaur.apache.org/www/myfaces.apache.org/projects</url-->
-    </site>
-  </distributionManagement>
 
 </project>

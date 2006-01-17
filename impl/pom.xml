@@ -2,7 +2,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.apache.myfaces</groupId>
+  <groupId>org.apache.myfaces.core</groupId>
   <artifactId>myfaces-impl</artifactId>
   <packaging>jar</packaging>
   <name>MyFaces Impl</name>
@@ -12,22 +12,22 @@
   </description>
 
   <parent>
-    <groupId>org.apache.myfaces</groupId>
-    <artifactId>myfaces</artifactId>
+    <groupId>org.apache.myfaces.core</groupId>
+    <artifactId>myfaces-core-project</artifactId>
     <version>1.1.2-SNAPSHOT</version>
   </parent>
 
   <dependencies>
 
     <dependency>
-      <groupId>org.apache.myfaces</groupId>
+      <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-api</artifactId>
       <version>${version}</version>
       <scope>compile</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.myfaces</groupId>
+      <groupId>org.apache.myfaces.commons</groupId>
       <artifactId>myfaces-commons</artifactId>
       <version>1.1.2-SNAPSHOT</version>
       <scope>compile</scope>
