@@ -1,0 +1,21 @@
+        <attribute>
+            <name>onSuccess</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
+            <description>Javascript method to call on successful ajax update</description>
+        </attribute>
+        <attribute>
+            <name>onFailure</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
+            <description>Javascript method to call on failed ajax update</description>
+        </attribute>
+        <attribute>
+            <name>onStart</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
+            <description>Javascript method to call on start of ajax update</description>
+        </attribute>

@@ -1,0 +1,15 @@
+<!-- validator min/max attributes -->
+      <attribute>
+        <name>minimum</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The smallest value that should be considered valid.</description>
+      </attribute>
+      <attribute>
+        <name>maximum</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The largest value that should be considered valid.</description>
+      </attribute>

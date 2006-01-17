@@ -1,0 +1,226 @@
+        <attribute>
+            <name>preserveDataModel</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>
+                Indicates whether the state of the whole DataModel should be saved and
+                restored. When set to false, the value-binding for the "value" attribute
+                of this table is executed each time the page is rendered. When set to 
+                true, that value-binding is only executed when the component is first
+                created, and the DataModel state is thereafter saved/restored automatically
+                by the component.
+                
+                When column sorting is used for a table this property needs to be false
+                so that the DataModel can be updated to reflect any changes in the
+                sort criteria.
+                
+                Default: false
+            </description>
+        </attribute>
+        <attribute>
+            <name>preserveRowStates</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>
+                Indicates whether the state for each row should not be discarded before 
+                the datatable is rendered again. Setting this to true might be hepful if
+                an input component inside the datatable has no valuebinding and the value
+                entered in there should be displayed again. 
+                This will only work reliable if the datamodel of the datatable did not change
+                either by sorting, removing or adding rows.
+                                
+                Default: false 
+            </description>
+        </attribute>
+        <attribute>
+            <name>forceIdIndexFormula</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>
+				A formula that overrides the default row index in the construction of table's
+				body components.
+				Example : #{myRowVar.key}
+				Warning, the EL should evaluate to a unique value for each row !
+            </description>
+        </attribute>
+        <attribute>
+            <name>sortColumn</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>
+                Value reference to a model property that gives the current sort column name.
+                The target String property is set to the "columnName" of whichever column has been
+                chosen to sort by, and the method which is bound to the "value" attribute
+                of this table (ie which provides the DataModel used) is expected to use this
+                property to determine how to sort the DataModel's contents.
+            </description>
+        </attribute>
+        <attribute>
+            <name>sortAscending</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>
+                Value reference to a model property that gives the current sort direction.
+                The target Boolean property is set to true when the selected sortColumn
+                should be sorted in ascending order, and false otherwise. The method which
+                is bound to the "value" attribute of this table (ie which provides the DataModel
+                used) is expected to use this property to determine how to sort the DataModel's
+                contents.
+            </description>
+        </attribute>
+        <attribute>
+            <name>preserveSort</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>
+                Indicates whether the state of the sortColumn and sortAscending attribute
+                should be saved and restored and written back to the model during the
+                update model phase.
+                Default: true
+            </description>
+        </attribute>
+        <attribute>
+            <name>renderedIfEmpty</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>
+                Indicates whether this table should be rendered if the underlying DataModel is
+                empty.
+                You could as well use rendered="#{not empty bean.list}", but this one causes
+                the getList method of your model bean beeing called up to five times per
+                request, which is not optimal when the list is backed by a DB table.
+                Using renderedIfEmpty="false" solves this problem, because the MyFaces
+                extended HtmlDataTable automatically caches the DataModel and calles the
+                model getter only once per request.
+                Default: true
+            </description>
+        </attribute>
+        <attribute>
+            <name>rowIndexVar</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>
+                A parameter name, under which the current rowIndex is set in request scope
+                similar to the var parameter.
+            </description>
+        </attribute>
+        <attribute>
+            <name>rowCountVar</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>
+                A parameter name, under which the rowCount is set in request scope
+                similar to the var parameter.
+            </description>
+        </attribute>
+        <attribute>
+            <name>previousRowDataVar</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>
+                A parameter name, under which the previous RowData Object is set in request scope
+                similar to the rowIndexVar and rowCountVar parameters.
+                Mind that the value of this request scope attribute is null in the first row
+                or when isRowAvailable returns false for the previous row.
+            </description>
+        </attribute>
+        <attribute>
+            <name>rowOnClick</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>
+                Defines a JavaScript onclick event handler for each table row
+            </description>
+        </attribute>
+        <attribute>
+            <name>rowOnDblClick</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>
+                Defines a JavaScript ondblclick event handler for each table row
+            </description>
+        </attribute>
+        <attribute>
+            <name>rowOnMouseDown</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>
+                Defines a JavaScript onmpusedown event handler for each table row
+            </description>
+        </attribute>
+        <attribute>
+            <name>rowOnMouseUp</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>
+                Defines a JavaScript onmouseup event handler for each table row
+            </description>
+        </attribute>
+        <attribute>
+            <name>rowOnMouseOver</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>
+                Defines a JavaScript onmouseover event handler for each table row
+            </description>
+        </attribute>
+        <attribute>
+            <name>rowOnMouseMove</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>
+                Defines a JavaScript onmousemove event handler for each table row
+            </description>
+        </attribute>
+        <attribute>
+            <name>rowOnMouseOut</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>
+                Defines a JavaScript onmouseout event handler for each table row
+            </description>
+        </attribute>
+        <attribute>
+            <name>rowOnKeyPress</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>
+                Defines a JavaScript onkeypress event handler for each table row
+            </description>
+        </attribute>
+        <attribute>
+            <name>rowOnKeyDown</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>
+                Defines a JavaScript onkeydown event handler for each table row
+            </description>
+        </attribute>
+        <attribute>
+            <name>rowOnKeyUp</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>
+                Defines a JavaScript onkeyup event handler for each table row
+            </description>
+        </attribute>
+        <attribute>
+            <name>rowId</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>
+                The id to use for &lt;tr> elements that are generated by the table.
+            </description>
+        </attribute>
+        <attribute>
+            <name>rowStyleClass</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>Corresponds to the HTML class attribute for the row tr tag.</description>
+        </attribute>
+        <attribute>
+            <name>rowStyle</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>Corresponds to the HTML style attribute for the row tr tag.</description>
+        </attribute>

@@ -1,0 +1,29 @@
+        <!--
+        This attribute indicates that the component should be forced to use the specified id instead of
+        using the one that faces generates.  Components contained within a "list" will include a '[n]'
+        suffix where 'n' is the row index (unless the forceIdIndex attribute is set to false).
+        -->
+        <attribute>
+            <name>forceId</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
+            <description>If true, this component will force the use of the specified id when rendering.</description>
+        </attribute>
+
+        <!--
+        If the component is contained within an "list" (such as dataTable), this attribute indicates whether or not a
+        '[n]' suffix should be added where 'n' is the row index.  Default is true.  The attribute is ignored if forceId
+        is false (or not specified)
+        -->
+        <attribute>
+            <name>forceIdIndex</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
+            <description>
+                If false, this component will not append a '[n]' suffix (where 'n' is the row index) to components
+                that are contained within a "list."  This value will be true by default and the value will be ignored if
+                the value of forceId is false (or not specified.)
+            </description>
+        </attribute>

@@ -1,0 +1,8 @@
+<attribute>
+    <name>type</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>HTML: A hint to the user agent about the content type of the linked resource.</description>
+</attribute>
+    

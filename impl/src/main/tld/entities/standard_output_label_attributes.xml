@@ -1,0 +1,12 @@
+<!-- all standard attributes of the outputLabel tag -->
+&ui_output_attributes;
+&html_universal_attributes;
+&html_event_handler_attributes;
+&html_label_attributes;
+<!-- LabelRenderer attributes -->
+<attribute>
+  <name>for</name>
+  <required>false</required>
+  <rtexprvalue>false</rtexprvalue>
+  <description>The client ID of the target input element of this label.</description>
+</attribute>

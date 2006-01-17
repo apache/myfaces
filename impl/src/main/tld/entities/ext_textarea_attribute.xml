@@ -1,0 +1,7 @@
+        <attribute>
+            <name>wrap</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
+            <description>None standard HTML attribute. Possible values are: soft, hard, virtual, physical and off.</description>
+        </attribute>

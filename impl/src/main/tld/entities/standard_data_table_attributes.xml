@@ -1,0 +1,36 @@
+        <!-- all standard attributes of the dataTable tag -->
+        &ui_panel_attributes;
+        &ui_table_renderer_attributes;
+        &html_universal_attributes;
+        &html_event_handler_attributes;
+        &html_table_attributes;
+        <!-- UIData attributes -->
+        <attribute>
+            <name>value</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>An EL expression that specifies the data model that backs this table.  The value can be of any type.
+            
+            A value of type DataModel is used directly.  Array-like parameters of type java.util.List, array of Object, 
+            java.sql.ResultSet, or javax.servlet.jsp.jstl.sql.Result are wrapped in a DataModel.
+            
+            Other values are wrapped in a DataModel as a single row.</description>
+        </attribute>
+        <attribute>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>Defines the name of the request-scope variable that will hold the current row during iteration.  This value must be a static value.</description>
+        </attribute>
+        <attribute>
+            <name>rows</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>The number of rows to be displayed.  Specify zero for all remaining rows in the table.</description>
+        </attribute>
+        <attribute>
+            <name>first</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>The index of the first row to be displayed, where 0 is the first row.</description>
+        </attribute>

@@ -1,0 +1,7 @@
+        <!-- all standard attributes of the selectOneMenu tag -->
+        &ui_select_one_attributes;
+        &html_universal_attributes;
+        &html_event_handler_attributes;
+        &html_select_attributes;
+        <attribute><name>enabledClass</name>     <required>false</required>  <rtexprvalue>false</rtexprvalue></attribute>
+         <attribute><name>disabledClass</name>     <required>false</required>  <rtexprvalue>false</rtexprvalue></attribute>

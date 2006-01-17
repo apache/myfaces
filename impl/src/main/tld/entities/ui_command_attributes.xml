@@ -1,0 +1,50 @@
+<!-- UICommand attributes -->
+&ui_component_attributes;
+
+<attribute>
+    <name>action</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>
+        A method binding EL expression that identifies an action method to be
+        invoked if this component is activated by the user. An action method
+        accepts no parameters and has a String return value, called the action
+        outcome, that identifies the next view displayed. The phase that this
+        event is fired in can be controlled via the immediate attribute.
+    </description>
+</attribute>
+<attribute>
+    <name>actionListener</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>
+        A method binding EL expression that identifies an action listener method
+        to be invoked if this component is activated by the user. An action
+        listener method accepts a parameter of type javax.faces.event.ActionEvent
+        and returns void. The phase that this event is fired in can be controlled
+        via the immediate attribute.
+    </description>
+</attribute>
+<attribute>
+    <name>immediate</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>
+        A boolean value that identifies the phase during which action events
+        should fire. During normal event processing, action methods and
+        action listener methods are fired during the "invoke application"
+        phase of request processing. If this attribute is set to "true",
+        these methods are fired instead at the end of the "apply request
+        values" phase.
+    </description>
+</attribute>
+<attribute>
+    <name>value</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>The initial value of this component.</description>
+</attribute>

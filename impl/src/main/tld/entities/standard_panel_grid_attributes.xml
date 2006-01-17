@@ -1,0 +1,13 @@
+&ui_panel_attributes;
+&html_universal_attributes;
+&html_event_handler_attributes;
+&html_table_attributes;
+&ui_table_renderer_attributes;
+
+<!-- GridRenderer attributes -->
+<attribute>
+    <name>columns</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <description>Specifies the number of columns in the grid.</description>
+</attribute>

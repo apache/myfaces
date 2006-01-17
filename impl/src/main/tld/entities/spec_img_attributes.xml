@@ -1,0 +1,39 @@
+<!-- The subset of HTML 4.0 img attributes that are supported by the JSF 1.1 specification -->
+        &html_alt_attribute;
+        <attribute>
+            <name>height</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
+            <description>HTML: Overrides the natural height of this image, by specifying height in pixels.</description>
+        </attribute>
+        <attribute>
+            <name>ismap</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
+            <description>HTML: Specifies server-side image map handling for this image.</description>
+        </attribute>
+        <attribute>
+            <name>longdesc</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
+            <description>HTML: A link to a long description of the image.</description>
+        </attribute>
+        <!-- "name" attribute cannot be set directly by user -->
+        <!-- "src" attribute cannot be set directly, use "url" instead! -->
+        <attribute>
+            <name>usemap</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
+            <description>HTML: Specifies an image map to use with this image.</description>
+        </attribute>
+        <attribute>
+            <name>width</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
+            <description>HTML: Overrides the natural width of this image, by specifying width in pixels.</description>
+        </attribute>

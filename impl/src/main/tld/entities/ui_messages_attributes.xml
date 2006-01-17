@@ -1,0 +1,32 @@
+<!-- UIMessages attributes -->
+&ui_component_attributes;
+<attribute>
+    <name>showSummary</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>
+        A boolean value that controls whether the summary text of the
+        associated messages is displayed.  Default: true.
+    </description>
+</attribute>
+<attribute>
+    <name>showDetail</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>
+        A boolean value that controls whether the detail text of the
+        associated messages is displayed.  Default: false.
+    </description>
+</attribute>
+<attribute>
+    <name>globalOnly</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>
+        A boolean value that controls whether global messages (those without
+        IDs) should be displayed. Default: true.
+    </description>
+</attribute>

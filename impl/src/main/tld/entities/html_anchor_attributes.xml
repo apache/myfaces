@@ -1,0 +1,55 @@
+        <!-- HTML 4.0 anchor (=a) attributes -->
+        &html_accesskey_attribute;
+        &html_charset_attribute;
+        &html_tabindex_attribute;
+        &html_focus_blur_attributes;
+        &html_type_attribute;
+        &html_target_attribute;
+
+        <attribute>
+            <name>coords</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
+            <description>HTML: The coordinates of regions within a client side image map.</description>
+        </attribute>
+
+        <!-- "href" is a special LinkRenderer attribute -->
+        <attribute>
+            <name>hreflang</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
+            <description>HTML: The language of the linked resource.</description>
+        </attribute>
+
+        <!-- "name" cannot be set by user -->
+        <attribute>
+            <name>rel</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
+            <description>
+                HTML: The relationship between the current document and
+                the linked resource.
+            </description>
+        </attribute>
+        <attribute>
+            <name>rev</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
+            <description>
+                HTML: The type(s) describing the reverse link for the linked
+                resource.
+            </description>
+        </attribute>
+        <attribute>
+            <name>shape</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
+            <description>
+                HTML: The shape of a region in a client side image map.
+            </description>
+        </attribute>

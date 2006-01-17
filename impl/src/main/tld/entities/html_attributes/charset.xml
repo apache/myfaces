@@ -1,0 +1,7 @@
+<attribute>
+    <name>charset</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>HTML: Specifies the character encoding of the linked resource.</description>
+</attribute>

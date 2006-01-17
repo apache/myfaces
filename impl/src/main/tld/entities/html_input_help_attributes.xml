@@ -1,0 +1,12 @@
+<!-- Attributes for HtmlInputText with Helptext -->
+        <attribute>
+            <name>helpText</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <name>selectText</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>

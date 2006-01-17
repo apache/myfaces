@@ -1,0 +1,10 @@
+<attribute>
+    <name>readonly</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>
+        HTML: When true, indicates that this component cannot be modified by the user.
+        The element may receive focus unless it has also been disabled.
+    </description>
+</attribute>

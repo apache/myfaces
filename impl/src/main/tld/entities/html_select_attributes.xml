@@ -1,0 +1,10 @@
+<!-- HTML 4.0 select attributes -->
+&html_focus_blur_attributes;
+&html_onchange_attribute;
+&html_tabindex_attribute;
+&html_readonly_attribute;
+&html_disabled_attribute;
+&html_datafld_datasrc_dataformatas_attributes;
+<!-- "multiple" cannot be set manually -->
+<!-- "name" cannot be set manually -->
+<!-- "size" cannot be set directly for it is a MenuRenderer specific attribute -->

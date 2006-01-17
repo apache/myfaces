@@ -1,0 +1,7 @@
+<attribute>
+    <name>tabindex</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>HTML: Specifies the position of this element within the tab order of the document.</description>
+</attribute>

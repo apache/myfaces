@@ -1,0 +1,23 @@
+<!-- HTML 4.0 img attributes that are not part of the JSF 1.1 specification -->
+&html_align_attribute;
+&html_border_attribute;
+<attribute>
+    <name>hspace</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>
+        HTML: The amount of white space to be inserted to the left and right
+        of this element, in undefined units.  Deprecated in HTML 4.01.
+    </description>
+</attribute>
+<attribute>
+    <name>vspace</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>
+        HTML: The amount of white space to be inserted above and below this
+        element, in undefined units.  Deprecated in HTML 4.01.
+    </description>
+</attribute>

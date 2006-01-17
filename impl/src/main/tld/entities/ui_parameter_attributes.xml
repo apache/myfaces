@@ -1,0 +1,18 @@
+<!-- UIParameter attributes -->
+&faces_binding_attribute;
+&faces_id_optional_attribute;
+
+<attribute>
+    <name>name</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>A String containing the name of the parameter.</description>
+</attribute>
+<attribute>
+    <name>value</name>
+    <required>true</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>The value of this parameter.</description>
+</attribute>

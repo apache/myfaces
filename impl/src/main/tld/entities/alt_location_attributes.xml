@@ -1,0 +1,32 @@
+        <attribute>
+            <name>javascriptLocation</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
+            <description>
+                An alternate location to find javascript resources.  If no values is specified, javascript will
+                be loaded from the resources directory using AddResource and ExtensionsFilter.
+            </description>
+        </attribute>
+
+        <attribute>
+            <name>imageLocation</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
+            <description>
+                An alternate location to find image resources.  If no values is specified, images will
+                be loaded from the resources directory using AddResource and ExtensionsFilter.
+            </description>
+        </attribute>
+
+        <attribute>
+            <name>styleLocation</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
+            <description>
+                An alternate location to find stylesheet resources.  If no values is specified, stylesheets will
+                be loaded from the resources directory using AddResource and ExtensionsFilter.
+            </description>
+        </attribute>

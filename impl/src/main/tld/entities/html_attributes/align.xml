@@ -1,0 +1,6 @@
+<attribute>
+    <name>align</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <description>HTML: Specifies the horizontal alignment of this element.  Deprecated in HTML 4.01.</description>
+</attribute>

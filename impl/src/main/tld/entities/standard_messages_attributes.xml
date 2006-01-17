@@ -1,0 +1,67 @@
+        <!-- all standard attributes of the messages tag -->
+        &ui_messages_attributes;
+        &html_universal_attributes;
+        &html_event_handler_attributes;
+        <!-- HtmlMessages attributes -->
+        <attribute>
+            <name>infoClass</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>CSS class to be used for messages with severity "INFO".</description>
+        </attribute>
+        <attribute>
+            <name>infoStyle</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>CSS style to be used for messages with severity "INFO".</description>
+        </attribute>
+        <attribute>
+            <name>warnClass</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>CSS class to be used for messages with severity "WARN".</description>
+        </attribute>
+        <attribute>
+            <name>warnStyle</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>CSS style to be used for messages with severity "WARN".</description>
+        </attribute>
+        <attribute>
+            <name>errorClass</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>CSS class to be used for messages with severity "ERROR".</description>
+        </attribute>
+        <attribute>
+            <name>errorStyle</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>CSS style to be used for messages with severity "ERROR".</description>
+        </attribute>
+        <attribute>
+            <name>fatalClass</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>CSS class to be used for messages with severity "FATAL".</description>
+        </attribute>
+        <attribute>
+            <name>fatalStyle</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>CSS style to be used for messages with severity "FATAL".</description>
+        </attribute>
+        <attribute>
+            <name>layout</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>The layout: "table" or "list". Default: list</description>
+        </attribute>
+        <attribute>
+            <name>tooltip</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>
+                If true, the message summary will be rendered as a tooltip (i.e. HTML title attribute).
+            </description>
+        </attribute>

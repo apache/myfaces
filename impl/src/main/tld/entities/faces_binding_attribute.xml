@@ -1,0 +1,11 @@
+<attribute>
+    <name>binding</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>
+        Identifies a backing bean property (of type UIComponent or appropriate
+        subclass) to bind to this component instance.  This value must be an
+        EL expression.
+    </description>
+</attribute>

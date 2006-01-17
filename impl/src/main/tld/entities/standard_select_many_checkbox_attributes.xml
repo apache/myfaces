@@ -1,0 +1,27 @@
+<!-- all standard attributes of the selectManyCheckbox tag -->
+&ui_select_many_attributes;
+&html_universal_attributes;
+&html_event_handler_attributes;
+&html_input_checkbox_attributes;
+<!-- CheckboxListRenderer attributes -->
+<attribute>
+	<name>layout</name>
+	<required>false</required>
+	<rtexprvalue>false</rtexprvalue>
+	<type>java.lang.String</type>
+	<description>Controls the layout direction of the child elements.  Values include:  
+	lineDirection (vertical) and pageDirection (horzontal).</description>
+</attribute>
+<!--TODO: disabledClass, enabledClass -->
+<attribute>
+	<name>enabledClass</name>
+	<required>false</required>
+	<rtexprvalue>false</rtexprvalue>
+	<description>The CSS class assigned to the label element for enabled choices.</description>
+</attribute>
+<attribute>
+	<name>disabledClass</name>
+	<required>false</required>
+	<rtexprvalue>false</rtexprvalue>
+	<description>The CSS class assigned to the label element for enabled choices.</description>
+</attribute>

@@ -1,0 +1,7 @@
+<attribute>
+    <name>alt</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>HTML: Specifies alternative text that can be used by a browser that can't show this element.</description>
+</attribute>

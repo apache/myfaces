@@ -1,0 +1,5 @@
+        <!-- all standard attributes of the inputText tag -->
+        &ui_input_attributes;
+        &html_universal_attributes;
+        &html_event_handler_attributes;
+        &html_input_attributes;

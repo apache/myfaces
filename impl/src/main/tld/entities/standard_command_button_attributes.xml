@@ -1,0 +1,12 @@
+        <!-- all standard attributes of the commandButton tag -->
+        &ui_command_attributes;
+        &html_universal_attributes;
+        &html_event_handler_attributes;
+        &html_button_attributes;
+        <!-- HtmlCommandButton attributes -->
+        <attribute>
+            <name>image</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>HTML: The URL of an image that renders in place of the button.</description>
+        </attribute>

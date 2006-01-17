@@ -1,0 +1,24 @@
+<!-- HTML 4.0 input attributes -->
+&html_accesskey_attribute;
+&html_align_attribute;
+&html_alt_attribute;
+&html_disabled_attribute;
+&html_focus_blur_attributes;
+&html_onchange_attribute;
+&html_onselect_attribute;
+&html_readonly_attribute;
+&html_tabindex_attribute;
+<attribute>
+    <name>maxlength</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>HTML: The maximum number of characters allowed to be entered.</description>
+</attribute>
+<attribute>
+    <name>size</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>HTML: The initial width of this control, in characters.</description>
+</attribute>

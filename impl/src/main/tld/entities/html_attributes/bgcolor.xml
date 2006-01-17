@@ -1,0 +1,6 @@
+<attribute>
+    <name>bgcolor</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <description>HTML: The background color of this element.</description>
+</attribute>

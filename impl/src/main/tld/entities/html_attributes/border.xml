@@ -1,0 +1,7 @@
+<attribute>
+    <name>border</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>HTML: Specifies the width of the border of this element, in pixels.  Deprecated in HTML 4.01.</description>
+</attribute>

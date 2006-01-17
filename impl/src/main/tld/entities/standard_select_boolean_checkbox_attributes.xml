@@ -1,0 +1,4 @@
+        &ui_select_boolean_attributes;
+        &html_universal_attributes;
+        &html_event_handler_attributes;
+        &html_input_checkbox_attributes;

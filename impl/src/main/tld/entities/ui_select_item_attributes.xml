@@ -1,0 +1,47 @@
+<!-- UISelectItem attributes -->
+&faces_binding_attribute;
+&faces_id_optional_attribute;
+
+<attribute>
+    <name>itemDisabled</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>
+        If true, this component will not be saved during state saving.
+    </description>
+</attribute>
+<attribute>
+    <name>itemDescription</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>An optional description for this item.</description>
+</attribute>
+<attribute>
+    <name>itemLabel</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>
+        The locale-specific label that will be displayed to the user for this item.
+    </description>
+</attribute>
+<attribute>
+    <name>itemValue</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>
+        The value of this item, of the same type as the parent component's value.
+    </description>
+</attribute>
+<attribute>
+    <name>value</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>
+        An EL expression that refers to a javax.faces.model.SelectItem instance.
+    </description>
+</attribute>

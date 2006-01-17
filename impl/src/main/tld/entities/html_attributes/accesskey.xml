@@ -1,0 +1,7 @@
+<attribute>
+    <name>accesskey</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>HTML: Sets the access key for this element.</description>
+</attribute>

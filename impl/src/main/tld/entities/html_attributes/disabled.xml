@@ -1,0 +1,7 @@
+<attribute>
+    <name>disabled</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>HTML: When true, this element cannot receive focus.</description>
+</attribute>

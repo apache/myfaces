@@ -1,0 +1,9 @@
+        <attribute>
+            <name>escape</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <description>
+                Indicates whether rendered markup should be escaped.
+                Default: true
+            </description>
+        </attribute>

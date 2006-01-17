@@ -1,0 +1,14 @@
+<attribute>
+    <name>onblur</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>HTML: Specifies a script to be invoked when the element loses focus.</description>
+</attribute>
+<attribute>
+    <name>onfocus</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>HTML: Specifies a script to be invoked when the element receives focus.</description>
+</attribute>

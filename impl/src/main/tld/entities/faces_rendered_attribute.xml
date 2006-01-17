@@ -1,0 +1,10 @@
+<attribute>
+    <name>rendered</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>
+        A boolean value that indicates whether this component should be rendered.
+        Default value: true.
+    </description>
+</attribute>

@@ -1,0 +1,5 @@
+        <!-- all standard attributes of the inputTextarea tag -->
+        &ui_input_attributes;
+        &html_textarea_attributes;
+        &html_universal_attributes;
+        &html_event_handler_attributes;

@@ -1,0 +1,12 @@
+        <attribute>
+            <name>actionFor</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
+            <description>Comma separated list of component-ids for which
+                validation and model update should take place when
+                this command is executed.
+                You need to use component-containers, not actual
+                input components for this to work.
+            </description>
+        </attribute>

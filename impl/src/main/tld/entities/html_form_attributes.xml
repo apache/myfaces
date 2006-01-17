@@ -1,0 +1,40 @@
+<!-- HTML 4.0 form attributes -->
+&html_target_attribute;
+<attribute>
+    <name>accept</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <description>
+        HTML: Provides a comma-separated list of content types that the 
+        server processing this form can handle.
+    </description>
+</attribute>
+<attribute>
+    <name>acceptCharset</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <description>
+        HTML: The list of character encodings accepted by the server for this
+        form.
+    </description>
+</attribute>
+<attribute>
+    <name>enctype</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <description>
+        HTML: The content type used to submit this form to the server.
+    </description>
+</attribute>
+<attribute>
+    <name>onreset</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <description>HTML: Script to be invoked when this form is reset.</description>
+</attribute>
+<attribute>
+    <name>onsubmit</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <description>HTML: Script to be invoked when this form is submitted.</description>
+</attribute>

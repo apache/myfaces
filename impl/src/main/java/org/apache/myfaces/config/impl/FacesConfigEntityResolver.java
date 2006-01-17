@@ -1,0 +1,112 @@
+/*
+ * Copyright 2004 The Apache Software Foundation.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.myfaces.config.impl;
+
+import org.apache.myfaces.util.ClassUtils;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import javax.faces.context.ExternalContext;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.util.jar.JarEntry;
+
+/**
+ * DOCUMENT ME!
+ * @author Manfred Geiler (latest modification by $Author$)
+ * @author Thomas Spiegl
+ * @version $Revision$ $Date$
+ */
+public class FacesConfigEntityResolver
+    implements EntityResolver
+{
+    private static final Log log = LogFactory.getLog(FacesConfigEntityResolver.class);
+
+    private static final String FACES_CONFIG_1_0_DTD_SYSTEM_ID = "http://java.sun.com/dtd/web-facesconfig_1_0.dtd";
+    private static final String FACES_CONFIG_1_0_DTD_RESOURCE
+            = "org.apache.myfaces.resource".replace('.', '/') + "/web-facesconfig_1_0.dtd";
+    private static final String FACES_CONFIG_1_1_DTD_SYSTEM_ID = "http://java.sun.com/dtd/web-facesconfig_1_1.dtd";
+    private static final String FACES_CONFIG_1_1_DTD_RESOURCE
+            = "org.apache.myfaces.resource".replace('.', '/') + "/web-facesconfig_1_1.dtd";
+
+    private ExternalContext _externalContext = null;
+
+    public FacesConfigEntityResolver(ExternalContext context)
+    {
+        _externalContext = context;
+    }
+
+    public FacesConfigEntityResolver()
+    {
+    }
+
+    public InputSource resolveEntity(String publicId,
+                                     String systemId)
+        throws IOException
+    {
+        InputStream stream;
+        if (systemId.equals(FACES_CONFIG_1_0_DTD_SYSTEM_ID))
+        {
+            stream = ClassUtils.getResourceAsStream(FACES_CONFIG_1_0_DTD_RESOURCE);
+        }
+        else if (systemId.equals(FACES_CONFIG_1_1_DTD_SYSTEM_ID))
+        {
+            stream = ClassUtils.getResourceAsStream(FACES_CONFIG_1_1_DTD_RESOURCE);
+        }
+
+        else if (systemId.startsWith("jar:"))
+        {
+            URL url = new URL(systemId);
+            JarURLConnection conn = (JarURLConnection) url.openConnection();
+            JarEntry jarEntry = conn.getJarEntry();
+            if (jarEntry == null)
+            {
+                log.fatal("JAR entry '" + systemId + "' not found.");
+            }
+            //_jarFile.getInputStream(jarEntry);
+            stream = conn.getJarFile().getInputStream(jarEntry);
+        }
+        else
+        {
+            if (_externalContext == null)
+            {
+                stream = ClassUtils.getResourceAsStream(systemId);
+            }
+            else
+            {
+                if (systemId.startsWith("file:")) {
+                    systemId = systemId.substring(7); // remove file://
+                }
+                stream = _externalContext.getResourceAsStream(systemId);
+            }
+        }
+
+        if (stream == null) {
+            return null;
+        }
+        InputSource is = new InputSource(stream);
+        is.setPublicId(publicId);
+        is.setSystemId(systemId);
+        is.setEncoding("ISO-8859-1");
+        return is;
+    }
+
+}

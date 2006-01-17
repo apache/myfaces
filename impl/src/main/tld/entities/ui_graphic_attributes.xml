@@ -1,0 +1,21 @@
+<!-- UIGraphic attributes -->
+&ui_component_attributes;
+<attribute>
+    <name>url</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>
+        An alias for the "value" attribute.
+    </description>
+</attribute>
+<attribute>
+    <name>value</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>
+        The URL of the image.  If the URL starts with a '/', it is relative
+        to the context path of the web application.
+    </description>
+</attribute>

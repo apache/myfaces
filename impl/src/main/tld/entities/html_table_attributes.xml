@@ -1,0 +1,62 @@
+<!-- HTML 4.0 table attributes -->
+&html_align_attribute;
+&html_border_attribute;
+&html_bgcolor_attribute;
+&html_datafld_datasrc_dataformatas_attributes;
+
+<attribute>
+    <name>cellpadding</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <description>
+        HTML: Specifies the amount of empty space between the cell border and
+        its contents.  It can be either a pixel length or a percentage.
+    </description>
+</attribute>
+<attribute>
+    <name>cellspacing</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <description>
+        HTML: Specifies the amount of space between the cells of the table.
+        It can be either a pixel length or a percentage of available 
+        space.
+    </description>
+</attribute>
+<attribute>
+    <name>frame</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <description>
+        HTML: Controls what part of the frame that surrounds a table is 
+        visible.  Values include:  void, above, below, hsides, lhs, 
+        rhs, vsides, box, and border.
+    </description>
+</attribute>
+<attribute>
+    <name>rules</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <description>
+        HTML: Controls how rules are rendered between cells.  Values include:
+        none, groups, rows, cols, and all.
+    </description>
+</attribute>
+<attribute>
+    <name>summary</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <description>
+        HTML: Provides a summary of the contents of the table, for
+        accessibility purposes.
+    </description>
+</attribute>
+<attribute>
+    <name>width</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <description>
+        HTML: Specifies the desired width of the table, as a pixel length or
+        a percentage of available space.
+    </description>
+</attribute>

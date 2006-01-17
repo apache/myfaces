@@ -1,0 +1,34 @@
+<!-- UIMessage attributes -->
+&ui_component_attributes;
+<attribute>
+    <name>for</name>
+    <required>true</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>
+        An EL expression, returning a String, with the unique ID of the component 
+        for which messages should be displayed.  This string has the same format
+        as that accepted by the UIComponent.findComponent() method.
+    </description>
+</attribute>
+<attribute>
+    <name>showSummary</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>
+        An EL expression, returning a boolean, that controls whether the
+        summary text of the associated messages is displayed.  Default: true.
+    </description>
+</attribute>
+<attribute>
+    <name>showDetail</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>
+        An EL expression, returning a boolean, that controls whether the
+        detail text of the associated messages is displayed.  Default: false.
+    </description>
+</attribute>
+

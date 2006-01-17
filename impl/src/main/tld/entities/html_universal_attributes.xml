@@ -1,0 +1,31 @@
+<!-- HTML 4.0 universal attributes -->
+<attribute>
+    <name>dir</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <description>HTML: The direction of text display, either 'ltr' (left-to-right) or 'rtl' (right-to-left).</description>
+</attribute>
+<attribute>
+    <name>lang</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <description>HTML: The base language of this document.</description>
+</attribute>
+<attribute>
+    <name>style</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <description>HTML: CSS styling instructions.</description>
+</attribute>
+<attribute>
+    <name>title</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <description>HTML: An advisory title for this element.  Often used by the user agent as a tooltip.</description>
+</attribute>
+<attribute>
+    <name>styleClass</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <description>The CSS class for this element.  Corresponds to the HTML 'class' attribute.</description>
+</attribute>

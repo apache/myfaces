@@ -1,0 +1,5 @@
+        <!-- all standard attributes of the commandLink tag -->
+        &ui_command_attributes;
+        &html_universal_attributes;
+        &html_event_handler_attributes;
+        &html_anchor_attributes;

@@ -1,0 +1,30 @@
+<attribute>
+    <name>columnClasses</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <description>
+        A comma separated list of CSS class names to apply to td elements in
+        each column.
+    </description>
+</attribute>
+<attribute>
+    <name>footerClass</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <description>The CSS class to be applied to footer cells.</description>
+</attribute>
+<attribute>
+    <name>headerClass</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <description>The CSS class to be applied to header cells.</description>
+</attribute>
+<attribute>
+    <name>rowClasses</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <description>
+        A comma separated list of CSS class names to apply to td elements in
+        each row.
+    </description>
+</attribute>

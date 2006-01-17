@@ -1,0 +1,23 @@
+&ui_select_one_attributes;
+&html_universal_attributes;
+&html_event_handler_attributes;
+&html_select_attributes;
+
+<!-- ListboxRenderer attributes -->
+<attribute>
+    <name>size</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <type>java.lang.String</type>
+    <description>see JSF Spec.</description>
+</attribute>
+<attribute>
+    <name>enabledClass</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+</attribute>
+<attribute>
+    <name>disabledClass</name>
+    <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+</attribute>
