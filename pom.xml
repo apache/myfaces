@@ -363,14 +363,14 @@
       <artifactId>junit</artifactId>
       <version>3.8.1</version>
       <scope>test</scope>
-
     </dependency>
+
   </dependencies>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/api/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/api/trunk</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/myfaces/api/trunk</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/trunk</url>
   </scm>
 
   <organization>

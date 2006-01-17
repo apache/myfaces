@@ -244,9 +244,9 @@
    </profiles>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/impl/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/impl/trunk</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/myfaces/impl/trunk</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk/impl</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk/impl</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/trunk/impl</url>
   </scm>
 
 </project>
