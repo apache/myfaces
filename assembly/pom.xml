@@ -2,8 +2,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.apache.myfaces</groupId>
-  <artifactId>myfaces-assembly</artifactId>
+  <artifactId>myfaces-core-assembly</artifactId>
   <packaging>pom</packaging>
   <name>MyFaces Assembly</name>
   <description>
@@ -11,8 +10,8 @@
   </description>
 
   <parent>
-    <groupId>org.apache.myfaces</groupId>
-    <artifactId>myfaces</artifactId>
+    <groupId>org.apache.myfaces.core</groupId>
+    <artifactId>myfaces-core-project</artifactId>
     <version>1.1.2-SNAPSHOT</version>
   </parent>
 
@@ -32,19 +31,19 @@
             <configuration>
               <artifactItems>
                 <artifactItem>
-                  <groupId>org.apache.myfaces</groupId>
+                  <groupId>org.apache.myfaces.core</groupId>
                   <artifactId>myfaces-api</artifactId>
                   <version>${version}</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>
                 <artifactItem>
-                  <groupId>org.apache.myfaces</groupId>
+                  <groupId>org.apache.myfaces.core</groupId>
                   <artifactId>myfaces-impl</artifactId>
                   <version>${version}</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>
                 <artifactItem>
-                  <groupId>org.apache.myfaces</groupId>
+                  <groupId>org.apache.myfaces.commons</groupId>
                   <artifactId>myfaces-commons</artifactId>
                   <!-- TODO find one way to define the common version -->
                   <version>1.1.2-SNAPSHOT</version>
