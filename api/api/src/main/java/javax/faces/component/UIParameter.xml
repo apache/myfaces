@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<component>
+    <component-class>javax.faces.component.UIParameter</component-class>
+    <base-class>javax.faces.component.UIComponentBase</base-class>
+    <component-type>javax.faces.Parameter</component-type>
+    <component-family>javax.faces.Parameter</component-family>
+    <field>
+        <name>name</name>
+        <type>java.lang.String</type>
+    </field>
+    <field>
+        <name>value</name>
+        <type>java.lang.Object</type>
+    </field>
+</component>

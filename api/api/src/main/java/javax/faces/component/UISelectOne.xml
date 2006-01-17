@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<component>
+    <component-class>javax.faces.component.UISelectOne</component-class>
+    <base-class>javax.faces.component.UIInput</base-class>
+    <component-type>javax.faces.SelectOne</component-type>
+    <component-family>javax.faces.SelectOne</component-family>
+    <renderer-type>javax.faces.Menu</renderer-type>
+</component>

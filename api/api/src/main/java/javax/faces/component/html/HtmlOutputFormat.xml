@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<component>
+    <component-class>javax.faces.component.html.HtmlOutputFormat</component-class>
+    <base-class>javax.faces.component.UIOutput</base-class>
+    <component-type>javax.faces.HtmlOutputFormat</component-type>
+    <renderer-type>javax.faces.Format</renderer-type>
+    <field>
+        <name>escape</name>
+        <type>boolean</type>
+        <default-value>true</default-value>
+    </field>
+    <field>
+        <name>style</name>
+        <type>java.lang.String</type>
+    </field>
+    <field>
+        <name>styleClass</name>
+        <type>java.lang.String</type>
+    </field>
+    <field>
+        <name>title</name>
+        <type>java.lang.String</type>
+    </field>
+</component>

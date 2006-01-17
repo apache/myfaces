@@ -1,0 +1,40 @@
+<assembly>
+  <id>bin</id>
+  <formats>
+    <format>tar.bz2</format>
+    <format>tar.gz</format>
+    <format>zip</format>
+  </formats>
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>lib</outputDirectory>
+      <scope>runtime</scope>
+    </dependencySet>
+  </dependencySets>
+  <fileSets>
+    <fileSet>
+    	<directory>src/main/resources</directory>
+    	<outputDirectory></outputDirectory>
+      <includes>
+        <include>README*</include>
+        <include>LICENSE*</include>
+        <include>NOTICE*</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>target/javadoc</directory>
+      <outputDirectory>javadoc</outputDirectory>
+      <includes>
+        <include>*.jar</include>
+      </includes>
+    </fileSet>
+    <!--fileSet>
+      <directory>target/tlddoc</directory>
+      <outputDirectory>tlddoc</outputDirectory>
+      <includes>
+        <include>*.jar</include>
+      </includes>
+    </fileSet-->
+
+  </fileSets>
+</assembly>
