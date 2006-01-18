@@ -222,31 +222,41 @@
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
-             <artifactId>maven-javadoc-plugin</artifactId>
-             <executions>
-               <execution>
-                 <id>attach-javadoc</id>
-                 <goals><goal>jar</goal></goals>
-               </execution>
-             </executions>
-           </plugin>
-           <!--plugin>
-             <groupId>net.sourceforge.maven-taglib</groupId>
-             <artifactId>maven-taglib-plugin</artifactId>
-             <configuration>
-               <taglib.src.dir>${basedir}/target/classes/META-INF</taglib.src.dir>
-               <tldDocDir>${basedir}/target/tlddoc</tldDocDir>
-             </configuration>
-             <executions>                                                  
-               <execution>
-                 <id>attach-tlddoc</id>
-                 <goals><goal>taglibdocjar</goal></goals>
-               </execution>
-             </executions>
-           </plugin-->
-         </plugins>
-       </build>
-     </profile>
-   </profiles>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-javadoc</id>
+                <goals><goal>jar</goal></goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--plugin>
+            <groupId>net.sourceforge.maven-taglib</groupId>
+            <artifactId>maven-taglib-plugin</artifactId>
+            <configuration>
+              <taglib.src.dir>${basedir}/target/classes/META-INF</taglib.src.dir>
+              <tldDocDir>${basedir}/target/tlddoc</tldDocDir>
+            </configuration>
+            <executions>
+              <execution>
+                <id>attach-tlddoc</id>
+                <goals><goal>taglibdocjar</goal></goals>
+              </execution>
+            </executions>
+          </plugin-->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-source</id>
+                <goals><goal>jar</goal></goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>
