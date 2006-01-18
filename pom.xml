@@ -7,7 +7,7 @@
   <artifactId>myfaces-core-project</artifactId>
   <packaging>pom</packaging>
   <version>1.1.2-SNAPSHOT</version>
-  <name>MyFaces Core Project</name>
+  <name>Core Project</name>
   <url>http://myfaces.apache.org/projects</url>
 
   <parent>
@@ -15,6 +15,12 @@
     <artifactId>myfaces-master</artifactId>
 		<version>1.0.0-SNAPSHOT</version>	  
   </parent>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/trunk</url>
+  </scm>
 
   <issueManagement>
     <system>jira</system>
@@ -366,12 +372,6 @@
     </dependency>
 
   </dependencies>
-
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/trunk</url>
-  </scm>
 
   <organization>
     <name>Apache Software Foundation</name>

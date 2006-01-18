@@ -6,7 +6,7 @@
   <groupId>org.apache.myfaces.core</groupId>
   <artifactId>myfaces-api</artifactId>
   <packaging>jar</packaging>
-  <name>MyFaces API</name>
+  <name>API</name>
   <description>
     This is the MyFaces API Subproject Description [INSERT MORE STUFF HERE]
   </description>

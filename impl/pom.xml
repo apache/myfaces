@@ -5,7 +5,7 @@
   <groupId>org.apache.myfaces.core</groupId>
   <artifactId>myfaces-impl</artifactId>
   <packaging>jar</packaging>
-  <name>MyFaces Impl</name>
+  <name>Impl</name>
   <url>http://myfaces.apache.org</url>
   <description>
     This is the MyFaces Impl Subproject Description [INSERT MORE STUFF HERE]
