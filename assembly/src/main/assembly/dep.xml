@@ -5,12 +5,12 @@
     <format>tar.gz</format>
     <format>zip</format>
   </formats>
-  <dependencySets>
+  <!--dependencySets>
     <dependencySet>
       <outputDirectory>lib</outputDirectory>
       <scope>runtime</scope>
     </dependencySet>
-  </dependencySets>
+  </dependencySets-->
   <fileSets>
     <fileSet>
     	<directory>src/main/resources</directory>
@@ -24,6 +24,13 @@
     <fileSet>
       <directory>target/javadoc</directory>
       <outputDirectory>javadoc</outputDirectory>
+      <includes>
+        <include>*.jar</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>target/assembly-lib</directory>
+      <outputDirectory>lib</outputDirectory>
       <includes>
         <include>*.jar</include>
       </includes>
