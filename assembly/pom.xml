@@ -4,7 +4,7 @@
 
   <artifactId>myfaces-core-assembly</artifactId>
   <packaging>pom</packaging>
-  <name>MyFaces Assembly</name>
+  <name>Core Assembly</name>
   <description>
   	This is the MyFaces Assembly [INSERT MORE STUFF HERE]
   </description>
@@ -14,6 +14,12 @@
     <artifactId>myfaces-core-project</artifactId>
     <version>1.1.2-SNAPSHOT</version>
   </parent>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk/assembly</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk/assembly</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/trunk/assembly</url>
+  </scm>
 
   <distributionManagement>
 <!--
