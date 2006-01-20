@@ -2,6 +2,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+	<groupId>nightly</groupId>
   <artifactId>myfaces-core-assembly</artifactId>
   <packaging>pom</packaging>
   <name>Core Assembly</name>
@@ -33,7 +34,7 @@
       <uniqueVersion>false</uniqueVersion>
       <id>myfaces-nightly-builds</id>
       <name>Apache My Faces Nightly Builds</name>
-      <url>scpexe://minotaur.apache.org/www/cvs.apache.org/builds/myfaces/nightly</url>
+      <url>scpexe://minotaur.apache.org/www/cvs.apache.org/builds/myfaces/</url>
     </snapshotRepository>
   </distributionManagement>
 
