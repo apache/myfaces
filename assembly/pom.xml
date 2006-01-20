@@ -15,6 +15,23 @@
     <version>1.1.2-SNAPSHOT</version>
   </parent>
 
+  <distributionManagement>
+<!--
+    <repository>
+      <id>apache-maven</id>
+      <name>Apache Maven Repository</name>
+      <url>scpexe://people.apache.org/www/www.apache.org/dist/maven-repository</url>
+    </repository>
+-->
+    <snapshotRepository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>myfaces-nightly-builds</id>
+      <name>Apache My Faces Nightly Builds</name>
+      <url>scpexe://minotaur.apache.org/www/cvs.apache.org/builds/myfaces/nightly</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+
   <build>
 
     <plugins>
@@ -112,7 +129,7 @@
         <version>2.0-beta-1</version>
         <configuration>
           <descriptor>src/main/assembly/dep.xml</descriptor>
-          <finalName>myfaces-${version}</finalName>
+          <finalName>myfaces-core-${version}</finalName>
           <outputDirectory>target</outputDirectory>
           <workDirectory>target/assembly/work</workDirectory>
         </configuration>
