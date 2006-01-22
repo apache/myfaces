@@ -130,7 +130,7 @@
         <version>1.0-SNAPSHOT</version>
         <configuration>
           <id>myfaces-nightly-builds</id>
-          <url>scpexe://minotaur.apache.org/www/cvs.apache.org/builds/myfaces/</url>
+          <url>scpexe://minotaur.apache.org/www/cvs.apache.org/builds/myfaces/nightly</url>
           <inputDirectory>target/assembly/out</inputDirectory>
         </configuration>
       </plugin>
