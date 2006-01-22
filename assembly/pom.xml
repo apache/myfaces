@@ -1,8 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
-	<groupId>nightly</groupId>
   <artifactId>myfaces-core-assembly</artifactId>
   <packaging>pom</packaging>
   <name>Core Assembly</name>
@@ -22,23 +20,6 @@
     <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/trunk/assembly</url>
   </scm>
 
-  <distributionManagement>
-<!--
-    <repository>
-      <id>apache-maven</id>
-      <name>Apache Maven Repository</name>
-      <url>scpexe://people.apache.org/www/www.apache.org/dist/maven-repository</url>
-    </repository>
--->
-    <snapshotRepository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>myfaces-nightly-builds</id>
-      <name>Apache My Faces Nightly Builds</name>
-      <url>scpexe://minotaur.apache.org/www/cvs.apache.org/builds/myfaces/</url>
-    </snapshotRepository>
-  </distributionManagement>
-
-
   <build>
 
     <plugins>
@@ -46,6 +27,7 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>dependency-maven-plugin</artifactId>
         <executions>
+
           <execution>
             <id>copy-javadoc</id>
             <phase>package</phase>
@@ -137,8 +119,19 @@
         <configuration>
           <descriptor>src/main/assembly/dep.xml</descriptor>
           <finalName>myfaces-core-${version}</finalName>
-          <outputDirectory>target</outputDirectory>
+          <outputDirectory>target/assembly/out</outputDirectory>
           <workDirectory>target/assembly/work</workDirectory>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.myfaces.maven</groupId>
+        <artifactId>wagon-maven-plugin</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <configuration>
+          <id>myfaces-nightly-builds</id>
+          <url>scpexe://minotaur.apache.org/www/cvs.apache.org/builds/myfaces/</url>
+          <inputDirectory>target/assembly/out</inputDirectory>
         </configuration>
       </plugin>
 
