@@ -18,8 +18,12 @@ package javax.faces.component;
 
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
+import javax.faces.FactoryFinder;
+import javax.faces.MockApplicationFactory;
+import javax.faces.MockRenderKitFactory;
 
 import org.apache.myfaces.AbstractTestCase;
+import org.apache.myfaces.FacesContextHelper;
 import org.easymock.MockControl;
 import org.easymock.classextension.MockClassControl;
 
@@ -116,14 +120,58 @@ public class UIComponentBaseTest extends AbstractTestCase {
    */
   public void testGetClientIdFacesContext() {
 
+      FacesContext context = new FacesContextHelper();
+
+      UIInput input = createInputInTree(context);
+
+      String str = input.getClientId(context);
+
+      assertEquals(str, "data:input");
+
+      UIData uiData = (UIData) input.getParent().getParent();
+
+      uiData.setRowIndex(1);
+
+      str = input.getClientId(context);
   }
 
-  /*
-   * Test method for 'javax.faces.component.UIComponentBase.getId()'
-   */
-  public void testGetId() {
+    private UIInput createInputInTree(FacesContext context)
+    {
+        UIViewRoot viewRoot = new UIViewRoot();
+        viewRoot.setId("root");
 
-  }
+        UIData uiData = new UIData();
+        uiData.setId("data");
+
+        UIColumn column = new UIColumn();
+
+        uiData.getChildren().add(column);
+
+        UIInput input = new UIInput();
+        input.setId("input");
+
+        column.getChildren().add(input);
+
+        viewRoot.getChildren().add(uiData);
+
+        FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY,
+          MockApplicationFactory.class.getName());
+
+        FactoryFinder.setFactory(FactoryFinder.RENDER_KIT_FACTORY,
+          MockRenderKitFactory.class.getName());
+
+        context.setViewRoot(viewRoot);
+
+        FacesContextHelper.setCurrentInstance(context);
+        return input;
+    }
+
+    /*
+    * Test method for 'javax.faces.component.UIComponentBase.getId()'
+    */
+    public void testGetId() {
+
+    }
 
   /*
    * Test method for 'javax.faces.component.UIComponentBase.setId(String)'
@@ -157,6 +205,17 @@ public class UIComponentBaseTest extends AbstractTestCase {
    * Test method for 'javax.faces.component.UIComponentBase.findComponent(String)'
    */
   public void testFindComponentString() {
+      FacesContext context = new FacesContextHelper();
+
+      UIInput input = createInputInTree(context);
+
+      UIComponent comp = input.findComponent(":data:input");
+
+      assertEquals(input, comp);
+
+      comp = input.findComponent("input");
+
+      assertEquals(input, comp);
 
   }
 

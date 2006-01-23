@@ -169,18 +169,6 @@ public class UIInput
         }
     }
 
-    /**
-     * execute phase only if the component is partial-enabled or one
-     * of its ancestors is partial-enabled
-     *
-     * @param context
-     * @return true if component is being included in partial phase execution
-     */
-    private boolean isPartialEnabled(FacesContext context)
-    {
-        return context.getExternalContext().getRequestMap().get(PARTIAL_ENABLED)==Boolean.TRUE;
-    }
-
     public void processValidators(FacesContext context)
     {
         if (context == null) throw new NullPointerException("context");
@@ -188,23 +176,20 @@ public class UIInput
 
         super.processValidators(context);
 
-        if(isPartialEnabled(context))
+        if (!isImmediate())
         {
-            if (!isImmediate())
+            try
             {
-                try
-                {
-                    validate(context);
-                }
-                catch (RuntimeException e)
-                {
-                    context.renderResponse();
-                    throw e;
-                }
-                if (!isValid())
-                {
-                    context.renderResponse();
-                }
+                validate(context);
+            }
+            catch (RuntimeException e)
+            {
+                context.renderResponse();
+                throw e;
+            }
+            if (!isValid())
+            {
+                context.renderResponse();
             }
         }
     }
@@ -216,21 +201,18 @@ public class UIInput
 
         super.processUpdates(context);
 
-        if(isPartialEnabled(context))
+        try
         {
-            try
-            {
-                updateModel(context);
-            }
-            catch (RuntimeException e)
-            {
-                context.renderResponse();
-                throw e;
-            }
-            if (!isValid())
-            {
-                context.renderResponse();
-            }
+            updateModel(context);
+        }
+        catch (RuntimeException e)
+        {
+            context.renderResponse();
+            throw e;
+        }
+        if (!isValid())
+        {
+            context.renderResponse();
         }
     }
 

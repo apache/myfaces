@@ -132,7 +132,7 @@ class _ComponentUtils
             }
             else
             {
-                return id.equals(cmp.getId()+"_"+uiData.getRowIndex());
+                return id.equals(cmp.getId()+NamingContainer.SEPARATOR_CHAR+uiData.getRowIndex());
             }
         }
 
@@ -141,7 +141,7 @@ class _ComponentUtils
 
     private static boolean dynamicIdIsEqual(String dynamicId, String id)
     {
-        return dynamicId.matches(id+"_[0-9]*");
+        return dynamicId.matches(id+":[0-9]*");
     }
 
 
