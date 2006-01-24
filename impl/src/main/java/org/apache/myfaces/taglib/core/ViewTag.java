@@ -18,7 +18,14 @@ package org.apache.myfaces.taglib.core;
 import org.apache.myfaces.application.MyfacesStateManager;
 import org.apache.myfaces.application.jsp.JspViewHandlerImpl;
 import org.apache.myfaces.renderkit.html.HtmlLinkRendererBase;
+import org.apache.myfaces.renderkit.html.HTML;
+import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
+import org.apache.myfaces.renderkit.html.util.HtmlBufferResponseWriterWrapper;
+import org.apache.myfaces.renderkit.html.util.DummyFormUtils;
+import org.apache.myfaces.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.util.LocaleUtils;
+import org.apache.myfaces.util.MyFacesJavascriptRendererUtil;
+import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -112,6 +119,16 @@ public class ViewTag
         catch (IOException e)
         {
             log.error("Error writing endDocument", e);
+            throw new JspException(e);
+        }
+
+        try {
+            // this will generate the javascript code that myfaces needs (dummyform...)
+            // and put it in the request. The extensionsFilter will get the value from
+            // the request and render it in the "post-parse"
+            MyFacesJavascriptRendererUtil.renderCodeBeforeBodyEnd(facesContext);
+        } catch (IOException e) {
+            log.error("Error preparing MyFacesJavascript", e);
             throw new JspException(e);
         }
 
