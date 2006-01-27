@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.myfaces;
+package org.apache.myfaces.mock.api;
 
-import org.apache.myfaces.mock.MockExternalContext;
+import org.apache.myfaces.mock.api.MockExternalContext;
 
 import javax.faces.context.FacesContext;
 import javax.faces.context.ExternalContext;
@@ -37,122 +37,117 @@ import java.util.Iterator;
  * FacesContext.getCurrentInstance().
  */
 
-public class FacesContextHelper extends FacesContext
+public class MockFacesContextHelper extends FacesContext
 {
-    private Application application;
-    private ExternalContext externalContext;
-    private UIViewRoot viewRoot;
+    private MockFacesContextHelper()
+    {
+
+    }
 
     public Application getApplication()
     {
-        return application;
+        throw new UnsupportedOperationException("this class is for setting the current faces-context only");
     }
 
     public void setApplication(Application application)
     {
-        this.application = application;
+        throw new UnsupportedOperationException("this class is for setting the current faces-context only");
     }
 
     public ExternalContext getExternalContext()
     {
-        if(externalContext==null)
-        {
-            externalContext = new MockExternalContext();
-        }
-
-        return externalContext;
+        throw new UnsupportedOperationException("this class is for setting the current faces-context only");
     }
 
     public void setExternalContext(ExternalContext externalContext)
     {
-        this.externalContext = externalContext;
+        throw new UnsupportedOperationException("this class is for setting the current faces-context only");
     }
 
     public UIViewRoot getViewRoot()
     {
-        return viewRoot;
+        throw new UnsupportedOperationException("this class is for setting the current faces-context only");
     }
 
     public void setViewRoot(UIViewRoot viewRoot)
     {
-        this.viewRoot = viewRoot;
+        throw new UnsupportedOperationException("this class is for setting the current faces-context only");
     }
-
 
     public Iterator getClientIdsWithMessages()
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException("this class is for setting the current faces-context only");
     }
 
 
     public FacesMessage.Severity getMaximumSeverity()
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException("this class is for setting the current faces-context only");
     }
 
     public Iterator getMessages()
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException("this class is for setting the current faces-context only");
     }
 
     public Iterator getMessages(String clientId)
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException("this class is for setting the current faces-context only");
     }
 
     public RenderKit getRenderKit()
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException("this class is for setting the current faces-context only");
     }
 
     public boolean getRenderResponse()
     {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException("this class is for setting the current faces-context only");
     }
 
     public boolean getResponseComplete()
     {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException("this class is for setting the current faces-context only");
     }
 
     public ResponseStream getResponseStream()
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException("this class is for setting the current faces-context only");
     }
 
     public void setResponseStream(ResponseStream responseStream)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException("this class is for setting the current faces-context only");
     }
 
     public ResponseWriter getResponseWriter()
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException("this class is for setting the current faces-context only");
     }
 
     public void setResponseWriter(ResponseWriter responseWriter)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException("this class is for setting the current faces-context only");
     }
 
     public void addMessage(String clientId, FacesMessage message)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException("this class is for setting the current faces-context only");
     }
 
     public void release()
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException("this class is for setting the current faces-context only");
     }
 
     public void renderResponse()
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException("this class is for setting the current faces-context only");
     }
 
     public void responseComplete()
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException("this class is for setting the current faces-context only");
     }
 
     public static void setCurrentInstance(FacesContext other)

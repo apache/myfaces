@@ -21,8 +21,9 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.myfaces.AbstractTestCase;
-import org.apache.myfaces.mock.MockApplication;
-import org.apache.myfaces.mock.MockFacesContext;
+import org.apache.myfaces.mock.api.MockApplication;
+import org.apache.myfaces.mock.api.MockFacesContext;
+
 import javax.faces.component.UIViewRoot;
 
 public class UISelectManyTest extends AbstractTestCase {

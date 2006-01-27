@@ -19,11 +19,12 @@ package javax.faces.component;
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 import javax.faces.FactoryFinder;
-import javax.faces.MockApplicationFactory;
-import javax.faces.MockRenderKitFactory;
+import org.apache.myfaces.mock.api.MockApplicationFactory;
+import org.apache.myfaces.mock.api.MockRenderKitFactory;
 
 import org.apache.myfaces.AbstractTestCase;
-import org.apache.myfaces.FacesContextHelper;
+import org.apache.myfaces.mock.api.MockFacesContextHelper;
+import org.apache.myfaces.mock.api.MockFacesContext;
 import org.easymock.MockControl;
 import org.easymock.classextension.MockClassControl;
 
@@ -120,7 +121,7 @@ public class UIComponentBaseTest extends AbstractTestCase {
    */
   public void testGetClientIdFacesContext() {
 
-      FacesContext context = new FacesContextHelper();
+      FacesContext context = new MockFacesContext();
 
       UIInput input = createInputInTree(context);
 
@@ -162,7 +163,7 @@ public class UIComponentBaseTest extends AbstractTestCase {
 
         context.setViewRoot(viewRoot);
 
-        FacesContextHelper.setCurrentInstance(context);
+        MockFacesContextHelper.setCurrentInstance(context);
         return input;
     }
 
@@ -205,7 +206,7 @@ public class UIComponentBaseTest extends AbstractTestCase {
    * Test method for 'javax.faces.component.UIComponentBase.findComponent(String)'
    */
   public void testFindComponentString() {
-      FacesContext context = new FacesContextHelper();
+      FacesContext context = new MockFacesContext();
 
       UIInput input = createInputInTree(context);
 

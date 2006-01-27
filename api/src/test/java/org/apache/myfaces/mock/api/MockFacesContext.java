@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.apache.myfaces.mock;
+package org.apache.myfaces.mock.api;
 
 import javax.faces.application.Application;
 import javax.faces.component.UIViewRoot;

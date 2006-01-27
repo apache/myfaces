@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package javax.faces;
+package org.apache.myfaces.mock.api;
+
+import org.apache.myfaces.mock.api.MockRenderKit;
 
 import javax.faces.render.RenderKitFactory;
 import javax.faces.render.RenderKit;
@@ -58,5 +60,6 @@ public class MockRenderKitFactory extends RenderKitFactory
         {
             return delegate.getRenderKitIds();
         }
-        return null;    }
+        return null;
+    }
 }

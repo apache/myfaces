@@ -19,6 +19,7 @@ package org.apache.myfaces;
 import javax.faces.context.FacesContext;
 
 import junit.framework.TestCase;
+import org.apache.myfaces.mock.api.MockFacesContextHelper;
 
 /**
  * Base class that unit tests can extend to ensure the current FacesContext
@@ -38,14 +39,14 @@ public abstract class AbstractTestCase extends TestCase {
 
   protected void setUp() throws Exception {
     if (FacesContext.getCurrentInstance() != null) {
-    	throw new IllegalStateException("faces context not null");
+        throw new IllegalStateException("faces context not null");
     }
-    
+
     super.setUp();
   }
 
   protected void tearDown() throws Exception {
     super.tearDown();
-	FacesContextHelper.setCurrentInstance(null);
+    MockFacesContextHelper.setCurrentInstance(null);
   }
 }

@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-package javax.faces;
+package org.apache.myfaces.mock.api;
 
 import javax.faces.application.Application;
 import javax.faces.application.ApplicationFactory;
 
+/**
+ * Necessary for testing application-factory-setup with to application-factories;
+ */
 public class Mock2ApplicationFactory extends ApplicationFactory {
 	private Application app = null;
 	private ApplicationFactory factory = null;
