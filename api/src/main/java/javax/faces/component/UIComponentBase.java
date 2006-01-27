@@ -595,7 +595,7 @@ public abstract class UIComponentBase
     public void processDecodes(FacesContext context)
     {
         if (context == null) throw new NullPointerException("context");
-        if (!isRendered()) return;
+                if (!isRendered()) return;
         for (Iterator it = getFacetsAndChildren(); it.hasNext(); )
         {
             UIComponent childOrFacet = (UIComponent)it.next();
