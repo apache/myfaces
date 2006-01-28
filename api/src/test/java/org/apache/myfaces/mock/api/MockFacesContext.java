@@ -36,7 +36,7 @@ public class MockFacesContext extends FacesContext
     
     public MockFacesContext()
     {
-        super.setCurrentInstance(this);
+        FacesContext.setCurrentInstance(this);
     }
 
     public void setApplication(Application application)
@@ -61,6 +61,10 @@ public class MockFacesContext extends FacesContext
 
     public javax.faces.context.ExternalContext getExternalContext()
     {
+        if(_externalContext == null)
+        {
+            _externalContext = new MockExternalContext();
+        }
         return _externalContext;
     }
 
