@@ -436,7 +436,7 @@ public class ApplicationImpl
          		return (UIComponent) obj;
          	}
          	else {
-         		log.warn("Stale component found while creating component of type [" + componentType + "]"
+         		log.debug("Stale component found while creating component of type [" + componentType + "]"
 	                    + " for binding [" + valueBinding.getExpressionString() + "]");
          	}
 
@@ -490,8 +490,8 @@ public class ApplicationImpl
             throw new NullPointerException("createConverter: targetClass = null is not allowed");
         }
 
-        Converter converter = internalCreateConverter(targetClass);
-
+        Converter converter;
+        converter = internalCreateConverter(targetClass);
         return converter;
     }
 
