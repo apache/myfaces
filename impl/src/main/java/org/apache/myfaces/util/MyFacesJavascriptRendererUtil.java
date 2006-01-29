@@ -51,11 +51,9 @@ public class MyFacesJavascriptRendererUtil
         HtmlBufferResponseWriterWrapper writerWrapper = HtmlBufferResponseWriterWrapper
                     .getInstance(responseWriter);
 
-        HtmlResponseWriterImpl responseWriterImpl = (HtmlResponseWriterImpl) responseWriter;
-
-        if (responseWriterImpl.isWriteDummyForm())
+        if (DummyFormUtils.isWriteDummyForm(facesContext))
         {
-            DummyFormUtils.writeDummyForm(writerWrapper, responseWriterImpl.getDummyFormParams());
+            DummyFormUtils.writeDummyForm(writerWrapper, DummyFormUtils.getDummyFormParameters(facesContext));
         }
 
         MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(facesContext.getExternalContext());
