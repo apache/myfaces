@@ -342,7 +342,7 @@ public class UIInput
         Object previousValue = getValue();
         setValue(convertedValue);
         setSubmittedValue(null);
-        if (valuesDifferent(previousValue, convertedValue))
+        if (compareValues(previousValue, convertedValue))
         {
             queueEvent(new ValueChangeEvent(this, previousValue, convertedValue));
         }
@@ -406,7 +406,7 @@ public class UIInput
 
 
 
-    protected boolean valuesDifferent(Object previous,
+    protected boolean compareValues(Object previous,
                                       Object value)
     {
         return previous==null?(value!=null):(!previous.equals(value));

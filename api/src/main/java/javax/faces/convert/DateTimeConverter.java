@@ -53,7 +53,7 @@ public class DateTimeConverter
     private Locale _locale;
     private String _pattern;
     private String _timeStyle;
-    protected TimeZone _timeZone;
+    private TimeZone _timeZone;
     private String _type;
     private boolean _transient;
 

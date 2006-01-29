@@ -81,7 +81,7 @@ public class UISelectMany extends UIInput
     /**
      * @return true if Objects are different (!)
      */
-    protected boolean valuesDifferent(Object previous, Object value)
+    protected boolean compareValues(Object previous, Object value)
     {
         if (previous == null)
         {
