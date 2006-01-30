@@ -653,7 +653,7 @@ public abstract class UIComponentTag
 
             StringBuffer retValue = new StringBuffer(UIViewRoot.UNIQUE_ID_PREFIX);
             retValue.append("Jsp");
-            retValue.append(currentCounter);
+            retValue.append(lCurrentCounter);
 
             lCurrentCounter++;
 
@@ -688,7 +688,7 @@ public abstract class UIComponentTag
                                                                 componentType);
             component.setId(id);
             component.setValueBinding("binding", componentBinding);
-            recurseFacetsAndChildrenForId(context, component.getFacetsAndChildren(), id + "_", 0);
+            recurseFacetsAndChildrenForId(component.getFacetsAndChildren(), id + "_", 0);
             _created = true;
             return component;
         }
@@ -707,10 +707,10 @@ public abstract class UIComponentTag
      * because this would affect the order of the created ids upon
      * rerendering the page!
      */
-    private int recurseFacetsAndChildrenForId(FacesContext context,
-                                              Iterator facetsAndChildren,
-                                              String idPrefix,
-                                              int cnt)
+    private int recurseFacetsAndChildrenForId(
+            Iterator facetsAndChildren,
+            String idPrefix,
+            int cnt)
     {
         while (facetsAndChildren.hasNext())
         {
@@ -720,7 +720,7 @@ public abstract class UIComponentTag
                 ++cnt;
                 comp.setId(idPrefix + cnt);
             }
-            cnt = recurseFacetsAndChildrenForId(context, comp.getFacetsAndChildren(), idPrefix, cnt);
+            cnt = recurseFacetsAndChildrenForId(comp.getFacetsAndChildren(), idPrefix, cnt);
         }
         return cnt;
     }
@@ -953,10 +953,7 @@ public abstract class UIComponentTag
 
         buf.insert(0,intBuf);
 
-        if(component!=null)
-        {
-            getPathToComponent(component.getParent(),buf);
-        }
+        getPathToComponent(component.getParent(),buf);
     }
 
 }

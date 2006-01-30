@@ -17,7 +17,6 @@ package org.apache.myfaces.util;
 
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.renderkit.html.HTML;
-import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.renderkit.html.util.DummyFormUtils;
 import org.apache.myfaces.renderkit.html.util.HtmlBufferResponseWriterWrapper;
 import org.apache.myfaces.renderkit.html.util.JavascriptUtils;
@@ -33,6 +32,7 @@ import java.io.IOException;
  */
 public class MyFacesJavascriptRendererUtil
 {
+    private static final String ORG_APACHE_MYFACES_MY_FACES_JAVASCRIPT = "org.apache.myfaces.myFacesJavascript";
 
     /**
      * Renders stuff such as the dummy form and the autoscroll javascript, which goes before the closing &lt;/body&gt;
@@ -40,7 +40,7 @@ public class MyFacesJavascriptRendererUtil
      */
     public static void renderCodeBeforeBodyEnd(FacesContext facesContext) throws IOException
     {
-        Object myFacesJavascript = facesContext.getExternalContext().getRequestMap().get("org.apache.myfaces.myFacesJavascript");
+        Object myFacesJavascript = facesContext.getExternalContext().getRequestMap().get(ORG_APACHE_MYFACES_MY_FACES_JAVASCRIPT);
 
         if (myFacesJavascript != null)
         {
@@ -50,6 +50,7 @@ public class MyFacesJavascriptRendererUtil
         ResponseWriter responseWriter = facesContext.getResponseWriter();
         HtmlBufferResponseWriterWrapper writerWrapper = HtmlBufferResponseWriterWrapper
                     .getInstance(responseWriter);
+        facesContext.setResponseWriter(writerWrapper);
 
         if (DummyFormUtils.isWriteDummyForm(facesContext))
         {
@@ -77,6 +78,8 @@ public class MyFacesJavascriptRendererUtil
             JavascriptUtils.renderAutoScrollFunction(facesContext, writerWrapper);
         }
 
-        facesContext.getExternalContext().getRequestMap().put("org.apache.myfaces.myFacesJavascript", "<!-- MYFACES JAVASCRIPT -->\n"+writerWrapper.toString()+"\n");
+        facesContext.setResponseWriter(responseWriter);
+
+        facesContext.getExternalContext().getRequestMap().put(ORG_APACHE_MYFACES_MY_FACES_JAVASCRIPT, "<!-- MYFACES JAVASCRIPT -->\n"+writerWrapper.toString()+"\n");
     }
 }
