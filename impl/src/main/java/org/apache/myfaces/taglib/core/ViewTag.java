@@ -15,20 +15,13 @@
  */
 package org.apache.myfaces.taglib.core;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.MyfacesStateManager;
 import org.apache.myfaces.application.jsp.JspViewHandlerImpl;
 import org.apache.myfaces.renderkit.html.HtmlLinkRendererBase;
-import org.apache.myfaces.renderkit.html.HTML;
-import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
-import org.apache.myfaces.renderkit.html.util.HtmlBufferResponseWriterWrapper;
-import org.apache.myfaces.renderkit.html.util.DummyFormUtils;
-import org.apache.myfaces.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.util.LocaleUtils;
 import org.apache.myfaces.util.MyFacesJavascriptRendererUtil;
-import org.apache.myfaces.config.MyfacesConfig;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import javax.faces.application.StateManager;
 import javax.faces.component.UIComponent;
