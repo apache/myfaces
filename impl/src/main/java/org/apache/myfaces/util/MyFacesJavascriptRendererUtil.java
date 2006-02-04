@@ -78,7 +78,7 @@ public class MyFacesJavascriptRendererUtil
             JavascriptUtils.renderAutoScrollFunction(facesContext, writerWrapper);
         }
 
-        facesContext.setResponseWriter(responseWriter);
+        //facesContext.setResponseWriter(responseWriter);
 
         facesContext.getExternalContext().getRequestMap().put(ORG_APACHE_MYFACES_MY_FACES_JAVASCRIPT, "<!-- MYFACES JAVASCRIPT -->\n"+writerWrapper.toString()+"\n");
     }

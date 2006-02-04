@@ -115,16 +115,6 @@ public class ViewTag
             throw new JspException(e);
         }
 
-        try {
-            // this will generate the javascript code that myfaces needs (dummyform...)
-            // and put it in the request. The extensionsFilter will get the value from
-            // the request and render it in the "post-parse"
-            MyFacesJavascriptRendererUtil.renderCodeBeforeBodyEnd(facesContext);
-        } catch (IOException e) {
-            log.error("Error preparing MyFacesJavascript", e);
-            throw new JspException(e);
-        }
-
         StateManager stateManager = facesContext.getApplication().getStateManager();
         if (!stateManager.isSavingStateInClient(facesContext))
         {
