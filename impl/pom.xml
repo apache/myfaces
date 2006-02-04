@@ -221,6 +221,24 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>xslt-maven-plugin</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <configuration>
+              <xslFile>src/main/tld/misc/resolve_entities-tlddoc.xsl</xslFile>
+              <srcIncludes>**/*.tld</srcIncludes>
+              <srcDir>src/main/tld</srcDir>
+              <destDir>target/tlddoc-site</destDir>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>transform</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
             <executions>
@@ -230,11 +248,11 @@
               </execution>
             </executions>
           </plugin>
-          <!--plugin>
+          <plugin>
             <groupId>net.sourceforge.maven-taglib</groupId>
             <artifactId>maven-taglib-plugin</artifactId>
             <configuration>
-              <taglib.src.dir>${basedir}/target/classes/META-INF</taglib.src.dir>
+              <taglib.src.dir>${basedir}/target/tlddoc-site</taglib.src.dir>
               <tldDocDir>${basedir}/target/tlddoc</tldDocDir>
             </configuration>
             <executions>
@@ -243,7 +261,7 @@
                 <goals><goal>taglibdocjar</goal></goals>
               </execution>
             </executions>
-          </plugin-->
+          </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-source-plugin</artifactId>

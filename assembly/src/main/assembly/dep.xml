@@ -34,13 +34,13 @@
         <include>*.jar</include>
       </includes>
     </fileSet>
-    <!--fileSet>
+    <fileSet>
       <directory>target/tlddoc</directory>
       <outputDirectory>tlddoc</outputDirectory>
       <includes>
         <include>*.jar</include>
       </includes>
-    </fileSet-->
+    </fileSet>
 
   </fileSets>
 </assembly>

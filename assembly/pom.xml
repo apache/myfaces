@@ -89,7 +89,7 @@
             </configuration>
           </execution>
 
-          <!--execution>
+          <execution>
             <id>copy-tlddoc</id>
             <phase>package</phase>
             <goals>
@@ -99,7 +99,7 @@
               <artifactItems>
 
                 <artifactItem>
-                  <groupId>org.apache.myfaces</groupId>
+                  <groupId>org.apache.myfaces.core</groupId>
                   <artifactId>myfaces-impl</artifactId>
                   <version>${version}</version>
                   <classifier>tlddoc</classifier>
@@ -108,7 +108,7 @@
                </artifactItems>
                <outputDirectory>${project.build.directory}/tlddoc</outputDirectory>
              </configuration>
-           </execution-->
+           </execution>
 
         </executions>
       </plugin>
