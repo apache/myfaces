@@ -178,7 +178,7 @@ implements Filter
         try
         {
             SAXParserFactory factory = SAXParserFactory.newInstance();
-            factory.setValidating(true);
+            factory.setValidating(false);
             factory.setNamespaceAware(false);
 
             SAXParser          parser  = factory.newSAXParser();
