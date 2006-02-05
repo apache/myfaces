@@ -21,7 +21,6 @@ import org.apache.myfaces.application.MyfacesStateManager;
 import org.apache.myfaces.application.jsp.JspViewHandlerImpl;
 import org.apache.myfaces.renderkit.html.HtmlLinkRendererBase;
 import org.apache.myfaces.util.LocaleUtils;
-import org.apache.myfaces.util.MyFacesJavascriptRendererUtil;
 
 import javax.faces.application.StateManager;
 import javax.faces.component.UIComponent;
