@@ -8,7 +8,8 @@
   <packaging>jar</packaging>
   <name>API</name>
   <description>
-    This is the MyFaces API Subproject Description [INSERT MORE STUFF HERE]
+    The MyFaces API Subproject provides a full set of the API interfaces and classes
+    defined in JSR-127 (see also http://www.jcp.org/en/jsr/detail?id=127).
   </description>
 
   <parent>
