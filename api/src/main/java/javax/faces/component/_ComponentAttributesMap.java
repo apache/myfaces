@@ -298,7 +298,7 @@ class _ComponentAttributesMap
      */
     public Object put(Object key, Object value)
     {
-        checkKeyAndValue(key, value);
+        checkKeyAndValue(key);
 
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor((String)key);
         if (propertyDescriptor != null)
@@ -420,9 +420,12 @@ class _ComponentAttributesMap
     }
 
 
-    private void checkKeyAndValue(Object key, Object value)
+    private void checkKeyAndValue(Object key)
     {
-        if (value == null) throw new NullPointerException("value");
+        //http://issues.apache.org/jira/browse/MYFACES-458: obviously, the spec is a little unclear here,
+        // but value == null should be allowed - if there is a TCK-test failing due to this, we should
+        // apply for getting the TCK-test dropped
+        // if (value == null) throw new NullPointerException("value");
         checkKey(key);
     }
 
