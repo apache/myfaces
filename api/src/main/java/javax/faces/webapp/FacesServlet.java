@@ -27,6 +27,8 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -98,6 +100,33 @@ public final class FacesServlet
             throws IOException,
                    ServletException
     {
+
+        HttpServletRequest httpRequest = ((HttpServletRequest) request);
+        String pathInfo = httpRequest.getPathInfo();
+
+        // if it is a prefix mapping ...
+        if (pathInfo != null
+                && (pathInfo.startsWith("/WEB-INF") || pathInfo
+                        .startsWith("/META-INF")))
+        {
+            StringBuffer buffer = new StringBuffer();
+
+            buffer.append(" Someone is trying to access a secure resource : "
+                    + pathInfo);
+            buffer.append("\n remote address is " + httpRequest.getRemoteAddr());
+            buffer.append("\n remote host is " + httpRequest.getRemoteHost());
+            buffer.append("\n remote user is " + httpRequest.getRemoteUser());
+            buffer.append("\n request URI is " + httpRequest.getRequestURI());
+
+            log.warn(buffer.toString());
+
+            // Why does RI return a 404 and not a 403, SC_FORBIDDEN ?
+            
+            ((HttpServletResponse) response)
+                    .sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
 		if(log.isTraceEnabled()) log.trace("service begin");
         FacesContext facesContext
                 = _facesContextFactory.getFacesContext(_servletConfig.getServletContext(),
