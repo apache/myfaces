@@ -79,6 +79,7 @@ public class FacesConfigurator
     private static final String DEFAULT_FACES_CONTEXT_FACTORY = FacesContextFactoryImpl.class.getName();
     private static final String DEFAULT_LIFECYCLE_FACTORY = LifecycleFactoryImpl.class.getName();
     private static final String DEFAULT_RENDER_KIT_FACTORY = RenderKitFactoryImpl.class.getName();
+    private static final String DEFAULT_FACES_CONFIG = "/WEB-INF/faces-config.xml";
 
     private static final Set FACTORY_NAMES  = new HashSet();
     {
@@ -361,6 +362,13 @@ public class FacesConfigurator
             while (st.hasMoreTokens())
             {
                 String systemId = st.nextToken().trim();
+                
+                if(log.isWarnEnabled() && DEFAULT_FACES_CONFIG.equals(systemId))
+                    log.warn(DEFAULT_FACES_CONFIG + " has been specified in the " + 
+                            FacesServlet.CONFIG_FILES_ATTR + " context parameter of " +
+                            "the deployment descriptor. This should be removed, " +
+                            "as it will be loaded twice.  See JSF spec 1.1, 10.3.2");
+                
                 InputStream stream = _externalContext.getResourceAsStream(systemId);
                 if (stream == null)
                 {
@@ -379,12 +387,11 @@ public class FacesConfigurator
     private void feedWebAppConfig() throws IOException, SAXException
     {
         //web application config
-        String systemId = "/WEB-INF/faces-config.xml";
-        InputStream stream = _externalContext.getResourceAsStream(systemId);
+        InputStream stream = _externalContext.getResourceAsStream(DEFAULT_FACES_CONFIG);
         if (stream != null)
         {
             if (log.isInfoEnabled()) log.info("Reading config /WEB-INF/faces-config.xml");
-            _dispenser.feed(_unmarshaller.getFacesConfig(stream, systemId));
+            _dispenser.feed(_unmarshaller.getFacesConfig(stream, DEFAULT_FACES_CONFIG));
             stream.close();
         }
     }
@@ -558,6 +565,11 @@ public class FacesConfigurator
         for (Iterator iterator = _dispenser.getManagedBeans(); iterator.hasNext();)
         {
             ManagedBean bean = (ManagedBean) iterator.next();
+
+            if(log.isWarnEnabled() && runtimeConfig.getManagedBean(bean.getManagedBeanName()) != null)
+                log.warn("More than one managed bean w/ the name of '" 
+                        + bean.getManagedBeanName() + "' - only keeping the last ");
+
             runtimeConfig.addManagedBean(bean.getManagedBeanName(), bean);
 
         }
