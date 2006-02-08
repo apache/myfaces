@@ -45,14 +45,14 @@ import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.webapp.FacesServlet;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.jar.JarInputStream;
 import java.net.URL;
+import java.util.*;
 
 
 /**
@@ -72,7 +72,6 @@ public class FacesConfigurator
     private static final String FACES_CONFIG_RESOURCE = "META-INF/faces-config.xml";
 
     private static final String META_INF_SERVICES_RESOURCE_PREFIX = "META-INF/services/";
-    private static final String META_INF_SERVICES_LOCATION = "/META-INF/services/";
 
     private static final String DEFAULT_RENDER_KIT_CLASS = HtmlRenderKitImpl.class.getName();
     private static final String DEFAULT_APPLICATION_FACTORY = ApplicationFactoryImpl.class.getName();
@@ -162,7 +161,7 @@ public class FacesConfigurator
                     InputStream stream = url.openStream();
                     InputStreamReader isr = new InputStreamReader(stream);
                     BufferedReader br = new BufferedReader(isr);
-                    String className = null;
+                    String className;
                     try
                     {
                         className = br.readLine();
@@ -204,7 +203,7 @@ public class FacesConfigurator
     }
 
 
-    private Map expandFactoryNames(Set factoryNames)
+    /*private Map expandFactoryNames(Set factoryNames)
     {
         Map names = new HashMap();
         Iterator itr = factoryNames.iterator();
@@ -214,7 +213,7 @@ public class FacesConfigurator
             names.put(META_INF_SERVICES_LOCATION + name, name);
         }
         return names;
-    }
+    } */
 
 
     /**
@@ -247,7 +246,7 @@ public class FacesConfigurator
      * {@link FacesConfigurator#feedClassloaderConfigurations}
      *
      * @deprecated {@link FacesConfigurator#feedClassloaderConfigurations} replaces this one
-     */
+
     private void feedJarFileConfigurations()
     {
         Set jars = _externalContext.getResourcePaths("/WEB-INF/lib/");
@@ -305,7 +304,7 @@ public class FacesConfigurator
             }
             jar.close();
 
-            File tmp = null;
+            File tmp;
 
             // 3. if faces-config.xml was found, extract the jar and copy it to a temp file; hand over the temp file
             // to the parser and delete it afterwards
@@ -352,6 +351,7 @@ public class FacesConfigurator
             throw new FacesException(e);
         }
     }
+     */
 
     private void feedContextSpecifiedConfig() throws IOException, SAXException
     {
@@ -602,7 +602,7 @@ public class FacesConfigurator
             for (Iterator renderers = _dispenser.getRenderers(renderKitId); renderers.hasNext();)
             {
                 Renderer element = (Renderer) renderers.next();
-                javax.faces.render.Renderer renderer = null;
+                javax.faces.render.Renderer renderer;
                 try {
                   renderer = (javax.faces.render.Renderer) ClassUtils.newInstance(element.getRendererClass());
                 } catch(FacesException e) {
