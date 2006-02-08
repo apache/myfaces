@@ -22,11 +22,9 @@
       <item name="Sandbox" href="../sandbox/index.html"/>
     </links>
   
-	  <menu name="MyFaces API">
-	    <item name="Overview" href="index.html"/>
-	  </menu>
 
     <menu name="MyFaces Projects">
+      <item name="Overview" href="../index.html"/>
       <item name="API" href="index.html"/>
       <item name="Impl" href="../impl/index.html"/>
       <item name="Commons" href="../commons/index.html"/>
