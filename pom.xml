@@ -22,19 +22,13 @@
     <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/trunk</url>
   </scm>
 
-  <distributionManagement>
+  <repositories>
     <repository>
-      <id>apache-maven</id>
-      <name>Apache Maven Repository</name>
-      <url>scpexe://minotaur.apache.org/www/www.apache.org/dist/maven-repository</url>
-    </repository>
-    <snapshotRepository>
-      <uniqueVersion>false</uniqueVersion>
+      <snapshots />
       <id>apache-maven-snapshots</id>
-      <name>Apache Maven Snapshot Repository</name>
-      <url>scpexe://minotaur.apache.org/www/cvs.apache.org/maven-snapshot-repository</url>
-    </snapshotRepository>
-  </distributionManagement>
+      <url>http://cvs.apache.org/maven-snapshot-repository</url>
+    </repository>
+  </repositories>
 
   <issueManagement>
     <system>jira</system>
