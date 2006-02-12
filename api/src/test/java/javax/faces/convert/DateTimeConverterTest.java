@@ -21,6 +21,8 @@ import org.apache.myfaces.mock.api.MockFacesContext;
 
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 public class DateTimeConverterTest extends AbstractTestCase
 {
@@ -60,9 +62,9 @@ public class DateTimeConverterTest extends AbstractTestCase
 
         UIInput input = new UIInput();
 
-        mock.setPattern("dd/MM/yyyy");
+        mock.setPattern("MM/dd/yyyy");
 
-        // defaults to true
+        //should trow a ConverterException
         try
         {
             mock.getAsObject(FacesContext.getCurrentInstance(),input,"15/15/15");
@@ -72,6 +74,28 @@ public class DateTimeConverterTest extends AbstractTestCase
         catch (ConverterException e)
         {
 
+        }
+
+        //should not trow a ConverterException
+        try
+        {
+            Date date = (Date) mock.getAsObject(FacesContext.getCurrentInstance(),input,"12/01/01");
+
+            SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy");
+
+            String str = format.format(date);
+
+            assertEquals("12/01/01",str);
+
+            format = new SimpleDateFormat("MM/dd/yyyy");
+
+            str = format.format(date);
+
+            assertEquals("12/01/0001",str);            
+        }
+        catch (ConverterException e)
+        {
+            assertTrue("this date should not be parsable - and it is, so this is wrong.",false);
         }
     }
 }
