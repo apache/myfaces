@@ -46,6 +46,11 @@ public class MockFacesContext extends FacesContext
 
     public Application getApplication()
     {
+        if(_application == null)
+        {
+            _application = new MockApplication();
+        }
+
         return _application;
     }
 
@@ -120,6 +125,11 @@ public class MockFacesContext extends FacesContext
 
     public javax.faces.component.UIViewRoot getViewRoot()
     {
+        if(_view == null)
+        {
+            _view = new UIViewRoot();
+        }
+
         return _view;
     }
 
