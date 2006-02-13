@@ -22,6 +22,7 @@ import org.apache.myfaces.mock.api.MockFacesContext;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import java.util.Date;
+import java.util.TimeZone;
 import java.text.SimpleDateFormat;
 
 public class DateTimeConverterTest extends AbstractTestCase
@@ -43,6 +44,7 @@ public class DateTimeConverterTest extends AbstractTestCase
         super.setUp();
 
         mock = new DateTimeConverter();
+        mock.setTimeZone(TimeZone.getDefault());
 
         new MockFacesContext();
     }
@@ -82,12 +84,14 @@ public class DateTimeConverterTest extends AbstractTestCase
             Date date = (Date) mock.getAsObject(FacesContext.getCurrentInstance(),input,"12/01/01");
 
             SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy");
+            format.setTimeZone(TimeZone.getDefault());
 
             String str = format.format(date);
 
             assertEquals("12/01/01",str);
 
             format = new SimpleDateFormat("MM/dd/yyyy");
+            format.setTimeZone(TimeZone.getDefault());
 
             str = format.format(date);
 
