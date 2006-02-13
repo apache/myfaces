@@ -73,16 +73,39 @@ public class JspStateManagerImpl
     private static final String RESTORED_SERIALIZED_VIEW_REQUEST_ATTR
     = JspStateManagerImpl.class.getName() + ".RESTORED_SERIALIZED_VIEW";
     
+    /**
+     * Only applicable if state saving method is "server" (= default).
+     * Defines the amount (default = 20) of the latest views are stored in session.
+     */
     private static final String NUMBER_OF_VIEWS_IN_SESSION_PARAM = "org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION";
     
+    /**
+     * Default value for <code>org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION</code> context parameter.
+     */
     private static final int DEFAULT_NUMBER_OF_VIEWS_IN_SESSION = 20;
 
+    /**
+     * Only applicable if state saving method is "server" (= default).
+     * If <code>true</code> (default) the state will be serialized to a byte stream before it is written to the session.
+     * If <code>false</code> the state will not be serialized to a byte stream.
+     */
     private static final String SERIALIZE_STATE_IN_SESSION_PARAM = "org.apache.myfaces.SERIALIZE_STATE_IN_SESSION";
 
+    /**
+     * Only applicable if state saving method is "server" (= default) and if <code>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> is <code>true</code> (= default).
+     * If <code>true</code> (default) the serialized state will be compressed before it is written to the session.
+     * If <code>false</code> the state will not be compressed.
+     */
     private static final String COMPRESS_SERVER_STATE_PARAM = "org.apache.myfaces.COMPRESS_STATE_IN_SESSION";
 
+    /**
+     * Default value for <code>org.apache.myfaces.COMPRESS_STATE_IN_SESSION</code> context parameter.
+     */
     private static final boolean DEFAULT_COMPRESS_SERVER_STATE_PARAM = true;
 
+    /**
+     * Default value for <code>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> context parameter.
+     */
     private static final boolean DEFAULT_SERIALIZE_STATE_IN_SESSION = true;
     
     private static final int UNCOMPRESSED_FLAG = 0;
@@ -520,7 +543,9 @@ public class JspStateManagerImpl
     }
 
     /**
-     * @param context
+	 * Reads the value of the <code>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> context parameter.
+	 * @see SERIALIZE_STATE_IN_SESSION_PARAM
+     * @param context <code>FacesContext</code> for the request we are processing.
      * @return boolean true, if the server state should be serialized in the session
      */
     protected boolean isSerializeStateInSession(FacesContext context)
@@ -536,7 +561,9 @@ public class JspStateManagerImpl
     }
 
     /**
-     * @param context
+	 * Reads the value of the <code>org.apache.myfaces.COMPRESS_STATE_IN_SESSION</code> context parameter.
+	 * @see COMPRESS_SERVER_STATE_PARAM
+     * @param context <code>FacesContext</code> for the request we are processing.
      * @return boolean true, if the server state steam should be compressed
      */
     protected boolean isCompressStateInSession(FacesContext context)
@@ -609,6 +636,12 @@ public class JspStateManagerImpl
             }
         }
 
+	    /**
+	     * Reads the amount (default = 20) of views to be stored in session.
+	     * @see NUMBER_OF_VIEWS_IN_SESSION_PARAM
+         * @param context FacesContext for the current request, we are processing
+         * @return Number vf views stored in the session
+         */
         protected int getNumberOfViewsInSession(FacesContext context)
         {
             String value = context.getExternalContext().getInitParameter(
