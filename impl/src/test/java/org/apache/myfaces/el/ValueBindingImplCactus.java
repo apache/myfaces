@@ -151,6 +151,30 @@ public class ValueBindingImplCactus extends ServletTestCase {
 		binding.setValue(facesContext, value);
 		assertEquals(14, bean.getIntegerPrimitive());
 	}
+	
+	public void testUnaryNot() {
+		facesContext.getExternalContext().getRequestMap().put("trueBean", Boolean.TRUE);
+		ValueBinding binding;
+		
+		// First test #{trueBean} is working well
+		binding = application.createValueBinding("#{trueBean}");
+		assertTrue( ((Boolean)binding.getValue(facesContext)).booleanValue() );
+		
+		// Then test #{! trueBean} is false
+		binding = application.createValueBinding("#{! trueBean}");
+		assertFalse( ((Boolean)binding.getValue(facesContext)).booleanValue() );
+	}
+	
+	public void testNotEmpty() {
+		facesContext.getExternalContext().getRequestMap().put("dummyString", "dummy");
+		ValueBinding binding;
+		
+		binding = application.createValueBinding("#{! empty dummyString}");
+		assertTrue( ((Boolean)binding.getValue(facesContext)).booleanValue() );
+		
+		binding = application.createValueBinding("#{! empty undefString}");
+		assertFalse( ((Boolean)binding.getValue(facesContext)).booleanValue() );
+	}
 
 	/*
 	 * Test method for
