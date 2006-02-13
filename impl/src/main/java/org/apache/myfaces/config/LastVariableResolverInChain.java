@@ -39,11 +39,6 @@ public class LastVariableResolverInChain extends VariableResolver
     // METHODS
     public Object resolveVariable(FacesContext facesContext, String name) throws EvaluationException
     {
-        Object retVal = delegate.resolveVariable(facesContext, name);
-
-        if(retVal == null)
-            throw new EvaluationException("Variable for name : '"+name+"' could not be retrieved.");
-
-        return retVal;
+        return delegate.resolveVariable(facesContext, name);
     }
 }
