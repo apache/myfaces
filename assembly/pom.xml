@@ -51,7 +51,7 @@
                 <artifactItem>
                   <groupId>org.apache.myfaces.commons</groupId>
                   <artifactId>myfaces-commons</artifactId>
-                  <version>1.1.3-SNAPSHOT</version>
+                  <version>1.1.2</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>
               </artifactItems>
@@ -80,7 +80,7 @@
                 <artifactItem>
                   <groupId>org.apache.myfaces.commons</groupId>
                   <artifactId>myfaces-commons</artifactId>
-                  <version>1.1.3-SNAPSHOT</version>
+                  <version>1.1.2</version>
                 </artifactItem>
               </artifactItems>
               <outputDirectory>${project.build.directory}/assembly-lib</outputDirectory>
@@ -125,7 +125,7 @@
       <plugin>
         <groupId>org.apache.myfaces.maven</groupId>
         <artifactId>wagon-maven-plugin</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.0.0</version>
         <configuration>
           <id>myfaces-nightly-builds</id>
           <url>scpexe://minotaur.apache.org/www/cvs.apache.org/builds/myfaces/nightly</url>
