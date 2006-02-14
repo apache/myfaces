@@ -80,17 +80,8 @@ public class ViewTag
             throw new JspException(e);
         }
 
-        StateManager stateManager = facesContext.getApplication().getStateManager();
-        if (stateManager.isSavingStateInClient(facesContext))
-        {
-            if (log.isTraceEnabled()) log.trace("leaving ViewTag.doStartTag");
-            return BodyTag.EVAL_BODY_BUFFERED;
-        }
-        else
-        {
-            if (log.isTraceEnabled()) log.trace("leaving ViewTag.doStartTag");
-            return BodyTag.EVAL_BODY_INCLUDE;
-        }
+        if (log.isTraceEnabled()) log.trace("leaving ViewTag.doStartTag");
+        return BodyTag.EVAL_BODY_BUFFERED;
     }
 
     protected boolean isSuppressed()
@@ -112,13 +103,6 @@ public class ViewTag
         {
             log.error("Error writing endDocument", e);
             throw new JspException(e);
-        }
-
-        StateManager stateManager = facesContext.getApplication().getStateManager();
-        if (!stateManager.isSavingStateInClient(facesContext))
-        {
-            //save state in server
-            stateManager.saveSerializedView(facesContext);
         }
 
         if (log.isTraceEnabled()) log.trace("leaving ViewTag.doEndTag");
@@ -147,37 +131,44 @@ public class ViewTag
                     facesContext.setResponseWriter(realWriter);
 
                     String bodyStr = bodyContent.getString();
-                    int form_marker = bodyStr.indexOf(JspViewHandlerImpl.FORM_STATE_MARKER);
-                    int url_marker = bodyStr.indexOf(HtmlLinkRendererBase.URL_STATE_MARKER);
-                    int lastMarkerEnd = 0;
-                    while (form_marker != -1 || url_marker != -1)
+                    if ( stateManager.isSavingStateInClient(facesContext) )
                     {
-                        if (url_marker == -1 || (form_marker != -1 && form_marker < url_marker))
+                        int form_marker = bodyStr.indexOf(JspViewHandlerImpl.FORM_STATE_MARKER);
+                        int url_marker = bodyStr.indexOf(HtmlLinkRendererBase.URL_STATE_MARKER);
+                        int lastMarkerEnd = 0;
+                        while (form_marker != -1 || url_marker != -1)
                         {
-                            //replace form_marker
-                            realWriter.write(bodyStr, lastMarkerEnd, form_marker - lastMarkerEnd);
-                            stateManager.writeState(facesContext, serializedView);
-                            lastMarkerEnd = form_marker + JspViewHandlerImpl.FORM_STATE_MARKER_LEN;
-                            form_marker = bodyStr.indexOf(JspViewHandlerImpl.FORM_STATE_MARKER, lastMarkerEnd);
-                        }
-                        else
-                        {
-                            //replace url_marker
-                            realWriter.write(bodyStr, lastMarkerEnd, url_marker - lastMarkerEnd);
-                            if (stateManager instanceof MyfacesStateManager)
+                            if (url_marker == -1 || (form_marker != -1 && form_marker < url_marker))
                             {
-                                ((MyfacesStateManager)stateManager).writeStateAsUrlParams(facesContext,
-                                                                                          serializedView);
+                                //replace form_marker
+                                realWriter.write(bodyStr, lastMarkerEnd, form_marker - lastMarkerEnd);
+                                stateManager.writeState(facesContext, serializedView);
+                                lastMarkerEnd = form_marker + JspViewHandlerImpl.FORM_STATE_MARKER_LEN;
+                                form_marker = bodyStr.indexOf(JspViewHandlerImpl.FORM_STATE_MARKER, lastMarkerEnd);
                             }
                             else
                             {
-                                log.error("Current StateManager is no MyfacesStateManager and does not support saving state in url parameters.");
+                                //replace url_marker
+                                realWriter.write(bodyStr, lastMarkerEnd, url_marker - lastMarkerEnd);
+                                if (stateManager instanceof MyfacesStateManager)
+                                {
+                                    ((MyfacesStateManager)stateManager).writeStateAsUrlParams(facesContext,
+                                                                                              serializedView);
+                                }
+                                else
+                                {
+                                    log.error("Current StateManager is no MyfacesStateManager and does not support saving state in url parameters.");
+                                }
+                                lastMarkerEnd = url_marker + HtmlLinkRendererBase.URL_STATE_MARKER_LEN;
+                                url_marker = bodyStr.indexOf(HtmlLinkRendererBase.URL_STATE_MARKER, lastMarkerEnd);
                             }
-                            lastMarkerEnd = url_marker + HtmlLinkRendererBase.URL_STATE_MARKER_LEN;
-                            url_marker = bodyStr.indexOf(HtmlLinkRendererBase.URL_STATE_MARKER, lastMarkerEnd);
                         }
+                        realWriter.write(bodyStr, lastMarkerEnd, bodyStr.length() - lastMarkerEnd);
                     }
-                    realWriter.write(bodyStr, lastMarkerEnd, bodyStr.length() - lastMarkerEnd);
+                    else
+                    {
+                        realWriter.write( bodyStr );
+                    }
                 }
                 else
                 {
