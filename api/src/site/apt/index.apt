@@ -1,8 +1,34 @@
  ------
-MyFaces API
+ MyFaces Core: API
  ------
 
+MyFaces Core: API
 
-Overview
+	The MyFaces Core is the portion of MyFaces that implements the JSF Specification.  The specification 
+	includes both an API and an Implementation aspect and the {{{http://myfaces.apache.org/api}MyFaces API}} 
+	and {{{http://myfaces.apache.org/impl}MyFaces Impl}} subprojects mirror this concept.  
+	
+Using the MyFaces JSF Implementation
 
-  Blah blah.
+	To use the MyFaces implementation you will need to download one of the core release versions.  Each 
+	version XXX of the core that is released will contain myfaces-api-XXX.jar, myfaces-impl-XXX.jar and 
+	myfaces-commons-YYY.jar.  
+	
+	<NOTE: The version of commons is not necessarily the same as the version of the 
+	api and impl.  All three jar files must be in your classpath in order to use the MyFaces JSF implementation.>
+
+	<NOTE: This newly bundled core is not yet available as an official release.  For now it can be build using Maven 
+	or obtained through the nightly build link.>  
+
+	<<JSR-127: JavaServer Faces>>
+	
+	MyFaces currently implements {{{http://www.jcp.org/en/jsr/detail?id=127}Java Specification Request 127}}.  
+	Each release is certified against the Sun TCK to ensure compliance.
+
+
+	<<JSR-252: JavaServer Faces 1.2>>
+	
+	There is a new JSR, {{{http://www.jcp.org/en/jsr/detail?id=252}Java Specification Request 252}}, which includes 
+	several major improvements to JSF.  The specification is currently in Proposed Final Draft form.  There are no 
+	immediate plans to implement this specification in MyFaces but it is likely that work will begin once the spec 
+	is finalized.
