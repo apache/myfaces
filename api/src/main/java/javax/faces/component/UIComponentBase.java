@@ -790,7 +790,7 @@ public abstract class UIComponentBase
         }
         intBuf.append("]");
 
-        buf.insert(0,intBuf);
+        buf.insert(0,intBuf.toString());
 
         getPathToComponent(component.getParent(), buf);
     }
