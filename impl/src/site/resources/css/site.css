@@ -192,3 +192,7 @@ div#leftColumn {
   background: #F0F0F0;
   color: #000000; 
 }
+
+#banner img {
+ behavior: url(css/png-fix.htc);
+}

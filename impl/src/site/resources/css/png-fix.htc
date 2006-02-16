@@ -1,0 +1,57 @@
+<public:component lightWeight="true">
+<public:attach event="onpropertychange" onEvent="propertyChanged()" />
+<script>
+/*
+ * Based on
+ * http://www.mongus.net/pngInfo/
+ * and
+ * http://webfx.eae.net/dhtml/pngbehavior/pngbehavior.html
+ *
+ */
+
+       var gNeedFix = needFix();
+
+       var transparentImage = "transparent.gif";
+
+       pngFix();
+
+       function propertyChanged() {
+               if (event.propertyName == "src") {
+                       pngFix();
+         }
+       }
+
+       function pngFix() {
+               if (!gNeedFix) {
+                       return;
+               }
+
+               var src = element.src;
+
+               if (src.indexOf(transparentImage) != -1) {
+                       return;
+               }
+
+               if (src.indexOf(".png") == -1) {
+                       return;
+               }
+
+   var w = element.width;
+   var h = element.height;
+               element.src = src.substring(0, src.lastIndexOf('/') + 1)  + transparentImage;
+   element.width = w;
+   element.height = h;
+               element.runtimeStyle.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + src + "',sizingMethod='scale')";
+       }
+
+       function needFix() {
+               var pos = navigator.userAgent.indexOf("MSIE ");
+               if (pos == -1) {
+                       return false;
+               }
+               var version = navigator.userAgent.substring(pos + 5);
+               return (((version.indexOf("5.5") == 0) || (version.indexOf("6") == 0)) && (navigator.platform == ("Win32")));
+       }
+
+</script>
+</public:component>
