@@ -34,6 +34,10 @@ public abstract class MethodBinding
 	}
 
 	// METHODS
+	
+	/**
+	 * returns the <code>String</code> of your expression like <code>#{bean.foo}</code>.
+	 */
 	public String getExpressionString()
 	{
         return null;
