@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.myfaces.AbstractTestCase;
-import org.apache.myfaces.mock.api.MockApplication;
 import org.apache.myfaces.mock.api.MockFacesContext;
+import org.apache.shale.test.mock.MockApplication;
 
 import javax.faces.component.UIViewRoot;
 
