@@ -29,12 +29,14 @@ import javax.faces.application.ApplicationFactory;
 public class ApplicationFactoryImpl
     extends ApplicationFactory
 {
-    private static final Log log = LogFactory.getLog(ApplicationFactory.class);
+    private static final Log log = LogFactory.getLog(ApplicationFactoryImpl.class);
 
-    //Application is thread-safe (see Application javadoc)
-    //"Application represents a per-web-application singleton object..."
-    //FactoryFinder has a ClassLoader-Factory Map. Since each webapp has it's
-    //own ClassLoader, each webapp will have it's own private factory instances.
+    /**
+     * Application is thread-safe (see Application javadoc)
+     * "Application represents a per-web-application singleton object..."
+     * FactoryFinder has a ClassLoader-Factory Map. Since each webapp has it's
+     * own ClassLoader, each webapp will have it's own private factory instances.
+     */
     private Application _application;
 
     public ApplicationFactoryImpl()
