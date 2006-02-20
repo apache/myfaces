@@ -16,8 +16,7 @@
 
 package javax.faces.convert;
 
-import org.apache.myfaces.AbstractTestCase;
-import org.apache.myfaces.mock.api.MockFacesContext;
+import org.apache.shale.test.base.AbstractJsfTestCase;
 
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
@@ -25,7 +24,9 @@ import java.util.Date;
 import java.util.TimeZone;
 import java.text.SimpleDateFormat;
 
-public class DateTimeConverterTest extends AbstractTestCase
+import junit.framework.Test;
+
+public class DateTimeConverterTest extends AbstractJsfTestCase
 {
     private DateTimeConverter mock;
 
@@ -34,22 +35,25 @@ public class DateTimeConverterTest extends AbstractTestCase
         junit.textui.TestRunner.run(DateTimeConverterTest.class);
     }
 
+    public static Test suite() {
+        return null; // keep this method or maven won't run it
+    }
+    
     public DateTimeConverterTest(String name)
     {
         super(name);
     }
 
-    protected void setUp() throws Exception
+    public void setUp()
     {
         super.setUp();
 
         mock = new DateTimeConverter();
         mock.setTimeZone(TimeZone.getDefault());
 
-        new MockFacesContext();
     }
 
-    protected void tearDown() throws Exception
+    public void tearDown()
     {
         super.tearDown();
 

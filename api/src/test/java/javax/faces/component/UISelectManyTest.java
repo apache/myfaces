@@ -20,27 +20,23 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.myfaces.AbstractTestCase;
-import org.apache.myfaces.mock.api.MockFacesContext;
-import org.apache.shale.test.mock.MockApplication;
+import org.apache.shale.test.base.AbstractJsfTestCase;
 
-import javax.faces.component.UIViewRoot;
+import junit.framework.Test;
 
-public class UISelectManyTest extends AbstractTestCase {
+public class UISelectManyTest extends AbstractJsfTestCase {
 
   public UISelectManyTest(String name) {
     super(name);
   }
 
+  public static Test suite() {
+      return null; // keep this method or maven won't run it
+  }
   
   public void testValidateRequiredNull() {
-    UIViewRoot view = new UIViewRoot();
-    view.setLocale(_TEST_LOCALE);
 
-    MockApplication application = new MockApplication();
-    MockFacesContext context = new MockFacesContext();
-    context.setViewRoot(view);
-    context.setApplication(application);
+    facesContext.getViewRoot().setLocale(_TEST_LOCALE);
 
     UISelectMany selectMany = new UISelectMany();
     selectMany.setId("selectMany");
@@ -60,19 +56,14 @@ public class UISelectManyTest extends AbstractTestCase {
     three.setItemValue(new Integer(3));
     children.add(three);
 
-    selectMany.validateValue(context, null);
+    selectMany.validateValue(facesContext, null);
 
     assertFalse(selectMany.isValid());
   }
 
   public void testValidateRequiredEmptyList() {
-    UIViewRoot view = new UIViewRoot();
-    view.setLocale(_TEST_LOCALE);
-
-    MockApplication application = new MockApplication();
-    MockFacesContext context = new MockFacesContext();
-    context.setViewRoot(view);
-    context.setApplication(application);
+    
+    facesContext.getViewRoot().setLocale(_TEST_LOCALE);
 
     UISelectMany selectMany = new UISelectMany();
     selectMany.setId("selectMany");
@@ -92,21 +83,15 @@ public class UISelectManyTest extends AbstractTestCase {
     three.setItemValue(new Integer(3));
     children.add(three);
 
-    selectMany.validateValue(context, Collections.EMPTY_LIST);
+    selectMany.validateValue(facesContext, Collections.EMPTY_LIST);
 
     assertFalse(selectMany.isValid());
   }
 
   public void testValidateIntArray() {
-    UIViewRoot view = new UIViewRoot();
-    view.setLocale(_TEST_LOCALE);
-
-    MockApplication application = new MockApplication();
-
-    MockFacesContext context = new MockFacesContext();
-    context.setViewRoot(view);
-    context.setApplication(application);
-
+    
+	facesContext.getViewRoot().setLocale(_TEST_LOCALE);
+	  
     UISelectMany selectMany = new UISelectMany();
     selectMany.setId("selectMany");
     selectMany.setRendererType(null);
@@ -124,20 +109,14 @@ public class UISelectManyTest extends AbstractTestCase {
     three.setItemValue(new Integer(3));
     children.add(three);
 
-    selectMany.validateValue(context, new int[] { 2, 3 });
+    selectMany.validateValue(facesContext, new int[] { 2, 3 });
 
     assertTrue(selectMany.isValid());
   }
 
   public void testValidateStringArray() {
-    UIViewRoot view = new UIViewRoot();
-    view.setLocale(_TEST_LOCALE);
 
-    MockApplication application = new MockApplication();
-
-    MockFacesContext context = new MockFacesContext();
-    context.setViewRoot(view);
-    context.setApplication(application);
+	facesContext.getViewRoot().setLocale(_TEST_LOCALE);
 
     UISelectMany selectMany = new UISelectMany();
     selectMany.setId("selectMany");
@@ -156,21 +135,15 @@ public class UISelectManyTest extends AbstractTestCase {
     three.setItemValue("3");
     children.add(three);
 
-    selectMany.validateValue(context, new String[] { "2", "3" });
+    selectMany.validateValue(facesContext, new String[] { "2", "3" });
 
     assertTrue(selectMany.isValid());
   }
 
   public void testValidateStringList() {
-    UIViewRoot view = new UIViewRoot();
-    view.setLocale(_TEST_LOCALE);
 
-    MockApplication application = new MockApplication();
-
-    MockFacesContext context = new MockFacesContext();
-    context.setViewRoot(view);
-    context.setApplication(application);
-
+	facesContext.getViewRoot().setLocale(_TEST_LOCALE);
+	  
     UISelectMany selectMany = new UISelectMany();
     selectMany.setId("selectMany");
     selectMany.setRendererType(null);
@@ -188,7 +161,7 @@ public class UISelectManyTest extends AbstractTestCase {
     three.setItemValue("3");
     children.add(three);
 
-    selectMany.validateValue(context, Arrays.asList(new String[] { "2", "3" }));
+    selectMany.validateValue(facesContext, Arrays.asList(new String[] { "2", "3" }));
 
     assertTrue(selectMany.isValid());
   }
