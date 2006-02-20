@@ -37,10 +37,16 @@ public class FactoryFinderTest extends TestCase {
 
   protected void setUp() throws Exception {
     super.setUp();
+    // this needs to be called *before* the first Test test is run, 
+    // as there may be left over FactoryFinder configurations from
+    // that previous tests that may interfere with the first test here. 
+    FactoryFinder.releaseFactories(); 
   }
 
   protected void tearDown() throws Exception {
     super.tearDown();
+    // call this again so there is no possibility of messing up tests that will
+    // run after this one
     FactoryFinder.releaseFactories();
     releaseRegisteredFactoryNames();
   }
