@@ -15,11 +15,11 @@
  */
 package org.apache.myfaces.lifecycle;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.portlet.MyFacesGenericPortlet;
+import org.apache.myfaces.portlet.PortletUtil;
+import org.apache.myfaces.util.DebugUtils;
 
 import javax.faces.FacesException;
 import javax.faces.application.Application;
@@ -35,17 +35,14 @@ import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 import javax.faces.lifecycle.Lifecycle;
 import javax.portlet.PortletRequest;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.portlet.MyFacesGenericPortlet;
-import org.apache.myfaces.portlet.PortletUtil;
-import org.apache.myfaces.util.DebugUtils;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Implements the lifecycle as described in Spec. 1.0 PFD Chapter 2
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
+ * @author Manfred Geiler
  */
 public class LifecycleImpl
         extends Lifecycle
@@ -53,6 +50,10 @@ public class LifecycleImpl
     private static final Log log = LogFactory.getLog(LifecycleImpl.class);
 
     private List _phaseListenerList = new ArrayList();
+
+    /**
+     * Lazy cache for returning _phaseListenerList as an Array.
+     */
     private PhaseListener[] _phaseListenerArray = null;
 
     public LifecycleImpl()
@@ -490,16 +491,11 @@ public class LifecycleImpl
         {
             throw new NullPointerException("PhaseListener must not be null.");
         }
-        if (_phaseListenerList == null)
+        synchronized(_phaseListenerList)
         {
-            _phaseListenerList = new ArrayList();
-            if (_phaseListenerArray != null)
-            {
-                _phaseListenerList.addAll(Arrays.asList(_phaseListenerArray));
-                _phaseListenerArray = null;
-            }
+            _phaseListenerList.add(phaseListener);
+            _phaseListenerArray = null; // reset lazy cache array
         }
-        _phaseListenerList.add(phaseListener);
     }
 
     public void removePhaseListener(PhaseListener phaseListener)
@@ -508,33 +504,24 @@ public class LifecycleImpl
         {
             throw new NullPointerException("PhaseListener must not be null.");
         }
-        if (_phaseListenerList == null)
+        synchronized(_phaseListenerList)
         {
-            _phaseListenerList = new ArrayList();
-            if (_phaseListenerArray != null)
-            {
-                _phaseListenerList.addAll(Arrays.asList(_phaseListenerArray));
-                _phaseListenerArray = null;
-            }
+            _phaseListenerList.remove(phaseListener);
+            _phaseListenerArray = null; // reset lazy cache array
         }
-        _phaseListenerList.remove(phaseListener);
     }
 
     public PhaseListener[] getPhaseListeners()
     {
-        if (_phaseListenerArray == null)
+        synchronized(_phaseListenerList)
         {
-            if (_phaseListenerList == null)
-            {
-                _phaseListenerArray = new PhaseListener[0];
-            }
-            else
+            // (re)build lazy cache array if necessary
+            if (_phaseListenerArray == null)
             {
                 _phaseListenerArray = (PhaseListener[])_phaseListenerList.toArray(new PhaseListener[_phaseListenerList.size()]);
-                _phaseListenerList = null;
             }
+            return _phaseListenerArray;
         }
-        return _phaseListenerArray;
     }
 
 
