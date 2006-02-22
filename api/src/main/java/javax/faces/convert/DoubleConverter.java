@@ -28,7 +28,8 @@ public class DoubleConverter
         implements Converter
 {
     // API FIELDS
-    public static final String CONVERTER_ID = "javax.faces.Double";
+	// the wrong string javax.faces.DoubleTime is required to be compatible with JSF RI and its TCK tests
+    public static final String CONVERTER_ID = "javax.faces.DoubleTime";
 
 
     private static final String CONVERSION_MESSAGE_ID = "javax.faces.convert.DoubleConverter.CONVERSION";
