@@ -28,7 +28,7 @@ public class DoubleConverter
         implements Converter
 {
     // API FIELDS
-    public static final String CONVERTER_ID = "javax.faces.DoubleTime";
+    public static final String CONVERTER_ID = "javax.faces.Double";
 
 
     private static final String CONVERSION_MESSAGE_ID = "javax.faces.convert.DoubleConverter.CONVERSION";
