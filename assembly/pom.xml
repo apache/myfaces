@@ -61,37 +61,6 @@
               <outputDirectory>${project.build.directory}/javadoc</outputDirectory>
             </configuration>
           </execution>
-
-          <execution>
-            <id>copy-lib</id>
-            <phase>package</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.apache.myfaces.core</groupId>
-                  <artifactId>myfaces-api</artifactId>
-                  <version>${version}</version>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.apache.myfaces.core</groupId>
-                  <artifactId>myfaces-impl</artifactId>
-                  <version>${version}</version>
-                </artifactItem>
-                <!--
-                <artifactItem>
-                  <groupId>org.apache.myfaces.commons</groupId>
-                  <artifactId>myfaces-commons</artifactId>
-                  <version>1.1.2</version>
-                </artifactItem>
-                -->
-              </artifactItems>
-              <outputDirectory>${project.build.directory}/assembly-lib</outputDirectory>
-            </configuration>
-          </execution>
-
           <execution>
             <id>copy-tlddoc</id>
             <phase>package</phase>
