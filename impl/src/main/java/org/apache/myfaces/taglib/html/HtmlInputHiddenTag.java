@@ -15,6 +15,8 @@
  */
 package org.apache.myfaces.taglib.html;
 
+import org.apache.myfaces.shared.taglib.html.HtmlInputHiddenTagBase;
+
 import javax.faces.component.html.HtmlInputHidden;
 
 /**

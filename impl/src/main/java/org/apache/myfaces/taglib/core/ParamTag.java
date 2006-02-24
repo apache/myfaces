@@ -15,7 +15,7 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import org.apache.myfaces.taglib.UIComponentTagBase;
+import org.apache.myfaces.shared.taglib.UIComponentTagBase;
 
 import javax.faces.component.UIComponent;
 

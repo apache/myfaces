@@ -19,8 +19,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.MyfacesStateManager;
 import org.apache.myfaces.application.jsp.JspViewHandlerImpl;
-import org.apache.myfaces.renderkit.html.HtmlLinkRendererBase;
-import org.apache.myfaces.util.LocaleUtils;
+import org.apache.myfaces.shared.renderkit.html.HtmlLinkRendererBase;
+import org.apache.myfaces.shared.util.LocaleUtils;
 
 import javax.faces.application.StateManager;
 import javax.faces.component.UIComponent;

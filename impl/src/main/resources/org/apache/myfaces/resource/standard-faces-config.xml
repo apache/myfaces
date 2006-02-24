@@ -45,7 +45,7 @@
 
   <lifecycle>
       <!-- This PhaseListener is only necessary if the autoscroll feature is used -->
-      <phase-listener>org.apache.myfaces.renderkit.html.util.AutoScrollPhaseListener</phase-listener>
+      <phase-listener>org.apache.myfaces.shared.renderkit.html.util.AutoScrollPhaseListener</phase-listener>
   </lifecycle>
 
 

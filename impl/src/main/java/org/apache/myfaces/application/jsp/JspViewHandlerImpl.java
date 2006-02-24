@@ -20,8 +20,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.portlet.MyFacesGenericPortlet;
 import org.apache.myfaces.portlet.PortletUtil;
 import org.apache.myfaces.util.DebugUtils;
-import org.apache.myfaces.webapp.webxml.ServletMapping;
-import org.apache.myfaces.webapp.webxml.WebXml;
+import org.apache.myfaces.shared.webapp.webxml.ServletMapping;
+import org.apache.myfaces.shared.webapp.webxml.WebXml;
 
 import javax.faces.FacesException;
 import javax.faces.application.Application;

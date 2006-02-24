@@ -23,7 +23,7 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.context.servlet.ServletExternalContextImpl;
-import org.apache.myfaces.webapp.webxml.WebXml;
+import org.apache.myfaces.shared.webapp.webxml.WebXml;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

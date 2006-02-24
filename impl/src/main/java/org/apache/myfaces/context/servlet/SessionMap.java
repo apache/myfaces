@@ -15,7 +15,7 @@
  */
 package org.apache.myfaces.context.servlet;
 
-import org.apache.myfaces.util.NullEnumeration;
+import org.apache.myfaces.shared.util.NullEnumeration;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;

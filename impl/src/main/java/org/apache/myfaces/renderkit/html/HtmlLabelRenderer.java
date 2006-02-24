@@ -25,8 +25,11 @@ import javax.faces.context.ResponseWriter;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.renderkit.JSFAttr;
-import org.apache.myfaces.renderkit.RendererUtils;
+import org.apache.myfaces.shared.renderkit.JSFAttr;
+import org.apache.myfaces.shared.renderkit.RendererUtils;
+import org.apache.myfaces.shared.renderkit.html.HTML;
+import org.apache.myfaces.shared.renderkit.html.HtmlRenderer;
+import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
 
 
 /**
@@ -58,9 +61,9 @@ extends HtmlRenderer
         if (forAttr != null)
         {
           writer.writeAttribute(HTML.FOR_ATTR,
-                  getClientId(facesContext, uiComponent, forAttr), JSFAttr.FOR_ATTR);
-        } 
-        else 
+                                getClientId(facesContext, uiComponent, forAttr), JSFAttr.FOR_ATTR);
+        }
+        else
         {
             if (log.isWarnEnabled()) {
                 log.warn("Attribute 'for' of label component with id " + uiComponent.getClientId(facesContext)+" is not defined");
@@ -106,7 +109,7 @@ extends HtmlRenderer
             return (String)component.getAttributes().get(JSFAttr.FOR_ATTR);
         }
     }
-    
+
     protected String getClientId(FacesContext facesContext,
                                  UIComponent uiComponent, String forAttr)
     {

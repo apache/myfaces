@@ -28,8 +28,8 @@ import org.apache.myfaces.context.FacesContextFactoryImpl;
 import org.apache.myfaces.lifecycle.LifecycleFactoryImpl;
 import org.apache.myfaces.renderkit.RenderKitFactoryImpl;
 import org.apache.myfaces.renderkit.html.HtmlRenderKitImpl;
-import org.apache.myfaces.util.ClassUtils;
-import org.apache.myfaces.util.LocaleUtils;
+import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.shared.util.LocaleUtils;
 import org.xml.sax.SAXException;
 
 import javax.faces.FacesException;

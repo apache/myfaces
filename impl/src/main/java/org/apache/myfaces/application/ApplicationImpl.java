@@ -21,8 +21,8 @@ import org.apache.myfaces.el.MethodBindingImpl;
 import org.apache.myfaces.el.PropertyResolverImpl;
 import org.apache.myfaces.el.ValueBindingImpl;
 import org.apache.myfaces.el.VariableResolverImpl;
-import org.apache.myfaces.util.BiLevelCacheMap;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.shared.util.BiLevelCacheMap;
+import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.config.impl.digester.elements.Property;
 
 import org.apache.commons.logging.Log;

@@ -15,7 +15,7 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import org.apache.myfaces.taglib.UIComponentTagBase;
+import org.apache.myfaces.shared.taglib.UIComponentTagBase;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)

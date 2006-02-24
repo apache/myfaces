@@ -15,6 +15,7 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import org.apache.myfaces.shared.renderkit.html.HtmlImageRendererBase;
 
 
 /**
@@ -25,5 +26,5 @@ package org.apache.myfaces.renderkit.html;
 public class HtmlImageRenderer
 extends HtmlImageRendererBase
 {
-   
+
 }

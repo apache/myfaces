@@ -15,6 +15,8 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import org.apache.myfaces.shared.renderkit.html.HtmlGridRendererBase;
+
 
 /**
  * X-CHECKED: tlddoc h:panelGrid 1.0 final

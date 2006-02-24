@@ -15,7 +15,7 @@
  */
 package org.apache.myfaces.context.servlet;
 
-import org.apache.myfaces.util.NullIterator;
+import org.apache.myfaces.shared.util.NullIterator;
 
 import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
@@ -70,8 +70,8 @@ public class ServletFacesContextImpl
                                    PortletResponse portletResponse)
     {
         this(new PortletExternalContextImpl(portletContext,
-                portletRequest,
-                portletResponse));
+                                            portletRequest,
+                                            portletResponse));
     }
 
     public ServletFacesContextImpl(ServletContext servletContext,
@@ -79,8 +79,8 @@ public class ServletFacesContextImpl
                                    ServletResponse servletResponse)
     {
         this(new ServletExternalContextImpl(servletContext,
-                servletRequest,
-                servletResponse));
+                                            servletRequest,
+                                            servletResponse));
     }
 
     private ServletFacesContextImpl(ReleaseableExternalContext externalContext)

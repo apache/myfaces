@@ -26,7 +26,7 @@ import javax.servlet.jsp.PageContext;
 import java.util.TimeZone;
 import java.util.Locale;
 
-import org.apache.myfaces.util.LocaleUtils;
+import org.apache.myfaces.shared.util.LocaleUtils;
 
 
 /**

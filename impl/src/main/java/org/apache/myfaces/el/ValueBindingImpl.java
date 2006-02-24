@@ -34,7 +34,7 @@ import javax.servlet.jsp.el.VariableResolver;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.ManagedBean;
-import org.apache.myfaces.util.BiLevelCacheMap;
+import org.apache.myfaces.shared.util.BiLevelCacheMap;
 
 import org.apache.commons.el.ArraySuffix;
 import org.apache.commons.el.Coercions;

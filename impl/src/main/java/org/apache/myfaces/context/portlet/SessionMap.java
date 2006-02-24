@@ -15,7 +15,7 @@
  */
 package org.apache.myfaces.context.portlet;
 
-import org.apache.myfaces.util.NullEnumeration;
+import org.apache.myfaces.shared.util.NullEnumeration;
 
 import java.util.Enumeration;
 import java.util.Map;
@@ -42,7 +42,7 @@ public class SessionMap extends AbstractAttributeMap
     {
         PortletSession portletSession = getSession();
         return (portletSession == null)
-            ? null : portletSession.getAttribute(key.toString(), PortletSession.PORTLET_SCOPE);
+               ? null : portletSession.getAttribute(key.toString(), PortletSession.PORTLET_SCOPE);
     }
 
     protected void setAttribute(String key, Object value)
@@ -63,8 +63,8 @@ public class SessionMap extends AbstractAttributeMap
     {
         PortletSession portletSession = getSession();
         return (portletSession == null)
-            ? NullEnumeration.instance()
-            : portletSession.getAttributeNames(PortletSession.PORTLET_SCOPE);
+               ? NullEnumeration.instance()
+               : portletSession.getAttributeNames(PortletSession.PORTLET_SCOPE);
     }
 
     private PortletSession getSession()
@@ -81,5 +81,5 @@ public class SessionMap extends AbstractAttributeMap
     public void clear()
     {
         throw new UnsupportedOperationException();
-    }    
+    }
 }
