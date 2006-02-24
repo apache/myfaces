@@ -8,7 +8,6 @@ import javax.portlet.RenderResponse;
  * Static utility class for portlet-related operations.
  *
  * @author  Stan Silvert
- * @deprecated These utils work only with the MyFaces implementation and therefore should be moved to myfaces-impl in the future
  */
 public final class PortletUtil {
     
