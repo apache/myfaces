@@ -20,16 +20,14 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.portlet.MyFacesGenericPortlet;
 import org.apache.myfaces.portlet.PortletUtil;
 import org.apache.myfaces.util.DebugUtils;
+import org.apache.myfaces.util.RestoreStateUtils;
 
 import javax.faces.FacesException;
 import javax.faces.application.Application;
 import javax.faces.application.ViewHandler;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
@@ -37,7 +35,6 @@ import javax.faces.lifecycle.Lifecycle;
 import javax.portlet.PortletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -49,7 +46,7 @@ public class LifecycleImpl
 {
     private static final Log log = LogFactory.getLog(LifecycleImpl.class);
 
-    private List _phaseListenerList = new ArrayList();
+    private final List _phaseListenerList = new ArrayList();
 
     /**
      * Lazy cache for returning _phaseListenerList as an Array.
@@ -84,10 +81,7 @@ public class LifecycleImpl
             return;
         }
 
-        if (invokeApplication(facesContext))
-        {
-            return;
-        }
+        invokeApplication(facesContext);
     }
 
 
@@ -179,7 +173,7 @@ public class LifecycleImpl
             facesContext.renderResponse();
         }
 
-        recursivelyHandleComponentReferencesAndSetValid(facesContext, viewRoot);
+        RestoreStateUtils.recursivelyHandleComponentReferencesAndSetValid(facesContext, viewRoot);
 
         informPhaseListenersAfter(facesContext, PhaseId.RESTORE_VIEW);
 
@@ -431,6 +425,9 @@ public class LifecycleImpl
             viewId = externalContext.getRequestServletPath();  //getServletPath
             DebugUtils.assertError(viewId != null,
                                    log, "RequestServletPath is null, cannot determine viewId of current page.");
+            if(viewId==null)
+                return null;
+
             //TODO: JSF Spec 2.2.1 - what do they mean by "if the default ViewHandler implementation is used..." ?
             String defaultSuffix = externalContext.getInitParameter(ViewHandler.DEFAULT_SUFFIX_PARAM_NAME);
             String suffix = defaultSuffix != null ? defaultSuffix : ViewHandler.DEFAULT_SUFFIX;
@@ -452,38 +449,6 @@ public class LifecycleImpl
         return viewId;
     }
 
-
-    /**
-     * Walk the component tree, executing any component-bindings to reattach
-     * components to their backing beans. Also, any UIInput component is
-     * marked as Valid.
-     * <p>
-     *  Note that this method effectively breaks encapsulation; instead of
-     *  asking each component to update itself and its children, this
-     * method just reaches into each component. That makes it impossible
-     * for any component to customise its behaviour at this point.
-     */
-    private static void recursivelyHandleComponentReferencesAndSetValid(FacesContext facesContext,
-                                                                        UIComponent root)
-    {
-        for (Iterator it = root.getFacetsAndChildren(); it.hasNext(); )
-        {
-            UIComponent component = (UIComponent)it.next();
-
-            ValueBinding binding = component.getValueBinding("binding");    //TODO: constant
-            if (binding != null && !binding.isReadOnly(facesContext))
-            {
-                binding.setValue(facesContext, component);
-            }
-
-            if (component instanceof UIInput)
-            {
-                ((UIInput)component).setValid(true);
-            }
-
-            recursivelyHandleComponentReferencesAndSetValid(facesContext, component);
-        }
-    }
 
     public void addPhaseListener(PhaseListener phaseListener)
     {
