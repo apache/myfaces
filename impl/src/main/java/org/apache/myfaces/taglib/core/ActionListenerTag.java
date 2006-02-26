@@ -15,7 +15,7 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 import javax.faces.component.ActionSource;
 import javax.faces.component.UIComponent;

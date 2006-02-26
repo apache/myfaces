@@ -17,8 +17,8 @@ package org.apache.myfaces.renderkit.html;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
-import org.apache.myfaces.shared.renderkit.html.HtmlResponseWriterImpl;
+import org.apache.myfaces.shared_impl.renderkit.html.HtmlRendererUtils;
+import org.apache.myfaces.shared_impl.renderkit.html.HtmlResponseWriterImpl;
 
 import javax.faces.context.ResponseStream;
 import javax.faces.context.ResponseWriter;

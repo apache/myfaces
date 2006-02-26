@@ -15,7 +15,7 @@
  */
 package org.apache.myfaces.taglib.html;
 
-import org.apache.myfaces.shared.taglib.html.HtmlCommandButtonTagBase;
+import org.apache.myfaces.shared_impl.taglib.html.HtmlCommandButtonTagBase;
 
 import javax.faces.component.html.HtmlCommandButton;
 

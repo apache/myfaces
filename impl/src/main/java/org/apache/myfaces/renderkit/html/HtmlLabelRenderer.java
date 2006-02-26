@@ -25,11 +25,11 @@ import javax.faces.context.ResponseWriter;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.shared.renderkit.JSFAttr;
-import org.apache.myfaces.shared.renderkit.RendererUtils;
-import org.apache.myfaces.shared.renderkit.html.HTML;
-import org.apache.myfaces.shared.renderkit.html.HtmlRenderer;
-import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
+import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
+import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
+import org.apache.myfaces.shared_impl.renderkit.html.HTML;
+import org.apache.myfaces.shared_impl.renderkit.html.HtmlRenderer;
+import org.apache.myfaces.shared_impl.renderkit.html.HtmlRendererUtils;
 
 
 /**

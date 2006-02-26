@@ -14,7 +14,7 @@
   <parent>
     <groupId>org.apache.myfaces.core</groupId>
     <artifactId>myfaces-core-project</artifactId>
-    <version>1.1.3-SNAPSHOT</version>
+    <version>1.1.2-SNAPSHOT</version>
   </parent>
 
   <scm>
@@ -34,9 +34,10 @@
 
     <dependency>
       <groupId>org.apache.myfaces.shared</groupId>
-      <artifactId>myfaces-shared</artifactId>
+      <artifactId>myfaces-shared-impl</artifactId>
       <version>2.0.0-SNAPSHOT</version>
-      <scope>compile</scope>
+      <!-- myfaces-shared-impl classes will be included in myfaces-impl.jar -->
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -127,6 +128,32 @@
           </execution>
         </executions>
       </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>dependency-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-shared-impl-classes</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                   <groupId>org.apache.myfaces.shared</groupId>
+                   <artifactId>myfaces-shared-impl</artifactId>
+                   <version>1.1.2-SNAPSHOT</version>
+                   <type>jar</type>
+                 </artifactItem>
+               </artifactItems>
+               <outputDirectory>${project.build.directory}/classes</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
 
   </build>

@@ -52,7 +52,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.MyfacesStateManager;
 import org.apache.myfaces.application.TreeStructureManager;
 import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
-import org.apache.myfaces.shared.renderkit.RendererUtils;
+import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
 
 /**
  * Default StateManager implementation for use when views are defined

@@ -15,7 +15,7 @@
  */
 package org.apache.myfaces.context.portlet;
 
-import org.apache.myfaces.shared.util.NullEnumeration;
+import org.apache.myfaces.shared_impl.util.NullEnumeration;
 
 import java.util.Enumeration;
 import java.util.Map;

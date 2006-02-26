@@ -15,7 +15,7 @@
  */
 package org.apache.myfaces.context.servlet;
 
-import org.apache.myfaces.shared.util.NullIterator;
+import org.apache.myfaces.shared_impl.util.NullIterator;
 
 import javax.faces.FactoryFinder;
 import javax.faces.application.Application;

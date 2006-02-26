@@ -38,7 +38,7 @@ import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.NavigationCase;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.portlet.PortletUtil;
-import org.apache.myfaces.shared.util.HashMapUtils;
+import org.apache.myfaces.shared_impl.util.HashMapUtils;
 
 /**
  * @author Thomas Spiegl (latest modification by $Author$)

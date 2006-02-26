@@ -49,10 +49,10 @@
                   <classifier>javadoc</classifier>
                 </artifactItem>
                 <!--
-                TODO/CHECK: o.a.m.impl.shared.* javadoc automatically included?
+                TODO/CHECK: o.a.m.shared_impl.* javadoc automatically included?
                 <artifactItem>
-                  <groupId>org.apache.myfaces.commons</groupId>
-                  <artifactId>myfaces-commons</artifactId>
+                  <groupId>org.apache.myfaces.shared</groupId>
+                  <artifactId>myfaces-shared-impl</artifactId>
                   <version>1.1.2</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>

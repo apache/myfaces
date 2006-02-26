@@ -15,7 +15,7 @@
  */
 package org.apache.myfaces.taglib.html;
 
-import org.apache.myfaces.shared.taglib.html.HtmlFormTagBase;
+import org.apache.myfaces.shared_impl.taglib.html.HtmlFormTagBase;
 
 import javax.faces.component.html.HtmlForm;
 

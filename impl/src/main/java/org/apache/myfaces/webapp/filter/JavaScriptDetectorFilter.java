@@ -16,7 +16,7 @@
 package org.apache.myfaces.webapp.filter;
 
 import org.apache.myfaces.context.servlet.ServletExternalContextImpl;
-import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
+import org.apache.myfaces.shared_impl.renderkit.html.util.JavascriptUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

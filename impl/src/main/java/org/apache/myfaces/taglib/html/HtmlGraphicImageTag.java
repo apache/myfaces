@@ -15,7 +15,7 @@
  */
 package org.apache.myfaces.taglib.html;
 
-import org.apache.myfaces.shared.taglib.html.HtmlGraphicImageTagBase;
+import org.apache.myfaces.shared_impl.taglib.html.HtmlGraphicImageTagBase;
 
 import javax.faces.component.html.HtmlGraphicImage;
 

@@ -15,7 +15,7 @@
  */
 package org.apache.myfaces.taglib.html;
 
-import org.apache.myfaces.shared.taglib.html.HtmlSelectBooleanCheckboxTagBase;
+import org.apache.myfaces.shared_impl.taglib.html.HtmlSelectBooleanCheckboxTagBase;
 
 import javax.faces.component.html.HtmlSelectBooleanCheckbox;
 

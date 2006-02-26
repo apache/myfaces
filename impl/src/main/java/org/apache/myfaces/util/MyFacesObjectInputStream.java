@@ -15,7 +15,7 @@
  */
 package org.apache.myfaces.util;
 
-import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 import java.io.IOException;
 import java.io.InputStream;

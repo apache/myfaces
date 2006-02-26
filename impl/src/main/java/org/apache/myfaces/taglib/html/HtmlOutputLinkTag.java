@@ -15,7 +15,7 @@
  */
 package org.apache.myfaces.taglib.html;
 
-import org.apache.myfaces.shared.taglib.html.HtmlOutputLinkTagBase;
+import org.apache.myfaces.shared_impl.taglib.html.HtmlOutputLinkTagBase;
 
 import javax.faces.component.html.HtmlOutputLink;
 

@@ -15,7 +15,7 @@
  */
 package org.apache.myfaces.taglib.html;
 
-import org.apache.myfaces.shared.taglib.html.HtmlSelectManyCheckboxTagBase;
+import org.apache.myfaces.shared_impl.taglib.html.HtmlSelectManyCheckboxTagBase;
 
 import javax.faces.component.html.HtmlSelectManyCheckbox;
 

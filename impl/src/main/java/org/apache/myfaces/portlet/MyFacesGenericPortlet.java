@@ -45,7 +45,7 @@ import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.context.portlet.PortletExternalContextImpl;
 import org.apache.myfaces.context.servlet.ServletFacesContextImpl;
-import org.apache.myfaces.shared.webapp.webxml.WebXml;
+import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
 
 /**
  * This portlet initializes MyFaces and converts portlet requests into

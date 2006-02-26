@@ -15,7 +15,7 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import org.apache.myfaces.shared.renderkit.html.HtmlMessageRendererBase;
+import org.apache.myfaces.shared_impl.renderkit.html.HtmlMessageRendererBase;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;

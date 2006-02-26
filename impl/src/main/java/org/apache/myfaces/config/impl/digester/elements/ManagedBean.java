@@ -15,7 +15,7 @@
  */
 package org.apache.myfaces.config.impl.digester.elements;
 
-import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
