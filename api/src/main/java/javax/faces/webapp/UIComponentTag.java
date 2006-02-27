@@ -334,8 +334,8 @@ public abstract class UIComponentTag
      * corresponding component which do not have corresponding tags
      * as children of this tag are removed from the view. This isn't likely
      * to be a common occurrence: wrapping JSF tags in JSTL tag "c:if" is
-     * one possible cause; programmatically inserted components may be
-     * another.
+     * one possible cause. Programmatically created components are not affected
+     * by this.
      * <p>
      * If the corresponding component returns true from getRendersChildren
      * then its encodeBegin and encodeChildren methods are called here.
