@@ -15,7 +15,7 @@
  */
 package org.apache.myfaces.config.impl;
 
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 

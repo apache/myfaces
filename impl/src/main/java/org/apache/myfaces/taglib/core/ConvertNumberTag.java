@@ -25,7 +25,7 @@ import javax.faces.webapp.UIComponentTag;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
-import org.apache.myfaces.util.LocaleUtils;
+import org.apache.myfaces.shared_impl.util.LocaleUtils;
 
 
 /**

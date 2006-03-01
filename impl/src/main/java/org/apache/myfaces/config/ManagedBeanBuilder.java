@@ -16,7 +16,7 @@
 package org.apache.myfaces.config;
 
 import org.apache.myfaces.config.element.*;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

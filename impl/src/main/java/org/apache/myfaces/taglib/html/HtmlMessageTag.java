@@ -15,6 +15,8 @@
  */
 package org.apache.myfaces.taglib.html;
 
+import org.apache.myfaces.shared_impl.taglib.html.HtmlMessageTagBase;
+
 import javax.faces.component.html.HtmlMessage;
 
 /**

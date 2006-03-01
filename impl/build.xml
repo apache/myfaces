@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<project name="myfaces_shared_tasks">
+
+  <target name="refactor-java-sources">
+      <!-- 1. Create output dir  -->
+      <mkdir dir="${refactor.output.dir}" />
+      <!-- 2. Move and rename package dir "shared" to new name -->
+      <move todir="${refactor.output.dir}/org/apache/myfaces/${refactor.package.new}">
+        <fileset dir="${refactor.src.dir}/org/apache/myfaces/shared"> 
+          <include name="**/*.java"/>
+        </fileset>
+      </move>
+      <!-- 3. Rename occurrences of package "shared" by new name -->
+      <replace dir="${refactor.output.dir}"
+            token="org.apache.myfaces.shared."
+            value="org.apache.myfaces.${refactor.package.new}.">
+        <include name="**/*.java"/>
+      </replace>
+  </target>       
+
+  <target name="refactor-resources">
+      <!-- 1. Create output dir  -->
+      <mkdir dir="${refactor.output.dir}" />
+      <!-- 2. Move and rename package dir "shared" to new name -->
+      <move todir="${refactor.output.dir}/org/apache/myfaces/${refactor.package.new}">
+        <fileset dir="${refactor.src.dir}/org/apache/myfaces/shared"> 
+          <include name="**/*.properties"/>
+          <include name="**/*.xml"/>
+        </fileset>
+      </move>
+      <!-- 3. Rename occurrences of package "shared" new name -->
+      <replace dir="${refactor.output.dir}"
+            token="org.apache.myfaces.shared."
+            value="org.apache.myfaces.${refactor.package.new}.">
+        <include name="**/*.properties"/>
+        <include name="**/*.xml"/>
+      </replace>
+  </target>       
+
+</project>

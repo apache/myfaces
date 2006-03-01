@@ -15,7 +15,7 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-
+import org.apache.myfaces.shared_impl.renderkit.html.HtmlTextareaRendererBase;
 
 
 /**

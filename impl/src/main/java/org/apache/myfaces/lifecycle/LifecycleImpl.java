@@ -20,7 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.portlet.MyFacesGenericPortlet;
 import org.apache.myfaces.portlet.PortletUtil;
 import org.apache.myfaces.util.DebugUtils;
-import org.apache.myfaces.util.RestoreStateUtils;
+import org.apache.myfaces.shared_impl.util.RestoreStateUtils;
 
 import javax.faces.FacesException;
 import javax.faces.application.Application;

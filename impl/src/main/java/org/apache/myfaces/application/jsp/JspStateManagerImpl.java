@@ -52,7 +52,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.MyfacesStateManager;
 import org.apache.myfaces.application.TreeStructureManager;
 import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
-import org.apache.myfaces.renderkit.RendererUtils;
+import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
 
 /**
  * Default StateManager implementation for use when views are defined
@@ -72,13 +72,20 @@ public class JspStateManagerImpl
             = JspStateManagerImpl.class.getName() + ".SERIALIZED_VIEW";
     private static final String RESTORED_SERIALIZED_VIEW_REQUEST_ATTR
     = JspStateManagerImpl.class.getName() + ".RESTORED_SERIALIZED_VIEW";
-    
+
+    /**
+     * Only applicable if state saving method is "server" (= default).
+     * Defines the amount (default = 20) of the latest views are stored in session.
+     */
     /**
      * Only applicable if state saving method is "server" (= default).
      * Defines the amount (default = 20) of the latest views are stored in session.
      */
     private static final String NUMBER_OF_VIEWS_IN_SESSION_PARAM = "org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION";
-    
+
+    /**
+     * Default value for <code>org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION</code> context parameter.
+     */
     /**
      * Default value for <code>org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION</code> context parameter.
      */
@@ -107,7 +114,7 @@ public class JspStateManagerImpl
      * Default value for <code>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> context parameter.
      */
     private static final boolean DEFAULT_SERIALIZE_STATE_IN_SESSION = true;
-    
+
     private static final int UNCOMPRESSED_FLAG = 0;
     private static final int COMPRESSED_FLAG = 1;
 
@@ -156,12 +163,12 @@ public class JspStateManagerImpl
      */
     protected void restoreComponentState(FacesContext facesContext,
                                          UIViewRoot uiViewRoot,
-            String renderKitId)
+                                         String renderKitId)
     {
         //===========================================
         // first, locate the saved state information
         //===========================================
-        
+
         Object serializedComponentStates;
         if (isSavingStateInClient(facesContext))
         {
@@ -179,7 +186,7 @@ public class JspStateManagerImpl
         else
         {
             SerializedView serializedView = getSerializedViewFromServletSession(facesContext,
-                    uiViewRoot.getViewId());
+                                                                                uiViewRoot.getViewId());
             if (serializedView == null)
             {
                 log.error("No serialized view found in server session!");
@@ -210,7 +217,7 @@ public class JspStateManagerImpl
      */
     protected UIViewRoot restoreTreeStructure(FacesContext facesContext,
                                               String viewId,
-            String renderKitId)
+                                              String renderKitId)
     {
         UIViewRoot uiViewRoot = null;
         if (isSavingStateInClient(facesContext))
@@ -233,7 +240,7 @@ public class JspStateManagerImpl
         {
             //reconstruct tree structure from ServletSession
             SerializedView serializedView = getSerializedViewFromServletSession(facesContext,
-                    viewId);
+                                                                                viewId);
             if (serializedView == null)
             {
                 if (log.isDebugEnabled()) log.debug("No serialized view found in server session!");
@@ -307,8 +314,8 @@ public class JspStateManagerImpl
         if (id != null && !ids.add(id))
         {
             throw new IllegalStateException("Client-id : "+id +
-                    " is duplicated in the faces tree. Component : "+component.getClientId(context)+", path: "+
-                    getPathToComponent(component));
+                                            " is duplicated in the faces tree. Component : "+component.getClientId(context)+", path: "+
+                                            getPathToComponent(component));
         }
         Iterator it = component.getFacetsAndChildren();
         boolean namingContainer = component instanceof NamingContainer;
@@ -426,7 +433,7 @@ public class JspStateManagerImpl
     }
 
     protected void saveSerializedViewInServletSession(FacesContext context,
-            SerializedView serializedView)
+                                                      SerializedView serializedView)
     {
         Map sessionMap = context.getExternalContext().getSessionMap();
         SerializedViewCollection viewCollection = (SerializedViewCollection) sessionMap
@@ -516,12 +523,12 @@ public class JspStateManagerImpl
                 OutputStream os = baos;
                 if(isCompressStateInSession(context))
                 {
-                    os.write(COMPRESSED_FLAG); 
+                    os.write(COMPRESSED_FLAG);
                     os = new GZIPOutputStream(os, 1024);
                 }
                 else
                 {
-                    os.write(UNCOMPRESSED_FLAG); 
+                    os.write(UNCOMPRESSED_FLAG);
                 }
                 ObjectOutputStream out = new ObjectOutputStream(os);
                 out.writeObject(serializedView.getStructure());
@@ -538,13 +545,13 @@ public class JspStateManagerImpl
         else
         {
             return new Object[] {serializedView.getStructure(), serializedView.getState()};
-        }        
+        }
         return null;
     }
 
     /**
-	 * Reads the value of the <code>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> context parameter.
-	 * @see SERIALIZE_STATE_IN_SESSION_PARAM
+     * Reads the value of the <code>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> context parameter.
+     * @see SERIALIZE_STATE_IN_SESSION_PARAM
      * @param context <code>FacesContext</code> for the request we are processing.
      * @return boolean true, if the server state should be serialized in the session
      */
@@ -561,8 +568,8 @@ public class JspStateManagerImpl
     }
 
     /**
-	 * Reads the value of the <code>org.apache.myfaces.COMPRESS_STATE_IN_SESSION</code> context parameter.
-	 * @see COMPRESS_SERVER_STATE_PARAM
+     * Reads the value of the <code>org.apache.myfaces.COMPRESS_STATE_IN_SESSION</code> context parameter.
+     * @see COMPRESS_SERVER_STATE_PARAM
      * @param context <code>FacesContext</code> for the request we are processing.
      * @return boolean true, if the server state steam should be compressed
      */
@@ -621,24 +628,24 @@ public class JspStateManagerImpl
         // old views will be hold as soft references which will be removed by 
         // the garbage collector if free memory is low
         private transient Map _oldSerializedViews = null;
-        
+
         public synchronized void add(FacesContext context, Object state)
         {
             Object key = new SerializedViewKey(context);
             _serializedViews.put(key, state);
             _keys.add(key);
-            
+
             int views = getNumberOfViewsInSession(context);
-            while (_keys.size() > views) 
+            while (_keys.size() > views)
             {
                 key = _keys.remove(0);
                 getOldSerializedViewsMap().put(key, _serializedViews.remove(key));
             }
         }
 
-	    /**
-	     * Reads the amount (default = 20) of views to be stored in session.
-	     * @see NUMBER_OF_VIEWS_IN_SESSION_PARAM
+        /**
+         * Reads the amount (default = 20) of views to be stored in session.
+         * @see NUMBER_OF_VIEWS_IN_SESSION_PARAM
          * @param context FacesContext for the current request, we are processing
          * @return Number vf views stored in the session
          */
@@ -655,16 +662,16 @@ public class JspStateManagerImpl
                     if (views <= 0)
                     {
                         log.error("Configured value for " + NUMBER_OF_VIEWS_IN_SESSION_PARAM
-                                + " is not valid, must be an value > 0, using default value ("
-                                + DEFAULT_NUMBER_OF_VIEWS_IN_SESSION);
+                                  + " is not valid, must be an value > 0, using default value ("
+                                  + DEFAULT_NUMBER_OF_VIEWS_IN_SESSION);
                         views = DEFAULT_NUMBER_OF_VIEWS_IN_SESSION;
                     }
                 }
                 catch (Throwable e)
                 {
                     log.error("Error determining the value for " + NUMBER_OF_VIEWS_IN_SESSION_PARAM
-                            + ", expected an integer value > 0, using default value ("
-                            + DEFAULT_NUMBER_OF_VIEWS_IN_SESSION + "): " + e.getMessage(), e);
+                              + ", expected an integer value > 0, using default value ("
+                              + DEFAULT_NUMBER_OF_VIEWS_IN_SESSION + "): " + e.getMessage(), e);
                 }
             }
             return views;
@@ -727,7 +734,7 @@ public class JspStateManagerImpl
             {
                 SerializedViewKey other = (SerializedViewKey) obj;
                 return new EqualsBuilder().append(other._viewId, _viewId).append(other._sequenceId,
-                        _sequenceId).isEquals();
+                                                                                 _sequenceId).isEquals();
             }
             return false;
         }

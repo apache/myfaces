@@ -17,7 +17,7 @@ package org.apache.myfaces.webapp;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.webapp.webxml.DelegatedFacesServlet;
+import org.apache.myfaces.shared_impl.webapp.webxml.DelegatedFacesServlet;
 
 import javax.faces.webapp.FacesServlet;
 import javax.servlet.*;

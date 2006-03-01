@@ -15,8 +15,8 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import org.apache.myfaces.renderkit.JSFAttr;
-import org.apache.myfaces.taglib.UIComponentBodyTagBase;
+import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
+import org.apache.myfaces.shared_impl.taglib.UIComponentBodyTagBase;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIOutput;

@@ -15,6 +15,8 @@
  */
 package org.apache.myfaces.taglib.html;
 
+import org.apache.myfaces.shared_impl.taglib.html.HtmlInputSecretTagBase;
+
 import javax.faces.component.html.HtmlInputSecret;
 
 

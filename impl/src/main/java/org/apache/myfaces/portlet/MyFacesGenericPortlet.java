@@ -45,7 +45,7 @@ import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.context.portlet.PortletExternalContextImpl;
 import org.apache.myfaces.context.servlet.ServletFacesContextImpl;
-import org.apache.myfaces.webapp.webxml.WebXml;
+import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
 
 /**
  * This portlet initializes MyFaces and converts portlet requests into
@@ -143,14 +143,14 @@ public class MyFacesGenericPortlet extends GenericPortlet
             throw new UnavailableException(e.getMessage());
         }
     }
-    
+
     protected void setContentType(RenderRequest request, RenderResponse response)
     {
-        
-        if (response.getContentType() == null) 
+
+        if (response.getContentType() == null)
         {
             String portalPreferredContentType = request.getResponseContentType();
-            if (portalPreferredContentType != null) 
+            if (portalPreferredContentType != null)
             {
                 response.setContentType(portalPreferredContentType);
             }

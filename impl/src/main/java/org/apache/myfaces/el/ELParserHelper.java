@@ -27,7 +27,7 @@ import javax.servlet.jsp.el.ELException;
 import javax.servlet.jsp.el.FunctionMapper;
 import javax.servlet.jsp.el.VariableResolver;
 
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.shared_impl.util.StringUtils;
 
 import org.apache.commons.el.ArraySuffix;
 import org.apache.commons.el.BinaryOperatorExpression;

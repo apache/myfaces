@@ -15,6 +15,8 @@
  */
 package org.apache.myfaces.taglib.html;
 
+import org.apache.myfaces.shared_impl.taglib.html.HtmlSelectOneRadioTagBase;
+
 import javax.faces.component.html.HtmlSelectOneRadio;
 
 

@@ -15,6 +15,8 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import org.apache.myfaces.shared_impl.renderkit.html.HtmlGroupRendererBase;
+
 
 /**
  * @author Thomas Spiegl (latest modification by $Author$)

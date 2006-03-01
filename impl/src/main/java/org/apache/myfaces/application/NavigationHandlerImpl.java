@@ -38,7 +38,7 @@ import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.NavigationCase;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.portlet.PortletUtil;
-import org.apache.myfaces.util.HashMapUtils;
+import org.apache.myfaces.shared_impl.util.HashMapUtils;
 
 /**
  * @author Thomas Spiegl (latest modification by $Author$)
@@ -120,7 +120,7 @@ public class NavigationHandlerImpl
                           " redirect=" + navigationCase.isRedirect());
             }
             if (navigationCase.isRedirect() &&
-               (!PortletUtil.isPortletRequest(facesContext)))
+                (!PortletUtil.isPortletRequest(facesContext)))
             { // Spec section 7.4.2 says "redirects not possible" in this case for portlets
                 ExternalContext externalContext = facesContext.getExternalContext();
                 ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
@@ -154,7 +154,7 @@ public class NavigationHandlerImpl
                           " no matching navigation-case found, staying on current ViewRoot");
             }
         }
-    }               
+    }
 
     private NavigationCase calcMatchingNavigationCase(List casesList, String actionRef, String outcome)
     {

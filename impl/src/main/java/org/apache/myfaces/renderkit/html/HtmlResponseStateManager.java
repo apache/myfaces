@@ -18,7 +18,8 @@ package org.apache.myfaces.renderkit.html;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
-import org.apache.myfaces.util.StateUtils;
+import org.apache.myfaces.shared_impl.util.StateUtils;
+import org.apache.myfaces.shared_impl.renderkit.html.HTML;
 
 import javax.faces.application.StateManager;
 import javax.faces.context.FacesContext;
