@@ -2,13 +2,15 @@
 <project name="myfaces_shared_tasks">
 
   <target name="refactor-java-sources">
-      <!-- 1. Move and rename package dir "shared" to new name -->
+      <!-- 1. Create output dir  -->
+      <mkdir dir="${refactor.output.dir}" />
+      <!-- 2. Move and rename package dir "shared" to new name -->
       <move todir="${refactor.output.dir}/org/apache/myfaces/${refactor.package.new}">
         <fileset dir="${refactor.src.dir}/org/apache/myfaces/shared"> 
           <include name="**/*.java"/>
         </fileset>
       </move>
-      <!-- 2. Rename occurrences of package "shared" by new name -->
+      <!-- 3. Rename occurrences of package "shared" by new name -->
       <replace dir="${refactor.output.dir}"
             token="org.apache.myfaces.shared."
             value="org.apache.myfaces.${refactor.package.new}.">
@@ -17,14 +19,16 @@
   </target>       
 
   <target name="refactor-resources">
-      <!-- 1. Move and rename package dir "shared" to new name -->
+      <!-- 1. Create output dir  -->
+      <mkdir dir="${refactor.output.dir}" />
+      <!-- 2. Move and rename package dir "shared" to new name -->
       <move todir="${refactor.output.dir}/org/apache/myfaces/${refactor.package.new}">
         <fileset dir="${refactor.src.dir}/org/apache/myfaces/shared"> 
           <include name="**/*.properties"/>
           <include name="**/*.xml"/>
         </fileset>
       </move>
-      <!-- 2. Rename occurrences of package "shared" new name -->
+      <!-- 3. Rename occurrences of package "shared" new name -->
       <replace dir="${refactor.output.dir}"
             token="org.apache.myfaces.shared."
             value="org.apache.myfaces.${refactor.package.new}.">
