@@ -32,14 +32,12 @@
       <scope>compile</scope>
     </dependency>
 
-    <!--
     <dependency>
       <groupId>org.apache.myfaces.shared</groupId>
       <artifactId>myfaces-shared-impl</artifactId>
       <version>2.0.0-SNAPSHOT</version>
-      <scope>provided</scope>
+      <scope>provided</scope> <!-- because we add all classes to the jar directly -->
     </dependency>
-    -->
     
     <dependency>
       <groupId>commons-codec</groupId>
@@ -122,10 +120,6 @@
       <resource>
         <directory>src/main/resources-facesconfig</directory>
       </resource>
-      <resource>
-        <!-- because adding an additional resourceRoot not possible with antrun yet -->
-        <directory>target/refactored-shared-sources/main/resources</directory>
-      </resource>
     </resources>
 
     <plugins>
@@ -153,61 +147,19 @@
         <artifactId>dependency-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>unpack-sources</id>
-            <phase>generate-sources</phase>
+            <id>unpack-shared-impl</id>
+            <phase>process-classes</phase>
             <goals><goal>unpack</goal></goals>
             <configuration>
               <artifactItems>
                 <artifactItem>
                    <groupId>org.apache.myfaces.shared</groupId>
-                   <artifactId>myfaces-shared</artifactId>
+                   <artifactId>myfaces-shared-impl</artifactId>
                    <version>2.0.0-SNAPSHOT</version>
-                   <type>jar</type>
-                   <classifier>sources</classifier>
                  </artifactItem>
                </artifactItems>
-               <outputDirectory>${project.build.directory}/unpacked-shared-sources</outputDirectory>
+               <outputDirectory>${project.build.directory}/classes</outputDirectory>
             </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>refactor-shared-sources</id>
-            <phase>process-sources</phase>
-            <configuration>
-              <tasks>
-                  <property name="refactor.src.dir" value="${project.build.directory}/unpacked-shared-sources"/>
-                  <property name="refactor.output.dir" value="${project.build.directory}/refactored-shared-sources/main/java"/>
-                  <property name="refactor.package.new" value="shared_impl"/>
-                  <ant dir="${project.basedir}" antfile="build.xml"
-                        inheritRefs="true" inheritAll="true">
-                    <target name="refactor-java-sources"/>
-                  </ant>
-              </tasks>
-              <sourceRoot>${project.build.directory}/refactored-shared-sources/main/java</sourceRoot>
-            </configuration>
-            <goals><goal>run</goal></goals>
-          </execution>
-          <execution>
-            <id>refactor-resources</id>
-            <phase>generate-resources</phase>
-            <configuration>
-              <tasks>
-                  <property name="refactor.src.dir" value="${project.build.directory}/unpacked-shared-sources"/>
-                  <property name="refactor.output.dir" value="${project.build.directory}/refactored-shared-sources/main/resources"/>
-                  <property name="refactor.package.new" value="shared_impl"/>
-                  <ant dir="${project.basedir}" antfile="build.xml"
-                        inheritRefs="true" inheritAll="true">
-                    <target name="refactor-resources"/>
-                  </ant>
-              </tasks>
-              <resourceRoot>${project.build.directory}/refactored-shared-sources/main/resources</resourceRoot> <!-- not yet supported -->
-            </configuration>
-            <goals><goal>run</goal></goals>
           </execution>
         </executions>
       </plugin>
