@@ -196,7 +196,7 @@ public class FacesConfigurator
                 }
             }
         }
-        catch (Exception e)
+        catch (Throwable e)
         {
             throw new FacesException(e);
         }
@@ -234,7 +234,7 @@ public class FacesConfigurator
                 stream.close();
             }
         }
-        catch (Exception e)
+        catch (Throwable e)
         {
             throw new FacesException(e);
         }
@@ -605,7 +605,7 @@ public class FacesConfigurator
                 javax.faces.render.Renderer renderer;
                 try {
                   renderer = (javax.faces.render.Renderer) ClassUtils.newInstance(element.getRendererClass());
-                } catch(FacesException e) {
+                } catch(Throwable e) {
                   // ignore the failure so that the render kit is configured
                   log.error("failed to configure class " + element.getRendererClass(), e);
                   continue;
