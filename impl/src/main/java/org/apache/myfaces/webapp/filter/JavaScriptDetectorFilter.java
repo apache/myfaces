@@ -15,17 +15,20 @@
  */
 package org.apache.myfaces.webapp.filter;
 
-import org.apache.myfaces.context.servlet.ServletExternalContextImpl;
-import org.apache.myfaces.shared_impl.renderkit.html.util.JavascriptUtils;
+import java.io.IOException;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import javax.faces.context.ExternalContext;
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import org.apache.myfaces.shared_impl.renderkit.html.util.JavascriptUtils;
 
 
 /**
@@ -39,31 +42,22 @@ public class JavaScriptDetectorFilter implements Filter
 {
     private static final Log log = LogFactory.getLog(JavaScriptDetectorFilter.class);
 
-    private ServletContext _servletContext;
-
     public void init(FilterConfig filterConfig) throws ServletException
     {
-        _servletContext = filterConfig.getServletContext();
     }
-
 
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException
     {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-        ExternalContext externalContext = new ServletExternalContextImpl(_servletContext,
-                                                                         servletRequest,
-                                                                         servletResponse);
-        JavascriptUtils.setJavascriptDetected(externalContext, true); // mark the session to use javascript
+        JavascriptUtils.setJavascriptDetected(request.getSession(true), true); // mark the session to use javascript
 
         log.info("Enabled JavaScript for session - redirect to" + request.getParameter("goto"));
         response.sendRedirect(request.getParameter("goto"));
     }
 
-
     public void destroy()
     {
-
     }
 }
