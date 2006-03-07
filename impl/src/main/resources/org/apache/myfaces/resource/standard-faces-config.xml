@@ -42,13 +42,6 @@
     </locale-config>
   </application>
 
-
-  <lifecycle>
-      <!-- This PhaseListener is only necessary if the autoscroll feature is used -->
-      <phase-listener>org.apache.myfaces.renderkit.html.util.AutoScrollPhaseListener</phase-listener>
-  </lifecycle>
-
-
   <!-- Standard HTML Components (see Spec. Table 8-13) -->
   <!-- (in alphabetical order) -->
 
