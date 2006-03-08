@@ -459,7 +459,11 @@ public abstract class UIComponentTag
     protected void encodeBegin()
             throws IOException
     {
+        if(log.isDebugEnabled())
+            log.debug("Entered encodeBegin for client-Id: "+_componentInstance.getClientId(getFacesContext()));
         _componentInstance.encodeBegin(getFacesContext());
+        if(log.isDebugEnabled())
+            log.debug("Exited encodeBegin");
     }
 
     /**
@@ -471,7 +475,11 @@ public abstract class UIComponentTag
     protected void encodeChildren()
             throws IOException
     {
+        if(log.isDebugEnabled())
+            log.debug("Entered encodeChildren for client-Id: "+_componentInstance.getClientId(getFacesContext()));
         _componentInstance.encodeChildren(getFacesContext());
+        if(log.isDebugEnabled())
+            log.debug("Exited encodeChildren for client-Id: "+_componentInstance.getClientId(getFacesContext()));
     }
 
     /**
@@ -482,7 +490,12 @@ public abstract class UIComponentTag
     protected void encodeEnd()
             throws IOException
     {
+        if(log.isDebugEnabled())
+            log.debug("Entered encodeEnd for client-Id: "+_componentInstance.getClientId(getFacesContext()));
         _componentInstance.encodeEnd(getFacesContext());
+        if(log.isDebugEnabled())
+            log.debug("Exited encodeEnd for client-Id: "+_componentInstance.getClientId(getFacesContext()));
+
     }
 
     /**
@@ -564,7 +577,8 @@ public abstract class UIComponentTag
             // Sun RI just issues a warning...
             if(parentTag._childrenAdded != null && parentTag._childrenAdded.contains(id))
             {
-                log.warn("There is more than one JSF tag with an id of " + id);
+                if(log.isWarnEnabled())
+                    log.warn("There is more than one JSF tag with an id : " + id);
             }
             
             _componentInstance = findComponent(parent,id);
