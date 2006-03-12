@@ -23,6 +23,7 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.context.servlet.ServletExternalContextImpl;
+import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -78,6 +79,10 @@ public class StartupServletContextListener
             ex.printStackTrace();
         }
         log.info("ServletContext '" + servletContext.getRealPath("/") + "' initialized.");
+        
+        if(servletContext.getInitParameter(StateUtils.INIT_SECRET) != null)
+            StateUtils.initSecret(servletContext);
+        
     }
 
 

@@ -59,8 +59,8 @@ public class HtmlResponseStateManager
                 responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
                 responseWriter.writeAttribute(HTML.NAME_ATTR, TREE_PARAM, null);
                 responseWriter.writeAttribute(HTML.ID_ATTR, TREE_PARAM, null);
-                if(StateUtils.isSecure())
-                	treeStruct = StateUtils.construct(treeStruct);
+                if(StateUtils.isSecure(facescontext.getExternalContext()))
+                	treeStruct = StateUtils.construct(treeStruct, facescontext.getExternalContext());
                 responseWriter.writeAttribute(HTML.VALUE_ATTR, treeStruct, null);
                 responseWriter.endElement(HTML.INPUT_ELEM);
             }
@@ -71,7 +71,7 @@ public class HtmlResponseStateManager
                 responseWriter.writeAttribute(HTML.NAME_ATTR, BASE64_TREE_PARAM, null);
                 responseWriter.writeAttribute(HTML.ID_ATTR, BASE64_TREE_PARAM, null);
                 responseWriter.writeAttribute(HTML.VALUE_ATTR,
-                        StateUtils.construct(treeStruct), null);
+                        StateUtils.construct(treeStruct, facescontext.getExternalContext()), null);
                 responseWriter.endElement(HTML.INPUT_ELEM);
             }
         }
@@ -88,8 +88,8 @@ public class HtmlResponseStateManager
                 responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
                 responseWriter.writeAttribute(HTML.NAME_ATTR, STATE_PARAM, null);
                 responseWriter.writeAttribute(HTML.ID_ATTR, STATE_PARAM, null);
-                if(StateUtils.isSecure())
-                	compStates = StateUtils.construct(compStates);
+                if(StateUtils.isSecure(facescontext.getExternalContext()))
+                	compStates = StateUtils.construct(compStates, facescontext.getExternalContext());
                 responseWriter.writeAttribute(HTML.VALUE_ATTR, compStates, null);
                 responseWriter.endElement(HTML.INPUT_ELEM);
             }
@@ -100,7 +100,7 @@ public class HtmlResponseStateManager
                 responseWriter.writeAttribute(HTML.NAME_ATTR, BASE64_STATE_PARAM, null);
                 responseWriter.writeAttribute(HTML.ID_ATTR, BASE64_STATE_PARAM, null);
                 responseWriter.writeAttribute(HTML.VALUE_ATTR,
-                        StateUtils.construct(compStates), null);
+                        StateUtils.construct(compStates, facescontext.getExternalContext()), null);
                 responseWriter.endElement(HTML.INPUT_ELEM);
             }
         }
@@ -134,14 +134,14 @@ public class HtmlResponseStateManager
         {
             if (treeStruct instanceof String)
             {
-            	if(StateUtils.isSecure())
-            		treeStruct = StateUtils.construct(treeStruct);
+            	if(StateUtils.isSecure(facescontext.getExternalContext()))
+            		treeStruct = StateUtils.construct(treeStruct,facescontext.getExternalContext());
                 writeStateParam(responseWriter, TREE_PARAM, (String)treeStruct);
             }
             else
             {
                 writeStateParam(responseWriter, BASE64_TREE_PARAM,
-                        StateUtils.construct(treeStruct));
+                        StateUtils.construct(treeStruct, facescontext.getExternalContext()));
             }
         }
         else
@@ -157,13 +157,13 @@ public class HtmlResponseStateManager
             }
             if (compStates instanceof String)
             {
-            	if(StateUtils.isSecure())
-            		compStates = StateUtils.construct(compStates);
+            	if(StateUtils.isSecure(facescontext.getExternalContext()))
+            		compStates = StateUtils.construct(compStates, facescontext.getExternalContext());
                 writeStateParam(responseWriter, STATE_PARAM, (String)compStates);
             }
             else
             {
-                writeStateParam(responseWriter, BASE64_STATE_PARAM, StateUtils.construct(compStates));
+                writeStateParam(responseWriter, BASE64_STATE_PARAM, StateUtils.construct(compStates, facescontext.getExternalContext()));
             }
         }
         else
@@ -190,15 +190,15 @@ public class HtmlResponseStateManager
         param = reqParamMap.get(TREE_PARAM);
         if (param != null)
         {
-        	if(StateUtils.isSecure())
-        		param = StateUtils.construct(param);
+        	if(StateUtils.isSecure(facescontext.getExternalContext()))
+        		param = StateUtils.construct(param, facescontext.getExternalContext());
             return param;
         }
 
         param = reqParamMap.get(BASE64_TREE_PARAM);
         if (param != null)
         {
-            return StateUtils.reconstruct((String)param);
+            return StateUtils.reconstruct((String)param, facescontext.getExternalContext());
         }
 
         return null;
@@ -210,15 +210,15 @@ public class HtmlResponseStateManager
         Object param = reqParamMap.get(STATE_PARAM);
         if (param != null)
         {
-        	if(StateUtils.isSecure())
-        		param = StateUtils.construct(param);
+        	if(StateUtils.isSecure(facescontext.getExternalContext()))
+        		param = StateUtils.construct(param, facescontext.getExternalContext());
             return param;
         }
 
         param = reqParamMap.get(BASE64_STATE_PARAM);
         if (param != null)
         {
-            return StateUtils.reconstruct((String)param);
+            return StateUtils.reconstruct((String)param, facescontext.getExternalContext());
         }
 
         return null;
