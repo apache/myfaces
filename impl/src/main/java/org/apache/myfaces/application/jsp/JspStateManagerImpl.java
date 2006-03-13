@@ -53,6 +53,7 @@ import org.apache.myfaces.application.MyfacesStateManager;
 import org.apache.myfaces.application.TreeStructureManager;
 import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
 import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
+import org.apache.myfaces.shared_impl.util.MyFacesObjectInputStream;
 
 /**
  * Default StateManager implementation for use when views are defined
@@ -658,7 +659,7 @@ public class JspStateManagerImpl
                 {
                     is = new GZIPInputStream(is);
                 }
-                ObjectInputStream in = new ObjectInputStream(
+                ObjectInputStream in = new MyFacesObjectInputStream(
                         is);
                 return new SerializedView(in.readObject(), in.readObject());
             }
