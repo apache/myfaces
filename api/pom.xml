@@ -138,7 +138,7 @@
     </dependency>
 
     <dependency>
-      <groupId>struts</groupId>
+      <groupId>org.apache.struts.shale</groupId>
       <artifactId>shale-test</artifactId>
       <version>1.0.1-SNAPSHOT</version>
       <scope>test</scope>
