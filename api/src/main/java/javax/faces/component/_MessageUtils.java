@@ -54,6 +54,15 @@ class _MessageUtils
 										   args));
 	}
 
+    static void addErrorMessage(FacesContext facesContext,
+            UIComponent component, Throwable cause)
+    {
+        facesContext.addMessage(component.getClientId(facesContext),
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, cause
+                        .getLocalizedMessage(), cause.getLocalizedMessage()));
+    }
+
+    
     static FacesMessage getMessage(FacesContext facesContext,
                                    Locale locale,
                                    FacesMessage.Severity severity,

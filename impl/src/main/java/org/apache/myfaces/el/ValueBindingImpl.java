@@ -289,7 +289,7 @@ public class ValueBindingImpl extends ValueBinding implements StateHolder
             throw new PropertyNotFoundException(
                 "Expression: '" + _expressionString + "'", e);
         }
-        catch (PropertyNotFoundException e)
+        catch (EvaluationException e)
         {
           throw e;
         }

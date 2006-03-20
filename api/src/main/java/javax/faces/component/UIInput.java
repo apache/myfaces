@@ -270,6 +270,19 @@ public class UIInput
             setValue(null);
             setLocalValueSet(false);
         }
+        catch (EvaluationException ee)
+        {
+            String exceptionMessage = ee.getMessage();
+            if (exceptionMessage == null)
+            {
+                _MessageUtils.addErrorMessage(context, this,
+                        CONVERSION_MESSAGE_ID, new Object[] { getId() });
+            }
+            else
+            {
+                _MessageUtils.addErrorMessage(context, this, ee);
+            }
+        }
         catch (RuntimeException e)
         {
         	//Object[] args = {getId()};
