@@ -16,20 +16,17 @@
 
 package javax.faces.component;
 
-import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
-import javax.faces.FactoryFinder;
 
 import junit.framework.Test;
 
 import org.apache.shale.test.base.AbstractJsfTestCase;
-import org.apache.shale.test.mock.MockApplicationFactory;
 import org.apache.shale.test.mock.MockRenderKitFactory;
 import org.apache.shale.test.mock.MockValueBinding;
 
 public class UIComponentBaseTest extends AbstractJsfTestCase {
-	UIComponentBase mock = null;
-
+	private UIComponentBase mock = null;
+     
 	public static void main(String[] args) {
 		junit.textui.TestRunner.run(UIComponentBaseTest.class);
 	}
@@ -44,7 +41,8 @@ public class UIComponentBaseTest extends AbstractJsfTestCase {
 
 	public void setUp() {
 		super.setUp();
-
+        // TODO remove this line once shale-test goes alpha, see MYFACES-1155
+		facesContext.getViewRoot().setRenderKitId(MockRenderKitFactory.HTML_BASIC_RENDER_KIT);
 		mock = new UIComponentMock();
 	}
 
@@ -125,8 +123,8 @@ public class UIComponentBaseTest extends AbstractJsfTestCase {
 	 */
 	public void testGetClientIdFacesContext() {
 
-		UIInput input = createInputInTree(facesContext);
-
+		UIInput input = createInputInTree();
+        
 		String str = input.getClientId(facesContext);
 
 		assertEquals(str, "data:input");
@@ -138,8 +136,8 @@ public class UIComponentBaseTest extends AbstractJsfTestCase {
 		str = input.getClientId(facesContext);
 	}
 
-	private UIInput createInputInTree(FacesContext context) {
-		UIViewRoot viewRoot = new UIViewRoot();
+	private UIInput createInputInTree() {
+		UIViewRoot viewRoot = facesContext.getViewRoot();
 		viewRoot.setId("root");
 
 		UIData uiData = new UIData();
@@ -155,14 +153,6 @@ public class UIComponentBaseTest extends AbstractJsfTestCase {
 		column.getChildren().add(input);
 
 		viewRoot.getChildren().add(uiData);
-
-		FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY,
-				MockApplicationFactory.class.getName());
-
-		FactoryFinder.setFactory(FactoryFinder.RENDER_KIT_FACTORY,
-				MockRenderKitFactory.class.getName());
-
-		context.setViewRoot(viewRoot);
 
 		return input;
 	}
@@ -207,7 +197,7 @@ public class UIComponentBaseTest extends AbstractJsfTestCase {
 	 */
 	public void testFindComponentString() {
 
-		UIInput input = createInputInTree(facesContext);
+		UIInput input = createInputInTree();
 
 		UIComponent comp = input.findComponent(":data:input");
 

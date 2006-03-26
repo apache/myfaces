@@ -27,7 +27,6 @@ import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.FacesEvent;
 import javax.faces.event.PhaseId;
-import javax.faces.render.RenderKitFactory;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
@@ -271,7 +270,7 @@ public class UIViewRoot
 
     public static final String COMPONENT_TYPE = "javax.faces.ViewRoot";
     public static final String COMPONENT_FAMILY = "javax.faces.ViewRoot";
-    private static final String DEFAULT_RENDERKITID = RenderKitFactory.HTML_BASIC_RENDER_KIT;
+    //private static final String DEFAULT_RENDERKITID = RenderKitFactory.HTML_BASIC_RENDER_KIT;
 
     private String _renderKitId = null;
 
@@ -290,7 +289,7 @@ public class UIViewRoot
     {
         if (_renderKitId != null) return _renderKitId;
         ValueBinding vb = getValueBinding("renderKitId");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : DEFAULT_RENDERKITID;
+        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null; //DEFAULT_RENDERKITID
     }
 
 
