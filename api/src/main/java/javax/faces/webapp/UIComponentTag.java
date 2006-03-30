@@ -549,10 +549,18 @@ public abstract class UIComponentTag
             _componentInstance = parent.getFacet(facetName);
             if (_componentInstance == null)
             {
-                _componentInstance = createComponentInstance(context, id);
+            	_componentInstance = createComponentInstance(context, id);
                 setProperties(_componentInstance);
                 parent.getFacets().put(facetName, _componentInstance);
             }
+            else
+            {
+            	if (!id.equals(_componentInstance.getId()))
+            	{
+            		throw new IllegalStateException("facet already has a child associated. current component id: " + _componentInstance.getClientId(context));
+            	}
+            }
+            
             addFacetNameToParentTag(parentTag, facetName);
             return _componentInstance;
         }
