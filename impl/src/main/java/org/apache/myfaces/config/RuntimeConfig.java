@@ -58,7 +58,8 @@ public class RuntimeConfig
      */
     public Collection getNavigationRules()
     {
-        return Collections.unmodifiableCollection(_navigationRules);
+        return _navigationRules == null ?
+                null : Collections.unmodifiableCollection(_navigationRules);
     }
 
     public void addNavigationRule(NavigationRule navigationRule)
