@@ -33,8 +33,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * TODO: Add listener to myfaces-core.tld instead of web.xml
- *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
