@@ -62,6 +62,12 @@ public class RuntimeConfig
                 null : Collections.unmodifiableCollection(_navigationRules);
     }
 
+    public Map getManagedBeans()
+    {
+        return _managedBeans == null ?
+                null : Collections.unmodifiableMap(_managedBeans);
+    }
+    
     public void addNavigationRule(NavigationRule navigationRule)
     {
         _navigationRules.add(navigationRule);

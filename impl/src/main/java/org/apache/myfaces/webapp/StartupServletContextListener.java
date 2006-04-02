@@ -15,12 +15,16 @@
  */
 package org.apache.myfaces.webapp;
 
+import java.util.Iterator;
+import java.util.List;
+
 import javax.faces.FactoryFinder;
 import javax.faces.context.ExternalContext;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.apache.myfaces.config.FacesConfigValidator;
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.context.servlet.ServletExternalContextImpl;
 import org.apache.myfaces.shared_impl.util.StateUtils;
@@ -63,6 +67,19 @@ public class StartupServletContextListener
                 //And configure everything
                 new FacesConfigurator(externalContext).configure();
 
+                if ("true".equals(servletContext
+                                .getInitParameter(FacesConfigValidator.VALIDATE_CONTEXT_PARAM)))
+                {
+                    List list = FacesConfigValidator.validate(externalContext,
+                            servletContext.getRealPath("/"));
+
+                    Iterator iterator = list.iterator();
+
+                    while (iterator.hasNext())
+                        log.warn(iterator.next());
+
+                }
+                
                 // parse web.xml
                 WebXml.init(externalContext);
 
