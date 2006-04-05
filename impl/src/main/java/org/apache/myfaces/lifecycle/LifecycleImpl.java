@@ -61,27 +61,29 @@ public class LifecycleImpl
     public void execute(FacesContext facesContext)
         throws FacesException
     {
-        if (restoreView(facesContext))
+        PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, facesContext, getPhaseListeners());
+        
+        if (restoreView(facesContext, phaseListenerMgr))
         {
             return;
         }
 
-        if (applyRequestValues(facesContext))
+        if (applyRequestValues(facesContext, phaseListenerMgr))
         {
             return;
         }
 
-        if (processValidations(facesContext))
+        if (processValidations(facesContext, phaseListenerMgr))
         {
             return;
         }
 
-        if (updateModelValues(facesContext))
+        if (updateModelValues(facesContext, phaseListenerMgr))
         {
             return;
         }
 
-        invokeApplication(facesContext);
+        invokeApplication(facesContext, phaseListenerMgr);
     }
 
 
@@ -91,91 +93,93 @@ public class LifecycleImpl
      * Restore View (JSF.2.2.1)
      * @return true, if immediate rendering should occur
      */
-    private boolean restoreView(FacesContext facesContext)
+    private boolean restoreView(FacesContext facesContext, PhaseListenerManager phaseListenerMgr)
         throws FacesException
     {
     		boolean skipFurtherProcessing = false;
         if (log.isTraceEnabled()) log.trace("entering restoreView in " + LifecycleImpl.class.getName());
 
-        informPhaseListenersBefore(facesContext, PhaseId.RESTORE_VIEW);
+        try {
+            phaseListenerMgr.informPhaseListenersBefore(PhaseId.RESTORE_VIEW);
 
-        if(isResponseComplete(facesContext, "restoreView", true))
-        {
-        		// have to skips this phase
-        		return true;
-        }
-        if (shouldRenderResponse(facesContext, "restoreView", true)) 
-        {
-			skipFurtherProcessing = true;
-		}
-
-        // Derive view identifier
-        String viewId = deriveViewId(facesContext);
-
-        if(viewId == null)
-        {
-            ExternalContext externalContext = facesContext.getExternalContext();
-
-            if(!externalContext.getRequestServletPath().endsWith("/"))
+            if(isResponseComplete(facesContext, "restoreView", true))
             {
-                try
+                            // have to skips this phase
+                            return true;
+            }
+            if (shouldRenderResponse(facesContext, "restoreView", true)) 
+            {
+                            skipFurtherProcessing = true;
+                    }
+
+            // Derive view identifier
+            String viewId = deriveViewId(facesContext);
+
+            if(viewId == null)
+            {
+                ExternalContext externalContext = facesContext.getExternalContext();
+
+                if(!externalContext.getRequestServletPath().endsWith("/"))
                 {
-                    externalContext.redirect(externalContext.getRequestServletPath()+"/");
-                    facesContext.responseComplete();
-                    return true;
-                }
-                catch (IOException e)
-                {
-                    throw new FacesException("redirect failed",e);
+                    try
+                    {
+                        externalContext.redirect(externalContext.getRequestServletPath()+"/");
+                        facesContext.responseComplete();
+                        return true;
+                    }
+                    catch (IOException e)
+                    {
+                        throw new FacesException("redirect failed",e);
+                    }
                 }
             }
+
+            Application application = facesContext.getApplication();
+            ViewHandler viewHandler = application.getViewHandler();
+
+            //boolean viewCreated = false;
+            UIViewRoot viewRoot = viewHandler.restoreView(facesContext, viewId);
+            if (viewRoot == null)
+            {
+                viewRoot = viewHandler.createView(facesContext, viewId);
+                viewRoot.setViewId(viewId);
+                facesContext.renderResponse();
+                //viewCreated = true;
+            }
+
+            facesContext.setViewRoot(viewRoot);
+
+            /* This section has been disabled because it causes some bug.
+             * Be careful if you need to re-enable it.
+             * Furthermore, for an unknown reason, it seems that by default
+             * it is executed (i.e. log.isTraceEnabled() is true).
+             * Bug example :
+             * This traceView causes DebugUtil.printComponent to print all the attributes
+             * of the view components.
+             * And if you have a data table within an aliasBean, this causes the data table
+             * to initialize it's value attribute while the alias isn't set.
+             * So, the value initializes with an UIData.EMPTY_DATA_MODEL, and not with the aliased one.
+             * But as it's initialized, it will not try to get the value from the ValueBinding next
+             * time it needs to.
+             * I expect this to cause more similar bugs.
+             * TODO : Completely remove or be SURE by default it's not executed, and it has no more side-effects.
+
+            if (log.isTraceEnabled())
+            {
+                //Note: DebugUtils Logger must also be in trace level
+                DebugUtils.traceView(viewCreated ? "Newly created view" : "Restored view");
+            }*/
+
+            if (facesContext.getExternalContext().getRequestParameterMap().isEmpty())
+            {
+                //no POST or query parameters --> set render response flag
+                facesContext.renderResponse();
+            }
+
+            RestoreStateUtils.recursivelyHandleComponentReferencesAndSetValid(facesContext, viewRoot);
+        } finally {
+            phaseListenerMgr.informPhaseListenersAfter(PhaseId.RESTORE_VIEW);
         }
-
-        Application application = facesContext.getApplication();
-        ViewHandler viewHandler = application.getViewHandler();
-
-        //boolean viewCreated = false;
-        UIViewRoot viewRoot = viewHandler.restoreView(facesContext, viewId);
-        if (viewRoot == null)
-        {
-            viewRoot = viewHandler.createView(facesContext, viewId);
-            viewRoot.setViewId(viewId);
-            facesContext.renderResponse();
-            //viewCreated = true;
-        }
-
-        facesContext.setViewRoot(viewRoot);
-
-        /* This section has been disabled because it causes some bug.
-         * Be careful if you need to re-enable it.
-         * Furthermore, for an unknown reason, it seems that by default
-         * it is executed (i.e. log.isTraceEnabled() is true).
-         * Bug example :
-         * This traceView causes DebugUtil.printComponent to print all the attributes
-         * of the view components.
-         * And if you have a data table within an aliasBean, this causes the data table
-         * to initialize it's value attribute while the alias isn't set.
-         * So, the value initializes with an UIData.EMPTY_DATA_MODEL, and not with the aliased one.
-         * But as it's initialized, it will not try to get the value from the ValueBinding next
-         * time it needs to.
-         * I expect this to cause more similar bugs.
-         * TODO : Completely remove or be SURE by default it's not executed, and it has no more side-effects.
-
-        if (log.isTraceEnabled())
-        {
-            //Note: DebugUtils Logger must also be in trace level
-            DebugUtils.traceView(viewCreated ? "Newly created view" : "Restored view");
-        }*/
-
-        if (facesContext.getExternalContext().getRequestParameterMap().isEmpty())
-        {
-            //no POST or query parameters --> set render response flag
-            facesContext.renderResponse();
-        }
-
-        RestoreStateUtils.recursivelyHandleComponentReferencesAndSetValid(facesContext, viewRoot);
-
-        informPhaseListenersAfter(facesContext, PhaseId.RESTORE_VIEW);
 
         if (isResponseComplete(facesContext, "restoreView", false)
 				|| shouldRenderResponse(facesContext, "restoreView", false))
@@ -193,27 +197,29 @@ public class LifecycleImpl
      * Apply Request Values (JSF.2.2.2)
      * @return true, if response is complete
      */
-    private boolean applyRequestValues(FacesContext facesContext)
+    private boolean applyRequestValues(FacesContext facesContext, PhaseListenerManager phaseListenerMgr)
         throws FacesException
     {
     		boolean skipFurtherProcessing = false;
         if (log.isTraceEnabled()) log.trace("entering applyRequestValues in " + LifecycleImpl.class.getName());
 
-        informPhaseListenersBefore(facesContext, PhaseId.APPLY_REQUEST_VALUES);
+        try {
+            phaseListenerMgr.informPhaseListenersBefore(PhaseId.APPLY_REQUEST_VALUES);
 
-        if(isResponseComplete(facesContext, "applyRequestValues", true))
-        {
-        		// have to return right away
-        		return true;
+            if(isResponseComplete(facesContext, "applyRequestValues", true))
+            {
+                            // have to return right away
+                            return true;
+            }
+            if(shouldRenderResponse(facesContext, "applyRequestValues", true))
+            {
+                            skipFurtherProcessing = true;
+            }
+
+            facesContext.getViewRoot().processDecodes(facesContext);
+        } finally {
+            phaseListenerMgr.informPhaseListenersAfter(PhaseId.APPLY_REQUEST_VALUES);
         }
-        if(shouldRenderResponse(facesContext, "applyRequestValues", true))
-        {
-        		skipFurtherProcessing = true;
-        }
-
-        facesContext.getViewRoot().processDecodes(facesContext);
-
-        informPhaseListenersAfter(facesContext, PhaseId.APPLY_REQUEST_VALUES);
 
 
         if (isResponseComplete(facesContext, "applyRequestValues", false)
@@ -234,26 +240,29 @@ public class LifecycleImpl
      * Process Validations (JSF.2.2.3)
      * @return true, if response is complete
      */
-    private boolean processValidations(FacesContext facesContext) throws FacesException
+    private boolean processValidations(FacesContext facesContext, PhaseListenerManager phaseListenerMgr)
+        throws FacesException
     {
         boolean skipFurtherProcessing = false;
         if (log.isTraceEnabled()) log.trace("entering processValidations in " + LifecycleImpl.class.getName());
 
-        informPhaseListenersBefore(facesContext, PhaseId.PROCESS_VALIDATIONS);
+        try {
+            phaseListenerMgr.informPhaseListenersBefore(PhaseId.PROCESS_VALIDATIONS);
 
-        if(isResponseComplete(facesContext, "processValidations", true))
-        {
-        		// have to return right away
-        		return true;
+            if(isResponseComplete(facesContext, "processValidations", true))
+            {
+                            // have to return right away
+                            return true;
+            }
+            if(shouldRenderResponse(facesContext, "processValidations", true))
+            {
+                            skipFurtherProcessing = true;
+            }
+
+            facesContext.getViewRoot().processValidators(facesContext);
+        } finally {
+            phaseListenerMgr.informPhaseListenersAfter(PhaseId.PROCESS_VALIDATIONS);
         }
-        if(shouldRenderResponse(facesContext, "processValidations", true))
-        {
-        		skipFurtherProcessing = true;
-        }
-
-        facesContext.getViewRoot().processValidators(facesContext);
-
-        informPhaseListenersAfter(facesContext, PhaseId.PROCESS_VALIDATIONS);
 
 		if (isResponseComplete(facesContext, "processValidations", false)
 				|| shouldRenderResponse(facesContext, "processValidations", false))
@@ -271,26 +280,29 @@ public class LifecycleImpl
      * Update Model Values (JSF.2.2.4)
      * @return true, if response is complete
      */
-    private boolean updateModelValues(FacesContext facesContext) throws FacesException
+    private boolean updateModelValues(FacesContext facesContext, PhaseListenerManager phaseListenerMgr)
+        throws FacesException
     {
 	    boolean skipFurtherProcessing = false;
         if (log.isTraceEnabled()) log.trace("entering updateModelValues in " + LifecycleImpl.class.getName());
 
-        informPhaseListenersBefore(facesContext, PhaseId.UPDATE_MODEL_VALUES);
+        try {
+            phaseListenerMgr.informPhaseListenersBefore(PhaseId.UPDATE_MODEL_VALUES);
 
-        if(isResponseComplete(facesContext, "updateModelValues", true))
-        {
-        		// have to return right away
-        		return true;
+            if(isResponseComplete(facesContext, "updateModelValues", true))
+            {
+                            // have to return right away
+                            return true;
+            }
+            if(shouldRenderResponse(facesContext, "updateModelValues", true))
+            {
+                            skipFurtherProcessing = true;
+            }
+
+            facesContext.getViewRoot().processUpdates(facesContext);
+        } finally {
+            phaseListenerMgr.informPhaseListenersAfter(PhaseId.UPDATE_MODEL_VALUES);
         }
-        if(shouldRenderResponse(facesContext, "updateModelValues", true))
-        {
-        		skipFurtherProcessing = true;
-        }
-
-        facesContext.getViewRoot().processUpdates(facesContext);
-
-        informPhaseListenersAfter(facesContext, PhaseId.UPDATE_MODEL_VALUES);
 
 		if (isResponseComplete(facesContext, "updateModelValues", false)
 				|| shouldRenderResponse(facesContext, "updateModelValues", false))
@@ -309,27 +321,29 @@ public class LifecycleImpl
      * Invoke Application (JSF.2.2.5)
      * @return true, if response is complete
      */
-    private boolean invokeApplication(FacesContext facesContext)
+    private boolean invokeApplication(FacesContext facesContext, PhaseListenerManager phaseListenerMgr)
         throws FacesException
     {
 	    boolean skipFurtherProcessing = false;
         if (log.isTraceEnabled()) log.trace("entering invokeApplication in " + LifecycleImpl.class.getName());
 
-        informPhaseListenersBefore(facesContext, PhaseId.INVOKE_APPLICATION);
+        try {
+            phaseListenerMgr.informPhaseListenersBefore(PhaseId.INVOKE_APPLICATION);
 
-        if(isResponseComplete(facesContext, "invokeApplication", true))
-        {
-        		// have to return right away
-        		return true;
+            if(isResponseComplete(facesContext, "invokeApplication", true))
+            {
+                            // have to return right away
+                            return true;
+            }
+            if(shouldRenderResponse(facesContext, "invokeApplication", true))
+            {
+                            skipFurtherProcessing = true;
+            }
+
+            facesContext.getViewRoot().processApplication(facesContext);
+        } finally {
+            phaseListenerMgr.informPhaseListenersAfter(PhaseId.INVOKE_APPLICATION);
         }
-        if(shouldRenderResponse(facesContext, "invokeApplication", true))
-        {
-        		skipFurtherProcessing = true;
-        }
-
-        facesContext.getViewRoot().processApplication(facesContext);
-
-        informPhaseListenersAfter(facesContext, PhaseId.INVOKE_APPLICATION);
 
 		if (isResponseComplete(facesContext, "invokeApplication", false)
 				|| shouldRenderResponse(facesContext, "invokeApplication", false))
@@ -353,25 +367,30 @@ public class LifecycleImpl
         }
         if (log.isTraceEnabled()) log.trace("entering renderResponse in " + LifecycleImpl.class.getName());
 
-        informPhaseListenersBefore(facesContext, PhaseId.RENDER_RESPONSE);
-        // also possible that one of the listeners completed the response
-        if(isResponseComplete(facesContext, "render", true))
-        {
-        		return;
-        }
-        Application application = facesContext.getApplication();
-        ViewHandler viewHandler = application.getViewHandler();
-        
-        try
-        {
-            viewHandler.renderView(facesContext, facesContext.getViewRoot());
-        }
-        catch (IOException e)
-        {
-            throw new FacesException(e.getMessage(), e);
-        }
+        PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, facesContext, getPhaseListeners());
+     
+        try {
+            phaseListenerMgr.informPhaseListenersBefore(PhaseId.RENDER_RESPONSE);
+            // also possible that one of the listeners completed the response
+            if(isResponseComplete(facesContext, "render", true))
+            {
+                            return;
+            }
+            Application application = facesContext.getApplication();
+            ViewHandler viewHandler = application.getViewHandler();
 
-        informPhaseListenersAfter(facesContext, PhaseId.RENDER_RESPONSE);
+            try
+            {
+                viewHandler.renderView(facesContext, facesContext.getViewRoot());
+            }
+            catch (IOException e)
+            {
+                throw new FacesException(e.getMessage(), e);
+            }
+        } finally {
+            phaseListenerMgr.informPhaseListenersAfter(PhaseId.RENDER_RESPONSE);
+        }
+        
         if (log.isTraceEnabled())
         {
             //Note: DebugUtils Logger must also be in trace level
@@ -490,36 +509,6 @@ public class LifecycleImpl
     }
 
 
-    private void informPhaseListenersBefore(FacesContext facesContext, PhaseId phaseId)
-    {
-        PhaseListener[] phaseListeners = getPhaseListeners();
-        for (int i = 0; i < phaseListeners.length; i++)
-        {
-            PhaseListener phaseListener = phaseListeners[i];
-            int listenerPhaseId = phaseListener.getPhaseId().getOrdinal();
-            if (listenerPhaseId == PhaseId.ANY_PHASE.getOrdinal() ||
-                listenerPhaseId == phaseId.getOrdinal())
-            {
-                phaseListener.beforePhase(new PhaseEvent(facesContext, phaseId, this));
-            }
-        }
-
-    }
-
-    private void informPhaseListenersAfter(FacesContext facesContext, PhaseId phaseId)
-    {
-        PhaseListener[] phaseListeners = getPhaseListeners();
-        for (int i = 0; i < phaseListeners.length; i++)
-        {
-            PhaseListener phaseListener = phaseListeners[i];
-            int listenerPhaseId = phaseListener.getPhaseId().getOrdinal();
-            if (listenerPhaseId == PhaseId.ANY_PHASE.getOrdinal() ||
-                listenerPhaseId == phaseId.getOrdinal())
-            {
-                phaseListener.afterPhase(new PhaseEvent(facesContext, phaseId, this));
-            }
-        }
-
-    }
+    
 
 }
