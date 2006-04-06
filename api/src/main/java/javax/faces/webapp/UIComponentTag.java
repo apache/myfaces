@@ -555,9 +555,10 @@ public abstract class UIComponentTag
             }
             else
             {
-            	if (!id.equals(_componentInstance.getId()))
+            	if (checkFacetNameOoParentExists(parentTag, facetName))
             	{
-            		throw new IllegalStateException("facet already has a child associated. current component id: " + _componentInstance.getClientId(context));
+            		throw new IllegalStateException("facet '" + facetName + "' already has a child associated. current associated component id: "
+            			+ _componentInstance.getClientId(context) + " class: " + _componentInstance.getClass().getName());
             	}
             }
             
@@ -761,6 +762,14 @@ public abstract class UIComponentTag
         parentTag._childrenAdded.add(id);
     }
 
+    /**
+     * check if the facet is already added to the parent
+     */
+    private boolean checkFacetNameOoParentExists(UIComponentTag parentTag, String facetName)
+    {
+        return parentTag._facetsAdded != null && parentTag._facetsAdded.contains(facetName); 
+    }
+    
     /**
      * Notify the enclosing JSP tag of the id of this facet's id. The parent
      * tag will later delete any existing view facets that were not seen
