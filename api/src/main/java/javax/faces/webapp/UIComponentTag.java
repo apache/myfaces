@@ -555,7 +555,7 @@ public abstract class UIComponentTag
             }
             else
             {
-            	if (checkFacetNameOoParentExists(parentTag, facetName))
+            	if (checkFacetNameOnParentExists(parentTag, facetName))
             	{
             		throw new IllegalStateException("facet '" + facetName + "' already has a child associated. current associated component id: "
             			+ _componentInstance.getClientId(context) + " class: " + _componentInstance.getClass().getName());
@@ -765,7 +765,7 @@ public abstract class UIComponentTag
     /**
      * check if the facet is already added to the parent
      */
-    private boolean checkFacetNameOoParentExists(UIComponentTag parentTag, String facetName)
+    private boolean checkFacetNameOnParentExists(UIComponentTag parentTag, String facetName)
     {
         return parentTag._facetsAdded != null && parentTag._facetsAdded.contains(facetName); 
     }
