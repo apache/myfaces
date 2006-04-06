@@ -417,13 +417,26 @@ public class ServletExternalContextImpl
         }
         catch (ServletException e)
         {
+        	// imario@apache.org ==> this will get the root exception from the ServletException.
+        	// I'd say its a bug in ServletException not to take the rootCause into account when it generates
+        	// the stacktrace, though this code will workaround it. If there is a rootCause no one is interested
+        	// in the ServletException.
+        	// Now, e.g if it comes to an EvaluationException you'll be able (maybe by creating your own error.jsp)
+        	// to show the real exception. 
+        	Throwable cause = e.getRootCause();
+        	if (cause == null)
+        	{
+        		cause = e;
+        	}
+        	// <==
+        	
         	if (e.getMessage() != null)
             {
-                throw new FacesException(e.getMessage(), e);
+                throw new FacesException(e.getMessage(), cause);
             }
             else
             {
-                throw new FacesException(e);
+                throw new FacesException(cause);
             }
         }
     }
