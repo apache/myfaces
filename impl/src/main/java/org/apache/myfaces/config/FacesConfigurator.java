@@ -52,6 +52,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.*;
 
 
@@ -158,7 +159,7 @@ public class FacesConfigurator
                 while (it.hasNext())
                 {
                     URL url = (URL)it.next();
-                    InputStream stream = url.openStream();
+                    InputStream stream = openStreamWithoutCache(url);
                     InputStreamReader isr = new InputStreamReader(stream);
                     BufferedReader br = new BufferedReader(isr);
                     String className;
@@ -202,18 +203,25 @@ public class FacesConfigurator
         }
     }
 
+    private InputStream openStreamWithoutCache(URL url)
+            throws IOException
+    {
+        URLConnection connection = url.openConnection();
+        connection.setUseCaches(false);
+        return connection.getInputStream();
+    }
 
     /*private Map expandFactoryNames(Set factoryNames)
-    {
-        Map names = new HashMap();
-        Iterator itr = factoryNames.iterator();
-        while (itr.hasNext())
-        {
-            String name = (String) itr.next();
-            names.put(META_INF_SERVICES_LOCATION + name, name);
-        }
-        return names;
-    } */
+   {
+       Map names = new HashMap();
+       Iterator itr = factoryNames.iterator();
+       while (itr.hasNext())
+       {
+           String name = (String) itr.next();
+           names.put(META_INF_SERVICES_LOCATION + name, name);
+       }
+       return names;
+   } */
 
 
     /**
@@ -227,7 +235,7 @@ public class FacesConfigurator
             while (it.hasNext())
             {
                 URL url = (URL)it.next();
-                InputStream stream = url.openStream();
+                InputStream stream = openStreamWithoutCache(url);
                 String systemId = url.toExternalForm();
                 if (log.isInfoEnabled()) log.info("Reading config " + systemId);
                 _dispenser.feed(_unmarshaller.getFacesConfig(stream, systemId));
