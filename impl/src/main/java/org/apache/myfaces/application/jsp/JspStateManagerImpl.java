@@ -58,7 +58,7 @@ import org.apache.myfaces.shared_impl.util.MyFacesObjectInputStream;
 /**
  * Default StateManager implementation for use when views are defined
  * via tags in JSP pages.
- *
+ * 
  * @author Thomas Spiegl (latest modification by $Author$)
  * @author Manfred Geiler
  * @version $Revision$ $Date$
@@ -518,11 +518,6 @@ public class JspStateManagerImpl
                     // use latest sequence
                     Map map = externalContext.getSessionMap();
                     sequence = (Integer) map.get(RendererUtils.SEQUENCE_PARAM);
-
-                    if (sequence == null)
-                    {
-                        sequence = (Integer) externalContext.getRequestMap().get(RendererUtils.SEQUENCE_PARAM);
-                    }
                 }
                 else
                 {
@@ -547,7 +542,7 @@ public class JspStateManagerImpl
     {
         ExternalContext externalContext = facescontext.getExternalContext();
         Object sessionObj = externalContext.getSession(true);
-        synchronized(sessionObj) // synchronized to increase sequence if multiple requests
+        synchronized(sessionObj) // synchronized to increase sequence if multiple requests 
                                  // are handled at the same time for the session
         {
             Map map = externalContext.getSessionMap();
