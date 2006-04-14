@@ -131,7 +131,7 @@ public class UIInput
 
     /**
      * Set the "submitted value" of this component from the relevant data
-     * in the current servet request object.
+     * in the current servlet request object.
      * <p>
      * If this component is not rendered, then do nothing; no output would
      * have been sent to the client so no input is expected.
