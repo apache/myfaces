@@ -1,38 +1,83 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>myfaces-core-project</artifactId>
+    <groupId>org.apache.myfaces.core</groupId>
+    <version>1.1.2</version>
+  </parent>
   <modelVersion>4.0.0</modelVersion>
-
   <groupId>org.apache.myfaces.core</groupId>
   <artifactId>myfaces-api</artifactId>
-  <packaging>jar</packaging>
   <name>API</name>
-  <description>
-    The MyFaces API Subproject provides a full set of the API interfaces and classes
-    defined in JSR-127 (see also http://www.jcp.org/en/jsr/detail?id=127).
-  </description>
-
-  <parent>
-    <groupId>org.apache.myfaces.core</groupId>
-    <artifactId>myfaces-core-project</artifactId>
-    <version>1.1.2-SNAPSHOT</version>
-  </parent>
-
+  <version>1.1.2</version>
+  <description>The MyFaces API Subproject provides a full set of the API interfaces and classes
+    defined in JSR-127 (see also http://www.jcp.org/en/jsr/detail?id=127).</description>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk/api</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk/api</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/trunk/api</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/tags/1_1_2</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/tags/1_1_2</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/tags/1_1_2</url>
   </scm>
-
+  <profiles>
+    <profile>
+      <id>generate-assembly</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-javadoc</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-source</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
   <dependencies>
-
     <dependency>
-      <groupId>commons-beanutils</groupId>
-      <artifactId>commons-beanutils</artifactId>
-      <version>1.7.0</version>
-      <scope>compile</scope>
+      <groupId>easymock</groupId>
+      <artifactId>easymockclassextension</artifactId>
+      <version>1.1</version>
+      <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>httpunit</groupId>
+      <artifactId>httpunit</artifactId>
+      <version>1.6</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.3</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jsp-api</artifactId>
+      <version>2.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>cactus</groupId>
+      <artifactId>cactus</artifactId>
+      <version>13-1.7.1</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>commons-digester</groupId>
       <artifactId>commons-digester</artifactId>
@@ -40,26 +85,35 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>xml-apis</groupId>
           <artifactId>xml-apis</artifactId>
+          <groupId>xml-apis</groupId>
         </exclusion>
       </exclusions>
     </dependency>
-
+    <dependency>
+      <groupId>nekohtml</groupId>
+      <artifactId>nekohtml</artifactId>
+      <version>0.9.1</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
       <version>2.1</version>
       <scope>compile</scope>
     </dependency>
-
     <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <version>1.0.4</version>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
+      <version>1.7.0</version>
       <scope>compile</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.apache.struts.shale</groupId>
+      <artifactId>shale-test</artifactId>
+      <version>1.0.2</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
@@ -67,89 +121,42 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>javax.servlet</groupId>
           <artifactId>jsp-api</artifactId>
+          <groupId>javax.servlet</groupId>
         </exclusion>
       </exclusions>
     </dependency>
-
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>jsp-api</artifactId>
-      <version>2.0</version>
-      <scope>provided</scope>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.0.4</version>
+      <scope>compile</scope>
     </dependency>
-
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.3</version>
-      <scope>provided</scope>
-    </dependency>
-
     <dependency>
       <groupId>easymock</groupId>
       <artifactId>easymock</artifactId>
       <version>1.1</version>
       <scope>test</scope>
     </dependency>
-
-    <dependency>
-      <groupId>easymock</groupId>
-      <artifactId>easymockclassextension</artifactId>
-      <version>1.1</version>
-      <scope>test</scope>
-    </dependency>
-
-
-    <dependency>
-      <groupId>cactus</groupId>
-      <artifactId>cactus</artifactId>
-      <version>13-1.7.1</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>aspectj</groupId>
-      <artifactId>aspectjrt</artifactId>
-      <version>1.2.1</version>
-      <scope>test</scope>
-    </dependency>
-
     <dependency>
       <groupId>commons-httpclient</groupId>
       <artifactId>commons-httpclient</artifactId>
       <version>2.0.2</version>
       <scope>test</scope>
     </dependency>
-
     <dependency>
-      <groupId>httpunit</groupId>
-      <artifactId>httpunit</artifactId>
-      <version>1.6</version>
+      <groupId>aspectj</groupId>
+      <artifactId>aspectjrt</artifactId>
+      <version>1.2.1</version>
       <scope>test</scope>
     </dependency>
-
-    <dependency>
-      <groupId>nekohtml</groupId>
-      <artifactId>nekohtml</artifactId>
-      <version>0.9.1</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.struts.shale</groupId>
-      <artifactId>shale-test</artifactId>
-      <version>1.0.2</version>
-      <scope>test</scope>
-    </dependency>
- 
   </dependencies>
-
   <reporting>
-
     <plugins>
-
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.0-beta-3</version>
+      </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>changelog-maven-plugin</artifactId>
@@ -169,18 +176,14 @@
           </reportSet>
         </reportSets>
       </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.0-beta-3</version>
-      </plugin>
-
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>jxr-maven-plugin</artifactId>
       </plugin>
-
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>surefire-report-maven-plugin</artifactId>
+      </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>taglist-maven-plugin</artifactId>
@@ -189,45 +192,6 @@
           <tags>TODO, FIXME, XXX, @deprecated</tags>
         </configuration>
       </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>surefire-report-maven-plugin</artifactId>
-      </plugin>
-
     </plugins>
-
   </reporting>
-
-  <profiles>
-    <profile>
-      <id>generate-assembly</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>attach-javadoc</id>
-                <goals><goal>jar</goal></goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-source-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>attach-source</id>
-                <goals><goal>jar</goal></goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
-
-
 </project>

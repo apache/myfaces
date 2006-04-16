@@ -1,0 +1,246 @@
+Release Notes - MyFaces Core - Version 1.1.2-SNAPSHOT
+
+** Bug
+    * [MYFACES-27] - JSCookmenu cannot be used for storing data
+    * [MYFACES-32] - Multiple browser window problem with server state saving
+    * [MYFACES-154] - checkbox and listbox do not handler converters well
+    * [MYFACES-210] - Undesired dependency on ApplicationImpl in FacesConfigurator
+    * [MYFACES-290] - x:datascroller does not have the immediate attribute to by pass the validation and update model phase
+    * [MYFACES-320] - selectOneRadio does not properly persist its value
+    * [MYFACES-351] - [tree2] Cannot dynamically add or delete nodes
+    * [MYFACES-394] - Using "/faces/*" path mapping and connectiong to "faces" causes stack overflow
+    * [MYFACES-428] - InputDate(s) within dataTable submitting incorrect dates
+    * [MYFACES-430] - inputDate (calendar) and French Locale
+    * [MYFACES-438] - [tree2] Selected node is lost when navigating to another page
+    * [MYFACES-443] - javax.faces.render.Renderer.encodeChildren() should encode children
+    * [MYFACES-450] - Can't use <h:outputLabel> against a Tomahawk component
+    * [MYFACES-476] - commandButton doesn't renders well the application-dependent image urls
+    * [MYFACES-488] - Weird re-rendered in tagfiles tags inside subviews inside aliasbean inside panelgrid.
+    * [MYFACES-543] - Problems handling simultaneous request from the same session
+    * [MYFACES-568] - tree2 TreeState wrong after node deletion/reposition, causes Servlet Exception
+    * [MYFACES-581] - Frames
+    * [MYFACES-588] - JSCookMenu separator bug - phantom item
+    * [MYFACES-589] - inputCalendar localized month names problem
+    * [MYFACES-595] - Context Problems when using target option in commandLink
+    * [MYFACES-599] - Potential NullPointerException from HtmlResponseWriterImpl.writeAttribute()
+    * [MYFACES-605] - FacesContext.getResponseStream/getResponseWriter unimplemented
+    * [MYFACES-609] - t:dataScroller fires unnecessary ScrollerActionEvents
+    * [MYFACES-610] - Getting IllegalStateException exception when setting javax.faces.STATE_SAVING_METHOD to "server"
+    * [MYFACES-618] - Tree2 Expand/Collapse Handled By Server does not work (old opened issue MYFACES-291 still here)
+    * [MYFACES-622] - HtmlSelectManyCheckbox rendering is flawed
+    * [MYFACES-626] - org.apache.myfaces.el.getType(Object base, int index) return null if base instanceof Object[]
+    * [MYFACES-627] - valueChangeListener not called for elements in HtmlDataTable
+    * [MYFACES-630] - StartupServletContextListener should ignore missing web.xml
+    * [MYFACES-635] - Calendar popup is incorrectly positioned inside scrolling div
+    * [MYFACES-637] - <x:commandLink/> Atrribute  'value' is not rendered in combination with 'enabledOnUserRole'
+    * [MYFACES-639] - wrong renderer for HtmlCommandSortHeader
+    * [MYFACES-642] - <t:commandSortHeader> is not disabled if attribute 'enabledOnUserRole' is used and user isn't in role
+    * [MYFACES-643] - InputSuggestAjax does not work when javax.faces.STATE_SAVING_METHOD=server
+    * [MYFACES-644] - InputDate doesn't parses submitted seconds
+    * [MYFACES-646] - <x:inputDate> accepts invalid date input
+    * [MYFACES-649] - Possible NPE in ViewTag.setProperties
+    * [MYFACES-651] - DigesterFacesConfigDispenserImpl.feedFacesContextFactory() broken
+    * [MYFACES-653] - org.apache.myfaces.renderkit.html.HTML.AUTOCOMPLETE_ATTR has private visibility
+    * [MYFACES-656] - data conversion problems???
+    * [MYFACES-662] - displayValueOnly property on HtmlSelectBooleanCheckbox throws ClassCastException during rendering
+    * [MYFACES-665] - StartupServletContextListener crashes if all jars placed in webapp
+    * [MYFACES-669] - Validation error
+    * [MYFACES-671] - Component  t:collapsiblePanel , on open action will submit the form and call validators
+    * [MYFACES-676] - DataScroller: Wrong infos with an empty collection
+    * [MYFACES-677] - HtmlSelectOneMenu conversion error with SelectItemGroup
+    * [MYFACES-678] - Can't find "org.apache.myfaces.Message" when HtmlMessageTag.getRendererType() is invoked
+    * [MYFACES-681] - Javascript error in <x:inputCalendar> component
+    * [MYFACES-685] - Error in displaying <t:inputCalendar> on a page
+    * [MYFACES-686] - ValueBindingImpl.isReadOnly() delivers false when an Exception is thrown, why?
+    * [MYFACES-687] - aliasBean which includes elements with valueBinding attribute crashes during restoreView
+    * [MYFACES-688] - displayValueOnly property on HtmlSelectBooleanCheckbox throws ClassCastException during rendering, second approach
+    * [MYFACES-690] - tree2 server-side-toggle example: Encountered a node [0:0:0] + with an illogical state...
+    * [MYFACES-691] - t:dataList does not style <li> elements
+    * [MYFACES-692] - AjaxPhaseListener does not work with forceId
+    * [MYFACES-693] - select Combo Box is displayed over popup component instead of hiding behind
+    * [MYFACES-695] - date.js in inputCalendar isn't compatible with IE
+    * [MYFACES-696] - Using  t:navigationMenuItem inside a form is not working. Id assign  problemm.
+    * [MYFACES-697] - Non-standard behaviour of t:navigationMenuItem (in t:jscookMenu) breaks facelets
+    * [MYFACES-700] - incompatible change to jscookMenu
+    * [MYFACES-702] - outputText generates wrapped span element in a portal
+    * [MYFACES-703] - Invalid rederer under RI
+    * [MYFACES-704] - Misleading error message: "a context listener is not setup in your web.xml"
+    * [MYFACES-705] - Overflow problem with InputSuggestAjax
+    * [MYFACES-711] - Date tag does not display properly, javascript errors are returned
+    * [MYFACES-712] - inputCalendar : Internationalization problem
+    * [MYFACES-713] - wrong component type for InputSuggest prevents disabling
+    * [MYFACES-715] - ArrayStoreException in _SharedRendererUtils.getConvertedUISelectManyValue()
+    * [MYFACES-716] - Problem using JSF input components with DataList
+    * [MYFACES-717] - No way to make selection from code in Tree2
+    * [MYFACES-718] - ExternalContext.redirect does not call responseComplete()
+    * [MYFACES-721] - DataTable erroneously discard saved state when validation error in non child field
+    * [MYFACES-723] - ApplicationImpl: German "ist" instead of "is" in error messages
+    * [MYFACES-724] - ClassNotFoundException: org.apache.myfaces.examples.inputSuggestAjax.InputSuggestAjaxBean
+    * [MYFACES-727] - AddResource is outputting the resource under the <thead> if it exists in a datatable
+    * [MYFACES-729] - x:dataTabel not displaying the correct values
+    * [MYFACES-733] - javax.faces.el.PropertyNotFoundException: Bean: org.hibernate.collection.PersistentSet, property: id
+    * [MYFACES-736] - Number converter not working with Number
+    * [MYFACES-737] - JSCookMenu can't be used as a child of a form, and AddResources code for custom themes is incomplete
+    * [MYFACES-739] - Null Pointer Exception
+    * [MYFACES-740] - HtmlDataTable.getClientId() should use info() not warn() when using forcedIdIndex
+    * [MYFACES-743] - Javascript conflict between x:tree2 and x:inputCalendar
+    * [MYFACES-746] - tabChangeListener doesn´t work
+    * [MYFACES-749] - inputText refresh problem
+    * [MYFACES-750] - Need synchronization in LifecycleImpl
+    * [MYFACES-753] - HtmlDataList.processDecodes processes its children twice
+    * [MYFACES-755] - HTML links "onclick" - if "onsubmit" function exists, it's required to explicitly return "true" (returning nothing considered as "false" and clicking the link doesn't submit the form)
+    * [MYFACES-757] - Using a custom getActionURL creates a 404 error
+    * [MYFACES-762] - Error after calling session.invalidate() - Cannot get value for expression '#{ScopeContainer}'
+    * [MYFACES-764] - AddResource has changes that break custom classes and JSP pages using javascriptLocation
+    * [MYFACES-767] - Programming error in HtmlTextareaRenderer
+    * [MYFACES-768] - ReducedHTMLParser issues
+    * [MYFACES-772] - <t:inputCalendar/> stops working with Facelets
+    * [MYFACES-773] - serverSideTabSwitch attribute in x:panelTabbedPane shows wrong behaviour
+    * [MYFACES-774] - UIComponentTagUtils.setActionProperty checks for UICommand instead of ActionSource
+    * [MYFACES-775] - Exception in inputDate
+    * [MYFACES-777] - AddResource uses static StringBuffer ADDITIONAL_JAVASCRIPT_TO_BODY_TAG for per-request data
+    * [MYFACES-783] - t:tree2: javascript error in some version of IE
+    * [MYFACES-784] - Popup component  renders an empty box at the 0px origin in addition to the offset popup window IF margin-top:-0px or margin-left:0px; are set to a value other than 0px  (200px for example)
+    * [MYFACES-785] - Docs refer to non-existant spec. section
+    * [MYFACES-786] - <t:inputHtml doesn't work when using it with Custom Object that encapsulates a String value
+    * [MYFACES-789] - NullPointerException in HtmlDataTableHack
+    * [MYFACES-791] - NPE in org.apache.myfaces.convert.StringArrayConverter.getAsString(String[], boolean)
+    * [MYFACES-796] - Problem with Date Conversion with 1.1.1 release
+    * [MYFACES-798] - Name attribute in <h:form> not spec-compliant
+    * [MYFACES-805] - The first part of the examples-config.xml file for the sandbox examples is missing
+    * [MYFACES-815] - t:inputCalendar "Required" not functioning correctly
+    * [MYFACES-825] - AddResource creates invalid body tag
+    * [MYFACES-826] - BUG in the inputDate component relating with the jsf(RI) selectOneMenu component
+    * [MYFACES-827] - The facet for popup component only accept components with children
+    * [MYFACES-829] - <h:selectManyCheckbox> with value bound to an array of int fails
+    * [MYFACES-833] - HtmlFormRendererBase saves form state before components have been rendered - breaks auto id generation
+    * [MYFACES-838] - Tomahawk column tag gets: Unable to find setter method for attribute: footerstyleClass
+    * [MYFACES-841] - 500 error w/ collapsiblePanel example
+    * [MYFACES-842] - Typo in t:htmlTag documentation
+    * [MYFACES-845] - quote in html link causes javascript error
+    * [MYFACES-846] - tomahawk.tld contains <p> <i> tags within description tag
+    * [MYFACES-847] - NPE w/ UpdateActionListener when @property is Serializable
+    * [MYFACES-848] - JsValueChangeListener has a JavaScript error if the index chnages on a datatable
+    * [MYFACES-849] - tomahawk HtmlSelectOneMenuTag has no setter corresponding to TLD declared attribute 'escape'
+    * [MYFACES-850] - Tomahawk HtmlCollapsabiblePanelTag and SelectOneCountryTag have no setter for "enableOnUserRole"
+    * [MYFACES-851] - Tomahawk HtmlCollapsiblePanelTag has no setter for "collapsed"
+    * [MYFACES-852] - Exception while using SelectManyListbox, SelectManyCheckbox or SelectOneRadio with a Converter.
+    * [MYFACES-853] - commandLink not working inside dataList
+    * [MYFACES-854] - Problem w/ InputSuggestAjax popup suggestion list
+    * [MYFACES-857] - Duplicate id in subview
+    * [MYFACES-860] - tomahawk.tld and myfaces_ext.tld is malformed errors in weblogic log
+    * [MYFACES-867] - myfaces examples support for JSP 1.2 / Servlet 2.3 containers
+    * [MYFACES-870] - IE6: NPE in JavaScript when using <t:calendarInput>
+    * [MYFACES-873] - InputSuggestAjax: False Encoding with German Umlauts
+    * [MYFACES-874] - popup not rendering over <h:inputText text. / popup in IE fubar.
+    * [MYFACES-875] - popupcalendar.js try clause error
+    * [MYFACES-878] - HtmlCalendarRenderer doesn't respect enclosed converted when encoding
+    * [MYFACES-879] - _SelectItemsUtil will not handle NULL value.
+    * [MYFACES-880] - recursive invocation of org.apache.myfaces.renderkit.html.ext.HtmlTextareaRenderer.isDisabled() - fix included
+    * [MYFACES-887] - "javax.servlet.ServletException: text name must not be null" when subtitle = null in DAY mode
+    * [MYFACES-889] - Spec compliance: managed-beans do not support List properties that are write-only
+    * [MYFACES-891] - Broken number converter
+    * [MYFACES-894] - MyFaces, Converter, Application Bean scope
+    * [MYFACES-900] - t:commandNavigation2 will dont render navigationMenuItems childs
+    * [MYFACES-901] - _SharedRendererUtils.java v 351865 breaks myfaces
+    * [MYFACES-902] - gets an ClassCastException on using forceId and forceIdIndex  in t:HtmlSelectOneRadio along with Myfaces and facelets
+    * [MYFACES-912] - 500 error w/ jscookMenu in simple.war
+    * [MYFACES-964] - inputTextHelp doesn't work with german Umlaute
+    * [MYFACES-967] - t:inputDate with popupCalendar=true broken in latest subversion checkout
+    * [MYFACES-978] - tree2 affected by changes to UIViewRoot
+    * [MYFACES-983] - Unnecessary check for UIForm component in ScheduleDetailedDayRenderer
+    * [MYFACES-1000] - File org/apache/myfaces/resource/standard-faces-config.xml no packed
+    * [MYFACES-1008] - security  bug of myfaces
+    * [MYFACES-1010] - Extended Data Table: Action Event delivered more than one time
+    * [MYFACES-1027] - State saving Race condition
+    * [MYFACES-1031] - test cases didnt reset the facesContext to null
+    * [MYFACES-1037] - ScheduleUtil.truncate does not truncate dates properly
+    * [MYFACES-1040] - Collapsible panel in datatable gets jammed
+    * [MYFACES-1042] - AddResource should use the current character encoding
+    * [MYFACES-1046] - h:selectOneRadio renders two closing tr tags per item
+    * [MYFACES-1047] - selectOne[Country/Language]@maxLength VB ignored
+    * [MYFACES-1066] - schedule detailed view sometimes renders entries that should be invisible
+    * [MYFACES-1074] - web-facesconfig_1_1.dtd not included in 1.1.2 nightly build.
+    * [MYFACES-1075] - NullPointerException after Session expiration
+    * [MYFACES-1076] - Links to schedule examples don't work
+    * [MYFACES-1079] - The page rendere a 'null' string at bottom of all pages.
+    * [MYFACES-1085] - DebugUtils do not print MethodBinding
+    * [MYFACES-1091] - Problem with validators and immediate
+    * [MYFACES-1094] - inputSuggestAjax: missing javascript file MyFaces.js when specifying attribute "javascriptLocation"
+    * [MYFACES-1259] - login page commandLink error -- default AutoScroll setting depends on Tomahawk
+    * [MYFACES-1272] - java.lang.NoClassDefFoundError on HtmlFocus component
+    * [MYFACES-1280] - EvaluationException during updateModel does not invalidate the component.
+    * [MYFACES-1281] - Unable to write and restore serialized views
+    * [MYFACES-1283] - JavaScript error on AccordionPanel
+
+** Improvement
+    * [MYFACES-164] - Server-side state should be held
+    * [MYFACES-238] - x:inputDate time format
+    * [MYFACES-473] - cannot use AddResource class to add resources of own components
+    * [MYFACES-645] - Extended class org.apache.myfaces.util.MessageUtils to pass also resourceBundles to get Messages
+    * [MYFACES-658] - UISelect*** only renders in encodeEnd(FacesContext, UIComponent)
+    * [MYFACES-720] - clean up top-level build.xml file
+    * [MYFACES-732] - ManagedProperty.getValue()
+    * [MYFACES-741] - Enhanced exception messages for UIComponentTagUtils
+    * [MYFACES-742] - Encryption for MyFaces
+    * [MYFACES-754] - Version within jar-names
+    * [MYFACES-756] - Server Side Tab Switching in panelTabbedPane not configurable
+    * [MYFACES-761] - Enhancement and Bugfixing of ReducedHTMLParser.
+    * [MYFACES-782] - Documentation for UIData
+    * [MYFACES-792] - Improve documentation for tomahawk dataTable
+    * [MYFACES-793] - Document outstanding issue with dataTable, commandSortHeader and input components
+    * [MYFACES-794] - AddResources javadoc enhancements
+    * [MYFACES-795] - Improve logging in class HtmlRenderKitImpl.java
+    * [MYFACES-799] - Minor tweak to AddResource to make writing unit tests easier
+    * [MYFACES-809] - Code reformat of ReducedHTMLParser class
+    * [MYFACES-810] - Javadoc for AddResource/ResourceHandler/ResourceLoader
+    * [MYFACES-818] - AddResource unit test
+    * [MYFACES-834] - Improve documentation for t:updateActionListener
+    * [MYFACES-835] - NavigationMenuItem javadoc
+    * [MYFACES-843] - Javadoc patch for UISaveState component
+    * [MYFACES-858] - Documentation on myFaces site has typo in code.
+    * [MYFACES-861] - Messages_pt_BR.properties update
+    * [MYFACES-862] - focus component
+    * [MYFACES-868] - dataList treatment inside panelGrid
+    * [MYFACES-899] - Added javax.faces.Messages_mt.properties
+    * [MYFACES-910] - Allow user to supply their own tree2 id scheme using new TreeWalker interface
+    * [MYFACES-911] - Allow user to supply their own tree2 id scheme using new TreeWalker interface
+    * [MYFACES-971] - Updated tag documentation for UI commands
+    * [MYFACES-1012] - better customisation features for schedule component
+    * [MYFACES-1022] - License Header for 63 Classes
+    * [MYFACES-1035] - Schedule month view mode, shown interval
+    * [MYFACES-1054] - Message localization for Polish (pl)
+    * [MYFACES-1072] - modify NewspaperTable columnClasses to be more useful
+    * [MYFACES-1111] - tld update: commandNavigation2 also needs disabled* Attributes
+    * [MYFACES-1112] - Move 3 classes to commons after release
+    * [MYFACES-1124] - Convert Tomahawak index.xml to index.apt
+    * [MYFACES-1128] - Bugfix for expandAll Attribute of PanelNavigationMenu + SelectOneRow enhancements
+    * [MYFACES-1129] - conversion of docs from xdoc to APT
+    * [MYFACES-1133] - Tying InputSuggestAjax to dojo
+    * [MYFACES-1134] - Adding tableSuggest feature to inputSuggestAjax
+    * [MYFACES-1135] - Adding new features to inputAjax component
+    * [MYFACES-1153] - PortletUtil should not be marked as @deprecated
+
+** New Feature
+    * [MYFACES-87] - x:updateActionListener inside x:navigationMenuItem
+    * [MYFACES-684] - Setting AccordionPanel style
+    * [MYFACES-707] - Define renderer method getChildren(UIComponent) instead of calling component.getChildren directly
+    * [MYFACES-976] - Apply patch to add ScheduleEntry level CSS style and class attributes
+    * [MYFACES-984] - Apply patch to allow variable day cell height
+    * [MYFACES-1064] - Patch for detail row in t:dataTable
+    * [MYFACES-1088] - Single Row Selection by Radio Button in datatable
+    * [MYFACES-1108] - Added new Attributes to HtmlPanelNavigationMenu, NavigationMenuItem and HtmlCommandLink
+    * [MYFACES-1205] - JSR-252 Issue #9: Clarified the behavior of PhaseListener implementations: must guarantee that if beforePhase() is called the afterPhase() must also be called.
+
+
+** Task
+    * [MYFACES-1077] - Some old files should be removed from the schedule component
+    * [MYFACES-1082] - Can't get focus to work
+
+** Test
+    * [MYFACES-664] - Cactus Test for HtmlSelectManyCheckbox rendering
+
+** Wish
+    * [MYFACES-673] - Allow Extensions Filter's facilities to be used by non-myfaces packages
+    * [MYFACES-1021] - Unclear licensing of myfaces-jsf-api.jar
+
