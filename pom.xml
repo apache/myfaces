@@ -40,11 +40,13 @@
     <module>impl</module>
   </modules>
 
-
+<!--
   <build>
     <pluginManagement>
       <plugins>
+-->      
         <!-- this version has already the sources classifier feature -->
+<!--
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-idea-plugin</artifactId>
@@ -53,5 +55,5 @@
       </plugins>
     </pluginManagement>
   </build>
-
+-->
 </project>
