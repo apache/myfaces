@@ -9,16 +9,16 @@
   <artifactId>myfaces-core-project</artifactId>
   <packaging>pom</packaging>
   <name>Core Project</name>
-  <version>1.1.2</version>
+  <version>1.1.2-SNAPSHOT</version>
   <url>http://myfaces.apache.org/projects</url>
   <issueManagement>
     <system>jira</system>
     <url>http://issues.apache.org/jira/secure/BrowseProject.jspa?id=10600</url>
   </issueManagement>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/tags/1_1_2</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/tags/1_1_2</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/tags/1_1_2</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/trunk</url>
   </scm>
   <modules>
     <module>api</module>

@@ -2,19 +2,19 @@
   <parent>
     <artifactId>myfaces-core-project</artifactId>
     <groupId>org.apache.myfaces.core</groupId>
-    <version>1.1.2</version>
+    <version>1.1.2-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.myfaces.core</groupId>
   <artifactId>myfaces-impl</artifactId>
   <name>Impl</name>
-  <version>1.1.2</version>
+  <version>1.1.2-SNAPSHOT</version>
   <description>This is the MyFaces Impl Subproject Description [INSERT MORE STUFF HERE]</description>
   <url>http://myfaces.apache.org</url>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/tags/1_1_2</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/tags/1_1_2</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/tags/1_1_2</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk/impl</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk/impl</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/trunk/impl</url>
   </scm>
   <build>
     <resources>
@@ -231,7 +231,7 @@
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-api</artifactId>
-      <version>1.1.2</version>
+      <version>1.1.2-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
