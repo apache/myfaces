@@ -282,6 +282,8 @@ public class UIInput
             {
                 _MessageUtils.addErrorMessage(context, this, ee);
             }
+            
+            setValid(false);
         }
         catch (RuntimeException e)
         {

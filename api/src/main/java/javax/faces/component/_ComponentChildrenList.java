@@ -50,20 +50,6 @@ class _ComponentChildrenList
     public Object set(int index, Object value)
     {
         checkValue(value);
-
-        UIComponent newChild = (UIComponent) value;
-
-        for (int i = 0; i < _list.size(); i++)
-        {
-            UIComponent component = (UIComponent) _list.get(i);
-            if(component.getId()!=null && component.getId().equals(newChild.getId()))
-            {
-                if(i!=index)
-                    throw new IllegalStateException(
-                        "Duplicate id : "+newChild.getId()+". Child could not be added.");
-            }
-        }
-        
         setNewParent((UIComponent)value);
         UIComponent child = (UIComponent) _list.set(index, value);
         if (child != null) child.setParent(null);
@@ -73,7 +59,6 @@ class _ComponentChildrenList
     public boolean add(Object value)
     {
         checkValue(value);
-        checkAddAllowed((UIComponent) value);
         setNewParent((UIComponent)value);
         return _list.add(value);
     }
@@ -81,19 +66,8 @@ class _ComponentChildrenList
     public void add(int index, Object value)
     {
         checkValue(value);
-        checkAddAllowed((UIComponent) value);
         setNewParent((UIComponent)value);
         _list.add(index, value);
-    }
-
-    private void checkAddAllowed(UIComponent newChild)
-    {
-        for (int i = 0; i < _list.size(); i++)
-        {
-            UIComponent component = (UIComponent) _list.get(i);
-            if(component.getId()!=null && component.getId().equals(newChild.getId()))
-                throw new IllegalStateException("Duplicate id : "+newChild.getId()+". Child could not be added.");
-        }
     }
 
     public Object remove(int index)
@@ -119,7 +93,5 @@ class _ComponentChildrenList
         if (value == null) throw new NullPointerException("value");
         if (!(value instanceof UIComponent)) throw new ClassCastException("value is not a UIComponent");
     }
-
-
 
 }

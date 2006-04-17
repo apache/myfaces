@@ -26,10 +26,10 @@
   <dependencies>
 
     <dependency>
-      <groupId>org.apache.myfaces.core</groupId>
+      <groupId>myfaces</groupId>
       <artifactId>myfaces-api</artifactId>
-      <version>${version}</version>
-      <scope>compile</scope>
+      <version>1.1.1</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
