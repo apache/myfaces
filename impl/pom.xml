@@ -96,13 +96,6 @@
     </dependency>
 
     <dependency>
-      <groupId>aspectj</groupId>
-      <artifactId>aspectjrt</artifactId>
-      <version>1.2.1</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.apache.struts.shale</groupId>
       <artifactId>shale-test</artifactId>
       <version>1.0.2</version>
