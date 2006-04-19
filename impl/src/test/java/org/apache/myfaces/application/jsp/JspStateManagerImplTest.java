@@ -18,20 +18,19 @@ package org.apache.myfaces.application.jsp;
 
 //import org.apache.myfaces.shared_impl.config.MyfacesConfig;
 
-import org.apache.shale.test.base.AbstractJsfTestCase;
-import org.apache.shale.test.mock.MockResponseWriter;
-import org.apache.myfaces.application.MyfacesStateManager;
-import junit.framework.TestSuite;
-import junit.framework.Test;
-
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.UIInput;
-import javax.faces.component.UIOutput;
-import javax.faces.validator.LengthValidator;
-import javax.faces.application.StateManager;
-import javax.faces.render.RenderKitFactory;
 import java.io.BufferedWriter;
 import java.io.CharArrayWriter;
+
+import javax.faces.application.StateManager;
+import javax.faces.component.UIOutput;
+import javax.faces.component.UIViewRoot;
+import javax.faces.render.RenderKitFactory;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
+import org.apache.shale.test.base.AbstractJsfTestCase;
+import org.apache.shale.test.mock.MockResponseWriter;
 
 public class JspStateManagerImplTest extends AbstractJsfTestCase {
 
