@@ -259,11 +259,11 @@ public class FacesConfigurator
     }
 
 
-    /**
+    /*
      * To make this easier AND to fix MYFACES-208 at the same time, this method is replaced by
      * {@link FacesConfigurator#feedClassloaderConfigurations}
      *
-     * deprecated {@link FacesConfigurator#feedClassloaderConfigurations} replaces this one
+     * @deprecated {@link FacesConfigurator#feedClassloaderConfigurations} replaces this one
 
     private void feedJarFileConfigurations()
     {
