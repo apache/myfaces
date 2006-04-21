@@ -307,6 +307,7 @@ public class ServletFacesContextImpl
         _responseStream       = null;
         _responseWriter       = null;
         _viewRoot             = null;
+        _maximumSeverity      = null;
 
         _released             = true;
         FacesContext.setCurrentInstance(null);
