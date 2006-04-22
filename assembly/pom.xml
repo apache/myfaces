@@ -99,7 +99,7 @@
       <plugin>
         <groupId>org.apache.myfaces.maven</groupId>
         <artifactId>wagon-maven-plugin</artifactId>
-        <version>1.0.3-SNAPSHOT</version>
+        <version>1.0.2-SNAPSHOT</version>
         <configuration>
           <id>myfaces-nightly-builds</id>
           <url>scpexe://minotaur.apache.org/www/cvs.apache.org/builds/myfaces/nightly</url>
