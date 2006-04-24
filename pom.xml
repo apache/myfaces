@@ -26,7 +26,12 @@
   </modules>
   <repositories>
     <repository>
-      <snapshots />
+        <releases>
+          <enabled>false</enabled>
+        </releases>
+        <snapshots>
+          <enabled>true</enabled>
+        </snapshots>
       <id>apache-maven-snapshots</id>
       <url>http://cvs.apache.org/maven-snapshot-repository</url>
     </repository>
