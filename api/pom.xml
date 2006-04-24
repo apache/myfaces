@@ -12,9 +12,9 @@
   <description>The MyFaces API Subproject provides a full set of the API interfaces and classes
     defined in JSR-127 (see also http://www.jcp.org/en/jsr/detail?id=127).</description>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/tags/1_1_3</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/tags/1_1_3</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/tags/1_1_3</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk/api</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk/api</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/trunk/api</url>
   </scm>
   <profiles>
     <profile>
