@@ -2,7 +2,7 @@
   <parent>
     <artifactId>myfaces-master</artifactId>
     <groupId>org.apache.myfaces.maven</groupId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.myfaces.core</groupId>
@@ -26,12 +26,7 @@
   </modules>
   <repositories>
     <repository>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
+      <snapshots />
       <id>apache-maven-snapshots</id>
       <url>http://cvs.apache.org/maven-snapshot-repository</url>
     </repository>
