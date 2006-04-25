@@ -538,7 +538,7 @@
             value then a ValueChangeEvent is queued. When the ValueChangeEvent
             is processed (at end of the validate phase for non-immediate components,
             or at end of the apply-request-values phase for immediate components)
-            the object's processValue method is invoked.
+            the object's processValueChange method is invoked.
             <p>
             Unless otherwise specified, all attributes accept static values
             or EL expressions.
