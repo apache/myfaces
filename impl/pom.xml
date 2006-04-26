@@ -12,9 +12,9 @@
   <description>This is the MyFaces Impl Subproject Description [INSERT MORE STUFF HERE]</description>
   <url>http://myfaces.apache.org</url>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/tags/1_1_3</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/tags/1_1_3</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/tags/1_1_3</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk/impl</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk/impl</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/trunk/impl</url>
   </scm>
   <build>
     <resources>

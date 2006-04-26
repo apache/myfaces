@@ -16,9 +16,9 @@
     <url>http://issues.apache.org/jira/secure/BrowseProject.jspa?id=10600</url>
   </issueManagement>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/tags/1_1_3</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/tags/1_1_3</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/tags/1_1_3</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/trunk</url>
   </scm>
   <modules>
     <module>api</module>
