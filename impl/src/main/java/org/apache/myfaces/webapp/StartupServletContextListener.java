@@ -27,7 +27,10 @@ import javax.servlet.ServletContextListener;
 import org.apache.myfaces.config.FacesConfigValidator;
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.context.servlet.ServletExternalContextImpl;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.shared_impl.util.StateUtils;
+import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
+import org.apache.myfaces.shared_impl.util.serial.SerialFactory;
 import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -98,9 +101,47 @@ public class StartupServletContextListener
         if(servletContext.getInitParameter(StateUtils.INIT_SECRET) != null)
             StateUtils.initSecret(servletContext);
         
+        handleSerialFactory(servletContext);
     }
 
-
+    private static void handleSerialFactory(ServletContext servletContext){
+        
+        String serialProvider = servletContext.getInitParameter(StateUtils.SERIAL_FACTORY);
+        SerialFactory serialFactory = null;
+        
+        if(serialProvider == null)
+        {
+            serialFactory = new DefaultSerialFactory();
+        }
+        else
+        {
+            try
+            {
+                serialFactory = (SerialFactory) ClassUtils.newInstance(serialProvider);
+                
+            }catch(ClassCastException e){
+                log.error("Make sure '" + serialProvider + 
+                        "' implements the correct interface", e);
+            }
+            catch(Exception e){
+                log.error(e);
+            }
+            finally
+            {
+                if(serialFactory == null)
+                {
+                    serialFactory = new DefaultSerialFactory();
+                    log.error("Using default serialization provider");
+                }
+            }
+            
+        }
+        
+        log.info("Serialization provider : " + serialFactory.getClass());
+        servletContext.setAttribute(StateUtils.SERIAL_FACTORY, serialFactory);
+        
+    }
+    
     public void contextDestroyed(ServletContextEvent e)
     {
         FactoryFinder.releaseFactories();
