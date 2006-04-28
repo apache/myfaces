@@ -708,6 +708,8 @@ public class JspStateManagerImpl
         {
             Object key = new SerializedViewKey(context);
             _serializedViews.put(key, state);
+            
+            while (_keys.remove(key));
             _keys.add(key);
 
             int views = getNumberOfViewsInSession(context);
