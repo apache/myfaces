@@ -84,9 +84,10 @@ public class FacesConfigValidator
     
     private static void validateNavRule(NavigationRule navRule, List list, String ctxPath){
         
-        String filePath = ctxPath + navRule.getFromViewId();
+        String fromId = navRule.getFromViewId();
+        String filePath = ctxPath + fromId;
         
-        if(! new File(filePath).exists())
+        if(fromId != null && ! "*".equals(fromId) && ! new File(filePath).exists())
             list.add("File for navigation 'from id' does not exist " + filePath);
         
         Collection cases = navRule.getNavigationCases();
