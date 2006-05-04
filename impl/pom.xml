@@ -119,7 +119,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>xslt-maven-plugin</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0</version>
         <configuration>
           <xslFile>src/main/tld/misc/resolve_entities.xsl</xslFile>
           <srcIncludes>**/*.tld</srcIncludes>
@@ -222,7 +222,7 @@
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>xslt-maven-plugin</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
             <executions>
               <execution>
                 <id>generate-tld-for-tlddoc</id>
@@ -273,7 +273,7 @@
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>xslt-maven-plugin</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
             <executions>
               <execution>
                 <id>generate-tld-for-tlddoc</id>
