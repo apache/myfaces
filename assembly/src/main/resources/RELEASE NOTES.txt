@@ -1,0 +1,12 @@
+
+Release Notes - MyFaces Core - Version 1.1.3
+
+** Bug
+    * [MYFACES-1092] - HtmlTableRendererBase.encodeInnerHtml() fails when data model returns -1 for getRowCount()
+    * [MYFACES-1270] - Hot deployment in exploded mode is broken due to FacesConfigurator
+    * [MYFACES-1289] - selectBooleanCheckbox does not call endElement("input")
+    * [MYFACES-1290] - ServletFacesContextImpl.release() doesn't reset
+    * [MYFACES-1299] - <f:facet name="header"/> doesn't allow multiple <h:outputText> inside
+
+** Improvement
+    * [MYFACES-1276] - Add new methods to HtmlFormBaseRenderer to ease integration support with AjaxAnywhere
