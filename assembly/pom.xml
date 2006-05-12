@@ -81,7 +81,26 @@
                <outputDirectory>${project.build.directory}/tlddoc</outputDirectory>
              </configuration>
            </execution>
+          <execution>
+            <id>copy-source</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
 
+                <artifactItem>
+                  <groupId>org.apache.myfaces.core</groupId>
+                  <artifactId>myfaces-impl</artifactId>
+                  <version>${version}</version>
+                  <classifier>sources</classifier>
+                </artifactItem>
+
+               </artifactItems>
+               <outputDirectory>${project.build.directory}/src</outputDirectory>
+             </configuration>
+           </execution>
         </executions>
       </plugin>
 
