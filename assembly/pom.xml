@@ -138,6 +138,13 @@
       <version>${version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.myfaces.core</groupId>
+      <artifactId>myfaces-api</artifactId>
+      <version>${version}</version>
+    </dependency>
+
+
   </dependencies>
 
 </project>
