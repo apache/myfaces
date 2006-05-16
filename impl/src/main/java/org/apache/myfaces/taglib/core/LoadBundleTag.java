@@ -143,7 +143,11 @@ public class LoadBundleTag
 
         public boolean containsKey(Object key)
         {
-            return _bundle.getObject(key.toString()) != null;
+        	try {
+                return _bundle.getObject(key.toString()) != null;
+        	} catch (MissingResourceException e) {
+        		return false;
+        	}
         }
 
 
