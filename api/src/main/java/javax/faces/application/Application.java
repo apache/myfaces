@@ -15,7 +15,15 @@
  */
 package javax.faces.application;
 
+import java.util.ResourceBundle;
+import javax.el.ELContextListener;
+import javax.el.ELException;
+import javax.el.ELResolver;
+import javax.el.ExpressionFactory;
+import javax.el.ValueExpression;
 import javax.faces.FacesException;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 import javax.faces.el.ReferenceSyntaxException;
 import java.util.Collection;
 import java.util.Iterator;
@@ -30,13 +38,62 @@ import java.util.Locale;
  * In particular, this provides a factory for UIComponent objects.
  * It also provides convenience methods for creating ValueBinding objects.
  *
- * See Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * See Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  * 
  * @author Manfred Geiler (latest modification by $Author$)
+ * @author Stan Silvert
  * @version $Revision$ $Date$
  */
 public abstract class Application
 {
+    
+    // The following concrete methods were added for JSF 1.2.  They supply default 
+    // implementations that throw UnsupportedOperationException.  
+    // This allows old Application implementations to still work.
+    public void addELResolver(ELResolver resolver) {
+        throw new UnsupportedOperationException();
+    }
+    
+    public ELResolver getELResolver() {
+        throw new UnsupportedOperationException();
+    }
+    
+    public ResourceBundle getResourceBundle(FacesContext ctx, String name) 
+            throws FacesException, NullPointerException {
+        throw new UnsupportedOperationException();
+    }
+    
+    public UIComponent createComponent(ValueExpression componentExpression,
+                                       FacesContext facesContext,
+                                       String componentType) 
+            throws FacesException, NullPointerException {
+        throw new UnsupportedOperationException();
+    }
+
+    public ExpressionFactory getExpressionFactory() {
+        throw new UnsupportedOperationException();
+    }
+    
+    public void addELContextListener(ELContextListener listener) {
+        throw new UnsupportedOperationException();
+    }
+    
+    public void removeELContextListener(ELContextListener listener) {
+        throw new UnsupportedOperationException();
+    }
+    
+    public ELContextListener[] getELContextListeners() {
+        throw new UnsupportedOperationException();
+    }
+    
+    public Object evaluateExpressionGet(FacesContext context,
+                                        String expression,
+                                        Class expectedType)
+             throws ELException {
+        throw new UnsupportedOperationException();
+    }
+    
+    // -------- abstract methods -------------------
     public abstract javax.faces.event.ActionListener getActionListener();
 
     public abstract void setActionListener(javax.faces.event.ActionListener listener);
@@ -65,18 +122,28 @@ public abstract class Application
      * Get the object used by the VariableResolver to read and write named properties
      * on java beans, Arrays, Lists and Maps. This object is used by the ValueBinding
      * implementation, and during the process of configuring "managed bean" properties.
+     *
+     * @deprecated
      */
     public abstract javax.faces.el.PropertyResolver getPropertyResolver();
 
+    /**
+     * @deprecated
+     */
     public abstract void setPropertyResolver(javax.faces.el.PropertyResolver resolver);
 
     /**
      * Get the object used to resolve expressions of form "#{...}".
+     *
+     * @deprecated
      */
     public abstract javax.faces.el.VariableResolver getVariableResolver();
 
+    /**
+     * @deprecated
+     */
     public abstract void setVariableResolver(javax.faces.el.VariableResolver resolver);
-
+    
     public abstract javax.faces.application.ViewHandler getViewHandler();
 
     public abstract void setViewHandler(javax.faces.application.ViewHandler handler);
@@ -122,13 +189,15 @@ public abstract class Application
      * <p>
      * Otherwise a new UIComponent instance is created using the specified componentType,
      * and the new object stored via the provided value-binding before being returned.
+     *
+     * @deprecated
      */
     public abstract javax.faces.component.UIComponent createComponent(
             javax.faces.el.ValueBinding componentBinding,
             javax.faces.context.FacesContext context,
             String componentType)
             throws FacesException;
-
+    
     public abstract Iterator getComponentTypes();
 
     public abstract void addConverter(String converterId,
@@ -153,6 +222,8 @@ public abstract class Application
      * <p>
      * This is used to invoke ActionListener method, and ValueChangeListener
      * methods.
+     *
+     * @deprecated
      */
     public abstract javax.faces.el.MethodBinding createMethodBinding(
             String ref, Class[] params)
@@ -178,6 +249,8 @@ public abstract class Application
      * <p>
      * This is used to invoke ActionListener method, and ValueChangeListener
      * methods.
+     *
+     * @deprecated
      */
     public abstract javax.faces.el.ValueBinding createValueBinding(String ref)
             throws ReferenceSyntaxException;

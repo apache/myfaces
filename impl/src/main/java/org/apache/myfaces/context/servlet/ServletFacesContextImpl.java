@@ -15,6 +15,10 @@
  */
 package org.apache.myfaces.context.servlet;
 
+import javax.el.ELContext;
+import javax.el.ELContextEvent;
+import javax.el.ELContextListener;
+import org.apache.myfaces.el.unified.FacesELContext;
 import org.apache.myfaces.shared_impl.util.NullIterator;
 
 import javax.faces.FactoryFinder;
@@ -61,6 +65,7 @@ public class ServletFacesContextImpl
     private boolean                     _responseComplete = false;
     private RenderKitFactory            _renderKitFactory;
     private boolean                     _released = false;
+    private ELContext                   _elContext;
 
     //~ Constructors -------------------------------------------------------------------------------
 
@@ -307,7 +312,6 @@ public class ServletFacesContextImpl
         _responseStream       = null;
         _responseWriter       = null;
         _viewRoot             = null;
-        _maximumSeverity      = null;
 
         _released             = true;
         FacesContext.setCurrentInstance(null);
@@ -336,4 +340,19 @@ public class ServletFacesContextImpl
         _externalContext = extContext;
         FacesContext.setCurrentInstance(this); //TODO: figure out if I really need to do this
     }
+
+    public ELContext getELContext() {
+        if (_elContext != null) return _elContext;
+        
+        
+        _elContext = new FacesELContext(getApplication().getELResolver(), this);
+        
+        ELContextEvent event = new ELContextEvent(_elContext);
+        for (ELContextListener listener : getApplication().getELContextListeners()) {
+            listener.contextCreated(event);
+        }
+        
+        return _elContext;
+    }
+    
 }

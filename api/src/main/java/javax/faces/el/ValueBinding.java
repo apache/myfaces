@@ -22,25 +22,40 @@ import javax.faces.context.FacesContext;
  *
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
+ * @deprecated
  */
 public abstract class ValueBinding
 {
     private String _expressionString = null;
 
+    /**
+     * @deprecated
+     */
     public String getExpressionString()
     {
         return _expressionString;
     }
 
+    /**
+     * @deprecated
+     */
     abstract public Class getType(FacesContext facesContext)
             throws EvaluationException, PropertyNotFoundException;
 
+    /**
+     * @deprecated
+     */
     public abstract Object getValue(FacesContext facesContext)
             throws EvaluationException, PropertyNotFoundException;
-
+    /**
+     * @deprecated
+     */
     public abstract boolean isReadOnly(FacesContext facesContext)
             throws EvaluationException, PropertyNotFoundException;
 
+    /**
+     * @deprecated
+     */
     public abstract void setValue(FacesContext facesContext, Object value)
             throws EvaluationException, PropertyNotFoundException;
 }

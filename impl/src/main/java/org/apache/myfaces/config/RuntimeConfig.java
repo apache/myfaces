@@ -58,16 +58,9 @@ public class RuntimeConfig
      */
     public Collection getNavigationRules()
     {
-        return _navigationRules == null ?
-                null : Collections.unmodifiableCollection(_navigationRules);
+        return Collections.unmodifiableCollection(_navigationRules);
     }
 
-    public Map getManagedBeans()
-    {
-        return _managedBeans == null ?
-                null : Collections.unmodifiableMap(_managedBeans);
-    }
-    
     public void addNavigationRule(NavigationRule navigationRule)
     {
         _navigationRules.add(navigationRule);
@@ -92,6 +85,10 @@ public class RuntimeConfig
     public ManagedBean getManagedBean(String name)
     {
         return (ManagedBean)_managedBeans.get(name);
+    }
+    
+    public Map<String, ManagedBean> getManagedBeans() {
+        return Collections.unmodifiableMap(_managedBeans);
     }
 
     public void addManagedBean(String name, ManagedBean managedBean)

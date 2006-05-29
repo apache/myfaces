@@ -15,6 +15,7 @@
  */
 package javax.faces.component;
 
+import javax.el.ValueExpression;
 import javax.faces.event.AbortProcessingException;
 
 /**
@@ -32,11 +33,21 @@ public abstract class UIComponent
 
     public abstract java.util.Map getAttributes();
 
+    /**
+     * @deprecated Replaced by getValueExpression
+     */
     public abstract javax.faces.el.ValueBinding getValueBinding(java.lang.String name);
 
+    public abstract ValueExpression getValueExpression(String name);
+    
+    /**
+     * @deprecated Replaced by setValueExpression
+     */
     public abstract void setValueBinding(java.lang.String name,
                                          javax.faces.el.ValueBinding binding);
 
+    public abstract void setValueExpression(String name, ValueExpression binding);
+    
     public abstract java.lang.String getClientId(javax.faces.context.FacesContext context);
 
     public abstract java.lang.String getFamily();

@@ -44,6 +44,12 @@ public class HtmlResponseStateManager
     private static final String BASE64_STATE_PARAM = "jsf_state_64";
     private static final String ZIP_CHARSET = "ISO-8859-1";
 
+    public void writeState(FacesContext facesContext, Object state) 
+            throws IOException {
+        //TODO: implement
+       throw new UnsupportedOperationException("Not Implemented yet");
+    }
+    
     public void writeState(FacesContext facescontext,
                            StateManager.SerializedView serializedview) throws IOException
     {

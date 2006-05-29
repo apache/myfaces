@@ -181,7 +181,9 @@ public class MyFacesGenericPortlet extends GenericPortlet
                 ExternalContext externalContext = new PortletExternalContextImpl(portletContext, null, null);
 
                 //And configure everything
-                new FacesConfigurator(externalContext).configure();
+                
+                // TODO: FIX PORTLET STUFF FOR JSF 1.2
+                // new FacesConfigurator(externalContext).configure();
 
                 // parse web.xml - not sure if this is needed for portlet
                 WebXml.init(externalContext);

@@ -212,6 +212,11 @@ public class ServletExternalContextImpl
         return _servletResponse;
     }
 
+    public String getResponseContentType()
+    {
+        return _servletResponse.getContentType();
+    }
+    
     public Map getApplicationMap()
     {
         if (_applicationMap == null)
@@ -336,6 +341,10 @@ public class ServletExternalContextImpl
         return _requestPathInfo;
     }
 
+    public String getRequestContentType() {
+        return _servletRequest.getContentType();
+    }
+    
     public String getRequestContextPath()
     {
         if (!_isHttpServletRequest)

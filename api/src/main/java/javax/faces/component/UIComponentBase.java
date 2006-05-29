@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import javax.el.ValueExpression;
+import javax.faces.FacesException;
 
 import javax.faces.FactoryFinder;
 import javax.faces.context.FacesContext;
@@ -36,6 +38,8 @@ import javax.faces.render.Renderer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.el.convert.ValueBindingToValueExpression;
+import org.apache.myfaces.el.convert.ValueExpressionToValueBinding;
 
 
 /**
@@ -59,7 +63,7 @@ public abstract class UIComponentBase
     private static Log log = LogFactory.getLog(UIComponentBase.class);
 
     private _ComponentAttributesMap _attributesMap = null;
-    private Map _valueBindingMap = null;
+    private Map<String, ValueExpression> _valueExpressionMap = null;
     private List _childrenList = null;
     private Map _facetMap = null;
     private List _facesListeners = null;
@@ -135,33 +139,69 @@ public abstract class UIComponentBase
      * though there is commonly a property (setter/getter methods) 
      * of the same name defined on the component itself which
      * evaluates the value-binding when called.
+     *
+     * @deprecated Replaced by getValueExpression
      */
     public ValueBinding getValueBinding(String name)
     {
-        if (name == null) throw new NullPointerException("name");
-        if (_valueBindingMap == null)
-        {
-            return null;
+        if (name == null) throw new NullPointerException("name can not be null");
+        
+        if (_valueExpressionMap == null) {
+            _valueExpressionMap = new HashMap<String, ValueExpression>();
         }
-        else
-        {
-            return (ValueBinding)_valueBindingMap.get(name);
+        
+        ValueExpression expression = _valueExpressionMap.get(name);
+        if (expression == null) return null;
+        
+        if (expression instanceof ValueBindingToValueExpression) {
+            ValueBindingToValueExpression bindingToExpression = (ValueBindingToValueExpression)expression;
+            return bindingToExpression.getValueBinding();
         }
+        
+        return new ValueExpressionToValueBinding(expression);
+    }
+    
+    public ValueExpression getValueExpression(String name) {
+        if (name == null) throw new NullPointerException("name can not be null");
+        
+        if (_valueExpressionMap == null) return null;
+        
+        return _valueExpressionMap.get(name);
     }
 
     /**
      * Put the provided value-binding into a map of value-bindings
      * associated with this component.
+     *
+     * @deprecated Replaced by setValueExpression
      */
     public void setValueBinding(String name,
                                 ValueBinding binding)
     {
+        setValueExpression(name, new ValueBindingToValueExpression(binding));
+    }
+    
+    public void setValueExpression(String name, ValueExpression binding) {
         if (name == null) throw new NullPointerException("name");
-        if (_valueBindingMap == null)
-        {
-            _valueBindingMap = new HashMap();
+        if (name.equals("id")) throw new IllegalArgumentException("Can't set a ValueExpression for the 'id' property.");
+        if (name.equals("parent")) throw new IllegalArgumentException("Can't set a ValueExpression for the 'parent' property.");
+        
+        if (binding.isLiteralText()) {
+            try {
+                Object value = binding.getValue(getFacesContext().getELContext());
+                this.getAttributes().put(name, value);
+                return;
+            } catch (Exception e) {
+                throw new FacesException(e);
+            }
+            
         }
-        _valueBindingMap.put(name, binding);
+        
+        if (_valueExpressionMap == null) {
+            _valueExpressionMap = new HashMap<String, ValueExpression>();
+        }
+        
+        _valueExpressionMap.put(name, binding);
     }
 
     /**
@@ -231,6 +271,7 @@ public abstract class UIComponentBase
 
         if (idWasNull)
         {
+            System.out.println("Component: " + getPathToComponent(this));
             context.getExternalContext().log("WARNING: Component " + _clientId + " just got an automatic id, because there was no id assigned yet. " +
                                              "If this component was created dynamically (i.e. not by a JSP tag) you should assign it an " +
                                              "explicit static id or assign it the id you get from the createUniqueId from the current UIViewRoot " +
@@ -927,7 +968,7 @@ public abstract class UIComponentBase
         values[3] = _clientId;
         values[4] = saveAttributesMap();
         values[5] = saveAttachedState(context, _facesListeners);
-        values[6] = saveValueBindingMap(context);
+        values[6] = saveValueExpressionMap(context);
         return values;
     }
 
@@ -948,7 +989,7 @@ public abstract class UIComponentBase
         _clientId = (String)values[3];
         restoreAttributesMap(values[4]);
         _facesListeners = (List)restoreAttachedState(context, values[5]);
-        restoreValueBindingMap(context, values[6]);
+        restoreValueExpressionMap(context, values[6]);
     }
 
 
@@ -976,13 +1017,13 @@ public abstract class UIComponentBase
         }
     }
 
-    private Object saveValueBindingMap(FacesContext context)
+    private Object saveValueExpressionMap(FacesContext context)
     {
-        if (_valueBindingMap != null)
+        if (_valueExpressionMap != null)
         {
-            int initCapacity = (_valueBindingMap.size() * 4 + 3) / 3;
+            int initCapacity = (_valueExpressionMap.size() * 4 + 3) / 3;
             HashMap stateMap = new HashMap(initCapacity);
-            for (Iterator it = _valueBindingMap.entrySet().iterator(); it.hasNext(); )
+            for (Iterator it = _valueExpressionMap.entrySet().iterator(); it.hasNext(); )
             {
                 Map.Entry entry = (Map.Entry)it.next();
                 stateMap.put(entry.getKey(),
@@ -996,23 +1037,23 @@ public abstract class UIComponentBase
         }
     }
 
-    private void restoreValueBindingMap(FacesContext context, Object stateObj)
+    private void restoreValueExpressionMap(FacesContext context, Object stateObj)
     {
         if (stateObj != null)
         {
             Map stateMap = (Map)stateObj;
             int initCapacity = (stateMap.size() * 4 + 3) / 3;
-            _valueBindingMap = new HashMap(initCapacity);
+            _valueExpressionMap = new HashMap<String, ValueExpression>(initCapacity);
             for (Iterator it = stateMap.entrySet().iterator(); it.hasNext(); )
             {
                 Map.Entry entry = (Map.Entry)it.next();
-                _valueBindingMap.put(entry.getKey(),
-                                     restoreAttachedState(context, entry.getValue()));
+                _valueExpressionMap.put((String)entry.getKey(),
+                                     (ValueExpression)restoreAttachedState(context, entry.getValue()));
             }
         }
         else
         {
-            _valueBindingMap = null;
+            _valueExpressionMap = null;
         }
     }
 

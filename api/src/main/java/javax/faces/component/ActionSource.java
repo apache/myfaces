@@ -23,10 +23,19 @@ package javax.faces.component;
  */
 public interface ActionSource
 {
+    /**
+     * @deprecated Replaced by ActionSource2.getActionExpression
+     */
     public javax.faces.el.MethodBinding getAction();
 
+    /**
+     * @deprecated Replaced by ActionSource2.setActionExpression
+     */
     public void setAction(javax.faces.el.MethodBinding action);
 
+    /**
+     * @deprecated Replaced by getActionListeners
+     */
     public javax.faces.el.MethodBinding getActionListener();
 
     public void setActionListener(javax.faces.el.MethodBinding actionListener);

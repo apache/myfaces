@@ -15,11 +15,15 @@
  */
 package javax.faces.component;
 
+import javax.el.MethodExpression;
 import javax.faces.context.FacesContext;
 import javax.faces.el.EvaluationException;
 import javax.faces.el.MethodBinding;
 import javax.faces.el.ValueBinding;
 import javax.faces.event.*;
+import org.apache.myfaces.el.convert.MethodBindingToActionListener;
+import org.apache.myfaces.el.convert.MethodBindingToMethodExpression;
+import org.apache.myfaces.el.convert.MethodExpressionToMethodBinding;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
@@ -29,29 +33,54 @@ import javax.faces.event.*;
  */
 public class UICommand
         extends UIComponentBase
-        implements ActionSource
+        implements ActionSource2
 {
-    private MethodBinding _action = null;
-    private MethodBinding _actionListener = null;
+    private MethodBindingToActionListener _actionListener = null;
+    private MethodExpression _action = null;
 
+    /**
+     * @deprecated Use setActionExpression instead.
+     */
     public void setAction(MethodBinding action)
     {
-        _action = action;
+        setActionExpression(new MethodBindingToMethodExpression(action));
     }
 
+    /**
+     * @deprecated Use getActionExpression() instead.
+     */
     public MethodBinding getAction()
     {
-        return _action;
+        MethodExpression actionExpression = getActionExpression();
+        if (actionExpression instanceof MethodBindingToMethodExpression) {
+            return ((MethodBindingToMethodExpression)actionExpression).getMethodBinding();
+        }
+        
+        return new MethodExpressionToMethodBinding(actionExpression);
     }
 
+    /**
+     * @deprecated Use addActionListener() instead.
+     */
     public void setActionListener(MethodBinding actionListener)
     {
-        _actionListener = actionListener;
+        // remove previous listener
+        if (_actionListener != null) {
+            removeActionListener(_actionListener);
+        }
+        
+        _actionListener = new MethodBindingToActionListener(actionListener);
+        addActionListener(_actionListener);
     }
 
+    /**
+     * @deprecated Use getActionListeners() instead.
+     */
     public MethodBinding getActionListener()
     {
-        return _actionListener;
+        if (_actionListener == null) return null;
+        
+        return _actionListener.getMethodBinding();
     }
 
     public void addActionListener(ActionListener listener)
@@ -68,6 +97,16 @@ public class UICommand
     {
         removeFacesListener(listener);
     }
+    
+// ----- ActionSource2 methods ----
+    public void setActionExpression(MethodExpression action) {
+        _action = action;
+    }
+
+    public MethodExpression getActionExpression() {
+        return _action;
+    }
+// ---------------------------------
 
     public void broadcast(FacesEvent event)
             throws AbortProcessingException
@@ -78,25 +117,9 @@ public class UICommand
         {
             FacesContext context = getFacesContext();
 
-            MethodBinding actionListenerBinding = getActionListener();
-            if (actionListenerBinding != null)
+            for (ActionListener listener : getActionListeners())
             {
-                try
-                {
-                    actionListenerBinding.invoke(context, new Object[] {event});
-                }
-                catch (EvaluationException e)
-                {
-                    Throwable cause = e.getCause();
-                    if (cause != null && cause instanceof AbortProcessingException)
-                    {
-                        throw (AbortProcessingException)cause;
-                    }
-                    else
-                    {
-                        throw e;
-                    }
-                }
+                listener.processAction((ActionEvent)event);
             }
 
             ActionListener defaultActionListener
@@ -171,7 +194,6 @@ public class UICommand
     }
 
 
-
     public Object saveState(FacesContext context)
     {
         Object values[] = new Object[5];
@@ -187,10 +209,11 @@ public class UICommand
     {
         Object values[] = (Object[])state;
         super.restoreState(context, values[0]);
-        _action = (MethodBinding)restoreAttachedState(context, values[1]);
-        _actionListener = (MethodBinding)restoreAttachedState(context, values[2]);
+        _action = (MethodExpression)restoreAttachedState(context, values[1]); // changed this line - TODO: fix src generator
+        _actionListener = (MethodBindingToActionListener)restoreAttachedState(context, values[2]); // changed this line - TODO: fix src generator
         _immediate = (Boolean)values[3];
         _value = (Object)values[4];
     }
     //------------------ GENERATED CODE END ---------------------------------------
+
 }

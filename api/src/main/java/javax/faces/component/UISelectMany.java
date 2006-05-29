@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import javax.el.ValueExpression;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component._SelectItemsUtil._ValueConverter;
@@ -50,6 +51,9 @@ public class UISelectMany extends UIInput
         setValue(selectedValues);
     }
 
+    /**
+     * @deprecated Use getValueExpression instead
+     */
     public ValueBinding getValueBinding(String name)
     {
         if (name == null)
@@ -64,6 +68,9 @@ public class UISelectMany extends UIInput
         }
     }
 
+    /**
+     * @deprecated Use setValueExpression instead
+     */
     public void setValueBinding(String name, ValueBinding binding)
     {
         if (name == null)
@@ -75,6 +82,34 @@ public class UISelectMany extends UIInput
         else
         {
             super.setValueBinding(name, binding);
+        }
+    }
+    
+    public ValueExpression getValueExpression(String name)
+    {
+        if (name == null)
+            throw new NullPointerException("name");
+        if (name.equals("selectedValues"))
+        {
+            return super.getValueExpression("value");
+        }
+        else
+        {
+            return super.getValueExpression(name);
+        }
+    }
+
+    public void setValueExpression(String name, ValueExpression binding)
+    {
+        if (name == null)
+            throw new NullPointerException("name");
+        if (name.equals("selectedValues"))
+        {
+            super.setValueExpression("value", binding);
+        }
+        else
+        {
+            super.setValueExpression(name, binding);
         }
     }
 

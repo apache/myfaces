@@ -241,6 +241,10 @@ public class PortletExternalContextImpl extends ExternalContext implements Relea
         return _portletRequest;
     }
 
+    public String getRequestContentType() {
+        return null;
+    }
+    
     public String getRequestContextPath() {
         return _portletRequest.getContextPath();
     }
@@ -331,6 +335,10 @@ public class PortletExternalContextImpl extends ExternalContext implements Relea
         return _portletResponse;
     }
 
+    public String getResponseContentType() {
+        return null;
+    }
+    
     public Object getSession(boolean create) {
         return _portletRequest.getPortletSession(create);
     }

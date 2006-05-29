@@ -38,6 +38,6 @@
     </field>
     <field generateProperty="false" >
         <name>valueChangeListener</name>
-        <type>javax.faces.el.MethodBinding</type>
+        <type>org.apache.myfaces.el.convert.MethodBindingToValueChangeListener</type>
     </field>
 </component>

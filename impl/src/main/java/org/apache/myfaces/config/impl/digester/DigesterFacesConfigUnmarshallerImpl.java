@@ -100,6 +100,7 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
 
         digester.addObjectCreate("faces-config/managed-bean", ManagedBean.class);
         digester.addSetNext("faces-config/managed-bean", "addManagedBean");
+        digester.addCallMethod("faces-config/managed-bean/description", "setDescription", 0);
         digester.addCallMethod("faces-config/managed-bean/managed-bean-name", "setName", 0);
         digester.addCallMethod("faces-config/managed-bean/managed-bean-class", "setBeanClass", 0);
         digester.addCallMethod("faces-config/managed-bean/managed-bean-scope", "setScope", 0);

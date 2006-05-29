@@ -20,6 +20,7 @@ import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
+import javax.el.MethodExpression;
 import javax.faces.context.ExternalContext;
 
 import javax.faces.context.FacesContext;
@@ -51,6 +52,8 @@ public class UIViewRoot
     private String _viewId = null;
     private Locale _locale = null;
     private List _events = null;
+    private MethodExpression _afterPhaseListener = null;
+    private MethodExpression _beforePhaseListener = null;
 
     public String getViewId()
     {
@@ -62,6 +65,25 @@ public class UIViewRoot
 //      The spec does not require to check this, so we don't check it      
 //        if (viewId == null) throw new NullPointerException("viewId");
         _viewId = viewId;
+    }
+    
+    public void setAfterPhaseListener(MethodExpression methodExpression) 
+    {
+        _afterPhaseListener = methodExpression;
+    }
+    
+    public MethodExpression getAfterPhaseListener() {
+        return _afterPhaseListener;
+    }
+    
+    public void setBeforePhaseListener(MethodExpression methodExpression)
+    {
+        _beforePhaseListener = methodExpression;
+    }
+    
+    public MethodExpression getBeforePhaseListener() 
+    {
+        return _beforePhaseListener;
     }
 
     public void queueEvent(FacesEvent event)
@@ -296,12 +318,14 @@ public class UIViewRoot
 
     public Object saveState(FacesContext context)
     {
-        Object values[] = new Object[5];
+        Object values[] = new Object[7]; // changed line - TODO: run src gen
         values[0] = super.saveState(context);
         values[1] = _locale;
         values[2] = _renderKitId;
         values[3] = _viewId;
         values[4] = new Long(_uniqueIdCounter);
+        values[5] = _beforePhaseListener;
+        values[6] = _afterPhaseListener;
         return values;
     }
 
@@ -313,6 +337,8 @@ public class UIViewRoot
         _renderKitId = (String)values[2];
         _viewId = (String)values[3];
         _uniqueIdCounter = values[4]==null?0:((Long)values[4]).longValue();
+        _beforePhaseListener = (MethodExpression)values[5]; // added line - TODO: run src gen
+        _afterPhaseListener = (MethodExpression)values[6]; // added line - TODO: run src gen
     }
     //------------------ GENERATED CODE END ---------------------------------------
 }

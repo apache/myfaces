@@ -15,39 +15,7 @@
  */
 package org.apache.myfaces.config;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.StringTokenizer;
-
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.application.NavigationHandler;
-import javax.faces.application.StateManager;
-import javax.faces.application.ViewHandler;
-import javax.faces.context.ExternalContext;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.VariableResolver;
-import javax.faces.event.ActionListener;
-import javax.faces.event.PhaseListener;
-import javax.faces.lifecycle.Lifecycle;
-import javax.faces.lifecycle.LifecycleFactory;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.webapp.FacesServlet;
-
+import javax.servlet.ServletContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.ApplicationFactoryImpl;
@@ -64,6 +32,28 @@ import org.apache.myfaces.renderkit.html.HtmlRenderKitImpl;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.shared_impl.util.LocaleUtils;
 import org.xml.sax.SAXException;
+
+import javax.faces.FacesException;
+import javax.faces.FactoryFinder;
+import javax.faces.application.*;
+import javax.faces.context.ExternalContext;
+import javax.faces.el.PropertyResolver;
+import javax.faces.el.VariableResolver;
+import javax.faces.event.ActionListener;
+import javax.faces.event.PhaseListener;
+import javax.faces.lifecycle.Lifecycle;
+import javax.faces.lifecycle.LifecycleFactory;
+import javax.faces.render.RenderKit;
+import javax.faces.render.RenderKitFactory;
+import javax.faces.webapp.FacesServlet;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.util.*;
 
 
 /**
@@ -112,7 +102,7 @@ public class FacesConfigurator
     }
 
 
-    public void configure()
+    public void configure(ServletContext servletContext)
         throws FacesException
     {
         //These two classes can be easily replaced by alternative implementations.
@@ -138,7 +128,7 @@ public class FacesConfigurator
         }
 
         configureFactories();
-        configureApplication();
+        configureApplication(servletContext);
         configureRenderKits();
         configureRuntimeConfig();
         configureLifecycle();
@@ -169,7 +159,7 @@ public class FacesConfigurator
                 while (it.hasNext())
                 {
                     URL url = (URL)it.next();
-                    InputStream stream = openStreamWithoutCache(url);
+                    InputStream stream = url.openStream();
                     InputStreamReader isr = new InputStreamReader(stream);
                     BufferedReader br = new BufferedReader(isr);
                     String className;
@@ -213,25 +203,18 @@ public class FacesConfigurator
         }
     }
 
-    private InputStream openStreamWithoutCache(URL url)
-            throws IOException
-    {
-        URLConnection connection = url.openConnection();
-        connection.setUseCaches(false);
-        return connection.getInputStream();
-    }
 
     /*private Map expandFactoryNames(Set factoryNames)
-   {
-       Map names = new HashMap();
-       Iterator itr = factoryNames.iterator();
-       while (itr.hasNext())
-       {
-           String name = (String) itr.next();
-           names.put(META_INF_SERVICES_LOCATION + name, name);
-       }
-       return names;
-   } */
+    {
+        Map names = new HashMap();
+        Iterator itr = factoryNames.iterator();
+        while (itr.hasNext())
+        {
+            String name = (String) itr.next();
+            names.put(META_INF_SERVICES_LOCATION + name, name);
+        }
+        return names;
+    } */
 
 
     /**
@@ -245,7 +228,7 @@ public class FacesConfigurator
             while (it.hasNext())
             {
                 URL url = (URL)it.next();
-                InputStream stream = openStreamWithoutCache(url);
+                InputStream stream = url.openStream();
                 String systemId = url.toExternalForm();
                 if (log.isInfoEnabled()) log.info("Reading config " + systemId);
                 _dispenser.feed(_unmarshaller.getFacesConfig(stream, systemId));
@@ -259,7 +242,7 @@ public class FacesConfigurator
     }
 
 
-    /*
+    /**
      * To make this easier AND to fix MYFACES-208 at the same time, this method is replaced by
      * {@link FacesConfigurator#feedClassloaderConfigurations}
      *
@@ -434,9 +417,16 @@ public class FacesConfigurator
     }
 
 
-    private void configureApplication()
+    private void configureApplication(ServletContext servletContext)
     {
         Application application = ((ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY)).getApplication();
+
+        if (application instanceof ApplicationImpl) {
+            ApplicationImpl appImpl = (ApplicationImpl)application;
+            appImpl.setServletContext(servletContext);
+        }
+         
+        
         application.setActionListener((ActionListener) getApplicationObject(ActionListener.class, _dispenser.getActionListenerIterator(), null));
 
         if (_dispenser.getDefaultLocale() != null)

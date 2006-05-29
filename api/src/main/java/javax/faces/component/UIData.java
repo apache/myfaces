@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import javax.el.ValueExpression;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -441,6 +442,9 @@ public class UIData extends UIComponentBase implements NamingContainer
         return _var;
     }
 
+    /**
+     * @deprecated Use setValueExpression instead
+     */
     public void setValueBinding(String name, ValueBinding binding)
     {
         if (name == null)
@@ -456,6 +460,22 @@ public class UIData extends UIComponentBase implements NamingContainer
             throw new IllegalArgumentException("name " + name);
         }
         super.setValueBinding(name, binding);
+    }
+    
+    public void setValueExpression(String name, ValueExpression binding) {
+        if (name == null)
+        {
+            throw new NullPointerException("name");
+        }
+        else if (name.equals("value"))
+        {
+            _dataModelMap.clear();
+        }
+        else if (name.equals("var") || name.equals("rowIndex"))
+        {
+            throw new IllegalArgumentException("name " + name);
+        }
+        super.setValueExpression(name, binding);
     }
 
     public String getClientId(FacesContext context)

@@ -78,8 +78,18 @@ public class SessionMap extends AbstractAttributeMap
     }
 
 
+    /**
+     * This will clear the session without invalidation.  If no session has
+     * been created, it will simply return.
+     */
     public void clear()
     {
-        throw new UnsupportedOperationException();
+        PortletSession session = getSession();
+        if (session == null) return;
+        for (Enumeration attributeNames = session.getAttributeNames(PortletSession.PORTLET_SCOPE); 
+             attributeNames.hasMoreElements(); ) {
+            String attributeName = (String)attributeNames.nextElement();
+            session.removeAttribute(attributeName);
+        }
     }
 }

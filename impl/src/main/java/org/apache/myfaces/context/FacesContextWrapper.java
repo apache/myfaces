@@ -15,6 +15,7 @@
  */
 package org.apache.myfaces.context;
 
+import javax.el.ELContext;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
@@ -142,5 +143,10 @@ public class FacesContextWrapper
     public void responseComplete()
     {
         _facesContext.responseComplete();
+    }
+    
+    public ELContext getELContext()
+    {
+        return _facesContext.getELContext();
     }
 }

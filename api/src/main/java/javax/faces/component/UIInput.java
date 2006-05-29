@@ -30,6 +30,7 @@ import javax.faces.render.Renderer;
 import javax.faces.validator.Validator;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.myfaces.el.convert.MethodBindingToValueChangeListener;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
@@ -52,7 +53,7 @@ public class UIInput
     private boolean _localValueSet = false;
     private boolean _valid = true;
     private MethodBinding _validator = null;
-    private MethodBinding _valueChangeListener = null;
+    private MethodBindingToValueChangeListener _valueChangeListener = null;
     private List _validatorList = null;
 
     // use javadoc inherited from EditableValueHolder
@@ -106,32 +107,54 @@ public class UIInput
     }
 
     // use javadoc inherited from EditableValueHolder
+    /**
+     * @deprecated
+     */
     public MethodBinding getValidator()
     {
         return _validator;
     }
 
     // use javadoc inherited from EditableValueHolder
+    /**
+     * @deprecated
+     */
     public void setValidator(MethodBinding validator)
     {
         _validator = validator;
     }
 
     // use javadoc inherited from EditableValueHolder
+    /**
+     * @deprecated
+     */
     public MethodBinding getValueChangeListener()
     {
-        return _valueChangeListener;
+        if (_valueChangeListener != null) {
+            return _valueChangeListener.getMethodBinding();
+        }
+        
+        return null;
     }
 
     // use javadoc inherited from EditableValueHolder
+    /**
+     * @deprecated
+     */
     public void setValueChangeListener(MethodBinding valueChangeListener)
     {
-        _valueChangeListener = valueChangeListener;
+        if (_valueChangeListener != null) {
+            removeValueChangeListener(_valueChangeListener);
+        }
+        
+        _valueChangeListener = new MethodBindingToValueChangeListener(valueChangeListener);
+        
+        addValueChangeListener(_valueChangeListener);
     }
 
     /**
      * Set the "submitted value" of this component from the relevant data
-     * in the current servlet request object.
+     * in the current servet request object.
      * <p>
      * If this component is not rendered, then do nothing; no output would
      * have been sent to the client so no input is expected.
@@ -282,8 +305,6 @@ public class UIInput
             {
                 _MessageUtils.addErrorMessage(context, this, ee);
             }
-            
-            setValid(false);
         }
         catch (RuntimeException e)
         {
@@ -493,7 +514,7 @@ public class UIInput
         _submittedValue = (Object)values[4];
         _valid = ((Boolean)values[5]).booleanValue();
         _validator = (MethodBinding)restoreAttachedState(context, values[6]);
-        _valueChangeListener = (MethodBinding)restoreAttachedState(context, values[7]);
+        _valueChangeListener = (MethodBindingToValueChangeListener)restoreAttachedState(context, values[7]); // changed line - TODO: fix w/ src gen
         _validatorList = (List)restoreAttachedState(context, values[8]);
     }
 

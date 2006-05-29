@@ -12,11 +12,11 @@
     <renderer-type>javax.faces.Button</renderer-type>
     <field generateProperty="false">
         <name>action</name>
-        <type>javax.faces.el.MethodBinding</type>
+        <type>javax.el.MethodExpression</type>
     </field>
     <field generateProperty="false">
         <name>actionListener</name>
-        <type>javax.faces.el.MethodBinding</type>
+        <type>org.apache.myfaces.el.convert.MethodBindingToActionListener</type>
     </field>
     <field>
         <name>immediate</name>

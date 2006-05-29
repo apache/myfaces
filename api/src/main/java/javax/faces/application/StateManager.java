@@ -15,6 +15,9 @@
  */
 package javax.faces.application;
 
+import java.io.IOException;
+import javax.faces.context.FacesContext;
+
 
 
 
@@ -22,6 +25,7 @@ package javax.faces.application;
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
  * @author Manfred Geiler (latest modification by $Author$)
+ * @author Stan Silvert
  * @version $Revision$ $Date$
  */
 public abstract class StateManager
@@ -31,27 +35,86 @@ public abstract class StateManager
     public static final String STATE_SAVING_METHOD_SERVER = "server";
     private Boolean _savingStateInClient = null;
 
-    public abstract StateManager.SerializedView saveSerializedView(javax.faces.context.FacesContext context);
+    public StateManager() {
+        
+    }
+    
+    /**
+     * @deprecated
+     */
+    public StateManager.SerializedView saveSerializedView(javax.faces.context.FacesContext context) {
+        return null;
+    }
+    
+    /**
+     * @since 1.2
+     */
+    public Object saveView(FacesContext context) {
+        StateManager.SerializedView serializedView = saveSerializedView(context);
+        if (serializedView == null) return null;
+        
+        Object[] structureAndState = new Object[2];
+        structureAndState[0] = serializedView.getStructure();
+        structureAndState[1] = serializedView.getState();
+        
+        return structureAndState;
+    }
+    
+    /**
+     * @deprecated
+     */
+    protected Object getTreeStructureToSave(javax.faces.context.FacesContext context) {
+        return null;
+    }
 
-    protected abstract Object getTreeStructureToSave(javax.faces.context.FacesContext context);
+    /**
+     * @deprecated
+     */
+    protected Object getComponentStateToSave(javax.faces.context.FacesContext context) {
+        return null;
+    }
 
-    protected abstract Object getComponentStateToSave(javax.faces.context.FacesContext context);
-
-    public abstract void writeState(javax.faces.context.FacesContext context,
+    /**
+     * @deprecated
+     */
+    public void writeState(javax.faces.context.FacesContext context,
                                     StateManager.SerializedView state)
-            throws java.io.IOException;
+            throws java.io.IOException {
+        // default impl does nothing as per JSF 1.2 javadoc
+    }
+    
+    /**
+     * @since 1.2
+     */
+    public void writeState(FacesContext context, Object state) throws IOException {
+        if (!(state instanceof Object[])) return;
+        Object[] structureAndState = (Object[])state;
+        if (structureAndState.length < 2) return;
+        
+        writeState(context, new StateManager.SerializedView(structureAndState[0], structureAndState[1]));
+    }
 
     public abstract javax.faces.component.UIViewRoot restoreView(javax.faces.context.FacesContext context,
                                                                  String viewId,
                                                                  String renderKitId);
 
-    protected abstract javax.faces.component.UIViewRoot restoreTreeStructure(javax.faces.context.FacesContext context,
-                                                                             String viewId,
-                                                                             String renderKitId);
+    /**
+     * @deprecated
+     */
+    protected javax.faces.component.UIViewRoot restoreTreeStructure(javax.faces.context.FacesContext context,
+                                                                    String viewId,
+                                                                    String renderKitId) {
+        return null;
+    }
 
-    protected abstract void restoreComponentState(javax.faces.context.FacesContext context,
-                                                  javax.faces.component.UIViewRoot viewRoot,
-                                                  String renderKitId);
+    /**
+     * @deprecated
+     */
+    protected void restoreComponentState(javax.faces.context.FacesContext context,
+                                         javax.faces.component.UIViewRoot viewRoot,
+                                         String renderKitId) {
+        // default impl does nothing as per JSF 1.2 javadoc
+    }
 
     public boolean isSavingStateInClient(javax.faces.context.FacesContext context)
     {
@@ -80,22 +143,34 @@ public abstract class StateManager
     }
 
 
+    /**
+     * @deprecated
+     */
     public class SerializedView
     {
         private Object _structure;
         private Object _state;
 
+        /**
+         * @deprecated
+         */
         public SerializedView(Object structure, Object state)
         {
             _structure = structure;
             _state = state;
         }
 
+        /**
+         * @deprecated
+         */
         public Object getStructure()
         {
             return _structure;
         }
 
+        /**
+         * @deprecated
+         */
         public Object getState()
         {
             return _state;

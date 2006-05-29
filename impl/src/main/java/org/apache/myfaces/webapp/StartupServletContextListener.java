@@ -15,27 +15,28 @@
  */
 package org.apache.myfaces.webapp;
 
-import java.util.Iterator;
-import java.util.List;
-
+import javax.el.ELResolver;
 import javax.faces.FactoryFinder;
+import javax.faces.application.Application;
+import javax.faces.application.ApplicationFactory;
 import javax.faces.context.ExternalContext;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.jsp.JspFactory;
+import org.apache.myfaces.application.ApplicationImpl;
 
-import org.apache.myfaces.config.FacesConfigValidator;
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.context.servlet.ServletExternalContextImpl;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.el.unified.resolver.ResolverForJSP;
 import org.apache.myfaces.shared_impl.util.StateUtils;
-import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
-import org.apache.myfaces.shared_impl.util.serial.SerialFactory;
 import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
+ * TODO: Add listener to myfaces-core.tld instead of web.xml
+ *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -66,21 +67,8 @@ public class StartupServletContextListener
                 ExternalContext externalContext = new ServletExternalContextImpl(servletContext, null, null);
 
                 //And configure everything
-                new FacesConfigurator(externalContext).configure();
+                new FacesConfigurator(externalContext).configure(servletContext);
 
-                if ("true".equals(servletContext
-                                .getInitParameter(FacesConfigValidator.VALIDATE_CONTEXT_PARAM)))
-                {
-                    List list = FacesConfigValidator.validate(externalContext,
-                            servletContext.getRealPath("/"));
-
-                    Iterator iterator = list.iterator();
-
-                    while (iterator.hasNext())
-                        log.warn(iterator.next());
-
-                }
-                
                 // parse web.xml
                 WebXml.init(externalContext);
 
@@ -100,45 +88,6 @@ public class StartupServletContextListener
         
         if(servletContext.getInitParameter(StateUtils.INIT_SECRET) != null)
             StateUtils.initSecret(servletContext);
-        
-        handleSerialFactory(servletContext);
-    }
-
-    private static void handleSerialFactory(ServletContext servletContext){
-        
-        String serialProvider = servletContext.getInitParameter(StateUtils.SERIAL_FACTORY);
-        SerialFactory serialFactory = null;
-        
-        if(serialProvider == null)
-        {
-            serialFactory = new DefaultSerialFactory();
-        }
-        else
-        {
-            try
-            {
-                serialFactory = (SerialFactory) ClassUtils.newInstance(serialProvider);
-                
-            }catch(ClassCastException e){
-                log.error("Make sure '" + serialProvider + 
-                        "' implements the correct interface", e);
-            }
-            catch(Exception e){
-                log.error(e);
-            }
-            finally
-            {
-                if(serialFactory == null)
-                {
-                    serialFactory = new DefaultSerialFactory();
-                    log.error("Using default serialization provider");
-                }
-            }
-            
-        }
-        
-        log.info("Serialization provider : " + serialFactory.getClass());
-        servletContext.setAttribute(StateUtils.SERIAL_FACTORY, serialFactory);
         
     }
     

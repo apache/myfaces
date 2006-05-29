@@ -20,6 +20,7 @@ package javax.faces.el;
  *
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
+ * @deprecated
  */
 public class ReferenceSyntaxException extends EvaluationException
 {
@@ -28,21 +29,33 @@ public class ReferenceSyntaxException extends EvaluationException
 	// FIELDS
 
   // CONSTRUCTORS
+        /**
+         * @deprecated
+         */
 	public ReferenceSyntaxException()
 	{
 		super();
 	}
 
+        /**
+         * @deprecated
+         */
 	public ReferenceSyntaxException(String message)
 	{
 		super(message);
 	}
 
+        /**
+         * @deprecated
+         */
 	public ReferenceSyntaxException(String message, Throwable cause)
 	{
 		super(message, cause);
 	}
 
+        /**
+         * @deprecated
+         */
 	public ReferenceSyntaxException(Throwable cause)
 	{
 		super(cause);

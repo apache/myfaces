@@ -164,9 +164,14 @@ public interface EditableValueHolder
      * associated with this component.
      * <p>
      * This validator is executed after all validators in the validator list.
+     *
+     * @deprecated Use getValidators() instead.
      */
     public MethodBinding getValidator();
 
+    /**
+     * @deprecated Use addValidator(MethodExpressionValidaotr) instead.
+     */
     public void setValidator(javax.faces.el.MethodBinding validatorBinding);
 
     /**
@@ -176,9 +181,14 @@ public interface EditableValueHolder
      * associated with this component.
      * <p>
      * This listeners is executed after all listeners in the list.
+     *
+     * @deprecated Use getValueChangeLIsteners() instead.
      */
     public MethodBinding getValueChangeListener();
 
+    /**
+     * @deprecated use addValueChangeListener(MethodExpressionValueChangeListener) instead.
+     */
     public void setValueChangeListener(MethodBinding valueChangeMethod);
 
     public void addValidator(Validator validator);

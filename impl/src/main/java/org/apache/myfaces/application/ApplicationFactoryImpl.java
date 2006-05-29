@@ -15,6 +15,7 @@
  */
 package org.apache.myfaces.application;
 
+import javax.servlet.ServletContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

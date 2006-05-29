@@ -55,6 +55,8 @@ public abstract class ExternalContext
     public abstract String getRemoteUser();
 
     public abstract Object getRequest();
+    
+    public abstract String getRequestContentType();
 
     public abstract String getRequestContextPath();
 
@@ -88,6 +90,8 @@ public abstract class ExternalContext
     public abstract Set getResourcePaths(String path);
 
     public abstract Object getResponse();
+    
+    public abstract String getResponseContentType();
 
     public abstract Object getSession(boolean create);
 

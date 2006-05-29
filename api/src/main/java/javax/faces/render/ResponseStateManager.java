@@ -23,17 +23,58 @@ import java.io.IOException;
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
  * @author Manfred Geiler (latest modification by $Author$)
+ * @author Stan Silvert
  * @version $Revision$ $Date$
  */
 public abstract class ResponseStateManager
 {
-    public abstract void writeState(FacesContext context,
-                                    StateManager.SerializedView state)
-            throws IOException;
+    public static final String RENDER_KIT_ID_PARAM = "javax.faces.RenderKitId";
+    public static final String VIEW_STATE_PARAM = "javax.faces.ViewState";
+    
+    // TODO: figure out if this is suppossed to be abstract.  JavaDoc doesn't say.
+    public abstract void writeState(FacesContext context, Object state) throws IOException;
+    
+    /**
+     * @deprecated
+     */
+    public void writeState(FacesContext context,
+                           StateManager.SerializedView state)
+            throws IOException {
+        // does nothing as per JSF 1.2 javadoc
+    }
 
-    public abstract Object getTreeStructureToRestore(FacesContext context,
-                                                     String viewId);
+    /**
+     * @since 1.2
+     */
+    public Object getState(FacesContext context, String viewId) {
+        Object[] structureAndState = new Object[2];
+        structureAndState[0] = getTreeStructureToRestore(context, viewId);
+        structureAndState[1] = getComponentStateToRestore(context);
+        return structureAndState;
+    }
+    
+    
+    /**
+     * @deprecated
+     */
+    public Object getTreeStructureToRestore(FacesContext context,
+                                             String viewId) {
+        return null;
+    }
+    
 
-    public abstract Object getComponentStateToRestore(FacesContext context);
+    /**
+     * @deprecated
+     */
+    public Object getComponentStateToRestore(FacesContext context) {
+        return null;
+    }
+    
+    /**
+     * @since 1.2
+     */
+    public boolean isPostback(FacesContext context) {
+        return context.getExternalContext().getRequestParameterMap().size() > 0;
+    }
 
 }

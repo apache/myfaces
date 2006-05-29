@@ -21,4 +21,12 @@
         <name>viewId</name>
         <type>java.lang.String</type>
     </field>
+    <field generateProperty="false" saveState="true" >
+        <name>beforePhaseListener</name>
+        <type>javax.el.MethodExpression</type>
+    </field>
+    <field generateProperty="false" saveState="true" >
+        <name>afterPhaseListener</name>
+        <type>javax.el.MethodExpression</type>
+    </field>
 </component>
