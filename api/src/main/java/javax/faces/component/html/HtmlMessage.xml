@@ -5,6 +5,10 @@
     <component-type>javax.faces.HtmlMessage</component-type>
     <renderer-type>javax.faces.Message</renderer-type>
     <field>
+        <name>dir</name>
+        <type>java.lang.String</type>
+    </field>
+    <field>
         <name>errorClass</name>
         <type>java.lang.String</type>
     </field>
@@ -26,6 +30,10 @@
     </field>
     <field>
         <name>infoStyle</name>
+        <type>java.lang.String</type>
+    </field>
+    <field>
+        <name>lang</name>
         <type>java.lang.String</type>
     </field>
     <field>

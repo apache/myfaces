@@ -10,6 +10,14 @@
         <default-value>true</default-value>
     </field>
     <field>
+        <name>dir</name>
+        <type>java.lang.String</type>
+    </field>
+    <field>
+        <name>lang</name>
+        <type>java.lang.String</type>
+    </field>
+    <field>
         <name>style</name>
         <type>java.lang.String</type>
     </field>
