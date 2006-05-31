@@ -53,11 +53,11 @@ public abstract class UIComponent
     public abstract void setValueExpression(String name, ValueExpression binding);
     
     /**
-     * 
+     * Invokes the <code>invokeContextCallback</code> method with the component, specified by <code>clientId</code>.
      * @param context <code>FacesContext</code> for the current request
-     * @param clientId 
-     * @param callback
-     * @return
+     * @param clientId the id of the desired <code>UIComponent</code> clazz 
+     * @param callback Implementation of the <code>ContextCallback</code> to be called
+     * @return has component been found ?
      * @throws javax.faces.FacesException
      */
     public boolean invokeOnComponent(javax.faces.context.FacesContext context, String clientId, javax.faces.component.ContextCallback callback) throws javax.faces.FacesException
