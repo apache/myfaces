@@ -70,6 +70,23 @@
                 </configuration>
               </execution>
             </executions>
+            <dependencies>
+                <dependency>
+                  <groupId>commons-logging</groupId>
+                  <artifactId>commons-logging</artifactId>
+                  <version>1.0.4</version>
+                </dependency>
+                <dependency>
+                  <groupId>velocity</groupId>
+                  <artifactId>velocity</artifactId>
+                  <version>1.4</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.myfaces.maven</groupId>
+                    <artifactId>build-tools</artifactId>
+                    <version>1.0.4-SNAPSHOT</version>
+                </dependency>
+            </dependencies> 
           </plugin>
         </plugins>
       </build>
