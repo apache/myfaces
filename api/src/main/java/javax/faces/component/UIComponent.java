@@ -15,7 +15,11 @@
  */
 package javax.faces.component;
 
+import java.util.Iterator;
+import java.util.List;
+
 import javax.el.ValueExpression;
+import javax.faces.FacesException;
 import javax.faces.event.AbortProcessingException;
 
 /**
@@ -48,6 +52,46 @@ public abstract class UIComponent
 
     public abstract void setValueExpression(String name, ValueExpression binding);
     
+    /**
+     * 
+     * @param context <code>FacesContext</code> for the current request
+     * @param clientId 
+     * @param callback
+     * @return
+     * @throws javax.faces.FacesException
+     */
+    public boolean invokeOnComponent(javax.faces.context.FacesContext context, String clientId, javax.faces.component.ContextCallback callback) throws javax.faces.FacesException
+    {
+    	//java.lang.NullPointerException - if any of the arguments are null
+    	if(context == null || clientId == null || callback == null)
+    	{
+    		throw new NullPointerException();
+    	}
+    	
+    	//searching for this component?
+    	boolean returnValue = this.getClientId(context).equals(clientId); 
+    	if(returnValue)
+    	{
+    		try
+    		{
+    			callback.invokeContextCallback(context, this);
+    		} catch(Exception e)
+    		{
+    			throw new FacesException(e);
+    		}
+    		return returnValue;
+    	}
+		//Searching for this component's children/facets 
+    	else 
+    	{
+    		for (Iterator<UIComponent> it = this.getFacetsAndChildren(); !returnValue && it.hasNext();)
+    			returnValue = it.next().invokeOnComponent(context, clientId, callback);
+    		}
+    		
+    	}
+    	return returnValue;
+    }
+
     public abstract java.lang.String getClientId(javax.faces.context.FacesContext context);
 
     public abstract java.lang.String getFamily();
@@ -99,7 +143,39 @@ public abstract class UIComponent
             throws java.io.IOException;
 
     public abstract void encodeEnd(javax.faces.context.FacesContext context)
-            throws java.io.IOException;
+    		throws java.io.IOException;
+
+    public void encodeAll(javax.faces.context.FacesContext context) throws java.io.IOException
+    {
+    	if(context == null)
+    	{
+    		throw new NullPointerException();
+    	}
+    	
+    	if(isRendered())
+    	{
+    		this.encodeBegin(context);
+    		
+    		//rendering children
+    		if(this.getRendersChildren())
+    		{
+    			this.encodeChildren(context);
+    		}
+    		//let children render itself
+    		else
+    		{
+    			List comps = this.getChildren();
+    			for (Iterator<UIComponent> iter = comps.iterator(); iter.hasNext();)
+    			{
+					iter.next().encodeAll(context);;
+				}
+    		}
+    		
+    		this.encodeEnd(context);
+    	}
+    }
+
+
 
     protected abstract void addFacesListener(javax.faces.event.FacesListener listener);
 

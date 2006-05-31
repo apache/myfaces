@@ -25,5 +25,10 @@ import javax.faces.context.FacesContext;
  */
 public interface ContextCallback {
     
-    public void invokeContextCallback(FacesContext context, UIComponent target);
+    /**
+     * 
+     * @param context <code>FacesContext</code> for the current request
+     * @param target <code>UIComponent</code> on which the <code>UIComponent.invokeOnComponent()</code> will be called
+     */
+	void invokeContextCallback(FacesContext context, UIComponent target);
 }

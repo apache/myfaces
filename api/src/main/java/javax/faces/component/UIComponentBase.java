@@ -26,6 +26,7 @@ import java.util.Map;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 
+import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
@@ -289,6 +290,14 @@ public abstract class UIComponentBase
     public String getId()
     {
         return _id;
+    }
+    
+    
+    /**
+     * <code>invokeOnComponent</code> must be implemented in <code>UIComponentBase</code> too...
+     */
+    public boolean invokeOnComponent(FacesContext context, String clientId, ContextCallback callback) throws FacesException{
+    	return super.invokeOnComponent(context, clientId, callback);
     }
 
     /**
