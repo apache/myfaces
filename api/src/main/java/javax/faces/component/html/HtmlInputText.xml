@@ -13,6 +13,10 @@
         <type>java.lang.String</type>
     </field>
     <field>
+        <name>autocomplete</name>
+        <type>java.lang.String</type>
+    </field>
+    <field>
         <name>dir</name>
         <type>java.lang.String</type>
     </field>

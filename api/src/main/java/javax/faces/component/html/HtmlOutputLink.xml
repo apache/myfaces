@@ -21,6 +21,11 @@
         <type>java.lang.String</type>
     </field>
     <field>
+        <name>disabled</name>
+        <type>boolean</type>
+        <default-value>false</default-value>
+    </field>
+    <field>
         <name>hreflang</name>
         <type>java.lang.String</type>
     </field>
