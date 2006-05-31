@@ -34,6 +34,8 @@ public class HtmlOutputFormat extends UIOutput
     private static final boolean DEFAULT_ESCAPE = true;
 
     private Boolean _escape = null;
+    private String _dir = null;
+    private String _lang = null;
     private String _style = null;
     private String _styleClass = null;
     private String _title = null;
@@ -57,6 +59,30 @@ public class HtmlOutputFormat extends UIOutput
         return v != null ? v.booleanValue() : DEFAULT_ESCAPE;
     }
 
+    public void setDir(String dir)
+    {
+        _dir = dir;
+    }
+
+    public String getDir()
+    {
+        if (_dir != null) return _dir;
+        ValueBinding vb = getValueBinding("dir");
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
+    }
+
+    public void setLang(String lang)
+    {
+        _lang = lang;
+    }
+
+    public String getLang()
+    {
+        if (_lang != null) return _lang;
+        ValueBinding vb = getValueBinding("lang");
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
+    }
+
     public void setStyle(String style)
     {
         _style = style;
@@ -66,7 +92,7 @@ public class HtmlOutputFormat extends UIOutput
     {
         if (_style != null) return _style;
         ValueBinding vb = getValueBinding("style");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setStyleClass(String styleClass)
@@ -78,7 +104,7 @@ public class HtmlOutputFormat extends UIOutput
     {
         if (_styleClass != null) return _styleClass;
         ValueBinding vb = getValueBinding("styleClass");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setTitle(String title)
@@ -90,18 +116,21 @@ public class HtmlOutputFormat extends UIOutput
     {
         if (_title != null) return _title;
         ValueBinding vb = getValueBinding("title");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
+
 
 
     public Object saveState(FacesContext context)
     {
-        Object values[] = new Object[5];
+        Object values[] = new Object[7];
         values[0] = super.saveState(context);
         values[1] = _escape;
-        values[2] = _style;
-        values[3] = _styleClass;
-        values[4] = _title;
+        values[2] = _dir;
+        values[3] = _lang;
+        values[4] = _style;
+        values[5] = _styleClass;
+        values[6] = _title;
         return ((Object) (values));
     }
 
@@ -110,9 +139,11 @@ public class HtmlOutputFormat extends UIOutput
         Object values[] = (Object[])state;
         super.restoreState(context, values[0]);
         _escape = (Boolean)values[1];
-        _style = (String)values[2];
-        _styleClass = (String)values[3];
-        _title = (String)values[4];
+        _dir = (String)values[2];
+        _lang = (String)values[3];
+        _style = (String)values[4];
+        _styleClass = (String)values[5];
+        _title = (String)values[6];
     }
     //------------------ GENERATED CODE END ---------------------------------------
 }

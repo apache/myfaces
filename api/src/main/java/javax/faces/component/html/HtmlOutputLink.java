@@ -31,11 +31,13 @@ public class HtmlOutputLink extends UIOutput
 
     public static final String COMPONENT_TYPE = "javax.faces.HtmlOutputLink";
     private static final String DEFAULT_RENDERER_TYPE = "javax.faces.Link";
+    private static final boolean DEFAULT_DISABLED = false;
 
     private String _accesskey = null;
     private String _charset = null;
     private String _coords = null;
     private String _dir = null;
+    private Boolean _disabled = null;
     private String _hreflang = null;
     private String _lang = null;
     private String _onblur = null;
@@ -75,7 +77,7 @@ public class HtmlOutputLink extends UIOutput
     {
         if (_accesskey != null) return _accesskey;
         ValueBinding vb = getValueBinding("accesskey");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setCharset(String charset)
@@ -87,7 +89,7 @@ public class HtmlOutputLink extends UIOutput
     {
         if (_charset != null) return _charset;
         ValueBinding vb = getValueBinding("charset");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setCoords(String coords)
@@ -99,7 +101,7 @@ public class HtmlOutputLink extends UIOutput
     {
         if (_coords != null) return _coords;
         ValueBinding vb = getValueBinding("coords");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setDir(String dir)
@@ -111,7 +113,20 @@ public class HtmlOutputLink extends UIOutput
     {
         if (_dir != null) return _dir;
         ValueBinding vb = getValueBinding("dir");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
+    }
+
+    public void setDisabled(boolean disabled)
+    {
+        _disabled = Boolean.valueOf(disabled);
+    }
+
+    public boolean isDisabled()
+    {
+        if (_disabled != null) return _disabled.booleanValue();
+        ValueBinding vb = getValueBinding("disabled");
+        Boolean v = vb != null ? (Boolean)vb.getValue(getFacesContext()) : null;
+        return v != null ? v.booleanValue() : DEFAULT_DISABLED;
     }
 
     public void setHreflang(String hreflang)
@@ -123,7 +138,7 @@ public class HtmlOutputLink extends UIOutput
     {
         if (_hreflang != null) return _hreflang;
         ValueBinding vb = getValueBinding("hreflang");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setLang(String lang)
@@ -135,7 +150,7 @@ public class HtmlOutputLink extends UIOutput
     {
         if (_lang != null) return _lang;
         ValueBinding vb = getValueBinding("lang");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setOnblur(String onblur)
@@ -147,7 +162,7 @@ public class HtmlOutputLink extends UIOutput
     {
         if (_onblur != null) return _onblur;
         ValueBinding vb = getValueBinding("onblur");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setOnclick(String onclick)
@@ -159,7 +174,7 @@ public class HtmlOutputLink extends UIOutput
     {
         if (_onclick != null) return _onclick;
         ValueBinding vb = getValueBinding("onclick");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setOndblclick(String ondblclick)
@@ -171,7 +186,7 @@ public class HtmlOutputLink extends UIOutput
     {
         if (_ondblclick != null) return _ondblclick;
         ValueBinding vb = getValueBinding("ondblclick");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setOnfocus(String onfocus)
@@ -183,7 +198,7 @@ public class HtmlOutputLink extends UIOutput
     {
         if (_onfocus != null) return _onfocus;
         ValueBinding vb = getValueBinding("onfocus");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setOnkeydown(String onkeydown)
@@ -195,7 +210,7 @@ public class HtmlOutputLink extends UIOutput
     {
         if (_onkeydown != null) return _onkeydown;
         ValueBinding vb = getValueBinding("onkeydown");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setOnkeypress(String onkeypress)
@@ -207,7 +222,7 @@ public class HtmlOutputLink extends UIOutput
     {
         if (_onkeypress != null) return _onkeypress;
         ValueBinding vb = getValueBinding("onkeypress");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setOnkeyup(String onkeyup)
@@ -219,7 +234,7 @@ public class HtmlOutputLink extends UIOutput
     {
         if (_onkeyup != null) return _onkeyup;
         ValueBinding vb = getValueBinding("onkeyup");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setOnmousedown(String onmousedown)
@@ -231,7 +246,7 @@ public class HtmlOutputLink extends UIOutput
     {
         if (_onmousedown != null) return _onmousedown;
         ValueBinding vb = getValueBinding("onmousedown");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setOnmousemove(String onmousemove)
@@ -243,7 +258,7 @@ public class HtmlOutputLink extends UIOutput
     {
         if (_onmousemove != null) return _onmousemove;
         ValueBinding vb = getValueBinding("onmousemove");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setOnmouseout(String onmouseout)
@@ -255,7 +270,7 @@ public class HtmlOutputLink extends UIOutput
     {
         if (_onmouseout != null) return _onmouseout;
         ValueBinding vb = getValueBinding("onmouseout");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setOnmouseover(String onmouseover)
@@ -267,7 +282,7 @@ public class HtmlOutputLink extends UIOutput
     {
         if (_onmouseover != null) return _onmouseover;
         ValueBinding vb = getValueBinding("onmouseover");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setOnmouseup(String onmouseup)
@@ -279,7 +294,7 @@ public class HtmlOutputLink extends UIOutput
     {
         if (_onmouseup != null) return _onmouseup;
         ValueBinding vb = getValueBinding("onmouseup");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setRel(String rel)
@@ -291,7 +306,7 @@ public class HtmlOutputLink extends UIOutput
     {
         if (_rel != null) return _rel;
         ValueBinding vb = getValueBinding("rel");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setRev(String rev)
@@ -303,7 +318,7 @@ public class HtmlOutputLink extends UIOutput
     {
         if (_rev != null) return _rev;
         ValueBinding vb = getValueBinding("rev");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setShape(String shape)
@@ -315,7 +330,7 @@ public class HtmlOutputLink extends UIOutput
     {
         if (_shape != null) return _shape;
         ValueBinding vb = getValueBinding("shape");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setStyle(String style)
@@ -327,7 +342,7 @@ public class HtmlOutputLink extends UIOutput
     {
         if (_style != null) return _style;
         ValueBinding vb = getValueBinding("style");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setStyleClass(String styleClass)
@@ -339,7 +354,7 @@ public class HtmlOutputLink extends UIOutput
     {
         if (_styleClass != null) return _styleClass;
         ValueBinding vb = getValueBinding("styleClass");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setTabindex(String tabindex)
@@ -351,7 +366,7 @@ public class HtmlOutputLink extends UIOutput
     {
         if (_tabindex != null) return _tabindex;
         ValueBinding vb = getValueBinding("tabindex");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setTarget(String target)
@@ -363,7 +378,7 @@ public class HtmlOutputLink extends UIOutput
     {
         if (_target != null) return _target;
         ValueBinding vb = getValueBinding("target");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setTitle(String title)
@@ -375,7 +390,7 @@ public class HtmlOutputLink extends UIOutput
     {
         if (_title != null) return _title;
         ValueBinding vb = getValueBinding("title");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setType(String type)
@@ -387,41 +402,43 @@ public class HtmlOutputLink extends UIOutput
     {
         if (_type != null) return _type;
         ValueBinding vb = getValueBinding("type");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
+
 
 
     public Object saveState(FacesContext context)
     {
-        Object values[] = new Object[28];
+        Object values[] = new Object[29];
         values[0] = super.saveState(context);
         values[1] = _accesskey;
         values[2] = _charset;
         values[3] = _coords;
         values[4] = _dir;
-        values[5] = _hreflang;
-        values[6] = _lang;
-        values[7] = _onblur;
-        values[8] = _onclick;
-        values[9] = _ondblclick;
-        values[10] = _onfocus;
-        values[11] = _onkeydown;
-        values[12] = _onkeypress;
-        values[13] = _onkeyup;
-        values[14] = _onmousedown;
-        values[15] = _onmousemove;
-        values[16] = _onmouseout;
-        values[17] = _onmouseover;
-        values[18] = _onmouseup;
-        values[19] = _rel;
-        values[20] = _rev;
-        values[21] = _shape;
-        values[22] = _style;
-        values[23] = _styleClass;
-        values[24] = _tabindex;
-        values[25] = _target;
-        values[26] = _title;
-        values[27] = _type;
+        values[5] = _disabled;
+        values[6] = _hreflang;
+        values[7] = _lang;
+        values[8] = _onblur;
+        values[9] = _onclick;
+        values[10] = _ondblclick;
+        values[11] = _onfocus;
+        values[12] = _onkeydown;
+        values[13] = _onkeypress;
+        values[14] = _onkeyup;
+        values[15] = _onmousedown;
+        values[16] = _onmousemove;
+        values[17] = _onmouseout;
+        values[18] = _onmouseover;
+        values[19] = _onmouseup;
+        values[20] = _rel;
+        values[21] = _rev;
+        values[22] = _shape;
+        values[23] = _style;
+        values[24] = _styleClass;
+        values[25] = _tabindex;
+        values[26] = _target;
+        values[27] = _title;
+        values[28] = _type;
         return ((Object) (values));
     }
 
@@ -433,29 +450,30 @@ public class HtmlOutputLink extends UIOutput
         _charset = (String)values[2];
         _coords = (String)values[3];
         _dir = (String)values[4];
-        _hreflang = (String)values[5];
-        _lang = (String)values[6];
-        _onblur = (String)values[7];
-        _onclick = (String)values[8];
-        _ondblclick = (String)values[9];
-        _onfocus = (String)values[10];
-        _onkeydown = (String)values[11];
-        _onkeypress = (String)values[12];
-        _onkeyup = (String)values[13];
-        _onmousedown = (String)values[14];
-        _onmousemove = (String)values[15];
-        _onmouseout = (String)values[16];
-        _onmouseover = (String)values[17];
-        _onmouseup = (String)values[18];
-        _rel = (String)values[19];
-        _rev = (String)values[20];
-        _shape = (String)values[21];
-        _style = (String)values[22];
-        _styleClass = (String)values[23];
-        _tabindex = (String)values[24];
-        _target = (String)values[25];
-        _title = (String)values[26];
-        _type = (String)values[27];
+        _disabled = (Boolean)values[5];
+        _hreflang = (String)values[6];
+        _lang = (String)values[7];
+        _onblur = (String)values[8];
+        _onclick = (String)values[9];
+        _ondblclick = (String)values[10];
+        _onfocus = (String)values[11];
+        _onkeydown = (String)values[12];
+        _onkeypress = (String)values[13];
+        _onkeyup = (String)values[14];
+        _onmousedown = (String)values[15];
+        _onmousemove = (String)values[16];
+        _onmouseout = (String)values[17];
+        _onmouseover = (String)values[18];
+        _onmouseup = (String)values[19];
+        _rel = (String)values[20];
+        _rev = (String)values[21];
+        _shape = (String)values[22];
+        _style = (String)values[23];
+        _styleClass = (String)values[24];
+        _tabindex = (String)values[25];
+        _target = (String)values[26];
+        _title = (String)values[27];
+        _type = (String)values[28];
     }
     //------------------ GENERATED CODE END ---------------------------------------
 }

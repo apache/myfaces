@@ -32,12 +32,11 @@ public class HtmlInputText extends UIInput
     public static final String COMPONENT_TYPE = "javax.faces.HtmlInputText";
     private static final String DEFAULT_RENDERER_TYPE = "javax.faces.Text";
     private static final boolean DEFAULT_DISABLED = false;
-    private static final int DEFAULT_MAXLENGTH = Integer.MIN_VALUE;
     private static final boolean DEFAULT_READONLY = false;
-    private static final int DEFAULT_SIZE = Integer.MIN_VALUE;
 
     private String _accesskey = null;
     private String _alt = null;
+    private String _autocomplete = null;
     private String _dir = null;
     private Boolean _disabled = null;
     private String _lang = null;
@@ -78,7 +77,7 @@ public class HtmlInputText extends UIInput
     {
         if (_accesskey != null) return _accesskey;
         ValueBinding vb = getValueBinding("accesskey");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setAlt(String alt)
@@ -90,7 +89,19 @@ public class HtmlInputText extends UIInput
     {
         if (_alt != null) return _alt;
         ValueBinding vb = getValueBinding("alt");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
+    }
+
+    public void setAutocomplete(String autocomplete)
+    {
+        _autocomplete = autocomplete;
+    }
+
+    public String getAutocomplete()
+    {
+        if (_autocomplete != null) return _autocomplete;
+        ValueBinding vb = getValueBinding("autocomplete");
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setDir(String dir)
@@ -102,7 +113,7 @@ public class HtmlInputText extends UIInput
     {
         if (_dir != null) return _dir;
         ValueBinding vb = getValueBinding("dir");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setDisabled(boolean disabled)
@@ -127,7 +138,7 @@ public class HtmlInputText extends UIInput
     {
         if (_lang != null) return _lang;
         ValueBinding vb = getValueBinding("lang");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setMaxlength(int maxlength)
@@ -140,7 +151,7 @@ public class HtmlInputText extends UIInput
         if (_maxlength != null) return _maxlength.intValue();
         ValueBinding vb = getValueBinding("maxlength");
         Number v = vb != null ? (Number)vb.getValue(getFacesContext()) : null;
-        return v != null ? v.intValue() : DEFAULT_MAXLENGTH;
+        return v != null ? v.intValue() : Integer.MIN_VALUE;
     }
 
     public void setOnblur(String onblur)
@@ -152,7 +163,7 @@ public class HtmlInputText extends UIInput
     {
         if (_onblur != null) return _onblur;
         ValueBinding vb = getValueBinding("onblur");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setOnchange(String onchange)
@@ -164,7 +175,7 @@ public class HtmlInputText extends UIInput
     {
         if (_onchange != null) return _onchange;
         ValueBinding vb = getValueBinding("onchange");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setOnclick(String onclick)
@@ -176,7 +187,7 @@ public class HtmlInputText extends UIInput
     {
         if (_onclick != null) return _onclick;
         ValueBinding vb = getValueBinding("onclick");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setOndblclick(String ondblclick)
@@ -188,7 +199,7 @@ public class HtmlInputText extends UIInput
     {
         if (_ondblclick != null) return _ondblclick;
         ValueBinding vb = getValueBinding("ondblclick");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setOnfocus(String onfocus)
@@ -200,7 +211,7 @@ public class HtmlInputText extends UIInput
     {
         if (_onfocus != null) return _onfocus;
         ValueBinding vb = getValueBinding("onfocus");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setOnkeydown(String onkeydown)
@@ -212,7 +223,7 @@ public class HtmlInputText extends UIInput
     {
         if (_onkeydown != null) return _onkeydown;
         ValueBinding vb = getValueBinding("onkeydown");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setOnkeypress(String onkeypress)
@@ -224,7 +235,7 @@ public class HtmlInputText extends UIInput
     {
         if (_onkeypress != null) return _onkeypress;
         ValueBinding vb = getValueBinding("onkeypress");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setOnkeyup(String onkeyup)
@@ -236,7 +247,7 @@ public class HtmlInputText extends UIInput
     {
         if (_onkeyup != null) return _onkeyup;
         ValueBinding vb = getValueBinding("onkeyup");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setOnmousedown(String onmousedown)
@@ -248,7 +259,7 @@ public class HtmlInputText extends UIInput
     {
         if (_onmousedown != null) return _onmousedown;
         ValueBinding vb = getValueBinding("onmousedown");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setOnmousemove(String onmousemove)
@@ -260,7 +271,7 @@ public class HtmlInputText extends UIInput
     {
         if (_onmousemove != null) return _onmousemove;
         ValueBinding vb = getValueBinding("onmousemove");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setOnmouseout(String onmouseout)
@@ -272,7 +283,7 @@ public class HtmlInputText extends UIInput
     {
         if (_onmouseout != null) return _onmouseout;
         ValueBinding vb = getValueBinding("onmouseout");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setOnmouseover(String onmouseover)
@@ -284,7 +295,7 @@ public class HtmlInputText extends UIInput
     {
         if (_onmouseover != null) return _onmouseover;
         ValueBinding vb = getValueBinding("onmouseover");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setOnmouseup(String onmouseup)
@@ -296,7 +307,7 @@ public class HtmlInputText extends UIInput
     {
         if (_onmouseup != null) return _onmouseup;
         ValueBinding vb = getValueBinding("onmouseup");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setOnselect(String onselect)
@@ -308,7 +319,7 @@ public class HtmlInputText extends UIInput
     {
         if (_onselect != null) return _onselect;
         ValueBinding vb = getValueBinding("onselect");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setReadonly(boolean readonly)
@@ -334,7 +345,7 @@ public class HtmlInputText extends UIInput
         if (_size != null) return _size.intValue();
         ValueBinding vb = getValueBinding("size");
         Number v = vb != null ? (Number)vb.getValue(getFacesContext()) : null;
-        return v != null ? v.intValue() : DEFAULT_SIZE;
+        return v != null ? v.intValue() : Integer.MIN_VALUE;
     }
 
     public void setStyle(String style)
@@ -346,7 +357,7 @@ public class HtmlInputText extends UIInput
     {
         if (_style != null) return _style;
         ValueBinding vb = getValueBinding("style");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setStyleClass(String styleClass)
@@ -358,7 +369,7 @@ public class HtmlInputText extends UIInput
     {
         if (_styleClass != null) return _styleClass;
         ValueBinding vb = getValueBinding("styleClass");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setTabindex(String tabindex)
@@ -370,7 +381,7 @@ public class HtmlInputText extends UIInput
     {
         if (_tabindex != null) return _tabindex;
         ValueBinding vb = getValueBinding("tabindex");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
 
     public void setTitle(String title)
@@ -382,40 +393,42 @@ public class HtmlInputText extends UIInput
     {
         if (_title != null) return _title;
         ValueBinding vb = getValueBinding("title");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return vb != null ? (String)vb.getValue(getFacesContext()) : null;
     }
+
 
 
     public Object saveState(FacesContext context)
     {
-        Object values[] = new Object[27];
+        Object values[] = new Object[28];
         values[0] = super.saveState(context);
         values[1] = _accesskey;
         values[2] = _alt;
-        values[3] = _dir;
-        values[4] = _disabled;
-        values[5] = _lang;
-        values[6] = _maxlength;
-        values[7] = _onblur;
-        values[8] = _onchange;
-        values[9] = _onclick;
-        values[10] = _ondblclick;
-        values[11] = _onfocus;
-        values[12] = _onkeydown;
-        values[13] = _onkeypress;
-        values[14] = _onkeyup;
-        values[15] = _onmousedown;
-        values[16] = _onmousemove;
-        values[17] = _onmouseout;
-        values[18] = _onmouseover;
-        values[19] = _onmouseup;
-        values[20] = _onselect;
-        values[21] = _readonly;
-        values[22] = _size;
-        values[23] = _style;
-        values[24] = _styleClass;
-        values[25] = _tabindex;
-        values[26] = _title;
+        values[3] = _autocomplete;
+        values[4] = _dir;
+        values[5] = _disabled;
+        values[6] = _lang;
+        values[7] = _maxlength;
+        values[8] = _onblur;
+        values[9] = _onchange;
+        values[10] = _onclick;
+        values[11] = _ondblclick;
+        values[12] = _onfocus;
+        values[13] = _onkeydown;
+        values[14] = _onkeypress;
+        values[15] = _onkeyup;
+        values[16] = _onmousedown;
+        values[17] = _onmousemove;
+        values[18] = _onmouseout;
+        values[19] = _onmouseover;
+        values[20] = _onmouseup;
+        values[21] = _onselect;
+        values[22] = _readonly;
+        values[23] = _size;
+        values[24] = _style;
+        values[25] = _styleClass;
+        values[26] = _tabindex;
+        values[27] = _title;
         return ((Object) (values));
     }
 
@@ -425,30 +438,31 @@ public class HtmlInputText extends UIInput
         super.restoreState(context, values[0]);
         _accesskey = (String)values[1];
         _alt = (String)values[2];
-        _dir = (String)values[3];
-        _disabled = (Boolean)values[4];
-        _lang = (String)values[5];
-        _maxlength = (Integer)values[6];
-        _onblur = (String)values[7];
-        _onchange = (String)values[8];
-        _onclick = (String)values[9];
-        _ondblclick = (String)values[10];
-        _onfocus = (String)values[11];
-        _onkeydown = (String)values[12];
-        _onkeypress = (String)values[13];
-        _onkeyup = (String)values[14];
-        _onmousedown = (String)values[15];
-        _onmousemove = (String)values[16];
-        _onmouseout = (String)values[17];
-        _onmouseover = (String)values[18];
-        _onmouseup = (String)values[19];
-        _onselect = (String)values[20];
-        _readonly = (Boolean)values[21];
-        _size = (Integer)values[22];
-        _style = (String)values[23];
-        _styleClass = (String)values[24];
-        _tabindex = (String)values[25];
-        _title = (String)values[26];
+        _autocomplete = (String)values[3];
+        _dir = (String)values[4];
+        _disabled = (Boolean)values[5];
+        _lang = (String)values[6];
+        _maxlength = (Integer)values[7];
+        _onblur = (String)values[8];
+        _onchange = (String)values[9];
+        _onclick = (String)values[10];
+        _ondblclick = (String)values[11];
+        _onfocus = (String)values[12];
+        _onkeydown = (String)values[13];
+        _onkeypress = (String)values[14];
+        _onkeyup = (String)values[15];
+        _onmousedown = (String)values[16];
+        _onmousemove = (String)values[17];
+        _onmouseout = (String)values[18];
+        _onmouseover = (String)values[19];
+        _onmouseup = (String)values[20];
+        _onselect = (String)values[21];
+        _readonly = (Boolean)values[22];
+        _size = (Integer)values[23];
+        _style = (String)values[24];
+        _styleClass = (String)values[25];
+        _tabindex = (String)values[26];
+        _title = (String)values[27];
     }
     //------------------ GENERATED CODE END ---------------------------------------
 }
