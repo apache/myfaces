@@ -252,6 +252,13 @@ Start of revised 1.0 conforming tags (in alphabetical order)
             Unless otherwise specified, all attributes accept static values
             or EL expressions.
         </description>
+		<attribute>
+		    <name>autocomplete</name>
+		    <required>false</required>
+		    <rtexprvalue>false</rtexprvalue>
+		    <type>java.lang.String</type>
+		    <description>Autocomplete function of the web browser (on | off).</description>
+		</attribute>
         &standard_input_text_attributes;
     </tag>
 

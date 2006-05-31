@@ -27,6 +27,28 @@ import javax.faces.component.html.HtmlInputText;
 public class HtmlInputTextTag
         extends HtmlInputTextTagBase
 {
+	
+	//special attribut added to jsf 1.2
+    private String _autocomplete;
+
+    public void release()
+    {
+        super.release();
+        _autocomplete = null;
+    }
+    
+    protected void setProperties(UIComponent component)
+    {
+        super.setProperties(component);
+
+        setStringProperty(component, org.apache.myfaces.shared_impl.renderkit.html.HTML.AUTOCOMPLETE_ATTR, _autocomplete);
+    }
+
+    public void setAutocomplete(String autocomplete)
+    {
+        _autocomplete = autocomplete;
+    }
+	
     public String getComponentType()
     {
         return HtmlInputText.COMPONENT_TYPE;
