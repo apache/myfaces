@@ -51,15 +51,6 @@
                   <classifier>javadoc</classifier>
                 </artifactItem>
 
-                <!--
-                TODO/CHECK: o.a.m.shared_impl.* javadoc automatically included?
-                <artifactItem>
-                  <groupId>org.apache.myfaces.shared</groupId>
-                  <artifactId>myfaces-shared-impl</artifactId>
-                  <version>1.1.2-SNAPSHOT</version>
-                  <classifier>javadoc</classifier>
-                </artifactItem>
-                -->
               </artifactItems>
               <outputDirectory>${project.build.directory}/javadoc</outputDirectory>
             </configuration>
@@ -92,19 +83,27 @@
             </goals>
             <configuration>
               <artifactItems>
-  							<artifactItem>
+  		<artifactItem>
                   <groupId>org.apache.myfaces.core</groupId>
                   <artifactId>myfaces-api</artifactId>
                   <version>${version}</version>
-								  <classifier>sources</classifier>
+		<classifier>sources</classifier>
                 </artifactItem>
 
                 <artifactItem>
                   <groupId>org.apache.myfaces.core</groupId>
                   <artifactId>myfaces-impl</artifactId>
                   <version>${version}</version>
-		  						<classifier>sources</classifier>
+		  <classifier>sources</classifier>
                 </artifactItem>
+
+		<artifactItem>
+                  <groupId>org.apache.myfaces.shared</groupId>
+                  <artifactId>myfaces-shared-impl</artifactId>
+                  <version>2.0.3-SNAPSHOT</version>
+		  <classifier>sources</classifier>
+                </artifactItem>
+
 
                </artifactItems>
                <outputDirectory>${project.build.directory}/src</outputDirectory>
@@ -117,10 +116,10 @@
         <artifactId>maven-assembly-plugin</artifactId>
         <version>2.0.1</version>
         <configuration>
-	  			<descriptors>
-          	<descriptor>src/main/assembly/bin.xml</descriptor>
-	      		<descriptor>src/main/assembly/src.xml</descriptor>
-	  			</descriptors>
+	  <descriptors>
+             <descriptor>src/main/assembly/bin.xml</descriptor>
+	     <descriptor>src/main/assembly/src.xml</descriptor>
+	  </descriptors>
           <finalName>myfaces-core-${version}</finalName>
           <outputDirectory>target/assembly/out</outputDirectory>
           <workDirectory>target/assembly/work</workDirectory>
