@@ -52,20 +52,18 @@ import java.util.*;
  * @version $Revision$ $Date$
  */
 public class ApplicationImpl
-    extends Application
+        extends Application
 {
     private static final Log log = LogFactory.getLog(ApplicationImpl.class);
 
     //~ Instance fields ----------------------------------------------------------------------------
 
     private final Map            _valueBindingCache =
-        new BiLevelCacheMap(90)
-        {
-            protected Object newInstance(Object key)
-            {
-                return new ValueBindingImpl(ApplicationImpl.this, (String) key);
-            }
-        };
+            new BiLevelCacheMap(90) {
+                protected Object newInstance(Object key) {
+                    return new ValueBindingImpl(ApplicationImpl.this, (String) key);
+                }
+            };
 
     private Collection           _supportedLocales = Collections.EMPTY_SET;
     private Locale               _defaultLocale;
@@ -193,7 +191,7 @@ public class ApplicationImpl
         }
         _propertyResolver = propertyResolver;
         if (log.isTraceEnabled()) log.trace("set PropertyResolver = " + propertyResolver.getClass().getName());
-   }
+    }
 
     public PropertyResolver getPropertyResolver()
     {
@@ -270,7 +268,7 @@ public class ApplicationImpl
         {
             _componentClassMap.put(componentType, ClassUtils.simpleClassForName(componentClassName));
             if (log.isTraceEnabled()) log.trace("add Component class = " + componentClassName +
-                                                " for type = " + componentType);
+                    " for type = " + componentType);
         }
         catch (Exception e)
         {
@@ -297,7 +295,7 @@ public class ApplicationImpl
             _converterIdToClassMap.put(converterId, ClassUtils.simpleClassForName(converterClass));
             if (log.isTraceEnabled()) log.trace("add Converter id = " + converterId +
                     " converterClass = " + converterClass);
-           }
+        }
         catch (Exception e)
         {
             log.error("Converter class " + converterClass + " not found", e);
@@ -363,7 +361,7 @@ public class ApplicationImpl
         {
             _validatorClassMap.put(validatorId, ClassUtils.simpleClassForName(validatorClass));
             if (log.isTraceEnabled()) log.trace("add Validator id = " + validatorId +
-                                            " class = " + validatorClass);
+                    " class = " + validatorClass);
         }
         catch (Exception e)
         {
@@ -372,7 +370,7 @@ public class ApplicationImpl
     }
 
     public UIComponent createComponent(String componentType)
-        throws FacesException
+            throws FacesException
     {
         if ((componentType == null) || (componentType.length() == 0))
         {
@@ -405,8 +403,8 @@ public class ApplicationImpl
     public UIComponent createComponent(ValueBinding valueBinding,
                                        FacesContext facesContext,
                                        String componentType)
-        throws FacesException
-    {        
+            throws FacesException
+    {
         if ((valueBinding == null))
         {
             log.error("createComponent: valueBinding = null is not allowed");
@@ -427,65 +425,55 @@ public class ApplicationImpl
 
         if (obj instanceof UIComponent)
         {
-         	// check for stale component
-         	UIComponent parent = (UIComponent) obj;
-             while (parent.getParent() != null) {
-         		parent = parent.getParent();
-         	}
-         	if (!(parent instanceof UIViewRoot) || parent == facesContext.getViewRoot()) {
-         		return (UIComponent) obj;
-         	}
-         	else {
-         		log.debug("Stale component found while creating component of type [" + componentType + "]"
-	                    + " for binding [" + valueBinding.getExpressionString() + "]");
-         	}
+            // check for stale component
+            UIComponent parent = (UIComponent) obj;
+            while (parent.getParent() != null) {
+                parent = parent.getParent();
+            }
+            if (!(parent instanceof UIViewRoot) || parent == facesContext.getViewRoot()) {
+                return (UIComponent) obj;
+            } else {
+                log.debug("Stale component found while creating component of type [" + componentType + "]"
+                        + " for binding [" + valueBinding.getExpressionString() + "]");
+            }
 
-            return (UIComponent) obj;
         }
-        else
-        {
-            try {
+        try {
             UIComponent component = createComponent(componentType);
             valueBinding.setValue(facesContext, component);
             return component;
-            } catch(FacesException ex) {
-                log.error("Exception while creating component of type [" + componentType + "]"
-                        + " for binding [" + valueBinding.getExpressionString() + "]");
-                throw ex;
-            }
+        } catch(FacesException ex) {
+            log.error("Exception while creating component of type [" + componentType + "]"
+                    + " for binding [" + valueBinding.getExpressionString() + "]");
+            throw ex;
+
         }
     }
 
-    public Converter createConverter(String converterId)
-    {
-        if ((converterId == null) || (converterId.length() == 0))
-        {
+    public Converter createConverter(String converterId) {
+        if ((converterId == null) || (converterId.length() == 0)) {
             log.error("createConverter: converterId = null is not allowed");
             throw new NullPointerException("createConverter: converterId = null is not allowed");
         }
 
         Class converterClass = (Class) _converterIdToClassMap.get(converterId);
 
-        try
-        {
+        try {
             Converter converter= (Converter) converterClass.newInstance();
 
             setConverterProperties(converterClass, converter);
 
             return converter;
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             log.error("Could not instantiate converter " + converterClass, e);
             throw new FacesException("Could not instantiate converter: " + converterClass, e);
         }
     }
 
 
-    public Converter createConverter(Class targetClass)
-    {
-        if (targetClass == null)
-        {
+    public Converter createConverter(Class targetClass) {
+        if (targetClass == null) {
             log.error("createConverter: targetClass = null is not allowed");
             throw new NullPointerException("createConverter: targetClass = null is not allowed");
         }
@@ -496,112 +484,87 @@ public class ApplicationImpl
     }
 
 
-    private Converter internalCreateConverter(Class targetClass)
-    {
+    private Converter internalCreateConverter(Class targetClass) {
         // Locate a Converter registered for the target class itself.
         String converterClassName = (String)_converterClassNameToClassMap.get(targetClass);
 
         //Locate a Converter registered for interfaces that are
         // implemented by the target class (directly or indirectly).
-        if (converterClassName == null)
-        {
+        if (converterClassName == null) {
             Class interfaces[] = targetClass.getInterfaces();
-            if (interfaces != null)
-            {
-                for (int i = 0, len = interfaces.length; i < len; i++)
-                {
-                	// search all superinterfaces for a matching converter, create it
+            if (interfaces != null) {
+                for (int i = 0, len = interfaces.length; i < len; i++) {
+                    // search all superinterfaces for a matching converter, create it
                     Converter converter = internalCreateConverter(interfaces[i]);
-                    if (converter != null)
-                    {
+                    if (converter != null) {
                         return converter;
                     }
                 }
             }
         }
 
-        if (converterClassName != null)
-        {
-            try
-            {
+        if (converterClassName != null) {
+            try {
                 Class converterClass = ClassUtils.simpleClassForName(converterClassName);
-                
+
                 Converter converter = (Converter) converterClass.newInstance();
 
                 setConverterProperties(converterClass, converter);
 
                 return converter;
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 log.error("Could not instantiate converter " + converterClassName, e);
                 throw new FacesException("Could not instantiate converter: " + converterClassName, e);
             }
         }
 
         //   locate converter for primitive types
-        if (targetClass == Long.TYPE)
-        {
+        if (targetClass == Long.TYPE) {
             return internalCreateConverter(Long.class);
-        } else if (targetClass == Boolean.TYPE)
-        {
+        } else if (targetClass == Boolean.TYPE) {
             return internalCreateConverter(Boolean.class);
-        } else if (targetClass == Double.TYPE)
-        {
+        } else if (targetClass == Double.TYPE) {
             return internalCreateConverter(Double.class);
-        } else if (targetClass == Byte.TYPE)
-        {
+        } else if (targetClass == Byte.TYPE) {
             return internalCreateConverter(Byte.class);
-        } else if (targetClass == Short.TYPE)
-        {
+        } else if (targetClass == Short.TYPE) {
             return internalCreateConverter(Short.class);
-        } else if (targetClass == Integer.TYPE)
-        {
+        } else if (targetClass == Integer.TYPE) {
             return internalCreateConverter(Integer.class);
-        } else if (targetClass == Float.TYPE)
-        {
+        } else if (targetClass == Float.TYPE) {
             return internalCreateConverter(Float.class);
-        } else if (targetClass == Character.TYPE)
-        {
+        } else if (targetClass == Character.TYPE) {
             return internalCreateConverter(Character.class);
         }
-
 
         //Locate a Converter registered for the superclass (if any) of the target class,
         // recursively working up the inheritance hierarchy.
         Class superClazz = targetClass.getSuperclass();
-        if (superClazz != null)
-        {
+        if (superClazz != null) {
             return internalCreateConverter(superClazz);
-        }
-        else
-        {
+        } else {
             return null;
         }
 
     }
 
-    private void setConverterProperties(Class converterClass, Converter converter)
-    {
+    private void setConverterProperties(Class converterClass, Converter converter) {
         org.apache.myfaces.config.impl.digester.elements.Converter converterConfig =
                 (org.apache.myfaces.config.impl.digester.elements.Converter)
-                    _converterClassNameToConfigurationMap.get(converterClass.getName());
+                        _converterClassNameToConfigurationMap.get(converterClass.getName());
 
-        if(converterConfig != null)
-        {
+        if(converterConfig != null) {
 
             Iterator it = converterConfig.getProperties();
 
-            while (it.hasNext())
-            {
+            while (it.hasNext()) {
                 Property property = (Property) it.next();
 
-                try
-                {
+                try {
                     BeanUtils.setProperty(converter,property.getPropertyName(),property.getDefaultValue());
                 }
-                catch(Throwable th)
-                {
+                catch(Throwable th) {
                     log.error("Initializing converter : "+converterClass.getName()+" with property : "+
                             property.getPropertyName()+" and value : "+property.getDefaultValue()+" failed.");
                 }
@@ -611,10 +574,8 @@ public class ApplicationImpl
 
 
     public synchronized MethodBinding createMethodBinding(String reference, Class[] params)
-        throws ReferenceSyntaxException
-    {
-        if ((reference == null) || (reference.length() == 0))
-        {
+            throws ReferenceSyntaxException {
+        if ((reference == null) || (reference.length() == 0)) {
             log.error("createMethodBinding: reference = null is not allowed");
             throw new NullPointerException("createMethodBinding: reference = null is not allowed");
         }
@@ -626,37 +587,30 @@ public class ApplicationImpl
         return new MethodBindingImpl(this, reference, params);
     }
 
-    public Validator createValidator(String validatorId) throws FacesException
-    {
-        if ((validatorId == null) || (validatorId.length() == 0))
-        {
+    public Validator createValidator(String validatorId) throws FacesException {
+        if ((validatorId == null) || (validatorId.length() == 0)) {
             log.error("createValidator: validatorId = null is not allowed");
             throw new NullPointerException("createValidator: validatorId = null is not allowed");
         }
 
         Class validatorClass = (Class) _validatorClassMap.get(validatorId);
-        if (validatorClass == null)
-        {
+        if (validatorClass == null) {
             String message = "Unknown validator id '" + validatorId + "'.";
             log.error(message);
             throw new FacesException(message);
         }
 
-        try
-        {
+        try {
             return (Validator) validatorClass.newInstance();
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             log.error("Could not instantiate validator " + validatorClass, e);
             throw new FacesException("Could not instantiate validator: " + validatorClass, e);
         }
     }
 
-    public ValueBinding createValueBinding(String reference) throws ReferenceSyntaxException
-    {
-        if ((reference == null) || (reference.length() == 0))
-        {
+    public ValueBinding createValueBinding(String reference) throws ReferenceSyntaxException {
+        if ((reference == null) || (reference.length() == 0)) {
             log.error("createValueBinding: reference = null is not allowed");
             throw new NullPointerException("createValueBinding: reference = null is not allowed");
         }
@@ -664,23 +618,19 @@ public class ApplicationImpl
     }
 
 
-    public String getDefaultRenderKitId()
-    {
+    public String getDefaultRenderKitId() {
         return _defaultRenderKitId;
     }
 
-    public void setDefaultRenderKitId(String defaultRenderKitId)
-    {
+    public void setDefaultRenderKitId(String defaultRenderKitId) {
         _defaultRenderKitId = defaultRenderKitId;
     }
 
-    public StateManager getStateManager()
-    {
+    public StateManager getStateManager() {
         return _stateManager;
     }
 
-    public void setStateManager(StateManager stateManager)
-    {
+    public void setStateManager(StateManager stateManager) {
         _stateManager = stateManager;
     }
 }
