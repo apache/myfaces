@@ -89,7 +89,19 @@
       </build>
     </profile>
   </profiles>
-  <dependencies>
+  <dependencies> 
+    <!-- 
+    
+    Download Glassfish http://java.sun.com/javaee/downloads/index.jsp
+    run this command on AppServer\lib\javaee.jar to install locally
+    mvn install:install-file -DgeneratePom=true -Dfile=javaee.jar -DgroupId=javax -DartifactId=javaee -Dversion=5.0 -Dpackaging=jar
+    
+    -->
+    <dependency>
+       <groupId>javax</groupId>
+	   <artifactId>javaee</artifactId>
+	   <version>5.0</version>
+    </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
