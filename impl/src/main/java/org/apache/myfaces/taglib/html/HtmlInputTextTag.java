@@ -16,7 +16,7 @@
 package org.apache.myfaces.taglib.html;
 
 import org.apache.myfaces.shared_impl.taglib.html.HtmlInputTextTagBase;
-
+import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlInputText;
 
 
