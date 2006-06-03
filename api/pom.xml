@@ -17,6 +17,20 @@
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk/api</developerConnection>
     <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/trunk/api</url>
   </scm>
+  <build>
+  	<plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.1.2</version>
+        <configuration>
+          <excludes>
+            <exclude>**/*FactoryFinderTest*</exclude>
+            <exclude>**/*UIComponentBaseTest*</exclude>
+          </excludes>
+        </configuration>
+      </plugin>	
+  	</plugins>
+  </build>
   <profiles>
     <profile>
       <id>generate-assembly</id>
