@@ -248,7 +248,9 @@
       <artifactId>commons-logging</artifactId>
       <version>1.0.4</version>
       <scope>compile</scope>
-    </dependency>      <groupId>cactus</groupId>
+    </dependency>
+    <dependency>
+      <groupId>cactus</groupId>
       <artifactId>cactus</artifactId>
       <version>13-1.7.1</version>
       <scope>test</scope>
