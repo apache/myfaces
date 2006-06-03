@@ -84,7 +84,7 @@ public abstract class UIComponent
 		//Searching for this component's children/facets 
     	else 
     	{
-    		for (Iterator<UIComponent> it = this.getFacetsAndChildren(); !returnValue && it.hasNext();)
+    		for (Iterator<UIComponent> it = this.getFacetsAndChildren(); !returnValue && it.hasNext();){
     			returnValue = it.next().invokeOnComponent(context, clientId, callback);
     		}
     		
