@@ -17,7 +17,6 @@ package javax.faces.component;
 
 import javax.el.MethodExpression;
 import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
 import javax.faces.el.MethodBinding;
 import javax.faces.el.ValueBinding;
 import javax.faces.event.*;
