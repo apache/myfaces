@@ -9,7 +9,7 @@
   <groupId>org.apache.myfaces.core</groupId>
   <artifactId>myfaces-impl</artifactId>
   <name>Impl</name>
-  <description>This is the MyFaces Impl Subproject Description [INSERT MORE STUFF HERE]</description>
+  <description>MyFaces Implementation - JSR 252 ( http://www.jcp.org/en/jsr/detail?id=252 )</description>
   <url>http://myfaces.apache.org</url>
   <scm>
     <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk/impl</connection>
@@ -207,6 +207,18 @@
     </profile>
   </profiles>
   <dependencies>
+    <dependency>
+      <groupId>javax.servlet.jsp.jstl</groupId>
+      <artifactId>jstl</artifactId>
+      <version>1.2</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>jsp-api</artifactId>
+          <groupId>javax.servlet</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
     <dependency>
        <groupId>org.mortbay.jetty</groupId>
        <artifactId>jsp-2.1</artifactId>
