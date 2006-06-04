@@ -30,7 +30,6 @@ import javax.faces.render.Renderer;
 import javax.faces.validator.Validator;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.myfaces.el.convert.MethodBindingToValueChangeListener;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
@@ -53,7 +52,7 @@ public class UIInput
     private boolean _localValueSet = false;
     private boolean _valid = true;
     private MethodBinding _validator = null;
-    private MethodBindingToValueChangeListener _valueChangeListener = null;
+    private _MethodBindingToValueChangeListener _valueChangeListener = null;
     private List _validatorList = null;
 
     // use javadoc inherited from EditableValueHolder
@@ -147,7 +146,7 @@ public class UIInput
             removeValueChangeListener(_valueChangeListener);
         }
         
-        _valueChangeListener = new MethodBindingToValueChangeListener(valueChangeListener);
+        _valueChangeListener = new _MethodBindingToValueChangeListener(valueChangeListener);
         
         addValueChangeListener(_valueChangeListener);
     }
@@ -514,7 +513,7 @@ public class UIInput
         _submittedValue = (Object)values[4];
         _valid = ((Boolean)values[5]).booleanValue();
         _validator = (MethodBinding)restoreAttachedState(context, values[6]);
-        _valueChangeListener = (MethodBindingToValueChangeListener)restoreAttachedState(context, values[7]); // changed line - TODO: fix w/ src gen
+        _valueChangeListener = (_MethodBindingToValueChangeListener)restoreAttachedState(context, values[7]); // changed line - TODO: fix w/ src gen
         _validatorList = (List)restoreAttachedState(context, values[8]);
     }
 

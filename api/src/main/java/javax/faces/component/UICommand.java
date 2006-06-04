@@ -20,9 +20,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.el.MethodBinding;
 import javax.faces.el.ValueBinding;
 import javax.faces.event.*;
-import org.apache.myfaces.el.convert.MethodBindingToActionListener;
-import org.apache.myfaces.el.convert.MethodBindingToMethodExpression;
-import org.apache.myfaces.el.convert.MethodExpressionToMethodBinding;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
@@ -34,7 +31,7 @@ public class UICommand
         extends UIComponentBase
         implements ActionSource2
 {
-    private MethodBindingToActionListener _actionListener = null;
+    private _MethodBindingToActionListener _actionListener = null;
     private MethodExpression _action = null;
 
     /**
@@ -42,7 +39,7 @@ public class UICommand
      */
     public void setAction(MethodBinding action)
     {
-        setActionExpression(new MethodBindingToMethodExpression(action));
+        setActionExpression(new _MethodBindingToMethodExpression(action));
     }
 
     /**
@@ -51,11 +48,11 @@ public class UICommand
     public MethodBinding getAction()
     {
         MethodExpression actionExpression = getActionExpression();
-        if (actionExpression instanceof MethodBindingToMethodExpression) {
-            return ((MethodBindingToMethodExpression)actionExpression).getMethodBinding();
+        if (actionExpression instanceof _MethodBindingToMethodExpression) {
+            return ((_MethodBindingToMethodExpression)actionExpression).getMethodBinding();
         }
         
-        return new MethodExpressionToMethodBinding(actionExpression);
+        return new _MethodExpressionToMethodBinding(actionExpression);
     }
 
     /**
@@ -68,7 +65,7 @@ public class UICommand
             removeActionListener(_actionListener);
         }
         
-        _actionListener = new MethodBindingToActionListener(actionListener);
+        _actionListener = new _MethodBindingToActionListener(actionListener);
         addActionListener(_actionListener);
     }
 
@@ -209,7 +206,7 @@ public class UICommand
         Object values[] = (Object[])state;
         super.restoreState(context, values[0]);
         _action = (MethodExpression)restoreAttachedState(context, values[1]); // changed this line - TODO: fix src generator
-        _actionListener = (MethodBindingToActionListener)restoreAttachedState(context, values[2]); // changed this line - TODO: fix src generator
+        _actionListener = (_MethodBindingToActionListener)restoreAttachedState(context, values[2]); // changed this line - TODO: fix src generator
         _immediate = (Boolean)values[3];
         _value = (Object)values[4];
     }

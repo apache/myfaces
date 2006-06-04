@@ -18,7 +18,6 @@ package javax.faces.validator;
 
 import javax.el.ELException;
 import javax.el.MethodExpression;
-import javax.el.MethodInfo;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.StateHolder;
 import javax.faces.component.UIComponent;

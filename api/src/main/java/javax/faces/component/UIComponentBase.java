@@ -38,9 +38,6 @@ import javax.faces.render.Renderer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.el.convert.ValueBindingToValueExpression;
-import org.apache.myfaces.el.convert.ValueExpressionToValueBinding;
-
 
 /**
  * Standard implementation of the UIComponent base class; all standard JSF
@@ -153,12 +150,12 @@ public abstract class UIComponentBase
         ValueExpression expression = _valueExpressionMap.get(name);
         if (expression == null) return null;
         
-        if (expression instanceof ValueBindingToValueExpression) {
-            ValueBindingToValueExpression bindingToExpression = (ValueBindingToValueExpression)expression;
+        if (expression instanceof _ValueBindingToValueExpression) {
+            _ValueBindingToValueExpression bindingToExpression = (_ValueBindingToValueExpression)expression;
             return bindingToExpression.getValueBinding();
         }
         
-        return new ValueExpressionToValueBinding(expression);
+        return new _ValueExpressionToValueBinding(expression);
     }
     
     public ValueExpression getValueExpression(String name) {
@@ -178,7 +175,7 @@ public abstract class UIComponentBase
     public void setValueBinding(String name,
                                 ValueBinding binding)
     {
-        setValueExpression(name, new ValueBindingToValueExpression(binding));
+        setValueExpression(name, new _ValueBindingToValueExpression(binding));
     }
     
     public void setValueExpression(String name, ValueExpression binding) {
