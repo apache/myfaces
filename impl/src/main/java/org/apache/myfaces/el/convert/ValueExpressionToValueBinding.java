@@ -31,7 +31,12 @@ import javax.faces.el.ValueBinding;
 /**
  * Converter for legacy ValueBinding objects.  See JSF 1.2 section 5.8.3
  *
+ * ATTENTION: If you make changes to this class, treat 
+ * javax.faces.component.ValueExpressionToValueBinding
+ * accordingly.
+ *
  * @author Stan Silvert
+ * @see javax.faces.component.ValueExpressionToValueBinding
  */
 public class ValueExpressionToValueBinding extends ValueBinding implements StateHolder {
     private static final ExpressionFactory expFactory;

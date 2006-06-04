@@ -16,7 +16,6 @@
 package org.apache.myfaces.application;
 
 import java.lang.reflect.Constructor;
-import javax.el.CompositeELResolver;
 import javax.el.ELContext;
 import javax.el.ELContextListener;
 import javax.el.ELException;
@@ -38,7 +37,6 @@ import org.apache.myfaces.el.unified.resolver.ResolverForFaces;
 import org.apache.myfaces.el.unified.resolver.ResolverForJSP;
 import org.apache.myfaces.el.convert.ELResolverToPropertyResolver;
 import org.apache.myfaces.el.convert.ELResolverToVariableResolver;
-import org.apache.myfaces.shared_impl.util.BiLevelCacheMap;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.config.impl.digester.elements.Property;
 
@@ -52,14 +50,12 @@ import javax.faces.application.NavigationHandler;
 import javax.faces.application.StateManager;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.el.*;
 import javax.faces.event.ActionListener;
 import javax.faces.validator.Validator;
 import java.util.*;
-
 
 /**
  * DOCUMENT ME!

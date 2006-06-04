@@ -28,7 +28,12 @@ import javax.faces.el.MethodNotFoundException;
  * Converts a MethodExpression to a MethodBinding.  
  * See JSF 1.2 spec section 5.8.4
  *
+ * ATTENTION: If you make changes to this class, treat 
+ * javax.faces.component._MethodExpressionToMethodBinding
+ * accordingly.
+ *
  * @author Stan Silvert
+ * @see javax.faces.component._MethodExpressionToMethodBinding
  */
 public class MethodExpressionToMethodBinding extends MethodBinding implements StateHolder {
     

@@ -37,7 +37,12 @@ import javax.faces.el.ValueBinding;
  * Although ValueExpression implements Serializable, this class implements
  * StateHolder instead.
  *
+ * ATTENTION: If you make changes to this class, treat 
+ * javax.faces.component._ValueBindingToValueExpression
+ * accordingly.
+ *
  * @author Stan Silvert
+ * @see javax.faces.component._ValueBindingToValueExpression
  */
 public class ValueBindingToValueExpression extends ValueExpression implements StateHolder {
     
