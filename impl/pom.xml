@@ -212,19 +212,7 @@
        <artifactId>jsp-2.1</artifactId>
        <version>6.0.0beta15</version>
        <scope>provided</scope>
-    </dependency>
-    <!-- 
-    
-    Download Glassfish http://java.sun.com/javaee/downloads/index.jsp
-    run this command on AppServer\lib\javaee.jar to install locally
-    mvn install:install-file -DgeneratePom=true -Dfile=javaee.jar -DgroupId=javax -DartifactId=javaee -Dversion=5.0 -Dpackaging=jar
-    
-    -->
-    <dependency>
-       <groupId>javax</groupId>
-	   <artifactId>javaee</artifactId>
-	   <version>5.0</version>
-    </dependency>      
+    </dependency>    
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
