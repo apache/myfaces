@@ -99,6 +99,48 @@ public abstract class ExternalContext
 
     public abstract java.security.Principal getUserPrincipal();
 
+    /**
+     * throws <code>UnsupportedOperationException</code> by default.
+     * @since JSF 1.2
+     * @param request
+     */
+    public void setRequest(java.lang.Object request)
+    {
+    	throw new UnsupportedOperationException();
+    }
+    
+    /**
+     * throws <code>UnsupportedOperationException</code> by default.
+     * @since JSF 1.2
+     * @param encoding
+     * @throws java.io.UnsupportedEncodingException
+     */
+    public void setRequestCharacterEncoding(java.lang.String encoding)
+    		throws java.io.UnsupportedEncodingException{
+    	
+    	throw new UnsupportedOperationException();
+    }
+    
+    /**
+     * throws <code>UnsupportedOperationException</code> by default.
+     * @since JSF 1.2
+     * @param response
+     */
+    public void setResponse(java.lang.Object response)
+    {
+    	throw new UnsupportedOperationException();
+    }
+    
+    /**
+     * throws <code>UnsupportedOperationException</code> by default.
+     * @since JSF 1.2
+     * @param encoding
+     */
+    public void setResponseCharacterEncoding(java.lang.String encoding)
+    {
+    	throw new UnsupportedOperationException();
+    }
+    
     public abstract boolean isUserInRole(String role);
 
     public abstract void log(String message);

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import javax.el.ValueExpression;
 
+import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
@@ -126,7 +127,13 @@ import javax.servlet.jsp.jstl.sql.Result;
  */
 public class UIData extends UIComponentBase implements NamingContainer
 {
-    private static final int STATE_SIZE = 5;
+    @Override
+	public boolean invokeOnComponent(FacesContext context, String clientId, ContextCallback callback) throws FacesException {
+		// not supported yet
+		return false;
+	}
+
+	private static final int STATE_SIZE = 5;
     private static final int SUPER_STATE_INDEX = 0;
     private static final int FIRST_STATE_INDEX = 1;
     private static final int ROWS_STATE_INDEX = 2;

@@ -119,7 +119,7 @@ public abstract class UIComponent
 
     public abstract boolean getRendersChildren();
 
-    public abstract java.util.List getChildren();
+    public abstract java.util.List<UIComponent> getChildren();
 
     public abstract int getChildCount();
 
@@ -129,7 +129,7 @@ public abstract class UIComponent
 
     public abstract javax.faces.component.UIComponent getFacet(java.lang.String name);
 
-    public abstract java.util.Iterator getFacetsAndChildren();
+    public abstract java.util.Iterator<UIComponent> getFacetsAndChildren();
 
     public abstract void broadcast(javax.faces.event.FacesEvent event)
             throws AbortProcessingException;
@@ -164,7 +164,7 @@ public abstract class UIComponent
     		//let children render itself
     		else
     		{
-    			List comps = this.getChildren();
+    			List<UIComponent> comps = this.getChildren();
     			for (Iterator<UIComponent> iter = comps.iterator(); iter.hasNext();)
     			{
 					iter.next().encodeAll(context);;

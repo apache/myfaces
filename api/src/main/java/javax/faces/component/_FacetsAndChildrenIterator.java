@@ -24,11 +24,11 @@ import java.util.NoSuchElementException;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-class _FacetsAndChildrenIterator
+class _FacetsAndChildrenIterator<E>
         implements Iterator
 {
-    private Iterator _facetsIterator;
-    private Iterator _childrenIterator;
+    private Iterator<UIComponent> _facetsIterator;
+    private Iterator<UIComponent> _childrenIterator;
 
     _FacetsAndChildrenIterator(Map facetMap, List childrenList)
     {

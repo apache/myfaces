@@ -23,9 +23,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
-
 import javax.faces.FactoryFinder;
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
@@ -61,8 +61,8 @@ public abstract class UIComponentBase
 
     private _ComponentAttributesMap _attributesMap = null;
     private Map<String, ValueExpression> _valueExpressionMap = null;
-    private List _childrenList = null;
-    private Map _facetMap = null;
+    private List<UIComponent> _childrenList = null;
+    private Map<String,UIComponent> _facetMap = null;
     private List _facesListeners = null;
     private String _clientId = null;
     private String _id = null;
@@ -376,7 +376,7 @@ public abstract class UIComponentBase
      * from its original parent's child list.
      * </ul>
      */
-    public List getChildren()
+    public List<UIComponent> getChildren()
     {
         if (_childrenList == null)
         {
@@ -489,9 +489,9 @@ public abstract class UIComponentBase
         return _facetMap == null ? null : (UIComponent)_facetMap.get(name);
     }
 
-    public Iterator getFacetsAndChildren()
+    public Iterator<UIComponent> getFacetsAndChildren()
     {
-        return new _FacetsAndChildrenIterator(_facetMap, _childrenList);
+        return new _FacetsAndChildrenIterator<UIComponent>(_facetMap, _childrenList);
     }
 
     /**

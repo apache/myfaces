@@ -16,6 +16,8 @@
 package javax.faces.application;
 
 import javax.faces.FacesException;
+
+import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
 /**
@@ -30,6 +32,35 @@ public abstract class ViewHandler
     public static final String DEFAULT_SUFFIX_PARAM_NAME = "javax.faces.DEFAULT_SUFFIX";
     public static final String DEFAULT_SUFFIX = ".jsp";
 
+    /**
+     * @since JSF 1.2
+     */
+    public String calculateCharacterEncoding(javax.faces.context.FacesContext context)
+    {
+    	String _encoding = null;
+    	String _contentType = (String) context.getExternalContext().getRequestHeaderMap().get("Content-Type");
+    	int _indexOf = _contentType == null ? -1 :_contentType.indexOf("charset");
+    	if(_indexOf != -1)
+    	{
+			String _tempEnc =_contentType.substring(_indexOf); //charset=UTF-8 
+    		_encoding = _tempEnc.substring(_tempEnc.indexOf("=")+1); //UTF-8
+    	}
+    	else 
+    	{
+    		boolean _sessionAvailable = context.getExternalContext().getSession(false) != null;
+    		if(_sessionAvailable)
+    		{
+    			String _sessionParam = (String) context.getExternalContext().getSessionMap().get(CHARACTER_ENCODING_KEY); 
+    			if (_sessionParam != null)
+    			{
+    				_encoding = _sessionParam;
+    			}
+    		}
+    	}
+    	
+    	return _encoding;
+    }
+    
     public abstract Locale calculateLocale(javax.faces.context.FacesContext context);
 
     public abstract String calculateRenderKitId(javax.faces.context.FacesContext context);
@@ -42,7 +73,29 @@ public abstract class ViewHandler
 
     public abstract String getResourceURL(javax.faces.context.FacesContext context,
                                           String path);
-
+    
+    /**
+     * Method must be called by the JSF impl at the beginning of Phase <i>Restore View</i> of the JSF
+     * lifecycle.
+     * 
+     * @since JSF 1.2
+     */
+    public void initView(javax.faces.context.FacesContext context) throws FacesException
+    {
+    	String _encoding = this.calculateCharacterEncoding(context);
+    	if(_encoding != null)
+    	{
+    		try
+    		{
+        		context.getExternalContext().setRequestCharacterEncoding(_encoding);
+    		}
+    		catch(UnsupportedEncodingException uee)
+    		{
+    			throw new FacesException(uee);
+    		}
+    	}
+    }
+    
     public abstract void renderView(javax.faces.context.FacesContext context,
                                     javax.faces.component.UIViewRoot viewToRender)
             throws java.io.IOException,

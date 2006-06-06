@@ -29,7 +29,17 @@ import javax.faces.context.FacesContext;
  */
 public abstract class ViewHandlerWrapper extends ViewHandler {
     
-    public abstract ViewHandler getWrapped();
+    @Override
+	public String calculateCharacterEncoding(FacesContext context) {
+		return getWrapped().calculateCharacterEncoding(context);
+	}
+
+	@Override
+	public void initView(FacesContext context) throws FacesException {
+		getWrapped().initView(context);
+	}
+
+	public abstract ViewHandler getWrapped();
     
     public void renderView(FacesContext context, UIViewRoot viewToRender) throws IOException, FacesException {
         getWrapped().renderView(context, viewToRender);
