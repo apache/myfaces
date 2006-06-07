@@ -198,7 +198,7 @@ public abstract class Application
             String componentType)
             throws FacesException;
     
-    public abstract Iterator getComponentTypes();
+    public abstract Iterator<String> getComponentTypes();
 
     public abstract void addConverter(String converterId,
                                       String converterClass);
@@ -210,9 +210,9 @@ public abstract class Application
 
     public abstract javax.faces.convert.Converter createConverter(Class targetClass);
 
-    public abstract Iterator getConverterIds();
+    public abstract Iterator<String> getConverterIds();
 
-    public abstract Iterator getConverterTypes();
+    public abstract Iterator<Class> getConverterTypes();
 
     /**
      * Create an object which can be used to invoke an arbitrary method via an
@@ -229,7 +229,7 @@ public abstract class Application
             String ref, Class[] params)
             throws ReferenceSyntaxException;
 
-    public abstract Iterator getSupportedLocales();
+    public abstract Iterator<Locale> getSupportedLocales();
 
     public abstract void setSupportedLocales(Collection locales);
 
@@ -239,7 +239,7 @@ public abstract class Application
     public abstract javax.faces.validator.Validator createValidator(String validatorId)
             throws FacesException;
 
-    public abstract Iterator getValidatorIds();
+    public abstract Iterator<String> getValidatorIds();
 
     /**
      * Create an object which can be used to invoke an arbitrary method via an
