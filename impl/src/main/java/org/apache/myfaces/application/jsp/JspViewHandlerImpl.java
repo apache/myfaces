@@ -15,13 +15,10 @@
  */
 package org.apache.myfaces.application.jsp;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.portlet.MyFacesGenericPortlet;
-import org.apache.myfaces.portlet.PortletUtil;
-import org.apache.myfaces.util.DebugUtils;
-import org.apache.myfaces.shared_impl.webapp.webxml.ServletMapping;
-import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
 
 import javax.faces.FacesException;
 import javax.faces.application.Application;
@@ -36,10 +33,14 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.portlet.MyFacesGenericPortlet;
+import org.apache.myfaces.portlet.PortletUtil;
+import org.apache.myfaces.shared_impl.webapp.webxml.ServletMapping;
+import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
+import org.apache.myfaces.util.DebugUtils;
 
 /**
  * @author Thomas Spiegl (latest modification by $Author$)

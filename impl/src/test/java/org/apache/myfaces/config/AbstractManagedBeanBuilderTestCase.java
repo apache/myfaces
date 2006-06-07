@@ -7,17 +7,18 @@ package org.apache.myfaces.config;
  * @author Dennis C. Byrne
  */
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 
 import javax.faces.application.Application;
 
+import junit.framework.TestCase;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.ApplicationImpl;
-import org.apache.myfaces.config.ManagedBeanBuilder;
 import org.apache.myfaces.config.impl.digester.elements.ListEntries;
 import org.apache.myfaces.config.impl.digester.elements.ManagedBean;
 import org.apache.myfaces.config.impl.digester.elements.ManagedProperty;
@@ -25,8 +26,6 @@ import org.apache.myfaces.config.impl.digester.elements.MapEntries;
 import org.apache.myfaces.config.impl.digester.elements.ListEntries.Entry;
 import org.apache.myfaces.el.PropertyResolverImpl;
 import org.apache.shale.test.mock.MockFacesContext;
-
-import junit.framework.TestCase;
 
 public abstract class AbstractManagedBeanBuilderTestCase extends TestCase {
 

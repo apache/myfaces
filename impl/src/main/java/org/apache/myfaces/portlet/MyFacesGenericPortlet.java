@@ -41,7 +41,6 @@ import javax.portlet.UnavailableException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.context.portlet.PortletExternalContextImpl;
 import org.apache.myfaces.context.servlet.ServletFacesContextImpl;

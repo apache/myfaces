@@ -15,12 +15,9 @@
  */
 package org.apache.myfaces.lifecycle;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.portlet.MyFacesGenericPortlet;
-import org.apache.myfaces.portlet.PortletUtil;
-import org.apache.myfaces.util.DebugUtils;
-import org.apache.myfaces.shared_impl.util.RestoreStateUtils;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.faces.FacesException;
 import javax.faces.application.Application;
@@ -28,14 +25,17 @@ import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 import javax.faces.lifecycle.Lifecycle;
 import javax.portlet.PortletRequest;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.portlet.MyFacesGenericPortlet;
+import org.apache.myfaces.portlet.PortletUtil;
+import org.apache.myfaces.shared_impl.util.RestoreStateUtils;
+import org.apache.myfaces.util.DebugUtils;
 
 /**
  * Implements the lifecycle as described in Spec. 1.0 PFD Chapter 2

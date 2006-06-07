@@ -16,6 +16,15 @@
 package org.apache.myfaces.application;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
+
 import javax.el.ELContext;
 import javax.el.ELContextListener;
 import javax.el.ELException;
@@ -23,27 +32,6 @@ import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
-import javax.servlet.ServletContext;
-import javax.servlet.jsp.JspApplicationContext;
-import javax.servlet.jsp.JspFactory;
-import org.apache.myfaces.application.jsp.JspStateManagerImpl;
-import org.apache.myfaces.application.jsp.JspViewHandlerImpl;
-import org.apache.myfaces.el.NullPropertyResolver;
-import org.apache.myfaces.el.NullVariableResolver;
-import org.apache.myfaces.el.convert.MethodExpressionToMethodBinding;
-import org.apache.myfaces.el.convert.ValueBindingToValueExpression;
-import org.apache.myfaces.el.convert.ValueExpressionToValueBinding;
-import org.apache.myfaces.el.unified.resolver.ResolverForFaces;
-import org.apache.myfaces.el.unified.resolver.ResolverForJSP;
-import org.apache.myfaces.el.convert.ELResolverToPropertyResolver;
-import org.apache.myfaces.el.convert.ELResolverToVariableResolver;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
-import org.apache.myfaces.config.impl.digester.elements.Property;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.beanutils.BeanUtils;
-
 import javax.faces.FacesException;
 import javax.faces.application.Application;
 import javax.faces.application.NavigationHandler;
@@ -52,10 +40,33 @@ import javax.faces.application.ViewHandler;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
-import javax.faces.el.*;
+import javax.faces.el.MethodBinding;
+import javax.faces.el.PropertyResolver;
+import javax.faces.el.ReferenceSyntaxException;
+import javax.faces.el.ValueBinding;
+import javax.faces.el.VariableResolver;
 import javax.faces.event.ActionListener;
 import javax.faces.validator.Validator;
-import java.util.*;
+import javax.servlet.ServletContext;
+import javax.servlet.jsp.JspApplicationContext;
+import javax.servlet.jsp.JspFactory;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.application.jsp.JspStateManagerImpl;
+import org.apache.myfaces.application.jsp.JspViewHandlerImpl;
+import org.apache.myfaces.config.impl.digester.elements.Property;
+import org.apache.myfaces.el.NullPropertyResolver;
+import org.apache.myfaces.el.NullVariableResolver;
+import org.apache.myfaces.el.convert.ELResolverToPropertyResolver;
+import org.apache.myfaces.el.convert.ELResolverToVariableResolver;
+import org.apache.myfaces.el.convert.MethodExpressionToMethodBinding;
+import org.apache.myfaces.el.convert.ValueBindingToValueExpression;
+import org.apache.myfaces.el.convert.ValueExpressionToValueBinding;
+import org.apache.myfaces.el.unified.resolver.ResolverForFaces;
+import org.apache.myfaces.el.unified.resolver.ResolverForJSP;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 /**
  * DOCUMENT ME!
