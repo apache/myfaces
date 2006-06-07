@@ -36,6 +36,10 @@ public class DateTimeConverter
 
     // API field
     public static final String CONVERTER_ID = "javax.faces.DateTime";
+    public static final String DATE_ID = "javax.faces.converter.DateTimeConverter.DATE";
+    public static final String DATETIME_ID = "javax.faces.converter.DateTimeConverter.DATETIME";
+    public static final String STRING_ID = "javax.faces.converter.STRING";
+    public static final String TIME_ID = "javax.faces.converter.DateTimeConverter.TIME";
 
     // internal constants
     private static final String CONVERSION_MESSAGE_ID = "javax.faces.convert.DateTimeConverter.CONVERSION";

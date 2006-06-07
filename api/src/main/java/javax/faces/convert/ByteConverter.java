@@ -31,6 +31,8 @@ public class ByteConverter
 
     // FIELDS
     public static final String CONVERTER_ID = "javax.faces.Byte";
+    public static final String STRING_ID = "javax.faces.converter.STRING";
+    public static final String BYTE_ID = "javax.faces.converter.ByteConverter.BYTE";
 
     // CONSTRUCTORS
     public ByteConverter()

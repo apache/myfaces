@@ -32,6 +32,8 @@ public class BigIntegerConverter
 
     // FIELDS
     public static final String CONVERTER_ID = "javax.faces.BigInteger";
+    public static final String STRING_ID = "javax.faces.converter.STRING";
+    public static final String BIGINTEGER_ID = "javax.faces.converter.BigIntegerConverter.BIGINTEGER";
 
     // CONSTRUCTORS
     public BigIntegerConverter()

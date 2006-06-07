@@ -31,6 +31,8 @@ public class BooleanConverter
 
     // FIELDS
     public static final String CONVERTER_ID = "javax.faces.Boolean";
+    public static final String STRING_ID = "javax.faces.converter.STRING";
+    public static final String BOOLEAN_ID = "javax.faces.converter.BooleanConverter.BOOLEAN";
 
     // CONSTRUCTORS
     public BooleanConverter()

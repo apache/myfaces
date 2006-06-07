@@ -29,6 +29,8 @@ public class CharacterConverter
 {
     // FIELDS
     public static final String CONVERTER_ID = "javax.faces.Character";
+    public static final String STRING_ID = "javax.faces.converter.STRING";
+    public static final String CHARACTER_ID = "javax.faces.converter.CharacterConverter.CHARACTER";
 
     // CONSTRUCTORS
     public CharacterConverter()

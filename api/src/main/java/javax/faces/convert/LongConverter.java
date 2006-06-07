@@ -31,6 +31,8 @@ public class LongConverter
 
     // FIELDS
     public static final String CONVERTER_ID = "javax.faces.Long";
+    public static final String STRING_ID = "javax.faces.converter.STRING";
+    public static final String LONG_ID = "javax.faces.converter.LongConverter.LONG";
 
     // CONSTRUCTORS
     public LongConverter()

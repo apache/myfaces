@@ -32,6 +32,8 @@ public class BigDecimalConverter
 
     // FIELDS
     public static final String CONVERTER_ID = "javax.faces.BigDecimal";
+    public static final String STRING_ID = "javax.faces.converter.STRING";
+    public static final String DECIMAL_ID = "javax.faces.converter.BigDecimalConverter.DECIMA";
 
     // CONSTRUCTORS
     public BigDecimalConverter()

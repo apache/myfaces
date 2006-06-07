@@ -30,10 +30,10 @@ public class DoubleConverter
     // API FIELDS
 	// the wrong string javax.faces.DoubleTime is required to be compatible with JSF RI and its TCK tests
     public static final String CONVERTER_ID = "javax.faces.DoubleTime";
-
+    public static final String STRING_ID = "javax.faces.converter.STRING";
+    public static final String DOUBLE_ID = "javax.faces.converter.DoubleConverter.DOUBLE";
 
     private static final String CONVERSION_MESSAGE_ID = "javax.faces.convert.DoubleConverter.CONVERSION";
-
 
     // CONSTRUCTORS
     public DoubleConverter()

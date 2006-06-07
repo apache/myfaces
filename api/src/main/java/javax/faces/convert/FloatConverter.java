@@ -31,6 +31,8 @@ public class FloatConverter
 
     // FIELDS
     public static final String CONVERTER_ID = "javax.faces.Float";
+    public static final String STRING_ID = "javax.faces.converter.STRING";
+    public static final String FLOAT_ID = "javax.faces.converter.FloatConverter.FLOAT";
 
     // CONSTRUCTORS
     public FloatConverter()

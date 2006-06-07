@@ -31,6 +31,8 @@ public class IntegerConverter
 
     // FIELDS
     public static final String CONVERTER_ID = "javax.faces.Integer";
+    public static final String STRING_ID = "javax.faces.converter.STRING";
+    public static final String INTEGER_ID = "javax.faces.converter.IntegerConverter.INTEGER";
 
     // CONSTRUCTORS
     public IntegerConverter()

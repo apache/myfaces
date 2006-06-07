@@ -31,6 +31,8 @@ public class ShortConverter
 
     // FIELDS
     public static final String CONVERTER_ID = "javax.faces.Short";
+    public static final String STRING_ID = "javax.faces.converter.STRING";
+    public static final String SHORT_ID = "javax.faces.converter.ShortConverter.SHORT";
 
     // CONSTRUCTORS
     public ShortConverter()
