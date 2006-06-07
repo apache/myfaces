@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ELResolver;
@@ -48,11 +49,11 @@ public class ScopedAttributeResolver extends ELResolver {
         if (base != null) return;
         if (property == null) throw new PropertyNotFoundException();
         
-        Map scopedMap = findScopedMap(externalContext(context), property);
+        Map<String, Object> scopedMap = findScopedMap(externalContext(context), property);
         if (scopedMap != null) {
-            scopedMap.put(property, value);
+            scopedMap.put((String)property, value);
         } else {
-            externalContext(context).getRequestMap().put(property, value);
+            externalContext(context).getRequestMap().put((String)property, value);
         }
         
         context.setPropertyResolved(true);
@@ -134,9 +135,9 @@ public class ScopedAttributeResolver extends ELResolver {
     }
     
     // returns null if not found
-    private Map findScopedMap(ExternalContext extContext, Object property) {
+    private Map<String, Object> findScopedMap(ExternalContext extContext, Object property) {
 
-        Map scopedMap = extContext.getRequestMap();
+        Map<String, Object> scopedMap = extContext.getRequestMap();
         if (scopedMap.containsKey(property)) return scopedMap;
         
         scopedMap = extContext.getSessionMap();

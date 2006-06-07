@@ -42,7 +42,7 @@ public abstract class ExternalContext
 
     public abstract String encodeResourceURL(String url);
 
-    public abstract Map getApplicationMap();
+    public abstract Map<String, Object> getApplicationMap();
 
     public abstract String getAuthType();
 
@@ -56,27 +56,35 @@ public abstract class ExternalContext
 
     public abstract Object getRequest();
     
-    public abstract String getRequestContentType();
-
+    public String getRequestCharacterEncoding()
+    {
+    	throw new UnsupportedOperationException();
+    }
+    
+    public String getRequestContentType()
+    {
+    	throw new UnsupportedOperationException();
+    }
+    
     public abstract String getRequestContextPath();
 
-    public abstract Map getRequestCookieMap();
+    public abstract Map<String, Object> getRequestCookieMap();
 
-    public abstract Map getRequestHeaderMap();
+    public abstract Map<String, Object> getRequestHeaderMap();
 
-    public abstract Map getRequestHeaderValuesMap();
+    public abstract Map<String, String[]> getRequestHeaderValuesMap();
 
     public abstract Locale getRequestLocale();
 
-    public abstract Iterator getRequestLocales();
+    public abstract Iterator<Locale> getRequestLocales();
 
-    public abstract Map getRequestMap();
+    public abstract Map<String, Object> getRequestMap();
 
-    public abstract Map getRequestParameterMap();
+    public abstract Map<String, String> getRequestParameterMap();
 
-    public abstract Iterator getRequestParameterNames();
+    public abstract Iterator<String> getRequestParameterNames();
 
-    public abstract Map getRequestParameterValuesMap();
+    public abstract Map<String, String[]> getRequestParameterValuesMap();
 
     public abstract String getRequestPathInfo();
 
@@ -87,7 +95,7 @@ public abstract class ExternalContext
 
     public abstract java.io.InputStream getResourceAsStream(String path);
 
-    public abstract Set getResourcePaths(String path);
+    public abstract Set<String> getResourcePaths(String path);
 
     public abstract Object getResponse();
     
@@ -95,7 +103,7 @@ public abstract class ExternalContext
 
     public abstract Object getSession(boolean create);
 
-    public abstract Map getSessionMap();
+    public abstract Map<String, Object> getSessionMap();
 
     public abstract java.security.Principal getUserPrincipal();
 
