@@ -36,15 +36,15 @@ public abstract class FacesContext
     
     public abstract javax.faces.application.Application getApplication();
 
-    public abstract Iterator getClientIdsWithMessages();
+    public abstract Iterator<String> getClientIdsWithMessages();
 
     public abstract javax.faces.context.ExternalContext getExternalContext();
 
     public abstract FacesMessage.Severity getMaximumSeverity();
 
-    public abstract Iterator getMessages();
+    public abstract Iterator<FacesMessage> getMessages();
 
-    public abstract Iterator getMessages(String clientId);
+    public abstract Iterator<FacesMessage> getMessages(String clientId);
 
     public abstract javax.faces.render.RenderKit getRenderKit();
 
