@@ -14,7 +14,7 @@ import java.util.Map;
 
 import javax.faces.application.Application;
 
-import junit.framework.TestCase;
+import junit.framework.Test;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,9 +25,14 @@ import org.apache.myfaces.config.impl.digester.elements.ManagedProperty;
 import org.apache.myfaces.config.impl.digester.elements.MapEntries;
 import org.apache.myfaces.config.impl.digester.elements.ListEntries.Entry;
 import org.apache.myfaces.el.PropertyResolverImpl;
+import org.apache.shale.test.base.AbstractJsfTestCase;
 import org.apache.shale.test.mock.MockFacesContext;
 
-public abstract class AbstractManagedBeanBuilderTestCase extends TestCase {
+public abstract class AbstractManagedBeanBuilderTestCase extends AbstractJsfTestCase {
+
+	public AbstractManagedBeanBuilderTestCase(String name) {
+		super(name);
+	}
 
 	private static Log log = LogFactory.getLog(AbstractManagedBeanBuilderTestCase.class);
 	protected MangedBeanExample example;
@@ -37,11 +42,16 @@ public abstract class AbstractManagedBeanBuilderTestCase extends TestCase {
 	protected static final Map MANAGED_MAP = new HashMap();
 	protected static final String INJECTED_VALUE = "tatiana";
 	
+    public static Test suite() {
+        return null; // keep this method or maven won't run it
+    }
+	
 	/**
 	 * Skips digester and manually builds and configures a managed bean.
 	 */
 	
-	protected void setUp() throws Exception {
+	public void setUp(){
+		super.setUp();
 		ManagedBeanBuilder managedBeanBuilder = new ManagedBeanBuilder();
 		ManagedBean managedBean = new ManagedBean();
 		
@@ -100,7 +110,7 @@ public abstract class AbstractManagedBeanBuilderTestCase extends TestCase {
 			.buildManagedBean(facesContext, managedBean);
 	}
 	
-	protected void tearDown() throws Exception {
+	public void tearDown() {
 		example = null;
 		MANAGED_LIST.clear();
 		MANAGED_MAP.clear();

@@ -14,6 +14,10 @@ import org.apache.commons.logging.LogFactory;
 
 public class Myfaces889TestCase extends AbstractManagedBeanBuilderTestCase {
 
+	public Myfaces889TestCase(String name) {
+		super(name);
+	}
+
 	private static Log log = LogFactory.getLog(Myfaces889TestCase.class);
 	
 	public void testWriteOnlyMap(){
