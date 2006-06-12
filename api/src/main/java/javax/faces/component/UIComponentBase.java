@@ -1020,7 +1020,8 @@ public abstract class UIComponentBase
     /**
      * @param string the component id, that should be a vaild one.
      */
-    private void isIdValid(String string) {
+    private void isIdValid(String string)
+    {
 
         //is there any component identifier ?
         if(string == null)
@@ -1028,29 +1029,27 @@ public abstract class UIComponentBase
 
         //Component identifiers must obey the following syntax restrictions:
         //1. Must not be a zero-length String.
-        if(string.length()==0){
+        if(string.length()==0)
+        {
             throw new IllegalArgumentException("component identifier must not be a zero-length String");
         }
 
         //let's look at all chars inside of the ID if it is a valid ID!
         char[] chars = string.toCharArray();
-        for (int i = 0; i < chars.length; i++) {
-            char tmpChar = chars[i];
 
-            //2. First character must be a letter or an underscore ('_').
-            if(i==0){
-                if(!Character.isLetter(tmpChar) &&  tmpChar !='_'){
-                    throw new IllegalArgumentException("component identifier's first character must be a letter or an underscore ('_')! But it is \""+tmpChar+"\"");
-                }
-            }else{
-
-                //3. Subsequent characters must be a letter, a digit, an underscore ('_'), or a dash ('-').
-                if(!Character.isDigit(tmpChar) && !Character.isLetter(tmpChar) && tmpChar !='-' && tmpChar !='_'){
-                    throw new IllegalArgumentException("Subsequent characters of component identifier must be a letter, a digit, an underscore ('_'), or a dash ('-')! But component identifier contains \""+tmpChar+"\"");
-                }
+        //2. First character must be a letter or an underscore ('_').
+        if(!Character.isLetter(chars[0]) &&  chars[0] !='_')
+        {
+            throw new IllegalArgumentException("component identifier's first character must be a letter or an underscore ('_')! But it is \""+chars[0]+"\"");
+        }
+        for (int i = 1; i < chars.length; i++)
+        {
+            //3. Subsequent characters must be a letter, a digit, an underscore ('_'), or a dash ('-').
+            if(!Character.isDigit(chars[i]) && !Character.isLetter(chars[i]) && chars[i] !='-' && chars[i] !='_')
+            {
+                throw new IllegalArgumentException("Subsequent characters of component identifier must be a letter, a digit, an underscore ('_'), or a dash ('-')! But component identifier contains \""+chars[i]+"\"");
             }
         }
-
     }
 
 
