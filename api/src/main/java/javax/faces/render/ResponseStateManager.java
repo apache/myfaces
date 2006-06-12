@@ -28,28 +28,14 @@ import java.io.IOException;
 public abstract class ResponseStateManager
 {
 	
-    /**
-     * @deprecated
-     */
     public abstract void writeState(FacesContext context,
                                     StateManager.SerializedView state)
             throws IOException;
 
-    /**
-     * @deprecated
-     */
     public abstract Object getTreeStructureToRestore(FacesContext context,
                                                      String viewId);
 
-    /**
-     * @deprecated
-     */
     public abstract Object getComponentStateToRestore(FacesContext context);
 
-    public abstract boolean isPostback(FacesContext context); 
-    
-    public abstract Object getState(FacesContext context, String viewId);
-    
-    public abstract void writeState(FacesContext context, Object state) ;
     
 }
