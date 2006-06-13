@@ -50,7 +50,6 @@ class _SharedRendererUtils
         Class valueType = vb.getType(facesContext);
         if (valueType == null) return null;
 
-        if (String.class.equals(valueType)) return null;    //No converter needed for String type
         if (Object.class.equals(valueType)) return null;    //There is no converter for Object class
 
         try
@@ -116,7 +115,6 @@ class _SharedRendererUtils
                 throw new IllegalArgumentException("ValueBinding for UISelectMany must be of type List or Array");
             }
 
-            if (String.class.equals(arrayComponentType)) return submittedValue; //No conversion needed for String type
             if (Object.class.equals(arrayComponentType)) return submittedValue; //No conversion for Object class
 
             try
