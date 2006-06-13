@@ -284,7 +284,7 @@
             <rtexprvalue>false</rtexprvalue>
             <description>
                 The type of formatting/parsing to be performed.  Values include:
-                number, currency, and percentage.  Default: number.
+                number, currency, and percent.  Default: number.
             </description>
         </attribute>
     </tag>
