@@ -172,6 +172,21 @@ public class NavigationHandlerImpl
         return navigationCase;
     }
 
+    /**
+     * TODO
+     */
+    protected String getViewId(FacesContext context, String fromAction, String outcome)
+    {
+        return null;
+    }
+
+    /**
+     * TODO
+     */
+    protected String beforeNavigation(String viewId)
+    {
+        return null;
+    }
 
     private NavigationCase calcMatchingNavigationCase(List casesList, String actionRef, String outcome)
     {
