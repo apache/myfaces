@@ -70,7 +70,7 @@ public class NavigationHandlerImpl
 
         String viewId = facesContext.getViewRoot().getViewId();
         Map casesMap = getNavigationCases(facesContext);
-        NavigationCase navigationCase = null;
+        NavigationCase navigationCase = getNavigationCase(facesContext, fromAction, outcome);
 
         List casesList = (List)casesMap.get(viewId);
         if (casesList != null)
@@ -79,37 +79,6 @@ public class NavigationHandlerImpl
             navigationCase = calcMatchingNavigationCase(casesList, fromAction, outcome);
         }
 
-        if (navigationCase == null)
-        {
-            // Wildcard match?
-            List keys = getSortedWildcardKeys();
-            for (int i = 0, size = keys.size(); i < size; i++)
-            {
-                String fromViewId = (String)keys.get(i);
-                if (fromViewId.length() > 2)
-                {
-                    String prefix = fromViewId.substring(0, fromViewId.length() - 1);
-                    if (viewId != null && viewId.startsWith(prefix))
-                    {
-                        casesList = (List)casesMap.get(fromViewId);
-                        if (casesList != null)
-                        {
-                            navigationCase = calcMatchingNavigationCase(casesList, fromAction, outcome);
-                            if (navigationCase != null) break;
-                        }
-                    }
-                }
-                else
-                {
-                    casesList = (List)casesMap.get(fromViewId);
-                    if (casesList != null)
-                    {
-                        navigationCase = calcMatchingNavigationCase(casesList, fromAction, outcome);
-                        if (navigationCase != null) break;
-                    }
-                }
-            }
-        }
 
         if (navigationCase != null)
         {
@@ -155,6 +124,54 @@ public class NavigationHandlerImpl
             }
         }
     }
+
+    protected NavigationCase getNavigationCase(FacesContext facesContext, String fromAction, String outcome)
+    {
+        String viewId = facesContext.getViewRoot().getViewId();
+        Map casesMap = getNavigationCases(facesContext);
+        NavigationCase navigationCase = null;
+
+        List casesList = (List)casesMap.get(viewId);
+        if (casesList != null)
+        {
+            // Exact match?
+            navigationCase = calcMatchingNavigationCase(casesList, fromAction, outcome);
+        }
+
+        if (navigationCase == null)
+        {
+            // Wildcard match?
+            List keys = getSortedWildcardKeys();
+            for (int i = 0, size = keys.size(); i < size; i++)
+            {
+                String fromViewId = (String)keys.get(i);
+                if (fromViewId.length() > 2)
+                {
+                    String prefix = fromViewId.substring(0, fromViewId.length() - 1);
+                    if (viewId != null && viewId.startsWith(prefix))
+                    {
+                        casesList = (List)casesMap.get(fromViewId);
+                        if (casesList != null)
+                        {
+                            navigationCase = calcMatchingNavigationCase(casesList, fromAction, outcome);
+                            if (navigationCase != null) break;
+                        }
+                    }
+                }
+                else
+                {
+                    casesList = (List)casesMap.get(fromViewId);
+                    if (casesList != null)
+                    {
+                        navigationCase = calcMatchingNavigationCase(casesList, fromAction, outcome);
+                        if (navigationCase != null) break;
+                    }
+                }
+            }
+        }
+        return navigationCase;
+    }
+
 
     private NavigationCase calcMatchingNavigationCase(List casesList, String actionRef, String outcome)
     {
