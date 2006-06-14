@@ -25,7 +25,7 @@ public abstract class UIComponentTagBase extends Object implements JspTag
 
     protected ELContext getELContext()
     {
-        throw new UnsupportedOperationException("1.2");
+        return getFacesContext().getELContext();
     }
 
     protected abstract FacesContext getFacesContext();
