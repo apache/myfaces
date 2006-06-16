@@ -11,8 +11,7 @@ MyFaces Core: Impl
 Using the MyFaces JSF Implementation
 
 	To use the MyFaces implementation you will need to download one of the core release versions.  Each 
-	version XXX of the core that is released will contain myfaces-api-XXX.jar, myfaces-impl-XXX.jar and 
-	myfaces-commons-YYY.jar.  
+	version XXX of the core that is released will contain myfaces-api-XXX.jar, myfaces-impl-XXX.jar.  
 	
 	<NOTE: The version of commons is not necessarily the same as the version of the 
 	api and impl.  All three jar files must be in your classpath in order to use the MyFaces JSF implementation.>
