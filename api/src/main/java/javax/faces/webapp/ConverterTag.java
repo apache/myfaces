@@ -98,4 +98,8 @@ public class ConverterTag
         }
     }
 
+    public void setBinding(String binding)
+    {
+        throw new UnsupportedOperationException("1.2");
+    }
 }

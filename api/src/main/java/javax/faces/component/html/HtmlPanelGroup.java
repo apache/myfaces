@@ -34,6 +34,7 @@ public class HtmlPanelGroup extends UIPanel
 
     private String _style = null;
     private String _styleClass = null;
+    private String layout;
 
     public HtmlPanelGroup()
     {
@@ -68,10 +69,11 @@ public class HtmlPanelGroup extends UIPanel
 
     public Object saveState(FacesContext context)
     {
-        Object values[] = new Object[3];
+        Object values[] = new Object[4];
         values[0] = super.saveState(context);
         values[1] = _style;
         values[2] = _styleClass;
+        values[3] = layout;
         return ((Object) (values));
     }
 
@@ -81,6 +83,19 @@ public class HtmlPanelGroup extends UIPanel
         super.restoreState(context, values[0]);
         _style = (String)values[1];
         _styleClass = (String)values[2];
+        layout = (String)values[3];
     }
     //------------------ GENERATED CODE END ---------------------------------------
+    
+    public void setLayout(String layout)
+    {
+        this.layout = layout;
+    }
+
+    public String getLayout()
+    {
+        if (layout != null) return layout;
+        ValueBinding vb = getValueBinding("layout");
+        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+    }
 }

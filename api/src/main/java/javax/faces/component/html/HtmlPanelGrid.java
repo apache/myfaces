@@ -64,6 +64,9 @@ public class HtmlPanelGrid extends UIPanel
     private String _summary = null;
     private String _title = null;
     private String _width = null;
+    
+    private String captionClass ;
+    private String captionStyle ;
 
     public HtmlPanelGrid()
     {
@@ -442,6 +445,8 @@ public class HtmlPanelGrid extends UIPanel
         values[26] = _summary;
         values[27] = _title;
         values[28] = _width;
+        values[29] = captionClass;
+        values[30] = captionStyle;
         return ((Object) (values));
     }
 
@@ -477,6 +482,35 @@ public class HtmlPanelGrid extends UIPanel
         _summary = (String)values[26];
         _title = (String)values[27];
         _width = (String)values[28];
+        captionClass = (String)values[29];
+        captionStyle = (String)values[30];
     }
     //------------------ GENERATED CODE END ---------------------------------------
+    
+    public String getCaptionClass()
+    {
+        if (captionClass != null) return captionClass;
+        ValueBinding vb = getValueBinding("captionClass");
+        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+    }
+
+    public void setCaptionClass(String captionClass)
+    {
+        this.captionClass = captionClass;
+    }
+
+    public String getCaptionStyle()
+    {
+        if (captionStyle != null) return captionStyle;
+        ValueBinding vb = getValueBinding("captionStyle");
+        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+    }
+
+    public void setCaptionStyle(String captionStyle)
+    {
+        this.captionStyle = captionStyle;
+    }
+    
+
+    
 }

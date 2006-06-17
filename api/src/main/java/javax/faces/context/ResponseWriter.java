@@ -71,4 +71,10 @@ public abstract class ResponseWriter
             throws IOException;
 
     public abstract ResponseWriter cloneWithWriter(Writer writer);
+    
+    /**
+     * @since 1.2
+     */
+    
+    public abstract void writeText(Object object, UIComponent component, String string);
 }

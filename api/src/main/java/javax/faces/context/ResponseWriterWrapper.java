@@ -89,4 +89,13 @@ public abstract class ResponseWriterWrapper extends ResponseWriter {
         getWrapped().writeAttribute(name, value, property);
     }
     
+    /**
+     * @since 1.2
+     */
+    
+    public void writeText(Object object, UIComponent component, String string)
+    {
+        getWrapped().writeText(object, component, string);
+    }
+    
 }

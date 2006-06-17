@@ -34,7 +34,8 @@ public class DoubleRangeValidator
     public static final String MAXIMUM_MESSAGE_ID = "javax.faces.validator.DoubleRangeValidator.MAXIMUM";
     public static final String MINIMUM_MESSAGE_ID = "javax.faces.validator.DoubleRangeValidator.MINIMUM";
     public static final String TYPE_MESSAGE_ID    = "javax.faces.validator.DoubleRangeValidator.TYPE";
-
+    public static final String NOT_IN_RANGE_MESSAGE_ID = "javax.faces.validator.DoubleRangeValidator.NOT_IN_RANGE";
+    
     private Double _minimum = null;
     private Double _maximum = null;
     private boolean _transient = false;

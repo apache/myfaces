@@ -41,6 +41,8 @@ public class UISelectMany extends UIInput
 {
     public static final String INVALID_MESSAGE_ID = "javax.faces.component.UISelectMany.INVALID";
 
+    private String label ;
+    
     public Object[] getSelectedValues()
     {
         return (Object[]) getValue();
@@ -437,4 +439,39 @@ public class UISelectMany extends UIInput
     }
 
     //------------------ GENERATED CODE END ---------------------------------------
+    
+    public Object saveState(FacesContext context)
+    {
+        Object values[] = new Object[2];
+        values[0] = super.saveState(context);
+        values[1] = label;
+        return ((Object) (values));
+    }
+
+    public void restoreState(FacesContext context, Object state)
+    {
+        Object values[] = (Object[])state;
+        super.restoreState(context, values[0]);
+        label = (String)values[1];
+    }
+    
+    /**
+     * @since 1.2
+     */
+    
+    public String getLabel()
+    {
+        if (label != null) return label;
+        ValueBinding vb = getValueBinding("label");
+        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+    }
+
+    /**
+     * @since 1.2
+     */
+    
+    public void setLabel(String label)
+    {
+        this.label = label;
+    }
 }

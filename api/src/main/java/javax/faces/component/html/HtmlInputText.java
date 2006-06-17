@@ -62,6 +62,8 @@ public class HtmlInputText extends UIInput
     private String _tabindex = null;
     private String _title = null;
 
+    private String label;
+    
     public HtmlInputText()
     {
         setRendererType(DEFAULT_RENDERER_TYPE);
@@ -400,7 +402,7 @@ public class HtmlInputText extends UIInput
 
     public Object saveState(FacesContext context)
     {
-        Object values[] = new Object[28];
+        Object values[] = new Object[29];
         values[0] = super.saveState(context);
         values[1] = _accesskey;
         values[2] = _alt;
@@ -429,6 +431,7 @@ public class HtmlInputText extends UIInput
         values[25] = _styleClass;
         values[26] = _tabindex;
         values[27] = _title;
+        values[28] = label;
         return ((Object) (values));
     }
 
@@ -463,6 +466,19 @@ public class HtmlInputText extends UIInput
         _styleClass = (String)values[25];
         _tabindex = (String)values[26];
         _title = (String)values[27];
+        label = (String)values[28];
     }
     //------------------ GENERATED CODE END ---------------------------------------
+    
+    public String getLabel()
+    {
+        if (label != null) return label;
+        ValueBinding vb = getValueBinding("label");
+        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+    }
+
+    public void setLabel(String label)
+    {
+        this.label = label;
+    }
 }

@@ -31,6 +31,7 @@ public class SelectItem implements Serializable
     private String _label;
     private String _description;
     private boolean _disabled;
+    private boolean escape;
 
 	// CONSTRUCTORS
     public SelectItem()
@@ -76,6 +77,17 @@ public class SelectItem implements Serializable
         _disabled = disabled;
     }
 
+    public SelectItem(Object value, String label, String description, boolean disabled, boolean escape)
+    {
+        if (value == null) throw new NullPointerException("value");
+        if (label == null) throw new NullPointerException("label");
+        _value = value;
+        _label = label;
+        _description = description;
+        _disabled = disabled;
+        this.escape = escape;
+    }
+    
 	// METHODS
     public String getDescription()
     {
@@ -118,4 +130,15 @@ public class SelectItem implements Serializable
         if (value == null) throw new NullPointerException("value");
         _value = value;
     }
+
+    public boolean isEscape()
+    {
+        return escape;
+    }
+
+    public void setEscape(boolean escape)
+    {
+        this.escape = escape;
+    }
+    
 }

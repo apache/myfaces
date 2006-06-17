@@ -52,6 +52,8 @@ public class HtmlOutputLabel extends UIOutput
     private String _styleClass = null;
     private String _tabindex = null;
     private String _title = null;
+    
+    private Boolean escape;
 
     public HtmlOutputLabel()
     {
@@ -302,7 +304,7 @@ public class HtmlOutputLabel extends UIOutput
 
     public Object saveState(FacesContext context)
     {
-        Object values[] = new Object[21];
+        Object values[] = new Object[22];
         values[0] = super.saveState(context);
         values[1] = _accesskey;
         values[2] = _dir;
@@ -324,6 +326,7 @@ public class HtmlOutputLabel extends UIOutput
         values[18] = _styleClass;
         values[19] = _tabindex;
         values[20] = _title;
+        values[21] = escape;
         return ((Object) (values));
     }
 
@@ -351,6 +354,21 @@ public class HtmlOutputLabel extends UIOutput
         _styleClass = (String)values[18];
         _tabindex = (String)values[19];
         _title = (String)values[20];
+        escape = (Boolean)values[21];
     }
     //------------------ GENERATED CODE END ---------------------------------------
+
+    public boolean isEscape()
+    {
+        if (escape != null) return escape.booleanValue();
+        ValueBinding vb = getValueBinding("escape");
+        Boolean v = vb != null ? (Boolean)vb.getValue(getFacesContext()) : null;
+        return v != null ? v.booleanValue() : false; // TODO find out of false is the default?
+    }
+
+    public void setEscape(boolean escape)
+    {
+        this.escape = escape;
+    }
+    
 }

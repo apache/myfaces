@@ -80,7 +80,10 @@ public class HtmlDataTable extends UIData
     private String _summary = null;
     private String _title = null;
     private String _width = null;
-
+    
+    private String captionClass ;
+    private String captionStyle ;
+    
     public HtmlDataTable()
     {
         setRendererType(DEFAULT_RENDERER_TYPE);
@@ -412,10 +415,9 @@ public class HtmlDataTable extends UIData
         return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
     }
 
-
     public Object saveState(FacesContext context)
     {
-        Object values[] = new Object[28];
+        Object values[] = new Object[30];
         values[0] = super.saveState(context);
         values[1] = _bgcolor;
         values[2] = _border;
@@ -444,6 +446,8 @@ public class HtmlDataTable extends UIData
         values[25] = _summary;
         values[26] = _title;
         values[27] = _width;
+        values[28] = captionClass;
+        values[29] = captionStyle;
         return ((Object) (values));
     }
 
@@ -478,6 +482,34 @@ public class HtmlDataTable extends UIData
         _summary = (String)values[25];
         _title = (String)values[26];
         _width = (String)values[27];
+        captionClass = (String)values[28];
+        captionStyle = (String)values[29];
     }
     //------------------ GENERATED CODE END ---------------------------------------
+    
+    public String getCaptionClass()
+    {
+        if (captionClass != null) return captionClass;
+        ValueBinding vb = getValueBinding("captionClass");
+        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+    }
+
+    public void setCaptionClass(String captionClass)
+    {
+        this.captionClass = captionClass;
+    }
+
+
+    public String getCaptionStyle()
+    {
+        if (captionStyle != null) return captionStyle;
+        ValueBinding vb = getValueBinding("captionStyle");
+        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+    }
+
+
+    public void setCaptionStyle(String captionStyle)
+    {
+        this.captionStyle = captionStyle;
+    }
 }

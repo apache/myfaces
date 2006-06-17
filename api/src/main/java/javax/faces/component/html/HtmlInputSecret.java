@@ -64,7 +64,10 @@ public class HtmlInputSecret extends UIInput
     private String _styleClass = null;
     private String _tabindex = null;
     private String _title = null;
-
+    
+    private String autocomplete ;
+    private String label;
+    
     public HtmlInputSecret()
     {
         setRendererType(DEFAULT_RENDERER_TYPE);
@@ -400,10 +403,9 @@ public class HtmlInputSecret extends UIInput
         return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
     }
 
-
     public Object saveState(FacesContext context)
     {
-        Object values[] = new Object[28];
+        Object values[] = new Object[30];
         values[0] = super.saveState(context);
         values[1] = _accesskey;
         values[2] = _alt;
@@ -432,6 +434,8 @@ public class HtmlInputSecret extends UIInput
         values[25] = _styleClass;
         values[26] = _tabindex;
         values[27] = _title;
+        values[28] = autocomplete;
+        values[29] = label;
         return ((Object) (values));
     }
 
@@ -466,6 +470,32 @@ public class HtmlInputSecret extends UIInput
         _styleClass = (String)values[25];
         _tabindex = (String)values[26];
         _title = (String)values[27];
+        autocomplete = (String) values[28];
+        label = (String) values[29];
     }
     //------------------ GENERATED CODE END ---------------------------------------
+    
+    public String getAutocomplete()
+    {
+        if (autocomplete != null) return autocomplete;
+        ValueBinding vb = getValueBinding("autocomplete");
+        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+    }
+
+    public void setAutocomplete(String autocomplete)
+    {
+        this.autocomplete = autocomplete;
+    }
+
+    public String getLabel()
+    {
+        if (label != null) return label;
+        ValueBinding vb = getValueBinding("label");
+        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+    }
+
+    public void setLabel(String label)
+    {
+        this.label = label;
+    }
 }

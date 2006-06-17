@@ -34,7 +34,8 @@ public class LongRangeValidator
     public static final String MINIMUM_MESSAGE_ID =	"javax.faces.validator.LongRangeValidator.MINIMUM";
     public static final String TYPE_MESSAGE_ID 	  = "javax.faces.validator.LongRangeValidator.TYPE";
     public static final String VALIDATOR_ID 	  = "javax.faces.LongRange";
-
+    public static final String NOT_IN_RANGE_MESSAGE_ID = "javax.faces.validator.LongRangeValidator.NOT_IN_RANGE";
+    
     private Long _minimum = null;
     private Long _maximum = null;
     private boolean _transient = false;

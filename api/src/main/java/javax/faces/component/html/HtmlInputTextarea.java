@@ -62,6 +62,8 @@ public class HtmlInputTextarea extends UIInput
     private String _tabindex = null;
     private String _title = null;
 
+    private String label;
+    
     public HtmlInputTextarea()
     {
         setRendererType(DEFAULT_RENDERER_TYPE);
@@ -402,6 +404,7 @@ public class HtmlInputTextarea extends UIInput
         values[23] = _styleClass;
         values[24] = _tabindex;
         values[25] = _title;
+        values[26] = label;
         return ((Object) (values));
     }
 
@@ -434,6 +437,19 @@ public class HtmlInputTextarea extends UIInput
         _styleClass = (String)values[23];
         _tabindex = (String)values[24];
         _title = (String)values[25];
+        label = (String)values[26];
     }
     //------------------ GENERATED CODE END ---------------------------------------
+    
+    public String getLabel()
+    {
+        if (label != null) return label;
+        ValueBinding vb = getValueBinding("label");
+        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+    }
+
+    public void setLabel(String label)
+    {
+        this.label = label;
+    }
 }

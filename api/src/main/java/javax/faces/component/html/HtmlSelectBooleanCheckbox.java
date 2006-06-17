@@ -57,6 +57,8 @@ public class HtmlSelectBooleanCheckbox extends UISelectBoolean
     private String _styleClass = null;
     private String _tabindex = null;
     private String _title = null;
+    
+    private String label;
 
     public HtmlSelectBooleanCheckbox()
     {
@@ -345,7 +347,7 @@ public class HtmlSelectBooleanCheckbox extends UISelectBoolean
 
     public Object saveState(FacesContext context)
     {
-        Object values[] = new Object[24];
+        Object values[] = new Object[25];
         values[0] = super.saveState(context);
         values[1] = _accesskey;
         values[2] = _dir;
@@ -370,6 +372,7 @@ public class HtmlSelectBooleanCheckbox extends UISelectBoolean
         values[21] = _styleClass;
         values[22] = _tabindex;
         values[23] = _title;
+        values[24] = label;
         return ((Object) (values));
     }
 
@@ -400,6 +403,20 @@ public class HtmlSelectBooleanCheckbox extends UISelectBoolean
         _styleClass = (String)values[21];
         _tabindex = (String)values[22];
         _title = (String)values[23];
+        label = (String)values[24];
     }
     //------------------ GENERATED CODE END ---------------------------------------
+
+    public String getLabel()
+    {
+        if (label != null) return label;
+        ValueBinding vb = getValueBinding("label");
+        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+    }
+
+    public void setLabel(String label)
+    {
+        this.label = label;
+    }
+    
 }

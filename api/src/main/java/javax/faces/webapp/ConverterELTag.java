@@ -22,8 +22,8 @@ public abstract class ConverterELTag extends TagSupport
     public int doStartTag() throws JspException
     {
 
-        if( log.isInfoEnabled() )
-            log.info("JSF 1.2 SPEC : Create a new instance of " +
+        if( log.isDebugEnabled() )
+            log.debug("JSF 1.2 SPEC : Create a new instance of " +
                     "the specified Converter class");
 
         Converter converter = createConverter();
@@ -31,8 +31,8 @@ public abstract class ConverterELTag extends TagSupport
         if (converter == null)
             throw new JspException("Could not create Converter instance");
 
-        if( log.isInfoEnabled() )
-            log.info("JSF 1.2 SPEC : ... and register it with the " +
+        if( log.isDebugEnabled() )
+            log.debug("JSF 1.2 SPEC : ... and register it with the " +
                     "UIComponent instance associated with our" +
                     " most immediately surrounding " +
                     "UIComponentClassicTagBase instance"); 
@@ -44,8 +44,8 @@ public abstract class ConverterELTag extends TagSupport
             throw new JspException(
                     "Could not obtain reference to parent UIComponentClassicTagBase instance ");
 
-        if( log.isInfoEnabled() )
-            log.info("JSF 1.2 SPEC : ... if the UIComponent " +
+        if( log.isDebugEnabled() )
+            log.debug("JSF 1.2 SPEC : ... if the UIComponent " +
                     "instance was created by this execution " +
                     "of the containing JSP page.");
 

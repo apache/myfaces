@@ -38,8 +38,8 @@ public abstract class UIComponentELTag extends UIComponentClassicTagBase
                         "during the execution of this tag handler instance");
         }
         
-        if( log.isInfoEnabled() )
-            log.info("rendered set if a value for the " +
+        if( log.isDebugEnabled() )
+            log.debug("rendered set if a value for the " +
                     "rendered property is specified for " +
                     "this tag handler instance.");
         
@@ -55,8 +55,8 @@ public abstract class UIComponentELTag extends UIComponentClassicTagBase
             component.setValueExpression("rendered", rendered);
         }
         
-        if( log.isInfoEnabled() )
-            log.info("rendererType set if the getRendererType()" +
+        if( log.isDebugEnabled() )
+            log.debug("rendererType set if the getRendererType()" +
                     " method returns a non-null value.");
         
         String renderType = getRendererType();
@@ -76,26 +76,26 @@ public abstract class UIComponentELTag extends UIComponentClassicTagBase
         
         UIComponent component;
         
-        if(log.isInfoEnabled())
-            log.info("JSF SPEC 1.2 : If this " +
+        if(log.isDebugEnabled())
+            log.debug("JSF SPEC 1.2 : If this " +
                     "UIComponentELTag has a non-null binding");
         
         if( binding != null )
         {
-            if(log.isInfoEnabled())
-                log.info("... call Application.createComponent");
+            if(log.isDebugEnabled())
+                log.debug("... call Application.createComponent");
             component = app.createComponent(binding, context, componentType);
             
         }else{
             
-            if(log.isInfoEnabled())
-                log.info("... called with only the component type");
+            if(log.isDebugEnabled())
+                log.debug("... called with only the component type");
             component = app.createComponent(componentType);
             
         }
         
-        if(log.isInfoEnabled())
-            log.info("... initialize the components id and other properties");
+        if(log.isDebugEnabled())
+            log.debug("... initialize the components id and other properties");
         component.setId(newId);
         setProperties(component);
         

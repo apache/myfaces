@@ -149,6 +149,12 @@ public abstract class ExternalContext
     	throw new UnsupportedOperationException();
     }
     
+    public String getResponseCharacterEncoding()
+    {
+        throw new UnsupportedOperationException(
+                "JSF 1.2 : figure out how to tell if this is a Portlet request");
+    }
+    
     public abstract boolean isUserInRole(String role);
 
     public abstract void log(String message);

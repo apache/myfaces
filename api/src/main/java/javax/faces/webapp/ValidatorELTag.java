@@ -22,8 +22,8 @@ public abstract class ValidatorELTag extends TagSupport
     public int doStartTag() throws JspException
     {
 
-        if (log.isInfoEnabled())
-            log.info("JSF 1.2 SPEC : Create a new instance "
+        if (log.isDebugEnabled())
+            log.debug("JSF 1.2 SPEC : Create a new instance "
                     + "of the specified Validator");
 
         Validator validator = createValidator();
@@ -31,8 +31,8 @@ public abstract class ValidatorELTag extends TagSupport
         if (validator == null)
             throw new JspException("Could not create a Validator");
 
-        if (log.isInfoEnabled())
-            log.info(" ... and register it with the UIComponent "
+        if (log.isDebugEnabled())
+            log.debug(" ... and register it with the UIComponent "
                     + "instance associated with our most "
                     + "immediately surrounding UIComponentTagBase");
 
@@ -43,8 +43,8 @@ public abstract class ValidatorELTag extends TagSupport
             throw new JspException(
                     "Could not obtain reference to parent UIComponentClassicTagBase instance ");
 
-        if (log.isInfoEnabled())
-            log.info(" ... if the UIComponent instance was created "
+        if (log.isDebugEnabled())
+            log.debug(" ... if the UIComponent instance was created "
                     + "by this execution of the containing JSP page.");
 
         if (tag.getCreated())

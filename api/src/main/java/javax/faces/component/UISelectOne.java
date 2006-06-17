@@ -17,6 +17,7 @@ package javax.faces.component;
 
 import javax.faces.component._SelectItemsUtil._ValueConverter;
 import javax.faces.context.FacesContext;
+import javax.faces.el.ValueBinding;
 
 /**
  * Component for choosing one option out of a set of possibilities.
@@ -34,6 +35,8 @@ public class UISelectOne extends UIInput
 {
     public static final String INVALID_MESSAGE_ID = "javax.faces.component.UISelectOne.INVALID";
 
+    private String label ;
+    
     /**
      * Verify that the result of converting the newly submitted value is
      * <i>equal</i> to the value property of one of the child SelectItem
@@ -84,4 +87,39 @@ public class UISelectOne extends UIInput
     }
 
     //------------------ GENERATED CODE END ---------------------------------------
+    
+    public Object saveState(FacesContext context)
+    {
+        Object values[] = new Object[2];
+        values[0] = super.saveState(context);
+        values[1] = label;
+        return ((Object) (values));
+    }
+
+    public void restoreState(FacesContext context, Object state)
+    {
+        Object values[] = (Object[])state;
+        super.restoreState(context, values[0]);
+        label = (String)values[1];
+    }
+    
+    /**
+     * @since 1.2
+     */
+    
+    public String getLabel()
+    {
+        if (label != null) return label;
+        ValueBinding vb = getValueBinding("label");
+        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+    }
+
+    /**
+     * @since 1.2
+     */
+    
+    public void setLabel(String label)
+    {
+        this.label = label;
+    }
 }
