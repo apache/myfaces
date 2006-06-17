@@ -28,6 +28,7 @@ import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.FacesEvent;
 import javax.faces.event.PhaseId;
+import javax.faces.event.PhaseListener;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
@@ -54,6 +55,8 @@ public class UIViewRoot
     private List _events = null;
     private MethodExpression _afterPhaseListener = null;
     private MethodExpression _beforePhaseListener = null;
+    
+    private List<PhaseListener> phaseListeners;
 
     public String getViewId()
     {
@@ -341,4 +344,35 @@ public class UIViewRoot
         _afterPhaseListener = (MethodExpression)values[6]; // added line - TODO: run src gen
     }
     //------------------ GENERATED CODE END ---------------------------------------
+    
+    /**
+     * @since 1.2
+     */
+    
+    public void addPhaseListener(PhaseListener phaseListener)
+    {
+        getPhaseListeners().add(phaseListener);
+    }
+
+    /**
+     * @since 1.2
+     */
+    
+    private List<PhaseListener> getPhaseListeners()
+    {
+        if(phaseListeners == null)
+            phaseListeners = new ArrayList<PhaseListener>();
+        
+        return phaseListeners;
+    }
+    
+    /**
+     * @since 1.2
+     */
+    
+    public void removePhaseListener(PhaseListener phaseListener)
+    {
+        getPhaseListeners().remove(phaseListener);
+    }
+    
 }

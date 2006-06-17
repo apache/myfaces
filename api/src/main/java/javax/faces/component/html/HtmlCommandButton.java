@@ -62,6 +62,8 @@ public class HtmlCommandButton
     private String _tabindex = null;
     private String _title = null;
     private String _type = null;
+    
+    private String _label ;
 
     public HtmlCommandButton()
     {
@@ -383,10 +385,9 @@ public class HtmlCommandButton
         return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : DEFAULT_TYPE;
     }
 
-
     public Object saveState(FacesContext context)
     {
-        Object values[] = new Object[27];
+        Object values[] = new Object[28];
         values[0] = super.saveState(context);
         values[1] = _accesskey;
         values[2] = _alt;
@@ -414,6 +415,8 @@ public class HtmlCommandButton
         values[24] = _tabindex;
         values[25] = _title;
         values[26] = _type;
+        
+        values[27] = _label;
         return ((Object) (values));
     }
 
@@ -447,6 +450,28 @@ public class HtmlCommandButton
         _tabindex = (String)values[24];
         _title = (String)values[25];
         _type = (String)values[26];
+        
+        _label = (String)values[27];
     }
     //------------------ GENERATED CODE END ---------------------------------------
+    
+    /**
+     * @since 1.2
+     */
+    
+    public String getLabel()
+    {
+        if (_label != null) return _label;
+        ValueBinding vb = getValueBinding("label");
+        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : DEFAULT_TYPE;
+    }
+
+    /**
+     * @since 1.2
+     */
+    
+    public void setLabel(String _label)
+    {
+        this._label = _label;
+    }
 }

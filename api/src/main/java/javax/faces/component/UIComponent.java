@@ -17,9 +17,11 @@ package javax.faces.component;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
+import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 
 /**
@@ -199,4 +201,28 @@ public abstract class UIComponent
     protected abstract javax.faces.context.FacesContext getFacesContext();
 
     protected abstract javax.faces.render.Renderer getRenderer(javax.faces.context.FacesContext context);
+
+    /**
+     * @since 1.2
+     */
+    
+    public int getFacetCount()
+    {
+        // not sure why the RI has this method in both 
+        // UIComponent and UIComponentBase
+        Map facets = getFacets();
+        return facets == null ? 0 : facets.size();
+    }
+    
+    /**
+     * @since 1.2
+     */
+    
+    public String getContainerClientId(FacesContext ctx)
+    {
+        if( ctx == null )
+            throw new NullPointerException("FacesContext ctx");
+        
+        return getClientId(ctx);
+    }
 }

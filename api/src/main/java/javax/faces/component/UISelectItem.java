@@ -48,6 +48,8 @@ public class UISelectItem
     private String _itemLabel = null;
     private Object _itemValue = null;
     private Object _value = null;
+    
+    private boolean itemEscaped;
 
     public UISelectItem()
     {
@@ -159,4 +161,15 @@ public class UISelectItem
         _value = (Object)values[5];
     }
     //------------------ GENERATED CODE END ---------------------------------------
+    
+    public boolean isItemEscaped()
+    {
+        throw new UnsupportedOperationException("1.2");
+    }
+
+    public void setItemEscaped(boolean itemEscaped)
+    {
+        throw new UnsupportedOperationException("1.2");
+    }
+
 }

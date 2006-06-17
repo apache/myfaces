@@ -777,7 +777,7 @@ public class UIData extends UIComponentBase implements NamingContainer
      * that changes its id (like a table does) then this map only ever has
      * one entry.
      */
-    private DataModel getDataModel()
+    protected DataModel getDataModel()
     {
         DataModel dataModel = null;
         String clientID = "";
@@ -795,6 +795,12 @@ public class UIData extends UIComponentBase implements NamingContainer
         return dataModel;
     }
 
+    protected void setDataModel(DataModel dataModel)
+    {
+        throw new UnsupportedOperationException(
+                "this method is here only to maintain binary compatibility w/ the RI");
+    }
+    
     /**
      * Evaluate this object's value property and convert the result into a 
      * DataModel. Normally this object's value property will be a value-binding

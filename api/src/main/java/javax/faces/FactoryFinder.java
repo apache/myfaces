@@ -37,7 +37,7 @@ public final class FactoryFinder
     public static final String LIFECYCLE_FACTORY = "javax.faces.lifecycle.LifecycleFactory";
     public static final String RENDER_KIT_FACTORY = "javax.faces.render.RenderKitFactory";
 
-    private static Map _registeredFactoryNames = new HashMap();
+    private static Map<ClassLoader, Map> _registeredFactoryNames = new HashMap<ClassLoader, Map>();
     /**
      * Maps from classLoader to another map, the container (i.e. Tomcat) will create a class loader for
      * each web app that it controls (typically anyway) and that class loader is used as the key.
@@ -46,10 +46,10 @@ public final class FactoryFinder
      * that are created via getFactory. The instances will be of the class specified in the setFactory method
      * for the factory name, i.e. FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, MyFactory.class).
      */
-    private static Map _factories = new HashMap();
+    private static Map<ClassLoader, Map> _factories = new HashMap<ClassLoader, Map>();
 
-    private static final Set VALID_FACTORY_NAMES = new HashSet();
-    private static final Map ABSTRACT_FACTORY_CLASSES = new HashMap();
+    private static final Set<String> VALID_FACTORY_NAMES = new HashSet<String>();
+    private static final Map<String, Class> ABSTRACT_FACTORY_CLASSES = new HashMap<String, Class>();
     static {
         VALID_FACTORY_NAMES.add(APPLICATION_FACTORY);
         VALID_FACTORY_NAMES.add(FACES_CONTEXT_FACTORY);

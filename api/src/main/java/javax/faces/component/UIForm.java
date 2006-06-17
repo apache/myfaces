@@ -17,6 +17,8 @@ package javax.faces.component;
 
 import java.util.Iterator;
 
+import javax.faces.context.FacesContext;
+
 
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
@@ -31,6 +33,8 @@ public class UIForm
     //private static final Log log = LogFactory.getLog(UIForm.class);
 
     private boolean _submitted;
+    
+    private boolean prependId ;
 
     public boolean isSubmitted()
     {
@@ -112,4 +116,20 @@ public class UIForm
 
 
     //------------------ GENERATED CODE END ---------------------------------------
+    
+    public String getContainerClientId(FacesContext ctx)
+    {
+        throw new UnsupportedOperationException("1.2");
+    }
+    
+    public boolean isPrependId()
+    {
+        throw new UnsupportedOperationException("1.2");
+    }
+
+    public void setPrependId(boolean prependId)
+    {
+        throw new UnsupportedOperationException("1.2");
+    }
+
 }

@@ -1136,4 +1136,16 @@ public abstract class UIComponentBase
 
 
     //------------------ GENERATED CODE END ---------------------------------------
+    
+    /**
+     * @since 1.2
+     */
+    
+    public int getFacetCount()
+    {
+        // not sure why the RI has this method in both 
+        // UIComponent and UIComponentBase
+        Map facets = getFacets();
+        return facets == null ? 0 : facets.size();
+    }
 }

@@ -55,6 +55,8 @@ public class UIInput
     private _MethodBindingToValueChangeListener _valueChangeListener = null;
     private List _validatorList = null;
 
+    public static final String UPDATE_MESSAGE_ID = "javax.faces.component.UIInput.UPDATE";
+    
     // use javadoc inherited from EditableValueHolder
     public Object getSubmittedValue()
     {
@@ -567,4 +569,71 @@ public class UIInput
 
 
     //------------------ GENERATED CODE END ---------------------------------------
+    
+    /**
+     * @since 1.2
+     */
+    
+    public String getConverterMessage()
+    {
+        throw new UnsupportedOperationException("1.2");
+    }
+
+    /**
+     * @since 1.2
+     */
+    
+    public String getRequiredMessage()
+    {
+        throw new UnsupportedOperationException("1.2");
+    }
+    
+    /**
+     * @since 1.2
+     */
+    
+    public String getValidatorMessage()
+    {
+        throw new UnsupportedOperationException("1.2");
+    }
+    
+    /**
+     * @since 1.2
+     */
+    
+    public void resetValue() 
+    {
+        setValue(null);
+        setSubmittedValue(null);
+        setLocalValueSet(false);
+        setValid(true);
+    }
+    
+    /**
+     * @since 1.2
+     */
+    
+    public void setConverterMessage(String msg)
+    {
+        throw new UnsupportedOperationException("1.2");
+    }
+    
+    /**
+     * @since 1.2
+     */
+    
+    public void setRequiredMessage(String msg)
+    {
+        throw new UnsupportedOperationException("1.2");
+    }
+    
+    /**
+     * @since 1.2
+     */
+    
+    public void setValidatorMessage(String msg)
+    {
+        throw new UnsupportedOperationException("1.2");
+    }
+    
 }

@@ -39,7 +39,7 @@ public abstract class ViewHandlerWrapper extends ViewHandler {
 		getWrapped().initView(context);
 	}
 
-	public abstract ViewHandler getWrapped();
+    protected abstract ViewHandler getWrapped();
     
     public void renderView(FacesContext context, UIViewRoot viewToRender) throws IOException, FacesException {
         getWrapped().renderView(context, viewToRender);
