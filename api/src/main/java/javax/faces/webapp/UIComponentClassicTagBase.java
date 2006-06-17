@@ -50,11 +50,6 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     private boolean created ;
     
     private static final String VERBATIM_COMP_TYPE = "javax.faces.HtmlOutputText";
-    
-    public void doInitBody() throws JspException
-    {
-        throw new UnsupportedOperationException("1.2");
-    }
 
     public int doAfterBody() throws JspException
     {
@@ -100,9 +95,14 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
 
     protected int getDoAfterBodyValue() throws JspException
     {
-        throw new UnsupportedOperationException("1.2");
+        return SKIP_BODY;
     }
 
+    public void doInitBody() throws JspException
+    {
+        // intentional noop
+    }
+    
     protected UIComponent createVerbatimComponentFromBodyContent()
     {
         
