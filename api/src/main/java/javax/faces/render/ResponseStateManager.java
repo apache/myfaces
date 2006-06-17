@@ -31,8 +31,11 @@ public abstract class ResponseStateManager
     public static final String RENDER_KIT_ID_PARAM = "javax.faces.RenderKitId";
     public static final String VIEW_STATE_PARAM = "javax.faces.ViewState";
     
-    // TODO: figure out if this is suppossed to be abstract.  JavaDoc doesn't say.
-    public abstract void writeState(FacesContext context, Object state) throws IOException;
+    public void writeState(FacesContext context, Object state) throws IOException{
+        
+        throw new UnsupportedOperationException("1.2");
+        
+    }
     
     /**
      * @deprecated
