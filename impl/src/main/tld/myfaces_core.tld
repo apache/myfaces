@@ -601,5 +601,20 @@
         </attribute>
     </tag>
 
+    <!-- setPropertyActionListener -->
+    
+    <tag>
+        <name>setPropertyActionListener</name>
+        <tag-class>org.apache.myfaces.taglib.core.SetPropertyActionListenerTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>target</name>
+            <required>true</required>
+        </attribute>        
+        <attribute>
+            <name>value</name>
+            <required>true</required>
+        </attribute>
+	</tag>
 
 </taglib>

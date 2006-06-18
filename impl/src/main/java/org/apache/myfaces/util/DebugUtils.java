@@ -48,10 +48,10 @@ public class DebugUtils
     private static final Log log = LogFactory.getLog(DebugUtils.class);
 
     //Attributes that should not be printed
-    private static final HashSet IGNORE_ATTRIBUTES;
+    private static final HashSet<String> IGNORE_ATTRIBUTES;
     static
     {
-        IGNORE_ATTRIBUTES = new HashSet();
+        IGNORE_ATTRIBUTES = new HashSet<String>();
         IGNORE_ATTRIBUTES.add("attributes");
         IGNORE_ATTRIBUTES.add("children");
         IGNORE_ATTRIBUTES.add("childCount");
