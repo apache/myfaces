@@ -1,4 +1,4 @@
-package org.apache.myfaces.taglib.core;
+package org.apache.myfaces.event;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
