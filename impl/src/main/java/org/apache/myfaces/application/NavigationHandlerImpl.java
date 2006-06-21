@@ -68,16 +68,8 @@ public class NavigationHandlerImpl
             return;
         }
 
-        String viewId = facesContext.getViewRoot().getViewId();
-        Map casesMap = getNavigationCases(facesContext);
         NavigationCase navigationCase = null;
 
-        List casesList = (List)casesMap.get(viewId);
-        if (casesList != null)
-        {
-            // Exact match?
-            navigationCase = calcMatchingNavigationCase(casesList, fromAction, outcome);
-        }
 
         if (navigationCase == null)
         {
