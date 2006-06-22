@@ -34,7 +34,11 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.Tag;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.Stack;
 
 /**
  * Base class for all JSP tags that represent a JSF UIComponent.
@@ -56,7 +60,9 @@ public abstract class UIComponentTag
 {
     private static final String FORMER_CHILD_IDS_SET_ATTR = UIComponentTag.class.getName() + ".FORMER_CHILD_IDS";
     private static final String FORMER_FACET_NAMES_SET_ATTR = UIComponentTag.class.getName() + ".FORMER_FACET_NAMES";
-    private static final String COMPONENT_STACK_ATTR =  UIComponentTag.class.getName() + ".COMPONENT_STACK";
+    
+    // do not change this w/out doing likewise in UIComponentClassicTagBase
+    private static final String COMPONENT_STACK_ATTR = "org.apache.myfaces.COMPONENT_STACK";
 
     private static final String UNIQUE_ID_COUNTER_ATTR = UIComponentTag.class.getName() + ".UNIQUE_ID_COUNTER";
 
@@ -181,59 +187,35 @@ public abstract class UIComponentTag
 
     /**
      * Return the nearest JSF tag that encloses this tag.
+     * @deprecated
      */
     public static UIComponentTag getParentUIComponentTag(PageContext pageContext)
     {
-        // Question: why not just walk up the _parent chain testing for
-        // instanceof UIComponentTag rather than maintaining a separate
-        // stack with the pushTag and popTag methods?
-        List list = (List)pageContext.getAttribute(COMPONENT_STACK_ATTR,
-                                                   PageContext.REQUEST_SCOPE);
-        if (list != null)
-        {
-            return (UIComponentTag)list.get(list.size() - 1);
-        }
-        return null;
-    }
-
-    /** See documentation for pushTag. */
-    private void popTag()
-    {
-        List list = (List)pageContext.getAttribute(COMPONENT_STACK_ATTR,
-                                                    PageContext.REQUEST_SCOPE);
-        if (list != null)
-        {
-            int size = list.size();
-            list.remove(size -1);
-            if (size <= 1)
-            {
-                pageContext.removeAttribute(COMPONENT_STACK_ATTR,
-                                             PageContext.REQUEST_SCOPE);
-            }
-        }
+        Stack stack = getStack(pageContext);
+        
+        int size = stack.size();
+        
+        return size > 1 ? (UIComponentTag)stack.get(size - 1) : null;
     }
 
     /**
-     * Push this tag onto the stack of JSP tags seen.
-     * <p>
      * The pageContext's request scope map is used to hold a stack of
      * JSP tag objects seen so far, so that a new tag can find the
      * parent tag that encloses it. Access to the parent tag is used
      * to find the parent UIComponent for the component associated
      * with this tag plus some other uses. 
      */
-    private void pushTag()
+    
+    private void popTag()
     {
-        List list = (List)pageContext.getAttribute(COMPONENT_STACK_ATTR,
-                                                    PageContext.REQUEST_SCOPE);
-        if (list == null)
-        {
-            list = new ArrayList();
-            pageContext.setAttribute(COMPONENT_STACK_ATTR,
-                                      list,
-                                      PageContext.REQUEST_SCOPE);
-        }
-        list.add(this);
+        Stack stack = getStack(pageContext);
+        
+        int size = stack.size();
+        stack.remove(size -1);
+        if (size <= 1)
+            pageContext.removeAttribute(COMPONENT_STACK_ATTR,
+                                         PageContext.REQUEST_SCOPE);
+        
     }
 
     /**
@@ -322,7 +304,7 @@ public abstract class UIComponentTag
                 throw new JspException(e.getMessage(), e);
             }
         }
-        pushTag();
+        getStack(pageContext).add(this); // push this tag on the stack
         return getDoStartValue();
     }
 
@@ -985,6 +967,26 @@ public abstract class UIComponentTag
         buf.insert(0,intBuf);
 
         getPathToComponent(component.getParent(),buf);
+    }
+    
+    /**
+     * Returns a request scoped stack, creating one if necessary.
+     * 
+     * @see UIComponentClassicTagBase.getStack()
+     */
+    
+    private static final Stack getStack(PageContext pageContext){
+        
+        Stack stack = (Stack) pageContext.getAttribute(COMPONENT_STACK_ATTR,
+                PageContext.REQUEST_SCOPE);
+        
+        if(stack == null){
+            stack = new Stack();
+            pageContext.setAttribute(COMPONENT_STACK_ATTR, stack, 
+                    PageContext.REQUEST_SCOPE);
+        }
+        
+        return stack;
     }
 
 }

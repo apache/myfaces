@@ -33,6 +33,9 @@ import javax.faces.event.AbortProcessingException;
 public abstract class UIComponent
         implements StateHolder
 {
+    
+    protected Map<String,ValueExpression> bindings; 
+    
     public UIComponent()
     {
     }
