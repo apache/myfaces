@@ -38,3 +38,8 @@
     <rtexprvalue>false</rtexprvalue>
     <description>HTML: Script to be invoked when this form is submitted.</description>
 </attribute>
+<attribute>
+    <name>prependId</name>
+    <required>false</required>
+    <rtexprvalue>true</rtexprvalue>
+</attribute>
