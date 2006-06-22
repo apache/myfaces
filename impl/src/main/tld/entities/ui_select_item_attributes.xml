@@ -45,3 +45,9 @@
         An EL expression that refers to a javax.faces.model.SelectItem instance.
     </description>
 </attribute>
+<attribute>
+    <name>itemEscaped</name>
+    <required>false</required>
+    <rtexprvalue>true</rtexprvalue>
+    <description>Added for JSF 1.2</description>
+</attribute>
