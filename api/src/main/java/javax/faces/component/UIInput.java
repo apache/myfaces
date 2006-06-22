@@ -54,6 +54,10 @@ public class UIInput
     private MethodBinding _validator = null;
     private _MethodBindingToValueChangeListener _valueChangeListener = null;
     private List _validatorList = null;
+    
+    private String converterMessage;
+    private String requiredMessage;
+    private String validatorMessage;
 
     public static final String UPDATE_MESSAGE_ID = "javax.faces.component.UIInput.UPDATE";
     
@@ -492,7 +496,7 @@ public class UIInput
 
     public Object saveState(FacesContext context)
     {
-        Object values[] = new Object[9];
+        Object values[] = new Object[12];
         values[0] = super.saveState(context);
         values[1] = _immediate;
         values[2] = Boolean.valueOf(_localValueSet);
@@ -502,6 +506,9 @@ public class UIInput
         values[6] = saveAttachedState(context, _validator);
         values[7] = saveAttachedState(context, _valueChangeListener);
         values[8] = saveAttachedState(context, _validatorList);
+        values[9] = converterMessage;
+        values[10] = requiredMessage;
+        values[11] = validatorMessage;
         return ((Object)(values));
     }
 
@@ -517,6 +524,9 @@ public class UIInput
         _validator = (MethodBinding)restoreAttachedState(context, values[6]);
         _valueChangeListener = (_MethodBindingToValueChangeListener)restoreAttachedState(context, values[7]); // changed line - TODO: fix w/ src gen
         _validatorList = (List)restoreAttachedState(context, values[8]);
+        converterMessage = (String) values[9];
+        requiredMessage = (String) values[10];
+        validatorMessage = (String) values[11];
     }
 
 
@@ -576,7 +586,9 @@ public class UIInput
     
     public String getConverterMessage()
     {
-        throw new UnsupportedOperationException("1.2");
+        if (converterMessage != null) return converterMessage;
+        ValueBinding vb = getValueBinding("converterMessage");
+        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
     }
 
     /**
@@ -585,7 +597,9 @@ public class UIInput
     
     public String getRequiredMessage()
     {
-        throw new UnsupportedOperationException("1.2");
+        if (requiredMessage != null) return requiredMessage;
+        ValueBinding vb = getValueBinding("requiredMessage");
+        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
     }
     
     /**
@@ -594,7 +608,9 @@ public class UIInput
     
     public String getValidatorMessage()
     {
-        throw new UnsupportedOperationException("1.2");
+        if (validatorMessage != null) return validatorMessage;
+        ValueBinding vb = getValueBinding("validatorMessage");
+        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
     }
     
     /**
@@ -615,7 +631,7 @@ public class UIInput
     
     public void setConverterMessage(String msg)
     {
-        throw new UnsupportedOperationException("1.2");
+        this.converterMessage = msg;
     }
     
     /**
@@ -624,7 +640,7 @@ public class UIInput
     
     public void setRequiredMessage(String msg)
     {
-        throw new UnsupportedOperationException("1.2");
+        this.requiredMessage = msg;
     }
     
     /**
@@ -633,7 +649,7 @@ public class UIInput
     
     public void setValidatorMessage(String msg)
     {
-        throw new UnsupportedOperationException("1.2");
+        this.validatorMessage = msg;
     }
     
 }
