@@ -9,12 +9,11 @@ import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
 
 /**
- * TODO this really needs to be under javax.faces.*
+ * The MyFaces implementation of the <code>SetPropertyActionListener</code>.
  * 
  * @author Dennis Byrne
  * @since 1.2
  */
-
 public class SetPropertyActionListener implements ActionListener, StateHolder
 {
 
