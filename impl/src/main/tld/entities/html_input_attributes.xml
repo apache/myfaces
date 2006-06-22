@@ -22,3 +22,22 @@
     <type>java.lang.String</type>
     <description>HTML: The initial width of this control, in characters.</description>
 </attribute>
+
+<attribute>
+    <name>converterMessage</name>
+    <required>false</required>
+    <rtexprvalue>true</rtexprvalue>
+    <description>Attribute added for 1.2</description>
+</attribute>
+<attribute>
+    <name>requiredMessage</name>
+    <required>false</required>
+    <rtexprvalue>true</rtexprvalue>
+    <description>Attribute added for 1.2</description>
+</attribute>
+<attribute>
+    <name>validatorMessage</name>
+    <required>false</required>
+    <rtexprvalue>true</rtexprvalue>
+    <description>Attribute added for 1.2</description>    
+</attribute>
