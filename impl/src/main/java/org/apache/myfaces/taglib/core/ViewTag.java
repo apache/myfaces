@@ -28,7 +28,7 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.el.ValueBinding;
-import javax.faces.webapp.UIComponentBodyTag;
+import javax.faces.webapp.UIComponentELTag;
 import javax.faces.webapp.UIComponentTag;
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
@@ -43,7 +43,7 @@ import java.util.Locale;
  * @version $Revision$ $Date$
  */
 public class ViewTag
-        extends UIComponentBodyTag
+        extends UIComponentELTag
 {
     private static final Log log = LogFactory.getLog(ViewTag.class);
 
