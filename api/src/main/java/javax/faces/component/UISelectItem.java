@@ -49,7 +49,7 @@ public class UISelectItem
     private Object _itemValue = null;
     private Object _value = null;
     
-    private boolean itemEscaped;
+    private Boolean itemEscaped;
 
     public UISelectItem()
     {
@@ -140,13 +140,14 @@ public class UISelectItem
 
     public Object saveState(FacesContext context)
     {
-        Object values[] = new Object[6];
+        Object values[] = new Object[7];
         values[0] = super.saveState(context);
         values[1] = _itemDescription;
         values[2] = _itemDisabled;
         values[3] = _itemLabel;
         values[4] = _itemValue;
         values[5] = _value;
+        values[6] = itemEscaped;
         return ((Object) (values));
     }
 
@@ -159,17 +160,21 @@ public class UISelectItem
         _itemLabel = (String)values[3];
         _itemValue = (Object)values[4];
         _value = (Object)values[5];
+        itemEscaped = (Boolean) values[6];
     }
     //------------------ GENERATED CODE END ---------------------------------------
     
     public boolean isItemEscaped()
     {
-        throw new UnsupportedOperationException("1.2");
+        if (itemEscaped != null) return itemEscaped.booleanValue();
+        ValueBinding vb = getValueBinding("itemEscaped");
+        Boolean v = vb != null ? (Boolean)vb.getValue(getFacesContext()) : null;
+        return v != null ? v.booleanValue() : Boolean.FALSE;
     }
 
     public void setItemEscaped(boolean itemEscaped)
     {
-        throw new UnsupportedOperationException("1.2");
+        this.itemEscaped = itemEscaped ? Boolean.TRUE : Boolean.FALSE;
     }
 
 }
