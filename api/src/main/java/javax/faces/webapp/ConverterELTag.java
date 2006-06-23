@@ -53,7 +53,6 @@ public abstract class ConverterELTag extends TagSupport
                     " most immediately surrounding " +
                     "UIComponentClassicTagBase instance"); 
 
-        /*
         UIComponentClassicTagBase tag = UIComponentClassicTagBase
                 .getParentUIComponentClassicTagBase(pageContext);
 
@@ -81,7 +80,7 @@ public abstract class ConverterELTag extends TagSupport
 
             ((ValueHolder) component).setConverter(converter);
         }
-        */
+        
         return SKIP_BODY;
     }
     

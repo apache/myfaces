@@ -52,7 +52,6 @@ public abstract class ValidatorELTag extends TagSupport
                     + "instance associated with our most "
                     + "immediately surrounding UIComponentTagBase");
 
-        /*
         UIComponentTagBase tag = UIComponentELTag
                 .getParentUIComponentClassicTagBase(pageContext);
 
@@ -79,7 +78,7 @@ public abstract class ValidatorELTag extends TagSupport
 
             ((EditableValueHolder) component).addValidator(validator);
         }
-        */
+        
         return SKIP_BODY;
     }
     
