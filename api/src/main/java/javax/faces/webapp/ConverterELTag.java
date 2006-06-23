@@ -22,7 +22,7 @@ import javax.faces.convert.Converter;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import org.apache.commons.logging.Log;
+import org.apache.commons.logging.Log;  
 import org.apache.commons.logging.LogFactory;
 
 /**
@@ -53,6 +53,7 @@ public abstract class ConverterELTag extends TagSupport
                     " most immediately surrounding " +
                     "UIComponentClassicTagBase instance"); 
 
+        /*
         UIComponentClassicTagBase tag = UIComponentClassicTagBase
                 .getParentUIComponentClassicTagBase(pageContext);
 
@@ -80,7 +81,7 @@ public abstract class ConverterELTag extends TagSupport
 
             ((ValueHolder) component).setConverter(converter);
         }
-
+        */
         return SKIP_BODY;
     }
     
