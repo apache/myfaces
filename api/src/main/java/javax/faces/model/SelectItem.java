@@ -40,17 +40,14 @@ public class SelectItem implements Serializable
 
     public SelectItem(Object value)
     {
-        if (value == null) throw new NullPointerException("value");
         _value = value;
-        _label = value.toString();
+        _label = value == null ? null : value.toString();
         _description = null;
         _disabled = false;
     }
 
     public SelectItem(Object value, String label)
     {
-        if (value == null) throw new NullPointerException("value");
-        if (label == null) throw new NullPointerException("label");
         _value = value;
         _label = label;
         _description = null;
@@ -59,8 +56,6 @@ public class SelectItem implements Serializable
 
     public SelectItem(Object value, String label, String description)
     {
-        if (value == null) throw new NullPointerException("value");
-        if (label == null) throw new NullPointerException("label");
         _value = value;
         _label = label;
         _description = description;
@@ -69,8 +64,6 @@ public class SelectItem implements Serializable
 
     public SelectItem(Object value, String label, String description, boolean disabled)
     {
-        if (value == null) throw new NullPointerException("value");
-        if (label == null) throw new NullPointerException("label");
         _value = value;
         _label = label;
         _description = description;
@@ -79,8 +72,6 @@ public class SelectItem implements Serializable
 
     public SelectItem(Object value, String label, String description, boolean disabled, boolean escape)
     {
-        if (value == null) throw new NullPointerException("value");
-        if (label == null) throw new NullPointerException("label");
         _value = value;
         _label = label;
         _description = description;
@@ -116,7 +107,6 @@ public class SelectItem implements Serializable
 
     public void setLabel(String label)
     {
-        if (label == null) throw new NullPointerException("label");
         _label = label;
     }
 
@@ -127,7 +117,6 @@ public class SelectItem implements Serializable
 
     public void setValue(Object value)
     {
-        if (value == null) throw new NullPointerException("value");
         _value = value;
     }
 
