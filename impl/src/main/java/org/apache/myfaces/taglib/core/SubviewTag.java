@@ -15,7 +15,7 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import javax.faces.webapp.UIComponentELTag;
+import javax.faces.webapp.UIComponentTag;
 import javax.faces.component.UINamingContainer;
 
 /**
@@ -23,7 +23,7 @@ import javax.faces.component.UINamingContainer;
  * @version $Revision$ $Date$
  */
 public class SubviewTag
-    extends UIComponentELTag
+    extends UIComponentTag //UIComponentELTag
 {
     public String getComponentType()
     {

@@ -15,14 +15,14 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import javax.faces.webapp.UIComponentELTag;
+import javax.faces.webapp.UIComponentTag;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
 public class SelectItemsTag
-        extends UIComponentELTag
+        extends UIComponentTag //UIComponentELTag
 {
     //private static final Log log = LogFactory.getLog(SelectItemsTag.class);
 
