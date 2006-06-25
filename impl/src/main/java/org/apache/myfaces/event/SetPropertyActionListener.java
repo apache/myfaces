@@ -67,6 +67,8 @@ public class SetPropertyActionListener implements ActionListener, StateHolder
         if( ectx == null )
             throw new AbortProcessingException("ELContext ectx is null");
         
+        // TODO use a Converter before calling setValue 
+        
         target.setValue(ectx, value.getValue(ectx));
         
     }

@@ -20,6 +20,7 @@ import javax.el.ValueExpression;
 import javax.faces.component.ActionSource;
 import javax.faces.component.UIComponent;
 import javax.faces.event.ActionListener;
+import javax.faces.webapp.UIComponentClassicTagBase;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
@@ -50,7 +51,6 @@ public class SetPropertyActionListenerTag extends TagSupport
 
         ActionListener actionListener = new SetPropertyActionListener(target, value);
         
-        /*
         UIComponentClassicTagBase tag = UIComponentClassicTagBase.getParentUIComponentClassicTagBase(pageContext);
         
         if(tag == null)
@@ -82,7 +82,6 @@ public class SetPropertyActionListenerTag extends TagSupport
             ((ActionSource)component).addActionListener(actionListener);
             
         }
-        */
         
         return SKIP_BODY;
     }
