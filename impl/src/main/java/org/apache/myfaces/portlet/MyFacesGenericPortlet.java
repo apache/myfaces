@@ -388,6 +388,14 @@ public class MyFacesGenericPortlet extends GenericPortlet
                                                    getPortletSession().
                                                    getAttribute(CURRENT_FACES_CONTEXT);
 
+            // depending on the Portal implementation, facesContext could be
+            // null after a redeploy
+            if (facesContext == null) {
+               setPortletRequestFlag(request);
+               nonFacesRequest(request, response);
+               return;
+            }
+            
             // TODO: not sure if this can happen.  Also double check this against spec section 2.1.3
             if (facesContext.getResponseComplete()) return;
 
