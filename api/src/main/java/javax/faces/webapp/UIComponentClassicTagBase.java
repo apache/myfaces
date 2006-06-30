@@ -42,6 +42,8 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
 
     private static final String VERBATIM_COMP_TYPE = "javax.faces.HtmlOutputText";
 
+    private static final boolean DEFAULT_CREATED = false;
+    
     private UIComponent component;
 
     private FacesContext ctx;
@@ -62,30 +64,9 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
 
     private List<String> facets;
 
-    private boolean created;
-
-    protected String getFacesJspId()
-    {
-        throw new UnsupportedOperationException("1.2");
-    }
-
-    /**
-     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentClassicTagBase.html#doAfterBody()
-     */
-
-    public int doAfterBody() throws JspException
-    {
-        throw new UnsupportedOperationException("1.2");
-    }
-
-    /**
-     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentClassicTagBase.html#release()
-     */
-
-    public void release()
-    {
-        throw new UnsupportedOperationException("1.2");
-    }
+    private boolean created = DEFAULT_CREATED;
+    
+    private String facesJspId;
 
     /**
      * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentClassicTagBase.html#setJspId(java.lang.String)
@@ -132,8 +113,8 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         if (component != null)
         {
             if (log.isDebugEnabled())
-                log
-                        .debug("JSF 1.2 SPEC: If we have previously located this component, return it.");
+                log.debug("JSF 1.2 SPEC: If we have previously " +
+                                "located this component, return it.");
 
             foundComponent = component;
 
@@ -141,17 +122,20 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         else
         {
 
+            FacesContext ctx = getFacesContext();
+            
             if (log.isDebugEnabled())
-                log
-                        .debug("Locate the parent component by looking for a parent UIComponentTag instance");
+                log.debug("Locate the parent component by looking " +
+                                "for a parent UIComponentTag instance");
 
             UIComponentClassicTagBase parentTag = getParentUIComponentClassicTagBase(pageContext);
 
             if (parentTag == null)
             {
                 if (log.isDebugEnabled())
-                    log
-                            .debug(" If there is no parent UIComponentTag instance, this tag represents the root component, so get it from the current Tree and return it.");
+                    log.debug(" If there is no parent UIComponentTag " +
+                                    "instance, this tag represents the root component, " +
+                                    "so get it from the current Tree and return it.");
 
                 foundComponent = getFacesContext().getViewRoot();
             }
@@ -175,23 +159,33 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
                 {
 
                     if (log.isDebugEnabled())
-                        log
-                                .debug("If this UIComponentTag instance has the facetName attribute set, ask the parent UIComponent for a facet with this name");
+                        log.debug("If this UIComponentTag instance has " +
+                                        "the facetName attribute set, ask the parent " +
+                                        "UIComponent for a facet with this name");
 
                     foundComponent = componentOfParent.getFacet(facetName);
 
+                    if(foundComponent == null)
+                    {
+                        
+                        if (log.isDebugEnabled())
+                            log.debug("If not found, create one, call " +
+                                            "setProperties() with the new component " +
+                                            "as a parameter ");
+                        
+                        foundComponent = internalCreateComponent(this, ctx);
+
+                        setProperties(foundComponent);
+                        
+                        componentOfParent.getFacets().put(facetName, foundComponent);
+                        
+                    }
+                    
                 }
                 else
                 {
-                    if (log.isDebugEnabled())
-                        log
-                                .debug("If not found, create one, call setProperties() with the new component as a parameter ");
 
-                    foundComponent = internalCreateComponent();
-
-                    setProperties(foundComponent);
-
-                    // TODO and register it under this name ? Add the new component as a child or facet of its parent ?
+                    
 
                 }
 
@@ -206,15 +200,37 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     }
 
     /**
-     * TODO implment algorithm found at 
      * http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentClassicTagBase.html#findComponent(javax.faces.context.FacesContext)
      * @return
      */
 
-    private static UIComponent internalCreateComponent()
+    private static UIComponent internalCreateComponent(UIComponentClassicTagBase tagBase, FacesContext ctx)
     {
 
-        throw new UnsupportedOperationException("1.2");
+        UIComponent component = null;
+        
+        if(log.isDebugEnabled())
+            log.debug("JSF Spec 1.2 : When creating a component, the process is:" +
+                    "Retrieve the component type by calling UIComponentTagBase.getComponentType()");
+        
+        String componentType = tagBase.getComponentType();
+        
+        if ( tagBase.hasBinding() )
+        {
+            
+            throw new UnsupportedOperationException("1.2");
+            
+            //component = ctx.getApplication().createComponent(null , ctx, componentType);
+            
+        }
+        else
+        {
+            
+            component = ctx.getApplication().createComponent( componentType );
+            
+        }
+        
+        return component;
     }
 
     /**
@@ -313,6 +329,8 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         component.getAttributes().put("escape", Boolean.FALSE);
         component.setId(uniqueId);
 
+        // TODO maybe it would be better to call addChild here?
+        
         return (UIOutput) component;
     }
 
@@ -365,6 +383,46 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         return output;
     }
 
+    /**
+     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentClassicTagBase.html#doAfterBody()
+     */
+
+    public int doAfterBody() throws JspException
+    {
+        if( log.isDebugEnabled() )
+            log.debug("Perform any processing necessary " +
+                    "to handle the content implications of CASE 4 " +
+                    "(template text and/or non-component custom tag " +
+                    "output occurring between the last child component " +
+                    "tag and its enclosing parent component tag's end tag )");
+        
+        UIComponentClassicTagBase parent = getParentUIComponentClassicTagBase(pageContext);
+        
+        if( parent != null )
+        {
+            UIComponent componentOfParent = parent.getComponentInstance();
+            
+            if( componentOfParent != null && componentOfParent.getRendersChildren() )
+            {
+                UIComponent verbatimComponent = createVerbatimComponentFromBodyContent();
+                
+                if( verbatimComponent != null )
+                {
+                    
+                    if(log.isDebugEnabled())
+                        log.debug("adding child w/ id of " + verbatimComponent.getId());
+                    
+                    componentOfParent.getChildren().add(verbatimComponent);
+                    addChild(verbatimComponent);
+                }
+                
+            }
+            
+        }
+        
+        return getDoAfterBodyValue();
+    }
+    
     /**
      * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentClassicTagBase.html#doInitBody()
      */
@@ -494,6 +552,24 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     }
 
     /**
+     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentClassicTagBase.html#getFacesJspId()
+     * @return
+     */
+    
+    protected String getFacesJspId()
+    {
+        if(facesJspId == null)
+        {
+            if( jspId != null )
+                facesJspId = UIViewRoot.UNIQUE_ID_PREFIX + jspId;
+            else
+                facesJspId = ctx.getViewRoot().createUniqueId();
+            
+        }
+        return facesJspId;
+    }
+    
+    /**
      * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentClassicTagBase.html#getFacetName()
      * @return
      */
@@ -581,6 +657,26 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
 
     protected abstract boolean hasBinding();
 
+    /**
+     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentClassicTagBase.html#release()
+     */
+
+    public void release()
+    {
+        component = null;
+        ctx = null;
+        pageContext = null;
+        parent = null;
+        responseWriter = null;
+        id = null;
+        bodyContent = null;
+        jspId = null;
+        children = null;
+        facets = null;
+        created = DEFAULT_CREATED;
+        facesJspId = null;
+    }
+    
     /**
      * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentClassicTagBase.html#setBodyContent(javax.servlet.jsp.tagext.BodyContent) 
      */
