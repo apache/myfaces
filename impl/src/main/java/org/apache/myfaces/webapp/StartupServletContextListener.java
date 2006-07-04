@@ -69,7 +69,8 @@ public class StartupServletContextListener
                 new FacesConfigurator(externalContext).configure();
 
                 if ("true".equals(servletContext
-                                .getInitParameter(FacesConfigValidator.VALIDATE_CONTEXT_PARAM)))
+                                .getInitParameter(FacesConfigValidator.VALIDATE_CONTEXT_PARAM)) || "true".equals(servletContext
+                                .getInitParameter(FacesConfigValidator.VALIDATE_CONTEXT_PARAM.toLowerCase())))
                 {
                     List list = FacesConfigValidator.validate(externalContext,
                             servletContext.getRealPath("/"));

@@ -34,7 +34,7 @@ import org.apache.myfaces.shared_impl.util.ClassUtils;
 public class FacesConfigValidator
 {
 
-    public static final String VALIDATE_CONTEXT_PARAM = "org.apache.myfaces.validate";
+    public static final String VALIDATE_CONTEXT_PARAM = "org.apache.myfaces.VALIDATE";
     
     private FacesConfigValidator(){
         // hidden 
