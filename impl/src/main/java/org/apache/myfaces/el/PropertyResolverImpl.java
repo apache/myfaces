@@ -415,8 +415,9 @@ public class PropertyResolverImpl extends PropertyResolver
     {
         return "Bean: "
             + base.getClass().getName() + ", property: " + name +", newValue: "+(newValue==null?" null ":newValue)+
-                ",newValue class: "+(newValue==null?" null ":newValue.getClass().getName())+"method parameter class: "
-                +(m.getParameterTypes().length>0?m.getParameterTypes()[0].getName():"null");
+                ",newValue class: "+(newValue==null?" null ":newValue.getClass().getName())+" method parameter class: "
+                +((m.getParameterTypes()!=null&&m.getParameterTypes().length>0)
+                    ?m.getParameterTypes()[0].getName():"null");
 
     }
 
