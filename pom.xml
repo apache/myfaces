@@ -46,4 +46,20 @@
       <url>http://myfaces.zones.apache.org/dist/maven-repository</url>
     </repository>
   </repositories>
+
+  <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-source</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

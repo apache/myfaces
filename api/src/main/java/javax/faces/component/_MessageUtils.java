@@ -57,9 +57,20 @@ class _MessageUtils
     static void addErrorMessage(FacesContext facesContext,
             UIComponent component, Throwable cause)
     {
+        StringBuffer buf = new StringBuffer();
+
+        while(cause != null && cause.getCause()!=cause)
+        {
+            if(buf.length()>0)
+                buf.append(", ");
+            
+            buf.append(cause.getLocalizedMessage());
+
+            cause = cause.getCause();
+        }
+
         facesContext.addMessage(component.getClientId(facesContext),
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, cause
-                        .getLocalizedMessage(), cause.getLocalizedMessage()));
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, buf.toString(), buf.toString()));
     }
 
     
