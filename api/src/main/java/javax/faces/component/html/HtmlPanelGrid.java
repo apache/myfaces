@@ -28,7 +28,7 @@ import javax.faces.el.ValueBinding;
 public class HtmlPanelGrid extends UIPanel
 {
 
-    private static final int DEFAULT_BORDER = 0;
+    private static final int DEFAULT_BORDER = Integer.MIN_VALUE;
     private static final int DEFAULT_COLUMNS = 1;
 
     //------------------ GENERATED CODE BEGIN (do not modify!) --------------------
