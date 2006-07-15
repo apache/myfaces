@@ -407,6 +407,7 @@ public class PropertyResolverImpl extends PropertyResolver
         }
         catch (Throwable t)
         {
+            log.debug("Exception while invoking setter method.",t);
             throw new EvaluationException(getMessage(base, name, newValue, m), t);
         }
     }
