@@ -115,7 +115,11 @@ public class NavigationHandlerImpl
         }
     }
 
-    protected NavigationCase getNavigationCase(FacesContext facesContext, String fromAction, String outcome)
+
+    /**
+     * Returns the navigation case that applies for the given action and outcome
+     */
+    public NavigationCase getNavigationCase(FacesContext facesContext, String fromAction, String outcome)
     {
         String viewId = facesContext.getViewRoot().getViewId();
         Map casesMap = getNavigationCases(facesContext);
@@ -164,16 +168,21 @@ public class NavigationHandlerImpl
 
     /**
      * TODO
+     * Returns the view ID that would be created for the given action and outcome
      */
-    protected String getViewId(FacesContext context, String fromAction, String outcome)
+    public String getViewId(FacesContext context, String fromAction, String outcome)
     {
         return null;
     }
 
     /**
      * TODO
+     * Invoked by the navigation handler before the new view component is created.
+     * @param viewId The view ID to be created
+     * @return The view ID that should be used instead. If null, the view ID passed
+     * in will be used without modification.
      */
-    protected String beforeNavigation(String viewId)
+    public String beforeNavigation(String viewId)
     {
         return null;
     }
