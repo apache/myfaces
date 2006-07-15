@@ -65,7 +65,46 @@
               <outputDirectory>${project.build.directory}/classes</outputDirectory>
             </configuration>
           </execution>
+          <!-- unpack the shared sources into target/shared_sources-->
+          <execution>
+            <id>unpack-shared-impl-sources</id>
+            <phase>process-sources</phase>
+            <goals>
+                <goal>unpack</goal>
+            </goals>
+            <configuration>
+                <artifactItems>
+                    <artifactItem>
+                        <groupId>org.apache.myfaces.shared</groupId>
+                        <artifactId>myfaces-shared-impl</artifactId>
+                        <version>2.0.4-SNAPSHOT</version>
+                        <classifier>sources</classifier>
+                    </artifactItem>
+                </artifactItems>
+                <outputDirectory>${project.build.directory}/shared_sources</outputDirectory>
+            </configuration>
+          </execution>
         </executions>
+      </plugin>
+      <!-- the following will add the unpacked shared sources directory as source directory into the pom,
+           so also the shared sources are automaticaly included by the attach source plugin -->  
+      <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>add-source</id>
+                    <phase>process-sources</phase>
+                    <goals>
+                        <goal>add-source</goal>
+                    </goals>
+                    <configuration>
+                        <sources>
+                            <source>${project.build.directory}/shared_sources</source>
+                        </sources>
+                    </configuration>
+                </execution>
+            </executions>
       </plugin>
     </plugins>
   </build>
