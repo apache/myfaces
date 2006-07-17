@@ -72,16 +72,10 @@ extends HtmlRenderer
 
     public void decode(FacesContext facesContext, UIComponent component)
      {
-         RendererUtils.checkParamValidity(facesContext,component,null);
+         RendererUtils.checkParamValidity(facesContext,component,UIInput.class);
 
-         if (component instanceof UIInput)
-         {
-             HtmlRendererUtils.decodeUIInput(facesContext, component);
-         }
-         else
-         {
-             throw new IllegalArgumentException("Unsupported component class " + component.getClass().getName());
-         }
+         HtmlRendererUtils.decodeUIInput(facesContext, component);
+
      }
 
 }
