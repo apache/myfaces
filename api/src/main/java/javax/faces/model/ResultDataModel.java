@@ -15,9 +15,11 @@
  */
 package javax.faces.model;
 
-import javax.servlet.jsp.jstl.sql.Result;
 import java.util.SortedMap;
 
+import javax.servlet.jsp.jstl.sql.Result;
+
+//import javax.servlet.jsp.
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *

@@ -24,7 +24,8 @@ import org.apache.shale.test.base.AbstractJsfTestCase;
 import org.apache.shale.test.mock.MockRenderKitFactory;
 import org.apache.shale.test.mock.MockValueBinding;
 
-public class UIComponentBaseTest extends AbstractJsfTestCase {
+public class UIComponentBaseTest extends AbstractJsfTestCase
+{
 	private UIComponentBase mock = null;
      
 	public static void main(String[] args) {

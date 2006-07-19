@@ -23,7 +23,8 @@ import javax.faces.context.FacesContext;
  *
  * @author Stan Silvert
  */
-public interface ContextCallback {
+public interface ContextCallback
+{
     
     /**
      * 
