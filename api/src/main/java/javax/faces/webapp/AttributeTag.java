@@ -24,7 +24,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
- *
+ * @deprecated the implementation of this clazz is now an implementation detail.
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -35,16 +35,27 @@ public class AttributeTag
     private String _name;
     private String _value;
 
+    /**
+     * @deprecated
+     * @param name
+     */
     public void setName(String name)
     {
         _name = name;
     }
 
+    /**
+     * @deprecated
+     * @param value
+     */
     public void setValue(String value)
     {
         _value = value;
     }
 
+    /**
+     * @deprecated
+     */
     public int doStartTag() throws JspException
     {
         UIComponentTag componentTag = UIComponentTag.getParentUIComponentTag(pageContext);
@@ -68,6 +79,9 @@ public class AttributeTag
         return Tag.SKIP_BODY;
     }
 
+    /**
+     * @deprecated
+     */
     public void release()
     {
         super.release();
