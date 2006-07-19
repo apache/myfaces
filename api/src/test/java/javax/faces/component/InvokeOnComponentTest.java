@@ -7,19 +7,27 @@ import org.jmock.Mock;
 
 public class InvokeOnComponentTest extends AbstractComponentTest
 {
+  
+  Mock mock = null;
+  ContextCallback cc = null;
 
   public InvokeOnComponentTest(String arg0)
   {
-    super(arg0);
+      super(arg0);
   }
   
   public void setUp()
   {
       super.setUp();
+      mock = mock(ContextCallback.class);
+      cc = (ContextCallback) mock.proxy();
   }
 
   public void tearDown()
   {
+      mock.verify();
+      cc = null;
+      mock = null;
       super.tearDown();
   }
   
@@ -39,14 +47,14 @@ public class InvokeOnComponentTest extends AbstractComponentTest
     form.getChildren().add(i2);
     form.getChildren().add(i3);
     this.facesContext.getViewRoot().getChildren().add(form);
-    Mock mock = mock(ContextCallback.class);
-    ContextCallback cc = (ContextCallback) mock.proxy();
    
     mock.expects(once()).method("invokeContextCallback").with(eq(facesContext), eq(i2));
+    mock.expects(never()).method("invokeContextCallback").with(eq(facesContext), eq(i1));
+    mock.expects(never()).method("invokeContextCallback").with(eq(facesContext), eq(i3));
+    mock.expects(never()).method("invokeContextCallback").with(eq(facesContext), eq(i4));
     
     this.facesContext.getViewRoot().invokeOnComponent(facesContext, i2.getClientId(facesContext), cc);
     
-    mock.verify();
   }
   
   public static Test suite()
