@@ -10,5 +10,19 @@ public abstract class AbstractComponentTest extends AbstractJsfTestCase
     super(arg0);
   }
   
+  /**
+   * TODO
+   */
+  public void setUp()
+  {
+      super.setUp();
+  }
 
+  /**
+   * TODO
+   */
+  public void tearDown()
+  {
+      super.tearDown();
+  }
 }
