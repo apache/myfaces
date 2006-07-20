@@ -1,9 +1,13 @@
 package javax.faces.component;
 
-import org.apache.shale.test.jmock.AbstractJsfTestCase;
+import org.apache.shale.test.jmock.AbstractJmockJsfTestCase;
 
-
-public abstract class AbstractComponentTest extends AbstractJsfTestCase
+/**
+ * Abstract basis clazz for Apache MyFaces' test kit.
+ * 
+ * @author Matthias Wessendorf
+ */
+public abstract class AbstractComponentTest extends AbstractJmockJsfTestCase
 {
   public AbstractComponentTest(String arg0)
   {
