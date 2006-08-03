@@ -30,36 +30,47 @@ class _MessageUtils
 {
     private static final String DETAIL_SUFFIX = "_detail";
 
-	static void addErrorMessage(FacesContext facesContext,
-								UIComponent component,
-								String messageId)
-	{
-		facesContext.addMessage(component.getClientId(facesContext),
-								getMessage(facesContext,
-										   facesContext.getViewRoot().getLocale(),
-										   FacesMessage.SEVERITY_ERROR,
-										   messageId,
-										   null));
-	}
+  static void addErrorMessage(FacesContext facesContext,
+                UIComponent component,
+                String messageId)
+  {
+    facesContext.addMessage(component.getClientId(facesContext),
+                getMessage(facesContext,
+                       facesContext.getViewRoot().getLocale(),
+                       FacesMessage.SEVERITY_ERROR,
+                       messageId,
+                       null));
+  }
 
-	static void addErrorMessage(FacesContext facesContext,
-								UIComponent component,
-								String messageId, Object[] args)
-	{
-		facesContext.addMessage(component.getClientId(facesContext),
-								getMessage(facesContext,
-										   facesContext.getViewRoot().getLocale(),
-										   FacesMessage.SEVERITY_ERROR,
-										   messageId,
-										   args));
-	}
+  static void addErrorMessage(FacesContext facesContext,
+                UIComponent component,
+                String messageId, Object[] args)
+  {
+    facesContext.addMessage(component.getClientId(facesContext),
+                getMessage(facesContext,
+                       facesContext.getViewRoot().getLocale(),
+                       FacesMessage.SEVERITY_ERROR,
+                       messageId,
+                       args));
+  }
 
     static void addErrorMessage(FacesContext facesContext,
             UIComponent component, Throwable cause)
     {
+        StringBuffer buf = new StringBuffer();
+
+        while(cause != null && cause.getCause()!=cause)
+        {
+            if(buf.length()>0)
+                buf.append(", ");
+            
+            buf.append(cause.getLocalizedMessage());
+
+            cause = cause.getCause();
+        }
+
         facesContext.addMessage(component.getClientId(facesContext),
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, cause
-                        .getLocalizedMessage(), cause.getLocalizedMessage()));
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, buf.toString(), buf.toString()));
     }
 
     
