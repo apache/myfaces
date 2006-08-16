@@ -44,8 +44,6 @@ public class UIInput
     public static final String CONVERSION_MESSAGE_ID = "javax.faces.component.UIInput.CONVERSION";
     public static final String REQUIRED_MESSAGE_ID = "javax.faces.component.UIInput.REQUIRED";
 
-    private static final String PARTIAL_ENABLED = "org.apache.myfaces.IsPartialPhaseExecutionEnabled";
-
     private static final Validator[] EMPTY_VALIDATOR_ARRAY = new Validator[0];
 
     private Object _submittedValue = null;
