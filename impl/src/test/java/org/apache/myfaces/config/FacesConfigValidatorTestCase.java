@@ -33,7 +33,6 @@ import org.apache.shale.test.base.AbstractJsfTestCase;
 public class FacesConfigValidatorTestCase extends AbstractJsfTestCase
 {
 
-    private Log log = LogFactory.getLog(FacesConfigValidatorTestCase.class);
     private FacesConfigDispenser dispenser;
     private FacesConfigUnmarshaller unmarshaller;
     

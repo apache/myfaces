@@ -500,13 +500,6 @@ public class ValueBindingImpl extends ValueBinding implements StateHolder
         return new Object[] {base, index};
     }
 
-    private Object coerce(Object value, Class clazz) throws ELException
-    {
-        return (value == null) ? null
-            : (clazz == null) ? value :
-                Coercions.coerce(value, clazz, ELParserHelper.LOGGER);
-    }
-
     protected RuntimeConfig getRuntimeConfig(FacesContext facesContext)
     {
         if (_runtimeConfig == null)

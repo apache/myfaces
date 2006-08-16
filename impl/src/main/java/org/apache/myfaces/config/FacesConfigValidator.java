@@ -125,7 +125,7 @@ public class FacesConfigValidator
         
         try
         {
-            Class clazz = ClassUtils.classForName(className);
+            ClassUtils.classForName(className);
         }
         catch (ClassNotFoundException e)
         { 

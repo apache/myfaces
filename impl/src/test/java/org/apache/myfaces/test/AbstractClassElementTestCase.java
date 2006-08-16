@@ -91,7 +91,7 @@ public abstract class AbstractClassElementTestCase extends TestCase
             
             try
             {
-                Class c1 = getClass().getClassLoader().loadClass(clazz);
+                getClass().getClassLoader().loadClass(clazz);
                 
             }
             catch (ClassNotFoundException e)
@@ -99,7 +99,7 @@ public abstract class AbstractClassElementTestCase extends TestCase
                 
                 try{
                     
-                    Class c2 = Thread.currentThread().getContextClassLoader().loadClass(clazz);
+                    Thread.currentThread().getContextClassLoader().loadClass(clazz);
                     
                 }catch(ClassNotFoundException e2){
                     

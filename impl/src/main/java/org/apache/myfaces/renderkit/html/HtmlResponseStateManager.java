@@ -42,7 +42,6 @@ public class HtmlResponseStateManager
     private static final String VIEWID_PARAM = "jsf_viewid";
     private static final String BASE64_TREE_PARAM = "jsf_tree_64";
     private static final String BASE64_STATE_PARAM = "jsf_state_64";
-    private static final String ZIP_CHARSET = "ISO-8859-1";
 
     public void writeState(FacesContext facescontext,
                            StateManager.SerializedView serializedview) throws IOException

@@ -38,8 +38,6 @@ import org.apache.commons.logging.LogFactory;
 public class ActionListenerImpl
     implements ActionListener
 {
-    private static final Log log = LogFactory.getLog(ActionListenerImpl.class);
-
     public void processAction(ActionEvent actionEvent) throws AbortProcessingException
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();

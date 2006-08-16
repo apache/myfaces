@@ -30,7 +30,6 @@ import junit.framework.TestCase;
 
 public abstract class AbstractManagedBeanBuilderTestCase extends TestCase {
 
-	private static Log log = LogFactory.getLog(AbstractManagedBeanBuilderTestCase.class);
 	protected MangedBeanExample example;
 	
 	// managed property values
