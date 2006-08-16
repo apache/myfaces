@@ -18,8 +18,6 @@ package org.apache.myfaces.config;
 import org.apache.myfaces.config.element.*;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import javax.faces.FacesException;
 import javax.faces.application.Application;
@@ -27,7 +25,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ExternalContext;
 import javax.faces.el.PropertyResolver;
 import javax.faces.el.ValueBinding;
-import javax.faces.el.EvaluationException;
 import javax.faces.webapp.UIComponentTag;
 import java.util.*;
 import java.lang.reflect.Array;

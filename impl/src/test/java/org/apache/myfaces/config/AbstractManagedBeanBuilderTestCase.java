@@ -14,8 +14,6 @@ import java.util.Map;
 
 import javax.faces.application.Application;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.ApplicationImpl;
 import org.apache.myfaces.config.ManagedBeanBuilder;
 import org.apache.myfaces.config.impl.digester.elements.ListEntries;
