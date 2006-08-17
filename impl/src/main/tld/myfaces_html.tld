@@ -350,6 +350,7 @@ Start of revised 1.0 conforming tags (in alphabetical order)
         &html_universal_attributes;
         &html_event_handler_attributes;
         &html_anchor_attributes;
+        &html_disabled_attribute;
     </tag>
 
 <!-- output_message -->

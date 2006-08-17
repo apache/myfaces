@@ -3,3 +3,4 @@
         &html_universal_attributes;
         &html_event_handler_attributes;
         &html_anchor_attributes;
+        &html_disabled_attribute;
