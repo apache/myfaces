@@ -50,7 +50,8 @@ public abstract class AbstractManagedBeanBuilderTestCase extends AbstractJsfTest
 	 * Skips digester and manually builds and configures a managed bean.
 	 */
 	
-	public void setUp(){
+	protected void setUp() throws Exception
+  {
 		super.setUp();
 		ManagedBeanBuilder managedBeanBuilder = new ManagedBeanBuilder();
 		ManagedBean managedBean = new ManagedBean();

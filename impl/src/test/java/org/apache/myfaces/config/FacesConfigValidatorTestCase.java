@@ -46,7 +46,7 @@ public class FacesConfigValidatorTestCase extends AbstractJsfTestCase
         return new TestSuite(FacesConfigValidatorTestCase.class); // keep this method or maven won't run it
     }
     
-    public void setUp()
+    protected void setUp() throws Exception
     {
 
         super.setUp();

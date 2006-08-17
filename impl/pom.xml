@@ -250,9 +250,9 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.struts.shale</groupId>
+      <groupId>org.apache.shale</groupId>
       <artifactId>shale-test</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.3-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>
