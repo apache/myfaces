@@ -389,7 +389,7 @@ public class PropertyResolverImpl extends PropertyResolver
         if (m == null)
         {
             throw new PropertyNotFoundException(
-                getMessage(base, name)+ " (no write method for property!)"); 
+                "Bean: " + base.getClass().getName() + ", property: " + name);
         }
 
         // Check if the concrete class of this method is accessible and if not
@@ -398,7 +398,7 @@ public class PropertyResolverImpl extends PropertyResolver
         if (m == null)
         {
             throw new PropertyNotFoundException(
-                getMessage(base, name) + " (not accessible!)");
+                "Bean: " + base.getClass().getName() + ", property: " + name + " (not accessible!)");
         }
 
         try
@@ -407,25 +407,9 @@ public class PropertyResolverImpl extends PropertyResolver
         }
         catch (Throwable t)
         {
-            log.debug("Exception while invoking setter method.",t);
-            throw new EvaluationException(getMessage(base, name, newValue, m), t);
+            throw new EvaluationException("Bean: "
+                + base.getClass().getName() + ", property: " + name, t);
         }
-    }
-
-    private static String getMessage(Object base, String name, Object newValue, Method m)
-    {
-        return "Bean: "
-            + base.getClass().getName() + ", property: " + name +", newValue: "+(newValue==null?" null ":newValue)+
-                ",newValue class: "+(newValue==null?" null ":newValue.getClass().getName())+" method parameter class: "
-                +((m.getParameterTypes()!=null&&m.getParameterTypes().length>0)
-                    ?m.getParameterTypes()[0].getName():"null");
-
-    }
-
-    private static String getMessage(Object base, String name)
-    {
-        return "Bean: "
-            + base.getClass().getName() + ", property: " + name;
     }
 
     public static Object getProperty(Object base, String name)
@@ -437,7 +421,7 @@ public class PropertyResolverImpl extends PropertyResolver
         if (m == null)
         {
             throw new PropertyNotFoundException(
-                getMessage(base, name));
+                "Bean: " + base.getClass().getName() + ", property: " + name);
         }
 
         // Check if the concrete class of this method is accessible and if not
@@ -446,7 +430,7 @@ public class PropertyResolverImpl extends PropertyResolver
         if (m == null)
         {
             throw new PropertyNotFoundException(
-                getMessage(base, name) + " (not accessible!)");
+                "Bean: " + base.getClass().getName() + ", property: " + name + " (not accessible!)");
         }
 
         try
@@ -455,7 +439,8 @@ public class PropertyResolverImpl extends PropertyResolver
         }
         catch (Throwable t)
         {
-            throw new EvaluationException(getMessage(base, name), t);
+            throw new EvaluationException("Bean: "
+                + base.getClass().getName() + ", property: " + name, t);
         }
     }
 
@@ -472,7 +457,8 @@ public class PropertyResolverImpl extends PropertyResolver
         }
         catch (IntrospectionException e)
         {
-            throw new PropertyNotFoundException(getMessage(base, name), e);
+            throw new PropertyNotFoundException("Bean: "
+                + base.getClass().getName() + ", property: " + name, e);
         }
 
         return propertyDescriptor;
