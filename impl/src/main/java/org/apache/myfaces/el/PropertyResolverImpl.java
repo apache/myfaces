@@ -389,7 +389,7 @@ public class PropertyResolverImpl extends PropertyResolver
         if (m == null)
         {
             throw new PropertyNotFoundException(
-                getMessage(base, name));
+                getMessage(base, name)+ " (no write method for property!)"); 
         }
 
         // Check if the concrete class of this method is accessible and if not
