@@ -17,7 +17,7 @@ public abstract class AbstractComponentTest extends AbstractJmockJsfTestCase
   /**
    * TODO
    */
-  public void setUp()
+  protected void setUp() throws Exception
   {
       super.setUp();
   }
@@ -25,7 +25,7 @@ public abstract class AbstractComponentTest extends AbstractJmockJsfTestCase
   /**
    * TODO
    */
-  public void tearDown()
+  protected void tearDown() throws Exception
   {
       super.tearDown();
   }

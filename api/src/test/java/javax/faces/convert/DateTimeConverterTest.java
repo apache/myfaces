@@ -44,7 +44,7 @@ public class DateTimeConverterTest extends AbstractJsfTestCase
         super(name);
     }
 
-    public void setUp()
+    protected void setUp() throws Exception
     {
         super.setUp();
 
@@ -53,7 +53,7 @@ public class DateTimeConverterTest extends AbstractJsfTestCase
 
     }
 
-    public void tearDown()
+    protected void tearDown() throws Exception
     {
         super.tearDown();
 

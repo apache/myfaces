@@ -40,14 +40,16 @@ public class UIComponentBaseTest extends AbstractJsfTestCase
 		return null; // keep this method or maven won't run it
 	}
 
-	public void setUp() {
+	protected void setUp() throws Exception
+  {
 		super.setUp();
         // TODO remove this line once shale-test goes alpha, see MYFACES-1155
 		facesContext.getViewRoot().setRenderKitId(MockRenderKitFactory.HTML_BASIC_RENDER_KIT);
 		mock = new UIComponentMock();
 	}
 
-	public void tearDown() {
+	protected void tearDown() throws Exception
+  {
 		super.tearDown();
 		mock = null;
 	}
