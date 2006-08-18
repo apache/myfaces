@@ -748,7 +748,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         if (stack == null)
         {
             stack = new Stack();
-            pageContext.setAttribute(COMPONENT_STACK_ATTR,
+            pageContext.setAttribute(COMPONENT_STACK_ATTR, stack,
                     PageContext.REQUEST_SCOPE);
         }
 
