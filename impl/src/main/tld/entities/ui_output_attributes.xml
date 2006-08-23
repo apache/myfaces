@@ -5,7 +5,24 @@
     <required>false</required>
     <rtexprvalue>false</rtexprvalue>
     <type>java.lang.String</type>
-    <description>The initial value of this component.</description>
+    <description>
+        The initial value of this component. This value is generally
+        set as a value-binding in the form #{myBean.myProperty}, where
+        myProperty can be any data-type of Java (also user-defined data-types),
+        if a converter for this data-type exists.
+
+        Special cases:
+
+        1) f:selectItems - value needs to bind to a list (or an array) of javax.faces.model.SelectItem-instances
+
+        2) components implementing UISelectMany (e.g. h:selectManyCheckbox) -
+            value needs to bind to a list (or an array) of values, where the values need to be
+            of the same data-type as the choices of the associated f:selectItems-component
+
+        3) components implementing UIData (e.g. h:dataTable) -
+            value needs to bind to a list (or an array) of values,
+            which will be iterated over when the data-table is processed
+    </description>
 </attribute>
 <attribute>
     <name>converter</name>
