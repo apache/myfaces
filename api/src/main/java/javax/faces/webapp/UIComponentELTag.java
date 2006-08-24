@@ -117,12 +117,13 @@ public abstract class UIComponentELTag extends UIComponentClassicTagBase
     }
 
     /**
-     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentELTag.html#setBinding(javax.el.ValueExpression)
+     *
+     * @param binding The new value expression
+     *
+     * @throws JspException if an error occurs
      */
-
     public void setBinding(ValueExpression binding) throws JspException
     {
-        // TODO throw exception, just like UIComponentTag ? 
         this.binding = binding;
     }
 
