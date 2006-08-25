@@ -99,7 +99,8 @@ public class StartupServletContextListener
         }
         log.info("ServletContext '" + servletContext.getRealPath("/") + "' initialized.");
         
-        if(servletContext.getInitParameter(StateUtils.INIT_SECRET) != null)
+        if(servletContext.getInitParameter(StateUtils.INIT_SECRET) != null
+                || servletContext.getInitParameter(StateUtils.INIT_SECRET.toLowerCase()) != null)
             StateUtils.initSecret(servletContext);
         
         handleSerialFactory(servletContext);
