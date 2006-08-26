@@ -167,12 +167,11 @@ public class NavigationHandlerImpl
     }
 
     /**
-     * TODO
      * Returns the view ID that would be created for the given action and outcome
      */
     public String getViewId(FacesContext context, String fromAction, String outcome)
     {
-        return null;
+        return this.getNavigationCase(context, fromAction, outcome).getToViewId();
     }
 
     /**
