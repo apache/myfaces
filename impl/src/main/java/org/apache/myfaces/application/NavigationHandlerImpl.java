@@ -179,6 +179,8 @@ public class NavigationHandlerImpl
      * @return The view ID that should be used instead. If null, the view ID passed
      * in will be used without modification.
      * 
+     * <p><b>returns NULL</b></p>
+     * 
      * <p>not implemented/called by Apache MyFaces</p>
      */
     public String beforeNavigation(String viewId)
