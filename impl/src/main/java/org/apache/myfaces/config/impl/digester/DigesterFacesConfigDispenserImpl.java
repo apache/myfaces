@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -59,7 +60,7 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser
     private Map converterById = new HashMap();
     private Map converterByClass = new HashMap();
     private Map converterConfigurationByClassName = new HashMap();
-    private Map renderKits = new HashMap();
+    private Map renderKits = new LinkedHashMap();
     private List managedBeans = new ArrayList();
     private List navigationRules = new ArrayList();
 
