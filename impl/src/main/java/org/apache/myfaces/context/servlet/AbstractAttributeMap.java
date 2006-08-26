@@ -15,6 +15,7 @@
  */
 package org.apache.myfaces.context.servlet;
 
+import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,7 +34,7 @@ import java.util.Set;
  * @version $Revision$ $Date$
  */
 public abstract class AbstractAttributeMap
-    implements Map
+    extends AbstractMap
 {
     private Set              _keySet;
     private Collection       _values;
