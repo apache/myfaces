@@ -208,9 +208,9 @@
   </profiles>
   <dependencies>
     <dependency>
-      <groupId>javax.servlet.jsp.jstl</groupId>
+      <groupId>jstl</groupId>
       <artifactId>jstl</artifactId>
-      <version>1.2</version>
+      <version>1.2</version>    
       <scope>provided</scope>
       <exclusions>
         <exclusion>
