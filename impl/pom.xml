@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.myfaces.core</groupId>
   <artifactId>myfaces-impl</artifactId>
-  <name>Impl</name>
+  <name>MyFaces Implementation</name>
   <description>This is the MyFaces Impl Subproject Description [INSERT MORE STUFF HERE]</description>
   <url>http://myfaces.apache.org</url>
   <scm>

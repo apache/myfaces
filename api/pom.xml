@@ -7,7 +7,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.myfaces.core</groupId>
   <artifactId>myfaces-api</artifactId>
-  <name>API</name>
+  <name>MyFaces API</name>
   <description>
     The MyFaces API Subproject provides a full set of the API interfaces and classes
     defined in JSR-127 (see also http://www.jcp.org/en/jsr/detail?id=127).
