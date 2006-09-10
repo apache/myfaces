@@ -2,7 +2,7 @@
   <parent>
     <artifactId>myfaces-core-project</artifactId>
     <groupId>org.apache.myfaces.core</groupId>
-    <version>1.1.4-SNAPSHOT</version>
+    <version>1.1.4</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.myfaces.core</groupId>
@@ -47,6 +47,7 @@
         </plugins>
       </build>
     </profile>
+    <!-- Comment out for the release due to the snapshot dependency on build-tools
     <profile>
       <id>regenerate-component-code</id>
       <build>
@@ -91,6 +92,7 @@
         </plugins>
       </build>
     </profile>
+    -->
   </profiles>
   <dependencies>
     <dependency>
