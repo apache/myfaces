@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
 import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.renderkit.html.HTML;
+import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
 
 import javax.faces.application.StateManager;
 import javax.faces.context.FacesContext;
@@ -47,65 +48,77 @@ public class HtmlResponseStateManager
                            StateManager.SerializedView serializedview) throws IOException
     {
         ResponseWriter responseWriter = facescontext.getResponseWriter();
-        Object treeStruct = serializedview.getStructure();
-        Object compStates = serializedview.getState();
 
-        if (treeStruct != null)
+        if(facescontext.getApplication().getStateManager().isSavingStateInClient(facescontext))
         {
-            if (treeStruct instanceof String)
+            Object treeStruct = serializedview.getStructure();
+            Object compStates = serializedview.getState();
+
+            if (treeStruct != null)
             {
-                responseWriter.startElement(HTML.INPUT_ELEM, null);
-                responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
-                responseWriter.writeAttribute(HTML.NAME_ATTR, TREE_PARAM, null);
-                responseWriter.writeAttribute(HTML.ID_ATTR, TREE_PARAM, null);
-                if(StateUtils.isSecure(facescontext.getExternalContext()))
-                	treeStruct = StateUtils.construct(treeStruct, facescontext.getExternalContext());
-                responseWriter.writeAttribute(HTML.VALUE_ATTR, treeStruct, null);
-                responseWriter.endElement(HTML.INPUT_ELEM);
+                if (treeStruct instanceof String)
+                {
+                    responseWriter.startElement(HTML.INPUT_ELEM, null);
+                    responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
+                    responseWriter.writeAttribute(HTML.NAME_ATTR, TREE_PARAM, null);
+                    responseWriter.writeAttribute(HTML.ID_ATTR, TREE_PARAM, null);
+                    if(StateUtils.isSecure(facescontext.getExternalContext()))
+                        treeStruct = StateUtils.construct(treeStruct, facescontext.getExternalContext());
+                    responseWriter.writeAttribute(HTML.VALUE_ATTR, treeStruct, null);
+                    responseWriter.endElement(HTML.INPUT_ELEM);
+                }
+                else
+                {
+                    responseWriter.startElement(HTML.INPUT_ELEM, null);
+                    responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
+                    responseWriter.writeAttribute(HTML.NAME_ATTR, BASE64_TREE_PARAM, null);
+                    responseWriter.writeAttribute(HTML.ID_ATTR, BASE64_TREE_PARAM, null);
+                    responseWriter.writeAttribute(HTML.VALUE_ATTR,
+                            StateUtils.construct(treeStruct, facescontext.getExternalContext()), null);
+                    responseWriter.endElement(HTML.INPUT_ELEM);
+                }
             }
             else
             {
-                responseWriter.startElement(HTML.INPUT_ELEM, null);
-                responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
-                responseWriter.writeAttribute(HTML.NAME_ATTR, BASE64_TREE_PARAM, null);
-                responseWriter.writeAttribute(HTML.ID_ATTR, BASE64_TREE_PARAM, null);
-                responseWriter.writeAttribute(HTML.VALUE_ATTR,
-                        StateUtils.construct(treeStruct, facescontext.getExternalContext()), null);
-                responseWriter.endElement(HTML.INPUT_ELEM);
+                log.error("No tree structure to be saved in client response!");
+            }
+
+            if (compStates != null)
+            {
+                if (compStates instanceof String)
+                {
+                    responseWriter.startElement(HTML.INPUT_ELEM, null);
+                    responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
+                    responseWriter.writeAttribute(HTML.NAME_ATTR, STATE_PARAM, null);
+                    responseWriter.writeAttribute(HTML.ID_ATTR, STATE_PARAM, null);
+                    if(StateUtils.isSecure(facescontext.getExternalContext()))
+                        compStates = StateUtils.construct(compStates, facescontext.getExternalContext());
+                    responseWriter.writeAttribute(HTML.VALUE_ATTR, compStates, null);
+                    responseWriter.endElement(HTML.INPUT_ELEM);
+                }
+                else
+                {
+                    responseWriter.startElement(HTML.INPUT_ELEM, null);
+                    responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
+                    responseWriter.writeAttribute(HTML.NAME_ATTR, BASE64_STATE_PARAM, null);
+                    responseWriter.writeAttribute(HTML.ID_ATTR, BASE64_STATE_PARAM, null);
+                    responseWriter.writeAttribute(HTML.VALUE_ATTR,
+                            StateUtils.construct(compStates, facescontext.getExternalContext()), null);
+                    responseWriter.endElement(HTML.INPUT_ELEM);
+                }
+            }
+            else
+            {
+                log.error("No component states to be saved in client response!");
             }
         }
         else
         {
-            log.error("No tree structure to be saved in client response!");
-        }
-
-        if (compStates != null)
-        {
-            if (compStates instanceof String)
-            {
-                responseWriter.startElement(HTML.INPUT_ELEM, null);
-                responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
-                responseWriter.writeAttribute(HTML.NAME_ATTR, STATE_PARAM, null);
-                responseWriter.writeAttribute(HTML.ID_ATTR, STATE_PARAM, null);
-                if(StateUtils.isSecure(facescontext.getExternalContext()))
-                	compStates = StateUtils.construct(compStates, facescontext.getExternalContext());
-                responseWriter.writeAttribute(HTML.VALUE_ATTR, compStates, null);
-                responseWriter.endElement(HTML.INPUT_ELEM);
-            }
-            else
-            {
-                responseWriter.startElement(HTML.INPUT_ELEM, null);
-                responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
-                responseWriter.writeAttribute(HTML.NAME_ATTR, BASE64_STATE_PARAM, null);
-                responseWriter.writeAttribute(HTML.ID_ATTR, BASE64_STATE_PARAM, null);
-                responseWriter.writeAttribute(HTML.VALUE_ATTR,
-                        StateUtils.construct(compStates, facescontext.getExternalContext()), null);
-                responseWriter.endElement(HTML.INPUT_ELEM);
-            }
-        }
-        else
-        {
-            log.error("No component states to be saved in client response!");
+            responseWriter.startElement(HTML.INPUT_ELEM, null);
+            responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
+            responseWriter.writeAttribute(HTML.NAME_ATTR, RendererUtils.SEQUENCE_PARAM, null);
+            responseWriter.writeAttribute(HTML.VALUE_ATTR, RendererUtils.getViewSequence(facescontext), null);
+            responseWriter.endElement(HTML.INPUT_ELEM);                    
         }
 
         responseWriter.startElement(HTML.INPUT_ELEM, null);

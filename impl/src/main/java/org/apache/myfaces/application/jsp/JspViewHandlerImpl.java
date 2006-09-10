@@ -242,17 +242,7 @@ public class JspViewHandlerImpl
      * @throws IOException
      */
     public void writeState(FacesContext facesContext) throws IOException {
-        if (facesContext.getApplication().getStateManager().isSavingStateInClient(facesContext)) {
-            facesContext.getResponseWriter().write(FORM_STATE_MARKER);
-        }
-        else {
-            ResponseWriter writer = facesContext.getResponseWriter();
-            writer.startElement(HTML.INPUT_ELEM, null);
-            writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
-            writer.writeAttribute(HTML.NAME_ATTR, RendererUtils.SEQUENCE_PARAM, null);
-            writer.writeAttribute(HTML.VALUE_ATTR, RendererUtils.getViewSequence(facesContext), null);
-            writer.endElement(HTML.INPUT_ELEM);
-        }
+        facesContext.getResponseWriter().write(FORM_STATE_MARKER);
     }
 
 

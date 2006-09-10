@@ -420,15 +420,12 @@ public class JspStateManagerImpl
     {
         if (log.isTraceEnabled()) log.trace("Entering writeState");
 
-        if (isSavingStateInClient(facesContext))
-        {
-            if (log.isTraceEnabled()) log.trace("Processing writeState - client-side state-saving writing state");
+        if (log.isTraceEnabled()) log.trace("Processing writeState - either client-side (full state) or server-side (partial information; e.g. sequence)");
 
-            UIViewRoot uiViewRoot = facesContext.getViewRoot();
-            //save state in response (client)
-            RenderKit renderKit = getRenderKitFactory().getRenderKit(facesContext, uiViewRoot.getRenderKitId());
-            renderKit.getResponseStateManager().writeState(facesContext, serializedView);
-        }
+        UIViewRoot uiViewRoot = facesContext.getViewRoot();
+        //save state in response (client-side: full state; server-side: sequence)
+        RenderKit renderKit = getRenderKitFactory().getRenderKit(facesContext, uiViewRoot.getRenderKitId());       
+        renderKit.getResponseStateManager().writeState(facesContext, serializedView);
 
         if (log.isTraceEnabled()) log.trace("Exiting writeState");
 
