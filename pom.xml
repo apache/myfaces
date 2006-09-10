@@ -24,28 +24,6 @@
     <module>api</module>
     <module>impl</module>
   </modules>
-  <repositories>
-    <repository>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <id>apache-maven-snapshots</id>
-      <url>http://cvs.apache.org/maven-snapshot-repository</url>
-    </repository>
-    <repository>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <id>myfaces-staging</id>
-      <url>http://people.apache.org/builds/myfaces/m2-staging-repository</url>
-    </repository>
-  </repositories>
     <build>
         <pluginManagement>
             <plugins>
