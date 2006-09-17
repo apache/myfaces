@@ -18,7 +18,7 @@
   <scm>
     <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/trunk</url>
+    <url>http://svn.apache.org/viewvc/myfaces/core/trunk</url>
   </scm>
   <modules>
     <module>api</module>
@@ -32,18 +32,8 @@
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
-      <id>apache-maven-snapshots</id>
+      <id>apache.snapshots</id>
       <url>http://people.apache.org/repo/m2-snapshot-repository</url>
-    </repository>
-    <repository>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <id>myfaces-repo</id>
-      <url>http://myfaces.zones.apache.org/dist/maven-repository</url>
     </repository>
   </repositories>
 
@@ -61,5 +51,20 @@
                 </executions>
             </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.1</version>
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            </manifest>
+                        </archive>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 </project>
