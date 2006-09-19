@@ -15,23 +15,16 @@
  */
 package org.apache.myfaces.application.jsp;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
+import org.apache.commons.collections.map.ReferenceMap;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.application.MyfacesStateManager;
+import org.apache.myfaces.application.TreeStructureManager;
+import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
+import org.apache.myfaces.shared_impl.renderkit.ViewSequenceUtils;
+import org.apache.myfaces.shared_impl.util.MyFacesObjectInputStream;
 
 import javax.faces.FactoryFinder;
 import javax.faces.application.StateManager;
@@ -43,36 +36,28 @@ import javax.faces.context.FacesContext;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
-
-import org.apache.commons.collections.map.ReferenceMap;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.application.MyfacesStateManager;
-import org.apache.myfaces.application.TreeStructureManager;
-import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
-import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
-import org.apache.myfaces.shared_impl.util.MyFacesObjectInputStream;
+import java.io.*;
+import java.util.*;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Default StateManager implementation for use when views are defined
  * via tags in JSP pages.
- * 
+ *
  * @author Thomas Spiegl (latest modification by $Author$)
  * @author Manfred Geiler
  * @version $Revision$ $Date$
  */
 public class JspStateManagerImpl
-    extends MyfacesStateManager
-{
+    extends MyfacesStateManager {
     private static final Log log = LogFactory.getLog(JspStateManagerImpl.class);
     private static final String SERIALIZED_VIEW_SESSION_ATTR
-            = JspStateManagerImpl.class.getName() + ".SERIALIZED_VIEW";
+        = JspStateManagerImpl.class.getName() + ".SERIALIZED_VIEW";
     private static final String SERIALIZED_VIEW_REQUEST_ATTR
-            = JspStateManagerImpl.class.getName() + ".SERIALIZED_VIEW";
+        = JspStateManagerImpl.class.getName() + ".SERIALIZED_VIEW";
     private static final String RESTORED_SERIALIZED_VIEW_REQUEST_ATTR
-    = JspStateManagerImpl.class.getName() + ".RESTORED_SERIALIZED_VIEW";
+        = JspStateManagerImpl.class.getName() + ".RESTORED_SERIALIZED_VIEW";
 
     /**
      * Only applicable if state saving method is "server" (= default).
@@ -121,18 +106,15 @@ public class JspStateManagerImpl
 
     private RenderKitFactory _renderKitFactory = null;
 
-    public JspStateManagerImpl()
-    {
+    public JspStateManagerImpl() {
         if (log.isTraceEnabled()) log.trace("New JspStateManagerImpl instance created");
     }
 
-    protected Object getComponentStateToSave(FacesContext facesContext)
-    {
+    protected Object getComponentStateToSave(FacesContext facesContext) {
         if (log.isTraceEnabled()) log.trace("Entering getComponentStateToSave");
 
         UIViewRoot viewRoot = facesContext.getViewRoot();
-        if (viewRoot.isTransient())
-        {
+        if (viewRoot.isTransient()) {
             return null;
         }
 
@@ -148,12 +130,10 @@ public class JspStateManagerImpl
      * tree to be recreated later, though all the components will have
      * just default values for their members.
      */
-    protected Object getTreeStructureToSave(FacesContext facesContext)
-    {
+    protected Object getTreeStructureToSave(FacesContext facesContext) {
         if (log.isTraceEnabled()) log.trace("Entering getTreeStructureToSave");
         UIViewRoot viewRoot = facesContext.getViewRoot();
-        if (viewRoot.isTransient())
-        {
+        if (viewRoot.isTransient()) {
             return null;
         }
         TreeStructureManager tsm = new TreeStructureManager();
@@ -170,8 +150,7 @@ public class JspStateManagerImpl
      */
     protected void restoreComponentState(FacesContext facesContext,
                                          UIViewRoot uiViewRoot,
-                                         String renderKitId)
-    {
+                                         String renderKitId) {
         if (log.isTraceEnabled()) log.trace("Entering restoreComponentState");
 
         //===========================================
@@ -179,40 +158,37 @@ public class JspStateManagerImpl
         //===========================================
 
         Object serializedComponentStates;
-        if (isSavingStateInClient(facesContext))
-        {
+        if (isSavingStateInClient(facesContext)) {
             RenderKit renderKit = getRenderKitFactory().getRenderKit(facesContext, renderKitId);
             ResponseStateManager responseStateManager = renderKit.getResponseStateManager();
             serializedComponentStates = responseStateManager.getComponentStateToRestore(facesContext);
-            if (serializedComponentStates == null)
-            {
+            if (serializedComponentStates == null) {
                 log.error("No serialized component state found in client request!");
                 // mark UIViewRoot invalid by resetting view id
                 uiViewRoot.setViewId(null);
                 return;
             }
         }
-        else
-        {
+        else {
+            String viewId = uiViewRoot.getViewId();
+            String sequenceStr = getSequenceString(facesContext, renderKitId, viewId);
             SerializedView serializedView = getSerializedViewFromServletSession(facesContext,
-                                                                                uiViewRoot.getViewId());
-            if (serializedView == null)
-            {
+                                                                                viewId,
+                                                                                sequenceStr);
+            if (serializedView == null) {
                 log.error("No serialized view found in server session!");
                 // mark UIViewRoot invalid by resetting view id
                 uiViewRoot.setViewId(null);
                 return;
             }
             serializedComponentStates = serializedView.getState();
-            if (serializedComponentStates == null)
-            {
+            if (serializedComponentStates == null) {
                 log.error("No serialized component state found in server session!");
                 return;
             }
         }
 
-        if (uiViewRoot.getRenderKitId() == null)
-        {
+        if (uiViewRoot.getRenderKitId() == null) {
             //Just to be sure...
             uiViewRoot.setRenderKitId(renderKitId);
         }
@@ -228,47 +204,46 @@ public class JspStateManagerImpl
      */
     protected UIViewRoot restoreTreeStructure(FacesContext facesContext,
                                               String viewId,
-                                              String renderKitId)
-    {
+                                              String renderKitId) {
         if (log.isTraceEnabled()) log.trace("Entering restoreTreeStructure");
 
         UIViewRoot uiViewRoot;
-        if (isSavingStateInClient(facesContext))
-        {
+        if (isSavingStateInClient(facesContext)) {
             //reconstruct tree structure from request
             RenderKit rk = getRenderKitFactory().getRenderKit(facesContext, renderKitId);
             ResponseStateManager responseStateManager = rk.getResponseStateManager();
             Object treeStructure = responseStateManager.getTreeStructureToRestore(facesContext, viewId);
-            if (treeStructure == null)
-            {
-                if (log.isDebugEnabled()) log.debug("Exiting restoreTreeStructure - No tree structure state found in client request");
+            if (treeStructure == null) {
+                if (log.isDebugEnabled())
+                    log.debug("Exiting restoreTreeStructure - No tree structure state found in client request");
                 return null;
             }
 
             TreeStructureManager tsm = new TreeStructureManager();
-            uiViewRoot = tsm.restoreTreeStructure((TreeStructureManager.TreeStructComponent)treeStructure);
+            uiViewRoot = tsm.restoreTreeStructure((TreeStructureManager.TreeStructComponent) treeStructure);
             if (log.isTraceEnabled()) log.trace("Tree structure restored from client request");
         }
-        else
-        {
+        else {
+            String sequenceStr = getSequenceString(facesContext, renderKitId, viewId);
             //reconstruct tree structure from ServletSession
             SerializedView serializedView = getSerializedViewFromServletSession(facesContext,
-                                                                                viewId);
-            if (serializedView == null)
-            {
-                if (log.isDebugEnabled()) log.debug("Exiting restoreTreeStructure - No serialized view found in server session!");
+                                                                                viewId,
+                                                                                sequenceStr);
+            if (serializedView == null) {
+                if (log.isDebugEnabled())
+                    log.debug("Exiting restoreTreeStructure - No serialized view found in server session!");
                 return null;
             }
 
             Object treeStructure = serializedView.getStructure();
-            if (treeStructure == null)
-            {
-                if (log.isDebugEnabled()) log.debug("Exiting restoreTreeStructure - No tree structure state found in server session, former UIViewRoot must have been transient");
+            if (treeStructure == null) {
+                if (log.isDebugEnabled())
+                    log.debug("Exiting restoreTreeStructure - No tree structure state found in server session, former UIViewRoot must have been transient");
                 return null;
             }
 
             TreeStructureManager tsm = new TreeStructureManager();
-            uiViewRoot = tsm.restoreTreeStructure((TreeStructureManager.TreeStructComponent)serializedView.getStructure());
+            uiViewRoot = tsm.restoreTreeStructure((TreeStructureManager.TreeStructComponent) serializedView.getStructure());
             if (log.isTraceEnabled()) log.trace("Tree structure restored from server session");
         }
 
@@ -276,18 +251,22 @@ public class JspStateManagerImpl
         return uiViewRoot;
     }
 
-    public UIViewRoot restoreView(FacesContext facescontext, String viewId, String renderKitId)
-    {
+    private String getSequenceString(FacesContext facesContext, String renderKitId, String viewId) {
+        RenderKit rk = getRenderKitFactory().getRenderKit(facesContext, renderKitId);
+        ResponseStateManager responseStateManager = rk.getResponseStateManager();
+        String sequenceStr = (String) responseStateManager.getTreeStructureToRestore(facesContext, viewId);
+        return sequenceStr;
+    }
+
+    public UIViewRoot restoreView(FacesContext facescontext, String viewId, String renderKitId) {
         if (log.isTraceEnabled()) log.trace("Entering restoreView");
 
         UIViewRoot uiViewRoot = restoreTreeStructure(facescontext, viewId, renderKitId);
-        if (uiViewRoot != null)
-        {
+        if (uiViewRoot != null) {
             uiViewRoot.setViewId(viewId);
             restoreComponentState(facescontext, uiViewRoot, renderKitId);
             String restoredViewId = uiViewRoot.getViewId();
-            if (restoredViewId == null || !(restoredViewId.equals(viewId)))
-            {
+            if (restoredViewId == null || !(restoredViewId.equals(viewId))) {
                 if (log.isTraceEnabled()) log.trace("Exiting restoreView - restored view is null.");
                 return null;
             }
@@ -298,8 +277,7 @@ public class JspStateManagerImpl
         return uiViewRoot;
     }
 
-    public SerializedView saveSerializedView(FacesContext facesContext) throws IllegalStateException
-    {
+    public SerializedView saveSerializedView(FacesContext facesContext) throws IllegalStateException {
         if (log.isTraceEnabled()) log.trace("Entering saveSerializedView");
 
         checkForDuplicateIds(facesContext, facesContext.getViewRoot(), new HashSet());
@@ -309,10 +287,9 @@ public class JspStateManagerImpl
         ExternalContext externalContext = facesContext.getExternalContext();
 
         // SerializedView already created before within this request?
-        SerializedView serializedView = (SerializedView)externalContext.getRequestMap()
-                                                            .get(SERIALIZED_VIEW_REQUEST_ATTR);
-        if (serializedView == null)
-        {
+        SerializedView serializedView = (SerializedView) externalContext.getRequestMap()
+            .get(SERIALIZED_VIEW_REQUEST_ATTR);
+        if (serializedView == null) {
             if (log.isTraceEnabled()) log.trace("Processing saveSerializedView - create new serialized view");
 
             // first call to saveSerializedView --> create SerializedView
@@ -325,14 +302,15 @@ public class JspStateManagerImpl
             if (log.isTraceEnabled()) log.trace("Processing saveSerializedView - new serialized view created");
         }
 
-        if (!isSavingStateInClient(facesContext))
-        {
-            if (log.isTraceEnabled()) log.trace("Processing saveSerializedView - server-side state saving - save state");
+        if (!isSavingStateInClient(facesContext)) {
+            if (log.isTraceEnabled())
+                log.trace("Processing saveSerializedView - server-side state saving - save state");
             //save state in server session
             saveSerializedViewInServletSession(facesContext, serializedView);
 
             if (log.isTraceEnabled()) log.trace("Exiting saveSerializedView - server-side state saving - saved state");
-            return null;
+            Integer sequence = ViewSequenceUtils.getViewSequence(facesContext);
+            return new SerializedView(sequence.toString(), null);
         }
 
         if (log.isTraceEnabled()) log.trace("Exiting saveSerializedView - client-side state saving");
@@ -342,122 +320,108 @@ public class JspStateManagerImpl
 
     private static void checkForDuplicateIds(FacesContext context,
                                              UIComponent component,
-                                             Set ids)
-    {
+                                             Set ids) {
         String id = component.getId();
-        if (id != null && !ids.add(id))
-        {
-            throw new IllegalStateException("Client-id : "+id +
-                                            " is duplicated in the faces tree. Component : "+component.getClientId(context)+", path: "+
-                                            getPathToComponent(component));
+        if (id != null && !ids.add(id)) {
+            throw new IllegalStateException("Client-id : " + id +
+                " is duplicated in the faces tree. Component : " + component.getClientId(context) + ", path: " +
+                getPathToComponent(component));
         }
         Iterator it = component.getFacetsAndChildren();
         boolean namingContainer = component instanceof NamingContainer;
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             UIComponent kid = (UIComponent) it.next();
-            if (namingContainer)
-            {
+            if (namingContainer) {
                 checkForDuplicateIds(context, kid, new HashSet());
             }
-            else
-            {
+            else {
                 checkForDuplicateIds(context, kid, ids);
             }
         }
     }
 
-    private static String getPathToComponent(UIComponent component)
-    {
+    private static String getPathToComponent(UIComponent component) {
         StringBuffer buf = new StringBuffer();
 
-        if(component == null)
-        {
+        if (component == null) {
             buf.append("{Component-Path : ");
             buf.append("[null]}");
             return buf.toString();
         }
 
-        getPathToComponent(component,buf);
+        getPathToComponent(component, buf);
 
-        buf.insert(0,"{Component-Path : ");
+        buf.insert(0, "{Component-Path : ");
         buf.append("}");
 
         return buf.toString();
     }
 
-    private static void getPathToComponent(UIComponent component, StringBuffer buf)
-    {
-        if(component == null)
+    private static void getPathToComponent(UIComponent component, StringBuffer buf) {
+        if (component == null)
             return;
 
         StringBuffer intBuf = new StringBuffer();
 
         intBuf.append("[Class: ");
         intBuf.append(component.getClass().getName());
-        if(component instanceof UIViewRoot)
-        {
+        if (component instanceof UIViewRoot) {
             intBuf.append(",ViewId: ");
             intBuf.append(((UIViewRoot) component).getViewId());
         }
-        else
-        {
+        else {
             intBuf.append(",Id: ");
             intBuf.append(component.getId());
         }
         intBuf.append("]");
 
-        buf.insert(0,intBuf.toString());
+        buf.insert(0, intBuf.toString());
 
-        if(component!=null)
-        {
-            getPathToComponent(component.getParent(),buf);
+        if (component != null) {
+            getPathToComponent(component.getParent(), buf);
         }
     }
 
     public void writeState(FacesContext facesContext,
-                           SerializedView serializedView) throws IOException
-    {
+                           SerializedView serializedView) throws IOException {
         if (log.isTraceEnabled()) log.trace("Entering writeState");
 
-        if (log.isTraceEnabled()) log.trace("Processing writeState - either client-side (full state) or server-side (partial information; e.g. sequence)");
+        if (log.isTraceEnabled())
+            log.trace("Processing writeState - either client-side (full state) or server-side (partial information; e.g. sequence)");
+        if (serializedView != null) {
+            UIViewRoot uiViewRoot = facesContext.getViewRoot();
+            //save state in response (client-side: full state; server-side: sequence)
+            RenderKit renderKit = getRenderKitFactory().getRenderKit(facesContext, uiViewRoot.getRenderKitId());
+            renderKit.getResponseStateManager().writeState(facesContext, serializedView);
 
-        UIViewRoot uiViewRoot = facesContext.getViewRoot();
-        //save state in response (client-side: full state; server-side: sequence)
-        RenderKit renderKit = getRenderKitFactory().getRenderKit(facesContext, uiViewRoot.getRenderKitId());       
-        renderKit.getResponseStateManager().writeState(facesContext, serializedView);
-
-        if (log.isTraceEnabled()) log.trace("Exiting writeState");
-
-
+            if (log.isTraceEnabled()) log.trace("Exiting writeState");
+        }
     }
 
     /**
      * MyFaces extension
+     *
      * @param facesContext
      * @param serializedView
      * @throws IOException
      */
     public void writeStateAsUrlParams(FacesContext facesContext,
-                                      SerializedView serializedView) throws IOException
-    {
+                                      SerializedView serializedView) throws IOException {
         if (log.isTraceEnabled()) log.trace("Entering writeStateAsUrlParams");
 
-        if (isSavingStateInClient(facesContext))
-        {
-            if (log.isTraceEnabled()) log.trace("Processing writeStateAsUrlParams - client-side state saving writing state");
+        if (isSavingStateInClient(facesContext)) {
+            if (log.isTraceEnabled())
+                log.trace("Processing writeStateAsUrlParams - client-side state saving writing state");
 
             UIViewRoot uiViewRoot = facesContext.getViewRoot();
             //save state in response (client)
             RenderKit renderKit = getRenderKitFactory().getRenderKit(facesContext, uiViewRoot.getRenderKitId());
             ResponseStateManager responseStateManager = renderKit.getResponseStateManager();
-            if (responseStateManager instanceof MyfacesResponseStateManager)
-            {
-                ((MyfacesResponseStateManager)responseStateManager).writeStateAsUrlParams(facesContext,
-                                                                                          serializedView);
+            if (responseStateManager instanceof MyfacesResponseStateManager) {
+                ((MyfacesResponseStateManager) responseStateManager).writeStateAsUrlParams(facesContext,
+                                                                                           serializedView);
             }
-            else
-            {
+            else {
                 log.error("ResponseStateManager of render kit " + uiViewRoot.getRenderKitId() + " is no MyfacesResponseStateManager and does not support saving state in url parameters.");
             }
         }
@@ -467,23 +431,19 @@ public class JspStateManagerImpl
 
     //helpers
 
-    protected RenderKitFactory getRenderKitFactory()
-    {
-        if (_renderKitFactory == null)
-        {
-            _renderKitFactory = (RenderKitFactory)FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+    protected RenderKitFactory getRenderKitFactory() {
+        if (_renderKitFactory == null) {
+            _renderKitFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
         }
         return _renderKitFactory;
     }
 
     protected void saveSerializedViewInServletSession(FacesContext context,
-                                                      SerializedView serializedView)
-    {
+                                                      SerializedView serializedView) {
         Map sessionMap = context.getExternalContext().getSessionMap();
         SerializedViewCollection viewCollection = (SerializedViewCollection) sessionMap
-                .get(SERIALIZED_VIEW_SESSION_ATTR);
-        if (viewCollection == null)
-        {
+            .get(SERIALIZED_VIEW_SESSION_ATTR);
+        if (viewCollection == null) {
             viewCollection = new SerializedViewCollection();
             sessionMap.put(SERIALIZED_VIEW_SESSION_ATTR, viewCollection);
         }
@@ -492,92 +452,54 @@ public class JspStateManagerImpl
         sessionMap.put(SERIALIZED_VIEW_SESSION_ATTR, viewCollection);
     }
 
-    protected SerializedView getSerializedViewFromServletSession(FacesContext context, String viewId)
-    {
+    protected SerializedView getSerializedViewFromServletSession(FacesContext context, String viewId, String sequenceStr) {
         ExternalContext externalContext = context.getExternalContext();
         Map requestMap = externalContext.getRequestMap();
         SerializedView serializedView = null;
-        if (requestMap.containsKey(RESTORED_SERIALIZED_VIEW_REQUEST_ATTR))
-        {
+        if (requestMap.containsKey(RESTORED_SERIALIZED_VIEW_REQUEST_ATTR)) {
             serializedView = (SerializedView) requestMap.get(RESTORED_SERIALIZED_VIEW_REQUEST_ATTR);
         }
-        else
-        {
+        else {
             SerializedViewCollection viewCollection = (SerializedViewCollection) externalContext
-                    .getSessionMap().get(SERIALIZED_VIEW_SESSION_ATTR);
-            if (viewCollection != null)
-            {
-                String sequenceStr = (String) externalContext.getRequestParameterMap().get(
-                        RendererUtils.SEQUENCE_PARAM);
+                .getSessionMap().get(SERIALIZED_VIEW_SESSION_ATTR);
+            if (viewCollection != null) {
                 Integer sequence = null;
-                if (sequenceStr == null)
-                {
+                if (sequenceStr == null) {
                     // use latest sequence
-                    Map map = externalContext.getSessionMap();
-                    sequence = (Integer) map.get(RendererUtils.SEQUENCE_PARAM);
+                    sequence = ViewSequenceUtils.getCurrentSequence(context);
                 }
-                else
-                {
+                else {
                     sequence = new Integer(sequenceStr);
                 }
-                if (sequence != null)
-                {
+                if (sequence != null) {
                     Object state = viewCollection.get(sequence, viewId);
-                    if (state != null)
-                    {
+                    if (state != null) {
                         serializedView = deserializeView(state);
                     }
                 }
             }
             requestMap.put(RESTORED_SERIALIZED_VIEW_REQUEST_ATTR, serializedView);
-            nextViewSequence(context);
+            ViewSequenceUtils.nextViewSequence(context);
         }
         return serializedView;
     }
 
-    protected void nextViewSequence(FacesContext facescontext)
-    {
-        ExternalContext externalContext = facescontext.getExternalContext();
-        Object sessionObj = externalContext.getSession(true);
-        synchronized(sessionObj) // synchronized to increase sequence if multiple requests 
-                                 // are handled at the same time for the session
-        {
-            Map map = externalContext.getSessionMap();
-            Integer sequence = (Integer) map.get(RendererUtils.SEQUENCE_PARAM);
-            if(sequence == null || sequence.intValue() == Integer.MAX_VALUE)
-            {
-                sequence = new Integer(1);
-            }
-            else
-            {
-                sequence = new Integer(sequence.intValue() + 1);
-            }
-            map.put(RendererUtils.SEQUENCE_PARAM, sequence);
-            externalContext.getRequestMap().put(RendererUtils.SEQUENCE_PARAM, sequence);
-        }
-    }
-
-    protected Object serializeView(FacesContext context, SerializedView serializedView)
-    {
+    protected Object serializeView(FacesContext context, SerializedView serializedView) {
         if (log.isTraceEnabled()) log.trace("Entering serializeView");
 
-        if(isSerializeStateInSession(context))
-        {
+        if (isSerializeStateInSession(context)) {
             if (log.isTraceEnabled()) log.trace("Processing serializeView - serialize state in session");
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
-            try
-            {
+            try {
                 OutputStream os = baos;
-                if(isCompressStateInSession(context))
-                {
+                if (isCompressStateInSession(context)) {
                     if (log.isTraceEnabled()) log.trace("Processing serializeView - serialize compressed");
 
                     os.write(COMPRESSED_FLAG);
                     os = new GZIPOutputStream(os, 1024);
                 }
-                else
-                {
+                else {
                     if (log.isTraceEnabled()) log.trace("Processing serializeView - serialize uncompressed");
 
                     os.write(UNCOMPRESSED_FLAG);
@@ -588,110 +510,97 @@ public class JspStateManagerImpl
                 out.close();
                 baos.close();
 
-                if (log.isTraceEnabled()) log.trace("Exiting serializeView - serialized. Bytes : "+baos.size());
+                if (log.isTraceEnabled()) log.trace("Exiting serializeView - serialized. Bytes : " + baos.size());
                 return baos.toByteArray();
             }
-            catch (IOException e)
-            {
+            catch (IOException e) {
                 log.error("Exiting serializeView - Could not serialize state: " + e.getMessage(), e);
                 return null;
             }
         }
-        else
-        {
+        else {
             if (log.isTraceEnabled()) log.trace("Exiting serializeView - do not serialize state in session.");
-            return new Object[] {serializedView.getStructure(), serializedView.getState()};
+            return new Object[]{serializedView.getStructure(), serializedView.getState()};
         }
     }
 
     /**
      * Reads the value of the <code>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> context parameter.
-     * @see SERIALIZE_STATE_IN_SESSION_PARAM
+     *
      * @param context <code>FacesContext</code> for the request we are processing.
      * @return boolean true, if the server state should be serialized in the session
+     * @see SERIALIZE_STATE_IN_SESSION_PARAM
      */
-    protected boolean isSerializeStateInSession(FacesContext context)
-    {
+    protected boolean isSerializeStateInSession(FacesContext context) {
         String value = context.getExternalContext().getInitParameter(
-                SERIALIZE_STATE_IN_SESSION_PARAM);
+            SERIALIZE_STATE_IN_SESSION_PARAM);
         boolean serialize = DEFAULT_SERIALIZE_STATE_IN_SESSION;
-        if (value != null)
-        {
-           serialize = new Boolean(value).booleanValue();
+        if (value != null) {
+            serialize = new Boolean(value).booleanValue();
         }
         return serialize;
     }
 
     /**
      * Reads the value of the <code>org.apache.myfaces.COMPRESS_STATE_IN_SESSION</code> context parameter.
-     * @see COMPRESS_SERVER_STATE_PARAM
+     *
      * @param context <code>FacesContext</code> for the request we are processing.
      * @return boolean true, if the server state steam should be compressed
+     * @see COMPRESS_SERVER_STATE_PARAM
      */
-    protected boolean isCompressStateInSession(FacesContext context)
-    {
+    protected boolean isCompressStateInSession(FacesContext context) {
         String value = context.getExternalContext().getInitParameter(
-                COMPRESS_SERVER_STATE_PARAM);
+            COMPRESS_SERVER_STATE_PARAM);
         boolean compress = DEFAULT_COMPRESS_SERVER_STATE_PARAM;
-        if (value != null)
-        {
-           compress = new Boolean(value).booleanValue();
+        if (value != null) {
+            compress = new Boolean(value).booleanValue();
         }
         return compress;
     }
 
-    protected SerializedView deserializeView(Object state)
-    {
+    protected SerializedView deserializeView(Object state) {
         if (log.isTraceEnabled()) log.trace("Entering deserializeView");
 
-        if(state instanceof byte[])
-        {
-            if (log.isTraceEnabled()) log.trace("Processing deserializeView - deserializing serialized state. Bytes : "+((byte[]) state).length);
+        if (state instanceof byte[]) {
+            if (log.isTraceEnabled())
+                log.trace("Processing deserializeView - deserializing serialized state. Bytes : " + ((byte[]) state).length);
 
-            try
-            {
+            try {
                 ByteArrayInputStream bais = new ByteArrayInputStream((byte[]) state);
                 InputStream is = bais;
-                if(is.read() == COMPRESSED_FLAG)
-                {
+                if (is.read() == COMPRESSED_FLAG) {
                     is = new GZIPInputStream(is);
                 }
                 ObjectInputStream in = new MyFacesObjectInputStream(
-                        is);
+                    is);
                 return new SerializedView(in.readObject(), in.readObject());
             }
-            catch (IOException e)
-            {
+            catch (IOException e) {
                 log.error("Exiting deserializeView - Could not deserialize state: " + e.getMessage(), e);
                 return null;
             }
-            catch (ClassNotFoundException e)
-            {
+            catch (ClassNotFoundException e) {
                 log.error("Exiting deserializeView - Could not deserialize state: " + e.getMessage(), e);
                 return null;
             }
         }
-        else if (state instanceof Object[])
-        {
+        else if (state instanceof Object[]) {
             if (log.isTraceEnabled()) log.trace("Exiting deserializeView - state not serialized.");
 
             Object[] value = (Object[]) state;
             return new SerializedView(value[0], value[1]);
         }
-        else if(state == null)
-        {
+        else if (state == null) {
             log.error("Exiting deserializeView - this method should not be called with a null-state.");
             return null;
         }
-        else
-        {
-            log.error("Exiting deserializeView - this method should not be called with a state of type : "+state.getClass());
+        else {
+            log.error("Exiting deserializeView - this method should not be called with a state of type : " + state.getClass());
             return null;
         }
     }
 
-    protected static class SerializedViewCollection implements Serializable
-    {
+    protected static class SerializedViewCollection implements Serializable {
         private static final long serialVersionUID = -3734849062185115847L;
 
         private final List _keys = new ArrayList(DEFAULT_NUMBER_OF_VIEWS_IN_SESSION);
@@ -701,21 +610,18 @@ public class JspStateManagerImpl
         // the garbage collector if free memory is low
         private transient Map _oldSerializedViews = null;
 
-        public synchronized void add(FacesContext context, Object state)
-        {
+        public synchronized void add(FacesContext context, Object state) {
             Object key = new SerializedViewKey(context);
             _serializedViews.put(key, state);
-            
-            while (_keys.remove(key));
+
+            while (_keys.remove(key)) ;
             _keys.add(key);
 
             int views = getNumberOfViewsInSession(context);
-            while (_keys.size() > views)
-            {
+            while (_keys.size() > views) {
                 key = _keys.remove(0);
                 Object oldView = _serializedViews.remove(key);
-                if (oldView != null)
-                {
+                if (oldView != null) {
                     getOldSerializedViewsMap().put(key, oldView);
                 }
             }
@@ -723,33 +629,29 @@ public class JspStateManagerImpl
 
         /**
          * Reads the amount (default = 20) of views to be stored in session.
-         * @see NUMBER_OF_VIEWS_IN_SESSION_PARAM
+         *
          * @param context FacesContext for the current request, we are processing
          * @return Number vf views stored in the session
+         * @see NUMBER_OF_VIEWS_IN_SESSION_PARAM
          */
-        protected int getNumberOfViewsInSession(FacesContext context)
-        {
+        protected int getNumberOfViewsInSession(FacesContext context) {
             String value = context.getExternalContext().getInitParameter(
-                    NUMBER_OF_VIEWS_IN_SESSION_PARAM);
+                NUMBER_OF_VIEWS_IN_SESSION_PARAM);
             int views = DEFAULT_NUMBER_OF_VIEWS_IN_SESSION;
-            if (value != null)
-            {
-                try
-                {
+            if (value != null) {
+                try {
                     views = Integer.parseInt(value);
-                    if (views <= 0)
-                    {
+                    if (views <= 0) {
                         log.error("Configured value for " + NUMBER_OF_VIEWS_IN_SESSION_PARAM
-                                  + " is not valid, must be an value > 0, using default value ("
-                                  + DEFAULT_NUMBER_OF_VIEWS_IN_SESSION);
+                            + " is not valid, must be an value > 0, using default value ("
+                            + DEFAULT_NUMBER_OF_VIEWS_IN_SESSION);
                         views = DEFAULT_NUMBER_OF_VIEWS_IN_SESSION;
                     }
                 }
-                catch (Throwable e)
-                {
+                catch (Throwable e) {
                     log.error("Error determining the value for " + NUMBER_OF_VIEWS_IN_SESSION_PARAM
-                              + ", expected an integer value > 0, using default value ("
-                              + DEFAULT_NUMBER_OF_VIEWS_IN_SESSION + "): " + e.getMessage(), e);
+                        + ", expected an integer value > 0, using default value ("
+                        + DEFAULT_NUMBER_OF_VIEWS_IN_SESSION + "): " + e.getMessage(), e);
                 }
             }
             return views;
@@ -758,58 +660,47 @@ public class JspStateManagerImpl
         /**
          * @return old serialized views map
          */
-        protected Map getOldSerializedViewsMap()
-        {
-            if (_oldSerializedViews == null)
-            {
+        protected Map getOldSerializedViewsMap() {
+            if (_oldSerializedViews == null) {
                 _oldSerializedViews = new ReferenceMap();
             }
             return _oldSerializedViews;
         }
 
-        public Object get(Integer sequence, String viewId)
-        {
+        public Object get(Integer sequence, String viewId) {
             Object key = new SerializedViewKey(viewId, sequence);
             Object value = _serializedViews.get(key);
-            if (value == null)
-            {
+            if (value == null) {
                 value = getOldSerializedViewsMap().get(key);
             }
             return value;
         }
     }
 
-    protected static class SerializedViewKey implements Serializable
-    {
+    protected static class SerializedViewKey implements Serializable {
         private static final long serialVersionUID = -1170697124386063642L;
 
         private final String _viewId;
         private final Integer _sequenceId;
 
-        public SerializedViewKey(String viewId, Integer sequence)
-        {
+        public SerializedViewKey(String viewId, Integer sequence) {
             _sequenceId = sequence;
             _viewId = viewId;
         }
 
-        public SerializedViewKey(FacesContext context)
-        {
-            _sequenceId = RendererUtils.getViewSequence(context);
+        public SerializedViewKey(FacesContext context) {
+            _sequenceId = ViewSequenceUtils.getViewSequence(context);
             _viewId = context.getViewRoot().getViewId();
         }
 
-        public boolean equals(Object obj)
-        {
-            if (obj == null)
-            {
+        public boolean equals(Object obj) {
+            if (obj == null) {
                 return false;
             }
-            if (obj == this)
-            {
+            if (obj == this) {
                 return true;
             }
-            if (obj instanceof SerializedViewKey)
-            {
+            if (obj instanceof SerializedViewKey) {
                 SerializedViewKey other = (SerializedViewKey) obj;
                 return new EqualsBuilder().append(other._viewId, _viewId).append(other._sequenceId,
                                                                                  _sequenceId).isEquals();
@@ -817,8 +708,7 @@ public class JspStateManagerImpl
             return false;
         }
 
-        public int hashCode()
-        {
+        public int hashCode() {
             return new HashCodeBuilder().append(_viewId).append(_sequenceId).toHashCode();
         }
     }
