@@ -44,6 +44,12 @@ class RestoreViewExecutor implements PhaseExecutor {
 	private static final Log log = LogFactory.getLog(LifecycleImpl.class);
 
 	public boolean execute(FacesContext facesContext) {
+		if(facesContext.getViewRoot() != null) {
+			facesContext.getViewRoot().setLocale(facesContext.getExternalContext().getRequestLocale());
+			RestoreStateUtils.recursivelyHandleComponentReferencesAndSetValid(facesContext, facesContext.getViewRoot());
+			return false;
+		}
+
 		// Derive view identifier
 		String viewId = deriveViewId(facesContext);
 
