@@ -60,10 +60,16 @@ public class AttributeTag
         String name = getName();
         if (component.getAttributes().get(name) == null)
         {
-            Object value = getValue();
-
-            if(value != null)
-                component.getAttributes().put(name, value);
+        	if (UIComponentTag.isValueReference(_value))
+        	{
+            	FacesContext facesContext = FacesContext.getCurrentInstance();
+            	ValueBinding vb = facesContext.getApplication().createValueBinding(_value);
+            	component.setValueBinding(name, vb);
+        	}
+        	else
+        	{
+			if(_value != null) component.getAttributes().put(name, _value);
+        	}
         }
         return Tag.SKIP_BODY;
     }
@@ -87,20 +93,6 @@ public class AttributeTag
         else
         {
             return _name;
-        }
-    }
-
-    private Object getValue()
-    {
-        if (UIComponentTag.isValueReference(_value))
-        {
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            ValueBinding vb = facesContext.getApplication().createValueBinding(_value);
-            return vb.getValue(facesContext);
-        }
-        else
-        {
-            return _value;
         }
     }
 
