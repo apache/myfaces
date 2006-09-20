@@ -346,7 +346,7 @@ public class PropertyResolverImpl extends PropertyResolver
             {
                 if (base instanceof Object[] && ((Object[])base)[index] != null) {
                     Object[] array = (Object[]) base;
-                    return array[index].getClass().getComponentType();
+                    return array[index].getClass();
                 } else {
                     return base.getClass().getComponentType();
                 }
