@@ -129,7 +129,7 @@
       <plugin>
         <groupId>org.apache.myfaces.maven</groupId>
         <artifactId>wagon-maven-plugin</artifactId>
-        <version>1.0.4-SNAPSHOT</version>
+        <version>1.0.1</version>
         <configuration>
           <id>myfaces-nightly-builds</id>
           <url>scpexe://minotaur.apache.org/www/people.apache.org/builds/myfaces/nightly</url>
