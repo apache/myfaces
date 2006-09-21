@@ -581,9 +581,7 @@ public abstract class UIComponentTag
             // _childrenAdded is a Set, and we will stomp over a past id when calling 
             // addChildIdToParentTag.
             //
-            // It would also be reasonable to throw an exception here rather than
-            // just issue a warning as this is a pretty serious problem. However the
-            // Sun RI just issues a warning...
+            // we throw an exception here - RI issues a warning.
             if(parentTag._childrenAdded != null && parentTag._childrenAdded.contains(id))
             {
                 throw new FacesException("There is more than one JSF tag with id : " + id+" for parent component with id : '"+parent.getId()+"'");
