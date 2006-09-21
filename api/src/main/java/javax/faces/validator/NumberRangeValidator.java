@@ -21,7 +21,7 @@ import javax.faces.context.FacesContext;
 
 /**
  * An abstract base class for all number range validators including LengthValidator
- * 
+ *
  * @author Nikolay Petrov
  * @version $Revision$ $Date$
  */
@@ -30,7 +30,7 @@ abstract class NumberRangeValidator implements Validator, StateHolder {
 	protected Number _minimum;
 	protected Number _maximum;
 	private boolean _transient = false;
-	
+
 	private boolean _checkRange;
 
 	public NumberRangeValidator(Number minimum, Number maximum) {
@@ -42,7 +42,7 @@ abstract class NumberRangeValidator implements Validator, StateHolder {
 		this._maximum = maximum;
 		this._checkRange = checkRange;
 	}
-	
+
 	public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
 		if (context == null) {
 			throw new NullPointerException("facesContext");
@@ -54,7 +54,7 @@ abstract class NumberRangeValidator implements Validator, StateHolder {
 		if (value == null) {
 			return;
 		}
-		
+
 		Comparable compValue = parseValue(context, component, value);
 		if (_checkRange && _minimum != null && _maximum != null && isNotInRange(compValue, _minimum, _maximum)) {
 			Object[] args = { _minimum, _maximum, component.getId()};
@@ -63,7 +63,7 @@ abstract class NumberRangeValidator implements Validator, StateHolder {
 			Object[] args = { _minimum, component.getId() };
 			throw new ValidatorException(_MessageUtils.getErrorMessage(context, getMinimumMessageId(), args));
 		} else if (_maximum != null && isBigger(compValue, _maximum)) {
-			Object[] args = { _minimum, component.getId() };
+			Object[] args = { _maximum, component.getId() };
 			throw new ValidatorException(_MessageUtils.getErrorMessage(context, getMaximumMessageId(), args));
 		}
 	}
@@ -73,7 +73,7 @@ abstract class NumberRangeValidator implements Validator, StateHolder {
 		if (value instanceof Number) {
 			return getValue((Number) value);
 		}
-		
+
 		try {
 			return getValue(value.toString());
 		} catch (NumberFormatException e) {
@@ -81,17 +81,17 @@ abstract class NumberRangeValidator implements Validator, StateHolder {
 			throw new ValidatorException(_MessageUtils.getErrorMessage(context, getTypeMessageId(), args));
 		}
 	}
-	
+
 	protected abstract Comparable getValue(Number number);
-	
+
 	protected abstract Comparable getValue(String str) throws NumberFormatException;
-	
+
 	protected abstract String getMinimumMessageId();
-	
+
 	protected abstract String getMaximumMessageId();
-	
+
 	protected abstract String getTypeMessageId();
-	
+
 	public boolean isTransient() {
 		return _transient;
 	}
@@ -136,12 +136,12 @@ abstract class NumberRangeValidator implements Validator, StateHolder {
 	private boolean isNotInRange(Comparable compValue, Number minValue, Number maxValue) {
 		return isSmaller(compValue, minValue) || isBigger(compValue, maxValue);
 	}
-	
+
 	private boolean isSmaller(Comparable compValue, Number other) {
 		return compValue.compareTo(other) < 0;
 	}
-	
+
 	private boolean isBigger(Comparable compValue, Number other) {
 		return compValue.compareTo(other) > 0;
-	}	
+	}
 }

@@ -17,7 +17,7 @@ package javax.faces.validator;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
- * 
+ *
  * @author Manfred Geiler (latest modification by $Author$)
  * @author Thomas Spiegl
  * @version $Revision$ $Date$
@@ -43,7 +43,7 @@ public class LengthValidator extends NumberRangeValidator {
 
 	// Abstract methods implementation
 	protected Comparable getValue(Number number) {
-		return null;
+		return new Integer(number.toString().length());
 	}
 
 	protected Comparable getValue(String str) throws NumberFormatException {
@@ -61,7 +61,7 @@ public class LengthValidator extends NumberRangeValidator {
 	protected String getTypeMessageId() {
 		return null;
 	}
-	
+
 	// SETTER & GETTER
 	public int getMaximum() {
 		return _maximum != null ? _maximum.intValue() : Integer.MAX_VALUE;
