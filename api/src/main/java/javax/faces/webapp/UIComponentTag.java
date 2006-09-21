@@ -586,8 +586,7 @@ public abstract class UIComponentTag
             // Sun RI just issues a warning...
             if(parentTag._childrenAdded != null && parentTag._childrenAdded.contains(id))
             {
-                if(log.isWarnEnabled())
-                    log.warn("There is more than one JSF tag with an id : " + id);
+                throw new FacesException("There is more than one JSF tag with id : " + id+" for parent component with id : '"+parent.getId()+"'");
             }
             
             _componentInstance = findComponent(parent,id);
