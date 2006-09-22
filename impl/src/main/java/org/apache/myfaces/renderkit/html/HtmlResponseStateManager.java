@@ -110,8 +110,6 @@ public class HtmlResponseStateManager
                     responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
                     responseWriter.writeAttribute(HTML.NAME_ATTR, TREE_PARAM, null);
                     responseWriter.writeAttribute(HTML.ID_ATTR, TREE_PARAM, null);
-                    if (StateUtils.isSecure(facescontext.getExternalContext()))
-                        treeStruct = StateUtils.construct(treeStruct, facescontext.getExternalContext());
                     responseWriter.writeAttribute(HTML.VALUE_ATTR, treeStruct, null);
                     responseWriter.endElement(HTML.INPUT_ELEM);
                 }
