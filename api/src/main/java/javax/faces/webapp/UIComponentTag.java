@@ -923,7 +923,7 @@ public abstract class UIComponentTag
             throw new FacesException("Faces context not found. getResponseWriter will fail. "+
                     "Check if the FacesServlet has been initialized at all in your web.xml configuration file"+
                     "and if you are accessing your jsf-pages through the correct mapping. E.g.: if your FacesServlet is mapped to "+
-                    " *.jsf, you need to access your pages as 'sample.jsf'. If you'd try to access 'sample.jsp', you'd get this error-message."                    
+                    " *.jsf (with the <servlet-mapping>-element), you need to access your pages as 'sample.jsf'. If you tried to access 'sample.jsp', you'd get this error-message."                    
                     );
         }
 
