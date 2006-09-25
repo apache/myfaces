@@ -15,20 +15,12 @@
  */
 package org.apache.myfaces.config;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.StringTokenizer;
+import java.util.*;
 
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
@@ -103,7 +95,16 @@ public class FacesConfigurator
     private ExternalContext _externalContext;
     private FacesConfigUnmarshaller _unmarshaller;
     private FacesConfigDispenser _dispenser;
+    private static final String JAR_EXTENSION = ".jar";
+    private static final String META_INF_MANIFEST_SUFFIX = "!/META-INF/MANIFEST.MF";
+    private static final String JAR_PREFIX = "jar:";
 
+    public static final String MYFACES_API_PACKAGE_NAME = "myfaces-api";
+    public static final String MYFACES_IMPL_PACKAGE_NAME = "myfaces-impl";
+    public static final String MYFACES_TOMAHAWK_PACKAGE_NAME = "tomahawk";
+    public static final String MYFACES_TOMAHAWK_SANDBOX_PACKAGE_NAME = "tomahawk-sandbox";
+    public static final String COMMONS_EL_PACKAGE_NAME = "commons-el";
+    public static final String JSP_API_PACKAGE_NAME = "jsp-api";
 
     public FacesConfigurator(ExternalContext externalContext)
     {
@@ -129,6 +130,11 @@ public class FacesConfigurator
             feedClassloaderConfigurations();
             feedContextSpecifiedConfig();
             feedWebAppConfig();
+
+            if(log.isInfoEnabled())
+            {
+                logMetaInf();
+            }
         } catch (IOException e)
         {
             throw new FacesException(e);
@@ -151,6 +157,98 @@ public class FacesConfigurator
         if (log.isInfoEnabled()) log.info("Reading standard config " + STANDARD_FACES_CONFIG_RESOURCE);
         _dispenser.feed(_unmarshaller.getFacesConfig(stream, STANDARD_FACES_CONFIG_RESOURCE));
         stream.close();
+    }
+
+    /**
+     * This method performs part of the factory search outlined in section 10.2.6.1.
+     */
+    protected void logMetaInf()
+    {
+        try
+        {
+            List li = new ArrayList();
+            li.add(new VersionInfo(MYFACES_API_PACKAGE_NAME));
+            li.add(new VersionInfo(MYFACES_IMPL_PACKAGE_NAME));
+            li.add(new VersionInfo(MYFACES_TOMAHAWK_PACKAGE_NAME));
+            li.add(new VersionInfo(MYFACES_TOMAHAWK_SANDBOX_PACKAGE_NAME));
+
+            Iterator it = ClassUtils.getResources("META-INF/MANIFEST.MF",
+                                                  this);
+            while (it.hasNext())
+            {
+                URL url = (URL)it.next();
+
+                for (int i = 0; i < li.size(); i++)
+                {
+                    VersionInfo versionInfo = (VersionInfo) li.get(i);
+                    checkJar(versionInfo, url);
+                }
+            }
+
+            for (int i = 0; i < li.size(); i++)
+            {
+                VersionInfo versionInfo = (VersionInfo) li.get(i);
+
+                if(versionInfo.getUsedVersion()!=null)
+                {
+                    if(log.isInfoEnabled())
+                    {
+                        log.info("Starting up MyFaces-package : "+versionInfo.getPackageName()+" in version : "
+                                +versionInfo.getUsedVersion()+" from path : "+versionInfo.getUsedVersionPath());
+                    }
+                }
+                else
+                {
+                    if(log.isInfoEnabled())
+                    {
+                        log.info("MyFaces-package : "+versionInfo.getPackageName()+" not found.");
+                    }
+                }
+            }
+        }
+        catch (Throwable e)
+        {
+            throw new FacesException(e);
+        }
+    }
+
+    private static void checkJar(VersionInfo versionInfo, URL path)
+    {
+        int index;
+
+        String version = versionInfo.getLastVersion();
+
+        String pathString = path.toString();
+
+        pathString = pathString.substring(JAR_PREFIX.length(),pathString.length()-META_INF_MANIFEST_SUFFIX.length());
+
+        File file = new File(pathString);
+
+        String fileName = file.getName();
+
+        if(fileName.endsWith(JAR_EXTENSION) && (index=fileName.indexOf(versionInfo.getPackageName()))!=-1)
+        {
+            String newVersion = fileName.substring(
+                    Math.min(index+versionInfo.getPackageName().length()+1,fileName.length()-1),
+                    Math.max(fileName.length()-JAR_EXTENSION.length(),0));
+
+            if(version == null)
+            {
+                versionInfo.addJarInfo(pathString,newVersion);
+                return;
+            }
+            else if(version.equals(newVersion))
+            {
+                versionInfo.addJarInfo(pathString, version);
+            }
+
+
+            log.error("You are using the MyFaces-package : "+versionInfo.getPackageName() +
+                    " in different versions; first (and probably used) version is : "+versionInfo.getUsedVersion() +", currently encountered version is : "+newVersion+
+                    ". This will cause undesired behaviour. Please clean out your class-path." +
+                    " The first encountered version is loaded from : "+versionInfo.getUsedVersionPath()+". The currently encountered version is loaded from : "+
+                    path);
+        }
     }
 
 
@@ -668,5 +766,110 @@ public class FacesConfigurator
         }
 
         return LifecycleFactory.DEFAULT_LIFECYCLE;
+    }
+
+    public static class VersionInfo
+    {
+        private String packageName;
+        private List jarInfos;
+
+        public VersionInfo(String packageName)
+        {
+
+            this.packageName = packageName;
+        }
+
+        public String getPackageName()
+        {
+            return packageName;
+        }
+
+        public void setPackageName(String packageName)
+        {
+            this.packageName = packageName;
+        }
+
+        public void addJarInfo(String path, String version)
+        {
+            if(jarInfos == null)
+            {
+                jarInfos = new ArrayList();
+            }
+
+            jarInfos.add(new JarInfo(path, version));
+        }
+
+        public String getLastVersion()
+        {
+            if(jarInfos == null)
+                return null;
+            if(jarInfos.size()==0)
+                return null;
+
+            return ((JarInfo) jarInfos.get(jarInfos.size()-1)).getVersion();
+        }
+
+        /**Probably, the first encountered version will be used.
+         *
+         * @return probably used version
+         */
+        public String getUsedVersion()
+        {
+
+            if(jarInfos == null)
+                return null;
+            if(jarInfos.size()==0)
+                return null;
+
+            return ((JarInfo) jarInfos.get(0)).getVersion();
+        }
+
+        /**Probably, the first encountered version will be used.
+         *
+         * @return probably used classpath
+         */
+        public String getUsedVersionPath()
+        {
+
+            if(jarInfos == null)
+                return null;
+            if(jarInfos.size()==0)
+                return null;
+
+            return ((JarInfo) jarInfos.get(0)).getUrl();
+
+        }
+    }
+
+    public static class JarInfo
+    {
+        private String url;
+        private String version;
+
+        public JarInfo(String url, String version)
+        {
+            this.url = url;
+            this.version = version;
+        }
+
+        public String getVersion()
+        {
+            return version;
+        }
+
+        public void setVersion(String version)
+        {
+            this.version = version;
+        }
+
+        public String getUrl()
+        {
+            return url;
+        }
+
+        public void setUrl(String url)
+        {
+            this.url = url;
+        }
     }
 }
