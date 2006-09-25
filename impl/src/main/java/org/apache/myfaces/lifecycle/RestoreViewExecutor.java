@@ -56,6 +56,10 @@ class RestoreViewExecutor implements PhaseExecutor {
 		if (viewId == null) {
 			ExternalContext externalContext = facesContext.getExternalContext();
 
+			if(externalContext.getRequestServletPath() == null) {
+				return true;
+			}
+			
 			if (!externalContext.getRequestServletPath().endsWith("/")) {
 				try {
 					externalContext.redirect(externalContext.getRequestServletPath() + "/");
