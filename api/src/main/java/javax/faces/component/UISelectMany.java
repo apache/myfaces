@@ -261,26 +261,6 @@ public class UISelectMany extends UIInput
 
         if (isValid() && hasValues)
         {
-            // all selected values must match to the values of the available options
-
-            _ValueConverter converter = new _ValueConverter()
-            {
-                public Object getConvertedValue(FacesContext context, String value)
-                {
-                    Object convertedValue = UISelectMany.this.getConvertedValue(context, new String[] {value});
-                    if(convertedValue instanceof Collection)
-                    {
-                        Iterator iter = ((Collection)convertedValue).iterator();
-                        if(iter.hasNext())
-                        {
-                            return iter.next();
-                        }
-                        return null;
-                    }
-                    return ((Object[])convertedValue)[0];
-                }
-            };
-
             Collection items = new ArrayList();
             for (Iterator iter = new _SelectItemsIterator(this); iter.hasNext();)
             {
@@ -290,8 +270,7 @@ public class UISelectMany extends UIInput
             {
                 Object itemValue = itemValues.next();
 
-                if (!_SelectItemsUtil.matchValue(context, itemValue,
-                                                 items.iterator(), converter))
+                if (!_SelectItemsUtil.matchValue(itemValue, items.iterator()))
                 {
                     _MessageUtils.addErrorMessage(context, this,
                                     INVALID_MESSAGE_ID,

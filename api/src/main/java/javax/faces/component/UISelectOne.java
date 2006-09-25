@@ -50,16 +50,8 @@ public class UISelectOne extends UIInput
             return;
         }
 
-        _ValueConverter converter = new _ValueConverter()
-        {
-            public Object getConvertedValue(FacesContext context, String value)
-            {
-                return UISelectOne.this.getConvertedValue(context, value);
-            }
-        };
-
         // selected value must match to one of the available options
-        if (!_SelectItemsUtil.matchValue(context, value, new _SelectItemsIterator(this), converter))
+        if (!_SelectItemsUtil.matchValue(value, new _SelectItemsIterator(this)))
         {
             _MessageUtils.addErrorMessage(context, this, INVALID_MESSAGE_ID,
                             new Object[] {getId()});
