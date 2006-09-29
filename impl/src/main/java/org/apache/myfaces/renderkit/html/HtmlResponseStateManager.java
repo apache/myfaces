@@ -18,9 +18,8 @@ package org.apache.myfaces.renderkit.html;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
-import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.renderkit.html.HTML;
-import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
+import org.apache.myfaces.shared_impl.util.StateUtils;
 
 import javax.faces.application.StateManager;
 import javax.faces.context.FacesContext;
@@ -185,7 +184,8 @@ public class HtmlResponseStateManager
 
         param = reqParamMap.get(TREE_PARAM);
         if (param != null) {
-            if (StateUtils.isSecure(facescontext.getExternalContext()))
+            boolean saveStateInClient = facescontext.getApplication().getStateManager().isSavingStateInClient(facescontext);
+            if (saveStateInClient && StateUtils.isSecure(facescontext.getExternalContext())) // MYFACES-1427
                 param = StateUtils.construct(param, facescontext.getExternalContext());
             return param;
         }
