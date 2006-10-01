@@ -15,14 +15,13 @@
  */
 package javax.faces.component;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
@@ -105,6 +104,11 @@ public abstract class UIComponent
 
     public abstract void setId(java.lang.String id);
 
+    /**
+     * Returns the parent of the component.
+     * Children can be added to or removed from a component even if this method returns null
+     * for the child.
+     */
     public abstract javax.faces.component.UIComponent getParent();
 
     /**
