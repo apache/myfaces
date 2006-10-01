@@ -16,9 +16,9 @@
 
 package javax.faces.context;
 
+import javax.faces.component.UIComponent;
 import java.io.IOException;
 import java.io.Writer;
-import javax.faces.component.UIComponent;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -92,8 +92,7 @@ public abstract class ResponseWriterWrapper extends ResponseWriter {
     /**
      * @since 1.2
      */
-    
-    public void writeText(Object object, UIComponent component, String string)
+    public void writeText(Object object, UIComponent component, String string) throws IOException
     {
         getWrapped().writeText(object, component, string);
     }
