@@ -15,6 +15,9 @@
  */
 package org.apache.myfaces.application;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import javax.faces.FacesException;
 import javax.faces.application.Application;
 import javax.faces.application.NavigationHandler;
@@ -25,9 +28,6 @@ import javax.faces.el.MethodBinding;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 
 /**
@@ -48,19 +48,19 @@ public class ActionListenerImpl
         ActionSource actionSource = (ActionSource)actionEvent.getComponent();
         MethodBinding methodBinding = actionSource.getAction();
 
-        String fromAction;
-        String outcome;
-        if (methodBinding == null)
-        {
-            fromAction = null;
-            outcome = null;
-        }
-        else
+        String fromAction = null;
+        String outcome = null;
+        if (methodBinding != null)
         {
             fromAction = methodBinding.getExpressionString();
             try
             {
-                outcome = (String) methodBinding.invoke(facesContext, null);
+                Object objOutcome = methodBinding.invoke(facesContext, null);
+
+                if (objOutcome != null)
+                {
+                    outcome = objOutcome.toString();
+                }
             }
             catch (EvaluationException e)
             {
