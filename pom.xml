@@ -39,8 +39,8 @@
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
-      <id>apache-maven-snapshots</id>
-      <url>people.apache.org/repo/m2-snapshot-repository</url>
+      <id>apache.snapshots</id>
+      <url>http://people.apache.org/repo/m2-snapshot-repository</url>
     </repository>
     <repository>
       <releases>
