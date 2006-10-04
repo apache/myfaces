@@ -169,8 +169,8 @@ public class FacesConfigurator
             List li = new ArrayList();
             li.add(new VersionInfo(MYFACES_API_PACKAGE_NAME));
             li.add(new VersionInfo(MYFACES_IMPL_PACKAGE_NAME));
-            li.add(new VersionInfo(MYFACES_TOMAHAWK_PACKAGE_NAME));
             li.add(new VersionInfo(MYFACES_TOMAHAWK_SANDBOX_PACKAGE_NAME));
+            li.add(new VersionInfo(MYFACES_TOMAHAWK_PACKAGE_NAME));
 
             Iterator it = ClassUtils.getResources("META-INF/MANIFEST.MF",
                                                   this);
@@ -181,7 +181,8 @@ public class FacesConfigurator
                 for (int i = 0; i < li.size(); i++)
                 {
                     VersionInfo versionInfo = (VersionInfo) li.get(i);
-                    checkJar(versionInfo, url);
+                    if(checkJar(versionInfo, url))
+                        break;
                 }
             }
 
@@ -212,7 +213,7 @@ public class FacesConfigurator
         }
     }
 
-    private static void checkJar(VersionInfo versionInfo, URL path)
+    private static boolean checkJar(VersionInfo versionInfo, URL path)
     {
         int index;
 
@@ -235,20 +236,24 @@ public class FacesConfigurator
             if(version == null)
             {
                 versionInfo.addJarInfo(pathString,newVersion);
-                return;
-            }
+           }
             else if(version.equals(newVersion))
             {
                 versionInfo.addJarInfo(pathString, version);
             }
+            else
+            {
+                log.error("You are using the MyFaces-package : "+versionInfo.getPackageName() +
+                        " in different versions; first (and probably used) version is : "+versionInfo.getUsedVersion() +", currently encountered version is : "+newVersion+
+                        ". This will cause undesired behaviour. Please clean out your class-path." +
+                        " The first encountered version is loaded from : "+versionInfo.getUsedVersionPath()+". The currently encountered version is loaded from : "+
+                        path);
+            }
 
-
-            log.error("You are using the MyFaces-package : "+versionInfo.getPackageName() +
-                    " in different versions; first (and probably used) version is : "+versionInfo.getUsedVersion() +", currently encountered version is : "+newVersion+
-                    ". This will cause undesired behaviour. Please clean out your class-path." +
-                    " The first encountered version is loaded from : "+versionInfo.getUsedVersionPath()+". The currently encountered version is loaded from : "+
-                    path);
+            return true;
         }
+
+        return false;
     }
 
 
