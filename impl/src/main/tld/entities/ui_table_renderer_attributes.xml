@@ -4,7 +4,10 @@
     <rtexprvalue>false</rtexprvalue>
     <description>
         A comma separated list of CSS class names to apply to td elements in
-        each column.
+        each column. More than one class can be applied to a column by separing the classes
+        with a space. I there are less classes than the number of columns, apply the same
+        sequence of classes to the remaining columns. If there are more classes specified
+        than the number of columns, ignore the last classes
     </description>
 </attribute>
 <attribute>
@@ -25,6 +28,9 @@
     <rtexprvalue>false</rtexprvalue>
     <description>
         A comma separated list of CSS class names to apply to td elements in
-        each row.
+        each row. If tere are less classes than the number of rows, apply the same
+        sequence of classes to the remaining rows, so the pattern is repeated.
+        More than one class can be applied to a row by separing the classes
+        with a space.
     </description>
 </attribute>
