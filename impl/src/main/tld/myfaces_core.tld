@@ -311,6 +311,7 @@
             <name>name</name>
             <required>true</required>
             <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
             <description>The name of the facet to be created.  This must be a static value.</description>
         </attribute>
     </tag>
