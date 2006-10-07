@@ -15,15 +15,22 @@
  */
 package org.apache.myfaces.application;
 
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.application.jsp.JspStateManagerImpl;
+import org.apache.myfaces.application.jsp.JspViewHandlerImpl;
+import org.apache.myfaces.config.impl.digester.elements.Property;
+import org.apache.myfaces.el.NullPropertyResolver;
+import org.apache.myfaces.el.NullVariableResolver;
+import org.apache.myfaces.el.convert.ELResolverToPropertyResolver;
+import org.apache.myfaces.el.convert.ELResolverToVariableResolver;
+import org.apache.myfaces.el.convert.MethodExpressionToMethodBinding;
+import org.apache.myfaces.el.convert.ValueBindingToValueExpression;
+import org.apache.myfaces.el.convert.ValueExpressionToValueBinding;
+import org.apache.myfaces.el.unified.resolver.ResolverForFaces;
+import org.apache.myfaces.el.unified.resolver.ResolverForJSP;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 import javax.el.ELContext;
 import javax.el.ELContextListener;
@@ -50,23 +57,15 @@ import javax.faces.validator.Validator;
 import javax.servlet.ServletContext;
 import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspFactory;
-
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.application.jsp.JspStateManagerImpl;
-import org.apache.myfaces.application.jsp.JspViewHandlerImpl;
-import org.apache.myfaces.config.impl.digester.elements.Property;
-import org.apache.myfaces.el.NullPropertyResolver;
-import org.apache.myfaces.el.NullVariableResolver;
-import org.apache.myfaces.el.convert.ELResolverToPropertyResolver;
-import org.apache.myfaces.el.convert.ELResolverToVariableResolver;
-import org.apache.myfaces.el.convert.MethodExpressionToMethodBinding;
-import org.apache.myfaces.el.convert.ValueBindingToValueExpression;
-import org.apache.myfaces.el.convert.ValueExpressionToValueBinding;
-import org.apache.myfaces.el.unified.resolver.ResolverForFaces;
-import org.apache.myfaces.el.unified.resolver.ResolverForJSP;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 /**
  * DOCUMENT ME!
@@ -172,7 +171,7 @@ public class ApplicationImpl
         checkNull(name, "name");
         
         //TODO: implement the rest of this
-        return null;
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
     
     public UIComponent createComponent(ValueExpression componentExpression,
