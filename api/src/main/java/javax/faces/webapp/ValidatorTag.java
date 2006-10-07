@@ -30,6 +30,8 @@ import javax.servlet.jsp.tagext.TagSupport;
  *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
+ *
+ * @deprecated replaced by {@link ValidatorELTag}
  */
 public class ValidatorTag
         extends TagSupport

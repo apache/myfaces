@@ -1,5 +1,5 @@
 /*
- * Copyright 2004 The Apache Software Foundation.
+ * Copyright 2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,27 +18,26 @@ package javax.faces.webapp;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
+import javax.servlet.jsp.tagext.Tag;
+import javax.servlet.jsp.PageContext;
+import javax.servlet.jsp.JspException;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.context.ExternalContext;
-import javax.faces.el.ValueBinding;
-import javax.faces.render.RenderKit;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
+import javax.faces.FacesException;
+import javax.faces.FactoryFinder;
 import javax.faces.render.RenderKitFactory;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.Tag;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
+import javax.faces.render.RenderKit;
+import javax.faces.el.ValueBinding;
+import javax.faces.application.Application;
 import java.util.Set;
 import java.util.Stack;
+import java.util.Iterator;
+import java.util.List;
+import java.util.HashSet;
+import java.io.IOException;
 
 /**
  * Base class for all JSP tags that represent a JSF UIComponent.
@@ -49,24 +48,24 @@ import java.util.Stack;
  * class therefore describes the current implementation rather than the
  * officially required behaviour, though it is believed that this class
  * does comply with the specification.
- * 
+ *
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a> for more.
- * 
+ *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  *
- * @deprecated replaced by {@link UIComponentELTag}
+ * @since 1.2
  */
-public abstract class UIComponentTag
+public abstract class UIComponentELTag extends UIComponentClassicTagBase
         implements Tag
 {
-    private static final String FORMER_CHILD_IDS_SET_ATTR = UIComponentTag.class.getName() + ".FORMER_CHILD_IDS";
-    private static final String FORMER_FACET_NAMES_SET_ATTR = UIComponentTag.class.getName() + ".FORMER_FACET_NAMES";
-    
+    private static final String FORMER_CHILD_IDS_SET_ATTR = UIComponentELTag.class.getName() + ".FORMER_CHILD_IDS";
+    private static final String FORMER_FACET_NAMES_SET_ATTR = UIComponentELTag.class.getName() + ".FORMER_FACET_NAMES";
+
     // do not change this w/out doing likewise in UIComponentClassicTagBase
     private static final String COMPONENT_STACK_ATTR = "org.apache.myfaces.COMPONENT_STACK";
 
-    private static final String UNIQUE_ID_COUNTER_ATTR = UIComponentTag.class.getName() + ".UNIQUE_ID_COUNTER";
+    private static final String UNIQUE_ID_COUNTER_ATTR = UIComponentELTag.class.getName() + ".UNIQUE_ID_COUNTER";
 
     protected PageContext pageContext = null;
     private Tag _parent = null;
@@ -84,10 +83,10 @@ public abstract class UIComponentTag
     private Set _childrenAdded = null;
     private Set _facetsAdded = null;
 
-    private static Log log = LogFactory.getLog(UIComponentTag.class);
+    private static Log log = LogFactory.getLog(UIComponentELTag.class);
 
 
-    public UIComponentTag()
+    public UIComponentELTag()
     {
 
     }
@@ -113,7 +112,7 @@ public abstract class UIComponentTag
     /**
      * Reset any members that apply to the according component instance and
      * must not be reused if the container wants to reuse this tag instance.
-     * This method is called when rendering for this tag is finished 
+     * This method is called when rendering for this tag is finished
      * ( doEndTag() ) or when released by the container.
      */
     private void internalRelease()
@@ -164,7 +163,7 @@ public abstract class UIComponentTag
      * this tag. This method is called by other methods in this class, and is
      * intended to be overridden in subclasses to specify the actual component
      * type to be created.
-     * 
+     *
      * @return a registered component type name, never null.
      */
     public abstract String getComponentType();
@@ -191,13 +190,13 @@ public abstract class UIComponentTag
      * Return the nearest JSF tag that encloses this tag.
      * @deprecated
      */
-    public static UIComponentTag getParentUIComponentTag(PageContext pageContext)
+    public static UIComponentELTag getParentUIComponentTag(PageContext pageContext)
     {
         Stack stack = getStack(pageContext);
-        
+
         int size = stack.size();
-        
-        return size > 1 ? (UIComponentTag)stack.get(size - 1) : null;
+
+        return size > 1 ? (UIComponentELTag)stack.get(size - 1) : null;
     }
 
     /**
@@ -205,19 +204,19 @@ public abstract class UIComponentTag
      * JSP tag objects seen so far, so that a new tag can find the
      * parent tag that encloses it. Access to the parent tag is used
      * to find the parent UIComponent for the component associated
-     * with this tag plus some other uses. 
+     * with this tag plus some other uses.
      */
-    
+
     private void popTag()
     {
         Stack stack = getStack(pageContext);
-        
+
         int size = stack.size();
         stack.remove(size -1);
         if (size <= 1)
             pageContext.removeAttribute(COMPONENT_STACK_ATTR,
                                          PageContext.REQUEST_SCOPE);
-        
+
     }
 
     /**
@@ -252,7 +251,7 @@ public abstract class UIComponentTag
     /**
      * Standard method invoked by the JSP framework to inform this tag
      * of the PageContext associated with the jsp page currently being
-     * processed. 
+     * processed.
      */
     public void setPageContext(PageContext pageContext)
     {
@@ -497,7 +496,7 @@ public abstract class UIComponentTag
      * UIViewRoot will generate the same id values for tags in
      * this page as it did when first generating the view. For this
      * reason all JSF tags within a JSTL "c:if" are required to have
-     * explicitly-assigned ids. 
+     * explicitly-assigned ids.
      * <p>
      * Otherwise create the component, populate its properties from
      * the xml attributes on this JSP tag and attach it to its parent.
@@ -512,7 +511,7 @@ public abstract class UIComponentTag
             throws JspException
     {
         if (_componentInstance != null) return _componentInstance;
-        UIComponentTag parentTag = getParentUIComponentTag(pageContext);
+        UIComponentELTag parentTag = getParentUIComponentTag(pageContext);
         if (parentTag == null)
         {
             //This is the root
@@ -545,7 +544,7 @@ public abstract class UIComponentTag
             			+ _componentInstance.getClientId(context) + " class: " + _componentInstance.getClass().getName());
             	}
             }
-            
+
             addFacetNameToParentTag(parentTag, facetName);
             return _componentInstance;
         }
@@ -559,10 +558,10 @@ public abstract class UIComponentTag
             // ignored.
 
             String id = getOrCreateUniqueId(context);
-            
+
             // Warn users that this tag is about to find/steal the UIComponent
             // that has already been created for a sibling tag with the same id value .
-            // _childrenAdded is a Set, and we will stomp over a past id when calling 
+            // _childrenAdded is a Set, and we will stomp over a past id when calling
             // addChildIdToParentTag.
             //
             // It would also be reasonable to throw an exception here rather than
@@ -573,7 +572,7 @@ public abstract class UIComponentTag
                 if(log.isWarnEnabled())
                     log.warn("There is more than one JSF tag with an id : " + id);
             }
-            
+
             _componentInstance = findComponent(parent,id);
             if (_componentInstance == null)
             {
@@ -674,7 +673,7 @@ public abstract class UIComponentTag
     /**
      * Create a UIComponent. Abstract method getComponentType is invoked to
      * determine the actual type name for the component to be created.
-     * 
+     *
      * If this tag has a "binding" attribute, then that is immediately
      * evaluated to store the created component in the specified property.
      */
@@ -737,7 +736,7 @@ public abstract class UIComponentTag
      * parent tag will later delete any existing view components that were
      * not seen during this rendering phase; see doEndTag for details.
      */
-    private void addChildIdToParentTag(UIComponentTag parentTag, String id)
+    private void addChildIdToParentTag(UIComponentELTag parentTag, String id)
     {
         if (parentTag._childrenAdded == null)
         {
@@ -749,17 +748,17 @@ public abstract class UIComponentTag
     /**
      * check if the facet is already added to the parent
      */
-    private boolean checkFacetNameOnParentExists(UIComponentTag parentTag, String facetName)
+    private boolean checkFacetNameOnParentExists(UIComponentELTag parentTag, String facetName)
     {
-        return parentTag._facetsAdded != null && parentTag._facetsAdded.contains(facetName); 
+        return parentTag._facetsAdded != null && parentTag._facetsAdded.contains(facetName);
     }
-    
+
     /**
      * Notify the enclosing JSP tag of the id of this facet's id. The parent
      * tag will later delete any existing view facets that were not seen
      * during this rendering phase; see doEndTag for details.
      */
-    private void addFacetNameToParentTag(UIComponentTag parentTag, String facetName)
+    private void addFacetNameToParentTag(UIComponentELTag parentTag, String facetName)
     {
         if (parentTag._facetsAdded == null)
         {
@@ -768,7 +767,7 @@ public abstract class UIComponentTag
         parentTag._facetsAdded.add(facetName);
     }
 
-    private int getAddedChildrenCount(UIComponentTag parentTag)
+    private int getAddedChildrenCount(UIComponentELTag parentTag)
     {
         return parentTag._childrenAdded != null ?
                parentTag._childrenAdded.size() :
@@ -781,7 +780,7 @@ public abstract class UIComponentTag
      * doStartTag but control whether the tag is permitted to contain
      * nested tags or not can just override this method to return
      * Tag.SOME_CONSTANT.
-     * 
+     *
      * @return Tag.EVAL_BODY_INCLUDE
      */
     protected int getDoStartValue()
@@ -796,7 +795,7 @@ public abstract class UIComponentTag
      * doEndTag but control whether the tag is permitted to contain
      * nested tags or not can just override this method to return
      * Tag.SOME_CONSTANT.
-     * 
+     *
      * @return Tag.EVAL_PAGE
      */
     protected int getDoEndValue()
@@ -913,7 +912,7 @@ public abstract class UIComponentTag
         _writer = facesContext.getResponseWriter();
         if (_writer == null)
         {
-            RenderKitFactory renderFactory = (RenderKitFactory)FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+            RenderKitFactory renderFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
             RenderKit renderKit = renderFactory.getRenderKit(facesContext,
                                                              facesContext.getViewRoot().getRenderKitId());
 
@@ -970,24 +969,24 @@ public abstract class UIComponentTag
 
         getPathToComponent(component.getParent(),buf);
     }
-    
+
     /**
      * Returns a request scoped stack, creating one if necessary.
-     * 
-     * @see UIComponentClassicTagBase.getStack()
+     *
+     * @see javax.faces.webapp.UIComponentClassicTagBase.getStack()
      */
-    
+
     private static final Stack getStack(PageContext pageContext){
-        
+
         Stack stack = (Stack) pageContext.getAttribute(COMPONENT_STACK_ATTR,
                 PageContext.REQUEST_SCOPE);
-        
+
         if(stack == null){
             stack = new Stack();
-            pageContext.setAttribute(COMPONENT_STACK_ATTR, stack, 
+            pageContext.setAttribute(COMPONENT_STACK_ATTR, stack,
                     PageContext.REQUEST_SCOPE);
         }
-        
+
         return stack;
     }
 

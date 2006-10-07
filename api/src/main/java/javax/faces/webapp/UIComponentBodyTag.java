@@ -25,15 +25,16 @@ import javax.servlet.jsp.tagext.BodyTag;
  *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
+ *
+ * @deprecated replaced by {@link UIComponentELTag}
  */
 public abstract class UIComponentBodyTag
     extends UIComponentTag
-    implements BodyTag
 {
     // API field
     protected BodyContent bodyContent;
 
-    
+
     public int doAfterBody()
             throws JspException
     {

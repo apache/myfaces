@@ -1,12 +1,12 @@
 /*
- * Copyright 2004 The Apache Software Foundation.
- * 
+ * Copyright 2006 The Apache Software Foundation.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,44 +15,37 @@
  */
 package javax.faces.webapp;
 
-import javax.faces.application.Application;
-import javax.faces.component.UIComponent;
-import javax.faces.component.ValueHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.el.ValueBinding;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
+import javax.servlet.jsp.tagext.Tag;
+import javax.servlet.jsp.JspException;
+import javax.faces.validator.Validator;
+import javax.faces.component.UIComponent;
+import javax.faces.component.EditableValueHolder;
+import javax.faces.context.FacesContext;
+import javax.faces.application.Application;
+import javax.faces.el.ValueBinding;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
- *
- * @deprecated replaced by {@link ConverterELTag}
  */
-public class ConverterTag
+public class ValidatorELTag
         extends TagSupport
 {
-    private static final long serialVersionUID = -6168345066829108081L;
-    private String _converterId;
+    private static final long serialVersionUID = 8794036166323016663L;
+    private String _validatorId;
 
-    public ConverterTag()
+    public void setValidatorId(String validatorId)
     {
-        super();
-    }
-
-    public void setConverterId(String converterId)
-    {
-        _converterId = converterId;
+        _validatorId = validatorId;
     }
 
     public int doStartTag()
-            throws JspException
+            throws javax.servlet.jsp.JspException
     {
-        UIComponentTag componentTag = UIComponentTag.getParentUIComponentTag(pageContext);
+        UIComponentClassicTagBase componentTag = UIComponentELTag.getParentUIComponentClassicTagBase(pageContext);
         if (componentTag == null)
         {
             throw new JspException("no parent UIComponentTag found");
@@ -62,18 +55,18 @@ public class ConverterTag
             return Tag.SKIP_BODY;
         }
 
-        Converter converter = createConverter();
+        Validator validator = createValidator();
 
         UIComponent component = componentTag.getComponentInstance();
         if (component == null)
         {
             throw new JspException("parent UIComponentTag has no UIComponent");
         }
-        if (!(component instanceof ValueHolder))
+        if (!(component instanceof EditableValueHolder))
         {
             throw new JspException("UIComponent is no ValueHolder");
         }
-        ((ValueHolder)component).setConverter(converter);
+        ((EditableValueHolder)component).addValidator(validator);
 
         return Tag.SKIP_BODY;
     }
@@ -81,27 +74,22 @@ public class ConverterTag
     public void release()
     {
         super.release();
-        _converterId = null;
+        _validatorId = null;
     }
 
-    protected Converter createConverter()
+    protected Validator createValidator()
             throws JspException
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Application application = facesContext.getApplication();
-        if (UIComponentTag.isValueReference(_converterId))
+        if (UIComponentTag.isValueReference(_validatorId))
         {
-            ValueBinding vb = facesContext.getApplication().createValueBinding(_converterId);
-            return application.createConverter((String)vb.getValue(facesContext));
+            ValueBinding vb = facesContext.getApplication().createValueBinding(_validatorId);
+            return application.createValidator((String)vb.getValue(facesContext));
         }
         else
         {
-            return application.createConverter(_converterId);
+            return application.createValidator(_validatorId);
         }
-    }
-
-    public void setBinding(String binding)
-    {
-        throw new UnsupportedOperationException("1.2");
     }
 }

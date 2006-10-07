@@ -1,12 +1,12 @@
 /*
- * Copyright 2004 The Apache Software Foundation.
- * 
+ * Copyright 2006 The Apache Software Foundation.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,31 +15,29 @@
  */
 package javax.faces.webapp;
 
-import javax.faces.application.Application;
+import javax.servlet.jsp.tagext.TagSupport;
+import javax.servlet.jsp.tagext.Tag;
+import javax.servlet.jsp.JspException;
+import javax.faces.convert.Converter;
 import javax.faces.component.UIComponent;
 import javax.faces.component.ValueHolder;
 import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
+import javax.faces.application.Application;
 import javax.faces.el.ValueBinding;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.Tag;
-import javax.servlet.jsp.tagext.TagSupport;
 
 /**
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
- *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  *
- * @deprecated replaced by {@link ConverterELTag}
+ * @since 1.2
  */
-public class ConverterTag
+public class ConverterELTag
         extends TagSupport
 {
-    private static final long serialVersionUID = -6168345066829108081L;
+    private static final long serialVersionUID = -616834506829108081L;
     private String _converterId;
 
-    public ConverterTag()
+    public ConverterELTag()
     {
         super();
     }
@@ -52,7 +50,7 @@ public class ConverterTag
     public int doStartTag()
             throws JspException
     {
-        UIComponentTag componentTag = UIComponentTag.getParentUIComponentTag(pageContext);
+        UIComponentClassicTagBase componentTag = UIComponentELTag.getParentUIComponentClassicTagBase(pageContext);
         if (componentTag == null)
         {
             throw new JspException("no parent UIComponentTag found");
@@ -98,10 +96,5 @@ public class ConverterTag
         {
             return application.createConverter(_converterId);
         }
-    }
-
-    public void setBinding(String binding)
-    {
-        throw new UnsupportedOperationException("1.2");
     }
 }
