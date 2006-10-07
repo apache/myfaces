@@ -155,12 +155,12 @@ public class ApplicationImpl
         _expressionFactory = appCtx.getExpressionFactory();
     }
     
-    
+
     public void addELResolver(ELResolver resolver) {
         _resolverForFaces.addResolverFromApplicationAddResolver(resolver);
         _resolverForJSP.addResolverFromApplicationAddResolver(resolver);
     }
-    
+
     public ELResolver getELResolver() {
         return _resolverForFaces;
     }
@@ -183,12 +183,31 @@ public class ApplicationImpl
         checkNull(componentExpression, "componentExpression");
         checkNull(facesContext, "facesContext");
         checkNull(componentType, "componentType");
+
+        ELContext elContext = facesContext.getELContext();
         
-        Object retVal = componentExpression.getValue(facesContext.getELContext());
-        if (retVal instanceof UIComponent) return (UIComponent)retVal;
-        
-        
-        throw new UnsupportedOperationException("Not implemented yet.");
+        Object retVal = componentExpression.getValue(elContext);
+
+        UIComponent createdComponent;
+
+        try
+        {
+            if (retVal instanceof UIComponent)
+            {
+                createdComponent = (UIComponent)retVal;
+            }
+            else
+            {
+                createdComponent = createComponent(componentType);
+                componentExpression.setValue(elContext, retVal);
+            }
+        }
+        catch (Exception e)
+        {
+            throw new FacesException(e);
+        }
+
+        return createdComponent;
     }
     
     public ExpressionFactory getExpressionFactory() {
