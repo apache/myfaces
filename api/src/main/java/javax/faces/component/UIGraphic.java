@@ -124,8 +124,9 @@ public class UIGraphic
     public Object getValue()
     {
         if (_value != null) return _value;
-        ValueBinding vb = getValueBinding("value");
-        return vb != null ? (Object)vb.getValue(getFacesContext()) : null;
+
+        ValueExpression ve = getValueExpression("value");
+        return ve != null ? ve.getValue(getFacesContext().getELContext()) : null;
     }
 
 
