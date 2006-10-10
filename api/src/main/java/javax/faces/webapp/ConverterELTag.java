@@ -31,21 +31,10 @@ import javax.faces.el.ValueBinding;
  *
  * @since 1.2
  */
-public class ConverterELTag
+public abstract class ConverterELTag
         extends TagSupport
 {
     private static final long serialVersionUID = -616834506829108081L;
-    private String _converterId;
-
-    public ConverterELTag()
-    {
-        super();
-    }
-
-    public void setConverterId(String converterId)
-    {
-        _converterId = converterId;
-    }
 
     public int doStartTag()
             throws JspException
@@ -76,25 +65,6 @@ public class ConverterELTag
         return Tag.SKIP_BODY;
     }
 
-    public void release()
-    {
-        super.release();
-        _converterId = null;
-    }
-
-    protected Converter createConverter()
-            throws JspException
-    {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        Application application = facesContext.getApplication();
-        if (UIComponentTag.isValueReference(_converterId))
-        {
-            ValueBinding vb = facesContext.getApplication().createValueBinding(_converterId);
-            return application.createConverter((String)vb.getValue(facesContext));
-        }
-        else
-        {
-            return application.createConverter(_converterId);
-        }
-    }
+    protected abstract Converter createConverter()
+            throws JspException;
 }
