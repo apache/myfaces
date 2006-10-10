@@ -74,6 +74,7 @@ public abstract class ResponseStateManager
     }
     
     /**
+     * Checks if the current request is a postback
      * @since 1.2
      */
     public boolean isPostback(FacesContext context) {

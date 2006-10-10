@@ -24,6 +24,7 @@ import org.apache.myfaces.shared_impl.renderkit.html.HTML;
 import javax.faces.application.StateManager;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
+import javax.faces.render.ResponseStateManager;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.Map;
@@ -238,6 +239,15 @@ public class HtmlResponseStateManager
         writer.write(URLEncoder.encode(value, writer.getCharacterEncoding()));
     }
 
-
+    /**
+     * Checks if the current request is a postback
+     * @since 1.2
+     */
+    @Override
+    public boolean isPostback(FacesContext context)
+    {
+        return context.getExternalContext()
+                .getRequestParameterMap().containsKey(ResponseStateManager.VIEW_STATE_PARAM);
+    }
 }
 
