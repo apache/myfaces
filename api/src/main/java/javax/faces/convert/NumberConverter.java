@@ -133,7 +133,7 @@ public class NumberConverter
 
     private NumberFormat getNumberFormat(FacesContext facesContext)
     {
-        Locale lokale = _locale != null ? _locale : facesContext.getViewRoot().getLocale();
+        Locale locale = _locale != null ? _locale : facesContext.getViewRoot().getLocale();
 
         if (_pattern == null && _type == null)
         {
@@ -143,21 +143,21 @@ public class NumberConverter
         // pattern
         if (_pattern != null)
         {
-            return new DecimalFormat(_pattern, new DecimalFormatSymbols(lokale));
+            return new DecimalFormat(_pattern, new DecimalFormatSymbols(locale));
         }
 
         // type
         if (_type.equals("number"))
         {
-            return NumberFormat.getNumberInstance(lokale);
+            return NumberFormat.getNumberInstance(locale);
         }
         else if (_type.equals("currency"))
         {
-            return NumberFormat.getCurrencyInstance(lokale);
+            return NumberFormat.getCurrencyInstance(locale);
         }
         else if (_type.equals("percent"))
         {
-            return NumberFormat.getPercentInstance(lokale);
+            return NumberFormat.getPercentInstance(locale);
         }
         throw new ConverterException("Cannot get NumberFormat, illegal type " + _type);
     }
