@@ -88,11 +88,15 @@
     </profile>
   </profiles>
   <dependencies>
-      <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jsp</artifactId>
-      <version>2.1-6.0.0rc0</version>
-      <scope>compile</scope>
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>el-api</artifactId>
+      <version>6.0.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>jasper-el</artifactId>
+      <version>6.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
