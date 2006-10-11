@@ -1,5 +1,5 @@
 /*
- * Copyright 2004 The Apache Software Foundation.
+ * Copyright 2004-2006 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,19 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import org.apache.myfaces.shared_impl.taglib.UIComponentTagBase;
+import org.apache.myfaces.shared_impl.taglib.UIComponentELTagBase;
 
 import javax.faces.component.UIComponent;
+import javax.el.ValueExpression;
 
 /**
  * DOCUMENT ME!
  * @author Manfred Geiler (latest modification by $Author$)
+ * @author Bruno Aranda (JSR-252)
  * @version $Revision$ $Date$
  */
 public class ParamTag
-    extends UIComponentTagBase
+    extends UIComponentELTagBase
 {
     public String getComponentType()
     {
@@ -37,11 +39,10 @@ public class ParamTag
         return null;
     }
 
-    // UIComponent attributes --> already implemented in UIComponentTagBase
+    // UIComponent attributes --> already implemented in UIComponentELTagBase
 
     // UIParameter attributes
-    // value already implemented in UIComponentTagBase
-    private String _name;
+    private ValueExpression _name;
 
     protected void setProperties(UIComponent component)
     {
@@ -50,7 +51,7 @@ public class ParamTag
         setStringProperty(component, "name", _name);
     }
 
-    public void setName(String name)
+    public void setName(ValueExpression name)
     {
         _name = name;
     }
