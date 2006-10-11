@@ -127,7 +127,7 @@ public class ViewTag
                     ResponseWriter bufferWriter = facesContext.getResponseWriter();
                     bufferWriter.flush();
                     //now we switch to real output
-                    ResponseWriter realWriter = bufferWriter.cloneWithWriter(getPreviousOut());
+                    ResponseWriter realWriter = bufferWriter.cloneWithWriter(getBodyContent().getEnclosingWriter());
                     facesContext.setResponseWriter(realWriter);
 
                     String bodyStr = bodyContent.getString();
@@ -172,7 +172,7 @@ public class ViewTag
                 }
                 else
                 {
-                    bodyContent.writeOut(getPreviousOut());
+                    bodyContent.writeOut(getBodyContent().getEnclosingWriter());
                 }
             }
         }
