@@ -16,19 +16,20 @@
 package org.apache.myfaces.taglib.core;
 
 import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
-import org.apache.myfaces.shared_impl.taglib.UIComponentBodyTagBase;
+import org.apache.myfaces.shared_impl.taglib.UIComponentELTagBase;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIOutput;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyContent;
+import javax.el.ValueExpression;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
 public class VerbatimTag
-        extends UIComponentBodyTagBase
+        extends UIComponentELTagBase
 {
     //private static final Log log = LogFactory.getLog(VerbatimTag.class);
 
@@ -43,29 +44,28 @@ public class VerbatimTag
     }
 
     // HtmlOutputText attributes
-    private String _escape;
+    private ValueExpression _escape;
+    private ValueExpression _rendered;
 
     protected void setProperties(UIComponent component)
     {
         super.setProperties(component);
-        if (_escape != null)
-        {
-            setBooleanProperty(component, JSFAttr.ESCAPE_ATTR, _escape);
-        }
-        else
-        {
-            //Default escape value for component is true, but for this tag it is false,
-            //so we must set it to false explicitly, if no attribute is given
-            component.getAttributes().put(JSFAttr.ESCAPE_ATTR, Boolean.FALSE);
-        }
+
+        setBooleanProperty(component, JSFAttr.ESCAPE_ATTR, _escape, Boolean.FALSE);
+        setBooleanProperty(component, JSFAttr.RENDERED, _rendered, Boolean.TRUE);
 
         //No need to save component state
         component.setTransient(true);
     }
 
-    public void setEscape(String escape)
+    public void setEscape(ValueExpression escape)
     {
         _escape = escape;
+    }
+
+    public void setRendered(ValueExpression rendered)
+    {
+        _rendered = rendered;
     }
     
     public int doAfterBody() throws JspException
@@ -75,6 +75,7 @@ public class VerbatimTag
         {
             UIOutput component = (UIOutput)getComponentInstance();
             component.setValue(bodyContent.getString());
+            bodyContent.clearBody();
         }
         return super.doAfterBody();
     }
