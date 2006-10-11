@@ -31,52 +31,5 @@ import javax.servlet.jsp.tagext.BodyTag;
 public abstract class UIComponentBodyTag
     extends UIComponentTag
 {
-    // API field
-    protected BodyContent bodyContent;
-
-
-    public int doAfterBody()
-            throws JspException
-    {
-        return getDoAfterBodyValue();
-    }
-
-    public void doInitBody()
-            throws JspException
-    {
-    }
-
-    public void release()
-    {
-        super.release();
-        bodyContent = null;
-    }
-
-    public BodyContent getBodyContent()
-    {
-        return bodyContent;
-    }
-
-    public void setBodyContent(BodyContent bodyContent)
-    {
-        this.bodyContent = bodyContent;
-    }
-
-    public JspWriter getPreviousOut()
-    {
-        return bodyContent.getEnclosingWriter();
-    }
-
-    protected int getDoStartValue()
-            throws JspException
-    {
-        return BodyTag.EVAL_BODY_BUFFERED;
-    }
-
-    protected int getDoAfterBodyValue()
-            throws JspException
-    {
-        return BodyTag.SKIP_BODY;
-    }
-
+ 
 }

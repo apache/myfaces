@@ -395,7 +395,11 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     {
         this._parent = tag;
     }
- 
+
+    public BodyContent getBodyContent()
+    {
+        return bodyContent;
+    }
 
     public int doStartTag() throws JspException
     {
