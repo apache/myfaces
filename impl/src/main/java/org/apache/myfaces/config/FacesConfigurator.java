@@ -221,6 +221,16 @@ public class FacesConfigurator
 
         String pathString = path.toString();
 
+        if(!pathString.startsWith(JAR_PREFIX))
+            return false;
+
+        if(!(pathString.length()>(META_INF_MANIFEST_SUFFIX.length()+JAR_PREFIX.length())))
+        {
+            if(log.isDebugEnabled())
+                log.debug("PathString : "+pathString+" not long enough to be parsed.");
+            return false;
+        }
+
         pathString = pathString.substring(JAR_PREFIX.length(),pathString.length()-META_INF_MANIFEST_SUFFIX.length());
 
         File file = new File(pathString);
@@ -229,9 +239,14 @@ public class FacesConfigurator
 
         if(fileName.endsWith(JAR_EXTENSION) && (index=fileName.indexOf(versionInfo.getPackageName()))!=-1)
         {
-            String newVersion = fileName.substring(
-                    Math.min(index+versionInfo.getPackageName().length()+1,fileName.length()-1),
-                    Math.max(fileName.length()-JAR_EXTENSION.length(),0));
+            int beginIndex = index+versionInfo.getPackageName().length()+1;
+
+            if(beginIndex > fileName.length()-1)
+                return false;
+
+            int endIndex = fileName.length()-JAR_EXTENSION.length();
+
+            String newVersion = fileName.substring(beginIndex, endIndex);
 
             if(version == null)
             {
