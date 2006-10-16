@@ -41,6 +41,7 @@ public class HtmlResponseStateManager
     private static final String VIEWID_PARAM = "jsf_viewid";
     private static final String BASE64_TREE_PARAM = "jsf_tree_64";
     private static final String BASE64_STATE_PARAM = "jsf_state_64";
+    public static final String STANDARD_STATE_SAVING_PARAM = "javax.faces.ViewState";    
 
     public void writeState(FacesContext facescontext,
                            StateManager.SerializedView serializedview) throws IOException {
