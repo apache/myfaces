@@ -14,3 +14,6 @@ http://conio.net/
 
 This product includes software developed by Thomas Fuchs (the Ruby on Rails Ajax javascript extensions)
 http://script.aculo.us/
+
+This product includes software developed by Dojo Foundation (http://dojotoolkit.org/foundation/)
+http://www.dojotoolkit.org/
