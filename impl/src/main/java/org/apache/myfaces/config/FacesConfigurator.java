@@ -237,7 +237,7 @@ public class FacesConfigurator
 
         String fileName = file.getName();
 
-        if(fileName.endsWith(JAR_EXTENSION) && (index=fileName.indexOf(versionInfo.getPackageName()))!=-1)
+        if(fileName.endsWith(JAR_EXTENSION) && ((index=fileName.indexOf(versionInfo.getPackageName()))!=-1))
         {
             int beginIndex = index+versionInfo.getPackageName().length()+1;
 
