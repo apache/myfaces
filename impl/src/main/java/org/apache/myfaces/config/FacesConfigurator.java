@@ -242,9 +242,18 @@ public class FacesConfigurator
             int beginIndex = index+versionInfo.getPackageName().length()+1;
 
             if(beginIndex > fileName.length()-1)
+            {
+                log.debug("beginIndex out of bounds. fileName: "+fileName);
                 return false;
+            }
 
             int endIndex = fileName.length()-JAR_EXTENSION.length();
+
+            if(endIndex<0 || endIndex<=beginIndex)
+            {
+                log.debug("endIndex out of bounds. fileName: "+fileName);
+                return false;
+            }
 
             String newVersion = fileName.substring(beginIndex, endIndex);
 
