@@ -28,13 +28,10 @@ import java.util.Set;
 
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
-import javax.faces.webapp.UIComponentTag;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import javax.el.ValueExpression;
 
 /**
  * TODO:
@@ -51,12 +48,10 @@ public class LoadBundleTag
 {
     private static final long serialVersionUID = -8892145684062838928L;
 
-    private static final Log log = LogFactory.getLog(LoadBundleTag.class);
-
-    private String _basename;
+    private ValueExpression _basename;
     private String _var;
 
-    public void setBasename(String basename)
+    public void setBasename(ValueExpression basename)
     {
         _basename = basename;
     }
@@ -68,6 +63,11 @@ public class LoadBundleTag
 
     public int doStartTag() throws JspException
     {
+        if (null == _var)
+        {
+            throw new NullPointerException("LoadBundle: 'var' must not be null");
+        }
+
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (facesContext == null)
         {
@@ -87,13 +87,17 @@ public class LoadBundleTag
         }
 
         String basename = null;
-
         if (_basename!=null) {
-            if (UIComponentTag.isValueReference(_basename)) {
-                basename = (String)facesContext.getApplication().createValueBinding(_basename).getValue(facesContext);
+            if (_basename.isLiteralText()) {
+                basename = _basename.getExpressionString();
             } else {
-                basename = _basename;
+                basename = (String) _basename.getValue(facesContext.getELContext());
             }
+        }
+
+        if (null == basename)
+        {
+            throw new NullPointerException("LoadBundle: 'basename' must not be null");
         }
 
         final ResourceBundle bundle;
@@ -105,8 +109,7 @@ public class LoadBundleTag
         }
         catch (MissingResourceException e)
         {
-            log.error("Resource bundle '" + basename + "' could not be found.");
-            return Tag.SKIP_BODY;
+            throw new JspException("Resource bundle '" + basename + "' could not be found.", e);
         }
 
         facesContext.getExternalContext().getRequestMap().put(_var,
@@ -118,7 +121,7 @@ public class LoadBundleTag
     private static class BundleMap implements Map
     {
         private ResourceBundle _bundle;
-        private List _values;
+        private List<String> _values;
 
         public BundleMap(ResourceBundle bundle)
         {
@@ -132,7 +135,7 @@ public class LoadBundleTag
             try {
                 return _bundle.getObject(key.toString());
             } catch (Exception e) {
-                return "MISSING: " + key + " :MISSING";
+                return "???" + key + "???";
             }
         }
 
@@ -143,11 +146,14 @@ public class LoadBundleTag
 
         public boolean containsKey(Object key)
         {
-        	try {
+            try
+            {
                 return _bundle.getObject(key.toString()) != null;
-        	} catch (MissingResourceException e) {
-        		return false;
-        	}
+            }
+            catch (MissingResourceException e)
+            {
+                return false;
+            }
         }
 
 
@@ -157,10 +163,10 @@ public class LoadBundleTag
         {
             if (_values == null)
             {
-                _values = new ArrayList();
-                for (Enumeration enumer = _bundle.getKeys(); enumer.hasMoreElements(); )
+                _values = new ArrayList<String>();
+                for (Enumeration<String> enumer = _bundle.getKeys(); enumer.hasMoreElements();)
                 {
-                    String v = _bundle.getString((String)enumer.nextElement());
+                    String v = _bundle.getString(enumer.nextElement());
                     _values.add(v);
                 }
             }
@@ -179,10 +185,10 @@ public class LoadBundleTag
 
         public Set entrySet()
         {
-            Set set = new HashSet();
-            for (Enumeration enumer = _bundle.getKeys(); enumer.hasMoreElements(); )
+            Set<Entry> set = new HashSet<Entry>();
+            for (Enumeration<String> enumer = _bundle.getKeys(); enumer.hasMoreElements(); )
             {
-                final String k = (String)enumer.nextElement();
+                final String k = enumer.nextElement();
                 set.add(new Map.Entry() {
                     public Object getKey()
                     {
@@ -205,8 +211,8 @@ public class LoadBundleTag
 
         public Set keySet()
         {
-            Set set = new HashSet();
-            for (Enumeration enumer = _bundle.getKeys(); enumer.hasMoreElements(); )
+            Set<String> set = new HashSet<String>();
+            for (Enumeration<String> enumer = _bundle.getKeys(); enumer.hasMoreElements(); )
             {
                 set.add(enumer.nextElement());
             }
