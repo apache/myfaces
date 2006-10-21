@@ -1,5 +1,5 @@
 /*
- * Copyright 2004 The Apache Software Foundation.
+ * Copyright 2004-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,14 @@ package org.apache.myfaces.renderkit.html;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
-import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.renderkit.html.HTML;
+import org.apache.myfaces.shared_impl.util.StateUtils;
 
 import javax.faces.application.StateManager;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.render.ResponseStateManager;
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.Map;
 
 /**
@@ -34,210 +33,102 @@ import java.util.Map;
  * @version $Revision$ $Date$
  */
 public class HtmlResponseStateManager
-        extends MyfacesResponseStateManager
-{
+    extends MyfacesResponseStateManager {
     private static final Log log = LogFactory.getLog(HtmlResponseStateManager.class);
 
-    private static final String TREE_PARAM = "jsf_tree";
-    private static final String STATE_PARAM = "jsf_state";
-    private static final String VIEWID_PARAM = "jsf_viewid";
-    private static final String BASE64_TREE_PARAM = "jsf_tree_64";
-    private static final String BASE64_STATE_PARAM = "jsf_state_64";
-    private static final String ZIP_CHARSET = "ISO-8859-1";
+    private static final int TREE_PARAM = 0;
+    private static final int STATE_PARAM = 1;
+    private static final int VIEWID_PARAM = 2;
 
-    public void writeState(FacesContext facesContext, Object state) 
-            throws IOException {
-        //TODO: implement
-       throw new UnsupportedOperationException("Not Implemented yet");
-    }
-    
+    public static final String STANDARD_STATE_SAVING_PARAM = "javax.faces.ViewState";
+
     public void writeState(FacesContext facescontext,
-                           StateManager.SerializedView serializedview) throws IOException
-    {
+                           StateManager.SerializedView serializedview) throws IOException {
         ResponseWriter responseWriter = facescontext.getResponseWriter();
-        Object treeStruct = serializedview.getStructure();
-        Object compStates = serializedview.getState();
 
-        if (treeStruct != null)
-        {
-            if (treeStruct instanceof String)
+        Object[] savedState = new Object[3];
+
+        if (facescontext.getApplication().getStateManager().isSavingStateInClient(facescontext)) {
+            Object treeStruct = serializedview.getStructure();
+            Object compStates = serializedview.getState();
+
+            if(treeStruct != null)
             {
-                responseWriter.startElement(HTML.INPUT_ELEM, null);
-                responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
-                responseWriter.writeAttribute(HTML.NAME_ATTR, TREE_PARAM, null);
-                responseWriter.writeAttribute(HTML.ID_ATTR, TREE_PARAM, null);
-                if(StateUtils.isSecure(facescontext.getExternalContext()))
-                	treeStruct = StateUtils.construct(treeStruct, facescontext.getExternalContext());
-                responseWriter.writeAttribute(HTML.VALUE_ATTR, treeStruct, null);
-                responseWriter.endElement(HTML.INPUT_ELEM);
+                savedState[TREE_PARAM]=treeStruct;
             }
-            else
-            {
-                responseWriter.startElement(HTML.INPUT_ELEM, null);
-                responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
-                responseWriter.writeAttribute(HTML.NAME_ATTR, BASE64_TREE_PARAM, null);
-                responseWriter.writeAttribute(HTML.ID_ATTR, BASE64_TREE_PARAM, null);
-                responseWriter.writeAttribute(HTML.VALUE_ATTR,
-                        StateUtils.construct(treeStruct, facescontext.getExternalContext()), null);
-                responseWriter.endElement(HTML.INPUT_ELEM);
+            else {
+                log.error("No tree structure to be saved in client response!");
+            }
+
+            if (compStates != null) {
+                savedState[STATE_PARAM] = compStates;
+            }
+            else {
+                log.error("No component states to be saved in client response!");
             }
         }
-        else
-        {
-            log.error("No tree structure to be saved in client response!");
+        else {
+            // write viewSequence
+            Object treeStruct = serializedview.getStructure();
+            if (treeStruct != null) {
+                if (treeStruct instanceof String) {
+                    savedState[TREE_PARAM] = treeStruct;
+                }
+            }
         }
 
-        if (compStates != null)
-        {
-            if (compStates instanceof String)
-            {
-                responseWriter.startElement(HTML.INPUT_ELEM, null);
-                responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
-                responseWriter.writeAttribute(HTML.NAME_ATTR, STATE_PARAM, null);
-                responseWriter.writeAttribute(HTML.ID_ATTR, STATE_PARAM, null);
-                if(StateUtils.isSecure(facescontext.getExternalContext()))
-                	compStates = StateUtils.construct(compStates, facescontext.getExternalContext());
-                responseWriter.writeAttribute(HTML.VALUE_ATTR, compStates, null);
-                responseWriter.endElement(HTML.INPUT_ELEM);
-            }
-            else
-            {
-                responseWriter.startElement(HTML.INPUT_ELEM, null);
-                responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
-                responseWriter.writeAttribute(HTML.NAME_ATTR, BASE64_STATE_PARAM, null);
-                responseWriter.writeAttribute(HTML.ID_ATTR, BASE64_STATE_PARAM, null);
-                responseWriter.writeAttribute(HTML.VALUE_ATTR,
-                        StateUtils.construct(compStates, facescontext.getExternalContext()), null);
-                responseWriter.endElement(HTML.INPUT_ELEM);
-            }
-        }
-        else
-        {
-            log.error("No component states to be saved in client response!");
-        }
+        savedState[VIEWID_PARAM] = facescontext.getViewRoot().getViewId();
 
         responseWriter.startElement(HTML.INPUT_ELEM, null);
         responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
-        responseWriter.writeAttribute(HTML.NAME_ATTR, VIEWID_PARAM, null);
-        responseWriter.writeAttribute(HTML.ID_ATTR, VIEWID_PARAM, null);
-        responseWriter.writeAttribute(HTML.VALUE_ATTR, facescontext.getViewRoot().getViewId(), null);
+        responseWriter.writeAttribute(HTML.NAME_ATTR, STANDARD_STATE_SAVING_PARAM, null);
+        responseWriter.writeAttribute(HTML.ID_ATTR, STANDARD_STATE_SAVING_PARAM, null);
+        responseWriter.writeAttribute(HTML.VALUE_ATTR, StateUtils.construct(savedState,
+                facescontext.getExternalContext()), null);
         responseWriter.endElement(HTML.INPUT_ELEM);
     }
 
-    /**
-     * MyFaces extension
-     * @param facescontext
-     * @param serializedview
-     * @throws IOException
-     */
-    public void writeStateAsUrlParams(FacesContext facescontext,
-                                      StateManager.SerializedView serializedview) throws IOException
-    {
-        ResponseWriter responseWriter = facescontext.getResponseWriter();
-        Object treeStruct = serializedview.getStructure();
-        Object compStates = serializedview.getState();
 
-        if (treeStruct != null)
-        {
-            if (treeStruct instanceof String)
-            {
-            	if(StateUtils.isSecure(facescontext.getExternalContext()))
-            		treeStruct = StateUtils.construct(treeStruct,facescontext.getExternalContext());
-                writeStateParam(responseWriter, TREE_PARAM, (String)treeStruct);
-            }
-            else
-            {
-                writeStateParam(responseWriter, BASE64_TREE_PARAM,
-                        StateUtils.construct(treeStruct, facescontext.getExternalContext()));
-            }
-        }
-        else
-        {
-            log.error("No tree structure to be saved in client response!");
-        }
+    public Object getTreeStructureToRestore(FacesContext facesContext, String viewId) {
+        Map reqParamMap = facesContext.getExternalContext().getRequestParameterMap();
 
-        if (compStates != null)
-        {
-            if (treeStruct != null)
-            {
-                responseWriter.write('&');
-            }
-            if (compStates instanceof String)
-            {
-            	if(StateUtils.isSecure(facescontext.getExternalContext()))
-            		compStates = StateUtils.construct(compStates, facescontext.getExternalContext());
-                writeStateParam(responseWriter, STATE_PARAM, (String)compStates);
-            }
-            else
-            {
-                writeStateParam(responseWriter, BASE64_STATE_PARAM, StateUtils.construct(compStates, facescontext.getExternalContext()));
-            }
-        }
-        else
-        {
-            log.error("No component states to be saved in client response!");
-        }
+        Object encodedState = reqParamMap.get(STANDARD_STATE_SAVING_PARAM);
 
-        if (treeStruct != null || compStates != null) {
-            responseWriter.write('&');
-        }
-        writeStateParam(responseWriter, VIEWID_PARAM, facescontext.getViewRoot().getViewId());
-    }
+        if(encodedState==null)
+            return null;
 
-    public Object getTreeStructureToRestore(FacesContext facescontext, String viewId)
-    {
-        Map reqParamMap = facescontext.getExternalContext().getRequestParameterMap();
-        Object param = reqParamMap.get(VIEWID_PARAM);
-        if (param == null || !param.equals(viewId))
-        {
+        Object[] savedState = (Object[]) StateUtils.reconstruct((String) encodedState, facesContext.getExternalContext());
+
+        String restoredViewId = (String) savedState[VIEWID_PARAM];
+
+        if (restoredViewId == null || !restoredViewId.equals(viewId)) {
             //no saved state or state of different viewId
             return null;
         }
 
-        param = reqParamMap.get(TREE_PARAM);
-        if (param != null)
-        {
-        	if(StateUtils.isSecure(facescontext.getExternalContext()))
-        		param = StateUtils.construct(param, facescontext.getExternalContext());
-            return param;
-        }
-
-        param = reqParamMap.get(BASE64_TREE_PARAM);
-        if (param != null)
-        {
-            return StateUtils.reconstruct((String)param, facescontext.getExternalContext());
-        }
-
-        return null;
+        return savedState[TREE_PARAM];
     }
 
-    public Object getComponentStateToRestore(FacesContext facescontext)
-    {
-        Map reqParamMap = facescontext.getExternalContext().getRequestParameterMap();
-        Object param = reqParamMap.get(STATE_PARAM);
-        if (param != null)
-        {
-        	if(StateUtils.isSecure(facescontext.getExternalContext()))
-        		param = StateUtils.construct(param, facescontext.getExternalContext());
-            return param;
+    public Object getComponentStateToRestore(FacesContext facesContext) {
+        Map reqParamMap = facesContext.getExternalContext().getRequestParameterMap();
+
+        Object encodedState = reqParamMap.get(STANDARD_STATE_SAVING_PARAM);
+
+        if(encodedState==null)
+            return null;
+
+        Object[] savedState = (Object[]) StateUtils.reconstruct((String) encodedState, facesContext.getExternalContext());
+
+        String restoredViewId = (String) savedState[VIEWID_PARAM];
+
+        if (restoredViewId == null || !restoredViewId.equals(facesContext)) {
+            //no saved state or state of different viewId
+            return null;
         }
 
-        param = reqParamMap.get(BASE64_STATE_PARAM);
-        if (param != null)
-        {
-            return StateUtils.reconstruct((String)param, facescontext.getExternalContext());
-        }
-
-        return null;
+        return savedState[STATE_PARAM];
     }
 
-    private void writeStateParam(ResponseWriter writer, String name, String value)
-        throws IOException
-    {
-        writer.write(name);
-        writer.write('=');
-        writer.write(URLEncoder.encode(value, writer.getCharacterEncoding()));
-    }
 
     /**
      * Checks if the current request is a postback

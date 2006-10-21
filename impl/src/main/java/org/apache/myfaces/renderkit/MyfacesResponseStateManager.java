@@ -23,23 +23,22 @@ import java.io.IOException;
 /**
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
+ *
  */
 public abstract class MyfacesResponseStateManager
         extends ResponseStateManager
 {
-    /**
-     * Writes hidden form inputs with the state info to be saved.
-     * {@link StateManager} delegates calls to {@link javax.faces.application.StateManager#writeState}
-     * to this method.
-     */
-    public abstract void writeState(FacesContext facescontext,
-                                    StateManager.SerializedView serializedview) throws IOException;
-
+    
     /**
      * Writes url parameters with the state info to be saved.
      * {@link org.apache.myfaces.application.MyfacesStateManager} delegates calls to
      * {@link org.apache.myfaces.application.MyfacesStateManager#writeState} to this method.
+     *
+     * @deprecated
      */
-    public abstract void writeStateAsUrlParams(FacesContext facescontext,
-                                               StateManager.SerializedView serializedview) throws IOException;
+    public void writeStateAsUrlParams(FacesContext facescontext,
+                                               StateManager.SerializedView serializedview) throws IOException
+    {
+        throw new UnsupportedOperationException("long been deprecated...");
+    }
 }
