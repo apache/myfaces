@@ -15,32 +15,21 @@
  */
 package javax.faces.webapp;
 
-import javax.servlet.jsp.tagext.TagSupport;
-import javax.servlet.jsp.tagext.Tag;
-import javax.servlet.jsp.JspException;
-import javax.faces.validator.Validator;
-import javax.faces.component.UIComponent;
 import javax.faces.component.EditableValueHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.application.Application;
-import javax.faces.el.ValueBinding;
+import javax.faces.component.UIComponent;
+import javax.faces.validator.Validator;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.Tag;
+import javax.servlet.jsp.tagext.TagSupport;
 
 /**
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
- *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ValidatorELTag
+public abstract class ValidatorELTag
         extends TagSupport
 {
     private static final long serialVersionUID = 8794036166323016663L;
-    private String _validatorId;
-
-    public void setValidatorId(String validatorId)
-    {
-        _validatorId = validatorId;
-    }
 
     public int doStartTag()
             throws javax.servlet.jsp.JspException
@@ -64,32 +53,14 @@ public class ValidatorELTag
         }
         if (!(component instanceof EditableValueHolder))
         {
-            throw new JspException("UIComponent is no ValueHolder");
+            throw new JspException("UIComponent is no EditableValueHolder");
         }
         ((EditableValueHolder)component).addValidator(validator);
 
         return Tag.SKIP_BODY;
     }
 
-    public void release()
-    {
-        super.release();
-        _validatorId = null;
-    }
+    protected abstract Validator createValidator()
+            throws JspException;
 
-    protected Validator createValidator()
-            throws JspException
-    {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        Application application = facesContext.getApplication();
-        if (UIComponentTag.isValueReference(_validatorId))
-        {
-            ValueBinding vb = facesContext.getApplication().createValueBinding(_validatorId);
-            return application.createValidator((String)vb.getValue(facesContext));
-        }
-        else
-        {
-            return application.createValidator(_validatorId);
-        }
-    }
 }
