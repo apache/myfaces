@@ -28,6 +28,7 @@ import javax.servlet.jsp.JspException;
  *
  * @author Andreas Berger (latest modification by $Author$)
  * @version $Revision$ $Date$
+ * @since 1.2
  */
 public class ValidatorTag
         extends ValidatorELTag

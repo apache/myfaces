@@ -18,12 +18,8 @@ package org.apache.myfaces.taglib.core;
 
 import org.apache.myfaces.convert.ConverterUtils;
 
-import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 import javax.faces.validator.DoubleRangeValidator;
 import javax.faces.validator.Validator;
-import javax.faces.webapp.UIComponentTag;
-import javax.faces.webapp.ValidatorTag;
 import javax.servlet.jsp.JspException;
 
 /**
@@ -32,63 +28,35 @@ import javax.servlet.jsp.JspException;
  * @version $Revision$ $Date$
  */
 public class ValidateDoubleRangeTag
-    extends ValidatorTag
+    extends GenericMinMaxValidatorTag<Double>
 {
     private static final long serialVersionUID = 6396116656224588016L;
 
     private static final String VALIDATOR_ID = "javax.faces.DoubleRange";
 
-    private String _minimum = null;
-    private String _maximum = null;
-
-    public void release()
-    {
-        _minimum = null;
-        _maximum = null;
-    }
-
-    public void setMinimum(String minimum)
-    {
-        _minimum = minimum;
-    }
-
-    public void setMaximum(String maximum)
-    {
-        _maximum = maximum;
-    }
-
     protected Validator createValidator()
         throws JspException
     {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        setValidatorId(VALIDATOR_ID);
+        setValidatorIdString(VALIDATOR_ID);
         DoubleRangeValidator validator = (DoubleRangeValidator)super.createValidator();
-        if (_minimum != null)
-        {
-            if (UIComponentTag.isValueReference(_minimum))
-            {
-                ValueBinding vb = facesContext.getApplication().createValueBinding(_minimum);
-                validator.setMinimum(ConverterUtils.convertToDouble(vb.getValue(facesContext)));
-            }
-            else
-            {
-                validator.setMinimum(ConverterUtils.convertToDouble(_minimum));
-            }
+        if (null != _min){
+            validator.setMinimum(_min);
         }
-        if (_maximum != null)
-        {
-            if (UIComponentTag.isValueReference(_maximum))
-            {
-                ValueBinding vb = facesContext.getApplication().createValueBinding(_maximum);
-                validator.setMaximum(ConverterUtils.convertToDouble(vb.getValue(facesContext)));
-            }
-            else
-            {
-                validator.setMaximum(ConverterUtils.convertToDouble(_maximum));
-            }
+        if (null != _max){
+            validator.setMaximum(_max);
         }
         return validator;
     }
 
+    @Override
+    protected boolean isMinLTMax()
+    {
+        return _min < _max;
+    }
 
+    @Override
+    protected Double getValue(Object value)
+    {
+        return ConverterUtils.convertToDouble(value);
+    }
 }
