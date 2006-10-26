@@ -19,12 +19,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import javax.faces.FacesException;
-import javax.faces.render.ResponseStateManager;
+import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIViewRoot;
-import javax.faces.component.NamingContainer;
 import javax.faces.context.FacesContext;
+import javax.faces.render.ResponseStateManager;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
@@ -34,14 +34,14 @@ import javax.servlet.jsp.tagext.BodyTag;
 import javax.servlet.jsp.tagext.JspIdConsumer;
 import javax.servlet.jsp.tagext.Tag;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
-import java.util.ArrayList;
-import java.util.HashSet;
 
 /**
  * @author Bruno Aranda (latest modification by $Author: baranda $)
@@ -598,21 +598,20 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         {
             String strContent = bodyContent.getString();
 
-            if (strContent != null && !isWhitespace(strContent) && !isComment(strContent))
+            if (strContent != null)
             {
-                verbatimComp = createVerbatimComponent();
-                verbatimComp.setValue(strContent);
+                String trimmedContent = strContent.trim();
+                if (trimmedContent.length() > 0 && !isComment(strContent))
+                {
+                    verbatimComp = createVerbatimComponent();
+                    verbatimComp.setValue(strContent);
+                }
             }
-            
+
             bodyContent.clearBody();
         }
 
         return verbatimComp;
-    }
-
-    private static boolean isWhitespace(String bodyContent)
-    {
-        return (bodyContent.trim().length() == 0);
     }
 
     private static boolean isComment(String bodyContent)

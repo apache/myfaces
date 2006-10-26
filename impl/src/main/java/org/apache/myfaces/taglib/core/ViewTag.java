@@ -17,33 +17,28 @@ package org.apache.myfaces.taglib.core;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.application.MyfacesStateManager;
-import org.apache.myfaces.application.jsp.JspViewHandlerImpl;
-import org.apache.myfaces.shared_impl.renderkit.html.HtmlLinkRendererBase;
 import org.apache.myfaces.shared_impl.util.LocaleUtils;
 
-import javax.faces.application.StateManager;
+import javax.el.ELContext;
+import javax.el.MethodExpression;
+import javax.el.ValueExpression;
+import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.el.ValueBinding;
-import javax.faces.webapp.UIComponentBodyTag;
-import javax.faces.webapp.UIComponentTag;
-import javax.servlet.ServletRequest;
+import javax.faces.render.RenderKitFactory;
+import javax.faces.webapp.UIComponentELTag;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.jstl.core.Config;
-import javax.servlet.jsp.tagext.BodyContent;
-import javax.servlet.jsp.tagext.BodyTag;
-import java.io.IOException;
 import java.util.Locale;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
+ * @author Bruno Aranda (JSR-252)
  * @version $Revision$ $Date$
  */
 public class ViewTag
-        extends UIComponentBodyTag //UIComponentELTag
+        extends UIComponentELTag
 {
     private static final Log log = LogFactory.getLog(ViewTag.class);
 
@@ -57,146 +52,163 @@ public class ViewTag
         return null;
     }
 
-    private String _locale;
+    private ValueExpression _locale;
+    private ValueExpression _renderKitId;
 
-    public void setLocale(String locale)
+    private MethodExpression _beforePhase;
+    private MethodExpression _afterPhase;
+
+    public void setLocale(ValueExpression locale)
     {
         _locale = locale;
+    }
+
+    public void setRenderKitId(ValueExpression renderKitId)
+    {
+        _renderKitId = renderKitId;
+    }
+
+    public void setBeforePhase(MethodExpression beforePhase)
+    {
+        _beforePhase = beforePhase;
+    }
+
+    public void setAfterPhase(MethodExpression afterPhase)
+    {
+        _afterPhase = afterPhase;
     }
 
     public int doStartTag() throws JspException
     {
         if (log.isTraceEnabled()) log.trace("entering ViewTag.doStartTag");
-        super.doStartTag();
+
+        int retVal = super.doStartTag();
+
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        ResponseWriter responseWriter = facesContext.getResponseWriter();
-        try
-        {
-            responseWriter.startDocument();
-        }
-        catch (IOException e)
-        {
-            log.error("Error writing startDocument", e);
-            throw new JspException(e);
-        }
+        
+        Config.set(pageContext.getRequest(),
+                       Config.FMT_LOCALE,
+                       facesContext.getViewRoot().getLocale());
 
         if (log.isTraceEnabled()) log.trace("leaving ViewTag.doStartTag");
-        return BodyTag.EVAL_BODY_BUFFERED;
-    }
-
-    protected boolean isSuppressed()
-    {
-        return true;
+        return retVal;
     }
 
     public int doEndTag() throws JspException
     {
         if (log.isTraceEnabled()) log.trace("entering ViewTag.doEndTag");
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        ResponseWriter responseWriter = facesContext.getResponseWriter();
-
-        try
-        {
-            responseWriter.endDocument();
-        }
-        catch (IOException e)
-        {
-            log.error("Error writing endDocument", e);
-            throw new JspException(e);
-        }
+        int retVal = super.doEndTag();
 
         if (log.isTraceEnabled()) log.trace("leaving ViewTag.doEndTag");
-        return super.doEndTag();
+        return retVal;
     }
 
     public int doAfterBody() throws JspException
     {
         if (log.isTraceEnabled()) log.trace("entering ViewTag.doAfterBody");
-        try
-        {
-            BodyContent bodyContent = getBodyContent();
-            if (bodyContent != null)
-            {
-                FacesContext facesContext = FacesContext.getCurrentInstance();
-                StateManager stateManager = facesContext.getApplication().getStateManager();
-                StateManager.SerializedView serializedView
-                        = stateManager.saveSerializedView(facesContext);
-                if (serializedView != null)
-                {
-                    //until now we have written to a buffer
-                    ResponseWriter bufferWriter = facesContext.getResponseWriter();
-                    bufferWriter.flush();
-                    //now we switch to real output
-                    ResponseWriter realWriter = bufferWriter.cloneWithWriter(getBodyContent().getEnclosingWriter());
-                    facesContext.setResponseWriter(realWriter);
 
-                    String bodyStr = bodyContent.getString();
-                    if ( stateManager.isSavingStateInClient(facesContext) )
+        UIComponent verbatimComp = createVerbatimComponentFromBodyContent();
+        
+        if (verbatimComp != null)
+        {
+            FacesContext.getCurrentInstance().getViewRoot().getChildren()
+                .add(verbatimComp);
+        }
+        /*
+        BodyContent bodyContent = getBodyContent();
+
+        if (bodyContent != null)
+        {
+
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+
+            StateManager stateManager = facesContext.getApplication().getStateManager();
+            StateManager.SerializedView serializedView
+                    = stateManager.saveSerializedView(facesContext);
+            if (serializedView != null)
+            {
+                //until now we have written to a buffer
+                ResponseWriter bufferWriter = facesContext.getResponseWriter();
+                bufferWriter.flush();
+                //now we switch to real output
+                ResponseWriter realWriter = bufferWriter.cloneWithWriter(getBodyContent().getEnclosingWriter());
+                facesContext.setResponseWriter(realWriter);
+
+                String bodyStr = bodyContent.getString();
+                if ( stateManager.isSavingStateInClient(facesContext) )
+                {
+                    int form_marker = bodyStr.indexOf(JspViewHandlerImpl.FORM_STATE_MARKER);
+                    int url_marker = bodyStr.indexOf(HtmlLinkRendererBase.URL_STATE_MARKER);
+                    int lastMarkerEnd = 0;
+                    while (form_marker != -1 || url_marker != -1)
                     {
-                        int form_marker = bodyStr.indexOf(JspViewHandlerImpl.FORM_STATE_MARKER);
-                        int url_marker = bodyStr.indexOf(HtmlLinkRendererBase.URL_STATE_MARKER);
-                        int lastMarkerEnd = 0;
-                        while (form_marker != -1 || url_marker != -1)
+                        if (url_marker == -1 || (form_marker != -1 && form_marker < url_marker))
                         {
-                            if (url_marker == -1 || (form_marker != -1 && form_marker < url_marker))
+                            //replace form_marker
+                            realWriter.write(bodyStr, lastMarkerEnd, form_marker - lastMarkerEnd);
+                            stateManager.writeState(facesContext, serializedView);
+                            lastMarkerEnd = form_marker + JspViewHandlerImpl.FORM_STATE_MARKER_LEN;
+                            form_marker = bodyStr.indexOf(JspViewHandlerImpl.FORM_STATE_MARKER, lastMarkerEnd);
+                        }
+                        else
+                        {
+                            //replace url_marker
+                            realWriter.write(bodyStr, lastMarkerEnd, url_marker - lastMarkerEnd);
+                            if (stateManager instanceof MyfacesStateManager)
                             {
-                                //replace form_marker
-                                realWriter.write(bodyStr, lastMarkerEnd, form_marker - lastMarkerEnd);
-                                stateManager.writeState(facesContext, serializedView);
-                                lastMarkerEnd = form_marker + JspViewHandlerImpl.FORM_STATE_MARKER_LEN;
-                                form_marker = bodyStr.indexOf(JspViewHandlerImpl.FORM_STATE_MARKER, lastMarkerEnd);
+                                ((MyfacesStateManager)stateManager).writeStateAsUrlParams(facesContext,
+                                                                                          serializedView);
                             }
                             else
                             {
-                                //replace url_marker
-                                realWriter.write(bodyStr, lastMarkerEnd, url_marker - lastMarkerEnd);
-                                if (stateManager instanceof MyfacesStateManager)
-                                {
-                                    ((MyfacesStateManager)stateManager).writeStateAsUrlParams(facesContext,
-                                                                                              serializedView);
-                                }
-                                else
-                                {
-                                    log.error("Current StateManager is no MyfacesStateManager and does not support saving state in url parameters.");
-                                }
-                                lastMarkerEnd = url_marker + HtmlLinkRendererBase.URL_STATE_MARKER_LEN;
-                                url_marker = bodyStr.indexOf(HtmlLinkRendererBase.URL_STATE_MARKER, lastMarkerEnd);
+                                log.error("Current StateManager is no MyfacesStateManager and does not support saving state in url parameters.");
                             }
+                            lastMarkerEnd = url_marker + HtmlLinkRendererBase.URL_STATE_MARKER_LEN;
+                            url_marker = bodyStr.indexOf(HtmlLinkRendererBase.URL_STATE_MARKER, lastMarkerEnd);
                         }
-                        realWriter.write(bodyStr, lastMarkerEnd, bodyStr.length() - lastMarkerEnd);
                     }
-                    else
-                    {
-                        realWriter.write( bodyStr );
-                    }
+                    realWriter.write(bodyStr, lastMarkerEnd, bodyStr.length() - lastMarkerEnd);
                 }
                 else
                 {
-                    bodyContent.writeOut(getBodyContent().getEnclosingWriter());
+                    realWriter.write( bodyStr );
                 }
             }
+            else
+            {
+                bodyContent.writeOut(getBodyContent().getEnclosingWriter());
+            }
+
         }
-        catch (IOException e)
-        {
-            log.error("Error writing body content", e);
-            throw new JspException(e);
-        }
+        */
+
         if (log.isTraceEnabled()) log.trace("leaving ViewTag.doAfterBody");
-        return super.doAfterBody();
+        return EVAL_PAGE;
     }
 
     protected void setProperties(UIComponent component)
     {
         super.setProperties(component);
 
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ELContext elContext = facesContext.getELContext();
+
+        UIViewRoot viewRoot = (UIViewRoot) component;
+
+        // locale
         if (_locale != null)
         {
             Locale locale;
-            if (UIComponentTag.isValueReference(_locale))
+            if (_locale.isLiteralText())
             {
-                FacesContext context = FacesContext.getCurrentInstance();
-                ValueBinding vb = context.getApplication().createValueBinding(_locale);
-                Object localeValue = vb.getValue(context);
+                locale = LocaleUtils.toLocale(_locale.getValue(elContext).toString());
+            }
+            else
+            {
+                component.setValueExpression("locale", _locale);
+
+                Object localeValue = _locale.getValue(elContext);
+                
                 if (localeValue instanceof Locale)
                 {
                     locale = (Locale) localeValue;
@@ -221,14 +233,61 @@ public class ViewTag
                      }
                 }
             }
-            else
-            {
-                locale = LocaleUtils.toLocale(_locale);
-            }
-            ((UIViewRoot)component).setLocale(locale);
-            Config.set((ServletRequest)getFacesContext().getExternalContext().getRequest(),
+            viewRoot.setLocale(locale);
+            Config.set(pageContext.getRequest(),
                        Config.FMT_LOCALE,
                        locale);
+        }
+
+        // renderkitId
+        if (_renderKitId != null)
+        {
+            if (_renderKitId.isLiteralText())
+            {
+                viewRoot.setRenderKitId(_renderKitId.getValue(elContext).toString());
+            }
+            else
+            {
+                viewRoot.setValueExpression("renderKitId", _renderKitId);
+                viewRoot.setRenderKitId(null);
+            }
+        }
+        else if (viewRoot.getRenderKitId() == null)
+        {
+            String defaultRenderKitId = facesContext.getApplication().getDefaultRenderKitId();
+            viewRoot.setRenderKitId(defaultRenderKitId);
+        }
+        else
+        {
+            viewRoot.setRenderKitId(RenderKitFactory.HTML_BASIC_RENDER_KIT);
+        }
+
+        // beforePhase
+        if (_beforePhase != null)
+        {
+            if (_beforePhase.isLiteralText())
+            {
+                throw new FacesException("Invalid method expression for attribute 'beforePhase' in the view tag: "
+                        +_beforePhase.getExpressionString());
+            }
+            else
+            {
+                viewRoot.setBeforePhaseListener(_beforePhase);
+            }
+        }
+
+        // afterPhase
+        if (_afterPhase != null)
+        {
+            if (_afterPhase.isLiteralText())
+            {
+                throw new FacesException("Invalid method expression for attribute 'beforePhase' in the view tag: "
+                        +_afterPhase.getExpressionString());
+            }
+            else
+            {
+                viewRoot.setAfterPhaseListener(_afterPhase);
+            }
         }
     }
 }
