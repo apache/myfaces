@@ -15,15 +15,12 @@
  */
 package javax.faces.webapp;
 
-import javax.servlet.jsp.tagext.TagSupport;
-import javax.servlet.jsp.tagext.Tag;
-import javax.servlet.jsp.JspException;
-import javax.faces.convert.Converter;
 import javax.faces.component.UIComponent;
 import javax.faces.component.ValueHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.application.Application;
-import javax.faces.el.ValueBinding;
+import javax.faces.convert.Converter;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.Tag;
+import javax.servlet.jsp.tagext.TagSupport;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
@@ -49,8 +46,6 @@ public abstract class ConverterELTag
             return Tag.SKIP_BODY;
         }
 
-        Converter converter = createConverter();
-
         UIComponent component = componentTag.getComponentInstance();
         if (component == null)
         {
@@ -60,6 +55,9 @@ public abstract class ConverterELTag
         {
             throw new JspException("UIComponent is no ValueHolder");
         }
+
+        Converter converter = createConverter();
+
         ((ValueHolder)component).setConverter(converter);
 
         return Tag.SKIP_BODY;
