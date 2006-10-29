@@ -22,8 +22,6 @@ import org.apache.myfaces.portlet.PortletUtil;
 import org.apache.myfaces.util.DebugUtils;
 import org.apache.myfaces.shared_impl.webapp.webxml.ServletMapping;
 import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
-import org.apache.myfaces.shared_impl.renderkit.html.HTML;
-import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
 
 import javax.faces.FacesException;
 import javax.faces.application.Application;
@@ -31,7 +29,6 @@ import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
 import javax.faces.render.RenderKitFactory;
 import javax.portlet.PortletURL;
 import javax.portlet.RenderResponse;
