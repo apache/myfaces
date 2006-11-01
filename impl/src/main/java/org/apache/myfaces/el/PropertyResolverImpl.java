@@ -50,16 +50,15 @@ public class PropertyResolverImpl extends PropertyResolver
     //~ Public PropertyResolver Methods ----------------------------------------
 
     public Object getValue(Object base, Object property)
-            throws EvaluationException, PropertyNotFoundException
-    {
+            throws EvaluationException {
         try
         {
            if(base == null)
            {
                if(log.isDebugEnabled())
                  log.debug("property : "+property +" could not be retrieved as base was null.");
-
-               return null;
+               throw new PropertyNotFoundException("Exception getting value of property " + property
+                + " - base was null ");
            }
 
            //fix for myfaces-315 - empty string as key to a map-value is allowed
@@ -69,7 +68,7 @@ public class PropertyResolverImpl extends PropertyResolver
                 !(base instanceof Map)))
            {
                if(log.isDebugEnabled())
-                 log.debug("property for base with class: "+ base.getClass().getName()  +" could not be retrieved as property was null.");
+                 log.debug("property for base with class: "+ getBaseType(base)  +" could not be retrieved as property was null.");
 
                return null;
            }
@@ -84,31 +83,34 @@ public class PropertyResolverImpl extends PropertyResolver
         catch (PropertyNotFoundException e) {
 
             if(log.isDebugEnabled())
-              log.debug("Exception while retrieving property; base with class : "+base.getClass().getName()+", property : "+property,e);
+              log.debug("Exception while retrieving property; base with class : "+
+                      getBaseType(base) +", property : "+property,e);
 
             throw e;
         }
         catch (RuntimeException e)
         {
             if(log.isDebugEnabled())
-              log.debug("Exception while retrieving property; base : "+base.getClass().getName()+", property : "+property,e);
+              log.debug("Exception while retrieving property; base : "+
+                      getBaseType(base) +", property : "+property,e);
 
             throw new EvaluationException("Exception getting value of property " + property
                 + " of base of type : "
-                + base.getClass().getName(), e);
+                + getBaseType(base), e);
         }
     }
 
     public Object getValue(Object base, int index)
-            throws EvaluationException, PropertyNotFoundException
-    {
+            throws EvaluationException {
         try
         {
-            if (base == null)
-            {
-                log.debug("index : "+index+" not retrievable cause base is null.");
-                return null;
-            }
+           if(base == null)
+           {
+               if(log.isDebugEnabled())
+                 log.debug("index : "+index +" could not be retrieved as base was null.");
+               throw new PropertyNotFoundException("Exception getting value for index " + index
+                + " - base was null ");
+           }
 
             try
             {
@@ -124,42 +126,44 @@ public class PropertyResolverImpl extends PropertyResolver
             catch (IndexOutOfBoundsException e)
             {
                 if(log.isDebugEnabled())
-                    log.debug("IndexOutOfBoundException while getting property; base with class: "+base.getClass().getName()+", index : "+index,e);
+                    log.debug("IndexOutOfBoundException while getting property; base with class: "+ getBaseType(base) +", index : "+index,e);
 
                 // Note: ArrayIndexOutOfBoundsException also here
                 return null;
             }
 
             throw new ReferenceSyntaxException("Must be array or List. Bean with class: "
-                + base.getClass().getName() + ", index " + index);
+                + getBaseType(base) + ", index " + index);
         }
         catch (RuntimeException e)
         {
             if(log.isDebugEnabled())
-                log.debug("Exception while getting property; base with class: "+base.getClass().getName()+", index : "+index,e);
+                log.debug("Exception while getting property; base with class: "+ getBaseType(base) +", index : "+index,e);
 
             throw new EvaluationException("Exception getting value for index " + index
                 + " of bean "
-                + base != null ? base.getClass().getName() : "NULL", e);
+                + base != null ? getBaseType(base) : "NULL", e);
         }
     }
 
     public void setValue(Object base, Object property, Object newValue)
-            throws EvaluationException, PropertyNotFoundException
-    {
+            throws EvaluationException {
         try
         {
-            if (base == null)
-            {
-                throw new PropertyNotFoundException(
-                    "Null bean, property: " + property);
-            }
+           if(base == null)
+           {
+               if(log.isDebugEnabled())
+                 log.debug("property : "+property +" could not be set as base was null.");
+               throw new PropertyNotFoundException("Exception setting value of property " + property
+                + " - base was null ");
+           }
+
             if (property == null ||
                 property instanceof String && ((String)property).length() == 0)
             {
-                throw new PropertyNotFoundException("Bean with class : "
-                    + base.getClass().getName()
-                    + ", null or empty property name");
+                throw new PropertyNotFoundException("Property in bean with class : "
+                    + getBaseType(base)
+                    + ", could not be retrieved - null or empty property name");
             }
 
             if (base instanceof Map)
@@ -174,30 +178,35 @@ public class PropertyResolverImpl extends PropertyResolver
         }
         catch (PropertyNotFoundException e) {
             if(log.isDebugEnabled())
-                log.debug("Exception while setting property; base with class : "+base.getClass().getName()+", property : "+property,e);
+                log.debug("Exception while setting property; base with class : "+ getBaseType(base) +", property : "+property,e);
             throw e;
         }
         catch (RuntimeException e)
         {
             if(log.isDebugEnabled())
-                log.debug("Exception while setting property; base : "+base.getClass().getName()+", property : "+property,e);
+                log.debug("Exception while setting property; base with type : "+getBaseType(base)+", property : "+property,e);
 
             throw new EvaluationException("Exception setting property " + property
-                + " of base with class "
-                + base.getClass().getName(), e);
+                + " of base with type : "
+                + getBaseType(base), e);
         }
     }
 
+    private static String getBaseType(Object base) {
+        return (base==null?"null":base.getClass().getName());
+    }
+
     public void setValue(Object base, int index, Object newValue)
-            throws EvaluationException, PropertyNotFoundException
-    {
+            throws EvaluationException {
         try
         {
-            if (base == null)
-            {
-                throw new PropertyNotFoundException(
-                    "Null bean, index: " + index);
-            }
+           if(base == null)
+           {
+               if(log.isDebugEnabled())
+                 log.debug("value for index : "+index +" could not be set as base was null.");
+               throw new PropertyNotFoundException("Exception setting value for index " + index
+                + " - base was null ");
+           }
 
             try
             {
@@ -220,12 +229,12 @@ public class PropertyResolverImpl extends PropertyResolver
             catch (IndexOutOfBoundsException e)
             {
                 throw new PropertyNotFoundException("Base with class : "
-                    + base.getClass().getName() + ", index " + index, e);
+                    + getBaseType(base) + ", index " + index, e);
             }
 
             throw new EvaluationException(
                 "Bean must be array or List. Base with class: "
-                + base.getClass().getName() + ", index " + index);
+                + getBaseType(base) + ", index " + index);
         }
         catch (PropertyNotFoundException e) {
             throw e;
@@ -233,7 +242,7 @@ public class PropertyResolverImpl extends PropertyResolver
         catch (RuntimeException e)
         {
             throw new EvaluationException("Exception setting value of index " + index + " of bean "
-                + base.getClass().getName(), e);
+                + getBaseType(base), e);
         }
     }
 
@@ -241,7 +250,15 @@ public class PropertyResolverImpl extends PropertyResolver
     {
         try
         {
-            if (base == null || property == null ||
+            if(base == null)
+            {
+               if(log.isDebugEnabled())
+                 log.debug("property : "+property +" could not be checked for read-only state as base was null.");
+               throw new PropertyNotFoundException("Exception getting read-only state of property " + property
+                + " - base was null ");
+            }
+
+            if (property == null ||
                 property instanceof String && ((String)property).length() == 0)
             {
                 // Cannot determine read-only, return false (is this what the spec requires?)
@@ -272,10 +289,12 @@ public class PropertyResolverImpl extends PropertyResolver
         try
         {
             /*todo: actually implement something here*/
-            if (base == null)
+            if(base == null)
             {
-                // Cannot determine read-only, return false (is this what the spec requires?)
-                return false;
+               if(log.isDebugEnabled())
+                 log.debug("index : "+index +" could not be checked for read-only state as base was null.");
+               throw new PropertyNotFoundException("Exception getting read-only state of index " + index
+                + " - base was null ");
             }
             if (base instanceof List || base.getClass().isArray())
             {
@@ -297,17 +316,22 @@ public class PropertyResolverImpl extends PropertyResolver
     {
         try
         {
-            if (base == null)
+            if(base == null)
             {
-                throw new PropertyNotFoundException("Base bean is null.");
+               if(log.isDebugEnabled())
+                 log.debug("type for property : "+property +" could not be retrieved as base was null.");
+               throw new PropertyNotFoundException("Exception getting type of property " + property
+                + " - base was null ");
             }
             else if (property == null)
             {
-                throw new PropertyNotFoundException("Property name is null.");
+                throw new PropertyNotFoundException("type for property could not be retrieved - property name for base : "+
+                        getBaseType(base)+"is null.");
             }
             else if (property instanceof String && ((String)property).length() == 0)
             {
-                throw new PropertyNotFoundException("Property name is an empty String.");
+                throw new PropertyNotFoundException("type for property could not be retrieved - property name for base : "+
+                        getBaseType(base)+"is an empty string.");
             }
 
             if (base instanceof Map)
@@ -329,15 +353,19 @@ public class PropertyResolverImpl extends PropertyResolver
         }
         catch (Exception e)
         {
-            return null;
+            throw new EvaluationException("Exception getting type of property " + property + " of bean with class : "
+                + getBaseType(base), e);
         }
     }
 
     public Class getType(Object base, int index)
     {
-        if (base == null)
+        if(base == null)
         {
-            throw new PropertyNotFoundException("Bean is null");
+           if(log.isDebugEnabled())
+             log.debug("type for value of index : "+index +" could not be retrieved as base was null.");
+           throw new PropertyNotFoundException("Exception getting type for value of index " + index
+            + " - base was null ");
         }
 
         try
@@ -368,12 +396,12 @@ public class PropertyResolverImpl extends PropertyResolver
         }
         catch (IndexOutOfBoundsException e) {
             throw new PropertyNotFoundException("Bean: "
-                + base.getClass().getName() + ", index " + index, e);
+                + getBaseType(base) + ", index " + index, e);
         }
         catch (Exception e)
         {
             throw new EvaluationException("Exception getting type of index " + index + " of bean with class : "
-                + base.getClass().getName(), e);
+                + getBaseType(base), e);
         }
     }
 
@@ -415,7 +443,7 @@ public class PropertyResolverImpl extends PropertyResolver
     private static String getMessage(Object base, String name, Object newValue, Method m)
     {
         return "Bean: "
-            + base.getClass().getName() + ", property: " + name +", newValue: "+(newValue==null?" null ":newValue)+
+            + getBaseType(base) + ", property: " + name +", newValue: "+(newValue==null?" null ":newValue)+
                 ",newValue class: "+(newValue==null?" null ":newValue.getClass().getName())+" method parameter class: "
                 +((m.getParameterTypes()!=null&&m.getParameterTypes().length>0)
                     ?m.getParameterTypes()[0].getName():"null");
@@ -425,19 +453,27 @@ public class PropertyResolverImpl extends PropertyResolver
     private static String getMessage(Object base, String name)
     {
         return "Bean: "
-            + base.getClass().getName() + ", property: " + name;
+            + getBaseType(base) + ", property: " + name;
     }
 
-    public static Object getProperty(Object base, String name)
+    public static Object getProperty(Object base, String property)
     {
+        if(base == null)
+        {
+           if(log.isDebugEnabled())
+             log.debug("property : "+property +" could not be retrieved as base was null.");
+           throw new PropertyNotFoundException("Exception getting value of property " + property
+            + " - base was null ");
+        }
+
         PropertyDescriptor propertyDescriptor =
-            getPropertyDescriptor(base, name);
+            getPropertyDescriptor(base, property);
 
         Method m = propertyDescriptor.getReadMethod();
         if (m == null)
         {
             throw new PropertyNotFoundException(
-                getMessage(base, name));
+                getMessage(base, property));
         }
 
         // Check if the concrete class of this method is accessible and if not
@@ -446,7 +482,7 @@ public class PropertyResolverImpl extends PropertyResolver
         if (m == null)
         {
             throw new PropertyNotFoundException(
-                getMessage(base, name) + " (not accessible!)");
+                getMessage(base, property) + " (not accessible!)");
         }
 
         try
@@ -455,32 +491,48 @@ public class PropertyResolverImpl extends PropertyResolver
         }
         catch (Throwable t)
         {
-            throw new EvaluationException(getMessage(base, name), t);
+            throw new EvaluationException(getMessage(base, property), t);
         }
     }
 
     public static PropertyDescriptor getPropertyDescriptor(
-        Object base, String name)
+        Object base, String property)
     {
+        if(base == null)
+        {
+           if(log.isDebugEnabled())
+             log.debug("property : "+property +" could not be retrieved as base was null.");
+           throw new PropertyNotFoundException("Exception getting value of property " + property
+            + " - base was null ");
+        }
+
         PropertyDescriptor propertyDescriptor;
 
         try
         {
             propertyDescriptor =
                 getPropertyDescriptor(
-                    Introspector.getBeanInfo(base.getClass()), name);
+                    Introspector.getBeanInfo(base.getClass()), property);
         }
         catch (IntrospectionException e)
         {
-            throw new PropertyNotFoundException(getMessage(base, name), e);
+            throw new PropertyNotFoundException(getMessage(base, property), e);
         }
 
         return propertyDescriptor;
     }
 
     public static PropertyDescriptor getPropertyDescriptor(
-        BeanInfo beanInfo, String propertyName)
+        BeanInfo beanInfo, String property)
     {
+        if(beanInfo == null)
+        {
+           if(log.isDebugEnabled())
+             log.debug("property : "+property +" could not be retrieved as beanInfo was null.");
+           throw new PropertyNotFoundException("Exception getting value of property " + property
+            + " - beanInfo was null ");
+        }
+
         PropertyDescriptor[] propDescriptors =
             beanInfo.getPropertyDescriptors();
 
@@ -489,14 +541,14 @@ public class PropertyResolverImpl extends PropertyResolver
             // TODO: cache this in classLoader safe way
             for (int i = 0, len = propDescriptors.length; i < len; i++)
             {
-                if (propDescriptors[i].getName().equals(propertyName))
+                if (propDescriptors[i].getName().equals(property))
                     return propDescriptors[i];
             }
         }
 
         throw new PropertyNotFoundException("Bean: "
             + beanInfo.getBeanDescriptor().getBeanClass().getName()
-            + ", property: " + propertyName);
+            + ", property: " + property);
     }
 
 }
