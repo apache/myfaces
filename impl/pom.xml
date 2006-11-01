@@ -222,12 +222,12 @@
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>el-api</artifactId>
-        <version>6.0.0-SNAPSHOT</version>
+        <version>6.0.1-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>jasper-el</artifactId>
-        <version>6.0.0-SNAPSHOT</version>
+        <version>6.0.1-SNAPSHOT</version>
       </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
