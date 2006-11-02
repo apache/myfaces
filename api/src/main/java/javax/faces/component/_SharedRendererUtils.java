@@ -128,6 +128,11 @@ class _SharedRendererUtils
                 log(facesContext, "No Converter for type " + arrayComponentType.getName() + " found", e);
                 return submittedValue;
             }
+            if(converter==null)
+            {
+                log(facesContext, "No Converter for type " + arrayComponentType.getName() + " found.",null);
+                return submittedValue;
+            }
         }
 
         // Now, we have a converter...
@@ -210,6 +215,13 @@ class _SharedRendererUtils
      */
     private static void log(FacesContext context, String msg, Exception e)
     {
-        context.getExternalContext().log(msg, e);
+        if(e != null)
+        {
+            context.getExternalContext().log(msg, e);
+        }
+        else
+        {
+            context.getExternalContext().log(msg);
+        }
     }
 }
