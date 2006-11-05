@@ -26,8 +26,32 @@
             <exclude>**/*UIComponentBaseTest*</exclude>
           </excludes>
         </configuration>
-      </plugin>	
-  	</plugins>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.myfaces.trinidadbuild</groupId>
+        <artifactId>maven-faces-plugin</artifactId>
+        <!-- special version from baranda's repository while the plugin is not
+        merged and released from the trinidad project
+        svn branch: https://svn.apache.org/repos/asf/incubator/adffaces/branches/myfaces-1_2-maven-faces-plugin
+        -->
+        <version>baranda-2.0-SNAPSHOT</version>
+        <configuration>
+          <typePrefix>javax.faces</typePrefix>
+          <packageContains>javax.faces</packageContains>
+          <jsfVersion>1.2</jsfVersion>
+          <force>true</force>
+          <templateSourceDirectory>src/main/java-templates</templateSourceDirectory>
+          <skipApiOrBaseClasses>false</skipApiOrBaseClasses>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate-components</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
   <profiles>
     <profile>
@@ -88,6 +112,11 @@
     </profile>
   </profiles>
   <dependencies>
+    <dependency>
+       <groupId>org.apache.myfaces.core</groupId>
+       <artifactId>myfaces-build</artifactId>
+       <version>1.2.0-SNAPSHOT</version>
+    </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>el-api</artifactId>
@@ -230,4 +259,14 @@
       </plugin>
     </plugins>
   </reporting>
+
+  <!-- Temporary repo while the maven-faces-config plugin is not available 
+  in a proper place -->
+  <pluginRepositories>
+      <pluginRepository>
+          <id>baranda-repo</id>
+          <url>http://people.apache.org/~baranda/repo</url>
+      </pluginRepository>
+  </pluginRepositories>
+
 </project>

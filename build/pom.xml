@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright 2006 The Apache Software Foundation.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<project>
+  <parent>
+    <groupId>org.apache.myfaces.core</groupId>
+    <artifactId>myfaces-core-project</artifactId>
+    <version>1.2.0-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <name>Build</name>
+  <description>Apache MyFaces Build</description>
+
+  <artifactId>myfaces-build</artifactId>
+  <packaging>jar</packaging>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.myfaces.trinidadbuild</groupId>
+        <artifactId>maven-faces-plugin</artifactId>
+        <!-- special version from baranda's repository while the plugin is not
+        merged and released from the trinidad project
+        svn branch: https://svn.apache.org/repos/asf/incubator/adffaces/branches/myfaces-1_2-maven-faces-plugin
+        -->
+        <version>baranda-2.0-SNAPSHOT</version>
+        <configuration>
+          <excludes>
+            <exclude>**/includes/**</exclude>
+          </excludes>
+          <force>true</force>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate-master-faces-config</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <!-- Temporary repo while the maven-faces-config plugin is not available
+  in a proper place -->
+  <pluginRepositories>
+      <pluginRepository>
+          <id>baranda-repo</id>
+          <url>http://people.apache.org/~baranda/repo</url>
+      </pluginRepository>
+  </pluginRepositories>
+
+</project>

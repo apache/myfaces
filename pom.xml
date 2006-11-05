@@ -22,6 +22,7 @@
     <url>http://svn.apache.org/repos/asf/myfaces/core/branches/jsf12</url>
   </scm>
   <modules>
+    <module>build</module>
     <module>api</module>
     <module>impl</module>
   </modules>

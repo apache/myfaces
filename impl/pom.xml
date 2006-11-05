@@ -54,6 +54,38 @@
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.apache.myfaces.trinidadbuild</groupId>
+        <artifactId>maven-faces-plugin</artifactId>
+        <!-- special version from baranda's repository while the plugin is not
+        merged and released from the trinidad project
+        svn branch: https://svn.apache.org/repos/asf/incubator/adffaces/branches/myfaces-1_2-maven-faces-plugin
+        -->
+        <version>baranda-2.0-SNAPSHOT</version>
+        <configuration>
+          <taglibs>
+            <tr>http://myfaces.apache.org/trinidad</tr>
+            <trh>http://myfaces.apache.org/trinidad/html</trh>
+          </taglibs>
+          <!--
+          <faceletHandlerClass>org.apache.myfaces.trinidadinternal.facelets.TrinidadComponentHandler</faceletHandlerClass>
+           -->
+          <skipApiOrBaseClasses>false</skipApiOrBaseClasses>
+          <jsfVersion>1.2</jsfVersion>
+          <force>true</force>
+          <templateSourceDirectory>src/main/java-templates</templateSourceDirectory>
+          <skipApiOrBaseClasses>false</skipApiOrBaseClasses>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate-faces-config</goal>
+              <goal>generate-jsp-taglibs</goal>
+              <!--<goal>generate-facelets-taglibs</goal>-->
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>dependency-maven-plugin</artifactId>
         <executions>
@@ -324,4 +356,13 @@
       </plugin>
     </plugins>
   </reporting>
+
+  <!-- Temporary repo while the maven-faces-config plugin is not available
+  in a proper place -->
+  <pluginRepositories>
+      <pluginRepository>
+          <id>baranda-repo</id>
+          <url>http://people.apache.org/~baranda/repo</url>
+      </pluginRepository>
+  </pluginRepositories>
 </project>
