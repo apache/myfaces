@@ -99,19 +99,13 @@ public abstract class AbstractManagedBeanBuilderTestCase extends AbstractJsfTest
 		managedBean.addProperty(managedMap);
 		managedBean.addProperty(writeOnlyMap);
 
-		// provide the minimal environment 
-		Application application = null;
-		application = new ApplicationImpl();
-		application.setPropertyResolver(new PropertyResolverImpl());
-		MockFacesContext facesContext = new MockFacesContext();
-		facesContext.setApplication(application);
-		
 		// simulate a managed bean creation
 		example = (MangedBeanExample) managedBeanBuilder
 			.buildManagedBean(facesContext, managedBean);
 	}
 	
-	public void tearDown() {
+	public void tearDown() throws Exception{
+		super.tearDown();
 		example = null;
 		MANAGED_LIST.clear();
 		MANAGED_MAP.clear();
