@@ -31,7 +31,18 @@ public abstract class FacesContext
     // implementation that throws UnsupportedOperationException.  
     // This allows old FacesContext implementations to still work.
     public ELContext getELContext() {
-        throw new UnsupportedOperationException();
+        
+    	FacesContext ctx = getCurrentInstance();
+    	 
+    	if( ctx == null )
+    		throw new NullPointerException(FacesContext.class.getName());
+    	
+    	ELContext elctx = ctx.getELContext();
+    	
+    	if ( elctx == null )
+    		throw new UnsupportedOperationException();
+    	
+    	return elctx;
     }
     
     public abstract javax.faces.application.Application getApplication();
