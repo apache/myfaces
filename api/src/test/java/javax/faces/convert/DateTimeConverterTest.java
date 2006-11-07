@@ -22,7 +22,9 @@ import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.Locale;
 import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 
 import junit.framework.Test;
 
@@ -105,5 +107,20 @@ public class DateTimeConverterTest extends AbstractJsfTestCase
         {
             assertTrue("this date should not be parsable - and it is, so this is wrong.",false);
         }
+    }
+
+    public void testGetAsObjectTimeStyle()
+    {
+        DateFormat df = DateFormat.getTimeInstance(DateFormat.DEFAULT, Locale.US);
+        TimeZone timeZone = TimeZone.getTimeZone("America/New_York");
+        df.setTimeZone(timeZone);
+        mock.setType("time");
+        mock.setTimeZone(timeZone);
+        String current = df.format(new Date());
+        System.out.println(current);
+        UIInput input = new UIInput();
+        input.setValue(new Date());
+        Date date = (Date) mock.getAsObject(FacesContext.getCurrentInstance(), input, current);
+        assertEquals(df.format(date),current);
     }
 }
