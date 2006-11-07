@@ -15,27 +15,74 @@
  */
 package javax.faces.convert;
 
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class BooleanConverter extends AbstractConverter {
-	private static final String CONVERSION_MESSAGE_ID = "javax.faces.convert.BooleanConverter.CONVERSION";
+public class BooleanConverter
+        implements Converter
+{
+    private static final String CONVERSION_MESSAGE_ID = "javax.faces.convert.BooleanConverter.CONVERSION";
 
-	public static final String CONVERTER_ID = "javax.faces.Boolean";
+    // FIELDS
+    public static final String CONVERTER_ID = "javax.faces.Boolean";
 
-	// Methods implementation
-	protected Object getAsObject(String value) {
-		return Boolean.valueOf(value);
-	}
+    // CONSTRUCTORS
+    public BooleanConverter()
+    {
+    }
 
-	protected String getAsString(Object value) {
-		return ((Boolean) value).toString();
-	}
+    // METHODS
+    public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value)
+    {
+        if (facesContext == null) throw new NullPointerException("facesContext");
+        if (uiComponent == null) throw new NullPointerException("uiComponent");
 
-	protected String getConversionMessageId() {
-		return CONVERSION_MESSAGE_ID;
-	}
+        if (value != null)
+        {
+            value = value.trim();
+            if (value.length() > 0)
+            {
+                try
+                {
+                    return Boolean.valueOf(value);
+                }
+                catch (Exception e)
+                {
+                    throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
+                                                                               CONVERSION_MESSAGE_ID,
+                                                                               new Object[]{value,uiComponent.getId()}), e);
+                }
+            }
+        }
+        return null;
+    }
+
+    public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value)
+    {
+        if (facesContext == null) throw new NullPointerException("facesContext");
+        if (uiComponent == null) throw new NullPointerException("uiComponent");
+
+        if (value == null)
+        {
+            return "";
+        }
+        if (value instanceof String)
+        {
+            return (String)value;
+        }
+        try
+        {
+            return ((Boolean)value).toString();
+        }
+        catch (Exception e)
+        {
+            throw new ConverterException(e);
+        }
+    }
 }

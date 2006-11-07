@@ -30,7 +30,7 @@ import javax.faces.context.FacesContext;
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class DateTimeConverter extends AbstractConverter implements StateHolder {
+public class DateTimeConverter implements Converter, StateHolder {
 	// API field
 	public static final String CONVERTER_ID = "javax.faces.DateTime";
 
@@ -47,19 +47,57 @@ public class DateTimeConverter extends AbstractConverter implements StateHolder 
 	private String _type;
 	private boolean _transient;
 
-	// Methods implementation
-	protected Object getAsObject(String value) throws Exception {
-		return prepareDateFormat().parse(value);
-	}
+    public Object getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
+        if (context == null) {
+            throw new NullPointerException("facesContext");
+        }
+        if (component == null) {
+            throw new NullPointerException("uiComponent");
+        }
 
-	protected String getAsString(Object value) {
-		return prepareDateFormat().format(value);
-	}
+        if (value == null) {
+            return null;
+        }
+
+        String trimmedValue = value.trim();
+        if (trimmedValue.length() == 0) {
+            return null;
+        }
+
+        try {
+            return prepareDateFormat().parse(trimmedValue);
+        } catch (Exception e) {
+            throw new ConverterException(_MessageUtils.getErrorMessage(context, getConversionMessageId(),
+                    getMessageArguments(component, value)), e);
+        }
+    }
+
+    public String getAsString(FacesContext context, UIComponent component, Object value) throws ConverterException {
+        if (context == null) {
+            throw new NullPointerException("facesContext");
+        }
+        if (component == null) {
+            throw new NullPointerException("uiComponent");
+        }
+
+        if (value == null) {
+            return "";
+        }
+        if (value instanceof String) {
+            return (String) value;
+        }
+
+        try {
+            return prepareDateFormat().format(value);
+        } catch (Exception e) {
+            throw new ConverterException(e);
+        }
+    }
 
 	protected String getConversionMessageId() {
 		return CONVERSION_MESSAGE_ID;
 	}
-	
+
 	protected Object[] getMessageArguments(UIComponent component, String value) {
 		return new Object[] {value, component.getId()};
 	}
@@ -68,15 +106,15 @@ public class DateTimeConverter extends AbstractConverter implements StateHolder 
 		DateFormat format = getDateFormat();
 		// format cannot be lenient (JSR-127)
 		format.setLenient(false);
-		
+
 		TimeZone tz = getTimeZone();
 		if (tz != null) {
 			format.setTimeZone(tz);
 		}
-		
+
 		return format;
 	}
-	
+
 	private DateFormat getDateFormat() {
 		if(_pattern != null) {
 			try {
@@ -85,14 +123,14 @@ public class DateTimeConverter extends AbstractConverter implements StateHolder 
 				throw new ConverterException("Invalid pattern", iae);
 			}
 		}
-		
+
 		return Type.getType(getType()).getFormatter(calcDateStyle(), calcTimeStyle(), getLocale());
 	}
 
 	private int calcDateStyle() {
 		return Style.getStyleFormat(getDateStyle());
 	}
-	
+
 	private int calcTimeStyle() {
 		return Style.getStyleFormat(getTimeStyle());
 	}
@@ -181,50 +219,50 @@ public class DateTimeConverter extends AbstractConverter implements StateHolder 
 		//TODO: validate type
 		_type = type;
 	}
-	
+
 	private static class Style {
-		
+
 		private static final Style DEFAULT = new Style("default", DateFormat.DEFAULT);
 		private static final Style MEDIUM = new Style("medium", DateFormat.MEDIUM);
 		private static final Style SHORT = new Style("short", DateFormat.SHORT);
 		private static final Style LONG = new Style("long", DateFormat.LONG);
 		private static final Style FULL = new Style("full", DateFormat.FULL);
-		
+
 		private static final Style[] values = new Style[] {DEFAULT, MEDIUM, SHORT, LONG, FULL};
-		
+
 		public static Style getStyle(String name) {
 			for(int i = 0;i < values.length;i++) {
 				if(values[i]._name.equals(name)) {
 					return values[i];
 				}
 			}
-			
+
 			throw new ConverterException("invalid style '" + name + "'");
 		}
-		
+
 		private static int getStyleFormat(String name) {
 			return getStyle(name).getFormat();
 		}
-		
+
 		private String _name;
 		private int _format;
-		
+
 		private Style(String name, int format) {
 			this._name = name;
 			this._format = format;
 		}
-		
+
 		public String getName() {
 			return _name;
 		}
-		
+
 		public int getFormat() {
 			return _format;
 		}
 	}
-	
+
 	private abstract static class Type {
-		
+
 		private static final Type DATE = new Type("date") {
 			public DateFormat getFormatter(int dateStyle, int timeStyle, Locale locale) {
 				return DateFormat.getDateInstance(dateStyle, locale);
@@ -240,7 +278,7 @@ public class DateTimeConverter extends AbstractConverter implements StateHolder 
 				return DateFormat.getDateTimeInstance(dateStyle, timeStyle, locale);
 			}
 		};
-		
+
 		private static final Type[] values = new Type[] {DATE, TIME, BOTH};
 
 		public static Type getType(String name) {
@@ -249,20 +287,20 @@ public class DateTimeConverter extends AbstractConverter implements StateHolder 
 					return values[i];
 				}
 			}
-			
+
 			throw new ConverterException("invalid type '" + name + "'");
 		}
-		
+
 		private String _name;
-		
+
 		private Type(String name) {
 			this._name = name;
 		}
-		
+
 		public String getName() {
 			return _name;
 		}
-		
+
 		public abstract DateFormat getFormatter(int dateStyle, int timeStyle, Locale locale);
 	}
 }
