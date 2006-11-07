@@ -334,5 +334,15 @@ public abstract class AbstractAttributeMap
         {
             return AbstractAttributeMap.this.put(_currentKey, value);
         }
+
+        public int hashCode() {
+            return _currentKey == null ? 0 : _currentKey.hashCode();
+        }
+
+        public boolean equals(Object obj) {
+            if (!(obj instanceof EntrySetEntry))
+                return false;
+            return _currentKey != null && _currentKey.equals(obj);
+        }
     }
 }
