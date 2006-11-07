@@ -232,7 +232,7 @@ public class DateTimeConverter extends AbstractConverter implements StateHolder 
 		};
 		private static final Type TIME = new Type("time") {
 			public DateFormat getFormatter(int dateStyle, int timeStyle, Locale locale) {
-				return DateFormat.getDateInstance(timeStyle, locale);
+				return DateFormat.getTimeInstance(timeStyle, locale);
 			}
 		};
 		private static final Type BOTH = new Type("both") {
