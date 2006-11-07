@@ -15,6 +15,8 @@
  */
 package javax.faces.convert;
 
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 import java.math.BigDecimal;
 
 /**
@@ -23,21 +25,67 @@ import java.math.BigDecimal;
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class BigDecimalConverter extends AbstractConverter {
-	private static final String CONVERSION_MESSAGE_ID = "javax.faces.convert.BigDecimalConverter.CONVERSION";
+public class BigDecimalConverter
+        implements Converter
+{
+    private static final String CONVERSION_MESSAGE_ID = "javax.faces.convert.BigDecimalConverter.CONVERSION";
 
-	public static final String CONVERTER_ID = "javax.faces.BigDecimal";
+    // FIELDS
+    public static final String CONVERTER_ID = "javax.faces.BigDecimal";
 
-	// Methods implementation
-	protected Object getAsObject(String value) {
-		return new BigDecimal(value);
-	}
+    // CONSTRUCTORS
+    public BigDecimalConverter()
+    {
+    }
 
-	protected String getAsString(Object value) {
-		return ((BigDecimal) value).toString();
-	}
+    // METHODS
+    public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value)
+    {
+        if (facesContext == null) throw new NullPointerException("facesContext");
+        if (uiComponent == null) throw new NullPointerException("uiComponent");
 
-	protected String getConversionMessageId() {
-		return CONVERSION_MESSAGE_ID;
-	}
+        if (value != null)
+        {
+            {
+                value = value.trim();
+                if (value.length() > 0)
+                {
+                    try
+                    {
+                        return new BigDecimal(value.trim());
+                    }
+                    catch (NumberFormatException e)
+                    {
+                        throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
+                                                                                   CONVERSION_MESSAGE_ID,
+                                                                                   new Object[]{uiComponent.getId(),value}), e);
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value)
+    {
+        if (facesContext == null) throw new NullPointerException("facesContext");
+        if (uiComponent == null) throw new NullPointerException("uiComponent");
+
+        if (value == null)
+        {
+            return "";
+        }
+        if (value instanceof String)
+        {
+            return (String)value;
+        }
+        try
+        {
+            return ((BigDecimal)value).toString();
+        }
+        catch (Exception e)
+        {
+            throw new ConverterException(e);
+        }
+    }
 }
