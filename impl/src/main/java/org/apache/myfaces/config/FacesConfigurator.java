@@ -18,31 +18,6 @@
  */
 package org.apache.myfaces.config;
 
-import java.io.*;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.*;
-
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.application.NavigationHandler;
-import javax.faces.application.StateManager;
-import javax.faces.application.ViewHandler;
-import javax.faces.context.ExternalContext;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.VariableResolver;
-import javax.faces.event.ActionListener;
-import javax.faces.event.PhaseListener;
-import javax.faces.lifecycle.Lifecycle;
-import javax.faces.lifecycle.LifecycleFactory;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.webapp.FacesServlet;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.ApplicationFactoryImpl;
@@ -58,7 +33,30 @@ import org.apache.myfaces.renderkit.RenderKitFactoryImpl;
 import org.apache.myfaces.renderkit.html.HtmlRenderKitImpl;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.shared_impl.util.LocaleUtils;
+import org.apache.myfaces.shared_impl.util.StateUtils;
+import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
+import org.apache.myfaces.shared_impl.util.serial.SerialFactory;
 import org.xml.sax.SAXException;
+
+import javax.faces.FacesException;
+import javax.faces.FactoryFinder;
+import javax.faces.application.*;
+import javax.faces.context.ExternalContext;
+import javax.faces.el.PropertyResolver;
+import javax.faces.el.VariableResolver;
+import javax.faces.event.ActionListener;
+import javax.faces.event.PhaseListener;
+import javax.faces.lifecycle.Lifecycle;
+import javax.faces.lifecycle.LifecycleFactory;
+import javax.faces.render.RenderKit;
+import javax.faces.render.RenderKitFactory;
+import javax.faces.webapp.FacesServlet;
+import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.*;
 
 
 /**
@@ -151,6 +149,7 @@ public class FacesConfigurator
         configureRenderKits();
         configureRuntimeConfig();
         configureLifecycle();
+        handleSerialFactory();
     }
 
     private void feedStandardConfig() throws IOException, SAXException
@@ -904,4 +903,44 @@ public class FacesConfigurator
             this.url = url;
         }
     }
+
+
+    private void handleSerialFactory(){
+
+        String serialProvider = _externalContext.getInitParameter(StateUtils.SERIAL_FACTORY);
+        SerialFactory serialFactory = null;
+
+        if(serialProvider == null)
+        {
+            serialFactory = new DefaultSerialFactory();
+        }
+        else
+        {
+            try
+            {
+                serialFactory = (SerialFactory) ClassUtils.newInstance(serialProvider);
+
+            }catch(ClassCastException e){
+                log.error("Make sure '" + serialProvider +
+                        "' implements the correct interface", e);
+            }
+            catch(Exception e){
+                log.error(e);
+            }
+            finally
+            {
+                if(serialFactory == null)
+                {
+                    serialFactory = new DefaultSerialFactory();
+                    log.error("Using default serialization provider");
+                }
+            }
+
+        }
+
+        log.info("Serialization provider : " + serialFactory.getClass());
+        _externalContext.getApplicationMap().put(StateUtils.SERIAL_FACTORY, serialFactory);
+
+    }
+
 }
