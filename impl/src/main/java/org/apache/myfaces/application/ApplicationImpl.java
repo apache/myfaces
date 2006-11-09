@@ -440,16 +440,18 @@ public class ApplicationImpl
                         + " for binding [" + valueBinding.getExpressionString() + "]");
             }
 
-        }
-        try {
-            UIComponent component = createComponent(componentType);
-            valueBinding.setValue(facesContext, component);
-            return component;
-        } catch(FacesException ex) {
-            log.error("Exception while creating component of type [" + componentType + "]"
-                    + " for binding [" + valueBinding.getExpressionString() + "]");
-            throw ex;
+            return (UIComponent) obj;
+        } else {
+            try {
+                UIComponent component = createComponent(componentType);
+                valueBinding.setValue(facesContext, component);
+                return component;
+            } catch(FacesException ex) {
+                log.error("Exception while creating component of type [" + componentType + "]"
+                        + " for binding [" + valueBinding.getExpressionString() + "]");
+                throw ex;
 
+            }
         }
     }
 
