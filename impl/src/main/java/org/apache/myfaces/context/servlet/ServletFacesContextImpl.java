@@ -293,6 +293,11 @@ public class ServletFacesContextImpl
         }
     }
 
+    public boolean isReleased()
+    {
+       return _released;
+    }
+    
     public void release()
     {
         if (_released) {

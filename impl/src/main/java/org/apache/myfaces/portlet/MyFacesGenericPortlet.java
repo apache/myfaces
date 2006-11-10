@@ -314,15 +314,22 @@ public class MyFacesGenericPortlet extends GenericPortlet
     {
         if (log.isTraceEnabled()) log.trace("Non-faces request: contextPath = " + request.getContextPath());
         setContentType(request, response); // do this in case nonFacesRequest is called by a subclass
+        
+        FacesContext facesContext = facesContext(request, response);
+        setViewRootOnFacesContext(facesContext, view);
+        lifecycle.render(facesContext);
+    }
+    
+    // Set the view root on a FacesContext to prepare for rendering
+    private void setViewRootOnFacesContext(FacesContext facesContext, String view)
+    {
         ApplicationFactory appFactory =
             (ApplicationFactory)FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
         Application application = appFactory.getApplication();
         ViewHandler viewHandler = application.getViewHandler();
-        FacesContext facesContext = facesContext(request, response);
         UIViewRoot viewRoot = viewHandler.createView(facesContext, view);
         viewRoot.setViewId(view);
         facesContext.setViewRoot(viewRoot);
-        lifecycle.render(facesContext);
     }
 
     protected String selectDefaultView(RenderRequest request, RenderResponse response) throws PortletException
@@ -385,11 +392,12 @@ public class MyFacesGenericPortlet extends GenericPortlet
 
         setPortletRequestFlag(request);
 
+        ServletFacesContextImpl facesContext = null;
         try
         {
-            ServletFacesContextImpl facesContext = (ServletFacesContextImpl)request.
-                                                   getPortletSession().
-                                                   getAttribute(CURRENT_FACES_CONTEXT);
+            facesContext = (ServletFacesContextImpl)request.
+                                                    getPortletSession().
+                                                    getAttribute(CURRENT_FACES_CONTEXT);
 
             // depending on the Portal implementation, facesContext could be
             // null after a redeploy
@@ -397,6 +405,12 @@ public class MyFacesGenericPortlet extends GenericPortlet
                setPortletRequestFlag(request);
                nonFacesRequest(request, response);
                return;
+            }
+            
+            if (facesContext.isReleased()) // processAction was not called
+            {
+               facesContext = (ServletFacesContextImpl)facesContext(request, response);
+               setViewRootOnFacesContext(facesContext, viewId);
             }
             
             // TODO: not sure if this can happen.  Also double check this against spec section 2.1.3
@@ -408,6 +422,12 @@ public class MyFacesGenericPortlet extends GenericPortlet
         catch (Throwable e)
         {
             handleExceptionFromLifecycle(e);
+        }
+        finally
+        {
+           // must release the FacesContext here because it is in the 
+           // session and it might get replicated in a clustered envirnoment
+           if (facesContext != null) facesContext.release();
         }
     }
 
