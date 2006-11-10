@@ -38,6 +38,7 @@ import javax.portlet.PortletContext;
 import javax.portlet.PortletException;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
+import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.portlet.UnavailableException;
@@ -75,6 +76,12 @@ public class MyFacesGenericPortlet extends GenericPortlet
     // portlet config parameter from portlet.xml
     protected static final String DEFAULT_VIEW_SELECTOR = "default-view-selector";
 
+    // On redeploy, the session might still exist, but all values are wiped out.  
+    // This depends on the portal implementation.  So we put this flag in
+    // the session to detect if a redeploy happened.
+    protected static final String REDEPLOY_FLAG =
+        MyFacesGenericPortlet.class.getName() + ".REDEPLOY_FLAG";
+    
     protected static final String FACES_INIT_DONE =
         MyFacesGenericPortlet.class.getName() + ".FACES_INIT_DONE";
 
@@ -265,7 +272,11 @@ public class MyFacesGenericPortlet extends GenericPortlet
     protected void doView(RenderRequest request, RenderResponse response)
             throws PortletException, IOException
     {
-        facesRender(request, response);
+       try {
+          facesRender(request, response);
+       } finally {
+          renderCleanup(request);
+       }
     }
 
     /**
@@ -275,7 +286,11 @@ public class MyFacesGenericPortlet extends GenericPortlet
     protected void doEdit(RenderRequest request, RenderResponse response)
             throws PortletException, IOException
     {
-        facesRender(request, response);
+       try {
+          facesRender(request, response);
+       } finally {
+          renderCleanup(request);
+       }
     }
 
     /**
@@ -285,7 +300,18 @@ public class MyFacesGenericPortlet extends GenericPortlet
     protected void doHelp(RenderRequest request, RenderResponse response)
             throws PortletException, IOException
     {
-        facesRender(request, response);
+       try {
+         facesRender(request, response);
+       } finally {
+          renderCleanup(request);
+       }
+    }
+    
+    protected void renderCleanup(RenderRequest request)
+    {
+       PortletSession session = request.getPortletSession();
+       session.setAttribute(REDEPLOY_FLAG, "portlet was not redeployed");
+       session.removeAttribute(this.CURRENT_FACES_CONTEXT);
     }
 
     /**
@@ -364,7 +390,13 @@ public class MyFacesGenericPortlet extends GenericPortlet
 
     protected boolean sessionTimedOut(PortletRequest request)
     {
-        return request.getPortletSession(false) == null;
+       return request.getPortletSession(false) == null;
+    }
+    
+    protected boolean sessionInvalidated(PortletRequest request)
+    {
+        return  sessionTimedOut(request) ||
+               (request.getPortletSession().getAttribute(REDEPLOY_FLAG) == null);
     }
 
     protected void setPortletRequestFlag(PortletRequest request)
@@ -383,7 +415,7 @@ public class MyFacesGenericPortlet extends GenericPortlet
         setContentType(request, response);
 
         String viewId = request.getParameter(VIEW_ID);
-        if ((viewId == null) || sessionTimedOut(request))
+        if ((viewId == null) || sessionInvalidated(request))
         {
             setPortletRequestFlag(request);
             nonFacesRequest(request,  response);
@@ -398,16 +430,8 @@ public class MyFacesGenericPortlet extends GenericPortlet
             facesContext = (ServletFacesContextImpl)request.
                                                     getPortletSession().
                                                     getAttribute(CURRENT_FACES_CONTEXT);
-
-            // depending on the Portal implementation, facesContext could be
-            // null after a redeploy
-            if (facesContext == null) {
-               setPortletRequestFlag(request);
-               nonFacesRequest(request, response);
-               return;
-            }
             
-            if (facesContext.isReleased()) // processAction was not called
+            if (facesContext == null) // processAction was not called
             {
                facesContext = (ServletFacesContextImpl)facesContext(request, response);
                setViewRootOnFacesContext(facesContext, viewId);
@@ -422,12 +446,6 @@ public class MyFacesGenericPortlet extends GenericPortlet
         catch (Throwable e)
         {
             handleExceptionFromLifecycle(e);
-        }
-        finally
-        {
-           // must release the FacesContext here because it is in the 
-           // session and it might get replicated in a clustered envirnoment
-           if (facesContext != null) facesContext.release();
         }
     }
 
