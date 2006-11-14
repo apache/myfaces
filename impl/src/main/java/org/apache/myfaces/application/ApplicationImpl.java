@@ -463,6 +463,10 @@ public class ApplicationImpl
 
         Class converterClass = (Class) _converterIdToClassMap.get(converterId);
 
+        if(converterClass == null){
+            throw new FacesException("Could not find any registered converter-class for converterId : "+converterId);            
+        }
+
         try {
             Converter converter= (Converter) converterClass.newInstance();
 
@@ -471,8 +475,8 @@ public class ApplicationImpl
             return converter;
         }
         catch (Exception e) {
-            log.error("Could not instantiate converter " + converterClass, e);
-            throw new FacesException("Could not instantiate converter: " + converterClass, e);
+            log.error("Could not instantiate converter " + converterClass+" for converterId : "+converterId, e);
+            throw new FacesException("Could not instantiate converter " + converterClass+" for converterId : "+converterId, e);
         }
     }
 
