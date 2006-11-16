@@ -28,7 +28,6 @@ import javax.faces.application.StateManager;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.Map;
 
 /**
@@ -186,7 +185,7 @@ public class HtmlResponseStateManager
 
         String restoredViewId = (String) savedState[VIEWID_PARAM];
 
-        if (restoredViewId == null || !restoredViewId.equals(facesContext)) {
+        if (restoredViewId == null) {
             //no saved state or state of different viewId
             return null;
         }
