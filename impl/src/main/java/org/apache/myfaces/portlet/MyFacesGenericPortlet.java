@@ -84,6 +84,9 @@ public class MyFacesGenericPortlet extends GenericPortlet
     
     protected static final String FACES_INIT_DONE =
         MyFacesGenericPortlet.class.getName() + ".FACES_INIT_DONE";
+    
+    protected static final String SAVED_REQUEST_ATTRIBUTES =
+        MyFacesGenericPortlet.class.getName() + ".SAVED_REQUEST_ATTRIBUTES";   
 
     protected PortletContext portletContext;
 
@@ -117,6 +120,11 @@ public class MyFacesGenericPortlet extends GenericPortlet
         this.portletContext = getPortletContext();
         setDefaultView();
         setDefaultViewSelector();
+        
+        //?????????????????????????????
+        // So what do we do about initialization?
+        // Is it specific to the JSF impl?
+        // What about JEE 5 auto-detection?  Should we do that for portlet?
         initMyFaces();
 
         facesContextFactory = (FacesContextFactory)FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
@@ -127,6 +135,8 @@ public class MyFacesGenericPortlet extends GenericPortlet
         lifecycle = lifecycleFactory.getLifecycle(getLifecycleId());
     }
 
+    //?????????????????????????
+    // Is defaultView really mandatory?
     protected void setDefaultView() throws UnavailableException
     {
         this.defaultView = getPortletConfig().getInitParameter(DEFAULT_VIEW);
@@ -137,6 +147,8 @@ public class MyFacesGenericPortlet extends GenericPortlet
         }
     }
 
+    //?????????????????????????????
+    // Is this useful?
     protected void setDefaultViewSelector() throws UnavailableException
     {
         String selectorClass = getPortletConfig().getInitParameter(DEFAULT_VIEW_SELECTOR);
@@ -154,6 +166,8 @@ public class MyFacesGenericPortlet extends GenericPortlet
         }
     }
 
+    //?????????????????????????????????????????
+    // Is this correct?
     protected void setContentType(RenderRequest request, RenderResponse response)
     {
 
@@ -171,6 +185,8 @@ public class MyFacesGenericPortlet extends GenericPortlet
         }
     }
 
+    //?????????????????????????
+    // Should we reuse FacesServlet.LIFECYCLE_ID_ATTR or replace it with our own?
     protected String getLifecycleId()
     {
         String lifecycleId = getPortletConfig().getInitParameter(FacesServlet.LIFECYCLE_ID_ATTR);
@@ -241,6 +257,37 @@ public class MyFacesGenericPortlet extends GenericPortlet
             facesContext.release();
             handleExceptionFromLifecycle(e);
         }
+        finally
+        {
+           saveRequestAttributes(request);
+        }
+    }
+    
+    // need to save req attribs so that lifecycle.render() can use them later
+    protected void saveRequestAttributes(ActionRequest request)
+    {
+       PortletSession session = request.getPortletSession();
+       SavedRequestAttributes reqAttribs = null;
+       synchronized(session)
+       {
+          reqAttribs = (SavedRequestAttributes)session.getAttribute(SAVED_REQUEST_ATTRIBUTES);
+          if (reqAttribs == null) 
+          {
+             reqAttribs = new SavedRequestAttributes();
+             session.setAttribute(SAVED_REQUEST_ATTRIBUTES, reqAttribs);
+          }
+       }
+       
+       reqAttribs.saveRequestAttributes(request);
+    }
+    
+    // restore req attribs so lifecycle.render() can use them
+    protected void restoreRequestAttributes(RenderRequest request)
+    {
+       PortletSession session = request.getPortletSession();
+       SavedRequestAttributes reqAttribs = 
+               (SavedRequestAttributes)session.getAttribute(SAVED_REQUEST_ATTRIBUTES);
+       reqAttribs.resotreRequestAttributes(request);
     }
 
     protected void handleExceptionFromLifecycle(Throwable e)
@@ -306,7 +353,9 @@ public class MyFacesGenericPortlet extends GenericPortlet
           renderCleanup(request);
        }
     }
-    
+
+    //???????????????????
+    // Is there any other reliable way to pass FacesContext to render?
     protected void renderCleanup(RenderRequest request)
     {
        PortletSession session = request.getPortletSession();
@@ -414,6 +463,8 @@ public class MyFacesGenericPortlet extends GenericPortlet
 
         setContentType(request, response);
 
+        //??????????????
+        // Is there a better way to maintain the view id?
         String viewId = request.getParameter(VIEW_ID);
         if ((viewId == null) || sessionInvalidated(request))
         {
@@ -441,6 +492,7 @@ public class MyFacesGenericPortlet extends GenericPortlet
             if (facesContext.getResponseComplete()) return;
 
             facesContext.setExternalContext(makeExternalContext(request, response));
+            restoreRequestAttributes(request);
             lifecycle.render(facesContext);
         }
         catch (Throwable e)
