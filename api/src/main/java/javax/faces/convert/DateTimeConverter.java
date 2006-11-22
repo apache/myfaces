@@ -70,8 +70,9 @@ public class DateTimeConverter implements Converter, StateHolder {
         try {
             return prepareDateFormat().parse(trimmedValue);
         } catch (Exception e) {
-            throw new ConverterException(_MessageUtils.getErrorMessage(context, getConversionMessageId(),
-                    getMessageArguments(component, value)), e);
+            throw new ConverterException(
+              _MessageUtils.getErrorMessage(context, CONVERSION_MESSAGE_ID,
+                      new Object[] {value, component.getId()}), e);
         }
     }
 
@@ -96,14 +97,6 @@ public class DateTimeConverter implements Converter, StateHolder {
             throw new ConverterException(e);
         }
     }
-
-	protected String getConversionMessageId() {
-		return CONVERSION_MESSAGE_ID;
-	}
-
-	protected Object[] getMessageArguments(UIComponent component, String value) {
-		return new Object[] {value, component.getId()};
-	}
 
 	private DateFormat prepareDateFormat() {
 		DateFormat format = getDateFormat();
