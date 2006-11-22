@@ -31,6 +31,8 @@
     <navigation-handler>org.apache.myfaces.application.NavigationHandlerImpl</navigation-handler>
     <variable-resolver>org.apache.myfaces.el.VariableResolverImpl</variable-resolver>
     <property-resolver>org.apache.myfaces.el.PropertyResolverImpl</property-resolver>
+    <view-handler>org.apache.myfaces.application.jsp.JspViewHandlerImpl</view-handler>
+    <state-manager>org.apache.myfaces.application.jsp.JspStateManagerImpl</state-manager>
     <locale-config>
         <supported-locale>en</supported-locale>
         <supported-locale>de</supported-locale>
@@ -44,6 +46,13 @@
         <supported-locale>zh_CN</supported-locale>
     </locale-config>
   </application>
+
+  <factory>
+    <faces-context-factory>org.apache.myfaces.context.FacesContextFactoryImpl</faces-context-factory>
+    <application-factory>org.apache.myfaces.application.ApplicationFactoryImpl</application-factory>
+    <lifecycle-factory>org.apache.myfaces.lifecycle.LifecycleFactoryImpl</lifecycle-factory>
+    <render-kit-factory>org.apache.myfaces.renderkit.RenderKitFactoryImpl</render-kit-factory>
+  </factory>
 
   <!-- Standard HTML Components (see Spec. Table 8-13) -->
   <!-- (in alphabetical order) -->
