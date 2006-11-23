@@ -77,18 +77,19 @@ public class LoadBundleTag
             throw new JspException("No faces context?!");
         }
 
-        UIViewRoot viewRoot = facesContext.getViewRoot();
-        if (viewRoot == null)
+        try
         {
-            throw new JspException("No view root! LoadBundle must be nested inside <f:view> action.");
+            resolveBundle(getBasename(facesContext));
+        }
+        catch(IllegalStateException ex)
+        {
+            throw new JspException(ex);
         }
 
-        Locale locale = viewRoot.getLocale();
-        if (locale == null)
-        {
-            locale = facesContext.getApplication().getDefaultLocale();
-        }
+        return Tag.SKIP_BODY;
+    }
 
+    private String getBasename(FacesContext facesContext) {
         String basename = null;
 
         if (_basename!=null) {
@@ -98,28 +99,58 @@ public class LoadBundleTag
                 basename = _basename;
             }
         }
+        return basename;
+    }
+
+    /**
+     * This method is copied over to org.apache.myfaces.custom.loadbundle.LoadBundle.
+     * If you change anything here, think about changing it there as well.
+     *
+     * @param resolvedBasename
+     */
+    private void resolveBundle(String resolvedBasename) {
+        //ATTENTION: read comment above before changing this!
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+
+        UIViewRoot viewRoot = facesContext.getViewRoot();
+        if (viewRoot == null)
+        {
+            throw new IllegalStateException("No view root! LoadBundle must be nested inside <f:view> action.");
+        }
+
+        Locale locale = viewRoot.getLocale();
+        if (locale == null)
+        {
+            locale = facesContext.getApplication().getDefaultLocale();
+        }
 
         final ResourceBundle bundle;
         try
         {
-            bundle = ResourceBundle.getBundle(basename,
+            bundle = ResourceBundle.getBundle(resolvedBasename,
                                               locale,
                                               Thread.currentThread().getContextClassLoader());
+
+            facesContext.getExternalContext().getRequestMap().put(_var,
+                                                                  new BundleMap(bundle));
+
         }
         catch (MissingResourceException e)
         {
-            log.error("Resource bundle '" + basename + "' could not be found.");
-            return Tag.SKIP_BODY;
+            log.error("Resource bundle '" + resolvedBasename + "' could not be found.");
         }
-
-        facesContext.getExternalContext().getRequestMap().put(_var,
-                                                              new BundleMap(bundle));
-        return Tag.SKIP_BODY;
+        //ATTENTION: read comment above before changing this!
     }
 
 
+    /**
+     * This class is copied over to org.apache.myfaces.custom.loadbundle.LoadBundle.
+     * If you change anything here, think about changing it there as well.
+     *
+     */
     private static class BundleMap implements Map
     {
+        //ATTENTION: read javadoc
         private ResourceBundle _bundle;
         private List _values;
 
@@ -215,6 +246,7 @@ public class LoadBundleTag
             }
             return set;
         }
+        //ATTENTION: read javadoc
 
 
         //Unsupported methods
@@ -238,7 +270,7 @@ public class LoadBundleTag
         {
             throw new UnsupportedOperationException(this.getClass().getName() + " UnsupportedOperationException");
         }
-
+        //ATTENTION: read javadoc
     }
 
 }
