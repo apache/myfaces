@@ -597,8 +597,8 @@ public class FacesConfigurator
         }
         application.setSupportedLocales(locales);
 
-        application.setVariableResolver(new LastVariableResolverInChain((VariableResolver) getApplicationObject(VariableResolver.class,
-                                                                                _dispenser.getVariableResolverIterator(), application.getVariableResolver())));
+        application.setVariableResolver((VariableResolver) getApplicationObject(VariableResolver.class,
+                                                                                _dispenser.getVariableResolverIterator(), application.getVariableResolver()));
         application.setViewHandler((ViewHandler) getApplicationObject(ViewHandler.class,
                                                                       _dispenser.getViewHandlerIterator(), application.getViewHandler()));
 
