@@ -173,7 +173,8 @@ class _SelectItemsIterator implements Iterator
                                 .getValueBinding("value");
                 throw new IllegalArgumentException(
                 _collectionLabel + " referenced by UISelectItems with binding '"
-                + binding.getExpressionString()
+                + (binding == null ? null : binding
+                                        .getExpressionString())
                 + "' and Component-Path : " + getPathToComponent(_currentUISelectItems)
                 + " does not contain Objects of type SelectItem");
             }
