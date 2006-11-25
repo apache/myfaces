@@ -1,0 +1,16 @@
+<faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:mfp="http://myfaces.apache.org/maven-faces-plugin">
+    <component>
+        <property>
+            <description>
+                When true, indicates that this component cannot be modified by the user.
+                The element may receive focus unless it has also been disabled.
+            </description>
+            <property-name>readonly</property-name>
+            <property-class>boolean</property-class>
+            <property-extension>
+                <mfp:required>false</mfp:required>
+            </property-extension>
+        </property>
+    </component>
+</faces-config>

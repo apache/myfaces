@@ -1,0 +1,53 @@
+<faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:mfp="http://myfaces.apache.org/maven-faces-plugin"
+              xmlns:h="http://java.sun.com/jsf/html"
+              xmlns:xi="http://www.w3.org/2001/XInclude">
+    <component>
+        <description>
+            This component renders as an HTML table element.  It has as its
+            children h:column entities, which describe the columns of the table.
+            It can be decorated with facets named "header" and "footer" to
+            specify header and footer rows.
+
+            Unless otherwise specified, all attributes accept static values
+            or EL expressions.
+        </description>
+
+        <!-- SPEC PAGE 299-300 column 1-->
+        <component-type>javax.faces.HtmlDataTable</component-type>
+        <component-class>javax.faces.component.html.HtmlDataTable</component-class>
+
+        <!-- inherited from superclasses: -->
+        <!--   'id' is declared in javax.faces.webapp.UIComponentClassicTagBase -->
+        <!--   'binding' and 'rendered' are declared in javax.faces.webapp.UIComponentELTag -->
+
+        <!-- columnClasses, footerClass, headerClass, rowClasses, captionClass, captionStyle -->
+        <xi:include href="../../../includes/ui/_TableRendererProperties.xml" xpointer="/faces_config/component/*" />
+
+        <!-- dir, lang, style, styleClass -->
+        <xi:include href="../../../includes/html/_UniversalProperties.xml" xpointer="/faces_config/component/*" />
+
+         <!-- onclick, ondblclick, onmousedown, onmouseup, onmouseover, onmousemove, onmouseout, onkeypress, onkeydown, onkeyup-->
+        <xi:include href="../../../includes/html/_EventHandlerProperties.xml" xpointer="/faces_config/component/*" />
+
+        <!-- align, border, bgcolor, datafld, datasrc, dataformatas, cellpadding, cellspacing, frame, rules, summary, width-->
+        <xi:include href="../../../includes/html/_TableProperties.xml" xpointer="/faces_config/component/*" />
+
+        <component-extension>
+            <!--for the Component generation-->
+            <mfp:component-family>javax.faces.Data</mfp:component-family>
+            <mfp:component-superclass>javax.faces.component.UIData</mfp:component-superclass>
+            <mfp:component-supertype>javax.faces.Data</mfp:component-supertype>
+
+            <!--for the TLD generation-->
+            <!-- SPEC PAGE 299-300 column 3-->
+            <mfp:tag-name>h:dataTable</mfp:tag-name>
+
+            <!--for the TagLib generation-->
+            <mfp:tag-class>org.apache.myfaces.taglib.html.HtmlDataTableTag</mfp:tag-class>
+
+            <!-- SPEC PAGE 299-300 column 2-->
+            <mfp:renderer-type>javax.faces.Table</mfp:renderer-type>
+        </component-extension>
+    </component>
+</faces-config>

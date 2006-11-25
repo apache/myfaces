@@ -1,0 +1,14 @@
+<faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:mfp="http://myfaces.apache.org/maven-faces-plugin">
+    <component>
+        <property>
+            <description>When true, this element cannot receive focus.</description>
+            <property-name>disabled</property-name>
+            <property-class>boolean</property-class>
+            <default-value>false</default-value>
+            <property-extension>
+                <mfp:required>false</mfp:required>
+            </property-extension>
+        </property>
+    </component>
+</faces-config>

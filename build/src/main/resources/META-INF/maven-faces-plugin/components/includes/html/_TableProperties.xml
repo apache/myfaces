@@ -1,0 +1,67 @@
+<faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee"
+		xmlns:mfp="http://myfaces.apache.org/maven-faces-plugin"
+		xmlns:xi="http://www.w3.org/2001/XInclude">
+	<component>
+        <!-- align, border, bgcolor, datafld, datasrc, dataformatas, cellpadding, cellspacing, frame, rules, summary, width-->
+        <xi:include href="AlignProperty.xml" xpointer="/faces_config/component/*" />
+		<xi:include href="BorderProperty.xml" xpointer="/faces_config/component/*" />
+		<xi:include href="BgcolorProperty.xml" xpointer="/faces_config/component/*" />
+		<xi:include href="_Datafld_Datasrc_DataformatasProperties.xml" xpointer="/faces_config/component/*" />
+		<property>
+			<description> Specifies the amount of empty space between the cell border and
+			its contents.  It can be either a pixel length or a percentage.</description>
+			<property-name>cellpadding</property-name>		
+            <property-class>java.lang.String</property-class>
+			<property-extension>
+				<mfp:required>false</mfp:required>
+			</property-extension>
+		</property>				
+		<property>
+			<description>Specifies the amount of space between the cells of the table.
+			It can be either a pixel length or a percentage of available 
+			space.</description>
+			<property-name>cellspacing</property-name>		
+            <property-class>java.lang.String</property-class>
+			<property-extension>
+				<mfp:required>false</mfp:required>
+			</property-extension>
+		</property>
+		<property>
+			<description>Controls what part of the frame that surrounds a table is
+			visible.  Values include:  void, above, below, hsides, lhs, 
+			rhs, vsides, box, and border.</description>
+			<property-name>frame</property-name>		
+            <property-class>java.lang.String</property-class>
+			<property-extension>
+				<mfp:required>false</mfp:required>
+			</property-extension>
+		</property>
+		<property>
+			<description>Controls how rules are rendered between cells.  Values include:
+			none, groups, rows, cols, and all.</description>
+			<property-name>rules</property-name>		
+            <property-class>java.lang.String</property-class>
+			<property-extension>
+				<mfp:required>false</mfp:required>
+			</property-extension>
+		</property>
+		<property>
+			<description>Provides a summary of the contents of the table, for
+			accessibility purposes.</description>
+			<property-name>summary</property-name>
+            <property-class>java.lang.String</property-class>
+            <property-extension>
+				<mfp:required>false</mfp:required>
+			</property-extension>
+		</property>
+		<property>
+			<description> Specifies the desired width of the table, as a pixel length or
+			a percentage of available space.</description>
+			<property-name>width</property-name>
+			<property-class>java.lang.String</property-class>
+			<property-extension>
+				<mfp:required>false</mfp:required>
+			</property-extension>
+		</property>
+	</component>
+</faces-config>

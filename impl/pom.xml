@@ -26,7 +26,7 @@
       </resource>
     </resources>
     <plugins>
-      <plugin>
+      <!--<plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.1.2</version>
         <configuration>
@@ -49,7 +49,7 @@
           <srcDir>src/main/tld</srcDir>
           <destDir>target/classes/META-INF</destDir>
         </configuration>
-      </plugin>
+      </plugin>-->
       <plugin>
         <groupId>org.apache.myfaces.trinidadbuild</groupId>
         <artifactId>maven-faces-plugin</artifactId>
@@ -60,8 +60,8 @@
         <version>baranda-2.0-SNAPSHOT</version>
         <configuration>
           <taglibs>
-            <tr>http://myfaces.apache.org/trinidad</tr>
-            <trh>http://myfaces.apache.org/trinidad/html</trh>
+            <f>http://java.sun.com/jsf/core</f>
+            <h>http://java.sun.com/jsf/html</h>
           </taglibs>
           <!--
           <faceletHandlerClass>org.apache.myfaces.trinidadinternal.facelets.TrinidadComponentHandler</faceletHandlerClass>

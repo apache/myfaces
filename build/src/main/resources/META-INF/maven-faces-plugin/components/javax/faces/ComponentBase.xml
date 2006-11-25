@@ -18,12 +18,12 @@
               xmlns:f="http://java.sun.com/jsf/core"
               xmlns:mfp="http://myfaces.apache.org/maven-faces-plugin"
               xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  <component>
-    <component-type>javax.faces.ComponentBase</component-type>
-    <component-class>javax.faces.component.UIComponentBase</component-class>
-    <component-extension>
-      <mfp:component-supertype>javax.faces.Component</mfp:component-supertype>
-      <mfp:tag-class>javax.faces.webapp.UIComponentELTag</mfp:tag-class>
-    </component-extension>
-  </component>
+    <component>
+        <component-type>javax.faces.ComponentBase</component-type>
+        <component-class>javax.faces.component.UIComponentBase</component-class>
+        <component-extension>
+            <mfp:component-supertype>javax.faces.Component</mfp:component-supertype>
+            <mfp:tag-class>javax.faces.webapp.UIComponentELTag</mfp:tag-class>
+        </component-extension>
+    </component>
 </faces-config>

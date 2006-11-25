@@ -1,0 +1,70 @@
+<faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:mfp="http://myfaces.apache.org/maven-faces-plugin"
+              xmlns:xi="http://www.w3.org/2001/XInclude">
+    <component>
+        <!-- columnClasses, footerClass, headerClass, rowClasses, captionClass, captionStyle -->
+        <property>
+            <description>A comma separated list of CSS class names to apply to td elements in
+                each column. More than one class can be applied to a column by separing the classes
+                with a space. I there are less classes than the number of columns, apply the same
+                sequence of classes to the remaining columns. If there are more classes specified
+                than the number of columns, ignore the last classes
+            </description>
+            <property-name>columnClasses</property-name>
+            <property-class>java.lang.String</property-class>
+            <property-extension>
+                <mfp:required>false</mfp:required>
+            </property-extension>
+        </property>
+        <property>
+            <description>The CSS class to be applied to footer cells.</description>
+            <property-name>footerClass</property-name>
+            <property-class>java.lang.String</property-class>
+            <property-extension>
+                <mfp:required>false</mfp:required>
+            </property-extension>
+        </property>
+        <property>
+            <description>The CSS class to be applied to header cells.</description>
+            <property-name>headerClass</property-name>
+            <property-class>java.lang.String</property-class>
+            <property-extension>
+                <mfp:required>false</mfp:required>
+            </property-extension>
+        </property>
+        <property>
+            <description>A comma separated list of CSS class names to apply to td elements in
+                each row. If tere are less classes than the number of rows, apply the same
+                sequence of classes to the remaining rows, so the pattern is repeated.
+                More than one class can be applied to a row by separing the classes
+                with a space.
+            </description>
+            <property-name>rowClasses</property-name>
+            <property-class>java.lang.String</property-class>
+            <property-extension>
+                <mfp:required>false</mfp:required>
+            </property-extension>
+        </property>
+        <property>
+            <description>A comma separated list of CSS class names to apply to all captions.
+                If tere are less classes than the number of rows, apply the same
+                sequence of classes to the remaining captions, so the pattern is repeated.
+                More than one class can be applied to a row by separing the classes
+                with a space.
+            </description>
+            <property-name>captionClass</property-name>
+            <property-class>java.lang.String</property-class>
+            <property-extension>
+                <mfp:required>false</mfp:required>
+            </property-extension>
+        </property>
+        <property>
+            <description>The CSS class to be applied to the Caption.</description>
+            <property-name>captionStyle</property-name>
+            <property-class>java.lang.String</property-class>
+            <property-extension>
+                <mfp:required>false</mfp:required>
+            </property-extension>
+        </property>
+    </component>
+</faces-config>

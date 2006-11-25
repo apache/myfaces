@@ -1,0 +1,47 @@
+<faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:mfp="http://myfaces.apache.org/maven-faces-plugin">
+    <component>
+        <!-- dir, lang, style, styleClass -->
+        <property>
+            <description>The direction of text display, either 'ltr' (left-to-right) or 'rtl' (right-to-left).</description>
+            <property-name>dir</property-name>
+            <property-class>java.lang.String</property-class>
+            <property-extension>
+                <mfp:required>false</mfp:required>
+            </property-extension>
+        </property>
+        <property>
+            <description>The base language of this document.</description>
+            <property-name>lang</property-name>
+            <property-class>java.lang.String</property-class>
+            <property-extension>
+                <mfp:required>false</mfp:required>
+            </property-extension>
+        </property>
+        <property>
+            <description>CSS styling instructions.</description>
+            <property-name>style</property-name>
+            <property-class>java.lang.String</property-class>
+            <property-extension>
+                <mfp:required>false</mfp:required>
+            </property-extension>
+        </property>
+        <property>
+            <description>The CSS class for this element. Corresponds to the HTML 'class' attribute.</description>
+            <property-name>styleClass</property-name>
+            <property-class>java.lang.String</property-class>
+            <property-extension>
+                <mfp:required>false</mfp:required>
+            </property-extension>
+        </property>
+        <property>
+            <description>An advisory title for this element. Often used by the user agent as a tooltip.
+            </description>
+            <property-name>title</property-name>
+            <property-class>java.lang.String</property-class>
+            <property-extension>
+                <mfp:required>false</mfp:required>
+            </property-extension>
+        </property>
+    </component>
+</faces-config>

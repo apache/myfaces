@@ -15,51 +15,23 @@
   limitations under the License.
 -->
 <faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee"
-              xmlns:f="http://java.sun.com/jsf/core"
               xmlns:mfp="http://myfaces.apache.org/maven-faces-plugin"
-              xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  <component>
-    <component-type>javax.faces.Component</component-type>
-    <component-class>javax.faces.component.UIComponent</component-class>
-    <property>
-      <description>the identifier for the component
-      </description>
-      <property-name>id</property-name>
-      <property-class>java.lang.String</property-class>
-      <property-extension>
-        <mfp:literal-only>true</mfp:literal-only>
-      </property-extension>
-    </property>
-    <property>
-      <description>whether the bean is rendered. When set to false, no output
-                   will be delivered for this bean.
-      </description>
-      <property-name>rendered</property-name>
-      <property-class>boolean</property-class>
-      <default-value>true</default-value>
-      <property-extension>
-        <mfp:property-metadata>
-	  <mfp:group>${md:getTranslatedString("CORE_GROUP")}</mfp:group>
-	</mfp:property-metadata>
-      </property-extension>
-    </property>
-    <property>
-      <description>a binding reference to store the component instance
-      </description>
-      <property-name>binding</property-name>
-      <property-class>javax.el.ValueExpression</property-class>
-    </property>
-    <property>
-      <property-name>transient</property-name>
-      <property-class>boolean</property-class>
-      <property-extension>
-        <mfp:literal-only>true</mfp:literal-only>
-        <mfp:transient>true</mfp:transient>
-        <mfp:tag-attribute-excluded>true</mfp:tag-attribute-excluded>
-        <mfp:property-metadata>
-    	  <mfp:group>${md:getTranslatedString("CORE_GROUP")}</mfp:group>
-	</mfp:property-metadata>
-      </property-extension>
-    </property>
-  </component>
+              xmlns:xi="http://www.w3.org/2001/XInclude">
+    <component>
+        <component-type>javax.faces.Component</component-type>
+        <component-class>javax.faces.component.UIComponent</component-class>
+
+        <!-- id, binding, rendered-->
+        <xi:include href="../../includes/ui/_ComponentProperties.xml" xpointer="/faces-config/component/*"/>
+        
+        <property>
+            <property-name>transient</property-name>
+            <property-class>boolean</property-class>
+            <property-extension>
+                <mfp:literal-only>true</mfp:literal-only>
+                <mfp:transient>true</mfp:transient>
+                <mfp:tag-attribute-excluded>true</mfp:tag-attribute-excluded>
+            </property-extension>
+        </property>
+    </component>
 </faces-config>

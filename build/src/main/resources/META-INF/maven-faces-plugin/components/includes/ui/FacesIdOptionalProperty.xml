@@ -1,0 +1,17 @@
+<faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee"
+		xmlns:mfp="http://myfaces.apache.org/maven-faces-plugin"
+		xmlns:xi="http://www.w3.org/2001/XInclude">
+	<component>
+		<property>
+			<description> The developer-assigned ID of this component.  The ID must be unique
+			within the scope of the tag's enclosing naming container (e.g. 
+			h:form or f:subview).  This value must be a static value.</description>
+			<property-name>id</property-name>
+			<property-class>java.lang.String</property-class>
+			<property-extension>
+                <mfp:literal-only>true</mfp:literal-only>
+                <mfp:required>false</mfp:required>
+			</property-extension>
+		</property>
+	</component>
+</faces-config>

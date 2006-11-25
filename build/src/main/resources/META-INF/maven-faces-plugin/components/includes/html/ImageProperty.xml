@@ -1,0 +1,13 @@
+<faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:mfp="http://myfaces.apache.org/maven-faces-plugin">
+    <component>
+        <property>
+            <description>Absolute or relative URL of the image</description>
+            <property-name>image</property-name>
+            <property-class>java.lang.String</property-class>
+            <property-extension>
+                <mfp:required>false</mfp:required>
+            </property-extension>
+        </property>
+    </component>
+</faces-config>
