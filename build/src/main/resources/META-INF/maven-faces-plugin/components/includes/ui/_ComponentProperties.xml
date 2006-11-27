@@ -1,10 +1,8 @@
-<!-- UIComponent attributes -->
 <faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee"
 		xmlns:mfp="http://myfaces.apache.org/maven-faces-plugin"
 		xmlns:xi="http://www.w3.org/2001/XInclude">
 	<component>
-        <!-- UIComponent attributes -->
-        <xi:include href="FacesIdOptionalProperty.xml" xpointer="/faces_config/component/*" />
+		<xi:include href="FacesIdOptionalProperty.xml" xpointer="/faces_config/component/*" />
 		<xi:include href="FacesBindingProperty.xml" xpointer="/faces_config/component/*" />
 	    <xi:include href="FacesRenderedProperty.xml" xpointer="/faces_config/component/*" />
 	</component>

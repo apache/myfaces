@@ -54,7 +54,7 @@ public class MethodExpressionValueChangeListener implements ValueChangeListener,
     }
     
     public void restoreState(FacesContext context, Object state) {
-        methodExpression = (MethodExpression)methodExpression;
+        methodExpression = (MethodExpression)state;
     }
 
     public Object saveState(FacesContext context) {

@@ -22,21 +22,18 @@
         <!-- ################################ defined Properties ################################ -->
         <!-- # from super classes:                                                              # -->
         <!-- #     id, binding, rendered, transient                                             # -->
-        <!-- # ******************************************************************************** # -->
-        <!-- # value, var, rows, first                                                          # -->
+        <!-- #     value, converter                                                             # -->
+        <!-- #     immediate, required, converterMessage, requiredMessage, validatorMessage,    # -->
+        <!-- #     validator, valueChangeListener                                               # -->
         <!-- #################################################################################### -->
-        <description><![CDATA[UIData is a base abstraction for components that holds Data.]]></description>
-        <component-type>javax.faces.Data</component-type>
-        <component-class>javax.faces.component.UIData</component-class>
-
-        <!--value, var, rows, first-->
-        <xi:include href="../../includes/ui/_DataProperties.xml" xpointer="/faces-config/component/*"/>
-
+        <component-type>javax.faces.SelectBoolean</component-type>
+        <component-class>javax.faces.component.UISelectBoolean</component-class>
+        <description>UISelectBoolean is a Comonent which represents a boolean value.</description>
+        
         <component-extension>
-            <mfp:component-family>javax.faces.Data</mfp:component-family>
-            <mfp:component-supertype>javax.faces.ComponentBase</mfp:component-supertype>
-            <mfp:renderer-type>javax.faces.Table</mfp:renderer-type>
+            <mfp:component-family>javax.faces.SelectBoolean</mfp:component-family>
+            <mfp:component-supertype>javax.faces.Input</mfp:component-supertype>
+            <mfp:renderer-type>javax.faces.Checkbox</mfp:renderer-type>
         </component-extension>
     </component>
 </faces-config>
-

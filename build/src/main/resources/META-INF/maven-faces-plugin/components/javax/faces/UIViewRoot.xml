@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2006 The Apache Software Foundation.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:xi="http://www.w3.org/2001/XInclude"
+              xmlns:mfp="http://myfaces.apache.org/maven-faces-plugin"
+              xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <component>
+        <!-- ################################ defined Properties ################################ -->
+        <!-- # from super classes:                                                              # -->
+        <!-- #     id, binding, rendered, transient                                             # -->
+        <!-- # ******************************************************************************** # -->
+        <!-- # value                                                                            # -->
+        <!-- #################################################################################### -->
+        <component-type>javax.faces.ViewRoot</component-type>
+        <component-class>javax.faces.component.UIViewRoot</component-class>
+        <description>The root element.</description>
+
+        <property>
+            <description>The locale for this ViewRoot.</description>
+            <property-name>locale</property-name>
+            <property-class>java.util.Locale</property-class>
+            <property-extension>
+                <mfp:required>false</mfp:required>
+			</property-extension>
+        </property>
+
+        <property>
+            <description>The initial value of this component.</description>
+            <property-name>renderKitId</property-name>
+            <property-class>java.lang.String</property-class>
+            <property-extension>
+                <mfp:required>false</mfp:required>
+			</property-extension>
+        </property>
+
+        <property>
+            <description>The viewId.</description>
+            <property-name>viewId</property-name>
+            <property-class>java.lang.String</property-class>
+            <property-extension>
+                <mfp:required>false</mfp:required>
+                <mfp:tag-attribute-excluded>true</mfp:tag-attribute-excluded>
+            </property-extension>
+        </property>
+
+        <property>
+            <description>The events within this ViewRoot.</description>
+            <property-name>events</property-name>
+            <property-class>java.util.List&lt;javax.faces.event.FacesEvent&gt;</property-class>
+            <property-extension>
+                <mfp:required>false</mfp:required>
+                <mfp:tag-attribute-excluded>true</mfp:tag-attribute-excluded>
+                <!-- todo: if events are no state holder this entry and in UIViewRootTemplate the lines:
+                             /**///getUniqueIdCounter
+                             /**///setUniqueIdCounter
+                           can be removed and this line needs to be uncommented:
+                             /**/private List<FacesEvent> _events = null;                         -->
+                <mfp:state-holder>yes</mfp:state-holder>
+            </property-extension>
+        </property>
+
+        <property>
+            <description>The counter which will ensure a unique component id
+for every component instance in the tree that doesn't have
+an id attribute set.</description>
+            <property-name>uniqueIdCounter</property-name>
+            <property-class>long</property-class>
+            <default-value>0</default-value>
+            <property-extension>
+                <mfp:required>false</mfp:required>
+                <mfp:tag-attribute-excluded>true</mfp:tag-attribute-excluded>
+            </property-extension>
+        </property>
+
+        _uniqueIdCounter
+
+        <property>
+            <description>The phaseListeners attached to ViewRoot.</description>
+            <property-name>phaseListeners</property-name>
+            <property-class>java.util.List&lt;javax.faces.event.PhaseListener&gt;</property-class>
+            <property-extension>
+                <mfp:required>false</mfp:required>
+                <mfp:list>true</mfp:list>
+                <mfp:tag-attribute-excluded>true</mfp:tag-attribute-excluded>
+                <mfp:state-holder>yes</mfp:state-holder>
+            </property-extension>
+        </property>
+
+        <property>
+            <description></description>
+            <property-name>beforePhaseListener</property-name>
+            <property-class>javax.el.MethodExpression</property-class>
+            <property-extension>
+                <mfp:method-binding-signature>
+                    <mfp:parameter-type>javax.faces.event.PhaseEvent</mfp:parameter-type>
+                    <mfp:return-type>void</mfp:return-type>
+                </mfp:method-binding-signature>
+                <mfp:property-metadata>
+                    <mfp:preferred>true</mfp:preferred>
+                    <mfp:required>false</mfp:required>
+                </mfp:property-metadata>
+                <mfp:state-holder>yes</mfp:state-holder>
+                <mfp:jsp-property-name>beforePhase</mfp:jsp-property-name>
+            </property-extension>
+        </property>
+
+        <property>
+            <description></description>
+            <property-name>afterPhaseListener</property-name>
+            <property-class>javax.el.MethodExpression</property-class>
+            <property-extension>
+                <mfp:method-binding-signature>
+                    <mfp:parameter-type>javax.faces.event.PhaseEvent</mfp:parameter-type>
+                    <mfp:return-type>void</mfp:return-type>
+                </mfp:method-binding-signature>
+                <mfp:property-metadata>
+                    <mfp:preferred>true</mfp:preferred>
+                    <mfp:required>false</mfp:required>
+                </mfp:property-metadata>
+                <mfp:state-holder>yes</mfp:state-holder>
+                <mfp:jsp-property-name>afterPhase</mfp:jsp-property-name>
+            </property-extension>
+        </property>
+
+        <component-extension>
+            <mfp:component-family>javax.faces.ViewRoot</mfp:component-family>
+            <mfp:component-supertype>javax.faces.ComponentBase</mfp:component-supertype>
+        </component-extension>
+    </component>
+</faces-config>

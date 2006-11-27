@@ -14,8 +14,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee"
-              xmlns:tr="http://myfaces.apache.org/trinidad"
+<faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee"              
               xmlns:mfp="http://myfaces.apache.org/maven-faces-plugin"
               xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <faces-config-extension>

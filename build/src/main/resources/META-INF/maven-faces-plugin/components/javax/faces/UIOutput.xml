@@ -27,7 +27,7 @@
         <!-- #################################################################################### -->
         <component-type>javax.faces.Output</component-type>
         <component-class>javax.faces.component.UIOutput</component-class>
-        <description>UICommand is a base abstraction for components that implement ActionSource.</description>
+        <description>UIOutput displays a value to the user</description>
 
         <property>
             <description>The initial value of this component.</description>
@@ -54,4 +54,3 @@
         </component-extension>
     </component>
 </faces-config>
-

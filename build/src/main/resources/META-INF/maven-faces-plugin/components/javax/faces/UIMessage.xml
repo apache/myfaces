@@ -23,20 +23,28 @@
         <!-- # from super classes:                                                              # -->
         <!-- #     id, binding, rendered, transient                                             # -->
         <!-- # ******************************************************************************** # -->
-        <!-- # value, var, rows, first                                                          # -->
+        <!-- # for, showDetail, showSummary                                                     # -->
         <!-- #################################################################################### -->
-        <description><![CDATA[UIData is a base abstraction for components that holds Data.]]></description>
-        <component-type>javax.faces.Data</component-type>
-        <component-class>javax.faces.component.UIData</component-class>
+        <component-type>javax.faces.Message</component-type>
+        <component-class>javax.faces.component.UIMessage</component-class>
+        <description>UIMessage is the base component class for components
+that display a single message on behalf of a component.</description>
 
-        <!--value, var, rows, first-->
-        <xi:include href="../../includes/ui/_DataProperties.xml" xpointer="/faces-config/component/*"/>
+        <property>
+            <description>The ID of the component the Message should be diplayed for.</description>
+            <property-name>for</property-name>
+            <property-class>java.lang.String</property-class>
+            <property-extension>
+                <mfp:required>true</mfp:required>
+            </property-extension>
+        </property>
+
+        <xi:include href="../../includes/ui/_MessageProperties.xml" xpointer="/faces-config/component/*"/>
 
         <component-extension>
-            <mfp:component-family>javax.faces.Data</mfp:component-family>
+            <mfp:component-family>javax.faces.Message</mfp:component-family>
             <mfp:component-supertype>javax.faces.ComponentBase</mfp:component-supertype>
-            <mfp:renderer-type>javax.faces.Table</mfp:renderer-type>
+            <mfp:renderer-type>javax.faces.Message</mfp:renderer-type>
         </component-extension>
     </component>
 </faces-config>
-

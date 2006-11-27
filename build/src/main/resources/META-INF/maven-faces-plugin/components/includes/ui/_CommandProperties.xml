@@ -1,9 +1,11 @@
-<!-- UICommand attributes -->
 <faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee"
               xmlns:mfp="http://myfaces.apache.org/maven-faces-plugin"
               xmlns:xi="http://www.w3.org/2001/XInclude">
     <component>
         <!--value, actionListener, action, immediate-->
+
+        <xi:include href="../../includes/ui/FacesImmediateProperty.xml" xpointer="/faces-config/component/*"/>
+
         <property>
             <description><![CDATA[The initial value of this component.]]></description>
             <property-name>value</property-name>
@@ -55,17 +57,5 @@
                 <mfp:state-holder>yes</mfp:state-holder>
             </property-extension>
         </property>
-
-        <property>
-            <description><![CDATA[A boolean value that identifies the phase during which action events
-        should fire. During normal event processing, action methods and
-        action listener methods are fired during the "invoke application"
-        phase of request processing. If this attribute is set to "true",
-        these methods are fired instead at the end of the "apply request
-        values" phase.]]></description>
-            <property-name>immediate</property-name>
-            <property-class>boolean</property-class>
-        </property>
-
     </component>
 </faces-config>

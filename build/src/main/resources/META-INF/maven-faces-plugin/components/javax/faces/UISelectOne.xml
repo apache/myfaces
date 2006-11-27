@@ -22,21 +22,22 @@
         <!-- ################################ defined Properties ################################ -->
         <!-- # from super classes:                                                              # -->
         <!-- #     id, binding, rendered, transient                                             # -->
+        <!-- #     value, converter                                                             # -->
+        <!-- #     immediate, required, converterMessage, requiredMessage, validatorMessage,    # -->
+        <!-- #     validator, valueChangeListener                                               # -->
         <!-- # ******************************************************************************** # -->
-        <!-- # value, var, rows, first                                                          # -->
+        <!-- # label                                                                            # -->
         <!-- #################################################################################### -->
-        <description><![CDATA[UIData is a base abstraction for components that holds Data.]]></description>
-        <component-type>javax.faces.Data</component-type>
-        <component-class>javax.faces.component.UIData</component-class>
+        <component-type>javax.faces.SelectOne</component-type>
+        <component-class>javax.faces.component.UISelectOne</component-class>
+        <description>UISelectOne is a Component which represents a user choice of 0..1 value.</description>
 
-        <!--value, var, rows, first-->
-        <xi:include href="../../includes/ui/_DataProperties.xml" xpointer="/faces-config/component/*"/>
+        <xi:include href="../../includes/ui/FacesLableProperty.xml" xpointer="/faces-config/component/*"/>
 
         <component-extension>
-            <mfp:component-family>javax.faces.Data</mfp:component-family>
-            <mfp:component-supertype>javax.faces.ComponentBase</mfp:component-supertype>
-            <mfp:renderer-type>javax.faces.Table</mfp:renderer-type>
+            <mfp:component-family>javax.faces.SelectOne</mfp:component-family>
+            <mfp:component-supertype>javax.faces.Input</mfp:component-supertype>
+            <mfp:renderer-type>javax.faces.Menu</mfp:renderer-type>
         </component-extension>
     </component>
 </faces-config>
-

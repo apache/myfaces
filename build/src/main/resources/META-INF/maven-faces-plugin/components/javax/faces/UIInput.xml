@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2006 The Apache Software Foundation.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:xi="http://www.w3.org/2001/XInclude"
+              xmlns:mfp="http://myfaces.apache.org/maven-faces-plugin"
+              xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <component>
+        <!-- ################################ defined Properties ################################ -->
+        <!-- # from super classes:                                                              # -->
+        <!-- #     id, binding, rendered, transient                                             # -->
+        <!-- #     value, converter                                                             # -->
+        <!-- # ******************************************************************************** # -->
+        <!-- # immediate, required, converterMessage, requiredMessage, validatorMessage,        # -->
+        <!-- # validator, valueChangeListener                                                   # -->
+        <!-- #################################################################################### -->
+        <component-type>javax.faces.Input</component-type>
+        <component-class>javax.faces.component.UIInput</component-class>
+        <description>UICommand is a base abstraction for components that implement ActionSource.</description>
+
+        <xi:include href="../../includes/ui/FacesImmediateProperty.xml" xpointer="/faces-config/component/*"/>
+        <xi:include href="../../includes/ui/FacesRequiredProperty.xml" xpointer="/faces-config/component/*"/>
+
+        <property>
+            <description>Text of the converter message.</description>
+            <property-name>converterMessage</property-name>
+            <property-class>java.lang.String</property-class>
+            <property-extension>
+                <mfp:required>false</mfp:required>
+            </property-extension>
+        </property>
+        <property>
+            <description>Text which will be shown if a required value is not submitted.</description>
+            <property-name>requiredMessage</property-name>
+            <property-class>java.lang.String</property-class>
+            <property-extension>
+                <mfp:required>false</mfp:required>
+            </property-extension>
+        </property>
+        <property>
+            <description>Validator Method, which should be invoked for validation.</description>
+            <property-name>validator</property-name>
+            <property-class>javax.faces.el.MethodBinding</property-class>
+            <property-extension>
+                <mfp:required>false</mfp:required>
+                <mfp:method-binding-signature>
+                    <mfp:parameter-type>javax.faces.context.FacesContext</mfp:parameter-type>
+                    <mfp:parameter-type>javax.faces.component.UIComponent</mfp:parameter-type>
+                    <mfp:parameter-type>java.lang.Object</mfp:parameter-type>
+                    <mfp:return-type>void</mfp:return-type>
+                </mfp:method-binding-signature>
+                <mfp:state-holder>yes</mfp:state-holder>
+            </property-extension>
+        </property>
+        <property>
+            <description>Text which will be shown, if validation fails.</description>
+            <property-name>validatorMessage</property-name>
+            <property-class>java.lang.String</property-class>
+            <property-extension>
+                <mfp:required>false</mfp:required>
+            </property-extension>
+        </property>
+        <property>
+            <description>A Method which is called when the value changed.</description>
+            <property-name>valueChangeListener</property-name>
+            <property-class>javax.faces.el.MethodBinding</property-class>
+            <property-extension>
+                <mfp:required>false</mfp:required>
+                <mfp:method-binding-signature>
+                    <mfp:parameter-type>javax.faces.event.ValueChangeEvent</mfp:parameter-type>
+                    <mfp:return-type>void</mfp:return-type>
+                </mfp:method-binding-signature>
+                <mfp:state-holder>yes</mfp:state-holder>
+            </property-extension>
+        </property>
+
+        <property>
+            <description><![CDATA[whether the component's value is currently valid]]></description>
+            <property-name>valid</property-name>
+            <property-class>boolean</property-class>
+            <default-value>true</default-value>
+            <property-extension>
+                <mfp:tag-attribute-excluded>true</mfp:tag-attribute-excluded>
+            </property-extension>
+        </property>
+
+        <property>
+            <description>
+                <![CDATA[whether a local value is currently set.  If false, values are being retrieved from any attached ValueBinding]]>
+            </description>
+            <property-name>localValueSet</property-name>
+            <property-class>boolean</property-class>
+            <default-value>false</default-value>
+            <property-extension>
+                <mfp:tag-attribute-excluded>true</mfp:tag-attribute-excluded>
+            </property-extension>
+        </property>
+
+        <property>
+            <description><![CDATA[the current submitted value.  This value,
+if non-null, is set by the Renderer to store a possibly invalid value
+for later conversion or redisplay, and has not yet been converted
+into the proper type for this component instance.   This method
+should only be used by the decode() and validate() method
+of this component, or its corresponding Renderer;  however, user code
+may manually set it to null to erase any submitted value.]]>
+            </description>
+            <property-name>submittedValue</property-name>
+            <property-class>java.lang.Object</property-class>
+            <property-extension>
+                <mfp:tag-attribute-excluded>true</mfp:tag-attribute-excluded>
+            </property-extension>
+        </property>
+
+        <component-extension>
+            <mfp:component-family>javax.faces.Input</mfp:component-family>
+            <mfp:component-supertype>javax.faces.Output</mfp:component-supertype>
+            <mfp:renderer-type>javax.faces.Text</mfp:renderer-type>
+
+            <mfp:event>
+                <mfp:description>The valueChange event is delivered when the value
+attribute is changed.
+                </mfp:description>
+                <mfp:event-type>javax.faces.ValueChange</mfp:event-type>
+            </mfp:event>
+        </component-extension>
+    </component>
+</faces-config>
+

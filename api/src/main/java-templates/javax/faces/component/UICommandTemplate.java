@@ -60,6 +60,7 @@ public abstract class UICommandTemplate extends UIComponentBase
         return new _MethodExpressionToMethodBinding(actionExpression);
     }
 
+    @Override
     public void broadcast(FacesEvent event)
             throws AbortProcessingException
     {
@@ -83,6 +84,7 @@ public abstract class UICommandTemplate extends UIComponentBase
         }
     }
 
+    @Override
     public void queueEvent(FacesEvent event)
     {
         if (event != null && event instanceof ActionEvent)
