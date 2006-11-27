@@ -37,8 +37,21 @@ that display a multiple messages on behalf of a component.</description>
             <default-value>false</default-value>
         </property>
 
-        <xi:include href="../../includes/ui/_MessageProperties.xml" xpointer="/faces-config/component/*"/>
+        <!--showDetail-->
+        <property>
+            <description>Indicates that details are shown.</description>
+            <property-name>showDetail</property-name>
+            <property-class>boolean</property-class>
+            <default-value>false</default-value>
+        </property>
 
+        <!--showSummary-->
+        <property>
+            <description>Indicates that the summary should be included into the Message.</description>
+            <property-name>showSummary</property-name>
+            <property-class>boolean</property-class>
+            <default-value>true</default-value>
+        </property>
         <component-extension>
             <mfp:component-family>javax.faces.Messages</mfp:component-family>
             <mfp:component-supertype>javax.faces.ComponentBase</mfp:component-supertype>
