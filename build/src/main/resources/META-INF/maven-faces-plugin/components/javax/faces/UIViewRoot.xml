@@ -86,8 +86,6 @@ an id attribute set.</description>
             </property-extension>
         </property>
 
-        _uniqueIdCounter
-
         <property>
             <description>The phaseListeners attached to ViewRoot.</description>
             <property-name>phaseListeners</property-name>

@@ -51,13 +51,14 @@
         </configuration>
       </plugin>-->
       <plugin>
+        <!--
+        this plugin needs to be built from
+        https://svn.apache.org/repos/asf/incubator/adffaces/branches/faces-1_2-061113/plugins/maven-faces-plugin
+        temporarily fetched from baranda's repo
+        -->
         <groupId>org.apache.myfaces.trinidadbuild</groupId>
         <artifactId>maven-faces-plugin</artifactId>
-        <!-- special version from baranda's repository while the plugin is not
-        merged and released from the trinidad project
-        svn branch: https://svn.apache.org/repos/asf/incubator/adffaces/branches/myfaces-1_2-maven-faces-plugin
-        -->
-        <version>baranda-2.0-SNAPSHOT</version>
+        <version>incubator-1.2-m1-SNAPSHOT</version>
         <configuration>
           <taglibs>
             <f>http://java.sun.com/jsf/core</f>
