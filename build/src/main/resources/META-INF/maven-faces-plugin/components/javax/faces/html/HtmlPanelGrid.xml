@@ -1,0 +1,122 @@
+<?xml version="1.0" ?>
+<!--
+  Copyright 2006 The Apache Software Foundation.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:mfp="http://myfaces.apache.org/maven-faces-plugin"
+              xmlns:h="http://java.sun.com/jsf/html"
+              xmlns:xi="http://www.w3.org/2001/XInclude">
+    <component>
+        <description>This element renders as an HTML table with specified number of
+columns.  Children of this element are rendered as cells in the
+table, filling rows from left to right.  Facets named "header"
+and "footer" are optional and specify the content of the thead
+and tfoot rows, respectively.
+
+Unless otherwise specified, all attributes accept static values
+or EL expressions.</description>
+        <component-class>javax.faces.component.html.HtmlPanelGrid</component-class>
+        <component-type>javax.faces.HtmlPanelGrid</component-type>
+
+        <!-- ################################ defined Properties ################################ -->
+        <!-- # from super classes:                                                              # -->
+        <!-- #     id, binding, rendered, transient                                             # -->
+        <!-- #################################################################################### -->
+
+        <!-- dir, lang, style, styleClass, title -->
+        <xi:include href="../../../includes/html/_UniversalProperties.xml" xpointer="/faces_config/component/*" />
+
+        <!-- onclick, ondblclick, onmousedown, onmouseup, onmouseover, onmousemove, onmouseout, onkeypress, onkeydown, onkeyup-->
+        <xi:include href="../../../includes/html/_EventHandlerProperties.xml" xpointer="/faces_config/component/*" />
+
+        <!-- border, bgcolor, cellpadding, cellspacing, frame, rules, summary, width-->
+        <xi:include href="../../../includes/html/_TableProperties.xml" xpointer="/faces_config/component/*" />
+
+        <property>
+			<description>Specifies the number of columns in the grid.</description>
+			<property-name>columns</property-name>
+            <property-class>int</property-class>
+            <default-value>1</default-value>
+            <property-extension>
+				<mfp:required>false</mfp:required>
+			</property-extension>
+		</property>
+
+        <property>
+			<description>CSS style to be used for the caption.</description>
+			<property-name>captionStyle</property-name>
+            <property-class>java.lang.String</property-class>
+            <property-extension>
+				<mfp:required>false</mfp:required>
+			</property-extension>
+		</property>
+
+        <property>
+			<description>CSS class to be used for the caption.</description>
+			<property-name>captionClass</property-name>
+            <property-class>java.lang.String</property-class>
+            <property-extension>
+				<mfp:required>false</mfp:required>
+			</property-extension>
+		</property>
+
+        <property>
+			<description>CSS class to be used for the columns.</description>
+			<property-name>columnClasses</property-name>
+            <property-class>java.lang.String</property-class>
+            <property-extension>
+				<mfp:required>false</mfp:required>
+			</property-extension>
+		</property>
+
+        <property>
+			<description>CSS class to be used for the footer.</description>
+			<property-name>footerClass</property-name>
+            <property-class>java.lang.String</property-class>
+            <property-extension>
+				<mfp:required>false</mfp:required>
+			</property-extension>
+		</property>
+
+        <property>
+			<description>CSS class to be used for the header.</description>
+			<property-name>headerClass</property-name>
+            <property-class>java.lang.String</property-class>
+            <property-extension>
+				<mfp:required>false</mfp:required>
+			</property-extension>
+		</property>
+
+        <property>
+			<description>CSS class to be used for the rows.</description>
+			<property-name>rowClasses</property-name>
+            <property-class>java.lang.String</property-class>
+            <property-extension>
+				<mfp:required>false</mfp:required>
+			</property-extension>
+		</property>
+
+        <component-extension>
+            <mfp:component-family>javax.faces.Panel</mfp:component-family>
+            <mfp:component-superclass>javax.faces.component.UIPanel</mfp:component-superclass>
+            <mfp:component-supertype>javax.faces.Panel</mfp:component-supertype>
+
+            <mfp:tag-name>h:panelGrid</mfp:tag-name>
+            <mfp:tag-class>org.apache.myfaces.taglib.html.HtmlPanelGridTag</mfp:tag-class>
+
+            <mfp:renderer-type>javax.faces.Grid</mfp:renderer-type>
+        </component-extension>
+    </component>
+</faces-config>

@@ -80,6 +80,8 @@ public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
 
         String output = writer.getWriter().toString();
 
+      System.out.println(output);
+
         assertEquals("<table><tr>\t\t" +
                 "<td><input id=\"_id0:0\" type=\"checkbox\" name=\"_id0\" value=\"mars\"/><label for=\"_id0:0\">&#160;mars</label></td>\t\t" +
                 "<td><input id=\"_id0:1\" type=\"checkbox\" name=\"_id0\" value=\"jupiter\"/><label for=\"_id0:1\">&#160;jupiter</label></td>" +

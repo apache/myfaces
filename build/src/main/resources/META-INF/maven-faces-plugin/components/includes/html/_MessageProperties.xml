@@ -1,0 +1,104 @@
+<?xml version="1.0" ?>
+<!--
+  Copyright 2006 The Apache Software Foundation.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee"
+		xmlns:mfp="http://myfaces.apache.org/maven-faces-plugin"
+		xmlns:xi="http://www.w3.org/2001/XInclude">
+	<component>
+        <!--infoClass, infoStyle, warnClass, warnStyle, errorClass, errorStyle, fatalClass, fatalStyle, tooltip-->
+        <property>
+			<description><![CDATA[CSS class to be used for messages with severity "INFO".]]></description>
+			<property-name>infoClass</property-name>
+            <property-class>java.lang.String</property-class>
+			<property-extension>
+				<mfp:required>false</mfp:required>
+			</property-extension>
+		</property>
+
+        <property>
+			<description><![CDATA[CSS style to be used for messages with severity "INFO".]]></description>
+			<property-name>infoStyle</property-name>
+            <property-class>java.lang.String</property-class>
+			<property-extension>
+				<mfp:required>false</mfp:required>
+			</property-extension>
+		</property>
+
+        <property>
+			<description><![CDATA[CSS class to be used for messages with severity "WARN".]]></description>
+			<property-name>warnClass</property-name>
+            <property-class>java.lang.String</property-class>
+			<property-extension>
+				<mfp:required>false</mfp:required>
+			</property-extension>
+		</property>
+
+        <property>
+			<description><![CDATA[CSS style to be used for messages with severity "WARN".]]></description>
+			<property-name>warnStyle</property-name>
+            <property-class>java.lang.String</property-class>
+			<property-extension>
+				<mfp:required>false</mfp:required>
+			</property-extension>
+		</property>
+
+        <property>
+			<description><![CDATA[CSS class to be used for messages with severity "ERROR".]]></description>
+			<property-name>errorClass</property-name>
+            <property-class>java.lang.String</property-class>
+			<property-extension>
+				<mfp:required>false</mfp:required>
+			</property-extension>
+		</property>
+
+        <property>
+			<description><![CDATA[CSS style to be used for messages with severity "ERROR".]]></description>
+			<property-name>errorStyle</property-name>
+            <property-class>java.lang.String</property-class>
+			<property-extension>
+				<mfp:required>false</mfp:required>
+			</property-extension>
+		</property>
+
+        <property>
+			<description><![CDATA[CSS class to be used for messages with severity "FATAL".]]></description>
+			<property-name>fatalClass</property-name>
+            <property-class>java.lang.String</property-class>
+			<property-extension>
+				<mfp:required>false</mfp:required>
+			</property-extension>
+		</property>
+
+        <property>
+			<description><![CDATA[CSS style to be used for messages with severity "FATAL".]]></description>
+			<property-name>fatalStyle</property-name>
+            <property-class>java.lang.String</property-class>
+			<property-extension>
+				<mfp:required>false</mfp:required>
+			</property-extension>
+		</property>
+
+        <property>
+			<description><![CDATA[If true, the message summary will be rendered as a tooltip (i.e. HTML title attribute).]]></description>
+			<property-name>tooltip</property-name>
+            <property-class>boolean</property-class>
+			<property-extension>
+				<mfp:required>false</mfp:required>
+			</property-extension>
+		</property>
+
+    </component>
+</faces-config>

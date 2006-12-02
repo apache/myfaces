@@ -11,6 +11,7 @@
     <field>
         <name>border</name>
         <type>int</type>
+        <default-value>-2147483647</default-value>
     </field>
     <field>
         <name>dir</name>

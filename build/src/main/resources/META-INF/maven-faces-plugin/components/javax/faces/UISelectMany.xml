@@ -25,14 +25,10 @@
         <!-- #     value, converter                                                             # -->
         <!-- #     immediate, required, converterMessage, requiredMessage, validatorMessage,    # -->
         <!-- #     validator, valueChangeListener                                               # -->
-        <!-- # ******************************************************************************** # -->
-        <!-- # label                                                                            # -->
         <!-- #################################################################################### -->
         <component-type>javax.faces.SelectMany</component-type>
         <component-class>javax.faces.component.UISelectMany</component-class>
         <description>UISelectMany is a Component which represents a user choice of 0..n values.</description>
-
-        <xi:include href="../../includes/ui/FacesLableProperty.xml" xpointer="/faces-config/component/*"/>
 
         <component-extension>
             <mfp:component-family>javax.faces.SelectMany</mfp:component-family>

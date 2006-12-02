@@ -1,0 +1,53 @@
+<?xml version="1.0" ?>
+<!--
+  Copyright 2006 The Apache Software Foundation.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:mfp="http://myfaces.apache.org/maven-faces-plugin"
+              xmlns:h="http://java.sun.com/jsf/html"
+              xmlns:xi="http://www.w3.org/2001/XInclude">
+    <component>
+        <description>Renders the first FacesMessage that is assigned to the component
+referenced by the "for" attribute.
+Unless otherwise specified, all attributes accept static values
+or EL expressions.</description>
+        <component-class>javax.faces.component.html.HtmlMessage</component-class>
+        <component-type>javax.faces.HtmlMessage</component-type>
+
+        <!-- ################################ defined Properties ################################ -->
+        <!-- # from super classes:                                                              # -->
+        <!-- #     id, binding, rendered, transient                                             # -->
+        <!-- #     for, showDetail, showSummary                                                 # -->
+        <!-- # ******************************************************************************** # -->
+        <!-- #################################################################################### -->
+
+        <!-- dir, lang, style, styleClass, title -->
+        <xi:include href="../../../includes/html/_UniversalProperties.xml" xpointer="/faces_config/component/*" />
+
+        <!-- infoClass, infoStyle, warnClass, warnStyle, errorClass, errorStyle, fatalClass, fatalStyle, tooltip -->
+        <xi:include href="../../../includes/html/_MessageProperties.xml" xpointer="/faces_config/component/*" />
+
+        <component-extension>
+            <mfp:component-family>javax.faces.Message</mfp:component-family>
+            <mfp:component-superclass>javax.faces.component.UIMessage</mfp:component-superclass>
+            <mfp:component-supertype>javax.faces.Message</mfp:component-supertype>
+
+            <mfp:tag-name>h:message</mfp:tag-name>
+            <mfp:tag-class>org.apache.myfaces.taglib.html.HtmlMessageTag</mfp:tag-class>
+
+            <mfp:renderer-type>javax.faces.Message</mfp:renderer-type>
+        </component-extension>
+    </component>
+</faces-config>

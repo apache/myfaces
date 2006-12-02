@@ -25,14 +25,10 @@
         <!-- #     value, converter                                                             # -->
         <!-- #     immediate, required, converterMessage, requiredMessage, validatorMessage,    # -->
         <!-- #     validator, valueChangeListener                                               # -->
-        <!-- # ******************************************************************************** # -->
-        <!-- # label                                                                            # -->
         <!-- #################################################################################### -->
         <component-type>javax.faces.SelectOne</component-type>
         <component-class>javax.faces.component.UISelectOne</component-class>
         <description>UISelectOne is a Component which represents a user choice of 0..1 value.</description>
-
-        <xi:include href="../../includes/ui/FacesLableProperty.xml" xpointer="/faces-config/component/*"/>
 
         <component-extension>
             <mfp:component-family>javax.faces.SelectOne</mfp:component-family>
