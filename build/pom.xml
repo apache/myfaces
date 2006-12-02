@@ -23,11 +23,17 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Build</name>
-  <description>Apache MyFaces Build</description>
+  <name>Apache MyFaces 1.2 Build</name>
+  <description>Apache MyFaces 1.2 Build</description>
 
   <artifactId>myfaces-build</artifactId>
   <packaging>jar</packaging>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/jsf12/build</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/jsf12/build</developerConnection>
+    <url>http://svn.apache.org/repos/asf/myfaces/core/branches/jsf12/build</url>
+  </scm>
 
   <build>
     <plugins>
