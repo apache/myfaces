@@ -10,7 +10,7 @@
     </description>
 </attribute>
 <attribute>
-    <name>acceptCharset</name>
+    <name>acceptcharset</name>
     <required>false</required>
     <rtexprvalue>false</rtexprvalue>
     <description>
