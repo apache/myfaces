@@ -77,7 +77,7 @@ public class UIOutput
     {
         if (_value != null) return _value;
         ValueBinding vb = getValueBinding("value");
-        return vb != null ? (Object)vb.getValue(getFacesContext()) : null;
+        return vb != null ? vb.getValue(getFacesContext()) : null;
     }
 
 
@@ -87,7 +87,7 @@ public class UIOutput
         values[0] = super.saveState(context);
         values[1] = saveAttachedState(context, _converter);
         values[2] = _value;
-        return ((Object) (values));
+        return values;
     }
 
     public void restoreState(FacesContext context, Object state)
@@ -95,7 +95,7 @@ public class UIOutput
         Object values[] = (Object[])state;
         super.restoreState(context, values[0]);
         _converter = (Converter)restoreAttachedState(context, values[1]);
-        _value = (Object)values[2];
+        _value = values[2];
     }
     //------------------ GENERATED CODE END ---------------------------------------
 }

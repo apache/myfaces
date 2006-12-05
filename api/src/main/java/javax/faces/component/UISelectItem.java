@@ -123,7 +123,7 @@ public class UISelectItem
     {
         if (_itemValue != null) return _itemValue;
         ValueBinding vb = getValueBinding("itemValue");
-        return vb != null ? (Object)vb.getValue(getFacesContext()) : null;
+        return vb != null ? vb.getValue(getFacesContext()) : null;
     }
 
     public void setValue(Object value)
@@ -135,7 +135,7 @@ public class UISelectItem
     {
         if (_value != null) return _value;
         ValueBinding vb = getValueBinding("value");
-        return vb != null ? (Object)vb.getValue(getFacesContext()) : null;
+        return vb != null ? vb.getValue(getFacesContext()) : null;
     }
 
 
@@ -148,7 +148,7 @@ public class UISelectItem
         values[3] = _itemLabel;
         values[4] = _itemValue;
         values[5] = _value;
-        return ((Object) (values));
+        return values;
     }
 
     public void restoreState(FacesContext context, Object state)
@@ -158,8 +158,8 @@ public class UISelectItem
         _itemDescription = (String)values[1];
         _itemDisabled = (Boolean)values[2];
         _itemLabel = (String)values[3];
-        _itemValue = (Object)values[4];
-        _value = (Object)values[5];
+        _itemValue = values[4];
+        _value = values[5];
     }
     //------------------ GENERATED CODE END ---------------------------------------
 }

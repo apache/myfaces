@@ -100,7 +100,7 @@ public class UIMessages
         values[1] = _globalOnly;
         values[2] = _showDetail;
         values[3] = _showSummary;
-        return ((Object) (values));
+        return values;
     }
 
     public void restoreState(FacesContext context, Object state)

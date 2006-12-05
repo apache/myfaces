@@ -42,7 +42,7 @@ public class UISelectBoolean
         if( value == null )
             value = (Boolean)getValue();
 
-        return value != null ? value.booleanValue() : false;
+        return value != null && value.booleanValue();
     }
 
     public ValueBinding getValueBinding(String name)

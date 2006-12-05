@@ -18,7 +18,6 @@
 */
 package javax.faces.component;
 
-import javax.faces.component._SelectItemsUtil._ValueConverter;
 import javax.faces.context.FacesContext;
 
 /**

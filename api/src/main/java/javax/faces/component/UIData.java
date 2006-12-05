@@ -1020,7 +1020,7 @@ public class UIData extends UIComponentBase implements NamingContainer
         if (_value != null)
             return _value;
         ValueBinding vb = getValueBinding("value");
-        return vb != null ? (Object) vb.getValue(getFacesContext()) : null;
+        return vb != null ? vb.getValue(getFacesContext()) : null;
     }
 
     //------------------ GENERATED CODE END ---------------------------------------

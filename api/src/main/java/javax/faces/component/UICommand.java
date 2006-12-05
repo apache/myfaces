@@ -170,7 +170,7 @@ public class UICommand
     {
         if (_value != null) return _value;
         ValueBinding vb = getValueBinding("value");
-        return vb != null ? (Object)vb.getValue(getFacesContext()) : null;
+        return vb != null ? vb.getValue(getFacesContext()) : null;
     }
 
 
@@ -183,7 +183,7 @@ public class UICommand
         values[2] = saveAttachedState(context, _actionListener);
         values[3] = _immediate;
         values[4] = _value;
-        return ((Object) (values));
+        return values;
     }
 
     public void restoreState(FacesContext context, Object state)
@@ -193,7 +193,7 @@ public class UICommand
         _action = (MethodBinding)restoreAttachedState(context, values[1]);
         _actionListener = (MethodBinding)restoreAttachedState(context, values[2]);
         _immediate = (Boolean)values[3];
-        _value = (Object)values[4];
+        _value = values[4];
     }
     //------------------ GENERATED CODE END ---------------------------------------
 }

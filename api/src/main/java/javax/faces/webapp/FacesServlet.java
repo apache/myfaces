@@ -114,12 +114,11 @@ public final class FacesServlet
         {
             StringBuffer buffer = new StringBuffer();
 
-            buffer.append(" Someone is trying to access a secure resource : "
-                    + pathInfo);
-            buffer.append("\n remote address is " + httpRequest.getRemoteAddr());
-            buffer.append("\n remote host is " + httpRequest.getRemoteHost());
-            buffer.append("\n remote user is " + httpRequest.getRemoteUser());
-            buffer.append("\n request URI is " + httpRequest.getRequestURI());
+            buffer.append(" Someone is trying to access a secure resource : ").append(pathInfo);
+            buffer.append("\n remote address is ").append(httpRequest.getRemoteAddr());
+            buffer.append("\n remote host is ").append(httpRequest.getRemoteHost());
+            buffer.append("\n remote user is ").append(httpRequest.getRemoteUser());
+            buffer.append("\n request URI is ").append(httpRequest.getRequestURI());
 
             log.warn(buffer.toString());
 

@@ -96,7 +96,7 @@ public class UIGraphic
     {
         if (_value != null) return _value;
         ValueBinding vb = getValueBinding("value");
-        return vb != null ? (Object)vb.getValue(getFacesContext()) : null;
+        return vb != null ? vb.getValue(getFacesContext()) : null;
     }
 
 
@@ -105,14 +105,14 @@ public class UIGraphic
         Object values[] = new Object[2];
         values[0] = super.saveState(context);
         values[1] = _value;
-        return ((Object) (values));
+        return values;
     }
 
     public void restoreState(FacesContext context, Object state)
     {
         Object values[] = (Object[])state;
         super.restoreState(context, values[0]);
-        _value = (Object)values[1];
+        _value = values[1];
     }
     //------------------ GENERATED CODE END ---------------------------------------
 }

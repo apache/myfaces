@@ -481,7 +481,7 @@ public class UIInput
         values[6] = saveAttachedState(context, _validator);
         values[7] = saveAttachedState(context, _valueChangeListener);
         values[8] = saveAttachedState(context, _validatorList);
-        return ((Object)(values));
+        return values;
     }
 
     public void restoreState(FacesContext context, Object state)
@@ -491,7 +491,7 @@ public class UIInput
         _immediate = (Boolean)values[1];
         _localValueSet = ((Boolean)values[2]).booleanValue();
         _required = (Boolean)values[3];
-        _submittedValue = (Object)values[4];
+        _submittedValue = values[4];
         _valid = ((Boolean)values[5]).booleanValue();
         _validator = (MethodBinding)restoreAttachedState(context, values[6]);
         _valueChangeListener = (MethodBinding)restoreAttachedState(context, values[7]);
