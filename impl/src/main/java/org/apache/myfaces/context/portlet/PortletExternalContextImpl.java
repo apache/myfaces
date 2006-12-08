@@ -82,8 +82,7 @@ public class PortletExternalContextImpl extends ExternalContext implements Relea
         _portletContext = portletContext;
         _portletRequest = portletRequest;
         _portletResponse = portletResponse;
-        _isActionRequest = (portletRequest != null &&
-                                 portletRequest instanceof ActionRequest);
+        _isActionRequest = this.isActionRequest(portletRequest);
 
         if (_isActionRequest)
         {
@@ -398,6 +397,52 @@ public class PortletExternalContextImpl extends ExternalContext implements Relea
         _requestHeaderValuesMap = null;
         _initParameterMap = null;
     }
+    
+    private boolean isActionRequest(PortletRequest portletRequest)
+    {
+        return (portletRequest != null && portletRequest instanceof ActionRequest);
+    }
+    
+    /**
+     * @since JSF 1.2
+     * @param request
+     */
+    public void setRequest(java.lang.Object request)
+    {
+      this._portletRequest = (PortletRequest) request;
+    }
+    
+    /**
+     * @since JSF 1.2
+     * @param encoding
+     * @throws java.io.UnsupportedEncodingException
+     */
+    public void setRequestCharacterEncoding(java.lang.String encoding)
+        throws java.io.UnsupportedEncodingException{
+      
+        if(isActionRequest(this._portletRequest))
+            ((ActionRequest) this._portletRequest).setCharacterEncoding(encoding);
+      
+    }
+    
+    /**
+     * @since JSF 1.2
+     * @param response
+     */
+    public void setResponse(java.lang.Object response)
+    {
+        this._portletResponse = (PortletResponse) response;
+    }
+    
+    /**
+     * @since JSF 1.2
+     * @param encoding
+     */
+    public void setResponseCharacterEncoding(java.lang.String encoding)
+    {
+      //nope!
+    }
+    
 
     private void checkNull(Object o, String param)
     {

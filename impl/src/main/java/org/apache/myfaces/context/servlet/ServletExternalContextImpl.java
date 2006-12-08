@@ -516,7 +516,7 @@ public class ServletExternalContextImpl
      */
     public void setRequest(java.lang.Object request)
     {
-      this._servletRequest = (HttpServletRequest) request;
+      this._servletRequest = (ServletRequest) request;
     }
     
     /**
@@ -537,7 +537,7 @@ public class ServletExternalContextImpl
      */
     public void setResponse(java.lang.Object response)
     {
-        this._servletResponse = (HttpServletResponse) response;
+        this._servletResponse = (ServletResponse) response;
     }
     
     /**
@@ -548,7 +548,5 @@ public class ServletExternalContextImpl
     {
       this._servletResponse.setCharacterEncoding(encoding);
     }
-    
-    
     
 }
