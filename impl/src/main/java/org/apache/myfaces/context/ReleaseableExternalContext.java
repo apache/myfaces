@@ -16,7 +16,7 @@
 package org.apache.myfaces.context;
 
 /**
- * Allows the ServletFacesContextImpl to refer to the external context
+ * Allows the FacesContextImpl to refer to the external context
  * polymorphically.
  *
  * @author  Stan Silvert (latest modification by $Author$)

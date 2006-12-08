@@ -15,27 +15,35 @@
  */
 package org.apache.myfaces.context.servlet;
 
-import org.apache.myfaces.util.EnumerationIterator;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.security.Principal;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import javax.faces.FacesException;
 import javax.faces.application.ViewHandler;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.servlet.*;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.security.Principal;
-import java.util.*;
-import java.lang.reflect.Method;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.context.ReleaseableExternalContext;
+import org.apache.myfaces.util.EnumerationIterator;
 
 /**
  * JSF 1.0 PRD2, 6.1.1
@@ -69,17 +77,7 @@ public class ServletExternalContextImpl
     private boolean _isHttpServletRequest;
     private String _requestServletPath;
     private String _requestPathInfo;
-    private static Method setCharacterEncodingMethod = null;
     
-    static {
-        try {
-            setCharacterEncodingMethod = ServletRequest.class.getMethod("setCharacterEncoding", new Class[]{String.class});
-        } catch (Exception e) {
-                    log.warn("Detecting request character encoding is disable.");
-                    log.warn("Failed to obtain ServletRequest#setCharacterEncoding() method: " + e);
-        }
-    } 
-
     public ServletExternalContextImpl(ServletContext servletContext,
                                       ServletRequest servletRequest,
                                       ServletResponse servletResponse)
@@ -107,31 +105,24 @@ public class ServletExternalContextImpl
             _requestServletPath = httpServletRequest.getServletPath();
             _requestPathInfo = httpServletRequest.getPathInfo();
 
-            // try to set character encoding as described in section 2.5.2.2 of JSF 1.1 spec
-            // we have to use reflection as method setCharacterEncoding is not supported Servlet API <= 2.3
-            try
-            {
-                if (setCharacterEncodingMethod != null) {
-                    String contentType = httpServletRequest.getHeader("Content-Type");
+            String contentType = httpServletRequest.getHeader("Content-Type");
 
-                    String characterEncoding = lookupCharacterEncoding(contentType);
+            String characterEncoding = lookupCharacterEncoding(contentType);
 
-                    if (characterEncoding == null) {
-                        HttpSession session = httpServletRequest.getSession(false);
+            if (characterEncoding == null) {
+                HttpSession session = httpServletRequest.getSession(false);
 
-                        if (session != null) {
-                            characterEncoding = (String) session.getAttribute(ViewHandler.CHARACTER_ENCODING_KEY);
-                        }
-
-                        if (characterEncoding != null) {
-                            setCharacterEncodingMethod.invoke(servletRequest, new Object[]{characterEncoding});
-                        }
+                if (session != null) {
+                    characterEncoding = (String) session.getAttribute(ViewHandler.CHARACTER_ENCODING_KEY);
+                }
+                if (characterEncoding != null) {
+                    try {
+                      httpServletRequest.setCharacterEncoding(characterEncoding);
+                    } catch (UnsupportedEncodingException e) {
+                      if (log.isWarnEnabled())
+                        log.warn("Failed to set character encoding " + e);
                     }
                 }
-            } catch (Exception e)
-            {
-                if (log.isWarnEnabled())
-                    log.warn("Failed to set character encoding " + e);
             }
         }
     }
@@ -518,4 +509,46 @@ public class ServletExternalContextImpl
     {
         return _servletContext.getResource(s);
     }
+    
+    /**
+     * @since JSF 1.2
+     * @param request
+     */
+    public void setRequest(java.lang.Object request)
+    {
+      this._servletRequest = (HttpServletRequest) request;
+    }
+    
+    /**
+     * @since JSF 1.2
+     * @param encoding
+     * @throws java.io.UnsupportedEncodingException
+     */
+    public void setRequestCharacterEncoding(java.lang.String encoding)
+        throws java.io.UnsupportedEncodingException{
+      
+        this._servletRequest.setCharacterEncoding(encoding);
+      
+    }
+    
+    /**
+     * @since JSF 1.2
+     * @param response
+     */
+    public void setResponse(java.lang.Object response)
+    {
+        this._servletResponse = (HttpServletResponse) response;
+    }
+    
+    /**
+     * @since JSF 1.2
+     * @param encoding
+     */
+    public void setResponseCharacterEncoding(java.lang.String encoding)
+    {
+      this._servletResponse.setCharacterEncoding(encoding);
+    }
+    
+    
+    
 }

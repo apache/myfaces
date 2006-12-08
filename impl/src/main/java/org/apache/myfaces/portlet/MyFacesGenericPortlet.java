@@ -43,7 +43,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.context.portlet.PortletExternalContextImpl;
-import org.apache.myfaces.context.servlet.ServletFacesContextImpl;
+import org.apache.myfaces.context.servlet.FacesContextImpl;
 import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
 
 /**
@@ -385,7 +385,7 @@ public class MyFacesGenericPortlet extends GenericPortlet
 
         try
         {
-            ServletFacesContextImpl facesContext = (ServletFacesContextImpl)request.
+            FacesContextImpl facesContext = (FacesContextImpl)request.
                                                    getPortletSession().
                                                    getAttribute(CURRENT_FACES_CONTEXT);
 

@@ -15,7 +15,7 @@
  */
 package org.apache.myfaces.context;
 
-import org.apache.myfaces.context.servlet.ServletFacesContextImpl;
+import org.apache.myfaces.context.servlet.FacesContextImpl;
 
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
@@ -57,14 +57,14 @@ public class FacesContextFactoryImpl
 
         if (context instanceof ServletContext)
         {
-            return new ServletFacesContextImpl((ServletContext)context,
+            return new FacesContextImpl((ServletContext)context,
                                                (ServletRequest)request,
                                                (ServletResponse)response);
         }
         
         if (context instanceof PortletContext)
         {
-            return new ServletFacesContextImpl((PortletContext)context,
+            return new FacesContextImpl((PortletContext)context,
                                                (PortletRequest)request,
                                                (PortletResponse)response);
         }

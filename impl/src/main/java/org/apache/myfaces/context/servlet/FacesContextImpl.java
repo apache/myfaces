@@ -54,7 +54,7 @@ import org.apache.myfaces.shared_impl.util.NullIterator;
  * @author Anton Koinov
  * @version $Revision$ $Date$
  */
-public class ServletFacesContextImpl
+public class FacesContextImpl
         extends FacesContext
 {
     //~ Instance fields ----------------------------------------------------------------------------
@@ -75,8 +75,7 @@ public class ServletFacesContextImpl
 
     //~ Constructors -------------------------------------------------------------------------------
 
-    // TODO: FIXME: the name of this class should be changed.
-    public ServletFacesContextImpl(PortletContext portletContext,
+    public FacesContextImpl(PortletContext portletContext,
                                    PortletRequest portletRequest,
                                    PortletResponse portletResponse)
     {
@@ -85,7 +84,7 @@ public class ServletFacesContextImpl
                                             portletResponse));
     }
 
-    public ServletFacesContextImpl(ServletContext servletContext,
+    public FacesContextImpl(ServletContext servletContext,
                                    ServletRequest servletRequest,
                                    ServletResponse servletResponse)
     {
@@ -94,7 +93,7 @@ public class ServletFacesContextImpl
                                             servletResponse));
     }
 
-    private ServletFacesContextImpl(ReleaseableExternalContext externalContext)
+    private FacesContextImpl(ReleaseableExternalContext externalContext)
     {
         _application = ((ApplicationFactory)FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY))
                 .getApplication();
