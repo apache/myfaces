@@ -360,6 +360,8 @@ public class MyFacesGenericPortlet extends GenericPortlet
     {
        PortletSession session = request.getPortletSession();
        session.setAttribute(REDEPLOY_FLAG, "portlet was not redeployed");
+       FacesContext context = FacesContext.getCurrentInstance();
+       if (context != null) context.release();
        session.removeAttribute(this.CURRENT_FACES_CONTEXT);
     }
 
