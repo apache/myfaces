@@ -849,7 +849,6 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
      */
     private void popTag()
     {
-        log.fatal("Poping: "+this.getClass());
         Stack stack = getStack(pageContext);
 
         int size = stack.size();
