@@ -177,7 +177,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
 
         int size = stack.size();
 
-        return size > 1 ? (UIComponentClassicTagBase) stack.get(size - 1) : null;
+        return size > 0 ? (UIComponentClassicTagBase) stack.get(size - 1) : null;
     }
 
     /**
@@ -259,6 +259,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         if (_facesContext != null)
         {
             pageContext.setAttribute(REQUEST_FACES_CONTEXT, _facesContext);
+            return _facesContext;
         }
 
         // should never be reached
@@ -443,14 +444,17 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
             }
 
             // create the transient _componentInstance
-            verbatimComp = _parentClassicTag.createVerbatimComponentFromBodyContent();
+            if (_parentClassicTag != null)
+            {
+                verbatimComp = _parentClassicTag.createVerbatimComponentFromBodyContent();
+            }
         }
 
         // find the _componentInstance for this tag
         _componentInstance = findComponent(_facesContext);
 
         // add the verbatim component
-        if (verbatimComp != null)
+        if (verbatimComp != null && _parentClassicTag != null)
         {
             addVerbatimAfterComponent(_parentClassicTag, verbatimComp, _componentInstance);
         }
@@ -845,6 +849,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
      */
     private void popTag()
     {
+        log.fatal("Poping: "+this.getClass());
         Stack stack = getStack(pageContext);
 
         int size = stack.size();
@@ -1029,7 +1034,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         // and ask it for its component. If there is no parent UIComponentTag instance,
         // this tag represents the root component, so get it from the current Tree and return it.
         UIComponentClassicTagBase parentTag = getParentUIComponentClassicTagBase(pageContext);
-        
+
         if (parentTag == null)
         {
             // This is the root

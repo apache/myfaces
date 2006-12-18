@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2006 The Apache Software Foundation.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:xi="http://www.w3.org/2001/XInclude"
+              xmlns:mfp="http://myfaces.apache.org/maven-faces-plugin"
+              xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    
+     <!-- Initial application element with partial values -->
+  <application>
+    <action-listener>org.apache.myfaces.application.ActionListenerImpl</action-listener>
+    <navigation-handler>org.apache.myfaces.application.NavigationHandlerImpl</navigation-handler>
+    <!--
+    <variable-resolver>org.apache.myfaces.el.VariableResolverImpl</variable-resolver>
+    <property-resolver>org.apache.myfaces.el.PropertyResolverImpl</property-resolver>
+    -->
+    <view-handler>org.apache.myfaces.application.jsp.JspViewHandlerImpl</view-handler>
+    <state-manager>org.apache.myfaces.application.jsp.JspStateManagerImpl</state-manager>
+    <locale-config>
+        <supported-locale>en</supported-locale>
+        <supported-locale>de</supported-locale>
+        <supported-locale>fr</supported-locale>
+        <supported-locale>ja</supported-locale>
+        <supported-locale>it</supported-locale>
+        <supported-locale>es</supported-locale>
+        <supported-locale>ca</supported-locale>
+        <supported-locale>pt_BR</supported-locale>
+        <supported-locale>ru</supported-locale>
+        <supported-locale>zh_CN</supported-locale>
+    </locale-config>
+  </application>
+
+  <factory>
+    <faces-context-factory>org.apache.myfaces.context.FacesContextFactoryImpl</faces-context-factory>
+    <application-factory>org.apache.myfaces.application.ApplicationFactoryImpl</application-factory>
+    <lifecycle-factory>org.apache.myfaces.lifecycle.LifecycleFactoryImpl</lifecycle-factory>
+    <render-kit-factory>org.apache.myfaces.renderkit.RenderKitFactoryImpl</render-kit-factory>
+  </factory>
+
+</faces-config>
+

@@ -85,7 +85,7 @@ public class ViewTag
         int retVal = super.doStartTag();
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        
+
         Config.set(pageContext.getRequest(),
                        Config.FMT_LOCALE,
                        facesContext.getViewRoot().getLocale());

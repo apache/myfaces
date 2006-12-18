@@ -430,12 +430,12 @@ public class FacesConfigurator
     private void configureApplication(ServletContext servletContext)
     {
         Application application = ((ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY)).getApplication();
-
+       /*
         if (application instanceof ApplicationImpl) {
             ApplicationImpl appImpl = (ApplicationImpl)application;
             appImpl.setServletContext(servletContext);
         }
-         
+        */ 
         
         application.setActionListener((ActionListener) getApplicationObject(ActionListener.class, _dispenser.getActionListenerIterator(), null));
 

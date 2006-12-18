@@ -40,7 +40,8 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
     public DigesterFacesConfigUnmarshallerImpl(ExternalContext externalContext)
     {
         digester = new Digester();
-        digester.setValidating(true);
+        // TODO: validation set to false during implementation of 1.2
+        digester.setValidating(false);
         digester.setNamespaceAware(true);
         digester.setEntityResolver(new FacesConfigEntityResolver(externalContext));
         digester.setUseContextClassLoader(true);

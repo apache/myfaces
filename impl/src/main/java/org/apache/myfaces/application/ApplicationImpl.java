@@ -146,7 +146,7 @@ public class ApplicationImpl
         _servletContext = servletContext;
         ResolverForJSP _resolverForJSP = new ResolverForJSP();
         
-        System.out.println("factory = " + JspFactory.getDefaultFactory());
+        log.debug("factory = " + JspFactory.getDefaultFactory());
         JspApplicationContext appCtx = JspFactory.getDefaultFactory().getJspApplicationContext(_servletContext);
         
         appCtx.addELResolver(_resolverForJSP);

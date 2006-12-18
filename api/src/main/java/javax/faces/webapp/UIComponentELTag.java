@@ -84,7 +84,7 @@ public abstract class UIComponentELTag extends UIComponentClassicTagBase
     {
         if (getRendererType() != null)
         {
-            getComponentInstance().setRendererType(getRendererType());
+            component.setRendererType(getRendererType());
         }
 
         if (_rendered != null)
