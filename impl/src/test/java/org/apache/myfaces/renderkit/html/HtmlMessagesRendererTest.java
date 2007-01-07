@@ -69,8 +69,8 @@ public class HtmlMessagesRendererTest extends AbstractJsfTestCase
 
     public void testLayoutTable_Style() throws Exception
     {
-        facesContext.addMessage("test1", new FacesMessage(FacesMessage.SEVERITY_ERROR, "errorSumary", "detailErrorSummary"));
-        facesContext.addMessage("test2", new FacesMessage(FacesMessage.SEVERITY_WARN, "warnSumary", "detailWarnSummary"));
+        facesContext.addMessage("test1", new FacesMessage(FacesMessage.SEVERITY_WARN, "warnSumary", "detailWarnSummary"));
+        facesContext.addMessage("test2", new FacesMessage(FacesMessage.SEVERITY_ERROR, "errorSumary", "detailErrorSummary"));
 
         messages.setLayout("table");
         messages.setStyle("left: 48px; top: 432px; position: absolute");
