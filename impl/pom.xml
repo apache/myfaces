@@ -71,6 +71,7 @@
           <!--
           <faceletHandlerClass>org.apache.myfaces.trinidadinternal.facelets.TrinidadComponentHandler</faceletHandlerClass>
            -->
+          <packageContains>org.apache</packageContains>
           <skipApiOrBaseClasses>false</skipApiOrBaseClasses>
           <jsfVersion>1.2</jsfVersion>
           <force>true</force>
