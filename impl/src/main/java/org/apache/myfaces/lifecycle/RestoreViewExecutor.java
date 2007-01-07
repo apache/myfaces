@@ -21,8 +21,10 @@ package org.apache.myfaces.lifecycle;
 import java.io.IOException;
 
 import javax.faces.FacesException;
+import javax.faces.render.ResponseStateManager;
 import javax.faces.application.Application;
 import javax.faces.application.ViewHandler;
+import javax.faces.application.ViewExpiredException;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -34,21 +36,39 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.portlet.MyFacesGenericPortlet;
 import org.apache.myfaces.portlet.PortletUtil;
 import org.apache.myfaces.shared_impl.util.RestoreStateUtils;
+import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
 import org.apache.myfaces.util.DebugUtils;
 
 /**
- * Implements the lifecycle as described in Spec. 1.0 PFD Chapter 2
- * @author Nikolay Petrov
+ * Implements the Restore View Phase (JSF Spec 2.2.1)
  *
- * Restore view phase (JSF Spec 2.2.1)
+ * @author Nikolay Petrov
+ * @author Bruno Aranda (JSF 1.2)
+ * @version $Revision$ $Date$
+ *
  */
 class RestoreViewExecutor implements PhaseExecutor {
 
 	private static final Log log = LogFactory.getLog(LifecycleImpl.class);
 
 	public boolean execute(FacesContext facesContext) {
-		if(facesContext.getViewRoot() != null) {
-			facesContext.getViewRoot().setLocale(facesContext.getExternalContext().getRequestLocale());
+
+        if (facesContext == null)
+        {
+            throw new FacesException("FacesContext is null");
+        }
+
+        // init the ViewHandler
+        Application application = facesContext.getApplication();
+        ViewHandler viewHandler = application.getViewHandler();
+        viewHandler.initView(facesContext);
+
+        UIViewRoot viewRoot = facesContext.getViewRoot();
+
+        if(viewRoot != null) {
+            if (log.isTraceEnabled()) log.trace("View already exists in the FacesContext");
+
+            viewRoot.setLocale(facesContext.getExternalContext().getRequestLocale());
 			RestoreStateUtils.recursivelyHandleComponentReferencesAndSetValid(facesContext, facesContext.getViewRoot());
 			return false;
 		}
@@ -74,19 +94,30 @@ class RestoreViewExecutor implements PhaseExecutor {
 			}
 		}
 
-		Application application = facesContext.getApplication();
-		ViewHandler viewHandler = application.getViewHandler();
+        // Determine if this request is a postback or initial request
+        if (isPostback(facesContext))
+        {
+            if (log.isTraceEnabled()) log.trace("Request is a postback");
 
-		// boolean viewCreated = false;
-		UIViewRoot viewRoot = viewHandler.restoreView(facesContext, viewId);
-		if (viewRoot == null) {
-			viewRoot = viewHandler.createView(facesContext, viewId);
-			viewRoot.setViewId(viewId);
-			facesContext.renderResponse();
-			// viewCreated = true;
-		}
+            viewRoot = viewHandler.restoreView(facesContext, viewId);
+            if (viewRoot == null)
+            {
+                throw new ViewExpiredException("The expected view was not returned " +
+                        "for the view identifier: "+viewId);
+            }
+            RestoreStateUtils.recursivelyHandleComponentReferencesAndSetValid(facesContext, facesContext.getViewRoot());
+        }
+        else
+        {
+            if (log.isTraceEnabled()) log.trace("Request is not a postback. New UIViewRoot will be created");
 
-		facesContext.setViewRoot(viewRoot);
+            viewRoot = viewHandler.createView(facesContext, viewId);
+            viewRoot.setViewId(viewId);
+            facesContext.renderResponse();
+            // viewCreated = true;
+        }
+
+        facesContext.setViewRoot(viewRoot);
 
 		if (facesContext.getExternalContext().getRequestParameterMap().isEmpty()) {
 			// no POST or query parameters --> set render response flag
@@ -135,4 +166,16 @@ class RestoreViewExecutor implements PhaseExecutor {
 
 		return viewId;
 	}
+
+    /**
+     * Determine if this request is a postback or initial request
+     */
+    private boolean isPostback(FacesContext facesContext) {
+
+        ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
+        String renderkitId = viewHandler.calculateRenderKitId(facesContext);
+        ResponseStateManager rsm = RendererUtils.getResponseStateManager(facesContext,
+                renderkitId);
+        return rsm.isPostback(facesContext);
+    }
 }
