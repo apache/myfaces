@@ -16,23 +16,33 @@
 package org.apache.myfaces.application.jsp;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
 import javax.faces.FacesException;
+import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
 import javax.faces.application.ViewHandler;
+import javax.faces.application.StateManager;
+import javax.faces.application.ViewHandlerWrapper;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.context.ResponseWriter;
 import javax.faces.render.RenderKitFactory;
+import javax.faces.render.RenderKit;
 import javax.portlet.PortletURL;
 import javax.portlet.RenderResponse;
+import javax.portlet.PortletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.ServletRequest;
+import javax.servlet.jsp.jstl.core.Config;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletResponseWrapper;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -52,6 +62,8 @@ public class JspViewHandlerImpl
     private static final Log log = LogFactory.getLog(JspViewHandlerImpl.class);
     public static final String FORM_STATE_MARKER     = "<!--@@JSF_FORM_STATE_MARKER@@-->";
     public static final int    FORM_STATE_MARKER_LEN = FORM_STATE_MARKER.length();
+
+    private static final int BUFFER_SIZE = 4096;
 
 
     public JspViewHandlerImpl()
@@ -188,11 +200,21 @@ public class JspViewHandlerImpl
             throw new NullPointerException("viewToRender must not be null");
         }
 
+        // do not render the view if the rendered attribute for the view is false
+        if (!viewToRender.isRendered())
+        {
+            if (log.isTraceEnabled()) log.trace("View is not rendered");
+            return;
+        }
+
         ExternalContext externalContext = facesContext.getExternalContext();
 
         String viewId = facesContext.getViewRoot().getViewId();
 
+        if (log.isTraceEnabled()) log.trace("Rendering JSP view: "+viewId);
+
         if (PortletUtil.isPortletRequest(facesContext)) {
+             if (log.isTraceEnabled()) log.trace("It is a portlet request. Dispatching to view");
             externalContext.dispatch(viewId);
             return;
         }
@@ -224,27 +246,83 @@ public class JspViewHandlerImpl
 
         if (log.isTraceEnabled()) log.trace("Dispatching to " + viewId);
 
-        // handle character encoding as of section 2.5.2.2 of JSF 1.1
-        if (externalContext.getResponse() instanceof ServletResponse) {
-            ServletResponse response = (ServletResponse) externalContext.getResponse();
-            response.setLocale(viewToRender.getLocale());
-        }
+        ServletResponse response = (ServletResponse) externalContext.getResponse();
+        ServletRequest request = (ServletRequest) externalContext.getRequest();
 
-        // TODO: 2.5.2.2 for Portlet?  What do I do?
+            Locale locale = viewToRender.getLocale();
+            response.setLocale(locale);
+            Config.set(request,
+                       Config.FMT_LOCALE,
+                       facesContext.getViewRoot().getLocale());
 
         externalContext.dispatch(viewId);
+        externalContext.setResponse(response);
 
+         /*
         // handle character encoding as of section 2.5.2.2 of JSF 1.1
+
         if (externalContext.getRequest() instanceof HttpServletRequest) {
-            HttpServletResponse response = (HttpServletResponse) externalContext.getResponse();
-            HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
-            HttpSession session = request.getSession(false);
+            HttpServletRequest httpServletRequest = (HttpServletRequest) externalContext.getRequest();
+            HttpSession session = httpServletRequest.getSession(false);
 
             if (session != null) {
                 session.setAttribute(ViewHandler.CHARACTER_ENCODING_KEY, response.getCharacterEncoding());
             }
         }
+        */
+        // render the view in this method (since JSF 1.2)
+        RenderKitFactory renderFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+        RenderKit renderKit = renderFactory.getRenderKit(facesContext, viewToRender.getRenderKitId());
 
+        ResponseWriter responseWriter;
+        StringWriter enclosedWriter = new StringWriter();
+
+        // If the FacesContext has a non-null ResponseWriter create a new writer using its
+        // cloneWithWriter() method, passing the response’s Writer as the argument.
+        // Otherwise, use the current RenderKit to create a new ResponseWriter.
+        ResponseWriter oldResponseWriter = facesContext.getResponseWriter();
+        if (oldResponseWriter != null)
+        {
+            responseWriter = oldResponseWriter.cloneWithWriter(enclosedWriter);
+        }
+        else
+        {
+            if (log.isTraceEnabled()) log.trace("Creating new ResponseWriter");
+            
+            responseWriter = renderKit.createResponseWriter(enclosedWriter, null,
+                    ((HttpServletRequest) externalContext.getRequest()).getCharacterEncoding());
+        }
+
+        // Set the new ResponseWriter into the FacesContext, saving the old one aside.
+        facesContext.setResponseWriter(responseWriter);
+
+        // TODO: Call saveView() on the StateManager for this application, saving the result in a
+        // thread-safe manner for use in the writeState() method of ViewHandler.
+
+        // Call startDocument() on the ResponseWriter.
+        responseWriter.startDocument();
+
+        // Call encodeAll() on the UIViewRoot
+        viewToRender.encodeAll(facesContext);
+
+        // TODO: Output any content in the wrapped response from above to the response, removing the
+        // wrapped response from the thread-safe storage.
+        // (next line is a test only)
+        response.getWriter().write(enclosedWriter.toString());
+
+        // Call endDocument() on the ResponseWriter
+        responseWriter.endDocument();
+
+        // If the old ResponseWriter was not null, place the old ResponseWriter back
+        // into the FacesContext.
+        if (oldResponseWriter != null)
+        {
+            facesContext.setResponseWriter(oldResponseWriter);
+        }
+        
+        response.flushBuffer();
+
+        log.debug("SHOULD WRITE TO PAGE:\n"+enclosedWriter.toString());
     }
 
 
@@ -396,6 +474,5 @@ public class JspViewHandlerImpl
             return null;
         }
     }
-
 
 }
