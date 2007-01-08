@@ -22,8 +22,6 @@ import javax.el.ELResolver;
 import javax.el.FunctionMapper;
 import javax.el.VariableMapper;
 import javax.faces.context.FacesContext;
-import org.apache.el.lang.FunctionMapperImpl;
-import org.apache.el.lang.VariableMapperImpl;
 
 /**
  * ELContext used for JSF.
@@ -32,31 +30,39 @@ import org.apache.el.lang.VariableMapperImpl;
  */
 public class FacesELContext extends ELContext {
     
-    private ELResolver elResolver;
-    private FunctionMapper functionMapper;
-    private VariableMapper variableMapper;
+    private ELResolver _elResolver;
+    private FunctionMapper _functionMapper;
+    private VariableMapper _variableMapper;
     
     public FacesELContext(ELResolver elResolver,
                           FacesContext facesContext) {
-        this.elResolver = elResolver;
+        this._elResolver = elResolver;
         putContext(FacesContext.class, facesContext);
         
         // TODO: decide if we need to implement our own FunctionMapperImpl and
         //       VariableMapperImpl instead of relying on Tomcat's version.
-        this.functionMapper = new FunctionMapperImpl();
-        this.variableMapper = new VariableMapperImpl();
+        //this.functionMapper = new FunctionMapperImpl();
+        //this.variableMapper = new VariableMapperImpl();
     }
     
     public VariableMapper getVariableMapper() {
-        return variableMapper;
+        return _variableMapper;
+    }
+
+    public void setVariableMapper(VariableMapper varMapper) {
+        _variableMapper = varMapper;
     }
 
     public FunctionMapper getFunctionMapper() {
-        return functionMapper;
+        return _functionMapper;
+    }
+
+    public void setFunctionMapper(FunctionMapper functionMapper) {
+        _functionMapper = functionMapper;
     }
 
     public ELResolver getELResolver() {
-        return elResolver;
+        return _elResolver;
     }
     
 }
