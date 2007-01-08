@@ -45,6 +45,7 @@ import javax.faces.application.NavigationHandler;
 import javax.faces.application.StateManager;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.el.MethodBinding;
@@ -169,9 +170,17 @@ public class ApplicationImpl
         
         checkNull(facesContext, "facesContext");
         checkNull(name, "name");
+
+        Locale locale = Locale.getDefault();
         
-        //TODO: implement the rest of this
-        throw new UnsupportedOperationException("Not implemented yet.");
+        UIViewRoot viewRoot = facesContext.getViewRoot();
+        if (viewRoot != null && viewRoot.getLocale() != null)
+        {
+           locale = viewRoot.getLocale();
+        }
+
+        ResourceBundle bundle = ResourceBundle.getBundle(name, locale, Thread.currentThread().getContextClassLoader());
+        return bundle;
     }
     
     public UIComponent createComponent(ValueExpression componentExpression,
