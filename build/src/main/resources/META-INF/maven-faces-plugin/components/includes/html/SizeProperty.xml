@@ -19,12 +19,13 @@
 		xmlns:xi="http://www.w3.org/2001/XInclude">
 	<component>
         <property>
-			<description>The initial width of this control, in characters.</description>
-			<property-name>size</property-name>
+            <description>The initial width of this control, in characters.</description>
+            <property-name>size</property-name>
             <property-class>int</property-class>
-			<property-extension>
-				<mfp:required>false</mfp:required>
-			</property-extension>
-		</property>
+            <default-value>-2147483648</default-value>
+            <property-extension>
+                <mfp:required>false</mfp:required>
+            </property-extension>
+        </property>
     </component>
 </faces-config>

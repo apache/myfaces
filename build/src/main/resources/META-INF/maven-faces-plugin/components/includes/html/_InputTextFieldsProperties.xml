@@ -32,25 +32,27 @@
         <xi:include href="SizeProperty.xml" xpointer="/faces_config/component/*" />
 
         <property>
-			<description>The maximum number of characters allowed to be entered.</description>
-			<property-name>maxlength</property-name>
+            <description>The maximum number of characters allowed to be entered.</description>
+            <property-name>maxlength</property-name>
             <property-class>int</property-class>
-			<property-extension>
-				<mfp:required>false</mfp:required>
-			</property-extension>
-		</property>
+            <default-value>-2147483648</default-value>
+            <property-extension>
+                <mfp:required>false</mfp:required>
+            </property-extension>
+        </property>
 
         <property>
-			<description>If the value of this attribute is "off", render "off" as the value of the attribute.
-This indicates that the browser should disable its autocomplete feature for this component.
-This is useful for components that perform autocompletion and do not want the browser interfering.
-If this attribute is not set or the value is "on", render nothing.</description>
-			<property-name>autocomplete</property-name>
+            <description>If the value of this attribute is "off", render "off" as the value of the attribute.
+                This indicates that the browser should disable its autocomplete feature for this component.
+                This is useful for components that perform autocompletion and do not want the browser interfering.
+                If this attribute is not set or the value is "on", render nothing.
+            </description>
+            <property-name>autocomplete</property-name>
             <property-class>java.lang.String</property-class>
-			<property-extension>
-				<mfp:required>false</mfp:required>
-			</property-extension>
-		</property>
+            <property-extension>
+                <mfp:required>false</mfp:required>
+            </property-extension>
+        </property>
 
     </component>
 </faces-config>
