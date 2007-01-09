@@ -17,7 +17,6 @@ package org.apache.myfaces.application.jsp;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -26,8 +25,6 @@ import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
 import javax.faces.application.ViewHandler;
-import javax.faces.application.StateManager;
-import javax.faces.application.ViewHandlerWrapper;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -36,14 +33,11 @@ import javax.faces.render.RenderKitFactory;
 import javax.faces.render.RenderKit;
 import javax.portlet.PortletURL;
 import javax.portlet.RenderResponse;
-import javax.portlet.PortletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.jstl.core.Config;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpServletResponseWrapper;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -256,15 +250,15 @@ public class JspViewHandlerImpl
                        Config.FMT_LOCALE,
                        facesContext.getViewRoot().getLocale());
 
-        ViewResponseWrapper wrapped = new ViewResponseWrapper((HttpServletResponse)response);
+        ViewResponseWrapper wrappedResponse = new ViewResponseWrapper((HttpServletResponse)response);
 
-        externalContext.setResponse(wrapped);
+        externalContext.setResponse(wrappedResponse);
         externalContext.dispatch(viewId);
         externalContext.setResponse(response);
 
-        boolean errorResponse = wrapped.getStatus() < 200 || wrapped.getStatus() > 299;
+        boolean errorResponse = wrappedResponse.getStatus() < 200 || wrappedResponse.getStatus() > 299;
         if (errorResponse) {
-            wrapped.flushToWrappedResponse();
+            wrappedResponse.flushToWrappedResponse();
         }
         
         /*
@@ -282,7 +276,7 @@ public class JspViewHandlerImpl
         RenderKitFactory renderFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
         RenderKit renderKit = renderFactory.getRenderKit(facesContext, viewToRender.getRenderKitId());
 
-        ResponseWriter responseWriter;
+        ResponseWriter newResponseWriter;
         StringWriter enclosedWriter = new StringWriter();
 
         // If the FacesContext has a non-null ResponseWriter create a new writer using its
@@ -291,35 +285,44 @@ public class JspViewHandlerImpl
         ResponseWriter oldResponseWriter = facesContext.getResponseWriter();
         if (oldResponseWriter != null)
         {
-            responseWriter = oldResponseWriter.cloneWithWriter(enclosedWriter);
+            newResponseWriter = oldResponseWriter.cloneWithWriter(enclosedWriter);
         }
         else
         {
             if (log.isTraceEnabled()) log.trace("Creating new ResponseWriter");
             
-            responseWriter = renderKit.createResponseWriter(enclosedWriter, null,
+            newResponseWriter = renderKit.createResponseWriter(enclosedWriter, null,
                     ((HttpServletRequest) externalContext.getRequest()).getCharacterEncoding());
         }
 
         // Set the new ResponseWriter into the FacesContext, saving the old one aside.
-        facesContext.setResponseWriter(responseWriter);
+        facesContext.setResponseWriter(newResponseWriter);
 
         // TODO: Call saveView() on the StateManager for this application, saving the result in a
         // thread-safe manner for use in the writeState() method of ViewHandler.
 
         // Call startDocument() on the ResponseWriter.
-        responseWriter.startDocument();
+        newResponseWriter.startDocument();
 
         // Call encodeAll() on the UIViewRoot
         viewToRender.encodeAll(facesContext);
 
-        // TODO: Output any content in the wrapped response from above to the response, removing the
-        // wrapped response from the thread-safe storage.
+        // Output any content in the wrappedResponse response from above to the response, removing the
+        // wrappedResponse response from the thread-safe storage.
         // (next line is a test only)
+        if (oldResponseWriter != null) {
+            newResponseWriter = oldResponseWriter.cloneWithWriter(response.getWriter());
+        } else {
+            newResponseWriter = newResponseWriter.cloneWithWriter(response.getWriter());
+        }
+        facesContext.setResponseWriter(newResponseWriter);
+
         response.getWriter().write(enclosedWriter.toString());
+        response.getWriter().write(wrappedResponse.toString());
 
         // Call endDocument() on the ResponseWriter
-        responseWriter.endDocument();
+        newResponseWriter.endDocument();
+
 
         // If the old ResponseWriter was not null, place the old ResponseWriter back
         // into the FacesContext.
@@ -329,8 +332,6 @@ public class JspViewHandlerImpl
         }
         
         response.flushBuffer();
-
-        log.debug("SHOULD WRITE TO PAGE:\n"+enclosedWriter.toString());
     }
 
 

@@ -18,6 +18,7 @@ package org.apache.myfaces.taglib.core;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.shared_impl.util.LocaleUtils;
+import org.apache.myfaces.application.jsp.ViewResponseWrapper;
 
 import javax.el.ELContext;
 import javax.el.MethodExpression;
@@ -31,6 +32,7 @@ import javax.faces.webapp.UIComponentELTag;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.jstl.core.Config;
 import java.util.Locale;
+import java.io.IOException;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
@@ -82,9 +84,23 @@ public class ViewTag
     {
         if (log.isTraceEnabled()) log.trace("entering ViewTag.doStartTag");
 
-        int retVal = super.doStartTag();
-
         FacesContext facesContext = FacesContext.getCurrentInstance();
+        Object response = facesContext.getExternalContext().getResponse();
+        if (response instanceof ViewResponseWrapper)
+        {
+            try
+            {
+                pageContext.getOut().flush();
+                ((ViewResponseWrapper) response).flushToWrappedResponse();
+            }
+            catch (IOException e)
+            {
+                throw new JspException("Can't write content above <f:view> tag"
+                        + " " + e.getMessage());
+            }
+        }
+
+        int retVal = super.doStartTag();
 
         Config.set(pageContext.getRequest(),
                        Config.FMT_LOCALE,

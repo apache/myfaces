@@ -2,10 +2,10 @@ package org.apache.myfaces.application.jsp;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
+import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.io.Writer;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)
@@ -14,7 +14,7 @@ import java.io.Writer;
 public class ViewResponseWrapper extends HttpServletResponseWrapper
 {
     private PrintWriter _writer;
-    private StringWriter _stringWriter;
+    private CharArrayWriter _charArrayWriter;
     private int _status = HttpServletResponse.SC_OK;
 
     public ViewResponseWrapper(HttpServletResponse httpServletResponse)
@@ -57,7 +57,10 @@ public class ViewResponseWrapper extends HttpServletResponseWrapper
 
     public void flushToWrappedResponse() throws IOException
     {
-        getResponse().getWriter().write(_stringWriter.toString());
+        _charArrayWriter.writeTo(getResponse().getWriter());
+        _charArrayWriter.reset();
+        _writer.flush();
+        
     }
 
     @Override
@@ -65,8 +68,8 @@ public class ViewResponseWrapper extends HttpServletResponseWrapper
     {
         if (_writer == null)
         {
-            _stringWriter = new StringWriter(4096);
-            _writer = new PrintWriter(_stringWriter);
+            _charArrayWriter = new CharArrayWriter(4096);
+            _writer = new PrintWriter(_charArrayWriter);
         }
         return _writer;
     }
@@ -74,6 +77,6 @@ public class ViewResponseWrapper extends HttpServletResponseWrapper
     @Override
     public String toString()
     {
-        return _stringWriter.toString();
+        return _charArrayWriter.toString();
     }
 }

@@ -351,6 +351,7 @@ public class FacesContextImpl
         
         
         _elContext = new FacesELContext(getApplication().getELResolver(), this);
+        _elContext.putContext(FacesContext.class, this);
         
         ELContextEvent event = new ELContextEvent(_elContext);
         for (ELContextListener listener : getApplication().getELContextListeners()) {
