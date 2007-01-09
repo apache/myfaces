@@ -17,6 +17,7 @@ package org.apache.myfaces.application.jsp;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -255,12 +256,19 @@ public class JspViewHandlerImpl
                        Config.FMT_LOCALE,
                        facesContext.getViewRoot().getLocale());
 
+        ViewResponseWrapper wrapped = new ViewResponseWrapper((HttpServletResponse)response);
+
+        externalContext.setResponse(wrapped);
         externalContext.dispatch(viewId);
         externalContext.setResponse(response);
 
-         /*
+        boolean errorResponse = wrapped.getStatus() < 200 || wrapped.getStatus() > 299;
+        if (errorResponse) {
+            wrapped.flushToWrappedResponse();
+        }
+        
+        /*
         // handle character encoding as of section 2.5.2.2 of JSF 1.1
-
         if (externalContext.getRequest() instanceof HttpServletRequest) {
             HttpServletRequest httpServletRequest = (HttpServletRequest) externalContext.getRequest();
             HttpSession session = httpServletRequest.getSession(false);
