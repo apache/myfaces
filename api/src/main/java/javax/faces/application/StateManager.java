@@ -15,10 +15,8 @@
  */
 package javax.faces.application;
 
-import java.io.IOException;
 import javax.faces.context.FacesContext;
-
-
+import java.io.IOException;
 
 
 /**
@@ -34,10 +32,6 @@ public abstract class StateManager
     public static final String STATE_SAVING_METHOD_CLIENT = "client";
     public static final String STATE_SAVING_METHOD_SERVER = "server";
     private Boolean _savingStateInClient = null;
-
-    public StateManager() {
-        
-    }
     
     /**
      * @deprecated
@@ -146,7 +140,7 @@ public abstract class StateManager
     /**
      * @deprecated
      */
-    public class SerializedView
+    public class SerializedView 
     {
         private Object _structure;
         private Object _state;

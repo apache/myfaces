@@ -15,30 +15,6 @@
  */
 package org.apache.myfaces.application.jsp;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.render.RenderKit;
-import javax.portlet.PortletURL;
-import javax.portlet.RenderResponse;
-import javax.servlet.ServletResponse;
-import javax.servlet.ServletRequest;
-import javax.servlet.jsp.jstl.core.Config;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.portlet.MyFacesGenericPortlet;
@@ -47,8 +23,34 @@ import org.apache.myfaces.shared_impl.webapp.webxml.ServletMapping;
 import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
 import org.apache.myfaces.util.DebugUtils;
 
+import javax.faces.FacesException;
+import javax.faces.FactoryFinder;
+import javax.faces.application.Application;
+import javax.faces.application.StateManager;
+import javax.faces.application.ViewHandler;
+import javax.faces.component.UIViewRoot;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.faces.context.ResponseWriter;
+import javax.faces.render.RenderKit;
+import javax.faces.render.RenderKitFactory;
+import javax.portlet.PortletURL;
+import javax.portlet.RenderResponse;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.jstl.core.Config;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+
 /**
  * @author Thomas Spiegl (latest modification by $Author$)
+ * @author Bruno Aranda
  * @version $Revision$ $Date$
  */
 public class JspViewHandlerImpl
@@ -58,8 +60,7 @@ public class JspViewHandlerImpl
     public static final String FORM_STATE_MARKER     = "<!--@@JSF_FORM_STATE_MARKER@@-->";
     public static final int    FORM_STATE_MARKER_LEN = FORM_STATE_MARKER.length();
 
-    private static final int BUFFER_SIZE = 4096;
-
+    private static final String AFTER_VIEW_TAG_CONTENT_PARAM = JspViewHandlerImpl.class+".AFTER_VIEW_TAG_CONTENT";
 
     public JspViewHandlerImpl()
     {
@@ -260,6 +261,9 @@ public class JspViewHandlerImpl
         if (errorResponse) {
             wrappedResponse.flushToWrappedResponse();
         }
+
+        // store the wrapped response in the request, so it is thread-safe
+        externalContext.getRequestMap().put(AFTER_VIEW_TAG_CONTENT_PARAM, wrappedResponse);
         
         /*
         // handle character encoding as of section 2.5.2.2 of JSF 1.1
@@ -277,29 +281,25 @@ public class JspViewHandlerImpl
         RenderKit renderKit = renderFactory.getRenderKit(facesContext, viewToRender.getRenderKitId());
 
         ResponseWriter newResponseWriter;
-        StringWriter enclosedWriter = new StringWriter();
+        StateMarkerAwareWriter stateAwareWriter = new StateMarkerAwareWriter();
 
         // If the FacesContext has a non-null ResponseWriter create a new writer using its
-        // cloneWithWriter() method, passing the response’s Writer as the argument.
+        // cloneWithWriter() method, passing the response's Writer as the argument.
         // Otherwise, use the current RenderKit to create a new ResponseWriter.
         ResponseWriter oldResponseWriter = facesContext.getResponseWriter();
         if (oldResponseWriter != null)
         {
-            newResponseWriter = oldResponseWriter.cloneWithWriter(enclosedWriter);
+            newResponseWriter = oldResponseWriter.cloneWithWriter(stateAwareWriter);
         }
         else
         {
             if (log.isTraceEnabled()) log.trace("Creating new ResponseWriter");
-            
-            newResponseWriter = renderKit.createResponseWriter(enclosedWriter, null,
+            newResponseWriter = renderKit.createResponseWriter(stateAwareWriter, null,
                     ((HttpServletRequest) externalContext.getRequest()).getCharacterEncoding());
         }
 
         // Set the new ResponseWriter into the FacesContext, saving the old one aside.
         facesContext.setResponseWriter(newResponseWriter);
-
-        // TODO: Call saveView() on the StateManager for this application, saving the result in a
-        // thread-safe manner for use in the writeState() method of ViewHandler.
 
         // Call startDocument() on the ResponseWriter.
         newResponseWriter.startDocument();
@@ -307,22 +307,25 @@ public class JspViewHandlerImpl
         // Call encodeAll() on the UIViewRoot
         viewToRender.encodeAll(facesContext);
 
+        ResponseWriter responseWriter;
+        if (oldResponseWriter != null) {
+            responseWriter = oldResponseWriter.cloneWithWriter(response.getWriter());
+        } else {
+            responseWriter = newResponseWriter.cloneWithWriter(response.getWriter());
+        }
+        facesContext.setResponseWriter(responseWriter);
+
+        //response.getWriter().write(stateAwareWriter.parseResponse());
+        stateAwareWriter.flushToWriter(response.getWriter());
+
         // Output any content in the wrappedResponse response from above to the response, removing the
         // wrappedResponse response from the thread-safe storage.
-        // (next line is a test only)
-        if (oldResponseWriter != null) {
-            newResponseWriter = oldResponseWriter.cloneWithWriter(response.getWriter());
-        } else {
-            newResponseWriter = newResponseWriter.cloneWithWriter(response.getWriter());
-        }
-        facesContext.setResponseWriter(newResponseWriter);
-
-        response.getWriter().write(enclosedWriter.toString());
-        response.getWriter().write(wrappedResponse.toString());
+        ViewResponseWrapper afterViewTagResponse = (ViewResponseWrapper) externalContext.getRequestMap().get(AFTER_VIEW_TAG_CONTENT_PARAM);
+        externalContext.getRequestMap().remove(AFTER_VIEW_TAG_CONTENT_PARAM);
+        response.getWriter().write(afterViewTagResponse.toString());
 
         // Call endDocument() on the ResponseWriter
         newResponseWriter.endDocument();
-
 
         // If the old ResponseWriter was not null, place the old ResponseWriter back
         // into the FacesContext.
@@ -483,5 +486,52 @@ public class JspViewHandlerImpl
             return null;
         }
     }
+
+    /**
+     * Writes the response and replaces the state marker tags with the state information
+     * for the current context
+     */
+    private static class StateMarkerAwareWriter extends StringWriter
+    {
+         public StateMarkerAwareWriter()
+         {
+         }
+
+        public void flushToWriter(Writer writer) throws IOException
+        {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            StateManager stateManager = facesContext.getApplication().getStateManager();
+
+            StringWriter stateWriter = new StringWriter();
+            ResponseWriter realWriter = facesContext.getResponseWriter();
+            facesContext.setResponseWriter(realWriter.cloneWithWriter(stateWriter));
+
+            Object serializedView = stateManager.saveView(facesContext);
+            stateManager.writeState(facesContext, serializedView);
+            facesContext.setResponseWriter(realWriter);
+
+            StringBuffer contentBuffer = getBuffer();
+            StringBuffer state = stateWriter.getBuffer();
+
+            int form_marker = contentBuffer.indexOf(JspViewHandlerImpl.FORM_STATE_MARKER);
+            contentBuffer.replace(form_marker, form_marker+FORM_STATE_MARKER_LEN, state.toString());
+
+            int bufferLength = contentBuffer.length();
+            int index = 0;
+            int bufferSize = 512;
+
+            while (index < bufferLength)
+            {
+                int maxSize = Math.min(bufferSize,bufferLength-index);
+                char[] bufToWrite = new char[maxSize];
+
+                contentBuffer.getChars(index, index+maxSize, bufToWrite, 0);
+                writer.write(bufToWrite);
+
+                index += bufferSize;
+            }
+        }
+    }
+
 
 }

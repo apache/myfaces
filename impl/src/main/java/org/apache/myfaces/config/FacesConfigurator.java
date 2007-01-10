@@ -1,52 +1,22 @@
 /*
- * Copyright 2004 The Apache Software Foundation.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 package org.apache.myfaces.config;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.StringTokenizer;
-
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.application.NavigationHandler;
-import javax.faces.application.StateManager;
-import javax.faces.application.ViewHandler;
-import javax.faces.context.ExternalContext;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.VariableResolver;
-import javax.faces.event.ActionListener;
-import javax.faces.event.PhaseListener;
-import javax.faces.lifecycle.Lifecycle;
-import javax.faces.lifecycle.LifecycleFactory;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.webapp.FacesServlet;
-import javax.servlet.ServletContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -63,7 +33,30 @@ import org.apache.myfaces.renderkit.RenderKitFactoryImpl;
 import org.apache.myfaces.renderkit.html.HtmlRenderKitImpl;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.shared_impl.util.LocaleUtils;
+import org.apache.myfaces.shared_impl.util.StateUtils;
+import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
+import org.apache.myfaces.shared_impl.util.serial.SerialFactory;
 import org.xml.sax.SAXException;
+
+import javax.faces.FacesException;
+import javax.faces.FactoryFinder;
+import javax.faces.application.*;
+import javax.faces.context.ExternalContext;
+import javax.faces.el.PropertyResolver;
+import javax.faces.el.VariableResolver;
+import javax.faces.event.ActionListener;
+import javax.faces.event.PhaseListener;
+import javax.faces.lifecycle.Lifecycle;
+import javax.faces.lifecycle.LifecycleFactory;
+import javax.faces.render.RenderKit;
+import javax.faces.render.RenderKitFactory;
+import javax.faces.webapp.FacesServlet;
+import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.*;
 
 
 /**
@@ -103,7 +96,16 @@ public class FacesConfigurator
     private ExternalContext _externalContext;
     private FacesConfigUnmarshaller _unmarshaller;
     private FacesConfigDispenser _dispenser;
+    private static final String JAR_EXTENSION = ".jar";
+    private static final String META_INF_MANIFEST_SUFFIX = "!/META-INF/MANIFEST.MF";
+    private static final String JAR_PREFIX = "jar:";
 
+    public static final String MYFACES_API_PACKAGE_NAME = "myfaces-api";
+    public static final String MYFACES_IMPL_PACKAGE_NAME = "myfaces-impl";
+    public static final String MYFACES_TOMAHAWK_PACKAGE_NAME = "tomahawk";
+    public static final String MYFACES_TOMAHAWK_SANDBOX_PACKAGE_NAME = "tomahawk-sandbox";
+    public static final String COMMONS_EL_PACKAGE_NAME = "commons-el";
+    public static final String JSP_API_PACKAGE_NAME = "jsp-api";
 
     public FacesConfigurator(ExternalContext externalContext)
     {
@@ -112,7 +114,7 @@ public class FacesConfigurator
     }
 
 
-    public void configure(ServletContext servletContext)
+    public void configure()
         throws FacesException
     {
         //These two classes can be easily replaced by alternative implementations.
@@ -129,6 +131,11 @@ public class FacesConfigurator
             feedClassloaderConfigurations();
             feedContextSpecifiedConfig();
             feedWebAppConfig();
+
+            if(log.isInfoEnabled())
+            {
+                logMetaInf();
+            }
         } catch (IOException e)
         {
             throw new FacesException(e);
@@ -138,10 +145,11 @@ public class FacesConfigurator
         }
 
         configureFactories();
-        configureApplication(servletContext);
+        configureApplication();
         configureRenderKits();
         configureRuntimeConfig();
         configureLifecycle();
+        handleSerialFactory();
     }
 
     private void feedStandardConfig() throws IOException, SAXException
@@ -151,6 +159,127 @@ public class FacesConfigurator
         if (log.isInfoEnabled()) log.info("Reading standard config " + STANDARD_FACES_CONFIG_RESOURCE);
         _dispenser.feed(_unmarshaller.getFacesConfig(stream, STANDARD_FACES_CONFIG_RESOURCE));
         stream.close();
+    }
+
+    /**
+     * This method performs part of the factory search outlined in section 10.2.6.1.
+     */
+    protected void logMetaInf()
+    {
+        try
+        {
+            List li = new ArrayList();
+            li.add(new VersionInfo(MYFACES_API_PACKAGE_NAME));
+            li.add(new VersionInfo(MYFACES_IMPL_PACKAGE_NAME));
+            li.add(new VersionInfo(MYFACES_TOMAHAWK_SANDBOX_PACKAGE_NAME));
+            li.add(new VersionInfo(MYFACES_TOMAHAWK_PACKAGE_NAME));
+
+            Iterator it = ClassUtils.getResources("META-INF/MANIFEST.MF",
+                                                  this);
+            while (it.hasNext())
+            {
+                URL url = (URL)it.next();
+
+                for (int i = 0; i < li.size(); i++)
+                {
+                    VersionInfo versionInfo = (VersionInfo) li.get(i);
+                    if(checkJar(versionInfo, url))
+                        break;
+                }
+            }
+
+            for (int i = 0; i < li.size(); i++)
+            {
+                VersionInfo versionInfo = (VersionInfo) li.get(i);
+
+                if(versionInfo.getUsedVersion()!=null)
+                {
+                    if(log.isInfoEnabled())
+                    {
+                        log.info("Starting up MyFaces-package : "+versionInfo.getPackageName()+" in version : "
+                                +versionInfo.getUsedVersion()+" from path : "+versionInfo.getUsedVersionPath());
+                    }
+                }
+                else
+                {
+                    if(log.isInfoEnabled())
+                    {
+                        log.info("MyFaces-package : "+versionInfo.getPackageName()+" not found.");
+                    }
+                }
+            }
+        }
+        catch (Throwable e)
+        {
+            throw new FacesException(e);
+        }
+    }
+
+    private static boolean checkJar(VersionInfo versionInfo, URL path)
+    {
+        int index;
+
+        String version = versionInfo.getLastVersion();
+
+        String pathString = path.toString();
+
+        if(!pathString.startsWith(JAR_PREFIX))
+            return false;
+
+        if(!(pathString.length()>(META_INF_MANIFEST_SUFFIX.length()+JAR_PREFIX.length())))
+        {
+            if(log.isDebugEnabled())
+                log.debug("PathString : "+pathString+" not long enough to be parsed.");
+            return false;
+        }
+
+        pathString = pathString.substring(JAR_PREFIX.length(),pathString.length()-META_INF_MANIFEST_SUFFIX.length());
+
+        File file = new File(pathString);
+
+        String fileName = file.getName();
+
+        if(fileName.endsWith(JAR_EXTENSION) && ((index=fileName.indexOf(versionInfo.getPackageName()))!=-1))
+        {
+            int beginIndex = index+versionInfo.getPackageName().length()+1;
+
+            if(beginIndex > fileName.length()-1)
+            {
+                log.debug("beginIndex out of bounds. fileName: "+fileName);
+                return false;
+            }
+
+            int endIndex = fileName.length()-JAR_EXTENSION.length();
+
+            if(endIndex<0 || endIndex<=beginIndex)
+            {
+                log.debug("endIndex out of bounds. fileName: "+fileName);
+                return false;
+            }
+
+            String newVersion = fileName.substring(beginIndex, endIndex);
+
+            if(version == null)
+            {
+                versionInfo.addJarInfo(pathString,newVersion);
+           }
+            else if(version.equals(newVersion))
+            {
+                versionInfo.addJarInfo(pathString, version);
+            }
+            else
+            {
+                log.error("You are using the MyFaces-package : "+versionInfo.getPackageName() +
+                        " in different versions; first (and probably used) version is : "+versionInfo.getUsedVersion() +", currently encountered version is : "+newVersion+
+                        ". This will cause undesired behaviour. Please clean out your class-path." +
+                        " The first encountered version is loaded from : "+versionInfo.getUsedVersionPath()+". The currently encountered version is loaded from : "+
+                        path);
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
 
@@ -169,7 +298,7 @@ public class FacesConfigurator
                 while (it.hasNext())
                 {
                     URL url = (URL)it.next();
-                    InputStream stream = url.openStream();
+                    InputStream stream = openStreamWithoutCache(url);
                     InputStreamReader isr = new InputStreamReader(stream);
                     BufferedReader br = new BufferedReader(isr);
                     String className;
@@ -213,18 +342,25 @@ public class FacesConfigurator
         }
     }
 
+    private InputStream openStreamWithoutCache(URL url)
+            throws IOException
+    {
+        URLConnection connection = url.openConnection();
+        connection.setUseCaches(false);
+        return connection.getInputStream();
+    }
 
     /*private Map expandFactoryNames(Set factoryNames)
-    {
-        Map names = new HashMap();
-        Iterator itr = factoryNames.iterator();
-        while (itr.hasNext())
-        {
-            String name = (String) itr.next();
-            names.put(META_INF_SERVICES_LOCATION + name, name);
-        }
-        return names;
-    } */
+   {
+       Map names = new HashMap();
+       Iterator itr = factoryNames.iterator();
+       while (itr.hasNext())
+       {
+           String name = (String) itr.next();
+           names.put(META_INF_SERVICES_LOCATION + name, name);
+       }
+       return names;
+   } */
 
 
     /**
@@ -238,7 +374,7 @@ public class FacesConfigurator
             while (it.hasNext())
             {
                 URL url = (URL)it.next();
-                InputStream stream = url.openStream();
+                InputStream stream = openStreamWithoutCache(url);
                 String systemId = url.toExternalForm();
                 if (log.isInfoEnabled()) log.info("Reading config " + systemId);
                 _dispenser.feed(_unmarshaller.getFacesConfig(stream, systemId));
@@ -252,7 +388,7 @@ public class FacesConfigurator
     }
 
 
-    /**
+    /*
      * To make this easier AND to fix MYFACES-208 at the same time, this method is replaced by
      * {@link FacesConfigurator#feedClassloaderConfigurations}
      *
@@ -373,13 +509,13 @@ public class FacesConfigurator
             while (st.hasMoreTokens())
             {
                 String systemId = st.nextToken().trim();
-                
+
                 if(log.isWarnEnabled() && DEFAULT_FACES_CONFIG.equals(systemId))
-                    log.warn(DEFAULT_FACES_CONFIG + " has been specified in the " + 
+                    log.warn(DEFAULT_FACES_CONFIG + " has been specified in the " +
                             FacesServlet.CONFIG_FILES_ATTR + " context parameter of " +
                             "the deployment descriptor. This should be removed, " +
                             "as it will be loaded twice.  See JSF spec 1.1, 10.3.2");
-                
+
                 InputStream stream = _externalContext.getResourceAsStream(systemId);
                 if (stream == null)
                 {
@@ -427,16 +563,9 @@ public class FacesConfigurator
     }
 
 
-    private void configureApplication(ServletContext servletContext)
+    private void configureApplication()
     {
         Application application = ((ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY)).getApplication();
-       /*
-        if (application instanceof ApplicationImpl) {
-            ApplicationImpl appImpl = (ApplicationImpl)application;
-            appImpl.setServletContext(servletContext);
-        }
-        */ 
-        
         application.setActionListener((ActionListener) getApplicationObject(ActionListener.class, _dispenser.getActionListenerIterator(), null));
 
         if (_dispenser.getDefaultLocale() != null)
@@ -468,8 +597,8 @@ public class FacesConfigurator
         }
         application.setSupportedLocales(locales);
 
-        application.setVariableResolver(new LastVariableResolverInChain((VariableResolver) getApplicationObject(VariableResolver.class,
-                                                                                _dispenser.getVariableResolverIterator(), application.getVariableResolver())));
+        application.setVariableResolver((VariableResolver) getApplicationObject(VariableResolver.class,
+                                                                                _dispenser.getVariableResolverIterator(), application.getVariableResolver()));
         application.setViewHandler((ViewHandler) getApplicationObject(ViewHandler.class,
                                                                       _dispenser.getViewHandlerIterator(), application.getViewHandler()));
 
@@ -585,7 +714,7 @@ public class FacesConfigurator
             ManagedBean bean = (ManagedBean) iterator.next();
 
             if(log.isWarnEnabled() && runtimeConfig.getManagedBean(bean.getManagedBeanName()) != null)
-                log.warn("More than one managed bean w/ the name of '" 
+                log.warn("More than one managed bean w/ the name of '"
                         + bean.getManagedBeanName() + "' - only keeping the last ");
 
             runtimeConfig.addManagedBean(bean.getManagedBeanName(), bean);
@@ -669,4 +798,149 @@ public class FacesConfigurator
 
         return LifecycleFactory.DEFAULT_LIFECYCLE;
     }
+
+    public static class VersionInfo
+    {
+        private String packageName;
+        private List jarInfos;
+
+        public VersionInfo(String packageName)
+        {
+
+            this.packageName = packageName;
+        }
+
+        public String getPackageName()
+        {
+            return packageName;
+        }
+
+        public void setPackageName(String packageName)
+        {
+            this.packageName = packageName;
+        }
+
+        public void addJarInfo(String path, String version)
+        {
+            if(jarInfos == null)
+            {
+                jarInfos = new ArrayList();
+            }
+
+            jarInfos.add(new JarInfo(path, version));
+        }
+
+        public String getLastVersion()
+        {
+            if(jarInfos == null)
+                return null;
+            if(jarInfos.size()==0)
+                return null;
+
+            return ((JarInfo) jarInfos.get(jarInfos.size()-1)).getVersion();
+        }
+
+        /**Probably, the first encountered version will be used.
+         *
+         * @return probably used version
+         */
+        public String getUsedVersion()
+        {
+
+            if(jarInfos == null)
+                return null;
+            if(jarInfos.size()==0)
+                return null;
+
+            return ((JarInfo) jarInfos.get(0)).getVersion();
+        }
+
+        /**Probably, the first encountered version will be used.
+         *
+         * @return probably used classpath
+         */
+        public String getUsedVersionPath()
+        {
+
+            if(jarInfos == null)
+                return null;
+            if(jarInfos.size()==0)
+                return null;
+
+            return ((JarInfo) jarInfos.get(0)).getUrl();
+
+        }
+    }
+
+    public static class JarInfo
+    {
+        private String url;
+        private String version;
+
+        public JarInfo(String url, String version)
+        {
+            this.url = url;
+            this.version = version;
+        }
+
+        public String getVersion()
+        {
+            return version;
+        }
+
+        public void setVersion(String version)
+        {
+            this.version = version;
+        }
+
+        public String getUrl()
+        {
+            return url;
+        }
+
+        public void setUrl(String url)
+        {
+            this.url = url;
+        }
+    }
+
+
+    private void handleSerialFactory(){
+
+        String serialProvider = _externalContext.getInitParameter(StateUtils.SERIAL_FACTORY);
+        SerialFactory serialFactory = null;
+
+        if(serialProvider == null)
+        {
+            serialFactory = new DefaultSerialFactory();
+        }
+        else
+        {
+            try
+            {
+                serialFactory = (SerialFactory) ClassUtils.newInstance(serialProvider);
+
+            }catch(ClassCastException e){
+                log.error("Make sure '" + serialProvider +
+                        "' implements the correct interface", e);
+            }
+            catch(Exception e){
+                log.error(e);
+            }
+            finally
+            {
+                if(serialFactory == null)
+                {
+                    serialFactory = new DefaultSerialFactory();
+                    log.error("Using default serialization provider");
+                }
+            }
+
+        }
+
+        log.info("Serialization provider : " + serialFactory.getClass());
+        _externalContext.getApplicationMap().put(StateUtils.SERIAL_FACTORY, serialFactory);
+
+    }
+
 }
