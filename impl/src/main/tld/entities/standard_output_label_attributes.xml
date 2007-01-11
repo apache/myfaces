@@ -1,6 +1,7 @@
 <!-- all standard attributes of the outputLabel tag -->
 &ui_output_attributes;
 &html_universal_attributes;
+&html_tabindex_attribute;
 &html_event_handler_attributes;
 &html_label_attributes;
 <!-- LabelRenderer attributes -->
