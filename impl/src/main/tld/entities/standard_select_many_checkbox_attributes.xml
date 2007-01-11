@@ -1,5 +1,6 @@
 <!-- all standard attributes of the selectManyCheckbox tag -->
 &ui_select_many_attributes;
+&html_border_attribute;
 &html_universal_attributes;
 &html_event_handler_attributes;
 &html_input_checkbox_attributes;
