@@ -50,6 +50,7 @@ public class HtmlResponseStateManager
         Object[] savedState = new Object[3];
 
         if (facescontext.getApplication().getStateManager().isSavingStateInClient(facescontext)) {
+            if (log.isTraceEnabled()) log.trace("Writing state in client");
             Object treeStruct = serializedview.getStructure();
             Object compStates = serializedview.getState();
 
@@ -69,6 +70,7 @@ public class HtmlResponseStateManager
             }
         }
         else {
+            if (log.isTraceEnabled()) log.trace("Writing state in server");
             // write viewSequence
             Object treeStruct = serializedview.getStructure();
             if (treeStruct != null) {
@@ -79,6 +81,8 @@ public class HtmlResponseStateManager
         }
 
         savedState[VIEWID_PARAM] = facescontext.getViewRoot().getViewId();
+
+        if (log.isTraceEnabled()) log.trace("Writing view state and renderKit fields");
 
         // write the view state field
         writeViewStateField(facescontext, responseWriter, savedState);
@@ -128,6 +132,7 @@ public class HtmlResponseStateManager
 
         if (restoredViewId == null || !restoredViewId.equals(viewId)) {
             //no saved state or state of different viewId
+            if (log.isTraceEnabled()) log.trace("No saved state or state of a different viewId"+restoredViewId);
             return null;
         }
 
@@ -146,8 +151,9 @@ public class HtmlResponseStateManager
 
         String restoredViewId = (String) savedState[VIEWID_PARAM];
 
-        if (restoredViewId == null || !restoredViewId.equals(facesContext)) {
+        if (restoredViewId == null) {
             //no saved state or state of different viewId
+            if (log.isTraceEnabled()) log.trace("No saved state or state of a different viewId: "+restoredViewId);
             return null;
         }
 

@@ -18,26 +18,25 @@
  */
 package org.apache.myfaces.lifecycle;
 
-import java.io.IOException;
-
-import javax.faces.FacesException;
-import javax.faces.render.ResponseStateManager;
-import javax.faces.application.Application;
-import javax.faces.application.ViewHandler;
-import javax.faces.application.ViewExpiredException;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
-import javax.portlet.PortletRequest;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.portlet.MyFacesGenericPortlet;
 import org.apache.myfaces.portlet.PortletUtil;
-import org.apache.myfaces.shared_impl.util.RestoreStateUtils;
 import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
+import org.apache.myfaces.shared_impl.util.RestoreStateUtils;
 import org.apache.myfaces.util.DebugUtils;
+
+import javax.faces.FacesException;
+import javax.faces.application.Application;
+import javax.faces.application.ViewExpiredException;
+import javax.faces.application.ViewHandler;
+import javax.faces.component.UIViewRoot;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.faces.event.PhaseId;
+import javax.faces.render.ResponseStateManager;
+import javax.portlet.PortletRequest;
+import java.io.IOException;
 
 /**
  * Implements the Restore View Phase (JSF Spec 2.2.1)
@@ -58,7 +57,7 @@ class RestoreViewExecutor implements PhaseExecutor {
             throw new FacesException("FacesContext is null");
         }
 
-        // init the ViewHandler
+        // init the View
         Application application = facesContext.getApplication();
         ViewHandler viewHandler = application.getViewHandler();
         viewHandler.initView(facesContext);
@@ -82,7 +81,7 @@ class RestoreViewExecutor implements PhaseExecutor {
 			if(externalContext.getRequestServletPath() == null) {
 				return true;
 			}
-			
+
 			if (!externalContext.getRequestServletPath().endsWith("/")) {
 				try {
 					externalContext.redirect(externalContext.getRequestServletPath() + "/");
@@ -105,6 +104,7 @@ class RestoreViewExecutor implements PhaseExecutor {
                 throw new ViewExpiredException("The expected view was not returned " +
                         "for the view identifier: "+viewId);
             }
+            facesContext.setViewRoot(viewRoot);
             RestoreStateUtils.recursivelyHandleComponentReferencesAndSetValid(facesContext, facesContext.getViewRoot());
         }
         else
@@ -119,12 +119,6 @@ class RestoreViewExecutor implements PhaseExecutor {
 
         facesContext.setViewRoot(viewRoot);
 
-		if (facesContext.getExternalContext().getRequestParameterMap().isEmpty()) {
-			// no POST or query parameters --> set render response flag
-			facesContext.renderResponse();
-		}
-
-		RestoreStateUtils.recursivelyHandleComponentReferencesAndSetValid(facesContext, viewRoot);
 		return false;
 	}
 

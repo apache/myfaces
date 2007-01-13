@@ -40,6 +40,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.jstl.core.Config;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -265,7 +266,7 @@ public class JspViewHandlerImpl
         // store the wrapped response in the request, so it is thread-safe
         externalContext.getRequestMap().put(AFTER_VIEW_TAG_CONTENT_PARAM, wrappedResponse);
         
-        /*
+
         // handle character encoding as of section 2.5.2.2 of JSF 1.1
         if (externalContext.getRequest() instanceof HttpServletRequest) {
             HttpServletRequest httpServletRequest = (HttpServletRequest) externalContext.getRequest();
@@ -275,7 +276,7 @@ public class JspViewHandlerImpl
                 session.setAttribute(ViewHandler.CHARACTER_ENCODING_KEY, response.getCharacterEncoding());
             }
         }
-        */
+        
         // render the view in this method (since JSF 1.2)
         RenderKitFactory renderFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
         RenderKit renderKit = renderFactory.getRenderKit(facesContext, viewToRender.getRenderKitId());
@@ -357,10 +358,7 @@ public class JspViewHandlerImpl
      */
     public void writeState(FacesContext facesContext) throws IOException
     {
-        if (facesContext.getApplication().getStateManager().isSavingStateInClient(facesContext))
-        {
-            facesContext.getResponseWriter().write(FORM_STATE_MARKER);
-        }
+        facesContext.getResponseWriter().write(FORM_STATE_MARKER);
     }
 
 
@@ -507,6 +505,9 @@ public class JspViewHandlerImpl
             facesContext.setResponseWriter(realWriter.cloneWithWriter(stateWriter));
 
             Object serializedView = stateManager.saveView(facesContext);
+
+            System.out.println("SERIALIZED VIEW: "+(serializedView == null));
+
             stateManager.writeState(facesContext, serializedView);
             facesContext.setResponseWriter(realWriter);
 
@@ -530,6 +531,7 @@ public class JspViewHandlerImpl
 
                 index += bufferSize;
             }
+
         }
     }
 
