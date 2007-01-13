@@ -506,8 +506,6 @@ public class JspViewHandlerImpl
 
             Object serializedView = stateManager.saveView(facesContext);
 
-            System.out.println("SERIALIZED VIEW: "+(serializedView == null));
-
             stateManager.writeState(facesContext, serializedView);
             facesContext.setResponseWriter(realWriter);
 
