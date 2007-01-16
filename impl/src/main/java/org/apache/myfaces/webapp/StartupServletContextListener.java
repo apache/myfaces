@@ -20,6 +20,7 @@ package org.apache.myfaces.webapp;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.application.ApplicationImpl;
 import org.apache.myfaces.config.FacesConfigValidator;
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.context.servlet.ServletExternalContextImpl;
@@ -27,6 +28,8 @@ import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
 
 import javax.faces.FactoryFinder;
+import javax.faces.application.Application;
+import javax.faces.application.ApplicationFactory;
 import javax.faces.context.ExternalContext;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -85,6 +88,12 @@ public class StartupServletContextListener
                 WebXml.init(externalContext);
 
                 servletContext.setAttribute(FACES_INIT_DONE, Boolean.TRUE);
+                
+                Application application = ((ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY)).getApplication();
+                if(application instanceof ApplicationImpl)
+                {
+                    ((ApplicationImpl) application).setServletContext(servletContext);
+                }
             }
             else
             {
