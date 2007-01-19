@@ -38,7 +38,8 @@
             <property-class>java.lang.String</property-class>
             <property-extension>
 				<mfp:required>true</mfp:required>
-			</property-extension>
+                <mfp:literal-only>true</mfp:literal-only>
+            </property-extension>
 		</property>
 		<property>
 			<description>The number of rows to be displayed.  Specify zero for all remaining rows in the table.</description>
