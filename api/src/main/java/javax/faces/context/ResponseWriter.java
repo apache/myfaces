@@ -75,6 +75,8 @@ public abstract class ResponseWriter
     /**
      * @since 1.2
      */
-    
-    public abstract void writeText(Object object, UIComponent component, String string) throws IOException;
+    public void writeText(Object object, UIComponent component, String string) throws IOException
+    {
+        writeText(object, string);
+    }
 }
