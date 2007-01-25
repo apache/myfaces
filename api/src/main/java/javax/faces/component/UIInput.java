@@ -345,7 +345,7 @@ public class UIInput
     {
         if (context == null) throw new NullPointerException("context");
         Object submittedValue = getSubmittedValue();
-        if (submittedValue == null && !this.isRequired()) return;
+        if (submittedValue == null) return;
 
         Object convertedValue = getConvertedValue(context, submittedValue);
 
