@@ -113,7 +113,7 @@ public class UICommand
 
     public void queueEvent(FacesEvent event)
     {
-        if (event != null && event instanceof ActionEvent)
+        if (event != null && this == event.getSource() && event instanceof ActionEvent)
         {
             if (isImmediate())
             {
