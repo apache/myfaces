@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <artifactId>myfaces-core-project</artifactId>
     <groupId>org.apache.myfaces.core</groupId>
-    <version>1.1.5-SNAPSHOT</version>
+    <version>1.1.5</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.myfaces.core</groupId>
@@ -13,9 +13,9 @@
     defined in JSR-127 (see also http://www.jcp.org/en/jsr/detail?id=127).
   </description>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk/api</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk/api</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/trunk/api</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/1_1_5</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/1_1_5</developerConnection>
+    <url>https://svn.apache.org/repos/asf/myfaces/core/branches/1_1_5</url>
   </scm>
   <profiles>
     <profile>
@@ -62,9 +62,9 @@
                 </goals>
                 <configuration>
                   <tasks>
-                    <property value="${project.basedir}/src/main/java" name="src.dir"></property>
+                    <property value="${project.basedir}/src/main/java" name="src.dir" />
                     <ant inheritRefs="true" inheritAll="true" antfile="build.xml" dir="${project.basedir}">
-                      <target name="generate-components"></target>
+                      <target name="generate-components" />
                     </ant>
                   </tasks>
                 </configuration>

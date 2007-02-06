@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.apache.myfaces.core</groupId>
     <artifactId>myfaces-core-project</artifactId>
-    <version>1.1.5-SNAPSHOT</version>
+    <version>1.1.5</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.myfaces.core</groupId>
@@ -12,9 +12,9 @@
   <description>This is the MyFaces Impl Subproject Description [INSERT MORE STUFF HERE]</description>
   <url>http://myfaces.apache.org</url>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk/impl</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk/impl</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/trunk/impl</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/1_1_5</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/1_1_5</developerConnection>
+    <url>https://svn.apache.org/repos/asf/myfaces/core/branches/1_1_5</url>
   </scm>
   <build>
     <resources>
