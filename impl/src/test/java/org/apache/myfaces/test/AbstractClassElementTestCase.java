@@ -77,7 +77,14 @@ public abstract class AbstractClassElementTestCase extends TestCase
             if(is == null)
                 throw new Exception("Could not locate resource :" + resourceName);
         
-            parser.parse(is, handler);
+            try
+            {
+              parser.parse(is, handler);
+            }
+            catch (Exception e)
+            {
+              throw new Exception("Error parsing " + resourceName, e);
+            }
             
         }
         
