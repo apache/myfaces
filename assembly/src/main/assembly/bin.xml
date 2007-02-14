@@ -24,15 +24,15 @@
     <fileSet>
       <directory>target/javadoc</directory>
       <outputDirectory>javadoc</outputDirectory>
-      <includes>
-        <include>*.jar</include>
-      </includes>
+      <excludes>
+        <exclude>META-INF/*</exclude>
+      </excludes>
     </fileSet>
     <fileSet>
       <directory>target/tlddoc</directory>
       <outputDirectory>tlddoc</outputDirectory>
       <includes>
-        <include>*.jar</include>
+        <include>**/*</include>
       </includes>
     </fileSet>
 
