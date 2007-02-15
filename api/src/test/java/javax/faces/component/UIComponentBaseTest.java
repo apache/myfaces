@@ -22,6 +22,7 @@ package javax.faces.component;
 import javax.faces.el.ValueBinding;
 
 import junit.framework.Test;
+import junit.framework.TestSuite;
 
 import org.apache.shale.test.base.AbstractJsfTestCase;
 import org.apache.shale.test.mock.MockRenderKitFactory;
@@ -39,7 +40,9 @@ public class UIComponentBaseTest extends AbstractJsfTestCase {
 	}
 
 	public static Test suite() {
-		return null; // keep this method or maven won't run it
+        TestSuite suite = new TestSuite();
+        suite.addTestSuite(UIComponentBaseTest.class);
+        return suite;        
 	}
 
 	public void setUp() {
@@ -130,7 +133,7 @@ public class UIComponentBaseTest extends AbstractJsfTestCase {
         
 		String str = input.getClientId(facesContext);
 
-		assertEquals(str, "data:input");
+		assertEquals(str, "data:input99");
 
 		UIData uiData = (UIData) input.getParent().getParent();
 
@@ -150,10 +153,13 @@ public class UIComponentBaseTest extends AbstractJsfTestCase {
 
 		uiData.getChildren().add(column);
 
-		UIInput input = new UIInput();
-		input.setId("input");
+        UIInput input = null;
 
-		column.getChildren().add(input);
+        for(int i=0; i<100; i++) {
+            input = new UIInput();
+            input.setId("input"+i);
+            column.getChildren().add(input);
+        }
 
 		viewRoot.getChildren().add(uiData);
 
@@ -202,15 +208,13 @@ public class UIComponentBaseTest extends AbstractJsfTestCase {
 
 		UIInput input = createInputInTree();
 
-		UIComponent comp = input.findComponent(":data:input");
-
-		assertEquals(input, comp);
-
-		comp = input.findComponent("input");
-
-		assertEquals(input, comp);
-
-	}
+        for(int j=0; j<100; j++) {
+            UIComponent comp = input.findComponent(":data:input"+j);
+            assertEquals("input-ids are not equal","input"+j, comp.getId());
+            comp = input.findComponent("input"+j);
+            assertEquals("input-ids are not equal","input"+j, comp.getId());
+        }
+    }
 
 	/*
 	 * Test method for 'javax.faces.component.UIComponentBase.getFacets()'

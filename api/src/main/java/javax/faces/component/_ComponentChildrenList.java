@@ -19,9 +19,7 @@
 package javax.faces.component;
 
 import java.io.Serializable;
-import java.util.AbstractList;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
@@ -34,10 +32,15 @@ class _ComponentChildrenList
 	private static final long serialVersionUID = -6775078929331154224L;
 	private UIComponent _component;
     private List _list = new ArrayList();
+    private Map _idIndexedMap = new HashMap();
 
     _ComponentChildrenList(UIComponent component)
     {
         _component = component;
+    }
+    
+    public UIComponent get(String id) {
+       return (UIComponent) _idIndexedMap.get(id);
     }
 
     public Object get(int index)
@@ -55,7 +58,7 @@ class _ComponentChildrenList
         checkValue(value);
         setNewParent((UIComponent)value);
         UIComponent child = (UIComponent) _list.set(index, value);
-        if (child != null) child.setParent(null);
+        resetParent(child);
         return child;
     }
 
@@ -76,7 +79,7 @@ class _ComponentChildrenList
     public Object remove(int index)
     {
         UIComponent child = (UIComponent) _list.remove(index);
-        if (child != null) child.setParent(null);
+        resetParent(child);
         return child;
     }
 
@@ -89,6 +92,13 @@ class _ComponentChildrenList
             oldParent.getChildren().remove(child);
         }
         child.setParent(_component);
+        _idIndexedMap.put(child.getId(),child);
+    }
+
+    private void resetParent(UIComponent child) {
+        if (child != null)
+                child.setParent(null);
+        _idIndexedMap.remove(child.getId());
     }
 
     private void checkValue(Object value)
@@ -97,4 +107,8 @@ class _ComponentChildrenList
         if (!(value instanceof UIComponent)) throw new ClassCastException("value is not a UIComponent");
     }
 
+    public void updateId(String oldId, UIComponent component) {
+        _idIndexedMap.remove(oldId);
+        _idIndexedMap.put(component.getId(), component);
+    }
 }

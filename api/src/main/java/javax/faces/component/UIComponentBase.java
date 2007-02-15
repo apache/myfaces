@@ -216,7 +216,7 @@ public abstract class UIComponentBase
             idWasNull = true;
         }
 
-        UIComponent namingContainer = _ComponentUtils.findParentNamingContainer(this, false);
+        UIComponent namingContainer = findParentNamingContainer(this, false);
         if (namingContainer != null)
         {
             _clientId = namingContainer.getClientId(context) + NamingContainer.SEPARATOR_CHAR + id;
@@ -277,6 +277,16 @@ public abstract class UIComponentBase
         isIdValid(id);
         _id = id;
         _clientId = null;
+
+        UIComponent parent = getParent();
+
+        if(parent != null) {
+            List li = getParent().getChildren();
+
+            if(li instanceof _ComponentChildrenList) {
+                ((_ComponentChildrenList) li).updateId(_id,this);
+            }
+        }
     }
 
     public UIComponent getParent()
@@ -393,7 +403,7 @@ public abstract class UIComponentBase
         UIComponent findBase;
         if (expr.charAt(0) == NamingContainer.SEPARATOR_CHAR)
         {
-            findBase = _ComponentUtils.getRootComponent(this);
+            findBase = getRootComponent(this);
             expr = expr.substring(1);
         }
         else
@@ -404,19 +414,19 @@ public abstract class UIComponentBase
             }
             else
             {
-                findBase = _ComponentUtils.findParentNamingContainer(this, true /* root if not found */);
+                findBase = findParentNamingContainer(this, true /* root if not found */);
             }
         }
 
         int separator = expr.indexOf(NamingContainer.SEPARATOR_CHAR);
         if (separator == -1)
         {
-            return _ComponentUtils.findComponent(findBase, expr);
+            return findComponent(findBase, expr);
         }
         else
         {
             String id = expr.substring(0, separator);
-            findBase = _ComponentUtils.findComponent(findBase, id);
+            findBase = findComponent(findBase, id);
             if (findBase == null)
             {
                 return null;
@@ -429,6 +439,145 @@ public abstract class UIComponentBase
                 return findBase.findComponent(expr.substring(separator + 1));
             }
         }
+    }
+
+    static UIComponent findParentNamingContainer(UIComponent component,
+                                                 boolean returnRootIfNotFound)
+    {
+        UIComponent parent = component.getParent();
+        if (returnRootIfNotFound && parent == null)
+        {
+            return component;
+        }
+        while (parent != null)
+        {
+            if (parent instanceof NamingContainer) return parent;
+            if (returnRootIfNotFound)
+            {
+                UIComponent nextParent = parent.getParent();
+                if (nextParent == null)
+                {
+                    return parent;  //Root
+                }
+                parent = nextParent;
+            }
+            else
+            {
+                parent = parent.getParent();
+            }
+        }
+        return null;
+    }
+
+    static UIComponent getRootComponent(UIComponent component)
+    {
+        UIComponent parent;
+        for(;;)
+        {
+            parent = component.getParent();
+            if (parent == null) return component;
+            component = parent;
+        }
+    }
+
+    /**
+     * Find the component with the specified id starting from the specified
+     * component.
+     * <p>
+     * Param id must not contain any NamingContainer.SEPARATOR_CHAR characters
+     * (ie ":"). This method explicitly does <i>not</i> search into any
+     * child naming container components; this is expected to be handled
+     * by the caller of this method.
+     * <p>
+     * For an implementation of findComponent which does descend into
+     * child naming components, see org.apache.myfaces.custom.util.ComponentUtils.
+     *
+     * @return findBase, a descendant of findBase, or null.
+     */
+    private UIComponent findComponent(UIComponent findBase, String id)
+    {
+        if (idsAreEqual(id, findBase)){
+            return findBase;
+        }
+
+        /*UIComponent comp = findComponentCached(id, findBase);
+
+        if(comp != null)
+            return comp;*/     
+
+        return findComponentNormal(id, findBase);
+    }
+
+    private UIComponent findComponentCached(String id, UIComponent findBase) {
+
+        if(!(findBase.getChildren() instanceof _ComponentChildrenList)) {
+            return null;
+        }
+
+        _ComponentChildrenList li = (_ComponentChildrenList) findBase.getChildren();
+
+        UIComponent comp = li.get(id);
+
+        if(comp != null)
+            return comp;
+
+        for (Iterator it = findBase.getFacetsAndChildren(); it.hasNext(); )
+        {
+            UIComponent childOrFacet = (UIComponent)it.next();
+            UIComponent find = findComponentCached(id,childOrFacet);
+            if (find != null) return find;
+        }
+
+        return null;
+    }
+
+    private UIComponent findComponentNormal(String id, UIComponent findBase) {
+        if (idsAreEqual(id, findBase))
+        {
+            return findBase;
+        }
+
+        for (Iterator it = findBase.getFacetsAndChildren(); it.hasNext(); )
+        {
+            UIComponent childOrFacet = (UIComponent)it.next();
+            UIComponent find = findComponentNormal(id, childOrFacet);
+            if (find != null) return find;
+        }
+
+        return null;
+    }
+
+    /*
+     * Return true if the specified component matches the provided id.
+     * This needs some quirks to handle components whose id value gets
+     * dynamically "tweaked", eg a UIData component whose id gets
+     * the current row index appended to it.
+     */
+    private boolean idsAreEqual(String id, UIComponent cmp)
+    {
+        if(id.equals(cmp.getId()))
+            return true;
+
+        if(cmp instanceof UIData)
+        {
+            UIData uiData = ((UIData) cmp);
+
+            if(uiData.getRowIndex()==-1)
+            {
+                return dynamicIdIsEqual(id,cmp.getId());
+            }
+            else
+            {
+                return id.equals(cmp.getId()+NamingContainer.SEPARATOR_CHAR+uiData.getRowIndex());
+            }
+        }
+
+        return false;
+    }
+
+    private boolean dynamicIdIsEqual(String dynamicId, String id)
+    {
+        return dynamicId.matches(id+":[0-9]*");
     }
 
 
