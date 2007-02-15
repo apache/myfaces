@@ -84,7 +84,7 @@ public abstract class FacesContext
 
     protected static void setCurrentInstance(javax.faces.context.FacesContext context)
     {
-        _currentInstance.remove();
+        //todo: enable this when JDK1.5 is available: _currentInstance.remove();
         _currentInstance.set(context);
 
     }
