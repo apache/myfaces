@@ -84,6 +84,7 @@ public abstract class FacesContext
 
     protected static void setCurrentInstance(javax.faces.context.FacesContext context)
     {
+        _currentInstance.remove();
         _currentInstance.set(context);
 
     }
