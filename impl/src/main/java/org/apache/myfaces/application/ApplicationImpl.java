@@ -58,6 +58,7 @@ import javax.faces.validator.Validator;
 import javax.servlet.ServletContext;
 import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspFactory;
+
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -311,6 +312,10 @@ public class ApplicationImpl
     public void setPropertyResolver(PropertyResolver propertyResolver) {
         checkNull(propertyResolver, "propertyResolver");
         
+        if(FacesContext.getCurrentInstance() != null) {
+            throw new IllegalStateException("propertyResolver must be defined before request processing");   
+        }           
+        
         _resolverForFaces.addResolverFromLegacyPropertyResolver(propertyResolver);
         
         // TODO: fix FacesConfigurator so this won't happen
@@ -350,6 +355,10 @@ public class ApplicationImpl
      */
     public void setVariableResolver(VariableResolver variableResolver) {
         checkNull(variableResolver, "variableResolver");
+        
+        if(FacesContext.getCurrentInstance() != null) {
+            throw new IllegalStateException("variableResolver must be defined before request processing");   
+        }           
         
         _resolverForFaces.addResolverFromLegacyVariableResolver(variableResolver);
         
