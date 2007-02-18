@@ -349,6 +349,8 @@ public class ApplicationImpl
      * @deprecated
      */
     public void setVariableResolver(VariableResolver variableResolver) {
+        checkNull(variableResolver, "variableResolver");
+        
         _resolverForFaces.addResolverFromLegacyVariableResolver(variableResolver);
         
         // TODO: fix FacesConfigurator so this won't happen
