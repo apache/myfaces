@@ -136,6 +136,8 @@ public class ScopedAttributeResolver extends ELResolver {
     
     // returns null if not found
     private Map<String, Object> findScopedMap(ExternalContext extContext, Object property) {
+        
+        if (extContext == null) return null;
 
         Map<String, Object> scopedMap = extContext.getRequestMap();
         if (scopedMap.containsKey(property)) return scopedMap;
@@ -155,7 +157,12 @@ public class ScopedAttributeResolver extends ELResolver {
     }
     
     private ExternalContext externalContext(ELContext context) {
-        return facesContext(context).getExternalContext();
+        FacesContext facesContext = facesContext(context);
+        if (facesContext != null) {
+            return facesContext(context).getExternalContext();
+        } else {
+            return null;
+        }
     }
     
 }

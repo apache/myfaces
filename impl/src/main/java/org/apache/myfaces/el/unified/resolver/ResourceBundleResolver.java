@@ -125,8 +125,12 @@ public class ResourceBundleResolver extends ELResolver {
 
     private ResourceBundle getResourceBundle(ELContext context, String property) {
         FacesContext facesContext = facesContext(context);
-        Application application = facesContext.getApplication();
-        return application.getResourceBundle(facesContext, property);
+        if (facesContext != null) {
+            Application application = facesContext.getApplication();
+            return application.getResourceBundle(facesContext, property);
+        } else {
+            return null;
+        }
     }
     
 }

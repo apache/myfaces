@@ -145,6 +145,7 @@ public class ManagedBeanResolver extends ELResolver {
         
         ExternalContext extContext = externalContext(context);
         
+        if (extContext == null) return null;
         if (extContext.getRequestMap().containsKey(property)) return null;
         if (extContext.getSessionMap().containsKey(property)) return null;
         if (extContext.getApplicationMap().containsKey(property)) return null;
@@ -214,7 +215,12 @@ public class ManagedBeanResolver extends ELResolver {
     }
     
     private ExternalContext externalContext(ELContext context) {
-        return facesContext(context).getExternalContext();
+        FacesContext facesContext = facesContext(context);
+        if (facesContext != null) {
+            return facesContext.getExternalContext();
+        } else {
+            return null;
+        }
     }
 
     public Class<?> getType(ELContext context, Object base, Object property) 
