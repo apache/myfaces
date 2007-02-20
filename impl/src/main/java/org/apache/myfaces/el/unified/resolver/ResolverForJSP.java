@@ -17,8 +17,6 @@
 package org.apache.myfaces.el.unified.resolver;
 
 import org.apache.myfaces.el.unified.resolver.implicitobject.ImplicitObjectResolver;
-import org.apache.myfaces.el.unified.resolver.ManagedBeanResolver;
-import org.apache.myfaces.el.unified.resolver.ResourceBundleResolver;
 
 /**
  * Provides an ELResolver for Faces.
@@ -27,17 +25,14 @@ import org.apache.myfaces.el.unified.resolver.ResourceBundleResolver;
  *
  * @author Stan Silvert
  */
-public class ResolverForJSP extends ResolverForFaces {
+public class ResolverForJSP extends CustomResolverBase {
     
     /** Creates a new instance of ResolverForJSP */
     public ResolverForJSP() {
         add(ImplicitObjectResolver.makeResolverForJSP());
         add(new ManagedBeanResolver());
         add(new ResourceBundleResolver());
-        add(resolversFromAppConfig);
-        add(resolversFromLegacyVariableResolvers);
-        add(resolversFromLegacyPropertyResolvers);
-        add(resolversFromApplicationAddResolver);
+        addCustomResolvers();
     }
     
 }
