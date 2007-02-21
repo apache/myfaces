@@ -111,6 +111,40 @@
         </plugins>
       </build>
     </profile>
+    <profile>
+      <!-- This plugin verifies the binary compablity with the jsf api of the RI
+           TODO: add this to the normal build if 2.1 (or higher) of clirr-maven-plugin is released 
+           In the meantime to use this plugin it must be installed manually from 
+           https://svn.codehaus.org/mojo/trunk/mojo/clirr-maven-plugin
+           There is also a pending bug. Due to a jira problem (02/21/2007) there is no issue yet. Ask mbroekelmann@googlemail.com for the patch -->
+      <id>checkCompability</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>clirr-maven-plugin</artifactId>
+            <version>2.1-SNAPSHOT</version>
+            <configuration>
+              <comparisonArtifacts>
+                <comparisonArtifact>
+                  <groupId>javax.faces</groupId>
+                  <artifactId>jsf-api</artifactId>
+                  <version>1.2_03</version>
+                </comparisonArtifact>
+              </comparisonArtifacts>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+                <phase>test</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
   <dependencies>
     <dependency>

@@ -15,6 +15,7 @@
  */
 package javax.faces.webapp;
 
+import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
@@ -38,6 +39,7 @@ public class ValidatorTag
 {
     private static final long serialVersionUID = 8794036166323016663L;
     private String _validatorId;
+    private String _binding;
 
     public void setValidatorId(String validatorId)
     {
@@ -77,6 +79,7 @@ public class ValidatorTag
     {
         super.release();
         _validatorId = null;
+        _binding = null;
     }
 
     protected Validator createValidator()
@@ -84,6 +87,17 @@ public class ValidatorTag
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Application application = facesContext.getApplication();
+        
+        if(_binding != null) {
+            ValueBinding vb = application.createValueBinding(_binding);
+            if(vb != null) {
+                Validator validator = (Validator) vb.getValue(facesContext);
+                if(validator != null) {
+                    return validator;
+                }
+            }
+        }
+        
         if (UIComponentTag.isValueReference(_validatorId))
         {
             ValueBinding vb = facesContext.getApplication().createValueBinding(_validatorId);
@@ -93,5 +107,22 @@ public class ValidatorTag
         {
             return application.createValidator(_validatorId);
         }
+    }
+    
+    /**
+     * 
+     * @param binding
+     * @throws javax.servlet.jsp.JspException
+     * 
+     * @deprecated
+     */
+    public void setBinding(java.lang.String binding)
+            throws javax.servlet.jsp.JspException
+    {
+        if (binding != null && !UIComponentTag.isValueReference(binding))
+        {
+            throw new IllegalArgumentException("not a valid binding: " + binding);
+        }
+        _binding = binding;
     }
 }

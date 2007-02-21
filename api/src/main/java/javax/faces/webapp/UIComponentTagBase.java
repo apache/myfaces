@@ -16,6 +16,8 @@
 
 package javax.faces.webapp;
 
+import java.util.logging.Logger;
+
 import javax.el.ELContext;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -29,6 +31,8 @@ import javax.servlet.jsp.tagext.JspTag;
 public abstract class UIComponentTagBase extends Object implements JspTag
 {
 
+    protected static Logger log = Logger.getLogger("javax.faces.webapp");
+    
     /**
      * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#addChild(javax.faces.component.UIComponent)
      * @param child
@@ -51,8 +55,14 @@ public abstract class UIComponentTagBase extends Object implements JspTag
     public abstract UIComponent getComponentInstance();
 
     /**
+     * Specify the "component type name" used together with the component's
+     * family and the Application object to create a UIComponent instance for
+     * this tag. This method is called by other methods in this class, and is
+     * intended to be overridden in subclasses to specify the actual component
+     * type to be created.
+     *
      * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#getComponentType()
-     * @return
+     * @return a registered component type name, never null.
      */
 
     public abstract String getComponentType();
@@ -95,10 +105,17 @@ public abstract class UIComponentTagBase extends Object implements JspTag
     protected abstract int getIndexOfNextChildTag();
 
     /**
+     * Specify the "renderer type name" used together with the current
+     * renderKit to get a Renderer instance for the corresponding UIComponent.
+     * <p>
+     * A JSP tag can return null here to use the default renderer type string.
+     * If non-null is returned, then the UIComponent's setRendererType method
+     * will be called passing this value, and this will later affect the
+     * type of renderer object returned by UIComponent.getRenderer().
+     * 
      * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#getRendererType()
      * @return
      */
-
     public abstract String getRendererType();
 
     /**

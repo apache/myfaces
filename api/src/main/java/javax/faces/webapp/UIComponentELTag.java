@@ -15,30 +15,11 @@
  */
 package javax.faces.webapp;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import javax.servlet.jsp.tagext.Tag;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.JspException;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.context.ExternalContext;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.render.RenderKit;
-import javax.faces.el.ValueBinding;
-import javax.faces.application.Application;
 import javax.el.ValueExpression;
-import java.util.Set;
-import java.util.Stack;
-import java.util.Iterator;
-import java.util.List;
-import java.util.HashSet;
-import java.io.IOException;
+import javax.faces.application.Application;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.servlet.jsp.tagext.Tag;
 
 /**
  * Base class for all JSP tags that represent a JSF UIComponent.
@@ -61,8 +42,6 @@ import java.io.IOException;
 public abstract class UIComponentELTag extends UIComponentClassicTagBase
         implements Tag
 {
-
-    private static Log log = LogFactory.getLog(UIComponentELTag.class);
 
     private ValueExpression _binding = null;
     private ValueExpression _rendered = null;
@@ -121,5 +100,19 @@ public abstract class UIComponentELTag extends UIComponentClassicTagBase
 
         return component;
     }
-
+    
+    public void setBinding(ValueExpression binding)
+    {
+        _binding = binding;
+    }
+    
+    protected boolean hasBinding()
+    {
+        return _binding != null;
+    }
+    
+    public void setRendered(ValueExpression rendered)
+    {
+        _rendered = rendered;
+    }
 }

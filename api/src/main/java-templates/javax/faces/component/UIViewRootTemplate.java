@@ -37,7 +37,7 @@ public class UIViewRootTemplate
         extends UIComponentBase
 {
     private static final int ANY_PHASE_ORDINAL = PhaseId.ANY_PHASE.getOrdinal();
-    public static final String UNIQUE_ID_PREFIX = "_id";
+    public static final String UNIQUE_ID_PREFIX = "j_id";
 
     // todo: is it right to save the state of _events and _phaseListeners?
     /**/ // removes the generated methods so only state saving stays

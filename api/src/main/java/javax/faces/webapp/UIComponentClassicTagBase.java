@@ -15,8 +15,16 @@
  */
 package javax.faces.webapp;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
+import java.util.logging.Level;
 
 import javax.faces.FacesException;
 import javax.faces.component.NamingContainer;
@@ -33,15 +41,6 @@ import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.tagext.BodyTag;
 import javax.servlet.jsp.tagext.JspIdConsumer;
 import javax.servlet.jsp.tagext.Tag;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
 
 /**
  * @author Bruno Aranda (latest modification by $Author: baranda $)
@@ -55,8 +54,6 @@ import java.util.Stack;
 public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         implements BodyTag, JspIdConsumer
 {
-    private static Log log = LogFactory.getLog(UIComponentClassicTagBase.class);
-    
     //  do not change this w/out doing likewise in UIComponentTag
     private static final String COMPONENT_STACK_ATTR = "org.apache.myfaces.COMPONENT_STACK";
 
@@ -94,28 +91,6 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     private UIComponentClassicTagBase _parentClassicTag = null;
 
     private FacesContext _facesContext = null;
-
-    /**
-     * Specify the "component type name" used together with the component's
-     * family and the Application object to create a UIComponent instance for
-     * this tag. This method is called by other methods in this class, and is
-     * intended to be overridden in subclasses to specify the actual component
-     * type to be created.
-     *
-     * @return a registered component type name, never null.
-     */
-    public abstract String getComponentType();
-
-    /**
-     * Specify the "renderer type name" used together with the current
-     * renderKit to get a Renderer instance for the corresponding UIComponent.
-     * <p>
-     * A JSP tag can return null here to use the default renderer type string.
-     * If non-null is returned, then the UIComponent's setRendererType method
-     * will be called passing this value, and this will later affect the
-     * type of renderer object returned by UIComponent.getRenderer().
-     */
-    public abstract String getRendererType();
 
     protected abstract void setProperties(UIComponent component);
 
@@ -748,11 +723,11 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     protected void encodeBegin()
             throws IOException
     {
-        if (log.isDebugEnabled())
-            log.debug("Entered encodeBegin for client-Id: " + _componentInstance.getClientId(getFacesContext()));
+        if (log.isLoggable(Level.FINE))
+            log.fine("Entered encodeBegin for client-Id: " + _componentInstance.getClientId(getFacesContext()));
         _componentInstance.encodeBegin(getFacesContext());
-        if (log.isDebugEnabled())
-            log.debug("Exited encodeBegin");
+        if (log.isLoggable(Level.FINE))
+            log.fine("Exited encodeBegin");
     }
 
     /**
@@ -764,11 +739,11 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     protected void encodeChildren()
             throws IOException
     {
-        if (log.isDebugEnabled())
-            log.debug("Entered encodeChildren for client-Id: " + _componentInstance.getClientId(getFacesContext()));
+        if (log.isLoggable(Level.FINE))
+            log.fine("Entered encodeChildren for client-Id: " + _componentInstance.getClientId(getFacesContext()));
         _componentInstance.encodeChildren(getFacesContext());
-        if (log.isDebugEnabled())
-            log.debug("Exited encodeChildren for client-Id: " + _componentInstance.getClientId(getFacesContext()));
+        if (log.isLoggable(Level.FINE))
+            log.fine("Exited encodeChildren for client-Id: " + _componentInstance.getClientId(getFacesContext()));
     }
 
     /**
@@ -779,11 +754,11 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     protected void encodeEnd()
             throws IOException
     {
-        if (log.isDebugEnabled())
-            log.debug("Entered encodeEnd for client-Id: " + _componentInstance.getClientId(getFacesContext()));
+        if (log.isLoggable(Level.FINE))
+            log.fine("Entered encodeEnd for client-Id: " + _componentInstance.getClientId(getFacesContext()));
         _componentInstance.encodeEnd(getFacesContext());
-        if (log.isDebugEnabled())
-            log.debug("Exited encodeEnd for client-Id: " + _componentInstance.getClientId(getFacesContext()));
+        if (log.isLoggable(Level.FINE))
+            log.fine("Exited encodeEnd for client-Id: " + _componentInstance.getClientId(getFacesContext()));
 
     }
 
@@ -1103,8 +1078,8 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
             // Sun RI just issues a warning...
             if(parentTag._childrenAdded != null && parentTag._childrenAdded.contains(id))
             {
-                if(log.isWarnEnabled())
-                    log.warn("There is more than one JSF tag with an id : " + id);
+                if(log.isLoggable(Level.WARNING))
+                    log.warning("There is more than one JSF tag with an id : " + id);
             }
 
             _componentInstance = findComponent(parent,id);
@@ -1338,6 +1313,10 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         }
         return buf.toString();
     }
-
-
+    
+    protected abstract boolean hasBinding();
+    
+    public JspWriter getPreviousOut() {
+        return bodyContent.getEnclosingWriter();
+    }
 }

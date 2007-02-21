@@ -68,9 +68,6 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
     private Boolean _suppressed = null;
     private ResponseWriter _writer = null;
 
-    private static Log log = LogFactory.getLog(UIComponentTag.class);
-
-
     public UIComponentTag()
     {
 
@@ -285,6 +282,12 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
         }
 
 
+    }
+
+    @Override
+    protected boolean hasBinding()
+    {
+        return _binding != null;
     }
 
 }
