@@ -57,6 +57,6 @@ public class HtmTextRendererTest extends AbstractJsfTestCase
 
         String output = writer.getWriter().toString();
 
-        assertEquals("<input id=\"_id0\" name=\"_id0\" type=\"text\" value=\"\"/>", output);
+        assertEquals("<input id=\"j_id0\" name=\"j_id0\" type=\"text\" value=\"\"/>", output);
     }
 }

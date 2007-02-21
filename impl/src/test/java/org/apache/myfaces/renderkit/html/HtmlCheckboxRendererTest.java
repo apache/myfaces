@@ -81,8 +81,8 @@ public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
         String output = writer.getWriter().toString();
 
         assertEquals("<table><tr>\t\t" +
-                "<td><input id=\"_id0:0\" type=\"checkbox\" name=\"_id0\" value=\"mars\"/><label for=\"_id0:0\">&#160;mars</label></td>\t\t" +
-                "<td><input id=\"_id0:1\" type=\"checkbox\" name=\"_id0\" value=\"jupiter\"/><label for=\"_id0:1\">&#160;jupiter</label></td>" +
+                "<td><input id=\"j_id0:0\" type=\"checkbox\" name=\"j_id0\" value=\"mars\"/><label for=\"j_id0:0\">&#160;mars</label></td>\t\t" +
+                "<td><input id=\"j_id0:1\" type=\"checkbox\" name=\"j_id0\" value=\"jupiter\"/><label for=\"j_id0:1\">&#160;jupiter</label></td>" +
                 "</tr></table>", output);
     }
 }
