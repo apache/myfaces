@@ -558,7 +558,9 @@ public class FacesConfigurator
         FactoryFinder.setFactory(factoryName, defaultFactory);
         while (factories.hasNext())
         {
-            FactoryFinder.setFactory(factoryName, (String) factories.next());
+            String factory = (String) factories.next();
+            if(!factory.equals(defaultFactory))
+                FactoryFinder.setFactory(factoryName, factory);
         }
     }
 
