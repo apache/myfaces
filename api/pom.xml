@@ -123,7 +123,8 @@
            TODO: add this to the normal build if 2.1 (or higher) of clirr-maven-plugin is released 
            In the meantime to use this plugin it must be installed manually from 
            https://svn.codehaus.org/mojo/trunk/mojo/clirr-maven-plugin
-           There is also a pending bug. Due to a jira problem (02/21/2007) there is no issue yet. Ask mbroekelmann@googlemail.com for the patch -->
+           There is also a pending bug which patch must be applied before using this plugin: 
+           http://jira.codehaus.org/browse/MCLIRR-5 -->
       <id>checkCompability</id>
       <build>
         <plugins>
