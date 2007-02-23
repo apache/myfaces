@@ -28,7 +28,7 @@ public class MapEntries implements org.apache.myfaces.config.element.MapEntries
 
     private String keyClass;
     private String valueClass;
-    private List entries = new ArrayList();
+    private List<Entry> entries = new ArrayList<Entry>();
 
 
     public String getKeyClass()
@@ -59,7 +59,7 @@ public class MapEntries implements org.apache.myfaces.config.element.MapEntries
     }
 
 
-    public Iterator getMapEntries()
+    public Iterator<Entry> getMapEntries()
     {
         return entries.iterator();
     }

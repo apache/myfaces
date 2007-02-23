@@ -27,7 +27,7 @@ public class ListEntries implements org.apache.myfaces.config.element.ListEntrie
 {
 
     private String valueClass;
-    private List entries = new ArrayList();
+    private List<Entry> entries = new ArrayList<Entry>();
 
 
     public String getValueClass()
@@ -49,7 +49,7 @@ public class ListEntries implements org.apache.myfaces.config.element.ListEntrie
     }
 
 
-    public Iterator getListEntries()
+    public Iterator<Entry> getListEntries()
     {
         return entries.iterator();
     }

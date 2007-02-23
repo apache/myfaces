@@ -36,25 +36,25 @@ import java.util.Collections;
  */
 public class Attribute
 {
-    private List _description;
-    private List _displayName;
-    private List _icon;
+    private List<String> _description;
+    private List<String> _displayName;
+    private List<String> _icon;
     private String _attributeName;
     private String _attributeClass;
     private String _defaultValue;
     private String _suggestedValue;
-    private List _attributeExtension;
+    private List<String> _attributeExtension;
 
 
     public void addDescription(String value)
     {
         if(_description == null)
-            _description = new ArrayList();
+            _description = new ArrayList<String>();
 
         _description.add(value);
     }
 
-    public Iterator getDescriptions()
+    public Iterator<String> getDescriptions()
     {
         if(_description==null)
             return Collections.EMPTY_LIST.iterator();
@@ -65,12 +65,12 @@ public class Attribute
     public void addDisplayName(String value)
     {
         if(_displayName == null)
-            _displayName = new ArrayList();
+            _displayName = new ArrayList<String>();
 
         _displayName.add(value);
     }
 
-    public Iterator getDisplayNames()
+    public Iterator<String> getDisplayNames()
     {
         if(_displayName==null)
             return Collections.EMPTY_LIST.iterator();
@@ -81,12 +81,12 @@ public class Attribute
     public void addIcon(String value)
     {
         if(_icon == null)
-            _icon = new ArrayList();
+            _icon = new ArrayList<String>();
 
         _icon.add(value);
     }
 
-    public Iterator getIcons()
+    public Iterator<String> getIcons()
     {
         if(_icon==null)
             return Collections.EMPTY_LIST.iterator();
@@ -137,12 +137,12 @@ public class Attribute
     public void addAttributeExtension(String attributeExtension)
     {
         if(_attributeExtension == null)
-            _attributeExtension = new ArrayList();
+            _attributeExtension = new ArrayList<String>();
 
         _attributeExtension.add(attributeExtension);
     }
 
-    public Iterator getAttributeExtensions()
+    public Iterator<String> getAttributeExtensions()
     {
         if(_attributeExtension==null)
             return Collections.EMPTY_LIST.iterator();

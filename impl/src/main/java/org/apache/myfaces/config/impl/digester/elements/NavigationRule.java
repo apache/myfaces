@@ -29,7 +29,7 @@ public class NavigationRule implements org.apache.myfaces.config.element.Navigat
 {
 
     private String fromViewId;
-    private List navigationCases = new ArrayList();
+    private List<NavigationCase> navigationCases = new ArrayList<NavigationCase>();
 
 
     public String getFromViewId()
@@ -50,7 +50,7 @@ public class NavigationRule implements org.apache.myfaces.config.element.Navigat
     }
 
 
-    public Collection getNavigationCases()
+    public Collection<NavigationCase> getNavigationCases()
     {
         return navigationCases;
     }

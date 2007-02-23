@@ -33,7 +33,7 @@ public class ManagedBean implements org.apache.myfaces.config.element.ManagedBea
     private String beanClassName;
     private Class beanClass;
     private String scope;
-    private List property = new ArrayList();
+    private List<ManagedProperty> property = new ArrayList<ManagedProperty>();
     private MapEntries mapEntries;
     private ListEntries listEntries;
 
@@ -142,7 +142,7 @@ public class ManagedBean implements org.apache.myfaces.config.element.ManagedBea
     }
 
 
-    public Iterator getManagedProperties()
+    public Iterator<ManagedProperty> getManagedProperties()
     {
         return property.iterator();
     }

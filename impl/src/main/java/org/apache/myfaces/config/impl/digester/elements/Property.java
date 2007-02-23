@@ -38,25 +38,25 @@ import java.util.Collections;
  */
 public class Property
 {
-    private List _description;
-    private List _displayName;
-    private List _icon;
+    private List<String> _description;
+    private List<String> _displayName;
+    private List<String> _icon;
     private String _propertyName;
     private String _propertyClass;
     private String _defaultValue;
     private String _suggestedValue;
-    private List _propertyExtension;
+    private List<String> _propertyExtension;
 
 
     public void addDescription(String value)
     {
         if(_description == null)
-            _description = new ArrayList();
+            _description = new ArrayList<String>();
 
         _description.add(value);
     }
 
-    public Iterator getDescriptions()
+    public Iterator<String> getDescriptions()
     {
         if(_description==null)
             return Collections.EMPTY_LIST.iterator();
@@ -67,12 +67,12 @@ public class Property
     public void addDisplayName(String value)
     {
         if(_displayName == null)
-            _displayName = new ArrayList();
+            _displayName = new ArrayList<String>();
 
         _displayName.add(value);
     }
 
-    public Iterator getDisplayNames()
+    public Iterator<String> getDisplayNames()
     {
         if(_displayName==null)
             return Collections.EMPTY_LIST.iterator();
@@ -83,12 +83,12 @@ public class Property
     public void addIcon(String value)
     {
         if(_icon == null)
-            _icon = new ArrayList();
+            _icon = new ArrayList<String>();
 
         _icon.add(value);
     }
 
-    public Iterator getIcons()
+    public Iterator<String> getIcons()
     {
         if(_icon==null)
             return Collections.EMPTY_LIST.iterator();
@@ -139,12 +139,12 @@ public class Property
     public void addPropertyExtension(String propertyExtension)
     {
         if(_propertyExtension == null)
-            _propertyExtension = new ArrayList();
+            _propertyExtension = new ArrayList<String>();
 
         _propertyExtension.add(propertyExtension);
     }
 
-    public Iterator getPropertyExtensions()
+    public Iterator<String> getPropertyExtensions()
     {
         if(_propertyExtension==null)
             return Collections.EMPTY_LIST.iterator();
