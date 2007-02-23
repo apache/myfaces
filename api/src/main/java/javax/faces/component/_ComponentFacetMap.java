@@ -27,7 +27,7 @@ class _ComponentFacetMap
 {
 	private static final long serialVersionUID = -3456937594422167629L;
 	private UIComponent _component;
-    private Map _map = new HashMap();
+    private Map<Object, Object> _map = new HashMap<Object, Object>();
 
     _ComponentFacetMap(UIComponent component)
     {
@@ -61,7 +61,7 @@ class _ComponentFacetMap
         return _map.containsValue(value);
     }
 
-    public Collection values()
+    public Collection<Object> values()
     {
         return _map.values();
     }
@@ -80,7 +80,7 @@ class _ComponentFacetMap
         return _map.entrySet();
     }
 
-    public Set keySet()
+    public Set<Object> keySet()
     {
         return _map.keySet();
     }

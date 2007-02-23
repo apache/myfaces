@@ -74,7 +74,7 @@ public final class FactoryFinder
             throw new NullPointerException("factoryName may not be null");
 
         ClassLoader classLoader = getClassLoader();
-        Map factoryClassNames = (Map) _registeredFactoryNames.get(classLoader);
+        Map factoryClassNames = _registeredFactoryNames.get(classLoader);
 
         if (factoryClassNames == null)
         {
@@ -94,17 +94,17 @@ public final class FactoryFinder
             throw new IllegalArgumentException("no factory " + factoryName + " configured for this application.");
         }
 
-        Map factoryMap = (Map) _factories.get(classLoader);
+        Map<String, Object> factoryMap = _factories.get(classLoader);
 
         if (factoryMap == null) {
-            factoryMap = new HashMap();
+            factoryMap = new HashMap<String, Object>();
             _factories.put(classLoader, factoryMap);
         }
         Object factory = factoryMap.get(factoryName);
 
         if (factory == null) {
             List classNames = (List) factoryClassNames.get(factoryName);
-            factory = newFactoryInstance((Class)ABSTRACT_FACTORY_CLASSES.get(factoryName), classNames.iterator(), classLoader);
+            factory = newFactoryInstance(ABSTRACT_FACTORY_CLASSES.get(factoryName), classNames.iterator(), classLoader);
             factoryMap.put(factoryName, factory);
             return factory;
         }
@@ -187,7 +187,7 @@ public final class FactoryFinder
         ClassLoader classLoader = getClassLoader();
         synchronized(_registeredFactoryNames)
         {
-            Map factories = (Map) _factories.get(classLoader);
+            Map factories = _factories.get(classLoader);
 
             if (factories != null && factories.containsKey(factoryName)) {
                 // Javadoc says ... This method has no effect if getFactory() has already been
@@ -195,18 +195,18 @@ public final class FactoryFinder
                 return;
             }
 
-            Map factoryClassNames = (Map) _registeredFactoryNames.get(classLoader);
+            Map<String, List> factoryClassNames = _registeredFactoryNames.get(classLoader);
 
             if (factoryClassNames == null)
             {
-                factoryClassNames = new HashMap();
+                factoryClassNames = new HashMap<String, List>();
                 _registeredFactoryNames.put(classLoader, factoryClassNames);
             }
 
-            List classNameList = (List) factoryClassNames.get(factoryName);
+            List<String> classNameList = factoryClassNames.get(factoryName);
 
             if (classNameList == null) {
-                classNameList = new ArrayList();
+                classNameList = new ArrayList<String>();
                 factoryClassNames.put(factoryName, classNameList);
             }
             classNameList.add(implName);

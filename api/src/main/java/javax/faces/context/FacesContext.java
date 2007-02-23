@@ -85,7 +85,7 @@ public abstract class FacesContext
     public abstract void responseComplete();
 
 
-    private static ThreadLocal _currentInstance = new ThreadLocal()
+    private static ThreadLocal<FacesContext> _currentInstance = new ThreadLocal()
     {
         protected Object initialValue()
         {
@@ -95,7 +95,7 @@ public abstract class FacesContext
 
     public static FacesContext getCurrentInstance()
     {
-        return (FacesContext)_currentInstance.get();
+        return _currentInstance.get();
     }
 
     protected static void setCurrentInstance(javax.faces.context.FacesContext context)

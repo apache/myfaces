@@ -62,13 +62,13 @@ class _ComponentAttributesMap
 
     // We delegate instead of derive from HashMap, so that we can later
     // optimize Serialization
-    private Map _attributes = null;
+    private Map<Object, Object> _attributes = null;
 
     // A cached hashmap of propertyName => PropertyDescriptor object for all
     // the javabean properties of the associated component. This is built by
     // introspection on the associated UIComponent. Don't serialize this as
     // it can always be recreated when needed.
-    private transient Map _propertyDescriptorMap = null;
+    private transient Map<String, PropertyDescriptor> _propertyDescriptorMap = null;
 
     /**
      * Create a map backed by the specified component.
@@ -78,7 +78,7 @@ class _ComponentAttributesMap
     _ComponentAttributesMap(UIComponent component)
     {
         _component = component;
-        _attributes = new HashMap();
+        _attributes = new HashMap<Object, Object>();
     }
 
     /**
@@ -89,7 +89,7 @@ class _ComponentAttributesMap
      * <p>
      * This method is expected to be called during the "restore view" phase. 
      */
-    _ComponentAttributesMap(UIComponent component, Map attributes)
+    _ComponentAttributesMap(UIComponent component, Map<Object, Object> attributes)
     {
         _component = component;
         _attributes = attributes;
@@ -178,7 +178,7 @@ class _ComponentAttributesMap
      * Return a collection of the values of all <i>attributes</i>. Property
      * values are not included, nor value-bindings.
      */
-    public Collection values()
+    public Collection<Object> values()
     {
         return _attributes.values();
     }
@@ -208,7 +208,7 @@ class _ComponentAttributesMap
      * Return a set of the keys for all <i>attributes</i>. Properties of the
      * underlying UIComponent are not included, nor value-bindings.
      */
-    public Set keySet()
+    public Set<Object> keySet()
     {
         return _attributes.keySet();
     }
@@ -347,7 +347,7 @@ class _ComponentAttributesMap
                 throw new FacesException(e);
             }
             PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
-            _propertyDescriptorMap = new HashMap();
+            _propertyDescriptorMap = new HashMap<String, PropertyDescriptor>();
             for (int i = 0; i < propertyDescriptors.length; i++)
             {
                 PropertyDescriptor propertyDescriptor = propertyDescriptors[i];
@@ -358,7 +358,7 @@ class _ComponentAttributesMap
                 }
             }
         }
-        return (PropertyDescriptor)_propertyDescriptorMap.get(key);
+        return _propertyDescriptorMap.get(key);
     }
 
 
@@ -441,7 +441,7 @@ class _ComponentAttributesMap
      * This method is package-scope so that the UIComponentBase class can access it
      * directly when serializing the component.
      */
-    Map getUnderlyingMap()
+    Map<Object, Object> getUnderlyingMap()
     {
         return _attributes;
     }

@@ -102,7 +102,7 @@ class _SharedRendererUtils
                 // --> according to javadoc of UISelectMany we assume that the element type
                 //     is java.lang.String, and copy the String array to a new List
                 int len = submittedValue.length;
-                List lst = new ArrayList(len);
+                List<String> lst = new ArrayList<String>(len);
                 for (int i = 0; i < len; i++)
                 {
                     lst.add(submittedValue[i]);
@@ -163,7 +163,7 @@ class _SharedRendererUtils
             // of this List is java.lang.String. But there is a Converter set for this
             // component. Because the user must know what he is doing, we will convert the values.
             int len = submittedValue.length;
-            List lst = new ArrayList(len);
+            List<Object> lst = new ArrayList<Object>(len);
             for (int i = 0; i < len; i++)
             {
                 lst.add(converter.getAsObject(facesContext, component, submittedValue[i]));
@@ -192,7 +192,7 @@ class _SharedRendererUtils
         {
             //Object array
             int len = submittedValue.length;
-            ArrayList convertedValues = new ArrayList(len); 
+            ArrayList<Object> convertedValues = new ArrayList<Object>(len); 
             for (int i = 0; i < len; i++)
             {
                 convertedValues.add(i, converter.getAsObject(facesContext, component, submittedValue[i])); 

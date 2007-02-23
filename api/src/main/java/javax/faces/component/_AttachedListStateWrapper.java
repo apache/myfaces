@@ -26,14 +26,14 @@ class _AttachedListStateWrapper
         implements Serializable
 {
 	private static final long serialVersionUID = -3958718149793179776L;
-	private List _wrappedStateList;
+	private List<Object> _wrappedStateList;
 
-    public _AttachedListStateWrapper(List wrappedStateList)
+    public _AttachedListStateWrapper(List<Object> wrappedStateList)
     {
         _wrappedStateList = wrappedStateList;
     }
 
-    public List getWrappedStateList()
+    public List<Object> getWrappedStateList()
     {
         return _wrappedStateList;
     }

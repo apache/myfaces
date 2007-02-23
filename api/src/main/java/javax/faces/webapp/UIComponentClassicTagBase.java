@@ -148,11 +148,11 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     public static UIComponentClassicTagBase getParentUIComponentClassicTagBase(
             PageContext pageContext)
     {
-        Stack stack = getStack(pageContext);
+        Stack<UIComponentClassicTagBase> stack = getStack(pageContext);
 
         int size = stack.size();
 
-        return size > 0 ? (UIComponentClassicTagBase) stack.get(size - 1) : null;
+        return size > 0 ? stack.get(size - 1) : null;
     }
 
     /**
@@ -695,7 +695,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         {
             return;
         }
-        List children = parent.getChildren();
+        List<UIComponent> children = parent.getChildren();
         indexOfComponentInParent = children.indexOf(component);
         if (children.size() - 1 == indexOfComponentInParent)
         {
@@ -782,8 +782,8 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     /** Map of <ID,Tag> in the view */
     private Map<String,Object> getViewComponentIds()
     {
-        Map requestMap = _facesContext.getExternalContext().getRequestMap();
-        Map<String,Object> viewComponentIds;
+        Map<String, Object> requestMap = _facesContext.getExternalContext().getRequestMap();
+        Map<String, Object> viewComponentIds;
 
         if (_parent == null)
         {
@@ -793,21 +793,21 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         }
         else
         {
-            viewComponentIds = (Map) requestMap.get(VIEW_IDS);
+            viewComponentIds = (Map<String, Object>) requestMap.get(VIEW_IDS);
         }
 
         return viewComponentIds;
     }
 
 
-    private static final Stack getStack(PageContext pageContext)
+    private static final Stack<UIComponentClassicTagBase> getStack(PageContext pageContext)
     {
-        Stack stack = (Stack) pageContext.getAttribute(COMPONENT_STACK_ATTR,
+        Stack<UIComponentClassicTagBase> stack = (Stack<UIComponentClassicTagBase>) pageContext.getAttribute(COMPONENT_STACK_ATTR,
                 PageContext.REQUEST_SCOPE);
 
         if (stack == null)
         {
-            stack = new Stack();
+            stack = new Stack<UIComponentClassicTagBase>();
             pageContext.setAttribute(COMPONENT_STACK_ATTR,
                     stack, PageContext.REQUEST_SCOPE);
         }
@@ -824,7 +824,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
      */
     private void popTag()
     {
-        Stack stack = getStack(pageContext);
+        Stack<UIComponentClassicTagBase> stack = getStack(pageContext);
 
         int size = stack.size();
         stack.remove(size -1);
@@ -1088,7 +1088,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
                 _componentInstance = createComponent(context, id);
                 setProperties(_componentInstance);
                 int index = getAddedChildrenCount(parentTag);
-                List children = parent.getChildren();
+                List<UIComponent> children = parent.getChildren();
                 if (index <= children.size())
                 {
                     children.add(index, _componentInstance);
@@ -1207,7 +1207,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
 
     private Set<String> getPreviousJspIdsSet()
     {
-        Set<String> previousJspIdsSet = (Set) getFacesContext().getExternalContext()
+        Set<String> previousJspIdsSet = (Set<String>) getFacesContext().getExternalContext()
                 .getRequestMap().get(PREVIOUS_JSP_IDS_SET);
 
         if (previousJspIdsSet == null)

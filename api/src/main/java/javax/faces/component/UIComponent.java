@@ -39,7 +39,7 @@ public abstract class UIComponent
     {
     }
 
-    public abstract java.util.Map getAttributes();
+    public abstract java.util.Map<String, Object> getAttributes();
 
     /**
      * @deprecated Replaced by getValueExpression
@@ -134,7 +134,7 @@ public abstract class UIComponent
 
     public abstract javax.faces.component.UIComponent findComponent(java.lang.String expr);
 
-    public abstract java.util.Map getFacets();
+    public abstract java.util.Map<String, UIComponent> getFacets();
 
     public abstract javax.faces.component.UIComponent getFacet(java.lang.String name);
 
@@ -217,7 +217,7 @@ public abstract class UIComponent
     {
         // not sure why the RI has this method in both 
         // UIComponent and UIComponentBase
-        Map facets = getFacets();
+        Map<String, UIComponent> facets = getFacets();
         return facets == null ? 0 : facets.size();
     }
     

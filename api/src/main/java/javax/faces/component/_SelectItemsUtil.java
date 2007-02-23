@@ -41,11 +41,11 @@ class _SelectItemsUtil
      * @return if the value of a selectitem is equal to the given value
      */
     public static boolean matchValue(FacesContext context, Object value,
-                    Iterator selectItemsIter, _ValueConverter converter)
+                    Iterator<SelectItem> selectItemsIter, _ValueConverter converter)
     {
         while (selectItemsIter.hasNext())
         {
-            SelectItem item = (SelectItem) selectItemsIter.next();
+            SelectItem item = selectItemsIter.next();
             if (item instanceof SelectItemGroup)
             {
                 SelectItemGroup itemgroup = (SelectItemGroup) item;

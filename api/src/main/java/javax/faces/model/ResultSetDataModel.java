@@ -262,8 +262,8 @@ public class ResultSetDataModel extends DataModel
 
         public boolean containsValue(Object value)
         {
-            Set keys = keySet();
-            for (Iterator iterator = keys.iterator(); iterator.hasNext();) {
+            Set<Object> keys = keySet();
+            for (Iterator<Object> iterator = keys.iterator(); iterator.hasNext();) {
                 Object object = get(iterator.next());
                 if (object == null) {
                     return value == null;
@@ -306,7 +306,7 @@ public class ResultSetDataModel extends DataModel
         }
 
 
-        public Set keySet()
+        public Set<Object> keySet()
         {
             return new WrapResultSetKeys(this);
         }
@@ -357,7 +357,7 @@ public class ResultSetDataModel extends DataModel
                     "It is not allowed to remove entries from this set.");
         }
 
-        public Collection values()
+        public Collection<Object> values()
         {
             return new WrapResultSetValues(this);
         }
@@ -460,7 +460,7 @@ public class ResultSetDataModel extends DataModel
     {
 
         private WrapResultSetMap _wrapMap = null;
-        private Iterator _keyIterator = null;
+        private Iterator<Object> _keyIterator = null;
 
         public WrapResultSetEntriesIterator(WrapResultSetMap wrapMap)
         {
@@ -708,7 +708,7 @@ public class ResultSetDataModel extends DataModel
     {
 
         private WrapResultSetMap _wrapMap;
-        private Iterator _keyIterator;
+        private Iterator<Object> _keyIterator;
 
         public WrapResultSetValuesIterator(WrapResultSetMap wrapMap)
         {

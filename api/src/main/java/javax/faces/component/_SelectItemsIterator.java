@@ -27,7 +27,7 @@ import javax.faces.model.SelectItem;
 class _SelectItemsIterator implements Iterator
 {
     private final Iterator _childs;
-    private Iterator _nestedItems;    
+    private Iterator<SelectItem> _nestedItems;    
     private Object _nextItem;
     private String _collectionLabel;
     private UISelectItems _currentUISelectItems;
@@ -105,14 +105,14 @@ class _SelectItemsIterator implements Iterator
                 }
                 else if (value instanceof Collection)
                 {
-                    _nestedItems = ((Collection)value).iterator();
+                    _nestedItems = ((Collection<SelectItem>)value).iterator();
                     _collectionLabel = "Collection";
                     return hasNext();
                 }
                 else if (value instanceof Map)
                 {
                     Map map = ((Map) value);
-                    Collection items = new ArrayList(map.size()); 
+                    Collection<SelectItem> items = new ArrayList<SelectItem>(map.size()); 
                     for (Iterator it = map.entrySet().iterator(); it
                                     .hasNext();)
                     {

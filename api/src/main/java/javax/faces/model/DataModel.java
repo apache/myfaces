@@ -47,7 +47,7 @@ import java.util.List;
 public abstract class DataModel
 {
     // FIELDS
-    private List _listeners;
+    private List<DataModelListener> _listeners;
 
     // METHODS
     public void addDataModelListener(DataModelListener listener)
@@ -55,7 +55,7 @@ public abstract class DataModel
         if (listener == null) throw new NullPointerException("listener");
         if (_listeners == null)
         {
-            _listeners = new ArrayList();
+            _listeners = new ArrayList<DataModelListener>();
         }
         _listeners.add(listener);
     }
@@ -66,7 +66,7 @@ public abstract class DataModel
         {
             return new DataModelListener[0];
         }
-        return (DataModelListener[])_listeners.toArray(new DataModelListener[_listeners.size()]);
+        return _listeners.toArray(new DataModelListener[_listeners.size()]);
     }
 
     /**

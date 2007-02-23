@@ -34,12 +34,12 @@ public class PhaseId implements Comparable{
 	public static final javax.faces.event.PhaseId RENDER_RESPONSE;
 	public static final javax.faces.event.PhaseId RESTORE_VIEW;
 	public static final javax.faces.event.PhaseId UPDATE_MODEL_VALUES;
-	public static final java.util.List VALUES;
+	public static final java.util.List<PhaseId> VALUES;
 
     static
     {
         int i = 0;
-        ArrayList list = new ArrayList(6);
+        ArrayList<PhaseId> list = new ArrayList<PhaseId>(6);
 
         ANY_PHASE = new PhaseId("ANY_PHASE",i++);
         list.add(ANY_PHASE);

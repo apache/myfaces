@@ -30,7 +30,7 @@ class _ComponentChildrenList
 {
 	private static final long serialVersionUID = -6775078929331154224L;
 	private UIComponent _component;
-    private List _list = new ArrayList();
+    private List<Object> _list = new ArrayList<Object>();
 
     _ComponentChildrenList(UIComponent component)
     {

@@ -62,7 +62,7 @@ public abstract class UIComponentBase
     private Map<String, ValueExpression> _valueExpressionMap = null;
     private List<UIComponent> _childrenList = null;
     private Map<String,UIComponent> _facetMap = null;
-    private List _facesListeners = null;
+    private List<FacesListener> _facesListeners = null;
     private String _clientId = null;
     private String _id = null;
     private UIComponent _parent = null;
@@ -119,7 +119,7 @@ public abstract class UIComponentBase
      * are automatically serialized along with the component when the view
      * is serialized.
      */
-    public Map getAttributes()
+    public Map<String, Object> getAttributes()
     {
         if (_attributesMap == null)
         {
@@ -474,7 +474,7 @@ public abstract class UIComponentBase
     }
 
 
-    public Map getFacets()
+    public Map<String, UIComponent> getFacets()
     {
         if (_facetMap == null)
         {
@@ -485,7 +485,7 @@ public abstract class UIComponentBase
 
     public UIComponent getFacet(String name)
     {
-        return _facetMap == null ? null : (UIComponent)_facetMap.get(name);
+        return _facetMap == null ? null : _facetMap.get(name);
     }
 
     public Iterator<UIComponent> getFacetsAndChildren()
@@ -521,9 +521,9 @@ public abstract class UIComponentBase
     {
         if (event == null) throw new NullPointerException("event");
         if (_facesListeners == null) return;
-        for (Iterator it = _facesListeners.iterator(); it.hasNext(); )
+        for (Iterator<FacesListener> it = _facesListeners.iterator(); it.hasNext(); )
         {
-            FacesListener facesListener = (FacesListener)it.next();
+            FacesListener facesListener = it.next();
             if (event.isAppropriateListener(facesListener))
             {
                 event.processListener(facesListener);
@@ -587,7 +587,7 @@ public abstract class UIComponentBase
         if (listener == null) throw new NullPointerException("listener");
         if (_facesListeners == null)
         {
-            _facesListeners = new ArrayList();
+            _facesListeners = new ArrayList<FacesListener>();
         }
         _facesListeners.add(listener);
     }
@@ -598,13 +598,13 @@ public abstract class UIComponentBase
         {
             return (FacesListener[])Array.newInstance(clazz, 0);
         }
-        List lst = null;
-        for (Iterator it = _facesListeners.iterator(); it.hasNext(); )
+        List<FacesListener> lst = null;
+        for (Iterator<FacesListener> it = _facesListeners.iterator(); it.hasNext(); )
         {
-            FacesListener facesListener = (FacesListener)it.next();
+            FacesListener facesListener = it.next();
             if (clazz.isAssignableFrom(facesListener.getClass()))
             {
-                if (lst == null) lst = new ArrayList();
+                if (lst == null) lst = new ArrayList<FacesListener>();
                 lst.add(facesListener);
             }
         }
@@ -614,7 +614,7 @@ public abstract class UIComponentBase
         }
         else
         {
-            return (FacesListener[])lst.toArray((FacesListener[])Array.newInstance(clazz, lst.size()));
+            return lst.toArray((FacesListener[])Array.newInstance(clazz, lst.size()));
         }
     }
 
@@ -706,14 +706,14 @@ public abstract class UIComponentBase
                 facetMap.put(entry.getKey(), component.processSaveState(context));
             }
         }
-        List childrenList = null;
+        List<Object> childrenList = null;
         if (getChildCount() > 0)
         {
             for (Iterator it = getChildren().iterator(); it.hasNext(); )
             {
               UIComponent child = (UIComponent)it.next();
               if (childrenList == null) {
-                childrenList = new ArrayList(getChildCount());
+                childrenList = new ArrayList<Object>(getChildCount());
               }
               Object childState = child.processSaveState(context);
               if (childState != null) {
@@ -881,7 +881,7 @@ public abstract class UIComponentBase
         if (attachedObject == null) return null;
         if (attachedObject instanceof List)
         {
-            List lst = new ArrayList(((List)attachedObject).size());
+            List<Object> lst = new ArrayList<Object>(((List)attachedObject).size());
             for (Iterator it = ((List)attachedObject).iterator(); it.hasNext(); )
             {
                 lst.add(saveAttachedState(context, it.next()));
@@ -918,9 +918,9 @@ public abstract class UIComponentBase
         if (stateObj == null) return null;
         if (stateObj instanceof _AttachedListStateWrapper)
         {
-            List lst = ((_AttachedListStateWrapper)stateObj).getWrappedStateList();
-            List restoredList = new ArrayList(lst.size());
-            for (Iterator it = lst.iterator(); it.hasNext(); )
+            List<Object> lst = ((_AttachedListStateWrapper)stateObj).getWrappedStateList();
+            List<Object> restoredList = new ArrayList<Object>(lst.size());
+            for (Iterator<Object> it = lst.iterator(); it.hasNext(); )
             {
                 restoredList.add(restoreAttachedState(context, it.next()));
             }
@@ -992,7 +992,7 @@ public abstract class UIComponentBase
         _rendererType = (String)values[2];
         _clientId = (String)values[3];
         restoreAttributesMap(values[4]);
-        _facesListeners = (List)restoreAttachedState(context, values[5]);
+        _facesListeners = (List<FacesListener>)restoreAttachedState(context, values[5]);
         restoreValueExpressionMap(context, values[6]);
     }
 
@@ -1013,7 +1013,7 @@ public abstract class UIComponentBase
     {
         if (stateObj != null)
         {
-            _attributesMap = new _ComponentAttributesMap(this, (Map)stateObj);
+            _attributesMap = new _ComponentAttributesMap(this, (Map<Object, Object>)stateObj);
         }
         else
         {
@@ -1144,7 +1144,7 @@ public abstract class UIComponentBase
     {
         // not sure why the RI has this method in both 
         // UIComponent and UIComponentBase
-        Map facets = getFacets();
+        Map<String, UIComponent> facets = getFacets();
         return facets == null ? 0 : facets.size();
     }
 }
