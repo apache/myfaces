@@ -32,5 +32,5 @@ public abstract class LifecycleFactory
 
     public abstract Lifecycle getLifecycle(String lifecycleId);
 
-    public abstract Iterator getLifecycleIds();
+    public abstract Iterator<String> getLifecycleIds();
 }
