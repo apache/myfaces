@@ -18,9 +18,6 @@ package org.apache.myfaces.config.impl.digester.elements;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.myfaces.config.impl.digester.elements.Renderer;
-
-
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
@@ -29,44 +26,37 @@ public class RenderKit
 
     private String id;
     private String renderKitClass;
-    private List renderer = new ArrayList();
-
+    private List<org.apache.myfaces.config.element.Renderer> renderer = new ArrayList<org.apache.myfaces.config.element.Renderer>();
 
     public String getId()
     {
         return id;
     }
 
-
     public void setId(String id)
     {
         this.id = id;
     }
-
 
     public String getRenderKitClass()
     {
         return renderKitClass;
     }
 
-
     public void setRenderKitClass(String renderKitClass)
     {
         this.renderKitClass = renderKitClass;
     }
 
-
-    public List getRenderer()
+    public List<org.apache.myfaces.config.element.Renderer> getRenderer()
     {
         return renderer;
     }
 
-
-    public void addRenderer(Renderer value)
+    public void addRenderer(org.apache.myfaces.config.element.Renderer value)
     {
         renderer.add(value);
     }
-
 
     public void merge(RenderKit renderKit)
     {

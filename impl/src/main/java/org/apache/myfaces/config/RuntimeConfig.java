@@ -15,48 +15,65 @@
  */
 package org.apache.myfaces.config;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
+import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
 
 import javax.faces.context.ExternalContext;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Holds all configuration information (from the faces-config xml files) that
- * is needed later during runtime.
- * The config information in this class is only available to the MyFaces core
- * implementation classes (i.e. the myfaces source tree). See MyfacesConfig
- * for config parameters that can be used for shared or component classes.
- *
+ * Holds all configuration information (from the faces-config xml files) that is
+ * needed later during runtime. The config information in this class is only
+ * available to the MyFaces core implementation classes (i.e. the myfaces source
+ * tree). See MyfacesConfig for config parameters that can be used for shared or
+ * component classes.
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
+ * @version $Revision$ $Date: 2006-05-29 05:59:46 +0200 (Mo, 29 Mai
+ *          2006) $
  */
 public class RuntimeConfig
 {
-    private static final String APPLICATION_MAP_PARAM_NAME = RuntimeConfig.class.getName();
+    private static final Log log = LogFactory.getLog(RuntimeConfig.class);
 
-    private Collection _navigationRules = new ArrayList();
-    private Map _managedBeans = new HashMap();
-    private boolean _navigationRulesChanged=false;
+    private static final String APPLICATION_MAP_PARAM_NAME = RuntimeConfig.class
+            .getName();
 
+    private final Collection<NavigationRule> _navigationRules = new ArrayList<NavigationRule>();
+    private final Map<String, ManagedBean> _managedBeans = new HashMap<String, ManagedBean>();
+    private boolean _navigationRulesChanged = false;
+    private final Map<String, ResourceBundle> _resourceBundles = new HashMap<String, ResourceBundle>();
 
-    public static RuntimeConfig getCurrentInstance(ExternalContext externalContext)
+    public static RuntimeConfig getCurrentInstance(
+            ExternalContext externalContext)
     {
-        RuntimeConfig runtimeConfig
-                = (RuntimeConfig)externalContext.getApplicationMap().get(APPLICATION_MAP_PARAM_NAME);
+        RuntimeConfig runtimeConfig = (RuntimeConfig) externalContext
+                .getApplicationMap().get(APPLICATION_MAP_PARAM_NAME);
         if (runtimeConfig == null)
         {
             runtimeConfig = new RuntimeConfig();
-            externalContext.getApplicationMap().put(APPLICATION_MAP_PARAM_NAME, runtimeConfig);
+            externalContext.getApplicationMap().put(APPLICATION_MAP_PARAM_NAME,
+                    runtimeConfig);
         }
         return runtimeConfig;
     }
 
     /**
-     * Return the navigation rules that can be used by the NavigationHandler implementation.
-     * @return a Collection of {@link org.apache.myfaces.config.element.NavigationRule NavigationRule}s
+     * Return the navigation rules that can be used by the NavigationHandler
+     * implementation.
+     * 
+     * @return a Collection of
+     *         {@link org.apache.myfaces.config.element.NavigationRule NavigationRule}s
      */
-    public Collection getNavigationRules()
+    public Collection<NavigationRule> getNavigationRules()
     {
         return Collections.unmodifiableCollection(_navigationRules);
     }
@@ -79,20 +96,66 @@ public class RuntimeConfig
     }
 
     /**
-     * Return the managed bean info that can be used by the VariableResolver implementation.
-     * @return a {@link org.apache.myfaces.config.element.ManagedBean ManagedBean}
+     * Return the managed bean info that can be used by the VariableResolver
+     * implementation.
+     * 
+     * @return a
+     *         {@link org.apache.myfaces.config.element.ManagedBean ManagedBean}
      */
     public ManagedBean getManagedBean(String name)
     {
-        return (ManagedBean)_managedBeans.get(name);
+        return _managedBeans.get(name);
     }
-    
-    public Map<String, ManagedBean> getManagedBeans() {
+
+    public Map<String, ManagedBean> getManagedBeans()
+    {
         return Collections.unmodifiableMap(_managedBeans);
     }
 
     public void addManagedBean(String name, ManagedBean managedBean)
     {
         _managedBeans.put(name, managedBean);
+    }
+
+    /**
+     * Return the resourcebundle which was configured in faces config by var
+     * name
+     * 
+     * @param name
+     *            the name of the resource bundle (content of var)
+     * @return the resource bundle or null if not found
+     */
+    public ResourceBundle getResourceBundle(String name)
+    {
+        return _resourceBundles.get(name);
+    }
+
+    /**
+     * @return the resourceBundles
+     */
+    public Map<String, ResourceBundle> getResourceBundles()
+    {
+        return _resourceBundles;
+    }
+
+    public void addResourceBundle(ResourceBundle bundle)
+    {
+        if (bundle == null)
+        {
+            throw new IllegalArgumentException("bundle must not be null");
+        }
+        String var = bundle.getVar();
+        if (_resourceBundles.containsKey(var) && log.isWarnEnabled())
+        {
+            log
+                    .warn("Another resource bundle for var '" + var
+                            + "' with base name '"
+                            + _resourceBundles.get(var).getBaseName()
+                            + "' is already registered. '"
+                            + _resourceBundles.get(var).getBaseName()
+                            + "' will be replaced with '"
+                            + bundle.getBaseName() + "'.");
+        }
+        _resourceBundles.put(var, bundle);
     }
 }

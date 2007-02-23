@@ -26,7 +26,7 @@ public class LocaleConfig
 {
 
     private String defaultLocale;
-    private List supportedLocales = new ArrayList();
+    private List<String> supportedLocales = new ArrayList<String>();
 
 
     public void setDefaultLocale(String defaultLocale)
@@ -47,7 +47,7 @@ public class LocaleConfig
     }
 
 
-    public List getSupportedLocales()
+    public List<String> getSupportedLocales()
     {
         return supportedLocales;
     }

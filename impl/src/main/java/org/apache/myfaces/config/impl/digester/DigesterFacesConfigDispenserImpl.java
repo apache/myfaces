@@ -23,58 +23,64 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.faces.event.PhaseListener;
 import javax.faces.render.RenderKitFactory;
 
 import org.apache.myfaces.config.FacesConfigDispenser;
+import org.apache.myfaces.config.element.ManagedBean;
+import org.apache.myfaces.config.element.NavigationRule;
+import org.apache.myfaces.config.element.Renderer;
 import org.apache.myfaces.config.impl.digester.elements.Application;
 import org.apache.myfaces.config.impl.digester.elements.Converter;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfig;
 import org.apache.myfaces.config.impl.digester.elements.Factory;
 import org.apache.myfaces.config.impl.digester.elements.LocaleConfig;
 import org.apache.myfaces.config.impl.digester.elements.RenderKit;
-
+import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
 
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser
+public class DigesterFacesConfigDispenserImpl implements
+        FacesConfigDispenser<FacesConfig>
 {
 
-    private List configs = new ArrayList();
-    private List applicationFactories = new ArrayList();
-    private List facesContextFactories = new ArrayList();
-    private List lifecycleFactories = new ArrayList();
-    private List renderKitFactories = new ArrayList();
-    private Map components = new HashMap();
-    private Map validators = new HashMap();
+    private List<FacesConfig> configs = new ArrayList<FacesConfig>();
+    private List<String> applicationFactories = new ArrayList<String>();
+    private List<String> facesContextFactories = new ArrayList<String>();
+    private List<String> lifecycleFactories = new ArrayList<String>();
+    private List<String> renderKitFactories = new ArrayList<String>();
+    private Map<String, String> components = new HashMap<String, String>();
+    private Map<String, String> validators = new HashMap<String, String>();
     private String defaultRenderKitId;
     private LocaleConfig localeConfig;
-    private List actionListeners = new ArrayList();
-    private List lifecyclePhaseListeners = new ArrayList();
+    private List<String> actionListeners = new ArrayList<String>();
+    private List<String> lifecyclePhaseListeners = new ArrayList<String>();
     private String messageBundle;
-    private List navigationHandlers = new ArrayList();
-    private List viewHandlers = new ArrayList();
-    private List stateManagers = new ArrayList();
-    private List propertyResolver = new ArrayList();
-    private List variableResolver = new ArrayList();
-    private Map converterById = new HashMap();
-    private Map converterByClass = new HashMap();
-    private Map converterConfigurationByClassName = new HashMap();
-    private Map renderKits = new LinkedHashMap();
-    private List managedBeans = new ArrayList();
-    private List navigationRules = new ArrayList();
-
+    private List<String> navigationHandlers = new ArrayList<String>();
+    private List<String> viewHandlers = new ArrayList<String>();
+    private List<String> stateManagers = new ArrayList<String>();
+    private List<String> propertyResolver = new ArrayList<String>();
+    private List<String> variableResolver = new ArrayList<String>();
+    private Map<String, String> converterById = new HashMap<String, String>();
+    private Map<String, String> converterByClass = new HashMap<String, String>();
+    private Map<String, Converter> converterConfigurationByClassName = new HashMap<String, Converter>();
+    private Map<String, RenderKit> renderKits = new LinkedHashMap<String, RenderKit>();
+    private List<ManagedBean> managedBeans = new ArrayList<ManagedBean>();
+    private List<NavigationRule> navigationRules = new ArrayList<NavigationRule>();
+    private List<ResourceBundle> resourceBundles = new ArrayList<ResourceBundle>();
 
     /**
      * Add another unmarshalled faces config object.
-     *
-     * @param facesConfig unmarshalled faces config object
+     * 
+     * @param facesConfig
+     *            unmarshalled faces config object
      */
-    public void feed(Object facesConfig)
+    public void feed(FacesConfig config)
     {
-        FacesConfig config = (FacesConfig) facesConfig;
         configs.add(config);
-        for (Iterator iterator = config.getFactories().iterator(); iterator.hasNext();)
+        for (Iterator iterator = config.getFactories().iterator(); iterator
+                .hasNext();)
         {
             Factory factory = (Factory) iterator.next();
             applicationFactories.addAll(factory.getApplicationFactory());
@@ -85,20 +91,25 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser
         components.putAll(config.getComponents());
         validators.putAll(config.getValidators());
 
-        for (Iterator iterator = config.getApplications().iterator(); iterator.hasNext();)
+        for (Iterator iterator = config.getApplications().iterator(); iterator
+                .hasNext();)
         {
             Application application = (Application) iterator.next();
             if (!application.getDefaultRenderkitId().isEmpty())
             {
-                defaultRenderKitId = (String) application.getDefaultRenderkitId().get(application.getDefaultRenderkitId().size() - 1);
+                defaultRenderKitId = (String) application
+                        .getDefaultRenderkitId().get(
+                                application.getDefaultRenderkitId().size() - 1);
             }
             if (!application.getMessageBundle().isEmpty())
             {
-                messageBundle = (String) application.getMessageBundle().get(application.getMessageBundle().size() - 1);
+                messageBundle = (String) application.getMessageBundle().get(
+                        application.getMessageBundle().size() - 1);
             }
             if (!application.getLocaleConfig().isEmpty())
             {
-                localeConfig = (LocaleConfig) application.getLocaleConfig().get(application.getLocaleConfig().size() - 1);
+                localeConfig = (LocaleConfig) application.getLocaleConfig()
+                        .get(application.getLocaleConfig().size() - 1);
             }
             actionListeners.addAll(application.getActionListener());
             navigationHandlers.addAll(application.getNavigationHandler());
@@ -106,37 +117,47 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser
             stateManagers.addAll(application.getStateManager());
             propertyResolver.addAll(application.getPropertyResolver());
             variableResolver.addAll(application.getVariableResolver());
+            resourceBundles.addAll(application.getResourceBundle());
         }
-        for (Iterator iterator = config.getConverters().iterator(); iterator.hasNext();)
+        for (Iterator iterator = config.getConverters().iterator(); iterator
+                .hasNext();)
         {
             Converter converter = (Converter) iterator.next();
 
             if (converter.getConverterId() != null)
             {
-                converterById.put(converter.getConverterId(), converter.getConverterClass());
+                converterById.put(converter.getConverterId(), converter
+                        .getConverterClass());
             }
             else
             {
-                converterByClass.put(converter.getForClass(), converter.getConverterClass());
+                converterByClass.put(converter.getForClass(), converter
+                        .getConverterClass());
             }
 
-            converterConfigurationByClassName.put(converter.getConverterClass(),converter);
+            converterConfigurationByClassName.put(
+                    converter.getConverterClass(), converter);
         }
 
-        for (Iterator iterator = config.getRenderKits().iterator(); iterator.hasNext();)
+        for (Iterator iterator = config.getRenderKits().iterator(); iterator
+                .hasNext();)
         {
             RenderKit renderKit = (RenderKit) iterator.next();
             String renderKitId = renderKit.getId();
 
-            if (renderKitId == null) {
+            if (renderKitId == null)
+            {
                 renderKitId = RenderKitFactory.HTML_BASIC_RENDER_KIT;
             }
 
-            RenderKit existing = (RenderKit) renderKits.get(renderKitId);
+            RenderKit existing = renderKits.get(renderKitId);
 
-            if (existing == null) {
+            if (existing == null)
+            {
                 renderKits.put(renderKit.getId(), renderKit);
-            } else {
+            }
+            else
+            {
                 existing.merge(renderKit);
             }
         }
@@ -145,96 +166,90 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser
         navigationRules.addAll(config.getNavigationRules());
     }
 
-
     /**
      * Add another ApplicationFactory class name
-     *
-     * @param factoryClassName a class name
+     * 
+     * @param factoryClassName
+     *            a class name
      */
     public void feedApplicationFactory(String factoryClassName)
     {
         applicationFactories.add(factoryClassName);
     }
 
-
     /**
      * Add another FacesContextFactory class name
-     *
-     * @param factoryClassName a class name
+     * 
+     * @param factoryClassName
+     *            a class name
      */
     public void feedFacesContextFactory(String factoryClassName)
     {
         facesContextFactories.add(factoryClassName);
     }
 
-
     /**
      * Add another LifecycleFactory class name
-     *
-     * @param factoryClassName a class name
+     * 
+     * @param factoryClassName
+     *            a class name
      */
     public void feedLifecycleFactory(String factoryClassName)
     {
         lifecycleFactories.add(factoryClassName);
     }
 
-
     /**
      * Add another RenderKitFactory class name
-     *
-     * @param factoryClassName a class name
+     * 
+     * @param factoryClassName
+     *            a class name
      */
     public void feedRenderKitFactory(String factoryClassName)
     {
         renderKitFactories.add(factoryClassName);
     }
 
-
     /**
      * @return Iterator over ApplicationFactory class names
      */
-    public Iterator getApplicationFactoryIterator()
+    public Iterator<String> getApplicationFactoryIterator()
     {
         return applicationFactories.iterator();
     }
 
-
     /**
      * @return Iterator over FacesContextFactory class names
      */
-    public Iterator getFacesContextFactoryIterator()
+    public Iterator<String> getFacesContextFactoryIterator()
     {
         return facesContextFactories.iterator();
     }
 
-
     /**
      * @return Iterator over LifecycleFactory class names
      */
-    public Iterator getLifecycleFactoryIterator()
+    public Iterator<String> getLifecycleFactoryIterator()
     {
         return lifecycleFactories.iterator();
     }
 
-
     /**
      * @return Iterator over RenderKit factory class names
      */
-    public Iterator getRenderKitFactoryIterator()
+    public Iterator<String> getRenderKitFactoryIterator()
     {
         return renderKitFactories.iterator();
     }
 
-
     /**
      * @return Iterator over ActionListener class names
      */
-    public Iterator getActionListenerIterator()
+    public Iterator<String> getActionListenerIterator()
     {
-        List listeners = new ArrayList(actionListeners);
+        List<String> listeners = new ArrayList<String>(actionListeners);
         return listeners.iterator();
     }
-
 
     /**
      * @return the default render kit id
@@ -244,7 +259,6 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser
         return defaultRenderKitId;
     }
 
-
     /**
      * @return Iterator over message bundle names
      */
@@ -253,57 +267,51 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser
         return messageBundle;
     }
 
-
     /**
      * @return Iterator over NavigationHandler class names
      */
-    public Iterator getNavigationHandlerIterator()
+    public Iterator<String> getNavigationHandlerIterator()
     {
-        List handlers = new ArrayList(navigationHandlers);
+        List<String> handlers = new ArrayList<String>(navigationHandlers);
         return handlers.iterator();
     }
-
 
     /**
      * @return Iterator over ViewHandler class names
      */
-    public Iterator getViewHandlerIterator()
+    public Iterator<String> getViewHandlerIterator()
     {
-        List handlers = new ArrayList(viewHandlers);
+        List<String> handlers = new ArrayList<String>(viewHandlers);
         return handlers.iterator();
     }
-
 
     /**
      * @return Iterator over StateManager class names
      */
-    public Iterator getStateManagerIterator()
+    public Iterator<String> getStateManagerIterator()
     {
-        List managers = new ArrayList(stateManagers);
+        List<String> managers = new ArrayList<String>(stateManagers);
         return managers.iterator();
     }
-
 
     /**
      * @return Iterator over PropertyResolver class names
      */
-    public Iterator getPropertyResolverIterator()
+    public Iterator<String> getPropertyResolverIterator()
     {
-        List resolver = new ArrayList(propertyResolver);
+        List<String> resolver = new ArrayList<String>(propertyResolver);
         return resolver.iterator();
     }
-
 
     /**
      * @return Iterator over VariableResolver class names
      */
-    public Iterator getVariableResolverIterator()
+    public Iterator<String> getVariableResolverIterator()
     {
-        List resolver = new ArrayList(variableResolver);
+        List<String> resolver = new ArrayList<String>(variableResolver);
 
         return resolver.iterator();
     }
-
 
     /**
      * @return the default locale name
@@ -317,7 +325,6 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser
         return null;
     }
 
-
     /**
      * @return Iterator over supported locale names
      */
@@ -330,7 +337,6 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser
         return Collections.EMPTY_LIST.iterator();
     }
 
-
     /**
      * @return Iterator over all defined component types
      */
@@ -338,7 +344,6 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser
     {
         return components.keySet().iterator();
     }
-
 
     /**
      * @return component class that belongs to the given component type
@@ -348,52 +353,48 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser
         return (String) components.get(componentType);
     }
 
-
     /**
      * @return Iterator over all defined converter ids
      */
-    public Iterator getConverterIds()
+    public Iterator<String> getConverterIds()
     {
         return converterById.keySet().iterator();
     }
 
-
     /**
      * @return Iterator over all classes with an associated converter
      */
-    public Iterator getConverterClasses()
+    public Iterator<String> getConverterClasses()
     {
         return converterByClass.keySet().iterator();
     }
 
-    public Iterator getConverterConfigurationByClassName()
+    public Iterator<String> getConverterConfigurationByClassName()
     {
         return converterConfigurationByClassName.keySet().iterator();
     }
 
     public Converter getConverterConfiguration(String converterClassName)
     {
-        return (Converter) converterConfigurationByClassName.get(converterClassName);
+        return converterConfigurationByClassName
+                .get(converterClassName);
     }
-
 
     /**
      * @return converter class that belongs to the given converter id
      */
     public String getConverterClassById(String converterId)
     {
-        return (String) converterById.get(converterId);
+        return converterById.get(converterId);
     }
-
 
     /**
      * @return converter class that is associated with the given class name
      */
     public String getConverterClassByClass(String className)
     {
-        return (String) converterByClass.get(className);
+        return converterByClass.get(className);
     }
-
 
     /**
      * @return Iterator over all defined validator ids
@@ -403,7 +404,6 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser
         return validators.keySet().iterator();
     }
 
-
     /**
      * @return validator class name that belongs to the given validator id
      */
@@ -412,60 +412,64 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser
         return (String) validators.get(validatorId);
     }
 
-
     /**
-     * @return Iterator over {@link org.apache.myfaces.config.element.ManagedBean ManagedBean}s
+     * @return Iterator over
+     *         {@link org.apache.myfaces.config.element.ManagedBean ManagedBean}s
      */
     public Iterator getManagedBeans()
     {
         return managedBeans.iterator();
     }
 
-
     /**
-     * @return Iterator over {@link org.apache.myfaces.config.element.NavigationRule NavigationRule}s
+     * @return Iterator over
+     *         {@link org.apache.myfaces.config.element.NavigationRule NavigationRule}s
      */
     public Iterator getNavigationRules()
     {
         return navigationRules.iterator();
     }
 
-
     /**
      * @return Iterator over all defined renderkit ids
      */
-    public Iterator getRenderKitIds()
+    public Iterator<String> getRenderKitIds()
     {
         return renderKits.keySet().iterator();
     }
-
 
     /**
      * @return renderkit class name for given renderkit id
      */
     public String getRenderKitClass(String renderKitId)
     {
-        RenderKit renderKit = (RenderKit) renderKits.get(renderKitId);
+        RenderKit renderKit = renderKits.get(renderKitId);
         return renderKit.getRenderKitClass();
     }
 
-
     /**
-     * @return Iterator over {@link org.apache.myfaces.config.element.Renderer Renderer}s for the given renderKitId
+     * @return Iterator over
+     *         {@link org.apache.myfaces.config.element.Renderer Renderer}s for
+     *         the given renderKitId
      */
-    public Iterator getRenderers(String renderKitId)
+    public Iterator<Renderer> getRenderers(String renderKitId)
     {
-        RenderKit renderKit = (RenderKit) renderKits.get(renderKitId);
+        RenderKit renderKit = renderKits.get(renderKitId);
         return renderKit.getRenderer().iterator();
     }
 
-
     /**
-     * @return Iterator over {@link javax.faces.event.PhaseListener} implementation class names
+     * @return Iterator over {@link javax.faces.event.PhaseListener}
+     *         implementation class names
      */
-    public Iterator getLifecyclePhaseListeners()
+    public Iterator<String> getLifecyclePhaseListeners()
     {
         return lifecyclePhaseListeners.iterator();
+    }
+
+    public Iterator<ResourceBundle> getResourceBundles()
+    {
+        return resourceBundles.iterator();
     }
 
 }

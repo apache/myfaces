@@ -28,7 +28,7 @@ import org.xml.sax.SAXException;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public interface FacesConfigUnmarshaller
+public interface FacesConfigUnmarshaller<T>
 {
-    public Object getFacesConfig(InputStream in, String systemId) throws IOException, SAXException;
+    public T getFacesConfig(InputStream in, String systemId) throws IOException, SAXException;
 }

@@ -31,7 +31,7 @@ import org.xml.sax.SAXException;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller
+public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<FacesConfig>
 {
 
     private Digester digester;
@@ -61,7 +61,15 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addSetNext("faces-config/application/locale-config", "addLocaleConfig");
         digester.addCallMethod("faces-config/application/locale-config/default-locale", "setDefaultLocale", 0);
         digester.addCallMethod("faces-config/application/locale-config/supported-locale", "addSupportedLocale", 0);
-
+        
+        // 1.2 specific start
+        digester.addCallMethod("faces-config/application/el-resolver", "addElResolver", 0);
+        digester.addObjectCreate("faces-config/application/resource-bundle", ResourceBundle.class);
+        digester.addSetNext("faces-config/application/resource-bundle", "addResourceBundle");
+        digester.addCallMethod("faces-config/application/resource-bundle/base-name", "setBaseName", 0);
+        digester.addCallMethod("faces-config/application/resource-bundle/var", "setVar", 0);
+        // 1.2 specific end
+        
         digester.addObjectCreate("faces-config/factory", Factory.class);
         digester.addSetNext("faces-config/factory", "addFactory");
         digester.addCallMethod("faces-config/factory/application-factory", "addApplicationFactory", 0);
@@ -176,7 +184,7 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
     }
 
 
-    public Object getFacesConfig(InputStream in, String systemId) throws IOException, SAXException
+    public FacesConfig getFacesConfig(InputStream in, String systemId) throws IOException, SAXException
     {
         InputSource is = new InputSource(in);
         is.setSystemId(systemId);

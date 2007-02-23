@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd"
+  version="1.2">
+  <application>
+    <action-listener>action-listener1</action-listener>
+    <action-listener>action-listener2</action-listener>
+    <default-render-kit-id>default-render-kit-id</default-render-kit-id>
+    <locale-config>
+      <default-locale>aa</default-locale>
+      <supported-locale>aa</supported-locale>
+      <supported-locale>bb</supported-locale>
+    </locale-config>
+    <message-bundle>message-bundle</message-bundle>
+    <navigation-handler>navigation-handler</navigation-handler>
+    <property-resolver>property-resolver</property-resolver>
+    <state-manager>state-manager</state-manager>
+    <variable-resolver>variable-resolver</variable-resolver>
+    <view-handler>view-handler</view-handler>
+
+    <!-- 1.2 specific -->
+    <el-resolver>el-resolver</el-resolver>
+    <resource-bundle>
+      <base-name>base-name</base-name>
+      <var>var</var>
+    </resource-bundle>
+  </application>
+</faces-config>

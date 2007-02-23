@@ -20,7 +20,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.jsp.JspStateManagerImpl;
 import org.apache.myfaces.application.jsp.JspViewHandlerImpl;
+import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.impl.digester.elements.Property;
+import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
 import org.apache.myfaces.el.NullPropertyResolver;
 import org.apache.myfaces.el.NullVariableResolver;
 import org.apache.myfaces.el.convert.ELResolverToPropertyResolver;
@@ -46,6 +48,7 @@ import javax.faces.application.StateManager;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.el.MethodBinding;
@@ -67,54 +70,60 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.MissingResourceException;
 
 /**
  * DOCUMENT ME!
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @author Anton Koinov
  * @author Thomas Spiegl
  * @author Stan Silvert
  * @version $Revision$ $Date$
  */
-public class ApplicationImpl
-        extends Application {
+public class ApplicationImpl extends Application
+{
     private static final Log log = LogFactory.getLog(ApplicationImpl.class);
-    
-    //~ Instance fields ----------------------------------------------------------------------------
-    
-    private Collection           _supportedLocales = Collections.EMPTY_SET;
-    private Locale               _defaultLocale;
-    private String               _messageBundle;
-    
-    private ViewHandler          _viewHandler;
-    private NavigationHandler    _navigationHandler;
-    private VariableResolver     _variableResolver;
-    private PropertyResolver     _propertyResolver;
-    private ActionListener       _actionListener;
-    private String               _defaultRenderKitId;
-    private StateManager         _stateManager;
-    
-    private ServletContext       _servletContext;
-    
-    private ResolverForFaces     _resolverForFaces;
-    private ResolverForJSP       _resolverForJSP;
-    
-    private ExpressionFactory    _expressionFactory;
-    
+
+    // ~ Instance fields
+    // ----------------------------------------------------------------------------
+
+    private Collection<Locale> _supportedLocales = Collections.emptySet();
+    private Locale _defaultLocale;
+    private String _messageBundle;
+
+    private ViewHandler _viewHandler;
+    private NavigationHandler _navigationHandler;
+    private VariableResolver _variableResolver;
+    private PropertyResolver _propertyResolver;
+    private ActionListener _actionListener;
+    private String _defaultRenderKitId;
+    private StateManager _stateManager;
+
+    private ServletContext _servletContext;
+
+    private ResolverForFaces _resolverForFaces;
+    private ResolverForJSP _resolverForJSP;
+
+    private ExpressionFactory _expressionFactory;
+
     private ArrayList<ELContextListener> _elContextListeners;
-    
-    // components, converters, and validators can be added at runtime--must synchronize
-    private final Map _converterIdToClassMap = Collections.synchronizedMap(new HashMap());
-    private final Map _converterClassNameToClassMap = Collections.synchronizedMap(new HashMap());
-    private final Map _converterClassNameToConfigurationMap = Collections.synchronizedMap(new HashMap());
-    private final Map _componentClassMap = Collections.synchronizedMap(new HashMap());
-    private final Map _validatorClassMap = Collections.synchronizedMap(new HashMap());
-    
-    
-    //~ Constructors -------------------------------------------------------------------------------
-    
-    public ApplicationImpl() {
+
+    // components, converters, and validators can be added at runtime--must
+    // synchronize
+    private final Map<String, Class> _converterIdToClassMap = Collections.synchronizedMap(new HashMap<String, Class>());
+    private final Map<Class, String> _converterClassNameToClassMap = Collections
+            .synchronizedMap(new HashMap<Class, String>());
+    private final Map<String, org.apache.myfaces.config.impl.digester.elements.Converter> _converterClassNameToConfigurationMap = Collections
+            .synchronizedMap(new HashMap<String, org.apache.myfaces.config.impl.digester.elements.Converter>());
+    private final Map<String, Class> _componentClassMap = Collections.synchronizedMap(new HashMap<String, Class>());
+    private final Map<String, Class> _validatorClassMap = Collections.synchronizedMap(new HashMap<String, Class>());
+
+    // ~ Constructors
+    // -------------------------------------------------------------------------------
+
+    public ApplicationImpl()
+    {
         // set default implementation in constructor
         // pragmatic approach, no syncronizing will be needed in get methods
         _viewHandler = new JspViewHandlerImpl();
@@ -124,77 +133,134 @@ public class ApplicationImpl
         _actionListener = new ActionListenerImpl();
         _defaultRenderKitId = "HTML_BASIC";
         _stateManager = new JspStateManagerImpl();
-        _elContextListeners = new ArrayList();
-        _resolverForFaces =  new ResolverForFaces();
+        _elContextListeners = new ArrayList<ELContextListener>();
+        _resolverForFaces = new ResolverForFaces();
         _resolverForJSP = null;
-        
-        if (log.isTraceEnabled()) log.trace("New Application instance created");
+
+        if (log.isTraceEnabled())
+            log.trace("New Application instance created");
     }
-    
-    //~ Methods ------------------------------------------------------------------------------------
-    
-    // note: this method is not part of the javax.faces.application.Application interface
+
+    // ~ Methods
+    // ------------------------------------------------------------------------------------
+
+    // note: this method is not part of the javax.faces.application.Application
+    // interface
     // it must be called by FacesConfigurator or other init mechanism
-    public void setServletContext(ServletContext servletContext) {
-        
+    public void setServletContext(ServletContext servletContext)
+    {
+
         // this Class.forName will be removed when Tomcat fixes a bug
         // also, we should then be able to remove jasper.jar from the deployment
-        try {
+        try
+        {
             Class.forName("org.apache.jasper.compiler.JspRuntimeContext");
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
-        
+
         _servletContext = servletContext;
         ResolverForJSP _resolverForJSP = new ResolverForJSP();
-        
+
         log.debug("factory = " + JspFactory.getDefaultFactory());
         JspApplicationContext appCtx = JspFactory.getDefaultFactory().getJspApplicationContext(_servletContext);
-        
+
         appCtx.addELResolver(_resolverForJSP);
-        
+
         _expressionFactory = appCtx.getExpressionFactory();
     }
-    
 
-    public void addELResolver(ELResolver resolver) {
+    @Override
+    public void addELResolver(ELResolver resolver)
+    {
         _resolverForFaces.addResolverFromApplicationAddResolver(resolver);
         _resolverForJSP.addResolverFromApplicationAddResolver(resolver);
     }
 
-    public ELResolver getELResolver() {
+    @Override
+    public ELResolver getELResolver()
+    {
         return _resolverForFaces;
     }
-    
-    public ResourceBundle getResourceBundle(FacesContext facesContext, String name)
-        throws FacesException, NullPointerException {
-        
+
+    @Override
+    public java.util.ResourceBundle getResourceBundle(FacesContext facesContext, String name) throws FacesException,
+            NullPointerException
+    {
+
         checkNull(facesContext, "facesContext");
         checkNull(name, "name");
 
+        String bundleName = getBundleName(name);
+
+        if (bundleName == null)
+        {
+            return null;
+        }
+
         Locale locale = Locale.getDefault();
-        
+
         UIViewRoot viewRoot = facesContext.getViewRoot();
         if (viewRoot != null && viewRoot.getLocale() != null)
         {
-           locale = viewRoot.getLocale();
+            locale = viewRoot.getLocale();
         }
 
-        ResourceBundle bundle = ResourceBundle.getBundle(name, locale, Thread.currentThread().getContextClassLoader());
-        return bundle;
+        try
+        {
+            return getResourceBundle(bundleName, locale, getClassLoader());
+        }
+        catch (MissingResourceException e)
+        {
+            throw new FacesException("Could not load resource bundle for name '" + name + "': " + e.getMessage(), e);
+        }
     }
-    
-    public UIComponent createComponent(ValueExpression componentExpression,
-            FacesContext facesContext,
-            String componentType)
-            throws FacesException, NullPointerException {
-        
+
+    ClassLoader getClassLoader()
+    {
+        return Thread.currentThread().getContextClassLoader();
+    }
+
+    String getBundleName(String name)
+    {
+        ResourceBundle bundle = getRuntimeConfig().getResourceBundle(name);
+        return bundle != null ? bundle.getBaseName() : null;
+    }
+
+    java.util.ResourceBundle getResourceBundle(String name, Locale locale, ClassLoader loader)
+            throws MissingResourceException
+    {
+        return java.util.ResourceBundle.getBundle(name, locale, loader);
+    }
+
+    RuntimeConfig getRuntimeConfig()
+    {
+        return RuntimeConfig.getCurrentInstance(getExternalContext());
+    }
+
+    ExternalContext getExternalContext()
+    {
+        return getFaceContext().getExternalContext();
+    }
+
+    FacesContext getFaceContext()
+    {
+        return FacesContext.getCurrentInstance();
+    }
+
+    @Override
+    public UIComponent createComponent(ValueExpression componentExpression, FacesContext facesContext,
+            String componentType) throws FacesException, NullPointerException
+    {
+
         checkNull(componentExpression, "componentExpression");
         checkNull(facesContext, "facesContext");
         checkNull(componentType, "componentType");
 
         ELContext elContext = facesContext.getELContext();
-        
+
         Object retVal = componentExpression.getValue(elContext);
 
         UIComponent createdComponent;
@@ -203,7 +269,7 @@ public class ApplicationImpl
         {
             if (retVal instanceof UIComponent)
             {
-                createdComponent = (UIComponent)retVal;
+                createdComponent = (UIComponent) retVal;
             }
             else
             {
@@ -218,498 +284,660 @@ public class ApplicationImpl
 
         return createdComponent;
     }
-    
-    public ExpressionFactory getExpressionFactory() {
+
+    @Override
+    public ExpressionFactory getExpressionFactory()
+    {
         return _expressionFactory;
     }
-    
-    public Object evaluateExpressionGet(FacesContext context, String expression, Class expectedType) throws ELException {
+
+    @Override
+    public Object evaluateExpressionGet(FacesContext context, String expression, Class expectedType) throws ELException
+    {
         ELContext elContext = context.getELContext();
-        return getExpressionFactory()
-               .createValueExpression(elContext, expression, expectedType)
-               .getValue(elContext);
+        return getExpressionFactory().createValueExpression(elContext, expression, expectedType).getValue(elContext);
     }
-    
-    public void addELContextListener(ELContextListener listener) {
-        
-        synchronized (_elContextListeners) {
+
+    @Override
+    public void addELContextListener(ELContextListener listener)
+    {
+
+        synchronized (_elContextListeners)
+        {
             _elContextListeners.add(listener);
         }
     }
-    
-    public void removeELContextListener(ELContextListener listener) {
-        synchronized (_elContextListeners) {
+
+    @Override
+    public void removeELContextListener(ELContextListener listener)
+    {
+        synchronized (_elContextListeners)
+        {
             _elContextListeners.remove(listener);
         }
     }
-    
-    public ELContextListener[] getELContextListeners() {
+
+    @Override
+    public ELContextListener[] getELContextListeners()
+    {
         // this gets called on every request, so I can't afford to synchronize
         // I just have to trust that toArray() with do the right thing if the
         // list is changing (not likely)
         return _elContextListeners.toArray(new ELContextListener[0]);
     }
-    
-    public void setActionListener(ActionListener actionListener) {
+
+    @Override
+    public void setActionListener(ActionListener actionListener)
+    {
         checkNull(actionListener, "actionListener");
-        
+
         _actionListener = actionListener;
-        if (log.isTraceEnabled()) log.trace("set actionListener = " + actionListener.getClass().getName());
+        if (log.isTraceEnabled())
+            log.trace("set actionListener = " + actionListener.getClass().getName());
     }
-    
-    public ActionListener getActionListener() {
+
+    @Override
+    public ActionListener getActionListener()
+    {
         return _actionListener;
     }
-    
-    public Iterator getComponentTypes() {
+
+    @Override
+    public Iterator<String> getComponentTypes()
+    {
         return _componentClassMap.keySet().iterator();
     }
-    
-    public Iterator getConverterIds() {
+
+    @Override
+    public Iterator<String> getConverterIds()
+    {
         return _converterIdToClassMap.keySet().iterator();
     }
-    
-    public Iterator getConverterTypes() {
+
+    @Override
+    public Iterator<Class> getConverterTypes()
+    {
         return _converterClassNameToClassMap.keySet().iterator();
     }
-    
-    public void setDefaultLocale(Locale locale) {
+
+    @Override
+    public void setDefaultLocale(Locale locale)
+    {
         checkNull(locale, "locale");
-        
+
         _defaultLocale = locale;
-        if (log.isTraceEnabled()) log.trace("set defaultLocale = " + locale.getCountry() + " " + locale.getLanguage());
+        if (log.isTraceEnabled())
+            log.trace("set defaultLocale = " + locale.getCountry() + " " + locale.getLanguage());
     }
-    
-    public Locale getDefaultLocale() {
+
+    @Override
+    public Locale getDefaultLocale()
+    {
         return _defaultLocale;
     }
-    
-    public void setMessageBundle(String messageBundle) {
+
+    @Override
+    public void setMessageBundle(String messageBundle)
+    {
         checkNull(messageBundle, "messageBundle");
-        
+
         _messageBundle = messageBundle;
-        if (log.isTraceEnabled()) log.trace("set MessageBundle = " + messageBundle);
+        if (log.isTraceEnabled())
+            log.trace("set MessageBundle = " + messageBundle);
     }
-    
-    public String getMessageBundle() {
+
+    @Override
+    public String getMessageBundle()
+    {
         return _messageBundle;
     }
-    
-    public void setNavigationHandler(NavigationHandler navigationHandler) {
+
+    @Override
+    public void setNavigationHandler(NavigationHandler navigationHandler)
+    {
         checkNull(navigationHandler, "navigationHandler");
-        
+
         _navigationHandler = navigationHandler;
-        if (log.isTraceEnabled()) log.trace("set NavigationHandler = " + navigationHandler.getClass().getName());
+        if (log.isTraceEnabled())
+            log.trace("set NavigationHandler = " + navigationHandler.getClass().getName());
     }
-    
-    public NavigationHandler getNavigationHandler() {
+
+    @Override
+    public NavigationHandler getNavigationHandler()
+    {
         return _navigationHandler;
     }
-    
+
     /**
      * @deprecated
      */
-    public void setPropertyResolver(PropertyResolver propertyResolver) {
+    @Deprecated
+    @Override
+    public void setPropertyResolver(PropertyResolver propertyResolver)
+    {
         checkNull(propertyResolver, "propertyResolver");
-        
-        if(FacesContext.getCurrentInstance() != null) {
-            throw new IllegalStateException("propertyResolver must be defined before request processing");   
-        }           
-        
+
+        if (getFaceContext() != null)
+        {
+            throw new IllegalStateException("propertyResolver must be defined before request processing");
+        }
+
         _resolverForFaces.addResolverFromLegacyPropertyResolver(propertyResolver);
-        
+
         // TODO: fix FacesConfigurator so this won't happen
-        if (_resolverForJSP != null) {
+        if (_resolverForJSP != null)
+        {
             _resolverForJSP.addResolverFromLegacyPropertyResolver(propertyResolver);
         }
-        
+
         _propertyResolver = new ELResolverToPropertyResolver(getELResolver());
-        
-        if (log.isTraceEnabled()) log.trace("set PropertyResolver = " + propertyResolver.getClass().getName());
+
+        if (log.isTraceEnabled())
+            log.trace("set PropertyResolver = " + propertyResolver.getClass().getName());
     }
-    
+
     /**
      * @deprecated
      */
-    public PropertyResolver getPropertyResolver() {
+    @Deprecated
+    @Override
+    public PropertyResolver getPropertyResolver()
+    {
         return _propertyResolver;
     }
-    
-    public void setSupportedLocales(Collection locales) {
+
+    @Override
+    public void setSupportedLocales(Collection<Locale> locales)
+    {
         checkNull(locales, "locales");
-        
+
         _supportedLocales = locales;
-        if (log.isTraceEnabled()) log.trace("set SupportedLocales");
+        if (log.isTraceEnabled())
+            log.trace("set SupportedLocales");
     }
-    
-    public Iterator getSupportedLocales() {
+
+    @Override
+    public Iterator<Locale> getSupportedLocales()
+    {
         return _supportedLocales.iterator();
     }
-    
-    public Iterator getValidatorIds() {
+
+    @Override
+    public Iterator<String> getValidatorIds()
+    {
         return _validatorClassMap.keySet().iterator();
     }
-    
+
     /**
      * @deprecated
      */
-    public void setVariableResolver(VariableResolver variableResolver) {
+    @Deprecated
+    @Override
+    public void setVariableResolver(VariableResolver variableResolver)
+    {
         checkNull(variableResolver, "variableResolver");
-        
-        if(FacesContext.getCurrentInstance() != null) {
-            throw new IllegalStateException("variableResolver must be defined before request processing");   
-        }           
-        
+
+        if (getFaceContext() != null)
+        {
+            throw new IllegalStateException("variableResolver must be defined before request processing");
+        }
+
         _resolverForFaces.addResolverFromLegacyVariableResolver(variableResolver);
-        
+
         // TODO: fix FacesConfigurator so this won't happen
-        if (_resolverForJSP != null) {
+        if (_resolverForJSP != null)
+        {
             _resolverForJSP.addResolverFromLegacyVariableResolver(variableResolver);
         }
-        
+
         _variableResolver = new ELResolverToVariableResolver(getELResolver());
     }
-    
+
     /**
      * @deprecated
      */
-    public VariableResolver getVariableResolver() {
+    @Deprecated
+    @Override
+    public VariableResolver getVariableResolver()
+    {
         return _variableResolver;
     }
-    
-    public void setViewHandler(ViewHandler viewHandler) {
+
+    @Override
+    public void setViewHandler(ViewHandler viewHandler)
+    {
         checkNull(viewHandler, "viewHandler");
-        
+
         _viewHandler = viewHandler;
-        if (log.isTraceEnabled()) log.trace("set ViewHandler = " + viewHandler.getClass().getName());
+        if (log.isTraceEnabled())
+            log.trace("set ViewHandler = " + viewHandler.getClass().getName());
     }
-    
-    public ViewHandler getViewHandler() {
+
+    @Override
+    public ViewHandler getViewHandler()
+    {
         return _viewHandler;
     }
-    
-    public void addComponent(String componentType, String componentClassName) {
+
+    @Override
+    public void addComponent(String componentType, String componentClassName)
+    {
         checkNull(componentType, "componentType");
         checkEmpty(componentType, "componentType");
         checkNull(componentClassName, "componentClassName");
         checkEmpty(componentClassName, "componentClassName");
-        
-        try {
+
+        try
+        {
             _componentClassMap.put(componentType, ClassUtils.simpleClassForName(componentClassName));
-            if (log.isTraceEnabled()) log.trace("add Component class = " + componentClassName +
-                    " for type = " + componentType);
-        } catch (Exception e) {
+            if (log.isTraceEnabled())
+                log.trace("add Component class = " + componentClassName + " for type = " + componentType);
+        }
+        catch (Exception e)
+        {
             log.error("Component class " + componentClassName + " not found", e);
         }
     }
-    
-    public void addConverter(String converterId, String converterClass) {
+
+    @Override
+    public void addConverter(String converterId, String converterClass)
+    {
         checkNull(converterId, "converterId");
         checkEmpty(converterId, "converterId");
         checkNull(converterClass, "converterClass");
         checkEmpty(converterClass, "converterClass");
-        
-        try {
+
+        try
+        {
             _converterIdToClassMap.put(converterId, ClassUtils.simpleClassForName(converterClass));
-            if (log.isTraceEnabled()) log.trace("add Converter id = " + converterId +
-                    " converterClass = " + converterClass);
-        } catch (Exception e) {
+            if (log.isTraceEnabled())
+                log.trace("add Converter id = " + converterId + " converterClass = " + converterClass);
+        }
+        catch (Exception e)
+        {
             log.error("Converter class " + converterClass + " not found", e);
         }
     }
-    
-    public void addConverter(Class targetClass, String converterClass) {
+
+    @Override
+    public void addConverter(Class targetClass, String converterClass)
+    {
         checkNull(targetClass, "targetClass");
         checkNull(converterClass, "converterClass");
         checkEmpty(converterClass, "converterClass");
-        
-        try {
+
+        try
+        {
             _converterClassNameToClassMap.put(targetClass, converterClass);
-            if (log.isTraceEnabled()) log.trace("add Converter for class = " + targetClass +
-                    " converterClass = " + converterClass);
-        } catch (Exception e) {
+            if (log.isTraceEnabled())
+                log.trace("add Converter for class = " + targetClass + " converterClass = " + converterClass);
+        }
+        catch (Exception e)
+        {
             log.error("Converter class " + converterClass + " not found", e);
         }
     }
-    
+
     public void addConverterConfiguration(String converterClassName,
-            org.apache.myfaces.config.impl.digester.elements.Converter configuration) {
+            org.apache.myfaces.config.impl.digester.elements.Converter configuration)
+    {
         checkNull(converterClassName, "converterClassName");
         checkEmpty(converterClassName, "converterClassName");
         checkNull(configuration, "configuration");
-        
+
         _converterClassNameToConfigurationMap.put(converterClassName, configuration);
     }
-    
-    public void addValidator(String validatorId, String validatorClass) {
+
+    @Override
+    public void addValidator(String validatorId, String validatorClass)
+    {
         checkNull(validatorId, "validatorId");
         checkEmpty(validatorId, "validatorId");
         checkNull(validatorClass, "validatorClass");
         checkEmpty(validatorClass, "validatorClass");
-        
-        try {
+
+        try
+        {
             _validatorClassMap.put(validatorId, ClassUtils.simpleClassForName(validatorClass));
-            if (log.isTraceEnabled()) log.trace("add Validator id = " + validatorId +
-                    " class = " + validatorClass);
-        } catch (Exception e) {
+            if (log.isTraceEnabled())
+                log.trace("add Validator id = " + validatorId + " class = " + validatorClass);
+        }
+        catch (Exception e)
+        {
             log.error("Validator class " + validatorClass + " not found", e);
         }
     }
-    
-    public UIComponent createComponent(String componentType)
-    throws FacesException {
+
+    @Override
+    public UIComponent createComponent(String componentType) throws FacesException
+    {
         checkNull(componentType, "componentType");
         checkEmpty(componentType, "componentType");
-        
+
         Class componentClass;
-        synchronized (_componentClassMap) {
-            componentClass = (Class) _componentClassMap.get(componentType);
+        synchronized (_componentClassMap)
+        {
+            componentClass = _componentClassMap.get(componentType);
         }
-        if (componentClass == null) {
+        if (componentClass == null)
+        {
             log.error("Undefined component type " + componentType);
             throw new FacesException("Undefined component type " + componentType);
         }
-        
-        try {
+
+        try
+        {
             return (UIComponent) componentClass.newInstance();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             log.error("Could not instantiate component componentType = " + componentType, e);
             throw new FacesException("Could not instantiate component componentType = " + componentType, e);
         }
     }
-    
+
     /**
      * @deprecated Use createComponent(ValueExpression, FacesContext, String) instead.
      */
-    public UIComponent createComponent(ValueBinding valueBinding,
-                                       FacesContext facesContext,
-                                       String componentType)
-            throws FacesException {
-        
+    @Deprecated
+    @Override
+    public UIComponent createComponent(ValueBinding valueBinding, FacesContext facesContext, String componentType)
+            throws FacesException
+    {
+
         checkNull(valueBinding, "valueBinding");
         checkNull(facesContext, "facesContext");
         checkNull(componentType, "componentType");
         checkEmpty(componentType, "componentType");
-        
+
         ValueExpression valExpression = new ValueBindingToValueExpression(valueBinding);
-        
+
         return createComponent(valExpression, facesContext, componentType);
     }
-    
-    public Converter createConverter(String converterId) {
+
+    @Override
+    public Converter createConverter(String converterId)
+    {
         checkNull(converterId, "converterId");
         checkEmpty(converterId, "converterId");
-        
-        Class converterClass = (Class) _converterIdToClassMap.get(converterId);
-        
-        try {
-            Converter converter= (Converter) converterClass.newInstance();
-            
+
+        Class converterClass = _converterIdToClassMap.get(converterId);
+
+        try
+        {
+            Converter converter = (Converter) converterClass.newInstance();
+
             setConverterProperties(converterClass, converter);
-            
+
             return converter;
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             log.error("Could not instantiate converter " + converterClass, e);
             throw new FacesException("Could not instantiate converter: " + converterClass, e);
         }
     }
-    
-    
-    public Converter createConverter(Class targetClass) {
+
+    @Override
+    public Converter createConverter(Class targetClass)
+    {
         checkNull(targetClass, "targetClass");
-        
+
         return internalCreateConverter(targetClass);
     }
-    
-    
-    private Converter internalCreateConverter(Class targetClass) {
+
+    private Converter internalCreateConverter(Class targetClass)
+    {
         // Locate a Converter registered for the target class itself.
-        String converterClassName = (String)_converterClassNameToClassMap.get(targetClass);
-        
-        //Locate a Converter registered for interfaces that are
+        String converterClassName = _converterClassNameToClassMap.get(targetClass);
+
+        // Locate a Converter registered for interfaces that are
         // implemented by the target class (directly or indirectly).
-        if (converterClassName == null) {
+        if (converterClassName == null)
+        {
             Class interfaces[] = targetClass.getInterfaces();
-            if (interfaces != null) {
-                for (int i = 0, len = interfaces.length; i < len; i++) {
-                    // search all superinterfaces for a matching converter, create it
+            if (interfaces != null)
+            {
+                for (int i = 0, len = interfaces.length; i < len; i++)
+                {
+                    // search all superinterfaces for a matching converter,
+                    // create it
                     Converter converter = internalCreateConverter(interfaces[i]);
-                    if (converter != null) {
+                    if (converter != null)
+                    {
                         return converter;
                     }
                 }
             }
         }
-        
-        if (converterClassName != null) {
-            try {
+
+        if (converterClassName != null)
+        {
+            try
+            {
                 Class converterClass = ClassUtils.simpleClassForName(converterClassName);
-                
+
                 Converter converter = null;
-                try {
+                try
+                {
                     // look for a constructor that takes a single Class object
                     // See JSF 1.2 javadoc for Converter
-                    Constructor constructor = converterClass.getConstructor(new Class[]{Class.class});
-                    converter = (Converter)constructor.newInstance(new Object[]{targetClass});
-                } catch (Exception e) {
-                    // if there is no matching constructor use no-arg constructor
+                    Constructor constructor = converterClass.getConstructor(new Class[] { Class.class });
+                    converter = (Converter) constructor.newInstance(new Object[] { targetClass });
+                }
+                catch (Exception e)
+                {
+                    // if there is no matching constructor use no-arg
+                    // constructor
                     converter = (Converter) converterClass.newInstance();
                 }
-                
+
                 setConverterProperties(converterClass, converter);
-                
+
                 return converter;
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 log.error("Could not instantiate converter " + converterClassName, e);
                 throw new FacesException("Could not instantiate converter: " + converterClassName, e);
             }
         }
-        
-        //   locate converter for primitive types
-        if (targetClass == Long.TYPE) {
+
+        // locate converter for primitive types
+        if (targetClass == Long.TYPE)
+        {
             return internalCreateConverter(Long.class);
-        } else if (targetClass == Boolean.TYPE) {
+        }
+        else if (targetClass == Boolean.TYPE)
+        {
             return internalCreateConverter(Boolean.class);
-        } else if (targetClass == Double.TYPE) {
+        }
+        else if (targetClass == Double.TYPE)
+        {
             return internalCreateConverter(Double.class);
-        } else if (targetClass == Byte.TYPE) {
+        }
+        else if (targetClass == Byte.TYPE)
+        {
             return internalCreateConverter(Byte.class);
-        } else if (targetClass == Short.TYPE) {
+        }
+        else if (targetClass == Short.TYPE)
+        {
             return internalCreateConverter(Short.class);
-        } else if (targetClass == Integer.TYPE) {
+        }
+        else if (targetClass == Integer.TYPE)
+        {
             return internalCreateConverter(Integer.class);
-        } else if (targetClass == Float.TYPE) {
+        }
+        else if (targetClass == Float.TYPE)
+        {
             return internalCreateConverter(Float.class);
-        } else if (targetClass == Character.TYPE) {
+        }
+        else if (targetClass == Character.TYPE)
+        {
             return internalCreateConverter(Character.class);
         }
-        
-        
-        //Locate a Converter registered for the superclass (if any) of the target class,
+
+        // Locate a Converter registered for the superclass (if any) of the
+        // target class,
         // recursively working up the inheritance hierarchy.
         Class superClazz = targetClass.getSuperclass();
-        if (superClazz != null) {
+        if (superClazz != null)
+        {
             return internalCreateConverter(superClazz);
-        } else {
+        }
+        else
+        {
             return null;
         }
-        
+
     }
-    
-    private void setConverterProperties(Class converterClass, Converter converter) {
-        org.apache.myfaces.config.impl.digester.elements.Converter converterConfig =
-                (org.apache.myfaces.config.impl.digester.elements.Converter)
-                _converterClassNameToConfigurationMap.get(converterClass.getName());
-        
-        if(converterConfig != null) {
-            
+
+    private void setConverterProperties(Class converterClass, Converter converter)
+    {
+        org.apache.myfaces.config.impl.digester.elements.Converter converterConfig = _converterClassNameToConfigurationMap
+                .get(converterClass.getName());
+
+        if (converterConfig != null)
+        {
+
             Iterator it = converterConfig.getProperties();
-            
-            while (it.hasNext()) {
+
+            while (it.hasNext())
+            {
                 Property property = (Property) it.next();
-                
-                try {
-                    BeanUtils.setProperty(converter,property.getPropertyName(),property.getDefaultValue());
-                } catch(Throwable th) {
-                    log.error("Initializing converter : "+converterClass.getName()+" with property : "+
-                            property.getPropertyName()+" and value : "+property.getDefaultValue()+" failed.");
+
+                try
+                {
+                    BeanUtils.setProperty(converter, property.getPropertyName(), property.getDefaultValue());
+                }
+                catch (Throwable th)
+                {
+                    log.error("Initializing converter : " + converterClass.getName() + " with property : "
+                            + property.getPropertyName() + " and value : " + property.getDefaultValue() + " failed.");
                 }
             }
         }
     }
-    
-    
-    // Note: this method used to be synchronized in the JSF 1.1 version.  Why?
+
+    // Note: this method used to be synchronized in the JSF 1.1 version. Why?
     /**
      * @deprecated
      */
-    public MethodBinding createMethodBinding(String reference, Class[] params)
-    throws ReferenceSyntaxException {
+    @Deprecated
+    @Override
+    public MethodBinding createMethodBinding(String reference, Class[] params) throws ReferenceSyntaxException
+    {
         checkNull(reference, "reference");
         checkEmpty(reference, "reference");
-        
-        if (params == null) params = new Class[0];
-        
+
+        if (params == null)
+            params = new Class[0];
+
         MethodExpression methodExpression;
-        
-        try {
-            methodExpression = getExpressionFactory()
-            .createMethodExpression(threadELContext(), reference, Object.class, params);
-        } catch (ELException e) {
+
+        try
+        {
+            methodExpression = getExpressionFactory().createMethodExpression(threadELContext(), reference,
+                    Object.class, params);
+        }
+        catch (ELException e)
+        {
             throw new ReferenceSyntaxException(e);
         }
-        
+
         return new MethodExpressionToMethodBinding(methodExpression);
     }
-    
-    public Validator createValidator(String validatorId) throws FacesException {
+
+    @Override
+    public Validator createValidator(String validatorId) throws FacesException
+    {
         checkNull(validatorId, "validatorId");
         checkEmpty(validatorId, "validatorId");
-        
-        Class validatorClass = (Class) _validatorClassMap.get(validatorId);
-        if (validatorClass == null) {
+
+        Class validatorClass = _validatorClassMap.get(validatorId);
+        if (validatorClass == null)
+        {
             String message = "Unknown validator id '" + validatorId + "'.";
             log.error(message);
             throw new FacesException(message);
         }
-        
-        try {
+
+        try
+        {
             return (Validator) validatorClass.newInstance();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             log.error("Could not instantiate validator " + validatorClass, e);
             throw new FacesException("Could not instantiate validator: " + validatorClass, e);
         }
     }
-    
+
     /**
      * @deprecated
      */
-    public ValueBinding createValueBinding(String reference) throws ReferenceSyntaxException {
+    @Override
+    public ValueBinding createValueBinding(String reference) throws ReferenceSyntaxException
+    {
         checkNull(reference, "reference");
         checkEmpty(reference, "reference");
-        
+
         ValueExpression valueExpression;
-        
-        try {
-            valueExpression = getExpressionFactory()
-            .createValueExpression(threadELContext(), reference, Object.class);
-        } catch (ELException e) {
+
+        try
+        {
+            valueExpression = getExpressionFactory().createValueExpression(threadELContext(), reference, Object.class);
+        }
+        catch (ELException e)
+        {
             throw new ReferenceSyntaxException(e);
         }
-        
+
         return new ValueExpressionToValueBinding(valueExpression);
     }
-    
+
     // gets the elContext from the current FacesContext()
-    private ELContext threadELContext() {
-        return FacesContext.getCurrentInstance().getELContext();
+    private ELContext threadELContext()
+    {
+        return getFaceContext().getELContext();
     }
-    
-    
-    public String getDefaultRenderKitId() {
+
+    @Override
+    public String getDefaultRenderKitId()
+    {
         return _defaultRenderKitId;
     }
-    
-    public void setDefaultRenderKitId(String defaultRenderKitId) {
+
+    @Override
+    public void setDefaultRenderKitId(String defaultRenderKitId)
+    {
         _defaultRenderKitId = defaultRenderKitId;
     }
-    
-    public StateManager getStateManager() {
+
+    @Override
+    public StateManager getStateManager()
+    {
         return _stateManager;
     }
-    
-    public void setStateManager(StateManager stateManager) {
+
+    @Override
+    public void setStateManager(StateManager stateManager)
+    {
         _stateManager = stateManager;
     }
-    
-    private void checkNull(Object param, String paramName) {
-        if (param == null) {
+
+    private void checkNull(Object param, String paramName)
+    {
+        if (param == null)
+        {
             throw new NullPointerException(paramName + " can not be null.");
         }
     }
-    
-    private void checkEmpty(String param, String paramName) {
-        if (param.length() == 0) {
+
+    private void checkEmpty(String param, String paramName)
+    {
+        if (param.length() == 0)
+        {
             throw new NullPointerException("String " + paramName + " can not be empty.");
         }
     }

@@ -15,9 +15,8 @@
  */
 package org.apache.myfaces.config.impl.digester.elements;
 
-import java.util.List;
 import java.util.ArrayList;
-
+import java.util.List;
 
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
@@ -25,54 +24,47 @@ import java.util.ArrayList;
 public class Factory
 {
 
-    private List applicationFactory = new ArrayList();
-    private List facesContextFactory = new ArrayList();
-    private List lifecycleFactory = new ArrayList();
-    private List renderkitFactory = new ArrayList();
+    private List<String> applicationFactory = new ArrayList<String>();
+    private List<String> facesContextFactory = new ArrayList<String>();
+    private List<String> lifecycleFactory = new ArrayList<String>();
+    private List<String> renderkitFactory = new ArrayList<String>();
 
     public void addApplicationFactory(String factory)
     {
         applicationFactory.add(factory);
     }
 
-
     public void addFacesContextFactory(String factory)
     {
         facesContextFactory.add(factory);
     }
-
 
     public void addLifecycleFactory(String factory)
     {
         lifecycleFactory.add(factory);
     }
 
-
     public void addRenderkitFactory(String factory)
     {
         renderkitFactory.add(factory);
     }
 
-
-    public List getApplicationFactory()
+    public List<String> getApplicationFactory()
     {
         return applicationFactory;
     }
 
-
-    public List getFacesContextFactory()
+    public List<String> getFacesContextFactory()
     {
         return facesContextFactory;
     }
 
-
-    public List getLifecycleFactory()
+    public List<String> getLifecycleFactory()
     {
         return lifecycleFactory;
     }
 
-
-    public List getRenderkitFactory()
+    public List<String> getRenderkitFactory()
     {
         return renderkitFactory;
     }

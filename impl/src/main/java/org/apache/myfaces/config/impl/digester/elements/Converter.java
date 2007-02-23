@@ -30,8 +30,8 @@ public class Converter
     private String converterId;
     private String forClass;
     private String converterClass;
-    private List _properties = null;
-    private List _attributes = null;
+    private List<Object> _properties = null;
+    private List<Object> _attributes = null;
 
 
     public String getConverterId()
@@ -72,12 +72,12 @@ public class Converter
     public void addProperty(Property value)
     {
         if(_properties==null)
-            _properties = new ArrayList();
+            _properties = new ArrayList<Object>();
 
         _properties.add(value);
     }
 
-    public Iterator getProperties()
+    public Iterator<Object> getProperties()
     {
         if(_properties==null)
             return Collections.EMPTY_LIST.iterator();
@@ -88,12 +88,12 @@ public class Converter
     public void addAttribute(Attribute value)
     {
         if(_attributes == null)
-            _attributes = new ArrayList();
+            _attributes = new ArrayList<Object>();
 
         _attributes.add(value);
     }
 
-    public Iterator getAttributes()
+    public Iterator<Object> getAttributes()
     {
         if(_attributes==null)
             return Collections.EMPTY_LIST.iterator();
