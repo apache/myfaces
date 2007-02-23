@@ -36,7 +36,7 @@ public class UIColumn
 
     public UIComponent getFooter()
     {
-        return getFacets().get(FOOTER_FACET_NAME);
+        return getFacet(FOOTER_FACET_NAME);
     }
 
     public void setHeader(UIComponent header)
@@ -46,7 +46,7 @@ public class UIColumn
 
     public UIComponent getHeader()
     {
-        return getFacets().get(HEADER_FACET_NAME);
+        return getFacet(HEADER_FACET_NAME);
     }
 
 
