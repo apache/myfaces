@@ -22,12 +22,12 @@ import java.util.*;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-class _ComponentFacetMap
-        implements Map, Serializable
+class _ComponentFacetMap<V extends UIComponent>
+        implements Map<String, V>, Serializable
 {
 	private static final long serialVersionUID = -3456937594422167629L;
 	private UIComponent _component;
-    private Map<Object, Object> _map = new HashMap<Object, Object>();
+    private Map<String, V> _map = new HashMap<String, V>();
 
     _ComponentFacetMap(UIComponent component)
     {
@@ -61,49 +61,49 @@ class _ComponentFacetMap
         return _map.containsValue(value);
     }
 
-    public Collection<Object> values()
+    public Collection<V> values()
     {
         return _map.values();
     }
 
-    public void putAll(Map t)
+    public void putAll(Map<? extends String, ? extends V> t)
     {
         for (Iterator it = t.entrySet().iterator(); it.hasNext(); )
         {
-            Map.Entry entry = (Entry)it.next();
+            Map.Entry<String, V> entry = (Entry<String, V>)it.next();
             put(entry.getKey(), entry.getValue());
         }
     }
 
-    public Set entrySet()
+    public Set<Entry<String, V>> entrySet()
     {
         return _map.entrySet();
     }
 
-    public Set<Object> keySet()
+    public Set<String> keySet()
     {
         return _map.keySet();
     }
 
-    public Object get(Object key)
+    public V get(Object key)
     {
         checkKey(key);
         return _map.get(key);
     }
 
-    public Object remove(Object key)
+    public V remove(Object key)
     {
         checkKey(key);
-        UIComponent facet = (UIComponent)_map.remove(key);
+        V facet = _map.remove(key);
         if (facet != null) facet.setParent(null);
         return facet;
     }
 
-    public Object put(Object key, Object value)
+    public V put(String key, V value)
     {
         checkKey(key);
         checkValue(value);
-        setNewParent((String)key, (UIComponent)value);
+        setNewParent(key, value);
         return _map.put(key, value);
     }
 
