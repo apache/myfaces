@@ -15,7 +15,6 @@
  */
 package javax.faces.application;
 
-import java.util.ResourceBundle;
 import javax.el.ELContextListener;
 import javax.el.ELException;
 import javax.el.ELResolver;
@@ -25,9 +24,11 @@ import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.el.ReferenceSyntaxException;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * Holds webapp-wide resources for a JSF application. There is a single one of
@@ -231,7 +232,7 @@ public abstract class Application
 
     public abstract Iterator<Locale> getSupportedLocales();
 
-    public abstract void setSupportedLocales(Collection locales);
+    public abstract void setSupportedLocales(Collection<Locale> locales);
 
     public abstract void addValidator(String validatorId,
                                       String validatorClass);
