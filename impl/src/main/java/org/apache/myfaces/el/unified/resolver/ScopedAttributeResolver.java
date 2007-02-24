@@ -92,11 +92,11 @@ public class ScopedAttributeResolver extends ELResolver {
         return Object.class;
     }
 
-    public Iterator getFeatureDescriptors(ELContext context, Object base) {
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
         
         if (base != null) return null;
         
-        List descriptorList = new ArrayList();
+        List<FeatureDescriptor> descriptorList = new ArrayList<FeatureDescriptor>();
         ExternalContext extContext = externalContext(context);
         addDescriptorsToList(descriptorList, extContext.getRequestMap());
         addDescriptorsToList(descriptorList, extContext.getSessionMap());
@@ -113,7 +113,7 @@ public class ScopedAttributeResolver extends ELResolver {
     }
     
     // side effect: modifies the list
-    private void addDescriptorsToList(List descriptorList, Map scopeMap) {
+    private void addDescriptorsToList(List<FeatureDescriptor> descriptorList, Map scopeMap) {
         for (Object name: scopeMap.keySet()) {
             String strName = (String)name;
             Class runtimeType = scopeMap.get(strName).getClass();

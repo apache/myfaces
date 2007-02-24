@@ -16,6 +16,7 @@
 
 package org.apache.myfaces.el.unified.resolver;
 
+import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 import java.util.ResourceBundle;
 import javax.el.ELContext;
@@ -102,7 +103,7 @@ public class ResourceBundleResolver extends ELResolver {
         return null;
     }
 
-    public Iterator getFeatureDescriptors(ELContext context, Object base) {
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
        
         if (base != null) return null;
         
