@@ -16,6 +16,7 @@
 
 package org.apache.myfaces.el.convert;
 
+import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 import javax.el.ELContext;
 import javax.el.ELException;
@@ -101,7 +102,7 @@ public class VariableResolverToELResolver extends ELResolver {
         return null;
     }
 
-    public Iterator getFeatureDescriptors(ELContext context, Object base) {
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
         return null;
     }
     
