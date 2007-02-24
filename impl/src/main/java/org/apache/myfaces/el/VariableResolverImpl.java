@@ -29,7 +29,6 @@ import javax.faces.FacesException;
 import org.apache.myfaces.config.ManagedBeanBuilder;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.ManagedBean;
-import org.apache.myfaces.el.unified.resolver.ManagedBeanResolver.Scope;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
