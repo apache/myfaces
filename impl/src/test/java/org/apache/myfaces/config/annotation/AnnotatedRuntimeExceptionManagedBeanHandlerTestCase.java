@@ -22,40 +22,83 @@ public class AnnotatedRuntimeExceptionManagedBeanHandlerTestCase extends TestCas
 		handler = new AnnotatedManagedBeanHandler(managedBean, managedBeanConf);
 	}
 	
-	public void testShouldNotInvokeForNoneScope() {
+	public void testPostConstructShouldNotInvokeForNoneScope() {
 
 		managedBeanConf.setScope(ManagedBeanBuilder.NONE);
-		boolean threwUnchecked = handler.run();
+		boolean threwUnchecked = handler.invokePostConstruct();
 		
 		assertFalse(threwUnchecked);
 		assertFalse(managedBean.isPostConstructCalled());
+		assertFalse(managedBean.isPreDestroyCalled());
 	}
 
-	public void testShouldInvokeForRequestScope() {
-		
-		managedBeanConf.setScope(ManagedBeanBuilder.REQUEST);
-		boolean threwUnchecked = handler.run();
-		
-		assertTrue(threwUnchecked);
-		assertTrue(managedBean.isPostConstructCalled());
-	}
+	public void testPreDestroyShouldNotInvokeForNoneScope() {
 
-	public void testShouldInvokeForSessionScope() {
+		managedBeanConf.setScope(ManagedBeanBuilder.NONE);
+		boolean threwUnchecked = handler.invokePreDestroy();
 		
-		managedBeanConf.setScope(ManagedBeanBuilder.SESSION);
-		boolean threwUnchecked = handler.run();
-		
-		assertTrue(threwUnchecked);
-		assertTrue(managedBean.isPostConstructCalled());
-	}
-
-	public void testShouldInvokeForApplicationScope() {
-		
-		managedBeanConf.setScope(ManagedBeanBuilder.APPLICATION);
-		boolean threwUnchecked = handler.run();
-		
-		assertTrue(threwUnchecked);
-		assertTrue(managedBean.isPostConstructCalled());
+		assertFalse(threwUnchecked);
+		assertFalse(managedBean.isPostConstructCalled());
+		assertFalse(managedBean.isPreDestroyCalled());
 	}
 	
+	public void testPostConstructShouldInvokeForRequestScope() {
+		
+		managedBeanConf.setScope(ManagedBeanBuilder.REQUEST);
+		boolean threwUnchecked = handler.invokePostConstruct();
+		
+		assertTrue(threwUnchecked);
+		assertTrue(managedBean.isPostConstructCalled());
+		assertFalse(managedBean.isPreDestroyCalled());
+	}
+
+	public void testPreDestroyShouldInvokeForRequestScope() {
+		
+		managedBeanConf.setScope(ManagedBeanBuilder.REQUEST);
+		boolean threwUnchecked = handler.invokePreDestroy();
+		
+		assertTrue(threwUnchecked);
+		assertFalse(managedBean.isPostConstructCalled());
+		assertTrue(managedBean.isPreDestroyCalled());
+	}
+	
+	public void testPostConstructShouldInvokeForSessionScope() {
+		
+		managedBeanConf.setScope(ManagedBeanBuilder.SESSION);
+		boolean threwUnchecked = handler.invokePostConstruct();
+		
+		assertTrue(threwUnchecked);
+		assertTrue(managedBean.isPostConstructCalled());
+		assertFalse(managedBean.isPreDestroyCalled());
+	}
+
+	public void testPreDestroyShouldInvokeForSessionScope() {
+		
+		managedBeanConf.setScope(ManagedBeanBuilder.SESSION);
+		boolean threwUnchecked = handler.invokePreDestroy();
+		
+		assertTrue(threwUnchecked);
+		assertFalse(managedBean.isPostConstructCalled());
+		assertTrue(managedBean.isPreDestroyCalled());
+	}
+	
+	public void testPostConstructShouldInvokeForApplicationScope() {
+		
+		managedBeanConf.setScope(ManagedBeanBuilder.APPLICATION);
+		boolean threwUnchecked = handler.invokePostConstruct();
+		
+		assertTrue(threwUnchecked);
+		assertTrue(managedBean.isPostConstructCalled());
+		assertFalse(managedBean.isPreDestroyCalled());
+	}
+
+	public void testPreDestroyShouldInvokeForApplicationScope() {
+		
+		managedBeanConf.setScope(ManagedBeanBuilder.APPLICATION);
+		boolean threwUnchecked = handler.invokePreDestroy();
+		
+		assertTrue(threwUnchecked);
+		assertFalse(managedBean.isPostConstructCalled());
+		assertTrue(managedBean.isPreDestroyCalled());
+	}
 }

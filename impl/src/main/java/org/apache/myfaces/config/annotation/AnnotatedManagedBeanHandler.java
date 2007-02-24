@@ -25,6 +25,10 @@ public class AnnotatedManagedBeanHandler {
 
 	private ManagedBean beanConfiguration;
 
+	private static final String POST_CONSTRUCT = "javax.annotation.PostConstruct";
+	
+	private static final String PRE_DESTROY = "javax.annotation.PreDestroy";
+
 	public AnnotatedManagedBeanHandler(Object managedBean, ManagedBean beanConfiguration) {
 
 		if (managedBean == null) {
@@ -40,25 +44,37 @@ public class AnnotatedManagedBeanHandler {
 
 	}
 
-	public boolean run() {
+	public boolean invokePreDestroy() {
+		return invoke(PRE_DESTROY);
+	}
+
+	public boolean invokePostConstruct() {
+		return invoke(POST_CONSTRUCT);
+	}
+	
+	private boolean invoke(String annotationName) {
 
 		boolean threwUnchecked = false;
 
 		if (ManagedBeanBuilder.NONE.equals(beanConfiguration.getManagedBeanScope())) {
-			; // this only applies to a, s, and r scope beans
+			if(log.isDebugEnabled())
+				log.debug( annotationName + " not processed for managed bean " 
+						+ beanConfiguration.getManagedBeanName() 
+						+ " because it is not in request, session, or "
+						+ "application scope.  See section 5.4 of the JSF 1.3 spec"); 
 		} else {
-			threwUnchecked = run(managedBean.getClass().getMethods());
+			threwUnchecked = invoke(managedBean.getClass().getMethods(), annotationName);
 		}
 
 		return threwUnchecked;
 	}
 
-	private boolean run(Method[] methods) {
+	private boolean invoke(Method[] methods, String annotationName) {
 
 		boolean threwUnchecked = false;
 
 		for (Method method : methods)
-			if (run(method)) {
+			if (invoke(method, annotationName)) {
 				threwUnchecked = true;
 				break;
 			}// break if we invoke method ? or invoke all w/ annoation?
@@ -66,16 +82,19 @@ public class AnnotatedManagedBeanHandler {
 		return threwUnchecked;
 	}
 
-	private boolean run(Method method) {
+	private boolean invoke(Method method, String annotationName) {
 
 		Annotation[] annotations = method.getAnnotations();
 		boolean threwUnchecked = false;
 
-		for (Annotation annotation : annotations) {
-			if (isPostConstruct(annotation)) {
-				if (run(annotation, method)) {
+		for (Annotation annotation : annotations) 
+		{
+			if (isMatch(annotation, annotationName)) 
+			{
+				if (invoke(annotation, method)) 
+				{
 					threwUnchecked = true;
-					break; // spec says not to call anymore methods on this
+					break; // spec says not to call any more methods on this
 				}
 			}
 		}
@@ -83,13 +102,13 @@ public class AnnotatedManagedBeanHandler {
 		return threwUnchecked;
 	}
 
-	private boolean run(Annotation annotation, Method method) {
+	private boolean invoke(Annotation annotation, Method method) {
 
 		boolean threwUnchecked = true; // start w/ pessimism
 
 		try {
 
-			method.invoke(managedBean, null);
+			method.invoke(managedBean, null); // what do we do for parameters?
 
 			threwUnchecked = false;
 
@@ -125,12 +144,12 @@ public class AnnotatedManagedBeanHandler {
 				+ " See section 5.4.1 of the JSF specification.";
 	}
 
-	private boolean isPostConstruct(Annotation annotation) {
+	private boolean isMatch(Annotation annotation, String annotationName) {
 
 		final Class<? extends Annotation> annotationType = annotation.annotationType();
 		final String name = annotationType.getName();
 		// use the literal String because we want to avoid ClassDefNotFoundError
-		return "javax.annotation.PostConstruct".equals(name);
+		return annotationName.equals(name);
 
 	}
 }

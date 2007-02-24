@@ -24,65 +24,139 @@ public class AnnotatedExceptionManagedBeanHandlerTestCase extends TestCase {
 		handler = new AnnotatedManagedBeanHandler(managedBean, managedBeanConf);
 	}
 
-	public void testShouldNotBlowUpForNoneScope() {
+	public void testPostConstructShouldNotBlowUpForNoneScope() {
 
 		managedBeanConf.setScope(ManagedBeanBuilder.NONE);
 
 		boolean exceptionThrown = false;
 		
 		try {
-			handler.run();
+			handler.invokePostConstruct();
 		} catch (Exception e) {
 			exceptionThrown = true;			
 		}
 
 		assertFalse(managedBean.isPostConstructCalled());
+		assertFalse(managedBean.isPreDestroyCalled());
 		assertFalse(exceptionThrown);
 	}
 
-	public void testShouldBlowUpForRequestScope() {
+	public void testPreDestroyShouldNotBlowUpForNoneScope() {
+
+		managedBeanConf.setScope(ManagedBeanBuilder.NONE);
+
+		boolean exceptionThrown = false;
+		
+		try {
+			handler.invokePreDestroy();
+		} catch (Exception e) {
+			exceptionThrown = true;			
+		}
+
+		assertFalse(managedBean.isPostConstructCalled());
+		assertFalse(managedBean.isPreDestroyCalled());
+		assertFalse(exceptionThrown);
+	}
+	
+	public void testPostConstructShouldBlowUpForRequestScope() {
 
 		managedBeanConf.setScope(ManagedBeanBuilder.REQUEST);
 
 		boolean exceptionThrown = false;
 		
 		try {
-			handler.run();
+			handler.invokePostConstruct();
 		} catch (Exception e) {
 			exceptionThrown = true;			
 		}
 
 		assertTrue(exceptionThrown);
+		assertTrue(managedBean.isPostConstructCalled());
+		assertFalse(managedBean.isPreDestroyCalled());
 	}
 
-	public void testShouldBlowUpForSessionScope() {
+	public void testPreDestroyShouldBlowUpForRequestScope() {
+
+		managedBeanConf.setScope(ManagedBeanBuilder.REQUEST);
+
+		boolean exceptionThrown = false;
+		
+		try {
+			handler.invokePreDestroy();
+		} catch (Exception e) {
+			exceptionThrown = true;			
+		}
+
+		assertTrue(exceptionThrown);
+		assertFalse(managedBean.isPostConstructCalled());
+		assertTrue(managedBean.isPreDestroyCalled());
+	}
+	
+	public void testPostConstructShouldBlowUpForSessionScope() {
 
 		managedBeanConf.setScope(ManagedBeanBuilder.SESSION);
 
 		boolean exceptionThrown = false;
 		
 		try {
-			handler.run();
+			handler.invokePostConstruct();
 		} catch (Exception e) {
 			exceptionThrown = true;			
 		}
 
 		assertTrue(exceptionThrown);
+		assertTrue(managedBean.isPostConstructCalled());
+		assertFalse(managedBean.isPreDestroyCalled());
 	}
 
-	public void testShouldBlowUpForApplicationScope() {
+	public void testPreDestroyShouldBlowUpForSessionScope() {
+
+		managedBeanConf.setScope(ManagedBeanBuilder.SESSION);
+
+		boolean exceptionThrown = false;
+		
+		try {
+			handler.invokePreDestroy();
+		} catch (Exception e) {
+			exceptionThrown = true;			
+		}
+
+		assertTrue(exceptionThrown);
+		assertFalse(managedBean.isPostConstructCalled());
+		assertTrue(managedBean.isPreDestroyCalled());
+	}
+	
+	public void testPostConstructShouldBlowUpForApplicationScope() {
 
 		managedBeanConf.setScope(ManagedBeanBuilder.APPLICATION);
 
 		boolean exceptionThrown = false;
 		
 		try {
-			handler.run();
+			handler.invokePostConstruct();
 		} catch (Exception e) {
 			exceptionThrown = true;			
 		}
 
 		assertTrue(exceptionThrown);
+		assertTrue(managedBean.isPostConstructCalled());
+		assertFalse(managedBean.isPreDestroyCalled());
 	}
 
+	public void testPreDestroyShouldBlowUpForApplicationScope() {
+
+		managedBeanConf.setScope(ManagedBeanBuilder.APPLICATION);
+
+		boolean exceptionThrown = false;
+		
+		try {
+			handler.invokePreDestroy();
+		} catch (Exception e) {
+			exceptionThrown = true;			
+		}
+
+		assertTrue(exceptionThrown);
+		assertFalse(managedBean.isPostConstructCalled());
+		assertTrue(managedBean.isPreDestroyCalled());
+	}
 }

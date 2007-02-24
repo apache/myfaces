@@ -67,7 +67,7 @@ public class ManagedBeanBuilder
 
         final AnnotatedManagedBeanHandler handler = new AnnotatedManagedBeanHandler(bean, beanConfiguration);
         
-        final boolean threwUnchecked = handler.run();
+        final boolean threwUnchecked = handler.invokePostConstruct();
         
         if(threwUnchecked)
         	return null;
@@ -302,7 +302,6 @@ public class ManagedBeanBuilder
     {
         String beanName = getFirstSegment(expression);
         ExternalContext externalContext = facesContext.getExternalContext();
-
         
 		// check scope objects
         if (beanName.equalsIgnoreCase("requestScope")) {
