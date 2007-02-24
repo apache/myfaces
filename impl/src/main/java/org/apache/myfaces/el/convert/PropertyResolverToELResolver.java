@@ -16,8 +16,6 @@
 
 package org.apache.myfaces.el.convert;
 
-import java.util.Iterator;
-import java.util.List;
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ELResolver;
@@ -25,9 +23,12 @@ import javax.el.ExpressionFactory;
 import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
 import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
 import javax.faces.application.ApplicationFactory;
 import javax.faces.el.PropertyResolver;
+
+import java.beans.FeatureDescriptor;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Wrapper that converts a VariableResolver into an ELResolver.
@@ -35,6 +36,7 @@ import javax.faces.el.PropertyResolver;
  *
  * @author Stan Silvert
  */
+@SuppressWarnings("deprecation")
 public class PropertyResolverToELResolver extends ELResolver {
     private PropertyResolver propertyResolver;
     
@@ -45,9 +47,6 @@ public class PropertyResolverToELResolver extends ELResolver {
      */
     public PropertyResolverToELResolver(PropertyResolver propertyResolver) {
         this.propertyResolver = propertyResolver;
-        
-        ApplicationFactory appFactory = (ApplicationFactory)FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-        this.expressionFactory = appFactory.getApplication().getExpressionFactory();
     }
 
     public void setValue(ELContext context, Object base, Object property, Object value) 
@@ -132,7 +131,7 @@ public class PropertyResolverToELResolver extends ELResolver {
         }
     }
     
-    public Iterator getFeatureDescriptors(ELContext context, Object base) {
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
         
         return null;
     }
@@ -148,8 +147,20 @@ public class PropertyResolverToELResolver extends ELResolver {
         return (base instanceof List) || base.getClass().isArray();
     }
     
+    /**
+     * @return the expressionFactory
+     */
+    public ExpressionFactory getExpressionFactory()
+    {
+        if(expressionFactory == null) {
+            ApplicationFactory appFactory = (ApplicationFactory)FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
+            expressionFactory = appFactory.getApplication().getExpressionFactory();
+        }
+        return expressionFactory;
+    }
+    
     private int coerceToInt(Object property) throws Exception {
-        Integer coerced = (Integer)expressionFactory.coerceToType(property, Integer.class);
+        Integer coerced = (Integer)getExpressionFactory().coerceToType(property, Integer.class);
         return coerced.intValue();
     }
     
