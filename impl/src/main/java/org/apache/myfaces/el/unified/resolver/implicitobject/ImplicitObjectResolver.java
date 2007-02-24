@@ -74,7 +74,7 @@ public class ImplicitObjectResolver extends ELResolver {
     
     private ImplicitObjectResolver() {
         super();
-        this.implicitObjects = new ArrayList();
+        this.implicitObjects = new ArrayList<ImplicitObject>();
     }
     
     /** Creates a new instance of ImplicitObjectResolverForJSP */
@@ -156,7 +156,7 @@ public class ImplicitObjectResolver extends ELResolver {
         return null;
     }
 
-    public Iterator getFeatureDescriptors(ELContext context, Object base) {
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
         if (base != null) return null;
 
         ArrayList<FeatureDescriptor> descriptors = new ArrayList<FeatureDescriptor>(implicitObjects.size());
