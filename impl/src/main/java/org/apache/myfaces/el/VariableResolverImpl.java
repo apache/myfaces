@@ -29,6 +29,7 @@ import javax.faces.FacesException;
 import org.apache.myfaces.config.ManagedBeanBuilder;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.ManagedBean;
+import org.apache.myfaces.el.unified.resolver.ManagedBeanResolver.Scope;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -313,25 +314,7 @@ public class VariableResolverImpl
                 beansUnderConstruction.remove(managedBeanName);
             }
 
-            // put in scope
-            String scopeKey = mbc.getManagedBeanScope();
-
-            // find the scope handler object
-            Scope scope = (Scope) _scopes.get(scopeKey);
-            if (scope == null)
-            {
-                log.error("Managed bean '" + name + "' has illegal scope: "
-                    + scopeKey);
-            }
-            else
-            {
-                scope.put(externalContext, name, obj);
-            }
-
-            if(obj==null && log.isDebugEnabled())
-            {
-                log.debug("Variable '" + name + "' could not be resolved.");
-            }
+            putInScope(mbc, externalContext, obj);
 
             return obj;
         }
@@ -344,6 +327,28 @@ public class VariableResolverImpl
         return null;
     }
 
+	private void putInScope(ManagedBean managedBean, ExternalContext extContext, Object obj) {
+
+		final String managedBeanName = managedBean.getManagedBeanName();
+		
+		if (obj == null) {
+			if (log.isDebugEnabled())
+				log.debug("Variable '" + managedBeanName + "' could not be resolved.");
+		} else {
+
+			String scopeKey = managedBean.getManagedBeanScope();
+
+			// find the scope handler object
+			Scope scope = (Scope) _scopes.get(scopeKey);
+			if (scope == null) {
+				log.error("Managed bean '" + managedBeanName + "' has illegal scope: " + scopeKey);
+			} else {
+				scope.put(extContext, managedBeanName, obj);
+			}
+		}
+
+	}
+    
     protected RuntimeConfig getRuntimeConfig(FacesContext facesContext)
     {
         if (_runtimeConfig == null)

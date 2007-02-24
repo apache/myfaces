@@ -15,23 +15,34 @@
  */
 package org.apache.myfaces.config;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import javax.el.ELContext;
+import javax.el.ELException;
 import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
-import org.apache.myfaces.config.element.*;
+import javax.faces.FacesException;
+import javax.faces.application.Application;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.faces.webapp.UIComponentTag;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import javax.faces.FacesException;
-import javax.faces.application.Application;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ExternalContext;
-import javax.faces.webapp.UIComponentTag;
-import java.util.*;
-import java.lang.reflect.Array;
-import javax.el.ELException;
+import org.apache.myfaces.config.annotation.AnnotatedManagedBeanHandler;
+import org.apache.myfaces.config.element.ListEntries;
+import org.apache.myfaces.config.element.ListEntry;
+import org.apache.myfaces.config.element.ManagedBean;
+import org.apache.myfaces.config.element.ManagedProperty;
+import org.apache.myfaces.config.element.MapEntries;
+import org.apache.myfaces.config.element.MapEntry;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 
@@ -45,12 +56,22 @@ public class ManagedBeanBuilder
 {
     private static Log log = LogFactory.getLog(ManagedBeanBuilder.class);
     private RuntimeConfig _runtimeConfig;
-
+    public final static String REQUEST = "request";
+    public final static String APPLICATION = "application";
+    public final static String SESSION = "session";
+    public final static String NONE = "none";
 
     public Object buildManagedBean(FacesContext facesContext, ManagedBean beanConfiguration) throws FacesException
     {
-        Object bean = ClassUtils.newInstance(beanConfiguration.getManagedBeanClassName());
+        final Object bean = ClassUtils.newInstance(beanConfiguration.getManagedBeanClassName());
 
+        final AnnotatedManagedBeanHandler handler = new AnnotatedManagedBeanHandler(bean, beanConfiguration);
+        
+        final boolean threwUnchecked = handler.run();
+        
+        if(threwUnchecked)
+        	return null;
+        
         switch (beanConfiguration.getInitMode())
         {
             case ManagedBean.INIT_MODE_PROPERTIES:
@@ -240,18 +261,18 @@ public class ManagedBeanBuilder
             String valueScope = getScope(facesContext, expression);
 
             // if the target scope is 'none' value scope has to be 'none', too
-            if (targetScope == null || targetScope.equalsIgnoreCase("none")) {
-                if (valueScope != null && !(valueScope.equalsIgnoreCase("none"))) {
+            if (targetScope == null || targetScope.equalsIgnoreCase(NONE)) {
+                if (valueScope != null && !(valueScope.equalsIgnoreCase(NONE))) {
                     return false;
                 }
                 return true;
             }
 
             // 'application' scope can reference 'application' and 'none'
-            if (targetScope.equalsIgnoreCase("application")) {
+            if (targetScope.equalsIgnoreCase(APPLICATION)) {
                 if (valueScope != null) {
-                    if (valueScope.equalsIgnoreCase("request") ||
-                        valueScope.equalsIgnoreCase("session")) {
+                    if (valueScope.equalsIgnoreCase(REQUEST) ||
+                        valueScope.equalsIgnoreCase(SESSION)) {
                         return false;
                     }
                 }
@@ -259,9 +280,9 @@ public class ManagedBeanBuilder
             }
 
             // 'session' scope can reference 'session', 'application', and 'none' but not 'request'
-            if (targetScope.equalsIgnoreCase("session")) {
+            if (targetScope.equalsIgnoreCase(SESSION)) {
                 if (valueScope != null) {
-                    if (valueScope.equalsIgnoreCase("request")) {
+                    if (valueScope.equalsIgnoreCase(REQUEST)) {
                         return false;
                     }
                 }
@@ -269,7 +290,7 @@ public class ManagedBeanBuilder
             }
 
             // 'request' scope can reference any value scope
-            if (targetScope.equalsIgnoreCase("request")) {
+            if (targetScope.equalsIgnoreCase(REQUEST)) {
                 return true;
             }
         }
@@ -282,59 +303,58 @@ public class ManagedBeanBuilder
         String beanName = getFirstSegment(expression);
         ExternalContext externalContext = facesContext.getExternalContext();
 
-        // check scope objects
+        
+		// check scope objects
         if (beanName.equalsIgnoreCase("requestScope")) {
-            return "request";
+            return REQUEST;
         }
-        if (beanName.equalsIgnoreCase("sessionScope")) {
-            return "session";
+		if (beanName.equalsIgnoreCase("sessionScope")) {
+            return SESSION;
         }
-        if (beanName.equalsIgnoreCase("applicationScope")) {
-            return "application";
+		if (beanName.equalsIgnoreCase("applicationScope")) {
+            return APPLICATION;
         }
 
 	    // check implicit objects
         if (beanName.equalsIgnoreCase("cookie")) {
-	    return "request";
+        	return REQUEST;
         }
         if (beanName.equalsIgnoreCase("facesContext")) {
-            return "request";
+            return REQUEST;
         }
 
         if (beanName.equalsIgnoreCase("header")) {
-            return "request";
+            return REQUEST;
         }
         if (beanName.equalsIgnoreCase("headerValues")) {
-            return "request";
+            return REQUEST;
         }
 
         if (beanName.equalsIgnoreCase("initParam")) {
-	    return "application";
+        	return APPLICATION;
         }
         if (beanName.equalsIgnoreCase("param")) {
-            return "request";
+            return REQUEST;
         }
         if (beanName.equalsIgnoreCase("paramValues")) {
-            return "request";
+            return REQUEST;
         }
         if (beanName.equalsIgnoreCase("view")) {
-            return "request";
+            return REQUEST;
         }
-
 
         // not found so far - check all scopes
         if (externalContext.getRequestMap().get(beanName) != null) {
-            return "request";
+            return REQUEST;
         }
         if (externalContext.getSessionMap().get(beanName) != null) {
-            return "session";
+            return SESSION;
         }
         if (externalContext.getApplicationMap().get(beanName) != null) {
-            return "application";
+            return APPLICATION;
         }
 
         //not found - check mangaged bean config
-
 
         ManagedBean mbc = getRuntimeConfig(facesContext).getManagedBean(beanName);
 
@@ -344,9 +364,6 @@ public class ManagedBeanBuilder
 
         return null;
     }
-
-
-
 
     /**
      * Extract the first expression segment, that is the substring up to the first '.' or '['
