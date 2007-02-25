@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 public class RequestHeaderValuesMap extends AbstractAttributeMap
 {
     private final HttpServletRequest _httpServletRequest;
-    private final Map                _valueCache = new HashMap();
+    private final Map<String, Object>                _valueCache = new HashMap<String, Object>();
 
     RequestHeaderValuesMap(HttpServletRequest httpServletRequest)
     {
