@@ -45,6 +45,7 @@ import java.util.ResourceBundle;
  * @author Stan Silvert
  * @version $Revision$ $Date$
  */
+@SuppressWarnings("deprecation")
 public abstract class Application
 {
     
