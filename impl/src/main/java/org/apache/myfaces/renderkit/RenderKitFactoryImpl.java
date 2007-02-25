@@ -36,7 +36,7 @@ public class RenderKitFactoryImpl
 {
     private static final Log log = LogFactory.getLog(RenderKitFactoryImpl.class);
 
-    private Map _renderkits = new HashMap();
+    private Map<String, RenderKit> _renderkits = new HashMap<String, RenderKit>();
 
     public RenderKitFactoryImpl()
     {
@@ -62,7 +62,7 @@ public class RenderKitFactoryImpl
             throws FacesException
     {
         if (renderKitId == null) throw new NullPointerException("renderKitId");
-        RenderKit renderkit = (RenderKit)_renderkits.get(renderKitId);
+        RenderKit renderkit = _renderkits.get(renderKitId);
         if (renderkit == null)
         {
             //throw new IllegalArgumentException("Unknown RenderKit '" + renderKitId + "'.");
@@ -76,7 +76,7 @@ public class RenderKitFactoryImpl
     }
 
 
-    public Iterator getRenderKitIds()
+    public Iterator<String> getRenderKitIds()
     {
         return _renderkits.keySet().iterator();
     }

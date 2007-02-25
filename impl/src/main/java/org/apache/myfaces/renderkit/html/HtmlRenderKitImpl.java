@@ -42,14 +42,14 @@ public class HtmlRenderKitImpl
 
     //~ Instance fields ----------------------------------------------------------------------------
 
-    private Map _renderers;
+    private Map<String, Renderer> _renderers;
     private ResponseStateManager _responseStateManager;
 
     //~ Constructors -------------------------------------------------------------------------------
 
     public HtmlRenderKitImpl()
     {
-        _renderers = new HashMap();
+        _renderers = new HashMap<String, Renderer>();
         _responseStateManager = new HtmlResponseStateManager();
     }
 
@@ -70,7 +70,7 @@ public class HtmlRenderKitImpl
         {
             throw new NullPointerException("renderer type must not be null.");
         }
-        Renderer renderer = (Renderer) _renderers.get(key(componentFamily, rendererType));
+        Renderer renderer = _renderers.get(key(componentFamily, rendererType));
         if (renderer == null)
         {
             log.warn("Unsupported component-family/renderer-type: " + componentFamily + "/" + rendererType);
