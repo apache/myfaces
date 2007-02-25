@@ -54,7 +54,7 @@ public class TreeStructureManager
         if (component.getChildCount() > 0)
         {
             List childList = component.getChildren();
-            List structChildList = new ArrayList();
+            List<TreeStructComponent> structChildList = new ArrayList<TreeStructComponent>();
             for (int i = 0, len = childList.size(); i < len; i++)
             {
                 UIComponent child = (UIComponent)childList.get(i);
@@ -64,15 +64,15 @@ public class TreeStructureManager
                     structChildList.add(structChild);
                 }
             }
-            TreeStructComponent[] childArray = (TreeStructComponent[])structChildList.toArray(new TreeStructComponent[structChildList.size()]);
+            TreeStructComponent[] childArray = structChildList.toArray(new TreeStructComponent[structChildList.size()]);
             structComp.setChildren(childArray);
         }
 
         //facets
-        Map facetMap = component.getFacets();
+        Map<String, UIComponent> facetMap = component.getFacets();
         if (!facetMap.isEmpty())
         {
-            List structFacetList = new ArrayList();
+            List<Object[]> structFacetList = new ArrayList<Object[]>();
             for (Iterator it = facetMap.entrySet().iterator(); it.hasNext(); )
             {
                 Map.Entry entry = (Map.Entry)it.next();
@@ -115,7 +115,7 @@ public class TreeStructureManager
         TreeStructComponent[] childArray = treeStructComp.getChildren();
         if (childArray != null)
         {
-            List childList = component.getChildren();
+            List<UIComponent> childList = component.getChildren();
             for (int i = 0, len = childArray.length; i < len; i++)
             {
                 UIComponent child = internalRestoreTreeStructure(childArray[i]);
@@ -127,7 +127,7 @@ public class TreeStructureManager
         Object[] facetArray = treeStructComp.getFacets();
         if (facetArray != null)
         {
-            Map facetMap = component.getFacets();
+            Map<String, UIComponent> facetMap = component.getFacets();
             for (int i = 0, len = facetArray.length; i < len; i++)
             {
                 Object[] tuple = (Object[])facetArray[i];

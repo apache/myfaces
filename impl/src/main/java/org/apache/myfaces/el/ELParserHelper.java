@@ -361,10 +361,10 @@ public class ELParserHelper
         Application application = FacesContext.getCurrentInstance()
             .getApplication();
 
-        List suffixes = complexValue.getSuffixes();
+        List<ArraySuffix> suffixes = complexValue.getSuffixes();
         for (int i = 0, len = suffixes.size(); i < len; i++)
         {
-            ValueSuffix suffix = (ValueSuffix) suffixes.get(i);
+            ValueSuffix suffix = suffixes.get(i);
             if (suffix instanceof PropertySuffix)
             {
                 if (suffix instanceof MyPropertySuffix)

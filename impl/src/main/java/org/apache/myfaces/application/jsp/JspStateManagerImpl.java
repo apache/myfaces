@@ -341,7 +341,7 @@ public class JspStateManagerImpl
     {
         if (log.isTraceEnabled()) log.trace("Entering saveSerializedView");
 
-        checkForDuplicateIds(facesContext, facesContext.getViewRoot(), new HashSet());
+        checkForDuplicateIds(facesContext, facesContext.getViewRoot(), new HashSet<String>());
 
         if (log.isTraceEnabled()) log.trace("Processing saveSerializedView - Checked for duplicate Ids");
 
@@ -383,7 +383,7 @@ public class JspStateManagerImpl
 
     private static void checkForDuplicateIds(FacesContext context,
                                              UIComponent component,
-                                             Set ids)
+                                             Set<String> ids)
     {
         String id = component.getId();
         if (id != null && !ids.add(id))
@@ -399,7 +399,7 @@ public class JspStateManagerImpl
             UIComponent kid = (UIComponent) it.next();
             if (namingContainer)
             {
-                checkForDuplicateIds(context, kid, new HashSet());
+                checkForDuplicateIds(context, kid, new HashSet<String>());
             }
             else
             {
@@ -529,7 +529,7 @@ public class JspStateManagerImpl
     protected void saveSerializedViewInServletSession(FacesContext context,
                                                       Object serializedView)
     {
-        Map sessionMap = context.getExternalContext().getSessionMap();
+        Map<String, Object> sessionMap = context.getExternalContext().getSessionMap();
         SerializedViewCollection viewCollection = (SerializedViewCollection) sessionMap
                 .get(SERIALIZED_VIEW_SESSION_ATTR);
         if (viewCollection == null)
@@ -545,7 +545,7 @@ public class JspStateManagerImpl
     protected Object getSerializedViewFromServletSession(FacesContext context, String viewId)
     {
         ExternalContext externalContext = context.getExternalContext();
-        Map requestMap = externalContext.getRequestMap();
+        Map<String, Object> requestMap = externalContext.getRequestMap();
         Object serializedView = null;
         if (requestMap.containsKey(RESTORED_SERIALIZED_VIEW_REQUEST_ATTR))
         {
@@ -592,7 +592,7 @@ public class JspStateManagerImpl
         synchronized(sessionObj) // synchronized to increase sequence if multiple requests 
                                  // are handled at the same time for the session
         {
-            Map map = externalContext.getSessionMap();
+            Map<String, Object> map = externalContext.getSessionMap();
             Integer sequence = (Integer) map.get(RendererUtils.SEQUENCE_PARAM);
             if(sequence == null || sequence.intValue() == Integer.MAX_VALUE)
             {
@@ -761,12 +761,12 @@ public class JspStateManagerImpl
     {
         private static final long serialVersionUID = -3734849062185115847L;
 
-        private final List _keys = new ArrayList(DEFAULT_NUMBER_OF_VIEWS_IN_SESSION);
-        private final Map _serializedViews = new HashMap();
+        private final List<Object> _keys = new ArrayList<Object>(DEFAULT_NUMBER_OF_VIEWS_IN_SESSION);
+        private final Map<Object, Object> _serializedViews = new HashMap<Object, Object>();
 
         // old views will be hold as soft references which will be removed by 
         // the garbage collector if free memory is low
-        private transient Map _oldSerializedViews = null;
+        private transient Map<Object, Object> _oldSerializedViews = null;
 
         public synchronized void add(FacesContext context, Object state)
         {
@@ -825,7 +825,7 @@ public class JspStateManagerImpl
         /**
          * @return old serialized views map
          */
-        protected Map getOldSerializedViewsMap()
+        protected Map<Object, Object> getOldSerializedViewsMap()
         {
             if (_oldSerializedViews == null)
             {
