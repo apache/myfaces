@@ -33,7 +33,7 @@ import org.apache.myfaces.context.servlet.AbstractAttributeMap;
 public class RequestHeaderValuesMap extends AbstractAttributeMap
 {
     private final PortletRequest _portletRequest;
-    private final Map            _valueCache = new HashMap();
+    private final Map<String, Object>            _valueCache = new HashMap<String, Object>();
 
     RequestHeaderValuesMap(PortletRequest portletRequest)
     {
