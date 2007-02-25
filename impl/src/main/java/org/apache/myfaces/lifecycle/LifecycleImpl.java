@@ -44,7 +44,7 @@ public class LifecycleImpl
     private PhaseExecutor[] lifecycleExecutors;
     private PhaseExecutor renderExecutor;
 
-    private final List _phaseListenerList = new ArrayList();
+    private final List<PhaseListener> _phaseListenerList = new ArrayList<PhaseListener>();
 
     /**
      * Lazy cache for returning _phaseListenerList as an Array.
@@ -194,7 +194,7 @@ public class LifecycleImpl
 		synchronized (_phaseListenerList) {
 			// (re)build lazy cache array if necessary
 			if (_phaseListenerArray == null) {
-				_phaseListenerArray = (PhaseListener[]) _phaseListenerList.toArray(new PhaseListener[_phaseListenerList
+				_phaseListenerArray = _phaseListenerList.toArray(new PhaseListener[_phaseListenerList
 						.size()]);
 			}
 			return _phaseListenerArray;
