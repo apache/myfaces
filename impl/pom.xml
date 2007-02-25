@@ -31,7 +31,6 @@
         <version>2.1.2</version>
         <configuration>
           <excludes>
-            <exclude>**/Myfaces889TestCase*</exclude>
             <exclude>**/JspStateManagerImplTest*</exclude>
           </excludes>
         </configuration>

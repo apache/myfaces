@@ -12,21 +12,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.application.Application;
-
-import junit.framework.Test;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.application.ApplicationImpl;
 import org.apache.myfaces.config.impl.digester.elements.ListEntries;
 import org.apache.myfaces.config.impl.digester.elements.ManagedBean;
 import org.apache.myfaces.config.impl.digester.elements.ManagedProperty;
 import org.apache.myfaces.config.impl.digester.elements.MapEntries;
 import org.apache.myfaces.config.impl.digester.elements.ListEntries.Entry;
-import org.apache.myfaces.el.PropertyResolverImpl;
 import org.apache.shale.test.base.AbstractJsfTestCase;
-import org.apache.shale.test.mock.MockFacesContext;
 
 public abstract class AbstractManagedBeanBuilderTestCase extends AbstractJsfTestCase {
 
@@ -41,10 +34,6 @@ public abstract class AbstractManagedBeanBuilderTestCase extends AbstractJsfTest
 	protected static final List MANAGED_LIST = new ArrayList();
 	protected static final Map MANAGED_MAP = new HashMap();
 	protected static final String INJECTED_VALUE = "tatiana";
-	
-    public static Test suite() {
-        return null; // keep this method or maven won't run it
-    }
 	
 	/**
 	 * Skips digester and manually builds and configures a managed bean.
