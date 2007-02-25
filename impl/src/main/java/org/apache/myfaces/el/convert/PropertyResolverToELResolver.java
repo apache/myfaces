@@ -24,6 +24,7 @@ import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
 import javax.faces.FactoryFinder;
 import javax.faces.application.ApplicationFactory;
+import javax.faces.el.EvaluationException;
 import javax.faces.el.PropertyResolver;
 
 import java.beans.FeatureDescriptor;
@@ -31,137 +32,191 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Wrapper that converts a VariableResolver into an ELResolver.
- * See JSF 1.2 spec section 5.6.1.6
- *
- * @author Stan Silvert
+ * Wrapper that converts a VariableResolver into an ELResolver. See JSF 1.2 spec section 5.6.1.6
+ * 
+ * @author Stan Silvert (latest modification by $Author$)
+ * @author Mathias Broekelmann
+ * @version $Revision$ $Date$
  */
 @SuppressWarnings("deprecation")
-public class PropertyResolverToELResolver extends ELResolver {
+public class PropertyResolverToELResolver extends ELResolver
+{
     private PropertyResolver propertyResolver;
-    
+
     private ExpressionFactory expressionFactory;
-    
+
     /**
      * Creates a new instance of PropertyResolverToELResolver
      */
-    public PropertyResolverToELResolver(PropertyResolver propertyResolver) {
+    public PropertyResolverToELResolver(PropertyResolver propertyResolver)
+    {
         this.propertyResolver = propertyResolver;
     }
 
-    public void setValue(ELContext context, Object base, Object property, Object value) 
-        throws NullPointerException, PropertyNotFoundException, PropertyNotWritableException, ELException {
-        
-        if ( (base == null) || (property == null)) return;
-        
-        context.setPropertyResolved(true);
-
-        try {
-            if (needsCoersion(base)) {
-               propertyResolver.setValue(base, coerceToInt(property), value);
-               return;
+    @Override
+    public void setValue(ELContext context, Object base, Object property, final Object value)
+            throws NullPointerException, PropertyNotFoundException, PropertyNotWritableException, ELException
+    {
+        invoke(context, base, property, new ResolverInvoker<Object>()
+        {
+            @Override
+            public Object invoke(Object base, Object property)
+            {
+                if (needsCoersion(base))
+                {
+                    propertyResolver.setValue(base, coerceToInt(property), value);
+                }
+                else
+                {
+                    propertyResolver.setValue(base, property, value);
+                }
+                return null;
             }
-
-            propertyResolver.setValue(base, property, value);
-            
-        } catch (Exception e) {
-            context.setPropertyResolved(false);
-            throw new ELException(e);
-        }
-        
+        });
     }
 
-    public boolean isReadOnly(ELContext context, Object base, Object property) 
-        throws NullPointerException, PropertyNotFoundException, ELException {
-        
-        if ( (base == null) || (property == null)) return true;
-        
-        context.setPropertyResolved(true);
-
-        try {
-            if (needsCoersion(base)) {
-               return propertyResolver.isReadOnly(base, coerceToInt(property));
+    @Override
+    public boolean isReadOnly(ELContext context, Object base, Object property) throws NullPointerException,
+            PropertyNotFoundException, ELException
+    {
+        return invoke(context, base, property, new ResolverInvoker<Boolean>()
+        {
+            @Override
+            public Boolean invoke(Object base, Object property)
+            {
+                if (needsCoersion(base))
+                {
+                    return propertyResolver.isReadOnly(base, coerceToInt(property));
+                }
+                return propertyResolver.isReadOnly(base, property);
             }
 
-            return propertyResolver.isReadOnly(base, property);
-            
-        } catch (Exception e) {
-            context.setPropertyResolved(false);
-            throw new ELException(e);
-        }
-    }
-    
-    public Object getValue(ELContext context, Object base, Object property) 
-        throws NullPointerException, PropertyNotFoundException, ELException {
-        
-        if ( (base == null) || (property == null)) return null;
-        
-        context.setPropertyResolved(true);
-
-        try {
-            if (needsCoersion(base)) {
-               return propertyResolver.getValue(base, coerceToInt(property));
+            @Override
+            Boolean getValueIfBaseAndPropertyIsNull()
+            {
+                return true;
             }
-
-            return propertyResolver.getValue(base, property);
-            
-        } catch (Exception e) {
-            context.setPropertyResolved(false);
-            throw new ELException(e);
-        }
+        });
     }
 
-    public Class<?> getType(ELContext context, Object base, Object property) 
-        throws NullPointerException, PropertyNotFoundException, ELException {
-        
-        if ( (base == null) || (property == null)) return null;
-        
-        context.setPropertyResolved(true);
-
-        try {
-            if (needsCoersion(base)) {
-               return propertyResolver.getType(base, coerceToInt(property));
+    @Override
+    public Object getValue(ELContext context, Object base, Object property) throws NullPointerException,
+            PropertyNotFoundException, ELException
+    {
+        return invoke(context, base, property, new ResolverInvoker<Object>()
+        {
+            @Override
+            Object invoke(Object base, Object property)
+            {
+                if (needsCoersion(base))
+                {
+                    return propertyResolver.getValue(base, coerceToInt(property));
+                }
+                return propertyResolver.getValue(base, property);
             }
-
-            return propertyResolver.getType(base, property);
-            
-        } catch (Exception e) {
-            context.setPropertyResolved(false);
-            throw new ELException(e);
-        }
+        });
     }
-    
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
-        
+
+    @Override
+    public Class<?> getType(ELContext context, Object base, Object property) throws NullPointerException,
+            PropertyNotFoundException, ELException
+    {
+        return invoke(context, base, property, new ResolverInvoker<Class<?>>()
+        {
+            @Override
+            Class<?> invoke(Object base, Object property)
+            {
+                if (needsCoersion(base))
+                {
+                    return propertyResolver.getType(base, coerceToInt(property));
+                }
+
+                return propertyResolver.getType(base, property);
+            }
+        });
+    }
+
+    @Override
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base)
+    {
         return null;
     }
 
-    public Class<?> getCommonPropertyType(ELContext context, Object base) {
-        
-        if (base == null) return null;
-        
+    @Override
+    public Class<?> getCommonPropertyType(ELContext context, Object base)
+    {
+
+        if (base == null)
+            return null;
+
         return Object.class;
     }
-    
-    private boolean needsCoersion(Object base) {
+
+    private boolean needsCoersion(Object base)
+    {
         return (base instanceof List) || base.getClass().isArray();
     }
-    
-    /**
-     * @return the expressionFactory
-     */
-    public ExpressionFactory getExpressionFactory()
+
+    protected ExpressionFactory getExpressionFactory()
     {
-        if(expressionFactory == null) {
-            ApplicationFactory appFactory = (ApplicationFactory)FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
+        if (expressionFactory == null)
+        {
+            ApplicationFactory appFactory = (ApplicationFactory) FactoryFinder
+                    .getFactory(FactoryFinder.APPLICATION_FACTORY);
             expressionFactory = appFactory.getApplication().getExpressionFactory();
         }
         return expressionFactory;
     }
-    
-    private int coerceToInt(Object property) throws Exception {
-        Integer coerced = (Integer)getExpressionFactory().coerceToType(property, Integer.class);
+
+    public void setExpressionFactory(ExpressionFactory expressionFactory)
+    {
+        this.expressionFactory = expressionFactory;
+    }
+
+    private int coerceToInt(Object property)
+    {
+        Integer coerced = (Integer) getExpressionFactory().coerceToType(property, Integer.class);
         return coerced.intValue();
     }
-    
+
+    private <T> T invoke(ELContext context, Object base, Object property, ResolverInvoker<T> invoker)
+            throws PropertyNotFoundException, ELException
+    {
+        if (base == null || property == null)
+        {
+            return invoker.getValueIfBaseAndPropertyIsNull();
+        }
+
+        try
+        {
+            context.setPropertyResolved(true);
+            return invoker.invoke(base, property);
+        }
+        catch (javax.faces.el.PropertyNotFoundException e)
+        {
+            context.setPropertyResolved(false);
+            throw new PropertyNotFoundException(e.getMessage(), e);
+        }
+        catch (EvaluationException e)
+        {
+            context.setPropertyResolved(false);
+            throw new ELException(e.getMessage(), e);
+        }
+        catch (RuntimeException e)
+        {
+            context.setPropertyResolved(false);
+            throw e;
+        }
+    }
+
+    private abstract class ResolverInvoker<T>
+    {
+        abstract T invoke(Object base, Object property) throws PropertyNotFoundException, EvaluationException,
+                RuntimeException;
+
+        T getValueIfBaseAndPropertyIsNull()
+        {
+            return null;
+        }
+    }
 }

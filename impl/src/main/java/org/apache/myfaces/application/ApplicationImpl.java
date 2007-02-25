@@ -23,17 +23,18 @@ import org.apache.myfaces.application.jsp.JspViewHandlerImpl;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.impl.digester.elements.Property;
 import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
-import org.apache.myfaces.el.NullPropertyResolver;
-import org.apache.myfaces.el.NullVariableResolver;
-import org.apache.myfaces.el.convert.ELResolverToPropertyResolver;
-import org.apache.myfaces.el.convert.ELResolverToVariableResolver;
+import org.apache.myfaces.el.PropertyResolverImpl;
+import org.apache.myfaces.el.VariableResolverImpl;
 import org.apache.myfaces.el.convert.MethodExpressionToMethodBinding;
 import org.apache.myfaces.el.convert.ValueBindingToValueExpression;
 import org.apache.myfaces.el.convert.ValueExpressionToValueBinding;
-import org.apache.myfaces.el.unified.resolver.ResolverForFaces;
-import org.apache.myfaces.el.unified.resolver.ResolverForJSP;
+import org.apache.myfaces.el.unified.ELResolverBuilder;
+import org.apache.myfaces.el.unified.ResolverFactoryForFaces;
+import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver;
+import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 
+import javax.el.CompositeELResolver;
 import javax.el.ELContext;
 import javax.el.ELContextListener;
 import javax.el.ELException;
@@ -48,7 +49,6 @@ import javax.faces.application.StateManager;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.el.MethodBinding;
@@ -58,9 +58,6 @@ import javax.faces.el.ValueBinding;
 import javax.faces.el.VariableResolver;
 import javax.faces.event.ActionListener;
 import javax.faces.validator.Validator;
-import javax.servlet.ServletContext;
-import javax.servlet.jsp.JspApplicationContext;
-import javax.servlet.jsp.JspFactory;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -81,9 +78,17 @@ import java.util.MissingResourceException;
  * @author Stan Silvert
  * @version $Revision$ $Date$
  */
+@SuppressWarnings("deprecation")
 public class ApplicationImpl extends Application
 {
     private static final Log log = LogFactory.getLog(ApplicationImpl.class);
+
+    private final static VariableResolver VARIABLERESOLVER = new VariableResolverImpl();
+
+    private final static PropertyResolver PROPERTYRESOLVER = new PropertyResolverImpl();
+
+    // recives the runtime config instance during initializing
+    private final static ThreadLocal<RuntimeConfig> initializingRuntimeConfig = new ThreadLocal<RuntimeConfig>();
 
     // ~ Instance fields
     // ----------------------------------------------------------------------------
@@ -94,18 +99,9 @@ public class ApplicationImpl extends Application
 
     private ViewHandler _viewHandler;
     private NavigationHandler _navigationHandler;
-    private VariableResolver _variableResolver;
-    private PropertyResolver _propertyResolver;
     private ActionListener _actionListener;
     private String _defaultRenderKitId;
     private StateManager _stateManager;
-
-    private ServletContext _servletContext;
-
-    private ResolverForFaces _resolverForFaces;
-    private ResolverForJSP _resolverForJSP;
-
-    private ExpressionFactory _expressionFactory;
 
     private ArrayList<ELContextListener> _elContextListeners;
 
@@ -119,70 +115,101 @@ public class ApplicationImpl extends Application
     private final Map<String, Class> _componentClassMap = Collections.synchronizedMap(new HashMap<String, Class>());
     private final Map<String, Class> _validatorClassMap = Collections.synchronizedMap(new HashMap<String, Class>());
 
+    private final RuntimeConfig _runtimeConfig;
+
+    private ELResolver elResolver;
+
+    private ELResolverBuilder resolverFactoryForFaces;
+
     // ~ Constructors
     // -------------------------------------------------------------------------------
 
     public ApplicationImpl()
     {
+        this(internalGetRuntimeConfig());
+    }
+
+    private static RuntimeConfig internalGetRuntimeConfig()
+    {
+        if (initializingRuntimeConfig.get() == null)
+        {
+            throw new IllegalStateException("The runtime config instance which is created while initialize myfaces "
+                    + "must be set through ApplicationImpl.setInitializingRuntimeConfig");
+        }
+        return initializingRuntimeConfig.get();
+    }
+
+    ApplicationImpl(RuntimeConfig runtimeConfig)
+    {
+        if (runtimeConfig == null)
+        {
+            throw new IllegalArgumentException("runtimeConfig must mot be null");
+        }
         // set default implementation in constructor
         // pragmatic approach, no syncronizing will be needed in get methods
         _viewHandler = new JspViewHandlerImpl();
         _navigationHandler = new NavigationHandlerImpl();
-        _variableResolver = new NullVariableResolver();
-        _propertyResolver = new NullPropertyResolver();
         _actionListener = new ActionListenerImpl();
         _defaultRenderKitId = "HTML_BASIC";
         _stateManager = new JspStateManagerImpl();
         _elContextListeners = new ArrayList<ELContextListener>();
-        _resolverForFaces = new ResolverForFaces();
-        _resolverForJSP = null;
+        _runtimeConfig = runtimeConfig;
 
         if (log.isTraceEnabled())
             log.trace("New Application instance created");
     }
 
+    public static void setInitializingRuntimeConfig(RuntimeConfig config)
+    {
+        initializingRuntimeConfig.set(config);
+    }
+
     // ~ Methods
     // ------------------------------------------------------------------------------------
-
-    // note: this method is not part of the javax.faces.application.Application
-    // interface
-    // it must be called by FacesConfigurator or other init mechanism
-    public void setServletContext(ServletContext servletContext)
-    {
-
-        // this Class.forName will be removed when Tomcat fixes a bug
-        // also, we should then be able to remove jasper.jar from the deployment
-        try
-        {
-            Class.forName("org.apache.jasper.compiler.JspRuntimeContext");
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        _servletContext = servletContext;
-        ResolverForJSP _resolverForJSP = new ResolverForJSP();
-
-        log.debug("factory = " + JspFactory.getDefaultFactory());
-        JspApplicationContext appCtx = JspFactory.getDefaultFactory().getJspApplicationContext(_servletContext);
-
-        appCtx.addELResolver(_resolverForJSP);
-
-        _expressionFactory = appCtx.getExpressionFactory();
-    }
 
     @Override
     public void addELResolver(ELResolver resolver)
     {
-        _resolverForFaces.addResolverFromApplicationAddResolver(resolver);
-        _resolverForJSP.addResolverFromApplicationAddResolver(resolver);
+        if (FacesContext.getCurrentInstance() != null)
+        {
+            throw new IllegalStateException("It is illegal to add a resolver after the first request is processed");
+        }
+        if (resolver != null)
+        {
+            _runtimeConfig.addApplicationElResolver(resolver);
+        }
     }
 
     @Override
     public ELResolver getELResolver()
     {
-        return _resolverForFaces;
+        // we don't need synchronization here since it is ok to have multiple instances of the elresolver
+        if (elResolver == null)
+        {
+            elResolver = createFacesResolver();
+        }
+        return elResolver;
+    }
+
+    private ELResolver createFacesResolver()
+    {
+        CompositeELResolver resolver = new FacesCompositeELResolver(Scope.Faces);
+        getResolverFactoryForFaces().build(resolver);
+        return resolver;
+    }
+
+    protected ELResolverBuilder getResolverFactoryForFaces()
+    {
+        if (resolverFactoryForFaces == null)
+        {
+            resolverFactoryForFaces = new ResolverFactoryForFaces(_runtimeConfig);
+        }
+        return resolverFactoryForFaces;
+    }
+
+    public void setResolverFactoryForFaces(ELResolverBuilder factory)
+    {
+        resolverFactoryForFaces = factory;
     }
 
     @Override
@@ -193,7 +220,7 @@ public class ApplicationImpl extends Application
         checkNull(facesContext, "facesContext");
         checkNull(name, "name");
 
-        String bundleName = getBundleName(name);
+        String bundleName = getBundleName(facesContext, name);
 
         if (bundleName == null)
         {
@@ -223,9 +250,9 @@ public class ApplicationImpl extends Application
         return Thread.currentThread().getContextClassLoader();
     }
 
-    String getBundleName(String name)
+    String getBundleName(FacesContext facesContext, String name)
     {
-        ResourceBundle bundle = getRuntimeConfig().getResourceBundle(name);
+        ResourceBundle bundle = getRuntimeConfig(facesContext).getResourceBundle(name);
         return bundle != null ? bundle.getBaseName() : null;
     }
 
@@ -235,14 +262,9 @@ public class ApplicationImpl extends Application
         return java.util.ResourceBundle.getBundle(name, locale, loader);
     }
 
-    RuntimeConfig getRuntimeConfig()
+    RuntimeConfig getRuntimeConfig(FacesContext facesContext)
     {
-        return RuntimeConfig.getCurrentInstance(getExternalContext());
-    }
-
-    ExternalContext getExternalContext()
-    {
-        return getFaceContext().getExternalContext();
+        return RuntimeConfig.getCurrentInstance(facesContext.getExternalContext());
     }
 
     FacesContext getFaceContext()
@@ -288,7 +310,7 @@ public class ApplicationImpl extends Application
     @Override
     public ExpressionFactory getExpressionFactory()
     {
-        return _expressionFactory;
+        return _runtimeConfig.getExpressionFactory();
     }
 
     @Override
@@ -422,15 +444,7 @@ public class ApplicationImpl extends Application
             throw new IllegalStateException("propertyResolver must be defined before request processing");
         }
 
-        _resolverForFaces.addResolverFromLegacyPropertyResolver(propertyResolver);
-
-        // TODO: fix FacesConfigurator so this won't happen
-        if (_resolverForJSP != null)
-        {
-            _resolverForJSP.addResolverFromLegacyPropertyResolver(propertyResolver);
-        }
-
-        _propertyResolver = new ELResolverToPropertyResolver(getELResolver());
+        _runtimeConfig.setPropertyResolver(propertyResolver);
 
         if (log.isTraceEnabled())
             log.trace("set PropertyResolver = " + propertyResolver.getClass().getName());
@@ -443,7 +457,7 @@ public class ApplicationImpl extends Application
     @Override
     public PropertyResolver getPropertyResolver()
     {
-        return _propertyResolver;
+        return PROPERTYRESOLVER;
     }
 
     @Override
@@ -482,15 +496,10 @@ public class ApplicationImpl extends Application
             throw new IllegalStateException("variableResolver must be defined before request processing");
         }
 
-        _resolverForFaces.addResolverFromLegacyVariableResolver(variableResolver);
+        _runtimeConfig.setVariableResolver(variableResolver);
 
-        // TODO: fix FacesConfigurator so this won't happen
-        if (_resolverForJSP != null)
-        {
-            _resolverForJSP.addResolverFromLegacyVariableResolver(variableResolver);
-        }
-
-        _variableResolver = new ELResolverToVariableResolver(getELResolver());
+        if (log.isTraceEnabled())
+            log.trace("set VariableResolver = " + variableResolver.getClass().getName());
     }
 
     /**
@@ -500,7 +509,7 @@ public class ApplicationImpl extends Application
     @Override
     public VariableResolver getVariableResolver()
     {
-        return _variableResolver;
+        return VARIABLERESOLVER;
     }
 
     @Override
