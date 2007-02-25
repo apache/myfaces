@@ -30,8 +30,6 @@ public class PartialTreeStructureManager
 {
     public static final String PARTIAL_STATE_CLASS_IDS = PartialTreeStructureManager.class.getName() + ".PARTIAL_STATE_MANAGER_COMPONENT_IDS";
 
-    private FacesContext _facesContext;
-
     public PartialTreeStructureManager(FacesContext facesContext)
     {
         _facesContext = facesContext;
@@ -50,21 +48,10 @@ public class PartialTreeStructureManager
     private TreeStructComponent internalBuildInitalTreeStructureToSave(UIComponent component,FacesContext facesContext, Object state, int childIndex)
     {
 
-        Object myState = null;
-        Map facetStateMap = null;
-        List childrenStateList = null;
+        Object myState = ((Object[])state)[0];
+        Map facetStateMap = (Map)((Object[])state)[1];
+        List childrenStateList = (List)((Object[])state)[2];
 
-
-        if (state != null)
-        {
-            myState = ((Object[])state)[0];
-            facetStateMap = (Map)((Object[])state)[1];
-            childrenStateList = (List)((Object[])state)[2];
-        }
-        else
-        {
-
-        }
         TreeStructComponent structComp = new TreeStructComponent(convertStringToComponentClassId(facesContext,component.getClass().getName()),
                                                                       component.getId(),myState,component.isTransient());
 
@@ -131,21 +118,10 @@ public class PartialTreeStructureManager
     private TreeStructComponent internalBuildTreeStructureToSave(UIComponent component,FacesContext facesContext, Object state, int childIndex)
     {
 
-        Object myState = null;
-        Map facetStateMap = null;
-        List childrenStateList = null;
+        Object myState = ((Object[])state)[0];
+        Map facetStateMap = (Map)((Object[])state)[1];
+        List childrenStateList = (List)((Object[])state)[2];
 
-
-        if (state != null)
-        {
-            myState = ((Object[])state)[0];
-            facetStateMap = (Map)((Object[])state)[1];
-            childrenStateList = (List)((Object[])state)[2];
-        }
-        else
-        {
-
-        }
         TreeStructComponent structComp = new TreeStructComponent(convertStringToComponentClassId(facesContext,component.getClass().getName()),
                                                                       component.getId(),myState,component.isTransient());
 

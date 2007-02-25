@@ -67,21 +67,12 @@ public class PssJspStateManagerImpl extends MyfacesStateManager
 
     private static final String PARTIAL_STATE_MANAGER_TREES = PssJspStateManagerImpl.class.getName() + ".PARTIAL_STATE_MANAGER_TREES";
 
-
-
-    /**
-     * Only applicable if state saving method is "server" (= default).
-     * Defines the amount (default = 20) of the latest views are stored in session.
-     */
     /**
      * Only applicable if state saving method is "server" (= default).
      * Defines the amount (default = 20) of the latest views are stored in session.
      */
     private static final String NUMBER_OF_VIEWS_IN_SESSION_PARAM = "org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION";
 
-    /**
-     * Default value for <code>org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION</code> context parameter.
-     */
     /**
      * Default value for <code>org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION</code> context parameter.
      */
@@ -941,7 +932,6 @@ public class PssJspStateManagerImpl extends MyfacesStateManager
                     objectEntry[0] = entry.getKey();
                     objectEntry[1] = diffComponent((TreeStructComponent)entry.getValue() ,foundtemplateComponent);
                     facets.add(objectEntry);
-                    //facets[facetindex++] = objectEntry;
                 }
             }
             diffComponent.setFacets(facets.toArray());
