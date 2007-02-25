@@ -34,7 +34,7 @@ public class ViewIterator
     private UIComponent _next = null;
     private boolean _mayHaveNext = true;
     private UIComponent _current = null;
-    private Stack _stack = new Stack();
+    private Stack<Iterator> _stack = new Stack<Iterator>();
 
     /**
      * @param root the root of the view structure to iterate over
@@ -89,7 +89,7 @@ public class ViewIterator
                         break;
                     }
 
-                    Iterator currentSiblings = (Iterator)_stack.peek();
+                    Iterator currentSiblings = _stack.peek();
                     if (currentSiblings.hasNext())
                     {
                         _next = (UIComponent)currentSiblings.next();

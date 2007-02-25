@@ -295,7 +295,7 @@ public class DebugUtils
         if (withChildrenAndFacets)
         {
             int childCount = comp.getChildCount();
-            Map facetsMap = comp.getFacets();
+            Map<String, UIComponent> facetsMap = comp.getFacets();
             if (childCount > 0 || !facetsMap.isEmpty())
             {
                 nestedObjects = true;
