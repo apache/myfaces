@@ -19,6 +19,7 @@ package javax.faces.component;
 import javax.faces.el.ValueBinding;
 
 import junit.framework.Test;
+import junit.framework.TestSuite;
 
 import org.apache.shale.test.base.AbstractJsfTestCase;
 import org.apache.shale.test.mock.MockRenderKitFactory;
@@ -37,7 +38,7 @@ public class UIComponentBaseTest extends AbstractJsfTestCase
 	}
 
 	public static Test suite() {
-		return null; // keep this method or maven won't run it
+		return new TestSuite(UIComponentBaseTest.class); // keep this method or maven won't run it
 	}
 
 	protected void setUp() throws Exception
