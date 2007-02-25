@@ -49,6 +49,38 @@ public class ViewTag
         extends UIComponentBodyTag
 {
     private static final Log log = LogFactory.getLog(ViewTag.class);
+    private static final String PARTIAL_STATE_SAVING_METHOD_PARAM_NAME = "javax.faces.PARTIAL_STATE_SAVING_METHOD";
+    private static final String PARTIAL_STATE_SAVING_METHOD_ON = "true";
+    private static final String PARTIAL_STATE_SAVING_METHOD_OFF = "false";
+
+    private Boolean _partialStateSaving = null;
+
+    private boolean isPartialStateSavingOn(javax.faces.context.FacesContext context)
+    {
+        if(context == null) throw new NullPointerException("context");
+        if (_partialStateSaving != null) return _partialStateSaving.booleanValue();
+        String stateSavingMethod = context.getExternalContext().getInitParameter(PARTIAL_STATE_SAVING_METHOD_PARAM_NAME);
+        if (stateSavingMethod == null)
+        {
+            _partialStateSaving = Boolean.FALSE; //Specs 10.1.3: default server saving
+            context.getExternalContext().log("No partial state saving method defined, assuming default partial state saving methode off.");
+        }
+        else if (stateSavingMethod.equals(PARTIAL_STATE_SAVING_METHOD_ON))
+        {
+            _partialStateSaving = Boolean.TRUE;
+        }
+        else if (stateSavingMethod.equals(PARTIAL_STATE_SAVING_METHOD_OFF))
+        {
+            _partialStateSaving = Boolean.FALSE;
+        }
+        else
+        {
+            _partialStateSaving = Boolean.FALSE; //Specs 10.1.3: default server saving
+            context.getExternalContext().log("Illegal partial state saving method '" + stateSavingMethod + "', default partial state saving will be used (partial state saving off).");
+        }
+        return _partialStateSaving.booleanValue();
+    }
+
 
     public String getComponentType()
     {
@@ -115,80 +147,83 @@ public class ViewTag
     public int doAfterBody() throws JspException
     {
         if (log.isTraceEnabled()) log.trace("entering ViewTag.doAfterBody");
-        try
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (!isPartialStateSavingOn(facesContext))
         {
-            BodyContent bodyContent = getBodyContent();
-            if (bodyContent != null)
+            try
             {
-                FacesContext facesContext = FacesContext.getCurrentInstance();
-                StateManager stateManager = facesContext.getApplication().getStateManager();
-                StateManager.SerializedView serializedView
-                        = stateManager.saveSerializedView(facesContext);
-
-                //until now we have written to a buffer
-                ResponseWriter bufferWriter = facesContext.getResponseWriter();
-                bufferWriter.flush();
-                //now we switch to real output
-                ResponseWriter realWriter = bufferWriter.cloneWithWriter(getPreviousOut());
-                facesContext.setResponseWriter(realWriter);
-
-                String bodyStr = bodyContent.getString();
-              /*
-                do this always - even with server-side-state saving
-                if ( stateManager.isSavingStateInClient(facesContext) )
-                { */
-
-                int form_marker = bodyStr.indexOf(JspViewHandlerImpl.FORM_STATE_MARKER);
-                int url_marker = bodyStr.indexOf(HtmlLinkRendererBase.URL_STATE_MARKER);
-                int lastMarkerEnd = 0;
-                while (form_marker != -1 || url_marker != -1)
+                BodyContent bodyContent = getBodyContent();
+                if (bodyContent != null)
                 {
-                    if (url_marker == -1 || (form_marker != -1 && form_marker < url_marker))
+                    StateManager stateManager = facesContext.getApplication().getStateManager();
+                    StateManager.SerializedView serializedView
+                            = stateManager.saveSerializedView(facesContext);
+
+                    //until now we have written to a buffer
+                    ResponseWriter bufferWriter = facesContext.getResponseWriter();
+                    bufferWriter.flush();
+                    //now we switch to real output
+                    ResponseWriter realWriter = bufferWriter.cloneWithWriter(getPreviousOut());
+                    facesContext.setResponseWriter(realWriter);
+
+                    String bodyStr = bodyContent.getString();
+                  /*
+                    do this always - even with server-side-state saving
+                    if ( stateManager.isSavingStateInClient(facesContext) )
+                    { */
+
+                    int form_marker = bodyStr.indexOf(JspViewHandlerImpl.FORM_STATE_MARKER);
+                    int url_marker = bodyStr.indexOf(HtmlLinkRendererBase.URL_STATE_MARKER);
+                    int lastMarkerEnd = 0;
+                    while (form_marker != -1 || url_marker != -1)
                     {
-                        //replace form_marker
-                        realWriter.write(bodyStr, lastMarkerEnd, form_marker - lastMarkerEnd);
-                        stateManager.writeState(facesContext, serializedView);
-                        lastMarkerEnd = form_marker + JspViewHandlerImpl.FORM_STATE_MARKER_LEN;
-                        form_marker = bodyStr.indexOf(JspViewHandlerImpl.FORM_STATE_MARKER, lastMarkerEnd);
-                    }
-                    else
-                    {
-                        //replace url_marker
-                        realWriter.write(bodyStr, lastMarkerEnd, url_marker - lastMarkerEnd);
-                        if (stateManager instanceof MyfacesStateManager)
+                        if (url_marker == -1 || (form_marker != -1 && form_marker < url_marker))
                         {
-                            ((MyfacesStateManager)stateManager).writeStateAsUrlParams(facesContext,
-                                                                                      serializedView);
+                            //replace form_marker
+                            realWriter.write(bodyStr, lastMarkerEnd, form_marker - lastMarkerEnd);
+                            stateManager.writeState(facesContext, serializedView);
+                            lastMarkerEnd = form_marker + JspViewHandlerImpl.FORM_STATE_MARKER_LEN;
+                            form_marker = bodyStr.indexOf(JspViewHandlerImpl.FORM_STATE_MARKER, lastMarkerEnd);
                         }
                         else
                         {
-                            log.error("Current StateManager is no MyfacesStateManager and does not support saving state in url parameters.");
+                            //replace url_marker
+                            realWriter.write(bodyStr, lastMarkerEnd, url_marker - lastMarkerEnd);
+                            if (stateManager instanceof MyfacesStateManager)
+                            {
+                                ((MyfacesStateManager)stateManager).writeStateAsUrlParams(facesContext,
+                                                                                          serializedView);
+                            }
+                            else
+                            {
+                                log.error("Current StateManager is no MyfacesStateManager and does not support saving state in url parameters.");
+                            }
+                            lastMarkerEnd = url_marker + HtmlLinkRendererBase.URL_STATE_MARKER_LEN;
+                            url_marker = bodyStr.indexOf(HtmlLinkRendererBase.URL_STATE_MARKER, lastMarkerEnd);
                         }
-                        lastMarkerEnd = url_marker + HtmlLinkRendererBase.URL_STATE_MARKER_LEN;
-                        url_marker = bodyStr.indexOf(HtmlLinkRendererBase.URL_STATE_MARKER, lastMarkerEnd);
                     }
-                }
-                realWriter.write(bodyStr, lastMarkerEnd, bodyStr.length() - lastMarkerEnd);
+                    realWriter.write(bodyStr, lastMarkerEnd, bodyStr.length() - lastMarkerEnd);
 
-                /* change over to do this always - even with server-side state saving
-                }
-                else
-                {
-                    realWriter.write( bodyStr );
-                } */
+                    /* change over to do this always - even with server-side state saving
+                    }
+                    else
+                    {
+                        realWriter.write( bodyStr );
+                    } */
 
-                /* before, this was done when getSerializedView was null
+                    /* before, this was done when getSerializedView was null
+                    }
+                    else
+                    {
+                        bodyContent.writeOut(getPreviousOut());
+                    }*/
                 }
-                else
-                {
-                    bodyContent.writeOut(getPreviousOut());
-                }*/
             }
-        }
-        catch (IOException e)
-        {
-            log.error("Error writing body content", e);
-            throw new JspException(e);
+            catch (IOException e)
+            {
+                log.error("Error writing body content", e);
+                throw new JspException(e);
+            }
         }
         if (log.isTraceEnabled()) log.trace("leaving ViewTag.doAfterBody");
         return super.doAfterBody();

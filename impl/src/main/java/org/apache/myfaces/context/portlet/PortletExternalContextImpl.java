@@ -334,6 +334,12 @@ public class PortletExternalContextImpl extends ExternalContext implements Relea
         return _portletResponse;
     }
 
+    public void setResponse(Object response) {
+        if (response instanceof PortletResponse) {
+	        this._portletResponse = (PortletResponse) response;
+	    }
+    }   
+
     public Object getSession(boolean create) {
         return _portletRequest.getPortletSession(create);
     }

@@ -26,6 +26,7 @@ import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
+import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.context.ExternalContext;
@@ -35,8 +36,11 @@ import javax.faces.render.RenderKitFactory;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
+import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.Tag;
+import javax.servlet.jsp.tagext.BodyContent;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.*;
 
 /**
@@ -63,6 +67,12 @@ public abstract class UIComponentTag
 
     private static final String UNIQUE_ID_COUNTER_ATTR = UIComponentTag.class.getName() + ".UNIQUE_ID_COUNTER";
 
+    private static final String PARTIAL_STATE_SAVING_METHOD_PARAM_NAME = "javax.faces.PARTIAL_STATE_SAVING_METHOD";
+    private static final String PARTIAL_STATE_SAVING_METHOD_ON = "true";
+    private static final String PARTIAL_STATE_SAVING_METHOD_OFF = "false";
+
+    private static final String BEFORE_VIEW_CONTEXT = "org.apache.myfaces.BEFORE_VIEW_CONTEXT";
+
     protected PageContext pageContext = null;
     private Tag _parent = null;
 
@@ -78,8 +88,36 @@ public abstract class UIComponentTag
     private ResponseWriter _writer = null;
     private Set _childrenAdded = null;
     private Set _facetsAdded = null;
+    private Boolean _partialStateSaving = null;
 
     private static Log log = LogFactory.getLog(UIComponentTag.class);
+    private static final int READ_LENGTH = 8000;
+
+    private boolean isPartialStateSavingOn(javax.faces.context.FacesContext context)
+    {
+        if(context == null) throw new NullPointerException("context");
+        if (_partialStateSaving != null) return _partialStateSaving.booleanValue();
+        String stateSavingMethod = context.getExternalContext().getInitParameter(PARTIAL_STATE_SAVING_METHOD_PARAM_NAME);
+        if (stateSavingMethod == null)
+        {
+            _partialStateSaving = Boolean.FALSE; //Specs 10.1.3: default server saving
+            context.getExternalContext().log("No partial state saving method defined, assuming default partial state saving methode off.");
+        }
+        else if (stateSavingMethod.equals(PARTIAL_STATE_SAVING_METHOD_ON))
+        {
+            _partialStateSaving = Boolean.TRUE;
+        }
+        else if (stateSavingMethod.equals(PARTIAL_STATE_SAVING_METHOD_OFF))
+        {
+            _partialStateSaving = Boolean.FALSE;
+        }
+        else
+        {
+            _partialStateSaving = Boolean.FALSE; //Specs 10.1.3: default server saving
+            context.getExternalContext().log("Illegal partial state saving method '" + stateSavingMethod + "', default partial state saving will be used (partial state saving off).");
+        }
+        return _partialStateSaving.booleanValue();
+    }
 
 
     public UIComponentTag()
@@ -297,6 +335,116 @@ public abstract class UIComponentTag
     }
 
     /**
+     * Flushes the Writer and adds the content of the Writer ( which is only the direct output
+     * of the JSP if the component uses a dummyWriter wich does not render the Component itself) as
+     * UIOutput component after the current component to the myfaces component tree.
+     * @param writerToFlush
+     * @throws JspException
+     * @throws IOException
+     */
+
+    private void flushWriter( JspWriter writerToFlush ) throws JspException,IOException {
+
+      if (getFacesContext() == null)
+            return;
+      BodyContent tempwriter;
+      _componentInstance = findComponent(_facesContext);
+      if (writerToFlush instanceof BodyContent)
+        {
+            int count = 0;
+            char [] readChars = new char[READ_LENGTH];
+            tempwriter = (BodyContent) writerToFlush;
+            Reader read =tempwriter.getReader();
+            count = read.read(readChars,0,READ_LENGTH);
+            String readString = new String(readChars,0,count);
+            if(!readString.trim().equals(""))
+            {
+                //_componentInstance = findComponent(_facesContext);
+                UIComponentTag parentTag = getParentUIComponentTag(pageContext);
+                addOutputComponentAfterComponent(parentTag,createUIOutputComponentFromString(readString),_componentInstance);
+                tempwriter.clearBody();
+            }
+
+        }
+        else
+      {
+          if (_componentInstance.getParent() == null) {
+            writerToFlush.flush();
+            String beforeViewContent = _facesContext.getExternalContext().getResponse().toString();
+            if((beforeViewContent != null)&&(!beforeViewContent.trim().equals("")))
+            {   // BEFORE BODY CONTENT
+                _facesContext.getExternalContext().getRequestMap().put(BEFORE_VIEW_CONTEXT,beforeViewContent);
+            }
+          }
+      }
+
+    }
+
+    /**
+     * Adds an Output Component afert a given component.
+     * @param parentTag the parent tag of the component.
+     * @param outputComponent the component which should be added after this component.
+     * @param component the component after witch the outputComponent should be added.
+     */
+    private void addOutputComponentAfterComponent(UIComponentTag parentTag,
+                                                  UIComponent outputComponent,
+                                                  UIComponent component) {
+	int indexOfComponentInParent = 0;
+	UIComponent parent = component.getParent();
+
+	if (null == parent) {
+	    return;
+	}
+	List children = parent.getChildren();
+	indexOfComponentInParent = children.indexOf(component);
+	if (children.size() - 1 == indexOfComponentInParent) {
+	    children.add(outputComponent);
+	}
+	else {
+	    children.add(indexOfComponentInParent + 1, outputComponent);
+	}
+    parentTag.addChildIdToParentTag(parentTag,outputComponent.getId());
+
+    }
+
+
+    /**
+     * Creates a UIOutput component and fill in the content. The attribute
+     * escape will be set to false. The content will be renderd as it is.
+     * @param content the content of the UIOutput component.
+     * @return A UIOutput component with the content an the attribute escape
+     *         set to false.
+     */
+     private UIComponent createUIOutputComponentFromString( String content) {
+         UIOutput outputComponent = null;
+
+         outputComponent = createUIOutputComponent(getFacesContext());
+         outputComponent.setValue(content);
+
+         return outputComponent;
+     }
+
+
+    /**
+     * Creates a UIOutput component with the attribute escape = false. The Value
+     * of the Component will be rendert as it is, which is useful if there are html tags
+     * which should be injectet into the component tree.
+     * @param context the Myfaces Context.
+     * @return A UIOutput Component with escape = false. The String of this Component
+     *         will be rendert as it is.
+     */
+     private UIOutput createUIOutputComponent(FacesContext context) {
+         if (context == null) return null;
+         UIOutput outputComponent = null;
+         Application application = context.getApplication();
+         outputComponent = (UIOutput) application.createComponent("javax.faces.HtmlOutputText");
+         outputComponent.setTransient(true);
+         outputComponent.getAttributes().put("escape", Boolean.FALSE);
+         outputComponent.setId(context.getViewRoot().createUniqueId());
+         return outputComponent;
+     }
+
+    /**
      * Invoked by the standard jsp processing mechanism when the opening
      * tag of a JSF component element is found.
      * <p>
@@ -312,6 +460,15 @@ public abstract class UIComponentTag
     {
         setupResponseWriter();
         FacesContext facesContext = getFacesContext();
+        if ( isPartialStateSavingOn(facesContext) )
+        {
+            JspWriter writer = pageContext.getOut();
+            try {
+                flushWriter(writer);
+            } catch (IOException e) {
+                log.error(e.toString());
+            }
+        }
         UIComponent component = findComponent(facesContext);
         if (!component.getRendersChildren() && !isSuppressed())
         {
@@ -349,6 +506,21 @@ public abstract class UIComponentTag
     public int doEndTag()
             throws JspException
     {
+        if (isPartialStateSavingOn(getFacesContext()))
+        {
+            JspWriter writerToFlush =   pageContext.getOut();
+            if (_componentInstance == null) {
+                findComponent(getFacesContext());
+            }
+            if ((!(writerToFlush instanceof BodyContent)) && _componentInstance.getParent() == null) {
+                //add the before view content to the UIViewRoot
+                _componentInstance.getChildren().add(0,
+                        createUIOutputComponentFromString((String)
+                                _facesContext.getExternalContext().getRequestMap().get(BEFORE_VIEW_CONTEXT)));
+                _facesContext.getExternalContext().getRequestMap().remove(BEFORE_VIEW_CONTEXT);
+            }
+        }
+
         popTag();
         UIComponent component = getComponentInstance();
         removeFormerChildren(component);
@@ -937,9 +1109,16 @@ public abstract class UIComponentTag
             RenderKit renderKit = renderFactory.getRenderKit(facesContext,
                                                              facesContext.getViewRoot().getRenderKitId());
 
-            _writer = renderKit.createResponseWriter(new _PageContextOutWriter(pageContext),
-                                                     null /*Default: get the allowed content-types from the accept-header*/,
-                                                     pageContext.getRequest().getCharacterEncoding());
+            if (isPartialStateSavingOn(facesContext)) {
+                    _writer = renderKit.createResponseWriter(new _DummyPageContextOutWriter(pageContext),
+                                                             null /*Default: get the allowed content-types from the accept-header*/,
+                                                             pageContext.getRequest().getCharacterEncoding());
+            } else {
+                    _writer = renderKit.createResponseWriter(new _PageContextOutWriter(pageContext),
+                                                             null /*Default: get the allowed content-types from the accept-header*/,
+                                                             pageContext.getRequest().getCharacterEncoding());
+
+            }
             facesContext.setResponseWriter(_writer);
         }
     }

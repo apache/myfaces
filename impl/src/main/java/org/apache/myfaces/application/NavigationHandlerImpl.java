@@ -52,8 +52,39 @@ public class NavigationHandlerImpl
     extends NavigationHandler
 {
     private static final Log log = LogFactory.getLog(NavigationHandlerImpl.class);
+    private static final String PARTIAL_STATE_SAVING_METHOD_PARAM_NAME = "javax.faces.PARTIAL_STATE_SAVING_METHOD";
+    private static final String PARTIAL_STATE_SAVING_METHOD_ON = "true";
+    private static final String PARTIAL_STATE_SAVING_METHOD_OFF = "false";
 
     private static final String ASTERISK = "*";
+    private Boolean _partialStateSaving = null;
+
+    private boolean isPartialStateSavingOn(javax.faces.context.FacesContext context)
+    {
+        if(context == null) throw new NullPointerException("context");
+        if (_partialStateSaving != null) return _partialStateSaving.booleanValue();
+        String stateSavingMethod = context.getExternalContext().getInitParameter(PARTIAL_STATE_SAVING_METHOD_PARAM_NAME);
+        if (stateSavingMethod == null)
+        {
+            _partialStateSaving = Boolean.FALSE; //Specs 10.1.3: default server saving
+            context.getExternalContext().log("No partial state saving method defined, assuming default partial state saving methode off.");
+        }
+        else if (stateSavingMethod.equals(PARTIAL_STATE_SAVING_METHOD_ON))
+        {
+            _partialStateSaving = Boolean.TRUE;
+        }
+        else if (stateSavingMethod.equals(PARTIAL_STATE_SAVING_METHOD_OFF))
+        {
+            _partialStateSaving = Boolean.FALSE;
+        }
+        else
+        {
+            _partialStateSaving = Boolean.FALSE; //Specs 10.1.3: default server saving
+            context.getExternalContext().log("Illegal partial state saving method '" + stateSavingMethod + "', default partial state saving will be used (partial state saving off).");
+        }
+        return _partialStateSaving.booleanValue();
+    }
+
 
     private Map _navigationCases = null;
     private List _wildcardKeys = new ArrayList();
@@ -102,7 +133,12 @@ public class NavigationHandlerImpl
                 ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
                 //create new view
                 String newViewId = navigationCase.getToViewId();
-                UIViewRoot viewRoot = viewHandler.createView(facesContext, newViewId);
+                UIViewRoot viewRoot = null;
+                if (isPartialStateSavingOn(facesContext)) {
+                    viewRoot = viewHandler.restoreView(facesContext,newViewId);
+                } else {
+                    viewRoot = viewHandler.createView(facesContext, newViewId);
+                }
                 facesContext.setViewRoot(viewRoot);
                 facesContext.renderResponse();
             }

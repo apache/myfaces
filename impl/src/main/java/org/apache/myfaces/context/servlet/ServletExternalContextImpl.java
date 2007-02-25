@@ -215,6 +215,12 @@ public class ServletExternalContextImpl
         return _servletResponse;
     }
 
+    public void setResponse(Object response) {
+        if (response instanceof ServletResponse) {
+            this._servletResponse = (ServletResponse) response;
+        }
+    }
+
     public Map getApplicationMap()
     {
         if (_applicationMap == null)
