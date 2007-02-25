@@ -19,6 +19,16 @@
   <build>
   	<plugins>
       <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.1.2</version>
         <configuration>
@@ -161,9 +171,9 @@
        <version>1.2.0-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.tomcat</groupId>
+      <groupId>javax.el</groupId>
       <artifactId>el-api</artifactId>
-      <version>6.0.1-SNAPSHOT</version>
+      <version>1.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
