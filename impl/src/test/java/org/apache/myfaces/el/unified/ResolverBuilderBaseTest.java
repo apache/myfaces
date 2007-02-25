@@ -24,7 +24,7 @@ import javax.el.CompositeELResolver;
 import javax.el.ELContext;
 import javax.el.ELResolver;
 import javax.faces.context.FacesContext;
-import javax.faces.context.MockFacesContext;
+import org.apache.shale.test.mock.MockFacesContext12;
 import javax.faces.el.EvaluationException;
 import javax.faces.el.PropertyNotFoundException;
 import javax.faces.el.PropertyResolver;
@@ -44,7 +44,7 @@ public class ResolverBuilderBaseTest extends TestCase
     private ResolverBuilderBase builder;
     private ELContext expectedContext;
     private String expectedProperty;
-    private MockFacesContext expectedFacesContext;
+    private MockFacesContext12 expectedFacesContext;
     private NoOpElResolver configResolver;
     private VariableResolver varResolver;
     private PropertyResolver propResolver;
@@ -58,7 +58,7 @@ public class ResolverBuilderBaseTest extends TestCase
         builder = new ResolverBuilderBase(runtimeConfig);
 
         expectedProperty = "xxx";
-        expectedFacesContext = new MockFacesContext();
+        expectedFacesContext = new MockFacesContext12();
         expectedContext = new FacesELContext(null, expectedFacesContext);
         expectedFacesContext.setELContext(expectedContext);
 
