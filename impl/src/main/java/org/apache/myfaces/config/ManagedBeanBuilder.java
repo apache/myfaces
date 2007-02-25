@@ -65,7 +65,8 @@ public class ManagedBeanBuilder
     {
         final Object bean = ClassUtils.newInstance(beanConfiguration.getManagedBeanClassName());
 
-        final AnnotatedManagedBeanHandler handler = new AnnotatedManagedBeanHandler(bean, beanConfiguration);
+        final AnnotatedManagedBeanHandler handler = new AnnotatedManagedBeanHandler(bean, 
+        		beanConfiguration.getManagedBeanScope(), beanConfiguration.getManagedBeanName());
         
         final boolean threwUnchecked = handler.invokePostConstruct();
         

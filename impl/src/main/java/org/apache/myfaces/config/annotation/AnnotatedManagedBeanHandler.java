@@ -23,25 +23,31 @@ public class AnnotatedManagedBeanHandler {
 
 	private Object managedBean;
 
-	private ManagedBean beanConfiguration;
-
+	private String scope;
+	
+	private String name;
+	
 	private static final String POST_CONSTRUCT = "javax.annotation.PostConstruct";
 	
 	private static final String PRE_DESTROY = "javax.annotation.PreDestroy";
 
-	public AnnotatedManagedBeanHandler(Object managedBean, ManagedBean beanConfiguration) {
+	public AnnotatedManagedBeanHandler(Object managedBean, String scope, String name) {
 
 		if (managedBean == null) {
 			throw new NullPointerException("Object managedBean");
 		}
 
-		if (beanConfiguration == null) {
-			throw new NullPointerException("ManagedBean beanConfiguration");
+		if (scope == null) {
+			throw new NullPointerException("scope");
 		}
 
+		if(name == null)
+			if(log.isWarnEnabled())
+				log.warn("managed bean " + managedBean.getClass() + "in " + scope + " scope has no name ");
+		
 		this.managedBean = managedBean;
-		this.beanConfiguration = beanConfiguration;
-
+		this.scope = scope;
+		this.name = name;
 	}
 
 	public boolean invokePreDestroy() {
@@ -56,10 +62,9 @@ public class AnnotatedManagedBeanHandler {
 
 		boolean threwUnchecked = false;
 
-		if (ManagedBeanBuilder.NONE.equals(beanConfiguration.getManagedBeanScope())) {
+		if (ManagedBeanBuilder.NONE.equals(scope)) {
 			if(log.isDebugEnabled())
-				log.debug( annotationName + " not processed for managed bean " 
-						+ beanConfiguration.getManagedBeanName() 
+				log.debug( annotationName + " not processed for managed bean " + name 
 						+ " because it is not in request, session, or "
 						+ "application scope.  See section 5.4 of the JSF 1.3 spec"); 
 		} else {
@@ -132,14 +137,14 @@ public class AnnotatedManagedBeanHandler {
 		if (e instanceof RuntimeException) // why did they make RE extend E ?
 		{
 			log.error(genericLoggingMessage + " MyFaces cannot " + " put the bean in "
-					+ beanConfiguration.getManagedBeanScope() + " scope " + " ... execution continues. ");
+					+ scope + " scope " + " ... execution continues. ");
 		} else {
 			throw new FacesException(genericLoggingMessage + " The spec is ambivalent on checked exceptions.");
 		}
 	}
 
 	private String getGenericLoggingMessage(Method method, Throwable e) {
-		return "When invoking " + method.getName() + " on a managed bean '" + beanConfiguration.getManagedBeanName()
+		return "When invoking " + method.getName() + " on a managed bean '" + name
 				+ "'," + " an exception " + e.getClass() + "{" + e.getMessage() + "} was thrown. "
 				+ " See section 5.4.1 of the JSF specification.";
 	}

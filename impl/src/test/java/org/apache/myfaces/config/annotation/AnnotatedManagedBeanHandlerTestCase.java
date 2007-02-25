@@ -14,17 +14,17 @@ public class AnnotatedManagedBeanHandlerTestCase extends TestCase {
 	
 	protected AnnotatedManagedBean managedBean;
 	protected AnnotatedManagedBeanHandler handler;
-	protected ManagedBean managedBeanConf;
+	protected final String NAME = "volker weber";
 	
 	public void setUp() {
 		managedBean = new AnnotatedManagedBean(null);
-		managedBeanConf = new ManagedBean();
-		handler = new AnnotatedManagedBeanHandler(managedBean, managedBeanConf);
 	}
 
 	public void testPostConstructShouldNotInvokeForNoneScope() {
 
-		managedBeanConf.setScope(ManagedBeanBuilder.NONE);
+		handler = new AnnotatedManagedBeanHandler(managedBean, 
+				ManagedBeanBuilder.NONE, NAME);
+		
 		boolean threwUnchecked = handler.invokePostConstruct();
 		
 		assertFalse(threwUnchecked);
@@ -34,7 +34,9 @@ public class AnnotatedManagedBeanHandlerTestCase extends TestCase {
 
 	public void testPreDestroyShouldNotInvokeForNoneScope() {
 
-		managedBeanConf.setScope(ManagedBeanBuilder.NONE);
+		handler = new AnnotatedManagedBeanHandler(managedBean, 
+				ManagedBeanBuilder.NONE, NAME);
+		
 		boolean threwUnchecked = handler.invokePreDestroy();
 		
 		assertFalse(threwUnchecked);
@@ -44,7 +46,9 @@ public class AnnotatedManagedBeanHandlerTestCase extends TestCase {
 	
 	public void testPostConstructShouldInvokeForRequestScope() {
 		
-		managedBeanConf.setScope(ManagedBeanBuilder.REQUEST);
+		handler = new AnnotatedManagedBeanHandler(managedBean, 
+				ManagedBeanBuilder.REQUEST, NAME);
+		
 		boolean threwUnchecked = handler.invokePostConstruct();
 		
 		assertFalse(threwUnchecked);
@@ -54,7 +58,9 @@ public class AnnotatedManagedBeanHandlerTestCase extends TestCase {
 
 	public void testPreDestroyShouldInvokeForRequestScope() {
 		
-		managedBeanConf.setScope(ManagedBeanBuilder.REQUEST);
+		handler = new AnnotatedManagedBeanHandler(managedBean, 
+				ManagedBeanBuilder.REQUEST, NAME);
+		
 		boolean threwUnchecked = handler.invokePreDestroy();
 		
 		assertFalse(threwUnchecked);
@@ -64,7 +70,9 @@ public class AnnotatedManagedBeanHandlerTestCase extends TestCase {
 	
 	public void testPostConstructShouldInvokeForSessionScope() {
 		
-		managedBeanConf.setScope(ManagedBeanBuilder.SESSION);
+		handler = new AnnotatedManagedBeanHandler(managedBean, 
+				ManagedBeanBuilder.SESSION, NAME);
+		
 		boolean threwUnchecked = handler.invokePostConstruct();
 		
 		assertFalse(threwUnchecked);
@@ -74,7 +82,9 @@ public class AnnotatedManagedBeanHandlerTestCase extends TestCase {
 
 	public void testPreDestroyShouldInvokeForSessionScope() {
 		
-		managedBeanConf.setScope(ManagedBeanBuilder.SESSION);
+		handler = new AnnotatedManagedBeanHandler(managedBean, 
+				ManagedBeanBuilder.SESSION, NAME);
+		
 		boolean threwUnchecked = handler.invokePreDestroy();
 		
 		assertFalse(threwUnchecked);
@@ -84,7 +94,9 @@ public class AnnotatedManagedBeanHandlerTestCase extends TestCase {
 	
 	public void testPostConstructShouldInvokeForApplicationScope() {
 		
-		managedBeanConf.setScope(ManagedBeanBuilder.APPLICATION);
+		handler = new AnnotatedManagedBeanHandler(managedBean, 
+				ManagedBeanBuilder.APPLICATION, NAME);
+		
 		boolean threwUnchecked = handler.invokePostConstruct();
 		
 		assertFalse(threwUnchecked);
@@ -94,7 +106,9 @@ public class AnnotatedManagedBeanHandlerTestCase extends TestCase {
 
 	public void testPreDestroyShouldInvokeForApplicationScope() {
 		
-		managedBeanConf.setScope(ManagedBeanBuilder.APPLICATION);
+		handler = new AnnotatedManagedBeanHandler(managedBean, 
+				ManagedBeanBuilder.APPLICATION, NAME);
+		
 		boolean threwUnchecked = handler.invokePreDestroy();
 		
 		assertFalse(threwUnchecked);

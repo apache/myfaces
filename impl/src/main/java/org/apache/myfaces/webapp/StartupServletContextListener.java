@@ -18,8 +18,11 @@
  */
 package org.apache.myfaces.webapp;
 
+import java.util.Enumeration;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.config.ManagedBeanBuilder;
 
 import javax.faces.FactoryFinder;
 import javax.servlet.ServletContext;
@@ -30,7 +33,8 @@ import javax.servlet.ServletContextListener;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class StartupServletContextListener implements ServletContextListener
+public class StartupServletContextListener extends AbstractMyFacesListener
+	implements ServletContextListener
 {
     static final String FACES_INIT_DONE = StartupServletContextListener.class.getName() + ".FACES_INIT_DONE";
 
@@ -86,13 +90,28 @@ public class StartupServletContextListener implements ServletContextListener
         }
     }
 
-    public void contextDestroyed(ServletContextEvent e)
+    public void contextDestroyed(ServletContextEvent event)
     {
+    	doPredestroy(event);
+    	
         if (_facesInitializer != null && _servletContext != null)
         {
             _facesInitializer.destroyFaces(_servletContext);
         }
         FactoryFinder.releaseFactories();
         _servletContext = null;
+    }
+    
+    private void doPredestroy(ServletContextEvent event) {
+    			
+    	ServletContext ctx = event.getServletContext();
+       	Enumeration<String> attributes = ctx.getAttributeNames();
+       	
+       	while(attributes.hasMoreElements()) 
+       	{
+       		String name = attributes.nextElement();
+       		Object value = ctx.getAttribute(name);
+       		doPreDestroy(value, name, ManagedBeanBuilder.APPLICATION);
+       	}
     }
 }

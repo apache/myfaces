@@ -16,17 +16,16 @@ public class AnnotatedExceptionManagedBeanHandlerTestCase extends TestCase {
 
 	protected AnnotatedManagedBeanHandler handler;
 
-	protected ManagedBean managedBeanConf;
-
+	protected final String NAME = "sean_schofield";
+	
 	public void setUp() {
 		managedBean = new AnnotatedManagedBean(new Exception());
-		managedBeanConf = new ManagedBean();
-		handler = new AnnotatedManagedBeanHandler(managedBean, managedBeanConf);
 	}
 
 	public void testPostConstructShouldNotBlowUpForNoneScope() {
 
-		managedBeanConf.setScope(ManagedBeanBuilder.NONE);
+		handler = new AnnotatedManagedBeanHandler(managedBean, 
+				ManagedBeanBuilder.NONE, NAME);
 
 		boolean exceptionThrown = false;
 		
@@ -43,7 +42,8 @@ public class AnnotatedExceptionManagedBeanHandlerTestCase extends TestCase {
 
 	public void testPreDestroyShouldNotBlowUpForNoneScope() {
 
-		managedBeanConf.setScope(ManagedBeanBuilder.NONE);
+		handler = new AnnotatedManagedBeanHandler(managedBean, 
+				ManagedBeanBuilder.NONE, NAME);
 
 		boolean exceptionThrown = false;
 		
@@ -60,7 +60,8 @@ public class AnnotatedExceptionManagedBeanHandlerTestCase extends TestCase {
 	
 	public void testPostConstructShouldBlowUpForRequestScope() {
 
-		managedBeanConf.setScope(ManagedBeanBuilder.REQUEST);
+		handler = new AnnotatedManagedBeanHandler(managedBean, 
+				ManagedBeanBuilder.REQUEST, NAME);
 
 		boolean exceptionThrown = false;
 		
@@ -77,7 +78,8 @@ public class AnnotatedExceptionManagedBeanHandlerTestCase extends TestCase {
 
 	public void testPreDestroyShouldBlowUpForRequestScope() {
 
-		managedBeanConf.setScope(ManagedBeanBuilder.REQUEST);
+		handler = new AnnotatedManagedBeanHandler(managedBean, 
+				ManagedBeanBuilder.REQUEST, NAME);
 
 		boolean exceptionThrown = false;
 		
@@ -94,7 +96,8 @@ public class AnnotatedExceptionManagedBeanHandlerTestCase extends TestCase {
 	
 	public void testPostConstructShouldBlowUpForSessionScope() {
 
-		managedBeanConf.setScope(ManagedBeanBuilder.SESSION);
+		handler = new AnnotatedManagedBeanHandler(managedBean, 
+				ManagedBeanBuilder.SESSION, NAME);
 
 		boolean exceptionThrown = false;
 		
@@ -111,7 +114,8 @@ public class AnnotatedExceptionManagedBeanHandlerTestCase extends TestCase {
 
 	public void testPreDestroyShouldBlowUpForSessionScope() {
 
-		managedBeanConf.setScope(ManagedBeanBuilder.SESSION);
+		handler = new AnnotatedManagedBeanHandler(managedBean, 
+				ManagedBeanBuilder.SESSION, NAME);
 
 		boolean exceptionThrown = false;
 		
@@ -128,7 +132,8 @@ public class AnnotatedExceptionManagedBeanHandlerTestCase extends TestCase {
 	
 	public void testPostConstructShouldBlowUpForApplicationScope() {
 
-		managedBeanConf.setScope(ManagedBeanBuilder.APPLICATION);
+		handler = new AnnotatedManagedBeanHandler(managedBean, 
+				ManagedBeanBuilder.APPLICATION, NAME);
 
 		boolean exceptionThrown = false;
 		
@@ -145,7 +150,8 @@ public class AnnotatedExceptionManagedBeanHandlerTestCase extends TestCase {
 
 	public void testPreDestroyShouldBlowUpForApplicationScope() {
 
-		managedBeanConf.setScope(ManagedBeanBuilder.APPLICATION);
+		handler = new AnnotatedManagedBeanHandler(managedBean, 
+				ManagedBeanBuilder.APPLICATION, NAME);
 
 		boolean exceptionThrown = false;
 		
