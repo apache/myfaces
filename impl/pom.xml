@@ -26,7 +26,7 @@
       </resource>
     </resources>
     <plugins>
-        <plugin>
+      <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.1.2</version>
         <configuration>
@@ -263,17 +263,17 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.apache.tomcat</groupId>
+      <groupId>javax.el</groupId>
       <artifactId>el-api</artifactId>
-      <version>6.0.1-SNAPSHOT</version>
+      <version>1.0</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
+    <!-- dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>jasper-el</artifactId>
       <version>6.0.1-SNAPSHOT</version>
       <scope>provided</scope>
-    </dependency>
+    </dependency-->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
@@ -284,7 +284,12 @@
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-api</artifactId>
       <version>1.2.0-SNAPSHOT</version>
-      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.myfaces.core</groupId>
+      <artifactId>myfaces-api</artifactId>
+      <version>1.2.0-SNAPSHOT</version>
+      <classifier>tests</classifier>
     </dependency>
     <dependency>
       <groupId>commons-collections</groupId>
@@ -317,6 +322,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <!-- this dependency will be packed together with the main artifact of this pom -->
       <groupId>org.apache.myfaces.shared</groupId>
       <artifactId>myfaces-shared-impl</artifactId>
       <version>3.0.0-SNAPSHOT</version>
@@ -338,6 +344,7 @@
       <groupId>org.apache.geronimo.specs</groupId>
       <artifactId>geronimo-annotation_1.0_spec</artifactId>
       <version>1.0</version>
+      <scope>provided</scope>
     </dependency>    
   </dependencies>
   <reporting>
