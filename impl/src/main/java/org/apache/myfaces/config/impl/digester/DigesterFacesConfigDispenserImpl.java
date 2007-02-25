@@ -15,17 +15,6 @@
  */
 package org.apache.myfaces.config.impl.digester;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.faces.event.PhaseListener;
-import javax.faces.render.RenderKitFactory;
-
 import org.apache.myfaces.config.FacesConfigDispenser;
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
@@ -37,6 +26,16 @@ import org.apache.myfaces.config.impl.digester.elements.Factory;
 import org.apache.myfaces.config.impl.digester.elements.LocaleConfig;
 import org.apache.myfaces.config.impl.digester.elements.RenderKit;
 import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
+
+import javax.faces.render.RenderKitFactory;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
@@ -69,6 +68,7 @@ public class DigesterFacesConfigDispenserImpl implements
     private List<ManagedBean> managedBeans = new ArrayList<ManagedBean>();
     private List<NavigationRule> navigationRules = new ArrayList<NavigationRule>();
     private List<ResourceBundle> resourceBundles = new ArrayList<ResourceBundle>();
+    private List<String> elResolvers = new ArrayList<String>();
 
     /**
      * Add another unmarshalled faces config object.
@@ -118,6 +118,7 @@ public class DigesterFacesConfigDispenserImpl implements
             propertyResolver.addAll(application.getPropertyResolver());
             variableResolver.addAll(application.getVariableResolver());
             resourceBundles.addAll(application.getResourceBundle());
+            elResolvers.addAll(application.getElResolver());
         }
         for (Iterator iterator = config.getConverters().iterator(); iterator
                 .hasNext();)
@@ -376,8 +377,7 @@ public class DigesterFacesConfigDispenserImpl implements
 
     public Converter getConverterConfiguration(String converterClassName)
     {
-        return converterConfigurationByClassName
-                .get(converterClassName);
+        return converterConfigurationByClassName.get(converterClassName);
     }
 
     /**
@@ -416,7 +416,7 @@ public class DigesterFacesConfigDispenserImpl implements
      * @return Iterator over
      *         {@link org.apache.myfaces.config.element.ManagedBean ManagedBean}s
      */
-    public Iterator getManagedBeans()
+    public Iterator<ManagedBean> getManagedBeans()
     {
         return managedBeans.iterator();
     }
@@ -425,7 +425,7 @@ public class DigesterFacesConfigDispenserImpl implements
      * @return Iterator over
      *         {@link org.apache.myfaces.config.element.NavigationRule NavigationRule}s
      */
-    public Iterator getNavigationRules()
+    public Iterator<NavigationRule> getNavigationRules()
     {
         return navigationRules.iterator();
     }
@@ -470,6 +470,11 @@ public class DigesterFacesConfigDispenserImpl implements
     public Iterator<ResourceBundle> getResourceBundles()
     {
         return resourceBundles.iterator();
+    }
+
+    public Iterator<String> getElResolvers()
+    {
+        return elResolvers.iterator();
     }
 
 }
