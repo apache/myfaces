@@ -40,7 +40,7 @@ public class FacesConfigValidator
         // hidden 
     }
 
-    public static List validate(ExternalContext ctx, String ctxPath){
+    public static List<String> validate(ExternalContext ctx, String ctxPath){
         
         RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(ctx);
         
@@ -50,16 +50,16 @@ public class FacesConfigValidator
                                 managedBeansMap.values() == null ? null :
                                     managedBeansMap.values().iterator();
         
-        Iterator navRules = runtimeConfig.getNavigationRules() == null ? 
+        Iterator<NavigationRule> navRules = runtimeConfig.getNavigationRules() == null ? 
                             null : runtimeConfig.getNavigationRules().iterator();
         
         return validate(managedBeans, navRules, ctxPath);
         
     }
     
-    public static List validate(Iterator managedBeans, Iterator navRules, String ctxPath){
+    public static List<String> validate(Iterator managedBeans, Iterator<NavigationRule> navRules, String ctxPath){
         
-        List list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         
         if(navRules != null)
             validateNavRules(navRules, list, ctxPath);
@@ -70,11 +70,11 @@ public class FacesConfigValidator
         return list;
     }
 
-    private static void validateNavRules(Iterator navRules, List list, String ctxPath){
+    private static void validateNavRules(Iterator<NavigationRule> navRules, List<String> list, String ctxPath){
         
         while(navRules.hasNext()){
             
-            NavigationRule navRule = (NavigationRule) navRules.next();
+            NavigationRule navRule = navRules.next();
             
             validateNavRule(navRule, list, ctxPath);
             
@@ -82,7 +82,7 @@ public class FacesConfigValidator
         
     }
     
-    private static void validateNavRule(NavigationRule navRule, List list, String ctxPath){
+    private static void validateNavRule(NavigationRule navRule, List<String> list, String ctxPath){
         
         String fromId = navRule.getFromViewId();
         String filePath = ctxPath + fromId;
@@ -107,7 +107,7 @@ public class FacesConfigValidator
         
     }
     
-    private static void validateManagedBeans(Iterator managedBeans, List list){
+    private static void validateManagedBeans(Iterator managedBeans, List<String> list){
         
         while(managedBeans.hasNext()){
             
@@ -119,7 +119,7 @@ public class FacesConfigValidator
         
     }
 
-    private static void validateManagedBean(ManagedBean managedBean, List list){
+    private static void validateManagedBean(ManagedBean managedBean, List<String> list){
         
         String className = managedBean.getManagedBeanClassName();
         

@@ -21,7 +21,12 @@ import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
 
+import javax.el.CompositeELResolver;
+import javax.el.ELResolver;
+import javax.el.ExpressionFactory;
 import javax.faces.context.ExternalContext;
+import javax.faces.el.PropertyResolver;
+import javax.faces.el.VariableResolver;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,48 +35,53 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Holds all configuration information (from the faces-config xml files) that is
- * needed later during runtime. The config information in this class is only
- * available to the MyFaces core implementation classes (i.e. the myfaces source
- * tree). See MyfacesConfig for config parameters that can be used for shared or
- * component classes.
+ * Holds all configuration information (from the faces-config xml files) that is needed later during runtime. The config
+ * information in this class is only available to the MyFaces core implementation classes (i.e. the myfaces source
+ * tree). See MyfacesConfig for config parameters that can be used for shared or component classes.
  * 
  * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date: 2006-05-29 05:59:46 +0200 (Mo, 29 Mai
- *          2006) $
+ * @version $Revision$ $Date$
  */
+@SuppressWarnings("deprecation")
 public class RuntimeConfig
 {
     private static final Log log = LogFactory.getLog(RuntimeConfig.class);
 
-    private static final String APPLICATION_MAP_PARAM_NAME = RuntimeConfig.class
-            .getName();
+    private static final String APPLICATION_MAP_PARAM_NAME = RuntimeConfig.class.getName();
 
     private final Collection<NavigationRule> _navigationRules = new ArrayList<NavigationRule>();
     private final Map<String, ManagedBean> _managedBeans = new HashMap<String, ManagedBean>();
     private boolean _navigationRulesChanged = false;
     private final Map<String, ResourceBundle> _resourceBundles = new HashMap<String, ResourceBundle>();
 
-    public static RuntimeConfig getCurrentInstance(
-            ExternalContext externalContext)
+    private CompositeELResolver facesConfigElResolvers;
+    private CompositeELResolver applicationElResolvers;
+
+    private VariableResolver _variableResolver;
+    private PropertyResolver _propertyResolver;
+
+    private ExpressionFactory _expressionFactory;
+
+    private PropertyResolver _propertyResolverChainHead;
+
+    private VariableResolver _variableResolverChainHead;
+
+    public static RuntimeConfig getCurrentInstance(ExternalContext externalContext)
     {
-        RuntimeConfig runtimeConfig = (RuntimeConfig) externalContext
-                .getApplicationMap().get(APPLICATION_MAP_PARAM_NAME);
+        RuntimeConfig runtimeConfig = (RuntimeConfig) externalContext.getApplicationMap().get(
+                APPLICATION_MAP_PARAM_NAME);
         if (runtimeConfig == null)
         {
             runtimeConfig = new RuntimeConfig();
-            externalContext.getApplicationMap().put(APPLICATION_MAP_PARAM_NAME,
-                    runtimeConfig);
+            externalContext.getApplicationMap().put(APPLICATION_MAP_PARAM_NAME, runtimeConfig);
         }
         return runtimeConfig;
     }
 
     /**
-     * Return the navigation rules that can be used by the NavigationHandler
-     * implementation.
+     * Return the navigation rules that can be used by the NavigationHandler implementation.
      * 
-     * @return a Collection of
-     *         {@link org.apache.myfaces.config.element.NavigationRule NavigationRule}s
+     * @return a Collection of {@link org.apache.myfaces.config.element.NavigationRule NavigationRule}s
      */
     public Collection<NavigationRule> getNavigationRules()
     {
@@ -96,11 +106,9 @@ public class RuntimeConfig
     }
 
     /**
-     * Return the managed bean info that can be used by the VariableResolver
-     * implementation.
+     * Return the managed bean info that can be used by the VariableResolver implementation.
      * 
-     * @return a
-     *         {@link org.apache.myfaces.config.element.ManagedBean ManagedBean}
+     * @return a {@link org.apache.myfaces.config.element.ManagedBean ManagedBean}
      */
     public ManagedBean getManagedBean(String name)
     {
@@ -118,8 +126,7 @@ public class RuntimeConfig
     }
 
     /**
-     * Return the resourcebundle which was configured in faces config by var
-     * name
+     * Return the resourcebundle which was configured in faces config by var name
      * 
      * @param name
      *            the name of the resource bundle (content of var)
@@ -147,15 +154,89 @@ public class RuntimeConfig
         String var = bundle.getVar();
         if (_resourceBundles.containsKey(var) && log.isWarnEnabled())
         {
-            log
-                    .warn("Another resource bundle for var '" + var
-                            + "' with base name '"
-                            + _resourceBundles.get(var).getBaseName()
-                            + "' is already registered. '"
-                            + _resourceBundles.get(var).getBaseName()
-                            + "' will be replaced with '"
-                            + bundle.getBaseName() + "'.");
+            log.warn("Another resource bundle for var '" + var + "' with base name '"
+                    + _resourceBundles.get(var).getBaseName() + "' is already registered. '"
+                    + _resourceBundles.get(var).getBaseName() + "' will be replaced with '" + bundle.getBaseName()
+                    + "'.");
         }
         _resourceBundles.put(var, bundle);
+    }
+
+    public void addFacesConfigElResolver(ELResolver resolver)
+    {
+        if (facesConfigElResolvers == null)
+        {
+            facesConfigElResolvers = new CompositeELResolver();
+        }
+        facesConfigElResolvers.add(resolver);
+    }
+
+    public ELResolver getFacesConfigElResolvers()
+    {
+        return facesConfigElResolvers;
+    }
+
+    public void addApplicationElResolver(ELResolver resolver)
+    {
+        if (applicationElResolvers == null)
+        {
+            applicationElResolvers = new CompositeELResolver();
+        }
+        applicationElResolvers.add(resolver);
+    }
+
+    public ELResolver getApplicationElResolvers()
+    {
+        return applicationElResolvers;
+    }
+
+    public void setVariableResolver(VariableResolver variableResolver)
+    {
+        _variableResolver = variableResolver;
+    }
+
+    public VariableResolver getVariableResolver()
+    {
+        return _variableResolver;
+    }
+
+    public void setPropertyResolver(PropertyResolver propertyResolver)
+    {
+        _propertyResolver = propertyResolver;
+    }
+
+    public PropertyResolver getPropertyResolver()
+    {
+        return _propertyResolver;
+    }
+
+    public ExpressionFactory getExpressionFactory()
+    {
+        return _expressionFactory;
+    }
+
+    public void setExpressionFactory(ExpressionFactory expressionFactory)
+    {
+        _expressionFactory = expressionFactory;
+    }
+
+    public void setPropertyResolverChainHead(PropertyResolver resolver)
+    {
+        _propertyResolverChainHead = resolver;
+    }
+
+    public PropertyResolver getPropertyResolverChainHead()
+    {
+        return _propertyResolverChainHead;
+    }
+
+    public void setVariableResolverChainHead(VariableResolver resolver)
+    {
+        _variableResolverChainHead = resolver;
+    }
+
+    public VariableResolver getVariableResolverChainHead()
+    {
+        return _variableResolverChainHead;
     }
 }

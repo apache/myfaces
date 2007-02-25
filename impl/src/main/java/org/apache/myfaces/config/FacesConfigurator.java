@@ -29,6 +29,8 @@ import org.apache.myfaces.config.impl.digester.DigesterFacesConfigDispenserImpl;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
 import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
 import org.apache.myfaces.context.FacesContextFactoryImpl;
+import org.apache.myfaces.el.DefaultPropertyResolver;
+import org.apache.myfaces.el.VariableResolverImpl;
 import org.apache.myfaces.lifecycle.LifecycleFactoryImpl;
 import org.apache.myfaces.renderkit.RenderKitFactoryImpl;
 import org.apache.myfaces.renderkit.html.HtmlRenderKitImpl;
@@ -37,8 +39,10 @@ import org.apache.myfaces.shared_impl.util.LocaleUtils;
 import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
 import org.apache.myfaces.shared_impl.util.serial.SerialFactory;
+
 import org.xml.sax.SAXException;
 
+import javax.el.ELResolver;
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
@@ -81,6 +85,7 @@ import java.util.StringTokenizer;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
+@SuppressWarnings("deprecation")
 public class FacesConfigurator
 {
     private static final Log log = LogFactory.getLog(FacesConfigurator.class);
@@ -109,6 +114,8 @@ public class FacesConfigurator
     private final ExternalContext _externalContext;
     private FacesConfigUnmarshaller _unmarshaller;
     private FacesConfigDispenser _dispenser;
+
+    private RuntimeConfig _runtimeConfig;
     private static final String JAR_EXTENSION = ".jar";
     private static final String META_INF_MANIFEST_SUFFIX = "!/META-INF/MANIFEST.MF";
     private static final String JAR_PREFIX = "jar:";
@@ -569,8 +576,7 @@ public class FacesConfigurator
 
         application.setNavigationHandler((NavigationHandler) getApplicationObject(NavigationHandler.class, dispenser
                 .getNavigationHandlerIterator(), application.getNavigationHandler()));
-        application.setPropertyResolver((PropertyResolver) getApplicationObject(PropertyResolver.class, dispenser
-                .getPropertyResolverIterator(), application.getPropertyResolver()));
+        
         application.setStateManager((StateManager) getApplicationObject(StateManager.class, dispenser
                 .getStateManagerIterator(), application.getStateManager()));
         List<Locale> locales = new ArrayList<Locale>();
@@ -580,8 +586,6 @@ public class FacesConfigurator
         }
         application.setSupportedLocales(locales);
 
-        application.setVariableResolver((VariableResolver) getApplicationObject(VariableResolver.class, dispenser
-                .getVariableResolverIterator(), application.getVariableResolver()));
         application.setViewHandler((ViewHandler) getApplicationObject(ViewHandler.class, dispenser
                 .getViewHandlerIterator(), application.getViewHandler()));
 
@@ -627,6 +631,31 @@ public class FacesConfigurator
             String validatorId = (String) it.next();
             application.addValidator(validatorId, dispenser.getValidatorClass(validatorId));
         }
+
+        RuntimeConfig runtimeConfig = getRuntimeConfig();
+        
+        runtimeConfig.setPropertyResolverChainHead((PropertyResolver) getApplicationObject(PropertyResolver.class, dispenser
+                .getPropertyResolverIterator(), new DefaultPropertyResolver()));
+        
+        runtimeConfig.setVariableResolverChainHead((VariableResolver) getApplicationObject(VariableResolver.class, dispenser
+                .getVariableResolverIterator(), new VariableResolverImpl()));
+    }
+
+    /**
+     * @return
+     */
+    protected RuntimeConfig getRuntimeConfig()
+    {
+        if(_runtimeConfig == null) 
+        {
+            _runtimeConfig = RuntimeConfig.getCurrentInstance(_externalContext);
+        }
+        return _runtimeConfig;
+    }
+    
+    public void setRuntimeConfig(RuntimeConfig runtimeConfig)
+    {
+        _runtimeConfig = runtimeConfig;
     }
 
     private Object getApplicationObject(Class interfaceClass, Iterator classNamesIterator, Object defaultObject)
@@ -715,6 +744,11 @@ public class FacesConfigurator
         for (Iterator<ResourceBundle> iter = dispenser.getResourceBundles(); iter.hasNext();)
         {
             runtimeConfig.addResourceBundle(iter.next());
+        }
+        
+        for (Iterator<String> iter = dispenser.getElResolvers(); iter.hasNext();)
+        {
+            runtimeConfig.addFacesConfigElResolver((ELResolver) ClassUtils.newInstance(iter.next(), ELResolver.class));
         }
     }
 

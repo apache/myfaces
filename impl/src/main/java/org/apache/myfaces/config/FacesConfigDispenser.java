@@ -21,7 +21,7 @@ import org.apache.myfaces.config.element.Renderer;
 import org.apache.myfaces.config.impl.digester.elements.Converter;
 import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
 
-import javax.faces.event.PhaseListener;
+import javax.el.ELResolver;
 
 import java.util.Iterator;
 
@@ -173,7 +173,12 @@ public interface FacesConfigDispenser<C>
     public Iterator<String> getLifecyclePhaseListeners();
 
     /**
-     * @return
+     * @return Iterator over {@link ResourceBundle}
      */
     public Iterator<ResourceBundle> getResourceBundles();
+
+    /**
+     * @return Iterator over {@link ELResolver} implementation class names
+     */
+    public Iterator<String> getElResolvers();
 }
