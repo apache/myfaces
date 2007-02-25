@@ -29,6 +29,9 @@ import java.util.*;
 public class PartialTreeStructureManager
 {
     public static final String PARTIAL_STATE_CLASS_IDS = PartialTreeStructureManager.class.getName() + ".PARTIAL_STATE_MANAGER_COMPONENT_IDS";
+    
+    //Why wasn't this here ???
+    private FacesContext _facesContext = null;
 
     public PartialTreeStructureManager(FacesContext facesContext)
     {
