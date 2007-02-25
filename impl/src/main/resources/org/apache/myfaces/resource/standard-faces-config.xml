@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 
-<!DOCTYPE faces-config PUBLIC
- "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN"
- "http://java.sun.com/dtd/web-facesconfig_1_1.dtd">
-
 <!--
  * Copyright 2004 The Apache Software Foundation.
  *
@@ -20,14 +16,14 @@
  * limitations under the License.
 -->
 
-<faces-config xmlns="http://java.sun.com/JSF/Configuration">
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd"
+  version="1.2">
 
   <!-- Initial application element with partial values -->
   <application>
     <action-listener>org.apache.myfaces.application.ActionListenerImpl</action-listener>
     <navigation-handler>org.apache.myfaces.application.NavigationHandlerImpl</navigation-handler>
-    <variable-resolver>org.apache.myfaces.el.VariableResolverImpl</variable-resolver>
-    <property-resolver>org.apache.myfaces.el.PropertyResolverImpl</property-resolver>
     <locale-config>
         <supported-locale>en</supported-locale>
         <supported-locale>de</supported-locale>
