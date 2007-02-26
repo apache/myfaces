@@ -152,14 +152,8 @@ class _ComponentAttributesMap
     public boolean containsKey(Object key)
     {
         checkKey(key);
-        if (getPropertyDescriptor((String)key) == null)
-        {
-            return _attributes.containsKey(key);
-        }
-        else
-        {
-            return false;
-        }
+        
+        return getPropertyDescriptor((String)key) == null ? _attributes.containsKey(key) : false;
     }
 
     /**
@@ -309,16 +303,10 @@ class _ComponentAttributesMap
                 setComponentProperty(propertyDescriptor, value);
                 return oldValue;
             }
-            else
-            {
-                setComponentProperty(propertyDescriptor, value);
-                return null;
-            }
+            setComponentProperty(propertyDescriptor, value);
+            return null;
         }
-        else
-        {
-            return _attributes.put(key, value);
-        }
+        return _attributes.put(key, value);
     }
 
     /**

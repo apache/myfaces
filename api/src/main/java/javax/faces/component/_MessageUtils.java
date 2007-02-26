@@ -150,14 +150,7 @@ class _MessageUtils
     private static ResourceBundle getApplicationBundle(FacesContext facesContext, Locale locale)
     {
         String bundleName = facesContext.getApplication().getMessageBundle();
-        if (bundleName != null)
-        {
-            return getBundle(facesContext, locale, bundleName);
-        }
-        else
-        {
-            return null;
-        }
+        return bundleName != null ? getBundle(facesContext, locale, bundleName) : null;
     }
 
     private static ResourceBundle getDefaultBundle(FacesContext facesContext,

@@ -52,28 +52,20 @@ public class ValidatorException
 
     private static String facesMessageToString(FacesMessage message)
     {
-        if (message.getSummary() != null)
+        final String summary = message.getSummary();
+		final String detail = message.getDetail();
+		
+		if (summary != null)
         {
-            if (message.getDetail() != null)
+            if (detail != null)
             {
-                return message.getSummary() + ": " + message.getDetail();
+                return summary + ": " + detail;
             }
-            else
-            {
-                return message.getSummary();
-            }
+            
+            return summary;
         }
-        else
-        {
-            if (message.getDetail() != null)
-            {
-                return message.getDetail();
-            }
-            else
-            {
-                return "";
-            }
-        }
+        
+        return detail != null ? detail : "";
     }
 
 }

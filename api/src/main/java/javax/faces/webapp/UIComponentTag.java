@@ -90,14 +90,8 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
     {
         UIComponentClassicTagBase parentTag = getParentUIComponentClassicTagBase(pageContext);
 
-        if (parentTag instanceof UIComponentTag)
-        {
-            return (UIComponentTag) parentTag;
-        }
-        else
-        {
-            return new UIComponentTagWrapper(parentTag);
-        }
+        return parentTag instanceof UIComponentTag ? (UIComponentTag) parentTag : new UIComponentTagWrapper(parentTag);
+        
     }
 
     /**
@@ -145,13 +139,12 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
 
             return component;
         }
-        else
-        {
-            UIComponent component = context.getApplication().createComponent(componentType);
-            component.setId(id);
 
-            return component;
-        }
+        UIComponent component = context.getApplication().createComponent(componentType);
+        component.setId(id);
+
+        return component;
+        
     }
 
 

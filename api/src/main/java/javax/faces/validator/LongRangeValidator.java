@@ -106,18 +106,17 @@ public class LongRangeValidator
         {
             return ((Number)value).longValue();
         }
-        else
+
+        try
         {
-            try
-            {
-                return Long.parseLong(value.toString());
-            }
-            catch (NumberFormatException e)
-            {
-				Object[] args = {uiComponent.getId()};
-                throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, TYPE_MESSAGE_ID, args));
-            }
+            return Long.parseLong(value.toString());
         }
+        catch (NumberFormatException e)
+        {
+			Object[] args = {uiComponent.getId()};
+            throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, TYPE_MESSAGE_ID, args));
+        }
+        
     }
 
 

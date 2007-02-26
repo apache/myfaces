@@ -188,20 +188,16 @@ class _SharedRendererUtils
             }
             return convertedValues;
         }
-        else
+        
+        //Object array
+        int len = submittedValue.length;
+        ArrayList<Object> convertedValues = new ArrayList<Object>(len); 
+        for (int i = 0; i < len; i++)
         {
-            //Object array
-            int len = submittedValue.length;
-            ArrayList<Object> convertedValues = new ArrayList<Object>(len); 
-            for (int i = 0; i < len; i++)
-            {
-                convertedValues.add(i, converter.getAsObject(facesContext, component, submittedValue[i])); 
-            }
-            return convertedValues.toArray((Object[]) Array.newInstance(arrayComponentType, len));
+        	convertedValues.add(i, converter.getAsObject(facesContext, component, submittedValue[i])); 
         }
+        return convertedValues.toArray((Object[]) Array.newInstance(arrayComponentType, len));
     }
-
-
 
     /**
      * This method is different in the two versions of _SharedRendererUtils.

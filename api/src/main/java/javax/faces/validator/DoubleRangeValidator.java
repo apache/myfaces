@@ -106,17 +106,15 @@ public class DoubleRangeValidator
         {
             return ((Number)value).doubleValue();
         }
-        else
+        
+        try
         {
-            try
-            {
-                return Double.parseDouble(value.toString());
-            }
-            catch (NumberFormatException e)
-            {
-				Object[] args = {uiComponent.getId()};
-               throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, TYPE_MESSAGE_ID, args));
-            }
+        	return Double.parseDouble(value.toString());
+        }
+        catch (NumberFormatException e)
+        {
+			Object[] args = {uiComponent.getId()};
+            throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, TYPE_MESSAGE_ID, args));
         }
     }
 

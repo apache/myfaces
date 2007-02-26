@@ -106,12 +106,8 @@ public final class FactoryFinder
             List classNames = (List) factoryClassNames.get(factoryName);
             factory = newFactoryInstance(ABSTRACT_FACTORY_CLASSES.get(factoryName), classNames.iterator(), classLoader);
             factoryMap.put(factoryName, factory);
-            return factory;
         }
-        else
-        {
-            return factory;
-        }
+        return factory;
     }
 
 

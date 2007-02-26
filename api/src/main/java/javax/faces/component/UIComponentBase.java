@@ -350,14 +350,7 @@ public abstract class UIComponentBase
     public boolean getRendersChildren()
     {
         Renderer renderer = getRenderer(getFacesContext());
-        if (renderer != null)
-        {
-            return renderer.getRendersChildren();
-        }
-        else
-        {
-            return false;
-        }
+        return renderer != null ? renderer.getRendersChildren() : false;
     }
 
     /**
@@ -455,22 +448,20 @@ public abstract class UIComponentBase
         {
             return _ComponentUtils.findComponent(findBase, expr);
         }
-        else
+
+        String id = expr.substring(0, separator);
+        findBase = _ComponentUtils.findComponent(findBase, id);
+        if (findBase == null)
         {
-            String id = expr.substring(0, separator);
-            findBase = _ComponentUtils.findComponent(findBase, id);
-            if (findBase == null)
-            {
-                return null;
-            }
-            else
-            {
-                if (!(findBase instanceof NamingContainer))
+        	return null;
+        }
+        
+        if (!(findBase instanceof NamingContainer))
                     throw new IllegalArgumentException("Intermediate identifier " + id + " in search expression " +
                         expr + " identifies a UIComponent that is not a NamingContainer");
-                return findBase.findComponent(expr.substring(separator + 1));
-            }
-        }
+        
+        return findBase.findComponent(expr.substring(separator + 1));
+        
     }
 
 
@@ -612,10 +603,8 @@ public abstract class UIComponentBase
         {
             return (FacesListener[])Array.newInstance(clazz, 0);
         }
-        else
-        {
-            return lst.toArray((FacesListener[])Array.newInstance(clazz, lst.size()));
-        }
+        
+        return lst.toArray((FacesListener[])Array.newInstance(clazz, lst.size()));
     }
 
     protected void removeFacesListener(FacesListener listener)
@@ -894,11 +883,9 @@ public abstract class UIComponentBase
             {
                 return null;
             }
-            else
-            {
-                return new _AttachedStateWrapper(attachedObject.getClass(),
+            
+            return new _AttachedStateWrapper(attachedObject.getClass(),
                                                  ((StateHolder)attachedObject).saveState(context));
-            }
         }
         else if (attachedObject instanceof Serializable)
         {
@@ -999,14 +986,7 @@ public abstract class UIComponentBase
 
     private Object saveAttributesMap()
     {
-        if (_attributesMap != null)
-        {
-            return _attributesMap.getUnderlyingMap();
-        }
-        else
-        {
-            return null;
-        }
+    	return _attributesMap != null ? _attributesMap.getUnderlyingMap() : null;
     }
 
     private void restoreAttributesMap(Object stateObj)
@@ -1035,10 +1015,8 @@ public abstract class UIComponentBase
             }
             return stateMap;
         }
-        else
-        {
-            return null;
-        }
+        
+        return null;
     }
 
     private void restoreValueExpressionMap(FacesContext context, Object stateObj)

@@ -98,10 +98,8 @@ public class AttributeTag
             ValueBinding vb = facesContext.getApplication().createValueBinding(_name);
             return (String)vb.getValue(facesContext);
         }
-        else
-        {
-            return _name;
-        }
+        
+        return _name;
     }
 
     private Object getValue()
@@ -112,10 +110,8 @@ public class AttributeTag
             ValueBinding vb = facesContext.getApplication().createValueBinding(_value);
             return vb.getValue(facesContext);
         }
-        else
-        {
-            return _value;
-        }
+        
+        return _value;
     }
 
 }

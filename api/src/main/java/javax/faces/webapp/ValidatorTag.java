@@ -102,10 +102,9 @@ public class ValidatorTag
             ValueBinding vb = facesContext.getApplication().createValueBinding(_validatorId);
             return application.createValidator((String)vb.getValue(facesContext));
         }
-        else
-        {
-            return application.createValidator(_validatorId);
-        }
+
+        return application.createValidator(_validatorId);
+        
     }
     
     /**

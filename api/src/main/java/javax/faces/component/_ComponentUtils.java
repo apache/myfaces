@@ -130,10 +130,7 @@ class _ComponentUtils
             {
                 return dynamicIdIsEqual(id,cmp.getId());
             }
-            else
-            {
-                return id.equals(cmp.getId()+NamingContainer.SEPARATOR_CHAR+uiData.getRowIndex());
-            }
+            return id.equals(cmp.getId()+NamingContainer.SEPARATOR_CHAR+uiData.getRowIndex());
         }
 
         return false;

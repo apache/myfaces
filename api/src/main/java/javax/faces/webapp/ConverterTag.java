@@ -94,10 +94,9 @@ public class ConverterTag
             ValueBinding vb = facesContext.getApplication().createValueBinding(_converterId);
             return application.createConverter((String)vb.getValue(facesContext));
         }
-        else
-        {
-            return application.createConverter(_converterId);
-        }
+
+        return application.createConverter(_converterId);
+        
     }
 
     public void setBinding(String binding)

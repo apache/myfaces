@@ -86,13 +86,10 @@ public abstract class UIComponent
     		return returnValue;
     	}
 		//Searching for this component's children/facets 
-    	else 
-    	{
-    		for (Iterator<UIComponent> it = this.getFacetsAndChildren(); !returnValue && it.hasNext();){
-    			returnValue = it.next().invokeOnComponent(context, clientId, callback);
-    		}
-    		
+    	for (Iterator<UIComponent> it = this.getFacetsAndChildren(); !returnValue && it.hasNext();){
+    		returnValue = it.next().invokeOnComponent(context, clientId, callback);
     	}
+    		
     	return returnValue;
     }
 

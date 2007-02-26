@@ -457,10 +457,8 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
                         throw new JspException("Duplicated component Id: '"+clientId+"' " +
                                 "for component: '"+getPathToComponent(_componentInstance)+"'.");
                     }
-                    else
-                    {
-                        viewComponentIds.put(clientId, this);
-                    }
+                    
+                    viewComponentIds.put(clientId, this);
                 }
             }
 
@@ -1057,54 +1055,53 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
             addFacetNameToParentTag(parentTag, facetName);
             return _componentInstance;
         }
-        else
+
+        //Child
+        //
+        // Note that setProperties is called only when we create the
+        // _componentInstance; on later passes, the attributes defined on the
+        // JSP tag are set on this Tag object, but then completely
+        // ignored.
+
+        String id = createUniqueId(context, parent);
+
+        // Warn users that this tag is about to find/steal the UIComponent
+        // that has already been created for a sibling tag with the same id value .
+        // _childrenAdded is a Set, and we will stomp over a past id when calling
+        // addChildIdToParentTag.
+        //
+        // It would also be reasonable to throw an exception here rather than
+        // just issue a warning as this is a pretty serious problem. However the
+        // Sun RI just issues a warning...
+        if(parentTag._childrenAdded != null && parentTag._childrenAdded.contains(id))
         {
-            //Child
-            //
-            // Note that setProperties is called only when we create the
-            // _componentInstance; on later passes, the attributes defined on the
-            // JSP tag are set on this Tag object, but then completely
-            // ignored.
-
-            String id = createUniqueId(context, parent);
-
-            // Warn users that this tag is about to find/steal the UIComponent
-            // that has already been created for a sibling tag with the same id value .
-            // _childrenAdded is a Set, and we will stomp over a past id when calling
-            // addChildIdToParentTag.
-            //
-            // It would also be reasonable to throw an exception here rather than
-            // just issue a warning as this is a pretty serious problem. However the
-            // Sun RI just issues a warning...
-            if(parentTag._childrenAdded != null && parentTag._childrenAdded.contains(id))
-            {
-                if(log.isLoggable(Level.WARNING))
-                    log.warning("There is more than one JSF tag with an id : " + id);
-            }
-
-            _componentInstance = findComponent(parent,id);
-            if (_componentInstance == null)
-            {
-                _componentInstance = createComponent(context, id);
-                setProperties(_componentInstance);
-                int index = getAddedChildrenCount(parentTag);
-                List<UIComponent> children = parent.getChildren();
-                if (index <= children.size())
-                {
-                    children.add(index, _componentInstance);
-                }
-                else
-                {
-                    throw new FacesException("cannot add _componentInstance with id '" +
-                            _componentInstance.getId() + " to its parent _componentInstance with id : '"+parent.getId()+"' and path '"+
-                            getPathToComponent(parent)+"'at position :"+index+" in list of children. "+
-                            "This might be a problem due to a duplicate id in a previously added _componentInstance,"+
-                            "if this is the case, the problematic id might be one of : "+ printList(parentTag._childrenAdded));
-                }
-            }
-            addChildIdToParentTag(parentTag, id);
-            return _componentInstance;
+            if(log.isLoggable(Level.WARNING))
+                log.warning("There is more than one JSF tag with an id : " + id);
         }
+
+        _componentInstance = findComponent(parent,id);
+        if (_componentInstance == null)
+        {
+            _componentInstance = createComponent(context, id);
+            setProperties(_componentInstance);
+            int index = getAddedChildrenCount(parentTag);
+            List<UIComponent> children = parent.getChildren();
+            if (index <= children.size())
+            {
+                children.add(index, _componentInstance);
+            }
+            else
+            {
+                throw new FacesException("cannot add _componentInstance with id '" +
+                        _componentInstance.getId() + " to its parent _componentInstance with id : '"+parent.getId()+"' and path '"+
+                        getPathToComponent(parent)+"'at position :"+index+" in list of children. "+
+                        "This might be a problem due to a duplicate id in a previously added _componentInstance,"+
+                        "if this is the case, the problematic id might be one of : "+ printList(parentTag._childrenAdded));
+            }
+        }
+        addChildIdToParentTag(parentTag, id);
+        return _componentInstance;
+        
     }
 
     private UIComponent findComponent(UIComponent parent, String id)
