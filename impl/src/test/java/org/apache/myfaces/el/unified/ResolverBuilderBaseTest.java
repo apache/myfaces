@@ -182,10 +182,11 @@ public class ResolverBuilderBaseTest extends TestCase
 
         Object value = resolver.getValue(expectedContext, expectedBase, expectedProperty);
         assertNull(value);
-        assertTrue(expectedContext.isPropertyResolved());
-        assertEquals(2, calledResolvers.size());
+        assertFalse(expectedContext.isPropertyResolved());
+        assertEquals(3, calledResolvers.size());
         assertEquals("config", calledResolvers.get(0));
         assertEquals("variable", calledResolvers.get(1));
+        assertEquals("app", calledResolvers.get(2));
 
         runtimeConfig.setVariableResolver(null);
         resolver = new CompositeELResolver();

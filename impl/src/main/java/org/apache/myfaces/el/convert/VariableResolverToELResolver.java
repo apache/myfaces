@@ -26,6 +26,8 @@ import javax.faces.el.EvaluationException;
 import javax.faces.el.VariableResolver;
 
 import java.beans.FeatureDescriptor;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 
 /**
@@ -39,6 +41,15 @@ import java.util.Iterator;
 public class VariableResolverToELResolver extends ELResolver
 {
 
+    // holds a flag to check if this instance is already called in current thread 
+    private static final ThreadLocal<Collection<String>> propertyGuard = new ThreadLocal<Collection<String>>() {
+        @Override
+        protected Collection<String> initialValue()
+        {
+            return new HashSet<String>();
+        }
+    };
+    
     private VariableResolver variableResolver;
 
     /**
@@ -57,7 +68,7 @@ public class VariableResolverToELResolver extends ELResolver
             return null;
         if (property == null)
             throw new PropertyNotFoundException();
-        
+
         context.setPropertyResolved(true);
 
         if (!(property instanceof String))
@@ -65,15 +76,13 @@ public class VariableResolverToELResolver extends ELResolver
 
         String strProperty = (String) property;
 
-        // This differs from the spec slightly. I'm wondering if the spec is
-        // wrong because it is legal for the resolveVariable method to return
-        // null. In that case you would not want to setPropertyResolved(true).
+        Object result = null;
         try
         {
-            Object value = variableResolver.resolveVariable(facesContext(context), strProperty);
-            if (value != null)
-            {
-                return value;
+            // only call the resolver if we haven't done it in current stack
+            if(!propertyGuard.get().contains(strProperty)) {
+                propertyGuard.get().add(strProperty);
+                result = variableResolver.resolveVariable(facesContext(context), strProperty);
             }
         }
         catch (javax.faces.el.PropertyNotFoundException e)
@@ -91,8 +100,14 @@ public class VariableResolverToELResolver extends ELResolver
             context.setPropertyResolved(false);
             throw e;
         }
+        finally
+        {
+            propertyGuard.get().remove(strProperty);
+            // set property resolved to false in any case if result is null
+            context.setPropertyResolved(result != null);
+        }
 
-        return null;
+        return result;
     }
 
     // get the FacesContext from the ELContext
