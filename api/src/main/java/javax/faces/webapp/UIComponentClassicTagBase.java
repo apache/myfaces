@@ -535,12 +535,12 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
      * nested tags or not can just override this method to return
      * Tag.SOME_CONSTANT.
      *
-     * @return Tag.EVAL_BODY_INCLUDE
+     * @return BodyTag.EVAL_BODY_BUFFERED
      */
     protected int getDoStartValue()
             throws JspException
     {
-        return Tag.EVAL_BODY_INCLUDE;
+        return BodyTag.EVAL_BODY_BUFFERED;
     }
 
     /**
