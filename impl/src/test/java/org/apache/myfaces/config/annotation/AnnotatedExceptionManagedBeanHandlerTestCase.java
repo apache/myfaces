@@ -1,10 +1,8 @@
 package org.apache.myfaces.config.annotation;
 
-import org.apache.myfaces.config.ManagedBeanBuilder;
-import org.apache.myfaces.config.annotation.AnnotatedManagedBeanHandler;
-import org.apache.myfaces.config.impl.digester.elements.ManagedBean;
-
 import junit.framework.TestCase;
+
+import org.apache.myfaces.config.ManagedBeanBuilder;
 
 /**
  * @author Dennis Byrne

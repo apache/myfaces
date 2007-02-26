@@ -24,8 +24,6 @@ import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigDispenserImpl;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
 import org.apache.shale.test.base.AbstractJsfTestCase;
@@ -33,7 +31,6 @@ import org.apache.shale.test.base.AbstractJsfTestCase;
 public class FacesConfigValidatorTestCase extends AbstractJsfTestCase
 {
 
-    private Log log = LogFactory.getLog(FacesConfigValidatorTestCase.class);
     private FacesConfigDispenser dispenser;
     private FacesConfigUnmarshaller unmarshaller;
     

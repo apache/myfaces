@@ -15,13 +15,14 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import org.apache.shale.test.base.AbstractJsfTestCase;
-import org.apache.shale.test.mock.MockRenderKitFactory;
-import org.apache.shale.test.mock.MockResponseWriter;
+import java.io.StringWriter;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.html.HtmlMessages;
-import java.io.StringWriter;
+
+import org.apache.shale.test.base.AbstractJsfTestCase;
+import org.apache.shale.test.mock.MockRenderKitFactory;
+import org.apache.shale.test.mock.MockResponseWriter;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)

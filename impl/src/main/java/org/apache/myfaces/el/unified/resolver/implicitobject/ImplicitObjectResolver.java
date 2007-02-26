@@ -20,13 +20,12 @@ import java.beans.FeatureDescriptor;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ELResolver;
 import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
 
 /**
  * See JSF 1.2 spec sections 5.6.1.1 and 5.6.2.1

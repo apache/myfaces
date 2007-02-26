@@ -390,47 +390,6 @@ public class ManagedBeanBuilder
         }
     }
 
-    private String getSecondSegment(String expression, String firstSegment)
-    {
-        String tmp = expression.substring(firstSegment.length());
-
-        if (tmp.length() == 0) {
-            return null;
-        }
-        if (tmp.charAt(0) == '.') {
-            return getFirstSegment(tmp.substring(1));
-        }
-        // starts with [
-        tmp = tmp.substring(1).trim();
-        int index;
-
-        if (tmp.charAt(0) == '"') {
-            index = tmp.indexOf('"', 1);
-
-            if (index < 0) {
-                throw new ELException(tmp);
-            }
-            return tmp.substring(1, index);
-        }
-        if (tmp.charAt(0) == '\'') {
-            index = tmp.indexOf('\'', 1);
-
-            if (index < 0) {
-                throw new ELException(tmp);
-            }
-            return tmp.substring(1, index);
-        }
-
-        index = tmp.indexOf(']');
-
-        if (index < 0) {
-            throw new ELException(tmp);
-        }
-
-        return tmp.substring(1, index);
-    }
-
-
     private String[] extractExpressions(String expressionString)
     {
         String[] expressions = expressionString.split("\\#\\{");

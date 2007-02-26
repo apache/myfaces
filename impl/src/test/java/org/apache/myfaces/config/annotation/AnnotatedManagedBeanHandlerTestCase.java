@@ -3,8 +3,6 @@ package org.apache.myfaces.config.annotation;
 import junit.framework.TestCase;
 
 import org.apache.myfaces.config.ManagedBeanBuilder;
-import org.apache.myfaces.config.annotation.AnnotatedManagedBeanHandler;
-import org.apache.myfaces.config.impl.digester.elements.ManagedBean;
 
 /**
  * @author Dennis Byrne

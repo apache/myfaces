@@ -15,30 +15,13 @@
  */
 package javax.faces.webapp;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
-import javax.faces.context.ExternalContext;
 import javax.faces.el.ValueBinding;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
-
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.Tag;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
 
 /**
  * Base class for all JSP tags that represent a JSF UIComponent.
@@ -66,7 +49,6 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
     private String _rendered = null;
 
     private Boolean _suppressed = null;
-    private ResponseWriter _writer = null;
 
     public UIComponentTag()
     {

@@ -15,9 +15,6 @@
  */
 package org.apache.myfaces.application;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import javax.faces.FacesException;
 import javax.faces.application.Application;
 import javax.faces.application.NavigationHandler;
@@ -38,9 +35,8 @@ import javax.faces.event.ActionListener;
 public class ActionListenerImpl
     implements ActionListener
 {
-    private static final Log log = LogFactory.getLog(ActionListenerImpl.class);
 
-    public void processAction(ActionEvent actionEvent) throws AbortProcessingException
+	public void processAction(ActionEvent actionEvent) throws AbortProcessingException
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Application application = facesContext.getApplication();

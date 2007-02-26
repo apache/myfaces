@@ -31,8 +31,7 @@ public abstract class AbstractMyFacesListener {
 			AnnotatedManagedBeanHandler handler = 
 				new AnnotatedManagedBeanHandler(value, scope, name);
 
-			boolean threwUnChecked = handler.invokePreDestroy();
-			
+			handler.invokePreDestroy();
 		}
 		
 	}

@@ -12,8 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.config.impl.digester.elements.ListEntries;
 import org.apache.myfaces.config.impl.digester.elements.ManagedBean;
 import org.apache.myfaces.config.impl.digester.elements.ManagedProperty;
@@ -27,7 +25,6 @@ public abstract class AbstractManagedBeanBuilderTestCase extends AbstractJsfTest
 		super(name);
 	}
 
-	private static Log log = LogFactory.getLog(AbstractManagedBeanBuilderTestCase.class);
 	protected MangedBeanExample example;
 	
 	// managed property values

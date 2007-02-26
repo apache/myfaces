@@ -15,7 +15,6 @@
  */
 package javax.faces.webapp;
 
-import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;

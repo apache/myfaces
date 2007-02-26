@@ -9,7 +9,6 @@ import javax.faces.FacesException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.config.ManagedBeanBuilder;
-import org.apache.myfaces.config.element.ManagedBean;
 
 /**
  * @see JSF spec 1.2, section 5.4

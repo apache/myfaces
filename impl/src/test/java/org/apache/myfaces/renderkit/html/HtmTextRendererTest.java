@@ -1,16 +1,12 @@
 package org.apache.myfaces.renderkit.html;
 
-import org.apache.shale.test.base.AbstractJsfTestCase;
-import org.apache.shale.test.mock.MockResponseWriter;
-import org.apache.shale.test.mock.MockRenderKitFactory;
-
-import javax.faces.component.html.HtmlSelectOneRadio;
-import javax.faces.component.html.HtmlInputText;
-import javax.faces.component.UISelectItems;
-import javax.faces.model.SelectItem;
 import java.io.StringWriter;
-import java.util.List;
-import java.util.ArrayList;
+
+import javax.faces.component.html.HtmlInputText;
+
+import org.apache.shale.test.base.AbstractJsfTestCase;
+import org.apache.shale.test.mock.MockRenderKitFactory;
+import org.apache.shale.test.mock.MockResponseWriter;
 
 /**
  * @author Bruno Aranda (latest modification by $Author: baranda $)

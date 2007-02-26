@@ -34,8 +34,6 @@ public class UIForm
 
     private boolean _submitted;
     
-    private boolean prependId ;
-
     public boolean isSubmitted()
     {
         return _submitted;

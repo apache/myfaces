@@ -15,13 +15,13 @@
  */
 package org.apache.myfaces.context.servlet;
 
-import org.apache.myfaces.shared_impl.util.NullEnumeration;
+import java.util.Enumeration;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.Enumeration;
-import java.util.Map;
-import javax.portlet.PortletSession;
+
+import org.apache.myfaces.shared_impl.util.NullEnumeration;
 
 
 /**
