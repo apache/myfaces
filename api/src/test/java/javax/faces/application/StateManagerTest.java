@@ -16,16 +16,14 @@
 
 package javax.faces.application;
 
-import org.apache.shale.test.mock.MockStateManager;
-
-import org.easymock.classextension.EasyMock;
-import org.easymock.classextension.IMocksControl;
-
-
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import junit.framework.TestCase;
+
+import org.apache.shale.test.mock.MockStateManager;
+import org.easymock.MockControl;
+import org.easymock.classextension.MockClassControl;
 
 public class StateManagerTest extends TestCase {
 
@@ -61,15 +59,15 @@ public class StateManagerTest extends TestCase {
       * Test method for 'javax.faces.application.StateManager.isSavingStateInClient(FacesContext)'
       */
     public void testIsSavingStateInClientTrue() {
-        IMocksControl contextControl = EasyMock.createControl();
-        IMocksControl externalControl = EasyMock.createControl();
-        FacesContext context = contextControl.createMock(FacesContext.class);
-        ExternalContext external = externalControl.createMock(ExternalContext.class);
+        MockControl contextControl = MockClassControl.createControl(FacesContext.class);
+        MockControl externalControl = MockClassControl.createControl(ExternalContext.class);
+        FacesContext context = (FacesContext)contextControl.getMock();
+        ExternalContext external = (ExternalContext)externalControl.getMock();
         context.getExternalContext();
-        contextControl.andReturn(external);
+        contextControl.setReturnValue(external);
         contextControl.replay();
         external.getInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME);
-        externalControl.andReturn("client");
+        externalControl.setReturnValue("client");
         externalControl.replay();
 
         MockStateManager subject = new MockStateManager();
@@ -80,15 +78,15 @@ public class StateManagerTest extends TestCase {
       * Test method for 'javax.faces.application.StateManager.isSavingStateInClient(FacesContext)'
       */
     public void testIsSavingStateInClientFalse() {
-        IMocksControl contextControl = EasyMock.createControl();
-        IMocksControl externalControl = EasyMock.createControl();
-        FacesContext context = contextControl.createMock(FacesContext.class);
-        ExternalContext external = externalControl.createMock(ExternalContext.class);
+        MockControl contextControl = MockClassControl.createControl(FacesContext.class);
+        MockControl externalControl = MockClassControl.createControl(ExternalContext.class);
+        FacesContext context = (FacesContext)contextControl.getMock();
+        ExternalContext external = (ExternalContext)externalControl.getMock();
         context.getExternalContext();
-        contextControl.andReturn(external);
+        contextControl.setReturnValue(external);
         contextControl.replay();
         external.getInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME);
-        externalControl.andReturn("server");
+        externalControl.setReturnValue("server");
         externalControl.replay();
 
         MockStateManager subject = new MockStateManager();
@@ -101,18 +99,19 @@ public class StateManagerTest extends TestCase {
       * Test method for 'javax.faces.application.StateManager.isSavingStateInClient(FacesContext)'
       */
     public void testIsSavingStateInClientBogus() {
-        IMocksControl contextControl = EasyMock.createControl();
-        IMocksControl externalControl = EasyMock.createControl();
-        FacesContext context = contextControl.createMock(FacesContext.class);
-        ExternalContext external = externalControl.createMock(ExternalContext.class);
+        MockControl contextControl = MockClassControl.createControl(FacesContext.class);
+        MockControl externalControl = MockClassControl.createControl(ExternalContext.class);
+        FacesContext context = (FacesContext)contextControl.getMock();
+        ExternalContext external = (ExternalContext)externalControl.getMock();
         context.getExternalContext();
-        contextControl.andReturn(external);
+        contextControl.setReturnValue(external);
         context.getExternalContext();
-        contextControl.andReturn(external);
+        contextControl.setReturnValue(external);
         contextControl.replay();
         external.getInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME);
-        externalControl.andReturn("blorf");
+        externalControl.setReturnValue("blorf");
         external.log("Illegal state saving method 'blorf', default server state saving will be used");
+        externalControl.setVoidCallable();
         externalControl.replay();
 
         MockStateManager subject = new MockStateManager();
@@ -123,18 +122,19 @@ public class StateManagerTest extends TestCase {
       * Test method for 'javax.faces.application.StateManager.isSavingStateInClient(FacesContext)'
       */
     public void testIsSavingStateInClientNull() {
-        IMocksControl contextControl = EasyMock.createControl();
-        IMocksControl externalControl = EasyMock.createControl();
-        FacesContext context = contextControl.createMock(FacesContext.class);
-        ExternalContext external = externalControl.createMock(ExternalContext.class);
+        MockControl contextControl = MockClassControl.createControl(FacesContext.class);
+        MockControl externalControl = MockClassControl.createControl(ExternalContext.class);
+        FacesContext context = (FacesContext)contextControl.getMock();
+        ExternalContext external = (ExternalContext)externalControl.getMock();
         context.getExternalContext();
-        contextControl.andReturn(external);
+        contextControl.setReturnValue(external);
         context.getExternalContext();
-        contextControl.andReturn(external);
+        contextControl.setReturnValue(external);
         contextControl.replay();
         external.getInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME);
-        externalControl.andReturn(null);
+        externalControl.setReturnValue(null);
         external.log("No state saving method defined, assuming default server state saving");
+        externalControl.setVoidCallable();
         externalControl.replay();
 
         MockStateManager subject = new MockStateManager();
