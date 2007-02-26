@@ -18,12 +18,15 @@
  */
 package javax.faces.application;
 
-import org.apache.myfaces.ExceptionTestCase;
-
+import static org.apache.myfaces.Assert.assertException;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.NoOp;
 
+import org.apache.myfaces.TestRunner;
+
 import javax.el.ValueExpression;
+
+import junit.framework.TestCase;
 
 /**
  * Tests for {@link Application}
@@ -31,7 +34,7 @@ import javax.el.ValueExpression;
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ApplicationTest extends ExceptionTestCase
+public class ApplicationTest extends TestCase
 {
     private Application app;
 
@@ -41,12 +44,11 @@ public class ApplicationTest extends ExceptionTestCase
     }
 
     /**
-     * Test method for
-     * {@link javax.faces.application.Application#addELResolver(javax.el.ELResolver)}.
+     * Test method for {@link javax.faces.application.Application#addELResolver(javax.el.ELResolver)}.
      */
     public void testAddELResolver()
     {
-        assertException(UnsupportedOperationException.class, new Runnable()
+        assertException(UnsupportedOperationException.class, new TestRunner()
         {
             public void run()
             {
@@ -56,12 +58,11 @@ public class ApplicationTest extends ExceptionTestCase
     }
 
     /**
-     * Test method for
-     * {@link javax.faces.application.Application#getELResolver()}.
+     * Test method for {@link javax.faces.application.Application#getELResolver()}.
      */
     public void testGetELResolver()
     {
-        assertException(UnsupportedOperationException.class, new Runnable()
+        assertException(UnsupportedOperationException.class, new TestRunner()
         {
             public void run()
             {
@@ -76,7 +77,7 @@ public class ApplicationTest extends ExceptionTestCase
      */
     public void testGetResourceBundle()
     {
-        assertException(UnsupportedOperationException.class, new Runnable()
+        assertException(UnsupportedOperationException.class, new TestRunner()
         {
             public void run()
             {
@@ -91,7 +92,7 @@ public class ApplicationTest extends ExceptionTestCase
      */
     public void testCreateComponentValueExpressionFacesContextString()
     {
-        assertException(UnsupportedOperationException.class, new Runnable()
+        assertException(UnsupportedOperationException.class, new TestRunner()
         {
             public void run()
             {
@@ -101,12 +102,11 @@ public class ApplicationTest extends ExceptionTestCase
     }
 
     /**
-     * Test method for
-     * {@link javax.faces.application.Application#getExpressionFactory()}.
+     * Test method for {@link javax.faces.application.Application#getExpressionFactory()}.
      */
     public void testGetExpressionFactory()
     {
-        assertException(UnsupportedOperationException.class, new Runnable()
+        assertException(UnsupportedOperationException.class, new TestRunner()
         {
             public void run()
             {
@@ -116,12 +116,11 @@ public class ApplicationTest extends ExceptionTestCase
     }
 
     /**
-     * Test method for
-     * {@link javax.faces.application.Application#addELContextListener(javax.el.ELContextListener)}.
+     * Test method for {@link javax.faces.application.Application#addELContextListener(javax.el.ELContextListener)}.
      */
     public void testAddELContextListener()
     {
-        assertException(UnsupportedOperationException.class, new Runnable()
+        assertException(UnsupportedOperationException.class, new TestRunner()
         {
             public void run()
             {
@@ -131,12 +130,11 @@ public class ApplicationTest extends ExceptionTestCase
     }
 
     /**
-     * Test method for
-     * {@link javax.faces.application.Application#removeELContextListener(javax.el.ELContextListener)}.
+     * Test method for {@link javax.faces.application.Application#removeELContextListener(javax.el.ELContextListener)}.
      */
     public void testRemoveELContextListener()
     {
-        assertException(UnsupportedOperationException.class, new Runnable()
+        assertException(UnsupportedOperationException.class, new TestRunner()
         {
             public void run()
             {
@@ -146,12 +144,11 @@ public class ApplicationTest extends ExceptionTestCase
     }
 
     /**
-     * Test method for
-     * {@link javax.faces.application.Application#getELContextListeners()}.
+     * Test method for {@link javax.faces.application.Application#getELContextListeners()}.
      */
     public void testGetELContextListeners()
     {
-        assertException(UnsupportedOperationException.class, new Runnable()
+        assertException(UnsupportedOperationException.class, new TestRunner()
         {
             public void run()
             {
@@ -166,7 +163,7 @@ public class ApplicationTest extends ExceptionTestCase
      */
     public void testEvaluateExpressionGet()
     {
-        assertException(UnsupportedOperationException.class, new Runnable()
+        assertException(UnsupportedOperationException.class, new TestRunner()
         {
             public void run()
             {

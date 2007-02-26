@@ -18,37 +18,42 @@
  */
 package org.apache.myfaces;
 
-import junit.framework.TestCase;
-
 /**
+ * Provides various assert calls which can be used for tests.
+ * 
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public abstract class ExceptionTestCase extends TestCase
+public class Assert
 {
-
-    /**
-     * 
-     */
-    public ExceptionTestCase()
+    protected Assert()
     {
-        super();
     }
 
-    protected void assertException(Class<? extends Exception> expected,
-            Runnable testCase)
+    /**
+     * Asserts that the execution of the {@link TestRunner#run()} method will throw the <code>expected</code>
+     * exception
+     * 
+     * @param expected
+     *            the expected Exception
+     * @param testCase
+     *            the testcase to run
+     */
+    public static void assertException(Class<? extends Throwable> expected, TestRunner testCase)
     {
+        junit.framework.Assert.assertNotNull(expected);
+        junit.framework.Assert.assertNotNull(testCase);
         try
         {
             testCase.run();
-            fail(expected + " expected");
+            junit.framework.Assert.fail(expected + " expected");
         }
-        catch (Exception e)
+        catch (Throwable e)
         {
-            if (e.getClass() != expected)
+            if (!expected.isAssignableFrom(e.getClass()))
             {
-                fail("caught exception <" + e + "> does not match expected <"
-                        + expected + ">");
+                junit.framework.Assert.fail("caught exception <" + e.getClass() + "> does not match expected <"
+                        + expected + ">: " + e.getMessage());
             }
         }
     }
