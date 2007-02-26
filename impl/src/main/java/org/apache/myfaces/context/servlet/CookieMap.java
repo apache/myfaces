@@ -128,14 +128,9 @@ public class CookieMap extends AbstractAttributeMap
     protected Enumeration getAttributeNames()
     {
         Cookie[] cookies = _httpServletRequest.getCookies();
-        if (cookies == null)
-        {
-            return new CookieNameEnumeration(EMPTY_ARRAY);
-        }
-        else
-        {
-            return new CookieNameEnumeration(cookies);
-        }
+
+        return cookies == null ? new CookieNameEnumeration(EMPTY_ARRAY) : new CookieNameEnumeration(cookies);
+  
     }
 
     private static class CookieNameEnumeration implements Enumeration

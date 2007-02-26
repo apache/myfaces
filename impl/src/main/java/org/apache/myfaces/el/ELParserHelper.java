@@ -486,11 +486,10 @@ public class ELParserHelper
                 return _application.getPropertyResolver().getValue(base,
                     indexVal);
             }
-            else
-            {
-                return _application.getPropertyResolver().getValue(base,
+            
+            return _application.getPropertyResolver().getValue(base,
                     index.intValue());
-            }
+            
         }
     }
 
@@ -532,11 +531,10 @@ public class ELParserHelper
                 return _application.getPropertyResolver().getValue(base,
                     indexVal);
             }
-            else
-            {
-                return _application.getPropertyResolver().getValue(base,
+
+            return _application.getPropertyResolver().getValue(base,
                     index.intValue());
-            }
+            
         }
     }
 }

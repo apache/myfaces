@@ -170,10 +170,9 @@ public class JspViewHandlerImpl
         {
             return facesContext.getExternalContext().getRequestContextPath() + path;
         }
-        else
-        {
-            return path;
-        }
+
+        return path;
+        
     }
 
     public String getResourceURL(FacesContext facesContext, String path)
@@ -182,10 +181,9 @@ public class JspViewHandlerImpl
         {
             return facesContext.getExternalContext().getRequestContextPath() + path;
         }
-        else
-        {
-            return path;
-        }
+
+        return path;
+        
     }
 
     public void renderView(FacesContext facesContext, UIViewRoot viewToRender)
@@ -396,35 +394,24 @@ public class JspViewHandlerImpl
                 {
                     return viewId;
                 }
-                else
-                {
-                    int idx = viewId.lastIndexOf(".");
-                    if (idx >= 0)
-                    {
-                        return viewId.substring(0, idx) + urlpattern;
-                    }
-                    else
-                    {
-                        return viewId + urlpattern;
-                    }
+                
+                int idx = viewId.lastIndexOf(".");
 
-                }
+                return idx >= 0 ? viewId.substring(0, idx) + urlpattern : viewId + urlpattern;
+     
             }
-            else
+            
+            // prefix mapping
+            String urlpattern = servletMapping.getUrlPattern();
+            if (urlpattern.endsWith("/*"))
             {
-                // prefix mapping
-                String urlpattern = servletMapping.getUrlPattern();
-                if (urlpattern.endsWith("/*"))
-                {
-                    urlpattern = urlpattern.substring(0, urlpattern.length() - 2);
-                }
-                return urlpattern + viewId;
+                urlpattern = urlpattern.substring(0, urlpattern.length() - 2);
             }
+            return urlpattern + viewId;
+            
         }
-        else
-        {
-            return viewId;
-        }
+        
+        return viewId;
     }
 
     private static ServletMapping getServletMapping(ExternalContext externalContext)
@@ -478,11 +465,11 @@ public class JspViewHandlerImpl
         {
             return (ServletMapping) mappings.get(0);
         }
-        else
-        {
-            log.warn("no faces servlet mappings found");
-            return null;
-        }
+
+        if(log.isWarnEnabled())
+        	log.warn("no faces servlet mappings found");
+        return null;
+        
     }
 
     /**

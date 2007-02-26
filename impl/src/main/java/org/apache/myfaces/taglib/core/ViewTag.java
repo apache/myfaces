@@ -174,12 +174,10 @@ public class ViewTag
                                  "Locale or String class expected. Expression: " + _locale
                                  + ". Return class: " + localeValue.getClass().getName());
                      }
-                     else
-                     {
-                         throw new IllegalArgumentException(
+
+                     throw new IllegalArgumentException(
                                  "Locale or String class expected. Expression: " + _locale
                                  + ". Return value null");
-                     }
                 }
             }
             viewRoot.setLocale(locale);
@@ -219,10 +217,9 @@ public class ViewTag
                 throw new FacesException("Invalid method expression for attribute 'beforePhase' in the view tag: "
                         +_beforePhase.getExpressionString());
             }
-            else
-            {
-                viewRoot.setBeforePhaseListener(_beforePhase);
-            }
+            
+            viewRoot.setBeforePhaseListener(_beforePhase);
+            
         }
 
         // afterPhase
@@ -233,10 +230,9 @@ public class ViewTag
                 throw new FacesException("Invalid method expression for attribute 'beforePhase' in the view tag: "
                         +_afterPhase.getExpressionString());
             }
-            else
-            {
-                viewRoot.setAfterPhaseListener(_afterPhase);
-            }
+            
+            viewRoot.setAfterPhaseListener(_afterPhase);
+            
         }
     }
 }

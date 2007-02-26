@@ -224,11 +224,8 @@ public class ManagedBeanResolver extends ELResolver {
     
     private ExternalContext externalContext(ELContext context) {
         FacesContext facesContext = facesContext(context);
-        if (facesContext != null) {
-            return facesContext.getExternalContext();
-        } else {
-            return null;
-        }
+
+        return facesContext != null ? facesContext.getExternalContext() : null;
     }
 
     public Class<?> getType(ELContext context, Object base, Object property) 

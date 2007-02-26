@@ -421,10 +421,9 @@ public class ServletExternalContextImpl
             {
                 throw new FacesException(e.getMessage(), e);
             }
-            else
-            {
-                throw new FacesException(e);
-            }
+
+            throw new FacesException(e);
+            
         }
     }
 

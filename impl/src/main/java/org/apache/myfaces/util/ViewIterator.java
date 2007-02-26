@@ -95,10 +95,9 @@ public class ViewIterator
                         _next = (UIComponent)currentSiblings.next();
                         break;
                     }
-                    else
-                    {
-                        _stack.pop();
-                    }
+                    
+                    _stack.pop();
+                    
                 }
             }
         }

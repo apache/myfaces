@@ -790,14 +790,8 @@ public class ApplicationImpl extends Application
         // target class,
         // recursively working up the inheritance hierarchy.
         Class superClazz = targetClass.getSuperclass();
-        if (superClazz != null)
-        {
-            return internalCreateConverter(superClazz);
-        }
-        else
-        {
-            return null;
-        }
+
+        return superClazz != null ? internalCreateConverter(superClazz) : null;
 
     }
 

@@ -104,10 +104,9 @@ extends HtmlRenderer
         {
             return ((HtmlOutputLabel)component).getFor();
         }
-        else
-        {
-            return (String)component.getAttributes().get(JSFAttr.FOR_ATTR);
-        }
+        
+        return (String) component.getAttributes().get(JSFAttr.FOR_ATTR);
+        
     }
 
     protected String getClientId(FacesContext facesContext,

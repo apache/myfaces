@@ -65,10 +65,9 @@ public class ActionListenerImpl
                 {
                     throw (AbortProcessingException)cause;
                 }
-                else
-                {
-                    throw new FacesException("Error calling action method of component with id " + actionEvent.getComponent().getClientId(facesContext), e);
-                }
+   
+                throw new FacesException("Error calling action method of component with id " + actionEvent.getComponent().getClientId(facesContext), e);
+                
             }
             catch (RuntimeException e)
             {

@@ -376,18 +376,17 @@ public class ManagedBeanBuilder
         int indexBracket = expression.indexOf('[');
 
         if (indexBracket < 0) {
-                if (indexDot < 0) {
-                    return expression;
-                } else {
-                    return expression.substring(0, indexDot);
-                }
-        } else {
-            if (indexDot < 0) {
-                return expression.substring(0, indexBracket);
-            } else {
-                return expression.substring(0, Math.min(indexDot, indexBracket));
-            }
+             
+        	return indexDot < 0 ? expression : expression.substring(0, indexDot);
+                
+        } 
+        
+        if (indexDot < 0) {
+            return expression.substring(0, indexBracket);
         }
+        
+        return expression.substring(0, Math.min(indexDot, indexBracket));
+        
     }
 
     private String[] extractExpressions(String expressionString)

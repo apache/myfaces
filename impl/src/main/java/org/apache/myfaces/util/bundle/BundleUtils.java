@@ -65,10 +65,9 @@ public class BundleUtils
                 return key;
             }
         }
-        else
-        {
-            return key;
-        }
+        
+        return key;
+        
     }
 
 }

@@ -129,9 +129,9 @@ public class ResourceBundleResolver extends ELResolver {
         if (facesContext != null) {
             Application application = facesContext.getApplication();
             return application.getResourceBundle(facesContext, property);
-        } else {
-            return null;
         }
+        
+        return null;
     }
     
 }

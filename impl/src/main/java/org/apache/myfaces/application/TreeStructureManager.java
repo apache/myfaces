@@ -98,10 +98,10 @@ public class TreeStructureManager
         {
             return (UIViewRoot)internalRestoreTreeStructure((TreeStructComponent)treeStructRoot);
         }
-        else
-        {
-            throw new IllegalArgumentException("TreeStructure of type " + treeStructRoot.getClass().getName() + " is not supported.");
-        }
+        
+        
+        throw new IllegalArgumentException("TreeStructure of type " + treeStructRoot.getClass().getName() + " is not supported.");
+        
     }
 
     private UIComponent internalRestoreTreeStructure(TreeStructComponent treeStructComp)

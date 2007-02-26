@@ -160,9 +160,9 @@ public class ScopedAttributeResolver extends ELResolver {
         FacesContext facesContext = facesContext(context);
         if (facesContext != null) {
             return facesContext(context).getExternalContext();
-        } else {
-            return null;
         }
+        
+        return null;
     }
     
 }

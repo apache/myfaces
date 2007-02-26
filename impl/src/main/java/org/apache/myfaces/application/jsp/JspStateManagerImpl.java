@@ -276,7 +276,7 @@ public class JspStateManagerImpl
             }
 
             TreeStructureManager tsm = new TreeStructureManager();
-            uiViewRoot = tsm.restoreTreeStructure((TreeStructureManager.TreeStructComponent)serializedView.getStructure());
+            uiViewRoot = tsm.restoreTreeStructure(serializedView.getStructure());
             if (log.isTraceEnabled()) log.trace("Tree structure restored from server session");
         }
 
@@ -650,11 +650,13 @@ public class JspStateManagerImpl
                 return null;
             }
         }
-        else
-        {
-            if (log.isTraceEnabled()) log.trace("Exiting serializeView - do not serialize state in session.");
-            return serializedView;
-        }
+        
+        
+        if (log.isTraceEnabled()) 
+        	log.trace("Exiting serializeView - do not serialize state in session.");
+        
+        return serializedView;
+        
     }
 
     /**

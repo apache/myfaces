@@ -97,18 +97,18 @@ public class DigesterFacesConfigDispenserImpl implements
             Application application = (Application) iterator.next();
             if (!application.getDefaultRenderkitId().isEmpty())
             {
-                defaultRenderKitId = (String) application
+                defaultRenderKitId = application
                         .getDefaultRenderkitId().get(
                                 application.getDefaultRenderkitId().size() - 1);
             }
             if (!application.getMessageBundle().isEmpty())
             {
-                messageBundle = (String) application.getMessageBundle().get(
+                messageBundle = application.getMessageBundle().get(
                         application.getMessageBundle().size() - 1);
             }
             if (!application.getLocaleConfig().isEmpty())
             {
-                localeConfig = (LocaleConfig) application.getLocaleConfig()
+                localeConfig = application.getLocaleConfig()
                         .get(application.getLocaleConfig().size() - 1);
             }
             actionListeners.addAll(application.getActionListener());
@@ -351,7 +351,7 @@ public class DigesterFacesConfigDispenserImpl implements
      */
     public String getComponentClass(String componentType)
     {
-        return (String) components.get(componentType);
+        return components.get(componentType);
     }
 
     /**
@@ -409,7 +409,7 @@ public class DigesterFacesConfigDispenserImpl implements
      */
     public String getValidatorClass(String validatorId)
     {
-        return (String) validators.get(validatorId);
+        return validators.get(validatorId);
     }
 
     /**

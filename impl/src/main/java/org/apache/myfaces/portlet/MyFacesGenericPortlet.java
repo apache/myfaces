@@ -350,7 +350,7 @@ public class MyFacesGenericPortlet extends GenericPortlet
     protected ReleaseableExternalContext makeExternalContext(PortletRequest request,
                                                              PortletResponse response)
     {
-        return (ReleaseableExternalContext)new PortletExternalContextImpl(portletContext, request, response);
+        return new PortletExternalContextImpl(portletContext, request, response);
     }
 
     protected boolean sessionTimedOut(PortletRequest request)
