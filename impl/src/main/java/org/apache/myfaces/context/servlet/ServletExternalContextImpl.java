@@ -17,7 +17,6 @@ package org.apache.myfaces.context.servlet;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.Principal;
@@ -28,7 +27,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.faces.FacesException;
-import javax.faces.application.ViewHandler;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.RequestDispatcher;
@@ -38,7 +36,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -58,8 +55,6 @@ public class ServletExternalContextImpl
     extends ExternalContext implements ReleaseableExternalContext
 {
 
-    private static final Log log = LogFactory.getLog(ServletExternalContextImpl.class);
-
     private static final String INIT_PARAMETER_MAP_ATTRIBUTE = InitParameterMap.class.getName();
 
     private ServletContext _servletContext;
@@ -74,7 +69,7 @@ public class ServletExternalContextImpl
     private Map _requestHeaderValuesMap;
     private Map _requestCookieMap;
     private Map _initParameterMap;
-    private boolean _isHttpServletRequest;
+    private HttpServletRequest _httpServletRequest;
     private String _requestServletPath;
     private String _requestPathInfo;
     
@@ -94,9 +89,9 @@ public class ServletExternalContextImpl
         _requestHeaderValuesMap = null;
         _requestCookieMap = null;
         _initParameterMap = null;
-        _isHttpServletRequest = (servletRequest != null &&
-                                 servletRequest instanceof HttpServletRequest);
-        if (_isHttpServletRequest)
+        _httpServletRequest = isHttpServletRequest(servletRequest) ? (HttpServletRequest)servletRequest : null;
+        
+        if (_httpServletRequest != null)
         {
             //HACK: MultipartWrapper scrambles the servletPath for some reason in Tomcat 4.1.29 embedded in JBoss 3.2.3!?
             // (this was reported by frederic.auge [frederic.auge@laposte.net])
@@ -104,61 +99,14 @@ public class ServletExternalContextImpl
 
             _requestServletPath = httpServletRequest.getServletPath();
             _requestPathInfo = httpServletRequest.getPathInfo();
-
-            String contentType = httpServletRequest.getHeader("Content-Type");
-
-            String characterEncoding = lookupCharacterEncoding(contentType);
-
-            if (characterEncoding == null) {
-                HttpSession session = httpServletRequest.getSession(false);
-
-                if (session != null) {
-                    characterEncoding = (String) session.getAttribute(ViewHandler.CHARACTER_ENCODING_KEY);
-                }
-                if (characterEncoding != null) {
-                    try {
-                      httpServletRequest.setCharacterEncoding(characterEncoding);
-                    } catch (UnsupportedEncodingException e) {
-                      if (log.isWarnEnabled())
-                        log.warn("Failed to set character encoding " + e);
-                    }
-                }
-            }
         }
     }
 
 
-    private String lookupCharacterEncoding(String contentType)
+    private boolean isHttpServletRequest(ServletRequest servletRequest)
     {
-        String characterEncoding = null;
-
-        if (contentType != null)
-        {
-            int charsetFind = contentType.indexOf("charset=");
-            if (charsetFind != -1)
-            {
-                if (charsetFind == 0)
-                {
-                    //charset at beginning of Content-Type, curious
-                    characterEncoding = contentType.substring(8);
-                }
-                else
-                {
-                    char charBefore = contentType.charAt(charsetFind - 1);
-                    if (charBefore == ';' || Character.isWhitespace(charBefore))
-                    {
-                        //Correct charset after mime type
-                        characterEncoding = contentType.substring(charsetFind + 8);
-                    }
-                }
-                if (log.isDebugEnabled()) log.debug("Incoming request has Content-Type header with character encoding " + characterEncoding);
-            }
-            else
-            {
-                if (log.isDebugEnabled()) log.debug("Incoming request has Content-Type header without character encoding: " + contentType);
-            }
-        }
-        return characterEncoding;
+        return (servletRequest != null &&
+                                 servletRequest instanceof HttpServletRequest);
     }
 
 
@@ -176,17 +124,16 @@ public class ServletExternalContextImpl
         _requestHeaderValuesMap = null;
         _requestCookieMap = null;
         _initParameterMap = null;
+        _httpServletRequest = null;
     }
 
 
     public Object getSession(boolean create)
     {
-        if (!_isHttpServletRequest)
-        {
-            throw new IllegalArgumentException("Only HttpServletRequest supported");
-        }
-        return ((HttpServletRequest)_servletRequest).getSession(create);
+        checkHttpServletRequest();
+        return _httpServletRequest.getSession(create);
     }
+
 
     public Object getContext()
     {
@@ -221,11 +168,8 @@ public class ServletExternalContextImpl
     {
         if (_sessionMap == null)
         {
-            if (!_isHttpServletRequest)
-            {
-                throw new IllegalArgumentException("Only HttpServletRequest supported");
-            }
-            _sessionMap = new SessionMap((HttpServletRequest) _servletRequest);
+            checkHttpServletRequest();
+            _sessionMap = new SessionMap(_httpServletRequest);
         }
         return _sessionMap;
     }
@@ -281,11 +225,8 @@ public class ServletExternalContextImpl
     {
         if (_requestHeaderMap == null)
         {
-            if (!_isHttpServletRequest)
-            {
-                throw new IllegalArgumentException("Only HttpServletRequest supported");
-            }
-            _requestHeaderMap = new RequestHeaderMap((HttpServletRequest)_servletRequest);
+            checkHttpServletRequest();
+            _requestHeaderMap = new RequestHeaderMap(_httpServletRequest);
         }
         return _requestHeaderMap;
     }
@@ -294,24 +235,18 @@ public class ServletExternalContextImpl
     {
         if (_requestHeaderValuesMap == null)
         {
-            if (!_isHttpServletRequest)
-            {
-                throw new IllegalArgumentException("Only HttpServletRequest supported");
-            }
-            _requestHeaderValuesMap = new RequestHeaderValuesMap((HttpServletRequest)_servletRequest);
+            checkHttpServletRequest();
+            _requestHeaderValuesMap = new RequestHeaderValuesMap(_httpServletRequest);
         }
         return _requestHeaderValuesMap;
     }
 
-    public Map getRequestCookieMap()
+    public Map<String, Object> getRequestCookieMap()
     {
         if (_requestCookieMap == null)
         {
-            if (!_isHttpServletRequest)
-            {
-                throw new IllegalArgumentException("Only HttpServletRequest supported");
-            }
-            _requestCookieMap = new CookieMap((HttpServletRequest)_servletRequest);
+            checkHttpServletRequest();
+            _requestCookieMap = new CookieMap(_httpServletRequest);
         }
         return _requestCookieMap;
     }
@@ -323,11 +258,8 @@ public class ServletExternalContextImpl
 
     public String getRequestPathInfo()
     {
-        if (!_isHttpServletRequest)
-        {
-            throw new IllegalArgumentException("Only HttpServletRequest supported");
-        }
-        //return ((HttpServletRequest)_servletRequest).getPathInfo();
+        checkHttpServletRequest();
+        //return (_httpServletRequest).getPathInfo();
         //HACK: see constructor
         return _requestPathInfo;
     }
@@ -338,11 +270,8 @@ public class ServletExternalContextImpl
     
     public String getRequestContextPath()
     {
-        if (!_isHttpServletRequest)
-        {
-            throw new IllegalArgumentException("Only HttpServletRequest supported");
-        }
-        return ((HttpServletRequest)_servletRequest).getContextPath();
+        checkHttpServletRequest();
+        return _httpServletRequest.getContextPath();
     }
 
     public String getInitParameter(String s)
@@ -364,7 +293,8 @@ public class ServletExternalContextImpl
         return _initParameterMap;
     }
 
-    public Set getResourcePaths(String s)
+    @SuppressWarnings("unchecked")
+    public Set<String> getResourcePaths(String s)
     {
         return _servletContext.getResourcePaths(s);
     }
@@ -376,19 +306,13 @@ public class ServletExternalContextImpl
 
     public String encodeActionURL(String s)
     {
-        if (!_isHttpServletRequest)
-        {
-            throw new IllegalArgumentException("Only HttpServletRequest supported");
-        }
+        checkHttpServletRequest();
         return ((HttpServletResponse)_servletResponse).encodeURL(s);
     }
 
     public String encodeResourceURL(String s)
     {
-        if (!_isHttpServletRequest)
-        {
-            throw new IllegalArgumentException("Only HttpServletRequest supported");
-        }
+        checkHttpServletRequest();
         return ((HttpServletResponse)_servletResponse).encodeURL(s);
     }
 
@@ -429,49 +353,34 @@ public class ServletExternalContextImpl
 
     public String getRequestServletPath()
     {
-        if (!_isHttpServletRequest)
-        {
-            throw new IllegalArgumentException("Only HttpServletRequest supported");
-        }
-        //return ((HttpServletRequest)_servletRequest).getServletPath();
+        checkHttpServletRequest();
+        //return (_httpServletRequest).getServletPath();
         //HACK: see constructor
         return _requestServletPath;
     }
 
     public String getAuthType()
     {
-        if (!_isHttpServletRequest)
-        {
-            throw new IllegalArgumentException("Only HttpServletRequest supported");
-        }
-        return ((HttpServletRequest)_servletRequest).getAuthType();
+        checkHttpServletRequest();
+        return _httpServletRequest.getAuthType();
     }
 
     public String getRemoteUser()
     {
-        if (!_isHttpServletRequest)
-        {
-            throw new IllegalArgumentException("Only HttpServletRequest supported");
-        }
-        return ((HttpServletRequest)_servletRequest).getRemoteUser();
+        checkHttpServletRequest();
+        return _httpServletRequest.getRemoteUser();
     }
 
     public boolean isUserInRole(String role)
     {
-        if (!_isHttpServletRequest)
-        {
-            throw new IllegalArgumentException("Only HttpServletRequest supported");
-        }
-        return ((HttpServletRequest)_servletRequest).isUserInRole(role);
+        checkHttpServletRequest();
+        return _httpServletRequest.isUserInRole(role);
     }
 
     public Principal getUserPrincipal()
     {
-        if (!_isHttpServletRequest)
-        {
-            throw new IllegalArgumentException("Only HttpServletRequest supported");
-        }
-        return ((HttpServletRequest)_servletRequest).getUserPrincipal();
+        checkHttpServletRequest();
+        return _httpServletRequest.getUserPrincipal();
     }
 
     public void log(String message) {
@@ -495,13 +404,11 @@ public class ServletExternalContextImpl
         }
     }
 
-    public Iterator getRequestLocales()
+    @SuppressWarnings("unchecked")
+    public Iterator<Locale> getRequestLocales()
     {
-        if (!_isHttpServletRequest)
-        {
-            throw new IllegalArgumentException("Only HttpServletRequest supported");
-        }
-        return new EnumerationIterator(((HttpServletRequest)_servletRequest).getLocales());
+        checkHttpServletRequest();
+        return new EnumerationIterator(_httpServletRequest.getLocales());
     }
 
     public URL getResource(String s) throws MalformedURLException
@@ -515,7 +422,8 @@ public class ServletExternalContextImpl
      */
     public void setRequest(java.lang.Object request)
     {
-      this._servletRequest = (ServletRequest) request;
+        this._servletRequest = (ServletRequest) request;
+        this._httpServletRequest = isHttpServletRequest(_servletRequest) ? (HttpServletRequest) _servletRequest : null;
     }
     
     /**
@@ -528,6 +436,24 @@ public class ServletExternalContextImpl
       
         this._servletRequest.setCharacterEncoding(encoding);
       
+    }
+    
+    /**
+     * @since JSF 1.2
+     */
+    @Override
+    public String getRequestCharacterEncoding()
+    {
+        return _servletRequest.getCharacterEncoding();
+    }
+    
+    /**
+     * @since JSF 1.2
+     */
+    @Override
+    public String getResponseCharacterEncoding()
+    {
+        return _servletResponse.getCharacterEncoding();
     }
     
     /**
@@ -545,7 +471,14 @@ public class ServletExternalContextImpl
      */
     public void setResponseCharacterEncoding(java.lang.String encoding)
     {
-      this._servletResponse.setCharacterEncoding(encoding);
+        this._servletResponse.setCharacterEncoding(encoding);
     }
-    
+
+    private void checkHttpServletRequest()
+    {
+        if (_httpServletRequest == null)
+        {
+            throw new UnsupportedOperationException("Only HttpServletRequest supported");
+        }
+    }
 }

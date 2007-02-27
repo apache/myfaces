@@ -55,10 +55,8 @@ import org.apache.myfaces.util.EnumerationIterator;
  */
 public class PortletExternalContextImpl extends ExternalContext implements ReleaseableExternalContext {
 
-    private static final Log log = LogFactory.getLog(PortletExternalContextImpl.class);
-
     private static final String INIT_PARAMETER_MAP_ATTRIBUTE = InitParameterMap.class.getName();
-    private static final Map EMPTY_UNMODIFIABLE_MAP = Collections.unmodifiableMap(new HashMap(0));
+    private static final Map EMPTY_UNMODIFIABLE_MAP = Collections.EMPTY_MAP;
 
     PortletContext _portletContext;
     PortletRequest _portletRequest;
@@ -72,7 +70,7 @@ public class PortletExternalContextImpl extends ExternalContext implements Relea
     private Map _requestHeaderMap;
     private Map _requestHeaderValuesMap;
     private Map _initParameterMap;
-    private boolean _isActionRequest;
+    private ActionRequest _actionRequest;
 
     /** Creates a new instance of PortletFacesContextImpl */
     public PortletExternalContextImpl(PortletContext portletContext,
@@ -82,75 +80,12 @@ public class PortletExternalContextImpl extends ExternalContext implements Relea
         _portletContext = portletContext;
         _portletRequest = portletRequest;
         _portletResponse = portletResponse;
-        _isActionRequest = this.isActionRequest(portletRequest);
-
-        if (_isActionRequest)
-        {
-            ActionRequest actionRequest = (ActionRequest)portletRequest;
-
-            // try to set character encoding as described in section 2.5.2.2 of JSF 1.1 spec
-            try
-            {
-                String contentType = portletRequest.getProperty("Content-Type");
-
-                String characterEncoding = lookupCharacterEncoding(contentType);
-
-                if (characterEncoding == null) {
-                    PortletSession session = portletRequest.getPortletSession(false);
-
-                    if (session != null) {
-                        characterEncoding = (String) session.getAttribute(ViewHandler.CHARACTER_ENCODING_KEY,
-                                                                          PortletSession.PORTLET_SCOPE);
-                    }
-
-                    if (characterEncoding != null) {
-                        actionRequest.setCharacterEncoding(characterEncoding);
-                    }
-                }
-            } catch (Exception e)
-            {
-                if (log.isWarnEnabled())
-                    log.warn("Failed to set character encoding " + e);
-            }
-        }
-    }
-
-    private String lookupCharacterEncoding(String contentType)
-    {
-        String characterEncoding = null;
-
-        if (contentType != null)
-        {
-            int charsetFind = contentType.indexOf("charset=");
-            if (charsetFind != -1)
-            {
-                if (charsetFind == 0)
-                {
-                    //charset at beginning of Content-Type, curious
-                    characterEncoding = contentType.substring(8);
-                }
-                else
-                {
-                    char charBefore = contentType.charAt(charsetFind - 1);
-                    if (charBefore == ';' || Character.isWhitespace(charBefore))
-                    {
-                        //Correct charset after mime type
-                        characterEncoding = contentType.substring(charsetFind + 8);
-                    }
-                }
-                if (log.isDebugEnabled()) log.debug("Incoming request has Content-Type header with character encoding " + characterEncoding);
-            }
-            else
-            {
-                if (log.isDebugEnabled()) log.debug("Incoming request has Content-Type header without character encoding: " + contentType);
-            }
-        }
-        return characterEncoding;
+        _actionRequest =  isActionRequest(portletRequest) ? (ActionRequest)portletRequest : null;
     }
 
     public void dispatch(String path) throws IOException
     {
-        if (_isActionRequest)
+        if (_actionRequest != null)
         { // dispatch only allowed for RenderRequest
             String msg = "Can not call dispatch() during a portlet ActionRequest";
             throw new IllegalStateException(msg);
@@ -169,9 +104,7 @@ public class PortletExternalContextImpl extends ExternalContext implements Relea
             {
                 throw new FacesException(e.getMessage(), e);
             }
-
-            throw new FacesException(e);
-            
+            throw new FacesException(e);            
         }
     }
 
@@ -181,7 +114,7 @@ public class PortletExternalContextImpl extends ExternalContext implements Relea
     }
 
     public String encodeNamespace(String name) {
-        if (_isActionRequest)
+        if (_actionRequest != null)
         { // encodeNamespace only allowed for RenderRequest
             String msg = "Can not call encodeNamespace() during a portlet ActionRequest";
             throw new IllegalStateException(msg);
@@ -395,6 +328,7 @@ public class PortletExternalContextImpl extends ExternalContext implements Relea
         _requestHeaderMap = null;
         _requestHeaderValuesMap = null;
         _initParameterMap = null;
+        _actionRequest = null;
     }
     
     private boolean isActionRequest(PortletRequest portletRequest)
@@ -409,6 +343,7 @@ public class PortletExternalContextImpl extends ExternalContext implements Relea
     public void setRequest(java.lang.Object request)
     {
       this._portletRequest = (PortletRequest) request;
+      this._actionRequest = this.isActionRequest(_portletRequest) ?  (ActionRequest) request : null;
     }
     
     /**
@@ -419,9 +354,25 @@ public class PortletExternalContextImpl extends ExternalContext implements Relea
     public void setRequestCharacterEncoding(java.lang.String encoding)
         throws java.io.UnsupportedEncodingException{
       
-        if(isActionRequest(this._portletRequest))
+        if(_actionRequest != null)
             ((ActionRequest) this._portletRequest).setCharacterEncoding(encoding);
+        throw new UnsupportedOperationException("Can not set request character encoding to value '" + encoding
+                + "'. Request is not an action request");
       
+    }
+    
+    @Override
+    public String getRequestCharacterEncoding()
+    {
+        if(_actionRequest != null)
+            return _actionRequest.getCharacterEncoding();
+        return null;
+    }
+    
+    @Override
+    public String getResponseCharacterEncoding()
+    {
+        return null;
     }
     
     /**
