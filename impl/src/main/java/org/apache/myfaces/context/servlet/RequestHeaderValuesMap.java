@@ -23,55 +23,52 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
  * HttpServletRequest header values (multi-value headers) as Map of String[].
  * 
  * @author Anton Koinov (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class RequestHeaderValuesMap extends AbstractAttributeMap
+public class RequestHeaderValuesMap extends AbstractAttributeMap<String[]>
 {
     private final HttpServletRequest _httpServletRequest;
-    private final Map<String, Object>                _valueCache = new HashMap<String, Object>();
+    private final Map<String, String[]> _valueCache = new HashMap<String, String[]>();
 
     RequestHeaderValuesMap(HttpServletRequest httpServletRequest)
     {
         _httpServletRequest = httpServletRequest;
     }
 
-    protected Object getAttribute(String key)
+    protected String[] getAttribute(String key)
     {
-        Object ret = _valueCache.get(key);
+        String[] ret = _valueCache.get(key);
         if (ret == null)
         {
-            _valueCache.put(key, ret = toArray(_httpServletRequest
-                .getHeaders(key)));
+            _valueCache.put(key, ret = toArray(_httpServletRequest.getHeaders(key)));
         }
 
         return ret;
     }
 
-    protected void setAttribute(String key, Object value)
+    protected void setAttribute(String key, String[] value)
     {
-        throw new UnsupportedOperationException(
-            "Cannot set HttpServletRequest HeaderValues");
+        throw new UnsupportedOperationException("Cannot set HttpServletRequest HeaderValues");
     }
 
     protected void removeAttribute(String key)
     {
-        throw new UnsupportedOperationException(
-            "Cannot remove HttpServletRequest HeaderValues");
+        throw new UnsupportedOperationException("Cannot remove HttpServletRequest HeaderValues");
     }
 
-    protected Enumeration getAttributeNames()
+    @SuppressWarnings("unchecked")
+    protected Enumeration<String> getAttributeNames()
     {
         return _httpServletRequest.getHeaderNames();
     }
 
-    private String[] toArray(Enumeration e)
+    private String[] toArray(Enumeration<String> e)
     {
-        List ret = new ArrayList();
+        List<String> ret = new ArrayList<String>();
 
         while (e.hasMoreElements())
         {

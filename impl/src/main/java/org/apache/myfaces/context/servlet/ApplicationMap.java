@@ -27,7 +27,7 @@ import javax.servlet.ServletContext;
  * @author Anton Koinov (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ApplicationMap extends AbstractAttributeMap
+public class ApplicationMap extends AbstractAttributeMap<Object>
 {
     final ServletContext _servletContext;
 
@@ -51,7 +51,8 @@ public class ApplicationMap extends AbstractAttributeMap
         _servletContext.removeAttribute(key);
     }
 
-    protected Enumeration getAttributeNames()
+    @SuppressWarnings("unchecked")
+    protected Enumeration<String> getAttributeNames()
     {
         return _servletContext.getAttributeNames();
     }

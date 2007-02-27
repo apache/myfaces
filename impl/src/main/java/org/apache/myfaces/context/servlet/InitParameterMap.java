@@ -27,7 +27,7 @@ import javax.servlet.ServletContext;
  * @author Anton Koinov (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class InitParameterMap extends AbstractAttributeMap
+public class InitParameterMap extends AbstractAttributeMap<String>
 {
     final ServletContext _servletContext;
 
@@ -36,12 +36,12 @@ public class InitParameterMap extends AbstractAttributeMap
         _servletContext = servletContext;
     }
 
-    protected Object getAttribute(String key)
+    protected String getAttribute(String key)
     {
         return _servletContext.getInitParameter(key);
     }
 
-    protected void setAttribute(String key, Object value)
+    protected void setAttribute(String key, String value)
     {
         throw new UnsupportedOperationException(
             "Cannot set ServletContext InitParameter");
@@ -53,7 +53,8 @@ public class InitParameterMap extends AbstractAttributeMap
             "Cannot remove ServletContext InitParameter");
     }
 
-    protected Enumeration getAttributeNames()
+    @SuppressWarnings("unchecked")
+    protected Enumeration<String> getAttributeNames()
     {
         return _servletContext.getInitParameterNames();
     }

@@ -26,24 +26,22 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-
 /**
  * Helper Map implementation for use with different Attribute Maps.
- *
+ * 
  * @author Anton Koinov (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public abstract class AbstractAttributeMap
-    extends AbstractMap
+public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
 {
-    private Set              _keySet;
-    private Collection       _values;
-    private Set              _entrySet;
+    private Set<String> _keySet;
+    private Collection<V> _values;
+    private Set<Entry<String, V>> _entrySet;
 
     public void clear()
     {
-        List names = new ArrayList();
-        for (Enumeration e = getAttributeNames(); e.hasMoreElements();)
+        List<String> names = new ArrayList<String>();
+        for (Enumeration<String> e = getAttributeNames(); e.hasMoreElements();)
         {
             names.add(e.nextElement());
         }
@@ -66,9 +64,9 @@ public abstract class AbstractAttributeMap
             return false;
         }
 
-        for (Enumeration e = getAttributeNames(); e.hasMoreElements();)
+        for (Enumeration<String> e = getAttributeNames(); e.hasMoreElements();)
         {
-            Object value = getAttribute((String) e.nextElement());
+            Object value = getAttribute(e.nextElement());
             if (findValue.equals(value))
             {
                 return true;
@@ -78,12 +76,13 @@ public abstract class AbstractAttributeMap
         return false;
     }
 
-    public Set entrySet()
+    @Override
+    public Set<Entry<String, V>> entrySet()
     {
         return (_entrySet != null) ? _entrySet : (_entrySet = new EntrySet());
     }
 
-    public Object get(Object key)
+    public V get(Object key)
     {
         return getAttribute(key.toString());
     }
@@ -93,36 +92,37 @@ public abstract class AbstractAttributeMap
         return !getAttributeNames().hasMoreElements();
     }
 
-    public Set keySet()
+    public Set<String> keySet()
     {
         return (_keySet != null) ? _keySet : (_keySet = new KeySet());
     }
 
-    public Object put(Object key, Object value)
+    public V put(String key, V value)
     {
-        String key_ = key.toString();
-        Object retval = getAttribute(key_);
-        setAttribute(key_, value);
+        V retval = getAttribute(key);
+        setAttribute(key, value);
         return retval;
     }
 
-    public void putAll(Map t)
+    public void putAll(Map<? extends String, ? extends V> t)
     {
-        for (Iterator it = t.entrySet().iterator(); it.hasNext();)
+        for (Iterator<? extends Entry<? extends String, ? extends V>> it = t.entrySet().iterator(); it.hasNext();)
         {
-            Entry entry = (Entry) it.next();
-            setAttribute(entry.getKey().toString(), entry.getValue());
+            Entry<? extends String, ? extends V> entry = it.next();
+            setAttribute(entry.getKey(), entry.getValue());
         }
     }
 
-    public Object remove(Object key)
+    @Override
+    public V remove(Object key)
     {
         String key_ = key.toString();
-        Object retval = getAttribute(key_);
+        V retval = getAttribute(key_);
         removeAttribute(key_);
         return retval;
     }
 
+    @Override
     public int size()
     {
         int size = 0;
@@ -134,69 +134,75 @@ public abstract class AbstractAttributeMap
         return size;
     }
 
-    public Collection values()
+    @Override
+    public Collection<V> values()
     {
         return (_values != null) ? _values : (_values = new Values());
     }
 
+    abstract protected V getAttribute(String key);
 
-    abstract protected Object getAttribute(String key);
-
-    abstract protected void setAttribute(String key, Object value);
+    abstract protected void setAttribute(String key, V value);
 
     abstract protected void removeAttribute(String key);
 
-    abstract protected Enumeration getAttributeNames();
+    abstract protected Enumeration<String> getAttributeNames();
 
-
-    private class KeySet extends AbstractSet
+    private abstract class AbstractAttributeSet<E> extends AbstractSet<E>
     {
-        public Iterator iterator()
-        {
-            return new KeyIterator();
-        }
-
+        @Override
         public boolean isEmpty()
         {
             return AbstractAttributeMap.this.isEmpty();
         }
 
+        @Override
         public int size()
         {
             return AbstractAttributeMap.this.size();
         }
 
+        @Override
         public boolean contains(Object o)
         {
             return AbstractAttributeMap.this.containsKey(o);
         }
 
+        @Override
         public boolean remove(Object o)
         {
             return AbstractAttributeMap.this.remove(o) != null;
         }
 
+        @Override
         public void clear()
         {
             AbstractAttributeMap.this.clear();
         }
     }
 
-    private class KeyIterator
-        implements Iterator
+    private class KeySet extends AbstractAttributeSet<String>
     {
-        protected final Enumeration _e = getAttributeNames();
-        protected Object            _currentKey;
+        @Override
+        public Iterator<String> iterator()
+        {
+            return new KeyIterator();
+        }
+    }
+
+    private abstract class AbstractAttributeIterator<E> implements Iterator<E>
+    {
+        protected final Enumeration<String> _e = getAttributeNames();
+        protected String _currentKey;
 
         public void remove()
         {
             // remove() may cause ConcurrentModificationException.
             // We could throw an exception here, but not throwing an exception
-            //   allows one call to remove() to succeed
+            // allows one call to remove() to succeed
             if (_currentKey == null)
             {
-                throw new NoSuchElementException(
-                    "You must call next() at least once");
+                throw new NoSuchElementException("You must call next() at least once");
             }
             AbstractAttributeMap.this.remove(_currentKey);
         }
@@ -206,24 +212,32 @@ public abstract class AbstractAttributeMap
             return _e.hasMoreElements();
         }
 
-        public Object next()
+        public E next()
         {
-            return _currentKey = _e.nextElement();
+            return getValue(_currentKey = _e.nextElement());
+        }
+
+        protected abstract E getValue(String attributeName);
+    }
+
+    private class KeyIterator extends AbstractAttributeIterator<String>
+    {
+        @Override
+        protected String getValue(String attributeName)
+        {
+            return attributeName;
         }
     }
 
-    private class Values extends KeySet
+    private class Values extends AbstractAttributeSet<V>
     {
-        public Iterator iterator()
+        @Override
+        public Iterator<V> iterator()
         {
             return new ValuesIterator();
         }
 
-        public boolean contains(Object o)
-        {
-            return AbstractAttributeMap.this.containsValue(o);
-        }
-
+        @Override
         public boolean remove(Object o)
         {
             if (o == null)
@@ -244,22 +258,26 @@ public abstract class AbstractAttributeMap
         }
     }
 
-    private class ValuesIterator extends KeyIterator
+    private class ValuesIterator extends AbstractAttributeIterator<V>
     {
-        public Object next()
+        @Override
+        protected V getValue(String attributeName)
         {
-            super.next();
-            return AbstractAttributeMap.this.get(_currentKey);
+            return AbstractAttributeMap.this.get(attributeName);
         }
     }
 
-    private class EntrySet extends KeySet
+    private class EntrySet extends AbstractAttributeSet<Entry<String, V>>
     {
-        public Iterator iterator() {
+        @Override
+        public Iterator<Entry<String, V>> iterator()
+        {
             return new EntryIterator();
         }
 
-        public boolean contains(Object o) {
+        @Override
+        public boolean contains(Object o)
+        {
             if (!(o instanceof Entry))
             {
                 return false;
@@ -276,7 +294,9 @@ public abstract class AbstractAttributeMap
             return value.equals(AbstractAttributeMap.this.get(key));
         }
 
-        public boolean remove(Object o) {
+        @Override
+        public boolean remove(Object o)
+        {
             if (!(o instanceof Entry))
             {
                 return false;
@@ -285,8 +305,7 @@ public abstract class AbstractAttributeMap
             Entry entry = (Entry) o;
             Object key = entry.getKey();
             Object value = entry.getValue();
-            if (key == null || value == null
-                || !value.equals(AbstractAttributeMap.this.get(key)))
+            if (key == null || value == null || !value.equals(AbstractAttributeMap.this.get(key)))
             {
                 return false;
             }
@@ -296,41 +315,40 @@ public abstract class AbstractAttributeMap
     }
 
     /**
-     * Not very efficient since it generates a new instance of <code>Entry</code>
-     * for each element and still internaly uses the <code>KeyIterator</code>.
-     * It is more efficient to use the <code>KeyIterator</code> directly.
+     * Not very efficient since it generates a new instance of <code>Entry</code> for each element and still internaly
+     * uses the <code>KeyIterator</code>. It is more efficient to use the <code>KeyIterator</code> directly.
      */
-    private class EntryIterator extends KeyIterator
+    private class EntryIterator extends AbstractAttributeIterator<Entry<String, V>>
     {
-        public Object next()
+        @Override
+        protected Entry<String, V> getValue(String attributeName)
         {
-            super.next();
             // Must create new Entry every time--value of the entry must stay
             // linked to the same attribute name
-            return new EntrySetEntry(_currentKey);
+            return new EntrySetEntry(attributeName);
         }
     }
 
-    private class EntrySetEntry implements Entry
+    private class EntrySetEntry implements Entry<String, V>
     {
-        private final Object _currentKey;
+        private final String _currentKey;
 
-        public EntrySetEntry(Object currentKey)
+        public EntrySetEntry(String currentKey)
         {
             _currentKey = currentKey;
         }
 
-        public Object getKey()
+        public String getKey()
         {
             return _currentKey;
         }
 
-        public Object getValue()
+        public V getValue()
         {
             return AbstractAttributeMap.this.get(_currentKey);
         }
 
-        public Object setValue(Object value)
+        public V setValue(V value)
         {
             return AbstractAttributeMap.this.put(_currentKey, value);
         }

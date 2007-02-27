@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Anton Koinov (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class RequestHeaderMap extends AbstractAttributeMap
+public class RequestHeaderMap extends AbstractAttributeMap<String>
 {
     private final HttpServletRequest _httpServletRequest;
 
@@ -36,34 +36,41 @@ public class RequestHeaderMap extends AbstractAttributeMap
         _httpServletRequest = httpServletRequest;
     }
 
-    protected Object getAttribute(String key)
+    @Override
+    protected String getAttribute(String key)
     {
         return _httpServletRequest.getHeader(key);
     }
 
-    protected void setAttribute(String key, Object value)
+    @Override
+    protected void setAttribute(String key, String value)
     {
         throw new UnsupportedOperationException(
             "Cannot set HttpServletRequest Header");
     }
 
+    @Override
     protected void removeAttribute(String key)
     {
         throw new UnsupportedOperationException(
             "Cannot remove HttpServletRequest Header");
     }
 
-    protected Enumeration getAttributeNames()
+    @Override
+    @SuppressWarnings("unchecked")
+    protected Enumeration<String> getAttributeNames()
     {
         return _httpServletRequest.getHeaderNames();
     }
 
+    @Override
     public void putAll(Map t)
     {
         throw new UnsupportedOperationException();
     }
 
 
+    @Override
     public void clear()
     {
         throw new UnsupportedOperationException();

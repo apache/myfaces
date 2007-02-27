@@ -28,7 +28,7 @@ import org.apache.myfaces.context.servlet.AbstractAttributeMap;
  * @author  Stan Silvert (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ApplicationMap extends AbstractAttributeMap
+public class ApplicationMap extends AbstractAttributeMap<Object>
 {
     final PortletContext _portletContext;
 
@@ -37,32 +37,39 @@ public class ApplicationMap extends AbstractAttributeMap
         _portletContext = portletContext;
     }
 
+    @Override
     protected Object getAttribute(String key)
     {
         return _portletContext.getAttribute(key);
     }
 
+    @Override
     protected void setAttribute(String key, Object value)
     {
         _portletContext.setAttribute(key, value);
     }
 
+    @Override
     protected void removeAttribute(String key)
     {
         _portletContext.removeAttribute(key);
     }
 
-    protected Enumeration getAttributeNames()
+    @Override
+    @SuppressWarnings("unchecked")
+    protected Enumeration<String> getAttributeNames()
     {
         return _portletContext.getAttributeNames();
     }
 
+    @Override
     public void putAll(Map t)
     {
         throw new UnsupportedOperationException();
     }
 
 
+    @Override
     public void clear()
     {
         throw new UnsupportedOperationException();

@@ -26,7 +26,7 @@ import org.apache.myfaces.context.servlet.AbstractAttributeMap;
  * @author  Stan Silvert (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class RequestParameterMap extends AbstractAttributeMap
+public class RequestParameterMap extends AbstractAttributeMap<String>
 {
     private final PortletRequest _portletRequest;
 
@@ -35,24 +35,29 @@ public class RequestParameterMap extends AbstractAttributeMap
         _portletRequest = portletRequest;
     }
 
-    protected Object getAttribute(String key)
+    @Override
+    protected String getAttribute(String key)
     {
         return _portletRequest.getParameter(key);
     }
 
-    protected void setAttribute(String key, Object value)
+    @Override
+    protected void setAttribute(String key, String value)
     {
         throw new UnsupportedOperationException(
             "Cannot set PortletRequest Parameter");
     }
 
+    @Override
     protected void removeAttribute(String key)
     {
         throw new UnsupportedOperationException(
             "Cannot remove PortletRequest Parameter");
     }
 
-    protected Enumeration getAttributeNames()
+    @Override
+    @SuppressWarnings("unchecked")
+    protected Enumeration<String> getAttributeNames()
     {
         return _portletRequest.getParameterNames();
     }

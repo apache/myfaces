@@ -21,6 +21,7 @@ import java.util.Enumeration;
 import java.util.Map;
 
 import javax.portlet.PortletContext;
+
 import org.apache.myfaces.context.servlet.AbstractAttributeMap;
 
 
@@ -30,7 +31,7 @@ import org.apache.myfaces.context.servlet.AbstractAttributeMap;
  * @author  Stan Silvert (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class InitParameterMap extends AbstractAttributeMap
+public class InitParameterMap extends AbstractAttributeMap<String>
 {
     final PortletContext _portletContext;
 
@@ -39,28 +40,34 @@ public class InitParameterMap extends AbstractAttributeMap
         _portletContext = portletContext;
     }
 
-    protected Object getAttribute(String key)
+    @Override
+    protected String getAttribute(String key)
     {
         return _portletContext.getInitParameter(key);
     }
 
-    protected void setAttribute(String key, Object value)
+    @Override
+    protected void setAttribute(String key, String value)
     {
         throw new UnsupportedOperationException(
             "Cannot set PortletContext InitParameter");
     }
 
+    @Override
     protected void removeAttribute(String key)
     {
         throw new UnsupportedOperationException(
             "Cannot remove PortletContext InitParameter");
     }
 
-    protected Enumeration getAttributeNames()
+    @Override
+    @SuppressWarnings("unchecked")
+    protected Enumeration<String> getAttributeNames()
     {
         return _portletContext.getInitParameterNames();
     }
 
+    @Override
     public boolean equals(Object o) {
         boolean retValue;
 
@@ -68,6 +75,7 @@ public class InitParameterMap extends AbstractAttributeMap
         return retValue;
     }
 
+    @Override
     public int hashCode() {
         int retValue;
 
@@ -75,12 +83,14 @@ public class InitParameterMap extends AbstractAttributeMap
         return retValue;
     }
     
+    @Override
     public void putAll(Map t)
     {
         throw new UnsupportedOperationException();
     }
 
 
+    @Override
     public void clear()
     {
         throw new UnsupportedOperationException();

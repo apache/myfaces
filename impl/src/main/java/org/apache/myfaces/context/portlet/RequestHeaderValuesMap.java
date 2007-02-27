@@ -20,64 +20,64 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.portlet.PortletRequest;
 
 import org.apache.myfaces.context.servlet.AbstractAttributeMap;
 
 /**
  * PortletRequest header values (multi-value headers) as Map of String[].
- *
- * @author  Stan Silvert (latest modification by $Author$)
+ * 
+ * @author Stan Silvert (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class RequestHeaderValuesMap extends AbstractAttributeMap
+public class RequestHeaderValuesMap extends AbstractAttributeMap<String[]>
 {
     private final PortletRequest _portletRequest;
-    private final Map<String, Object>            _valueCache = new HashMap<String, Object>();
+    private final Map<String, String[]> _valueCache = new HashMap<String, String[]>();
 
     RequestHeaderValuesMap(PortletRequest portletRequest)
     {
         _portletRequest = portletRequest;
     }
 
-    protected Object getAttribute(String key)
+    @SuppressWarnings("unchecked")
+    protected String[] getAttribute(String key)
     {
-        Object ret = _valueCache.get(key);
+        String[] ret = _valueCache.get(key);
         if (ret == null)
         {
-            _valueCache.put(key, ret = toArray(_portletRequest
-                .getProperties(key)));
+            _valueCache.put(key, ret = toArray(_portletRequest.getProperties(key)));
         }
 
         return ret;
     }
 
-    protected void setAttribute(String key, Object value)
+    protected void setAttribute(String key, String[] value)
     {
-        throw new UnsupportedOperationException(
-            "Cannot set PortletRequest Properties");
+        throw new UnsupportedOperationException("Cannot set PortletRequest Properties");
     }
 
     protected void removeAttribute(String key)
     {
-        throw new UnsupportedOperationException(
-            "Cannot remove PortletRequest Properties");
+        throw new UnsupportedOperationException("Cannot remove PortletRequest Properties");
     }
 
-    protected Enumeration getAttributeNames()
+    @SuppressWarnings("unchecked")
+    protected Enumeration<String> getAttributeNames()
     {
         return _portletRequest.getPropertyNames();
     }
 
-    private String[] toArray(Enumeration e)
+    private String[] toArray(Enumeration<String> e)
     {
-        List ret = new ArrayList();
+        List<String> ret = new ArrayList<String>();
 
         while (e.hasMoreElements())
         {
             ret.add(e.nextElement());
         }
 
-        return (String[]) ret.toArray(new String[ret.size()]);
+        return ret.toArray(new String[ret.size()]);
     }
 }

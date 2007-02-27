@@ -15,13 +15,13 @@
  */
 package org.apache.myfaces.context.portlet;
 
+import org.apache.myfaces.context.servlet.AbstractAttributeMap;
 import org.apache.myfaces.shared_impl.util.NullEnumeration;
 
 import java.util.Enumeration;
 import java.util.Map;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletSession;
-import org.apache.myfaces.context.servlet.AbstractAttributeMap;
 
 /**
  * Portlet scope PortletSession attibutes as Map.
@@ -29,7 +29,7 @@ import org.apache.myfaces.context.servlet.AbstractAttributeMap;
  * @author  Stan Silvert (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class SessionMap extends AbstractAttributeMap
+public class SessionMap extends AbstractAttributeMap<Object>
 {
     private final PortletRequest _portletRequest;
 
@@ -38,6 +38,7 @@ public class SessionMap extends AbstractAttributeMap
         _portletRequest = portletRequest;
     }
 
+    @Override
     protected Object getAttribute(String key)
     {
         PortletSession portletSession = getSession();
@@ -45,11 +46,13 @@ public class SessionMap extends AbstractAttributeMap
                ? null : portletSession.getAttribute(key.toString(), PortletSession.PORTLET_SCOPE);
     }
 
+    @Override
     protected void setAttribute(String key, Object value)
     {
         _portletRequest.getPortletSession(true).setAttribute(key, value, PortletSession.PORTLET_SCOPE);
     }
 
+    @Override
     protected void removeAttribute(String key)
     {
         PortletSession portletSession = getSession();
@@ -59,7 +62,9 @@ public class SessionMap extends AbstractAttributeMap
         }
     }
 
-    protected Enumeration getAttributeNames()
+    @Override
+    @SuppressWarnings("unchecked")
+    protected Enumeration<String> getAttributeNames()
     {
         PortletSession portletSession = getSession();
         return (portletSession == null)
@@ -72,6 +77,7 @@ public class SessionMap extends AbstractAttributeMap
         return _portletRequest.getPortletSession(false);
     }
 
+    @Override
     public void putAll(Map t)
     {
         throw new UnsupportedOperationException();
@@ -82,6 +88,7 @@ public class SessionMap extends AbstractAttributeMap
      * This will clear the session without invalidation.  If no session has
      * been created, it will simply return.
      */
+    @Override
     public void clear()
     {
         PortletSession session = getSession();

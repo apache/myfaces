@@ -25,7 +25,7 @@ import javax.servlet.ServletRequest;
  * @author Anton Koinov (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class RequestParameterValuesMap extends AbstractAttributeMap
+public class RequestParameterValuesMap extends AbstractAttributeMap<String[]>
 {
     private final ServletRequest _servletRequest;
 
@@ -34,24 +34,29 @@ public class RequestParameterValuesMap extends AbstractAttributeMap
         _servletRequest = servletRequest;
     }
 
-    protected Object getAttribute(String key)
+    @Override
+    protected String[] getAttribute(String key)
     {
         return _servletRequest.getParameterValues(key);
     }
 
-    protected void setAttribute(String key, Object value)
+    @Override
+    protected void setAttribute(String key, String[] value)
     {
         throw new UnsupportedOperationException(
             "Cannot set ServletRequest ParameterValues");
     }
 
+    @Override
     protected void removeAttribute(String key)
     {
         throw new UnsupportedOperationException(
             "Cannot remove ServletRequest ParameterValues");
     }
 
-    protected Enumeration getAttributeNames()
+    @Override
+    @SuppressWarnings("unchecked")
+    protected Enumeration<String> getAttributeNames()
     {
         return _servletRequest.getParameterNames();
     }

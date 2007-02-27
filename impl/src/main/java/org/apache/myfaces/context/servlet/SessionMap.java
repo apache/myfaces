@@ -30,7 +30,7 @@ import org.apache.myfaces.shared_impl.util.NullEnumeration;
  * @author Anton Koinov (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class SessionMap extends AbstractAttributeMap
+public class SessionMap extends AbstractAttributeMap<Object>
 {
     private final HttpServletRequest _httpRequest;
 
@@ -39,18 +39,20 @@ public class SessionMap extends AbstractAttributeMap
         _httpRequest = httpRequest;
     }
 
+    @Override
     protected Object getAttribute(String key)
     {
         HttpSession httpSession = getSession();
-        return (httpSession == null)
-            ? null : httpSession.getAttribute(key.toString());
+        return (httpSession == null) ? null : httpSession.getAttribute(key.toString());
     }
 
+    @Override
     protected void setAttribute(String key, Object value)
     {
         _httpRequest.getSession(true).setAttribute(key, value);
     }
 
+    @Override
     protected void removeAttribute(String key)
     {
         HttpSession httpSession = getSession();
@@ -60,12 +62,12 @@ public class SessionMap extends AbstractAttributeMap
         }
     }
 
-    protected Enumeration getAttributeNames()
+    @Override
+    @SuppressWarnings("unchecked")
+    protected Enumeration<String> getAttributeNames()
     {
         HttpSession httpSession = getSession();
-        return (httpSession == null)
-            ? NullEnumeration.instance()
-            : httpSession.getAttributeNames();
+        return (httpSession == null) ? NullEnumeration.instance() : httpSession.getAttributeNames();
     }
 
     private HttpSession getSession()
@@ -73,23 +75,24 @@ public class SessionMap extends AbstractAttributeMap
         return _httpRequest.getSession(false);
     }
 
-
+    @Override
     public void putAll(Map t)
     {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * This will clear the session without invalidation.  If no session has
-     * been created, it will simply return.
+     * This will clear the session without invalidation. If no session has been created, it will simply return.
      */
+    @Override
     public void clear()
     {
         HttpSession session = getSession();
-        if (session == null) return;
-        for (Enumeration attributeNames = session.getAttributeNames(); 
-             attributeNames.hasMoreElements(); ) {
-            String attributeName = (String)attributeNames.nextElement();
+        if (session == null)
+            return;
+        for (Enumeration attributeNames = session.getAttributeNames(); attributeNames.hasMoreElements();)
+        {
+            String attributeName = (String) attributeNames.nextElement();
             session.removeAttribute(attributeName);
         }
     }

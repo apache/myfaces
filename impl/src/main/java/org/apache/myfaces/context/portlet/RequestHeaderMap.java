@@ -18,6 +18,7 @@ package org.apache.myfaces.context.portlet;
 import java.util.Enumeration;
 import java.util.Map;
 import javax.portlet.PortletRequest;
+
 import org.apache.myfaces.context.servlet.AbstractAttributeMap;
 
 
@@ -28,7 +29,7 @@ import org.apache.myfaces.context.servlet.AbstractAttributeMap;
  * @author  Stan Silvert (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class RequestHeaderMap extends AbstractAttributeMap
+public class RequestHeaderMap extends AbstractAttributeMap<String>
 {
     private final PortletRequest _portletRequest;
 
@@ -37,34 +38,41 @@ public class RequestHeaderMap extends AbstractAttributeMap
         _portletRequest = portletRequest;
     }
 
-    protected Object getAttribute(String key)
+    @Override
+    protected String getAttribute(String key)
     {
         return _portletRequest.getProperty(key);
     }
 
-    protected void setAttribute(String key, Object value)
+    @Override
+    protected void setAttribute(String key, String value)
     {
         throw new UnsupportedOperationException(
             "Cannot set PortletRequest property");
     }
 
+    @Override
     protected void removeAttribute(String key)
     {
         throw new UnsupportedOperationException(
             "Cannot remove PortletRequest property");
     }
 
-    protected Enumeration getAttributeNames()
+    @Override
+    @SuppressWarnings("unchecked")
+    protected Enumeration<String> getAttributeNames()
     {
         return _portletRequest.getPropertyNames();
     }
 
+    @Override
     public void putAll(Map t)
     {
         throw new UnsupportedOperationException();
     }
 
 
+    @Override
     public void clear()
     {
         throw new UnsupportedOperationException();

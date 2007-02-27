@@ -17,6 +17,7 @@ package org.apache.myfaces.context.servlet;
 
 import java.util.Enumeration;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +29,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Anton Koinov
  * @version $Revision$ $Date$
  */
-public class CookieMap extends AbstractAttributeMap
+public class CookieMap extends AbstractAttributeMap<Cookie>
 {
     private static final Cookie[] EMPTY_ARRAY = new Cookie[0];
 
@@ -60,6 +61,7 @@ public class CookieMap extends AbstractAttributeMap
         return false;
     }
 
+    @Override
     public boolean containsValue(Object findValue)
     {
         if (findValue == null)
@@ -68,7 +70,8 @@ public class CookieMap extends AbstractAttributeMap
         }
 
         Cookie[] cookies = _httpServletRequest.getCookies();
-        if (cookies == null) return false;
+        if (cookies == null)
+            return false;
         for (int i = 0, len = cookies.length; i < len; i++)
         {
             if (findValue.equals(cookies[i]))
@@ -80,28 +83,32 @@ public class CookieMap extends AbstractAttributeMap
         return false;
     }
 
+    @Override
     public boolean isEmpty()
     {
         Cookie[] cookies = _httpServletRequest.getCookies();
         return cookies == null || cookies.length == 0;
     }
 
+    @Override
     public int size()
     {
         Cookie[] cookies = _httpServletRequest.getCookies();
         return cookies == null ? 0 : cookies.length;
     }
 
+    @Override
     public void putAll(Map t)
     {
         throw new UnsupportedOperationException();
     }
 
-
-    protected Object getAttribute(String key)
+    @Override
+    protected Cookie getAttribute(String key)
     {
         Cookie[] cookies = _httpServletRequest.getCookies();
-        if (cookies == null) return null;
+        if (cookies == null)
+            return null;
         for (int i = 0, len = cookies.length; i < len; i++)
         {
             if (cookies[i].getName().equals(key))
@@ -113,7 +120,7 @@ public class CookieMap extends AbstractAttributeMap
         return null;
     }
 
-    protected void setAttribute(String key, Object value)
+    protected void setAttribute(String key, Cookie value)
     {
         throw new UnsupportedOperationException(
             "Cannot set HttpRequest Cookies");
@@ -125,7 +132,7 @@ public class CookieMap extends AbstractAttributeMap
             "Cannot remove HttpRequest Cookies");
     }
 
-    protected Enumeration getAttributeNames()
+    protected Enumeration<String> getAttributeNames()
     {
         Cookie[] cookies = _httpServletRequest.getCookies();
 
@@ -133,7 +140,7 @@ public class CookieMap extends AbstractAttributeMap
   
     }
 
-    private static class CookieNameEnumeration implements Enumeration
+    private static class CookieNameEnumeration implements Enumeration<String>
     {
         private final Cookie[] _cookies;
         private final int _length;
@@ -150,8 +157,12 @@ public class CookieMap extends AbstractAttributeMap
             return _index < _length;
         }
 
-        public Object nextElement()
+        public String nextElement()
         {
+            if (!hasMoreElements())
+            {
+                throw new NoSuchElementException();
+            }
             return _cookies[_index++].getName();
         }
     }

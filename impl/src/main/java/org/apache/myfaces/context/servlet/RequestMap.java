@@ -27,7 +27,7 @@ import javax.servlet.ServletRequest;
  * @author Anton Koinov (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class RequestMap extends AbstractAttributeMap
+public class RequestMap extends AbstractAttributeMap<Object>
 {
     final ServletRequest _servletRequest;
 
@@ -36,32 +36,39 @@ public class RequestMap extends AbstractAttributeMap
         _servletRequest = servletRequest;
     }
 
+    @Override
     protected Object getAttribute(String key)
     {
         return _servletRequest.getAttribute(key);
     }
 
+    @Override
     protected void setAttribute(String key, Object value)
     {
         _servletRequest.setAttribute(key, value);
     }
 
+    @Override
     protected void removeAttribute(String key)
     {
         _servletRequest.removeAttribute(key);
     }
 
-    protected Enumeration getAttributeNames()
+    @Override
+    @SuppressWarnings("unchecked")
+    protected Enumeration<String> getAttributeNames()
     {
         return _servletRequest.getAttributeNames();
     }
 
+    @Override
     public void putAll(Map t)
     {
         throw new UnsupportedOperationException();
     }
 
 
+    @Override
     public void clear()
     {
         throw new UnsupportedOperationException();
