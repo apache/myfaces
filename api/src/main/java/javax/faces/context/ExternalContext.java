@@ -70,7 +70,7 @@ public abstract class ExternalContext
 
     public abstract Map<String, Object> getRequestCookieMap();
 
-    public abstract Map<String, Object> getRequestHeaderMap();
+    public abstract Map<String, String> getRequestHeaderMap();
 
     public abstract Map<String, String[]> getRequestHeaderValuesMap();
 
