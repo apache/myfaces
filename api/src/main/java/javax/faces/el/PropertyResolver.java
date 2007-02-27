@@ -20,7 +20,7 @@ package javax.faces.el;
  * Arrays and Lists. This class is used by such things as the ValueBinding
  * implementation and the ManagedBeanBuilder to access JSF beans.
  *
- * See the javadoc of the <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * See the javadoc of the <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  * for more details.
  *
  * @author Thomas Spiegl (latest modification by $Author$)

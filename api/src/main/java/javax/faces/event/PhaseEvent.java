@@ -20,7 +20,7 @@ import javax.faces.lifecycle.Lifecycle;
 import java.util.EventObject;
 
 /**
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  *
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$

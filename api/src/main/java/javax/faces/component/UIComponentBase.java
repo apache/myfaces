@@ -48,7 +48,7 @@ import java.util.Map;
  * describes the current implementation rather than the spec, though
  * this class has been verified as correctly implementing the spec.
  *
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a> for more.
+ * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a> for more.
  * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$

@@ -52,7 +52,7 @@ import javax.faces.validator.Validator;
  * to display data from the user's model classes. This is the most common
  * way a component's renderer obtains the value to display.
  * 
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a> for more.
+ * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a> for more.
  * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
