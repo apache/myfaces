@@ -23,6 +23,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.myfaces.util.AbstractAttributeMap;
+
 /**
  * HttpServletRequest header values (multi-value headers) as Map of String[].
  * 

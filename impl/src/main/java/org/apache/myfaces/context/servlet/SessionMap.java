@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.myfaces.shared_impl.util.NullEnumeration;
+import org.apache.myfaces.util.AbstractAttributeMap;
 
 
 /**

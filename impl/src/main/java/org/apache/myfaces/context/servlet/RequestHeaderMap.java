@@ -20,6 +20,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.myfaces.util.AbstractAttributeMap;
+
 
 /**
  * HttpServletRequest headers as Map.

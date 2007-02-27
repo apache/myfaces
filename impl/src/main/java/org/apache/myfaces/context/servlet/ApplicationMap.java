@@ -20,6 +20,8 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
+import org.apache.myfaces.util.AbstractAttributeMap;
+
 
 /**
  * ServletContext attributes as a Map.

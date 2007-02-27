@@ -23,7 +23,7 @@ import java.util.Map;
 
 import javax.portlet.PortletRequest;
 
-import org.apache.myfaces.context.servlet.AbstractAttributeMap;
+import org.apache.myfaces.util.AbstractAttributeMap;
 
 /**
  * PortletRequest header values (multi-value headers) as Map of String[].

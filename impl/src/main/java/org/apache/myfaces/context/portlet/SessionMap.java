@@ -15,8 +15,8 @@
  */
 package org.apache.myfaces.context.portlet;
 
-import org.apache.myfaces.context.servlet.AbstractAttributeMap;
 import org.apache.myfaces.shared_impl.util.NullEnumeration;
+import org.apache.myfaces.util.AbstractAttributeMap;
 
 import java.util.Enumeration;
 import java.util.Map;

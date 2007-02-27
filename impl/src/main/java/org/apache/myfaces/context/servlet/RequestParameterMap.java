@@ -19,6 +19,8 @@ import java.util.Enumeration;
 
 import javax.servlet.ServletRequest;
 
+import org.apache.myfaces.util.AbstractAttributeMap;
+
 /**
  * ServletRequest parameters as Map.
  * 
