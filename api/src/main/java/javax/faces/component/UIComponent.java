@@ -19,6 +19,8 @@ import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
+
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +35,7 @@ public abstract class UIComponent
         implements StateHolder
 {
     
-    protected Map<String,ValueExpression> bindings; 
+    protected Map<String,ValueExpression> bindings;
     
     public UIComponent()
     {
@@ -46,7 +48,13 @@ public abstract class UIComponent
      */
     public abstract javax.faces.el.ValueBinding getValueBinding(java.lang.String name);
 
-    public abstract ValueExpression getValueExpression(String name);
+    public ValueExpression getValueExpression(String name) {        
+        if (name == null) throw new NullPointerException("name can not be null");
+        
+        if (bindings == null) return null;
+        
+        return bindings.get(name);
+    }
     
     /**
      * @deprecated Replaced by setValueExpression
@@ -54,7 +62,32 @@ public abstract class UIComponent
     public abstract void setValueBinding(java.lang.String name,
                                          javax.faces.el.ValueBinding binding);
 
-    public abstract void setValueExpression(String name, ValueExpression binding);
+    public void setValueExpression(String name, ValueExpression binding) {
+        if (name == null) throw new NullPointerException("name");
+        if (name.equals("id")) throw new IllegalArgumentException("Can't set a ValueExpression for the 'id' property.");
+        if (name.equals("parent")) throw new IllegalArgumentException("Can't set a ValueExpression for the 'parent' property.");
+        
+        if(binding == null) {
+            this.getAttributes().remove(name);
+        }
+        
+        if (binding.isLiteralText()) {
+            try {
+                Object value = binding.getValue(getFacesContext().getELContext());
+                this.getAttributes().put(name, value);
+                return;
+            } catch (Exception e) {
+                throw new FacesException(e);
+            }
+            
+        }
+        
+        if (bindings == null) {
+            bindings = new HashMap<String, ValueExpression>();
+        }
+        
+        bindings.put(name, binding);
+    }
     
     /**
      * Invokes the <code>invokeContextCallback</code> method with the component, specified by <code>clientId</code>.

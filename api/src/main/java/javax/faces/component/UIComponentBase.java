@@ -156,14 +156,6 @@ public abstract class UIComponentBase
         
         return new _ValueExpressionToValueBinding(expression);
     }
-    
-    public ValueExpression getValueExpression(String name) {
-        if (name == null) throw new NullPointerException("name can not be null");
-        
-        if (_valueExpressionMap == null) return null;
-        
-        return _valueExpressionMap.get(name);
-    }
 
     /**
      * Put the provided value-binding into a map of value-bindings
@@ -175,29 +167,6 @@ public abstract class UIComponentBase
                                 ValueBinding binding)
     {
         setValueExpression(name, new _ValueBindingToValueExpression(binding));
-    }
-    
-    public void setValueExpression(String name, ValueExpression binding) {
-        if (name == null) throw new NullPointerException("name");
-        if (name.equals("id")) throw new IllegalArgumentException("Can't set a ValueExpression for the 'id' property.");
-        if (name.equals("parent")) throw new IllegalArgumentException("Can't set a ValueExpression for the 'parent' property.");
-        
-        if (binding.isLiteralText()) {
-            try {
-                Object value = binding.getValue(getFacesContext().getELContext());
-                this.getAttributes().put(name, value);
-                return;
-            } catch (Exception e) {
-                throw new FacesException(e);
-            }
-            
-        }
-        
-        if (_valueExpressionMap == null) {
-            _valueExpressionMap = new HashMap<String, ValueExpression>();
-        }
-        
-        _valueExpressionMap.put(name, binding);
     }
 
     /**
