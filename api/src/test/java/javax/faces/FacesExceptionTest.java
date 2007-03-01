@@ -42,6 +42,7 @@ public class FacesExceptionTest extends TestCase {
 	public void testFacesException() {
 		FacesException e = new FacesException();
 		assertNull(e.getCause());
+        assertNull(e.getMessage());
 	}
 
 	/*
