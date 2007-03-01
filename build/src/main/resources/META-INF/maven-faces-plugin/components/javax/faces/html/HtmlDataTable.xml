@@ -49,8 +49,6 @@
         <!-- border, bgcolor, datafld, datasrc, frame, rules, summary, width-->
         <xi:include href="../../../includes/html/_TableProperties.xml" xpointer="/faces_config/component/*" />
 
-        <xi:include href="../../../includes/html/AlignProperty.xml" xpointer="/faces_config/component/*" />
-
         <component-extension>
             <!--for the Component generation-->
             <mfp:component-family>javax.faces.Data</mfp:component-family>

@@ -6,7 +6,6 @@
         <xi:include href="AlignProperty.xml" xpointer="/faces_config/component/*" />
 		<xi:include href="BorderProperty.xml" xpointer="/faces_config/component/*" />
 		<xi:include href="BgcolorProperty.xml" xpointer="/faces_config/component/*" />
-		<xi:include href="_Datafld_Datasrc_DataformatasProperties.xml" xpointer="/faces_config/component/*" />
 		<property>
 			<description> Specifies the amount of empty space between the cell border and
 			its contents.  It can be either a pixel length or a percentage.</description>
