@@ -479,7 +479,7 @@ public class UIInput
 
     public Object saveState(FacesContext context)
     {
-        Object values[] = new Object[9];
+        Object values[] = new Object[10];
         values[0] = super.saveState(context);
         values[1] = _immediate;
         values[2] = Boolean.valueOf(_localValueSet);
@@ -489,6 +489,7 @@ public class UIInput
         values[6] = saveAttachedState(context, _validator);
         values[7] = saveAttachedState(context, _valueChangeListener);
         values[8] = saveAttachedState(context, _validatorList);
+        values[9] = _value;
         return values;
     }
 
@@ -504,6 +505,8 @@ public class UIInput
         _validator = (MethodBinding)restoreAttachedState(context, values[6]);
         _valueChangeListener = (MethodBinding)restoreAttachedState(context, values[7]);
         _validatorList = (List)restoreAttachedState(context, values[8]);
+        _value = values[9];
+
     }
 
 
