@@ -50,6 +50,7 @@ public class UIInput
     private static final Validator[] EMPTY_VALIDATOR_ARRAY = new Validator[0];
 
     private Object _submittedValue = null;
+    private Object _value;
     private boolean _localValueSet = false;
     private boolean _valid = true;
     private MethodBinding _validator = null;
@@ -79,7 +80,14 @@ public class UIInput
     public void setValue(Object value)
     {
         setLocalValueSet(true);
-        super.setValue(value);
+        _value = value;
+    }
+
+    public Object getValue()
+    {
+        if (isLocalValueSet()) return _value;
+        ValueBinding vb = getValueBinding("value");
+        return vb != null ? vb.getValue(getFacesContext()) : null;
     }
 
     // use javadoc inherited from EditableValueHolder
