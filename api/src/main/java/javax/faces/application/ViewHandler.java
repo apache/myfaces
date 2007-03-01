@@ -50,10 +50,10 @@ public abstract class ViewHandler
     		boolean _sessionAvailable = context.getExternalContext().getSession(false) != null;
     		if(_sessionAvailable)
     		{
-    			String _sessionParam = (String) context.getExternalContext().getSessionMap().get(CHARACTER_ENCODING_KEY); 
+    			Object _sessionParam = context.getExternalContext().getSessionMap().get(CHARACTER_ENCODING_KEY); 
     			if (_sessionParam != null)
     			{
-    				_encoding = _sessionParam;
+    				_encoding = _sessionParam.toString();
     			}
     		}
     	}
