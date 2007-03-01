@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Standard implementation of the UIComponent base class; all standard JSF
@@ -59,7 +60,6 @@ public abstract class UIComponentBase
     private static Log log = LogFactory.getLog(UIComponentBase.class);
 
     private _ComponentAttributesMap _attributesMap = null;
-    private Map<String, ValueExpression> _valueExpressionMap = null;
     private List<UIComponent> _childrenList = null;
     private Map<String,UIComponent> _facetMap = null;
     private List<FacesListener> _facesListeners = null;
@@ -142,11 +142,11 @@ public abstract class UIComponentBase
     {
         if (name == null) throw new NullPointerException("name can not be null");
         
-        if (_valueExpressionMap == null) {
-            _valueExpressionMap = new HashMap<String, ValueExpression>();
+        if (bindings == null) {
+            return null;
         }
         
-        ValueExpression expression = _valueExpressionMap.get(name);
+        ValueExpression expression = bindings.get(name);
         if (expression == null) return null;
         
         if (expression instanceof _ValueBindingToValueExpression) {
@@ -928,7 +928,7 @@ public abstract class UIComponentBase
         values[3] = _clientId;
         values[4] = saveAttributesMap();
         values[5] = saveAttachedState(context, _facesListeners);
-        values[6] = saveValueExpressionMap(context);
+        values[6] = saveBindings(context);
         return values;
     }
 
@@ -962,7 +962,7 @@ public abstract class UIComponentBase
     {
         if (stateObj != null)
         {
-            _attributesMap = new _ComponentAttributesMap(this, (Map<Object, Object>)stateObj);
+            _attributesMap = new _ComponentAttributesMap(this, (Map)stateObj);
         }
         else
         {
@@ -970,15 +970,14 @@ public abstract class UIComponentBase
         }
     }
 
-    private Object saveValueExpressionMap(FacesContext context)
+    private Object saveBindings(FacesContext context)
     {
-        if (_valueExpressionMap != null)
+        if (bindings != null)
         {
-            int initCapacity = (_valueExpressionMap.size() * 4 + 3) / 3;
-            HashMap stateMap = new HashMap(initCapacity);
-            for (Iterator it = _valueExpressionMap.entrySet().iterator(); it.hasNext(); )
+            HashMap<String, Object> stateMap = new HashMap<String, Object>(bindings.size(), 1);
+            for (Iterator<Entry<String, ValueExpression>> it = bindings.entrySet().iterator(); it.hasNext(); )
             {
-                Map.Entry entry = (Map.Entry)it.next();
+                Entry<String, ValueExpression> entry = it.next();
                 stateMap.put(entry.getKey(),
                              saveAttachedState(context, entry.getValue()));
             }
@@ -994,17 +993,17 @@ public abstract class UIComponentBase
         {
             Map stateMap = (Map)stateObj;
             int initCapacity = (stateMap.size() * 4 + 3) / 3;
-            _valueExpressionMap = new HashMap<String, ValueExpression>(initCapacity);
+            bindings = new HashMap<String, ValueExpression>(initCapacity);
             for (Iterator it = stateMap.entrySet().iterator(); it.hasNext(); )
             {
                 Map.Entry entry = (Map.Entry)it.next();
-                _valueExpressionMap.put((String)entry.getKey(),
+                bindings.put((String)entry.getKey(),
                                      (ValueExpression)restoreAttachedState(context, entry.getValue()));
             }
         }
         else
         {
-            _valueExpressionMap = null;
+            bindings = null;
         }
     }
 
