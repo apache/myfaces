@@ -35,8 +35,8 @@ public class FacesMessage
     public static final FacesMessage.Severity SEVERITY_WARN = new Severity("Warn", 2);
     public static final FacesMessage.Severity SEVERITY_ERROR = new Severity("Error", 3);
     public static final FacesMessage.Severity SEVERITY_FATAL = new Severity("Fatal", 4);
-    public static final List<FacesMessage.Severity> VALUES;
-    public static final Map<String, FacesMessage.Severity> VALUES_MAP;
+    public static final List VALUES;
+    public static final Map VALUES_MAP;
     static
     {
         Map<String, FacesMessage.Severity> map = new HashMap<String, FacesMessage.Severity>(7);
