@@ -21,6 +21,7 @@ import javax.faces.component.ValueHolder;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.el.ValueBinding;
+import javax.faces.validator.Validator;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -38,6 +39,7 @@ public class ConverterTag
 {
     private static final long serialVersionUID = -6168345066829108081L;
     private String _converterId;
+    private String _binding;
 
     public ConverterTag()
     {
@@ -82,6 +84,7 @@ public class ConverterTag
     {
         super.release();
         _converterId = null;
+        _binding = null;
     }
 
     protected Converter createConverter()
@@ -89,6 +92,17 @@ public class ConverterTag
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Application application = facesContext.getApplication();
+
+        if(_binding != null) {
+            ValueBinding vb = application.createValueBinding(_binding);
+            if(vb != null) {
+                Converter converter = (Converter) vb.getValue(facesContext);
+                if(converter != null) {
+                    return converter;
+                }
+            }
+        }
+
         if (UIComponentTag.isValueReference(_converterId))
         {
             ValueBinding vb = facesContext.getApplication().createValueBinding(_converterId);
@@ -99,8 +113,8 @@ public class ConverterTag
         
     }
 
-    public void setBinding(String binding)
+    public void setBinding(String binding) throws javax.servlet.jsp.JspException
     {
-        throw new UnsupportedOperationException("1.2");
+        _binding = binding;
     }
 }
