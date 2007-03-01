@@ -51,15 +51,6 @@
         <xi:include href="../../../includes/html/AltProperty.xml" xpointer="/faces-config/component/*"/>
         <xi:include href="../../../includes/html/TypeProperty.xml" xpointer="/faces-config/component/*"/>
 
-        <property>
-            <description>The initial width of this control.</description>
-            <property-name>size</property-name>
-            <property-class>java.lang.String</property-class>
-            <property-extension>
-                <mfp:required>false</mfp:required>
-            </property-extension>
-        </property>
-
         <component-extension>
             <!--for the Component generation-->
             <mfp:component-family>javax.faces.Command</mfp:component-family>
