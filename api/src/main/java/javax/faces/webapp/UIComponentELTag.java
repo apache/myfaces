@@ -19,6 +19,7 @@ import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
 
 /**
@@ -80,7 +81,7 @@ public abstract class UIComponentELTag extends UIComponentClassicTagBase
         }
     }
 
-    protected UIComponent createComponent(FacesContext context, String newId) 
+    protected UIComponent createComponent(FacesContext context, String newId) throws JspException
     {
         UIComponent component;
         Application application = context.getApplication();
@@ -101,7 +102,7 @@ public abstract class UIComponentELTag extends UIComponentClassicTagBase
         return component;
     }
     
-    public void setBinding(ValueExpression binding)
+    public void setBinding(ValueExpression binding) throws JspException
     {
         _binding = binding;
     }

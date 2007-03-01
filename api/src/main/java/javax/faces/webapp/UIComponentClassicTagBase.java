@@ -95,7 +95,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     protected abstract void setProperties(UIComponent component);
 
     protected abstract UIComponent createComponent(FacesContext context,
-                                                   String newId);
+                                                   String newId) throws JspException;
 
     public void release()
     {
