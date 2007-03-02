@@ -34,5 +34,5 @@ public abstract class RenderKitFactory
     public abstract RenderKit getRenderKit(FacesContext context,
                                            String renderKitId);
 
-    public abstract Iterator getRenderKitIds();
+    public abstract Iterator<String> getRenderKitIds();
 }
