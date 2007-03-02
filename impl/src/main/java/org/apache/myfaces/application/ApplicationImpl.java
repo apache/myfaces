@@ -119,7 +119,7 @@ public class ApplicationImpl extends Application
 
     private ELResolver elResolver;
 
-    private ELResolverBuilder resolverFactoryForFaces;
+    private ELResolverBuilder resolverBuilderForFaces;
 
     // ~ Constructors
     // -------------------------------------------------------------------------------
@@ -194,22 +194,22 @@ public class ApplicationImpl extends Application
     private ELResolver createFacesResolver()
     {
         CompositeELResolver resolver = new FacesCompositeELResolver(Scope.Faces);
-        getResolverFactoryForFaces().build(resolver);
+        getResolverBuilderForFaces().build(resolver);
         return resolver;
     }
 
-    protected ELResolverBuilder getResolverFactoryForFaces()
+    protected ELResolverBuilder getResolverBuilderForFaces()
     {
-        if (resolverFactoryForFaces == null)
+        if (resolverBuilderForFaces == null)
         {
-            resolverFactoryForFaces = new ResolverBuilderForFaces(_runtimeConfig);
+            resolverBuilderForFaces = new ResolverBuilderForFaces(_runtimeConfig);
         }
-        return resolverFactoryForFaces;
+        return resolverBuilderForFaces;
     }
 
-    public void setResolverFactoryForFaces(ELResolverBuilder factory)
+    public void setResolverBuilderForFaces(ELResolverBuilder factory)
     {
-        resolverFactoryForFaces = factory;
+        resolverBuilderForFaces = factory;
     }
 
     @Override
