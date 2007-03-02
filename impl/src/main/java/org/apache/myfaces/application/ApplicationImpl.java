@@ -29,7 +29,7 @@ import org.apache.myfaces.el.convert.MethodExpressionToMethodBinding;
 import org.apache.myfaces.el.convert.ValueBindingToValueExpression;
 import org.apache.myfaces.el.convert.ValueExpressionToValueBinding;
 import org.apache.myfaces.el.unified.ELResolverBuilder;
-import org.apache.myfaces.el.unified.ResolverFactoryForFaces;
+import org.apache.myfaces.el.unified.ResolverBuilderForFaces;
 import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver;
 import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
@@ -202,7 +202,7 @@ public class ApplicationImpl extends Application
     {
         if (resolverFactoryForFaces == null)
         {
-            resolverFactoryForFaces = new ResolverFactoryForFaces(_runtimeConfig);
+            resolverFactoryForFaces = new ResolverBuilderForFaces(_runtimeConfig);
         }
         return resolverFactoryForFaces;
     }

@@ -38,9 +38,9 @@ import javax.el.ResourceBundleELResolver;
  * @version $Revision$ $Date$
  */
 @SuppressWarnings("deprecation")
-public class ResolverFactoryForFaces extends ResolverBuilderBase implements ELResolverBuilder
+public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELResolverBuilder
 {
-    public ResolverFactoryForFaces(RuntimeConfig config)
+    public ResolverBuilderForFaces(RuntimeConfig config)
     {
         super(config);
     }
