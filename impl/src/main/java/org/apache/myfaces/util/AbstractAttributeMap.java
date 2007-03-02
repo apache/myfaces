@@ -352,5 +352,36 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
         {
             return AbstractAttributeMap.this.put(_currentKey, value);
         }
+
+        @Override
+        public int hashCode()
+        {
+            final int PRIME = 31;
+            int result = 1;
+            result = PRIME * result + ((_currentKey == null) ? 0 : _currentKey.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            final EntrySetEntry other = (EntrySetEntry) obj;
+            if (_currentKey == null)
+            {
+                if (other._currentKey != null)
+                    return false;
+            }
+            else if (!_currentKey.equals(other._currentKey))
+                return false;
+            return true;
+        }
+        
+        
     }
 }
