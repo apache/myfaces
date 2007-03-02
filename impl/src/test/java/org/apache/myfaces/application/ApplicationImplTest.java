@@ -142,6 +142,29 @@ public class ApplicationImplTest extends TestCase
         assertTrue(UIOutput.class.isAssignableFrom(app.createComponent(expr, context, "testComponent").getClass()));
     }
 
+    public void testCreateComponentExpressionFacesExceptionTest() throws Exception
+    {
+        ValueExpression expr = createMock(ValueExpression.class);
+        FacesContext context = createMock(FacesContext.class);
+        ELContext elcontext = createMock(ELContext.class);
+        expect(context.getELContext()).andReturn(elcontext);
+        expect(expr.getValue(elcontext)).andThrow(new IllegalArgumentException());
+        replay(context);
+        replay(expr);
+        try
+        {
+            app.createComponent(expr, context, "testComponent");
+        }
+        catch (FacesException e)
+        {
+            // ok
+        }
+        catch (Throwable e)
+        {
+            fail("FacesException expected: " + e.getMessage());
+        }
+    }
+
     private void assertGetResourceBundleWithLocale(final Locale expectedLocale)
     {
         final String var = "test";

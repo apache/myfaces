@@ -283,12 +283,12 @@ public class ApplicationImpl extends Application
 
         ELContext elContext = facesContext.getELContext();
 
-        Object retVal = componentExpression.getValue(elContext);
-
-        UIComponent createdComponent;
-
         try
         {
+            Object retVal = componentExpression.getValue(elContext);
+
+            UIComponent createdComponent;
+
             if (retVal instanceof UIComponent)
             {
                 createdComponent = (UIComponent) retVal;
@@ -298,13 +298,17 @@ public class ApplicationImpl extends Application
                 createdComponent = createComponent(componentType);
                 componentExpression.setValue(elContext, createdComponent);
             }
+
+            return createdComponent;
+        }
+        catch (FacesException e)
+        {
+            throw e;
         }
         catch (Exception e)
         {
             throw new FacesException(e);
         }
-
-        return createdComponent;
     }
 
     @Override
