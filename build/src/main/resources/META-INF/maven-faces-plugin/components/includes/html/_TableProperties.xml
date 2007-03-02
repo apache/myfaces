@@ -2,8 +2,7 @@
 		xmlns:mfp="http://myfaces.apache.org/maven-faces-plugin"
 		xmlns:xi="http://www.w3.org/2001/XInclude">
 	<component>
-        <!-- align, border, bgcolor, datafld, datasrc, dataformatas, cellpadding, cellspacing, frame, rules, summary, width-->
-        <xi:include href="AlignProperty.xml" xpointer="/faces_config/component/*" />
+        <!-- align, border, bgcolor, cellpadding, cellspacing, frame, rules, summary, width-->
 		<xi:include href="BorderProperty.xml" xpointer="/faces_config/component/*" />
 		<xi:include href="BgcolorProperty.xml" xpointer="/faces_config/component/*" />
 		<property>
