@@ -99,7 +99,14 @@ public abstract class ExternalContext
 
     public abstract Object getResponse();
     
-    public abstract String getResponseContentType();
+    /**
+     * throws <code>UnsupportedOperationException</code> by default.
+     * @since JSF 1.2
+     */
+    public String getResponseContentType()
+    {
+        throw new UnsupportedOperationException();
+    }
 
     public abstract Object getSession(boolean create);
 
