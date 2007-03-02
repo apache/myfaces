@@ -477,7 +477,7 @@ public class UIInput
 
     public Object saveState(FacesContext context)
     {
-        Object values[] = new Object[10];
+        Object values[] = new Object[9];
         values[0] = super.saveState(context);
         values[1] = _immediate;
         values[2] = Boolean.valueOf(_localValueSet);
