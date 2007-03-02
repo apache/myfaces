@@ -19,20 +19,28 @@
 package org.apache.myfaces.application;
 
 import static org.apache.myfaces.test.AssertThrowables.assertThrowable;
-
-import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.test.TestRunnable;
-import org.apache.shale.test.mock.MockFacesContext;
-
-import javax.faces.FacesException;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.classextension.EasyMock.createMock;
+import static org.easymock.classextension.EasyMock.replay;
 
 import java.util.ListResourceBundle;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import javax.el.ELContext;
+import javax.el.ValueExpression;
+import javax.faces.FacesException;
+import javax.faces.component.UIOutput;
+import javax.faces.component.UIViewRoot;
+import javax.faces.context.FacesContext;
+
 import junit.framework.TestCase;
+
+import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.test.TestRunnable;
+import org.apache.shale.test.mock.MockFacesContext;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -118,6 +126,20 @@ public class ApplicationImplTest extends TestCase
         context.setViewRoot(viewRoot);
         viewRoot.setLocale(locale);
         assertGetResourceBundleWithLocale(locale);
+    }
+
+    public void testCreateComponentCallSetValueOnExpressionIfValueNull() throws Exception
+    {
+        ValueExpression expr = createMock(ValueExpression.class);
+        FacesContext context = createMock(FacesContext.class);
+        ELContext elcontext = createMock(ELContext.class);
+        expect(context.getELContext()).andReturn(elcontext);
+        expect(expr.getValue(elcontext)).andReturn(null);
+        expr.setValue(eq(elcontext), isA(UIOutput.class));
+        app.addComponent("testComponent", UIOutput.class.getName());
+        replay(context);
+        replay(expr);
+        assertTrue(UIOutput.class.isAssignableFrom(app.createComponent(expr, context, "testComponent").getClass()));
     }
 
     private void assertGetResourceBundleWithLocale(final Locale expectedLocale)

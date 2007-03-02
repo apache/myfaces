@@ -296,7 +296,7 @@ public class ApplicationImpl extends Application
             else
             {
                 createdComponent = createComponent(componentType);
-                componentExpression.setValue(elContext, retVal);
+                componentExpression.setValue(elContext, createdComponent);
             }
         }
         catch (Exception e)
