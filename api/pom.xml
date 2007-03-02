@@ -163,73 +163,21 @@
     <dependency>
        <groupId>org.apache.myfaces.core</groupId>
        <artifactId>myfaces-build</artifactId>
-       <version>1.2.0-SNAPSHOT</version>
     </dependency>
-    <dependency>
-      <groupId>javax.el</groupId>
-      <artifactId>el-api</artifactId>
-      <version>1.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.tomcat</groupId>
-      <artifactId>jasper-el</artifactId>
-      <version>6.0.1-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-      <version>2.1</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>easymock</groupId>
-      <artifactId>easymockclassextension</artifactId>
-      <version>1.1</version>
-      <scope>test</scope>
-    </dependency>
+
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
-      <version>2.5</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>javax.servlet.jsp</groupId>
       <artifactId>jsp-api</artifactId>
-      <version>2.1</version>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>commons-beanutils</groupId>
-      <artifactId>commons-beanutils</artifactId>
-      <version>1.7.0</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.shale</groupId>
-      <artifactId>shale-test</artifactId>
-      <version>1.1.0-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>jmock</groupId>
-      <artifactId>jmock</artifactId>
-      <version>1.0.1</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>jmock</groupId>
-      <artifactId>jmock-cglib</artifactId>
-      <version>1.0.1</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>jstl</groupId>
       <artifactId>jstl</artifactId>
-      <version>1.2</version>    
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -238,29 +186,48 @@
         </exclusion>
       </exclusions>
     </dependency>
+
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
+    </dependency>
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
-      <version>1.0.4</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>easymock</groupId>
-      <artifactId>easymock</artifactId>
-      <version>1.1</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>commons-digester</groupId>
       <artifactId>commons-digester</artifactId>
-      <version>1.6</version>
-      <scope>compile</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>xml-apis</artifactId>
-          <groupId>xml-apis</groupId>
-        </exclusion>
-      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.shale</groupId>
+      <artifactId>shale-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>jmock</groupId>
+      <artifactId>jmock</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>jmock</groupId>
+      <artifactId>jmock-cglib</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.easymock</groupId>
+      <artifactId>easymock</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.easymock</groupId>
+      <artifactId>easymockclassextension</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   <reporting>
