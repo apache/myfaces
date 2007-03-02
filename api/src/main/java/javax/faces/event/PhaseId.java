@@ -34,7 +34,7 @@ public class PhaseId implements Comparable{
 	public static final javax.faces.event.PhaseId RENDER_RESPONSE;
 	public static final javax.faces.event.PhaseId RESTORE_VIEW;
 	public static final javax.faces.event.PhaseId UPDATE_MODEL_VALUES;
-	public static final java.util.List<PhaseId> VALUES;
+	public static final java.util.List VALUES;
 
     static
     {
