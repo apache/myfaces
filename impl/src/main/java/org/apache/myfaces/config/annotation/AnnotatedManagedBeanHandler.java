@@ -12,7 +12,6 @@ import org.apache.myfaces.config.ManagedBeanBuilder;
 
 /**
  * @see JSF spec 1.2, section 5.4
- * @warn Do not import javax.annotation.* in this class
  * @author Dennis Byrne
  */
 
