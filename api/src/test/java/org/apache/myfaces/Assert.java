@@ -54,8 +54,9 @@ public class Assert
                 junit.framework.Assert.fail("caught exception <" + e.getClass() + "> does not match expected <"
                         + expected + ">: " + e.getMessage());
             }
+            return;
         }
-        junit.framework.Assert.fail(expected + " expected");
+        junit.framework.Assert.fail(expected.getName() + " expected");
     }
 
 }
