@@ -58,7 +58,6 @@ public class AnnotatedExceptionManagedBeanHandlerTestCase extends TestCase {
 	
 	public void testPostConstructShouldBlowUpForRequestScope() {
 
-        try {
         handler = new AnnotatedManagedBeanHandler(managedBean,
 				ManagedBeanBuilder.REQUEST, NAME);
 
@@ -69,9 +68,6 @@ public class AnnotatedExceptionManagedBeanHandlerTestCase extends TestCase {
 		assertTrue(exceptionThrown);
 		assertTrue(managedBean.isPostConstructCalled());
 		assertFalse(managedBean.isPreDestroyCalled());
-       } catch (Throwable e) {
-			e.printStackTrace();			
-		}
     }
 
 	public void testPreDestroyShouldBlowUpForRequestScope() {

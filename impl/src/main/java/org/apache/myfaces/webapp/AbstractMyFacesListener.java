@@ -57,8 +57,7 @@ public abstract class AbstractMyFacesListener {
 
             try
             {
-                // AnnotationProcessor already configured
-                AnnotationProcessorFactory.getAnnotatonProcessor(null).preDestroy(value);
+                AnnotationProcessorFactory.getAnnotatonProcessor(null).preDestroy(value); 
             } catch (IllegalAccessException e)
             {
                 log.error("", e);

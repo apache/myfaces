@@ -46,14 +46,19 @@ public class AnnotationProcessorFactory
     {
         if (ANNOTATION_PROCESSOR_INSTANCE == null)
         {
-            if (externalContext == null) {
-                throw new NullPointerException("AnnotationProcessorFactory is not configured and ExternalContext is null");
-            }
-            if (!resolveAnnotationProcessorFromExternalContext(externalContext))
+            if (externalContext == null)
             {
-                if (!resolveAnnotationProcessorFromService(externalContext))
+                log.info("No ExternalContext using fallback annotation processor.");
+                resolveFallbackAnnotationProcessor();
+            }
+            else
+            {
+                if (!resolveAnnotationProcessorFromExternalContext(externalContext))
                 {
-                    resolveFallbackAnnotationProcessor();
+                    if (!resolveAnnotationProcessorFromService(externalContext))
+                    {
+                        resolveFallbackAnnotationProcessor();
+                    }
                 }
             }
         }
@@ -80,7 +85,7 @@ public class AnnotationProcessorFactory
                     ANNOTATION_PROCESSOR_INSTANCE = (AnnotationProcessor) obj;
                     return true;
                 }
-             }
+            }
         }
         catch (ClassNotFoundException e)
         {
@@ -136,11 +141,11 @@ public class AnnotationProcessorFactory
             }
             catch (IllegalAccessException e)
             {
-                 log.error("", e);
+                log.error("", e);
             }
             catch (InvocationTargetException e)
             {
-                 log.error("", e);
+                log.error("", e);
             }
         }
         return false;
@@ -152,7 +157,8 @@ public class AnnotationProcessorFactory
         Class clazz = ClassUtils.classForName(className);
 
         Object obj;
-        try {
+        try
+        {
             Constructor constructor = clazz.getConstructor(ExternalContext.class);
             obj = constructor.newInstance(externalContext);
         } catch (NoSuchMethodException e) {
