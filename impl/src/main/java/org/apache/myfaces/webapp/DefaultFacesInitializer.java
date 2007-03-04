@@ -18,6 +18,17 @@
  */
 package org.apache.myfaces.webapp;
 
+import java.util.Iterator;
+import java.util.List;
+
+import javax.faces.FactoryFinder;
+import javax.faces.context.ExternalContext;
+import javax.faces.event.PhaseListener;
+import javax.faces.lifecycle.LifecycleFactory;
+import javax.servlet.ServletContext;
+import javax.servlet.jsp.JspApplicationContext;
+import javax.servlet.jsp.JspFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.ApplicationImpl;
@@ -33,17 +44,6 @@ import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
 import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
 
-import javax.faces.FactoryFinder;
-import javax.faces.context.ExternalContext;
-import javax.faces.event.PhaseListener;
-import javax.faces.lifecycle.LifecycleFactory;
-import javax.servlet.ServletContext;
-import javax.servlet.jsp.JspApplicationContext;
-import javax.servlet.jsp.JspFactory;
-
-import java.util.Iterator;
-import java.util.List;
-
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
@@ -51,6 +51,7 @@ import java.util.List;
 public class DefaultFacesInitializer implements FacesInitializer
 {
     private static final Log log = LogFactory.getLog(DefaultFacesInitializer.class);
+    private JspFactory _jspFactory;
 
     protected ELResolverBuilder createResolverBuilderForJSP(RuntimeConfig runtimeConfig)
     {
@@ -72,17 +73,22 @@ public class DefaultFacesInitializer implements FacesInitializer
             {
                 Class.forName("org.apache.jasper.compiler.JspRuntimeContext");
             }
-            catch (Exception e)
+            catch (ClassNotFoundException e)
             {
-                e.printStackTrace();
+                // ignore
+            }
+            catch (Exception e) {
+                log.debug(e.getMessage(), e);
             }
 
-            JspFactory jspFactory = JspFactory.getDefaultFactory();
+            JspFactory jspFactory = getJspFactory();
             if (log.isDebugEnabled())
             {
                 log.debug("jspfactory = " + jspFactory);
             }
             JspApplicationContext appCtx = jspFactory.getJspApplicationContext(servletContext);
+
+            appCtx.addELContextListener(new FacesELContextListener());
 
             RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
             runtimeConfig.setExpressionFactory(appCtx.getExpressionFactory());
@@ -110,6 +116,23 @@ public class DefaultFacesInitializer implements FacesInitializer
         {
             log.error("Error initializing MyFaces: " + ex.getMessage(), ex);
         }
+    }
+
+    protected JspFactory getJspFactory()
+    {
+        if (_jspFactory == null)
+        {
+            return JspFactory.getDefaultFactory();
+        }
+        return _jspFactory;
+    }
+    
+    /**
+     * @param jspFactory the jspFactory to set
+     */
+    public void setJspFactory(JspFactory jspFactory)
+    {
+        _jspFactory = jspFactory;
     }
 
     /**
