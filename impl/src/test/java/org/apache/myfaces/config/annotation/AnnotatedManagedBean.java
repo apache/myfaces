@@ -13,26 +13,33 @@ class AnnotatedManagedBean {
 
 	private boolean preDestroyCalled = false; // using a stob for a mock here
 
-	private Throwable throwable;
+	boolean throwExcetion;
 
-	public AnnotatedManagedBean(Throwable throwable) {
-		this.throwable = throwable;
+
+    public AnnotatedManagedBean()
+    {
+    }
+
+    public AnnotatedManagedBean(boolean throwExcetion) {
+		this.throwExcetion = throwExcetion;
 	}
 
 	@PostConstruct
-	public void postConstruct() throws Throwable {
+	public void postConstruct()  {
 		postConstructCalled = true;
 
-		if (throwable != null)
-			throw throwable;
-	}
+		if (throwExcetion) {
+			throw new RuntimeException();
+        }
+    }
 
 	@PreDestroy
-	public void preDestroy() throws Throwable {
+	public void preDestroy() {
 		preDestroyCalled = true;
 
-		if (throwable != null)
-			throw throwable;
+		if (throwExcetion) {
+			throw new RuntimeException();
+        }
 	}
 
 	boolean isPostConstructCalled() {

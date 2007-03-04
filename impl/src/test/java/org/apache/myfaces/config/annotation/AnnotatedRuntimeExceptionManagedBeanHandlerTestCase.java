@@ -15,7 +15,7 @@ public class AnnotatedRuntimeExceptionManagedBeanHandlerTestCase extends TestCas
 	protected final String NAME = "Thomas_Spiegl";
 	
 	public void setUp() {
-		managedBean = new AnnotatedManagedBean(new RuntimeException());
+		managedBean = new AnnotatedManagedBean(true);
 	}
 	
 	public void testPostConstructShouldNotInvokeForNoneScope() {

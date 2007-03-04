@@ -1,18 +1,40 @@
 package org.apache.myfaces.webapp;
 
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import javax.servlet.ServletContextAttributeEvent;
 import javax.servlet.ServletRequestAttributeEvent;
 import javax.servlet.http.HttpSessionBindingEvent;
 
-import org.apache.myfaces.config.annotation.AnnotatedManagedBeanHandler;
+import org.apache.myfaces.config.annotation.AnnotationProcessorFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author Dennis Byrne
  */
 
 public abstract class AbstractMyFacesListener {
+    private static Log log = LogFactory.getLog(AbstractMyFacesListener.class);
 
-	protected void doPreDestroy(ServletRequestAttributeEvent event, String scope) {
+    protected void doPreDestroy(ServletRequestAttributeEvent event, String scope) {
 		doPreDestroy(event.getValue(), event.getName(), scope);
 	}
 
@@ -25,15 +47,25 @@ public abstract class AbstractMyFacesListener {
 	}
 	
 	protected void doPreDestroy(Object value, String name, String scope) {
-		
-		if(value != null)
+        
+        if(value != null)
 		{
-			AnnotatedManagedBeanHandler handler =
-				new AnnotatedManagedBeanHandler(value, scope, name);
+			//AnnotatedManagedBeanHandler handler =
+			//	new AnnotatedManagedBeanHandler(value, scope, name);
 
-			handler.invokePreDestroy();
-		}
+			//handler.invokePreDestroy();
 
+            try
+            {
+                // AnnotationProcessor already configured
+                AnnotationProcessorFactory.getAnnotatonProcessor(null).preDestroy(value);
+            } catch (IllegalAccessException e)
+            {
+                log.error("", e);
+            } catch (InvocationTargetException e)
+            {
+                log.error("", e);
+            }
+        }
 	}
-
 }

@@ -17,7 +17,7 @@ public class AnnotatedExceptionManagedBeanHandlerTestCase extends TestCase {
 	protected final String NAME = "sean_schofield";
 	
 	public void setUp() {
-		managedBean = new AnnotatedManagedBean(new Exception());
+		managedBean = new AnnotatedManagedBean(true);
 	}
 
 	public void testPostConstructShouldNotBlowUpForNoneScope() {
@@ -25,11 +25,11 @@ public class AnnotatedExceptionManagedBeanHandlerTestCase extends TestCase {
 		handler = new AnnotatedManagedBeanHandler(managedBean, 
 				ManagedBeanBuilder.NONE, NAME);
 
-		boolean exceptionThrown = false;
+		boolean exceptionThrown;
 		
 		try {
-			handler.invokePostConstruct();
-		} catch (Exception e) {
+			exceptionThrown = handler.invokePostConstruct();
+		} catch (RuntimeException e) {
 			exceptionThrown = true;			
 		}
 
@@ -43,11 +43,11 @@ public class AnnotatedExceptionManagedBeanHandlerTestCase extends TestCase {
 		handler = new AnnotatedManagedBeanHandler(managedBean, 
 				ManagedBeanBuilder.NONE, NAME);
 
-		boolean exceptionThrown = false;
+		boolean exceptionThrown;
 		
 		try {
-			handler.invokePreDestroy();
-		} catch (Exception e) {
+			exceptionThrown = handler.invokePreDestroy();
+		} catch (RuntimeException e) {
 			exceptionThrown = true;			
 		}
 
@@ -58,34 +58,31 @@ public class AnnotatedExceptionManagedBeanHandlerTestCase extends TestCase {
 	
 	public void testPostConstructShouldBlowUpForRequestScope() {
 
-		handler = new AnnotatedManagedBeanHandler(managedBean, 
+        try {
+        handler = new AnnotatedManagedBeanHandler(managedBean,
 				ManagedBeanBuilder.REQUEST, NAME);
 
-		boolean exceptionThrown = false;
+		boolean exceptionThrown;
 		
-		try {
-			handler.invokePostConstruct();
-		} catch (Exception e) {
-			exceptionThrown = true;			
-		}
+	    exceptionThrown = handler.invokePostConstruct();
 
 		assertTrue(exceptionThrown);
 		assertTrue(managedBean.isPostConstructCalled());
 		assertFalse(managedBean.isPreDestroyCalled());
-	}
+       } catch (Throwable e) {
+			e.printStackTrace();			
+		}
+    }
 
 	public void testPreDestroyShouldBlowUpForRequestScope() {
 
 		handler = new AnnotatedManagedBeanHandler(managedBean, 
 				ManagedBeanBuilder.REQUEST, NAME);
 
-		boolean exceptionThrown = false;
+		boolean exceptionThrown;
 		
-		try {
-			handler.invokePreDestroy();
-		} catch (Exception e) {
-			exceptionThrown = true;			
-		}
+
+	    exceptionThrown = handler.invokePreDestroy();
 
 		assertTrue(exceptionThrown);
 		assertFalse(managedBean.isPostConstructCalled());
@@ -97,13 +94,9 @@ public class AnnotatedExceptionManagedBeanHandlerTestCase extends TestCase {
 		handler = new AnnotatedManagedBeanHandler(managedBean, 
 				ManagedBeanBuilder.SESSION, NAME);
 
-		boolean exceptionThrown = false;
+		boolean exceptionThrown;
 		
-		try {
-			handler.invokePostConstruct();
-		} catch (Exception e) {
-			exceptionThrown = true;			
-		}
+	    exceptionThrown = handler.invokePostConstruct();
 
 		assertTrue(exceptionThrown);
 		assertTrue(managedBean.isPostConstructCalled());
@@ -115,13 +108,9 @@ public class AnnotatedExceptionManagedBeanHandlerTestCase extends TestCase {
 		handler = new AnnotatedManagedBeanHandler(managedBean, 
 				ManagedBeanBuilder.SESSION, NAME);
 
-		boolean exceptionThrown = false;
+		boolean exceptionThrown;
 		
-		try {
-			handler.invokePreDestroy();
-		} catch (Exception e) {
-			exceptionThrown = true;			
-		}
+	    exceptionThrown = handler.invokePreDestroy();
 
 		assertTrue(exceptionThrown);
 		assertFalse(managedBean.isPostConstructCalled());
@@ -133,13 +122,9 @@ public class AnnotatedExceptionManagedBeanHandlerTestCase extends TestCase {
 		handler = new AnnotatedManagedBeanHandler(managedBean, 
 				ManagedBeanBuilder.APPLICATION, NAME);
 
-		boolean exceptionThrown = false;
+		boolean exceptionThrown;
 		
-		try {
-			handler.invokePostConstruct();
-		} catch (Exception e) {
-			exceptionThrown = true;			
-		}
+		exceptionThrown = handler.invokePostConstruct();
 
 		assertTrue(exceptionThrown);
 		assertTrue(managedBean.isPostConstructCalled());
@@ -151,13 +136,9 @@ public class AnnotatedExceptionManagedBeanHandlerTestCase extends TestCase {
 		handler = new AnnotatedManagedBeanHandler(managedBean, 
 				ManagedBeanBuilder.APPLICATION, NAME);
 
-		boolean exceptionThrown = false;
+		boolean exceptionThrown;
 		
-		try {
-			handler.invokePreDestroy();
-		} catch (Exception e) {
-			exceptionThrown = true;			
-		}
+		exceptionThrown = handler.invokePreDestroy();
 
 		assertTrue(exceptionThrown);
 		assertFalse(managedBean.isPostConstructCalled());

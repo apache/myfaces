@@ -16,6 +16,7 @@
 package org.apache.myfaces.config;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -32,10 +33,12 @@ import javax.faces.application.Application;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.webapp.UIComponentTag;
+import javax.naming.NamingException;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.config.annotation.AnnotationProcessorFactory;
 import org.apache.myfaces.config.annotation.AnnotatedManagedBeanHandler;
 import org.apache.myfaces.config.element.ListEntries;
 import org.apache.myfaces.config.element.ListEntry;
@@ -72,6 +75,26 @@ public class ManagedBeanBuilder
 
         if(threwUnchecked)
         	return null;
+        /*try
+        {
+            AnnotationProcessorFactory.getAnnotatonProcessor(facesContext.getExternalContext()).processAnnotations(bean);
+            if (!beanConfiguration.getManagedBeanScope().equals(ManagedBeanBuilder.NONE))
+            {
+                AnnotationProcessorFactory.getAnnotatonProcessor(facesContext.getExternalContext()).postConstruct(bean);
+            }
+        }
+        catch (IllegalAccessException e)
+        {
+            throw new FacesException(e);
+        }
+        catch (InvocationTargetException e)
+        {
+            throw new FacesException(e);
+        }
+        catch (NamingException e)
+        {
+            throw new FacesException(e);
+        } */
 
         switch (beanConfiguration.getInitMode())
         {

@@ -1,0 +1,149 @@
+package org.apache.myfaces.config.annotation;
+
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import javax.naming.NamingException;
+import javax.naming.Context;
+import javax.annotation.Resource;
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Field;
+
+public class ResourceAnnotationProcessor extends NoInjectionAnnotationProcessor
+{
+
+    protected Context context;
+
+    public ResourceAnnotationProcessor(Context context)
+    {
+        this.context = context;
+    }
+
+
+    /**
+     * Inject resources in specified instance.
+     */
+    public void processAnnotations(Object instance)
+            throws IllegalAccessException, InvocationTargetException, NamingException
+    {
+
+        if (context == null)
+        {
+            // No resource injection
+            return;
+        }
+
+        // Initialize fields annotations
+        Field[] fields = instance.getClass().getDeclaredFields();
+        for (Field field : fields)
+        {
+            checkFieldAnnotation(field, instance);
+        }
+
+        // Initialize methods annotations
+        Method[] methods = instance.getClass().getDeclaredMethods();
+        for (Method method : methods)
+        {
+            checkMethodAnnotation(method, instance);
+        }
+
+    }
+
+    protected void checkMethodAnnotation(Method method, Object instance)
+            throws NamingException, IllegalAccessException, InvocationTargetException
+    {
+        if (method.isAnnotationPresent(Resource.class))
+        {
+            Resource annotation = method.getAnnotation(Resource.class);
+            lookupMethodResource(context, instance, method, annotation.name());
+        }
+    }
+
+    protected void checkFieldAnnotation(Field field, Object instance)
+            throws NamingException, IllegalAccessException
+    {
+        if (field.isAnnotationPresent(Resource.class))
+        {
+            Resource annotation = field.getAnnotation(Resource.class);
+            lookupFieldResource(context, instance, field, annotation.name());
+        }
+    }
+
+    /**
+     * Inject resources in specified field.
+     */
+    protected static void lookupFieldResource(javax.naming.Context context,
+            Object instance, Field field, String name)
+            throws NamingException, IllegalAccessException
+    {
+
+        Object lookedupResource;
+        boolean accessibility ;
+
+        if ((name != null) &&
+                (name.length() > 0))
+        {
+            lookedupResource = context.lookup(name);
+        }
+        else
+        {
+            lookedupResource = context.lookup(instance.getClass().getName() + "/" + field.getName());
+        }
+
+        accessibility = field.isAccessible();
+        field.setAccessible(true);
+        field.set(instance, lookedupResource);
+        field.setAccessible(accessibility);
+    }
+
+
+    /**
+     * Inject resources in specified method.
+     */
+    protected static void lookupMethodResource(javax.naming.Context context,
+            Object instance, Method method, String name)
+            throws NamingException, IllegalAccessException, InvocationTargetException
+    {
+
+        if (!method.getName().startsWith("set")
+                || method.getParameterTypes().length != 1
+                || !method.getReturnType().getName().equals("void"))
+        {
+            throw new IllegalArgumentException("Invalid method resource injection annotation");
+        }
+
+        Object lookedupResource;
+        boolean accessibility;
+
+        if ((name != null) &&
+                (name.length() > 0))
+        {
+            lookedupResource = context.lookup(name);
+        }
+        else
+        {
+            lookedupResource =
+                    context.lookup(instance.getClass().getName() + "/" + method.getName().substring(3));
+        }
+
+        accessibility = method.isAccessible();
+        method.setAccessible(true);
+        method.invoke(instance, lookedupResource);
+        method.setAccessible(accessibility);
+    }
+}

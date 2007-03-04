@@ -15,14 +15,14 @@ public class AnnotatedManagedBeanHandlerTestCase extends TestCase {
 	protected final String NAME = "volker weber";
 	
 	public void setUp() {
-		managedBean = new AnnotatedManagedBean(null);
+		managedBean = new AnnotatedManagedBean();
 	}
 
 	public void testPostConstructShouldNotInvokeForNoneScope() {
 
-		handler = new AnnotatedManagedBeanHandler(managedBean,
+		handler = new AnnotatedManagedBeanHandler(managedBean, 
 				ManagedBeanBuilder.NONE, NAME);
-
+		
 		boolean threwUnchecked = handler.invokePostConstruct();
 		
 		assertFalse(threwUnchecked);
@@ -32,7 +32,7 @@ public class AnnotatedManagedBeanHandlerTestCase extends TestCase {
 
 	public void testPreDestroyShouldNotInvokeForNoneScope() {
 
-		handler = new AnnotatedManagedBeanHandler(managedBean,
+		handler = new AnnotatedManagedBeanHandler(managedBean, 
 				ManagedBeanBuilder.NONE, NAME);
 		
 		boolean threwUnchecked = handler.invokePreDestroy();
@@ -44,7 +44,7 @@ public class AnnotatedManagedBeanHandlerTestCase extends TestCase {
 	
 	public void testPostConstructShouldInvokeForRequestScope() {
 		
-		handler = new AnnotatedManagedBeanHandler(managedBean,
+		handler = new AnnotatedManagedBeanHandler(managedBean, 
 				ManagedBeanBuilder.REQUEST, NAME);
 		
 		boolean threwUnchecked = handler.invokePostConstruct();
