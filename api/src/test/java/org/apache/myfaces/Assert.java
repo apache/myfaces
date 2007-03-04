@@ -46,7 +46,6 @@ public class Assert
         try
         {
             testCase.run();
-            junit.framework.Assert.fail(expected + " expected");
         }
         catch (Throwable e)
         {
@@ -56,6 +55,7 @@ public class Assert
                         + expected + ">: " + e.getMessage());
             }
         }
+        junit.framework.Assert.fail(expected + " expected");
     }
 
 }
