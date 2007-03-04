@@ -16,8 +16,6 @@
 package org.apache.myfaces.application.jsp;
 
 import org.apache.commons.collections.map.ReferenceMap;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.MyfacesStateManager;
@@ -867,28 +865,42 @@ public class JspStateManagerImpl
             _viewId = context.getViewRoot().getViewId();
         }
 
-        public boolean equals(Object obj)
-        {
-            if (obj == null)
-            {
-                return false;
-            }
-            if (obj == this)
-            {
-                return true;
-            }
-            if (obj instanceof SerializedViewKey)
-            {
-                SerializedViewKey other = (SerializedViewKey) obj;
-                return new EqualsBuilder().append(other._viewId, _viewId).append(other._sequenceId,
-                                                                                 _sequenceId).isEquals();
-            }
-            return false;
-        }
-
+        @Override
         public int hashCode()
         {
-            return new HashCodeBuilder().append(_viewId).append(_sequenceId).toHashCode();
+            final int PRIME = 31;
+            int result = 1;
+            result = PRIME * result + ((_sequenceId == null) ? 0 : _sequenceId.hashCode());
+            result = PRIME * result + ((_viewId == null) ? 0 : _viewId.hashCode());
+            return result;
         }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            final SerializedViewKey other = (SerializedViewKey) obj;
+            if (_sequenceId == null)
+            {
+                if (other._sequenceId != null)
+                    return false;
+            }
+            else if (!_sequenceId.equals(other._sequenceId))
+                return false;
+            if (_viewId == null)
+            {
+                if (other._viewId != null)
+                    return false;
+            }
+            else if (!_viewId.equals(other._viewId))
+                return false;
+            return true;
+        }
+
     }
 }
