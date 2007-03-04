@@ -66,6 +66,20 @@
         </configuration>
       </plugin>
     </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-idea-plugin</artifactId>
+	        <configuration>
+            <jdkName>1.5</jdkName>
+            <linkModules>true</linkModules>
+            <downloadSources>true</downloadSources>
+            <jdkLevel>5.0</jdkLevel>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
   <dependencyManagement>
     <dependencies>
@@ -140,6 +154,10 @@
           <exclusion>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
           </exclusion>
           <exclusion>
             <groupId>avalon-framework</groupId>
