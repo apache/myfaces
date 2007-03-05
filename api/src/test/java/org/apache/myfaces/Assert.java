@@ -51,8 +51,10 @@ public class Assert
         {
             if (!expected.isAssignableFrom(e.getClass()))
             {
-                junit.framework.Assert.fail("caught exception <" + e.getClass() + "> does not match expected <"
-                        + expected + ">: " + e.getMessage());
+                AssertionError assertionError = new AssertionError("caught exception <" + e.getClass()
+                        + "> does not match expected <" + expected + ">: " + e.getMessage());
+                assertionError.initCause(e);
+                throw assertionError;
             }
             return;
         }
