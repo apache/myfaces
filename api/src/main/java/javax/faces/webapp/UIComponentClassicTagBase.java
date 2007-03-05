@@ -902,12 +902,11 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
      */
     private void removeFormerChildren(UIComponent component)
     {
-        Set formerChildIdsSet = (Set)component.getAttributes().get(FORMER_CHILD_IDS_SET_ATTR);
-        if (formerChildIdsSet != null)
+        List<String> formerChildIds = (List<String>)component.getAttributes().get(FORMER_CHILD_IDS_SET_ATTR);
+        if (formerChildIds != null)
         {
-            for (Iterator iterator = formerChildIdsSet.iterator(); iterator.hasNext();)
+            for (String childId : formerChildIds)
             {
-                String childId = (String)iterator.next();
                 if (_childrenAdded == null || !_childrenAdded.contains(childId))
                 {
                     UIComponent childToRemove = component.findComponent(childId);
@@ -938,14 +937,12 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     /** See removeFormerChildren. */
     private void removeFormerFacets(UIComponent component)
     {
-        Set formerFacetNamesSet = (Set)component.getAttributes().get(FORMER_FACET_NAMES_SET_ATTR);
-        if (formerFacetNamesSet != null)
+        List<String> formerFacetNames = (List<String>)component.getAttributes().get(FORMER_FACET_NAMES_SET_ATTR);
+        if (formerFacetNames != null)
         {
-            for (Iterator iterator = formerFacetNamesSet.iterator(); iterator.hasNext();)
+            for (String facetName : formerFacetNames)
             {
-                String facetName = (String)iterator.next();
-                if (_facetsAdded == null || !_facetsAdded.contains(facetName))
-                {
+                if (_facetsAdded == null || !_facetsAdded.contains(facetName)) {
                     component.getFacets().remove(facetName);
                 }
             }
