@@ -69,8 +69,8 @@ or EL expressions.]]></description>
             <mfp:component-superclass>javax.faces.component.UISelectOne</mfp:component-superclass>
             <mfp:component-supertype>javax.faces.SelectOne</mfp:component-supertype>
 
-            <mfp:tag-name>h:selectManyListbox</mfp:tag-name>
-            <mfp:tag-class>org.apache.myfaces.taglib.html.HtmlSelectManyListboxTag</mfp:tag-class>
+            <mfp:tag-name>h:selectOneListbox</mfp:tag-name>
+            <mfp:tag-class>org.apache.myfaces.taglib.html.HtmlSelectOneListboxTag</mfp:tag-class>
 
             <mfp:renderer-type>javax.faces.Listbox</mfp:renderer-type>
         </component-extension>        
