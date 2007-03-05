@@ -26,14 +26,12 @@ import javax.faces.context.FacesContext;
  */
 public abstract class ValueBinding
 {
-    private String _expressionString = null;
-
     /**
      * @deprecated
      */
     public String getExpressionString()
     {
-        return _expressionString;
+        return null;
     }
 
     /**
