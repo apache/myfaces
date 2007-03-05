@@ -17,124 +17,222 @@
 package org.apache.myfaces.el.convert;
 
 import javax.el.ELException;
-import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
 import javax.faces.component.StateHolder;
 import javax.faces.context.FacesContext;
 import javax.faces.el.EvaluationException;
 import javax.faces.el.PropertyNotFoundException;
 import javax.faces.el.ValueBinding;
 
+import org.apache.myfaces.shared_impl.util.ClassUtils;
+
 /**
- * Converter for legacy ValueBinding objects.  See JSF 1.2 section 5.8.3
- *
- * ATTENTION: If you make changes to this class, treat 
- * javax.faces.component.ValueExpressionToValueBinding
- * accordingly.
- *
+ * Converter for legacy ValueBinding objects. See JSF 1.2 section 5.8.3
+ * 
+ * ATTENTION: If you make changes to this class, treat javax.faces.component.ValueExpressionToValueBinding accordingly.
+ * 
  * @author Stan Silvert
  * @see javax.faces.component.ValueExpressionToValueBinding
  */
-public class ValueExpressionToValueBinding extends ValueBinding implements StateHolder {
-    private static final ExpressionFactory expFactory;
-    
-    static {
-        ApplicationFactory appFactory = 
-                    (ApplicationFactory)FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-        Application application = appFactory.getApplication();
-        expFactory = application.getExpressionFactory();
-    }
-    
-    private ValueExpression valueExpression;
-    
+@SuppressWarnings("deprecation")
+public class ValueExpressionToValueBinding extends ValueBinding implements StateHolder
+{
+
+    private ValueExpression _valueExpression;
+
     private boolean isTransient = false;
-    
+
     // required no-arg constructor for StateHolder
-    public ValueExpressionToValueBinding() {
-        valueExpression = null;
+    protected ValueExpressionToValueBinding()
+    {
+        _valueExpression = null;
     }
-    
+
+    @Override
+    public int hashCode()
+    {
+        final int PRIME = 31;
+        int result = 1;
+        result = PRIME * result + ((_valueExpression == null) ? 0 : _valueExpression.hashCode());
+        result = PRIME * result + (isTransient ? 1231 : 1237);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final ValueExpressionToValueBinding other = (ValueExpressionToValueBinding) obj;
+        if (_valueExpression == null)
+        {
+            if (other._valueExpression != null)
+                return false;
+        }
+        else if (!_valueExpression.equals(other._valueExpression))
+            return false;
+        if (isTransient != other.isTransient)
+            return false;
+        return true;
+    }
+
+    /**
+     * @return the valueExpression
+     */
+    public ValueExpression getValueExpression()
+    {
+        return getNotNullValueExpression();
+    }
+
+    /**
+     * @return the valueExpression
+     */
+    private ValueExpression getNotNullValueExpression()
+    {
+        if (_valueExpression == null)
+        {
+            throw new IllegalStateException("value expression is null");
+        }
+        return _valueExpression;
+    }
+
+    @Override
+    public String getExpressionString()
+    {
+        return getNotNullValueExpression().getExpressionString();
+    }
+
     /** Creates a new instance of ValueExpressionToValueBinding */
-    public ValueExpressionToValueBinding(ValueExpression valueExpression) {
-        this.valueExpression = valueExpression;
+    public ValueExpressionToValueBinding(ValueExpression valueExpression)
+    {
+        if (valueExpression == null)
+        {
+            throw new IllegalArgumentException("value expression must not be null.");
+        }
+        _valueExpression = valueExpression;
     }
 
-    public void setValue(FacesContext facesContext, Object value) 
-        throws EvaluationException, PropertyNotFoundException {
-        
-        try {
-            valueExpression.setValue(facesContext.getELContext(), value);
-        } catch (javax.el.PropertyNotFoundException e) {
+    @Override
+    public void setValue(FacesContext facesContext, Object value) throws EvaluationException, PropertyNotFoundException
+    {
+        try
+        {
+            getNotNullValueExpression().setValue(facesContext.getELContext(), value);
+        }
+        catch (javax.el.PropertyNotFoundException e)
+        {
             throw new javax.faces.el.PropertyNotFoundException(e);
-        } catch (ELException e) {
+        }
+        catch (ELException e)
+        {
             throw new EvaluationException(e);
         }
     }
 
-    public boolean isReadOnly(FacesContext facesContext) 
-        throws EvaluationException, PropertyNotFoundException {
-        
-        try {
-            return valueExpression.isReadOnly(facesContext.getELContext());
-        } catch (javax.el.PropertyNotFoundException e) {
+    @Override
+    public boolean isReadOnly(FacesContext facesContext) throws EvaluationException, PropertyNotFoundException
+    {
+
+        try
+        {
+            return getNotNullValueExpression().isReadOnly(facesContext.getELContext());
+        }
+        catch (javax.el.PropertyNotFoundException e)
+        {
             throw new javax.faces.el.PropertyNotFoundException(e);
-        } catch (ELException e) {
+        }
+        catch (ELException e)
+        {
             throw new EvaluationException(e);
         }
-        
+
     }
 
-    public Object getValue(FacesContext facesContext) 
-        throws EvaluationException, PropertyNotFoundException {
-        
-        try {
-            return valueExpression.getValue(facesContext.getELContext());
-        } catch (javax.el.PropertyNotFoundException e) {
+    @Override
+    public Object getValue(FacesContext facesContext) throws EvaluationException, PropertyNotFoundException
+    {
+        try
+        {
+            return getNotNullValueExpression().getValue(facesContext.getELContext());
+        }
+        catch (javax.el.PropertyNotFoundException e)
+        {
             throw new javax.faces.el.PropertyNotFoundException(e);
-        } catch (ELException e) {
+        }
+        catch (ELException e)
+        {
             throw new EvaluationException(e);
         }
     }
 
-    public Class getType(FacesContext facesContext) 
-        throws EvaluationException, PropertyNotFoundException {
-        
-        try {
-            return valueExpression.getExpectedType();
-        } catch (javax.el.PropertyNotFoundException e) {
+    @Override
+    public Class getType(FacesContext facesContext) throws EvaluationException, PropertyNotFoundException
+    {
+        try
+        {
+            return getNotNullValueExpression().getType(facesContext.getELContext());
+        }
+        catch (javax.el.PropertyNotFoundException e)
+        {
             throw new javax.faces.el.PropertyNotFoundException(e);
-        } catch (ELException e) {
+        }
+        catch (ELException e)
+        {
             throw new EvaluationException(e);
         }
     }
 
-// -------- StateHolder methods -------------------------------------------
-    
-    public void restoreState(FacesContext facesContext, Object state) {
-        Object[] stateArray = (Object[])state;
-        String expressionString = (String)stateArray[0];
-        Class type = (Class)stateArray[1];
-        valueExpression = expFactory.createValueExpression(facesContext.getELContext(), 
-                                                           expressionString, 
-                                                           type);
+    // -------- StateHolder methods -------------------------------------------
+
+    public void restoreState(FacesContext facesContext, Object state)
+    {
+        if (state != null)
+        {
+            if (state instanceof ValueExpression)
+            {
+                _valueExpression = (ValueExpression) state;
+            }
+            else
+            {
+                Object[] stateArray = (Object[]) state;
+                _valueExpression = (ValueExpression) ClassUtils.newInstance((String) stateArray[0],
+                        ValueExpression.class);
+                ((StateHolder) _valueExpression).restoreState(facesContext, stateArray[1]);
+            }
+        }
     }
 
-    public Object saveState(FacesContext context) {
-        Object[] stateArray = new Object[3];
-        stateArray[0] = valueExpression.getExpressionString();
-        stateArray[1] = valueExpression.getExpectedType();
-        return stateArray;
+    public Object saveState(FacesContext context)
+    {
+        if (!isTransient)
+        {
+            if (_valueExpression instanceof StateHolder)
+            {
+                Object[] state = new Object[2];
+                state[0] = _valueExpression.getClass().getName();
+                state[1] = ((StateHolder) _valueExpression).saveState(context);
+                return state;
+            }
+            else
+            {
+                return _valueExpression;
+            }
+        }
+        return null;
     }
 
-    public void setTransient(boolean newTransientValue) {
+    public void setTransient(boolean newTransientValue)
+    {
         isTransient = newTransientValue;
     }
 
-    public boolean isTransient() {
+    public boolean isTransient()
+    {
         return isTransient;
     }
-    
+
 }
