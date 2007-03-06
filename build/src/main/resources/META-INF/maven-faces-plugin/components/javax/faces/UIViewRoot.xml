@@ -87,18 +87,6 @@ an id attribute set.</description>
         </property>
 
         <property>
-            <description>The phaseListeners attached to ViewRoot.</description>
-            <property-name>phaseListeners</property-name>
-            <property-class>java.util.List&lt;javax.faces.event.PhaseListener&gt;</property-class>
-            <property-extension>
-                <mfp:required>false</mfp:required>
-                <mfp:list>true</mfp:list>
-                <mfp:tag-attribute-excluded>true</mfp:tag-attribute-excluded>
-                <mfp:state-holder>yes</mfp:state-holder>
-            </property-extension>
-        </property>
-
-        <property>
             <description></description>
             <property-name>beforePhaseListener</property-name>
             <property-class>javax.el.MethodExpression</property-class>
