@@ -39,7 +39,6 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.config.annotation.AnnotationProcessorFactory;
-import org.apache.myfaces.config.annotation.AnnotatedManagedBeanHandler;
 import org.apache.myfaces.config.element.ListEntries;
 import org.apache.myfaces.config.element.ListEntry;
 import org.apache.myfaces.config.element.ManagedBean;
@@ -68,14 +67,14 @@ public class ManagedBeanBuilder
     {
         final Object bean = ClassUtils.newInstance(beanConfiguration.getManagedBeanClassName());
 
-        final AnnotatedManagedBeanHandler handler = new AnnotatedManagedBeanHandler(bean,
+        /*final AnnotatedManagedBeanHandler handler = new AnnotatedManagedBeanHandler(bean,
         		beanConfiguration.getManagedBeanScope(), beanConfiguration.getManagedBeanName());
         
         final boolean threwUnchecked = handler.invokePostConstruct();
 
         if(threwUnchecked)
-        	return null;
-        /*try
+        	return null;*/
+        try
         {
             AnnotationProcessorFactory.getAnnotatonProcessor(facesContext.getExternalContext()).processAnnotations(bean);
             if (!beanConfiguration.getManagedBeanScope().equals(ManagedBeanBuilder.NONE))
@@ -94,7 +93,7 @@ public class ManagedBeanBuilder
         catch (NamingException e)
         {
             throw new FacesException(e);
-        } */
+        } 
 
         switch (beanConfiguration.getInitMode())
         {

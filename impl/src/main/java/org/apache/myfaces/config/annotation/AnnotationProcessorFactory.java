@@ -61,6 +61,7 @@ public class AnnotationProcessorFactory
                     }
                 }
             }
+            log.info("Using AnnotationProcessor "+ ANNOTATION_PROCESSOR_INSTANCE.getClass().getName());
         }
         return ANNOTATION_PROCESSOR_INSTANCE;
     }
