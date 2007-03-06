@@ -28,6 +28,7 @@ public class ResourceAnnotationProcessor extends NoInjectionAnnotationProcessor
 {
 
     protected Context context;
+    private static final String JAVA_COMP_ENV = "java:comp/env/";
 
     public ResourceAnnotationProcessor(Context context)
     {
@@ -48,20 +49,34 @@ public class ResourceAnnotationProcessor extends NoInjectionAnnotationProcessor
             return;
         }
 
+        checkAnnotation(instance.getClass(), instance);
+
+        /* TODO the servlet spec is not clear about searching in superclass??
+         * May be only check non private fields and methods
+        Class superclass = instance.getClass().getSuperclass();
+        while (superclass != null && (!superclass.equals(Object.class)))
+        {
+            checkAnnotation(superclass, instance);
+            superclass = superclass.getSuperclass();
+        } */
+    }
+
+    private void checkAnnotation(Class clazz, Object instance)
+            throws NamingException, IllegalAccessException, InvocationTargetException
+    {
         // Initialize fields annotations
-        Field[] fields = instance.getClass().getDeclaredFields();
+        Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields)
         {
             checkFieldAnnotation(field, instance);
         }
 
         // Initialize methods annotations
-        Method[] methods = instance.getClass().getDeclaredMethods();
+        Method[] methods = clazz.getDeclaredMethods();
         for (Method method : methods)
         {
             checkMethodAnnotation(method, instance);
         }
-
     }
 
     protected void checkMethodAnnotation(Method method, Object instance)
@@ -93,19 +108,19 @@ public class ResourceAnnotationProcessor extends NoInjectionAnnotationProcessor
     {
 
         Object lookedupResource;
-        boolean accessibility ;
 
-        if ((name != null) &&
-                (name.length() > 0))
+        if ((name != null) && (name.length() > 0))
         {
-            lookedupResource = context.lookup(name);
+            // TODO local or global JNDI
+            lookedupResource = context.lookup(JAVA_COMP_ENV + name);
         }
         else
         {
-            lookedupResource = context.lookup(instance.getClass().getName() + "/" + field.getName());
+            // TODO local or global JNDI 
+            lookedupResource = context.lookup(JAVA_COMP_ENV + instance.getClass().getName() + "/" + field.getName());
         }
 
-        accessibility = field.isAccessible();
+        boolean accessibility = field.isAccessible();
         field.setAccessible(true);
         field.set(instance, lookedupResource);
         field.setAccessible(accessibility);
@@ -128,20 +143,20 @@ public class ResourceAnnotationProcessor extends NoInjectionAnnotationProcessor
         }
 
         Object lookedupResource;
-        boolean accessibility;
 
-        if ((name != null) &&
-                (name.length() > 0))
+        if ((name != null) && (name.length() > 0))
         {
-            lookedupResource = context.lookup(name);
+            // TODO local or global JNDI
+            lookedupResource = context.lookup(JAVA_COMP_ENV + name);
         }
         else
         {
+            // TODO local or global JNDI
             lookedupResource =
-                    context.lookup(instance.getClass().getName() + "/" + method.getName().substring(3));
+                    context.lookup(JAVA_COMP_ENV + instance.getClass().getName() + "/" + method.getName().substring(3));
         }
 
-        accessibility = method.isAccessible();
+        boolean accessibility = method.isAccessible();
         method.setAccessible(true);
         method.invoke(instance, lookedupResource);
         method.setAccessible(accessibility);

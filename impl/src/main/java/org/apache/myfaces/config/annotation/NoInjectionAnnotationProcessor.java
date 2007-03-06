@@ -26,6 +26,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+/**
+ * See SRV.14.5 Servlet Specification Version 2.5 JSR 154
+ * and Common Annotations for the Java Platform JSR 250
+
+ */
 
 public class NoInjectionAnnotationProcessor implements AnnotationProcessor
 {
@@ -37,12 +42,20 @@ public class NoInjectionAnnotationProcessor implements AnnotationProcessor
             throws IllegalAccessException, InvocationTargetException
     {
 
+        // TODO the servlet spec is not clear about searching in superclass??
+
         Method[] methods = instance.getClass().getDeclaredMethods();
         Method postConstruct = null;
         for (Method method : methods)
         {
             if (method.isAnnotationPresent(PostConstruct.class))
             {
+                // a method that does not take any arguments
+                // the method must not be static
+                // must not throw any checked expections
+                // the return value must be void
+                // the method may be public, protected, package private or private
+
                 if ((postConstruct != null)
                         || (method.getParameterTypes().length != 0)
                         || (Modifier.isStatic(method.getModifiers()))
@@ -55,18 +68,9 @@ public class NoInjectionAnnotationProcessor implements AnnotationProcessor
             }
         }
 
-        // At the end the postconstruct annotated
-        // method is invoked
-        if (postConstruct != null)
-        {
-            boolean accessibility = postConstruct.isAccessible();
-            postConstruct.setAccessible(true);
-            postConstruct.invoke(instance);
-            postConstruct.setAccessible(accessibility);
-        }
+        invokeAnnotatedMethod(postConstruct, instance);
 
     }
-
 
     /**
      * Call preDestroy method on the specified instance.
@@ -75,12 +79,20 @@ public class NoInjectionAnnotationProcessor implements AnnotationProcessor
             throws IllegalAccessException, InvocationTargetException
     {
 
+        // TODO the servlet spec is not clear about searching in superclass??
+        // May be only check non private fields and methods
         Method[] methods = instance.getClass().getDeclaredMethods();
         Method preDestroy = null;
         for (Method method : methods)
         {
             if (method.isAnnotationPresent(PreDestroy.class))
             {
+                // must not throw any checked expections
+                // the method must not be static
+                // must not throw any checked expections
+                // the return value must be void
+                // the method may be public, protected, package private or private
+
                 if ((preDestroy != null)
                         || (method.getParameterTypes().length != 0)
                         || (Modifier.isStatic(method.getModifiers()))
@@ -93,15 +105,7 @@ public class NoInjectionAnnotationProcessor implements AnnotationProcessor
             }
         }
 
-        // At the end the postconstruct annotated
-        // method is invoked
-        if (preDestroy != null)
-        {
-            boolean accessibility = preDestroy.isAccessible();
-            preDestroy.setAccessible(true);
-            preDestroy.invoke(instance);
-            preDestroy.setAccessible(accessibility);
-        }
+        invokeAnnotatedMethod(preDestroy, instance);
 
     }
 
@@ -113,6 +117,20 @@ public class NoInjectionAnnotationProcessor implements AnnotationProcessor
             throws IllegalAccessException, InvocationTargetException, NamingException
     {
 
+    }
+
+    private void invokeAnnotatedMethod(Method method, Object instance)
+                throws IllegalAccessException, InvocationTargetException
+    {
+        // At the end the annotated
+        // method is invoked
+        if (method != null)
+        {
+            boolean accessibility = method.isAccessible();
+            method.setAccessible(true);
+            method.invoke(instance);
+            method.setAccessible(accessibility);
+        }
     }
 
 }
