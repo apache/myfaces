@@ -16,6 +16,7 @@
 package javax.faces.application;
 
 import javax.faces.FacesException;
+import javax.faces.context.ExternalContext;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
@@ -38,7 +39,8 @@ public abstract class ViewHandler
     public String calculateCharacterEncoding(javax.faces.context.FacesContext context)
     {
     	String _encoding = null;
-    	String _contentType = (String) context.getExternalContext().getRequestHeaderMap().get("Content-Type");
+    	ExternalContext externalContext = context.getExternalContext();
+        String _contentType = (String) externalContext.getRequestHeaderMap().get("Content-Type");
     	int _indexOf = _contentType == null ? -1 :_contentType.indexOf("charset");
     	if(_indexOf != -1)
     	{
@@ -47,10 +49,10 @@ public abstract class ViewHandler
     	}
     	else 
     	{
-    		boolean _sessionAvailable = context.getExternalContext().getSession(false) != null;
+    		boolean _sessionAvailable = externalContext.getSession(false) != null;
     		if(_sessionAvailable)
     		{
-    			Object _sessionParam = context.getExternalContext().getSessionMap().get(CHARACTER_ENCODING_KEY); 
+    			Object _sessionParam = externalContext.getSessionMap().get(CHARACTER_ENCODING_KEY); 
     			if (_sessionParam != null)
     			{
     				_encoding = _sessionParam.toString();

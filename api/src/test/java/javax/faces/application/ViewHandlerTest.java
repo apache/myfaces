@@ -18,24 +18,24 @@
  */
 package javax.faces.application;
 
+import static org.easymock.EasyMock.*;
+
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
+import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 
 import javax.faces.FacesException;
 import javax.faces.component.UIViewRoot;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
-import org.apache.shale.test.mock.MockExternalContext12;
 import org.apache.shale.test.mock.MockFacesContext12;
+import org.easymock.classextension.EasyMock;
+import org.easymock.classextension.IMocksControl;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -44,10 +44,16 @@ import org.apache.shale.test.mock.MockFacesContext12;
 public class ViewHandlerTest extends TestCase
 {
     private MockFacesContext12 _facesContext;
+    private IMocksControl _mocksControl;
+    private ExternalContext _externalContext;
+    private TestViewHandler _testimpl;
 
     protected void setUp() throws Exception
     {
-        _facesContext = new MockFacesContext12();
+        _mocksControl = EasyMock.createControl();
+        _externalContext = _mocksControl.createMock(ExternalContext.class);
+        _facesContext = new MockFacesContext12(_externalContext);
+        _testimpl = new TestViewHandler();
     }
 
     /**
@@ -56,74 +62,77 @@ public class ViewHandlerTest extends TestCase
      */
     public void testCalculateCharacterEncodingWithRequestHeaderContentType()
     {
-        TestExternalContext context = new TestExternalContext(null, null, null)
-        {
-            @Override
-            public Object getSession(boolean create)
-            {
-                throw new AssertionFailedError("session access not allowed");
-            }
-
-            @Override
-            public Map getSessionMap()
-            {
-                throw new AssertionFailedError("session access not allowed");
-            }
-        };
-        _facesContext.setExternalContext(context);
-        TestViewHandler handler = new TestViewHandler();
-        HashMap hashMap = new HashMap();
-        hashMap.put("Content-Type", "text/html;charset=UTF-8");
-        context.setRequestParameterMap(hashMap);
-        assertEquals("UTF-8", handler.calculateCharacterEncoding(_facesContext));
+        Map map = _mocksControl.createMock(Map.class);
+        expect(_externalContext.getRequestHeaderMap()).andReturn(map);
+        expect(map.get(eq("Content-Type"))).andReturn("text/html;charset=UTF-8");
+        _mocksControl.replay();
+        assertEquals("UTF-8", _testimpl.calculateCharacterEncoding(_facesContext));
+        _mocksControl.verify();
     }
 
     /**
      * Test method for
      * {@link javax.faces.application.ViewHandler#calculateCharacterEncoding(javax.faces.context.FacesContext)}.
      */
-    public void testCalculateCharacterEncodingWithSession()
+    public void testCalculateCharacterEncodingWithNoRequestContentTypeAndNoSession()
     {
-        TestExternalContext context = new TestExternalContext(null, null, null);
-        _facesContext.setExternalContext(context);
-        TestViewHandler handler = new TestViewHandler();
-        context.sessionMap = new HashMap();
-        context.sessionMap.put(ViewHandler.CHARACTER_ENCODING_KEY, "UTF-8");
-        // no session
-        context.allowSession = true;
-        assertEquals(null, handler.calculateCharacterEncoding(_facesContext));
-        assertEquals(true, context.getSessionCalled);
-        assertEquals(false, context.getSessionMapCalled);
-        context.getSessionCalled = false;
-        
-        //simulate session
-        context.session = new Object();
-        assertEquals("UTF-8", handler.calculateCharacterEncoding(_facesContext));
-        assertEquals(true, context.getSessionCalled);
-        assertEquals(true, context.getSessionMapCalled);
+        expect(_externalContext.getRequestHeaderMap()).andReturn(Collections.EMPTY_MAP);
+        expect(_externalContext.getSession(eq(false))).andReturn(null);
+        _mocksControl.replay();
+        assertNull(_testimpl.calculateCharacterEncoding(_facesContext));
+        _mocksControl.verify();
+    }
+
+    /**
+     * Test method for
+     * {@link javax.faces.application.ViewHandler#calculateCharacterEncoding(javax.faces.context.FacesContext)}.
+     */
+    public void testCalculateCharacterEncodingWithNoRequestContentTypeAndWithSessionButNoSessionValue()
+    {
+        expect(_externalContext.getRequestHeaderMap()).andReturn(Collections.EMPTY_MAP);
+        expect(_externalContext.getSession(eq(false))).andReturn(new Object());
+        Map map = _mocksControl.createMock(Map.class);
+        expect(_externalContext.getSessionMap()).andReturn(map);
+        expect(map.get(eq(ViewHandler.CHARACTER_ENCODING_KEY))).andReturn(null);
+        _mocksControl.replay();
+        assertNull(_testimpl.calculateCharacterEncoding(_facesContext));
+        _mocksControl.verify();
+    }
+
+    /**
+     * Test method for
+     * {@link javax.faces.application.ViewHandler#calculateCharacterEncoding(javax.faces.context.FacesContext)}.
+     */
+    public void testCalculateCharacterEncodingWithNoRequestContentTypeAndWithSessionAndNoSessionValue()
+    {
+        expect(_externalContext.getRequestHeaderMap()).andReturn(Collections.EMPTY_MAP);
+        expect(_externalContext.getSession(eq(false))).andReturn(new Object());
+        Map map = _mocksControl.createMock(Map.class);
+        expect(_externalContext.getSessionMap()).andReturn(map);
+        expect(map.get(eq(ViewHandler.CHARACTER_ENCODING_KEY))).andReturn("UTF-8");
+        _mocksControl.replay();
+        assertEquals("UTF-8", _testimpl.calculateCharacterEncoding(_facesContext));
+        _mocksControl.verify();
     }
 
     /**
      * Test method for {@link javax.faces.application.ViewHandler#initView(javax.faces.context.FacesContext)}.
+     * 
+     * @throws Exception
      */
-    public void testInitView()
+    public void testInitView() throws Exception
     {
-        TestExternalContext context = new TestExternalContext(null, null, null) {
-        };
-        _facesContext.setExternalContext(context);
-        TestViewHandler handler = new TestViewHandler() {
-            @Override
-            public String calculateCharacterEncoding(FacesContext context)
-            {
-                return "UTF-8";
-            }
-        };
+        ViewHandler handler = _mocksControl.createMock(ViewHandler.class, new Method[] { ViewHandler.class.getMethod(
+                "calculateCharacterEncoding", new Class[] { FacesContext.class }) });
+        expect(handler.calculateCharacterEncoding(_facesContext)).andReturn("xxx");
+        _externalContext.setRequestCharacterEncoding(eq("xxx"));
+        _mocksControl.replay();
         handler.initView(_facesContext);
-        assertEquals("UTF-8", context.getRequestCharacterEncoding());
+        _mocksControl.verify();
     }
 
     private static class TestViewHandler extends ViewHandler
-    {        
+    {
         @Override
         public Locale calculateLocale(FacesContext context)
         {
@@ -172,72 +181,5 @@ public class ViewHandlerTest extends TestCase
             throw new UnsupportedOperationException();
         }
 
-    }
-
-    private static class TestExternalContext extends MockExternalContext12
-    {
-        private Map requestHeaderMap = new HashMap();
-        boolean getSessionCalled;
-        boolean getSessionMapCalled;
-        Map sessionMap;
-        boolean allowSession;
-        private Object session;
-        private String requestCharacterEncoding;
-
-        public TestExternalContext(ServletContext context, HttpServletRequest request, HttpServletResponse response)
-        {
-            super(context, request, response);
-        }
-
-        @Override
-        public Object getSession(boolean create)
-        {
-            if (!allowSession)
-            {
-                fail("call not allowed");
-            }
-            assertEquals(false, create);
-            getSessionCalled = true;
-            return session;
-        }
-
-        @Override
-        public Map getSessionMap()
-        {
-            if (!allowSession)
-            {
-                fail("call not allowed");
-            }
-            assertEquals(true, getSessionCalled);
-            getSessionMapCalled = true;
-            return sessionMap;
-        }
-
-        @Override
-        public Map getRequestHeaderMap()
-        {
-            return requestHeaderMap;
-        }
-
-        @Override
-        public void setRequestParameterMap(Map map)
-        {
-            requestHeaderMap = map;
-        }
-
-        @Override
-        public String getRequestCharacterEncoding()
-        {
-            return requestCharacterEncoding;
-        }
-
-        @Override
-        public void setRequestCharacterEncoding(String encoding) throws UnsupportedEncodingException
-        {
-            requestCharacterEncoding = encoding;
-        }
-        
-        
-        
     }
 }
