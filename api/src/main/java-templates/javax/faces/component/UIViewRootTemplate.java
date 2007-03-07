@@ -45,6 +45,7 @@ public class UIViewRootTemplate
     /**///setEvents
     /**///getUniqueIdCounter
     /**///setUniqueIdCounter
+    /**///getPhaseListeners
     /**/private List<FacesEvent> _events = null;
     /**/private long _uniqueIdCounter = 0;
     /**/private Locale _locale;
