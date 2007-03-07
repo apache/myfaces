@@ -55,4 +55,51 @@ public class PhaseEvent extends EventObject
 		return _phaseId;
 	}
 
+    @Override
+    public int hashCode()
+    {
+        final int PRIME = 31;
+        int result = 1;
+        result = PRIME * result + ((source == null) ? 0 : source.hashCode());
+        result = PRIME * result + ((_facesContext == null) ? 0 : _facesContext.hashCode());
+        result = PRIME * result + ((_phaseId == null) ? 0 : _phaseId.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final PhaseEvent other = (PhaseEvent) obj;
+        if (source == null)
+        {
+            if (other.source != null)
+                return false;
+        }
+        else if (!source.equals(other.source))
+            return false;
+        if (_facesContext == null)
+        {
+            if (other._facesContext != null)
+                return false;
+        }
+        else if (!_facesContext.equals(other._facesContext))
+            return false;
+        if (_phaseId == null)
+        {
+            if (other._phaseId != null)
+                return false;
+        }
+        else if (!_phaseId.equals(other._phaseId))
+            return false;
+        return true;
+    }
+    
+
+    
 }

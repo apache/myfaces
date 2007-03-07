@@ -15,18 +15,26 @@
 */
 package javax.faces.component;
 
+import javax.faces.FactoryFinder;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.FacesEvent;
+import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
+import javax.faces.lifecycle.Lifecycle;
+import javax.faces.lifecycle.LifecycleFactory;
+import javax.faces.webapp.FacesServlet;
+import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Andreas Berger (latest modification by $Author$)
@@ -38,24 +46,24 @@ public class UIViewRootTemplate
 {
     private static final int ANY_PHASE_ORDINAL = PhaseId.ANY_PHASE.getOrdinal();
     public static final String UNIQUE_ID_PREFIX = "j_id";
+    
+    private final Logger logger = Logger.getLogger(UIViewRootTemplate.class.getName());
 
     // todo: is it right to save the state of _events and _phaseListeners?
     /**/ // removes the generated methods so only state saving stays
-    /**///getEvents
-    /**///setEvents
-    /**///getUniqueIdCounter
-    /**///setUniqueIdCounter
-    /**///getPhaseListeners
+    /**/// getEvents
+    /**/// setEvents
+    /**/// getUniqueIdCounter
+    /**/// setUniqueIdCounter
+    /**/// getPhaseListeners
     /**/private List<FacesEvent> _events = null;
     /**/private long _uniqueIdCounter = 0;
-    /**/private Locale _locale;
+    
+    private transient Lifecycle _lifecycle = null;
 
     public void queueEvent(FacesEvent event)
     {
-        if (event == null)
-        {
-            throw new NullPointerException("event");
-        }
+        checkNull(event, "event");
         if (_events == null)
         {
             _events = new ArrayList<FacesEvent>();
@@ -63,6 +71,167 @@ public class UIViewRootTemplate
         _events.add(event);
     }
 
+
+    public void processDecodes(final FacesContext context)
+    {
+        checkNull(context, "context");
+        process(context, PhaseId.APPLY_REQUEST_VALUES, new Processor() 
+        {
+            public void process()
+            {
+                UIViewRootTemplate.super.processDecodes(context);
+            }
+        }, true);
+    }
+
+    public void processValidators(final FacesContext context)
+    {
+        checkNull(context, "context");
+        process(context, PhaseId.PROCESS_VALIDATIONS, new Processor() 
+        {
+            public void process()
+            {
+                UIViewRootTemplate.super.processValidators(context);
+            }
+        }, true);
+    }
+
+    public void processUpdates(final FacesContext context)
+    {
+        checkNull(context, "context");
+        process(context, PhaseId.UPDATE_MODEL_VALUES, new Processor() 
+        {
+            public void process()
+            {
+                UIViewRootTemplate.super.processUpdates(context);
+            }
+        }, true);
+    }
+
+    public void processApplication(final FacesContext context)
+    {
+        checkNull(context, "context");
+        process(context, PhaseId.INVOKE_APPLICATION, null, true);
+    }
+
+    public void encodeBegin(FacesContext context)
+            throws java.io.IOException
+    {
+        checkNull(context, "context");
+        
+        boolean skipPhase = false;
+
+        try 
+        {
+            skipPhase = notifyListeners(context, PhaseId.RENDER_RESPONSE, getBeforePhaseListener(), true);
+        }
+        catch (Exception e)
+        {
+            // following the spec we have to swallow the exception
+            logger.log(Level.SEVERE, "Exception while processing phase listener: " + e.getMessage(), e);
+        }
+        
+        if(!skipPhase)
+        {
+            super.encodeBegin(context);
+        }
+    }
+    
+    public void encodeEnd(FacesContext context) throws java.io.IOException
+    {
+        checkNull(context, "context");
+        super.encodeEnd(context);     
+        try
+        {
+            notifyListeners(context, PhaseId.RENDER_RESPONSE, getAfterPhaseListener(), false);
+        } 
+        catch (Exception e)
+        {
+            // following the spec we have to swallow the exception
+            logger.log(Level.SEVERE, "Exception while processing phase listener: " + e.getMessage(), e);
+        }
+    }
+
+    /*
+     * Provides a unique id for this component instance.
+     */
+    public String createUniqueId()
+    {
+        ExternalContext extCtx = FacesContext.getCurrentInstance().getExternalContext();
+        return extCtx.encodeNamespace(UNIQUE_ID_PREFIX + _uniqueIdCounter++);
+    }
+    
+    private boolean process(FacesContext context, PhaseId phaseId, Processor processor, boolean broadcast) 
+    {      
+        if(!notifyListeners(context, phaseId, getBeforePhaseListener(), true))
+        {
+            if(processor != null)
+                processor.process();
+            
+            if(broadcast)
+            {
+                _broadcastForPhase(phaseId);
+                if (context.getRenderResponse() || context.getResponseComplete())
+                {
+                    clearEvents();
+                }
+            }
+        }
+        return notifyListeners(context, phaseId, getAfterPhaseListener(), false);
+    }
+    
+    private boolean notifyListeners(FacesContext context, PhaseId phaseId, MethodExpression listener, boolean beforePhase)
+    {
+        boolean skipPhase = false;
+        
+        if(listener != null || (_phaseListeners != null && !_phaseListeners.isEmpty()))
+        {
+            PhaseEvent event = createEvent(context, phaseId);
+            
+            if(listener != null) 
+            {
+                listener.invoke(context.getELContext(), new Object[] { event });
+                skipPhase = context.getResponseComplete() || context.getRenderResponse();
+            }
+            
+            if(_phaseListeners != null && !_phaseListeners.isEmpty()) 
+            {
+                for(PhaseListener phaseListener : _phaseListeners)
+                {
+                    PhaseId listenerPhaseId = phaseListener.getPhaseId();
+                    if(phaseId.equals(listenerPhaseId) || PhaseId.ANY_PHASE.equals(listenerPhaseId))
+                    {
+                        if(beforePhase)
+                        {
+                            phaseListener.beforePhase(event);
+                        }
+                        else
+                        {
+                            phaseListener.afterPhase(event);
+                        }
+                        skipPhase = context.getResponseComplete() || context.getRenderResponse();
+                    }
+                }
+            }
+        }
+        
+        return skipPhase;
+    }
+    
+    private PhaseEvent createEvent(FacesContext context, PhaseId phaseId)
+    {
+        if (_lifecycle == null)
+        {
+            LifecycleFactory factory = (LifecycleFactory)FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
+            String id = context.getExternalContext().getInitParameter(FacesServlet.LIFECYCLE_ID_ATTR);
+            if(id == null) {
+                id = LifecycleFactory.DEFAULT_LIFECYCLE;
+            }
+            _lifecycle = factory.getLifecycle(id);
+        }
+        return new PhaseEvent(context, phaseId, _lifecycle);
+    }
+    
     private void _broadcastForPhase(PhaseId phaseId)
     {
         if (_events == null)
@@ -89,12 +258,12 @@ public class UIViewRootTemplate
                 {
                     // abort event processing
                     // Page 3-30 of JSF 1.1 spec: "Throw an AbortProcessingException, to tell the JSF implementation
-                    //  that no further broadcast of this event, or any further events, should take place."
+                    // that no further broadcast of this event, or any further events, should take place."
                     abort = true;
                     break;
-                } finally
+                } 
+                finally
                 {
-
                     try
                     {
                         listiterator.remove();
@@ -121,160 +290,18 @@ public class UIViewRootTemplate
     {
         _events = null;
     }
-
-
-    public void processDecodes(FacesContext context)
+    
+    private void checkNull(Object value, String valueLabel)
     {
-        if (context == null)
+        if(value == null)
         {
-            throw new NullPointerException("context");
-        }
-        super.processDecodes(context);
-        _broadcastForPhase(PhaseId.APPLY_REQUEST_VALUES);
-        if (context.getRenderResponse() || context.getResponseComplete())
-        {
-            clearEvents();
+            throw new NullPointerException(valueLabel + " is null");
         }
     }
 
-    public void processValidators(FacesContext context)
+    private interface Processor
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
-        super.processValidators(context);
-        _broadcastForPhase(PhaseId.PROCESS_VALIDATIONS);
-        if (context.getRenderResponse() || context.getResponseComplete())
-        {
-            clearEvents();
-        }
+        void process();
     }
 
-    public void processUpdates(FacesContext context)
-    {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
-        super.processUpdates(context);
-        _broadcastForPhase(PhaseId.UPDATE_MODEL_VALUES);
-        if (context.getRenderResponse() || context.getResponseComplete())
-        {
-            clearEvents();
-        }
-    }
-
-    public void processApplication(FacesContext context)
-    {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
-        _broadcastForPhase(PhaseId.INVOKE_APPLICATION);
-        if (context.getRenderResponse() || context.getResponseComplete())
-        {
-            clearEvents();
-        }
-    }
-
-    public void encodeBegin(FacesContext context)
-            throws java.io.IOException
-    {
-        clearEvents();
-        super.encodeBegin(context);
-    }
-
-    /* Provides a unique id for this component instance.
-    */
-    public String createUniqueId()
-    {
-        ExternalContext extCtx = FacesContext.getCurrentInstance().getExternalContext();
-        return extCtx.encodeNamespace(UNIQUE_ID_PREFIX + _uniqueIdCounter++);
-    }
-
-    /**
-     * Gets The locale for this ViewRoot.
-     *
-     * @return the new locale value
-     */
-    /**///getLocale
-    public Locale getLocale()
-    {
-        if (_locale != null)
-        {
-            return _locale;
-        }
-        ValueExpression expression = getValueExpression("locale");
-        FacesContext facesContext = getFacesContext();
-        if (expression == null)
-        {
-            return facesContext.getApplication().getViewHandler().calculateLocale(facesContext);
-        }
-        Object locale = expression.getValue(getFacesContext().getELContext());
-        if (locale == null)
-        {
-            return facesContext.getApplication().getViewHandler().calculateLocale(facesContext);
-        }
-        if (locale instanceof Locale)
-        {
-            return (Locale) locale;
-        } else if (locale instanceof String)
-        {
-            return getLocale((String) locale);
-        } else
-        {
-            //TODO: not specified!?
-            throw new IllegalArgumentException("locale binding");
-        }
-    }
-
-
-    /**
-     * Create Locale from String representation.
-     * <p/>
-     * http://java.sun.com/j2se/1.4.2/docs/api/java/util/Locale.html
-     *
-     * @param locale locale representation in String.
-     * @return Locale instance
-     */
-    private static Locale getLocale(String locale)
-    {
-        int cnt = 0;
-        int pos = 0;
-        int prev = 0;
-
-        // store locale variation.
-        // ex. "ja_JP_POSIX"
-        //  lv[0] : language(ja)
-        //  lv[1] : country(JP)
-        //  lv[2] : variant(POSIX)
-        String[] lv = new String[3];
-        Locale l = null;
-
-        while ((pos = locale.indexOf('_', prev)) != -1)
-        {
-            lv[cnt++] = locale.substring(prev, pos);
-            prev = pos + 1;
-        }
-
-        lv[cnt++] = locale.substring(prev, locale.length());
-
-        switch (cnt)
-        {
-            case 1:
-                // create Locale from language.
-                l = new Locale(lv[0]);
-                break;
-            case 2:
-                // create Locale from language and country.
-                l = new Locale(lv[0], lv[1]);
-                break;
-            case 3:
-                // create Locale from language, country and variant.
-                l = new Locale(lv[0], lv[1], lv[2]);
-                break;
-        }
-        return l;
-    }   
 }
