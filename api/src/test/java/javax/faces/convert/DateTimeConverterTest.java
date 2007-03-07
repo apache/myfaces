@@ -21,6 +21,7 @@ import org.apache.shale.test.base.AbstractJsfTestCase;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.text.SimpleDateFormat;
 
@@ -50,6 +51,7 @@ public class DateTimeConverterTest extends AbstractJsfTestCase
 
         mock = new DateTimeConverter();
         mock.setTimeZone(TimeZone.getDefault());
+        FacesContext.getCurrentInstance().getViewRoot().setLocale(Locale.GERMANY);
 
     }
 
