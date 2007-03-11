@@ -18,9 +18,9 @@
  */
 package org.apache.myfaces.util;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -30,39 +30,61 @@ import junit.framework.TestCase;
  */
 public class AbstractAttributeMapTest extends TestCase
 {
+    private TestAttributeMap _testimpl;
+
+    @Override
+    protected void setUp() throws Exception
+    {
+        Map map = new HashMap();
+        map.put("key", "value");
+        _testimpl = new TestAttributeMap(map);
+    }
+    
     /**
      * Test method for {@link java.util.AbstractMap#hashCode()}.
      */
     public void testHashCodeEquals()
     {
-        TestAttributeMap map = new TestAttributeMap();
-        assertEquals(map.hashCode(), map.hashCode());
+        assertEquals(_testimpl.hashCode(), _testimpl.hashCode());
+    }
+
+    public void testValues() throws Exception
+    {
+        _testimpl.put("myKey", "myValue");
+        assertTrue(_testimpl.values().contains("myValue"));
     }
 
     private static final class TestAttributeMap extends AbstractAttributeMap
     {
+        private final Map _values;
+
+        public TestAttributeMap(Map values)
+        {
+            _values = values;
+        }
+
         @Override
         protected Object getAttribute(String key)
         {
-            return "value";
+            return _values.get(key);
         }
 
         @Override
         protected Enumeration getAttributeNames()
         {
-            return Collections.enumeration(Arrays.asList(new String[] { "attr1", "attr2" }));
+            return new IteratorEnumeration(_values.keySet().iterator());
         }
 
         @Override
         protected void removeAttribute(String key)
         {
-            fail();
+            _values.remove(key);
         }
 
         @Override
         protected void setAttribute(String key, Object value)
         {
-            fail();
+            _values.put(key, value);
         }
     }
 

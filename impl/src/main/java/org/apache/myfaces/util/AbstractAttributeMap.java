@@ -163,18 +163,6 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
         }
 
         @Override
-        public boolean contains(Object o)
-        {
-            return AbstractAttributeMap.this.containsKey(o);
-        }
-
-        @Override
-        public boolean remove(Object o)
-        {
-            return AbstractAttributeMap.this.remove(o) != null;
-        }
-
-        @Override
         public void clear()
         {
             AbstractAttributeMap.this.clear();
@@ -188,6 +176,19 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
         {
             return new KeyIterator();
         }
+
+        @Override
+        public boolean contains(Object o)
+        {
+            return AbstractAttributeMap.this.containsKey(o);
+        }
+
+        @Override
+        public boolean remove(Object o)
+        {
+            return AbstractAttributeMap.this.remove(o) != null;
+        }
+
     }
 
     private abstract class AbstractAttributeIterator<E> implements Iterator<E>
@@ -235,6 +236,25 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
         public Iterator<V> iterator()
         {
             return new ValuesIterator();
+        }
+
+        @Override
+        public boolean contains(Object o)
+        {
+            if (o == null)
+            {
+                return false;
+            }
+
+            for (Iterator it = iterator(); it.hasNext();)
+            {
+                if (o.equals(it.next()))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         @Override
@@ -381,7 +401,6 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
                 return false;
             return true;
         }
-        
-        
+
     }
 }
