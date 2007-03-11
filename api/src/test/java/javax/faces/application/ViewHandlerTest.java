@@ -21,6 +21,7 @@ package javax.faces.application;
 import static org.easymock.EasyMock.*;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Locale;
@@ -33,6 +34,8 @@ import javax.faces.context.FacesContext;
 
 import junit.framework.TestCase;
 
+import org.apache.myfaces.Assert;
+import org.apache.myfaces.TestRunner;
 import org.apache.shale.test.mock.MockFacesContext12;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
@@ -128,6 +131,29 @@ public class ViewHandlerTest extends TestCase
         _externalContext.setRequestCharacterEncoding(eq("xxx"));
         _mocksControl.replay();
         handler.initView(_facesContext);
+        _mocksControl.verify();
+    }
+
+    /**
+     * Test method for {@link javax.faces.application.ViewHandler#initView(javax.faces.context.FacesContext)}.
+     * 
+     * @throws Exception
+     */
+    public void testInitViewWithUnsupportedEncodingException() throws Exception
+    {
+        final ViewHandler handler = _mocksControl.createMock(ViewHandler.class, new Method[] { ViewHandler.class.getMethod(
+                "calculateCharacterEncoding", new Class[] { FacesContext.class }) });
+        expect(handler.calculateCharacterEncoding(_facesContext)).andReturn("xxx");
+        _externalContext.setRequestCharacterEncoding(eq("xxx"));
+        expectLastCall().andThrow(new UnsupportedEncodingException());
+        _mocksControl.replay();
+        Assert.assertException(FacesException.class, new TestRunner()
+        {
+            public void run() throws Throwable
+            {
+                handler.initView(_facesContext);
+            }
+        });
         _mocksControl.verify();
     }
 
