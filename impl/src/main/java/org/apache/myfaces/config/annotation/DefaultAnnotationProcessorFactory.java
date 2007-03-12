@@ -42,7 +42,7 @@ public class DefaultAnnotationProcessorFactory extends AnnotationProcessorFactor
 {
     private static Log log = LogFactory.getLog(AnnotationProcessorFactory.class);
     private static AnnotationProcessor ANNOTATION_PROCESSOR_INSTANCE;
-    public static final String ANNOTATION_PROCESSOR_PROVIDER = "org.apache.myfaces.AnnotationProcessor";
+    public static final String ANNOTATION_PROCESSOR_PROVIDER = AnnotationProcessor.class.getName();
 
 
     public DefaultAnnotationProcessorFactory()
