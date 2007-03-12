@@ -18,7 +18,7 @@ package org.apache.myfaces.config.annotation;
  */
 
 import org.apache.shale.test.base.AbstractJsfTestCase;
-import org.apache.AnnotationProcessor;
+import org.apache.myfaces.AnnotationProcessor;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -36,7 +36,7 @@ public class AnnotationProcessorTestCase extends AbstractJsfTestCase
 
     public void setUp() throws Exception {
         super.setUp();
-        processor = AnnotationProcessorFactory.getAnnotatonProcessor(externalContext);
+        processor = AnnotationProcessorFactory.getAnnotatonProcessorFactory().getAnnotatonProcessor(externalContext);
         managedBean = new AnnotatedManagedBean();
 	}
 

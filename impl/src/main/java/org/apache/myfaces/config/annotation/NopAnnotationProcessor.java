@@ -17,7 +17,8 @@ package org.apache.myfaces.config.annotation;
  * limitations under the License.
  */
 
-import org.apache.AnnotationProcessor;
+import org.apache.myfaces.AnnotationProcessor;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 import javax.naming.NamingException;
 import java.lang.reflect.InvocationTargetException;
@@ -25,6 +26,12 @@ import java.lang.reflect.InvocationTargetException;
 public class NopAnnotationProcessor implements AnnotationProcessor
 {
 
+
+    public Object newInstance(String className) throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException
+    {
+        Class clazz = ClassUtils.classForName(className);
+        return clazz.newInstance();
+    }
 
     public void postConstruct(Object instance)
             throws IllegalAccessException, InvocationTargetException

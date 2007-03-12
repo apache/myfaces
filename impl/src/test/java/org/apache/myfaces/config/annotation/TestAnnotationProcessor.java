@@ -17,7 +17,7 @@ package org.apache.myfaces.config.annotation;
  * limitations under the License.
  */
 
-import org.apache.AnnotationProcessor;
+import org.apache.myfaces.AnnotationProcessor;
 
 import javax.naming.NamingException;
 import java.lang.reflect.InvocationTargetException;
@@ -26,6 +26,12 @@ import java.lang.reflect.InvocationTargetException;
 public class TestAnnotationProcessor implements AnnotationProcessor
 {
     private AnnotationProcessor processor = new NoInjectionAnnotationProcessor();
+
+
+    public Object newInstance(String className) throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException
+    {
+        return processor.newInstance(className);
+    }
 
     public void postConstruct(Object instance) throws IllegalAccessException, InvocationTargetException
     {

@@ -46,6 +46,7 @@ import org.apache.myfaces.config.element.ManagedProperty;
 import org.apache.myfaces.config.element.MapEntries;
 import org.apache.myfaces.config.element.MapEntry;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.AnnotationProcessor;
 
 
 /**
@@ -65,22 +66,77 @@ public class ManagedBeanBuilder
 
     public Object buildManagedBean(FacesContext facesContext, ManagedBean beanConfiguration) throws FacesException
     {
-        final Object bean = ClassUtils.newInstance(beanConfiguration.getManagedBeanClassName());
 
         /*final AnnotatedManagedBeanHandler handler = new AnnotatedManagedBeanHandler(bean,
-        		beanConfiguration.getManagedBeanScope(), beanConfiguration.getManagedBeanName());
-        
-        final boolean threwUnchecked = handler.invokePostConstruct();
+                  beanConfiguration.getManagedBeanScope(), beanConfiguration.getManagedBeanName());
 
-        if(threwUnchecked)
-        	return null;*/
+          final boolean threwUnchecked = handler.invokePostConstruct();
+
+          if(threwUnchecked)
+              return null;*/
         try
         {
-            AnnotationProcessorFactory.getAnnotatonProcessor(facesContext.getExternalContext()).processAnnotations(bean);
+            AnnotationProcessor annotationProcessor =
+                    AnnotationProcessorFactory.getAnnotatonProcessorFactory().getAnnotatonProcessor(facesContext.getExternalContext());
+            final Object bean = annotationProcessor.newInstance(beanConfiguration.getManagedBeanClassName());
+
+            annotationProcessor.processAnnotations(bean);
+
             if (!beanConfiguration.getManagedBeanScope().equals(ManagedBeanBuilder.NONE))
             {
-                AnnotationProcessorFactory.getAnnotatonProcessor(facesContext.getExternalContext()).postConstruct(bean);
+                annotationProcessor.postConstruct(bean);
             }
+
+            switch (beanConfiguration.getInitMode())
+            {
+                case ManagedBean.INIT_MODE_PROPERTIES:
+                    try
+                    {
+                        initializeProperties(facesContext, beanConfiguration.getManagedProperties(),
+                                beanConfiguration.getManagedBeanScope(), bean);
+                    }
+                    catch (IllegalArgumentException e)
+                    {
+                        throw new IllegalArgumentException(
+                                e.getMessage()
+                                        + " for bean '"
+                                        + beanConfiguration.getManagedBeanName()
+                                        + "' check the configuration to make sure all properties correspond with get/set methods", e);
+                    }
+                    break;
+
+                case ManagedBean.INIT_MODE_MAP:
+                    if (!(bean instanceof Map))
+                    {
+                        throw new IllegalArgumentException("Class " + bean.getClass().getName()
+                                + " of managed bean "
+                                + beanConfiguration.getManagedBeanName()
+                                + " is not a Map.");
+                    }
+                    initializeMap(facesContext, beanConfiguration.getMapEntries(), (Map) bean);
+                    break;
+
+                case ManagedBean.INIT_MODE_LIST:
+                    if (!(bean instanceof List))
+                    {
+                        throw new IllegalArgumentException("Class " + bean.getClass().getName()
+                                + " of managed bean "
+                                + beanConfiguration.getManagedBeanName()
+                                + " is not a List.");
+                    }
+                    initializeList(facesContext, beanConfiguration.getListEntries(), (List) bean);
+                    break;
+
+                case ManagedBean.INIT_MODE_NO_INIT:
+                    // no init values
+                    break;
+
+                default:
+                    throw new IllegalStateException("Unknown managed bean type "
+                            + bean.getClass().getName() + " for managed bean "
+                            + beanConfiguration.getManagedBeanName() + '.');
+            }
+            return bean;
         }
         catch (IllegalAccessException e)
         {
@@ -93,55 +149,16 @@ public class ManagedBeanBuilder
         catch (NamingException e)
         {
             throw new FacesException(e);
-        } 
-
-        switch (beanConfiguration.getInitMode())
-        {
-            case ManagedBean.INIT_MODE_PROPERTIES:
-                try {
-                  initializeProperties(facesContext, beanConfiguration.getManagedProperties(),
-                      beanConfiguration.getManagedBeanScope(), bean);
-                } catch (IllegalArgumentException e) {
-                  throw new IllegalArgumentException(
-                          e.getMessage()
-                              + " for bean '"
-                              + beanConfiguration.getManagedBeanName()
-                              + "' check the configuration to make sure all properties correspond with get/set methods", e);
-                }
-                break;
-
-            case ManagedBean.INIT_MODE_MAP:
-                if (!(bean instanceof Map))
-                {
-                    throw new IllegalArgumentException("Class " + bean.getClass().getName()
-                        + " of managed bean "
-                        + beanConfiguration.getManagedBeanName()
-                        + " is not a Map.");
-                }
-                initializeMap(facesContext, beanConfiguration.getMapEntries(), (Map) bean);
-                break;
-
-            case ManagedBean.INIT_MODE_LIST:
-                if (!(bean instanceof List))
-                {
-                    throw new IllegalArgumentException("Class " + bean.getClass().getName()
-                        + " of managed bean "
-                        + beanConfiguration.getManagedBeanName()
-                        + " is not a List.");
-                }
-                initializeList(facesContext, beanConfiguration.getListEntries(), (List) bean);
-                break;
-
-            case ManagedBean.INIT_MODE_NO_INIT:
-                // no init values
-                break;
-
-            default:
-                throw new IllegalStateException("Unknown managed bean type "
-                    + bean.getClass().getName() + " for managed bean "
-                    + beanConfiguration.getManagedBeanName() + '.');
         }
-        return bean;
+        catch (ClassNotFoundException e)
+        {
+            throw new FacesException(e);
+        }
+        catch (InstantiationException e)
+        {
+            throw new FacesException(e);
+        }
+
     }
 
 
@@ -149,7 +166,7 @@ public class ManagedBeanBuilder
     {
         ELResolver elResolver = facesContext.getApplication().getELResolver();
         ELContext elContext = facesContext.getELContext();
-        
+
         while (managedProperties.hasNext())
         {
             ManagedProperty property = (ManagedProperty) managedProperties.next();
@@ -158,48 +175,56 @@ public class ManagedBeanBuilder
             switch (property.getType())
             {
                 case ManagedProperty.TYPE_LIST:
-                	
-                	// JSF 1.1, 5.3.1.3 
-                	// Call the property getter, if it exists.
-                	// If the getter returns null or doesn't exist, create a java.util.ArrayList,
-                	// otherwise use the returned Object ...
-                	if(PropertyUtils.isReadable(bean, property.getPropertyName()))
-                		value = elResolver.getValue(elContext, bean, property.getPropertyName());
-                	value = value == null ? new ArrayList() : value;
-                	
-                    if (value instanceof List) {
+
+                    // JSF 1.1, 5.3.1.3
+                    // Call the property getter, if it exists.
+                    // If the getter returns null or doesn't exist, create a java.util.ArrayList,
+                    // otherwise use the returned Object ...
+                    if (PropertyUtils.isReadable(bean, property.getPropertyName()))
+                        value = elResolver.getValue(elContext, bean, property.getPropertyName());
+                    value = value == null ? new ArrayList() : value;
+
+                    if (value instanceof List)
+                    {
                         initializeList(facesContext, property.getListEntries(), (List) value);
 
-                    } else if (value != null && value.getClass().isArray()) {
+                    }
+                    else if (value != null && value.getClass().isArray())
+                    {
                         int length = Array.getLength(value);
                         ArrayList temp = new ArrayList(length);
-                        for (int i = 0; i < length; i++) {
+                        for (int i = 0; i < length; i++)
+                        {
                             temp.add(Array.get(value, i));
                         }
                         initializeList(facesContext, property.getListEntries(), temp);
                         value = Array.newInstance(value.getClass().getComponentType(), temp.size());
                         length = temp.size();
 
-                        for (int i = 0; i < length; i++) {
+                        for (int i = 0; i < length; i++)
+                        {
                             Array.set(value, i, temp.get(i));
                         }
-                    } else {
-                          value = new ArrayList();
+                    }
+                    else
+                    {
+                        value = new ArrayList();
                         initializeList(facesContext, property.getListEntries(), (List) value);
                     }
 
                     break;
                 case ManagedProperty.TYPE_MAP:
 
-                	// JSF 1.1, 5.3.1.3 
-                	// Call the property getter, if it exists.
-                	// If the getter returns null or doesn't exist, create a java.util.HashMap,
-                	// otherwise use the returned java.util.Map .
-                	if(PropertyUtils.isReadable(bean, property.getPropertyName()))
-                		value = elResolver.getValue(elContext, bean, property.getPropertyName());
-                	value = value == null ? new HashMap() : value;
-                	
-                    if (! (value instanceof Map)) {
+                    // JSF 1.1, 5.3.1.3
+                    // Call the property getter, if it exists.
+                    // If the getter returns null or doesn't exist, create a java.util.HashMap,
+                    // otherwise use the returned java.util.Map .
+                    if (PropertyUtils.isReadable(bean, property.getPropertyName()))
+                        value = elResolver.getValue(elContext, bean, property.getPropertyName());
+                    value = value == null ? new HashMap() : value;
+
+                    if (!(value instanceof Map))
+                    {
                         value = new HashMap();
                     }
 
@@ -210,9 +235,10 @@ public class ManagedBeanBuilder
                     break;
                 case ManagedProperty.TYPE_VALUE:
                     // check for correct scope of a referenced bean
-                    if (! isInValidScope(facesContext, property, targetScope)) {
+                    if (!isInValidScope(facesContext, property, targetScope))
+                    {
                         throw new FacesException("Property " + property.getPropertyName() +
-                            " references object in a scope with shorter lifetime than the target scope " + targetScope);
+                                " references object in a scope with shorter lifetime than the target scope " + targetScope);
                     }
                     value = property.getRuntimeValue(facesContext);
                     break;
@@ -222,22 +248,23 @@ public class ManagedBeanBuilder
             if (property.getPropertyClass() == null)
             {
                 propertyClass = elResolver
-                    .getType(elContext, bean, property.getPropertyName());
+                        .getType(elContext, bean, property.getPropertyName());
             }
             else
             {
                 propertyClass = ClassUtils
-                    .simpleJavaTypeToClass(property.getPropertyClass());
+                        .simpleJavaTypeToClass(property.getPropertyClass());
             }
-            if(null == propertyClass) {
-              throw new IllegalArgumentException("unable to find the type of property " + property.getPropertyName());
+            if (null == propertyClass)
+            {
+                throw new IllegalArgumentException("unable to find the type of property " + property.getPropertyName());
             }
             Object coercedValue = coerceToType(facesContext, value, propertyClass);
             elResolver.setValue(
-                elContext, bean, property.getPropertyName(), coercedValue);
+                    elContext, bean, property.getPropertyName(), coercedValue);
         }
     }
-    
+
     // We no longer use the convertToType from shared impl because we switched
     // to unified EL in JSF 1.2
     public static Object coerceToType(FacesContext facesContext, Object value, Class desiredClass)
@@ -254,7 +281,7 @@ public class ManagedBeanBuilder
         catch (ELException e)
         {
             String message = "Cannot coerce " + value.getClass().getName()
-                             + " to " + desiredClass.getName();
+                    + " to " + desiredClass.getName();
             log.error(message, e);
             throw new FacesException(message, e);
         }
@@ -263,39 +290,48 @@ public class ManagedBeanBuilder
 
     /**
      * Check if the scope of the property value is valid for a bean to be stored in targetScope.
+     *
      * @param facesContext
-     * @param property          the property to be checked
-     * @param targetScope       name of the target scope of the bean under construction
+     * @param property     the property to be checked
+     * @param targetScope  name of the target scope of the bean under construction
      */
     private boolean isInValidScope(FacesContext facesContext, ManagedProperty property, String targetScope)
     {
-        if (! property.isValueReference()) {
+        if (!property.isValueReference())
+        {
             // no value reference but a literal value -> nothing to check
             return true;
         }
         String[] expressions = extractExpressions(property.getValueBinding(facesContext).getExpressionString());
 
-        for (int i = 0; i < expressions.length; i++) {
+        for (int i = 0; i < expressions.length; i++)
+        {
             String expression = expressions[i];
-            if (expression == null) {
+            if (expression == null)
+            {
                 continue;
             }
 
             String valueScope = getScope(facesContext, expression);
 
             // if the target scope is 'none' value scope has to be 'none', too
-            if (targetScope == null || targetScope.equalsIgnoreCase(NONE)) {
-                if (valueScope != null && !(valueScope.equalsIgnoreCase(NONE))) {
+            if (targetScope == null || targetScope.equalsIgnoreCase(NONE))
+            {
+                if (valueScope != null && !(valueScope.equalsIgnoreCase(NONE)))
+                {
                     return false;
                 }
                 return true;
             }
 
             // 'application' scope can reference 'application' and 'none'
-            if (targetScope.equalsIgnoreCase(APPLICATION)) {
-                if (valueScope != null) {
+            if (targetScope.equalsIgnoreCase(APPLICATION))
+            {
+                if (valueScope != null)
+                {
                     if (valueScope.equalsIgnoreCase(REQUEST) ||
-                        valueScope.equalsIgnoreCase(SESSION)) {
+                            valueScope.equalsIgnoreCase(SESSION))
+                    {
                         return false;
                     }
                 }
@@ -303,9 +339,12 @@ public class ManagedBeanBuilder
             }
 
             // 'session' scope can reference 'session', 'application', and 'none' but not 'request'
-            if (targetScope.equalsIgnoreCase(SESSION)) {
-                if (valueScope != null) {
-                    if (valueScope.equalsIgnoreCase(REQUEST)) {
+            if (targetScope.equalsIgnoreCase(SESSION))
+            {
+                if (valueScope != null)
+                {
+                    if (valueScope.equalsIgnoreCase(REQUEST))
+                    {
                         return false;
                     }
                 }
@@ -313,7 +352,8 @@ public class ManagedBeanBuilder
             }
 
             // 'request' scope can reference any value scope
-            if (targetScope.equalsIgnoreCase(REQUEST)) {
+            if (targetScope.equalsIgnoreCase(REQUEST))
+            {
                 return true;
             }
         }
@@ -325,54 +365,68 @@ public class ManagedBeanBuilder
     {
         String beanName = getFirstSegment(expression);
         ExternalContext externalContext = facesContext.getExternalContext();
-        
-		// check scope objects
-        if (beanName.equalsIgnoreCase("requestScope")) {
+
+        // check scope objects
+        if (beanName.equalsIgnoreCase("requestScope"))
+        {
             return REQUEST;
         }
-		if (beanName.equalsIgnoreCase("sessionScope")) {
+        if (beanName.equalsIgnoreCase("sessionScope"))
+        {
             return SESSION;
         }
-		if (beanName.equalsIgnoreCase("applicationScope")) {
+        if (beanName.equalsIgnoreCase("applicationScope"))
+        {
             return APPLICATION;
         }
 
-	    // check implicit objects
-        if (beanName.equalsIgnoreCase("cookie")) {
-        	return REQUEST;
+        // check implicit objects
+        if (beanName.equalsIgnoreCase("cookie"))
+        {
+            return REQUEST;
         }
-        if (beanName.equalsIgnoreCase("facesContext")) {
+        if (beanName.equalsIgnoreCase("facesContext"))
+        {
             return REQUEST;
         }
 
-        if (beanName.equalsIgnoreCase("header")) {
+        if (beanName.equalsIgnoreCase("header"))
+        {
             return REQUEST;
         }
-        if (beanName.equalsIgnoreCase("headerValues")) {
+        if (beanName.equalsIgnoreCase("headerValues"))
+        {
             return REQUEST;
         }
 
-        if (beanName.equalsIgnoreCase("initParam")) {
-        	return APPLICATION;
+        if (beanName.equalsIgnoreCase("initParam"))
+        {
+            return APPLICATION;
         }
-        if (beanName.equalsIgnoreCase("param")) {
+        if (beanName.equalsIgnoreCase("param"))
+        {
             return REQUEST;
         }
-        if (beanName.equalsIgnoreCase("paramValues")) {
+        if (beanName.equalsIgnoreCase("paramValues"))
+        {
             return REQUEST;
         }
-        if (beanName.equalsIgnoreCase("view")) {
+        if (beanName.equalsIgnoreCase("view"))
+        {
             return REQUEST;
         }
 
         // not found so far - check all scopes
-        if (externalContext.getRequestMap().get(beanName) != null) {
+        if (externalContext.getRequestMap().get(beanName) != null)
+        {
             return REQUEST;
         }
-        if (externalContext.getSessionMap().get(beanName) != null) {
+        if (externalContext.getSessionMap().get(beanName) != null)
+        {
             return SESSION;
         }
-        if (externalContext.getApplicationMap().get(beanName) != null) {
+        if (externalContext.getApplicationMap().get(beanName) != null)
+        {
             return APPLICATION;
         }
 
@@ -380,7 +434,8 @@ public class ManagedBeanBuilder
 
         ManagedBean mbc = getRuntimeConfig(facesContext).getManagedBean(beanName);
 
-        if (mbc != null) {
+        if (mbc != null)
+        {
             return mbc.getManagedBeanScope();
         }
 
@@ -389,6 +444,7 @@ public class ManagedBeanBuilder
 
     /**
      * Extract the first expression segment, that is the substring up to the first '.' or '['
+     *
      * @param expression
      * @return first segment of the expression
      */
@@ -397,28 +453,34 @@ public class ManagedBeanBuilder
         int indexDot = expression.indexOf('.');
         int indexBracket = expression.indexOf('[');
 
-        if (indexBracket < 0) {
-             
-        	return indexDot < 0 ? expression : expression.substring(0, indexDot);
-                
-        } 
-        
-        if (indexDot < 0) {
+        if (indexBracket < 0)
+        {
+
+            return indexDot < 0 ? expression : expression.substring(0, indexDot);
+
+        }
+
+        if (indexDot < 0)
+        {
             return expression.substring(0, indexBracket);
         }
-        
+
         return expression.substring(0, Math.min(indexDot, indexBracket));
-        
+
     }
 
     private String[] extractExpressions(String expressionString)
     {
         String[] expressions = expressionString.split("\\#\\{");
-        for (int i = 0; i < expressions.length; i++) {
+        for (int i = 0; i < expressions.length; i++)
+        {
             String expression = expressions[i];
-            if (expression.trim().length() == 0) {
+            if (expression.trim().length() == 0)
+            {
                 expressions[i] = null;
-            } else {
+            }
+            else
+            {
                 int index = expression.indexOf('}');
                 expressions[i] = expression.substring(0, index);
             }
@@ -431,13 +493,13 @@ public class ManagedBeanBuilder
     {
         Application application = facesContext.getApplication();
         Class keyClass = (mapEntries.getKeyClass() == null)
-            ? String.class : ClassUtils.simpleJavaTypeToClass(mapEntries.getKeyClass());
+                ? String.class : ClassUtils.simpleJavaTypeToClass(mapEntries.getKeyClass());
         Class valueClass = (mapEntries.getValueClass() == null)
-            ? String.class : ClassUtils.simpleJavaTypeToClass(mapEntries.getValueClass());
+                ? String.class : ClassUtils.simpleJavaTypeToClass(mapEntries.getValueClass());
         ValueExpression valueExpression;
         ExpressionFactory expFactory = application.getExpressionFactory();
         ELContext elContext = facesContext.getELContext();
-        
+
         for (Iterator iterator = mapEntries.getMapEntries(); iterator.hasNext();)
         {
             MapEntry entry = (MapEntry) iterator.next();

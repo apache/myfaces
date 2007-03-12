@@ -18,7 +18,7 @@ package org.apache.myfaces;
  */
 
 
-import org.apache.AnnotationProcessor;
+import org.apache.myfaces.AnnotationProcessor;
 
 public interface DiscoverableAnnotationProcessor extends AnnotationProcessor
 {

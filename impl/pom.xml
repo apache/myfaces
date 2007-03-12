@@ -314,7 +314,12 @@
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
     </dependency>
-
+    <dependency>
+       <groupId>org.apache.tomcat</groupId>
+       <artifactId>catalina</artifactId>
+       <version>6.0.10</version>
+       <scope>provided</scope>
+    </dependency>  
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-api</artifactId>
@@ -391,4 +396,10 @@
           <url>http://people.apache.org/~baranda/repo</url>
       </pluginRepository>
   </pluginRepositories>
+  <repositories>
+     <repository>
+       <id>tomcat</id>
+       <url>http://tomcat.apache.org/dev/dist/m2-repository</url>       
+     </repository>
+  </repositories>
 </project>

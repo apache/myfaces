@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Field;
 
+// TODO @Resources
 public class ResourceAnnotationProcessor extends NoInjectionAnnotationProcessor
 {
 
@@ -53,6 +54,9 @@ public class ResourceAnnotationProcessor extends NoInjectionAnnotationProcessor
 
         /* TODO the servlet spec is not clear about searching in superclass??
          * May be only check non private fields and methods
+         * for @Resource (JSR 250), if used all superclasses MUST be examined
+         * to discover all uses of this annotation.
+
         Class superclass = instance.getClass().getSuperclass();
         while (superclass != null && (!superclass.equals(Object.class)))
         {

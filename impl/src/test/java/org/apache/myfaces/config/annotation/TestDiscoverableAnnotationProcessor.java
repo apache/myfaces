@@ -18,7 +18,7 @@ package org.apache.myfaces.config.annotation;
  */
 
 import org.apache.myfaces.DiscoverableAnnotationProcessor;
-import org.apache.AnnotationProcessor;
+import org.apache.myfaces.AnnotationProcessor;
 
 import javax.naming.NamingException;
 import java.lang.reflect.InvocationTargetException;
@@ -32,6 +32,11 @@ public class TestDiscoverableAnnotationProcessor implements DiscoverableAnnotati
     public boolean isAvailable()
     {
         return true;
+    }
+
+    public Object newInstance(String className) throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException
+    {
+        return processor.newInstance(className);
     }
 
     public void postConstruct(Object instance) throws IllegalAccessException, InvocationTargetException

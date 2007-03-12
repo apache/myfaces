@@ -1,4 +1,4 @@
-package org.apache;
+package org.apache.myfaces;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -25,6 +25,8 @@ import java.lang.reflect.InvocationTargetException;
  */
 public interface AnnotationProcessor {
 
+  public Object newInstance(String className)
+      throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException;
   public void postConstruct(Object instance)
       throws IllegalAccessException, InvocationTargetException;
   public void preDestroy(Object instance)

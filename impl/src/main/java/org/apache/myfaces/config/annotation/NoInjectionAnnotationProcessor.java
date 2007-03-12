@@ -17,7 +17,8 @@ package org.apache.myfaces.config.annotation;
  * limitations under the License.
  */
 
-import org.apache.AnnotationProcessor;
+import org.apache.myfaces.AnnotationProcessor;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -32,8 +33,15 @@ import java.lang.reflect.Modifier;
 
  */
 
-public class NoInjectionAnnotationProcessor implements AnnotationProcessor
-{
+public class NoInjectionAnnotationProcessor implements AnnotationProcessor {
+
+
+    public Object newInstance(String className)
+           throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException
+    {
+        Class clazz = ClassUtils.classForName(className);
+        return clazz.newInstance();
+    }
 
     /**
      * Call postConstruct method on the specified instance.

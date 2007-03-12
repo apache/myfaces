@@ -19,7 +19,6 @@ package org.apache.myfaces.config.annotation;
 
 
 import org.apache.myfaces.DiscoverableAnnotationProcessor;
-import org.apache.AnnotationProcessor;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 import javax.naming.NamingException;
@@ -34,6 +33,13 @@ public class TomcatAnnotationProcessor implements DiscoverableAnnotationProcesso
     public TomcatAnnotationProcessor(ExternalContext externalContext)
     {
         this.externalContext = externalContext;
+    }
+
+
+    public Object newInstance(String className)
+            throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+        Class clazz = ClassUtils.classForName(className);
+        return clazz.newInstance();
     }
 
     public boolean isAvailable()
@@ -62,9 +68,10 @@ public class TomcatAnnotationProcessor implements DiscoverableAnnotationProcesso
         getAnnotationPrcessor().processAnnotations(instance);
     }
 
-    private AnnotationProcessor getAnnotationPrcessor()
+    private org.apache.AnnotationProcessor getAnnotationPrcessor()
     {
-        return (AnnotationProcessor) ((ServletContext) externalContext.getContext()).getAttribute(AnnotationProcessor.class.getName());
+        return (org.apache.AnnotationProcessor) 
+                ((ServletContext) externalContext.getContext()).getAttribute(org.apache.AnnotationProcessor.class.getName());
     }
 
 }
