@@ -21,7 +21,7 @@ import javax.naming.NamingException;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * Copy from tomcat src until we can get this from a repository
+ * 
  */
 public interface AnnotationProcessor {
 
