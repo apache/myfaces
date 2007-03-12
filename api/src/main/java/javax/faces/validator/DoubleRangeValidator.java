@@ -77,7 +77,7 @@ public class DoubleRangeValidator
             if (dvalue < _minimum.doubleValue() ||
                 dvalue > _maximum.doubleValue())
             {
-                Object[] args = {_minimum, _maximum,uiComponent.getId()};
+                Object[] args = {_minimum, _maximum,_MessageUtils.getLabel(facesContext, uiComponent)};
                 throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, NOT_IN_RANGE_MESSAGE_ID, args));
             }
         }
@@ -85,7 +85,7 @@ public class DoubleRangeValidator
         {
             if (dvalue < _minimum.doubleValue())
             {
-                Object[] args = {_minimum,uiComponent.getId()};
+                Object[] args = {_minimum,_MessageUtils.getLabel(facesContext, uiComponent)};
                 throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, MINIMUM_MESSAGE_ID, args));
             }
         }
@@ -93,7 +93,7 @@ public class DoubleRangeValidator
         {
             if (dvalue > _maximum.doubleValue())
             {
-                Object[] args = {_maximum,uiComponent.getId()};
+                Object[] args = {_maximum,_MessageUtils.getLabel(facesContext, uiComponent)};
                 throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, MAXIMUM_MESSAGE_ID, args));
             }
         }
@@ -113,7 +113,7 @@ public class DoubleRangeValidator
         }
         catch (NumberFormatException e)
         {
-			Object[] args = {uiComponent.getId()};
+			Object[] args = {_MessageUtils.getLabel(facesContext, uiComponent)};
             throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, TYPE_MESSAGE_ID, args));
         }
     }

@@ -77,7 +77,7 @@ public class LongRangeValidator
             if (dvalue < _minimum.longValue() ||
                 dvalue > _maximum.longValue())
             {
-                Object[] args = {_minimum, _maximum,uiComponent.getId()};
+                Object[] args = {_minimum, _maximum,_MessageUtils.getLabel(facesContext, uiComponent)};
                 throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, NOT_IN_RANGE_MESSAGE_ID, args));
             }
         }
@@ -85,7 +85,7 @@ public class LongRangeValidator
         {
             if (dvalue < _minimum.longValue())
             {
-                Object[] args = {_minimum,uiComponent.getId()};
+                Object[] args = {_minimum,_MessageUtils.getLabel(facesContext, uiComponent)};
                 throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, MINIMUM_MESSAGE_ID, args));
             }
         }
@@ -93,7 +93,7 @@ public class LongRangeValidator
         {
             if (dvalue > _maximum.longValue())
             {
-                Object[] args = {_maximum,uiComponent.getId()};
+                Object[] args = {_maximum,_MessageUtils.getLabel(facesContext, uiComponent)};
                 throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, MAXIMUM_MESSAGE_ID, args));
             }
         }
@@ -113,7 +113,7 @@ public class LongRangeValidator
         }
         catch (NumberFormatException e)
         {
-			Object[] args = {uiComponent.getId()};
+			Object[] args = {_MessageUtils.getLabel(facesContext, uiComponent)};
             throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, TYPE_MESSAGE_ID, args));
         }
         
