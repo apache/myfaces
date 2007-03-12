@@ -57,8 +57,8 @@ public class ByteConverter
                 catch (NumberFormatException e)
                 {
                     throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
-                                                                               CONVERSION_MESSAGE_ID,
-                                                                               new Object[]{value,uiComponent.getId()}), e);
+                                                                               BYTE_ID,
+                                                                               new Object[]{value,"156",_MessageUtils.getLabel(facesContext, uiComponent)}), e);
                 }
             }
         }

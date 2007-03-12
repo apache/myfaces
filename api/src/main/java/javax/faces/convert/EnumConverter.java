@@ -62,8 +62,7 @@ public class EnumConverter implements Converter, StateHolder {
         if (uiComponent == null) throw new NullPointerException("uiComponent");
         if (value == null)  return null;
         if (targetClass == null) {
-            // TODO: instead of client id, use the label for input components as specified in issue #6 and javadocs
-            Object[] params = new Object[]{value, uiComponent.getClientId(facesContext)};
+            Object[] params = new Object[]{value, _MessageUtils.getLabel(facesContext, uiComponent)};
             throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, 
                                                                        ENUM_NO_CLASS_ID, 
                                                                        params));
@@ -77,10 +76,9 @@ public class EnumConverter implements Converter, StateHolder {
         try {
            return Enum.valueOf(targetClass, value);    
         } catch (IllegalArgumentException e) {
-            // TODO: instead of getClientId(), use the label for input components as specified in issue #6 and javadocs
             Object[] params = new Object[]{value, 
                                            firstConstantOfEnum(), 
-                                           uiComponent.getClientId(facesContext)};
+                                           _MessageUtils.getLabel(facesContext, uiComponent)};
             
             throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
                                                                        ENUM_ID,

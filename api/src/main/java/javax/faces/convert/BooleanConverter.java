@@ -57,8 +57,8 @@ public class BooleanConverter
                 catch (Exception e)
                 {
                     throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
-                                                                               CONVERSION_MESSAGE_ID,
-                                                                               new Object[]{value,uiComponent.getId()}), e);
+                                                                               BOOLEAN_ID,
+                                                                               new Object[]{value,_MessageUtils.getLabel(facesContext, uiComponent)}), e);
                 }
             }
         }

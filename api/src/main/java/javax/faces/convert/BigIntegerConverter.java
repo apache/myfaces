@@ -58,8 +58,8 @@ public class BigIntegerConverter
                 catch (NumberFormatException e)
                 {
                     throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
-                                                                               CONVERSION_MESSAGE_ID,
-                                                                               new Object[]{uiComponent.getId(),value}), e);
+                                                                               BIGINTEGER_ID,
+                                                                               new Object[]{value,"2345",_MessageUtils.getLabel(facesContext, uiComponent)}), e);
                 }
             }
         }

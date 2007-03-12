@@ -57,8 +57,8 @@ public class FloatConverter
                 catch (NumberFormatException e)
                 {
                     throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
-                                                                               CONVERSION_MESSAGE_ID,
-                                                                               new Object[]{uiComponent.getId(),value}), e);
+                                                                               FLOAT_ID,
+                                                                               new Object[]{value,"50000",_MessageUtils.getLabel(facesContext, uiComponent)}), e);
                 }
             }
         }

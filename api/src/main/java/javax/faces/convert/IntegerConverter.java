@@ -57,8 +57,8 @@ public class IntegerConverter
                 catch (NumberFormatException e)
                 {
                     throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
-                                                                               CONVERSION_MESSAGE_ID,
-                                                                               new Object[]{uiComponent.getId(),value}), e);
+                                                                               INTEGER_ID,
+                                                                               new Object[]{value,"21",_MessageUtils.getLabel(facesContext, uiComponent)}), e);
                 }
             }
         }

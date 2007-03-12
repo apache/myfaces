@@ -57,8 +57,8 @@ public class DoubleConverter
                 catch (NumberFormatException e)
                 {
                     throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
-                                                                               CONVERSION_MESSAGE_ID,
-                                                                               new Object[]{uiComponent.getId(),value}), e);
+                    														   DOUBLE_ID,
+                                                                               new Object[]{value,"4214",_MessageUtils.getLabel(facesContext, uiComponent)}), e);
                 }
             }
         }

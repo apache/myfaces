@@ -59,8 +59,8 @@ public class BigDecimalConverter
                     catch (NumberFormatException e)
                     {
                         throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
-                                                                                   CONVERSION_MESSAGE_ID,
-                                                                                   new Object[]{uiComponent.getId(),value}), e);
+                                                                                   DECIMAL_ID,
+                                                                                   new Object[]{value,"4815,16",_MessageUtils.getLabel(facesContext, uiComponent)}), e);
                     }
                 }
             }
