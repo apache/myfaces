@@ -80,7 +80,7 @@ class _MethodBindingToMethodExpression extends MethodExpression implements State
         if (expressionString == null) expressionString = "null";
         return expFactory.createMethodExpression(facesContext.getELContext(), 
                                                  expressionString, 
-                                                 methodBinding.getType(facesContext),
+                                                 null,
                                                  expectedParamTypes);
     }
     
