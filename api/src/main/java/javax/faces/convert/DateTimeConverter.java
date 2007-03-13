@@ -135,7 +135,7 @@ public class DateTimeConverter
         }
         catch (Exception e)
         {
-            throw new ConverterException("Cannot convert value '" + value + "'");
+        	throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, STRING_ID, new Object[]{value,_MessageUtils.getLabel(facesContext, uiComponent)}),e);
         }
     }
 
