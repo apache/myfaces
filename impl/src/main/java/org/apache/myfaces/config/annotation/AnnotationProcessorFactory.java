@@ -22,20 +22,26 @@ import org.apache.commons.discovery.tools.DiscoverSingleton;
 import org.apache.myfaces.AnnotationProcessor;
 
 import javax.faces.context.ExternalContext;
+import java.util.Properties;
 
 
 public abstract class AnnotationProcessorFactory
 {
     protected static final String FACTORY_DEFAULT = DefaultAnnotationProcessorFactory.class.getName();
+    private static Properties properties = new Properties();
 
     protected AnnotationProcessorFactory()
     {
     }
 
+    public static void setAnnotationProcessorFactory(String className) {
+        properties.setProperty(AnnotationProcessorFactory.class.getName(), className);
+    }
+
 
     public static AnnotationProcessorFactory getAnnotatonProcessorFactory()
     {
-        return (AnnotationProcessorFactory) DiscoverSingleton.find(AnnotationProcessorFactory.class, FACTORY_DEFAULT);
+        return (AnnotationProcessorFactory) DiscoverSingleton.find(AnnotationProcessorFactory.class, properties, FACTORY_DEFAULT);
     }
 
     public abstract AnnotationProcessor getAnnotatonProcessor(ExternalContext externalContext);
