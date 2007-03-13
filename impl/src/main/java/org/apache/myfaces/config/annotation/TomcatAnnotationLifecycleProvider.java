@@ -33,6 +33,7 @@ public class TomcatAnnotationLifecycleProvider implements DiscoverableLifecycleP
 
     private ExternalContext externalContext;
     private org.apache.AnnotationProcessor annotationProcessor;
+
     public TomcatAnnotationLifecycleProvider(ExternalContext externalContext)
     {
         this.externalContext = externalContext;
@@ -42,7 +43,7 @@ public class TomcatAnnotationLifecycleProvider implements DiscoverableLifecycleP
     public Object newInstance(String className)
             throws InstantiationException, IllegalAccessException, InvocationTargetException, NamingException, ClassNotFoundException {
         Class clazz = ClassUtils.classForName(className);
-        log.error("Creating instance of " + className);
+        log.info("Creating instance of " + className);
         Object object = clazz.newInstance();
         annotationProcessor.processAnnotations(object);
         annotationProcessor.postConstruct(object);
@@ -52,7 +53,7 @@ public class TomcatAnnotationLifecycleProvider implements DiscoverableLifecycleP
 
     public void destroyInstance(Object o) throws IllegalAccessException, InvocationTargetException
     {
-        log.error("Destroy instance of " + o.getClass().getName());
+        log.info("Destroy instance of " + o.getClass().getName());
         annotationProcessor.preDestroy(o);
     }
 
@@ -68,11 +69,5 @@ public class TomcatAnnotationLifecycleProvider implements DiscoverableLifecycleP
         }
         return false;
     }
-
-
-
-
-
-
 
 }
