@@ -49,6 +49,12 @@ public class MethodExpressionToMethodBinding extends MethodBinding implements St
     public MethodExpressionToMethodBinding(MethodExpression methodExpression) {
         this.methodExpression = methodExpression;
     }
+    
+    @Override
+    public String getExpressionString()
+    {
+        return methodExpression.getExpressionString();
+    }
 
     public Class getType(FacesContext facesContext) 
         throws MethodNotFoundException {
