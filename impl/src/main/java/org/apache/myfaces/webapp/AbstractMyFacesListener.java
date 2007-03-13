@@ -21,7 +21,7 @@ import javax.servlet.ServletContextAttributeEvent;
 import javax.servlet.ServletRequestAttributeEvent;
 import javax.servlet.http.HttpSessionBindingEvent;
 
-import org.apache.myfaces.config.annotation.AnnotationProcessorFactory;
+import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -57,7 +57,7 @@ public abstract class AbstractMyFacesListener {
 
             try
             {
-                AnnotationProcessorFactory.getAnnotatonProcessorFactory().getAnnotatonProcessor(null).preDestroy(value); 
+                LifecycleProviderFactory.getLifecycleProviderFactory().getLifecycleProvider(null).destroyInstance(value);
             } catch (IllegalAccessException e)
             {
                 log.error("", e);

@@ -25,13 +25,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Field;
 
 // TODO @Resources
-public class ResourceAnnotationProcessor extends NoInjectionAnnotationProcessor
+public class ResourceAnnotationLifecycleProvider extends NoInjectionAnnotationLifecycleProvider
 {
 
     protected Context context;
     private static final String JAVA_COMP_ENV = "java:comp/env/";
 
-    public ResourceAnnotationProcessor(Context context)
+    public ResourceAnnotationLifecycleProvider(Context context)
     {
         this.context = context;
     }
@@ -40,7 +40,7 @@ public class ResourceAnnotationProcessor extends NoInjectionAnnotationProcessor
     /**
      * Inject resources in specified instance.
      */
-    public void processAnnotations(Object instance)
+    protected void processAnnotations(Object instance)
             throws IllegalAccessException, InvocationTargetException, NamingException
     {
 

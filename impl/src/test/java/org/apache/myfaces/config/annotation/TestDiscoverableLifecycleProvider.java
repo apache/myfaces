@@ -17,34 +17,29 @@ package org.apache.myfaces.config.annotation;
  * limitations under the License.
  */
 
-import org.apache.myfaces.AnnotationProcessor;
 
 import javax.naming.NamingException;
 import java.lang.reflect.InvocationTargetException;
 
 
-public class TestAnnotationProcessor implements AnnotationProcessor
+
+public class TestDiscoverableLifecycleProvider implements DiscoverableLifecycleProvider
 {
-    private AnnotationProcessor processor = new NoInjectionAnnotationProcessor();
+    private LifecycleProvider processor = new NoInjectionAnnotationLifecycleProvider();
 
+    public boolean isAvailable()
+    {
+        return true;
+    }
 
-    public Object newInstance(String className) throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException
+    public Object newInstance(String className) throws InstantiationException, IllegalAccessException, NamingException, InvocationTargetException, ClassNotFoundException
     {
         return processor.newInstance(className);
     }
 
-    public void postConstruct(Object instance) throws IllegalAccessException, InvocationTargetException
-    {
-        processor.postConstruct(instance);
-    }
 
-    public void preDestroy(Object instance) throws IllegalAccessException, InvocationTargetException
+    public void destroyInstance(Object o) throws IllegalAccessException, InvocationTargetException
     {
-        processor.preDestroy(instance);
-    }
-
-    public void processAnnotations(Object instance) throws IllegalAccessException, InvocationTargetException, NamingException
-    {
-        processor.processAnnotations(instance);
+       processor.destroyInstance(o);
     }
 }

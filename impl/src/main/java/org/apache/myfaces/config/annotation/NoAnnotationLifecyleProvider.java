@@ -17,15 +17,18 @@ package org.apache.myfaces.config.annotation;
  * limitations under the License.
  */
 
-import org.apache.myfaces.AnnotationProcessor;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 
-import javax.naming.NamingException;
 import java.lang.reflect.InvocationTargetException;
 
-public class NopAnnotationProcessor implements AnnotationProcessor
+public class NoAnnotationLifecyleProvider implements LifecycleProvider
 {
 
+
+    public void destroyInstance(Object o) throws IllegalAccessException, InvocationTargetException
+    {
+
+    }
 
     public Object newInstance(String className) throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException
     {
@@ -33,21 +36,4 @@ public class NopAnnotationProcessor implements AnnotationProcessor
         return clazz.newInstance();
     }
 
-    public void postConstruct(Object instance)
-            throws IllegalAccessException, InvocationTargetException
-    {
-
-    }
-
-    public void preDestroy(Object instance)
-            throws IllegalAccessException, InvocationTargetException
-    {
-
-    }
-
-    public void processAnnotations(Object instance)
-            throws IllegalAccessException, InvocationTargetException, NamingException
-    {
-
-    }
 }

@@ -18,28 +18,42 @@ package org.apache.myfaces.config.annotation;
  */
 
 
-import org.apache.myfaces.DiscoverableAnnotationProcessor;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import javax.naming.NamingException;
 import javax.faces.context.ExternalContext;
 import javax.servlet.ServletContext;
 import java.lang.reflect.InvocationTargetException;
 
-public class TomcatAnnotationProcessor implements DiscoverableAnnotationProcessor
+public class TomcatAnnotationLifecycleProvider implements DiscoverableLifecycleProvider
 {
+    private static Log log = LogFactory.getLog(TomcatAnnotationLifecycleProvider.class);
+
     private ExternalContext externalContext;
     private org.apache.AnnotationProcessor annotationProcessor;
-    public TomcatAnnotationProcessor(ExternalContext externalContext)
+    public TomcatAnnotationLifecycleProvider(ExternalContext externalContext)
     {
         this.externalContext = externalContext;
     }
 
 
     public Object newInstance(String className)
-            throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+            throws InstantiationException, IllegalAccessException, InvocationTargetException, NamingException, ClassNotFoundException {
         Class clazz = ClassUtils.classForName(className);
-        return clazz.newInstance();
+        log.error("Creating instance of " + className);
+        Object object = clazz.newInstance();
+        annotationProcessor.processAnnotations(object);
+        annotationProcessor.postConstruct(object);
+        return object;
+    }
+
+
+    public void destroyInstance(Object o) throws IllegalAccessException, InvocationTargetException
+    {
+        log.error("Destroy instance of " + o.getClass().getName());
+        annotationProcessor.preDestroy(o);
     }
 
     public boolean isAvailable()
@@ -55,19 +69,10 @@ public class TomcatAnnotationProcessor implements DiscoverableAnnotationProcesso
         return false;
     }
 
-    public void postConstruct(Object instance) throws IllegalAccessException, InvocationTargetException
-    {
-        annotationProcessor.postConstruct(instance);
-    }
 
-    public void preDestroy(Object instance) throws IllegalAccessException, InvocationTargetException
-    {
-        annotationProcessor.preDestroy(instance);
-    }
 
-    public void processAnnotations(Object instance) throws IllegalAccessException, InvocationTargetException, NamingException
-    {
-        annotationProcessor.processAnnotations(instance);
-    }
+
+
+
 
 }

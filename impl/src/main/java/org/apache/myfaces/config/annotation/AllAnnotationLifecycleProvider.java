@@ -30,10 +30,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Field;
 
 // TODO @EJBs
-public class AllAnnotationProcessor extends ResourceAnnotationProcessor
+public class AllAnnotationLifecycleProvider extends ResourceAnnotationLifecycleProvider
 {
 
-    public AllAnnotationProcessor(Context context)
+    public AllAnnotationLifecycleProvider(Context context)
     {
         super(context);
     }

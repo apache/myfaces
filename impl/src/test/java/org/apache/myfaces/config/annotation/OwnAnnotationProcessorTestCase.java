@@ -18,14 +18,13 @@ package org.apache.myfaces.config.annotation;
  */
 
 import org.apache.shale.test.base.AbstractJsfTestCase;
-import org.apache.myfaces.AnnotationProcessor;
 
 
 public class OwnAnnotationProcessorTestCase extends AbstractJsfTestCase
 {
-	protected AnnotationProcessor processor;
+	protected LifecycleProvider lifecycleProvider;
 	protected AnnotatedManagedBean managedBean;
-    private static final String TEST_ANNOTATION_PROCESSOR = "org.apache.myfaces.config.annotation.TestAnnotationProcessor";
+    private static final String TEST_LIFECYCLE_PROVIDER = "org.apache.myfaces.config.annotation.TestLifecycleProvider";
 
 
     public OwnAnnotationProcessorTestCase(String string)
@@ -35,15 +34,15 @@ public class OwnAnnotationProcessorTestCase extends AbstractJsfTestCase
 
     public void setUp() throws Exception {
         super.setUp();
-        AnnotationProcessorFactory.getAnnotatonProcessorFactory().release();
-        servletContext.addInitParameter(DefaultAnnotationProcessorFactory.ANNOTATION_PROCESSOR_PROVIDER, TEST_ANNOTATION_PROCESSOR);
-        processor = AnnotationProcessorFactory.getAnnotatonProcessorFactory().getAnnotatonProcessor(externalContext);
+        LifecycleProviderFactory.getLifecycleProviderFactory().release();
+        servletContext.addInitParameter(DefaultLifecycleProviderFactory.LIFECYCLE_PROVIDER, TEST_LIFECYCLE_PROVIDER);
+        lifecycleProvider = LifecycleProviderFactory.getLifecycleProviderFactory().getLifecycleProvider(externalContext);
         managedBean = new AnnotatedManagedBean();
 
     }
 
     public void testOwnProcessor()
     {
-		assertEquals(TEST_ANNOTATION_PROCESSOR, processor.getClass().getName());
+		assertEquals(TEST_LIFECYCLE_PROVIDER, lifecycleProvider.getClass().getName());
 	}
 }

@@ -38,7 +38,8 @@ import javax.naming.NamingException;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.config.annotation.AnnotationProcessorFactory;
+import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
+import org.apache.myfaces.config.annotation.LifecycleProvider;
 import org.apache.myfaces.config.element.ListEntries;
 import org.apache.myfaces.config.element.ListEntry;
 import org.apache.myfaces.config.element.ManagedBean;
@@ -46,7 +47,6 @@ import org.apache.myfaces.config.element.ManagedProperty;
 import org.apache.myfaces.config.element.MapEntries;
 import org.apache.myfaces.config.element.MapEntry;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
-import org.apache.myfaces.AnnotationProcessor;
 
 
 /**
@@ -76,16 +76,9 @@ public class ManagedBeanBuilder
               return null;*/
         try
         {
-            AnnotationProcessor annotationProcessor =
-                    AnnotationProcessorFactory.getAnnotatonProcessorFactory().getAnnotatonProcessor(facesContext.getExternalContext());
-            final Object bean = annotationProcessor.newInstance(beanConfiguration.getManagedBeanClassName());
-
-            annotationProcessor.processAnnotations(bean);
-
-            if (!beanConfiguration.getManagedBeanScope().equals(ManagedBeanBuilder.NONE))
-            {
-                annotationProcessor.postConstruct(bean);
-            }
+            LifecycleProvider lifecycleProvider =
+                    LifecycleProviderFactory.getLifecycleProviderFactory().getLifecycleProvider(facesContext.getExternalContext());
+            final Object bean = lifecycleProvider.newInstance(beanConfiguration.getManagedBeanClassName());
 
             switch (beanConfiguration.getInitMode())
             {

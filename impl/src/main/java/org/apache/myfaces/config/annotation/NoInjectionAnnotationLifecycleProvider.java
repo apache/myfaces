@@ -17,7 +17,6 @@ package org.apache.myfaces.config.annotation;
  * limitations under the License.
  */
 
-import org.apache.myfaces.AnnotationProcessor;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 import javax.annotation.PostConstruct;
@@ -33,20 +32,23 @@ import java.lang.reflect.Modifier;
 
  */
 
-public class NoInjectionAnnotationProcessor implements AnnotationProcessor {
+public class NoInjectionAnnotationLifecycleProvider implements LifecycleProvider {
 
 
     public Object newInstance(String className)
-           throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException
+           throws InstantiationException, IllegalAccessException, NamingException, InvocationTargetException, ClassNotFoundException
     {
         Class clazz = ClassUtils.classForName(className);
-        return clazz.newInstance();
+        Object object = clazz.newInstance();
+        processAnnotations(object);
+        postConstruct(object);
+        return object;
     }
 
     /**
      * Call postConstruct method on the specified instance.
      */
-    public void postConstruct(Object instance)
+    private void postConstruct(Object instance)
             throws IllegalAccessException, InvocationTargetException
     {
 
@@ -80,10 +82,7 @@ public class NoInjectionAnnotationProcessor implements AnnotationProcessor {
 
     }
 
-    /**
-     * Call preDestroy method on the specified instance.
-     */
-    public void preDestroy(Object instance)
+    public void destroyInstance(Object instance)
             throws IllegalAccessException, InvocationTargetException
     {
 
@@ -117,16 +116,6 @@ public class NoInjectionAnnotationProcessor implements AnnotationProcessor {
 
     }
 
-
-    /**
-     * Inject resources in specified instance.
-     */
-    public void processAnnotations(Object instance)
-            throws IllegalAccessException, InvocationTargetException, NamingException
-    {
-
-    }
-
     private void invokeAnnotatedMethod(Method method, Object instance)
                 throws IllegalAccessException, InvocationTargetException
     {
@@ -139,6 +128,15 @@ public class NoInjectionAnnotationProcessor implements AnnotationProcessor {
             method.invoke(instance);
             method.setAccessible(accessibility);
         }
+    }
+
+     /**
+     * Inject resources in specified instance.
+     */
+    protected void processAnnotations(Object instance)
+            throws IllegalAccessException, InvocationTargetException, NamingException
+    {
+
     }
 
 }

@@ -23,9 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.discovery.resource.ClassLoaders;
 import org.apache.commons.discovery.resource.names.DiscoverServiceNames;
 import org.apache.commons.discovery.ResourceNameIterator;
-import org.apache.myfaces.AnnotationProcessor;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
-import org.apache.myfaces.DiscoverableAnnotationProcessor;
 
 import javax.faces.context.ExternalContext;
 import javax.naming.Context;
@@ -38,59 +36,58 @@ import java.lang.reflect.Constructor;
  * Date: Mar 12, 2007
  * Time: 9:53:40 PM
  */
-public class DefaultAnnotationProcessorFactory extends AnnotationProcessorFactory
-{
-    private static Log log = LogFactory.getLog(AnnotationProcessorFactory.class);
-    private static AnnotationProcessor ANNOTATION_PROCESSOR_INSTANCE;
-    public static final String ANNOTATION_PROCESSOR_PROVIDER = AnnotationProcessor.class.getName();
+public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
+    private static Log log = LogFactory.getLog(DefaultLifecycleProviderFactory.class);
+    private static LifecycleProvider LIFECYCLE_PROVIDER_INSTANCE;
+    public static final String LIFECYCLE_PROVIDER = LifecycleProvider.class.getName();
 
 
-    public DefaultAnnotationProcessorFactory()
+    public DefaultLifecycleProviderFactory()
     {
     }
 
-    public AnnotationProcessor getAnnotatonProcessor(ExternalContext externalContext)
+    public LifecycleProvider getLifecycleProvider(ExternalContext externalContext)
     {
-        if (ANNOTATION_PROCESSOR_INSTANCE == null)
+        if (LIFECYCLE_PROVIDER_INSTANCE == null)
         {
             if (externalContext == null)
             {
-                log.info("No ExternalContext using fallback annotation processor.");
-                resolveFallbackAnnotationProcessor();
+                log.info("No ExternalContext using fallback LifecycleProvider.");
+                resolveFallbackLifecycleProvider();
             }
             else
             {
-                if (!resolveAnnotationProcessorFromExternalContext(externalContext))
+                if (!resolveLifecycleProviderFromExternalContext(externalContext))
                 {
-                    if (!resolveAnnotationProcessorFromService(externalContext))
+                    if (!resolveLifecycleProviderFromService(externalContext))
                     {
-                        resolveFallbackAnnotationProcessor();
+                        resolveFallbackLifecycleProvider();
                     }
                 }
             }
-            log.info("Using AnnotationProcessor "+ ANNOTATION_PROCESSOR_INSTANCE.getClass().getName());
+            log.info("Using LifecycleProvider "+ LIFECYCLE_PROVIDER_INSTANCE.getClass().getName());
         }
-        return ANNOTATION_PROCESSOR_INSTANCE;
+        return LIFECYCLE_PROVIDER_INSTANCE;
     }
 
     public void release() {
-        ANNOTATION_PROCESSOR_INSTANCE = null;
+        LIFECYCLE_PROVIDER_INSTANCE = null;
     }
 
 
 
-    private boolean resolveAnnotationProcessorFromExternalContext(ExternalContext externalContext)
+    private boolean resolveLifecycleProviderFromExternalContext(ExternalContext externalContext)
     {
         try
         {
-            String annotationProcessorClassName = externalContext.getInitParameter(ANNOTATION_PROCESSOR_PROVIDER);
-            if (annotationProcessorClassName != null)
+            String lifecycleProvider = externalContext.getInitParameter(LIFECYCLE_PROVIDER);
+            if (lifecycleProvider != null)
             {
 
-                Object obj = createClass(annotationProcessorClassName, externalContext);
+                Object obj = createClass(lifecycleProvider, externalContext);
 
-                if (obj instanceof AnnotationProcessor) {
-                    ANNOTATION_PROCESSOR_INSTANCE = (AnnotationProcessor) obj;
+                if (obj instanceof LifecycleProvider) {
+                    LIFECYCLE_PROVIDER_INSTANCE = (LifecycleProvider) obj;
                     return true;
                 }
             }
@@ -115,33 +112,33 @@ public class DefaultAnnotationProcessorFactory extends AnnotationProcessorFactor
     }
 
 
-    private boolean resolveAnnotationProcessorFromService(ExternalContext externalContext) {
+    private boolean resolveLifecycleProviderFromService(ExternalContext externalContext) {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         ClassLoaders loaders = new ClassLoaders();
         loaders.put(classLoader);
         DiscoverServiceNames dsn = new DiscoverServiceNames(loaders);
-        ResourceNameIterator iter = dsn.findResourceNames(ANNOTATION_PROCESSOR_PROVIDER);
+        ResourceNameIterator iter = dsn.findResourceNames(LIFECYCLE_PROVIDER);
         while (iter.hasNext()) {
             String className = iter.nextResourceName();
             try
             {
                 Object obj = createClass(className, externalContext);
-                if (DiscoverableAnnotationProcessor.class.isAssignableFrom(obj.getClass())) {
-                    DiscoverableAnnotationProcessor discoverableAnnotationProcessor =
-                            (DiscoverableAnnotationProcessor) obj;
-                    if (discoverableAnnotationProcessor.isAvailable()) {
-                        ANNOTATION_PROCESSOR_INSTANCE = discoverableAnnotationProcessor;
+                if (DiscoverableLifecycleProvider.class.isAssignableFrom(obj.getClass())) {
+                    DiscoverableLifecycleProvider discoverableLifecycleProvider =
+                            (DiscoverableLifecycleProvider) obj;
+                    if (discoverableLifecycleProvider.isAvailable()) {
+                        LIFECYCLE_PROVIDER_INSTANCE = discoverableLifecycleProvider;
                         return true;
                     }
                 }
             }
             catch (ClassNotFoundException e)
             {
-                log.error("", e);
+                // ignore
             }
             catch (NoClassDefFoundError e)
             {
-                log.error("", e);
+                // ignore
             }
             catch (InstantiationException e)
             {
@@ -178,7 +175,7 @@ public class DefaultAnnotationProcessorFactory extends AnnotationProcessorFactor
     }
 
 
-    private void resolveFallbackAnnotationProcessor()
+    private void resolveFallbackLifecycleProvider()
     {
         try
         {
@@ -187,7 +184,7 @@ public class DefaultAnnotationProcessorFactory extends AnnotationProcessorFactor
         catch (ClassNotFoundException e)
         {
             // no annotation available don't process annotations
-            ANNOTATION_PROCESSOR_INSTANCE = new NopAnnotationProcessor();
+            LIFECYCLE_PROVIDER_INSTANCE = new NoAnnotationLifecyleProvider();
             return;
         }
         Context context;
@@ -198,18 +195,18 @@ public class DefaultAnnotationProcessorFactory extends AnnotationProcessorFactor
             {
                 ClassUtils.classForName("javax.ejb.EJB");
                 // Asume full JEE 5 container
-                ANNOTATION_PROCESSOR_INSTANCE = new AllAnnotationProcessor(context);
+                LIFECYCLE_PROVIDER_INSTANCE = new AllAnnotationLifecycleProvider(context);
             }
             catch (ClassNotFoundException e)
             {
                 // something else
-                ANNOTATION_PROCESSOR_INSTANCE = new ResourceAnnotationProcessor(context);
+                LIFECYCLE_PROVIDER_INSTANCE = new ResourceAnnotationLifecycleProvider(context);
             }
         }
         catch (NamingException e)
         {
             // no initial context available no injection
-            ANNOTATION_PROCESSOR_INSTANCE = new NoInjectionAnnotationProcessor();
+            LIFECYCLE_PROVIDER_INSTANCE = new NoInjectionAnnotationLifecycleProvider();
             log.error("No InitialContext found. Using NoInjectionAnnotationProcessor.", e);
 
         }

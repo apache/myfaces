@@ -18,14 +18,14 @@ package org.apache.myfaces.config.annotation;
  */
 
 import org.apache.shale.test.base.AbstractJsfTestCase;
-import org.apache.myfaces.AnnotationProcessor;
 
+import javax.naming.NamingException;
 import java.lang.reflect.InvocationTargetException;
 
 
 public class AnnotationProcessorTestCase extends AbstractJsfTestCase
 {
-	protected AnnotationProcessor processor;
+	protected LifecycleProvider lifecycleProvider;
 	protected AnnotatedManagedBean managedBean;
 
 
@@ -36,21 +36,22 @@ public class AnnotationProcessorTestCase extends AbstractJsfTestCase
 
     public void setUp() throws Exception {
         super.setUp();
-        processor = AnnotationProcessorFactory.getAnnotatonProcessorFactory().getAnnotatonProcessor(externalContext);
+        lifecycleProvider = new AllAnnotationLifecycleProvider(null);
         managedBean = new AnnotatedManagedBean();
 	}
 
-	public void testPostConstruct() throws IllegalAccessException, InvocationTargetException
+	public void testPostConstruct() throws IllegalAccessException, InvocationTargetException, NamingException, InstantiationException, ClassNotFoundException
     {
-		processor.postConstruct(managedBean);
+		AnnotatedManagedBean managedBean = (AnnotatedManagedBean) lifecycleProvider.newInstance(AnnotatedManagedBean.class.getName());
 		assertTrue(managedBean.isPostConstructCalled());
 		assertFalse(managedBean.isPreDestroyCalled());
 	}
 
-	public void testPreDestroy() throws IllegalAccessException, InvocationTargetException
+	public void testPreDestroy() throws IllegalAccessException, InvocationTargetException, NamingException, InstantiationException, ClassNotFoundException
     {
-        processor.preDestroy(managedBean);
-        assertFalse(managedBean.isPostConstructCalled());
+        AnnotatedManagedBean managedBean = (AnnotatedManagedBean) lifecycleProvider.newInstance(AnnotatedManagedBean.class.getName());
+        lifecycleProvider.destroyInstance(managedBean);
+        assertTrue(managedBean.isPostConstructCalled());
 		assertTrue(managedBean.isPreDestroyCalled());
 	}
 
@@ -58,7 +59,7 @@ public class AnnotationProcessorTestCase extends AbstractJsfTestCase
     {
         try
         {
-            processor.postConstruct(new AnnotatedManagedBean(true));
+            lifecycleProvider.destroyInstance(new AnnotatedManagedBean(true));
         } catch (InvocationTargetException e) {
             return;  
         }

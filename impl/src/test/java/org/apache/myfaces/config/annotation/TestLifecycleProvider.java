@@ -1,4 +1,4 @@
-package org.apache.myfaces;
+package org.apache.myfaces.config.annotation;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -17,20 +17,25 @@ package org.apache.myfaces;
  * limitations under the License.
  */
 
+
 import javax.naming.NamingException;
 import java.lang.reflect.InvocationTargetException;
 
-/**
- * 
- */
-public interface AnnotationProcessor {
 
-  public Object newInstance(String className)
-      throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException;
-  public void postConstruct(Object instance)
-      throws IllegalAccessException, InvocationTargetException;
-  public void preDestroy(Object instance)
-      throws IllegalAccessException, InvocationTargetException;
-  public void processAnnotations(Object instance)
-      throws IllegalAccessException, InvocationTargetException, NamingException;
+public class TestLifecycleProvider implements LifecycleProvider
+{
+    private LifecycleProvider processor = new NoInjectionAnnotationLifecycleProvider();
+
+
+    public Object newInstance(String className) throws InstantiationException, NamingException, IllegalAccessException, InvocationTargetException, ClassNotFoundException
+    {
+        return processor.newInstance(className);
+    }
+
+
+    public void destroyInstance(Object instance) throws IllegalAccessException, InvocationTargetException
+    {
+        processor.destroyInstance(instance);
+    }
+
 }

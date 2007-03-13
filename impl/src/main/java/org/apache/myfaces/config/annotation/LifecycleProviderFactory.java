@@ -19,32 +19,30 @@ package org.apache.myfaces.config.annotation;
 
 import org.apache.commons.discovery.tools.DiscoverSingleton;
 
-import org.apache.myfaces.AnnotationProcessor;
 
 import javax.faces.context.ExternalContext;
-import java.util.Properties;
 
 
-public abstract class AnnotationProcessorFactory
-{
-    protected static final String FACTORY_DEFAULT = DefaultAnnotationProcessorFactory.class.getName();
-    private static Properties properties = new Properties();
+public abstract class LifecycleProviderFactory {
+    protected static final String FACTORY_DEFAULT = DefaultLifecycleProviderFactory.class.getName();
 
-    protected AnnotationProcessorFactory()
+    private static volatile LifecycleProviderFactory INSTANCE;
+
+    public static LifecycleProviderFactory getLifecycleProviderFactory()
     {
+        LifecycleProviderFactory instance = INSTANCE;
+        if (instance != null) {
+            return instance;
+        }
+        return (LifecycleProviderFactory) DiscoverSingleton.find(LifecycleProviderFactory.class, FACTORY_DEFAULT);
     }
 
-    public static void setAnnotationProcessorFactory(String className) {
-        properties.setProperty(AnnotationProcessorFactory.class.getName(), className);
+
+    public static void setLifecycleProviderFactory(LifecycleProviderFactory instance) {
+        INSTANCE = instance;
     }
 
-
-    public static AnnotationProcessorFactory getAnnotatonProcessorFactory()
-    {
-        return (AnnotationProcessorFactory) DiscoverSingleton.find(AnnotationProcessorFactory.class, properties, FACTORY_DEFAULT);
-    }
-
-    public abstract AnnotationProcessor getAnnotatonProcessor(ExternalContext externalContext);
+    public abstract LifecycleProvider getLifecycleProvider(ExternalContext externalContext);
 
     public abstract void release();
 
