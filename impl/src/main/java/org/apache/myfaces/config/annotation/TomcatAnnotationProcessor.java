@@ -29,7 +29,7 @@ import java.lang.reflect.InvocationTargetException;
 public class TomcatAnnotationProcessor implements DiscoverableAnnotationProcessor
 {
     private ExternalContext externalContext;
-
+    private org.apache.AnnotationProcessor annotationProcessor;
     public TomcatAnnotationProcessor(ExternalContext externalContext)
     {
         this.externalContext = externalContext;
@@ -46,7 +46,9 @@ public class TomcatAnnotationProcessor implements DiscoverableAnnotationProcesso
     {
         try
         {
-            return ClassUtils.classForName("org.apache.catalina.util.DefaultAnnotationProcessor") != null;
+            annotationProcessor =  (org.apache.AnnotationProcessor) ((ServletContext)
+                     externalContext.getContext()).getAttribute(org.apache.AnnotationProcessor.class.getName());
+            return annotationProcessor != null;
         } catch (Exception e) {
             // ignore
         }
@@ -55,23 +57,17 @@ public class TomcatAnnotationProcessor implements DiscoverableAnnotationProcesso
 
     public void postConstruct(Object instance) throws IllegalAccessException, InvocationTargetException
     {
-        getAnnotationPrcessor().postConstruct(instance);
+        annotationProcessor.postConstruct(instance);
     }
 
     public void preDestroy(Object instance) throws IllegalAccessException, InvocationTargetException
     {
-        getAnnotationPrcessor().preDestroy(instance);
+        annotationProcessor.preDestroy(instance);
     }
 
     public void processAnnotations(Object instance) throws IllegalAccessException, InvocationTargetException, NamingException
     {
-        getAnnotationPrcessor().processAnnotations(instance);
-    }
-
-    private org.apache.AnnotationProcessor getAnnotationPrcessor()
-    {
-        return (org.apache.AnnotationProcessor) 
-                ((ServletContext) externalContext.getContext()).getAttribute(org.apache.AnnotationProcessor.class.getName());
+        annotationProcessor.processAnnotations(instance);
     }
 
 }

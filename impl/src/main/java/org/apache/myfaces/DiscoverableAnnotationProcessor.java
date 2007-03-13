@@ -18,8 +18,6 @@ package org.apache.myfaces;
  */
 
 
-import org.apache.myfaces.AnnotationProcessor;
-
 public interface DiscoverableAnnotationProcessor extends AnnotationProcessor
 {
     public boolean isAvailable();
