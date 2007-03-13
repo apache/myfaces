@@ -44,7 +44,14 @@ public abstract class UICommandTemplate extends UIComponentBase
      */
     public void setAction(MethodBinding action)
     {
-        setActionExpression(new _MethodBindingToMethodExpression(action));
+        if(action != null)
+        {
+            setActionExpression(new _MethodBindingToMethodExpression(action));
+        } 
+        else
+        {
+            setActionExpression(null);
+        }
     }
 
     /**
@@ -56,8 +63,11 @@ public abstract class UICommandTemplate extends UIComponentBase
         if (actionExpression instanceof _MethodBindingToMethodExpression) {
             return ((_MethodBindingToMethodExpression)actionExpression).getMethodBinding();
         }
-
-        return new _MethodExpressionToMethodBinding(actionExpression);
+        if(actionExpression != null)
+        {
+            return new _MethodExpressionToMethodBinding(actionExpression);
+        }
+        return null;
     }
 
     @Override
@@ -69,10 +79,11 @@ public abstract class UICommandTemplate extends UIComponentBase
         if (event instanceof ActionEvent)
         {
             FacesContext context = getFacesContext();
-
-            for (ActionListener listener : getActionListeners())
+            
+            MethodBinding mb = getActionListener();
+            if(mb != null)
             {
-                listener.processAction((ActionEvent)event);
+                mb.invoke(context, new Object[] { event });
             }
 
             ActionListener defaultActionListener
