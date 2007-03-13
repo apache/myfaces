@@ -96,9 +96,22 @@ public class NumberConverter
                 }
                 catch (ParseException e)
                 {
-                    throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
-                                                                               CONVERSION_MESSAGE_ID,
-                                                                               new Object[]{uiComponent.getId(),value}), e);
+                	if(getPattern() != null)
+                		throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
+                																	PATTERN_ID,
+                																	new Object[]{value,"$###,###",_MessageUtils.getLabel(facesContext, uiComponent)}));
+                	else if(getType().equals("number"))
+                		throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
+																					NUMBER_ID,
+																					new Object[]{value,"21",_MessageUtils.getLabel(facesContext, uiComponent)}));
+                	else if(getType().equals("currency"))
+                		throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
+                																	CURRENCY_ID,
+                																	new Object[]{value,"42.25",_MessageUtils.getLabel(facesContext, uiComponent)}));
+                	else if(getType().equals("percent"))
+                		throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
+																					PERCENT_ID,
+																					new Object[]{value,".90",_MessageUtils.getLabel(facesContext, uiComponent)}));
                 }
             }
         }

@@ -21,6 +21,7 @@ import javax.faces.context.FacesContext;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -40,6 +41,7 @@ public class DateTimeConverter
     public static final String DATETIME_ID = "javax.faces.converter.DateTimeConverter.DATETIME";
     public static final String STRING_ID = "javax.faces.converter.STRING";
     public static final String TIME_ID = "javax.faces.converter.DateTimeConverter.TIME";
+    public static final String PATTERN_TYPE_ID = "javax.faces.converter.DateTimeConverter.PATTERN_TYPE";
 
     // internal constants
     private static final String CONVERSION_MESSAGE_ID = "javax.faces.convert.DateTimeConverter.CONVERSION";
@@ -87,9 +89,21 @@ public class DateTimeConverter
                 }
                 catch (ParseException e)
                 {
-                    throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
-                                                                               CONVERSION_MESSAGE_ID,
-                                                                               new Object[]{value,uiComponent.getId()}), e);
+                	try {
+                		String type = getType();
+                		Object[] args = new Object[]{value,format.parse(new Date().toString()),_MessageUtils.getLabel(facesContext, uiComponent)};
+                		
+                		if(type.equals(TYPE_DATE))
+                			throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,DATE_ID,args));
+                		else if (type.equals(TYPE_TIME))
+                			throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,TIME_ID,args));
+                		else if (type.equals(TYPE_BOTH))
+                			throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,DATETIME_ID,args));
+                		else
+                			throw new ConverterException("invalid type '" + _type + "'");
+                	}catch(ParseException exception) {
+                		throw new ConverterException(exception);
+                	}
                 }
             }
         }
