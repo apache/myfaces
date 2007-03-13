@@ -18,161 +18,259 @@ package javax.faces.component;
 
 import javax.el.ELContext;
 import javax.el.ELException;
-import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.MethodInfo;
 import javax.el.MethodNotFoundException;
 import javax.el.PropertyNotFoundException;
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.component.StateHolder;
 import javax.faces.context.FacesContext;
+import javax.faces.el.EvaluationException;
 import javax.faces.el.MethodBinding;
 
 /**
  * Converts a MethodBinding to a MethodExpression
- *
+ * 
+ * TODO: find a way to share the implementation of class with impl.
+ * 
  * @author Stan Silvert
  */
-class _MethodBindingToMethodExpression extends MethodExpression implements StateHolder {
-    
-    private static final ExpressionFactory expFactory;
-    
-    static {
-        ApplicationFactory appFactory = 
-                    (ApplicationFactory)FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-        Application application = appFactory.getApplication();
-        expFactory = application.getExpressionFactory();
-    }
-    
+@SuppressWarnings("deprecation")
+class _MethodBindingToMethodExpression extends MethodExpression implements StateHolder
+{
+    private static final Class[] EXPECTED_TYPES = new Class[] { MethodBinding.class, StateHolder.class };
+
     private MethodBinding methodBinding;
-    
-    private MethodExpression methodExpression;
-    private boolean paramTypesKnown = false;
-    
+
+    private boolean _transientFlag;
+
+    private transient MethodInfo methodInfo;
+
     /**
      * No-arg constructor used during restoreState
      */
-    public _MethodBindingToMethodExpression() {
-        
+    protected _MethodBindingToMethodExpression()
+    {
     }
-    
+
     /** Creates a new instance of MethodBindingToMethodExpression */
-    public _MethodBindingToMethodExpression(MethodBinding methodBinding) {
+    public _MethodBindingToMethodExpression(MethodBinding methodBinding)
+    {
+        checkNullArgument(methodBinding, "methodBinding");
         this.methodBinding = methodBinding;
-        
-        if (!(methodBinding instanceof StateHolder)) {
-            throw new IllegalArgumentException("methodBinding must be an instance of StateHolder");
-        }
-        
-        // We can't determine the expectecParamTypes from the MethodBinding
-        // until someone calls invoke.
-        // Therefore, we will just create a new one when invoke is called.
-        methodExpression = makeMethodExpression(methodBinding, new Class[0]);
     }
-    
-    private MethodExpression makeMethodExpression(MethodBinding methodBinding, Class[] expectedParamTypes) {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        
-        String expressionString = methodBinding.getExpressionString();
-        if (expressionString == null) expressionString = "null";
-        return expFactory.createMethodExpression(facesContext.getELContext(), 
-                                                 expressionString, 
-                                                 null,
-                                                 expectedParamTypes);
-    }
-    
+
     /**
      * Return the wrapped MethodBinding.
      */
-    public MethodBinding getMethodBinding() {
+    public MethodBinding getMethodBinding()
+    {
         return methodBinding;
+    }
+    
+    void setMethodBinding(MethodBinding methodBinding)
+    {
+        this.methodBinding = methodBinding;
     }
 
     /**
-     * Note: MethodInfo.getParamTypes() may incorrectly return an empty
-     * class array if invoke() has not been called.
-     *
-     * @throws IllegalStateException if expected params types have not been determined.
+     * Note: MethodInfo.getParamTypes() may incorrectly return an empty class array if invoke() has not been called.
+     * 
+     * @throws IllegalStateException
+     *             if expected params types have not been determined.
      */
-    public MethodInfo getMethodInfo(ELContext context) 
-        throws NullPointerException, PropertyNotFoundException, MethodNotFoundException, ELException {
-        
-        if (!paramTypesKnown) throw new IllegalStateException("MethodInfo unavailable until invoke is called.");
-        
-        return methodExpression.getMethodInfo(context);
-    }
+    public MethodInfo getMethodInfo(ELContext context) throws PropertyNotFoundException, MethodNotFoundException,
+            ELException
+    {
+        checkNullArgument(context, "elcontext");
+        checkNullState(methodBinding, "methodBinding");
 
-    public Object invoke(ELContext context, Object[] params) 
-        throws NullPointerException, PropertyNotFoundException, MethodNotFoundException, ELException {
-        
-        if (!paramTypesKnown) {
-            Class[] paramTypes = findParamTypes(params);
-            methodExpression = makeMethodExpression(methodBinding, paramTypes);
-            paramTypesKnown = true;
+        if (methodInfo == null)
+        {
+            final FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
+            if (facesContext != null)
+            {
+                methodInfo = invoke(new Invoker<MethodInfo>()
+                {
+                    public MethodInfo invoke()
+                    {
+                        return new MethodInfo(null, methodBinding.getType(facesContext), null);
+                    }
+                });
+            }
         }
-        
-        return methodExpression.invoke(context, params);
+        return methodInfo;
     }
-    
-    private Class[] findParamTypes(Object[] params) {
-        Class[] paramTypes = new Class[params.length];
-        for (int i = 0; i < params.length; i++) {
-            paramTypes[i] = params[i].getClass();
+
+    public Object invoke(ELContext context, final Object[] params) throws PropertyNotFoundException,
+            MethodNotFoundException, ELException
+    {
+        checkNullArgument(context, "elcontext");
+        checkNullState(methodBinding, "methodBinding");
+        final FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
+        if (facesContext != null)
+        {
+            return invoke(new Invoker<Object>()
+            {
+                public Object invoke()
+                {
+                    return methodBinding.invoke(facesContext, params);
+                }
+            });
         }
-        
-        return paramTypes;
+        return null;
     }
 
-    public boolean isLiteralText() {
-        return methodExpression.isLiteralText();
+    public boolean isLiteralText()
+    {
+        if (methodBinding == null)
+            throw new IllegalStateException("methodBinding is null");
+        String expr = methodBinding.getExpressionString();
+        return !(expr.startsWith("#{") && expr.endsWith("}"));
     }
 
-    public String getExpressionString() {
-        return methodExpression.getExpressionString();
-    }
-    
-    public boolean equals(Object obj) {
-        return methodExpression.equals(obj);
-    }
-    
-    public int hashCode() {
-     return methodExpression.hashCode();
+    public String getExpressionString()
+    {
+        return methodBinding.getExpressionString();
     }
 
-    public void restoreState(FacesContext context, Object state) {
-        Object[] stateArray = (Object[])state;
-        try {
-            methodBinding = (MethodBinding)Thread.currentThread()
-                                                 .getContextClassLoader()
-                                                 .loadClass((String)stateArray[0])
-                                                 .newInstance();
-        } catch (Exception e) {
-            throw new FacesException(e);
+    public Object saveState(FacesContext context)
+    {
+        if (!isTransient())
+        {
+            if (methodBinding instanceof StateHolder)
+            {
+                Object[] state = new Object[2];
+                state[0] = methodBinding.getClass().getName();
+                state[1] = ((StateHolder) methodBinding).saveState(context);
+                return state;
+            }
+            else
+            {
+                return methodBinding;
+            }
         }
-        
-        ((StateHolder)methodBinding).restoreState(context, stateArray[1]);
-        paramTypesKnown = ((Boolean)stateArray[2]).booleanValue();
-        methodExpression = makeMethodExpression(methodBinding, (Class[])stateArray[3]);
+        return null;
     }
 
-    public Object saveState(FacesContext context) {
-        Object[] state = new Object[4];
-        state[0] = methodBinding.getClass().getName();
-        state[1] = ((StateHolder)methodBinding).saveState(context);
-        state[2] = Boolean.valueOf(paramTypesKnown);
-        state[3] = methodExpression.getMethodInfo(context.getELContext()).getParamTypes();
-        return state;
+    public void restoreState(FacesContext context, Object state)
+    {
+        if (state instanceof MethodBinding)
+        {
+            methodBinding = (MethodBinding) state;
+            methodInfo = null;
+        }
+        else if (state != null)
+        {
+            Object[] values = (Object[]) state;
+            methodBinding = (MethodBinding) newInstance(values[0].toString(), EXPECTED_TYPES);
+            ((StateHolder) methodBinding).restoreState(context, values[1]);
+            methodInfo = null;
+        }
     }
 
-    public void setTransient(boolean newTransientValue) {
-        ((StateHolder)methodBinding).setTransient(newTransientValue);
+    public void setTransient(boolean transientFlag)
+    {
+        _transientFlag = transientFlag;
     }
 
-    public boolean isTransient() {
-        return ((StateHolder)methodBinding).isTransient();
+    public boolean isTransient()
+    {
+        return _transientFlag;
     }
-    
+
+    @Override
+    public int hashCode()
+    {
+        final int PRIME = 31;
+        int result = 1;
+        result = PRIME * result + ((methodBinding == null) ? 0 : methodBinding.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final _MethodBindingToMethodExpression other = (_MethodBindingToMethodExpression) obj;
+        if (methodBinding == null)
+        {
+            if (other.methodBinding != null)
+                return false;
+        }
+        else if (!methodBinding.equals(other.methodBinding))
+            return false;
+        return true;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected Object newInstance(String className, Class[] expectedTypes)
+    {
+        try
+        {
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            if (classLoader == null)
+            {
+                classLoader = getClass().getClassLoader();
+            }
+            Class clazz = classLoader.loadClass(className);
+            for (int i = 0, size = expectedTypes.length; i < size; i++)
+            {
+                if (!expectedTypes[i].isAssignableFrom(clazz))
+                {
+                    throw new IllegalStateException("class for name " + className + " does not implement "
+                            + expectedTypes[i].getName());
+                }
+            }
+            return clazz.newInstance();
+        }
+        catch (ClassNotFoundException e)
+        {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
+        catch (InstantiationException e)
+        {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
+        catch (IllegalAccessException e)
+        {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
+    }
+
+    private void checkNullState(Object notNullInstance, String instanceName)
+    {
+        if (notNullInstance == null)
+            throw new IllegalStateException(instanceName + " is null");
+    }
+
+    private void checkNullArgument(Object notNullInstance, String instanceName)
+    {
+        if (notNullInstance == null)
+            throw new IllegalArgumentException(instanceName + " is null");
+    }
+
+    private <T> T invoke(Invoker<T> invoker)
+    {
+        try
+        {
+            return invoker.invoke();
+        }
+        catch (javax.faces.el.MethodNotFoundException e)
+        {
+            throw new MethodNotFoundException(e.getMessage(), e);
+        }
+        catch (EvaluationException e)
+        {
+            throw new ELException(e.getMessage(), e);
+        }
+    }
+
+    private interface Invoker<T>
+    {
+        T invoke();
+    }
 }

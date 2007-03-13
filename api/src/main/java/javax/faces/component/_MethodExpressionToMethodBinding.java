@@ -49,6 +49,12 @@ class _MethodExpressionToMethodBinding extends MethodBinding implements StateHol
     public _MethodExpressionToMethodBinding(MethodExpression methodExpression) {
         this.methodExpression = methodExpression;
     }
+    
+    @Override
+    public String getExpressionString()
+    {
+        return methodExpression.getExpressionString();
+    }
 
     public Class getType(FacesContext facesContext) 
         throws MethodNotFoundException {
@@ -57,6 +63,8 @@ class _MethodExpressionToMethodBinding extends MethodBinding implements StateHol
             return methodExpression.getMethodInfo(facesContext.getELContext()).getReturnType();
         } catch (javax.el.MethodNotFoundException e) {
             throw new javax.faces.el.MethodNotFoundException(e);
+        } catch (ELException e) {
+            throw new EvaluationException(e);
         }
     }
 
@@ -75,11 +83,14 @@ class _MethodExpressionToMethodBinding extends MethodBinding implements StateHol
 // -------- StateHolder methods -------------------------------------------    
     
     public void restoreState(FacesContext context, Object state) {
-        methodExpression = (MethodExpression)state;
+        if(state != null)
+            methodExpression = (MethodExpression)state;
     }
 
     public Object saveState(FacesContext context) {
-        return methodExpression;
+        if(!isTransient)
+            return methodExpression;
+        return null;
     }
 
     public void setTransient(boolean newTransientValue) {
