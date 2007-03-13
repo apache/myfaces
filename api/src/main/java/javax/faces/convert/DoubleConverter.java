@@ -32,8 +32,6 @@ public class DoubleConverter
     public static final String STRING_ID = "javax.faces.converter.STRING";
     public static final String DOUBLE_ID = "javax.faces.converter.DoubleConverter.DOUBLE";
 
-    private static final String CONVERSION_MESSAGE_ID = "javax.faces.convert.DoubleConverter.CONVERSION";
-
     // CONSTRUCTORS
     public DoubleConverter()
     {

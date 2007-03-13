@@ -27,8 +27,6 @@ import javax.faces.context.FacesContext;
 public class LongConverter
         implements Converter
 {
-    private static final String CONVERSION_MESSAGE_ID = "javax.faces.convert.LongConverter.CONVERSION";
-
     // FIELDS
     public static final String CONVERTER_ID = "javax.faces.Long";
     public static final String STRING_ID = "javax.faces.converter.STRING";

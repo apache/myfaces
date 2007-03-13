@@ -27,8 +27,6 @@ import javax.faces.context.FacesContext;
 public class BooleanConverter
         implements Converter
 {
-    private static final String CONVERSION_MESSAGE_ID = "javax.faces.convert.BooleanConverter.CONVERSION";
-
     // FIELDS
     public static final String CONVERTER_ID = "javax.faces.Boolean";
     public static final String STRING_ID = "javax.faces.converter.STRING";

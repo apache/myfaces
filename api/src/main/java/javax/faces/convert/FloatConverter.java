@@ -27,8 +27,6 @@ import javax.faces.context.FacesContext;
 public class FloatConverter
         implements Converter
 {
-    private static final String CONVERSION_MESSAGE_ID = "javax.faces.convert.FloatConverter.CONVERSION";
-
     // FIELDS
     public static final String CONVERTER_ID = "javax.faces.Float";
     public static final String STRING_ID = "javax.faces.converter.STRING";

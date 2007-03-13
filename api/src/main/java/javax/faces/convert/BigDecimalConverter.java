@@ -28,8 +28,6 @@ import java.math.BigDecimal;
 public class BigDecimalConverter
         implements Converter
 {
-    private static final String CONVERSION_MESSAGE_ID = "javax.faces.convert.BigDecimalConverter.CONVERSION";
-
     // FIELDS
     public static final String CONVERTER_ID = "javax.faces.BigDecimal";
     public static final String STRING_ID = "javax.faces.converter.STRING";

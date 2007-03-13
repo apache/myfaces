@@ -28,8 +28,6 @@ import java.math.BigInteger;
 public class BigIntegerConverter
         implements Converter
 {
-    private static final String CONVERSION_MESSAGE_ID = "javax.faces.convert.BigIntegerConverter.CONVERSION";
-
     // FIELDS
     public static final String CONVERTER_ID = "javax.faces.BigInteger";
     public static final String STRING_ID = "javax.faces.converter.STRING";

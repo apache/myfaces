@@ -42,10 +42,6 @@ public class NumberConverter
     public static final String PATTERN_ID = "javax.faces.converter.NumberConverter.PATTERN";
     public static final String PERCENT_ID = "javax.faces.converter.NumberConverter.PERCENT";
 
-    // internal constants
-    private static final String CONVERSION_MESSAGE_ID = "javax.faces.convert.NumberConverter.CONVERSION";
-
-
     private static final boolean JAVA_VERSION_14;
 
     static
