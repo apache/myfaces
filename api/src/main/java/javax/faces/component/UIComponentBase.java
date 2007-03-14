@@ -673,9 +673,12 @@ public abstract class UIComponentBase
               if (childrenList == null) {
                 childrenList = new ArrayList<Object>(getChildCount());
               }
-              Object childState = child.processSaveState(context);
-              if (childState != null) {
-                childrenList.add(childState);
+              if(!child.isTransient()) 
+              {
+                  Object childState = child.processSaveState(context);
+                  if (childState != null) {
+                    childrenList.add(childState);
+                  }
               }
             }
         }
