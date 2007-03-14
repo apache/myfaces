@@ -23,6 +23,8 @@ import static org.easymock.EasyMock.*;
 import javax.faces.application.FacesMessage;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
+import javax.faces.validator.Validator;
+import javax.faces.validator.ValidatorException;
 
 import junit.framework.Test;
 
@@ -31,6 +33,7 @@ import org.apache.shale.test.base.AbstractJsfTestCase;
 public class UIInputTest extends AbstractJsfTestCase{
 	
 	private Converter mockConverter;
+	private Validator mockValidator;
 
 	public UIInputTest(String name) {
 		super(name);
@@ -39,11 +42,13 @@ public class UIInputTest extends AbstractJsfTestCase{
 	protected void setUp() throws Exception {
 		super.setUp();
 		mockConverter = createMock(Converter.class);
+		mockValidator = createMock(Validator.class);
 	}
 	
     protected void tearDown() throws Exception {
         super.tearDown();
         mockConverter = null;
+        mockValidator = null;
     }
 
 	public static Test suite() {
@@ -68,5 +73,26 @@ public class UIInputTest extends AbstractJsfTestCase{
 		FacesMessage message = (FacesMessage) facesContext.getMessages("testId").next();
 		assertEquals(message.getDetail(), "Cannot convert");
 		assertEquals(message.getSummary(), "Cannot convert");
+	}
+	
+	public void testWhenSpecifiedValidatorMessageIsUsedInCaseValidatorExceptionOccurs() {
+		UIInput input = new UIInput();
+		input.setId("testId");
+		input.setValidatorMessage("Cannot validate");
+		
+		input.addValidator(mockValidator);
+		mockValidator.validate(facesContext, input, "xxx");
+		expectLastCall().andThrow(new ValidatorException(new FacesMessage()));
+		replay(mockValidator);
+		
+		input.validateValue(facesContext, "xxx");
+		verify(mockValidator);
+		
+		assertFalse(input.isValid());
+		assertNotNull(facesContext.getMessages("testId"));
+		
+		FacesMessage message = (FacesMessage) facesContext.getMessages("testId").next();
+		assertEquals(message.getDetail(), "Cannot validate");
+		assertEquals(message.getSummary(), "Cannot validate");
 	}
 }
