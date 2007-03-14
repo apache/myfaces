@@ -836,6 +836,12 @@ public class ApplicationImpl extends Application
     {
         checkNull(reference, "reference");
         checkEmpty(reference, "reference");
+        
+        // TODO: this check should be performed by the expression factory. It is a requirement of the TCK
+        if(! (reference.startsWith("#{") && reference.endsWith("}")))
+        {
+            throw new ReferenceSyntaxException("Invalid method reference: '" + reference + "'");
+        }
 
         if (params == null)
             params = new Class[0];

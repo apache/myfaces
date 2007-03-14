@@ -35,6 +35,7 @@ import javax.faces.FacesException;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
+import javax.faces.el.ReferenceSyntaxException;
 
 import junit.framework.TestCase;
 
@@ -56,6 +57,16 @@ public class ApplicationImplTest extends TestCase
     {
         app = new ApplicationImpl(new RuntimeConfig());
         context = new MockFacesContext();
+    }
+    
+    public void testCreateMethodBinding() throws Exception
+    {
+        assertThrowable(ReferenceSyntaxException.class, new TestRunnable() {
+            public void run() throws Throwable
+            {
+                app.createMethodBinding("xxx", null);
+            }
+        });
     }
 
     /**
