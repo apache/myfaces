@@ -15,6 +15,7 @@
  */
 package javax.faces.component;
 
+import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -34,20 +35,20 @@ import java.util.List;
  */
 class _SharedRendererUtils
 {
-    static Converter findUIOutputConverter(FacesContext facesContext, UIOutput component)
+	static Converter findUIOutputConverter(FacesContext facesContext, UIOutput component)
     {
         // Attention!
-        // This code is duplicated in myfaces implementation renderkit package.
+        // This code is duplicated in jsfapi component package.
         // If you change something here please do the same in the other class!
 
         Converter converter = component.getConverter();
         if (converter != null) return converter;
 
-        //Try to find out by value binding
-        ValueBinding vb = component.getValueBinding("value");
-        if (vb == null) return null;
+        //Try to find out by value expression
+        ValueExpression expression = component.getValueExpression("value");
+        if (expression == null) return null;
 
-        Class valueType = vb.getType(facesContext);
+        Class valueType = expression.getType(facesContext.getELContext());
         if (valueType == null) return null;
 
         if (Object.class.equals(valueType)) return null;    //There is no converter for Object class
