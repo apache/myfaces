@@ -15,6 +15,7 @@
  */
 package javax.faces.component;
 
+import javax.el.ValueExpression;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import java.text.MessageFormat;
@@ -196,5 +197,17 @@ class _MessageUtils
             }
         }
     }
-
+    
+    static String getLabel(FacesContext facesContext, UIComponent component) {
+    	Object label = component.getAttributes().get("label");
+    	if(label != null)
+    		return label.toString();
+    	
+    	ValueExpression expression = component.getValueExpression("label");
+    	if(expression != null)
+    		return (String)expression.getValue(facesContext.getELContext());
+    	
+    	//If no label is not specified, use clientId
+    	return component.getClientId( facesContext );
+    }
 }
