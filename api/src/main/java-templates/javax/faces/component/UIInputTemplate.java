@@ -334,16 +334,21 @@ public class UIInputTemplate extends UIOutput implements EditableValueHolder
         }
         catch (ConverterException e)
         {
-            FacesMessage facesMessage = e.getFacesMessage();
-            if (facesMessage != null)
-            {
-                context.addMessage(getClientId(context), facesMessage);
-            }
-            else
-            {
-                _MessageUtils.addErrorMessage(context, this, CONVERSION_MESSAGE_ID,new Object[]{getId()});
-            }
-            setValid(false);
+        	String converterMessage = getConverterMessage();
+        	if(converterMessage != null) {
+        		context.addMessage(getClientId(context),new FacesMessage(FacesMessage.SEVERITY_ERROR,converterMessage,converterMessage));
+        	} else {
+        		 FacesMessage facesMessage = e.getFacesMessage();
+                 if (facesMessage != null)
+                 {
+                     context.addMessage(getClientId(context), facesMessage);
+                 }
+                 else
+                 {
+                     _MessageUtils.addErrorMessage(context, this, CONVERSION_MESSAGE_ID,new Object[]{_MessageUtils.getLabel(context,this)});
+                 }
+        	}
+        	setValid(false);
         }
         return submittedValue;
     }
