@@ -15,6 +15,7 @@
  */
 package javax.faces.component;
 
+import javax.el.ELException;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
@@ -62,31 +63,47 @@ public abstract class UIComponent
     public abstract void setValueBinding(java.lang.String name,
                                          javax.faces.el.ValueBinding binding);
 
-    public void setValueExpression(String name, ValueExpression binding) {
-        if (name == null) throw new NullPointerException("name");
-        if (name.equals("id")) throw new IllegalArgumentException("Can't set a ValueExpression for the 'id' property.");
-        if (name.equals("parent")) throw new IllegalArgumentException("Can't set a ValueExpression for the 'parent' property.");
+    public void setValueExpression(String name, ValueExpression expression)
+    {
+        if (name == null)
+            throw new NullPointerException("name");
+        if (name.equals("id"))
+            throw new IllegalArgumentException("Can't set a ValueExpression for the 'id' property.");
+        if (name.equals("parent"))
+            throw new IllegalArgumentException("Can't set a ValueExpression for the 'parent' property.");
         
-        if(binding == null) {
-            this.getAttributes().remove(name);
-        }
-        
-        if (binding.isLiteralText()) {
-            try {
-                Object value = binding.getValue(getFacesContext().getELContext());
-                this.getAttributes().put(name, value);
-                return;
-            } catch (Exception e) {
-                throw new FacesException(e);
+        if (expression == null)
+        {
+            if (bindings != null)
+            {
+                bindings.remove(name);
+                if(bindings.isEmpty())
+                    bindings = null;
             }
-            
         }
-        
-        if (bindings == null) {
-            bindings = new HashMap<String, ValueExpression>();
+        else
+        {
+            if (expression.isLiteralText())
+            {
+                try
+                {
+                    Object value = expression.getValue(getFacesContext().getELContext());
+                    getAttributes().put(name, value);
+                    return;
+                }
+                catch (ELException e)
+                {
+                    throw new FacesException(e);
+                }
+            }
+
+            if (bindings == null)
+            {
+                bindings = new HashMap<String, ValueExpression>();
+            }
+
+            bindings.put(name, expression);
         }
-        
-        bindings.put(name, binding);
     }
     
     /**
@@ -209,8 +226,7 @@ public abstract class UIComponent
 					iter.next().encodeAll(context);;
 				}
     		}
-    		
-    		this.encodeEnd(context);
+            this.encodeEnd(context);
     	}
     }
 
