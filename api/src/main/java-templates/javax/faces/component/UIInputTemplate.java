@@ -226,9 +226,14 @@ public class UIInputTemplate extends UIOutput implements EditableValueHolder
 
         if (isRequired() && empty)
         {
-            _MessageUtils.addErrorMessage(context, this, REQUIRED_MESSAGE_ID,new Object[]{getId()});
-            setValid(false);
-            return;
+        	if(getRequiredMessage() != null) {
+        		String requiredMessage = getRequiredMessage();
+        		context.addMessage(this.getClientId(context),new FacesMessage(FacesMessage.SEVERITY_ERROR,requiredMessage,requiredMessage));
+        	} else {
+        		_MessageUtils.addErrorMessage(context, this, REQUIRED_MESSAGE_ID,new Object[]{_MessageUtils.getLabel(context,this)});
+        	}
+        	setValid(false);
+        	return;
         }
 
         if (!empty)
