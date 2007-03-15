@@ -161,7 +161,7 @@ class _MethodBindingToMethodExpression extends MethodExpression implements State
         else if (state != null)
         {
             Object[] values = (Object[]) state;
-            methodBinding = (MethodBinding) newInstance(values[0].toString(), EXPECTED_TYPES);
+            methodBinding = (MethodBinding) _ClassUtils.newInstance(values[0].toString(), EXPECTED_TYPES);
             ((StateHolder) methodBinding).restoreState(context, values[1]);
             methodInfo = null;
         }
@@ -204,41 +204,6 @@ class _MethodBindingToMethodExpression extends MethodExpression implements State
         else if (!methodBinding.equals(other.methodBinding))
             return false;
         return true;
-    }
-
-    @SuppressWarnings("unchecked")
-    protected Object newInstance(String className, Class[] expectedTypes)
-    {
-        try
-        {
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            if (classLoader == null)
-            {
-                classLoader = getClass().getClassLoader();
-            }
-            Class clazz = classLoader.loadClass(className);
-            for (int i = 0, size = expectedTypes.length; i < size; i++)
-            {
-                if (!expectedTypes[i].isAssignableFrom(clazz))
-                {
-                    throw new IllegalStateException("class for name " + className + " does not implement "
-                            + expectedTypes[i].getName());
-                }
-            }
-            return clazz.newInstance();
-        }
-        catch (ClassNotFoundException e)
-        {
-            throw new IllegalStateException(e.getMessage(), e);
-        }
-        catch (InstantiationException e)
-        {
-            throw new IllegalStateException(e.getMessage(), e);
-        }
-        catch (IllegalAccessException e)
-        {
-            throw new IllegalStateException(e.getMessage(), e);
-        }
     }
 
     private void checkNullState(Object notNullInstance, String instanceName)
