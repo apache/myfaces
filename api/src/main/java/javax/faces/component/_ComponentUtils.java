@@ -15,6 +15,9 @@
  */
 package javax.faces.component;
 
+import java.util.Iterator;
+
+import javax.el.ValueExpression;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.el.EvaluationException;
@@ -22,7 +25,6 @@ import javax.faces.el.MethodBinding;
 import javax.faces.el.ValueBinding;
 import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
-import java.util.Iterator;
 
 /**
  * A collection of static helper methods for locating UIComponents.
@@ -219,4 +221,17 @@ class _ComponentUtils
     }
 
 
+    static <T> T getExpressionValue(UIComponent component, String attribute, T overrideValue, T defaultValue)
+    {
+        if (overrideValue != null)
+        {
+            return overrideValue;
+        }
+        ValueExpression ve = component.getValueExpression(attribute);
+        if (ve != null)
+        {
+            return (T) ve.getValue(component.getFacesContext().getELContext());
+        }
+        return defaultValue;
+    }
 }
