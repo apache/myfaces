@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
+import javax.faces.el.MethodBinding;
 import javax.el.ExpressionFactory;
 import java.io.InputStream;
 import java.io.IOException;
@@ -264,21 +265,26 @@ final class _ClassUtils
 
     public static Object newInstance(String type, Class expectedType) throws FacesException
     {
-        if (expectedType == null)
-        {
-            throw new IllegalArgumentException(
-                    "expected type must not be null.");
-        }
+        return newInstance(type, expectedType == null ? null : new Class[] {expectedType});
+    }
+
+    public static Object newInstance(String type, Class[] expectedTypes)
+    {
         if (type == null)
             return null;        
         
         Class clazzForName = simpleClassForName(type);
         
-        if (!expectedType.isAssignableFrom(clazzForName))
+        if(expectedTypes != null)
         {
-            throw new FacesException("'" + type
-                    + "' does not implement expected type '" + expectedType
-                    + "'");
+            for (int i = 0, size = expectedTypes.length; i < size; i++)
+            {
+                if (!expectedTypes[i].isAssignableFrom(clazzForName))
+                {
+                    throw new FacesException("'" + type + "' does not implement expected type '" + expectedTypes[i]
+                            + "'");
+                }
+            }
         }
         
         return newInstance(clazzForName);
