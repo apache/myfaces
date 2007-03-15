@@ -27,9 +27,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 
 /**
  * A custom implementation of the Map interface, where get and put calls
@@ -234,10 +234,10 @@ class _ComponentAttributesMap
         }
         
         // is there a value-binding to read?
-        ValueBinding vb = _component.getValueBinding((String) key);
-        if (vb != null)
+        ValueExpression ve = _component.getValueExpression((String) key);
+        if (ve != null)
         {
-            return vb.getValue(FacesContext.getCurrentInstance());
+            return ve.getValue(FacesContext.getCurrentInstance().getELContext());
         }
 
         // no value found
