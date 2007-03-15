@@ -16,424 +16,277 @@
 
 package javax.faces.component;
 
-import javax.faces.el.ValueBinding;
+import static org.easymock.EasyMock.*;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+
+import javax.faces.context.FacesContext;
+import javax.faces.render.Renderer;
 
 import junit.framework.Test;
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.shale.test.base.AbstractJsfTestCase;
-import org.apache.shale.test.mock.MockRenderKitFactory;
-import org.apache.shale.test.mock.MockValueBinding;
+import org.apache.myfaces.Assert;
+import org.apache.myfaces.TestRunner;
+import org.easymock.classextension.EasyMock;
+import org.easymock.classextension.IMocksControl;
 
-public class UIComponentBaseTest extends AbstractJsfTestCase
+public class UIComponentBaseTest extends TestCase
 {
-	private UIComponentBase mock = null;
-     
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(UIComponentBaseTest.class);
-	}
-
-	public UIComponentBaseTest(String name) {
-		super(name);
-	}
-
-	public static Test suite() {
-		return new TestSuite(UIComponentBaseTest.class); // keep this method or maven won't run it
-	}
-
-	protected void setUp() throws Exception
-  {
-		super.setUp();
-        // TODO remove this line once shale-test goes alpha, see MYFACES-1155
-		facesContext.getViewRoot().setRenderKitId(MockRenderKitFactory.HTML_BASIC_RENDER_KIT);
-		mock = new UIComponentMock();
-	}
-
-	protected void tearDown() throws Exception
-  {
-		super.tearDown();
-		mock = null;
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.isRendered()'
-	 */
-	public void testIsRendered() {
-		// defaults to true
-		assertTrue(mock.isRendered());
-	}
-
-	public void testIsRenderedValueSet() {
-		mock.setRendered(true);
-		assertTrue(mock.isRendered());
-		mock.setRendered(false);
-		assertFalse(mock.isRendered());
-	}
-
-	public void testIsRenderedBinding() {
-
-		ValueBinding vb = new MockValueBinding(application,
-				"#{requestScope.foo}");
-		externalContext.getRequestMap().put("foo", new Boolean(false));
-
-		mock.setValueBinding("rendered", vb);
-		assertFalse(mock.isRendered());
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.getRendersChildren()'
-	 */
-	public void testGetRendersChildren() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.getChildCount()'
-	 */
-	public void testGetChildCount() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.UIComponentBase()'
-	 */
-	public void testUIComponentBase() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.getAttributes()'
-	 */
-	public void testGetAttributes() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.getValueBinding(String)'
-	 */
-	public void testGetValueBindingString() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.setValueBinding(String, ValueBinding)'
-	 */
-	public void testSetValueBindingStringValueBinding() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.getClientId(FacesContext)'
-	 */
-	public void testGetClientIdFacesContext() {
-
-		UIInput input = createInputInTree();
-        
-		String str = input.getClientId(facesContext);
-
-		assertEquals(str, "data:input");
-
-		UIData uiData = (UIData) input.getParent().getParent();
-
-		uiData.setRowIndex(1);
-
-		str = input.getClientId(facesContext);
-	}
-
-	private UIInput createInputInTree() {
-		UIViewRoot viewRoot = facesContext.getViewRoot();
-		viewRoot.setId("root");
-
-		UIData uiData = new UIData();
-		uiData.setId("data");
-
-		UIColumn column = new UIColumn();
-
-		uiData.getChildren().add(column);
-
-		UIInput input = new UIInput();
-		input.setId("input");
-
-		column.getChildren().add(input);
-
-		viewRoot.getChildren().add(uiData);
-
-		return input;
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.getId()'
-	 */
-	public void testGetId() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.setId(String)'
-	 */
-	public void testSetIdString() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.getParent()'
-	 */
-	public void testGetParent() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.setParent(UIComponent)'
-	 */
-	public void testSetParentUIComponent() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.getChildren()'
-	 */
-	public void testGetChildren() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.findComponent(String)'
-	 */
-	public void testFindComponentString() {
-
-		UIInput input = createInputInTree();
-
-		UIComponent comp = input.findComponent(":data:input");
-
-		assertEquals(input, comp);
-
-		comp = input.findComponent("input");
-
-		assertEquals(input, comp);
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.getFacets()'
-	 */
-	public void testGetFacets() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.getFacet(String)'
-	 */
-	public void testGetFacetString() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.getFacetsAndChildren()'
-	 */
-	public void testGetFacetsAndChildren() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.broadcast(FacesEvent)'
-	 */
-	public void testBroadcastFacesEvent() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.decode(FacesContext)'
-	 */
-	public void testDecodeFacesContext() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.encodeBegin(FacesContext)'
-	 */
-	public void testEncodeBeginFacesContext() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.encodeChildren(FacesContext)'
-	 */
-	public void testEncodeChildrenFacesContext() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.encodeEnd(FacesContext)'
-	 */
-	public void testEncodeEndFacesContext() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.addFacesListener(FacesListener)'
-	 */
-	public void testAddFacesListenerFacesListener() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.getFacesListeners(Class)'
-	 */
-	public void testGetFacesListenersClass() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.removeFacesListener(FacesListener)'
-	 */
-	public void testRemoveFacesListenerFacesListener() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.queueEvent(FacesEvent)'
-	 */
-	public void testQueueEventFacesEvent() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.processDecodes(FacesContext)'
-	 */
-	public void testProcessDecodesFacesContext() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.processValidators(FacesContext)'
-	 */
-	public void testProcessValidatorsFacesContext() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.processUpdates(FacesContext)'
-	 */
-	public void testProcessUpdatesFacesContext() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.processSaveState(FacesContext)'
-	 */
-	public void testProcessSaveStateFacesContext() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.processRestoreState(FacesContext, Object)'
-	 */
-	public void testProcessRestoreStateFacesContextObject() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.getFacesContext()'
-	 */
-	public void testGetFacesContext() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.getRenderer(FacesContext)'
-	 */
-	public void testGetRendererFacesContext() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.getPathToComponent(UIComponent)'
-	 */
-	public void testGetPathToComponent() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.isTransient()'
-	 */
-	public void testIsTransient() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.setTransient(boolean)'
-	 */
-	public void testSetTransient() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.saveAttachedState(FacesContext, Object)'
-	 */
-	public void testSaveAttachedState() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.restoreAttachedState(FacesContext, Object)'
-	 */
-	public void testRestoreAttachedState() {
-
-	}
-
-	public void testSaveState() throws Exception {
-
-		try {
-			String id = "id";
-			String rendererType = "Whumpy";
-			mock.setId(id);
-			mock.setRendered(true);
-			mock.setRendererType(rendererType);
-			Object value[] = (Object[]) mock.saveState(facesContext);
-			assertEquals(id, value[0]);
-			assertEquals(Boolean.TRUE, value[1]);
-			assertEquals(rendererType, value[2]);
-
-			assertNull(value[3]);
-			assertNull(value[4]);
-			assertNull(value[5]);
-			assertNull(value[6]);
-		} catch (NullPointerException e) {
-			fail("Should not throw an exception");
-		}
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.restoreState(FacesContext, Object)'
-	 */
-	public void testRestoreState() {
-
-	}
-
-	/*
-	 * Test method for 'javax.faces.component.UIComponentBase.setRendererType(String)'
-	 */
-	public void testSetRendererType() {
-		assertNull(mock.getRendererType());
-	}
-
-	public void testSetRendererTypeStringValue() {
-		String rendererType = "BlueBlorf";
-		mock.setRendererType(rendererType);
-		assertEquals(mock.getRendererType(), rendererType);
-	}
-
-	public void testSetRendererTypeStringBinding() {
-
-		String whumpy = "Whumpy";
-
-		ValueBinding vb = new MockValueBinding(application,
-				"#{requestScope.foo}");
-		externalContext.getRequestMap().put("foo", whumpy);
-
-		mock.setValueBinding("rendererType", vb);
-		assertEquals(mock.getRendererType(), whumpy);
-
-	}
-
+    private UIComponentBase _testImpl;
+
+    private IMocksControl _mocksControl;
+    private FacesContext _facesContext;
+    private Renderer _renderer;
+
+    @Override
+    protected void setUp() throws Exception
+    {
+        _mocksControl = EasyMock.createControl();
+        _facesContext = _mocksControl.createMock(FacesContext.class);
+        _testImpl = _mocksControl.createMock(UIComponentBase.class, getMockedMethods());
+        _renderer = _mocksControl.createMock(Renderer.class);
+    }
+
+    protected Method[] getMockedMethods() throws Exception
+    {
+        Collection<Method> methods = new ArrayList<Method>();
+        methods.add(UIComponentBase.class.getDeclaredMethod("getRenderer", new Class[] { FacesContext.class }));
+        methods.add(UIComponentBase.class.getDeclaredMethod("getFacesContext", null));
+        methods.add(UIComponentBase.class.getDeclaredMethod("getFacesContext", null));
+        methods.add(UIComponentBase.class.getDeclaredMethod("getParent", null));
+        methods.add(UIComponentBase.class.getDeclaredMethod("getPathToComponent", new Class[] { UIComponent.class }));
+
+        return methods.toArray(new Method[methods.size()]);
+    }
+
+    public static void main(String[] args)
+    {
+        junit.textui.TestRunner.run(UIComponentBaseTest.class);
+    }
+
+    public static Test suite()
+    {
+        TestSuite testSuite = new TestSuite(UIComponentBaseTest.class);
+        testSuite.addTestSuite(RenderedPropertyTest.class);
+        testSuite.addTestSuite(RendererTypePropertyTest.class);
+        testSuite.addTestSuite(GetClientIdTest.class);
+        return testSuite;
+    }
+
+    /*
+     * Test method for 'javax.faces.component.UIComponentBase.getAttributes()'
+     */
+    public void testGetAttributes()
+    {
+        assertTrue(_testImpl.getAttributes() instanceof _ComponentAttributesMap);
+    }
+
+    public void testGetRendersChildren()
+    {
+        assertGetRendersChildren(false, null);
+        assertGetRendersChildren(true, _renderer);
+        assertGetRendersChildren(false, _renderer);
+    }
+
+    private void assertGetRendersChildren(boolean expectedValue, Renderer renderer)
+    {
+        expect(_testImpl.getFacesContext()).andReturn(_facesContext);
+        expect(_testImpl.getRenderer(same(_facesContext))).andReturn(renderer);
+        if (renderer != null)
+            expect(renderer.getRendersChildren()).andReturn(expectedValue);
+        _mocksControl.replay();
+        assertEquals(expectedValue, _testImpl.getRendersChildren());
+        _mocksControl.verify();
+        _mocksControl.reset();
+    }
+
+    public static class RenderedPropertyTest extends UIComponentPropertyTest<Boolean>
+    {
+        @Override
+        protected UIComponent createComponent()
+        {
+            return new UIComponentMock();
+        }
+
+        @Override
+        protected Boolean getDefaultValue()
+        {
+            return true;
+        }
+
+        protected String getProperty()
+        {
+            return "rendered";
+        }
+
+        @Override
+        protected Boolean[] getTestValues()
+        {
+            return new Boolean[] { false, true };
+        }
+    }
+
+    public static class RendererTypePropertyTest extends UIComponentPropertyTest<String>
+    {
+        @Override
+        protected UIComponent createComponent()
+        {
+            return new UIComponentMock();
+        }
+
+        @Override
+        protected String getDefaultValue()
+        {
+            return null;
+        }
+
+        protected String getProperty()
+        {
+            return "rendererType";
+        }
+
+        @Override
+        protected String[] getTestValues()
+        {
+            return new String[] { "xxx", "123" };
+        }
+    }
+
+    public static class AbstractUIComponentBaseTest extends TestCase
+    {
+        protected UIComponentBase _testImpl;
+        protected IMocksControl _mocksControl;
+        protected FacesContext _facesContext;
+        protected Renderer _renderer;
+
+        @Override
+        protected void setUp() throws Exception
+        {
+            _mocksControl = EasyMock.createControl();
+            _facesContext = _mocksControl.createMock(FacesContext.class);
+            _testImpl = _mocksControl.createMock(UIComponentBase.class, getMockedMethods());
+            _renderer = _mocksControl.createMock(Renderer.class);
+        }
+
+        protected Method[] getMockedMethods() throws Exception
+        {
+            Collection<Method> methods = new ArrayList<Method>();
+            methods.add(UIComponentBase.class.getDeclaredMethod("getRenderer", new Class[] { FacesContext.class }));
+            methods.add(UIComponentBase.class.getDeclaredMethod("getFacesContext", null));
+            methods.add(UIComponentBase.class.getDeclaredMethod("getFacesContext", null));
+            methods.add(UIComponentBase.class.getDeclaredMethod("getParent", null));
+            methods.add(UIComponentBase.class
+                    .getDeclaredMethod("getPathToComponent", new Class[] { UIComponent.class }));
+
+            return methods.toArray(new Method[methods.size()]);
+        }
+    }
+
+    public static class GetClientIdTest extends AbstractUIComponentBaseTest
+    {
+        public void testNullFacesContext() throws Exception
+        {
+            Assert.assertException(NullPointerException.class, new TestRunner()
+            {
+                public void run() throws Throwable
+                {
+                    _testImpl.getClientId(null);
+                }
+            });
+        }
+
+        public void testWithoutParentAndNoRenderer() throws Exception
+        {
+            String expectedClientId = "testId";
+            _testImpl.setId(expectedClientId);
+            expect(_testImpl.getParent()).andReturn(null);
+            expect(_testImpl.getRenderer(same(_facesContext))).andReturn(null);
+            _mocksControl.replay();
+            assertEquals(expectedClientId, _testImpl.getClientId(_facesContext));
+            _mocksControl.verify();
+            assertEquals(expectedClientId, _testImpl.getClientId(_facesContext));
+        }
+
+        public void testWithRenderer() throws Exception
+        {
+            String id = "testId";
+            String expectedClientId = "convertedClientId";
+            _testImpl.setId(id);
+            expect(_testImpl.getParent()).andReturn(null);
+            expect(_testImpl.getRenderer(same(_facesContext))).andReturn(_renderer);
+            expect(_renderer.convertClientId(same(_facesContext), eq(id))).andReturn(expectedClientId);
+            _mocksControl.replay();
+            assertEquals(expectedClientId, _testImpl.getClientId(_facesContext));
+            _mocksControl.verify();
+            assertEquals(expectedClientId, _testImpl.getClientId(_facesContext));
+        }
+
+        public void testWithParentNamingContainer() throws Exception
+        {
+            String id = "testId";
+            String containerClientId = "containerClientId";
+            String expectedClientId = containerClientId + NamingContainer.SEPARATOR_CHAR + id;
+            UIComponent parent = _mocksControl.createMock(UIComponent.class);
+            UIComponent namingContainer = _mocksControl.createMock(TestNamingContainerComponent.class);
+            _testImpl.setId(id);
+            expect(_testImpl.getParent()).andReturn(parent);
+            expect(parent.getParent()).andReturn(namingContainer);
+            expect(namingContainer.getContainerClientId(same(_facesContext))).andReturn(containerClientId);
+
+            expect(_testImpl.getRenderer(same(_facesContext))).andReturn(_renderer);
+            expect(_renderer.convertClientId(same(_facesContext), eq(expectedClientId))).andReturn(expectedClientId);
+            _mocksControl.replay();
+            assertEquals(expectedClientId, _testImpl.getClientId(_facesContext));
+            _mocksControl.verify();
+            assertEquals(expectedClientId, _testImpl.getClientId(_facesContext));
+        }
+
+        public void testWithParentNamingContainerChanging() throws Exception
+        {
+            String id = "testId";
+            String containerClientId = "containerClientId";
+            UIComponent parent = _mocksControl.createMock(UIComponent.class);
+            UIComponent namingContainer = _mocksControl.createMock(TestNamingContainerComponent.class);
+            for (int i = 0; i < 10; i++)
+            {
+                _testImpl.setId(id);
+                String expectedClientId = containerClientId + i + NamingContainer.SEPARATOR_CHAR + id;
+                expect(_testImpl.getParent()).andReturn(parent);
+                expect(parent.getParent()).andReturn(namingContainer);
+                expect(namingContainer.getContainerClientId(same(_facesContext))).andReturn(containerClientId + i);
+
+                expect(_testImpl.getRenderer(same(_facesContext))).andReturn(_renderer);
+                expect(_renderer.convertClientId(same(_facesContext), eq(expectedClientId)))
+                        .andReturn(expectedClientId);
+                _mocksControl.replay();
+                assertEquals(expectedClientId, _testImpl.getClientId(_facesContext));
+                _mocksControl.verify();
+                assertEquals(expectedClientId, _testImpl.getClientId(_facesContext));
+                _mocksControl.reset();
+            }
+        }
+
+        public void testWithoutId() throws Exception
+        {
+            UIViewRoot viewRoot = _mocksControl.createMock(UIViewRoot.class);
+            expect(_facesContext.getViewRoot()).andReturn(viewRoot);
+            String expectedId = "uniqueId";
+            expect(viewRoot.createUniqueId()).andReturn(expectedId);
+            expect(_testImpl.getParent()).andReturn(null).anyTimes();
+            expect(_testImpl.getRenderer(same(_facesContext))).andReturn(null);
+            _mocksControl.replay();
+            assertEquals(expectedId, _testImpl.getClientId(_facesContext));
+            assertEquals(expectedId, _testImpl.getId());
+            _mocksControl.verify();
+            assertEquals(expectedId, _testImpl.getClientId(_facesContext));
+        }
+    }
+
+    public abstract static class TestNamingContainerComponent extends UIComponent implements NamingContainer
+    {
+    }
 }
