@@ -419,27 +419,6 @@ abstract public class UIDataTemplate extends UIComponentBase implements NamingCo
         return childStates;
     }
 
-    /**
-     * @deprecated Use setValueExpression instead
-     */
-    @Override
-    public void setValueBinding(String name, ValueBinding binding)
-    {
-        if (name == null)
-        {
-            throw new NullPointerException("name");
-        }
-        else if (name.equals("value"))
-        {
-            _dataModelMap.clear();
-        }
-        else if (name.equals("var") || name.equals("rowIndex"))
-        {
-            throw new IllegalArgumentException("name " + name);
-        }
-        super.setValueBinding(name, binding);
-    }
-
     @Override
     public void setValueExpression(String name, ValueExpression binding) {
         if (name == null)
