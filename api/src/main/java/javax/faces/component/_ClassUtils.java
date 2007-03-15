@@ -20,7 +20,6 @@ import org.apache.commons.logging.LogFactory;
 
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
-import javax.faces.el.MethodBinding;
 import javax.el.ExpressionFactory;
 import java.io.InputStream;
 import java.io.IOException;
