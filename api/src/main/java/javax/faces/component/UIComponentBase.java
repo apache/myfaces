@@ -67,12 +67,11 @@ public abstract class UIComponentBase
     private String _id = null;
     private UIComponent _parent = null;
     private boolean _transient = false;
-
-
+    
     public UIComponentBase()
     {
     }
-
+    
     /**
      * Get a map through which all the UIComponent's properties, value-bindings
      * and non-property attributes can be read and written.
@@ -140,21 +139,16 @@ public abstract class UIComponentBase
      */
     public ValueBinding getValueBinding(String name)
     {
-        if (name == null) throw new NullPointerException("name can not be null");
-        
-        if (bindings == null) {
-            return null;
+        ValueExpression expression = getValueExpression(name);
+        if (expression != null)
+        {
+            if (expression instanceof _ValueBindingToValueExpression)
+            {
+                return ((_ValueBindingToValueExpression) expression).getValueBinding();
+            }
+            return new _ValueExpressionToValueBinding(expression);
         }
-        
-        ValueExpression expression = bindings.get(name);
-        if (expression == null) return null;
-        
-        if (expression instanceof _ValueBindingToValueExpression) {
-            _ValueBindingToValueExpression bindingToExpression = (_ValueBindingToValueExpression)expression;
-            return bindingToExpression.getValueBinding();
-        }
-        
-        return new _ValueExpressionToValueBinding(expression);
+        return null;
     }
 
     /**
@@ -166,7 +160,7 @@ public abstract class UIComponentBase
     public void setValueBinding(String name,
                                 ValueBinding binding)
     {
-        setValueExpression(name, new _ValueBindingToValueExpression(binding));
+        setValueExpression(name, binding == null ? null : new _ValueBindingToValueExpression(binding));
     }
 
     /**
@@ -210,8 +204,10 @@ public abstract class UIComponentBase
             }
             else
             {
-                context.getExternalContext().log("ERROR: Cannot automatically create an id for component of type " + getClass().getName() + " because there is no viewRoot in the current facesContext!");
-                id = "ERROR";
+                // The RI throws a NPE
+                throw new FacesException(
+                        "Cannot create clientId. No id is assigned for component to create an id and UIViewRoot is not defined: "
+                                + getPathToComponent(this));
             }
             setId(id);
             //We remember that the id was null and log a warning down below
@@ -221,7 +217,7 @@ public abstract class UIComponentBase
         UIComponent namingContainer = _ComponentUtils.findParentNamingContainer(this, false);
         if (namingContainer != null)
         {
-            _clientId = namingContainer.getClientId(context) + NamingContainer.SEPARATOR_CHAR + id;
+            _clientId = namingContainer.getContainerClientId(context) + NamingContainer.SEPARATOR_CHAR + id;
         }
         else
         {
@@ -234,22 +230,22 @@ public abstract class UIComponentBase
             _clientId = renderer.convertClientId(context, _clientId);
         }
 
-        if (idWasNull)
-        {
-            System.out.println("Component: " + getPathToComponent(this));
-            context.getExternalContext().log("WARNING: Component " + _clientId + " just got an automatic id, because there was no id assigned yet. " +
-                                             "If this component was created dynamically (i.e. not by a JSP tag) you should assign it an " +
-                                             "explicit static id or assign it the id you get from the createUniqueId from the current UIViewRoot " +
-                                             "component right after creation!");
+        if (idWasNull && log.isWarnEnabled())
+        {            
+            log.warn("WARNING: Component " + _clientId
+                    + " just got an automatic id, because there was no id assigned yet. "
+                    + "If this component was created dynamically (i.e. not by a JSP tag) you should assign it an "
+                    + "explicit static id or assign it the id you get from "
+                    + "the createUniqueId from the current UIViewRoot "
+                    + "component right after creation! Path to Component: " + getPathToComponent(this));
         }
 
         return _clientId;
     }
 
     /**
-     * Get a string which uniquely identifies this UIComponent within the
-     * scope of the nearest ancestor NamingContainer component. The id is
-     * not necessarily unique across all components in the current view.
+     * Get a string which uniquely identifies this UIComponent within the scope of the nearest ancestor NamingContainer
+     * component. The id is not necessarily unique across all components in the current view.
      */
     public String getId()
     {
@@ -775,7 +771,7 @@ public abstract class UIComponentBase
         return buf.toString();
     }
 
-    private static void getPathToComponent(UIComponent component, StringBuffer buf)
+    private void getPathToComponent(UIComponent component, StringBuffer buf)
     {
         if(component == null)
             return;
@@ -1045,7 +1041,11 @@ public abstract class UIComponentBase
             }
         }
     }
-
+    
+    <T> T getExpressionValue(String attribute, T explizitValue, T defaultValueIfExpressionNull)
+    {
+        return _ComponentUtils.getExpressionValue(this, attribute, explizitValue, defaultValueIfExpressionNull);
+    }
 
 
     //------------------ GENERATED CODE BEGIN (do not modify!) --------------------
@@ -1064,10 +1064,7 @@ public abstract class UIComponentBase
 
     public boolean isRendered()
     {
-        if (_rendered != null) return _rendered.booleanValue();
-        ValueBinding vb = getValueBinding("rendered");
-        Boolean v = vb != null ? (Boolean)vb.getValue(getFacesContext()) : null;
-        return v != null ? v.booleanValue() : DEFAULT_RENDERED;
+        return getExpressionValue("rendered", _rendered, DEFAULT_RENDERED);
     }
 
     public void setRendererType(String rendererType)
@@ -1077,9 +1074,7 @@ public abstract class UIComponentBase
 
     public String getRendererType()
     {
-        if (_rendererType != null) return _rendererType;
-        ValueBinding vb = getValueBinding("rendererType");
-        return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
+        return getExpressionValue("rendererType", _rendererType, null);
     }
 
 
