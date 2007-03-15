@@ -39,7 +39,7 @@ import org.apache.commons.logging.LogFactory;
  * @see javax.faces.component._ValueBindingToValueExpression
  */
 @SuppressWarnings("deprecation")
-public class _ValueBindingToValueExpression extends ValueExpression implements StateHolder
+class _ValueBindingToValueExpression extends ValueExpression implements StateHolder
 {
     private static final long serialVersionUID = 8071429285360496554L;
 
