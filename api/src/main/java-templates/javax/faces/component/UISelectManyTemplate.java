@@ -268,9 +268,7 @@ public class UISelectManyTemplate
         // verify that iterator was successfully created for convertedValue type
         if (itemValues == null)
         {
-            _MessageUtils.addErrorMessage(context, this,
-                    INVALID_MESSAGE_ID,
-                    new Object[]{getId()});
+        	_MessageUtils.addErrorMessage(context, this, INVALID_MESSAGE_ID, new Object[]{_MessageUtils.getLabel(context,this)});
             setValid(false);
             return;
         }
@@ -280,8 +278,7 @@ public class UISelectManyTemplate
         // if UISelectMany is required, then there must be some selected values
         if (isRequired() && !hasValues)
         {
-            _MessageUtils.addErrorMessage(context, this, REQUIRED_MESSAGE_ID,
-                    new Object[]{getId()});
+        	_MessageUtils.addErrorMessage(context, this, REQUIRED_MESSAGE_ID, new Object[]{_MessageUtils.getLabel(context,this)});
             setValid(false);
             return;
         }
@@ -326,9 +323,7 @@ public class UISelectManyTemplate
                 if (!_SelectItemsUtil.matchValue(context, itemValue,
                         items.iterator(), converter))
                 {
-                    _MessageUtils.addErrorMessage(context, this,
-                            INVALID_MESSAGE_ID,
-                            new Object[]{getId()});
+                	_MessageUtils.addErrorMessage(context, this, INVALID_MESSAGE_ID, new Object[]{_MessageUtils.getLabel(context,this)});
                     setValid(false);
                     return;
                 }
@@ -376,8 +371,7 @@ public class UISelectManyTemplate
                 context.addMessage(getClientId(context), facesMessage);
             } else
             {
-                _MessageUtils.addErrorMessage(context, this,
-                        CONVERSION_MESSAGE_ID, new Object[]{getId()});
+                _MessageUtils.addErrorMessage(context, this, CONVERSION_MESSAGE_ID, new Object[]{_MessageUtils.getLabel(context,this)});
             }
             setValid(false);
         }

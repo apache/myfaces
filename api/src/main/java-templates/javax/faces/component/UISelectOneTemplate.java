@@ -53,8 +53,7 @@ public class UISelectOneTemplate extends UIInput
         // selected value must match to one of the available options
         if (!_SelectItemsUtil.matchValue(context, value, new _SelectItemsIterator(this), converter))
         {
-            _MessageUtils.addErrorMessage(context, this, INVALID_MESSAGE_ID,
-                    new Object[]{getId()});
+            _MessageUtils.addErrorMessage(context, this, INVALID_MESSAGE_ID, new Object[]{_MessageUtils.getLabel(context,this)});
             setValid(false);
         }
     }
