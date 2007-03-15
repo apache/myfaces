@@ -15,6 +15,8 @@
 */
 package javax.faces.component;
 
+import javax.el.ELException;
+import javax.el.ValueExpression;
 import javax.faces.validator.Validator;
 import javax.faces.el.MethodBinding;
 import javax.faces.el.EvaluationException;
@@ -188,32 +190,31 @@ public class UIInputTemplate extends UIOutput implements EditableValueHolder
     {
         if (!isValid()) return;
         if (!isLocalValueSet()) return;
-        ValueBinding vb = getValueBinding("value");
-        if (vb == null) return;
+        ValueExpression expression = getValueExpression("value");
+        if (expression == null) return;
         try
         {
-            vb.setValue(context, getLocalValue());
+        	expression.setValue(context.getELContext(), getLocalValue());
             setValue(null);
             setLocalValueSet(false);
         }
-        catch (EvaluationException ee)
+        catch (ELException elException)
         {
-            String exceptionMessage = ee.getMessage();
+            String exceptionMessage = elException.getMessage();
             if (exceptionMessage == null)
             {
-                _MessageUtils.addErrorMessage(context, this,
-                        CONVERSION_MESSAGE_ID, new Object[] { getId() });
+                _MessageUtils.addErrorMessage(context, this, UPDATE_MESSAGE_ID, new Object[]{_MessageUtils.getLabel(context,this)});
             }
             else
             {
-                _MessageUtils.addErrorMessage(context, this, ee);
+                _MessageUtils.addErrorMessage(context, this, elException);
             }
+            setValid(false);
         }
-        catch (RuntimeException e)
+        catch (Exception e)
         {
-        	//Object[] args = {getId()};
             context.getExternalContext().log(e.getMessage(), e);
-            _MessageUtils.addErrorMessage(context, this,CONVERSION_MESSAGE_ID,new Object[]{getId()});
+            _MessageUtils.addErrorMessage(context, this, UPDATE_MESSAGE_ID, new Object[]{_MessageUtils.getLabel(context,this)});
             setValid(false);
         }
     }
