@@ -15,16 +15,17 @@
  */
 package javax.faces.component;
 
-import javax.el.ELException;
-import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.el.ELException;
+import javax.el.ValueExpression;
+import javax.faces.FacesException;
+import javax.faces.context.FacesContext;
+import javax.faces.el.ValueBinding;
+import javax.faces.event.AbortProcessingException;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -49,12 +50,32 @@ public abstract class UIComponent
      */
     public abstract javax.faces.el.ValueBinding getValueBinding(java.lang.String name);
 
-    public ValueExpression getValueExpression(String name) {        
-        if (name == null) throw new NullPointerException("name can not be null");
-        
-        if (bindings == null) return null;
-        
-        return bindings.get(name);
+    public ValueExpression getValueExpression(String name)
+    {
+        if (name == null)
+            throw new NullPointerException("name can not be null");
+
+        if (bindings == null)
+        {
+            if (!(this instanceof UIComponentBase))
+            {
+                // if the component does not inherit from UIComponentBase and don't implements JSF 1.2 or later
+                ValueBinding vb = getValueBinding(name);
+                if (vb != null)
+                {
+                    bindings = new HashMap<String, ValueExpression>();
+                    ValueExpression ve = new _ValueBindingToValueExpression(vb);
+                    bindings.put(name, ve);
+                    return ve;
+                }
+            }
+        }
+        else
+        {
+            return bindings.get(name);
+        }
+
+        return null;
     }
     
     /**

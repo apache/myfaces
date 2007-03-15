@@ -15,7 +15,7 @@
  */
 package javax.faces.component;
 
-import static org.apache.myfaces.Assert.*;
+import static org.apache.myfaces.Assert.assertException;
 import static org.easymock.EasyMock.*;
 
 import java.lang.reflect.Method;
@@ -31,6 +31,7 @@ import javax.el.ELException;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
+import javax.faces.el.ValueBinding;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -68,7 +69,7 @@ public class UIComponentTest extends TestCase
         @Override
         protected void setUp() throws Exception
         {
-            _mocksControl = EasyMock.createControl();
+            _mocksControl = EasyMock.createNiceControl();
             _facesContext = _mocksControl.createMock(FacesContext.class);
         }
     }
@@ -244,6 +245,7 @@ public class UIComponentTest extends TestCase
             Class<UIComponent> clazz = UIComponent.class;
             mockedMethods.add(clazz.getDeclaredMethod("getAttributes", null));
             mockedMethods.add(clazz.getDeclaredMethod("getFacesContext", null));
+            mockedMethods.add(clazz.getDeclaredMethod("getValueBinding", new Class[] { String.class }));
 
             _testimpl = _mocksControl.createMock(clazz, mockedMethods.toArray(new Method[mockedMethods.size()]));
             _expression = _mocksControl.createMock(ValueExpression.class);
@@ -251,7 +253,7 @@ public class UIComponentTest extends TestCase
             _mocksControl.checkOrder(true);
         }
 
-        public void testSetValueExpressionArguments() throws Exception
+        public void testValueExpressionArguments() throws Exception
         {
             assertException(NullPointerException.class, new SetValueExpressionTestRunner(_testimpl, null, _expression));
             assertException(IllegalArgumentException.class, new SetValueExpressionTestRunner(_testimpl, "id",
@@ -260,7 +262,7 @@ public class UIComponentTest extends TestCase
                     _expression));
         }
 
-        public void testSetValueExpression() throws Exception
+        public void testValueExpression() throws Exception
         {
             expect(_expression.isLiteralText()).andReturn(false);
             _mocksControl.replay();
@@ -269,17 +271,17 @@ public class UIComponentTest extends TestCase
             assertEquals(_expression, _testimpl.getValueExpression("xxx"));
             _testimpl.setValueExpression("xxx", null);
             _mocksControl.verify();
+
             assertNull(_testimpl.getValueExpression("xxx"));
             assertNull(_testimpl.bindings);
         }
 
-        public void testSetValueExpressionWithExceptionOnGetValue() throws Exception
+        public void testValueExpressionWithExceptionOnGetValue() throws Exception
         {
-            assertSetValueExpressionWithExceptionOnGetValue(FacesException.class, new ELException());
+            assertValueExpressionWithExceptionOnGetValue(FacesException.class, new ELException());
         }
 
-        private void assertSetValueExpressionWithExceptionOnGetValue(Class<? extends Throwable> expected,
-                Throwable fired)
+        private void assertValueExpressionWithExceptionOnGetValue(Class<? extends Throwable> expected, Throwable fired)
         {
             expect(_expression.isLiteralText()).andReturn(true);
             expect(_testimpl.getFacesContext()).andReturn(_facesContext);
@@ -298,7 +300,7 @@ public class UIComponentTest extends TestCase
             _mocksControl.reset();
         }
 
-        public void testSetValueExpressionWithLiteralText() throws Exception
+        public void testValueExpressionWithLiteralText() throws Exception
         {
             expect(_expression.isLiteralText()).andReturn(true);
             expect(_testimpl.getFacesContext()).andReturn(_facesContext);
@@ -311,6 +313,22 @@ public class UIComponentTest extends TestCase
             assertEquals("abc", map.get("xxx"));
             _mocksControl.verify();
             assertNull(_testimpl.getValueExpression("xxx"));
+        }
+
+        public void testValueExpressionWithValueBindingFallback() throws Exception
+        {
+            ValueBinding valueBinding = _mocksControl.createMock(ValueBinding.class);
+            expect(_testimpl.getValueBinding("xxx")).andReturn(valueBinding);
+            _mocksControl.replay();
+            ValueExpression valueExpression = _testimpl.getValueExpression("xxx");
+            _mocksControl.verify();
+            assertTrue(valueExpression instanceof _ValueBindingToValueExpression);
+            _mocksControl.reset();
+            expect(_elContext.getContext(eq(FacesContext.class))).andReturn(_facesContext);
+            expect(valueBinding.getValue(eq(_facesContext))).andReturn("value");
+            _mocksControl.replay();
+            assertEquals("value", valueExpression.getValue(_elContext));
+            _mocksControl.verify();
         }
     }
 
