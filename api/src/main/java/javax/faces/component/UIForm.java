@@ -94,7 +94,18 @@ public class UIForm
 
     public Object saveState(javax.faces.context.FacesContext context)
     {
-        return super.saveState(context);
+        Object[] state = new Object[2];
+        state[0] = super.saveState(context);
+        state[1] = _prependId;
+        return state;
+    }
+    
+    @Override
+    public void restoreState(FacesContext context, Object state)
+    {
+        Object[] values = (Object[]) state;
+        super.restoreState(context, values[0]);
+        _prependId = (Boolean) values[1];
     }
 
     //------------------ GENERATED CODE BEGIN (do not modify!) --------------------
@@ -140,5 +151,5 @@ public class UIForm
     {
         _prependId = prependId;
     }
-
+    
 }

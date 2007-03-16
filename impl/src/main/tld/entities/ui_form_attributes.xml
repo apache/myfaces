@@ -1,2 +1,13 @@
 <!-- UIForm attributes -->
 &ui_component_attributes;
+<attribute>
+  <name>prependId</name>
+  <required>false</required>
+  <rtexprvalue>false</rtexprvalue>
+  <type>java.lang.String</type>
+  <description>
+    Flag indicating whether or not this form should prepend its id to its 
+    descendent's id during the clientId generation process. 
+    Default value: true.
+  </description>
+</attribute>
