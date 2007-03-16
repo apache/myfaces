@@ -22,7 +22,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.el.ValueExpression;
 import javax.faces.context.FacesContext;
+import javax.faces.el.ValueBinding;
 import javax.faces.render.Renderer;
 
 import junit.framework.Test;
@@ -31,9 +33,11 @@ import junit.framework.TestSuite;
 
 import org.apache.myfaces.Assert;
 import org.apache.myfaces.TestRunner;
+import org.easymock.IAnswer;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 
+@SuppressWarnings("deprecation")
 public class UIComponentBaseTest extends TestCase
 {
     private UIComponentBase _testImpl;
@@ -74,6 +78,7 @@ public class UIComponentBaseTest extends TestCase
         testSuite.addTestSuite(RenderedPropertyTest.class);
         testSuite.addTestSuite(RendererTypePropertyTest.class);
         testSuite.addTestSuite(GetClientIdTest.class);
+        testSuite.addTestSuite(ValueBindingTest.class);        
         return testSuite;
     }
 
@@ -82,6 +87,7 @@ public class UIComponentBaseTest extends TestCase
      */
     public void testGetAttributes()
     {
+        // TODO implement tests for _ComponentAttributesMap
         assertTrue(_testImpl.getAttributes() instanceof _ComponentAttributesMap);
     }
 
@@ -102,6 +108,65 @@ public class UIComponentBaseTest extends TestCase
         assertEquals(expectedValue, _testImpl.getRendersChildren());
         _mocksControl.verify();
         _mocksControl.reset();
+    }
+
+    public static class ValueBindingTest extends AbstractUIComponentBaseTest
+    {
+        private ValueBinding _valueBinding;
+
+        @Override
+        protected void setUp() throws Exception
+        {
+            super.setUp();
+            _valueBinding = _mocksControl.createMock(ValueBinding.class);
+        }
+
+        @Override
+        protected Collection<Method> getMockedMethods() throws Exception
+        {
+            Collection<Method> mockedMethods = super.getMockedMethods();
+            mockedMethods.add(UIComponent.class.getDeclaredMethod("getValueExpression", new Class[] { String.class }));
+            mockedMethods.add(UIComponent.class.getDeclaredMethod("setValueExpression", new Class[] { String.class,
+                    ValueExpression.class }));
+            return mockedMethods;
+        }
+
+        public void testGetValueBindingWOValueExpression() throws Exception
+        {
+            expect(_testImpl.getValueExpression(eq("xxx"))).andReturn(null);
+            _mocksControl.replay();
+            assertNull(_testImpl.getValueBinding("xxx"));
+        }
+
+        public void testSetValueBinding() throws Exception
+        {
+            _testImpl.setValueExpression(eq("xxx"), isA(_ValueBindingToValueExpression.class));
+            expectLastCall().andAnswer(new IAnswer<Object>() {
+                public Object answer() throws Throwable
+                {
+                    _ValueBindingToValueExpression ve = (_ValueBindingToValueExpression) getCurrentArguments()[1];
+                    assertEquals(_valueBinding, ve.getValueBinding());
+                    return null;
+                }
+            });
+            _mocksControl.replay();
+            _testImpl.setValueBinding("xxx", _valueBinding);
+        }
+        
+        public void testSetValueBindingWNullValue() throws Exception
+        {
+            _testImpl.setValueExpression(eq("xxx"), (ValueExpression) isNull());
+            _mocksControl.replay();
+            _testImpl.setValueBinding("xxx", null);
+        }
+
+        public void testGetValueBindingWithVBToVE() throws Exception
+        {
+            ValueExpression valueExpression = new _ValueBindingToValueExpression(_valueBinding);
+            expect(_testImpl.getValueExpression(eq("xxx"))).andReturn(valueExpression);
+            _mocksControl.replay();
+            assertEquals(_valueBinding, _testImpl.getValueBinding("xxx"));
+        }
     }
 
     public static class RenderedPropertyTest extends UIComponentPropertyTest<Boolean>
@@ -168,11 +233,13 @@ public class UIComponentBaseTest extends TestCase
         {
             _mocksControl = EasyMock.createControl();
             _facesContext = _mocksControl.createMock(FacesContext.class);
-            _testImpl = _mocksControl.createMock(UIComponentBase.class, getMockedMethods());
+            Collection<Method> mockedMethods = getMockedMethods();
+            _testImpl = _mocksControl.createMock(UIComponentBase.class, mockedMethods.toArray(new Method[mockedMethods
+                    .size()]));
             _renderer = _mocksControl.createMock(Renderer.class);
         }
 
-        protected Method[] getMockedMethods() throws Exception
+        protected Collection<Method> getMockedMethods() throws Exception
         {
             Collection<Method> methods = new ArrayList<Method>();
             methods.add(UIComponentBase.class.getDeclaredMethod("getRenderer", new Class[] { FacesContext.class }));
@@ -182,7 +249,7 @@ public class UIComponentBaseTest extends TestCase
             methods.add(UIComponentBase.class
                     .getDeclaredMethod("getPathToComponent", new Class[] { UIComponent.class }));
 
-            return methods.toArray(new Method[methods.size()]);
+            return methods;
         }
     }
 
