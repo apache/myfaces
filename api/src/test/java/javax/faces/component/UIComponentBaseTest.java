@@ -16,22 +16,28 @@
 
 package javax.faces.component;
 
-import static org.apache.myfaces.Assert.*;
+import static org.apache.myfaces.Assert.assertException;
 import static org.easymock.EasyMock.*;
+import static org.easymock.classextension.EasyMock.createControl;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
+import javax.faces.event.ActionListener;
 import javax.faces.event.FacesEvent;
 import javax.faces.event.FacesListener;
+import javax.faces.event.ValueChangeListener;
 import javax.faces.render.Renderer;
 
 import junit.framework.Test;
@@ -40,7 +46,6 @@ import junit.framework.TestSuite;
 
 import org.apache.myfaces.TestRunner;
 import org.easymock.IAnswer;
-import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 
 @SuppressWarnings("deprecation")
@@ -55,7 +60,7 @@ public class UIComponentBaseTest extends TestCase
     @Override
     protected void setUp() throws Exception
     {
-        _mocksControl = EasyMock.createControl();
+        _mocksControl = createControl();
         _facesContext = _mocksControl.createMock(FacesContext.class);
         _testImpl = _mocksControl.createMock(UIComponentBase.class, getMockedMethodsArray());
         _renderer = _mocksControl.createMock(Renderer.class);
@@ -72,10 +77,8 @@ public class UIComponentBaseTest extends TestCase
         Collection<Method> methods = new ArrayList<Method>();
         methods.add(UIComponentBase.class.getDeclaredMethod("getRenderer", new Class[] { FacesContext.class }));
         methods.add(UIComponentBase.class.getDeclaredMethod("getFacesContext", null));
-        methods.add(UIComponentBase.class.getDeclaredMethod("getFacesContext", null));
         methods.add(UIComponentBase.class.getDeclaredMethod("getParent", null));
-        methods.add(UIComponentBase.class
-                .getDeclaredMethod("getPathToComponent", new Class[] { UIComponent.class }));
+        methods.add(UIComponentBase.class.getDeclaredMethod("getPathToComponent", new Class[] { UIComponent.class }));
 
         return methods;
     }
@@ -93,6 +96,8 @@ public class UIComponentBaseTest extends TestCase
         testSuite.addTestSuite(GetClientIdTest.class);
         testSuite.addTestSuite(ValueBindingTest.class);
         testSuite.addTestSuite(FindComponentTest.class);
+        testSuite.addTestSuite(FacesListenerTest.class);
+        testSuite.addTestSuite(ProcessSaveRestoreStateTest.class);
         return testSuite;
     }
 
@@ -194,18 +199,13 @@ public class UIComponentBaseTest extends TestCase
                 _testImpl.encodeBegin(null);
             }
         });
-        
-        Collection<Method> mockedMethods = getMockedMethods();
-        mockedMethods.add(UIComponentBase.class.getDeclaredMethod("isRendered", null));
-        _testImpl = _mocksControl.createMock(UIComponentBase.class, mockedMethods.toArray(new Method[mockedMethods.size()]));
 
-        expect(_testImpl.isRendered()).andReturn(false);
+        _testImpl.setRendered(false);
         _mocksControl.replay();
         _testImpl.encodeBegin(_facesContext);
-        _mocksControl.verify();
 
         _mocksControl.reset();
-        expect(_testImpl.isRendered()).andReturn(true);
+        _testImpl.setRendered(true);
         expect(_testImpl.getRenderer(same(_facesContext))).andReturn(_renderer);
         _renderer.encodeBegin(same(_facesContext), same(_testImpl));
         _mocksControl.replay();
@@ -222,18 +222,13 @@ public class UIComponentBaseTest extends TestCase
                 _testImpl.encodeChildren(null);
             }
         });
-        
-        Collection<Method> mockedMethods = getMockedMethods();
-        mockedMethods.add(UIComponentBase.class.getDeclaredMethod("isRendered", null));
-        _testImpl = _mocksControl.createMock(UIComponentBase.class, mockedMethods.toArray(new Method[mockedMethods.size()]));
 
-        expect(_testImpl.isRendered()).andReturn(false);
+        _testImpl.setRendered(false);
         _mocksControl.replay();
         _testImpl.encodeChildren(_facesContext);
-        _mocksControl.verify();
 
         _mocksControl.reset();
-        expect(_testImpl.isRendered()).andReturn(true);
+        _testImpl.setRendered(true);
         expect(_testImpl.getRenderer(same(_facesContext))).andReturn(_renderer);
         _renderer.encodeChildren(same(_facesContext), same(_testImpl));
         _mocksControl.replay();
@@ -250,23 +245,361 @@ public class UIComponentBaseTest extends TestCase
                 _testImpl.encodeEnd(null);
             }
         });
-        
-        Collection<Method> mockedMethods = getMockedMethods();
-        mockedMethods.add(UIComponentBase.class.getDeclaredMethod("isRendered", null));
-        _testImpl = _mocksControl.createMock(UIComponentBase.class, mockedMethods.toArray(new Method[mockedMethods.size()]));
 
-        expect(_testImpl.isRendered()).andReturn(false);
+        _testImpl.setRendered(false);
         _mocksControl.replay();
         _testImpl.encodeEnd(_facesContext);
-        _mocksControl.verify();
 
         _mocksControl.reset();
-        expect(_testImpl.isRendered()).andReturn(true);
+        _testImpl.setRendered(true);
         expect(_testImpl.getRenderer(same(_facesContext))).andReturn(_renderer);
         _renderer.encodeEnd(same(_facesContext), same(_testImpl));
         _mocksControl.replay();
         _testImpl.encodeEnd(_facesContext);
         _mocksControl.verify();
+    }
+
+    public void testQueueEvent() throws Exception
+    {
+        assertException(NullPointerException.class, new TestRunner()
+        {
+            public void run() throws Throwable
+            {
+                _testImpl.queueEvent(null);
+            }
+
+        });
+
+        final FacesEvent event = _mocksControl.createMock(FacesEvent.class);
+
+        expect(_testImpl.getParent()).andReturn(null);
+        _mocksControl.replay();
+
+        assertException(IllegalStateException.class, new TestRunner()
+        {
+            public void run() throws Throwable
+            {
+                _testImpl.queueEvent(event);
+            }
+        });
+
+        _mocksControl.reset();
+        UIComponent parent = _mocksControl.createMock(UIComponent.class);
+        expect(_testImpl.getParent()).andReturn(parent);
+        parent.queueEvent(same(event));
+        _mocksControl.replay();
+        _testImpl.queueEvent(event);
+        _mocksControl.verify();
+    }
+
+    public void testProcessDecodes() throws Exception
+    {
+        assertException(NullPointerException.class, new TestRunner()
+        {
+            public void run() throws Throwable
+            {
+                _testImpl.processDecodes(null);
+            }
+        });
+
+        Collection<Method> methods = getMockedMethods();
+        methods.add(UIComponentBase.class.getDeclaredMethod("decode", new Class[] { FacesContext.class }));
+        methods.add(UIComponentBase.class.getDeclaredMethod("getFacetsAndChildren", null));
+        _testImpl = _mocksControl.createMock(UIComponentBase.class, methods.toArray(new Method[methods.size()]));
+
+        _testImpl.setRendered(false);
+        _mocksControl.replay();
+        _testImpl.processDecodes(_facesContext);
+
+        _mocksControl.reset();
+        _testImpl.setRendered(true);
+        _mocksControl.checkOrder(true);
+        UIComponent child = _mocksControl.createMock(UIComponent.class);
+        expect(_testImpl.getFacetsAndChildren()).andReturn(Arrays.asList(new UIComponent[] { child }).iterator());
+        child.processDecodes(same(_facesContext));
+        _testImpl.decode(same(_facesContext));
+        _mocksControl.replay();
+        _testImpl.processDecodes(_facesContext);
+        _mocksControl.verify();
+
+        _mocksControl.reset();
+        expect(_testImpl.getFacetsAndChildren()).andReturn(Collections.EMPTY_LIST.iterator());
+        _testImpl.decode(same(_facesContext));
+        expectLastCall().andThrow(new RuntimeException());
+        _facesContext.renderResponse();
+        _mocksControl.replay();
+        assertException(RuntimeException.class, new TestRunner()
+        {
+            public void run() throws Throwable
+            {
+                _testImpl.processDecodes(_facesContext);
+            }
+        });
+        _mocksControl.verify();
+    }
+
+    public void testProcessValidators() throws Exception
+    {
+        assertException(NullPointerException.class, new TestRunner()
+        {
+            public void run() throws Throwable
+            {
+                _testImpl.processValidators(null);
+            }
+        });
+
+        Collection<Method> methods = getMockedMethods();
+        methods.add(UIComponentBase.class.getDeclaredMethod("getFacetsAndChildren", null));
+        _testImpl = _mocksControl.createMock(UIComponentBase.class, methods.toArray(new Method[methods.size()]));
+
+        _testImpl.setRendered(false);
+        _mocksControl.replay();
+        _testImpl.processValidators(_facesContext);
+
+        _mocksControl.reset();
+        _testImpl.setRendered(true);
+        UIComponent child = _mocksControl.createMock(UIComponent.class);
+        expect(_testImpl.getFacetsAndChildren()).andReturn(Arrays.asList(new UIComponent[] { child }).iterator());
+        child.processValidators(same(_facesContext));
+        _mocksControl.replay();
+        _testImpl.processValidators(_facesContext);
+        _mocksControl.verify();
+    }
+
+    public void testProcessUpdates() throws Exception
+    {
+        assertException(NullPointerException.class, new TestRunner()
+        {
+            public void run() throws Throwable
+            {
+                _testImpl.processUpdates(null);
+            }
+        });
+
+        Collection<Method> methods = getMockedMethods();
+        methods.add(UIComponentBase.class.getDeclaredMethod("getFacetsAndChildren", null));
+        _testImpl = _mocksControl.createMock(UIComponentBase.class, methods.toArray(new Method[methods.size()]));
+
+        _testImpl.setRendered(false);
+        _mocksControl.replay();
+        _testImpl.processUpdates(_facesContext);
+
+        _mocksControl.reset();
+        _testImpl.setRendered(true);
+        UIComponent child = _mocksControl.createMock(UIComponent.class);
+        expect(_testImpl.getFacetsAndChildren()).andReturn(Arrays.asList(new UIComponent[] { child }).iterator());
+        child.processUpdates(same(_facesContext));
+        _mocksControl.replay();
+        _testImpl.processUpdates(_facesContext);
+        _mocksControl.verify();
+    }
+
+    public static class ProcessSaveRestoreStateTest extends AbstractUIComponentBaseTest
+    {
+        private static final String CHILD_STATE = "childState";
+        private static final String TESTIMPL_STATE = "testimplState";
+        private static final String FACET_STATE = "facetState";
+        private UIComponent _facet;
+        private UIComponent _child;
+        
+        @Override
+        protected void setUp() throws Exception
+        {
+            super.setUp();
+            _facet = _mocksControl.createMock(UIComponent.class);
+            _child = _mocksControl.createMock(UIComponent.class);
+        }
+
+        @Override
+        protected Collection<Method> getMockedMethods() throws Exception
+        {
+            Collection<Method> methods = super.getMockedMethods();
+            methods.add(UIComponentBase.class.getDeclaredMethod("getFacets", null));
+            methods.add(UIComponentBase.class.getDeclaredMethod("getChildren", null));
+            methods.add(UIComponentBase.class.getDeclaredMethod("getFacetCount", null));
+            methods.add(UIComponentBase.class.getDeclaredMethod("getChildCount", null));
+            methods.add(UIComponentBase.class.getDeclaredMethod("saveState", new Class[] { FacesContext.class }));
+            methods.add(UIComponentBase.class.getDeclaredMethod("restoreState", new Class[] { FacesContext.class,
+                    Object.class }));
+            return methods;
+        }
+
+        public void testSaveStateExpections() throws Exception
+        {
+            assertException(NullPointerException.class, new TestRunner()
+            {
+                public void run() throws Throwable
+                {
+                    _testImpl.processSaveState(null);
+                }
+            });
+        }
+
+        public void testRestoreStateExpections() throws Exception
+        {
+            assertException(NullPointerException.class, new TestRunner()
+            {
+                public void run() throws Throwable
+                {
+                    _testImpl.processRestoreState(null, null);
+                }
+            });
+        }
+
+        public void testSaveRestoreStateWithTransientChilds() throws Exception
+        {
+            _testImpl.setTransient(true);
+            assertNull(_testImpl.processSaveState(_facesContext));
+
+            _testImpl.setTransient(false);
+            setUpChilds(true, true, true);
+            _mocksControl.replay();
+            Object state = _testImpl.processSaveState(_facesContext);
+            assertNotNull(state);
+            _mocksControl.verify();
+
+            _mocksControl.reset();
+            _testImpl.restoreState(same(_facesContext), eq(TESTIMPL_STATE));
+            _mocksControl.replay();
+            _testImpl.processRestoreState(_facesContext, state);
+            _mocksControl.verify();
+        }
+
+        public void testSaveRestoreState() throws Exception
+        {
+            _testImpl.setTransient(true);
+            assertNull(_testImpl.processSaveState(_facesContext));
+
+            _testImpl.setTransient(false);
+            setUpChilds(true, false, false);
+            _mocksControl.replay();
+            Object state = _testImpl.processSaveState(_facesContext);
+            assertNotNull(state);
+            _mocksControl.verify();
+            
+            _mocksControl.reset();
+            setUpChilds(false, false, false);
+            _mocksControl.replay();
+            _testImpl.processRestoreState(_facesContext, state);
+            _mocksControl.verify();
+        }
+
+        private void setUpChilds(boolean saveState, boolean facetTransient, boolean childTransient)
+        {
+            if (saveState || !facetTransient)
+            {
+                Map<String, UIComponent> facetMap = new HashMap<String, UIComponent>();
+                facetMap.put("testFacet", _facet);
+                expect(_testImpl.getFacetCount()).andReturn(1).anyTimes();
+                expect(_testImpl.getFacets()).andReturn(facetMap).anyTimes();
+                expect(_facet.isTransient()).andReturn(facetTransient).anyTimes();
+            }
+            if (!facetTransient)
+            {
+                if (saveState)
+                    expect(_facet.processSaveState(same(_facesContext))).andReturn(FACET_STATE);
+                else
+                    _facet.processRestoreState(same(_facesContext), eq(FACET_STATE));
+            }
+            if (saveState || !childTransient)
+            {
+                List<UIComponent> childs = new ArrayList<UIComponent>();
+                childs.add(_child);
+                expect(_testImpl.getChildCount()).andReturn(1).anyTimes();
+                expect(_testImpl.getChildren()).andReturn(childs).anyTimes();
+                expect(_child.isTransient()).andReturn(childTransient).anyTimes();
+            }
+            if (!childTransient)
+            {
+                if (saveState)
+                    expect(_child.processSaveState(same(_facesContext))).andReturn(CHILD_STATE);
+                else
+                    _child.processRestoreState(same(_facesContext), eq(CHILD_STATE));
+            }
+            if (saveState)
+                expect(_testImpl.saveState(same(_facesContext))).andReturn(TESTIMPL_STATE);
+            else
+                _testImpl.restoreState(same(_facesContext), eq(TESTIMPL_STATE));
+        }
+
+        public void testProcessSaveState() throws Exception
+        {
+        }
+    }
+
+    public static class FacesListenerTest extends AbstractUIComponentBaseTest
+    {
+        private ActionListener _actionListener;
+        private ValueChangeListener _valueChangeListener;
+
+        @Override
+        protected void setUp() throws Exception
+        {
+            super.setUp();
+            _actionListener = _mocksControl.createMock(ActionListener.class);
+            _valueChangeListener = _mocksControl.createMock(ValueChangeListener.class);
+        }
+
+        public void testExceptions() throws Exception
+        {
+            assertException(NullPointerException.class, new TestRunner()
+            {
+                public void run() throws Throwable
+                {
+                    _testImpl.getFacesListeners(null);
+                }
+
+            });
+            assertException(IllegalArgumentException.class, new TestRunner()
+            {
+                public void run() throws Throwable
+                {
+                    _testImpl.getFacesListeners(Date.class);
+                }
+            });
+        }
+
+        public void testEmptyListener() throws Exception
+        {
+            FacesListener[] listener = _testImpl.getFacesListeners(ActionListener.class);
+            assertNotNull(listener);
+            assertEquals(0, listener.length);
+        }
+
+        public void testGetFacesListeners()
+        {
+            _testImpl.addFacesListener(_actionListener);
+
+            FacesListener[] listener = _testImpl.getFacesListeners(ValueChangeListener.class);
+            assertNotNull(listener);
+            assertEquals(0, listener.length);
+            assertTrue(ValueChangeListener.class.equals(listener.getClass().getComponentType()));
+
+            _testImpl.addFacesListener(_valueChangeListener);
+
+            listener = _testImpl.getFacesListeners(FacesListener.class);
+            assertNotNull(listener);
+            assertEquals(2, listener.length);
+            Collection<FacesListener> col = Arrays.asList(listener);
+            assertTrue(col.contains(_actionListener));
+            assertTrue(col.contains(_valueChangeListener));
+        }
+
+        public void testRemoveFacesListener() throws Exception
+        {
+            assertException(NullPointerException.class, new TestRunner()
+            {
+                public void run() throws Throwable
+                {
+                    _testImpl.removeFacesListener(null);
+                }
+            });
+
+            _testImpl.addFacesListener(_actionListener);
+            assertEquals(_actionListener, _testImpl.getFacesListeners(FacesListener.class)[0]);
+            _testImpl.removeFacesListener(_actionListener);
+            assertEquals(0, _testImpl.getFacesListeners(FacesListener.class).length);
+        }
     }
 
     public static class FindComponentTest extends AbstractUIComponentBaseTest
@@ -493,7 +826,7 @@ public class UIComponentBaseTest extends TestCase
         }
     }
 
-    public static class AbstractUIComponentBaseTest extends TestCase
+    public static abstract class AbstractUIComponentBaseTest extends TestCase
     {
         protected UIComponentBase _testImpl;
         protected IMocksControl _mocksControl;
@@ -503,7 +836,7 @@ public class UIComponentBaseTest extends TestCase
         @Override
         protected void setUp() throws Exception
         {
-            _mocksControl = EasyMock.createControl();
+            _mocksControl = createControl();
             _facesContext = _mocksControl.createMock(FacesContext.class);
             _testImpl = _mocksControl.createMock(UIComponentBase.class, getMockedMethodsArray());
             _renderer = _mocksControl.createMock(Renderer.class);
@@ -519,7 +852,6 @@ public class UIComponentBaseTest extends TestCase
         {
             Collection<Method> methods = new ArrayList<Method>();
             methods.add(UIComponentBase.class.getDeclaredMethod("getRenderer", new Class[] { FacesContext.class }));
-            methods.add(UIComponentBase.class.getDeclaredMethod("getFacesContext", null));
             methods.add(UIComponentBase.class.getDeclaredMethod("getFacesContext", null));
             methods.add(UIComponentBase.class.getDeclaredMethod("getParent", null));
             methods.add(UIComponentBase.class

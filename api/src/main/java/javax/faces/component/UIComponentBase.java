@@ -436,7 +436,7 @@ public abstract class UIComponentBase
     {
         if (_facetMap == null)
         {
-            _facetMap = new _ComponentFacetMap(this);
+            _facetMap = new _ComponentFacetMap<UIComponent>(this);
         }
         return _facetMap;
     }
@@ -552,23 +552,33 @@ public abstract class UIComponentBase
 
     protected FacesListener[] getFacesListeners(Class clazz)
     {
+        if(clazz == null)
+        {
+            throw new NullPointerException("Class is null");
+        }
+        if(!FacesListener.class.isAssignableFrom(clazz))
+        {
+            throw new IllegalArgumentException("Class " + clazz.getName() + " must implement " + FacesListener.class);
+        }
+        
         if (_facesListeners == null)
         {
             return (FacesListener[])Array.newInstance(clazz, 0);
         }
         List<FacesListener> lst = null;
-        for (Iterator<FacesListener> it = _facesListeners.iterator(); it.hasNext(); )
+        for (Iterator<FacesListener> it = _facesListeners.iterator(); it.hasNext();)
         {
             FacesListener facesListener = it.next();
             if (clazz.isAssignableFrom(facesListener.getClass()))
             {
-                if (lst == null) lst = new ArrayList<FacesListener>();
+                if (lst == null)
+                    lst = new ArrayList<FacesListener>();
                 lst.add(facesListener);
             }
         }
         if (lst == null)
         {
-            return (FacesListener[])Array.newInstance(clazz, 0);
+            return (FacesListener[]) Array.newInstance(clazz, 0);
         }
         
         return lst.toArray((FacesListener[])Array.newInstance(clazz, lst.size()));
@@ -576,6 +586,11 @@ public abstract class UIComponentBase
 
     protected void removeFacesListener(FacesListener listener)
     {
+        if(listener == null)
+        {
+            throw new NullPointerException("listener is null");
+        }
+        
         if (_facesListeners != null)
         {
             _facesListeners.remove(listener);
@@ -596,11 +611,10 @@ public abstract class UIComponentBase
     public void processDecodes(FacesContext context)
     {
         if (context == null) throw new NullPointerException("context");
-                if (!isRendered()) return;
-        for (Iterator it = getFacetsAndChildren(); it.hasNext(); )
+        if (!isRendered()) return;
+        for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
         {
-            UIComponent childOrFacet = (UIComponent)it.next();
-            childOrFacet.processDecodes(context);
+            it.next().processDecodes(context);
         }
         try
         {
@@ -619,10 +633,9 @@ public abstract class UIComponentBase
         if (context == null) throw new NullPointerException("context");
         if (!isRendered()) return;
 
-        for (Iterator it = getFacetsAndChildren(); it.hasNext(); )
+        for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext(); )
         {
-            UIComponent childOrFacet = (UIComponent)it.next();
-            childOrFacet.processValidators(context);
+            it.next().processValidators(context);
         }
     }
 
@@ -640,68 +653,75 @@ public abstract class UIComponentBase
         if (context == null) throw new NullPointerException("context");
         if (!isRendered()) return;
 
-        for (Iterator it = getFacetsAndChildren(); it.hasNext(); )
+        for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext(); )
         {
-            UIComponent childOrFacet = (UIComponent)it.next();
-            childOrFacet.processUpdates(context);
+            it.next().processUpdates(context);
         }
     }
 
     public Object processSaveState(FacesContext context)
     {
-        if (context == null) throw new NullPointerException("context");
-        if (isTransient()) return null;
-        Map facetMap = null;
-        for (Iterator it = getFacets().entrySet().iterator(); it.hasNext(); )
+        if (context == null)
+            throw new NullPointerException("context");
+        if (isTransient())
+            return null;
+        Map<String, Object> facetMap = null;
+        int facetCount = getFacetCount();
+        if (facetCount > 0)
         {
-            Map.Entry entry = (Map.Entry)it.next();
-            if (facetMap == null) facetMap = new HashMap();
-            UIComponent component = (UIComponent)entry.getValue();
-            if (!component.isTransient())
+            for (Iterator<Entry<String, UIComponent>> it = getFacets().entrySet().iterator(); it.hasNext();)
             {
-                facetMap.put(entry.getKey(), component.processSaveState(context));
+                Entry<String, UIComponent> entry = it.next();
+                UIComponent component = entry.getValue();
+                if (!component.isTransient())
+                {
+                    if (facetMap == null)
+                        facetMap = new HashMap<String, Object>(facetCount, 1);
+                    facetMap.put(entry.getKey(), component.processSaveState(context));
+                }
             }
         }
         List<Object> childrenList = null;
-        if (getChildCount() > 0)
+        int childCount = getChildCount();
+        if (childCount > 0)
         {
-            for (Iterator it = getChildren().iterator(); it.hasNext(); )
+            for (Iterator it = getChildren().iterator(); it.hasNext();)
             {
-              UIComponent child = (UIComponent)it.next();
-              if (childrenList == null) {
-                childrenList = new ArrayList<Object>(getChildCount());
-              }
-              if(!child.isTransient()) 
-              {
-                  Object childState = child.processSaveState(context);
-                  if (childState != null) {
-                    childrenList.add(childState);
-                  }
-              }
+                UIComponent child = (UIComponent) it.next();
+                if (!child.isTransient())
+                {
+                    if (childrenList == null)
+                    {
+                        childrenList = new ArrayList<Object>(childCount);
+                    }
+                    Object childState = child.processSaveState(context);
+                    if (childState != null)
+                    {
+                        childrenList.add(childState);
+                    }
+                }
             }
         }
-        return new Object[] {saveState(context),
-                             facetMap,
-                             childrenList};
+        return new Object[] { saveState(context), facetMap, childrenList };
     }
 
     public void processRestoreState(FacesContext context,
                                     Object state)
     {
         if (context == null) throw new NullPointerException("context");
-        Object myState = ((Object[])state)[0];
-        Map facetMap = (Map)((Object[])state)[1];
-        List childrenList = (List)((Object[])state)[2];
-        if(facetMap != null)
+        Object[] stateValues = (Object[]) state;
+        Object myState = stateValues[0];
+        Map<String, Object> facetMap = (Map<String, Object>)stateValues[1];
+        List<Object> childrenList = (List<Object>)stateValues[2];
+        if(facetMap != null && getFacetCount() > 0)
         {
-          for (Iterator it = getFacets().entrySet().iterator(); it.hasNext(); )
+          for (Iterator<Entry<String, UIComponent>> it = getFacets().entrySet().iterator(); it.hasNext(); )
           {
-              Map.Entry entry = (Map.Entry)it.next();
+              Entry<String, UIComponent> entry = it.next();
               Object facetState = facetMap.get(entry.getKey());
               if (facetState != null)
               {
-                UIComponent component = (UIComponent)entry.getValue();
-                component.processRestoreState(context, facetState);
+                  entry.getValue().processRestoreState(context, facetState);
               }
               else
               {
@@ -712,9 +732,9 @@ public abstract class UIComponentBase
         if (childrenList != null && getChildCount() > 0)
         {
             int idx = 0;
-            for (Iterator it = getChildren().iterator(); it.hasNext(); )
+            for (Iterator<UIComponent> it = getChildren().iterator(); it.hasNext(); )
             {
-                UIComponent child = (UIComponent)it.next();
+                UIComponent child = it.next();
                 if(!child.isTransient())
                 {
                   Object childState = childrenList.get(idx++);
@@ -963,7 +983,7 @@ public abstract class UIComponentBase
     {
         if (stateObj != null)
         {
-            _attributesMap = new _ComponentAttributesMap(this, (Map)stateObj);
+            _attributesMap = new _ComponentAttributesMap(this, (Map<Object, Object>)stateObj);
         }
         else
         {
@@ -1088,9 +1108,6 @@ public abstract class UIComponentBase
     
     public int getFacetCount()
     {
-        // not sure why the RI has this method in both 
-        // UIComponent and UIComponentBase
-        Map<String, UIComponent> facets = getFacets();
-        return facets == null ? 0 : facets.size();
+        return _facetMap == null ? 0 : _facetMap.size();
     }
 }
