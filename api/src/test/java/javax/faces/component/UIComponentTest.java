@@ -15,7 +15,7 @@
  */
 package javax.faces.component;
 
-import static org.apache.myfaces.Assert.assertException;
+import static org.apache.myfaces.Assert.*;
 import static org.easymock.EasyMock.*;
 
 import java.lang.reflect.Method;
@@ -104,6 +104,21 @@ public class UIComponentTest extends TestCase
             _mocksControl.replay();
             assertTrue(_testimpl.invokeOnComponent(_facesContext, "xxxId", _contextCallback));
             _mocksControl.verify();
+        }
+
+        public void testInvokeOnComponentWithException() throws Exception
+        {
+            expect(_testimpl.getClientId(same(_facesContext))).andReturn("xxxId");
+            _contextCallback.invokeContextCallback(same(_facesContext), same(_testimpl));
+            expectLastCall().andThrow(new RuntimeException());
+            _mocksControl.replay();
+            assertException(FacesException.class, new TestRunner()
+            {
+                public void run() throws Throwable
+                {
+                    assertTrue(_testimpl.invokeOnComponent(_facesContext, "xxxId", _contextCallback));
+                }
+            });
         }
 
         public void testInvokeOnComponentAndNotFindComponentWithClientId() throws Exception
