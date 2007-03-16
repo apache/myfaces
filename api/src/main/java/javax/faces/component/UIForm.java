@@ -34,6 +34,8 @@ public class UIForm
 
     private boolean _submitted;
     
+    private Boolean _prependId;
+    
     public boolean isSubmitted()
     {
         return _submitted;
@@ -117,17 +119,26 @@ public class UIForm
     
     public String getContainerClientId(FacesContext ctx)
     {
-        throw new UnsupportedOperationException("1.2");
+        if (isPrependId())
+        {
+            return super.getContainerClientId(ctx);
+        }
+        UIComponent parentNamingContainer = _ComponentUtils.findParentNamingContainer(this, false);
+        if (parentNamingContainer != null)
+        {
+            return parentNamingContainer.getContainerClientId(ctx);
+        }
+        return null;
     }
     
     public boolean isPrependId()
     {
-        throw new UnsupportedOperationException("1.2");
+        return getExpressionValue("prependId", _prependId, true);
     }
 
     public void setPrependId(boolean prependId)
     {
-        throw new UnsupportedOperationException("1.2");
+        _prependId = prependId;
     }
 
 }
