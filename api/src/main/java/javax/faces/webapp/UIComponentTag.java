@@ -18,7 +18,6 @@ package javax.faces.webapp;
 import javax.faces.application.Application;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
 import javax.faces.el.ValueBinding;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
