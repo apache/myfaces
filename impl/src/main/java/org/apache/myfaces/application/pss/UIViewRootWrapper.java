@@ -1,11 +1,9 @@
 package org.apache.myfaces.application.pss;
 
 import javax.faces.component.UIViewRoot;
-import javax.faces.component.UIComponentBase;
 import javax.faces.event.FacesEvent;
 import javax.faces.context.FacesContext;
 import java.util.*;
-import java.io.IOException;
 
 /*
  * Copyright 2004 The Apache Software Foundation.

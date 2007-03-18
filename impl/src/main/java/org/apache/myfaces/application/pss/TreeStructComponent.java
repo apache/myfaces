@@ -16,10 +16,7 @@
 
 package org.apache.myfaces.application.pss;
 
-import javax.faces.context.FacesContext;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.HashSet;
 
 /**
  * @author Martin Haimberger

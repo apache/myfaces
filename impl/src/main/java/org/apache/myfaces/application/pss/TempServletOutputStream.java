@@ -19,8 +19,6 @@ package org.apache.myfaces.application.pss;
 import javax.servlet.ServletOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
-import java.io.PrintWriter;
-import java.io.CharArrayWriter;
 
 /**
  * @author Martin Haimberger

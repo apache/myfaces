@@ -921,7 +921,6 @@ public class PssJspStateManagerImpl extends MyfacesStateManager
             }
 
             Iterator iter = facetMap.entrySet().iterator();
-            int facetindex = 0;
             while(iter.hasNext())
             {
                 Map.Entry entry = (Map.Entry)iter.next();
