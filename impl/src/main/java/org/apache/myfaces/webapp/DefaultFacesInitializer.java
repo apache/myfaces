@@ -106,8 +106,7 @@ public class DefaultFacesInitializer implements FacesInitializer
             // parse web.xml
             WebXml.init(externalContext);
 
-            if (servletContext.getInitParameter(StateUtils.INIT_SECRET) != null
-                    || servletContext.getInitParameter(StateUtils.INIT_SECRET.toLowerCase()) != null)
+            if (! "false".equals(servletContext.getInitParameter(StateUtils.USE_ENCRYPTION)))
                 StateUtils.initSecret(servletContext);
 
             log.info("ServletContext '" + servletContext.getRealPath("/") + "' initialized.");
