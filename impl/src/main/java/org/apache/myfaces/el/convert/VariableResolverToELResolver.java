@@ -59,6 +59,14 @@ public class VariableResolverToELResolver extends ELResolver
     {
         this.variableResolver = variableResolver;
     }
+    
+    /**
+     * @return the variableResolver
+     */
+    public VariableResolver getVariableResolver()
+    {
+        return variableResolver;
+    }
 
     public Object getValue(ELContext context, Object base, Object property) throws NullPointerException,
             PropertyNotFoundException, ELException

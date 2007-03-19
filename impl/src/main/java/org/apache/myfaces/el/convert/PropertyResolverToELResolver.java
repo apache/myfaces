@@ -219,4 +219,9 @@ public class PropertyResolverToELResolver extends ELResolver
             return null;
         }
     }
+
+    public PropertyResolver getPropertyResolver()
+    {
+        return propertyResolver;
+    }
 }
