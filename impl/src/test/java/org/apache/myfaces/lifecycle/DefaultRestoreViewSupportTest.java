@@ -54,13 +54,18 @@ public class DefaultRestoreViewSupportTest extends FacesTestCase
      */
     public void testProcessComponentBinding()
     {
-        expect(_facesContext.getELContext()).andReturn(_elContext).anyTimes();
         UIComponent root = _mocksControl.createMock(UIComponent.class);
-        expect(root.getValueExpression(eq("binding"))).andReturn(null);
         UIComponent testcomponent = _mocksControl.createMock(UIComponent.class);
-        expect(root.getFacetsAndChildren()).andReturn(Arrays.asList(new UIComponent[] { testcomponent }).iterator());
+        ValueExpression rootExpression = _mocksControl.createMock(ValueExpression.class);
         ValueExpression testExpression = _mocksControl.createMock(ValueExpression.class);
+        
+        _mocksControl.checkOrder(true);
+        expect(root.getValueExpression(eq("binding"))).andReturn(rootExpression);
+        expect(_facesContext.getELContext()).andReturn(_elContext);
+        rootExpression.setValue(same(_elContext), same(root));
+        expect(root.getFacetsAndChildren()).andReturn(Arrays.asList(new UIComponent[] { testcomponent }).iterator());
         expect(testcomponent.getValueExpression(eq("binding"))).andReturn(testExpression);
+        expect(_facesContext.getELContext()).andReturn(_elContext);
         testExpression.setValue(same(_elContext), same(testcomponent));
         expect(testcomponent.getFacetsAndChildren()).andReturn(Collections.EMPTY_LIST.iterator());
 
