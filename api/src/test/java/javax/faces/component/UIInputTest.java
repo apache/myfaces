@@ -57,10 +57,6 @@ public class UIInputTest extends AbstractJsfTestCase{
         mockValidator = null;
     }
 
-	public static Test suite() {
-		return null;
-	}
-	
 	public void testWhenSpecifiedConverterMessageIsUsedInCaseConverterExceptionOccurs() {
 		input.setConverterMessage("Cannot convert");
 		

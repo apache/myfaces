@@ -37,10 +37,6 @@ public class MessageUtilsTest extends AbstractJsfTestCase {
         super.tearDown();
     }
 
-	public static Test suite() {
-		return null;
-	}
-	
 	public void testGetLabelFromAttributesMap() {
 		HtmlInputText inputText = new HtmlInputText();
 		inputText.getAttributes().put("label", "testLabel");

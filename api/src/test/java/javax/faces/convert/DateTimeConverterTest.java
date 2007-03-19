@@ -36,10 +36,6 @@ public class DateTimeConverterTest extends AbstractJsfTestCase
         junit.textui.TestRunner.run(DateTimeConverterTest.class);
     }
 
-    public static Test suite() {
-        return null; // keep this method or maven won't run it
-    }
-    
     public DateTimeConverterTest(String name)
     {
         super(name);

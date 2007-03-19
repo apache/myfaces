@@ -169,11 +169,6 @@ public class InvokeOnComponentTest extends AbstractComponentTest
     
   }
 
-  public static Test suite()
-  {
-    return new TestSuite(InvokeOnComponentTest.class);
-  }
-  
   protected List<Data> createTestData()
   {
     List<Data> data = new ArrayList<Data>();
