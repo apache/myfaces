@@ -30,10 +30,6 @@ public class UISelectManyTest extends AbstractJsfTestCase {
     super(name);
   }
 
-  public static Test suite() {
-      return null; // keep this method or maven won't run it
-  }
-  
   public void testValidateRequiredNull() {
 
     facesContext.getViewRoot().setLocale(_TEST_LOCALE);

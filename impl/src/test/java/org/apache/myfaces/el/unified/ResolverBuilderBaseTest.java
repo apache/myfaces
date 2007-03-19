@@ -18,186 +18,147 @@
  */
 package org.apache.myfaces.el.unified;
 
-import org.apache.myfaces.config.RuntimeConfig;
+import static org.easymock.EasyMock.*;
+import static org.testng.Assert.assertEquals;
 
 import javax.el.CompositeELResolver;
-import javax.el.ELContext;
 import javax.el.ELResolver;
-import javax.faces.context.FacesContext;
-import org.apache.shale.test.mock.MockFacesContext12;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.PropertyNotFoundException;
 import javax.faces.el.PropertyResolver;
 import javax.faces.el.VariableResolver;
 
-import java.util.ArrayList;
-
-import junit.framework.TestCase;
+import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.el.convert.PropertyResolverToELResolver;
+import org.apache.myfaces.el.convert.VariableResolverToELResolver;
+import org.easymock.IAnswer;
+import org.easymock.classextension.EasyMock;
+import org.easymock.classextension.IMocksControl;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
 @SuppressWarnings("deprecation")
-public class ResolverBuilderBaseTest extends TestCase
+public class ResolverBuilderBaseTest
 {
-    private ResolverBuilderBase builder;
-    private ELContext expectedContext;
-    private String expectedProperty;
-    private MockFacesContext12 expectedFacesContext;
-    private NoOpElResolver configResolver;
-    private VariableResolver varResolver;
-    private PropertyResolver propResolver;
-    private ELResolver appResolver;
-    private ArrayList<String> calledResolvers;
-    private RuntimeConfig runtimeConfig;
+    private IMocksControl _mocksControl;
+    private RuntimeConfig _runtimeConfig;
+    private ResolverBuilderBase _testImpl;
+    private CompositeELResolver _compositeELResolver;
 
-    protected void setUp(final Object expectedBase)
+    @BeforeMethod
+    void setUp()
     {
-        runtimeConfig = new RuntimeConfig();
-        builder = new ResolverBuilderBase(runtimeConfig);
-
-        expectedProperty = "xxx";
-        expectedFacesContext = new MockFacesContext12();
-        expectedContext = new FacesELContext(null, expectedFacesContext);
-        expectedFacesContext.setELContext(expectedContext);
-
-        calledResolvers = new ArrayList<String>();
-        configResolver = new NoOpElResolver()
-        {
-            @Override
-            public Object getValue(ELContext context, Object base, Object property)
-            {
-                assertSame(expectedContext, context);
-                assertSame(expectedBase, base);
-                assertSame(expectedProperty, property);
-                calledResolvers.add("config");
-                return null;
-            }
-        };
-        varResolver = new VariableResolver()
-        {
-            @Override
-            public Object resolveVariable(FacesContext facesContext, String name) throws EvaluationException
-            {
-                assertSame(expectedFacesContext, facesContext);
-                assertSame(expectedProperty, name);
-                calledResolvers.add("variable");
-                return null;
-            }
-
-        };
-        propResolver = new NoOpPropertyResolver()
-        {
-            @Override
-            public Object getValue(Object base, Object property) throws EvaluationException, PropertyNotFoundException
-            {
-                assertSame(expectedBase, base);
-                assertSame(expectedProperty, property);
-                calledResolvers.add("property");
-                return super.getValue(base, property);
-            }
-        };
-        appResolver = new NoOpElResolver()
-        {
-            @Override
-            public Object getValue(ELContext context, Object base, Object property)
-            {
-                assertSame(expectedContext, context);
-                assertSame(expectedBase, base);
-                assertSame(expectedProperty, property);
-                calledResolvers.add("app");
-                return super.getValue(context, base, property);
-            }
-        };
+        _mocksControl = EasyMock.createNiceControl();
+        _runtimeConfig = _mocksControl.createMock(RuntimeConfig.class);
+        _compositeELResolver = _mocksControl.createMock(CompositeELResolver.class);
+        _testImpl = new ResolverBuilderBase(_runtimeConfig);
     }
 
-    /**
-     * Test method for
-     * {@link org.apache.myfaces.el.unified.ResolverBuilderBase#addFromRuntimeConfig(CompositeELResolver)}.
-     * 
-     * @throws
-     */
-    public void testCreateCompositeElResolverWithNoResolver()
+    @Test
+    public void testGetFacesConfigElResolvers() throws Exception
     {
-        setUp(null);
-        CompositeELResolver resolver = new CompositeELResolver();
-        builder.addFromRuntimeConfig(resolver);
-        Object value = resolver.getValue(expectedContext, null, expectedProperty);
-        assertNull(value);
-        assertEquals(0, calledResolvers.size());
+        ELResolver resolver = _mocksControl.createMock(ELResolver.class);
+        expect(_runtimeConfig.getFacesConfigElResolvers()).andReturn(resolver).anyTimes();
+        _compositeELResolver = _mocksControl.createMock(CompositeELResolver.class);
+        _compositeELResolver.add(eq(resolver));
+        _mocksControl.replay();
+        _testImpl.addFromRuntimeConfig(_compositeELResolver);
+        _mocksControl.verify();
     }
 
-    /**
-     * Test method for
-     * {@link org.apache.myfaces.el.unified.ResolverBuilderBase#addFromRuntimeConfig(CompositeELResolver)}.
-     */
-    public void testCreateCompositeElResolverWithBase()
+    @Test
+    public void testGetApplicationElResolvers() throws Exception
     {
-        Object expectedBase = "base";
-        setUp(expectedBase);
-        runtimeConfig.addFacesConfigElResolver(configResolver);
-        runtimeConfig.setVariableResolver(varResolver);
-        runtimeConfig.setPropertyResolver(propResolver);
-        runtimeConfig.addApplicationElResolver(appResolver);
-
-        CompositeELResolver resolver = new CompositeELResolver();
-        builder.addFromRuntimeConfig(resolver);
-
-        Object value = resolver.getValue(expectedContext, expectedBase, expectedProperty);
-        assertNull(value);
-        assertTrue(expectedContext.isPropertyResolved());
-        assertEquals(2, calledResolvers.size());
-        assertEquals("config", calledResolvers.get(0));
-        assertEquals("property", calledResolvers.get(1));
-
-        runtimeConfig.setPropertyResolver(null);
-        resolver = new CompositeELResolver();
-        calledResolvers.clear();
-        builder.addFromRuntimeConfig(resolver);
-
-        value = resolver.getValue(expectedContext, expectedBase, expectedProperty);
-        assertNull(value);
-        assertFalse(expectedContext.isPropertyResolved());
-        assertEquals(2, calledResolvers.size());
-        assertEquals("config", calledResolvers.get(0));
-        assertEquals("app", calledResolvers.get(1));
+        ELResolver resolver = _mocksControl.createMock(ELResolver.class);
+        expect(_runtimeConfig.getApplicationElResolvers()).andReturn(resolver).anyTimes();
+        _compositeELResolver = _mocksControl.createMock(CompositeELResolver.class);
+        _compositeELResolver.add(eq(resolver));
+        _mocksControl.replay();
+        _testImpl.addFromRuntimeConfig(_compositeELResolver);
+        _mocksControl.verify();
     }
 
-    /**
-     * Test method for
-     * {@link org.apache.myfaces.el.unified.ResolverBuilderBase#addFromRuntimeConfig(CompositeELResolver)}.
-     */
-    public void testCreateCompositeElResolverWithNullBase()
+    @Test
+    public void testGetVariableResolver() throws Exception
     {
-        Object expectedBase = null;
-        setUp(expectedBase);
-        runtimeConfig.addFacesConfigElResolver(configResolver);
-        runtimeConfig.setVariableResolver(varResolver);
-        runtimeConfig.setPropertyResolver(propResolver);
-        runtimeConfig.addApplicationElResolver(appResolver);
+        VariableResolver resolver = _mocksControl.createMock(VariableResolver.class);
+        expect(_runtimeConfig.getVariableResolver()).andReturn(resolver).anyTimes();
+        _compositeELResolver.add(isA(VariableResolverToELResolver.class));
+        expectLastCall().andAnswer(new VariableResolverToELResolverValidator(resolver));
+        _mocksControl.replay();
+        _testImpl.addFromRuntimeConfig(_compositeELResolver);
+        _mocksControl.verify();
+    }
 
-        CompositeELResolver resolver = new CompositeELResolver();
-        builder.addFromRuntimeConfig(resolver);
+    @Test
+    public void testGetVariableResolverChainHead() throws Exception
+    {
+        VariableResolver resolver = _mocksControl.createMock(VariableResolver.class);
+        EasyMock.expect(_runtimeConfig.getVariableResolverChainHead()).andReturn(resolver).anyTimes();
+        _compositeELResolver.add(isA(VariableResolverToELResolver.class));
+        expectLastCall().andAnswer(new VariableResolverToELResolverValidator(resolver));
+        _mocksControl.replay();
+        _testImpl.addFromRuntimeConfig(_compositeELResolver);
+        _mocksControl.verify();
+    }
 
-        Object value = resolver.getValue(expectedContext, expectedBase, expectedProperty);
-        assertNull(value);
-        assertFalse(expectedContext.isPropertyResolved());
-        assertEquals(3, calledResolvers.size());
-        assertEquals("config", calledResolvers.get(0));
-        assertEquals("variable", calledResolvers.get(1));
-        assertEquals("app", calledResolvers.get(2));
+    @Test
+    public void testGetPropertyResolver() throws Exception
+    {
+        PropertyResolver resolver = _mocksControl.createMock(PropertyResolver.class);
+        expect(_runtimeConfig.getPropertyResolver()).andReturn(resolver).anyTimes();
+        _compositeELResolver.add(isA(PropertyResolverToELResolver.class));
+        expectLastCall().andAnswer(new PropertyResolverToELResolverValidator(resolver));
+        _mocksControl.replay();
+        _testImpl.addFromRuntimeConfig(_compositeELResolver);
+        _mocksControl.verify();
+    }
 
-        runtimeConfig.setVariableResolver(null);
-        resolver = new CompositeELResolver();
-        calledResolvers.clear();
-        builder.addFromRuntimeConfig(resolver);
+    @Test
+    public void testGetPropertyResolverChainHead() throws Exception
+    {
+        PropertyResolver resolver = _mocksControl.createMock(PropertyResolver.class);
+        EasyMock.expect(_runtimeConfig.getPropertyResolverChainHead()).andReturn(resolver).anyTimes();
+        _compositeELResolver.add(isA(PropertyResolverToELResolver.class));
+        expectLastCall().andAnswer(new PropertyResolverToELResolverValidator(resolver));
+        _mocksControl.replay();
+        _testImpl.addFromRuntimeConfig(_compositeELResolver);
+        _mocksControl.verify();
+    }
 
-        value = resolver.getValue(expectedContext, expectedBase, expectedProperty);
-        assertNull(value);
-        assertFalse(expectedContext.isPropertyResolved());
-        assertEquals(2, calledResolvers.size());
-        assertEquals("config", calledResolvers.get(0));
-        assertEquals("app", calledResolvers.get(1));
+    private class VariableResolverToELResolverValidator implements IAnswer<Object>
+    {
+        private final VariableResolver _resolver;
+
+        private VariableResolverToELResolverValidator(VariableResolver resolver)
+        {
+            _resolver = resolver;
+        }
+
+        public Object answer() throws Throwable
+        {
+            VariableResolverToELResolver vr = (VariableResolverToELResolver) getCurrentArguments()[0];
+            assertEquals(_resolver, vr.getVariableResolver());
+            return null;
+        }
+    }
+
+    private class PropertyResolverToELResolverValidator implements IAnswer<Object>
+    {
+        private final PropertyResolver _resolver;
+
+        private PropertyResolverToELResolverValidator(PropertyResolver resolver)
+        {
+            _resolver = resolver;
+        }
+
+        public Object answer() throws Throwable
+        {
+            PropertyResolverToELResolver vr = (PropertyResolverToELResolver) getCurrentArguments()[0];
+            assertEquals(_resolver, vr.getPropertyResolver());
+            return null;
+        }
     }
 }

@@ -15,40 +15,46 @@
  */
 package javax.faces.component;
 
-import static org.easymock.EasyMock.*;
-
 import javax.el.ELContext;
 import javax.el.ValueExpression;
 import javax.faces.el.ValueBinding;
 
-import junit.framework.TestCase;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.shale.test.mock.MockFacesContext12;
+import static org.easymock.EasyMock.*;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
+import static org.testng.Assert.*;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public abstract class UIComponentPropertyTest<T extends Object> extends TestCase
+public abstract class AbstractUIComponentPropertyTest<T extends Object>
 {
+    private final String _property;
+    private final T _defaultValue;
+    private final T[] _testValues;
+
     private IMocksControl _mocksControl;
-    private UIComponent _testImpl;
     private MockFacesContext12 _facesContext;
     private ValueBinding _valueBinding;
     private ValueExpression _valueExpression;
     private ELContext _elContext;
+    private UIComponent _component;
 
-    protected abstract UIComponent createComponent();
+    public AbstractUIComponentPropertyTest(String property, T defaultValue, T... testValues)
+    {
+        _property = property;
+        _defaultValue = defaultValue;
+        _testValues = testValues;
+    }
 
-    protected abstract String getProperty();
-
-    protected abstract T getDefaultValue();
-
-    protected abstract T[] getTestValues();
-
+    @BeforeMethod
     protected void setUp() throws Exception
     {
         _mocksControl = EasyMock.createControl();
@@ -57,47 +63,58 @@ public abstract class UIComponentPropertyTest<T extends Object> extends TestCase
         _facesContext.setELContext(_elContext);
         _valueBinding = _mocksControl.createMock(ValueBinding.class);
         _valueExpression = _mocksControl.createMock(ValueExpression.class);
-        _testImpl = createComponent();
+        _component = createComponent();
+    }
+    
+    protected IMocksControl getMocksControl()
+    {
+        return _mocksControl;
     }
 
+    protected abstract UIComponent createComponent();
+
+    @Test
     public void testDefaultValue() throws Exception
     {
-        assertEquals(getDefaultValue(), PropertyUtils.getProperty(_testImpl, getProperty()));
+        assertEquals(_defaultValue, PropertyUtils.getProperty(_component, _property));
     }
 
+    @Test
     public void testExplicitValue() throws Exception
     {
-        for (T testValue : getTestValues())
+        for (T testValue : _testValues)
         {
-            PropertyUtils.setProperty(_testImpl, getProperty(), testValue);
-            assertEquals(testValue, PropertyUtils.getProperty(_testImpl, getProperty()));
+            PropertyUtils.setProperty(_component, _property, testValue);
+            assertEquals(testValue, PropertyUtils.getProperty(_component, _property));
         }
     }
 
+    @Test
     public void testExpressionWithLiteralTextValue() throws Exception
     {
-        for (T testValue : getTestValues())
+        for (T testValue : _testValues)
         {
             expect(_valueExpression.isLiteralText()).andReturn(true);
             expect(_valueExpression.getValue(eq(_facesContext.getELContext()))).andReturn(testValue);
             _mocksControl.replay();
-            _testImpl.setValueExpression(getProperty(), _valueExpression);
-            assertEquals(testValue, PropertyUtils.getProperty(_testImpl, getProperty()));
+            _component.setValueExpression(_property, _valueExpression);
+            assertEquals(testValue, PropertyUtils.getProperty(_component, _property));
             _mocksControl.reset();
         }
     }
 
+    @Test
     public void testExpressionValue() throws Exception
     {
-        for (T testValue : getTestValues())
+        for (T testValue : _testValues)
         {
             expect(_valueExpression.isLiteralText()).andReturn(false);
             _mocksControl.replay();
-            _testImpl.setValueExpression(getProperty(), _valueExpression);
+            _component.setValueExpression(_property, _valueExpression);
             _mocksControl.reset();
             expect(_valueExpression.getValue(eq(_facesContext.getELContext()))).andReturn(testValue);
             _mocksControl.replay();
-            assertEquals(testValue, PropertyUtils.getProperty(_testImpl, getProperty()));
+            assertEquals(testValue, PropertyUtils.getProperty(_component, _property));
             _mocksControl.reset();
         }
     }

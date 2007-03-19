@@ -19,6 +19,7 @@
 package javax.faces.component;
 
 import static org.easymock.EasyMock.*;
+import static org.testng.Assert.*;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -42,19 +43,20 @@ import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.webapp.FacesServlet;
 
-import junit.framework.TestCase;
-
 import org.apache.myfaces.TestRunner;
 import org.apache.shale.test.mock.MockFacesContext12;
 import org.easymock.IAnswer;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class UIViewRootTest extends TestCase
+public class UIViewRootTest
 {
     private Map<PhaseId, Class<? extends PhaseListener>> phaseListenerClasses;
     private IMocksControl _mocksControl;
@@ -68,6 +70,7 @@ public class UIViewRootTest extends TestCase
 
     private static ThreadLocal<LifecycleFactory> LIFECYCLEFACTORY = new ThreadLocal<LifecycleFactory>();
 
+    @BeforeMethod(alwaysRun=true)
     protected void setUp() throws Exception
     {
         phaseListenerClasses = new HashMap<PhaseId, Class<? extends PhaseListener>>();
@@ -91,22 +94,25 @@ public class UIViewRootTest extends TestCase
         FactoryFinder.setFactory(FactoryFinder.LIFECYCLE_FACTORY, MockLifeCycleFactory.class.getName());
     }
 
-    @Override
+    @AfterMethod(alwaysRun=true)
     protected void tearDown() throws Exception
     {
-        FactoryFinder.releaseFactories();
+        _mocksControl.reset();
     }
 
+    @Test
     public void testSuperClass() throws Exception
     {
         assertEquals(UIComponentBase.class, UIViewRoot.class.getSuperclass());
     }
 
+    @Test
     public void testComponentType() throws Exception
     {
         assertEquals("javax.faces.ViewRoot", UIViewRoot.COMPONENT_TYPE);
     }
 
+    @Test
     public void testLocale() throws Exception
     {
         _mocksControl.replay();
@@ -119,6 +125,7 @@ public class UIViewRootTest extends TestCase
     /**
      * Test method for {@link javax.faces.component.UIViewRoot#createUniqueId()}.
      */
+    @Test
     public void testCreateUniqueId()
     {
         expect(_externalContext.encodeNamespace((String) anyObject())).andAnswer(new IAnswer<String>()
@@ -145,6 +152,7 @@ public class UIViewRootTest extends TestCase
      * 
      * @throws Throwable
      */
+    @Test
     public void testProcessDecodes() throws Throwable
     {
         testProcessXXX(new TestRunner()
@@ -161,6 +169,7 @@ public class UIViewRootTest extends TestCase
      * 
      * @throws Throwable
      */
+    @Test
     public void testProcessValidators() throws Throwable
     {
         testProcessXXX(new TestRunner()
@@ -177,6 +186,7 @@ public class UIViewRootTest extends TestCase
      * 
      * @throws Throwable
      */
+    @Test
     public void testProcessUpdates() throws Throwable
     {
         testProcessXXX(new TestRunner()
@@ -193,6 +203,7 @@ public class UIViewRootTest extends TestCase
      * 
      * @throws Throwable
      */
+    @Test
     public void testProcessApplication() throws Throwable
     {
         testProcessXXX(new TestRunner()
@@ -209,6 +220,7 @@ public class UIViewRootTest extends TestCase
      * 
      * @throws Throwable
      */
+    @Test
     public void testEncodeBegin() throws Throwable
     {
         testProcessXXX(new TestRunner()
@@ -225,6 +237,7 @@ public class UIViewRootTest extends TestCase
      * 
      * @throws Throwable
      */
+    @Test
     public void testEncodeEnd() throws Throwable
     {
         testProcessXXX(new TestRunner()
@@ -236,6 +249,7 @@ public class UIViewRootTest extends TestCase
         }, PhaseId.RENDER_RESPONSE, false, false, true);
     }
 
+    @Test
     public void testEventQueue() throws Exception
     {
         FacesEvent event = _mocksControl.createMock(FacesEvent.class);
@@ -254,6 +268,7 @@ public class UIViewRootTest extends TestCase
         _mocksControl.verify();
     }
 
+    @Test
     public void testEventQueueWithAbortExcpetion() throws Exception
     {
         FacesEvent event = _mocksControl.createMock(FacesEvent.class);
