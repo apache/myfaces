@@ -45,8 +45,8 @@ public abstract class FacesTestCase extends TestCase
     {
         _mocksControl = EasyMock.createControl();
         _externalContext = _mocksControl.createMock(ExternalContext.class);
-        MockFacesContext.setCurrentInstance(_facesContext);
         _facesContext = _mocksControl.createMock(FacesContext.class);
+        MockFacesContext.setCurrentInstance(_facesContext);
         _application = _mocksControl.createMock(Application.class);
         _elContext = _mocksControl.createMock(ELContext.class);        
     }
