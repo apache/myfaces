@@ -319,7 +319,14 @@
        <artifactId>catalina</artifactId>
        <version>6.0.10</version>
        <scope>provided</scope>
-    </dependency>  
+    </dependency>
+
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <classifier>jdk15</classifier>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-api</artifactId>
