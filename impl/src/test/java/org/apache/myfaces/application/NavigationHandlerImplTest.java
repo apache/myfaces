@@ -21,10 +21,4 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 	    	NavigationHandlerImpl nh = new NavigationHandlerImpl();
 	    	this.application.setNavigationHandler(nh);
 	    }
-
-	    // Return the tests included in this test case.
-	    public static Test suite()
-	    {
-	        return (new TestSuite(NavigationHandlerImplTest.class));
-	    }
 }

@@ -63,10 +63,4 @@ public class JspStateManagerImplTest extends AbstractJsfTestCase {
         UIViewRoot restoredViewRoot = stateManager.restoreView(facesContext, "/root", RenderKitFactory.HTML_BASIC_RENDER_KIT);
         assertNotNull("restored view root should not be null", restoredViewRoot);
     }
-
-    // Return the tests included in this test case.
-    public static Test suite()
-    {
-        return (new TestSuite(JspStateManagerImplTest.class));
-    }
 }

@@ -39,10 +39,6 @@ public class FacesConfigValidatorTestCase extends AbstractJsfTestCase
         super(name);
     }
     
-    public static Test suite() {
-        return new TestSuite(FacesConfigValidatorTestCase.class); // keep this method or maven won't run it
-    }
-    
     protected void setUp() throws Exception
     {
 
