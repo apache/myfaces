@@ -137,6 +137,8 @@ abstract public class UIDataTemplate extends UIComponentBase implements NamingCo
     /**/private int _rows;
     /**/private int _first;
     /**/private Object _value;
+    /**/private boolean _firstSet;
+    /**/private boolean _rowsSet;
     
     private int _rowIndex = -1;
 
@@ -250,6 +252,7 @@ abstract public class UIDataTemplate extends UIComponentBase implements NamingCo
         }
 
         _rowIndex = rowIndex;
+        _rowsSet=true;
 
         DataModel dataModel = getDataModel();
         dataModel.setRowIndex(rowIndex);
@@ -897,6 +900,7 @@ abstract public class UIDataTemplate extends UIComponentBase implements NamingCo
             throw new IllegalArgumentException("Illegal value for first row: " + first);
         }
         _first = first;
+        _firstSet=true;
     }
 
     private static final DataModel EMPTY_DATA_MODEL = new DataModel()
