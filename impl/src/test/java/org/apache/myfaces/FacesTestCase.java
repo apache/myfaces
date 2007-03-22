@@ -22,10 +22,10 @@ import javax.el.ELContext;
 import javax.faces.application.Application;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.context.MockFacesContext;
 
 import junit.framework.TestCase;
 
+import org.apache.shale.test.mock.MockFacesContext12;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 
@@ -46,7 +46,7 @@ public abstract class FacesTestCase extends TestCase
         _mocksControl = EasyMock.createControl();
         _externalContext = _mocksControl.createMock(ExternalContext.class);
         _facesContext = _mocksControl.createMock(FacesContext.class);
-        MockFacesContext.setCurrentInstance(_facesContext);
+        MockFacesContext12.setCurrentInstance(_facesContext);
         _application = _mocksControl.createMock(Application.class);
         _elContext = _mocksControl.createMock(ELContext.class);        
     }
@@ -54,6 +54,6 @@ public abstract class FacesTestCase extends TestCase
     @Override
     protected void tearDown() throws Exception
     {
-        MockFacesContext.setCurrentInstance(null);
+        MockFacesContext12.setCurrentInstance(null);
     }
 }
