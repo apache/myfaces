@@ -395,7 +395,11 @@ public class JspViewHandlerImpl extends ViewHandler
             StringBuffer state = stateWriter.getBuffer();
 
             int form_marker = contentBuffer.indexOf(JspViewHandlerImpl.FORM_STATE_MARKER);
-            contentBuffer.replace(form_marker, form_marker + FORM_STATE_MARKER_LEN, state.toString());
+            if (form_marker > -1 )
+            {
+                //FORM_STATE_MARKER found, replace it
+                contentBuffer.replace(form_marker, form_marker + FORM_STATE_MARKER_LEN, state.toString());
+            }
 
             int bufferLength = contentBuffer.length();
             int index = 0;
