@@ -15,6 +15,8 @@
  */
 package org.apache.myfaces.el;
 
+import java.util.List;
+
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ELResolver;
@@ -101,6 +103,9 @@ public class PropertyResolverImpl extends PropertyResolver
     @Override
     public Class getType(final Object base, final Object property)
     {
+        if (base == null || property == null)
+            throw new PropertyNotFoundException();
+        
         return invokeResolver(new ResolverInvoker<Class>(base, property)
         {
             public Class invoke(ELResolver resolver, ELContext context)
@@ -113,9 +118,22 @@ public class PropertyResolverImpl extends PropertyResolver
     @Override
     public Class getType(Object base, int index)
     {
+        if (base == null)
+            throw new PropertyNotFoundException();
+        
+        if (base instanceof Object[]) {
+            if (index < 0 || index>=((Object[])base).length) {
+                throw new PropertyNotFoundException();
+            }
+        } else if (base instanceof List) {
+            if (index < 0 || index>=((List)base).size()) {
+                throw new PropertyNotFoundException();
+            }
+        }
+        
         return getType(base, new Integer(index));
     }
-
+    
     // ~ Internal Helper Methods
     // ------------------------------------------------
 
