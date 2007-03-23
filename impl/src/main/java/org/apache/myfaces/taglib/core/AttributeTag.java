@@ -16,7 +16,6 @@
 package org.apache.myfaces.taglib.core;
 
 import javax.servlet.jsp.tagext.TagSupport;
-import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.JspException;
 import javax.faces.webapp.UIComponentClassicTagBase;
 import javax.faces.webapp.UIComponentELTag;
@@ -100,7 +99,7 @@ public class AttributeTag
             }
         }
 
-        return Tag.SKIP_BODY;
+        return SKIP_BODY;
     }
 
     /**

@@ -104,7 +104,7 @@
 
        </description>
        <name>attribute</name>
-       <tag-class>javax.faces.webapp.AttributeTag</tag-class>
+       <tag-class>org.apache.myfaces.taglib.core.AttributeTag</tag-class>
        <body-content>empty</body-content>
       <attribute>
           <description>The name of the attribute.</description>
