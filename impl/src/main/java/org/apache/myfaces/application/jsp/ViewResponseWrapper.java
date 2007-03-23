@@ -73,10 +73,23 @@ public class ViewResponseWrapper extends HttpServletResponseWrapper
         }
         return _writer;
     }
+    
+    public void reset()
+    {
+        if (_charArrayWriter != null)
+        {
+            _charArrayWriter.reset();
+        }
+    }
 
     @Override
     public String toString()
     {
-        return _charArrayWriter.toString();
+        if (_charArrayWriter != null)
+        {
+            return _charArrayWriter.toString();
+        }
+        return null;
     }
+
 }

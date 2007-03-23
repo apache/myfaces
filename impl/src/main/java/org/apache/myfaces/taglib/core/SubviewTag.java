@@ -15,16 +15,24 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import javax.faces.webapp.UIComponentTag;
+import javax.faces.webapp.UIComponentELTag;
+import javax.faces.component.UIComponent;
 import javax.faces.component.UINamingContainer;
+import javax.faces.component.UIOutput;
+import javax.faces.context.FacesContext;
+
+import org.apache.myfaces.application.jsp.ViewResponseWrapper;
 
 /**
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class SubviewTag
-    extends UIComponentTag //UIComponentELTag
+public class SubviewTag extends UIComponentELTag
 {
+    public SubviewTag() {
+        super();
+    }
+    
     public String getComponentType()
     {
         return UINamingContainer.COMPONENT_TYPE;
@@ -34,4 +42,47 @@ public class SubviewTag
     {
         return null;
     }
+    
+    /**
+     * Creates a UIComponent from the BodyContent
+     * If a Subview is included via the <jsp:include> tag
+     * the corresponding jsp is rendered with
+     * getServletContext().getRequestDispatcher("includedSite").include(request,response)
+     * and it is possible that something was written to the Response direct.
+     * So is is necessary that the content of the wrapped response is added to the componenttree.
+     * @return UIComponent or null
+     */
+    protected UIComponent createVerbatimComponentFromBodyContent() {
+        UIOutput component = (UIOutput) super.createVerbatimComponentFromBodyContent();
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Object response = facesContext.getExternalContext().getResponse();
+        String wrappedOutput;
+
+        if (response instanceof ViewResponseWrapper)
+        {
+            ViewResponseWrapper wrappedResponse = (ViewResponseWrapper) response;
+            wrappedOutput = wrappedResponse.toString();
+            if (wrappedOutput.length() > 0)
+            {
+                String componentvalue = null;
+                if (component != null)
+                {
+                    //save the Value of the Bodycontent
+                  componentvalue = (String) component.getValue();
+                }
+                component = super.createVerbatimComponent();
+                if (componentvalue != null)
+                {
+                    component.setValue(wrappedOutput + componentvalue);
+                }
+                else
+                {
+                    component.setValue(wrappedOutput);
+                }
+                wrappedResponse.reset();
+            }
+        }
+        return component;
+    }    
+    
 }
