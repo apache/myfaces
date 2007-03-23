@@ -74,7 +74,7 @@ public class MethodExpressionToMethodBinding extends MethodBinding implements St
         } catch (javax.el.MethodNotFoundException e) {
             throw new javax.faces.el.MethodNotFoundException(e);
         } catch (ELException e) {
-            throw new EvaluationException(e);
+            throw new EvaluationException(e.getCause());
         }
     }
 
