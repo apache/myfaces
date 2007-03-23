@@ -15,7 +15,7 @@
  */
 package javax.faces.webapp;
 
-import javax.servlet.jsp.tagext.Tag;
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
 /**
@@ -47,14 +47,9 @@ public class FacetTag
     }
 
     public int doStartTag()
-            throws javax.servlet.jsp.JspException
+            throws JspException
     {
-        return Tag.EVAL_BODY_INCLUDE;
+        return EVAL_BODY_INCLUDE;
     }
 
-    public int doEndTag()
-            throws javax.servlet.jsp.JspException
-    {
-        return Tag.EVAL_PAGE;
-    }
 }
