@@ -497,7 +497,7 @@ public class FacesConfigurator
                 if (log.isWarnEnabled() && DEFAULT_FACES_CONFIG.equals(systemId))
                     log.warn(DEFAULT_FACES_CONFIG + " has been specified in the " + FacesServlet.CONFIG_FILES_ATTR
                             + " context parameter of " + "the deployment descriptor. This should be removed, "
-                            + "as it will be loaded twice.  See JSF spec 1.1, 10.3.2");
+                            + "as it will be loaded twice.  See JSF spec 1.2, 10.1.3");
 
                 InputStream stream = _externalContext.getResourceAsStream(systemId);
                 if (stream == null)
