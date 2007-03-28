@@ -1,8 +1,5 @@
 package org.apache.myfaces.application;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.apache.shale.test.base.AbstractJsfTestCase;
 
 public class NavigationHandlerImplTest extends AbstractJsfTestCase

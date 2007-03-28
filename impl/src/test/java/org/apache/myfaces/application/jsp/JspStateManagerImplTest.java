@@ -26,9 +26,6 @@ import javax.faces.component.UIOutput;
 import javax.faces.component.UIViewRoot;
 import javax.faces.render.RenderKitFactory;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.apache.shale.test.base.AbstractJsfTestCase;
 import org.apache.shale.test.mock.MockResponseWriter;
 
