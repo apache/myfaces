@@ -252,7 +252,6 @@ abstract public class UIDataTemplate extends UIComponentBase implements NamingCo
         }
 
         _rowIndex = rowIndex;
-        _rowsSet=true;
 
         DataModel dataModel = getDataModel();
         dataModel.setRowIndex(rowIndex);
@@ -888,6 +887,7 @@ abstract public class UIDataTemplate extends UIComponentBase implements NamingCo
             throw new IllegalArgumentException("rows: " + rows);
         }
         _rows = rows;        
+        _rowsSet = true;        
     }
 
     /**
