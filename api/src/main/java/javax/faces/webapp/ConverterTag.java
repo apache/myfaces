@@ -30,7 +30,6 @@ import javax.servlet.jsp.tagext.TagSupport;
  *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
- *
  * @deprecated replaced by {@link ConverterELTag}
  */
 public class ConverterTag
@@ -53,7 +52,9 @@ public class ConverterTag
     public int doStartTag()
             throws JspException
     {
-        UIComponentTag componentTag = UIComponentTag.getParentUIComponentTag(pageContext);
+
+        UIComponentClassicTagBase componentTag = UIComponentClassicTagBase.getParentUIComponentClassicTagBase(pageContext);
+
         if (componentTag == null)
         {
             throw new JspException("no parent UIComponentTag found");
@@ -109,7 +110,7 @@ public class ConverterTag
         }
 
         return application.createConverter(_converterId);
-        
+
     }
 
     public void setBinding(String binding) throws javax.servlet.jsp.JspException

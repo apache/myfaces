@@ -222,7 +222,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
             return _facesContext;
         }
 
-        _facesContext = (FacesContext) pageContext.getAttribute(REQUEST_FACES_CONTEXT);
+        _facesContext = pageContext == null ? null : (FacesContext) pageContext.getAttribute(REQUEST_FACES_CONTEXT);
 
         if (_facesContext != null)
         {
@@ -233,7 +233,10 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
 
         if (_facesContext != null)
         {
-            pageContext.setAttribute(REQUEST_FACES_CONTEXT, _facesContext);
+            if(pageContext != null)
+            {
+                pageContext.setAttribute(REQUEST_FACES_CONTEXT, _facesContext);
+            }
             return _facesContext;
         }
 
@@ -1037,6 +1040,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
             if (_componentInstance == null)
             {
                 _componentInstance = createComponent(context, id);
+                _created = true;
                 setProperties(_componentInstance);
                 parent.getFacets().put(facetName, _componentInstance);
             }
@@ -1080,6 +1084,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         if (_componentInstance == null)
         {
             _componentInstance = createComponent(context, id);
+            _created = true;
             setProperties(_componentInstance);
             int index = getAddedChildrenCount(parentTag);
             List<UIComponent> children = parent.getChildren();
