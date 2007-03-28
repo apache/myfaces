@@ -52,6 +52,19 @@ public class PropertyResolverImpl extends PropertyResolver
     @Override
     public Object getValue(final Object base, final int index) throws EvaluationException, PropertyNotFoundException
     {
+        if (base == null)
+            throw new PropertyNotFoundException();
+        
+        if (base instanceof Object[]) {
+            if (index < 0 || index>=((Object[])base).length) {
+                throw new PropertyNotFoundException();
+            }
+        } else if (base instanceof List) {
+            if (index < 0 || index>=((List)base).size()) {
+                throw new PropertyNotFoundException();
+            }
+        }
+        
         return getValue(base, new Integer(index));
     }
 
@@ -59,6 +72,9 @@ public class PropertyResolverImpl extends PropertyResolver
     public void setValue(final Object base, final Object property, final Object newValue) throws EvaluationException,
             PropertyNotFoundException
     {
+        if (base == null || property == null)
+            throw new PropertyNotFoundException();
+        
         invokeResolver(new ResolverInvoker<Object>(base, property)
         {
             @Override
@@ -79,6 +95,19 @@ public class PropertyResolverImpl extends PropertyResolver
     @Override
     public void setValue(Object base, int index, Object newValue) throws EvaluationException, PropertyNotFoundException
     {
+        if (base == null)
+            throw new PropertyNotFoundException();
+        
+        if (base instanceof Object[]) {
+            if (index < 0 || index>=((Object[])base).length) {
+                throw new PropertyNotFoundException();
+            }
+        } else if (base instanceof List) {
+            if (index < 0 || index>=((List)base).size()) {
+                throw new PropertyNotFoundException();
+            }
+        }
+        
         setValue(base, new Integer(index), newValue);
     }
 
