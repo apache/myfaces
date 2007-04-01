@@ -19,29 +19,32 @@
 package org.apache.myfaces.application;
 
 import static org.apache.myfaces.test.AssertThrowables.assertThrowable;
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.isA;
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.replay;
+import static org.easymock.EasyMock.*;
+import static org.easymock.classextension.EasyMock.*;
 
 import java.util.ListResourceBundle;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.el.ELContext;
+import javax.el.ELResolver;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
+import javax.faces.application.Application;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.el.ReferenceSyntaxException;
+import javax.faces.el.VariableResolver;
 
 import junit.framework.TestCase;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.test.TestRunnable;
-import org.apache.shale.test.mock.MockFacesContext;
+import org.apache.shale.test.el.MockELContext;
+import org.apache.shale.test.mock.MockFacesContext12;
+import org.easymock.classextension.EasyMock;
+import org.easymock.classextension.IMocksControl;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -51,12 +54,12 @@ public class ApplicationImplTest extends TestCase
 {
 
     private ApplicationImpl app;
-    private MockFacesContext context;
+    private MockFacesContext12 context;
 
     protected void setUp() throws Exception
     {
         app = new ApplicationImpl(new RuntimeConfig());
-        context = new MockFacesContext();
+        context = new MockFacesContext12();
     }
     
     public void testCreateMethodBinding() throws Exception
@@ -174,6 +177,21 @@ public class ApplicationImplTest extends TestCase
         {
             fail("FacesException expected: " + e.getMessage());
         }
+    }
+    
+    public void testGetVariableResolver() throws Exception
+    {
+        VariableResolver variableResolver = app.getVariableResolver();
+        assertNotNull(variableResolver);
+        IMocksControl mocksControl = EasyMock.createControl();
+        Application mockApp = mocksControl.createMock(Application.class);
+        context.setApplication(mockApp);        
+        ELResolver elResolver = mocksControl.createMock(ELResolver.class);
+        expect(mockApp.getELResolver()).andReturn(elResolver);
+        context.setELContext(new MockELContext());
+        expect(elResolver.getValue(eq(context.getELContext()), isNull(), eq("xxx"))).andReturn("testValue");
+        mocksControl.replay();
+        assertEquals("testValue", variableResolver.resolveVariable(context, "xxx"));
     }
 
     private void assertGetResourceBundleWithLocale(final Locale expectedLocale)

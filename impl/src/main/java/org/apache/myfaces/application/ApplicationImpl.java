@@ -15,24 +15,15 @@
  */
 package org.apache.myfaces.application;
 
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.application.jsp.JspStateManagerImpl;
-import org.apache.myfaces.application.jsp.JspViewHandlerImpl;
-import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.config.impl.digester.elements.Property;
-import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
-import org.apache.myfaces.el.PropertyResolverImpl;
-import org.apache.myfaces.el.VariableResolverImpl;
-import org.apache.myfaces.el.convert.MethodExpressionToMethodBinding;
-import org.apache.myfaces.el.convert.ValueBindingToValueExpression;
-import org.apache.myfaces.el.convert.ValueExpressionToValueBinding;
-import org.apache.myfaces.el.unified.ELResolverBuilder;
-import org.apache.myfaces.el.unified.ResolverBuilderForFaces;
-import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver;
-import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
+import java.util.MissingResourceException;
 
 import javax.el.CompositeELResolver;
 import javax.el.ELContext;
@@ -59,15 +50,24 @@ import javax.faces.el.VariableResolver;
 import javax.faces.event.ActionListener;
 import javax.faces.validator.Validator;
 
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
-import java.util.MissingResourceException;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.application.jsp.JspStateManagerImpl;
+import org.apache.myfaces.application.jsp.JspViewHandlerImpl;
+import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.config.impl.digester.elements.Property;
+import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
+import org.apache.myfaces.el.PropertyResolverImpl;
+import org.apache.myfaces.el.VariableResolverToApplicationELResolverAdapter;
+import org.apache.myfaces.el.convert.MethodExpressionToMethodBinding;
+import org.apache.myfaces.el.convert.ValueBindingToValueExpression;
+import org.apache.myfaces.el.convert.ValueExpressionToValueBinding;
+import org.apache.myfaces.el.unified.ELResolverBuilder;
+import org.apache.myfaces.el.unified.ResolverBuilderForFaces;
+import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver;
+import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 /**
  * DOCUMENT ME!
@@ -83,7 +83,7 @@ public class ApplicationImpl extends Application
 {
     private static final Log log = LogFactory.getLog(ApplicationImpl.class);
 
-    private final static VariableResolver VARIABLERESOLVER = new VariableResolverImpl();
+    private final static VariableResolver VARIABLERESOLVER = new VariableResolverToApplicationELResolverAdapter();
 
     private final static PropertyResolver PROPERTYRESOLVER = new PropertyResolverImpl();
 
@@ -836,9 +836,9 @@ public class ApplicationImpl extends Application
     {
         checkNull(reference, "reference");
         checkEmpty(reference, "reference");
-        
+
         // TODO: this check should be performed by the expression factory. It is a requirement of the TCK
-        if(! (reference.startsWith("#{") && reference.endsWith("}")))
+        if (!(reference.startsWith("#{") && reference.endsWith("}")))
         {
             throw new ReferenceSyntaxException("Invalid method reference: '" + reference + "'");
         }
