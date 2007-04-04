@@ -62,7 +62,7 @@ class _SelectItemsUtil
             else
             {
                 Object itemValue = item.getValue();
-                if (value==itemValue || value.equals(itemValue))
+                if (value==itemValue || (itemValue.equals(value)))
                 {
                     return true;
                 }
