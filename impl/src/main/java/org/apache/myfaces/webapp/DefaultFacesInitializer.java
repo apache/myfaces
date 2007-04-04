@@ -158,9 +158,7 @@ public class DefaultFacesInitializer implements FacesInitializer
 
     protected void validateFacesConfigIfNecessary(ServletContext servletContext, ExternalContext externalContext)
     {
-        if ("true".equals(servletContext.getInitParameter(FacesConfigValidator.VALIDATE_CONTEXT_PARAM))
-                || "true".equals(servletContext.getInitParameter(FacesConfigValidator.VALIDATE_CONTEXT_PARAM
-                        .toLowerCase())))
+        if ("true".equals(servletContext.getInitParameter(FacesConfigValidator.VALIDATE_CONTEXT_PARAM)))
         {
             List<String> list = FacesConfigValidator.validate(externalContext, servletContext.getRealPath("/"));
 
