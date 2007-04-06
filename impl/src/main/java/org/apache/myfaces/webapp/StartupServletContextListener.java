@@ -38,7 +38,7 @@ public class StartupServletContextListener extends AbstractMyFacesListener
 {
     static final String FACES_INIT_DONE = StartupServletContextListener.class.getName() + ".FACES_INIT_DONE";
 
-    private static final Log log = LogFactory.getLog(DefaultFacesInitializer.class);
+    private static final Log log = LogFactory.getLog(StartupServletContextListener.class);
 
     private FacesInitializer _facesInitializer;
     private ServletContext _servletContext;
