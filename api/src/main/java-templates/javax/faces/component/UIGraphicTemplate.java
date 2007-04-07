@@ -27,42 +27,21 @@ public class UIGraphicTemplate extends UIComponentBase
 {
     private static final String URL_PROPERTY = "url";
     private static final String VALUE_PROPERTY = "value";
-
+    
     /**/ public String getFamily() { return null;}
-
-    /**
-     * @deprecated Use getValueExpression instead
-     */
-    @Override
-    public ValueBinding getValueBinding(String name)
+    
+    /**///setUrl
+    public void setUrl(String url)
     {
-        if (URL_PROPERTY.equals(name))
-        {
-            return super.getValueBinding(VALUE_PROPERTY);
-        }
-        else
-        {
-            return super.getValueBinding(name);
-        }
+        setValue(url);        
     }
-
-    /**
-     * @deprecated Use setValueExpression instead
-     */
-    @Override
-    public void setValueBinding(String name,
-                                ValueBinding binding)
+    
+    /**///getUrl
+    public String getUrl()
     {
-        if (URL_PROPERTY.equals(name))
-        {
-            super.setValueBinding(VALUE_PROPERTY, binding);
-        }
-        else
-        {
-            super.setValueBinding(name, binding);
-        }
+        return (String)getValue();
     }
-
+    
     @Override
     public ValueExpression getValueExpression(String name)
     {
