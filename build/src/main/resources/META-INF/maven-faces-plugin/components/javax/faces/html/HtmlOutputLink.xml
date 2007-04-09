@@ -50,7 +50,7 @@ or EL expressions.</description>
             <mfp:tag-name>h:outputLink</mfp:tag-name>
             <mfp:tag-class>org.apache.myfaces.taglib.html.HtmlOutputLinkTag</mfp:tag-class>
 
-            <mfp:renderer-type>javax.faces.Label</mfp:renderer-type>
+            <mfp:renderer-type>javax.faces.Link</mfp:renderer-type>
         </component-extension>
     </component>
 </faces-config>
