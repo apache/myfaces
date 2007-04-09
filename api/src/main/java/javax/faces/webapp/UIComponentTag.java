@@ -101,7 +101,7 @@ public abstract class UIComponentTag
         if (stateSavingMethod == null)
         {
             _partialStateSaving = Boolean.FALSE; //Specs 10.1.3: default server saving
-            context.getExternalContext().log("No partial state saving method defined, assuming default partial state saving methode off.");
+            context.getExternalContext().log("No context init parameter '"+PARTIAL_STATE_SAVING_METHOD_PARAM_NAME+"' found; no partial state saving method defined, assuming default partial state saving method off.");
         }
         else if (stateSavingMethod.equals(PARTIAL_STATE_SAVING_METHOD_ON))
         {
@@ -114,7 +114,7 @@ public abstract class UIComponentTag
         else
         {
             _partialStateSaving = Boolean.FALSE; //Specs 10.1.3: default server saving
-            context.getExternalContext().log("Illegal partial state saving method '" + stateSavingMethod + "', default partial state saving will be used (partial state saving off).");
+            context.getExternalContext().log("Illegal context init parameter '"+PARTIAL_STATE_SAVING_METHOD_PARAM_NAME+"' found; illegal partial state saving method '" + stateSavingMethod + "', default partial state saving will be used (partial state saving off).");
         }
         return _partialStateSaving.booleanValue();
     }

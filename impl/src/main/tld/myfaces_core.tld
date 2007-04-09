@@ -600,7 +600,7 @@
             <name>locale</name>
             <required>false</required>
             <rtexprvalue>false</rtexprvalue>
-            <description>The locale of this view.  Default:  the default locale from the configuration file.</description>
+            <description>The locale of this view.  Default: the default locale from the configuration file.</description>
         </attribute>
     </tag>
 

@@ -130,7 +130,7 @@ public class PssJspStateManagerImpl extends MyfacesStateManager
         if (stateSavingMethod == null)
         {
             _partialStateSaving = Boolean.FALSE; //Specs 10.1.3: default server saving
-            context.getExternalContext().log("No partial state saving method defined, assuming default partial state saving methode off.");
+            context.getExternalContext().log("No context init parameter '"+PARTIAL_STATE_SAVING_METHOD_PARAM_NAME+"' found; no partial state saving method defined, assuming default partial state saving method off.");
         }
         else if (stateSavingMethod.equals(PARTIAL_STATE_SAVING_METHOD_ON))
         {
@@ -156,7 +156,7 @@ public class PssJspStateManagerImpl extends MyfacesStateManager
         if (stateSavingDispatch == null)
         {
             _partialStateSavingDispatch = Boolean.TRUE; //Specs 10.1.3: default server saving
-            context.getExternalContext().log("No partial state saving dispatch usage behavior, assuming default partial state saving dispatch mode on.");
+            context.getExternalContext().log("No context init parameter '"+PARTIAL_STATE_SAVING_DISPATCH_PARAM_NAME+"' found; no partial state saving dispatch usage behavior, assuming default partial state saving dispatch mode on.");
         }
         else if (stateSavingDispatch.equals(PARTIAL_STATE_SAVING_METHOD_ON))
         {
