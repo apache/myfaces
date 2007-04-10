@@ -18,16 +18,15 @@
  */
 package org.apache.myfaces.el;
 
-import org.apache.myfaces.el.unified.ELResolverBuilder;
+import java.util.Iterator;
 
-import javax.el.CompositeELResolver;
 import javax.faces.FactoryFinder;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 import javax.faces.lifecycle.LifecycleFactory;
 
-import java.util.Iterator;
+import org.apache.myfaces.el.unified.ELResolverBuilder;
 
 /**
  * The class will initialize the resolver for JSP
@@ -39,9 +38,9 @@ public class ResolverForJSPInitializer implements PhaseListener
 {
     private final ELResolverBuilder _resolverBuilder;
     private boolean initialized;
-    private final CompositeELResolver _resolverForJSP;
+    private final javax.el.CompositeELResolver _resolverForJSP;
 
-    public ResolverForJSPInitializer(ELResolverBuilder resolverBuilder, CompositeELResolver resolverForJSP)
+    public ResolverForJSPInitializer(ELResolverBuilder resolverBuilder, javax.el.CompositeELResolver resolverForJSP)
     {
         _resolverBuilder = resolverBuilder;
         _resolverForJSP = resolverForJSP;

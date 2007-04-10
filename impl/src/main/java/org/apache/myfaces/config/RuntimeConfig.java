@@ -15,11 +15,11 @@
  */
 package org.apache.myfaces.config;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.config.element.ManagedBean;
-import org.apache.myfaces.config.element.NavigationRule;
-import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.el.CompositeELResolver;
 import javax.el.ELResolver;
@@ -28,11 +28,11 @@ import javax.faces.context.ExternalContext;
 import javax.faces.el.PropertyResolver;
 import javax.faces.el.VariableResolver;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.config.element.ManagedBean;
+import org.apache.myfaces.config.element.NavigationRule;
+import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
 
 /**
  * Holds all configuration information (from the faces-config xml files) that is needed later during runtime. The config
@@ -166,7 +166,7 @@ public class RuntimeConfig
     {
         if (facesConfigElResolvers == null)
         {
-            facesConfigElResolvers = new CompositeELResolver();
+            facesConfigElResolvers = new org.apache.myfaces.el.CompositeELResolver();
         }
         facesConfigElResolvers.add(resolver);
     }
@@ -180,7 +180,7 @@ public class RuntimeConfig
     {
         if (applicationElResolvers == null)
         {
-            applicationElResolvers = new CompositeELResolver();
+            applicationElResolvers = new org.apache.myfaces.el.CompositeELResolver();
         }
         applicationElResolvers.add(resolver);
     }

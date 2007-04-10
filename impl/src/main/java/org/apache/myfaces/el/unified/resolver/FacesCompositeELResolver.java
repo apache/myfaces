@@ -18,7 +18,8 @@
  */
 package org.apache.myfaces.el.unified.resolver;
 
-import org.apache.myfaces.el.VariableResolverImpl;
+import java.beans.FeatureDescriptor;
+import java.util.Iterator;
 
 import javax.el.CompositeELResolver;
 import javax.el.ELContext;
@@ -26,8 +27,7 @@ import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
 import javax.servlet.jsp.JspApplicationContext;
 
-import java.beans.FeatureDescriptor;
-import java.util.Iterator;
+import org.apache.myfaces.el.VariableResolverImpl;
 
 /**
  * <p>
@@ -45,7 +45,7 @@ import java.util.Iterator;
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class FacesCompositeELResolver extends CompositeELResolver
+public class FacesCompositeELResolver extends org.apache.myfaces.el.CompositeELResolver
 {
     private final Scope _scope;
 
