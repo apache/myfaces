@@ -52,19 +52,6 @@ public class PropertyResolverImpl extends PropertyResolver
     @Override
     public Object getValue(final Object base, final int index) throws EvaluationException, PropertyNotFoundException
     {
-        if (base == null)
-            throw new PropertyNotFoundException();
-        
-        if (base instanceof Object[]) {
-            if (index < 0 || index>=((Object[])base).length) {
-                throw new PropertyNotFoundException();
-            }
-        } else if (base instanceof List) {
-            if (index < 0 || index>=((List)base).size()) {
-                throw new PropertyNotFoundException();
-            }
-        }
-        
         return getValue(base, new Integer(index));
     }
 
