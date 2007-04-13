@@ -43,7 +43,7 @@ public class ValueExpressionToValueBinding extends ValueBinding implements State
     private boolean isTransient = false;
 
     // required no-arg constructor for StateHolder
-    protected ValueExpressionToValueBinding()
+    public ValueExpressionToValueBinding()
     {
         _valueExpression = null;
     }

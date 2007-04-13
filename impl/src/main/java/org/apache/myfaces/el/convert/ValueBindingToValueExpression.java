@@ -54,7 +54,7 @@ public class ValueBindingToValueExpression extends ValueExpression implements St
     /**
      * No-arg constructor used during restoreState
      */
-    protected ValueBindingToValueExpression()
+    public ValueBindingToValueExpression()
     {
     }
 
