@@ -41,7 +41,6 @@ public class DateTimeConverter
     public static final String DATETIME_ID = "javax.faces.converter.DateTimeConverter.DATETIME";
     public static final String STRING_ID = "javax.faces.converter.STRING";
     public static final String TIME_ID = "javax.faces.converter.DateTimeConverter.TIME";
-    public static final String PATTERN_TYPE_ID = "javax.faces.converter.DateTimeConverter.PATTERN_TYPE";
 
     // internal constants
     private static final String TYPE_DATE = "date";
