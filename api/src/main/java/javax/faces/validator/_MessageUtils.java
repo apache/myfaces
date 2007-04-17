@@ -54,6 +54,11 @@ class _MessageUtils
         String summary;
         String detail;
 
+        if(locale == null)
+        {
+            locale = Locale.getDefault();
+        }
+
         appBundle = getApplicationBundle(facesContext, locale);
         summary = getBundleString(appBundle, messageId);
         if (summary != null)
@@ -144,11 +149,6 @@ class _MessageUtils
                                             Locale locale,
                                             String bundleName)
     {
-        if(locale == null)
-        {
-            locale = Locale.getDefault();
-        }
-        
         try
         {
             //First we try the JSF implementation class loader
