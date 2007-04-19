@@ -146,21 +146,22 @@ public class ManagedBeanResolver extends ELResolver {
         String strProperty = (String)property;
         
         ManagedBean managedBean = runtimeConfig(context).getManagedBean(strProperty);
+        Object beanInstance = null;
         if (managedBean != null) {
             FacesContext facesContext = facesContext(context);
             context.setPropertyResolved(true);
-            if ("none".equals(managedBean.getManagedBeanScope())) {
-                return beanBuilder.buildManagedBean(facesContext, managedBean);
-            } else {
-                storeManagedBean(managedBean, facesContext);
-            }
+            beanInstance = createManagedBean(managedBean, facesContext);
         }
         
-        return null;
+        return beanInstance;
     }
     
+    // Create a managed bean.  If the scope of the bean is "none" then
+    // return it right away.  Otherwise store the bean in the appropriate
+    // scope and return null.
+    //
     // adapted from Manfred's JSF 1.1 VariableResolverImpl
-    private void storeManagedBean(ManagedBean managedBean,
+    private Object createManagedBean(ManagedBean managedBean,
                                   FacesContext facesContext) 
         throws ELException {
         
@@ -188,7 +189,12 @@ public class ManagedBeanResolver extends ELResolver {
             beansUnderConstruction.remove(managedBeanName);
         }
 
-       putInScope(managedBean, extContext, obj);
+        if ("none".equals(managedBean.getManagedBeanScope())) {
+            return obj;
+        } else {
+            putInScope(managedBean, extContext, obj);
+            return null;
+        }
     }
     
 	private void putInScope(ManagedBean managedBean, ExternalContext extContext, Object obj) {
