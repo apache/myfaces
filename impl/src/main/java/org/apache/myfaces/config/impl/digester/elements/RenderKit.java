@@ -27,7 +27,7 @@ import org.apache.myfaces.config.impl.digester.elements.Renderer;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class RenderKit
+public class RenderKit extends ElementBaseImpl
 {
 
     private String id;

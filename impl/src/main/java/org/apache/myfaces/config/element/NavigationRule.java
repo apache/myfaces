@@ -27,7 +27,7 @@ import java.util.Collection;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public interface NavigationRule
+public interface NavigationRule extends ElementBase
 {
     // <!ELEMENT navigation-rule (description*, display-name*, icon*, from-view-id?, navigation-case*)>
 

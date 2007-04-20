@@ -22,7 +22,7 @@ package org.apache.myfaces.config.element;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public interface ListEntry
+public interface ListEntry extends ElementBase
 {
     public boolean isNullValue();
     public String getValue();

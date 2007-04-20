@@ -39,7 +39,7 @@ import java.util.Collections;
 
  *          <p/>
  */
-public class Property
+public class Property extends ElementBaseImpl
 {
     private List _description;
     private List _displayName;

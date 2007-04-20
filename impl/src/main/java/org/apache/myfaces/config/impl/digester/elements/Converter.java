@@ -27,7 +27,7 @@ import java.util.Collections;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class Converter
+public class Converter extends ElementBaseImpl
 {
 
     private String converterId;

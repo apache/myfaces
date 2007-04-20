@@ -24,7 +24,7 @@ import java.util.Iterator;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public interface ListEntries
+public interface ListEntries extends ElementBase
 {
     // <!ELEMENT list-entries    (value-class?, (null-value|value)*)>
 

@@ -30,7 +30,7 @@ import org.apache.myfaces.config.impl.digester.elements.Converter;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class FacesConfig
+public class FacesConfig extends ElementBaseImpl
 {
 
     private List applications = new ArrayList();

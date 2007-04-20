@@ -712,10 +712,13 @@ public class FacesConfigurator
         for (Iterator iterator = _dispenser.getManagedBeans(); iterator.hasNext();)
         {
             ManagedBean bean = (ManagedBean) iterator.next();
+            ManagedBean oldBean = runtimeConfig.getManagedBean(bean.getManagedBeanName());
 
-            if(log.isWarnEnabled() && runtimeConfig.getManagedBean(bean.getManagedBeanName()) != null)
+            if(log.isWarnEnabled() && oldBean != null)
                 log.warn("More than one managed bean w/ the name of '" 
-                        + bean.getManagedBeanName() + "' - only keeping the last ");
+                        + bean.getManagedBeanName() + "' registered. First managed bean was registered in :" +
+                            oldBean.getConfigLocation()+", new managed bean was registered in : "+
+                            bean.getConfigLocation()+". The first definition of the managed-bean will be ignored by the standard MyFaces variable resolver!");
 
             runtimeConfig.addManagedBean(bean.getManagedBeanName(), bean);
 

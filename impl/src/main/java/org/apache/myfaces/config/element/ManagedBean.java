@@ -26,7 +26,7 @@ import org.apache.myfaces.config.element.ListEntries;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public interface ManagedBean
+public interface ManagedBean extends ElementBase
 {
     // <!ELEMENT managed-bean (description*, display-name*, icon*, managed-bean-name, managed-bean-class, managed-bean-scope, (managed-property* | map-entries | list-entries))>
 

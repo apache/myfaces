@@ -28,7 +28,7 @@ import org.apache.myfaces.config.impl.digester.elements.NavigationCase;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class NavigationRule implements org.apache.myfaces.config.element.NavigationRule
+public class NavigationRule extends ElementBaseImpl implements org.apache.myfaces.config.element.NavigationRule
 {
 
     private String fromViewId;

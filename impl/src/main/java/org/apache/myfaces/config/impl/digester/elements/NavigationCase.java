@@ -24,7 +24,7 @@ package org.apache.myfaces.config.impl.digester.elements;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class NavigationCase implements org.apache.myfaces.config.element.NavigationCase
+public class NavigationCase extends ElementBaseImpl implements org.apache.myfaces.config.element.NavigationCase
 {
 
     private String fromAction;

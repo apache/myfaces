@@ -25,7 +25,7 @@ import java.util.ArrayList;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class Application
+public class Application extends ElementBaseImpl
 {
 
     private List actionListener = new ArrayList();

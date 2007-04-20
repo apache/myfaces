@@ -22,7 +22,7 @@ package org.apache.myfaces.config.impl.digester.elements;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class Renderer implements org.apache.myfaces.config.element.Renderer
+public class Renderer extends ElementBaseImpl implements org.apache.myfaces.config.element.Renderer
 {
 
     private String componentFamily;

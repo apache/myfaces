@@ -24,11 +24,16 @@ import java.util.List;
 import javax.faces.context.ExternalContext;
 
 import org.apache.myfaces.config.FacesConfigUnmarshaller;
+import org.apache.myfaces.config.element.ElementBase;
 import org.apache.myfaces.config.impl.digester.elements.*;
 import org.apache.myfaces.config.impl.FacesConfigEntityResolver;
 import org.apache.commons.digester.Digester;
+import org.apache.commons.digester.Rule;
+import org.apache.commons.digester.ExtendedBaseRules;
+import org.apache.commons.digester.RulesBase;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.Attributes;
 
 
 /**
@@ -37,6 +42,7 @@ import org.xml.sax.SAXException;
 public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller
 {
 
+    private String systemId;
     private Digester digester;
 
 
@@ -48,7 +54,11 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.setEntityResolver(new FacesConfigEntityResolver(externalContext));
         digester.setUseContextClassLoader(true);
 
-        digester.addObjectCreate("faces-config", FacesConfig.class);
+        Rule rule = new GlobalRule(digester);
+        digester.setRules(new GlobalRulesBase(rule));
+
+
+        digester.addObjectCreate("faces-config", FacesConfig.class);        
         digester.addObjectCreate("faces-config/application", Application.class);
         digester.addSetNext("faces-config/application", "addApplication");
         digester.addCallMethod("faces-config/application/action-listener", "addActionListener", 0);
@@ -181,6 +191,7 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
     {
         InputSource is = new InputSource(in);
         is.setSystemId(systemId);
+        this.systemId = systemId;
 
         //Fix for http://issues.apache.org/jira/browse/MYFACES-236
         FacesConfig config = (FacesConfig) digester.parse(is);
@@ -205,4 +216,32 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
     }
 
 
+    private class GlobalRule extends Rule {
+
+        private Digester digester;
+
+        public GlobalRule(Digester digester) {
+            this.digester = digester;
+        }
+
+        public void begin(String s, String s1, Attributes attributes) throws Exception {
+            ElementBaseImpl base = (ElementBaseImpl) digester.peek();
+            base.setConfigLocation(systemId);
+        }
+    }
+
+    private static class GlobalRulesBase extends RulesBase {
+        private final Rule globalRule;
+
+        public GlobalRulesBase(Rule globalRule) {
+            this.globalRule = globalRule;
+        }
+
+        public List match(String s, String s1) {
+            List li = super.match(s, s1);
+            li.add(globalRule);
+
+            return li;
+        }
+    }
 }

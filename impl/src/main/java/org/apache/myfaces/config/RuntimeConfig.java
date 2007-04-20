@@ -40,6 +40,7 @@ public class RuntimeConfig
 
     private Collection _navigationRules = new ArrayList();
     private Map _managedBeans = new HashMap();
+    private Map _managedBeansPerLocation = new HashMap();
     private boolean _navigationRulesChanged=false;
 
 
@@ -97,8 +98,31 @@ public class RuntimeConfig
         return (ManagedBean)_managedBeans.get(name);
     }
 
+    /**
+     * Return the managed bean info that can be used by the VariableResolver implementation.
+     * Here, the full list of managed-beans is returned - if a managed bean
+     * was registered more than once. The getConfigLocation()
+     * method of the managed-bean will indicate in which config file
+     * it was registered originally.
+     *
+     * @return a {@link org.apache.myfaces.config.element.ManagedBean ManagedBean}
+     */
+    public List getManagedBeans(String name)
+    {
+        List li = (List) _managedBeansPerLocation.get(name);
+        return li==null?null:Collections.unmodifiableList(li);
+    }
+
     public void addManagedBean(String name, ManagedBean managedBean)
     {
         _managedBeans.put(name, managedBean);
+        List li = (List) _managedBeansPerLocation.get(name);
+
+        if(li == null) {
+            li = new ArrayList();
+            _managedBeansPerLocation.put(name,li);
+        }
+
+        li.add(managedBean);
     }
 }

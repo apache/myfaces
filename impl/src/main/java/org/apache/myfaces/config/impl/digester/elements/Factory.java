@@ -25,7 +25,7 @@ import java.util.ArrayList;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class Factory
+public class Factory extends ElementBaseImpl
 {
 
     private List applicationFactory = new ArrayList();

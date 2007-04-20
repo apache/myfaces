@@ -26,7 +26,7 @@ import java.util.Iterator;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class MapEntries implements org.apache.myfaces.config.element.MapEntries
+public class MapEntries extends ElementBaseImpl implements org.apache.myfaces.config.element.MapEntries
 {
 
     private String keyClass;
@@ -68,7 +68,7 @@ public class MapEntries implements org.apache.myfaces.config.element.MapEntries
     }
 
 
-    public static class Entry implements org.apache.myfaces.config.element.MapEntry {
+    public static class Entry extends ElementBaseImpl implements org.apache.myfaces.config.element.MapEntry {
        String key;
         boolean nullValue = false;
         String value;

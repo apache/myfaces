@@ -22,7 +22,7 @@ package org.apache.myfaces.config.impl.digester.elements;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class Component
+public class Component extends ElementBaseImpl
 {
 
     private String componentType;

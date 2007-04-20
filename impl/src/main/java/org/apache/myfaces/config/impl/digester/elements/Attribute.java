@@ -37,7 +37,7 @@ import java.util.Collections;
 
  *          <p/>
  */
-public class Attribute
+public class Attribute extends ElementBaseImpl
 {
     private List _description;
     private List _displayName;

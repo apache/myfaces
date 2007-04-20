@@ -22,7 +22,7 @@ package org.apache.myfaces.config.element;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public interface Renderer
+public interface Renderer extends ElementBase
 {
     // <!ELEMENT renderer (description*, display-name*, icon*, component-family, renderer-type, renderer-class, attribute*, renderer-extension*)>
 

@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class LocaleConfig
+public class LocaleConfig extends ElementBaseImpl
 {
 
     private String defaultLocale;

@@ -28,7 +28,9 @@ import java.util.List;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class ManagedBean implements org.apache.myfaces.config.element.ManagedBean
+public class ManagedBean extends ElementBaseImpl
+        implements org.apache.myfaces.config.element.ManagedBean
+
 {
 
     private String name;

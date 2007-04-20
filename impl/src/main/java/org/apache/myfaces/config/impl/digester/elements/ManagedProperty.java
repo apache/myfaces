@@ -31,7 +31,7 @@ import org.apache.myfaces.config.impl.digester.elements.ListEntries;
  *
  * @version $Revision$ $Date$
  */
-public class ManagedProperty implements org.apache.myfaces.config.element.ManagedProperty
+public class ManagedProperty extends ElementBaseImpl implements org.apache.myfaces.config.element.ManagedProperty
 {
     private static final ValueBinding DUMMY_VB = new DummyValueBinding();
 

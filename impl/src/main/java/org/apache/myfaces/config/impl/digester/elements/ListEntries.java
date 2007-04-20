@@ -26,7 +26,7 @@ import java.util.Iterator;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class ListEntries implements org.apache.myfaces.config.element.ListEntries
+public class ListEntries extends ElementBaseImpl implements org.apache.myfaces.config.element.ListEntries
 {
 
     private String valueClass;
@@ -58,7 +58,7 @@ public class ListEntries implements org.apache.myfaces.config.element.ListEntrie
     }
 
 
-    public static class Entry implements org.apache.myfaces.config.element.ListEntry {
+    public static class Entry extends ElementBaseImpl implements org.apache.myfaces.config.element.ListEntry {
         private boolean nullValue;
         private String value;
 
