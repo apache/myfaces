@@ -21,7 +21,7 @@
 
 <!DOCTYPE taglib
   PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN"
-  "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd" [
+  "misc/web-jsptaglibrary_1_2.dtd" [
 <!ENTITY validator_min_max_attributes   SYSTEM "entities/validator_min_max_attributes.xml">
 <!ENTITY faces_binding_attribute        SYSTEM "entities/faces_binding_attribute.xml">
 <!ENTITY faces_id_optional_attribute    SYSTEM "entities/faces_id_optional_attribute.xml">
