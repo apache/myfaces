@@ -74,6 +74,15 @@ public class ManagedBeanResolver extends ELResolver {
                     extContext.getApplicationMap().put(name, obj);
                 }
             });
+        s_standardScopes.put(
+            "none",
+            new Scope()
+            {
+                public void put(ExternalContext extContext, String name, Object obj)
+                {
+                    // do nothing
+                }
+            });
     }
 
     /**
@@ -189,12 +198,9 @@ public class ManagedBeanResolver extends ELResolver {
             beansUnderConstruction.remove(managedBeanName);
         }
 
-        if ("none".equals(managedBean.getManagedBeanScope())) {
-            return obj;
-        } else {
-            putInScope(managedBean, extContext, obj);
-            return null;
-        }
+        putInScope(managedBean, extContext, obj);
+        
+        return obj;
     }
     
 	private void putInScope(ManagedBean managedBean, ExternalContext extContext, Object obj) {
