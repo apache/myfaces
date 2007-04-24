@@ -15,17 +15,6 @@
  */
 package javax.faces.webapp;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
-import java.util.logging.Level;
-
 import javax.faces.FacesException;
 import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
@@ -41,6 +30,9 @@ import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.tagext.BodyTag;
 import javax.servlet.jsp.tagext.JspIdConsumer;
 import javax.servlet.jsp.tagext.Tag;
+import java.io.IOException;
+import java.util.*;
+import java.util.logging.Level;
 
 /**
  * @author Bruno Aranda (latest modification by $Author: baranda $)
@@ -1020,6 +1012,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
             {
                 throw new JspException(e);
             }
+            _created = true;
 
             return _componentInstance;
         }

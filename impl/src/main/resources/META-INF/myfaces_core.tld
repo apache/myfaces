@@ -467,7 +467,6 @@
  phaseListener 
 ======================================================
 -->
-    <!-- TODO: NOT YET IMPLEMENTED IN JAVA
     <tag>
 
     <description>
@@ -501,7 +500,7 @@
 
     </attribute>
   </tag>
-    -->
+    
    <!--
 ======================================================
  selectitem
