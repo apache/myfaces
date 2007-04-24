@@ -66,6 +66,20 @@ public class DefaultFacesInitializer implements FacesInitializer
             // Load the configuration
             ExternalContext externalContext = new ServletExternalContextImpl(servletContext, null, null);
 
+            // parse web.xml
+            WebXml webXml = WebXml.getWebXml(externalContext);
+            if(webXml==null)
+            {
+                log.warn("Couldn't find web.xml. Abort initializing MyFaces.");
+                return;
+            }
+            if(webXml.getFacesServletMappings().isEmpty())
+            {
+                log.warn("No mappings of FacesServlet found. Abort initializing MyFaces.");
+                return;
+            }
+
+
             // TODO: this Class.forName will be removed when Tomcat fixes a bug
             // also, we should then be able to remove jasper.jar from the deployment
             try
@@ -101,9 +115,6 @@ public class DefaultFacesInitializer implements FacesInitializer
 
             // configure the el resolver for jsp
             configureResolverForJSP(appCtx, runtimeConfig);
-
-             // parse web.xml
-            WebXml.init(externalContext);
 
             if (! "false".equals(servletContext.getInitParameter(StateUtils.USE_ENCRYPTION)))
                 StateUtils.initSecret(servletContext);
