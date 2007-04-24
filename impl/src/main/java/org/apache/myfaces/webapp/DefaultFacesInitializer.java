@@ -18,17 +18,6 @@
  */
 package org.apache.myfaces.webapp;
 
-import java.util.Iterator;
-import java.util.List;
-
-import javax.faces.FactoryFinder;
-import javax.faces.context.ExternalContext;
-import javax.faces.event.PhaseListener;
-import javax.faces.lifecycle.LifecycleFactory;
-import javax.servlet.ServletContext;
-import javax.servlet.jsp.JspApplicationContext;
-import javax.servlet.jsp.JspFactory;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.ApplicationImpl;
@@ -43,6 +32,16 @@ import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver;
 import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
 import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
+
+import javax.faces.FactoryFinder;
+import javax.faces.context.ExternalContext;
+import javax.faces.event.PhaseListener;
+import javax.faces.lifecycle.LifecycleFactory;
+import javax.servlet.ServletContext;
+import javax.servlet.jsp.JspApplicationContext;
+import javax.servlet.jsp.JspFactory;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -66,6 +65,15 @@ public class DefaultFacesInitializer implements FacesInitializer
 
             // Load the configuration
             ExternalContext externalContext = new ServletExternalContextImpl(servletContext, null, null);
+
+            // parse web.xml
+            WebXml webXml = WebXml.getWebXml(externalContext);
+            if(webXml.getFacesServletMappings().isEmpty())
+            {
+                log.warn("No mappings of FacesServlet found. Abort initializing MyFaces.");
+                return;
+            }
+
 
             // TODO: this Class.forName will be removed when Tomcat fixes a bug
             // also, we should then be able to remove jasper.jar from the deployment
@@ -102,9 +110,6 @@ public class DefaultFacesInitializer implements FacesInitializer
 
             // configure the el resolver for jsp
             configureResolverForJSP(appCtx, runtimeConfig);
-
-            // parse web.xml
-            WebXml.init(externalContext);
 
             if (! "false".equals(servletContext.getInitParameter(StateUtils.USE_ENCRYPTION)))
                 StateUtils.initSecret(servletContext);
