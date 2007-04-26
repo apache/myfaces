@@ -70,6 +70,7 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
     {
         link.setDisabled(true);
         link.setTarget("testTarget");
+        link.setId("foo1");
 
         HtmlLinkRenderer renderer = new HtmlLinkRenderer();
         renderer.encodeBegin(facesContext, link);
@@ -80,6 +81,6 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
 
         String output = writer.getWriter().toString();
 
-        assertEquals("<span target=\"testTarget\" class=\"linkClass\">HelloLink</span>", output);
+        assertEquals("<span id=\"" + link.getClientId(facesContext) + "\" target=\"testTarget\" class=\"linkClass\">HelloLink</span>", output);
     }
 }
