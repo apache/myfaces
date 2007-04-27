@@ -15,6 +15,9 @@
  */
 package org.apache.myfaces.taglib.core;
 
+import javax.el.ValueExpression;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UISelectItems;
 import javax.faces.webapp.UIComponentELTag;
 
 /**
@@ -22,18 +25,35 @@ import javax.faces.webapp.UIComponentELTag;
  * @version $Revision$ $Date$
  */
 public class SelectItemsTag
-        extends UIComponentELTag
-{
+        extends UIComponentELTag {
     //private static final Log log = LogFactory.getLog(SelectItemsTag.class);
 
-    public String getComponentType()
-    {
+    private ValueExpression _value;
+
+    public void setValue(ValueExpression value) {
+        this._value = value;
+    }
+
+    public String getComponentType() {
         return "javax.faces.SelectItems";
     }
 
-    public String getRendererType()
-    {
+    public String getRendererType() {
         return null;
+    }
+
+
+    protected void setProperties(UIComponent component) {
+        super.setProperties(component);
+
+        if ( _value != null ) {
+            if (!_value.isLiteralText()) {
+                component.setValueExpression("value", _value);
+            } else {
+                ((UISelectItems) component).setValue(
+                        _value.getExpressionString());
+            }
+        }
     }
 
     // UISelectItems attributes
