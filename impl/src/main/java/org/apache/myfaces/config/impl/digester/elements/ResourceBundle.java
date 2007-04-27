@@ -23,6 +23,7 @@ public class ResourceBundle
 {
     private String baseName;
     private String var;
+    private String displayName;
 
     /**
      * @return the baseName
@@ -56,5 +57,13 @@ public class ResourceBundle
     public void setVar(String var)
     {
         this.var = var;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 }

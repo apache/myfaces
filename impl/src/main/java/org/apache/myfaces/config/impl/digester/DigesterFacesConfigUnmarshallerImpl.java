@@ -68,6 +68,7 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addSetNext("faces-config/application/resource-bundle", "addResourceBundle");
         digester.addCallMethod("faces-config/application/resource-bundle/base-name", "setBaseName", 0);
         digester.addCallMethod("faces-config/application/resource-bundle/var", "setVar", 0);
+        digester.addCallMethod("faces-config/application/resource-bundle/display-name", "setDisplayName", 0);
         // 1.2 specific end
         
         digester.addObjectCreate("faces-config/factory", Factory.class);

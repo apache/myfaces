@@ -17,7 +17,9 @@
 package org.apache.myfaces.el.unified.resolver;
 
 import java.beans.FeatureDescriptor;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javax.el.ELContext;
 import javax.el.ELException;
@@ -27,12 +29,20 @@ import javax.el.PropertyNotWritableException;
 import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
 
+import org.apache.myfaces.config.RuntimeConfig;
+
 /**
  * See JSF 1.2 spec section 5.6.1.4
  *
  * @author Stan Silvert
  */
 public class ResourceBundleResolver extends ELResolver {
+    
+    /**
+     * RuntimeConfig is instantiated once per servlet and never changes--we can
+     * safely cache it
+     */
+    private RuntimeConfig runtimeConfig;
     
     /** Creates a new instance of ResourceBundleResolver */
     public ResourceBundleResolver() {
@@ -107,9 +117,15 @@ public class ResourceBundleResolver extends ELResolver {
        
         if (base != null) return null;
         
-        // TODO fix this?
-        // throw new UnsupportedOperationException("Can't implement without a list of all resource bundles??????");
-        return null; // noop
+        ArrayList<FeatureDescriptor> descriptors = new ArrayList<FeatureDescriptor>();
+        
+        Map<String, org.apache.myfaces.config.impl.digester.elements.ResourceBundle> resourceBundles = runtimeConfig(context).getResourceBundles();
+        
+        for (org.apache.myfaces.config.impl.digester.elements.ResourceBundle resourceBundle : resourceBundles.values()) {
+            descriptors.add(makeDescriptor(resourceBundle));
+        }
+        
+        return descriptors.iterator();
     }
 
     public Class<?> getCommonPropertyType(ELContext context, Object base) {
@@ -134,4 +150,27 @@ public class ResourceBundleResolver extends ELResolver {
         return null;
     }
     
+    protected RuntimeConfig runtimeConfig(ELContext context) {
+        FacesContext facesContext = facesContext(context);
+        
+        // application-level singleton - we can safely cache this
+        if (this.runtimeConfig == null) {
+            this.runtimeConfig = RuntimeConfig.getCurrentInstance(facesContext.getExternalContext());
+        }
+        
+        return runtimeConfig;
+    }
+
+    private FeatureDescriptor makeDescriptor(org.apache.myfaces.config.impl.digester.elements.ResourceBundle bundle) {
+        FeatureDescriptor fd = new FeatureDescriptor();
+        fd.setValue(ELResolver.RESOLVABLE_AT_DESIGN_TIME, Boolean.TRUE);
+        fd.setName(bundle.getVar());
+        fd.setDisplayName(bundle.getDisplayName());
+        fd.setValue(ELResolver.TYPE, ResourceBundle.class);
+        fd.setShortDescription("");
+        fd.setExpert(false);
+        fd.setHidden(false);
+        fd.setPreferred(true);
+        return fd;
+    }
 }
