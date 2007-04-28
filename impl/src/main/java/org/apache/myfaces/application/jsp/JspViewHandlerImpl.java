@@ -15,12 +15,11 @@
  */
 package org.apache.myfaces.application.jsp;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.application.DefaultViewHandlerSupport;
+import org.apache.myfaces.application.InvalidViewIdException;
+import org.apache.myfaces.application.ViewHandlerSupport;
 
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
@@ -40,16 +39,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.jstl.core.Config;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.application.DefaultViewHandlerSupport;
-import org.apache.myfaces.application.InvalidViewIdException;
-import org.apache.myfaces.application.ViewHandlerSupport;
-import org.apache.myfaces.portlet.PortletUtil;
-import org.apache.myfaces.shared_impl.webapp.webxml.ServletMapping;
-import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
-import org.apache.myfaces.util.DebugUtils;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.Iterator;
+import java.util.Locale;
 
 /**
  * @author Thomas Spiegl (latest modification by $Author$)
@@ -394,8 +388,8 @@ public class JspViewHandlerImpl extends ViewHandler
             StringBuffer contentBuffer = getBuffer();
             StringBuffer state = stateWriter.getBuffer();
 
-            int form_marker = contentBuffer.indexOf(JspViewHandlerImpl.FORM_STATE_MARKER);
-            if (form_marker > -1 )
+            int form_marker;
+            while ((form_marker = contentBuffer.indexOf(JspViewHandlerImpl.FORM_STATE_MARKER)) > -1 )
             {
                 //FORM_STATE_MARKER found, replace it
                 contentBuffer.replace(form_marker, form_marker + FORM_STATE_MARKER_LEN, state.toString());
