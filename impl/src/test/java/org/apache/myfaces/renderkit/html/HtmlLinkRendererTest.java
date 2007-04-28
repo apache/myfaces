@@ -45,8 +45,6 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
         UIForm form = new UIForm();
 
         link = new HtmlCommandLink();
-        link.setValue("HelloLink");
-        link.setStyleClass("linkClass");
 
         form.getChildren().add(link);
 
@@ -69,6 +67,8 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
     public void testLinkDisabled() throws Exception
     {
         link.setDisabled(true);
+        link.setValue("HelloLink");
+        link.setStyleClass("linkClass");
         link.setTarget("testTarget");
         link.setId("foo1");
 
@@ -82,5 +82,55 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
         String output = writer.getWriter().toString();
 
         assertEquals("<span id=\"" + link.getClientId(facesContext) + "\" target=\"testTarget\" class=\"linkClass\">HelloLink</span>", output);
+    }
+
+     public void testLinkPassthrough() throws Exception
+    {
+        link.setAccesskey("accesskey");
+        link.setCharset("charset");
+        link.setCoords("coords");
+        link.setDir("dir");
+        link.setHreflang("hreflang");
+        link.setLang("lang");
+        link.setOnblur("onblur");
+        link.setOndblclick("ondblclick");
+        link.setOnfocus("onfocus");
+        link.setOnkeydown("onkeydown");
+        link.setOnkeypress("onkeypress");
+        link.setOnkeyup("onkeyup");
+        link.setOnmousedown("onmousedown");
+        link.setOnmousemove("onmousemove");
+        link.setOnmouseout("onmouseout");
+        link.setOnmouseover("onmouseover");
+        link.setOnmouseup("onmouseup");
+        link.setRel("rel");
+        link.setRev("rev");
+        link.setShape("shape");
+        link.setStyle("style");
+        link.setTabindex("tabindex");
+        link.setTitle("title");
+        link.setType("type");
+
+        HtmlLinkRenderer renderer = new HtmlLinkRenderer();
+        renderer.encodeBegin(facesContext, link);
+        renderer.encodeChildren(facesContext, link);
+        renderer.encodeEnd(facesContext, link);
+
+        facesContext.renderResponse();
+
+        String output = writer.getWriter().toString();
+
+        assertEquals("<a href=\"#\" onclick=\"clear_j_5Fid1();document.forms[&apos;j_id1&apos;].elements[&apos;j_id1:_link_hidden_&apos;]" +
+                ".value=&apos;j_id1:j_id0&apos;;if(document.forms[&apos;j_id1&apos;].onsubmit){var result=document.forms[&apos;j_id1&apos;]" +
+                ".onsubmit();  if( (typeof result == &apos;undefined&apos;) || result ) {document.forms[&apos;j_id1&apos;].submit();}}else" +
+                "{document.forms[&apos;j_id1&apos;].submit();}return false;\" " +
+                "id=\"" + link.getClientId(facesContext) + "\" " +
+                "accesskey=\"accesskey\" charset=\"charset\" coords=\"coords\" hreflang=\"hreflang\" " +
+                "rel=\"rel\" rev=\"rev\" shape=\"shape\" tabindex=\"tabindex\" type=\"type\" " +
+                "ondblclick=\"ondblclick\" onmousedown=\"onmousedown\" onmouseup=\"onmouseup\" " +
+                "onmouseover=\"onmouseover\" onmousemove=\"onmousemove\" onmouseout=\"onmouseout\" " +
+                "onkeypress=\"onkeypress\" onkeydown=\"onkeydown\" onkeyup=\"onkeyup\" onblur=\"onblur\" " +
+                "onfocus=\"onfocus\" dir=\"dir\" lang=\"lang\" title=\"title\" style=\"style\"></a>", output);
+
     }
 }
