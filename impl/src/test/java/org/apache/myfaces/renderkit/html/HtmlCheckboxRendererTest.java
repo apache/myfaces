@@ -75,7 +75,7 @@ public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
 
         selectManyCheckbox.getChildren().add(selectItems);
 
-        selectManyCheckbox.encodeEnd(facesContext);
+        selectManyCheckbox.encodeAll(facesContext);
         facesContext.renderResponse();
 
         String output = writer.getWriter().toString();
@@ -97,7 +97,7 @@ public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
 
         selectManyCheckbox.getChildren().add(selectItems);
 
-        selectManyCheckbox.encodeEnd(facesContext);
+        selectManyCheckbox.encodeAll(facesContext);
         facesContext.renderResponse();
 
         String output = writer.getWriter().toString();
@@ -105,5 +105,32 @@ public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
                 "<td><input id=\"j_id0:0\" type=\"checkbox\" name=\"j_id0\"/><label for=\"j_id0:0\">&#160;mars</label></td>\t\t" +
                 "<td><input id=\"j_id0:1\" type=\"checkbox\" name=\"j_id0\"/><label for=\"j_id0:1\">&#160;jupiter</label></td>" +
                 "</tr></table>", output);
-    }      
+    }
+
+    public void testRenderDisabledEnabledClass() throws Exception
+    {
+        List items = new ArrayList();
+        SelectItem disabledItem = new SelectItem("mars", "mars");
+        disabledItem.setDisabled(true);
+
+        items.add(disabledItem);
+        items.add(new SelectItem("jupiter", "jupiter"));
+
+        UISelectItems selectItems = new UISelectItems();
+        selectItems.setValue(items);
+
+        selectManyCheckbox.getChildren().add(selectItems);
+
+        selectManyCheckbox.setEnabledClass("enabledClass");
+        selectManyCheckbox.setDisabledClass("disabledClass");
+
+        selectManyCheckbox.encodeAll(facesContext);
+        facesContext.renderResponse();
+
+        String output = writer.getWriter().toString();
+        assertEquals("<table><tr>\t\t" +
+                "<td><input id=\"j_id0:0\" type=\"checkbox\" name=\"j_id0\" disabled=\"disabled\" value=\"mars\"/><label for=\"j_id0:0\" class=\"disabledClass\">&#160;mars</label></td>\t\t" +
+                "<td><input id=\"j_id0:1\" type=\"checkbox\" name=\"j_id0\" value=\"jupiter\"/><label for=\"j_id0:1\" class=\"enabledClass\">&#160;jupiter</label></td>" +
+                "</tr></table>", output);
+    }
 }
