@@ -18,13 +18,13 @@
  */
 package javax.faces.component;
 
-import javax.faces.render.Renderer;
-
 import org.apache.myfaces.Assert;
 import org.apache.myfaces.TestRunner;
 import org.apache.shale.test.base.AbstractJsfTestCase;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
+
+import javax.faces.render.Renderer;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -53,7 +53,6 @@ public class UIDataTest extends AbstractJsfTestCase
      */
     public void testValueExpression()
     {
-        assertSetValueExpressionException(IllegalArgumentException.class, "var");
         assertSetValueExpressionException(IllegalArgumentException.class, "rowIndex");
         assertSetValueExpressionException(NullPointerException.class, null);
     }
