@@ -16,9 +16,9 @@
 
 package org.apache.myfaces.el.unified.resolver.implicitobject;
 
+import javax.el.ELContext;
 import java.beans.FeatureDescriptor;
 import java.util.Map;
-import javax.el.ELContext;
 
 /**
  * Encapsulates information needed by the ImplicitObjectResolver
@@ -42,7 +42,7 @@ public class SessionScopeImplicitObject extends ImplicitObject {
     }
     
     public Class getType() {
-        return Object.class;
+        return null;
     }
 
     public FeatureDescriptor getDescriptor() {

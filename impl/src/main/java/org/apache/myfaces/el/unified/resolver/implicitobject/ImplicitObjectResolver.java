@@ -16,16 +16,11 @@
 
 package org.apache.myfaces.el.unified.resolver.implicitobject;
 
+import javax.el.*;
 import java.beans.FeatureDescriptor;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ELResolver;
-import javax.el.PropertyNotFoundException;
-import javax.el.PropertyNotWritableException;
 
 /**
  * See JSF 1.2 spec sections 5.6.1.1 and 5.6.2.1
@@ -92,7 +87,7 @@ public class ImplicitObjectResolver extends ELResolver {
         String strProperty = castAndIntern(property);
         
         for (ImplicitObject obj: implicitObjects) {
-            if (strProperty == obj.getName()) {
+            if (strProperty.equals(obj.getName())) {
                 throw new PropertyNotWritableException();
             }
         }
@@ -108,7 +103,7 @@ public class ImplicitObjectResolver extends ELResolver {
         String strProperty = castAndIntern(property);
         
         for (ImplicitObject obj: implicitObjects) {
-            if (strProperty == obj.getName()) {
+            if (strProperty.equals(obj.getName())) {
                 context.setPropertyResolved(true);
                 return true;
             }
@@ -119,17 +114,17 @@ public class ImplicitObjectResolver extends ELResolver {
 
     public Object getValue(ELContext context, Object base, Object property) 
         throws NullPointerException, PropertyNotFoundException, ELException {
-        
+
         if (base != null) return null;
         if (property == null) throw new PropertyNotFoundException();      
         if (!(property instanceof String)) return null;
             
         String strProperty = castAndIntern(property);
-        
+
         for (ImplicitObject obj : implicitObjects) {
-            if (strProperty == obj.getName()) {
+            if (strProperty.equals(obj.getName())) {
                 context.setPropertyResolved(true);
-                return obj.getValue(context);
+                return obj.getType();
             }
         }
         
@@ -146,7 +141,7 @@ public class ImplicitObjectResolver extends ELResolver {
         String strProperty = castAndIntern(property);
         
         for (ImplicitObject obj: implicitObjects) {
-            if (strProperty == obj.getName()) {
+            if (strProperty.equals(obj.getName())) {
                 context.setPropertyResolved(true);
                 return obj.getType();
             }
