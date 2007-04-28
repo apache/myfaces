@@ -46,6 +46,7 @@ or EL expressions.</description>
             <description>The width of this element, in characters.</description>
             <property-name>cols</property-name>
             <property-class>int</property-class>
+            <default-value>-2147483648</default-value>  <!-- Integer.MIN_VALUE -->
             <property-extension>
                 <mfp:required>false</mfp:required>
             </property-extension>
@@ -55,6 +56,7 @@ or EL expressions.</description>
             <description>The height of this element, in characters.</description>
             <property-name>rows</property-name>
             <property-class>int</property-class>
+            <default-value>-2147483648</default-value>  <!-- Integer.MIN_VALUE -->
             <property-extension>
                 <mfp:required>false</mfp:required>
             </property-extension>
