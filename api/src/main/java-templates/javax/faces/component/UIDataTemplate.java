@@ -797,16 +797,6 @@ abstract public class UIDataTemplate extends UIComponentBase implements NamingCo
         }
     }
 
-    private Object getValue()
-    {
-        if (_value != null)
-        {
-            return _value;
-        }
-
-        return getValueExpression("value").getValue(FacesContext.getCurrentInstance().getELContext());
-    }
-
     private static class FacesEventWrapper extends FacesEvent
     {
         private static final long serialVersionUID = 6648047974065628773L;
