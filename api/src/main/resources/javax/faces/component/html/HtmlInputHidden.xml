@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<component>
-    <component-class>javax.faces.component.html.HtmlInputHidden</component-class>
-    <base-class>javax.faces.component.UIInput</base-class>
-    <component-type>javax.faces.HtmlInputHidden</component-type>
-    <renderer-type>javax.faces.Hidden</renderer-type>
-</component>
