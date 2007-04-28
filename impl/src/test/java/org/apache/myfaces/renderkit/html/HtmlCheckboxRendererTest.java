@@ -85,4 +85,25 @@ public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
                 "<td><input id=\"j_id0:1\" type=\"checkbox\" name=\"j_id0\" value=\"jupiter\"/><label for=\"j_id0:1\">&#160;jupiter</label></td>" +
                 "</tr></table>", output);
     }
+
+    public void testRenderSelectItemWithoutValue() throws Exception
+    {
+        List items = new ArrayList();
+        items.add(new SelectItem(null, "mars"));
+        items.add(new SelectItem(null, "jupiter"));
+
+        UISelectItems selectItems = new UISelectItems();
+        selectItems.setValue(items);
+
+        selectManyCheckbox.getChildren().add(selectItems);
+
+        selectManyCheckbox.encodeEnd(facesContext);
+        facesContext.renderResponse();
+
+        String output = writer.getWriter().toString();
+        assertEquals("<table><tr>\t\t" +
+                "<td><input id=\"j_id0:0\" type=\"checkbox\" name=\"j_id0\"/><label for=\"j_id0:0\">&#160;mars</label></td>\t\t" +
+                "<td><input id=\"j_id0:1\" type=\"checkbox\" name=\"j_id0\"/><label for=\"j_id0:1\">&#160;jupiter</label></td>" +
+                "</tr></table>", output);
+    }      
 }
