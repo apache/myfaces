@@ -431,7 +431,7 @@ abstract public class UIDataTemplate extends UIComponentBase implements NamingCo
         {
             _dataModelMap.clear();
         }
-        else if (name.equals("var") || name.equals("rowIndex"))
+        else if (name.equals("rowIndex"))
         {
             throw new IllegalArgumentException("name " + name);
         }
