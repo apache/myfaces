@@ -15,30 +15,19 @@
 */
 package javax.faces.component;
 
-import javax.faces.context.FacesContext;
+import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
-import javax.faces.event.FacesEvent;
+import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
-import javax.faces.event.PhaseId;
+import javax.faces.event.FacesEvent;
 import javax.faces.event.FacesListener;
-import javax.faces.el.ValueBinding;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
-import javax.faces.model.ArrayDataModel;
-import javax.faces.model.ResultSetDataModel;
-import javax.faces.model.ResultDataModel;
-import javax.faces.model.ScalarDataModel;
-import javax.el.ValueExpression;
+import javax.faces.event.PhaseId;
+import javax.faces.model.*;
 import javax.servlet.jsp.jstl.sql.Result;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Collection;
-import java.util.ArrayList;
-import java.util.List;
 import java.io.IOException;
 import java.sql.ResultSet;
+import java.util.*;
 
 /**
  * Represents a component which has multiple "rows" of data.
@@ -776,7 +765,8 @@ abstract public class UIDataTemplate extends UIComponentBase implements NamingCo
      */
     private DataModel createDataModel()
     {
-        Object value = _value;
+        Object value = getValue();
+
         if (value == null)
         {
             return EMPTY_DATA_MODEL;
@@ -805,6 +795,16 @@ abstract public class UIDataTemplate extends UIComponentBase implements NamingCo
         {
             return new ScalarDataModel(value);
         }
+    }
+
+    private Object getValue()
+    {
+        if (_value != null)
+        {
+            return _value;
+        }
+
+        return getValueExpression("value").getValue(FacesContext.getCurrentInstance().getELContext());
     }
 
     private static class FacesEventWrapper extends FacesEvent
