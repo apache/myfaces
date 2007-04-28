@@ -106,13 +106,10 @@ public class HtmlGridRendererTest extends AbstractJsfTestCase
         facesContext.renderResponse();
 
         String output = writer.getWriter().toString();
-        System.out.println(output);
-        /*
         assertEquals("<table>" + LINE_SEPARATOR +
-                "<caption>captionText</caption><tbody><tr><td>col1Text</td></tr>" + LINE_SEPARATOR +
+                "<caption class=\"captionClass\" style=\"captionStyle\">captionText</caption><tbody><tr><td>col1Text</td></tr>" + LINE_SEPARATOR +
                 "<tr><td>col2Text</td></tr>" + LINE_SEPARATOR +
                 "</tbody></table>", output);
-                */
     }
 
 

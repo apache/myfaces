@@ -120,4 +120,37 @@ public class HtmlTableRendererTest extends AbstractJsfTestCase
                 "<tr><td>Three</td></tr></tbody></table>"+LINE_SEPARATOR, output);
     }
 
+
+    public void testRenderTableWithHeader() throws Exception
+    {
+        dataTable.setValue(new String[] {"One","Two","Three"});
+        dataTable.setVar("var");
+
+        HtmlOutputText headerTest = new HtmlOutputText();
+        headerTest.setValue("colHeader");
+        dataTable.getFacets().put("header", headerTest);
+
+        UIColumn col = new UIColumn();
+
+        ValueExpression varValueExpression = facesContext.getApplication().getExpressionFactory()
+                .createValueExpression(facesContext.getELContext(), "#{var}", String.class);
+        colText.setValueExpression("value", varValueExpression);
+
+        col.getChildren().add(colText);
+        dataTable.getChildren().add(col);
+
+        dataTable.encodeAll(facesContext);
+        facesContext.renderResponse();
+
+        String output = writer.getWriter().toString();
+        assertEquals(LINE_SEPARATOR +
+                "<table>" + LINE_SEPARATOR +
+                "<thead>" + LINE_SEPARATOR +
+                "<tr><th scope=\"colgroup\" colspan=\"1\">colHeader</th></tr></thead>" + LINE_SEPARATOR +
+                "<tbody id=\"j_id0:tbody_element\">" + LINE_SEPARATOR +
+                "<tr><td>One</td></tr>" + LINE_SEPARATOR +
+                "<tr><td>Two</td></tr>" + LINE_SEPARATOR +
+                "<tr><td>Three</td></tr></tbody></table>"+LINE_SEPARATOR, output);
+    }
+
 }
