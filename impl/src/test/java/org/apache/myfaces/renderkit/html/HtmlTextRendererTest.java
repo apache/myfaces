@@ -1,23 +1,22 @@
 package org.apache.myfaces.renderkit.html;
 
-import java.io.StringWriter;
-
-import javax.faces.component.html.HtmlInputText;
-
 import org.apache.shale.test.base.AbstractJsfTestCase;
 import org.apache.shale.test.mock.MockRenderKitFactory;
 import org.apache.shale.test.mock.MockResponseWriter;
+
+import javax.faces.component.html.HtmlInputText;
+import java.io.StringWriter;
 
 /**
  * @author Bruno Aranda (latest modification by $Author: baranda $)
  * @version $Revision: 451814 $ $Date: 2006-10-01 22:28:42 +0100 (dom, 01 oct 2006) $
  */
-public class HtmTextRendererTest extends AbstractJsfTestCase
+public class HtmlTextRendererTest extends AbstractJsfTestCase
 {
     private MockResponseWriter writer ;
     private HtmlInputText inputText;
 
-    public HtmTextRendererTest(String name)
+    public HtmlTextRendererTest(String name)
     {
         super(name);
     }
@@ -55,4 +54,26 @@ public class HtmTextRendererTest extends AbstractJsfTestCase
 
         assertEquals("<input id=\"j_id0\" name=\"j_id0\" type=\"text\" value=\"\"/>", output);
     }
+
+    public void testInputTextAutocompleteOn() throws Exception
+    {
+        inputText.setAutocomplete("on");
+        inputText.encodeEnd(facesContext);
+        facesContext.renderResponse();
+
+        String output = writer.getWriter().toString();
+        
+        assertEquals("<input id=\"j_id0\" name=\"j_id0\" type=\"text\" value=\"\"/>", output);
+    }
+
+    public void testInputTextAutocompleteOff() throws Exception
+    {
+        inputText.setAutocomplete("off");
+        inputText.encodeEnd(facesContext);
+        facesContext.renderResponse();
+
+        String output = writer.getWriter().toString();
+        assertEquals("<input id=\"j_id0\" name=\"j_id0\" type=\"text\" value=\"\" autocomplete=\"off\"/>", output);
+    }
+
 }
