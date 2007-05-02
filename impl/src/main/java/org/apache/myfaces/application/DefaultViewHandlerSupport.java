@@ -18,17 +18,16 @@
  */
 package org.apache.myfaces.application;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.faces.application.ViewHandler;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.shared_impl.webapp.webxml.ServletMapping;
 import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
+
+import javax.faces.application.ViewHandler;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -179,6 +178,12 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
     protected String applyDefaultSuffix(FacesContext context, String viewId)
     {
         String defaultSuffix = getContextSuffix(context);
+
+        if (viewId == null)
+        {
+            return null;
+        }
+
         if (!viewId.endsWith(defaultSuffix))
         {
             StringBuilder builder = new StringBuilder(viewId);
