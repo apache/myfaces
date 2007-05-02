@@ -36,14 +36,14 @@
         outcome, that identifies the next view displayed. The phase that this
         event is fired in can be controlled via the immediate attribute.
 
-    	If the value is a string literal, it is treated as a navigation outcome
-    	for the current view.  This is functionally equivalent to a reference to
-    	an action method that returns the string literal.]]></description>
+        If the value is a string literal, it is treated as a navigation outcome
+        for the current view.  This is functionally equivalent to a reference to
+        an action method that returns the string literal.]]></description>
             <property-name>actionExpression</property-name>
             <property-class>javax.el.MethodExpression</property-class>
             <property-extension>
                 <mfp:method-binding-signature>
-                    <mfp:return-type>java.lang.String</mfp:return-type>
+                    <mfp:return-type>java.lang.Object</mfp:return-type>
                 </mfp:method-binding-signature>
                 <mfp:property-metadata>
                     <mfp:preferred>true</mfp:preferred>
