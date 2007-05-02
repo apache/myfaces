@@ -17,7 +17,7 @@
     <url>http://svn.apache.org/repos/asf/myfaces/core/branches/jsf12/api</url>
   </scm>
   <build>
-  	<plugins>
+    <plugins>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <executions>
@@ -36,7 +36,7 @@
         -->
         <groupId>org.apache.myfaces.trinidadbuild</groupId>
         <artifactId>maven-faces-plugin</artifactId>
-        <version>incubator-1.2-m1-SNAPSHOT</version>
+        <version>incubator-1.2-07-apr-SNAPSHOT</version>
         <configuration>
           <typePrefix>javax.faces</typePrefix>
           <packageContains>javax.faces</packageContains>
@@ -44,6 +44,7 @@
           <force>true</force>
           <templateSourceDirectory>src/main/java-templates</templateSourceDirectory>
           <skipApiOrBaseClasses>false</skipApiOrBaseClasses>
+          <disableIdExpressions>true</disableIdExpressions>
         </configuration>
         <executions>
           <execution>
@@ -53,11 +54,11 @@
           </execution>
         </executions>
         <dependencies>
-		    <dependency>
-		      <groupId>commons-logging</groupId>
-		      <artifactId>commons-logging</artifactId>
-		      <version>1.0.4</version>
-		    </dependency>
+            <dependency>
+              <groupId>commons-logging</groupId>
+              <artifactId>commons-logging</artifactId>
+              <version>1.0.4</version>
+            </dependency>
         </dependencies>
       </plugin>
     </plugins>
@@ -121,10 +122,10 @@
     </profile>
     <profile>
       <!-- This plugin verifies the binary compablity with the jsf api of the RI
-           TODO: add this to the normal build if 2.1 (or higher) of clirr-maven-plugin is released 
-           In the meantime to use this plugin it must be installed manually from 
+           TODO: add this to the normal build if 2.1 (or higher) of clirr-maven-plugin is released
+           In the meantime to use this plugin it must be installed manually from
            https://svn.codehaus.org/mojo/trunk/mojo/clirr-maven-plugin
-           There is also a pending bug which patch must be applied before using this plugin: 
+           There is also a pending bug which patch must be applied before using this plugin:
            http://jira.codehaus.org/browse/MCLIRR-5 -->
       <id>checkCompability</id>
       <build>

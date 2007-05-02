@@ -61,7 +61,7 @@
         -->
         <groupId>org.apache.myfaces.trinidadbuild</groupId>
         <artifactId>maven-faces-plugin</artifactId>
-        <version>incubator-1.2-m1-SNAPSHOT</version>
+        <version>incubator-1.2-07-apr-SNAPSHOT</version>
         <configuration>
           <taglibs>
             <f>http://java.sun.com/jsf/core</f>
@@ -76,6 +76,7 @@
           <force>true</force>
           <templateSourceDirectory>src/main/java-templates</templateSourceDirectory>
           <skipApiOrBaseClasses>false</skipApiOrBaseClasses>
+          <disableIdExpressions>true</disableIdExpressions>
         </configuration>
         <executions>
           <execution>
@@ -405,7 +406,7 @@
   <repositories>
      <repository>
        <id>tomcat</id>
-       <url>http://tomcat.apache.org/dev/dist/m2-repository</url>       
+       <url>http://tomcat.apache.org/dev/dist/m2-repository</url>
      </repository>
   </repositories>
 </project>

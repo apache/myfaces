@@ -15,14 +15,14 @@
   limitations under the License.
 -->
 <faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee"
-		xmlns:mfp="http://myfaces.apache.org/maven-faces-plugin"
-		xmlns:xi="http://www.w3.org/2001/XInclude">
-	<component>
+        xmlns:mfp="http://myfaces.apache.org/maven-faces-plugin"
+        xmlns:xi="http://www.w3.org/2001/XInclude">
+    <component>
         <property>
             <description>A boolean value that indicates whether this component should be rendered.
-			Default value: true.</description>
+            Default value: true.</description>
             <property-name>rendered</property-name>
-            <property-class>boolean</property-class>
+            <property-class>java.lang.Boolean</property-class>
             <default-value>true</default-value>
             <property-extension>
                 <mfp:property-metadata>

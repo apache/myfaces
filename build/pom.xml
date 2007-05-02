@@ -45,7 +45,7 @@
         -->
         <groupId>org.apache.myfaces.trinidadbuild</groupId>
         <artifactId>maven-faces-plugin</artifactId>
-        <version>incubator-1.2-m1-SNAPSHOT</version>
+        <version>incubator-1.2-07-apr-SNAPSHOT</version>
         <configuration>
           <excludes>
             <exclude>**/includes/**</exclude>
@@ -59,7 +59,7 @@
             </goals>
           </execution>
         </executions>
-	      <dependencies>
+          <dependencies>
           <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
