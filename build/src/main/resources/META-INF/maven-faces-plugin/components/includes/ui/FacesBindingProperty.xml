@@ -23,7 +23,7 @@
                 EL expression.
             </description>
             <property-name>binding</property-name>
-            <property-class>javax.el.ValueExpression</property-class>
+            <property-class>javax.faces.component.UIComponent</property-class>
             <property-extension>
                 <mfp:required>false</mfp:required>
             </property-extension>
