@@ -124,7 +124,7 @@ public class ImplicitObjectResolver extends ELResolver {
         for (ImplicitObject obj : implicitObjects) {
             if (strProperty.equals(obj.getName())) {
                 context.setPropertyResolved(true);
-                return obj.getType();
+                return obj.getValue(context);
             }
         }
         
@@ -143,7 +143,6 @@ public class ImplicitObjectResolver extends ELResolver {
         for (ImplicitObject obj: implicitObjects) {
             if (strProperty.equals(obj.getName())) {
                 context.setPropertyResolved(true);
-                return obj.getType();
             }
         }
         

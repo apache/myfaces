@@ -18,16 +18,14 @@
  */
 package org.apache.myfaces.el.unified.resolver;
 
-import java.beans.FeatureDescriptor;
-import java.util.Iterator;
+import org.apache.myfaces.el.VariableResolverImpl;
 
-import javax.el.CompositeELResolver;
 import javax.el.ELContext;
 import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
 import javax.servlet.jsp.JspApplicationContext;
-
-import org.apache.myfaces.el.VariableResolverImpl;
+import java.beans.FeatureDescriptor;
+import java.util.Iterator;
 
 /**
  * <p>
@@ -94,6 +92,7 @@ public class FacesCompositeELResolver extends org.apache.myfaces.el.CompositeELR
         {
             public Class<?> invoke()
             {
+                context.setPropertyResolved(false);  
                 return FacesCompositeELResolver.super.getType(context, base, property);
             }
         });
