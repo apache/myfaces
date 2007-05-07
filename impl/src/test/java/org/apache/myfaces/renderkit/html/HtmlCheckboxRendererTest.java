@@ -20,6 +20,7 @@ import org.apache.shale.test.mock.MockRenderKitFactory;
 import org.apache.shale.test.mock.MockResponseWriter;
 
 import javax.faces.component.UISelectItems;
+import javax.faces.component.html.HtmlSelectBooleanCheckbox;
 import javax.faces.component.html.HtmlSelectManyCheckbox;
 import javax.faces.model.SelectItem;
 import java.io.StringWriter;
@@ -34,6 +35,7 @@ public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
 {
     private MockResponseWriter writer ;
     private HtmlSelectManyCheckbox selectManyCheckbox;
+    private HtmlSelectBooleanCheckbox selectBooleanCheckbox;
 
     public HtmlCheckboxRendererTest(String name)
     {
@@ -45,6 +47,7 @@ public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
         super.setUp();
 
         selectManyCheckbox = new HtmlSelectManyCheckbox();
+        selectBooleanCheckbox = new HtmlSelectBooleanCheckbox();
 
         writer = new MockResponseWriter(new StringWriter(), null, null);
         facesContext.setResponseWriter(writer);
@@ -53,6 +56,10 @@ public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
         facesContext.getRenderKit().addRenderer(
                 selectManyCheckbox.getFamily(),
                 selectManyCheckbox.getRendererType(),
+                new HtmlCheckboxRenderer());
+        facesContext.getRenderKit().addRenderer(
+                selectBooleanCheckbox.getFamily(),
+                selectBooleanCheckbox.getRendererType(),
                 new HtmlCheckboxRenderer());
 
     }
@@ -64,7 +71,7 @@ public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
         writer = null;
     }
 
-    public void testDefault() throws Exception
+    public void testSelectManyDefault() throws Exception
     {
         List items = new ArrayList();
         items.add(new SelectItem("mars"));
@@ -85,7 +92,7 @@ public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
                 "</tr></table>", output);
     }
 
-    public void testRenderSelectItemWithoutValue() throws Exception
+    public void testSelectManySelectItemWithoutValue() throws Exception
     {
         List items = new ArrayList();
         items.add(new SelectItem(null, "mars"));
@@ -106,7 +113,7 @@ public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
                 "</tr></table>", output);
     }
 
-    public void testRenderDisabledEnabledClass() throws Exception
+    public void testSelectManyDisabledEnabledClass() throws Exception
     {
         List items = new ArrayList();
         SelectItem disabledItem = new SelectItem("mars", "mars");
@@ -133,7 +140,7 @@ public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
                 "</tr></table>", output);
     }
 
-    public void testRenderStylePassthru() throws Exception
+    public void testSelectManyStylePassthru() throws Exception
     {
         List items = new ArrayList();
         items.add(new SelectItem(null, "mars"));
@@ -154,5 +161,17 @@ public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
                 "<td><input id=\"j_id0:0\" type=\"checkbox\" name=\"j_id0\"/><label for=\"j_id0:0\">&#160;mars</label></td>\t\t" +
                 "<td><input id=\"j_id0:1\" type=\"checkbox\" name=\"j_id0\"/><label for=\"j_id0:1\">&#160;jupiter</label></td>" +
                 "</tr></table>", output);
+    }
+
+    public void testSelectBooleanStylePassthru() throws Exception
+    {
+        selectBooleanCheckbox.setValue(true);
+        selectBooleanCheckbox.setStyle("color: red;");
+
+        selectBooleanCheckbox.encodeAll(facesContext);
+        facesContext.renderResponse();
+
+        String output = writer.getWriter().toString();
+        assertEquals("<input type=\"checkbox\" name=\"j_id0\" checked=\"checked\" value=\"true\" style=\"color: red;\"/>", output);
     }
 }
