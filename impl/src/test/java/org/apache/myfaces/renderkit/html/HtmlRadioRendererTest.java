@@ -79,8 +79,31 @@ public class HtmlRadioRendererTest extends AbstractJsfTestCase
         facesContext.renderResponse();
 
         String output = writer.getWriter().toString();
-        
+
         assertEquals("<table><tr>\t\t" +
+                "<td><input id=\"j_id0:0\" type=\"radio\" name=\"j_id0\" value=\"mars\"/><label for=\"j_id0:0\">&#160;mars</label></td>\t\t" +
+                "<td><input id=\"j_id0:1\" type=\"radio\" name=\"j_id0\" value=\"jupiter\"/><label for=\"j_id0:1\">&#160;jupiter</label></td>" +
+                "</tr></table>", output);
+    }
+
+    public void testDefaultStylePassthru() throws Exception
+    {
+        List items = new ArrayList();
+        items.add(new SelectItem("mars"));
+        items.add(new SelectItem("jupiter"));
+
+        UISelectItems selectItems = new UISelectItems();
+        selectItems.setValue(items);
+
+        selectOneRadio.getChildren().add(selectItems);
+
+        selectOneRadio.setStyle("color: red;");
+
+        selectOneRadio.encodeEnd(facesContext);
+        facesContext.renderResponse();
+
+        String output = writer.getWriter().toString();
+        assertEquals("<table style=\"color: red;\"><tr>\t\t" +
                 "<td><input id=\"j_id0:0\" type=\"radio\" name=\"j_id0\" value=\"mars\"/><label for=\"j_id0:0\">&#160;mars</label></td>\t\t" +
                 "<td><input id=\"j_id0:1\" type=\"radio\" name=\"j_id0\" value=\"jupiter\"/><label for=\"j_id0:1\">&#160;jupiter</label></td>" +
                 "</tr></table>", output);
