@@ -48,7 +48,6 @@ ever called, then any EL-binding for the disabled property will be ignored.</des
             <property-class>boolean</property-class>
             <property-extension>
                 <mfp:required>false</mfp:required>
-                <mfp:tag-attribute-excluded>true</mfp:tag-attribute-excluded>
             </property-extension>
         </property>
 
@@ -58,7 +57,6 @@ ever called, then any EL-binding for the disabled property will be ignored.</des
             <property-class>boolean</property-class>
             <property-extension>
                 <mfp:required>false</mfp:required>
-                <mfp:tag-attribute-excluded>true</mfp:tag-attribute-excluded>
             </property-extension>
         </property>
 
@@ -68,7 +66,6 @@ ever called, then any EL-binding for the disabled property will be ignored.</des
             <property-class>java.lang.String</property-class>
             <property-extension>
                 <mfp:required>false</mfp:required>
-                <mfp:tag-attribute-excluded>true</mfp:tag-attribute-excluded>
             </property-extension>
         </property>
 
@@ -78,7 +75,6 @@ ever called, then any EL-binding for the disabled property will be ignored.</des
             <property-class>java.lang.String</property-class>
             <property-extension>
                 <mfp:required>false</mfp:required>
-                <mfp:tag-attribute-excluded>true</mfp:tag-attribute-excluded>
             </property-extension>
         </property>
 
@@ -88,7 +84,6 @@ ever called, then any EL-binding for the disabled property will be ignored.</des
             <property-class>java.lang.Object</property-class>
             <property-extension>
                 <mfp:required>false</mfp:required>
-                <mfp:tag-attribute-excluded>true</mfp:tag-attribute-excluded>
             </property-extension>
         </property>
 
