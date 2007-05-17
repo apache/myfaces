@@ -326,7 +326,12 @@ public class JspViewHandlerImpl extends ViewHandler
         ViewResponseWrapper afterViewTagResponse = (ViewResponseWrapper) externalContext.getRequestMap().get(
                 AFTER_VIEW_TAG_CONTENT_PARAM);
         externalContext.getRequestMap().remove(AFTER_VIEW_TAG_CONTENT_PARAM);
-        response.getWriter().write(afterViewTagResponse.toString());
+
+        String afterViewContent = afterViewTagResponse.toString();
+        if (afterViewContent != null)
+        {
+            response.getWriter().write(afterViewTagResponse.toString());
+        }
 
         // Call endDocument() on the ResponseWriter
         newResponseWriter.endDocument();
