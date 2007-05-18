@@ -68,7 +68,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     private String _jspId = null;
     private String _facesJspId = null;
 
-    private List<String> _childrenAdded = null;
+    private Set<String> _childrenAdded = null;
     private List<String> _facetsAdded = null;
 
     private UIComponent _componentInstance = null;
@@ -129,7 +129,11 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     }
 
      protected List<String> getCreatedComponents() {
-        return _childrenAdded;
+         if (_childrenAdded != null)
+         {
+            return new ArrayList<String>(_childrenAdded);
+         }
+         return null;
     }
     
     /**
@@ -173,13 +177,10 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     {
         if (_childrenAdded == null)
         {
-            _childrenAdded = new ArrayList<String>();
+            _childrenAdded = new HashSet<String>();
         }
 
-        if (!_childrenAdded.contains(child.getId()))
-        {
-            _childrenAdded.add(child.getId());
-        }
+        _childrenAdded.add(child.getId());
     }
 
     /**
@@ -895,7 +896,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
      */
     private void removeFormerChildren(UIComponent component)
     {
-        List<String> formerChildIds = (List<String>)component.getAttributes().get(FORMER_CHILD_IDS_SET_ATTR);
+        Set<String> formerChildIds = (Set<String>)component.getAttributes().get(FORMER_CHILD_IDS_SET_ATTR);
         if (formerChildIds != null)
         {
             for (String childId : formerChildIds)
@@ -1270,7 +1271,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     {
         if (parentTag._childrenAdded == null)
         {
-            parentTag._childrenAdded = new ArrayList<String>();
+            parentTag._childrenAdded = new HashSet<String>();
         }
 
         if (!parentTag._childrenAdded.contains(id))
@@ -1288,7 +1289,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     /**
      * Utility method for creating diagnostic output.
      */
-    private String printList(List childrenAdded)
+    private String printList(Collection childrenAdded)
     {
         StringBuffer buf = new StringBuffer();
 
