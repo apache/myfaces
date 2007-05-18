@@ -3,9 +3,11 @@ package org.apache.myfaces.application.jsp;
 import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.ByteArrayOutputStream;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
+import javax.servlet.ServletOutputStream;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)
@@ -16,6 +18,7 @@ public class ViewResponseWrapper extends HttpServletResponseWrapper
     private PrintWriter _writer;
     private CharArrayWriter _charArrayWriter;
     private int _status = HttpServletResponse.SC_OK;
+    private WrappedServletOutputStream _byteArrayWriter;
 
     public ViewResponseWrapper(HttpServletResponse httpServletResponse)
     {
@@ -56,16 +59,31 @@ public class ViewResponseWrapper extends HttpServletResponseWrapper
     }
 
     public void flushToWrappedResponse() throws IOException
-    {
-        _charArrayWriter.writeTo(getResponse().getWriter());
-        _charArrayWriter.reset();
-        _writer.flush();
-        
+    {   if (_charArrayWriter != null) {
+            _charArrayWriter.writeTo(getResponse().getWriter());
+            _charArrayWriter.reset();
+            _writer.flush();
+        } else if (_byteArrayWriter != null) {
+            getResponse().getOutputStream().write(_byteArrayWriter.toByteArray());
+            _byteArrayWriter.reset();
+            _byteArrayWriter.flush();
+        }
+
+    }
+
+    @Override
+    public ServletOutputStream getOutputStream() throws IOException {
+        if (_charArrayWriter != null ) throw new IllegalStateException();
+        if (_byteArrayWriter == null ) {
+            _byteArrayWriter = new WrappedServletOutputStream();
+        }
+        return _byteArrayWriter;
     }
 
     @Override
     public PrintWriter getWriter() throws IOException
     {
+        if (_byteArrayWriter != null ) throw new IllegalStateException();
         if (_writer == null)
         {
             _charArrayWriter = new CharArrayWriter(4096);
@@ -73,7 +91,8 @@ public class ViewResponseWrapper extends HttpServletResponseWrapper
         }
         return _writer;
     }
-    
+
+    @Override
     public void reset()
     {
         if (_charArrayWriter != null)
@@ -92,4 +111,25 @@ public class ViewResponseWrapper extends HttpServletResponseWrapper
         return null;
     }
 
+    static class WrappedServletOutputStream extends ServletOutputStream {
+        private ByteArrayOutputStream _byteArrayOutputStream;
+
+
+        public WrappedServletOutputStream() {
+            _byteArrayOutputStream = new ByteArrayOutputStream(1024);
+        }
+
+        public void write(int i) throws IOException {
+           _byteArrayOutputStream.write(i);
+        }
+
+        public byte[] toByteArray() {
+            return _byteArrayOutputStream.toByteArray();
+        }
+
+        public void reset() {
+            _byteArrayOutputStream.reset();
+        }
+        
+    }
 }
