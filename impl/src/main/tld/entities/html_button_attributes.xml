@@ -7,11 +7,5 @@
         &html_onchange_attribute;
         &html_tabindex_attribute;
         &html_type_attribute;
-        <attribute>
-            <name>size</name>
-            <required>false</required>
-            <rtexprvalue>false</rtexprvalue>
-            <type>java.lang.String</type>
-            <description>The initial width of this control.</description>
-        </attribute>
+        
 
