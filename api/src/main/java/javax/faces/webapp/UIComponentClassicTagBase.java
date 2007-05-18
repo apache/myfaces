@@ -176,7 +176,10 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
             _childrenAdded = new ArrayList<String>();
         }
 
-        _childrenAdded.add(child.getId());
+        if (!_childrenAdded.contains(child.getId()))
+        {
+            _childrenAdded.add(child.getId());
+        }
     }
 
     /**
@@ -426,7 +429,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         // add the verbatim component
         if (verbatimComp != null && _parentClassicTag != null)
         {
-            addVerbatimAfterComponent(_parentClassicTag, verbatimComp, _componentInstance);
+            addVerbatimBeforeComponent(_parentClassicTag, verbatimComp, _componentInstance);
         }
 
         Map<String,Object> viewComponentIds = getViewComponentIds();
@@ -440,7 +443,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
             tagInstance = (viewComponentIds.get(clientId) == this) ? this : null;
         }
 
-        if (tagInstance != null)
+        if (tagInstance == null)
         {
             // check for duplicated IDs
             if (_id != null)
@@ -640,28 +643,23 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         Set childrenAddedIds = (Set)
                 parent.getAttributes().get(FORMER_CHILD_IDS_SET_ATTR);
 
+
+        int parentIndex = children.indexOf(component);
+
          if (childrenAddedIds != null)
          {
-             int parentIndex = children.indexOf(component);
-
-             boolean replacedVerbatim = false;
-
-             if (childrenAddedIds.size() == parentIndex)
+             if (parentIndex > 0 && childrenAddedIds.size() == parentIndex)
              {
                  UIComponent formerVerbatim = children.get(parentIndex - 1);
 
                  if (formerVerbatim instanceof UIOutput && formerVerbatim.isTransient())
                  {
                      children.set(parentIndex - 1, verbatimComp);
-                     replacedVerbatim = true;
                  }
              }
-
-             if (!replacedVerbatim)
-             {
-                 children.add(parentIndex, verbatimComp);
-             }
          }
+
+        children.add(parentIndex, verbatimComp);
 
         parentTag.addChild(verbatimComp);
     }
@@ -1274,7 +1272,11 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         {
             parentTag._childrenAdded = new ArrayList<String>();
         }
-        parentTag._childrenAdded.add(id);
+
+        if (!parentTag._childrenAdded.contains(id))
+        {
+            parentTag._childrenAdded.add(id);
+        }
     }
 
     private int getAddedChildrenCount(UIComponentClassicTagBase parentTag)

@@ -18,11 +18,11 @@ package org.apache.myfaces.taglib.core;
 import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
 import org.apache.myfaces.shared_impl.taglib.UIComponentELTagBase;
 
+import javax.el.ValueExpression;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIOutput;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyContent;
-import javax.el.ValueExpression;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
@@ -77,6 +77,6 @@ public class VerbatimTag
             component.setValue(bodyContent.getString());
             bodyContent.clearBody();
         }
-        return super.doAfterBody();
+        return super.getDoAfterBodyValue();
     }
 }
