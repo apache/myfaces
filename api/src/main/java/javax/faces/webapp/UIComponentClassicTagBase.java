@@ -15,7 +15,6 @@
  */
 package javax.faces.webapp;
 
-import javax.faces.FacesException;
 import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIOutput;
@@ -58,17 +57,19 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
 
     private static final String PREVIOUS_JSP_IDS_SET = "org.apache.myfaces.PREVIOUS_JSP_IDS_SET";
 
+    private static final String BOUND_VIEW_ROOT = "org.apache.myfaces.BOUND_VIEW_ROOT";
+
     protected static final String UNIQUE_ID_PREFIX = UIViewRoot.UNIQUE_ID_PREFIX + "_";
 
     protected PageContext pageContext = null;
     protected BodyContent bodyContent = null;
 
     private boolean _created = false;
-    
+
     private String _jspId = null;
     private String _facesJspId = null;
 
-    private Set<String> _childrenAdded = null;
+    private List<String> _childrenAdded = null;
     private List<String> _facetsAdded = null;
 
     private UIComponent _componentInstance = null;
@@ -129,13 +130,9 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     }
 
      protected List<String> getCreatedComponents() {
-         if (_childrenAdded != null)
-         {
-            return new ArrayList<String>(_childrenAdded);
-         }
-         return null;
+         return _childrenAdded;
     }
-    
+
     /**
      * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentClassicTagBase.html#getParentUIComponentClassicTagBase(javax.servlet.jsp.PageContext)
      * @param pageContext
@@ -177,7 +174,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     {
         if (_childrenAdded == null)
         {
-            _childrenAdded = new HashSet<String>();
+            _childrenAdded = new ArrayList<String>();
         }
 
         _childrenAdded.add(child.getId());
@@ -280,7 +277,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     protected String getFacesJspId() {
         if (_facesJspId == null)
         {
-            if (_jspId == null)
+            if (_jspId != null)
             {
                 _facesJspId = UNIQUE_ID_PREFIX + _jspId;
 
@@ -456,7 +453,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
                         throw new JspException("Duplicated component Id: '"+clientId+"' " +
                                 "for component: '"+getPathToComponent(_componentInstance)+"'.");
                     }
-                    
+
                     viewComponentIds.put(clientId, this);
                 }
             }
@@ -518,7 +515,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         int retValue = getDoEndValue();
 
         internalRelease();
-        
+
         return retValue;
     }
 
@@ -526,7 +523,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     {
         return SKIP_BODY;
     }
-    
+
     /**
      * Get the value to be returned by the doStartTag method to the
      * JSP framework. Subclasses which wish to use the inherited
@@ -823,7 +820,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         if (size <= 1)
             pageContext.removeAttribute(COMPONENT_STACK_ATTR,
                                          PageContext.REQUEST_SCOPE);
-        
+
     }
 
     private void pushTag()
@@ -896,7 +893,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
      */
     private void removeFormerChildren(UIComponent component)
     {
-        Set<String> formerChildIds = (Set<String>)component.getAttributes().get(FORMER_CHILD_IDS_SET_ATTR);
+        List<String> formerChildIds = (List<String>)component.getAttributes().get(FORMER_CHILD_IDS_SET_ATTR);
         if (formerChildIds != null)
         {
             for (String childId : formerChildIds)
@@ -1003,15 +1000,36 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
             // This is the root
             _componentInstance = context.getViewRoot();
 
-            try
+            // check if the view root is already bound to the tag
+            Object alreadyBoundViewRootFlag = _componentInstance.getAttributes().get(BOUND_VIEW_ROOT);
+
+            if (alreadyBoundViewRootFlag == null)
+            {
+                try
+                {
+                    setProperties(_componentInstance);
+                }
+                catch (Throwable e)
+                {
+                    throw new JspException(e);
+                }
+
+                if (_id != null)
+                {
+                    _componentInstance.setId(_id);
+                }
+                else
+                {
+                    _componentInstance.setId(getFacesJspId());
+                }
+                _componentInstance.getAttributes().put(BOUND_VIEW_ROOT, true);
+                _created = true;
+
+            }
+            else if (hasBinding())
             {
                 setProperties(_componentInstance);
             }
-            catch (Throwable e)
-            {
-                throw new JspException(e);
-            }
-            _created = true;
 
             return _componentInstance;
         }
@@ -1078,24 +1096,18 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
             _componentInstance = createComponent(context, id);
             _created = true;
             setProperties(_componentInstance);
-            int index = getAddedChildrenCount(parentTag);
+            int index = parentTag.getIndexOfNextChildTag();
+            if (index > parent.getChildCount())
+            {
+                index = parent.getChildCount();
+            }
+
             List<UIComponent> children = parent.getChildren();
-            if (index <= children.size())
-            {
-                children.add(index, _componentInstance);
-            }
-            else
-            {
-                throw new FacesException("cannot add _componentInstance with id '" +
-                        _componentInstance.getId() + " to its parent _componentInstance with id : '"+parent.getId()+"' and path '"+
-                        getPathToComponent(parent)+"'at position :"+index+" in list of children. "+
-                        "This might be a problem due to a duplicate id in a previously added _componentInstance,"+
-                        "if this is the case, the problematic id might be one of : "+ printList(parentTag._childrenAdded));
-            }
+            children.add(index, _componentInstance);
         }
-        addChildIdToParentTag(parentTag, id);
+
         return _componentInstance;
-        
+
     }
 
     private UIComponent findComponent(UIComponent parent, String id)
@@ -1262,55 +1274,8 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         parentTag._facetsAdded.add(facetName);
     }
 
-    /**
-     * Notify the enclosing JSP tag of the id of this component's id. The
-     * parent tag will later delete any existing view components that were
-     * not seen during this rendering phase; see doEndTag for details.
-     */
-    private void addChildIdToParentTag(UIComponentClassicTagBase parentTag, String id)
-    {
-        if (parentTag._childrenAdded == null)
-        {
-            parentTag._childrenAdded = new HashSet<String>();
-        }
-
-        if (!parentTag._childrenAdded.contains(id))
-        {
-            parentTag._childrenAdded.add(id);
-        }
-    }
-
-    private int getAddedChildrenCount(UIComponentClassicTagBase parentTag)
-    {
-        return parentTag._childrenAdded != null ?
-               parentTag._childrenAdded.size() : 0;
-    }
-
-    /**
-     * Utility method for creating diagnostic output.
-     */
-    private String printList(Collection childrenAdded)
-    {
-        StringBuffer buf = new StringBuffer();
-
-        if(childrenAdded!=null)
-        {
-            Iterator it = childrenAdded.iterator();
-
-            while (it.hasNext())
-            {
-                Object obj =  it.next();
-                buf.append(obj);
-
-                if(it.hasNext())
-                    buf.append(",");
-            }
-        }
-        return buf.toString();
-    }
-    
     protected abstract boolean hasBinding();
-    
+
     public JspWriter getPreviousOut() {
         return bodyContent.getEnclosingWriter();
     }
