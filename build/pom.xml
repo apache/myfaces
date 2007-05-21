@@ -38,14 +38,9 @@
   <build>
     <plugins>
       <plugin>
-        <!--
-        this plugin needs to be built from
-        https://svn.apache.org/repos/asf/incubator/adffaces/branches/faces-1_2-061113/plugins/maven-faces-plugin
-        temporarily fetched from baranda's repo
-        -->
         <groupId>org.apache.myfaces.trinidadbuild</groupId>
         <artifactId>maven-faces-plugin</artifactId>
-        <version>incubator-1.2-07-apr-SNAPSHOT</version>
+        <version>1.2-07-apr-SNAPSHOT</version>
         <configuration>
           <excludes>
             <exclude>**/includes/**</exclude>
@@ -69,14 +64,5 @@
       </plugin>
     </plugins>
   </build>
-
-  <!-- Temporary repo while the maven-faces-config plugin is not available
-  in a proper place -->
-  <pluginRepositories>
-      <pluginRepository>
-          <id>baranda-repo</id>
-          <url>http://people.apache.org/~baranda/repo</url>
-      </pluginRepository>
-  </pluginRepositories>
 
 </project>

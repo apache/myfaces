@@ -34,34 +34,11 @@
           </excludes>
         </configuration>
       </plugin>
-      <!--<plugin>
+
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>xslt-maven-plugin</artifactId>
-        <version>1.0</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>transform</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <xslFile>src/main/tld/misc/resolve_entities.xsl</xslFile>
-          <srcIncludes>**/*.tld</srcIncludes>
-          <srcDir>src/main/tld</srcDir>
-          <destDir>target/classes/META-INF</destDir>
-        </configuration>
-      </plugin>-->
-      <plugin>
-        <!--
-        this plugin needs to be built from
-        https://svn.apache.org/repos/asf/incubator/adffaces/branches/faces-1_2-061113/plugins/maven-faces-plugin
-        temporarily fetched from baranda's repo
-        -->
         <groupId>org.apache.myfaces.trinidadbuild</groupId>
         <artifactId>maven-faces-plugin</artifactId>
-        <version>incubator-1.2-07-apr-SNAPSHOT</version>
+        <version>1.2-07-apr-SNAPSHOT</version>
         <configuration>
           <taglibs>
             <f>http://java.sun.com/jsf/core</f>
@@ -395,14 +372,6 @@
     </plugins>
   </reporting>
 
-  <!-- Temporary repo while the maven-faces-config plugin is not available
-  in a proper place -->
-  <pluginRepositories>
-      <pluginRepository>
-          <id>baranda-repo</id>
-          <url>http://people.apache.org/~baranda/repo</url>
-      </pluginRepository>
-  </pluginRepositories>
   <repositories>
      <repository>
        <id>tomcat</id>
