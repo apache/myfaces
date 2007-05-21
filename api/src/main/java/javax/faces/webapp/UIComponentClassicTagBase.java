@@ -638,7 +638,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         // as the number of children replace at a -1 offset from the current
         // value of indexOfComponentInParent, otherwise, call add()
 
-        Set childrenAddedIds = (Set)
+        List<String> childrenAddedIds = (List<String>)
                 parent.getAttributes().get(FORMER_CHILD_IDS_SET_ATTR);
 
 
