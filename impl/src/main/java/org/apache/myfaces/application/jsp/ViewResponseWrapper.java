@@ -74,7 +74,7 @@ public class ViewResponseWrapper extends HttpServletResponseWrapper
     {
         if (_charArrayWriter != null)
         {
-            _charArrayWriter.writeTo(getResponse().getWriter());
+            _charArrayWriter.writeTo(writer);
             _charArrayWriter.reset();
             _writer.flush();
         }
