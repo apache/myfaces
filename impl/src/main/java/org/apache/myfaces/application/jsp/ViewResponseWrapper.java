@@ -55,24 +55,31 @@ public class ViewResponseWrapper extends HttpServletResponseWrapper
     }
 
     public void flushToWrappedResponse() throws IOException
-    {   if (_charArrayWriter != null) {
+    {
+        if (_charArrayWriter != null)
+        {
             _charArrayWriter.writeTo(getResponse().getWriter());
             _charArrayWriter.reset();
             _writer.flush();
-        } else if (_byteArrayWriter != null) {
-        System.out.println("BYTE ARRAY WRITER");
+        }
+        else if (_byteArrayWriter != null)
+        {
             getResponse().getOutputStream().write(_byteArrayWriter.toByteArray());
             _byteArrayWriter.reset();
             _byteArrayWriter.flush();
         }
     }
 
-    public void flushToWriter(Writer writer) throws IOException {
-        if (_charArrayWriter != null) {
+    public void flushToWriter(Writer writer) throws IOException
+    {
+        if (_charArrayWriter != null)
+        {
             _charArrayWriter.writeTo(getResponse().getWriter());
             _charArrayWriter.reset();
             _writer.flush();
-        } else if (_byteArrayWriter != null) {
+        }
+        else if (_byteArrayWriter != null)
+        {
             getResponse().getOutputStream().write(_byteArrayWriter.toByteArray());
             _byteArrayWriter.reset();
             _byteArrayWriter.flush();
@@ -81,9 +88,11 @@ public class ViewResponseWrapper extends HttpServletResponseWrapper
     }
 
     @Override
-    public ServletOutputStream getOutputStream() throws IOException {
-        if (_charArrayWriter != null ) throw new IllegalStateException();
-        if (_byteArrayWriter == null ) {
+    public ServletOutputStream getOutputStream() throws IOException
+    {
+        if (_charArrayWriter != null) throw new IllegalStateException();
+        if (_byteArrayWriter == null)
+        {
             _byteArrayWriter = new WrappedServletOutputStream();
         }
         return _byteArrayWriter;
@@ -92,7 +101,7 @@ public class ViewResponseWrapper extends HttpServletResponseWrapper
     @Override
     public PrintWriter getWriter() throws IOException
     {
-        if (_byteArrayWriter != null ) throw new IllegalStateException();
+        if (_byteArrayWriter != null) throw new IllegalStateException();
         if (_writer == null)
         {
             _charArrayWriter = new CharArrayWriter(4096);
@@ -120,25 +129,30 @@ public class ViewResponseWrapper extends HttpServletResponseWrapper
         return null;
     }
 
-    static class WrappedServletOutputStream extends ServletOutputStream {
+    static class WrappedServletOutputStream extends ServletOutputStream
+    {
         private ByteArrayOutputStream _byteArrayOutputStream;
 
 
-        public WrappedServletOutputStream() {
+        public WrappedServletOutputStream()
+        {
             _byteArrayOutputStream = new ByteArrayOutputStream(1024);
         }
 
-        public void write(int i) throws IOException {
-           _byteArrayOutputStream.write(i);
+        public void write(int i) throws IOException
+        {
+            _byteArrayOutputStream.write(i);
         }
 
-        public byte[] toByteArray() {
+        public byte[] toByteArray()
+        {
             return _byteArrayOutputStream.toByteArray();
         }
 
-        public void reset() {
+        public void reset()
+        {
             _byteArrayOutputStream.reset();
         }
-        
+
     }
 }
