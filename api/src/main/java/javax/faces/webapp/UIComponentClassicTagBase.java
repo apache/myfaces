@@ -314,7 +314,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
 
             if (verbatimComp != null)
             {
-                Set childrenAddedIds = (Set)
+                List<String> childrenAddedIds = (List<String>)
                   _componentInstance.getAttributes().get(FORMER_CHILD_IDS_SET_ATTR);
 
                 if (childrenAddedIds == null)
