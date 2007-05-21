@@ -20,7 +20,6 @@ import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
-import javax.faces.el.ValueBinding;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,17 +69,17 @@ class _SharedRendererUtils
             throws ConverterException
     {
         // Attention!
-        // This code is duplicated in myfaces implementation renderkit package.
+        // This code is duplicated in jsfapi component package.
         // If you change something here please do the same in the other class!
 
         if (submittedValue == null) throw new NullPointerException("submittedValue");
 
-        ValueBinding vb = component.getValueBinding("value");
+        ValueExpression expression = component.getValueExpression("value");
         Class valueType = null;
         Class arrayComponentType = null;
-        if (vb != null)
+        if (expression != null)
         {
-            valueType = vb.getType(facesContext);
+            valueType = expression.getType(facesContext.getELContext());
             if (valueType != null && valueType.isArray())
             {
                 arrayComponentType = valueType.getComponentType();
@@ -103,7 +102,7 @@ class _SharedRendererUtils
                 // --> according to javadoc of UISelectMany we assume that the element type
                 //     is java.lang.String, and copy the String array to a new List
                 int len = submittedValue.length;
-                List<String> lst = new ArrayList<String>(len);
+                List lst = new ArrayList(len);
                 for (int i = 0; i < len; i++)
                 {
                     lst.add(submittedValue[i]);
@@ -118,38 +117,35 @@ class _SharedRendererUtils
 
             if (Object.class.equals(arrayComponentType)) return submittedValue; //No conversion for Object class
 
-            try
+            converter = facesContext.getApplication().createConverter(arrayComponentType);
+
+            if (converter == null)
             {
-                converter = facesContext.getApplication().createConverter(arrayComponentType);
-            }
-            catch (FacesException e)
-            {
-                log(facesContext, "No Converter for type " + arrayComponentType.getName() + " found", e);
                 return submittedValue;
             }
         }
 
         // Now, we have a converter...
         // We determine the type of the component array after converting one of it's elements
-        if (vb != null)
+        if (expression != null)
         {
-            valueType = vb.getType(facesContext);
+            valueType = expression.getType(facesContext.getELContext());
             if (valueType != null && valueType.isArray())
             {
-                if (submittedValue.length > 0) 
+                if (submittedValue.length > 0)
                 {
                     arrayComponentType = converter.getAsObject(facesContext, component, submittedValue[0]).getClass();
                 }
             }
         }
-        
+
         if (valueType == null)
         {
             // ...but have no idea of expected type
             // --> so let's convert it to an Object array
             int len = submittedValue.length;
             Object [] convertedValues = (Object []) Array.newInstance(
-                    arrayComponentType==null?Object.class:arrayComponentType, len);
+                    arrayComponentType==null?Object.class:arrayComponentType,len);
             for (int i = 0; i < len; i++)
             {
                 convertedValues[i]
@@ -164,7 +160,7 @@ class _SharedRendererUtils
             // of this List is java.lang.String. But there is a Converter set for this
             // component. Because the user must know what he is doing, we will convert the values.
             int len = submittedValue.length;
-            List<Object> lst = new ArrayList<Object>(len);
+            List lst = new ArrayList(len);
             for (int i = 0; i < len; i++)
             {
                 lst.add(converter.getAsObject(facesContext, component, submittedValue[i]));
@@ -189,13 +185,13 @@ class _SharedRendererUtils
             }
             return convertedValues;
         }
-        
+
         //Object array
         int len = submittedValue.length;
-        ArrayList<Object> convertedValues = new ArrayList<Object>(len); 
+        ArrayList convertedValues = new ArrayList(len);
         for (int i = 0; i < len; i++)
         {
-        	convertedValues.add(i, converter.getAsObject(facesContext, component, submittedValue[i])); 
+            convertedValues.add(i, converter.getAsObject(facesContext, component, submittedValue[i]));
         }
         return convertedValues.toArray((Object[]) Array.newInstance(arrayComponentType, len));
     }
