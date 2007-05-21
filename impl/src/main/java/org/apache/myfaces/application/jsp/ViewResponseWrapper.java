@@ -1,13 +1,9 @@
 package org.apache.myfaces.application.jsp;
 
-import java.io.CharArrayWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.ByteArrayOutputStream;
-
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
-import javax.servlet.ServletOutputStream;
+import java.io.*;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)
@@ -64,11 +60,24 @@ public class ViewResponseWrapper extends HttpServletResponseWrapper
             _charArrayWriter.reset();
             _writer.flush();
         } else if (_byteArrayWriter != null) {
+        System.out.println("BYTE ARRAY WRITER");
             getResponse().getOutputStream().write(_byteArrayWriter.toByteArray());
             _byteArrayWriter.reset();
             _byteArrayWriter.flush();
         }
+    }
 
+    public void flushToWriter(Writer writer) throws IOException {
+        if (_charArrayWriter != null) {
+            _charArrayWriter.writeTo(getResponse().getWriter());
+            _charArrayWriter.reset();
+            _writer.flush();
+        } else if (_byteArrayWriter != null) {
+            getResponse().getOutputStream().write(_byteArrayWriter.toByteArray());
+            _byteArrayWriter.reset();
+            _byteArrayWriter.flush();
+        }
+        writer.flush();
     }
 
     @Override

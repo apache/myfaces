@@ -327,11 +327,7 @@ public class JspViewHandlerImpl extends ViewHandler
                 AFTER_VIEW_TAG_CONTENT_PARAM);
         externalContext.getRequestMap().remove(AFTER_VIEW_TAG_CONTENT_PARAM);
 
-        String afterViewContent = afterViewTagResponse.toString();
-        if (afterViewContent != null)
-        {
-            response.getWriter().write(afterViewTagResponse.toString());
-        }
+        afterViewTagResponse.flushToWriter(response.getWriter());
 
         // Call endDocument() on the ResponseWriter
         newResponseWriter.endDocument();
