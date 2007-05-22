@@ -32,6 +32,7 @@ import javax.servlet.jsp.tagext.Tag;
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Bruno Aranda (latest modification by $Author: baranda $)
@@ -45,6 +46,9 @@ import java.util.logging.Level;
 public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         implements BodyTag, JspIdConsumer
 {
+	
+		private static Logger log = Logger.getLogger("javax.faces.webapp");
+	
     //  do not change this w/out doing likewise in UIComponentTag
     private static final String COMPONENT_STACK_ATTR = "org.apache.myfaces.COMPONENT_STACK";
 
