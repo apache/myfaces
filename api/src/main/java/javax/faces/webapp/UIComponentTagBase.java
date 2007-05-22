@@ -16,8 +16,6 @@
 
 package javax.faces.webapp;
 
-import java.util.logging.Logger;
-
 import javax.el.ELContext;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -31,8 +29,6 @@ import javax.servlet.jsp.tagext.JspTag;
 public abstract class UIComponentTagBase extends Object implements JspTag
 {
 
-    protected static Logger log = Logger.getLogger("javax.faces.webapp");
-    
     /**
      * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#addChild(javax.faces.component.UIComponent)
      * @param child
