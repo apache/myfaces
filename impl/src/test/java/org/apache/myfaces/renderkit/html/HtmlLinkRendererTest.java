@@ -81,7 +81,7 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
 
         String output = writer.getWriter().toString();
 
-        assertEquals("<span id=\"" + link.getClientId(facesContext) + "\" target=\"testTarget\" class=\"linkClass\">HelloLink</span>", output);
+        assertEquals("<span target=\"testTarget\" class=\"linkClass\">HelloLink</span>", output);
     }
 
      public void testLinkPassthrough() throws Exception
@@ -124,7 +124,6 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
                 ".value=&apos;j_id1:j_id0&apos;;if(document.forms[&apos;j_id1&apos;].onsubmit){var result=document.forms[&apos;j_id1&apos;]" +
                 ".onsubmit();  if( (typeof result == &apos;undefined&apos;) || result ) {document.forms[&apos;j_id1&apos;].submit();}}else" +
                 "{document.forms[&apos;j_id1&apos;].submit();}return false;\" " +
-                "id=\"" + link.getClientId(facesContext) + "\" " +
                 "accesskey=\"accesskey\" charset=\"charset\" coords=\"coords\" hreflang=\"hreflang\" " +
                 "rel=\"rel\" rev=\"rev\" shape=\"shape\" tabindex=\"tabindex\" type=\"type\" " +
                 "ondblclick=\"ondblclick\" onmousedown=\"onmousedown\" onmouseup=\"onmouseup\" " +
