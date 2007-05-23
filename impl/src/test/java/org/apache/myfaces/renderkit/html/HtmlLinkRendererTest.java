@@ -81,7 +81,7 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
 
         String output = writer.getWriter().toString();
 
-        assertEquals("<span target=\"testTarget\" class=\"linkClass\">HelloLink</span>", output);
+        assertEquals("<span id=\"" + link.getClientId(facesContext) + "\" target=\"testTarget\" class=\"linkClass\">HelloLink</span>", output);
     }
 
      public void testLinkPassthrough() throws Exception
