@@ -18,16 +18,17 @@
  */
 package javax.faces.validator;
 
-import static org.easymock.EasyMock.expect;
-import static org.testng.Assert.assertEquals;
-
-import javax.faces.application.Application;
-import javax.faces.component.UIViewRoot;
-
 import org.apache.shale.test.mock.MockFacesContext12;
+import static org.easymock.EasyMock.expect;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
+
+import javax.faces.application.Application;
+import javax.faces.application.ViewHandler;
+import javax.faces.component.UIViewRoot;
+import java.util.Locale;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -47,9 +48,12 @@ public class _MessageUtilsTest
         MockFacesContext12 facesContext = new MockFacesContext12();
         IMocksControl mocksControl = EasyMock.createControl();
         Application application = mocksControl.createMock(Application.class);
+        ViewHandler viewHandler = mocksControl.createMock(ViewHandler.class);
         facesContext.setApplication(application);
         facesContext.setViewRoot(root);
 
+        expect(application.getViewHandler()).andReturn(viewHandler);
+        expect(viewHandler.calculateLocale(facesContext)).andReturn(Locale.ENGLISH);
         expect(application.getMessageBundle()).andReturn("javax.faces.Messages");
         mocksControl.replay();
 

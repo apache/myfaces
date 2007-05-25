@@ -18,39 +18,29 @@
  */
 package javax.faces.component;
 
+import org.apache.myfaces.TestRunner;
+import org.apache.shale.test.mock.MockFacesContext12;
 import static org.easymock.EasyMock.*;
+import org.easymock.IAnswer;
+import org.easymock.classextension.EasyMock;
+import org.easymock.classextension.IMocksControl;
 import static org.testng.Assert.*;
-
-import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import javax.el.ELContext;
 import javax.el.MethodExpression;
 import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
+import javax.faces.application.ViewHandler;
 import javax.faces.context.ExternalContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.FacesEvent;
-import javax.faces.event.PhaseEvent;
-import javax.faces.event.PhaseId;
-import javax.faces.event.PhaseListener;
+import javax.faces.event.*;
 import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.webapp.FacesServlet;
-
-import org.apache.myfaces.TestRunner;
-import org.apache.shale.test.mock.MockFacesContext12;
-import org.easymock.IAnswer;
-import org.easymock.classextension.EasyMock;
-import org.easymock.classextension.IMocksControl;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import java.lang.reflect.Method;
+import java.util.*;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -66,6 +56,7 @@ public class UIViewRootTest
     private Application _application;
     private Lifecycle _lifecycle;
     private LifecycleFactory _lifecycleFactory;
+    private ViewHandler _viewHandler;
     private ELContext _elContext;
 
     private static ThreadLocal<LifecycleFactory> LIFECYCLEFACTORY = new ThreadLocal<LifecycleFactory>();
@@ -88,6 +79,7 @@ public class UIViewRootTest
         _testimpl = new UIViewRoot();
         _lifecycle = _mocksControl.createMock(Lifecycle.class);
         _elContext = _mocksControl.createMock(ELContext.class);
+        _viewHandler = _mocksControl.createMock(ViewHandler.class);
         _facesContext.setELContext(_elContext);
 
         LIFECYCLEFACTORY.set(_lifecycleFactory);
@@ -115,7 +107,11 @@ public class UIViewRootTest
     @Test
     public void testLocale() throws Exception
     {
+        expect(_application.getViewHandler()).andReturn(_viewHandler).anyTimes();
+        expect(_viewHandler.calculateLocale(_facesContext)).andReturn(null).anyTimes();
         _mocksControl.replay();
+
+        _facesContext.setApplication(_application);
         assertNull(_testimpl.getLocale());
         _testimpl.setLocale(Locale.JAPANESE);
         assertEquals(Locale.JAPANESE, _testimpl.getLocale());
