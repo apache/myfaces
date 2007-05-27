@@ -603,14 +603,11 @@ public class FacesConfigurator
 
     private Object getApplicationObject(Class interfaceClass, Iterator classNamesIterator, Object defaultObject)
     {
-        System.out.println("DELETEME: Interface: "+interfaceClass);
-
         Object current = defaultObject;
 
         while (classNamesIterator.hasNext())
         {
             String implClassName = (String) classNamesIterator.next();
-            System.out.println("\tDELETEME: "+implClassName);
             Class implClass = ClassUtils.simpleClassForName(implClassName);
 
             // check, if class is of expected interface type
