@@ -15,10 +15,17 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import javax.faces.convert.DateTimeConverter;
-import javax.servlet.jsp.PageContext;
+import org.apache.myfaces.shared_impl.taglib.UIComponentELTagUtils;
+import org.apache.myfaces.shared_impl.util.LocaleUtils;
 
-import org.apache.myfaces.shared_impl.taglib.core.ConvertDateTimeTagBase;
+import javax.el.ELContext;
+import javax.el.ValueExpression;
+import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
+import javax.faces.convert.DateTimeConverter;
+import javax.servlet.jsp.JspException;
+import java.util.Locale;
+import java.util.TimeZone;
 
 
 /**
@@ -26,19 +33,209 @@ import org.apache.myfaces.shared_impl.taglib.core.ConvertDateTimeTagBase;
  * @version $Revision$ $Date$
  */
 public class ConvertDateTimeTag
-        extends ConvertDateTimeTagBase
+        extends ConverterTag
 {
-	
+
     /**
      * serial version id for correct serialisation versioning
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 54366768002181L;
 
-	
-    public void setPageContext(PageContext context)
+    private static final String DEFAULT_DATE_STYLE = "default";
+    private static final String DEFAULT_TIME_STYLE = "default";
+
+    private static final String TYPE_DATE = "date";
+    private static final String TYPE_TIME = "time";
+    private static final String TYPE_BOTH = "both";
+
+    private static final String DEFAULT_TYPE = TYPE_DATE;
+
+    private ValueExpression _dateStyle;
+    private ValueExpression _locale;
+    private ValueExpression _pattern;
+    private ValueExpression _timeStyle;
+    private ValueExpression _timeZone;
+    private ValueExpression _type;
+
+    private static final ValueExpression CONVERTER_ID;
+
+    static
     {
-        super.setPageContext(context);
-        setConverterId(DateTimeConverter.CONVERTER_ID);
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        CONVERTER_ID = FacesContext.getCurrentInstance().getApplication().getExpressionFactory().createValueExpression(
+                    facesContext.getELContext(),"javax.faces.DateTime",String.class);
     }
-	
+        
+    public void release()
+    {
+        super.release();
+        _dateStyle = null;
+        _locale = null;
+        _pattern = null;
+        _timeStyle = null;
+        _timeZone = null;
+        _type = null;
+    }
+
+    public void setDateStyle(ValueExpression dateStyle)
+    {
+        _dateStyle = dateStyle;
+    }
+
+    public void setLocale(ValueExpression locale)
+    {
+        _locale = locale;
+    }
+
+    public void setPattern(ValueExpression pattern)
+    {
+        _pattern = pattern;
+    }
+
+    public void setTimeStyle(ValueExpression timeStyle)
+    {
+        _timeStyle = timeStyle;
+    }
+
+    public void setTimeZone(ValueExpression timeZone)
+    {
+        _timeZone = timeZone;
+    }
+
+    public void setType(ValueExpression type)
+    {
+        _type = type;
+    }
+
+    public int doStartTag() throws JspException {
+        super.setConverterId(CONVERTER_ID);
+        return super.doStartTag();
+    }
+
+    protected Converter createConverter() throws JspException
+        {
+            DateTimeConverter converter = (DateTimeConverter)super.createConverter();
+
+            ELContext elContext = FacesContext.getCurrentInstance().getELContext();
+            setConverterDateStyle(elContext, converter, _dateStyle);
+            setConverterLocale(elContext, converter, _locale);
+            setConverterPattern(elContext, converter, _pattern);
+            setConverterTimeStyle(elContext, converter, _timeStyle);
+            setConverterTimeZone(elContext, converter, _timeZone);
+            setConverterType(elContext, converter, _type);
+
+            return converter;
+        }
+
+        private void setConverterLocale(ELContext eLContext,
+                                                 DateTimeConverter converter,
+                                                 ValueExpression value)
+        {
+            if (value == null) return;
+
+            Object objLocale = UIComponentELTagUtils.evaluateValueExpression(eLContext, value);
+            Locale locale;
+
+            if (objLocale == null) return;
+
+            if (objLocale instanceof Locale)
+            {
+                locale = (Locale) objLocale;
+            }
+            else
+            {
+                locale = LocaleUtils.toLocale(objLocale.toString());
+            }
+            converter.setLocale(locale);
+        }
+
+        private void setConverterDateStyle(ELContext elContext,
+                                                 DateTimeConverter converter,
+                                                 ValueExpression value)
+        {
+            if (value == null) return;
+
+            String dateStyle = (String) UIComponentELTagUtils.evaluateValueExpression(elContext, value);
+
+            if (dateStyle == null)
+            {
+                dateStyle = DEFAULT_DATE_STYLE;
+            }
+
+            converter.setDateStyle(dateStyle);
+        }
+
+        private void setConverterPattern(ELContext elContext,
+                                                 DateTimeConverter converter,
+                                                 ValueExpression value)
+        {
+            if (value == null) return;
+
+            String pattern = (String) UIComponentELTagUtils.evaluateValueExpression(elContext, value);
+            converter.setPattern(pattern);
+        }
+
+        private void setConverterTimeStyle(ELContext elContext,
+                                                 DateTimeConverter converter,
+                                                 ValueExpression value)
+        {
+            if (value == null) return;
+
+            String timeStyle = (String) UIComponentELTagUtils.evaluateValueExpression(elContext, value);
+
+            if (timeStyle == null)
+            {
+                timeStyle = DEFAULT_TIME_STYLE;
+            }
+
+            converter.setTimeStyle(timeStyle);
+        }
+
+        private void setConverterTimeZone(ELContext elContext,
+                                                 DateTimeConverter converter,
+                                                 ValueExpression value)
+        {
+            if (value == null) return;
+
+            Object objTimeZone = UIComponentELTagUtils.evaluateValueExpression(elContext, value);
+            TimeZone timeZone;
+
+            if (objTimeZone == null) return;
+
+            if (objTimeZone instanceof TimeZone)
+            {
+                timeZone = (TimeZone) objTimeZone;
+            }
+            else
+            {
+                timeZone = TimeZone.getTimeZone(objTimeZone.toString());
+            }
+            converter.setTimeZone(timeZone);
+        }
+
+        private void setConverterType(ELContext elContext,
+                                             DateTimeConverter converter,
+                                             ValueExpression value)
+        {
+            if (value == null) return;
+
+            String type = (String) UIComponentELTagUtils.evaluateValueExpression(elContext, value);
+
+            if (type == null)
+            {
+                type = DEFAULT_TYPE;
+            }
+            else
+            {
+                if (_dateStyle != null) {
+                    type = TYPE_BOTH;
+                } else {
+                    type = TYPE_TIME;
+                }
+           }
+
+            converter.setType(type);
+        }
+
+
 }
