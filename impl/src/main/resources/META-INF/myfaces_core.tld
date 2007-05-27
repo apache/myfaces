@@ -124,7 +124,8 @@
    </tag>
    <!--
 ======================================================
- converter
+
+
 ======================================================
 -->
    <tag>
@@ -210,7 +211,7 @@
            associates it with the nearest parent UIComponent.
        </description>
        <name>converter</name>
-       <tag-class>javax.faces.webapp.ConverterTag</tag-class>
+       <tag-class>org.apache.myfaces.taglib.core.ConverterTag</tag-class>
        <body-content>empty</body-content>
       <attribute>
           <description>The converter's registered ID.</description>
