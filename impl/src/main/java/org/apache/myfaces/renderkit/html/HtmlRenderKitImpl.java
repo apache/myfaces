@@ -25,10 +25,11 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.render.RenderKit;
 import javax.faces.render.Renderer;
 import javax.faces.render.ResponseStateManager;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
-import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -101,7 +102,7 @@ public class HtmlRenderKitImpl
             // this is not necessarily an error, but users do need to be
             // very careful about jar processing order when overriding
             // some component's renderer with an alternate renderer.
-            log.info("Overwriting renderer with family = " + componentFamily +
+            log.debug("Overwriting renderer with family = " + componentFamily +
                " rendererType = " + rendererType +
                " renderer class = " + renderer.getClass().getName());
         }

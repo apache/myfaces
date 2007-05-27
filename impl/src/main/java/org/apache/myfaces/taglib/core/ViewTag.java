@@ -202,12 +202,17 @@ public class ViewTag
         else if (viewRoot.getRenderKitId() == null)
         {
             String defaultRenderKitId = facesContext.getApplication().getDefaultRenderKitId();
-            viewRoot.setRenderKitId(defaultRenderKitId);
+
+            if (defaultRenderKitId != null)
+            {
+                viewRoot.setRenderKitId(defaultRenderKitId);
+            }
+            else
+            {
+                viewRoot.setRenderKitId(RenderKitFactory.HTML_BASIC_RENDER_KIT);
+            }
         }
-        else
-        {
-            viewRoot.setRenderKitId(RenderKitFactory.HTML_BASIC_RENDER_KIT);
-        }
+
 
         // beforePhase
         if (_beforePhase != null)
