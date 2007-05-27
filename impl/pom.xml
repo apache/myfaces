@@ -44,9 +44,7 @@
             <f>http://java.sun.com/jsf/core</f>
             <h>http://java.sun.com/jsf/html</h>
           </taglibs>
-          <!--
-          <faceletHandlerClass>org.apache.myfaces.trinidadinternal.facelets.TrinidadComponentHandler</faceletHandlerClass>
-           -->
+          <targetPath>META-INF/standard-faces-config.xml</targetPath>
           <packageContains>org.apache</packageContains>
           <skipApiOrBaseClasses>false</skipApiOrBaseClasses>
           <jsfVersion>1.2</jsfVersion>
@@ -60,7 +58,6 @@
             <goals>
               <goal>generate-faces-config</goal>
               <goal>generate-jsp-taglibs</goal>
-              <!--<goal>generate-facelets-taglibs</goal>-->
             </goals>
           </execution>
         </executions>

@@ -80,7 +80,7 @@ public class ViewResponseWrapper extends HttpServletResponseWrapper
         }
         else if (_byteArrayWriter != null)
         {
-            getResponse().getOutputStream().write(_byteArrayWriter.toByteArray());
+            getOutputStream().write(_byteArrayWriter.toByteArray());
             _byteArrayWriter.reset();
             _byteArrayWriter.flush();
         }

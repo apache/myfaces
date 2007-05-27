@@ -23,10 +23,6 @@
   <application>
     <action-listener>org.apache.myfaces.application.ActionListenerImpl</action-listener>
     <navigation-handler>org.apache.myfaces.application.NavigationHandlerImpl</navigation-handler>
-    <!--
-    <variable-resolver>org.apache.myfaces.el.VariableResolverImpl</variable-resolver>
-    <property-resolver>org.apache.myfaces.el.PropertyResolverImpl</property-resolver>
-    -->
     <view-handler>org.apache.myfaces.application.jsp.JspViewHandlerImpl</view-handler>
     <state-manager>org.apache.myfaces.application.jsp.JspStateManagerImpl</state-manager>
     <locale-config>

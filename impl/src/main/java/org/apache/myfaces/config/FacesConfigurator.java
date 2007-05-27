@@ -74,8 +74,7 @@ public class FacesConfigurator
 {
     private static final Log log = LogFactory.getLog(FacesConfigurator.class);
 
-    private static final String STANDARD_FACES_CONFIG_RESOURCE = "org.apache.myfaces.resource".replace('.', '/')
-            + "/standard-faces-config.xml";
+    private static final String STANDARD_FACES_CONFIG_RESOURCE = "META-INF/standard-faces-config.xml";
     private static final String FACES_CONFIG_RESOURCE = "META-INF/faces-config.xml";
 
     private static final String META_INF_SERVICES_RESOURCE_PREFIX = "META-INF/services/";
@@ -169,7 +168,6 @@ public class FacesConfigurator
         {
             feedStandardConfig();
             feedMetaInfServicesFactories();
-            // feedJarFileConfigurations();
             feedClassloaderConfigurations();
             feedContextSpecifiedConfig();
             feedWebAppConfig();
@@ -428,45 +426,6 @@ public class FacesConfigurator
         }
     }
 
-    /*
-     * To make this easier AND to fix MYFACES-208 at the same time, this method is replaced by
-     * {@link FacesConfigurator#feedClassloaderConfigurations}
-     * 
-     * @deprecated {@link FacesConfigurator#feedClassloaderConfigurations} replaces this one
-     * 
-     * private void feedJarFileConfigurations() { Set jars = _externalContext.getResourcePaths("/WEB-INF/lib/"); if
-     * (jars != null) { for (Iterator it = jars.iterator(); it.hasNext();) { String path = (String) it.next(); if
-     * (path.toLowerCase().endsWith(".jar")) { feedJarConfig(path); } } } }
-     * 
-     * private void feedJarConfig(String jarPath) throws FacesException { try { // not all containers expand archives,
-     * so we have to do it the generic way: // 1. get the stream from external context InputStream in =
-     * _externalContext.getResourceAsStream(jarPath); if (in == null) { if (jarPath.startsWith("/")) { in =
-     * _externalContext.getResourceAsStream(jarPath.substring(1)); } else { in =
-     * _externalContext.getResourceAsStream("/" + jarPath); } } if (in == null) { log.error("Resource " + jarPath + "
-     * not found"); return; } // 2. search the jar stream for META-INF/faces-config.xml JarInputStream jar = new
-     * JarInputStream(in); JarEntry entry = jar.getNextJarEntry(); boolean found = false;
-     * 
-     * while (entry != null) { if (entry.getName().equals(FACES_CONFIG_RESOURCE)) { if (log.isDebugEnabled())
-     * log.debug("faces-config.xml found in " + jarPath); found = true; break; } entry = jar.getNextJarEntry(); }
-     * jar.close();
-     * 
-     * File tmp; // 3. if faces-config.xml was found, extract the jar and copy it to a temp file; hand over the temp
-     * file // to the parser and delete it afterwards if (found) { tmp = File.createTempFile("myfaces", ".jar");
-     * tmp.deleteOnExit(); // just to make sure the file will be deleted
-     * 
-     * in = _externalContext.getResourceAsStream(jarPath); FileOutputStream out = new FileOutputStream(tmp); byte[]
-     * buffer = new byte[4096]; int r;
-     * 
-     * while ((r = in.read(buffer)) != -1) { out.write(buffer, 0, r); } out.close();
-     * 
-     * JarFile jarFile = new JarFile(tmp); try { JarEntry configFile = jarFile.getJarEntry(FACES_CONFIG_RESOURCE); if
-     * (configFile != null) { if (log.isInfoEnabled()) log.info("faces-config.xml found in jar " + jarPath); InputStream
-     * stream = jarFile.getInputStream(configFile); String systemId = "jar:" + tmp.toURL() + "!/" +
-     * configFile.getName(); if (log.isDebugEnabled()) log.debug("Reading config " + systemId);
-     * _dispenser.feed(_unmarshaller.getFacesConfig(stream, systemId)); stream.close(); } } finally { jarFile.close();
-     * tmp.delete(); } } else { if (log.isDebugEnabled()) log.debug("Jar " + jarPath + " contains no faces-config.xml"); } }
-     * catch (Exception e) { throw new FacesException(e); } }
-     */
 
     private void feedContextSpecifiedConfig() throws IOException, SAXException
     {
@@ -644,11 +603,14 @@ public class FacesConfigurator
 
     private Object getApplicationObject(Class interfaceClass, Iterator classNamesIterator, Object defaultObject)
     {
+        System.out.println("DELETEME: Interface: "+interfaceClass);
+
         Object current = defaultObject;
 
         while (classNamesIterator.hasNext())
         {
             String implClassName = (String) classNamesIterator.next();
+            System.out.println("\tDELETEME: "+implClassName);
             Class implClass = ClassUtils.simpleClassForName(implClassName);
 
             // check, if class is of expected interface type
@@ -769,8 +731,7 @@ public class FacesConfigurator
                     continue;
                 }
 
-                System.out.println("ADd renderer: "+element.getComponentFamily()+", "+element.getRendererType());
-                renderKit.addRenderer(element.getComponentFamily(), element.getRendererType(), renderer);
+               renderKit.addRenderer(element.getComponentFamily(), element.getRendererType(), renderer);
             }
 
             renderKitFactory.addRenderKit(renderKitId, renderKit);
