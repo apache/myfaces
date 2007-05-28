@@ -17,13 +17,6 @@
     <url>http://svn.apache.org/repos/asf/myfaces/core/branches/jsf12/api</url>
   </scm>
   <build>
-    <extensions>
-     <extension>
-       <groupId>org.apache.myfaces.core</groupId>
-       <artifactId>myfaces-build</artifactId>
-       <version>1.2.0-SNAPSHOT</version>
-     </extension>
-    </extensions>
     <plugins>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
@@ -38,7 +31,7 @@
       <plugin>
         <groupId>org.apache.myfaces.trinidadbuild</groupId>
         <artifactId>maven-faces-plugin</artifactId>
-        <version>1.2-07-apr-SNAPSHOT</version>
+        <version>1.2-07-may-SNAPSHOT</version>
         <configuration>
           <typePrefix>javax.faces</typePrefix>
           <packageContains>javax.faces</packageContains>
@@ -159,6 +152,12 @@
     </profile>
   </profiles>
   <dependencies>
+    <dependency>
+       <groupId>org.apache.myfaces.core</groupId>
+       <artifactId>myfaces-build</artifactId>
+       <version>1.2.0-SNAPSHOT</version>
+       <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>

@@ -24,6 +24,7 @@
         <component-extension>
             <mfp:component-supertype>javax.faces.Component</mfp:component-supertype>
             <mfp:tag-class>javax.faces.webapp.UIComponentELTag</mfp:tag-class>
+            <mfp:component-class-modifier>abstract</mfp:component-class-modifier>
         </component-extension>
     </component>
 </faces-config>
