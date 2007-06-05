@@ -19,27 +19,19 @@
 package org.apache.myfaces.application.jsp;
 
 import static org.apache.myfaces.Assert.assertException;
+import org.apache.myfaces.FacesTestCase;
+import org.apache.myfaces.TestRunner;
+import org.apache.myfaces.application.InvalidViewIdException;
+import org.apache.myfaces.application.ViewHandlerSupport;
 import static org.easymock.EasyMock.*;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
+import org.easymock.IAnswer;
 
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.myfaces.FacesTestCase;
-import org.apache.myfaces.TestRunner;
-import org.apache.myfaces.application.InvalidViewIdException;
-import org.apache.myfaces.application.ViewHandlerSupport;
-import org.easymock.IAnswer;
+import java.util.*;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -184,6 +176,23 @@ public class JspViewHandlerImplTest extends FacesTestCase
         expect(_externalContext.getRequestMap()).andReturn(map);
         _mocksControl.replay();
         assertEquals("xxx", _testimpl.calculateRenderKitId(_facesContext));
+        _mocksControl.verify();
+    }
+
+    /**
+     * Test method for
+     * {@link org.apache.myfaces.application.jsp.JspViewHandlerImpl#calculateLocale(javax.faces.context.FacesContext)}.
+     */
+    public void testCalculateLocaleWithNoMatchingRequestLocaleWithSupportedLocaleAndNoDefaultLocale()
+    {
+        expectApplicationAndExternalContextGet();
+        Iterator<Locale> requestLocales = Arrays.asList(new Locale[] { Locale.ENGLISH }).iterator();
+        expect(_externalContext.getRequestLocales()).andReturn(requestLocales);
+        expect(_application.getDefaultLocale()).andReturn(null);
+        Iterator<Locale> supportedLocales = Arrays.asList(new Locale[] { Locale.KOREAN }).iterator();
+        expect(_application.getSupportedLocales()).andReturn(supportedLocales);
+        _mocksControl.replay();
+        assertEquals(Locale.getDefault(), _testimpl.calculateLocale(_facesContext));
         _mocksControl.verify();
     }
 

@@ -33,16 +33,16 @@ public abstract class FacesContext
     public ELContext getELContext() {
         
     	FacesContext ctx = getCurrentInstance();
-    	 
-    	if( ctx == null )
-    		throw new NullPointerException(FacesContext.class.getName());
-    	
-    	ELContext elctx = ctx.getELContext();
-    	
-    	if ( elctx == null )
-    		throw new UnsupportedOperationException();
-    	
-    	return elctx;
+
+        if (ctx == null)
+            throw new NullPointerException(FacesContext.class.getName());
+
+        ELContext elctx = ctx.getELContext();
+
+        if (elctx == null)
+            throw new UnsupportedOperationException();
+
+        return elctx;
     }
     
     public abstract javax.faces.application.Application getApplication();

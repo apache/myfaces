@@ -120,10 +120,10 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
 
         String output = writer.getWriter().toString();
 
-        assertEquals("<a href=\"#\" onclick=\"clear_j_5Fid1();document.forms[&apos;j_id1&apos;].elements[&apos;j_id1:_link_hidden_&apos;]" +
-                ".value=&apos;j_id1:j_id0&apos;;if(document.forms[&apos;j_id1&apos;].onsubmit){var result=document.forms[&apos;j_id1&apos;]" +
-                ".onsubmit();  if( (typeof result == &apos;undefined&apos;) || result ) {document.forms[&apos;j_id1&apos;].submit();}}else" +
-                "{document.forms[&apos;j_id1&apos;].submit();}return false;\" " +
+        // just get what is rendered in the <a> element
+        output = output.substring(output.indexOf("<a href"));
+
+        assertEquals("<a href=\"#\" onclick=\"return oamSubmitForm(&apos;j_id1&apos;,&apos;j_id1:j_id0&apos;);\" " +
                 "accesskey=\"accesskey\" charset=\"charset\" coords=\"coords\" hreflang=\"hreflang\" " +
                 "rel=\"rel\" rev=\"rev\" shape=\"shape\" tabindex=\"tabindex\" type=\"type\" " +
                 "ondblclick=\"ondblclick\" onmousedown=\"onmousedown\" onmouseup=\"onmouseup\" " +
