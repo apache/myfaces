@@ -19,6 +19,7 @@
 package org.apache.myfaces.application.jsp;
 
 import org.apache.commons.collections.map.ReferenceMap;
+import org.apache.commons.collections.map.AbstractReferenceMap;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.logging.Log;
@@ -665,7 +666,7 @@ public class JspStateManagerImpl
          */
         protected Map getOldSerializedViewsMap() {
             if (_oldSerializedViews == null) {
-                _oldSerializedViews = new ReferenceMap();
+                _oldSerializedViews = new ReferenceMap(AbstractReferenceMap.WEAK, AbstractReferenceMap.WEAK, true);
             }
             return _oldSerializedViews;
         }
