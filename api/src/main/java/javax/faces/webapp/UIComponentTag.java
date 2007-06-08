@@ -1165,7 +1165,7 @@ public abstract class UIComponentTag
         }
         intBuf.append("]");
 
-        buf.insert(0,intBuf);
+        buf.insert(0,(Object)intBuf);
 
         getPathToComponent(component.getParent(),buf);
     }
