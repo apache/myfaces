@@ -38,7 +38,7 @@
       <plugin>
         <groupId>org.apache.myfaces.trinidadbuild</groupId>
         <artifactId>maven-faces-plugin</artifactId>
-        <version>1.2-07-may-SNAPSHOT</version>
+        <version>1.2.1</version>
         <configuration>
           <taglibs>
             <h>http://java.sun.com/jsf/html</h>
