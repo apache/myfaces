@@ -96,11 +96,10 @@ public class ConverterTag extends ConverterELTag
             }
         }
 
-        if (_converterId != null)
+        if ((_converterId != null) || (_converterIdString != null))
         {
             try
             {
-                // first check if an ValidatorId was set by a method
                 if (null != _converterIdString)
                 {
                     converter = facesContext.getApplication().createConverter(_converterIdString);
