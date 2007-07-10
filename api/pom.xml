@@ -29,9 +29,20 @@
         </executions>
       </plugin>
       <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-source</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+         </executions>
+        </plugin>
+      <plugin>
         <groupId>org.apache.myfaces.trinidadbuild</groupId>
         <artifactId>maven-faces-plugin</artifactId>
-        <version>1.2.1</version>
+        <version>1.2.1.1</version>
         <configuration>
           <typePrefix>javax.faces</typePrefix>
           <packageContains>javax.faces</packageContains>
