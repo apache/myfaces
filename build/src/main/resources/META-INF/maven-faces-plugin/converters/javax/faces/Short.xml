@@ -26,4 +26,8 @@
     <converter-id>javax.faces.Short</converter-id>
     <converter-class>javax.faces.convert.ShortConverter</converter-class>
   </converter>
+  <converter>
+    <converter-for-class>java.lang.Short</converter-for-class>
+    <converter-class>javax.faces.convert.ShortConverter</converter-class>
+  </converter>
 </faces-config>

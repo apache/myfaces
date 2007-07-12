@@ -26,4 +26,8 @@
     <converter-id>javax.faces.Boolean</converter-id>
     <converter-class>javax.faces.convert.BooleanConverter</converter-class>
   </converter>
+  <converter>
+    <converter-for-class>java.lang.Boolean</converter-for-class>
+    <converter-class>javax.faces.convert.BooleanConverter</converter-class>
+  </converter>
 </faces-config>

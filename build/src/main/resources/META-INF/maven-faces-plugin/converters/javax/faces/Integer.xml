@@ -26,4 +26,8 @@
     <converter-id>javax.faces.Integer</converter-id>
     <converter-class>javax.faces.convert.IntegerConverter</converter-class>
   </converter>
+  <converter>
+    <converter-for-class>java.lang.Integer</converter-for-class>
+    <converter-class>javax.faces.convert.IntegerConverter</converter-class>
+  </converter>
 </faces-config>

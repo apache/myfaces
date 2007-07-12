@@ -21,5 +21,9 @@
   <converter>
     <converter-id>javax.faces.Byte</converter-id>
     <converter-class>javax.faces.convert.ByteConverter</converter-class>
-  </converter>  
+  </converter>
+  <converter>
+    <converter-for-class>java.lang.Byte</converter-for-class>
+    <converter-class>javax.faces.convert.ByteConverter</converter-class>
+  </converter>
 </faces-config>

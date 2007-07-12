@@ -26,4 +26,8 @@
     <converter-id>javax.faces.Float</converter-id>
     <converter-class>javax.faces.convert.FloatConverter</converter-class>
   </converter>
+  <converter>
+    <converter-for-class>java.lang.Float</converter-for-class>
+    <converter-class>javax.faces.convert.FloatConverter</converter-class>
+  </converter>
 </faces-config>
