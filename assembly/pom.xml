@@ -11,7 +11,7 @@
   <parent>
     <groupId>org.apache.myfaces.core</groupId>
     <artifactId>myfaces-core-project</artifactId>
-    <version>1.1.4-SNAPSHOT</version>
+    <version>1.2.0</version>
   </parent>
 
   <scm>
@@ -53,7 +53,7 @@
                 <artifactItem>
                   <groupId>org.apache.myfaces.shared</groupId>
                   <artifactId>myfaces-shared-impl</artifactId>
-                  <version>1.1.2-SNAPSHOT</version>
+                  <version>1.2.0</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>
                 -->
@@ -118,7 +118,7 @@
       <plugin>
         <groupId>org.apache.myfaces.maven</groupId>
         <artifactId>wagon-maven-plugin</artifactId>
-        <version>1.0.3-SNAPSHOT</version>
+        <version>1.0.5</version>
         <configuration>
           <id>myfaces-nightly-builds</id>
           <url>scpexe://minotaur.apache.org/www/cvs.apache.org/builds/myfaces/nightly</url>
