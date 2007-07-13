@@ -18,7 +18,7 @@
   <parent>
     <groupId>org.apache.myfaces.core</groupId>
     <artifactId>myfaces-core-project</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -30,9 +30,9 @@
   <packaging>jar</packaging>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-base-1.2.0</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-base-1.2.0</developerConnection>
-    <url>http://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-base-1.2.0</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/jsf12/build</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/jsf12/build</developerConnection>
+    <url>http://svn.apache.org/repos/asf/myfaces/core/branches/jsf12/build</url>
   </scm>
 
   <build>

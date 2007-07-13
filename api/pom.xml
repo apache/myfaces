@@ -2,7 +2,7 @@
   <parent>
     <artifactId>myfaces-core-project</artifactId>
     <groupId>org.apache.myfaces.core</groupId>
-    <version>1.2.0</version>
+    <version>1.2.1-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.myfaces.core</groupId>
@@ -12,9 +12,9 @@
     MyFaces API - JSR 252 ( http://www.jcp.org/en/jsr/detail?id=252 )
   </description>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-base-1.2.0</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-base-1.2.0</developerConnection>
-    <url>http://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-base-1.2.0</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/jsf12/api</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/jsf12/api</developerConnection>
+    <url>http://svn.apache.org/repos/asf/myfaces/core/branches/jsf12/api</url>
   </scm>
   <build>
     <plugins>
@@ -166,7 +166,7 @@
     <dependency>
        <groupId>org.apache.myfaces.core</groupId>
        <artifactId>myfaces-build</artifactId>
-       <version>1.2.0</version>
+       <version>1.2.1-SNAPSHOT</version>
        <scope>provided</scope>
     </dependency>
     <dependency>
