@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <artifactId>myfaces-core-project</artifactId>
     <groupId>org.apache.myfaces.core</groupId>
-    <version>1.2.0-SNAPSHOT</version>
+    <version>1.2.0</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.myfaces.core</groupId>
@@ -12,9 +12,9 @@
     MyFaces API - JSR 252 ( http://www.jcp.org/en/jsr/detail?id=252 )
   </description>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/jsf12/api</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/jsf12/api</developerConnection>
-    <url>http://svn.apache.org/repos/asf/myfaces/core/branches/jsf12/api</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-base-1.2.0</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-base-1.2.0</developerConnection>
+    <url>http://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-base-1.2.0</url>
   </scm>
   <build>
     <plugins>
@@ -114,9 +114,9 @@
                 </goals>
                 <configuration>
                   <tasks>
-                    <property value="${project.basedir}/src/main/java" name="src.dir"></property>
+                    <property value="${project.basedir}/src/main/java" name="src.dir" />
                     <ant inheritRefs="true" inheritAll="true" antfile="build.xml" dir="${project.basedir}">
-                      <target name="generate-components"></target>
+                      <target name="generate-components" />
                     </ant>
                   </tasks>
                 </configuration>
@@ -166,7 +166,7 @@
     <dependency>
        <groupId>org.apache.myfaces.core</groupId>
        <artifactId>myfaces-build</artifactId>
-       <version>1.2.0-SNAPSHOT</version>
+       <version>1.2.0</version>
        <scope>provided</scope>
     </dependency>
     <dependency>
