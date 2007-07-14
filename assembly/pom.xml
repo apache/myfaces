@@ -15,24 +15,23 @@
   </parent>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/jsf12/assembly</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/jsf12/assembly</developerConnection>
-    <url>http://svn.apache.org/repos/asf/myfaces/core/branches/jsf12/assembly</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/1_2_0/assembly</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/1_2_0/assembly</developerConnection>
+    <url>http://svn.apache.org/repos/asf/myfaces/core/branches/1_2_0/assembly</url>
   </scm>
 
   <build>
 
     <plugins>
        <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>dependency-maven-plugin</artifactId>
+        <artifactId>maven-dependency-plugin</artifactId>
         <executions>
 
           <execution>
             <id>copy-javadoc</id>
             <phase>package</phase>
             <goals>
-              <goal>copy</goal>
+              <goal>unpack</goal>
             </goals>
             <configuration>
               <artifactItems>
@@ -41,62 +40,64 @@
                   <artifactId>myfaces-api</artifactId>
                   <version>${version}</version>
                   <classifier>javadoc</classifier>
+                  <outputDirectory>${project.build.directory}/javadoc/api</outputDirectory>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.myfaces.core</groupId>
                   <artifactId>myfaces-impl</artifactId>
                   <version>${version}</version>
                   <classifier>javadoc</classifier>
+                  <outputDirectory>${project.build.directory}/javadoc/impl</outputDirectory>
                 </artifactItem>
-                <!--
-                TODO/CHECK: o.a.m.shared_impl.* javadoc automatically included?
-                <artifactItem>
-                  <groupId>org.apache.myfaces.shared</groupId>
-                  <artifactId>myfaces-shared-impl</artifactId>
-                  <version>1.2.0</version>
-                  <classifier>javadoc</classifier>
-                </artifactItem>
-                -->
               </artifactItems>
-              <outputDirectory>${project.build.directory}/javadoc</outputDirectory>
             </configuration>
           </execution>
+          
           <execution>
             <id>copy-tlddoc</id>
             <phase>package</phase>
             <goals>
-              <goal>copy</goal>
+              <goal>unpack</goal>
             </goals>
             <configuration>
               <artifactItems>
-
                 <artifactItem>
                   <groupId>org.apache.myfaces.core</groupId>
                   <artifactId>myfaces-impl</artifactId>
                   <version>${version}</version>
                   <classifier>tlddoc</classifier>
                 </artifactItem>
-
                </artifactItems>
                <outputDirectory>${project.build.directory}/tlddoc</outputDirectory>
              </configuration>
-           </execution>
+          </execution>
+          
           <execution>
             <id>copy-source</id>
             <phase>package</phase>
             <goals>
-              <goal>copy</goal>
+              <goal>unpack</goal>
             </goals>
             <configuration>
               <artifactItems>
-
+  		          <artifactItem>
+                  <groupId>org.apache.myfaces.core</groupId>
+                  <artifactId>myfaces-api</artifactId>
+                  <version>${version}</version>
+		              <classifier>sources</classifier>
+                </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.myfaces.core</groupId>
                   <artifactId>myfaces-impl</artifactId>
                   <version>${version}</version>
-                  <classifier>sources</classifier>
+		              <classifier>sources</classifier>
                 </artifactItem>
-
+		            <artifactItem>
+                  <groupId>org.apache.myfaces.shared</groupId>
+                  <artifactId>myfaces-shared-impl</artifactId>
+                  <version>2.0.7-SNAPSHOT</version>
+		              <classifier>sources</classifier>
+                </artifactItem>
                </artifactItems>
                <outputDirectory>${project.build.directory}/src</outputDirectory>
              </configuration>
@@ -106,9 +107,12 @@
 
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.0-beta-1</version>
+        <version>2.0.1</version>
         <configuration>
-          <descriptor>src/main/assembly/dep.xml</descriptor>
+          <descriptors>
+             <descriptor>src/main/assembly/bin.xml</descriptor>
+	           <descriptor>src/main/assembly/src.xml</descriptor>
+	        </descriptors>
           <finalName>myfaces-core-${version}</finalName>
           <outputDirectory>target/assembly/out</outputDirectory>
           <workDirectory>target/assembly/work</workDirectory>
@@ -118,10 +122,10 @@
       <plugin>
         <groupId>org.apache.myfaces.maven</groupId>
         <artifactId>wagon-maven-plugin</artifactId>
-        <version>1.0.5</version>
+        <version>1.0.6-SNAPSHOT</version>
         <configuration>
           <id>myfaces-nightly-builds</id>
-          <url>scpexe://minotaur.apache.org/www/cvs.apache.org/builds/myfaces/nightly</url>
+          <url>scpexe://minotaur.apache.org/www/people.apache.org/builds/myfaces/nightly</url>
           <inputDirectory>target/assembly/out</inputDirectory>
         </configuration>
       </plugin>
