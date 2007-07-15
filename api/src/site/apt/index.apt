@@ -21,13 +21,11 @@ Using the MyFaces JSF Implementation
 
 	<<JSR-127: JavaServer Faces>>
 	
-	MyFaces currently implements {{{http://www.jcp.org/en/jsr/detail?id=127}Java Specification Request 127}}.  
+	Apache MyFaces 1.1.x currently implements {{{http://www.jcp.org/en/jsr/detail?id=127}Java Specification Request 127}}.  
 	Each release is certified against the Sun TCK to ensure compliance.
 
 
 	<<JSR-252: JavaServer Faces 1.2>>
 	
-	There is a new JSR, {{{http://www.jcp.org/en/jsr/detail?id=252}Java Specification Request 252}}, which includes 
-	several major improvements to JSF.  The specification is currently in Proposed Final Draft form.  There are no 
-	immediate plans to implement this specification in MyFaces but it is likely that work will begin once the spec 
-	is finalized.
+	Apache MyFaces 1.2.x currently implements {{{http://www.jcp.org/en/jsr/detail?id=252}Java Specification Request 252}}.  
+	Each release is certified against the Sun TCK to ensure compliance.
