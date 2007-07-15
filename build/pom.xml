@@ -30,9 +30,9 @@
   <packaging>jar</packaging>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/jsf12/build</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/jsf12/build</developerConnection>
-    <url>http://svn.apache.org/repos/asf/myfaces/core/branches/jsf12/build</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/1_2_1/build</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/1_2_1/build</developerConnection>
+    <url>http://svn.apache.org/repos/asf/myfaces/core/branches/1_2_1/build</url>
   </scm>
 
   <build>

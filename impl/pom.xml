@@ -12,9 +12,9 @@
   <description>MyFaces Implementation - JSR 252 ( http://www.jcp.org/en/jsr/detail?id=252 )</description>
   <url>http://myfaces.apache.org</url>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/jsf12/impl</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/jsf12/impl</developerConnection>
-    <url>http://svn.apache.org/repos/asf/myfaces/core/branches/jsf12/impl</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/1_2_1/impl</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/1_2_1/impl</developerConnection>
+    <url>http://svn.apache.org/repos/asf/myfaces/core/branches/1_2_1/impl</url>
   </scm>
   <build>
     <resources>
