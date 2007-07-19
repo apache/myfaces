@@ -292,10 +292,15 @@ class _ComponentAttributesMap
      */
     public Object put(Object key, Object value)
     {
-        checkKeyAndValue(key, value);
+        checkKey(key);
 
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor((String)key);
-        if (propertyDescriptor != null)
+        if(propertyDescriptor == null)
+        {
+          if(value==null)
+              throw new NullPointerException("value is null for a not available property: " + key);
+        }
+        else
         {
             if (propertyDescriptor.getReadMethod() != null)
             {
@@ -405,16 +410,6 @@ class _ComponentAttributesMap
                     " of component " + _component.getClientId(facesContext) +" to value : "+value+" with type : "+
                     (value==null?"null":value.getClass().getName()), e);
         }
-    }
-
-
-    private void checkKeyAndValue(Object key, Object value)
-    {
-        //http://issues.apache.org/jira/browse/MYFACES-458: obviously, the spec is a little unclear here,
-        // but value == null should be allowed - if there is a TCK-test failing due to this, we should
-        // apply for getting the TCK-test dropped
-        if (value == null) throw new NullPointerException("value");
-        checkKey(key);
     }
 
     private void checkKey(Object key)
