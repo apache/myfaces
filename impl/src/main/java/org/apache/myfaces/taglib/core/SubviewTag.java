@@ -62,7 +62,7 @@ public class SubviewTag extends UIComponentELTag
         {
             ViewResponseWrapper wrappedResponse = (ViewResponseWrapper) response;
             wrappedOutput = wrappedResponse.toString();
-            if (wrappedOutput.length() > 0)
+            if (wrappedOutput != null && wrappedOutput.length() > 0)
             {
                 String componentvalue = null;
                 if (component != null)
