@@ -16,6 +16,8 @@
 package javax.faces.webapp;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.faces.FactoryFinder;
 import javax.faces.context.FacesContext;
@@ -47,6 +49,9 @@ public final class FacesServlet
     public static final String LIFECYCLE_ID_ATTR = "javax.faces.LIFECYCLE_ID";
 
     private static final String SERVLET_INFO = "FacesServlet of the MyFaces API implementation";
+    private static final String ERROR_HANDLING_PARAMETER = "org.apache.myfaces.ERROR_HANDLING";
+    private static final String ERROR_HANDLER_PARAMETER = "org.apache.myfaces.ERROR_HANDLER";
+
     private ServletConfig _servletConfig;
     private FacesContextFactory _facesContextFactory;
     private Lifecycle _lifecycle;
@@ -111,17 +116,16 @@ public final class FacesServlet
         {
             StringBuffer buffer = new StringBuffer();
 
-            buffer.append(" Someone is trying to access a secure resource : "
-                    + pathInfo);
-            buffer.append("\n remote address is " + httpRequest.getRemoteAddr());
-            buffer.append("\n remote host is " + httpRequest.getRemoteHost());
-            buffer.append("\n remote user is " + httpRequest.getRemoteUser());
-            buffer.append("\n request URI is " + httpRequest.getRequestURI());
+            buffer.append(" Someone is trying to access a secure resource : ").append(pathInfo);
+            buffer.append("\n remote address is ").append(httpRequest.getRemoteAddr());
+            buffer.append("\n remote host is ").append(httpRequest.getRemoteHost());
+            buffer.append("\n remote user is ").append(httpRequest.getRemoteUser());
+            buffer.append("\n request URI is ").append(httpRequest.getRequestURI());
 
             log.warn(buffer.toString());
 
             // Why does RI return a 404 and not a 403, SC_FORBIDDEN ?
-            
+
             ((HttpServletResponse) response)
                     .sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
@@ -137,29 +141,54 @@ public final class FacesServlet
 			_lifecycle.execute(facesContext);
 			_lifecycle.render(facesContext);
 		}
-        catch (Throwable e)
+        catch (Exception e)
         {
-            if (e instanceof IOException)
-            {
-                throw (IOException)e;
-            }
-            else if (e instanceof ServletException)
-            {
-                throw (ServletException)e;
-            }
-            else if (e.getMessage() != null)
-            {
-                throw new ServletException(e.getMessage(), e);
-            }
-            else
-            {
-                throw new ServletException(e);
-            }
+            handleLifecycleException(facesContext, e);
         }
         finally
         {
             facesContext.release();
         }
 		if(log.isTraceEnabled()) log.trace("service end");
+    }
+
+    private void handleLifecycleException(FacesContext facesContext, Exception e) throws IOException, ServletException {
+
+        boolean errorHandling = getBooleanValue(facesContext.getExternalContext().getInitParameter(ERROR_HANDLING_PARAMETER), true);
+
+        if(errorHandling) {
+            String errorHandlerClass = facesContext.getExternalContext().getInitParameter(ERROR_HANDLER_PARAMETER);
+            if(errorHandlerClass != null) {
+                try {
+                    Class clazz = Class.forName(errorHandlerClass);
+
+                    Object errorHandler = clazz.newInstance();
+
+                    Method m = clazz.getMethod("handleException", new Class[]{FacesContext.class,Exception.class});
+                    m.invoke(errorHandler, new Object[]{facesContext, e});
+                }
+                catch(ClassNotFoundException ex) {
+                    throw new ServletException("Error-Handler : " +errorHandlerClass+ " was not found. Fix your web.xml-parameter : "+ERROR_HANDLER_PARAMETER,ex);
+                } catch (IllegalAccessException ex) {
+                    throw new ServletException("Constructor of error-Handler : " +errorHandlerClass+ " is not accessible. Error-Handler is specified in web.xml-parameter : "+ERROR_HANDLER_PARAMETER,ex);
+                } catch (InstantiationException ex) {
+                    throw new ServletException("Error-Handler : " +errorHandlerClass+ " could not be instantiated. Error-Handler is specified in web.xml-parameter : "+ERROR_HANDLER_PARAMETER,ex);
+                } catch (NoSuchMethodException ex) {
+                    throw new ServletException("Error-Handler : " +errorHandlerClass+ " did not have a method with name : handleException and parameters : javax.faces.context.FacesContext, java.lang.Exception. Error-Handler is specified in web.xml-parameter : "+ERROR_HANDLER_PARAMETER,ex);
+                } catch (InvocationTargetException ex) {
+                    throw new ServletException("Excecution of method handleException in Error-Handler : " +errorHandlerClass+ " caused an exception. Error-Handler is specified in web.xml-parameter : "+ERROR_HANDLER_PARAMETER,ex);
+                }
+            }
+            else {
+                _ErrorPageWriter.handleException(facesContext, e);
+            }
+        }
+        else {
+            _ErrorPageWriter.throwException(e);
+        }
+    }
+
+    private boolean getBooleanValue(String initParameter, boolean defaultVal) {
+        return initParameter != null && (initParameter.equalsIgnoreCase("on") || initParameter.equals("1") || initParameter.equalsIgnoreCase("true")) || defaultVal;
     }
 }
