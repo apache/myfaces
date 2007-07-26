@@ -257,6 +257,10 @@ public class JspStateManagerImpl
 
     private String getSequenceString(FacesContext facesContext, String renderKitId, String viewId) {
         RenderKit rk = getRenderKitFactory().getRenderKit(facesContext, renderKitId);
+
+        if(rk==null) //first access of the renderkit in a typical application - at this point, renderkit needs to be available. if it isn't we'll throw an exception
+            throw new NullPointerException("RenderKit for renderKitId : "+renderKitId + " on viewId : " + viewId + " could not be retrieved. Please specify a valid renderkit-id.");
+
         ResponseStateManager responseStateManager = rk.getResponseStateManager();
         String sequenceStr = (String) responseStateManager.getTreeStructureToRestore(facesContext, viewId);
         return sequenceStr;

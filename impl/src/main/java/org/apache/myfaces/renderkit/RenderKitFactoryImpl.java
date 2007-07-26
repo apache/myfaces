@@ -73,6 +73,7 @@ public class RenderKitFactoryImpl
             // "If there is no registered RenderKit for the specified identifier, return null"
             // vs "IllegalArgumentException - if no RenderKit instance can be returned for the specified identifier"
             //First sentence is more precise, so we just log a warning
+            //RI doesn't even log a warning. Warning seems appropriate, though.
             log.warn("Unknown RenderKit '" + renderKitId + "'.");
         }
         return renderkit;
