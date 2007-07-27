@@ -191,7 +191,11 @@ public final class FacesServlet
         }
     }
 
-    private boolean getBooleanValue(String initParameter, boolean defaultVal) {
-        return initParameter != null && (initParameter.equalsIgnoreCase("on") || initParameter.equals("1") || initParameter.equalsIgnoreCase("true")) || defaultVal;
+    private static boolean getBooleanValue(String initParameter, boolean defaultVal) {
+
+        if(initParameter == null || initParameter.trim().length()==0)
+            return defaultVal;
+
+        return (initParameter.equalsIgnoreCase("on") || initParameter.equals("1") || initParameter.equalsIgnoreCase("true"));
     }
 }
