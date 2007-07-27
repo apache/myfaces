@@ -15,20 +15,22 @@
 */
 package javax.faces.component;
 
-import javax.el.ELException;
 import javax.el.ValueExpression;
-import javax.faces.validator.Validator;
-import javax.faces.el.MethodBinding;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.ValueBinding;
+import javax.faces.FacesException;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.event.FacesEvent;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ValueChangeEvent;
-import javax.faces.render.Renderer;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
-import javax.faces.application.FacesMessage;
+import javax.faces.el.EvaluationException;
+import javax.faces.el.MethodBinding;
+import javax.faces.event.AbortProcessingException;
+import javax.faces.event.FacesEvent;
+import javax.faces.event.ValueChangeEvent;
+import javax.faces.event.ValueChangeListener;
+import javax.faces.render.Renderer;
+import javax.faces.validator.Validator;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -198,24 +200,11 @@ public class UIInputTemplate extends UIOutput implements EditableValueHolder
             setValue(null);
             setLocalValueSet(false);
         }
-        catch (ELException elException)
+        catch (Exception ex)
         {
-            String exceptionMessage = elException.getMessage();
-            if (exceptionMessage == null)
-            {
-                _MessageUtils.addErrorMessage(context, this, UPDATE_MESSAGE_ID, new Object[]{_MessageUtils.getLabel(context,this)});
-            }
-            else
-            {
-                _MessageUtils.addErrorMessage(context, this, elException);
-            }
-            setValid(false);
-        }
-        catch (Exception e)
-        {
-            context.getExternalContext().log(e.getMessage(), e);
-            _MessageUtils.addErrorMessage(context, this, UPDATE_MESSAGE_ID, new Object[]{_MessageUtils.getLabel(context,this)});
-            setValid(false);
+            throw new FacesException("Exception while setting value for expression : "+
+                    expression.getExpressionString()+" of component with path : "
+                    +_ComponentUtils.getPathToComponent(this),ex);
         }
     }
 
