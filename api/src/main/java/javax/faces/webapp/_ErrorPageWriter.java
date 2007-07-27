@@ -1,54 +1,43 @@
 /*
- * Copyright 2004 The Apache Software Foundation.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 package javax.faces.webapp;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import javax.el.Expression;
+import javax.el.ValueExpression;
+import javax.faces.component.UIComponent;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import java.io.Writer;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.lang.reflect.Method;
 import java.text.DateFormat;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
-
-import javax.el.Expression;
-import javax.el.ValueExpression;
-import javax.el.MethodExpression;
-import javax.faces.component.UIComponent;
-import javax.faces.context.ExternalContext;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
+import java.util.*;
 
 /**
- * @author Jacob Hookom (ICLA with ASF filed).
+ * @author Jacob Hookom (ICLA with ASF filed)
  */
 public final class _ErrorPageWriter {
 
@@ -257,13 +246,6 @@ public final class _ErrorPageWriter {
                             if (v instanceof Expression) {
                                 str = ((Expression) v).getExpressionString();
                             }
-                            else if(v instanceof MethodExpression) {
-                                str = ((Expression) v).getExpressionString();
-                            }
-                            else {
-                                ValueExpression ve = c.getValueExpression(pd[i].getName());
-                                str = ve!=null?(ve.getExpressionString()+"="+v.toString()):v.toString();
-                            }
                             writer.write(str.replaceAll("<", TS));
                             writer.write("\"");
                         }
@@ -323,7 +305,7 @@ public final class _ErrorPageWriter {
 
                 debugHtml(writer, facesContext, ex);
 
-                log.error("An exception occurred.",ex);
+                log.error("An exception occurred", ex);
             }
             else {
                 throwException(ex);
@@ -339,26 +321,30 @@ public final class _ErrorPageWriter {
         if(ex==null)
             return;
 
+        //handle Servlet-Exceptions - long know for swallowing root-causes ;)
         if(ex instanceof ServletException) {
+            Throwable rootCause = ((ServletException) ex).getRootCause();
+            initCauseIfAvailable(ex,rootCause);
+        }
+        //handle portlet-exceptions - not much better in this regard
+        else if(ex.getClass().getName().equals("javax.portlet.PortletException")) {
             try
             {
-                Throwable rootCause = ((ServletException) ex).getRootCause();
-
-                if(rootCause != null) {
-                    Method m = ServletException.class.getMethod("initCause",new Class[]{Throwable.class});
-                    m.invoke(ex,new Object[]{rootCause});
-                }
+                Method causeGetter = ex.getClass().getMethod("getCause",new Class[]{});
+                Throwable rootCause = (Throwable) causeGetter.invoke(ex,new Class[]{});
+                initCauseIfAvailable(ex,rootCause);
             } catch (Exception e1) {
                 //ignore if the method is not found - or cause has already been set.
             }
         }
+        //add other exceptions which swallow to much as appropriate
 
         prepareExceptionStack(ex.getCause());
     }
 
     static void throwException(Exception e) throws IOException, ServletException {
 
-        prepareExceptionStack(e.getCause());        
+        prepareExceptionStack(e);
 
         if (e instanceof IOException)
         {
@@ -379,14 +365,24 @@ public final class _ErrorPageWriter {
                 ex=new ServletException(e);
             }
 
-            try {
-                Method m = ServletException.class.getMethod("initCause",new Class[]{Throwable.class});
-                m.invoke(ex,new Object[]{e});
-            } catch (Exception e1) {
-                //ignore if the method is not found - or cause has already been set.
-            }
+            initCauseIfAvailable(ex, e);
 
             throw ex;
         }
     }
+
+    private static void initCauseIfAvailable(Throwable th, Throwable cause) {
+
+        if(cause == null)
+            return;
+
+        try
+        {
+            Method m = Throwable.class.getMethod("initCause",new Class[]{Throwable.class});
+            m.invoke(th,new Object[]{cause});
+        }
+        catch(Exception e) {
+        }
+    }
 }
+
