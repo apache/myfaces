@@ -15,6 +15,9 @@
  */
 package javax.faces.webapp;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import javax.faces.context.FacesContext;
 import java.io.Writer;
 import java.beans.BeanInfo;
@@ -48,6 +51,8 @@ import javax.servlet.ServletException;
  * @author Jacob Hookom (ICLA with ASF filed).
  */
 public final class _ErrorPageWriter {
+
+    private static final Log log = LogFactory.getLog(_ErrorPageWriter.class);
 
     private final static String TS = "&lt;";
 
@@ -317,6 +322,11 @@ public final class _ErrorPageWriter {
                 Writer writer = httpResp.getWriter();
 
                 debugHtml(writer, facesContext, ex);
+
+                log.error("An exception occurred.",ex);
+            }
+            else {
+                throwException(ex);
             }
         }
         else {
@@ -347,6 +357,9 @@ public final class _ErrorPageWriter {
     }
 
     static void throwException(Exception e) throws IOException, ServletException {
+
+        prepareExceptionStack(e.getCause());        
+
         if (e instanceof IOException)
         {
             throw (IOException)e;
