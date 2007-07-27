@@ -347,6 +347,9 @@ public final class _ErrorPageWriter {
     }
 
     static void throwException(Exception e) throws IOException, ServletException {
+
+        prepareExceptionStack(e);
+
         if (e instanceof IOException)
         {
             throw (IOException)e;
