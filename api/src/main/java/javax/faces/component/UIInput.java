@@ -31,6 +31,7 @@ import javax.faces.event.ValueChangeEvent;
 import javax.faces.event.ValueChangeListener;
 import javax.faces.render.Renderer;
 import javax.faces.validator.Validator;
+import javax.faces.FacesException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -277,27 +278,9 @@ public class UIInput
             setValue(null);
             setLocalValueSet(false);
         }
-        catch (EvaluationException ee)
+        catch (Exception ex)
         {
-            String exceptionMessage = ee.getMessage();
-            if (exceptionMessage == null)
-            {
-                _MessageUtils.addErrorMessage(context, this,
-                        CONVERSION_MESSAGE_ID, new Object[] { getId() });
-            }
-            else
-            {
-                _MessageUtils.addErrorMessage(context, this, ee);
-            }
-            
-            setValid(false);
-        }
-        catch (RuntimeException e)
-        {
-        	//Object[] args = {getId()};
-            context.getExternalContext().log(e.getMessage(), e);
-            _MessageUtils.addErrorMessage(context, this,CONVERSION_MESSAGE_ID,new Object[]{getId()});
-            setValid(false);
+            throw new FacesException("Exception while setting value : "+vb.getExpressionString()+"of component with path : "+_ComponentUtils.getPathToComponent(this),ex);
         }
     }
 
