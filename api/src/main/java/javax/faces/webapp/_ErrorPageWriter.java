@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.Collection;
@@ -339,19 +340,23 @@ public final class _ErrorPageWriter {
         if(ex==null)
             return;
 
+        //handle Servlet-Exceptions - long know for swallowing root-causes ;)
         if(ex instanceof ServletException) {
+            Throwable rootCause = ((ServletException) ex).getRootCause();
+            initCauseIfAvailable(ex,rootCause);
+        }
+        //handle portlet-exceptions - not much better in this regard
+        else if(ex.getClass().getName().equals("javax.portlet.PortletException")) {
             try
             {
-                Throwable rootCause = ((ServletException) ex).getRootCause();
-
-                if(rootCause != null) {
-                    Method m = ServletException.class.getMethod("initCause",new Class[]{Throwable.class});
-                    m.invoke(ex,new Object[]{rootCause});
-                }
+                Method causeGetter = ex.getClass().getMethod("getCause",new Class[]{});
+                Throwable rootCause = (Throwable) causeGetter.invoke(ex,new Class[]{});
+                initCauseIfAvailable(ex,rootCause);
             } catch (Exception e1) {
                 //ignore if the method is not found - or cause has already been set.
             }
         }
+        //add other exceptions which swallow to much as appropriate
 
         prepareExceptionStack(ex.getCause());
     }
@@ -379,14 +384,23 @@ public final class _ErrorPageWriter {
                 ex=new ServletException(e);
             }
 
-            try {
-                Method m = ServletException.class.getMethod("initCause",new Class[]{Throwable.class});
-                m.invoke(ex,new Object[]{e});
-            } catch (Exception e1) {
-                //ignore if the method is not found - or cause has already been set.
-            }
+            initCauseIfAvailable(ex, e);
 
             throw ex;
+        }
+    }
+
+    private static void initCauseIfAvailable(Throwable th, Throwable cause) {
+
+        if(cause == null)
+            return;
+
+        try
+        {
+            Method m = Throwable.class.getMethod("initCause",new Class[]{Throwable.class});
+            m.invoke(th,new Object[]{cause});
+        }
+        catch(Exception e) {
         }
     }
 }
