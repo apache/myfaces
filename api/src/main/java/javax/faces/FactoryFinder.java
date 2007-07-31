@@ -83,13 +83,17 @@ public final class FactoryFinder
         {
             String message = "No Factories configured for this Application. This happens if the faces-initialization "+
             "does not work at all - make sure that you properly include all configuration settings necessary for a basic faces application " +
-            "and that all the necessary libs are included. Also check the logging output of your web application and your container for any exceptions!" +
-            "\nIf you did that and find nothing, the mistake might be due to the fact that you use some special web-containers which "+
+            "and that all the necessary libs are included. <br/>\n "+
+            "Make sure that the JSF-API (myfaces-api-xxx.jar) is not included twice on the classpath - if not, the factories might be configured in the wrong class instance. <br/>\n"+
+            "If you use Tomcat, it might also pay off to clear your /[tomcat-installation]/work/ directory - Tomcat sometimes stumbles over its own tld-cache stored there, and doesn't load the StartupServletContextListener. <br/>\n"+
+            "Also check the logging output of your web application and your container for any exceptions! \n<br/>" +
+            "If you did that and find nothing, the mistake might be due to the fact that you use one of the very few web-containers which "+
             "do not support registering context-listeners via TLD files and " +
-            "a context listener is not setup in your web.xml.\n" +
-            "A typical config looks like this;\n<listener>\n" +
-            "  <listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>\n" +
-            "</listener>\n";
+            "a context listener is not setup in your web.xml. <br/>\n" +
+            "Add the following lines to your web.xml file to work around this issue : <br/>\n&lt;listener&gt;\n<br/>" +
+            "  &lt;listener-class&gt;org.apache.myfaces.webapp.StartupServletContextListener&lt;/listener-class&gt;\n<br/>" +
+            "&lt;/listener&gt;";
+
             throw new IllegalStateException(message);
         }
 
