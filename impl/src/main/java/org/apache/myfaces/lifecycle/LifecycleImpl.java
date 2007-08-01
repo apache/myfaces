@@ -30,6 +30,8 @@ import javax.faces.lifecycle.Lifecycle;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.util.DebugUtils;
+import org.apache.myfaces.config.FacesConfigurator;
+import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
 
 /**
  * Implements the lifecycle as described in Spec. 1.0 PFD Chapter 2
@@ -65,6 +67,10 @@ public class LifecycleImpl
     }
 
     public void execute(FacesContext facesContext) throws FacesException {
+        //refresh all configuration information if according web-xml parameter is set.
+        WebXml.update(facesContext.getExternalContext());        
+        new FacesConfigurator(facesContext.getExternalContext()).update();
+
         PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, facesContext, getPhaseListeners());
         for(int executorIndex = 0;executorIndex < lifecycleExecutors.length;executorIndex++) {
         	if(executePhase(facesContext, lifecycleExecutors[executorIndex], phaseListenerMgr)) {

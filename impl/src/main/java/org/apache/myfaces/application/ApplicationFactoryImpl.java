@@ -44,8 +44,16 @@ public class ApplicationFactoryImpl
 
     public ApplicationFactoryImpl()
     {
+        createAndLogNewApplication();
+    }
+
+    private void createAndLogNewApplication() {
         _application = new ApplicationImpl();
         if (log.isTraceEnabled()) log.trace("New ApplicationFactory instance created");
+    }
+
+    public void purgeApplication(){
+        createAndLogNewApplication();
     }
 
     public Application getApplication()

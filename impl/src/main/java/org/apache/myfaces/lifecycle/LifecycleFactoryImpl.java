@@ -40,6 +40,11 @@ public class LifecycleFactoryImpl
         addLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE, new LifecycleImpl());
     }
 
+    public void purgeLifecycle(){
+        _lifecycles.clear();
+        addLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE, new LifecycleImpl());
+    }
+
     public void addLifecycle(String id, Lifecycle lifecycle)
     {
         synchronized (_lifecycles)

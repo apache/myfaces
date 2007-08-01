@@ -45,6 +45,9 @@ public class RenderKitFactoryImpl
     {
     }
 
+    public void purgeRenderKit(){
+        _renderkits.clear();
+    }
 
     public void addRenderKit(String renderKitId, RenderKit renderKit)
     {

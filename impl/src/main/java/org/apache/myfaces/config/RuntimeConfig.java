@@ -40,6 +40,7 @@ public class RuntimeConfig
 
     private Collection _navigationRules = new ArrayList();
     private Map _managedBeans = new HashMap();
+    private Map _oldManagedBeans = new HashMap();
     private Map _managedBeansPerLocation = new HashMap();
     private boolean _navigationRulesChanged=false;
 
@@ -54,6 +55,14 @@ public class RuntimeConfig
             externalContext.getApplicationMap().put(APPLICATION_MAP_PARAM_NAME, runtimeConfig);
         }
         return runtimeConfig;
+    }
+
+    public void purge(){
+        _navigationRules = new ArrayList();
+        _oldManagedBeans = _managedBeans;
+        _managedBeans = new HashMap();
+        _managedBeansPerLocation = new HashMap();
+        _navigationRulesChanged = false;
     }
 
     /**
@@ -116,6 +125,9 @@ public class RuntimeConfig
     public void addManagedBean(String name, ManagedBean managedBean)
     {
         _managedBeans.put(name, managedBean);
+        if(_oldManagedBeans!=null)
+            _oldManagedBeans.remove(name);
+
         List li = (List) _managedBeansPerLocation.get(name);
 
         if(li == null) {
@@ -124,5 +136,13 @@ public class RuntimeConfig
         }
 
         li.add(managedBean);
+    }
+
+    public Map getManagedBeansNotReaddedAfterPurge() {
+        return _oldManagedBeans;
+    }
+
+    public void resetManagedBeansNotReaddedAfterPurge() {
+        _oldManagedBeans = null;
     }
 }
