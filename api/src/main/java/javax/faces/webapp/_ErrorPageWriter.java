@@ -35,13 +35,9 @@ import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 import java.text.DateFormat;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.ExternalContext;
@@ -100,6 +96,34 @@ public final class _ErrorPageWriter {
         return str.split("@@");
     }
 
+    private static ArrayList getErrorId(Exception e){
+        String message = e.getMessage();
+        ArrayList list = new ArrayList();
+        Pattern pattern = Pattern.compile(".*?\\Q,Id:\\E\\s*(\\S+)\\s*\\].*?");
+        Matcher matcher = pattern.matcher(message);
+
+        while (matcher.find()){
+            list.add(matcher.group(1));
+        }
+        if (list.size()>0) return list;
+        return null;
+    }
+
+    public static void writeCause(Writer writer, Throwable ex) throws IOException {
+        String msg = ex.getMessage();
+        while (ex.getCause()!=null){
+            ex=ex.getCause();
+            if (ex.getMessage()!=null) msg = ex.getMessage();
+        }
+
+        if (msg != null) {
+            msg =ex.getClass().getName() + " - " + msg;
+            writer.write(msg.replaceAll("<", TS));
+        } else {
+            writer.write(ex.getClass().getName());
+        }
+    }
+    
     public static void debugHtml(Writer writer, FacesContext faces, Exception e) throws IOException {
         init();
         Date now = new Date();
@@ -116,9 +140,11 @@ public final class _ErrorPageWriter {
             } else if ("now".equals(ERROR_PARTS[i])) {
                 writer.write(DateFormat.getDateTimeInstance().format(now));
             } else if ("tree".equals(ERROR_PARTS[i])) {
-                writeComponent(writer, faces.getViewRoot());
+                writeComponent(writer, faces.getViewRoot(), getErrorId(e));
             } else if ("vars".equals(ERROR_PARTS[i])) {
                 writeVariables(writer, faces);
+            } else if ("cause".equals(ERROR_PARTS[i])) {
+                writeCause(writer, e);
             } else {
                 writer.write(ERROR_PARTS[i]);
             }
@@ -142,7 +168,7 @@ public final class _ErrorPageWriter {
             } else if ("now".equals(DEBUG_PARTS[i])) {
                 writer.write(DateFormat.getDateTimeInstance().format(now));
             } else if ("tree".equals(DEBUG_PARTS[i])) {
-                writeComponent(writer, faces.getViewRoot());
+                writeComponent(writer, faces.getViewRoot(), null);
             } else if ("vars".equals(DEBUG_PARTS[i])) {
                 writeVariables(writer, faces);
             } else {
@@ -189,10 +215,18 @@ public final class _ErrorPageWriter {
         writer.write("</tbody></table>");
     }
 
-    private static void writeComponent(Writer writer, UIComponent c) throws IOException {
+    private static void writeComponent(Writer writer, UIComponent c, List highlightId) throws IOException {
         writer.write("<dl><dt");
         if (isText(c)) {
             writer.write(" class=\"uicText\"");
+        }
+        if (highlightId != null){
+            if ((highlightId.size() > 0) && (highlightId.get(0).equals(c.getId()))){
+                highlightId.remove(0);
+                if (highlightId.size()==0){
+                    writer.write(" class=\"highlightComponent\"");
+                }
+            }
         }
         writer.write(">");
 
@@ -209,14 +243,14 @@ public final class _ErrorPageWriter {
                     writer.write("<span>");
                     writer.write((String) entry.getKey());
                     writer.write("</span>");
-                    writeComponent(writer, (UIComponent) entry.getValue());
+                    writeComponent(writer, (UIComponent) entry.getValue(), highlightId);
                     writer.write("</dd>");
                 }
             }
             if (c.getChildCount() > 0) {
                 for (Iterator itr = c.getChildren().iterator(); itr.hasNext(); ) {
                     writer.write("<dd>");
-                    writeComponent(writer, (UIComponent) itr.next());
+                    writeComponent(writer, (UIComponent) itr.next(), highlightId);
                     writer.write("</dd>");
                 }
             }
