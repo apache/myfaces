@@ -158,41 +158,42 @@ public class FacesConfigurator
         if (refreshPeriod > 0){
             long ttl = lastUpdate + refreshPeriod;
             if ((System.currentTimeMillis() > ttl) && (getLastModifiedTime() > ttl)) {
-                try {
-                    purgeConfiguration();
-                } catch (NoSuchMethodException e) {
-                    log.error("Configuration objects do not support clean-up. Update aborted");
-                    return;
-                } catch (IllegalAccessException e) {
-                    log.fatal("Error during configuration clean-up" + e.getMessage());
-                } catch (InvocationTargetException e) {
-                    log.fatal("Error during configuration clean-up" + e.getMessage());
-                }
+                log.info("Faces config-files are being reloaded. If you don't want this reload to happen (e.g. in production), set the web-xml-parameter: "+MyfacesConfig.INIT_PARAM_CONFIG_REFRESH_PERIOD +" to -1.");
+                purgeConfiguration();
                 configure();
             }
         }
     }
 
-    private void purgeConfiguration() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    private void purgeConfiguration() {
 
-        Method purgeMethod;
-        Class[] emptyParameterList = new Class[]{};
+        try {
+            Method purgeMethod;
+            Class[] emptyParameterList = new Class[]{};
 
-        ApplicationFactory applicationFactory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-        purgeMethod = applicationFactory.getClass().getMethod("purgeApplication", emptyParameterList);
-        purgeMethod.invoke(applicationFactory, emptyParameterList);
+            ApplicationFactory applicationFactory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
+            purgeMethod = applicationFactory.getClass().getMethod("purgeApplication", emptyParameterList);
+            purgeMethod.invoke(applicationFactory, emptyParameterList);
 
-        RenderKitFactory renderKitFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
-        purgeMethod = renderKitFactory.getClass().getMethod("purgeRenderKit", emptyParameterList);
-        purgeMethod.invoke(renderKitFactory, emptyParameterList);
+            RenderKitFactory renderKitFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+            purgeMethod = renderKitFactory.getClass().getMethod("purgeRenderKit", emptyParameterList);
+            purgeMethod.invoke(renderKitFactory, emptyParameterList);
 
-        RuntimeConfig.getCurrentInstance(_externalContext).purge();
+            RuntimeConfig.getCurrentInstance(_externalContext).purge();
 
-        LifecycleFactory lifecycleFactory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-        purgeMethod = lifecycleFactory.getClass().getMethod("purgeLifecycle", emptyParameterList);
-        purgeMethod.invoke(lifecycleFactory, emptyParameterList);
+            LifecycleFactory lifecycleFactory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
+            purgeMethod = lifecycleFactory.getClass().getMethod("purgeLifecycle", emptyParameterList);
+            purgeMethod.invoke(lifecycleFactory, emptyParameterList);
 
-        // factories and serial factory need not be purged...
+            // factories and serial factory need not be purged...
+        } catch (NoSuchMethodException e) {
+            log.error("Configuration objects do not support clean-up. Update aborted");
+            return;
+        } catch (IllegalAccessException e) {
+            log.fatal("Error during configuration clean-up" + e.getMessage());
+        } catch (InvocationTargetException e) {
+            log.fatal("Error during configuration clean-up" + e.getMessage());
+        }
     }
 
     public void configure()
