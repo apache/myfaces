@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.faces.FactoryFinder;
+import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
