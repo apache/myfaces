@@ -132,11 +132,9 @@ public final class FacesServlet
         }
 
 		if(log.isTraceEnabled()) log.trace("service begin");
-        FacesContext facesContext
-                = _facesContextFactory.getFacesContext(_servletConfig.getServletContext(),
-                                                       request,
-                                                       response,
-                                                       _lifecycle);
+
+        FacesContext facesContext = prepareFacesContext(request, response);
+
         try {
 			_lifecycle.execute(facesContext);
 			_lifecycle.render(facesContext);
@@ -194,5 +192,14 @@ public final class FacesServlet
             return defaultVal;
 
         return (initParameter.equalsIgnoreCase("on") || initParameter.equals("1") || initParameter.equalsIgnoreCase("true"));
+    }
+
+    private FacesContext prepareFacesContext(ServletRequest request, ServletResponse response) {
+        FacesContext facesContext
+                = _facesContextFactory.getFacesContext(_servletConfig.getServletContext(),
+                                                       request,
+                                                       response,
+                                                       _lifecycle);
+        return facesContext;
     }
 }
