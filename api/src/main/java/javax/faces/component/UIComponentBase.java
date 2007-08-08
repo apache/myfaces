@@ -497,10 +497,16 @@ public abstract class UIComponentBase
     public void decode(FacesContext context)
     {
         if (context == null) throw new NullPointerException("context");
-        Renderer renderer = getRenderer(context);
-        if (renderer != null)
+        try
         {
-            renderer.decode(context, this);
+            Renderer renderer = getRenderer(context);
+            if (renderer != null)
+            {
+                renderer.decode(context, this);
+            }
+        }
+        catch(Exception ex) {
+            throw new FacesException("Exception while decoding component : "+getPathToComponent(this));
         }
     }
 
@@ -508,11 +514,15 @@ public abstract class UIComponentBase
             throws IOException
     {
         if (context == null) throw new NullPointerException("context");
-        if (!isRendered()) return;
-        Renderer renderer = getRenderer(context);
-        if (renderer != null)
-        {
-            renderer.encodeBegin(context, this);
+        try {
+            if (!isRendered()) return;
+            Renderer renderer = getRenderer(context);
+            if (renderer != null)
+            {
+                renderer.encodeBegin(context, this);
+            }
+        } catch (Exception ex) {
+            throw new FacesException("Exception while calling encodeBegin on component : "+getPathToComponent(this));
         }
     }
 
@@ -532,11 +542,15 @@ public abstract class UIComponentBase
             throws IOException
     {
         if (context == null) throw new NullPointerException("context");
-        if (!isRendered()) return;
-        Renderer renderer = getRenderer(context);
-        if (renderer != null)
-        {
-            renderer.encodeEnd(context, this);
+        try {
+            if (!isRendered()) return;
+            Renderer renderer = getRenderer(context);
+            if (renderer != null)
+            {
+                renderer.encodeEnd(context, this);
+            }
+        } catch (Exception ex) {
+            throw new FacesException("Exception while calling encodeEnd on component : "+getPathToComponent(this));
         }
     }
 
@@ -702,7 +716,15 @@ public abstract class UIComponentBase
                 }
             }
         }
-        return new Object[] { saveState(context), facetMap, childrenList };
+
+        Object savedState;
+        try {
+            savedState = saveState(context);
+        } catch(Exception ex) {
+            throw new FacesException("Exception while saving state of component : "+getPathToComponent(this));
+        }
+
+        return new Object[] { savedState, facetMap, childrenList };
     }
 
     public void processRestoreState(FacesContext context,
@@ -749,7 +771,11 @@ public abstract class UIComponentBase
                 }
             }
         }
-        restoreState(context, myState);
+        try {
+            restoreState(context, myState);
+        } catch(Exception ex) {
+            throw new FacesException("Exception while restoring state of component : "+getPathToComponent(this));
+        }
     }
 
     protected FacesContext getFacesContext()
