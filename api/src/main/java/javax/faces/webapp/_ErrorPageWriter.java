@@ -41,7 +41,7 @@ import java.util.regex.Matcher;
 /**
  * @author Jacob Hookom (ICLA with ASF filed)
  */
-public final class _ErrorPageWriter {
+final class _ErrorPageWriter {
 
     private static final Log log = LogFactory.getLog(_ErrorPageWriter.class);
 
@@ -57,10 +57,6 @@ public final class _ErrorPageWriter {
 
     public _ErrorPageWriter() {
         super();
-    }
-
-    public static void main(String[] argv) throws Exception {
-        init();
     }
 
     private static void init() throws IOException {
