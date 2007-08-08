@@ -627,14 +627,18 @@ public abstract class UIComponentBase
             throws AbortProcessingException
     {
         if (event == null) throw new NullPointerException("event");
-        if (_facesListeners == null) return;
-        for (Iterator it = _facesListeners.iterator(); it.hasNext(); )
-        {
-            FacesListener facesListener = (FacesListener)it.next();
-            if (event.isAppropriateListener(facesListener))
+        try {
+            if (_facesListeners == null) return;
+            for (Iterator it = _facesListeners.iterator(); it.hasNext(); )
             {
-                event.processListener(facesListener);
+                FacesListener facesListener = (FacesListener)it.next();
+                if (event.isAppropriateListener(facesListener))
+                {
+                    event.processListener(facesListener);
+                }
             }
+        } catch (Exception e) {
+            throw new FacesException("Exception while calling broadcast on : "+getPathToComponent(this), e);
         }
     }
 
@@ -646,10 +650,14 @@ public abstract class UIComponentBase
     public void decode(FacesContext context)
     {
         if (context == null) throw new NullPointerException("context");
-        Renderer renderer = getRenderer(context);
-        if (renderer != null)
-        {
-            renderer.decode(context, this);
+        try {
+            Renderer renderer = getRenderer(context);
+            if (renderer != null)
+            {
+                renderer.decode(context, this);
+            }
+        } catch (Exception e) {
+            throw new FacesException("Exception while calling decode on : "+getPathToComponent(this), e);
         }
     }
 
@@ -657,11 +665,15 @@ public abstract class UIComponentBase
             throws IOException
     {
         if (context == null) throw new NullPointerException("context");
-        if (!isRendered()) return;
-        Renderer renderer = getRenderer(context);
-        if (renderer != null)
-        {
-            renderer.encodeBegin(context, this);
+        try {
+            if (!isRendered()) return;
+            Renderer renderer = getRenderer(context);
+            if (renderer != null)
+            {
+                renderer.encodeBegin(context, this);
+            }
+        } catch (Exception e) {
+            throw new FacesException("Exception while calling encodeBegin on : "+getPathToComponent(this), e);
         }
     }
 
@@ -681,11 +693,16 @@ public abstract class UIComponentBase
             throws IOException
     {
         if (context == null) throw new NullPointerException("context");
-        if (!isRendered()) return;
-        Renderer renderer = getRenderer(context);
-        if (renderer != null)
-        {
-            renderer.encodeEnd(context, this);
+        try {
+            if (!isRendered()) return;
+
+            Renderer renderer = getRenderer(context);
+            if (renderer != null)
+            {
+                renderer.encodeEnd(context, this);
+            }
+        } catch (Exception e) {
+            throw new FacesException("Exception while calling encodeEnd on : "+getPathToComponent(this), e);
         }
     }
 
@@ -828,7 +845,14 @@ public abstract class UIComponentBase
               }
             }
         }
-        return new Object[] {saveState(context),
+        Object savedState;
+        try {
+             savedState = saveState(context);
+        } catch (Exception e) {
+            throw new FacesException("Exception while saving state of component : "+getPathToComponent(this), e);
+        }
+
+        return new Object[] {savedState,
                              facetMap,
                              childrenList};
     }
@@ -877,7 +901,11 @@ public abstract class UIComponentBase
                 }
             }
         }
-        restoreState(context, myState);
+        try {
+            restoreState(context, myState);
+        } catch (Exception e) {
+            throw new FacesException("Exception while restoring state of component : "+getPathToComponent(this), e);
+        }
     }
 
     protected FacesContext getFacesContext()
