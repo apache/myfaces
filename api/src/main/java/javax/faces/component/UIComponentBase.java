@@ -491,7 +491,7 @@ public abstract class UIComponentBase
             }
         }
         catch(Exception ex) {
-            throw new FacesException("Exception while calling broadcast on component : "+getPathToComponent(this));
+            throw new FacesException("Exception while calling broadcast on component : "+getPathToComponent(this), ex);
         }
     }
 
@@ -512,7 +512,7 @@ public abstract class UIComponentBase
             }
         }
         catch(Exception ex) {
-            throw new FacesException("Exception while decoding component : "+getPathToComponent(this));
+            throw new FacesException("Exception while decoding component : "+getPathToComponent(this), ex);
         }
     }
 
@@ -528,7 +528,7 @@ public abstract class UIComponentBase
                 renderer.encodeBegin(context, this);
             }
         } catch (Exception ex) {
-            throw new FacesException("Exception while calling encodeBegin on component : "+getPathToComponent(this));
+            throw new FacesException("Exception while calling encodeBegin on component : "+getPathToComponent(this), ex);
         }
     }
 
@@ -556,7 +556,7 @@ public abstract class UIComponentBase
                 renderer.encodeEnd(context, this);
             }
         } catch (Exception ex) {
-            throw new FacesException("Exception while calling encodeEnd on component : "+getPathToComponent(this));
+            throw new FacesException("Exception while calling encodeEnd on component : "+getPathToComponent(this), ex);
         }
     }
 
@@ -727,7 +727,7 @@ public abstract class UIComponentBase
         try {
             savedState = saveState(context);
         } catch(Exception ex) {
-            throw new FacesException("Exception while saving state of component : "+getPathToComponent(this));
+            throw new FacesException("Exception while saving state of component : "+getPathToComponent(this), ex);
         }
 
         return new Object[] { savedState, facetMap, childrenList };
@@ -780,7 +780,7 @@ public abstract class UIComponentBase
         try {
             restoreState(context, myState);
         } catch(Exception ex) {
-            throw new FacesException("Exception while restoring state of component : "+getPathToComponent(this));
+            throw new FacesException("Exception while restoring state of component : "+getPathToComponent(this), ex);
         }
     }
 
