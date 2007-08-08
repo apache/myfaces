@@ -49,7 +49,7 @@ import javax.servlet.ServletException;
 /**
  * @author Jacob Hookom (ICLA with ASF filed)
  */
-public final class _ErrorPageWriter {
+class _ErrorPageWriter {
 
     private static final Log log = LogFactory.getLog(_ErrorPageWriter.class);
 
@@ -65,10 +65,6 @@ public final class _ErrorPageWriter {
 
     public _ErrorPageWriter() {
         super();
-    }
-
-    public static void main(String[] argv) throws Exception {
-        init();
     }
 
     private static void init() throws IOException {
@@ -395,7 +391,7 @@ public final class _ErrorPageWriter {
         prepareExceptionStack(ex.getCause());
     }
 
-    static void throwException(Exception e) throws IOException, ServletException {
+    public static void throwException(Exception e) throws IOException, ServletException {
 
         prepareExceptionStack(e);
 
