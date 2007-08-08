@@ -478,14 +478,20 @@ public abstract class UIComponentBase
             throws AbortProcessingException
     {
         if (event == null) throw new NullPointerException("event");
-        if (_facesListeners == null) return;
-        for (Iterator<FacesListener> it = _facesListeners.iterator(); it.hasNext(); )
-        {
-            FacesListener facesListener = it.next();
-            if (event.isAppropriateListener(facesListener))
+        try {
+
+            if (_facesListeners == null) return;
+            for (Iterator<FacesListener> it = _facesListeners.iterator(); it.hasNext(); )
             {
-                event.processListener(facesListener);
+                FacesListener facesListener = it.next();
+                if (event.isAppropriateListener(facesListener))
+                {
+                    event.processListener(facesListener);
+                }
             }
+        }
+        catch(Exception ex) {
+            throw new FacesException("Exception while calling broadcast on component : "+getPathToComponent(this));
         }
     }
 
