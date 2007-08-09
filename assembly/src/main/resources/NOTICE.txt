@@ -6,11 +6,3 @@ See the file LICENSE.txt
 See licenses for accompanying products in the "/licenses" subdirectory.
 ------------------------------------------------------------------------
 
-This product includes software developed by Heng Yuan
-http://www.cs.ucla.edu/~heng/JSCookMenu
-
-This product includes software developed by Sam Stephenson (the ProtoType library)
-http://conio.net/
-
-This product includes software developed by Thomas Fuchs (the Ruby on Rails Ajax javascript extensions)
-http://script.aculo.us/
