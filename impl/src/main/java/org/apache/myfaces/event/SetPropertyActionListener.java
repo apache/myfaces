@@ -83,7 +83,7 @@ public class SetPropertyActionListener implements ActionListener, StateHolder
 
     public void restoreState(FacesContext context, Object state)
     {
-        Object[] values = new Object[2];
+        Object[] values = (Object[]) state;
         target = (ValueExpression) values[0];
         value = (ValueExpression) values[1];
     }
