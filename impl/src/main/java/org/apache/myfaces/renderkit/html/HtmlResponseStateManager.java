@@ -117,47 +117,71 @@ public class HtmlResponseStateManager
         }
     }
 
-
-    public Object getTreeStructureToRestore(FacesContext facesContext, String viewId) {
-        Map reqParamMap = facesContext.getExternalContext().getRequestParameterMap();
-
-        Object encodedState = reqParamMap.get(STANDARD_STATE_SAVING_PARAM);
-
-        if(encodedState==null)
+    @Override
+    public Object getState(FacesContext facesContext, String viewId) {
+        Object[] savedState = getSavedState(facesContext);
+        if (savedState == null) {
             return null;
+        }
+        
+        return new Object[] { savedState[TREE_PARAM], savedState[STATE_PARAM] };
+    }
 
-        Object[] savedState = (Object[]) StateUtils.reconstruct((String) encodedState, facesContext.getExternalContext());
-
-        String restoredViewId = (String) savedState[VIEWID_PARAM];
-
-        if (restoredViewId == null || !restoredViewId.equals(viewId)) {
-            //no saved state or state of different viewId
-            if (log.isTraceEnabled()) log.trace("No saved state or state of a different viewId"+restoredViewId);
+    @Override
+    public Object getTreeStructureToRestore(FacesContext facesContext, String viewId) {
+        // Although this method won't be called anymore, 
+        // it has been kept for backward compatibility.
+        Object[] savedState = getSavedState(facesContext);
+        if (savedState == null) {
             return null;
         }
 
         return savedState[TREE_PARAM];
     }
 
+    @Override
     public Object getComponentStateToRestore(FacesContext facesContext) {
-        Map reqParamMap = facesContext.getExternalContext().getRequestParameterMap();
-
-        Object encodedState = reqParamMap.get(STANDARD_STATE_SAVING_PARAM);
-
-        if(encodedState==null)
-            return null;
-
-        Object[] savedState = (Object[]) StateUtils.reconstruct((String) encodedState, facesContext.getExternalContext());
-
-        String restoredViewId = (String) savedState[VIEWID_PARAM];
-
-        if (restoredViewId == null) {
-            //no saved state or state of different viewId
-            if (log.isTraceEnabled()) log.trace("No saved state or state of a different viewId: "+restoredViewId);
+        // Although this method won't be called anymore, 
+        // it has been kept for backward compatibility.
+        Object[] savedState = getSavedState(facesContext);
+        if (savedState == null) {
             return null;
         }
 
         return savedState[STATE_PARAM];
+    }
+    
+    /**
+     * Reconstructs the state from the "javax.faces.ViewState" request parameter.
+     * 
+     * @param facesContext the current FacesContext
+     * 
+     * @return the reconstructed state, or <code>null</code> 
+     *          if there was no saved state
+     */
+    private Object[] getSavedState(FacesContext facesContext) {
+        Object encodedState = 
+            facesContext.getExternalContext().
+                getRequestParameterMap().get(STANDARD_STATE_SAVING_PARAM);
+        if(encodedState==null) { 
+            return null;
+        }
+        
+        Object[] savedState = (Object[]) StateUtils.reconstruct(
+                (String) encodedState, facesContext.getExternalContext());
+
+        String restoredViewId = (String) savedState[VIEWID_PARAM];
+
+        if (restoredViewId == null) {
+            // no saved state or state of different viewId
+            if (log.isTraceEnabled()) {
+                log.trace("No saved state or state of a different viewId: " + restoredViewId);
+            }
+            
+            return null;
+        }
+        
+        return savedState;
     }
 
 
@@ -172,4 +196,5 @@ public class HtmlResponseStateManager
                 .getRequestParameterMap().containsKey(ResponseStateManager.VIEW_STATE_PARAM);
     }
 }
+
 
