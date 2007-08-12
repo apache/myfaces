@@ -24,6 +24,7 @@ import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
 import javax.faces.FactoryFinder;
 import javax.faces.application.ApplicationFactory;
+import javax.faces.context.FacesContext;
 import javax.faces.el.EvaluationException;
 import javax.faces.el.PropertyResolver;
 
@@ -190,7 +191,13 @@ public class PropertyResolverToELResolver extends ELResolver
         try
         {
             context.setPropertyResolved(true);
-            return invoker.invoke(base, property);
+            T value = invoker.invoke(base, property);
+            
+            // see: https://issues.apache.org/jira/browse/MYFACES-1670
+            context.setPropertyResolved(
+            		FacesContext.getCurrentInstance().getELContext().isPropertyResolved());
+            
+            return value;
         }
         catch (javax.faces.el.PropertyNotFoundException e)
         {
