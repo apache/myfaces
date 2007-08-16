@@ -84,8 +84,8 @@ public final class FacesServlet
         //1. check for Servlet's init-param
         //2. check for global context parameter
         //3. use default Lifecycle Id, if none of them was provided
-        String appLifecycleId = _servletConfig.getServletContext().getInitParameter(LIFECYCLE_ID_ATTR);
         String serLifecycleId = _servletConfig.getInitParameter(LIFECYCLE_ID_ATTR);
+        String appLifecycleId = _servletConfig.getServletContext().getInitParameter(LIFECYCLE_ID_ATTR);
         appLifecycleId = serLifecycleId == null ? appLifecycleId : serLifecycleId;
         return appLifecycleId != null ? appLifecycleId : LifecycleFactory.DEFAULT_LIFECYCLE;
     }
