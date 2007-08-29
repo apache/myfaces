@@ -94,6 +94,10 @@ class _ErrorPageWriter {
 
     private static ArrayList getErrorId(Exception e){
         String message = e.getMessage();
+
+        if(message==null)
+            return null;
+
         ArrayList list = new ArrayList();
         Pattern pattern = Pattern.compile(".*?\\Q,Id:\\E\\s*(\\S+)\\s*\\].*?");
         Matcher matcher = pattern.matcher(message);
