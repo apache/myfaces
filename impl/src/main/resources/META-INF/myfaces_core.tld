@@ -996,12 +996,8 @@
                 (during Render Response Phase), or processed on any subsequent
                 form submit.  The default value for this property is true.]]>
             </description>
-            <name>
-                rendered
-            </name>
-            <required>
-                false
-            </required>
+            <name>rendered</name>
+            <required>false</required>
             <deferred-value>
                 <type>
                     java.lang.Boolean

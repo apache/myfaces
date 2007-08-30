@@ -62,7 +62,7 @@ public class ConvertDateTimeTag
     static
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        CONVERTER_ID = FacesContext.getCurrentInstance().getApplication().getExpressionFactory().createValueExpression(
+        CONVERTER_ID = facesContext.getApplication().getExpressionFactory().createValueExpression(
                     facesContext.getELContext(),"javax.faces.DateTime",String.class);
     }
         
