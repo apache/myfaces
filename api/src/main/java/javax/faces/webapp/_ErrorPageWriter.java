@@ -366,20 +366,28 @@ final class _ErrorPageWriter {
             Throwable rootCause = ((ServletException) ex).getRootCause();
             initCauseIfAvailable(ex,rootCause);
         }
+        //handle JSP-Exceptions - equally long know for swallowing root-causes ;)
+        if(ex.getClass().getName().equals("javax.servlet.jsp.JspException")) {
+            initCausePerReflection(ex,"getRootCause");
+        }
         //handle portlet-exceptions - not much better in this regard
         else if(ex.getClass().getName().equals("javax.portlet.PortletException")) {
-            try
-            {
-                Method causeGetter = ex.getClass().getMethod("getCause",new Class[]{});
-                Throwable rootCause = (Throwable) causeGetter.invoke(ex,new Class[]{});
-                initCauseIfAvailable(ex,rootCause);
-            } catch (Exception e1) {
-                //ignore if the method is not found - or cause has already been set.
-            }
+            initCausePerReflection(ex,"getCause");
         }
         //add other exceptions which swallow to much as appropriate
 
         prepareExceptionStack(ex.getCause());
+    }
+
+    private static void initCausePerReflection(Throwable ex, String methodName) {
+        try
+            {
+                Method causeGetter = ex.getClass().getMethod(methodName,new Class[]{});
+            Throwable rootCause = (Throwable) causeGetter.invoke(ex,new Class[]{});
+            initCauseIfAvailable(ex,rootCause);
+        } catch (Exception e1) {
+            //ignore if the method is not found - or cause has already been set.
+        }
     }
 
     static void throwException(Exception e) throws IOException, ServletException {
