@@ -353,7 +353,7 @@
   </reporting>
 
   <properties>
-    <myfaces-shared.version>2.0.7-SNAPSHOT</myfaces-shared.version>
+    <myfaces-shared.version>2.0.8-SNAPSHOT</myfaces-shared.version>
   </properties>
 
 </project>
