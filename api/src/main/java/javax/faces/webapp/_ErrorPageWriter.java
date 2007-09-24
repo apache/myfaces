@@ -132,7 +132,9 @@ final class _ErrorPageWriter {
             } else if ("now".equals(ERROR_PARTS[i])) {
                 writer.write(DateFormat.getDateTimeInstance().format(now));
             } else if ("tree".equals(ERROR_PARTS[i])) {
-                writeComponent(writer, faces.getViewRoot(), getErrorId(e));
+                if (faces.getViewRoot() != null) {
+                    writeComponent(writer, faces.getViewRoot(), getErrorId(e));
+                }
             } else if ("vars".equals(ERROR_PARTS[i])) {
                 writeVariables(writer, faces);
             } else if ("cause".equals(ERROR_PARTS[i])) {
