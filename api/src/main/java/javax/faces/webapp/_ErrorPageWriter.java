@@ -123,7 +123,7 @@ class _ErrorPageWriter {
             writer.write(ex.getClass().getName());
         }
     }
-    
+
     public static void debugHtml(Writer writer, FacesContext faces, Exception e) throws IOException {
         init();
         Date now = new Date();
@@ -140,8 +140,10 @@ class _ErrorPageWriter {
             } else if ("now".equals(ERROR_PARTS[i])) {
                 writer.write(DateFormat.getDateTimeInstance().format(now));
             } else if ("tree".equals(ERROR_PARTS[i])) {
-                writeComponent(writer, faces.getViewRoot(), getErrorId(e));
-            } else if ("vars".equals(ERROR_PARTS[i])) {
+				if (faces.getViewRoot() != null) {
+					writeComponent(writer, faces.getViewRoot(), getErrorId(e));
+				}
+			} else if ("vars".equals(ERROR_PARTS[i])) {
                 writeVariables(writer, faces);
             } else if ("cause".equals(ERROR_PARTS[i])) {
                 writeCause(writer, e);
