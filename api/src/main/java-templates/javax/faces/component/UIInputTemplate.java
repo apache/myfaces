@@ -262,24 +262,33 @@ public class UIInputTemplate extends UIOutput implements EditableValueHolder
     public void validate(FacesContext context)
     {
         if (context == null) throw new NullPointerException("context");
-        Object submittedValue = getSubmittedValue();
-        if (submittedValue == null) return;
+        
+        try {
 
-        Object convertedValue = getConvertedValue(context, submittedValue);
+            Object submittedValue = getSubmittedValue();
+            if (submittedValue == null) return;
 
-        if (!isValid()) return;
+            Object convertedValue = getConvertedValue(context, submittedValue);
 
-        validateValue(context, convertedValue);
+            if (!isValid()) return;
 
-        if (!isValid()) return;
+            validateValue(context, convertedValue);
 
-        Object previousValue = getValue();
-        setValue(convertedValue);
-        setSubmittedValue(null);
-        if (compareValues(previousValue, convertedValue))
-        {
-            queueEvent(new ValueChangeEvent(this, previousValue, convertedValue));
+            if (!isValid()) return;
+
+            Object previousValue = getValue();
+            setValue(convertedValue);
+            setSubmittedValue(null);
+            if (compareValues(previousValue, convertedValue))
+            {
+                queueEvent(new ValueChangeEvent(this, previousValue, convertedValue));
+            }
         }
+        catch (Exception ex)
+        {
+            throw new FacesException("Exception while validating component with path : "+_ComponentUtils.getPathToComponent(this),ex);
+        }
+
     }
 
     /**
