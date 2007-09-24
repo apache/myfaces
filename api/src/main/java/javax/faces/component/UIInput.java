@@ -280,7 +280,7 @@ public class UIInput
         }
         catch (Exception ex)
         {
-            throw new FacesException("Exception while setting value : "+vb.getExpressionString()+"of component with path : "+_ComponentUtils.getPathToComponent(this),ex);
+            throw new FacesException("Exception while setting value : "+vb.getExpressionString()+" of component with path : "+_ComponentUtils.getPathToComponent(this),ex);
         }
     }
 
@@ -333,23 +333,31 @@ public class UIInput
     public void validate(FacesContext context)
     {
         if (context == null) throw new NullPointerException("context");
-        Object submittedValue = getSubmittedValue();
-        if (submittedValue == null) return;
 
-        Object convertedValue = getConvertedValue(context, submittedValue);
+        try {
 
-        if (!isValid()) return;
+            Object submittedValue = getSubmittedValue();
+            if (submittedValue == null) return;
 
-        validateValue(context, convertedValue);
+            Object convertedValue = getConvertedValue(context, submittedValue);
 
-        if (!isValid()) return;
+            if (!isValid()) return;
 
-        Object previousValue = getValue();
-        setValue(convertedValue);
-        setSubmittedValue(null);
-        if (compareValues(previousValue, convertedValue))
+            validateValue(context, convertedValue);
+
+            if (!isValid()) return;
+
+            Object previousValue = getValue();
+            setValue(convertedValue);
+            setSubmittedValue(null);
+            if (compareValues(previousValue, convertedValue))
+            {
+                queueEvent(new ValueChangeEvent(this, previousValue, convertedValue));
+            }
+        }
+        catch (Exception ex)
         {
-            queueEvent(new ValueChangeEvent(this, previousValue, convertedValue));
+            throw new FacesException("Exception while validating component with path : "+_ComponentUtils.getPathToComponent(this),ex);
         }
     }
 
