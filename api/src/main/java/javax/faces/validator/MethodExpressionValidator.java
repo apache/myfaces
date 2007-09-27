@@ -52,8 +52,15 @@ public class MethodExpressionValidator implements Validator, StateHolder {
         
         try {
             methodExpression.invoke(context.getELContext(), params);
-        } catch (ELException e) {
-            throw new ValidatorException(new FacesMessage(), e);
+        } 
+        catch (ELException e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof ValidatorException) {
+                throw (ValidatorException) cause;
+            }
+            else {
+                throw e;
+            }
         }
     }
 
