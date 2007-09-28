@@ -152,8 +152,64 @@ abstract public class UIDataTemplate extends UIComponentBase implements NamingCo
 
     @Override
     public boolean invokeOnComponent(FacesContext context, String clientId, ContextCallback callback) throws FacesException {
-        // not supported yet
-        return false;
+        if (context == null || clientId == null || callback == null) {
+            throw new NullPointerException();
+        }
+
+        //searching for this component?
+        boolean returnValue = this.getClientId(context).equals(clientId);
+
+        if (returnValue) {
+            try {
+                callback.invokeContextCallback(context, this);
+            } catch (Exception e) {
+                throw new FacesException(e);
+            }
+            return returnValue;
+        }
+
+        //Now Look throught facets on this UIComponent
+        for (Iterator<UIComponent> it = this.getFacets().values().iterator(); !returnValue && it.hasNext();) {
+            returnValue = it.next().invokeOnComponent(context, clientId, callback);
+        }
+
+        if (returnValue == true)
+            return returnValue;
+
+        //Now we have to check if it is searching an inner component
+        String baseClientId = super.getClientId(context);
+
+        //First check if the clientId starts with the baseClientId of
+        //this component, to check if continue trying to find the component
+        //inside the children of this component.
+        if (clientId.matches(baseClientId + ":[0-9]+:.*")) {
+
+            String subId = clientId.substring(baseClientId.length() + 1);
+            String clientRow = subId.substring(0, subId.indexOf(':'));
+
+            //Now we save the current position
+            int oldRow = this.getRowIndex();
+
+            //The conversion is safe, because its already checked on the
+            //regular expresion
+            this.setRowIndex(Integer.parseInt(clientRow));
+
+            for (Iterator<UIComponent> it1 = getChildren().iterator(); !returnValue && it1.hasNext();) {
+                //recursive call to find the component
+                UIComponent child = it1.next();
+                returnValue = child.invokeOnComponent(context, clientId, callback);
+            }
+
+            //Restore the old position. Doing this prevent
+            //side effects.
+            this.setRowIndex(oldRow);
+        } else {
+            //The component that matches this clientId must be outside
+            //of this component
+            return false;
+        }
+
+        return returnValue;
     }
 
     public void setFooter(UIComponent footer)
