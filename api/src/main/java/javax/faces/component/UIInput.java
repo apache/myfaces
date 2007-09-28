@@ -47,6 +47,7 @@ public class UIInput
 {
     public static final String CONVERSION_MESSAGE_ID = "javax.faces.component.UIInput.CONVERSION";
     public static final String REQUIRED_MESSAGE_ID = "javax.faces.component.UIInput.REQUIRED";
+    private static final String ERROR_HANDLING_EXCEPTION_LIST = "org.apache.myfaces.errorHandling.exceptionList";
 
     private static final Validator[] EMPTY_VALIDATOR_ARRAY = new Validator[0];
 
@@ -278,9 +279,38 @@ public class UIInput
             setValue(null);
             setLocalValueSet(false);
         }
-        catch (Exception ex)
+         catch (Exception e)
         {
-            throw new FacesException("Exception while setting value : "+vb.getExpressionString()+" of component with path : "+_ComponentUtils.getPathToComponent(this),ex);
+        	//Object[] args = {getId()};
+            context.getExternalContext().log(e.getMessage(), e);
+            _MessageUtils.addErrorMessage(context, this,CONVERSION_MESSAGE_ID,new Object[]{getId()});
+            setValid(false);
+
+            /* we are not allowed to throw exceptions here - we still need the full stack-trace later on
+             * to process it later in our error-handler
+             */
+            queueExceptionInRequest(context, vb, e);
+        }
+    }
+
+    /**
+     * For development and production, we want to offer a single point
+     * to which error-handlers can attach. So we queue up all ocurring
+     * exceptions and later pass them to the configured error-handler.
+     *
+     * @param context
+     * @param binding
+     * @param e
+     */
+    private void queueExceptionInRequest(FacesContext context, ValueBinding binding, Exception e) {
+        List li = (List) context.getExternalContext().getRequestMap().get(ERROR_HANDLING_EXCEPTION_LIST);
+        if(null==li) {
+            li = new ArrayList();
+            context.getExternalContext().getRequestMap().put(ERROR_HANDLING_EXCEPTION_LIST, li);
+
+            li.add(new FacesException("Exception while setting value for expression : "+
+                binding.getExpressionString()+" of component with path : "
+                + _ComponentUtils.getPathToComponent(this),e));
         }
     }
 

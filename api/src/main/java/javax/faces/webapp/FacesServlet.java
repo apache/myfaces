@@ -21,8 +21,10 @@ package javax.faces.webapp;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import javax.faces.FactoryFinder;
+import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextFactory;
 import javax.faces.lifecycle.Lifecycle;
@@ -54,6 +56,7 @@ public final class FacesServlet
     private static final String SERVLET_INFO = "FacesServlet of the MyFaces API implementation";
     private static final String ERROR_HANDLING_PARAMETER = "org.apache.myfaces.ERROR_HANDLING";
     private static final String ERROR_HANDLER_PARAMETER = "org.apache.myfaces.ERROR_HANDLER";
+    private static final String ERROR_HANDLING_EXCEPTION_LIST = "org.apache.myfaces.errorHandling.exceptionList";    
 
     private ServletConfig _servletConfig;
     private FacesContextFactory _facesContextFactory;
@@ -138,7 +141,10 @@ public final class FacesServlet
         FacesContext facesContext = prepareFacesContext(request, response);
         try {
 			_lifecycle.execute(facesContext);
-			_lifecycle.render(facesContext);
+
+            handleQueuedExceptions(facesContext);
+
+            _lifecycle.render(facesContext);
 		}
         catch (Exception e)
         {
@@ -150,6 +156,32 @@ public final class FacesServlet
         }
 		if(log.isTraceEnabled()) log.trace("service end");
     }
+
+    /**This method makes sure we see an exception page also
+     * if an exception has been thrown in UIInput.updateModel();
+     * In this method, according to the spec, we may not rethrow the
+     * exception, so we add it to a list and process it here.
+     *
+     * Attention: if you use redirects, the exceptions will get lost - exactly
+     * like in the case of FacesMessages. If you want them to be taken over to the
+     * next request, you should try the redirect-tracker of MyFaces.
+     *
+     * @param facesContext
+     * @throws javax.faces.FacesException
+     */
+    private void handleQueuedExceptions(FacesContext facesContext) throws FacesException {
+        List li = (List)
+                facesContext.getExternalContext().getRequestMap().get(ERROR_HANDLING_EXCEPTION_LIST);
+
+        if(li != null && li.size()>=1)  {
+            //todo: for now, we only handle the first exception out of the list - we just rethrow this
+            //first exception.
+            //in the end, we should enable the error handler to show all the exceptions at once
+            throw (FacesException) li.get(0);
+        }
+    }
+
+    
 
     private void handleLifecycleException(FacesContext facesContext, Exception e) throws IOException, ServletException {
 
