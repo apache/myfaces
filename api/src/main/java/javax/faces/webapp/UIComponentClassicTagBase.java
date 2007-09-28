@@ -335,6 +335,11 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
                         _componentInstance.getChildren().add(verbatimComp);
                     }
                 }
+
+                // also tell the parent-tag about the new component instance
+                if(parentTag!=null) {
+                    parentTag.addChild(verbatimComp);
+                }
             }
         }
 
