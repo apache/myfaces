@@ -53,6 +53,7 @@ public class RuntimeConfig
     private final Map<String, ManagedBean> _managedBeans = new HashMap<String, ManagedBean>();
     private boolean _navigationRulesChanged = false;
     private final Map<String, ResourceBundle> _resourceBundles = new HashMap<String, ResourceBundle>();
+    private final Map<String, ManagedBean> _oldManagedBeans = new HashMap<String, ManagedBean>();
 
     private CompositeELResolver facesConfigElResolvers;
     private CompositeELResolver applicationElResolvers;
@@ -76,6 +77,15 @@ public class RuntimeConfig
             externalContext.getApplicationMap().put(APPLICATION_MAP_PARAM_NAME, runtimeConfig);
         }
         return runtimeConfig;
+    }
+
+    public void purge()
+    {
+        _navigationRules.clear();
+        _oldManagedBeans.clear();
+        _oldManagedBeans.putAll(_managedBeans);
+        _managedBeans.clear();
+        _navigationRulesChanged = false;
     }
 
     /**
@@ -123,6 +133,8 @@ public class RuntimeConfig
     public void addManagedBean(String name, ManagedBean managedBean)
     {
         _managedBeans.put(name, managedBean);
+        if(_oldManagedBeans!=null)
+            _oldManagedBeans.remove(name);
     }
 
     /**
@@ -238,5 +250,15 @@ public class RuntimeConfig
     public VariableResolver getVariableResolverChainHead()
     {
         return _variableResolverChainHead;
+    }
+
+    public Map getManagedBeansNotReaddedAfterPurge()
+    {
+        return _oldManagedBeans;
+    }
+
+    public void resetManagedBeansNotReaddedAfterPurge()
+    {
+        _oldManagedBeans.clear();
     }
 }

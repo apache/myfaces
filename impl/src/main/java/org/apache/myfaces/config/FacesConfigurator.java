@@ -34,6 +34,7 @@ import org.apache.myfaces.el.VariableResolverImpl;
 import org.apache.myfaces.lifecycle.LifecycleFactoryImpl;
 import org.apache.myfaces.renderkit.RenderKitFactoryImpl;
 import org.apache.myfaces.renderkit.html.HtmlRenderKitImpl;
+import org.apache.myfaces.shared_impl.config.MyfacesConfig;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.shared_impl.util.LocaleUtils;
 import org.apache.myfaces.shared_impl.util.StateUtils;
@@ -58,6 +59,7 @@ import javax.faces.webapp.FacesServlet;
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
@@ -102,6 +104,8 @@ public class FacesConfigurator
     private static final String JAR_EXTENSION = ".jar";
     private static final String META_INF_MANIFEST_SUFFIX = "!/META-INF/MANIFEST.MF";
     private static final String JAR_PREFIX = "jar:";
+
+    private static long lastUpdate;
 
     public static final String MYFACES_API_PACKAGE_NAME = "myfaces-api";
     public static final String MYFACES_IMPL_PACKAGE_NAME = "myfaces-impl";
@@ -162,6 +166,88 @@ public class FacesConfigurator
         return _dispenser;
     }
 
+    private long getResourceLastModified(String resource)
+    {
+        try {
+            URL url =  _externalContext.getResource(resource);
+            if (url != null) {
+                return url.openConnection().getLastModified();
+            }
+        } catch (IOException e) {
+            log.error("Could not read resource " + resource, e);
+        }
+        return 0;
+    }
+    
+    private long getLastModifiedTime()
+    {
+        long lastModified = 0;
+        long resModified;
+
+        resModified = getResourceLastModified(DEFAULT_FACES_CONFIG);
+        if (resModified > lastModified)
+            lastModified = resModified;
+
+
+        List configFilesList = getConfigFilesList();
+
+        for (int i = 0; i < configFilesList.size(); i++) {
+            String systemId = (String) configFilesList.get(i);
+
+            resModified = getResourceLastModified(systemId);
+                if (resModified > lastModified)
+                    lastModified = resModified;
+
+        }
+
+        return lastModified;
+    }
+
+    public void update()
+    {
+        long refreshPeriod = (MyfacesConfig.getCurrentInstance(_externalContext).getConfigRefreshPeriod())*1000;
+
+        if (refreshPeriod > 0){
+            long ttl = lastUpdate + refreshPeriod;
+            if ((System.currentTimeMillis() > ttl) && (getLastModifiedTime() > ttl)) {
+                try {
+                    purgeConfiguration();
+                } catch (NoSuchMethodException e) {
+                    log.error("Configuration objects do not support clean-up. Update aborted");
+                    return;
+                } catch (IllegalAccessException e) {
+                    log.fatal("Error during configuration clean-up" + e.getMessage());
+                } catch (InvocationTargetException e) {
+                    log.fatal("Error during configuration clean-up" + e.getMessage());
+                }
+                configure();
+            }
+        }
+    }
+
+    private void purgeConfiguration() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException
+    {
+        Method purgeMethod;
+        Class[] emptyParameterList = new Class[]{};
+
+        ApplicationFactory applicationFactory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
+        purgeMethod = applicationFactory.getClass().getMethod("purgeApplication", emptyParameterList);
+        purgeMethod.invoke(applicationFactory, emptyParameterList);
+
+        RenderKitFactory renderKitFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+        purgeMethod = renderKitFactory.getClass().getMethod("purgeRenderKit", emptyParameterList);
+        purgeMethod.invoke(renderKitFactory, emptyParameterList);
+
+        RuntimeConfig.getCurrentInstance(_externalContext).purge();
+
+        LifecycleFactory lifecycleFactory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
+        purgeMethod = lifecycleFactory.getClass().getMethod("purgeLifecycle", emptyParameterList);
+        purgeMethod.invoke(lifecycleFactory, emptyParameterList);
+
+        // factories and serial factory need not be purged...
+    }
+
+
     public void configure() throws FacesException
     {
         try
@@ -192,6 +278,9 @@ public class FacesConfigurator
         configureRuntimeConfig();
         configureLifecycle();
         handleSerialFactory();
+
+        //record the time of update
+        lastUpdate = System.currentTimeMillis();
     }
 
     private void feedStandardConfig() throws IOException, SAXException
@@ -429,7 +518,25 @@ public class FacesConfigurator
 
     private void feedContextSpecifiedConfig() throws IOException, SAXException
     {
+        List configFilesList = getConfigFilesList();
+        for (int i = 0; i < configFilesList.size(); i++) {
+            String systemId = (String) configFilesList.get(i);
+            InputStream stream = _externalContext.getResourceAsStream(systemId);
+            if (stream == null)
+            {
+                log.error("Faces config resource " + systemId + " not found");
+                continue;
+            }
+
+            if (log.isInfoEnabled()) log.info("Reading config " + systemId);
+            getDispenser().feed(getUnmarshaller().getFacesConfig(stream, systemId));
+            stream.close();
+        }
+    }
+
+    private List getConfigFilesList() {
         String configFiles = _externalContext.getInitParameter(FacesServlet.CONFIG_FILES_ATTR);
+        List configFilesList = new ArrayList();
         if (configFiles != null)
         {
             StringTokenizer st = new StringTokenizer(configFiles, ",", false);
@@ -438,23 +545,15 @@ public class FacesConfigurator
                 String systemId = st.nextToken().trim();
 
                 if (log.isWarnEnabled() && DEFAULT_FACES_CONFIG.equals(systemId))
-                    log.warn(DEFAULT_FACES_CONFIG + " has been specified in the " + FacesServlet.CONFIG_FILES_ATTR
-                            + " context parameter of " + "the deployment descriptor. This should be removed, "
-                            + "as it will be loaded twice.  See JSF spec 1.2, 10.1.3");
-
-                InputStream stream = _externalContext.getResourceAsStream(systemId);
-                if (stream == null)
-                {
-                    log.error("Faces config resource " + systemId + " not found");
-                    continue;
-                }
-
-                if (log.isInfoEnabled())
-                    log.info("Reading config " + systemId);
-                getDispenser().feed(getUnmarshaller().getFacesConfig(stream, systemId));
-                stream.close();
+                    log.warn(DEFAULT_FACES_CONFIG + " has been specified in the " +
+                            FacesServlet.CONFIG_FILES_ATTR + " context parameter of " +
+                            "the deployment descriptor. This will automatically be removed, " +
+                            "if we wouldn't do this, it would be loaded twice.  See JSF spec 1.1, 10.3.2");
+                else
+                    configFilesList.add(systemId);
             }
         }
+        return configFilesList;
     }
 
     private void feedWebAppConfig() throws IOException, SAXException
@@ -677,6 +776,8 @@ public class FacesConfigurator
 
         }
 
+        removePurgedBeansFromSessionAndApplication(runtimeConfig);
+
         for (Iterator iterator = dispenser.getNavigationRules(); iterator.hasNext();)
         {
             NavigationRule rule = (NavigationRule) iterator.next();
@@ -693,6 +794,29 @@ public class FacesConfigurator
         {
             runtimeConfig.addFacesConfigElResolver((ELResolver) ClassUtils.newInstance(iter.next(), ELResolver.class));
         }
+
+    }
+
+    private void removePurgedBeansFromSessionAndApplication(RuntimeConfig runtimeConfig)
+    {
+        Map oldManagedBeans = runtimeConfig.getManagedBeansNotReaddedAfterPurge();
+        if(oldManagedBeans!=null) {
+            Iterator it=oldManagedBeans.entrySet().iterator();
+            while(it.hasNext()) {
+                Map.Entry entry = (Map.Entry) it.next();
+                ManagedBean bean = (ManagedBean) entry.getValue();
+
+                String scope = bean.getManagedBeanScope();
+
+                if(scope!=null && scope.equalsIgnoreCase("session")) {
+                    _externalContext.getSessionMap().remove(entry.getKey());
+                }
+                else if(scope!=null && scope.equalsIgnoreCase("application")) {
+                    _externalContext.getApplicationMap().remove(entry.getKey());
+                }
+            }
+        }
+        runtimeConfig.resetManagedBeansNotReaddedAfterPurge();
     }
 
     private void configureRenderKits()
