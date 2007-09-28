@@ -248,20 +248,11 @@ public class JspViewHandlerImpl extends ViewHandler
         response.setLocale(locale);
         Config.set(request, Config.FMT_LOCALE, facesContext.getViewRoot().getLocale());
 
-        ViewResponseWrapper wrappedResponse = new ViewResponseWrapper((HttpServletResponse) response);
-
-        externalContext.setResponse(wrappedResponse);
-        externalContext.dispatch(viewId);
-        externalContext.setResponse(response);
-
-        boolean errorResponse = wrappedResponse.getStatus() < 200 || wrappedResponse.getStatus() > 299;
-        if (errorResponse)
-        {
-            wrappedResponse.flushToWrappedResponse();
+        if(!buildView(response, externalContext, viewId)) {
+            //building the view was unsuccessful - an exception occurred during rendering
+            //we need to jump out
+            return;
         }
-
-        // store the wrapped response in the request, so it is thread-safe
-        externalContext.getRequestMap().put(AFTER_VIEW_TAG_CONTENT_PARAM, wrappedResponse);
 
         // handle character encoding as of section 2.5.2.2 of JSF 1.1
         if (externalContext.getRequest() instanceof HttpServletRequest)
@@ -279,13 +270,86 @@ public class JspViewHandlerImpl extends ViewHandler
         RenderKitFactory renderFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
         RenderKit renderKit = renderFactory.getRenderKit(facesContext, viewToRender.getRenderKitId());
 
-        ResponseWriter newResponseWriter;
         StateMarkerAwareWriter stateAwareWriter = new StateMarkerAwareWriter();
 
-        // If the FacesContext has a non-null ResponseWriter create a new writer using its
-        // cloneWithWriter() method, passing the response's Writer as the argument.
-        // Otherwise, use the current RenderKit to create a new ResponseWriter.
+        // Create a new response-writer using as an underlying writer the stateAwareWriter
+        // Effectively, all output will be buffered in the stateAwareWriter so that later
+        // this writer can replace the state-markers with the actual state.
         ResponseWriter oldResponseWriter = facesContext.getResponseWriter();
+        ResponseWriter newResponseWriter = hookInStateAwareWriter(
+                oldResponseWriter, stateAwareWriter, renderKit, externalContext);
+
+
+        actuallyRenderView(facesContext, newResponseWriter, oldResponseWriter, viewToRender);
+
+        //We're done with the document - now we can write all content
+        //to the response, properly replacing the state-markers on the way out
+        //by using the stateAwareWriter
+        stateAwareWriter.flushToWriter(response.getWriter());
+
+        // Final step - we output any content in the wrappedResponse response from above to the response,
+        // removing the wrappedResponse response from the request, we don't need it anymore
+        ViewResponseWrapper afterViewTagResponse = (ViewResponseWrapper) externalContext.getRequestMap().get(
+                AFTER_VIEW_TAG_CONTENT_PARAM);
+        externalContext.getRequestMap().remove(AFTER_VIEW_TAG_CONTENT_PARAM);
+
+        if (afterViewTagResponse != null)
+        {
+            afterViewTagResponse.flushToWriter(response.getWriter());
+        }
+
+        response.flushBuffer();
+    }
+
+    /**Render the view now - properly setting and resetting the response writer
+     *
+     * @param facesContext
+     * @param newResponseWriter
+     * @param viewToRender
+     * @throws IOException
+     */
+    private void actuallyRenderView(FacesContext facesContext,
+                                    ResponseWriter newResponseWriter, ResponseWriter oldResponseWriter,
+                                    UIViewRoot viewToRender) throws IOException {
+        // Set the new ResponseWriter into the FacesContext, saving the old one aside.
+        facesContext.setResponseWriter(newResponseWriter);
+
+        //Now we actually render the document
+        // Call startDocument() on the ResponseWriter.
+        newResponseWriter.startDocument();
+
+        // Call encodeAll() on the UIViewRoot
+        viewToRender.encodeAll(facesContext);
+
+        // Call endDocument() on the ResponseWriter
+        newResponseWriter.endDocument();
+
+        newResponseWriter.flush();
+
+        // If the old ResponseWriter was not null, place the old ResponseWriter back
+        // into the FacesContext.
+        if (oldResponseWriter != null)
+        {
+            facesContext.setResponseWriter(oldResponseWriter);
+        }
+    }
+
+    /**Create a new response-writer using as an underlying writer the stateAwareWriter
+     * Effectively, all output will be buffered in the stateAwareWriter so that later
+     * this writer can replace the state-markers with the actual state.
+     *
+     * If the FacesContext has a non-null ResponseWriter create a new writer using its
+     * cloneWithWriter() method, passing the response's Writer as the argument.
+     * Otherwise, use the current RenderKit to create a new ResponseWriter.
+     *
+     * @param oldResponseWriter
+     * @param stateAwareWriter
+     * @param renderKit
+     * @param externalContext
+     * @return
+     */
+    private ResponseWriter hookInStateAwareWriter(ResponseWriter oldResponseWriter, StateMarkerAwareWriter stateAwareWriter, RenderKit renderKit, ExternalContext externalContext) {
+        ResponseWriter newResponseWriter;
         if (oldResponseWriter != null)
         {
             newResponseWriter = oldResponseWriter.cloneWithWriter(stateAwareWriter);
@@ -297,52 +361,39 @@ public class JspViewHandlerImpl extends ViewHandler
             newResponseWriter = renderKit.createResponseWriter(stateAwareWriter, null,
                     ((HttpServletRequest) externalContext.getRequest()).getCharacterEncoding());
         }
+        return newResponseWriter;
+    }
 
-        // Set the new ResponseWriter into the FacesContext, saving the old one aside.
-        facesContext.setResponseWriter(newResponseWriter);
+    /**Build the view-tree before rendering.
+     * This is done by dispatching to the underlying JSP-page, effectively processing it, creating
+     * components out of any text in between JSF components (not rendering the text to the output of course, this
+     * will happen later while rendering), attaching these components
+     * to the component tree, and buffering any content after the view-root.
+     *
+     * @param response The current response - it will be replaced while the view-building happens (we want the text in the component tree, not on the actual servlet output stream)
+     * @param externalContext The external context where the response will be replaced while building
+     * @param viewId The view-id to dispatch to
+     * @return true if successfull, false if an error occurred during rendering
+     * @throws IOException
+     */
+    private boolean buildView(ServletResponse response, ExternalContext externalContext, String viewId) throws IOException {
+        ViewResponseWrapper wrappedResponse = new ViewResponseWrapper((HttpServletResponse) response);
 
-        // Call startDocument() on the ResponseWriter.
-        newResponseWriter.startDocument();
+        externalContext.setResponse(wrappedResponse);
+        externalContext.dispatch(viewId);
+        externalContext.setResponse(response);
 
-        // Call encodeAll() on the UIViewRoot
-        viewToRender.encodeAll(facesContext);
-
-        ResponseWriter responseWriter;
-        if (oldResponseWriter != null)
+        boolean errorResponse = wrappedResponse.getStatus() < 200 || wrappedResponse.getStatus() > 299;
+        if (errorResponse)
         {
-            responseWriter = oldResponseWriter.cloneWithWriter(response.getWriter());
-        }
-        else
-        {
-            responseWriter = newResponseWriter.cloneWithWriter(response.getWriter());
-        }
-        facesContext.setResponseWriter(responseWriter);
-
-        // response.getWriter().write(stateAwareWriter.parseResponse());
-        stateAwareWriter.flushToWriter(response.getWriter());
-
-        // Output any content in the wrappedResponse response from above to the response, removing the
-        // wrappedResponse response from the thread-safe storage.
-        ViewResponseWrapper afterViewTagResponse = (ViewResponseWrapper) externalContext.getRequestMap().get(
-                AFTER_VIEW_TAG_CONTENT_PARAM);
-        externalContext.getRequestMap().remove(AFTER_VIEW_TAG_CONTENT_PARAM);
-
-        if (afterViewTagResponse != null)
-        {
-            afterViewTagResponse.flushToWriter(response.getWriter());
+            wrappedResponse.flushToWrappedResponse();
+            return false;
         }
 
-        // Call endDocument() on the ResponseWriter
-        newResponseWriter.endDocument();
+        // store the wrapped response in the request, so it is thread-safe
+        externalContext.getRequestMap().put(AFTER_VIEW_TAG_CONTENT_PARAM, wrappedResponse);
 
-        // If the old ResponseWriter was not null, place the old ResponseWriter back
-        // into the FacesContext.
-        if (oldResponseWriter != null)
-        {
-            facesContext.setResponseWriter(oldResponseWriter);
-        }
-
-        response.flushBuffer();
+        return true;
     }
 
     public UIViewRoot restoreView(FacesContext facesContext, String viewId)
