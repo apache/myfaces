@@ -17,13 +17,14 @@
  * under the License.
  */
 
-package org.apache.myfaces.guice;
+package org.apache.myfaces.el.unified.resolver;
 
 import javax.el.ELResolver;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.impl.digester.elements.ManagedBean;
+import org.apache.myfaces.el.unified.resolver.GuiceResolver;
 import org.apache.shale.test.base.AbstractJsfTestCase;
 
 import com.google.inject.Guice;

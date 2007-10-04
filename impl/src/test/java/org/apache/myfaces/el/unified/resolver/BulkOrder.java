@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.myfaces.guice;
+package org.apache.myfaces.el.unified.resolver;
 
 public class BulkOrder implements Order {
 

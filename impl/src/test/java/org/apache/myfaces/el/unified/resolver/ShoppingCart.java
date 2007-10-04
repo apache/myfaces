@@ -17,8 +17,21 @@
  * under the License.
  */
 
-package org.apache.myfaces.guice;
+package org.apache.myfaces.el.unified.resolver;
 
-public interface Order {
+import com.google.inject.Inject;
+
+public class ShoppingCart {
+
+	private Order order;
+	
+	@Inject
+	public ShoppingCart(Order order) {
+		this.order = order;
+	}
+	
+	public Order getOrder() {
+		return order;
+	}
 	
 }
