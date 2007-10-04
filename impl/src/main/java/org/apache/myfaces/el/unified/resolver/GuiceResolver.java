@@ -34,7 +34,7 @@ import com.google.inject.Injector;
  * <p>Register this ELResolver in faces-config.xml.</p>
  * 
  * 	&ltapplication>
- *		&ltel-resolver>org.apache.guice.GuiceResolver&lt/el-resolver>
+ *		&ltel-resolver>org.apache.myfaces.el.unified.resolver.GuiceResolver&lt/el-resolver>
  *	&lt/application>
  *
  * <p>Implement and configure a ServletContextListener in web.xml .</p>
