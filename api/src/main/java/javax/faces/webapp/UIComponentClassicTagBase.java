@@ -1057,7 +1057,6 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
             {
                 _componentInstance = createComponent(context, id);
                 _created = true;
-                setProperties(_componentInstance);
                 parent.getFacets().put(facetName, _componentInstance);
             }
             else
@@ -1101,7 +1100,6 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         {
             _componentInstance = createComponent(context, id);
             _created = true;
-            setProperties(_componentInstance);
             int index = parentTag.getIndexOfNextChildTag();
             if (index > parent.getChildCount())
             {

@@ -133,9 +133,11 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
             UIComponent component = application.createComponent(componentBinding,
                                                                 context,
                                                                 componentType);
+            
             component.setId(id);
             component.setValueBinding("binding", componentBinding);
-
+            setProperties(component);
+            
             return component;
         }
 
@@ -211,7 +213,7 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
     {
         if (getRendererType() != null)
         {
-            getComponentInstance().setRendererType(getRendererType());
+            component.setRendererType(getRendererType());
         }
 
         if (_rendered != null)

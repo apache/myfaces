@@ -97,6 +97,7 @@ public abstract class UIComponentELTag extends UIComponentClassicTagBase
         }
 
         component.setId(newId);
+        setProperties(component);
 
         return component;
     }
