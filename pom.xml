@@ -30,7 +30,7 @@
      <repository>
        <id>java.net</id>
        <name>java.net Maven 1 Repository</name>
-       <url>https://maven-repository.dev.java.net/nonav/repository</url>
+       <url>http://download.java.net/maven/1</url>
        <layout>legacy</layout>
     </repository>
     <repository>
