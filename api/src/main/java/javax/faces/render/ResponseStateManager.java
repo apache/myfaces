@@ -105,7 +105,9 @@ public abstract class ResponseStateManager
      * @since 1.2
      */
     public boolean isPostback(FacesContext context) {
-        return context.getExternalContext().getRequestParameterMap().size() > 0;
+      return context.getExternalContext().
+        getRequestParameterMap().containsKey(
+              ResponseStateManager.VIEW_STATE_PARAM);
     }
 
 }
