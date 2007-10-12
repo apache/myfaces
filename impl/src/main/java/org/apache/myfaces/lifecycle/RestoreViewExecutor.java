@@ -88,7 +88,7 @@ class RestoreViewExecutor implements PhaseExecutor {
 
 		facesContext.setViewRoot(viewRoot);
 
-		if (facesContext.getExternalContext().getRequestParameterMap().isEmpty()) {
+    if (!isPostback(facesContext)) {
 			// no POST or query parameters --> set render response flag
 			facesContext.renderResponse();
 		}
@@ -96,6 +96,19 @@ class RestoreViewExecutor implements PhaseExecutor {
 		RestoreStateUtils.recursivelyHandleComponentReferencesAndSetValid(facesContext, viewRoot);
 		return false;
 	}
+  
+    
+  /**
+   * Return <code>true</code> if the current request is a post back and
+   * <code>false</code> otherwise.
+   * 
+   * @param  facesContext  the current faces context
+   * @return <code>true</code> if the current request is a post back and
+   *         <code>false</code> otherwise
+   */
+  private boolean isPostback(FacesContext facesContext) {
+      return facesContext.getExternalContext().getRequestParameterMap().containsKey(HtmlResponseStateManager.STANDARD_STATE_SAVING_PARAM);
+  } 
 
 	public PhaseId getPhase() {
 		return PhaseId.RESTORE_VIEW;
