@@ -35,6 +35,7 @@ import org.apache.myfaces.portlet.MyFacesGenericPortlet;
 import org.apache.myfaces.portlet.PortletUtil;
 import org.apache.myfaces.shared_impl.util.RestoreStateUtils;
 import org.apache.myfaces.util.DebugUtils;
+import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
 
 /**
  * Implements the lifecycle as described in Spec. 1.0 PFD Chapter 2
