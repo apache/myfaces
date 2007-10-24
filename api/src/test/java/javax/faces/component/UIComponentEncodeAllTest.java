@@ -32,6 +32,7 @@ public class UIComponentEncodeAllTest extends UIComponentTestBase
         mockedMethods.add(clazz.getDeclaredMethod("getRendersChildren", null));
         mockedMethods.add(clazz.getDeclaredMethod("encodeChildren", new Class[] { FacesContext.class }));
         mockedMethods.add(clazz.getDeclaredMethod("getChildren", null));
+        mockedMethods.add(clazz.getDeclaredMethod("getChildCount", null));
         mockedMethods.add(clazz.getDeclaredMethod("encodeEnd", new Class[] { FacesContext.class }));
 
         _testimpl = _mocksControl.createMock(clazz, mockedMethods.toArray(new Method[mockedMethods.size()]));
@@ -82,6 +83,7 @@ public class UIComponentEncodeAllTest extends UIComponentTestBase
         List<UIComponent> childs = new ArrayList<UIComponent>();
         UIComponent testChild = _mocksControl.createMock(UIComponent.class);
         childs.add(testChild);
+        EasyMock.expect(_testimpl.getChildCount()).andReturn(childs.size());        
         EasyMock.expect(_testimpl.getChildren()).andReturn(childs);
         testChild.encodeAll(EasyMock.same(_facesContext));
 
