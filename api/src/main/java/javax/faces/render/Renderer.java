@@ -63,7 +63,7 @@ public abstract class Renderer
             }
 
             child.encodeBegin(context);
-            if (child.getRendersChildren())
+            if (!child.getRendersChildren())
             {
                 child.encodeChildren(context);
             }
