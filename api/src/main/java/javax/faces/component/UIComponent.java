@@ -234,18 +234,18 @@ public abstract class UIComponent
     		this.encodeBegin(context);
     		
     		//rendering children
-    		if(!this.getRendersChildren())
+    		if(this.getRendersChildren())
     		{
     			this.encodeChildren(context);
     		}
     		//let children render itself
     		else
     		{
-    			List<UIComponent> comps = this.getChildren();
-    			for (Iterator<UIComponent> iter = comps.iterator(); iter.hasNext();)
-    			{
-					iter.next().encodeAll(context);;
-				}
+          if(this.getChildCount()>0) {
+      			for (UIComponent comp : this.getChildren()) {
+    					comp.encodeAll(context);
+    				}
+          }
     		}
             this.encodeEnd(context);
     	}

@@ -45,48 +45,65 @@ public abstract class Renderer
         if (component == null) throw new NullPointerException("component");
     }
 
+    /**Render all children if there are any.
+     * 
+     * Note: this will only be called if getRendersChildren()
+     * returns true. A component which has a renderer with
+     * getRendersChildren() set to true will typically contain
+     * the rendering logic for its children in this method.
+     * 
+     * @param context
+     * @param component
+     * @throws IOException
+     */
     public void encodeChildren(FacesContext context,
                                UIComponent component)
-            throws IOException
-    {
+            throws IOException {
         if (context == null) throw new NullPointerException("context");
         if (component == null) throw new NullPointerException("component");
         
-        List children = component.getChildren();
-        for (int i=0; i<children.size(); i++) 
-        {
-            UIComponent child = (UIComponent) children.get(i);
-            
-            if (!child.isRendered())
-            {
-                continue;
-            }
-
-            child.encodeBegin(context);
-            if (!child.getRendersChildren())
-            {
-                child.encodeChildren(context);
-            }
-            child.encodeEnd(context);
+        if(component.getChildCount()>0) {
+          for (UIComponent child : component.getChildren()) {
+              if (!child.isRendered()) {
+                  continue;
+              }
+  
+              child.encodeAll(context);
+          }
         }
     }
 
     public void encodeEnd(FacesContext context,
                           UIComponent component)
-            throws IOException
+            throws IOException 
     {
         if (context == null) throw new NullPointerException("context");
         if (component == null) throw new NullPointerException("component");
     }
 
     public String convertClientId(FacesContext context,
-                                  String clientId)
+                                  String clientId) 
     {
         if (context == null) throw new NullPointerException("context");
         if (clientId == null) throw new NullPointerException("clientId");
         return clientId;
     }
 
+    /**Switch for deciding who renders the children.
+     * 
+     * @return <b>true</b> - if the component takes care of rendering its
+     * children. In this case, encodeChildren() ought to be called
+     * by the rendering controller (e.g., the rendering controller
+     * could be the method encodeAll() in UIComponent). 
+     * In the method encodeChildren(), the component
+     * should therefore provide all children encode logic.
+     * <br/>
+     * <b>false</b> - if the component does not take care of rendering its
+     * children. In this case, encodeChildren() should not be called
+     * by the rendering controller. Instead, the children-list should
+     * be retrieved and the children should directly be rendered by
+     * the rendering controller one by one.
+     */
     public boolean getRendersChildren()
     {
         return false;
