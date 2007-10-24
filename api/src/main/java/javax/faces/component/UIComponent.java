@@ -234,7 +234,7 @@ public abstract class UIComponent
     		this.encodeBegin(context);
     		
     		//rendering children
-    		if(this.getRendersChildren())
+    		if(!this.getRendersChildren())
     		{
     			this.encodeChildren(context);
     		}
