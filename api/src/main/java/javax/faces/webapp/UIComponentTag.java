@@ -143,6 +143,7 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
 
         UIComponent component = context.getApplication().createComponent(componentType);
         component.setId(id);
+        setProperties(component);
 
         return component;
         
