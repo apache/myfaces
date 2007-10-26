@@ -18,10 +18,14 @@ package org.apache.myfaces.renderkit.html;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
+import org.apache.myfaces.shared_impl.config.MyfacesConfig;
 import org.apache.myfaces.shared_impl.renderkit.html.HTML;
+import org.apache.myfaces.shared_impl.renderkit.html.HtmlRendererUtils;
+import org.apache.myfaces.shared_impl.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.shared_impl.util.StateUtils;
 
 import javax.faces.application.StateManager;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.render.RenderKitFactory;
@@ -95,13 +99,21 @@ public class HtmlResponseStateManager
                                        ResponseWriter responseWriter,
                                        Object savedState) throws IOException
     {
-        responseWriter.startElement(HTML.INPUT_ELEM, null);
-        responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
-        responseWriter.writeAttribute(HTML.NAME_ATTR, STANDARD_STATE_SAVING_PARAM, null);
-        responseWriter.writeAttribute(HTML.ID_ATTR, STANDARD_STATE_SAVING_PARAM, null);
-        responseWriter.writeAttribute(HTML.VALUE_ATTR, StateUtils.construct(savedState,
-                facesContext.getExternalContext()), null);
-        responseWriter.endElement(HTML.INPUT_ELEM);
+    	String serializedState = StateUtils.construct(savedState,
+                facesContext.getExternalContext());
+        ExternalContext extContext = facesContext.getExternalContext();
+        // Write Javascript viewstate if enabled and if javascript is allowed,
+        // otherwise write hidden input
+        if (JavascriptUtils.isJavascriptAllowed(extContext) && MyfacesConfig.getCurrentInstance(extContext).isViewStateJavascript()) {
+        	HtmlRendererUtils.renderViewStateJavascript(facesContext, STANDARD_STATE_SAVING_PARAM, serializedState);
+        } else {
+        	responseWriter.startElement(HTML.INPUT_ELEM, null);
+        	responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
+        	responseWriter.writeAttribute(HTML.NAME_ATTR, STANDARD_STATE_SAVING_PARAM, null);
+        	responseWriter.writeAttribute(HTML.ID_ATTR, STANDARD_STATE_SAVING_PARAM, null);
+        	responseWriter.writeAttribute(HTML.VALUE_ATTR, serializedState, null);
+        	responseWriter.endElement(HTML.INPUT_ELEM);
+        }
     }
 
     private void writeRenderKitIdField(FacesContext facesContext,

@@ -20,6 +20,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.DefaultViewHandlerSupport;
 import org.apache.myfaces.application.InvalidViewIdException;
 import org.apache.myfaces.application.ViewHandlerSupport;
+import org.apache.myfaces.shared_impl.config.MyfacesConfig;
+import org.apache.myfaces.shared_impl.renderkit.html.util.JavascriptUtils;
 
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
@@ -414,17 +416,51 @@ public class JspViewHandlerImpl extends ViewHandler
      */
     public void writeState(FacesContext facesContext) throws IOException
     {
-        facesContext.getResponseWriter().write(FORM_STATE_MARKER);
+        // Only write state marker if javascript view state is disabled
+    	ExternalContext extContext = facesContext.getExternalContext();
+        if (!(JavascriptUtils.isJavascriptAllowed(extContext) && MyfacesConfig.getCurrentInstance(extContext).isViewStateJavascript())) {
+        	facesContext.getResponseWriter().write(FORM_STATE_MARKER);
+        }
     }
 
     /**
      * Writes the response and replaces the state marker tags with the state information for the current context
      */
-    private static class StateMarkerAwareWriter extends StringWriter
+    private static class StateMarkerAwareWriter extends Writer
     {
-        public StateMarkerAwareWriter()
-        {
-        }
+		private StringBuilder buf;
+
+		public StateMarkerAwareWriter()
+		{
+			this.buf = new StringBuilder();
+		}
+
+		@Override
+		public void close() throws IOException
+		{
+		}
+
+		@Override
+		public void flush() throws IOException
+		{
+		}
+
+		@Override
+		public void write(char[] cbuf, int off, int len) throws IOException
+		{
+			if ((off < 0) || (off > cbuf.length) || (len < 0) ||
+					((off + len) > cbuf.length) || ((off + len) < 0)) {
+				throw new IndexOutOfBoundsException();
+			} else if (len == 0) {
+				return;
+			}
+			buf.append(cbuf, off, len);
+		}
+
+		public StringBuilder getStringBuilder()
+		{
+			return buf;
+		}
 
         public void flushToWriter(Writer writer) throws IOException
         {
@@ -440,32 +476,60 @@ public class JspViewHandlerImpl extends ViewHandler
             stateManager.writeState(facesContext, serializedView);
             facesContext.setResponseWriter(realWriter);
 
-            StringBuffer contentBuffer = getBuffer();
-            StringBuffer state = stateWriter.getBuffer();
+            StringBuilder contentBuffer = getStringBuilder();
+            String state = stateWriter.getBuffer().toString();
 
-            int form_marker;
-            while ((form_marker = contentBuffer.indexOf(JspViewHandlerImpl.FORM_STATE_MARKER)) > -1 )
-            {
-                //FORM_STATE_MARKER found, replace it
-                contentBuffer.replace(form_marker, form_marker + FORM_STATE_MARKER_LEN, state.toString());
+            ExternalContext extContext = facesContext.getExternalContext();
+            if (JavascriptUtils.isJavascriptAllowed(extContext) && MyfacesConfig.getCurrentInstance(extContext).isViewStateJavascript()) {
+            	// If javascript viewstate is enabled no state markers were written
+            	write(contentBuffer, 0, contentBuffer.length(), writer);
+            	writer.write(state);
+            } else {
+            	// If javascript viewstate is disabled state markers must be replaced
+            	int lastFormMarkerPos = 0;
+            	int formMarkerPos = 0;
+            	// Find all state markers and write out actual state instead
+            	while ((formMarkerPos = contentBuffer.indexOf(FORM_STATE_MARKER, formMarkerPos)) > -1)
+            	{
+            		// Write content before state marker
+            		write(contentBuffer, lastFormMarkerPos, formMarkerPos, writer);
+            		// Write state and move position in buffer after marker
+            		writer.write(state);
+            		formMarkerPos += FORM_STATE_MARKER_LEN;
+            		lastFormMarkerPos = formMarkerPos;
+            	}
+                // Write content after last state marker
+                if (lastFormMarkerPos < contentBuffer.length()) {
+                	write(contentBuffer, lastFormMarkerPos, contentBuffer.length(), writer);
+                }
             }
+            
+        }
 
-            int bufferLength = contentBuffer.length();
-            int index = 0;
-            int bufferSize = 512;
+        /**
+         * Writes the content of the specified StringBuffer from index 
+         * <code>beginIndex</code> to index <code>endIndex - 1</code>.
+         * 
+         * @param contentBuffer  the <code>StringBuffer</code> to copy content from
+         * @param begin  the beginning index, inclusive.
+         * @param end  the ending index, exclusive
+         * @param writer  the <code>Writer</code> to write to
+         * @throws IOException  if an error occurs writing to specified <code>Writer</code>
+         */
+        private void write(StringBuilder contentBuffer, int beginIndex, int endIndex, Writer writer) throws IOException {
+            int index = beginIndex;
+            int bufferSize = 2048;
+            char[] bufToWrite = new char[bufferSize];
 
-            while (index < bufferLength)
+            while (index < endIndex)
             {
-                int maxSize = Math.min(bufferSize, bufferLength - index);
-                char[] bufToWrite = new char[maxSize];
+                int maxSize = Math.min(bufferSize, endIndex - index);
 
                 contentBuffer.getChars(index, index + maxSize, bufToWrite, 0);
-                writer.write(bufToWrite);
+                writer.write(bufToWrite, 0, maxSize);
 
                 index += bufferSize;
             }
-
         }
     }
-
 }
