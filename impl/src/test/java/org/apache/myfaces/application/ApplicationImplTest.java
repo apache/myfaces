@@ -34,6 +34,8 @@ import javax.faces.application.Application;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
+import javax.faces.convert.EnumConverter;
 import javax.faces.el.ReferenceSyntaxException;
 import javax.faces.el.VariableResolver;
 
@@ -226,4 +228,19 @@ public class ApplicationImplTest extends TestCase
         };
         assertSame(bundle, myapp.getResourceBundle(context, var));
     }
+
+    private enum MyEnum {VALUE1, VALUE2}; 
+
+    /**
+     * Test method for
+     * {@link javax.faces.application.Application#createConverter(java.lang.Class)}.
+     */
+    public void testCreateEnumConverter() throws Exception
+    {
+    	app.addConverter(Enum.class, EnumConverter.class.getName());
+
+    	Converter converter = app.createConverter(MyEnum.class);
+    	assertNotNull(converter);
+    	assertEquals(converter.getClass(), EnumConverter.class);
+    }    
 }

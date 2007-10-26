@@ -48,7 +48,7 @@ public class EnumConverter implements Converter, StateHolder {
         if (facesContext == null) throw new NullPointerException("facesContext can not be null");
         if (uiComponent == null) throw new NullPointerException("uiComponent can not be null");
         if (value == null) return "";
-
+        checkTargetClass(facesContext, uiComponent, value);
         
         for (Object enumConstant : targetClass.getEnumConstants()) {
             if (enumConstant == value) return enumConstant.toString();
@@ -61,16 +61,10 @@ public class EnumConverter implements Converter, StateHolder {
         if (facesContext == null) throw new NullPointerException("facesContext");
         if (uiComponent == null) throw new NullPointerException("uiComponent");
         if (value == null)  return null;
-        if (targetClass == null) {
-            Object[] params = new Object[]{value, _MessageUtils.getLabel(facesContext, uiComponent)};
-            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, 
-                                                                       ENUM_NO_CLASS_ID, 
-                                                                       params));
-        }
-        
         value = value.trim();
         if (value.length() == 0)  return null;
-            
+        checkTargetClass(facesContext, uiComponent, value);
+        
         // we know targetClass and value can't be null, so we can use Enum.valueOf
         // instead of the hokey looping called for in the javadoc
         try {
@@ -85,6 +79,15 @@ public class EnumConverter implements Converter, StateHolder {
                                                                        params));
         }
     }
+
+	private void checkTargetClass(FacesContext facesContext, UIComponent uiComponent, Object value) {
+		if (targetClass == null) {
+            Object[] params = new Object[]{value, _MessageUtils.getLabel(facesContext, uiComponent)};
+            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, 
+                                                                       ENUM_NO_CLASS_ID, 
+                                                                       params));
+        }
+	}
 
     // find the first constant value of the targetClass and return as a String
     private String firstConstantOfEnum() {
