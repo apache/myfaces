@@ -19,11 +19,11 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.el.CompositeELResolver;
 import javax.el.ELContext;
@@ -106,14 +106,12 @@ public class ApplicationImpl extends Application
     private ArrayList<ELContextListener> _elContextListeners;
 
     // components, converters, and validators can be added at runtime--must
-    // synchronize
-    private final Map<String, Class> _converterIdToClassMap = Collections.synchronizedMap(new HashMap<String, Class>());
-    private final Map<Class, String> _converterClassNameToClassMap = Collections
-            .synchronizedMap(new HashMap<Class, String>());
-    private final Map<String, org.apache.myfaces.config.impl.digester.elements.Converter> _converterClassNameToConfigurationMap = Collections
-            .synchronizedMap(new HashMap<String, org.apache.myfaces.config.impl.digester.elements.Converter>());
-    private final Map<String, Class> _componentClassMap = Collections.synchronizedMap(new HashMap<String, Class>());
-    private final Map<String, Class> _validatorClassMap = Collections.synchronizedMap(new HashMap<String, Class>());
+    // synchronize, uses ConcurrentHashMap to allow concurrent read of map
+    private final Map<String, Class> _converterIdToClassMap = new ConcurrentHashMap<String, Class>();
+    private final Map<Class, String> _converterClassNameToClassMap = new ConcurrentHashMap<Class, String>();
+    private final Map<String, org.apache.myfaces.config.impl.digester.elements.Converter> _converterClassNameToConfigurationMap = new ConcurrentHashMap<String, org.apache.myfaces.config.impl.digester.elements.Converter>();
+    private final Map<String, Class> _componentClassMap = new ConcurrentHashMap<String, Class>();
+    private final Map<String, Class> _validatorClassMap = new ConcurrentHashMap<String, Class>();
 
     private final RuntimeConfig _runtimeConfig;
 
@@ -627,11 +625,7 @@ public class ApplicationImpl extends Application
         checkNull(componentType, "componentType");
         checkEmpty(componentType, "componentType");
 
-        Class componentClass;
-        synchronized (_componentClassMap)
-        {
-            componentClass = _componentClassMap.get(componentType);
-        }
+        Class componentClass = _componentClassMap.get(componentType);
         if (componentClass == null)
         {
             log.error("Undefined component type " + componentType);

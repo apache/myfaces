@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
@@ -69,6 +70,9 @@ class _ComponentAttributesMap
     // introspection on the associated UIComponent. Don't serialize this as
     // it can always be recreated when needed.
     private transient Map<String, PropertyDescriptor> _propertyDescriptorMap = null;
+
+    // Cache for component property descriptors
+    private static Map<Class, Map<String, PropertyDescriptor>> _propertyDescriptorCache = new WeakHashMap<Class, Map<String,PropertyDescriptor>>();
 
     /**
      * Create a map backed by the specified component.
@@ -330,27 +334,36 @@ class _ComponentAttributesMap
     {
         if (_propertyDescriptorMap == null)
         {
-            BeanInfo beanInfo;
-            try
-            {
-                beanInfo = Introspector.getBeanInfo(_component.getClass());
-            }
-            catch (IntrospectionException e)
-            {
-                throw new FacesException(e);
-            }
-            PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
-            _propertyDescriptorMap = new HashMap<String, PropertyDescriptor>();
-            for (int i = 0; i < propertyDescriptors.length; i++)
-            {
-                PropertyDescriptor propertyDescriptor = propertyDescriptors[i];
-                if (propertyDescriptor.getReadMethod() != null)
+        	// Try to get descriptor map from cache
+        	_propertyDescriptorMap = _propertyDescriptorCache.get(_component.getClass());
+        	// Cache miss: create descriptor map and put it in cache
+        	if (_propertyDescriptorMap == null)
+        	{
+        		// Create descriptor map...
+                BeanInfo beanInfo;
+                try
                 {
-                    _propertyDescriptorMap.put(propertyDescriptor.getName(),
-                                               propertyDescriptor);
+                    beanInfo = Introspector.getBeanInfo(_component.getClass());
                 }
-            }
-        }
+                catch (IntrospectionException e)
+                {
+                    throw new FacesException(e);
+                }
+                PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+                _propertyDescriptorMap = new HashMap<String, PropertyDescriptor>();
+                for (int i = 0; i < propertyDescriptors.length; i++)
+                {
+                    PropertyDescriptor propertyDescriptor = propertyDescriptors[i];
+                    if (propertyDescriptor.getReadMethod() != null)
+                    {
+                        _propertyDescriptorMap.put(propertyDescriptor.getName(),
+                                                   propertyDescriptor);
+                    }
+                }
+                // ... and put it in cache
+                _propertyDescriptorCache.put(_component.getClass(), _propertyDescriptorMap);
+        	}
+    	}
         return _propertyDescriptorMap.get(key);
     }
 
