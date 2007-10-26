@@ -26,4 +26,8 @@
     <converter-id>javax.faces.BigDecimal</converter-id>
     <converter-class>javax.faces.convert.BigDecimalConverter</converter-class>
   </converter>
+  <converter>
+    <converter-for-class>java.math.BigDecimal</converter-for-class>
+    <converter-class>javax.faces.convert.BigDecimalConverter</converter-class>
+  </converter>  
 </faces-config>
