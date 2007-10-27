@@ -22,7 +22,34 @@ package javax.faces.application;
 
 
 /**
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * Responsible for storing sufficient information about a component tree so that an identical tree
+ * can later be recreated.
+ * <p>
+ * It is up to the concrete implementation to decide whether to use information from the "view template"
+ * that was used to first create the view, or whether to store sufficient information to enable the
+ * view to be restored without any reference to the original template. However as JSF components have
+ * mutable fields that can be set by code, and affected by user input, at least some state does need
+ * to be kept in order to recreate a previously-existing component tree.
+ * <p>
+ * There are two different options defined by the specification: "client" and "server" state.
+ * <p>
+ * When "client" state is configured, all state information required to create the tree is embedded within
+ * the data rendered to the client. Note that because data received from a remote client must always be
+ * treated as "tainted", care must be taken when using such data. Some StateManager implementations may
+ * use encryption to ensure that clients cannot modify the data, and that the data received on postback
+ * is therefore trustworthy.
+ * <p>
+ * When "server" state is configured, the data is saved somewhere "on the back end", and (at most) a
+ * token is embedded in the data rendered to the user.
+ * <p>
+ * This class is usually invoked by a concrete implementation of ViewHandler.
+ * <p>
+ * Note that class ViewHandler isolates JSF components from the details of the request format. This class
+ * isolates JSF components from the details of the response format. Because request and response are usually
+ * tightly coupled, the StateManager and ViewHandler implementations are also usually fairly tightly coupled
+ * (ie the ViewHandler/StateManager implementations come as pairs).
+ * <p>
+ * See Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
@@ -34,12 +61,36 @@ public abstract class StateManager
     public static final String STATE_SAVING_METHOD_SERVER = "server";
     private Boolean _savingStateInClient = null;
 
+    /**
+     * Invokes getTreeStructureToSave and getComponentStateToSave, then return an object that wraps the two
+     * resulting objects. This object can then be passed to method writeState.
+     */
     public abstract StateManager.SerializedView saveSerializedView(javax.faces.context.FacesContext context);
 
+    /**
+     * Return data that is sufficient to recreate the component tree that is the viewroot of the specified
+     * context, but without restoring the state in the components.
+     * <p>
+     * Using this data, a tree of components which has the same "shape" as the original component
+     * tree can be recreated. However the component instances themselves will have only their default
+     * values, ie their member fields will not have been set to the original values.
+     */
     protected abstract Object getTreeStructureToSave(javax.faces.context.FacesContext context);
 
+    /**
+     * Return data that can be applied to a component tree created using the "getTreeStructureToSave"
+     * method.
+     */
     protected abstract Object getComponentStateToSave(javax.faces.context.FacesContext context);
 
+    /**
+     * Associate the provided state object with the current response being generated.
+     * <p>
+     * When client-side state is enabled, it is expected that method writes the data contained in the
+     * state parameter to the response somehow.
+     * <p>
+     * When server-side state is enabled, at most a "token" is expected to be written.
+     */
     public abstract void writeState(javax.faces.context.FacesContext context,
                                     StateManager.SerializedView state)
             throws java.io.IOException;
