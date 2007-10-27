@@ -530,6 +530,14 @@ public abstract class UIComponentTag
         {
             if (!isSuppressed())
             {
+            	// Note that encodeBegin is inside this if-clause because for components that do
+            	// NOT render their children, begin was already called during the doStartTag method.
+            	// However for components that do render their children, we want those children to
+            	// exist before the begin method gets called, so delay until here. Of course that
+            	// causes nasty problems when this tag has non-JSF stuff inside it, eg plain text.
+            	// That plain text will be output before encodeBegin is invoked. The spec authors
+            	// presumably decided this was an acceptable tradeoff to allow encodeBegin to have
+            	// access to the children.
                 if (component.getRendersChildren())
                 {
                     encodeBegin();
