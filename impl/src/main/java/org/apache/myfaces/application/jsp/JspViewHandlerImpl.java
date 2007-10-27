@@ -284,7 +284,7 @@ public class JspViewHandlerImpl
      * Writes a state marker that is replaced later by one or more hidden form
      * inputs.
      * <p>
-     * The problem with http is that the only place to encode client-side state is
+     * The problem with html is that the only place to encode client-side state is
      * in a hidden html input field. However when a form is submitted, only the fields
      * within a particular form are sent; fields in other forms are not sent. Therefore
      * the view tree state must be written into every form in the page. This method
@@ -302,8 +302,14 @@ public class JspViewHandlerImpl
      * tree state can be computed. The generated page is then post-processed to
      * replace all the "marker" strings with the complete tree state.
      * <p> 
-     *  See {@link org.apache.myfaces.taglib.core.ViewTag#doAfterBody()} for the call
-     *  that triggers the replacement of marker strings.
+     * Note that this is only a problem with client-side state saving. For server-side
+     * state it should be possible to write the appropriate "key" out even though the
+     * data will not be stored under that key until the end of the rendering. This is
+     * not yet implemented however. TODO: optimise server-side state saving by not
+     * writing markers.
+     * <p>
+     * See {@link org.apache.myfaces.taglib.core.ViewTag#doAfterBody()} for the call
+     * that triggers the replacement of marker strings.
      *  
      * @param facesContext
      * @throws IOException
