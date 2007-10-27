@@ -93,14 +93,16 @@ public abstract class ViewHandler
     public abstract String calculateRenderKitId(javax.faces.context.FacesContext context);
 
     /**
-     * Build a component tree using some kind of view template which is identified by the
-     * viewId parameter.
-     * <p> 
-     * Note that the template file may also contain non-component content that should be
-     * mixed in with the components when the view is rendered. Whether JSF components are
-     * created to wrap such data, or the ViewHandler uses some other mechanism to merge
-     * this content in with the component output at render time is left to the ViewHandler
-     * implementation. 
+     * Build a root node for a component tree.
+     * <p>
+     * When a request is received, this method is called if restoreView returns null,
+     * ie this is not a "postback". In this case, a root node is created and then renderView
+     * is invoked. It is the responsibility of the renderView method to build the full
+     * component tree (ie populate the UIViewRoot with descendant nodes).
+     * <p>
+     * This method is also invoked when navigation occurs from one view to another, where
+     * the viewId passed is the id of the new view to be displayed. Again it is the responsibility
+     * of renderView to then populate the viewroot with descendants.
      */
     public abstract javax.faces.component.UIViewRoot createView(javax.faces.context.FacesContext context,
                                                                 String viewId);
@@ -132,6 +134,12 @@ public abstract class ViewHandler
      * <p>
      * If the view cannot be rendered (eg due to an error in a component) then a FacesException
      * is thrown.
+     * <p>
+     * Note that if a "postback" has occurred but no navigation to a different view, then
+     * the viewToRender will be fully populated with components already. However on direct
+     * access to a new view, or when navigation has occurred, the viewToRender will just
+     * contain an empty UIViewRoot object that must be populated with components from
+     * the "view template". 
      */
     public abstract void renderView(javax.faces.context.FacesContext context,
                                     javax.faces.component.UIViewRoot viewToRender)
