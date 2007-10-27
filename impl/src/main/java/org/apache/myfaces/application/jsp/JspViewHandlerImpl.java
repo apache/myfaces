@@ -45,6 +45,36 @@ import java.util.List;
 import java.util.Locale;
 
 /**
+ * Implementation of the ViewHandler interface that knows how to use JSP pages
+ * as the view templating mechanism, and either javax.servlet or javax.portlet API
+ * as the request/response framework.
+ * <p>
+ * This implementation works tightly together with the various JSP TagHandler classes
+ * to implement the behaviour mandated by the ViewHandler specification. 
+ * <p>
+ * Rendering of a view is done simply by invoking the servlet generated from the jsp
+ * file that is named by the viewId of the view being rendered. Such servlets generate
+ * all their output in one pass, writing text and invoking JSP taghandlers in the order
+ * they are present in the jsp file.
+ * <p>
+ * On the first visit to a view, components are created when their taghandler is invoked
+ * They must then be rendered immediately in order for their output to be generated in the
+ * correct location relative to non-JSF text (and other non-jsf tags) within the same jsp
+ * file. This means that components which are defined via tags later in the page do not
+ * yet exist. This is particularly problematic for:
+ * <ul>
+ * <li>label components that want to refer to another component via a "for" attribute
+ * <li>components that "render their children", ie which render themselves differently
+ * depending upon the number and type of child nodes, or which want to wrap the output
+ * of each child node in specific text.
+ * </ul>
+ * <p>
+ * On later visits to the same view, the component tree already exists (has been restored).
+ * Components can therefore reference others later in the page. When the JSP-generated
+ * servlet invokes a taghandler, it "locates" the appropriate existing component in the
+ * tree rather than creating a new one, and then invokes the appropriate rendering
+ * methods on it.
+ * <p>
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -59,6 +89,10 @@ public class JspViewHandlerImpl
         if (log.isTraceEnabled()) log.trace("New ViewHandler instance created");
     }
 
+    /**
+     * Get the locales specified as acceptable by the original request, compare them to the
+     * locales supported by this Application and return the best match.
+     */
     public Locale calculateLocale(FacesContext facesContext) {
         Iterator locales = facesContext.getExternalContext().getRequestLocales();
         while (locales.hasNext()) {
@@ -89,6 +123,12 @@ public class JspViewHandlerImpl
     }
 
     /**
+     * Create a UIViewRoot object and return it; the returned object has no children.
+     * <p>
+     * As required by the spec, the returned object inherits locale and renderkit settings from
+     * the viewRoot currently configured for the facesContext (if any). This means that on navigation
+     * from one view to another these settings are "inherited".
+     * <p>
      */
     public UIViewRoot createView(FacesContext facesContext, String viewId) {
         Application application = facesContext.getApplication();
@@ -160,6 +200,9 @@ public class JspViewHandlerImpl
         }
     }
 
+    /**
+     * Simply invoke the appropriate jsp-generated servlet.
+     */
     public void renderView(FacesContext facesContext, UIViewRoot viewToRender)
         throws IOException, FacesException {
         if (viewToRender == null) {
@@ -224,6 +267,9 @@ public class JspViewHandlerImpl
     }
 
 
+    /**
+     * Just invoke StateManager.restoreView.
+     */
     public UIViewRoot restoreView(FacesContext facesContext, String viewId) {
         Application application = facesContext.getApplication();
         ViewHandler applicationViewHandler = application.getViewHandler();
@@ -237,7 +283,28 @@ public class JspViewHandlerImpl
     /**
      * Writes a state marker that is replaced later by one or more hidden form
      * inputs.
-     *
+     * <p>
+     * The problem with http is that the only place to encode client-side state is
+     * in a hidden html input field. However when a form is submitted, only the fields
+     * within a particular form are sent; fields in other forms are not sent. Therefore
+     * the view tree state must be written into every form in the page. This method
+     * is therefore invoked at the end of every form.
+     * <p>
+     * And the problem with JSP2.0 as a templating system is that as described at the
+     * top of this file the component tree is not built before rendering starts. It
+     * is created only as jsf tags are encountered while the page is being rendered.
+     * <p>
+     * But when the end of a form (h:form tag) is encountered, not all of the component
+     * tree exists yet, so it is impossible to write the tree state out at that time.
+     * <p>
+     * The solution used here is to buffer the entire page being generated, and simply
+     * output a "marker" string. After the rendering pass is complete the component
+     * tree state can be computed. The generated page is then post-processed to
+     * replace all the "marker" strings with the complete tree state.
+     * <p> 
+     *  See {@link org.apache.myfaces.taglib.core.ViewTag#doAfterBody()} for the call
+     *  that triggers the replacement of marker strings.
+     *  
      * @param facesContext
      * @throws IOException
      */
