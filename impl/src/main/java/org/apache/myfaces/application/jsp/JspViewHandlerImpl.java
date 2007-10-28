@@ -242,7 +242,7 @@ public class JspViewHandlerImpl extends ViewHandler
 
         if (log.isTraceEnabled())
             log.trace("Rendering JSP view: " + viewId);
-        
+
         ServletResponse response = (ServletResponse) externalContext.getResponse();
         ServletRequest request = (ServletRequest) externalContext.getRequest();
 
@@ -272,24 +272,47 @@ public class JspViewHandlerImpl extends ViewHandler
         RenderKitFactory renderFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
         RenderKit renderKit = renderFactory.getRenderKit(facesContext, viewToRender.getRenderKitId());
 
-        StateMarkerAwareWriter stateAwareWriter = new StateMarkerAwareWriter();
+		ResponseWriter responseWriter = facesContext.getResponseWriter();
+		if (responseWriter == null)
+		{
+			responseWriter = renderKit.createResponseWriter(response.getWriter(), null,
+					((HttpServletRequest) externalContext.getRequest()).getCharacterEncoding());
+			facesContext.setResponseWriter(responseWriter);
+		}
 
-        // Create a new response-writer using as an underlying writer the stateAwareWriter
-        // Effectively, all output will be buffered in the stateAwareWriter so that later
-        // this writer can replace the state-markers with the actual state.
-        ResponseWriter oldResponseWriter = facesContext.getResponseWriter();
-        ResponseWriter newResponseWriter = hookInStateAwareWriter(
-                oldResponseWriter, stateAwareWriter, renderKit, externalContext);
+		ResponseWriter oldResponseWriter = responseWriter;
+		StateMarkerAwareWriter stateAwareWriter = null;
 
+		StateManager stateManager = facesContext.getApplication().getStateManager();
+		if (stateManager.isSavingStateInClient(facesContext))
+		{
+			stateAwareWriter = new StateMarkerAwareWriter();
 
-        actuallyRenderView(facesContext, newResponseWriter, oldResponseWriter, viewToRender);
+			// Create a new response-writer using as an underlying writer the stateAwareWriter
+			// Effectively, all output will be buffered in the stateAwareWriter so that later
+			// this writer can replace the state-markers with the actual state.
+			responseWriter = hookInStateAwareWriter(
+					oldResponseWriter, stateAwareWriter, renderKit, externalContext);
+			facesContext.setResponseWriter(responseWriter);
+		}
 
-        //We're done with the document - now we can write all content
+		actuallyRenderView(facesContsext, viewToRender);
+
+		facesContext.setResponseWriter(oldResponseWriter);
+
+		//We're done with the document - now we can write all content
         //to the response, properly replacing the state-markers on the way out
         //by using the stateAwareWriter
-        stateAwareWriter.flushToWriter(response.getWriter());
+		if (stateManager.isSavingStateInClient(facesContext))
+		{
+			stateAwareWriter.flushToWriter(response.getWriter());
+		}
+		else
+		{
+			stateManager.saveView(facesContext);
+		}
 
-        // Final step - we output any content in the wrappedResponse response from above to the response,
+		// Final step - we output any content in the wrappedResponse response from above to the response,
         // removing the wrappedResponse response from the request, we don't need it anymore
         ViewResponseWrapper afterViewTagResponse = (ViewResponseWrapper) externalContext.getRequestMap().get(
                 AFTER_VIEW_TAG_CONTENT_PARAM);
@@ -311,29 +334,21 @@ public class JspViewHandlerImpl extends ViewHandler
      * @throws IOException
      */
     private void actuallyRenderView(FacesContext facesContext,
-                                    ResponseWriter newResponseWriter, ResponseWriter oldResponseWriter,
                                     UIViewRoot viewToRender) throws IOException {
         // Set the new ResponseWriter into the FacesContext, saving the old one aside.
-        facesContext.setResponseWriter(newResponseWriter);
+        ResponseWriter responseWriter = facesContext.getResponseWriter();
 
         //Now we actually render the document
         // Call startDocument() on the ResponseWriter.
-        newResponseWriter.startDocument();
+        responseWriter.startDocument();
 
         // Call encodeAll() on the UIViewRoot
         viewToRender.encodeAll(facesContext);
 
         // Call endDocument() on the ResponseWriter
-        newResponseWriter.endDocument();
+        responseWriter.endDocument();
 
-        newResponseWriter.flush();
-
-        // If the old ResponseWriter was not null, place the old ResponseWriter back
-        // into the FacesContext.
-        if (oldResponseWriter != null)
-        {
-            facesContext.setResponseWriter(oldResponseWriter);
-        }
+        responseWriter.flush();
     }
 
     /**Create a new response-writer using as an underlying writer the stateAwareWriter
@@ -351,12 +366,14 @@ public class JspViewHandlerImpl extends ViewHandler
      * @return
      */
     private ResponseWriter hookInStateAwareWriter(ResponseWriter oldResponseWriter, StateMarkerAwareWriter stateAwareWriter, RenderKit renderKit, ExternalContext externalContext) {
+		return oldResponseWriter.cloneWithWriter(stateAwareWriter);
+		/*
         ResponseWriter newResponseWriter;
         if (oldResponseWriter != null)
         {
             newResponseWriter = oldResponseWriter.cloneWithWriter(stateAwareWriter);
         }
-        else
+		else
         {
             if (log.isTraceEnabled())
                 log.trace("Creating new ResponseWriter");
@@ -364,6 +381,7 @@ public class JspViewHandlerImpl extends ViewHandler
                     ((HttpServletRequest) externalContext.getRequest()).getCharacterEncoding());
         }
         return newResponseWriter;
+        */
     }
 
     /**Build the view-tree before rendering.
@@ -410,18 +428,26 @@ public class JspViewHandlerImpl extends ViewHandler
 
     /**
      * Writes a state marker that is replaced later by one or more hidden form inputs.
-     * 
+     *
      * @param facesContext
      * @throws IOException
      */
     public void writeState(FacesContext facesContext) throws IOException
     {
+		StateManager stateManager = facesContext.getApplication().getStateManager();
+		if (stateManager.isSavingStateInClient(facesContext))
+		{
         // Only write state marker if javascript view state is disabled
     	ExternalContext extContext = facesContext.getExternalContext();
         if (!(JavascriptUtils.isJavascriptAllowed(extContext) && MyfacesConfig.getCurrentInstance(extContext).isViewStateJavascript())) {
         	facesContext.getResponseWriter().write(FORM_STATE_MARKER);
         }
-    }
+		}
+		else
+		{
+			stateManager.writeState(facesContext, new Object[2]);
+		}
+	}
 
     /**
      * Writes the response and replaces the state marker tags with the state information for the current context
@@ -503,13 +529,13 @@ public class JspViewHandlerImpl extends ViewHandler
                 	write(contentBuffer, lastFormMarkerPos, contentBuffer.length(), writer);
                 }
             }
-            
+
         }
 
         /**
-         * Writes the content of the specified StringBuffer from index 
+         * Writes the content of the specified StringBuffer from index
          * <code>beginIndex</code> to index <code>endIndex - 1</code>.
-         * 
+         *
          * @param contentBuffer  the <code>StringBuffer</code> to copy content from
          * @param begin  the beginning index, inclusive.
          * @param end  the ending index, exclusive
