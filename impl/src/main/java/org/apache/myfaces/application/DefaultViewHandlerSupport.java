@@ -30,6 +30,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * A ViewHandlerSupport implementation for use with standard Java Servlet engines,
+ * ie an engine that supports javax.servlet, and uses a standard web.xml file.
+ * 
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -95,6 +98,10 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         return calculatedActionURL;
     }
 
+    /**
+     * Read the web.xml file that is in the classpath and parse its internals to
+     * figure out how the FacesServlet is mapped for the current webapp.
+     */
     protected ServletMapping calculateServletMapping(FacesContext context)
     {
         ExternalContext externalContext = context.getExternalContext();
@@ -175,6 +182,12 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         return defaultSuffix;
     }
 
+    /**
+     * Return the viewId with any non-standard suffix stripped off and replaced with
+     * the default suffix configured for the specified context.
+     * <p>
+     * For example, an input parameter of "/foo.jsf" may return "/foo.jsp".
+     */
     protected String applyDefaultSuffix(FacesContext context, String viewId)
     {
         String defaultSuffix = getContextSuffix(context);

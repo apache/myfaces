@@ -21,6 +21,12 @@ package org.apache.myfaces.application;
 import javax.faces.context.FacesContext;
 
 /**
+ * A utility class to isolate a ViewHandler implementation from the underlying 
+ * request/response framework.
+ * <p>
+ * For example, an implementation of this interface might support javax.servlet,
+ * javax.portlet, or some other mechanism.
+ *    
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -28,5 +34,12 @@ public interface ViewHandlerSupport
 {
     String calculateViewId(FacesContext context, String viewId);
 
+    /**
+     * Return a string containing a webapp-relative URL that the user can invoke
+     * to render the specified view.
+     * <p>
+     * URLs and ViewIds are not quite the same; for example a url of "/foo.jsf"
+     * or "/faces/foo.jsp" may be needed to access the view "/foo.jsp". 
+     */
     String calculateActionURL(FacesContext facesContext, String viewId); 
 }

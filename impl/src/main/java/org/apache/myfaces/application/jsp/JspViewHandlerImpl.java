@@ -272,6 +272,8 @@ public class JspViewHandlerImpl extends ViewHandler
      * <p>
      * URLs and ViewIds are not quite the same; for example a url of "/foo.jsf"
      * or "/faces/foo.jsp" may be needed to access the view "/foo.jsp". 
+     * <p>
+     * This method simply delegates to ViewHandlerSupport.calculateActionURL.
      */
     public String getActionURL(FacesContext facesContext, String viewId)
     {
