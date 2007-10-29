@@ -296,7 +296,7 @@ public class JspViewHandlerImpl extends ViewHandler
 			facesContext.setResponseWriter(responseWriter);
 		}
 
-		actuallyRenderView(facesContsext, viewToRender);
+		actuallyRenderView(facesContext, viewToRender);
 
 		facesContext.setResponseWriter(oldResponseWriter);
 
