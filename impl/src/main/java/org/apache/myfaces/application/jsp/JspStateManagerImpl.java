@@ -63,15 +63,8 @@ public class JspStateManagerImpl
      * Only applicable if state saving method is "server" (= default).
      * Defines the amount (default = 20) of the latest views are stored in session.
      */
-    /**
-     * Only applicable if state saving method is "server" (= default).
-     * Defines the amount (default = 20) of the latest views are stored in session.
-     */
     private static final String NUMBER_OF_VIEWS_IN_SESSION_PARAM = "org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION";
 
-    /**
-     * Default value for <code>org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION</code> context parameter.
-     */
     /**
      * Default value for <code>org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION</code> context parameter.
      */
@@ -316,22 +309,6 @@ public class JspStateManagerImpl
             }
         }
 
-          /*
-        UIViewRoot uiViewRoot = restoreTreeStructure(facesContext, viewId, renderKitId);
-        if (uiViewRoot != null)
-        {
-            uiViewRoot.setViewId(viewId);
-
-            restoreComponentState(facesContext, uiViewRoot, renderKitId);
-
-            String restoredViewId = uiViewRoot.getViewId();
-            if (restoredViewId == null || !(restoredViewId.equals(viewId)))
-            {
-                if (log.isTraceEnabled()) log.trace("Exiting restoreView - restored view is null.");
-                return null;
-            }
-        }
-           */
         if (log.isTraceEnabled()) log.trace("Exiting restoreView - "+viewId);
 
         return uiViewRoot;
