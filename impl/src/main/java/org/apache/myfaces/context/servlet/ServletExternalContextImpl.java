@@ -285,29 +285,33 @@ public class ServletExternalContextImpl extends ExternalContext implements Relea
 
     @Override
     @SuppressWarnings("unchecked")
-    public Set<String> getResourcePaths(String s)
+    public Set<String> getResourcePaths(String path)
     {
-        return _servletContext.getResourcePaths(s);
+        checkNull(path, "path");
+        return _servletContext.getResourcePaths(path);
     }
 
     @Override
-    public InputStream getResourceAsStream(String s)
+    public InputStream getResourceAsStream(String path)
     {
-        return _servletContext.getResourceAsStream(s);
+        checkNull(path, "path");
+        return _servletContext.getResourceAsStream(path);
     }
 
     @Override
-    public String encodeActionURL(String s)
+    public String encodeActionURL(String url)
     {
+        checkNull(url, "url");
         checkHttpServletRequest();
-        return ((HttpServletResponse) _servletResponse).encodeURL(s);
+        return ((HttpServletResponse) _servletResponse).encodeURL(url);
     }
 
     @Override
-    public String encodeResourceURL(String s)
+    public String encodeResourceURL(String url)
     {
+        checkNull(url, "url");
         checkHttpServletRequest();
-        return ((HttpServletResponse) _servletResponse).encodeURL(s);
+        return ((HttpServletResponse) _servletResponse).encodeURL(url);
     }
 
     @Override
@@ -371,6 +375,7 @@ public class ServletExternalContextImpl extends ExternalContext implements Relea
     @Override
     public boolean isUserInRole(String role)
     {
+        checkNull(role, "role");
         checkHttpServletRequest();
         return _httpServletRequest.isUserInRole(role);
     }
@@ -385,13 +390,16 @@ public class ServletExternalContextImpl extends ExternalContext implements Relea
     @Override
     public void log(String message)
     {
+        checkNull(message, "message");
         _servletContext.log(message);
     }
 
     @Override
-    public void log(String message, Throwable t)
+    public void log(String message, Throwable exception)
     {
-        _servletContext.log(message, t);
+        checkNull(message, "message");
+        checkNull(exception, "exception");
+        _servletContext.log(message, exception);
     }
 
     @Override
@@ -416,9 +424,10 @@ public class ServletExternalContextImpl extends ExternalContext implements Relea
     }
 
     @Override
-    public URL getResource(String s) throws MalformedURLException
+    public URL getResource(String path) throws MalformedURLException
     {
-        return _servletContext.getResource(s);
+        checkNull(path, "path");
+        return _servletContext.getResource(path);
     }
 
     /**
@@ -482,6 +491,14 @@ public class ServletExternalContextImpl extends ExternalContext implements Relea
     public void setResponseCharacterEncoding(java.lang.String encoding)
     {
         this._servletResponse.setCharacterEncoding(encoding);
+    }
+
+    private void checkNull(Object o, String param)
+    {
+        if (o == null)
+        {
+            throw new NullPointerException(param + " can not be null.");
+        }
     }
 
     private void checkHttpServletRequest()
