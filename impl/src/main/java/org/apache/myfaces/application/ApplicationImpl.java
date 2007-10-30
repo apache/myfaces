@@ -71,7 +71,7 @@ import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 /**
  * DOCUMENT ME!
- * 
+ *
  * @author Manfred Geiler (latest modification by $Author$)
  * @author Anton Koinov
  * @author Thomas Spiegl
@@ -669,8 +669,12 @@ public class ApplicationImpl extends Application
         checkEmpty(converterId, "converterId");
 
         Class converterClass = _converterIdToClassMap.get(converterId);
+        if(converterClass == null)
+        {
+            throw new FacesException("Could not find any registered converter-class by converterId : "+converterId);
+        }
 
-        try
+		try
         {
             Converter converter = (Converter) converterClass.newInstance();
 
@@ -703,7 +707,7 @@ public class ApplicationImpl extends Application
         if (converterClassName == null && targetClass.isEnum()) {
         	converterClassName = _converterClassNameToClassMap.get(Enum.class);
         }
-        
+
         // Locate a Converter registered for interfaces that are
         // implemented by the target class (directly or indirectly).
         if (converterClassName == null)
