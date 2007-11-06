@@ -22,6 +22,8 @@
       <item name="Tomahawk" href="../tomahawk/index.html"/>
       <item name="Sandbox" href="../sandbox/index.html"/>
       <item name="Tobago" href="http://myfaces.apache.org/tobago"/>
+      <item name="Trinidad" href="http://myfaces.apache.org/trinidad/index.html"/>
+      <item name="Orchestra" href="http://myfaces.apache.org/orchestra/index.html"/>
     </links>
   
     <menu name="MyFaces Projects">
@@ -30,9 +32,18 @@
       <item name="Impl" href="index.html"/>
       <item name="Tomahawk" href="../tomahawk/index.html"/>
       <item name="Sandbox" href="../sandbox/index.html"/>
+      <item name="Tobago" href="http://myfaces.apache.org/tobago/index.html"/>
+      <item name="Trinidad" href="http://myfaces.apache.org/trinidad/index.html"/>
+      <item name="Orchestra" href="http://myfaces.apache.orgorchestra/index.html"/>
     </menu>
 	
 	  ${reports}
+
+    <menu name="Foundation">
+      <item name="ASF" href="http://apache.org/" />
+      <item name="Sponsorship" href="http://www.apache.org/foundation/sponsorship.html" />
+      <item name="Thanks" href="http://www.apache.org/foundation/thanks.html" />
+    </menu>
     
   </body>
 </project>
