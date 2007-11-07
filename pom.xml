@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
-    <artifactId>myfaces-master</artifactId>
-    <groupId>org.apache.myfaces.maven</groupId>
-    <version>1.0.5</version>
+    <groupId>org.apache.myfaces</groupId>
+    <artifactId>myfaces</artifactId>
+    <version>2</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.myfaces.core</groupId>
@@ -17,9 +17,9 @@
     <url>http://issues.apache.org/jira/secure/BrowseProject.jspa?id=10600</url>
   </issueManagement>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/1_2_1</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/1_2_1</developerConnection>
-    <url>http://svn.apache.org/repos/asf/myfaces/core/branches/1_2_1</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk_1.2.x</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk_1.2.x</developerConnection>
+    <url>http://svn.apache.org/repos/asf/myfaces/core/trunk_1.2.x</url>
   </scm>
   <modules>
     <module>build</module>
