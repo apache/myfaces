@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
-    <artifactId>myfaces-master</artifactId>
-    <groupId>org.apache.myfaces.maven</groupId>
-    <version>1.0.7-SNAPSHOT</version>
+      <groupId>org.apache.myfaces</groupId>
+      <artifactId>myfaces</artifactId>
+      <version>2</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.myfaces.core</groupId>
@@ -24,22 +24,11 @@
     <module>api</module>
     <module>impl</module>
   </modules>
-  <repositories>
-    <repository>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <id>apache.snapshots</id>
-      <url>http://people.apache.org/repo/m2-snapshot-repository</url>
-    </repository>
-  </repositories>
 
   <build>
         <plugins>
             <plugin>
+                <!-- todo: move to myfaces master pom? -->
                 <artifactId>maven-source-plugin</artifactId>
                 <executions>
                     <execution>
@@ -54,6 +43,7 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <!-- todo: move to myfaces master pom? -->
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>2.1</version>
                     <configuration>
