@@ -49,7 +49,7 @@
       <plugin>
         <groupId>org.apache.myfaces.trinidadbuild</groupId>
         <artifactId>maven-faces-plugin</artifactId>
-        <version>1.2.1.1</version>
+        <version>1.2.4-SNAPSHOT</version>
         <configuration>
           <taglibs>
             <h>http://java.sun.com/jsf/html</h>
