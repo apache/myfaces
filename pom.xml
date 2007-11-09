@@ -57,4 +57,11 @@
             </plugins>
         </pluginManagement>
     </build>
+    <distributionManagement>
+      <site>
+        <id>apache-site</id>
+        <name>Apache Website</name>
+        <url>scpexe://minotaur.apache.org/www/myfaces.apache.org/myfaces-core-project/</url>
+      </site>
+    </distributionManagement>
 </project>
