@@ -23,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
 import org.apache.myfaces.shared_impl.renderkit.html.HTML;
 import org.apache.myfaces.shared_impl.util.StateUtils;
+import org.apache.myfaces.shared_impl.config.MyfacesConfig;
 
 import javax.faces.application.StateManager;
 import javax.faces.context.FacesContext;
@@ -84,7 +85,11 @@ public class HtmlResponseStateManager
         responseWriter.startElement(HTML.INPUT_ELEM, null);
         responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
         responseWriter.writeAttribute(HTML.NAME_ATTR, STANDARD_STATE_SAVING_PARAM, null);
-        responseWriter.writeAttribute(HTML.ID_ATTR, STANDARD_STATE_SAVING_PARAM, null);
+
+        MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(facescontext.getExternalContext());
+        if (myfacesConfig.isRenderViewStateId()) {
+            responseWriter.writeAttribute(HTML.ID_ATTR, STANDARD_STATE_SAVING_PARAM, null);
+        }
         responseWriter.writeAttribute(HTML.VALUE_ATTR, StateUtils.construct(savedState,
                 facescontext.getExternalContext()), null);
         responseWriter.endElement(HTML.INPUT_ELEM);
