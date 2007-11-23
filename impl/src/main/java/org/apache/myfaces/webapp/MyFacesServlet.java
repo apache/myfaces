@@ -18,6 +18,7 @@ package org.apache.myfaces.webapp;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.shared_impl.webapp.webxml.DelegatedFacesServlet;
+import org.apache.myfaces.util.ContainerUtils;
 
 import javax.faces.webapp.FacesServlet;
 import javax.servlet.*;
@@ -42,8 +43,16 @@ public class MyFacesServlet implements Servlet, DelegatedFacesServlet
     {
         if (_facesInitializer == null)
         {
-            _facesInitializer = new DefaultFacesInitializer();
+            if (ContainerUtils.isJsp21()) 
+            {
+                _facesInitializer = new Jsp21FacesInitializer();
+            } 
+            else 
+            {
+                _facesInitializer = new Jsp20FacesInitializer();
+            }
         }
+        
         return _facesInitializer;
     }
     

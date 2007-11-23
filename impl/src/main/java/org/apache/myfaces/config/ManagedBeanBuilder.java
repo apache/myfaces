@@ -32,7 +32,6 @@ import javax.faces.FacesException;
 import javax.faces.application.Application;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.webapp.UIComponentTag;
 import javax.naming.NamingException;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -47,6 +46,7 @@ import org.apache.myfaces.config.element.ManagedProperty;
 import org.apache.myfaces.config.element.MapEntries;
 import org.apache.myfaces.config.element.MapEntry;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.util.ContainerUtils;
 
 
 /**
@@ -498,7 +498,7 @@ public class ManagedBeanBuilder
             MapEntry entry = (MapEntry) iterator.next();
             Object key = entry.getKey();
 
-            if (UIComponentTag.isValueReference((String) key))
+            if (ContainerUtils.isValueReference((String) key))
             {
                 valueExpression = expFactory.createValueExpression(elContext, (String) key, Object.class);
                 key = valueExpression.getValue(elContext);
@@ -511,7 +511,7 @@ public class ManagedBeanBuilder
             else
             {
                 Object value = entry.getValue();
-                if (UIComponentTag.isValueReference((String) value))
+                if (ContainerUtils.isValueReference((String) value))
                 {
                     valueExpression = expFactory.createValueExpression(elContext, (String) value, Object.class);
                     value = valueExpression.getValue(elContext);
@@ -539,7 +539,7 @@ public class ManagedBeanBuilder
             else
             {
                 Object value = entry.getValue();
-                if (UIComponentTag.isValueReference((String) value))
+                if (ContainerUtils.isValueReference((String) value))
                 {
                     ValueExpression valueExpression = expFactory.createValueExpression(elContext, (String) value, Object.class);
                     value = valueExpression.getValue(elContext);

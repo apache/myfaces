@@ -17,9 +17,9 @@ package org.apache.myfaces.config.impl.digester.elements;
 
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
-import javax.faces.webapp.UIComponentTag;
 
 import org.apache.myfaces.config.impl.digester.elements.ListEntries;
+import org.apache.myfaces.util.ContainerUtils;
 
 
 /**
@@ -144,7 +144,7 @@ public class ManagedProperty implements org.apache.myfaces.config.element.Manage
 
     public boolean isValueReference()
     {
-        return UIComponentTag.isValueReference(_value);
+        return ContainerUtils.isValueReference(_value);
     }
 
 

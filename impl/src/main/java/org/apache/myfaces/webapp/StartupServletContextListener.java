@@ -23,6 +23,7 @@ import java.util.Enumeration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.config.ManagedBeanBuilder;
+import org.apache.myfaces.util.ContainerUtils;
 
 import javax.faces.FactoryFinder;
 import javax.servlet.ServletContext;
@@ -67,8 +68,16 @@ public class StartupServletContextListener extends AbstractMyFacesListener
     {
         if (_facesInitializer == null)
         {
-            _facesInitializer = new DefaultFacesInitializer();
+            if (ContainerUtils.isJsp21()) 
+            {
+                _facesInitializer = new Jsp21FacesInitializer();
+            } 
+            else 
+            {
+                _facesInitializer = new Jsp20FacesInitializer();
+            }
         }
+        
         return _facesInitializer;
     }
 
