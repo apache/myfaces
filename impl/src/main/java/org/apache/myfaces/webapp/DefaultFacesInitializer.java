@@ -66,19 +66,10 @@ public class DefaultFacesInitializer implements FacesInitializer
             // Load the configuration
             ExternalContext externalContext = new ServletExternalContextImpl(servletContext, null, null);
 
-            // parse web.xml
-            WebXml webXml = WebXml.getWebXml(externalContext);
-            if(webXml==null)
-            {
-                log.warn("Couldn't find web.xml. Abort initializing MyFaces.");
+            boolean validWebXml = validateWebXml(externalContext);
+            if (!validWebXml) {
                 return;
             }
-            if(webXml.getFacesServletMappings().isEmpty())
-            {
-                log.warn("No mappings of FacesServlet found. Abort initializing MyFaces.");
-                return;
-            }
-
 
             // TODO: this Class.forName will be removed when Tomcat fixes a bug
             // also, we should then be able to remove jasper.jar from the deployment
@@ -126,7 +117,7 @@ public class DefaultFacesInitializer implements FacesInitializer
             log.error("Error initializing MyFaces: " + ex.getMessage(), ex);
         }
     }
-
+    
     protected JspFactory getJspFactory()
     {
         if (_jspFactory == null)
@@ -164,6 +155,34 @@ public class DefaultFacesInitializer implements FacesInitializer
         {
             factory.getLifecycle(iter.next()).addPhaseListener(resolverForJSPInitializer);
         }
+    }
+    
+    /**
+     * Validates the web.xml configuration file, i.e it checks if a FacesServlet
+     * mapping is found.
+     * 
+     * @param context
+     *            The current ExternalContext
+     * 
+     * @return <code>true</code>, if the web.xml configuration file is valid,
+     *         <code>false</code> otherwise
+     */
+    protected boolean validateWebXml(ExternalContext context)
+    {
+        // parse web.xml
+        WebXml webXml = WebXml.getWebXml(context);
+        if (webXml == null)
+        {
+            log.warn("Couldn't find web.xml. Abort initializing MyFaces.");
+            return false;
+        }
+        if (webXml.getFacesServletMappings().isEmpty())
+        {
+            log.warn("No mappings of FacesServlet found. Abort initializing MyFaces.");
+            return false;
+        }
+        
+        return true;
     }
 
     protected void validateFacesConfigIfNecessary(ServletContext servletContext, ExternalContext externalContext)

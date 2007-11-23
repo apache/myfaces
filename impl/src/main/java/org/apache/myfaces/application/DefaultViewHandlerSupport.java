@@ -20,31 +20,40 @@ package org.apache.myfaces.application;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.shared_impl.webapp.webxml.ServletMapping;
-import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
 
 import javax.faces.application.ViewHandler;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A ViewHandlerSupport implementation for use with standard Java Servlet engines,
  * ie an engine that supports javax.servlet, and uses a standard web.xml file.
- * 
+ *
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
 public class DefaultViewHandlerSupport implements ViewHandlerSupport
 {
-    private static final String SERVLET_MAPPING = DefaultViewHandlerSupport.class.getName() + ".ServletMapping";
+    /**
+     * Identifies the FacesServlet mapping in the current request map.
+     */
+    private static final String CACHED_SERVLET_MAPPING = 
+        DefaultViewHandlerSupport.class.getName() + ".CACHED_SERVLET_MAPPING";
+	
+	/**
+     * A RegEx pattern to determine if an extension is available in the given
+     * path.
+     */
+    private static final Pattern EXTENSION_PATTERN = Pattern.compile("(\\..*)");
 
     private static final Log log = LogFactory.getLog(DefaultViewHandlerSupport.class);
 
     public String calculateViewId(FacesContext context, String viewId)
     {
-        ServletMapping mapping = calculateServletMapping(context);
+        FacesServletMapping mapping = getFacesServletMapping(context);
         if (mapping == null || mapping.isExtensionMapping())
         {
             viewId = applyDefaultSuffix(context, viewId);
@@ -61,7 +70,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         if (viewId == null || !viewId.startsWith("/"))
             throw new IllegalArgumentException("ViewId must start with a '/': " + viewId);
 
-        ServletMapping mapping = calculateServletMapping(context);
+        FacesServletMapping mapping = getFacesServletMapping(context);
         ExternalContext externalContext = context.getExternalContext();
         String contextPath = externalContext.getRequestContextPath();
         StringBuilder builder = new StringBuilder(contextPath);
@@ -97,79 +106,75 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         }
         return calculatedActionURL;
     }
-
+    
     /**
      * Read the web.xml file that is in the classpath and parse its internals to
      * figure out how the FacesServlet is mapped for the current webapp.
      */
-    protected ServletMapping calculateServletMapping(FacesContext context)
+    protected FacesServletMapping getFacesServletMapping(FacesContext context)
     {
-        ExternalContext externalContext = context.getExternalContext();
-        Map<String, Object> requestMap = externalContext.getRequestMap();
-        ServletMapping mapping = null;
-        if (requestMap.containsKey(externalContext))
+        Map<String, Object> requestMap = context.getExternalContext().getRequestMap();
+
+        // Has the mapping already been determined during this request?
+        if (!requestMap.containsKey(CACHED_SERVLET_MAPPING))
         {
-            mapping = (ServletMapping) requestMap.get(SERVLET_MAPPING);
+            ExternalContext externalContext = context.getExternalContext();
+            FacesServletMapping mapping = 
+                calculateFacesServletMapping(
+                    externalContext.getRequestServletPath(), 
+                    externalContext.getRequestPathInfo());
+
+            requestMap.put(CACHED_SERVLET_MAPPING, mapping);
+        }
+
+        return (FacesServletMapping) requestMap.get(CACHED_SERVLET_MAPPING);
+    }
+	
+	/**
+     * Determines the mapping of the FacesServlet in the web.xml configuration
+     * file. However, there is no need to actually parse this configuration file
+     * as runtime information is sufficient.
+     * 
+     * @param servletPath
+     *            The servletPath of the current request
+     * @param pathInfo
+     *            The pathInfo of the current request
+     * 
+     * @return the mapping of the FacesServlet in the web.xml configuration file
+     */
+    protected static FacesServletMapping calculateFacesServletMapping(
+            String servletPath, String pathInfo)
+    {
+        if (pathInfo != null)
+        {
+            // If there is a "extra path", it's definitely no extension mapping.
+            // Now we just have to determine the path which has been specified 
+            // in the url-pattern, but that's easy as it's the same as the
+            // current servletPath. It doesn't even matter if "/*" has been used
+            // as in this case the servletPath is just an empty string according
+            // to the Servlet Specification (SRV 4.4).
+            return FacesServletMapping.createPrefixMapping(servletPath);
         }
         else
         {
-            String servletPath = externalContext.getRequestServletPath();
-            String requestPathInfo = externalContext.getRequestPathInfo();
-
-            WebXml webxml = WebXml.getWebXml(externalContext);
-            List mappings = webxml.getFacesServletMappings();
-
-            if (requestPathInfo == null)
+            // In the case of extension mapping, no "extra path" is available.
+            // Still it's possible that prefix-based mapping has been used. 
+            // Actually, if there was an exact match no "extra path" 
+            // is available (e.g. if the url-pattern is "/faces/*" 
+            // and the request-uri is "/context/faces").
+            Matcher extensionMatcher = EXTENSION_PATTERN.matcher(servletPath);
+            if (extensionMatcher.find())
             {
-                // might be extension mapping
-                for (int i = 0, size = mappings.size(); i < size && mapping == null; i++)
-                {
-                    ServletMapping servletMapping = (ServletMapping) mappings.get(i);
-                    String urlpattern = servletMapping.getUrlPattern();
-                    String extension = urlpattern.substring(1, urlpattern.length());
-                    if (servletPath.endsWith(extension))
-                    {
-                        mapping = servletMapping;
-                    }
-                    else if (servletPath.equals(urlpattern))
-                    {
-                        // path mapping with no pathInfo for the current request
-                        mapping = servletMapping;
-                    }
-                }
+                String extension = extensionMatcher.group(1);
+                return FacesServletMapping.createExtensionMapping(extension);
             }
             else
             {
-                // path mapping
-                for (int i = 0, size = mappings.size(); i < size && mapping == null; i++)
-                {
-
-                    ServletMapping servletMapping = (ServletMapping) mappings.get(i);
-                    String urlpattern = servletMapping.getUrlPattern();
-                    urlpattern = urlpattern.substring(0, urlpattern.length() - 2);
-                    // servletPath starts with "/" except in the case where the
-                    // request is matched with the "/*" pattern, in which case
-                    // it is the empty string (see Servlet Sepc 2.3 SRV4.4)
-                    if (servletPath.equals(urlpattern))
-                    {
-                        mapping = servletMapping;
-                    }
-                }
+                // There is no extension in the given servletPath and therefore 
+                // we assume that it's an exact match using prefix-based mapping.
+                return FacesServletMapping.createPrefixMapping(servletPath);
             }
-
-            // handle cases as best possible where servletPath is not a faces servlet,
-            // such as when coming through struts-faces
-            if (mapping == null && mappings.size() > 0)
-            {
-                mapping = (ServletMapping) mappings.get(0);
-            }
-
-            if (mapping == null && log.isWarnEnabled())
-                log.warn("no faces servlet mappings found");
-
-            requestMap.put(SERVLET_MAPPING, mapping);
         }
-        return mapping;
     }
 
     protected String getContextSuffix(FacesContext context)
@@ -216,5 +221,139 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             }
         }
         return viewId;
+    }
+    
+    /**
+     * Represents a mapping entry of the FacesServlet in the web.xml
+     * configuration file.
+     * 
+     */
+    protected static class FacesServletMapping
+    {
+
+        /**
+         * The path ("/faces", for example) which has been specified in the
+         * url-pattern of the FacesServlet mapping.
+         */
+        private String prefix;
+
+        /**
+         * The extension (".jsf", for example) which has been specified in the
+         * url-pattern of the FacesServlet mapping.
+         */
+        private String extension;
+
+        /**
+         * Creates a new FacesServletMapping object using prefix mapping.
+         * 
+         * @param path
+         *            The path ("/faces", for example) which has been specified
+         *            in the url-pattern of the FacesServlet mapping.
+         * 
+         * @return a newly created FacesServletMapping
+         */
+        public static FacesServletMapping createPrefixMapping(String path)
+        {
+            FacesServletMapping mapping = new FacesServletMapping();
+            mapping.setPrefix(path);
+            return mapping;
+        }
+
+        /**
+         * Creates a new FacesServletMapping object using extension mapping.
+         * 
+         * @param path
+         *            The extension (".jsf", for example) which has been
+         *            specified in the url-pattern of the FacesServlet mapping.
+         * 
+         * @return a newly created FacesServletMapping
+         */
+        public static FacesServletMapping createExtensionMapping(
+                String extension)
+        {
+            FacesServletMapping mapping = new FacesServletMapping();
+            mapping.setExtension(extension);
+            return mapping;
+        }
+
+        /**
+         * Returns the path ("/faces", for example) which has been specified in
+         * the url-pattern of the FacesServlet mapping. If this mapping is based
+         * on an extension, <code>null</code> will be returned. Note that this
+         * path is not the same as the specified url-pattern as the trailing
+         * "/*" is omitted.
+         * 
+         * @return the path which has been specified in the url-pattern
+         */
+        public String getPrefix()
+        {
+            return prefix;
+        }
+
+        /**
+         * Sets the path ("/faces/", for example) which has been specified in
+         * the url-pattern.
+         * 
+         * @param path
+         *            The path which has been specified in the url-pattern
+         */
+        public void setPrefix(String path)
+        {
+            this.prefix = path;
+        }
+
+        /**
+         * Returns the extension (".jsf", for example) which has been specified
+         * in the url-pattern of the FacesServlet mapping. If this mapping is
+         * not based on an extension, <code>null</code> will be returned.
+         * 
+         * @return the extension which has been specified in the url-pattern
+         */
+        public String getExtension()
+        {
+            return extension;
+        }
+
+        /**
+         * Sets the extension (".jsf", for example) which has been specified in
+         * the url-pattern of the FacesServlet mapping.
+         * 
+         * @param extension
+         *            The extension which has been specified in the url-pattern
+         */
+        public void setExtension(String extension)
+        {
+            this.extension = extension;
+        }
+
+        /**
+         * Indicates whether this mapping is based on an extension (e.g.
+         * ".jsp").
+         * 
+         * @return <code>true</code>, if this mapping is based is on an
+         *         extension, <code>false</code> otherwise
+         */
+        public boolean isExtensionMapping()
+        {
+            return extension != null;
+        }
+
+        /**
+         * Returns the url-pattern entry for this servlet mapping.
+         * 
+         * @return the url-pattern entry for this servlet mapping
+         */
+        public String getUrlPattern()
+        {
+            if (isExtensionMapping())
+            {
+                return "*" + extension;
+            }
+            else
+            {
+                return prefix + "/*";
+            }
+        }
+
     }
 }
