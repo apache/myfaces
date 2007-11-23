@@ -37,6 +37,7 @@
 			<property-name>var</property-name>
             <property-class>java.lang.String</property-class>
             <property-extension>
+ 	                        <mfp:literal-only>true</mfp:literal-only>
 				<mfp:required>false</mfp:required>
             </property-extension>
 		</property>
