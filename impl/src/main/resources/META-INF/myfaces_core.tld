@@ -458,7 +458,7 @@
       <attribute>
           <description>The value of this parameter.</description>
           <name>value</name>
-          <required>true</required>
+          <required>false</required>
           <deferred-value/>
       </attribute>
    </tag>
