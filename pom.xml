@@ -8,9 +8,13 @@
   <groupId>org.apache.myfaces.core</groupId>
   <artifactId>myfaces-core-project</artifactId>
   <packaging>pom</packaging>
-  <name>Core Project</name>
+  <name>Apache MyFaces JSF-1.1 Core Project</name>
+  <description>
+    The Apache MyFaces JSF-1.1 Core Project is home of the MyFaces JavaServer Faces 1.1 implementation and
+    consists of the API module (javax.faces.* classes) and the actual Implementation module (org.apache.myfaces.* classes).
+  </description>
   <version>1.1.6-SNAPSHOT</version>
-  <url>http://myfaces.apache.org/projects</url>
+  <url>http://myfaces.apache.org/core11</url>
   <issueManagement>
     <system>jira</system>
     <url>http://issues.apache.org/jira/secure/BrowseProject.jspa?id=10600</url>
@@ -25,43 +29,11 @@
     <module>impl</module>
   </modules>
 
-  <build>
-        <plugins>
-            <plugin>
-                <!-- todo: move to myfaces master pom? -->
-                <artifactId>maven-source-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-source</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <!-- todo: move to myfaces master pom? -->
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>2.1</version>
-                    <configuration>
-                        <archive>
-                            <manifest>
-                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            </manifest>
-                        </archive>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
     <distributionManagement>
       <site>
         <id>apache-site</id>
         <name>Apache Website</name>
-        <url>scpexe://minotaur.apache.org/www/myfaces.apache.org/myfaces-core-project/</url>
+        <url>scpexe://minotaur.apache.org/www/myfaces.apache.org/core11/</url>
       </site>
     </distributionManagement>
 </project>

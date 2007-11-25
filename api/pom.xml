@@ -7,10 +7,10 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.myfaces.core</groupId>
   <artifactId>myfaces-api</artifactId>
-  <name>API</name>
+  <name>Apache MyFaces JSF-1.1 API</name>
   <description>
-    The MyFaces API Subproject provides a full set of the API interfaces and classes
-    defined in JSR-127 (see also http://www.jcp.org/en/jsr/detail?id=127).
+    The Apache MyFaces JSF-1.1 API project provides a full set of the API interfaces and classes
+    (javax.faces.*) as defined in JSR-127 (see also http://www.jcp.org/en/jsr/detail?id=127).
   </description>
   <scm>
     <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk/api</connection>
