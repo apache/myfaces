@@ -42,7 +42,7 @@
       <plugin>
         <groupId>org.apache.myfaces.trinidadbuild</groupId>
         <artifactId>maven-faces-plugin</artifactId>
-        <version>1.2.5-SNAPSHOT</version>
+        <version>1.2.5</version>
         <configuration>
           <typePrefix>javax.faces</typePrefix>
           <packageContains>javax.faces</packageContains>

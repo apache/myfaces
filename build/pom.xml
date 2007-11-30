@@ -40,7 +40,7 @@
       <plugin>
         <groupId>org.apache.myfaces.trinidadbuild</groupId>
         <artifactId>maven-faces-plugin</artifactId>
-        <version>1.2.5-SNAPSHOT</version>
+        <version>1.2.5</version>
         <configuration>
           <excludes>
             <exclude>**/includes/**</exclude>
