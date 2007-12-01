@@ -18,17 +18,22 @@
  */
 package javax.faces.validator;
 
-import org.apache.shale.test.mock.MockFacesContext12;
 import static org.easymock.EasyMock.expect;
-import org.easymock.classextension.EasyMock;
-import org.easymock.classextension.IMocksControl;
 import static org.testng.Assert.assertEquals;
-import org.testng.annotations.Test;
 
+import java.util.Locale;
+
+import javax.el.ELContext;
+import javax.el.ExpressionFactory;
+import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
-import java.util.Locale;
+
+import org.apache.shale.test.mock.MockFacesContext12;
+import org.easymock.classextension.EasyMock;
+import org.easymock.classextension.IMocksControl;
+import org.testng.annotations.Test;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -49,12 +54,20 @@ public class _MessageUtilsTest
         IMocksControl mocksControl = EasyMock.createControl();
         Application application = mocksControl.createMock(Application.class);
         ViewHandler viewHandler = mocksControl.createMock(ViewHandler.class);
+        ELContext elContext = mocksControl.createMock(ELContext.class);
+        ExpressionFactory expressionFactory = mocksControl.createMock(ExpressionFactory.class);
+        ValueExpression valueExpression = mocksControl.createMock(ValueExpression.class);
         facesContext.setApplication(application);
         facesContext.setViewRoot(root);
-
+        facesContext.setELContext(elContext);
+        
         expect(application.getViewHandler()).andReturn(viewHandler);
         expect(viewHandler.calculateLocale(facesContext)).andReturn(Locale.ENGLISH);
         expect(application.getMessageBundle()).andReturn("javax.faces.Messages");
+        expect(application.getExpressionFactory()).andReturn(expressionFactory);
+        String s = "xxx: Validation Error: Value is greater than allowable maximum of \"xyz\"";
+        expect(expressionFactory.createValueExpression(elContext,s,String.class)).andReturn(valueExpression);
+        expect(valueExpression.getValue(elContext)).andReturn(s);
         mocksControl.replay();
 
         assertEquals(_MessageUtils.getErrorMessage(facesContext, "javax.faces.validator.DoubleRangeValidator.MAXIMUM",

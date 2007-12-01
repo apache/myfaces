@@ -18,6 +18,7 @@ package javax.faces.component;
 import javax.el.ValueExpression;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -131,7 +132,7 @@ class _MessageUtils
             }
         }
 
-        return new FacesMessage(severity, summary, detail);
+        return new _LabeledFacesMessage(severity, summary, detail);
     }
 
 
@@ -205,7 +206,8 @@ class _MessageUtils
     	
     	ValueExpression expression = component.getValueExpression("label");
     	if(expression != null)
-    		return (String)expression.getValue(facesContext.getELContext());
+    		return expression.getExpressionString();
+    		//return (String)expression.getValue(facesContext.getELContext());
     	
     	//If no label is not specified, use clientId
     	return component.getClientId( facesContext );
