@@ -27,6 +27,8 @@ import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
 
+import org.apache.myfaces.shared_impl.util.ClassUtils;
+
 
 /**
  * This class is used in conjunction with ActionListenerTag. 
@@ -112,8 +114,7 @@ public class DelegateActionListener implements ActionListener, StateHolder
                 }
                 catch (ELException e)
                 {
-                    //throw new JspException("Exception while evaluating the binding attribute of Component "
-                    //        + component.getId(), e);
+                    throw new ELException("Exception while evaluating the binding attribute", e);
                 }
             }
             if (null != _type)
@@ -128,8 +129,8 @@ public class DelegateActionListener implements ActionListener, StateHolder
                     className = (String) _type.getValue(facesContext
                             .getELContext());
                 }
-                listener = null;
-                //listener = (ActionListener) ClassUtils.newInstance(className);
+
+                listener = (ActionListener) ClassUtils.newInstance(className);
                 if (null != _binding)
                 {
                     try
@@ -139,8 +140,7 @@ public class DelegateActionListener implements ActionListener, StateHolder
                     }
                     catch (ELException e)
                     {
-                        //throw new JspException("Exception while evaluating the binding attribute of Component "
-                        //        + component.getId(), e);
+                        throw new ELException("Exception while evaluating the binding attribute ");
                     }
                 }
                 return listener;

@@ -143,13 +143,15 @@ public abstract class GenericListenerTag<_Holder, _Listener>
                 if (_type.isLiteralText())
                 {
                     className = _type.getExpressionString();
+                    //If type is literal text we should create
+                    //a new instance
+                    listener = (_Listener) ClassUtils.newInstance(className);
                 } else
                 {
                     className = (String) _type.getValue(facesContext.getELContext());
+                    listener = null;
                 }
-                
-                listener = null;
-                //listener = (ActionListener) ClassUtils.newInstance(className);
+                                
                 if (null != _binding)
                 {
                     try
@@ -160,6 +162,11 @@ public abstract class GenericListenerTag<_Holder, _Listener>
                         throw new JspException("Exception while evaluating the binding attribute of Component "
                                 + component.getId(), e);
                     }
+                }else{
+                    //Type is a EL expression, and there is
+                    //no binding property so we should create
+                    //a new instance
+                    listener = (_Listener) ClassUtils.newInstance(className);
                 }
                 addListener(holder, listener);
             }
