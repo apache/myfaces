@@ -15,6 +15,7 @@
  */
 package org.apache.myfaces.taglib.core;
 
+import javax.el.ValueExpression;
 import javax.faces.component.ActionSource;
 import javax.faces.event.ActionListener;
 
@@ -36,5 +37,12 @@ public class ActionListenerTag
     {
         actionSource.addActionListener(actionListener);
     }
+
+    protected ActionListener createDelegateListener(ValueExpression type,
+            ValueExpression binding)
+    {
+        return new DelegateActionListener(type,binding);
+    }
 }
+
 

@@ -210,12 +210,12 @@
            associates it with the nearest parent UIComponent.
        </description>
        <name>converter</name>
-       <tag-class>org.apache.myfaces.taglib.core.ConverterTag</tag-class>
+       <tag-class>org.apache.myfaces.taglib.core.ConverterImplTag</tag-class>
        <body-content>empty</body-content>
       <attribute>
           <description>The converter's registered ID.</description>
           <name>converterId</name>
-          <required>true</required>
+          <required>false</required>
           <deferred-value>
                 <type>java.lang.String</type>
             </deferred-value>
@@ -899,7 +899,7 @@
 
         </description>
         <name>validator</name>
-       <tag-class>org.apache.myfaces.taglib.core.ValidatorTag</tag-class>
+       <tag-class>org.apache.myfaces.taglib.core.ValidatorImplTag</tag-class>
        <body-content>empty</body-content>
       <attribute>
           <description>The registered ID of the desired Validator.</description>

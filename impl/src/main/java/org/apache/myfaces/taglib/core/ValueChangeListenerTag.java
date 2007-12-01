@@ -15,7 +15,9 @@
  */
 package org.apache.myfaces.taglib.core;
 
+import javax.el.ValueExpression;
 import javax.faces.component.EditableValueHolder;
+import javax.faces.event.ActionListener;
 import javax.faces.event.ValueChangeListener;
 
 /**
@@ -36,4 +38,10 @@ public class ValueChangeListenerTag
     {
         editableValueHolder.addValueChangeListener(valueChangeListener);
     }
+    
+    protected ValueChangeListener createDelegateListener(ValueExpression type,
+            ValueExpression binding)
+    {
+        return new DelegateValueChangeListener(type,binding);
+    }    
 }
