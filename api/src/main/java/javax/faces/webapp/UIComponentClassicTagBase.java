@@ -1144,6 +1144,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
             if (isInAnIterator)
             {
                 setId(createNextId(id));
+                id = getId();
             }
             else
             {
@@ -1183,11 +1184,12 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     {
         Integer currentCounter = (Integer) getFacesContext().getExternalContext().getRequestMap().get(componentId);
 
-        int iCurrentCounter = 0;
+        int iCurrentCounter = 1;
 
         if (currentCounter != null)
         {
             iCurrentCounter = currentCounter.intValue();
+            iCurrentCounter++;
         }
 
         getFacesContext().getExternalContext().getRequestMap().put(componentId, new Integer(iCurrentCounter));
@@ -1201,7 +1203,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     {
         Set<String> previousJspIdsSet = getPreviousJspIdsSet();
 
-        if (previousJspIdsSet.contains(jspId) && isIncludedOrForwarded())
+        if (previousJspIdsSet.contains(jspId) || isIncludedOrForwarded())
         {
             isInAnIterator = true;
         }
@@ -1220,6 +1222,10 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         if (previousJspIdsSet == null)
         {
             previousJspIdsSet = new HashSet<String>();
+            //Add it to the context! The next time is called
+            //this method it takes the ref from the RequestContext
+            getFacesContext().getExternalContext().getRequestMap()
+                .put(PREVIOUS_JSP_IDS_SET, previousJspIdsSet);
         }
 
         return previousJspIdsSet;
