@@ -72,10 +72,11 @@ public class ScopedAttributeResolver extends ELResolver {
         
         if (base != null) return null;
         if (property == null) throw new PropertyNotFoundException();
-        
+
+        context.setPropertyResolved(true);
+
         Map scopedMap = findScopedMap(externalContext(context), property);
         if (scopedMap != null) {
-            context.setPropertyResolved(true);
             return scopedMap.get(property);
         }
         
