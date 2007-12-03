@@ -109,7 +109,8 @@ public class PropertyResolverImpl extends PropertyResolver
         {
             if (base == null)
             {
-                log.debug("index : "+index+" not retrievable cause base is null.");
+                if(log.isDebugEnabled())
+                    log.debug("index : "+index+" not retrievable cause base is null.");
                 return null;
             }
 
@@ -410,7 +411,8 @@ public class PropertyResolverImpl extends PropertyResolver
         }
         catch (Throwable t)
         {
-            log.debug("Exception while invoking setter method.",t);
+            if(log.isDebugEnabled())
+                log.debug("Exception while invoking setter method.",t);
             throw new EvaluationException(getMessage(base, name, newValue, m), t);
         }
     }
