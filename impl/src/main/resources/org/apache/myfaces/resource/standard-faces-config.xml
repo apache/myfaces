@@ -44,6 +44,7 @@
         <supported-locale>pt_BR</supported-locale>
         <supported-locale>ru</supported-locale>
         <supported-locale>zh_CN</supported-locale>
+        <supported-locale>ar</supported-locale>        
     </locale-config>
   </application>
 
