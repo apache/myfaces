@@ -86,12 +86,34 @@ public class NumberConverter
             {
                 NumberFormat format = getNumberFormat(facesContext);
                 format.setParseIntegerOnly(_integerOnly);
+                
+                DecimalFormat df = (DecimalFormat)format;
+                DecimalFormatSymbols dfs = df.getDecimalFormatSymbols();
+                boolean changed = false;
+                if(dfs.getGroupingSeparator() == '\u00a0')
+                {
+                  dfs.setGroupingSeparator(' ');
+                  df.setDecimalFormatSymbols(dfs);
+                  changed = true;
+                }
                 try
                 {
                     return format.parse(value);
                 }
                 catch (ParseException e)
                 {
+                  if(changed)
+                  {
+                    dfs.setGroupingSeparator('\u00a0');
+                    df.setDecimalFormatSymbols(dfs);
+                  }
+                  try
+                  {
+                    return format.parse(value);
+                  }
+                  catch (ParseException pe)
+                  {
+
                 	if(getPattern() != null)
                 		throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
                 																	PATTERN_ID,
@@ -108,6 +130,7 @@ public class NumberConverter
                 		throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
 																					PERCENT_ID,
 																					new Object[]{value,".90",_MessageUtils.getLabel(facesContext, uiComponent)}));
+                  }
                 }
             }
         }

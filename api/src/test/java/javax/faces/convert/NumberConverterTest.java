@@ -20,12 +20,7 @@ import org.apache.shale.test.base.AbstractJsfTestCase;
 
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
-import java.util.Date;
 import java.util.Locale;
-import java.util.TimeZone;
-import java.text.SimpleDateFormat;
-
-import junit.framework.Test;
 
 public class NumberConverterTest extends AbstractJsfTestCase
 {
@@ -58,12 +53,20 @@ public class NumberConverterTest extends AbstractJsfTestCase
         mock = null;
     }
 
-//    public void testFranceLocale()
-//    {
-//
-//        UIInput input = new UIInput();
-//	mock.setType("currency");
-//        Number number = (Number) mock.getAsObject(FacesContext.getCurrentInstance(), input, "12 345,68 €");
-//        assertNotNull(number);
-//    }
+    public void testFranceLocaleWithNonBrakingSpace()
+    {
+
+        UIInput input = new UIInput();
+        mock.setType("currency");
+        Number number = (Number) mock.getAsObject(FacesContext.getCurrentInstance(), input, "12\u00a0345,68 €");
+        assertNotNull(number);
+    }
+    public void testFranceLocaleWithoutNonBrakingSpace()
+    {
+
+        UIInput input = new UIInput();
+        mock.setType("currency");
+        Number number = (Number) mock.getAsObject(FacesContext.getCurrentInstance(), input, "12 345,68 €");
+        assertNotNull(number);
+    }
 }
