@@ -33,6 +33,7 @@
         <supported-locale>it</supported-locale>
         <supported-locale>es</supported-locale>
         <supported-locale>ca</supported-locale>
+        <supported-locale>ar</supported-locale>
         <supported-locale>pt_BR</supported-locale>
         <supported-locale>ru</supported-locale>
         <supported-locale>zh_CN</supported-locale>
