@@ -103,6 +103,11 @@
           <linkXref>true</linkXref>
           <minimumTokens>100</minimumTokens>
           <targetJdk>1.5</targetJdk>
+          <excludes>
+            <!-- these class make the PMD plugin crash (NullPointerException). -->
+            <exclude>org/apache/myfaces/el/convert/PropertyResolverToELResolver.java</exclude>
+            <exclude>org/apache/myfaces/el/PropertyResolverImpl.java</exclude>
+          </excludes>
         </configuration>
       </plugin>
     </plugins>
