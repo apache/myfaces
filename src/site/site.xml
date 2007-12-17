@@ -45,13 +45,10 @@
 
         <menu name="MyFaces Projects" inherit="top">
             <item name="Core JSF-1.1"     href="http://myfaces.apache.org/core11/index.html" collapse="false">
-              <item name="API"            href="http://myfaces.apache.org/core11/myfaces-api/index.html"/>
-              <item name="Implementation" href="http://myfaces.apache.org/core11/myfaces-impl/index.html"/>
+              <item name="API"            href="myfaces-api/index.html"/>
+              <item name="Impl"           href="myfaces-impl/index.html"/>
             </item>
-            <item name="Core JSF-1.2"     href="http://myfaces.apache.org/core12/index.html" collapse="true">
-              <item name="API"            href="http://myfaces.apache.org/core12/myfaces-api/index.html"/>
-              <item name="Implementation" href="http://myfaces.apache.org/core12/myfaces-impl/index.html"/>
-            </item>
+            <item name="Core JSF-1.2"     href="http://myfaces.apache.org/core12/index.html"/>
             <item name="Tomahawk"         href="http://myfaces.apache.org/tomahawk/index.html"/>
             <item name="Sandbox"          href="http://myfaces.apache.org/sandbox/index.html"/>
             <item name="Tobago"           href="http://myfaces.apache.org/tobago/index.html"/>
