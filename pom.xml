@@ -10,8 +10,8 @@
   <packaging>pom</packaging>
   <name>Apache MyFaces JSF-1.1 Core Project</name>
   <description>
-    The Apache MyFaces JSF-1.1 Core Project is home of the MyFaces JavaServer Faces 1.1 implementation and
-    consists of the API module (javax.faces.* classes) and the actual Implementation module (org.apache.myfaces.* classes).
+    This project is the home of the MyFaces implementation of the JavaServer Faces 1.1 specification, and
+    consists of an API module (javax.faces.* classes) and an implementation module (org.apache.myfaces.* classes).
   </description>
   <version>1.1.6-SNAPSHOT</version>
   <url>http://myfaces.apache.org/core11</url>
