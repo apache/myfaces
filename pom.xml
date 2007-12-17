@@ -15,7 +15,7 @@
     consists of an API module (javax.faces.* classes) and an implementation module (org.apache.myfaces.* classes).
   </description>
   <version>1.2.1-SNAPSHOT</version>
-  <url>http://myfaces.apache.org/projects</url>
+  <url>http://myfaces.apache.org/core12</url>
   <issueManagement>
     <system>jira</system>
     <url>http://issues.apache.org/jira/secure/BrowseProject.jspa?id=10600</url>

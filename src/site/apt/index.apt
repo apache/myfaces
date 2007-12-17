@@ -1,0 +1,32 @@
+ ------
+ Myfaces Core 1.2
+ ------
+
+MyFaces Core 1.2 Project
+
+  This project provides an implementation of the JavaServer Faces 1.2 (JSF 1.2) specification.
+
+    * The API submodule implements all of the classes that are defined in the specification. 
+      If you are looking for API documentation about the classes that your JSF application
+      needs to use, then see the javadoc for the API module.
+
+    * The Impl submodule provides "invisible" support classes that user code does not directly
+      invoke, but which is needed for a working JSF framework. Examples are the renderer classes
+      for the standard JSF components.
+
+  These two libraries (myfaces-api.jar and myfaces-impl.jar) are deployed together with your
+  code to form a JSF web application.
+
+  If you want to know more about how JavaServer(tm) Faces works, take a look at the documentation
+  referenced from the main MyFaces site.
+
+Requirements
+
+  JSF 1.2 requires java 1.5 or later, JSP 2.1, JSTL 1.2 and a Java Servlet 2.5 implementation.
+
+Specifications
+
+  MyFaces implements {{{http://www.jcp.org/en/jsr/detail?id=252}Java Specification Request 252}}
+  Each major release of MyFaces is certified against the Sun TCK to ensure compliance.
+
+  The JSF 1.2 specification was issued on 11 May 2006.
