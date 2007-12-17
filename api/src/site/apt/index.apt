@@ -1,0 +1,9 @@
+ ------
+ Myfaces Core 1.1 API
+ ------
+
+MyFaces Core 1.1 API Project
+
+  The API submodule implements all of the classes that are defined in the specification. 
+  If you are looking for API documentation about the classes that your JSF application
+  needs to use, then see the javadoc for this module.
