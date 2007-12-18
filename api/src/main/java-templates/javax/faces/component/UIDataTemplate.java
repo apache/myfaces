@@ -710,8 +710,8 @@ abstract public class UIDataTemplate extends UIComponentBase implements NamingCo
      */
     private void processColumnChildren(FacesContext context, int processAction)
     {
-        int first = _first;
-        int rows = _rows;
+        int first = getFirst();
+        int rows = getRows();
         int last;
         if (rows == 0)
         {
