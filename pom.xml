@@ -68,6 +68,11 @@
           <version>2.3</version>
         </plugin>
         <plugin>
+          <groupId>org.apache.myfaces.trinidadbuild</groupId>
+          <artifactId>maven-faces-plugin</artifactId>
+          <version>1.2.6-SNAPSHOT</version>
+        </plugin>
+        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-idea-plugin</artifactId>
 	        <configuration>
