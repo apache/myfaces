@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.apache.myfaces</groupId>
     <artifactId>myfaces</artifactId>
-    <version>3</version>
+    <version>4</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.myfaces.core</groupId>
@@ -75,7 +75,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-idea-plugin</artifactId>
-	        <configuration>
+          <configuration>
             <jdkName>1.5</jdkName>
             <linkModules>true</linkModules>
             <downloadSources>true</downloadSources>
@@ -90,6 +90,7 @@
       </plugins>
     </pluginManagement>
   </build>
+
   <reporting>
     <plugins>
       <plugin>
@@ -117,6 +118,7 @@
       </plugin>
     </plugins>
   </reporting>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -176,25 +178,7 @@
       <dependency>
         <groupId>commons-logging</groupId>
         <artifactId>commons-logging</artifactId>
-        <version>1.1</version>
-        <exclusions>
-          <exclusion>
-            <groupId>logkit</groupId>
-            <artifactId>logkit</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>avalon-framework</groupId>
-            <artifactId>avalon-framework</artifactId>
-          </exclusion>
-        </exclusions>
+        <version>1.1.1</version>
       </dependency>
       <dependency>
         <groupId>commons-digester</groupId>
