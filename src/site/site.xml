@@ -26,6 +26,11 @@
         <src>http://myfaces.apache.org/images/easter.png</src>
         <href>http://myfaces.apache.org/</href>
     </bannerRight>
+    <skin>
+      <groupId>org.apache.myfaces.maven</groupId>
+      <artifactId>myfaces-site-skin</artifactId>
+      <version>1-SNAPSHOT</version>
+    </skin>
     <body>
         <links>
             <item name="Apache MyFaces" href="http://myfaces.apache.org/index.html"/>
