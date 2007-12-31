@@ -10,9 +10,10 @@
 
   <artifactId>myfaces-core-assembly</artifactId>
   <packaging>pom</packaging>
-  <name>Core Assembly</name>
+  <name>Apache MyFaces JSF-1.1 Core Assembly</name>
   <description>
-  	This is the MyFaces Assembly [INSERT MORE STUFF HERE]
+    This maven module builds a distributable bundle from the artifacts created
+    by other modules.
   </description>
 
   <scm>
@@ -123,7 +124,7 @@
       <plugin>
         <groupId>org.apache.myfaces.maven</groupId>
         <artifactId>wagon-maven-plugin</artifactId>
-        <version>1.0.6-SNAPSHOT</version>
+        <version>1.0.6</version>
         <configuration>
           <id>myfaces-nightly-builds</id>
           <url>scpexe://minotaur.apache.org/www/people.apache.org/builds/myfaces/nightly</url>
