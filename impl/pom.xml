@@ -13,7 +13,6 @@
     The Apache MyFaces JSF-1.1 Implementation project provides a full JSF 1.1
     implementation as defined in JSR-127 (see also http://www.jcp.org/en/jsr/detail?id=127).
   </description>
-  <url>http://myfaces.apache.org</url>
   <scm>
     <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk/impl</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk/impl</developerConnection>
@@ -286,7 +285,7 @@
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
-      <version>1.0.4</version>
+      <version>1.1.1</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -318,7 +317,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.0</version>
+        <version>2.3</version>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -342,15 +341,17 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>jxr-maven-plugin</artifactId>
+        <version>2.0-beta-1</version>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>surefire-report-maven-plugin</artifactId>
+        <version>2.0-beta-1</version>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>taglist-maven-plugin</artifactId>
-        <version>2.0</version>
+        <version>2.1</version>
       </plugin>
     </plugins>
   </reporting>
