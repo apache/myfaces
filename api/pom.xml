@@ -11,6 +11,7 @@
   <description>
     MyFaces API - JSR 252 ( http://www.jcp.org/en/jsr/detail?id=252 )
   </description>
+  <url>http://myfaces.apache.org/core12/myfaces-api</url>
   <scm>
     <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/1_2_1/api</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/1_2_1/api</developerConnection>
