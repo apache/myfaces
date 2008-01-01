@@ -15,7 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 -->
-<project>
+
+<!--
+  - Note regarding relative and absolute urls: each pom file has an optional
+  - <url> element. If specified, then any absolute url in this file which
+  - starts with the project's url is converted into a relative url. Other
+  - urls are left unaltered.
+  -->
+<project name="MyFaces Core JSF-1.1">
     <bannerLeft>
         <name>Apache MyFaces</name>
         <src>http://myfaces.apache.org/images/myfaces-logo.png</src>
@@ -33,43 +40,45 @@
     </skin>
     <body>
         <links>
-            <item name="Apache MyFaces" href="http://myfaces.apache.org/index.html"/>
+            <item name="Apache"         href="http://www.apache.org/"/>
+            <item name="MyFaces"        href="http://myfaces.apache.org/index.html"/>
             <item name="Core JSF-1.1"   href="http://myfaces.apache.org/core11/index.html"/>
             <item name="Core JSF-1.2"   href="http://myfaces.apache.org/core12/index.html"/>
-            <item name="Tomahawk"       href="http://myfaces.apache.org/tomahawk/index.html"/>
-            <item name="Tobago"         href="http://myfaces.apache.org/tobago/index.html"/>
             <item name="Trinidad"       href="http://myfaces.apache.org/trinidad/index.html"/>
+            <item name="Tobago"         href="http://myfaces.apache.org/tobago/index.html"/>
+            <item name="Tomahawk"       href="http://myfaces.apache.org/tomahawk/index.html"/>
+            <item name="Sandbox"        href="http://myfaces.apache.org/sandbox/index.html"/>
             <item name="Orchestra"      href="http://myfaces.apache.org/orchestra/index.html"/>
             <item name="Portlet Bridge" href="http://myfaces.apache.org/portlet-bridge/index.html"/>
         </links>
 
         <menu name="Apache MyFaces" inherit="top">
-            <item name="Home"           href="http://myfaces.apache.org/index.html"/>
+            <item name="Overview"       href="http://myfaces.apache.org/index.html"/>
             <item name="Download"       href="http://myfaces.apache.org/download.html" />
         </menu>
 
         <menu name="MyFaces Projects" inherit="top">
-            <item name="Core JSF-1.1"     href="http://myfaces.apache.org/core11/index.html" collapse="false">
-              <item name="API"            href="http://myfaces.apache.org/core11/myfaces-api/index.html"/>
-              <item name="Impl"           href="http://myfaces.apache.org/core11/myfaces-impl/index.html"/>
+            <item name="Core JSF-1.1"   href="http://myfaces.apache.org/core11/index.html" collapse="false">
+              <item name="API"          href="http://myfaces.apache.org/core11/myfaces-api/index.html"/>
+              <item name="Impl"         href="http://myfaces.apache.org/core11/myfaces-impl/index.html"/>
             </item>
-            <item name="Core JSF-1.2"     href="http://myfaces.apache.org/core12/index.html" collapse="true">
-              <item name="dummy"          href="dummy"/>
+            <item name="Core JSF-1.2"   href="http://myfaces.apache.org/core12/index.html" collapse="true">
+              <item name="dummy"        href="dummy"/>
             </item>
-            <item name="Tomahawk"         href="http://myfaces.apache.org/tomahawk/index.html"/>
-            <item name="Sandbox"          href="http://myfaces.apache.org/sandbox/index.html"/>
-            <item name="Tobago"           href="http://myfaces.apache.org/tobago/index.html"/>
-            <item name="Trinidad"         href="http://myfaces.apache.org/trinidad/index.html"/>
-            <item name="Orchestra"        href="http://myfaces.apache.org/orchestra/index.html"/>
-            <item name="Portlet Bridge"   href="http://myfaces.apache.org/portlet-bridge/index.html"/>
+            <item name="Trinidad"       href="http://myfaces.apache.org/trinidad/index.html"/>
+            <item name="Tobago"         href="http://myfaces.apache.org/tobago/index.html"/>
+            <item name="Tomahawk"       href="http://myfaces.apache.org/tomahawk/index.html"/>
+            <item name="Sandbox"        href="http://myfaces.apache.org/sandbox/index.html"/>
+            <item name="Orchestra"      href="http://myfaces.apache.org/orchestra/index.html"/>
+            <item name="Portlet Bridge" href="http://myfaces.apache.org/portlet-bridge/index.html"/>
         </menu>
         
-        <menu ref="reports" inherit="bottom"/>
+        <menu ref="reports" inherit="top"/>
 
-        <menu name="Foundation" inherit="bottom">
-            <item name="ASF"         href="http://www.apache.org/" />
-            <item name="Sponsorship" href="http://www.apache.org/foundation/sponsorship.html" />
-            <item name="Thanks"      href="http://www.apache.org/foundation/thanks.html" />
+        <menu name="Foundation" inherit="top">
+            <item name="ASF"            href="http://www.apache.org/" />
+            <item name="Sponsorship"    href="http://www.apache.org/foundation/sponsorship.html" />
+            <item name="Thanks"         href="http://www.apache.org/foundation/thanks.html" />
         </menu>
     </body>
 </project>
