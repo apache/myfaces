@@ -73,6 +73,14 @@
             <item name="Portlet Bridge" href="http://myfaces.apache.org/portlet-bridge/index.html"/>
         </menu>
         
+        <menu name="Documentation" inherit="top">
+            <item name="Getting Started" href="gettingstarted.html"/>
+            <item name="MyFaces and RI"  href="risamples.html"/>
+            <item name="Tomcat Config"   href="tomcat.html"/>
+            <item name="Javadocs"        href="javadoc.html"/>
+            <item name="FAQ"             href="faq.html"/>
+        </menu>
+
         <menu ref="reports" inherit="top"/>
 
         <menu name="Foundation" inherit="top">

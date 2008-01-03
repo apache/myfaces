@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<faqs id="Frequently Asked Questions">
+  <part id="General">
+    <faq id="1">
+      <question>What is MyFaces?</question>
+      <answer>
+        <p>
+          MyFaces Core 1.2 is a Open Source Implementation of the JavaServer Faces 1.2 specification.
+          See <a href="http://jcp.org/en/jsr/detail?id=252">JSR 252</a>.
+        </p>
+      </answer>
+    </faq>
+    <faq id="2">
+      <question>Does MyFaces Core 1.2 work with Tomcat 5.5?</question>
+      <answer>
+        <p>
+          No, JSF1.2 requires Tomcat 6.0 or later.
+        </p>
+      </answer>
+    </faq>
+  </part>
+</faqs>
