@@ -43,12 +43,6 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
 	private static final String CACHED_SERVLET_MAPPING =
 		DefaultViewHandlerSupport.class.getName() + ".CACHED_SERVLET_MAPPING";
 
-	/**
-	 * A RegEx pattern to determine if an extension is available in the given
-	 * path.
-	 */
-	private static final Pattern EXTENSION_PATTERN = Pattern.compile("(\\..*)");
-
 	private static final Log log = LogFactory.getLog(DefaultViewHandlerSupport.class);
 
 	public String calculateViewId(FacesContext context, String viewId)
@@ -161,10 +155,10 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
 			// Actually, if there was an exact match no "extra path"
 			// is available (e.g. if the url-pattern is "/faces/*"
 			// and the request-uri is "/context/faces").
-			Matcher extensionMatcher = EXTENSION_PATTERN.matcher(servletPath);
-			if (extensionMatcher.find())
+			int extensionPos = servletPath.lastIndexOf('.');
+			if (extensionPos > -1)
 			{
-				String extension = extensionMatcher.group(1);
+				String extension = servletPath.substring(extensionPos);
 				return FacesServletMapping.createExtensionMapping(extension);
 			}
 			else
