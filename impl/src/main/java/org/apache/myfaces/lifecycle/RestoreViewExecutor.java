@@ -125,7 +125,7 @@ class RestoreViewExecutor implements PhaseExecutor {
 
 		String viewId = externalContext.getRequestPathInfo(); // getPathInfo
 		if (viewId == null) {
-			// No extra path info found, so it is propably extension mapping
+			// No extra path info found, so it is probably extension mapping
 			viewId = externalContext.getRequestServletPath(); // getServletPath
 			DebugUtils.assertError(viewId != null, log,
 					"RequestServletPath is null, cannot determine viewId of current page.");
@@ -138,12 +138,13 @@ class RestoreViewExecutor implements PhaseExecutor {
 			String suffix = defaultSuffix != null ? defaultSuffix : ViewHandler.DEFAULT_SUFFIX;
 			DebugUtils.assertError(suffix.charAt(0) == '.', log, "Default suffix must start with a dot!");
 
-			int dot = viewId.lastIndexOf('.');
-			if (dot == -1) {
+			int slashPos = viewId.lastIndexOf('/');
+			int extensionPos = viewId.lastIndexOf('.');
+			if (extensionPos == -1 || extensionPos <= slashPos) {
 				log.error("Assumed extension mapping, but there is no extension in " + viewId);
 				viewId = null;
 			} else {
-				viewId = viewId.substring(0, dot) + suffix;
+				viewId = viewId.substring(0, extensionPos) + suffix;
 			}
 		}
 

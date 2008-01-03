@@ -180,8 +180,9 @@ public class PssJspViewHandlerImpl extends ViewHandler
                                    log, "Default suffix must start with a dot!");
             if (!viewId.endsWith(suffix))
             {
-                int dot = viewId.lastIndexOf('.');
-                if (dot == -1)
+                int slashPos = viewId.lastIndexOf('/');
+                int extensionPos = viewId.lastIndexOf('.');
+                if (extensionPos == -1 || extensionPos <= slashPos)
                 {
                     if (log.isTraceEnabled()) log.trace("Current viewId has no extension, appending default suffix " + suffix);
                     viewId = viewId + suffix;
@@ -189,7 +190,7 @@ public class PssJspViewHandlerImpl extends ViewHandler
                 else
                 {
                     if (log.isTraceEnabled()) log.trace("Replacing extension of current viewId by suffix " + suffix);
-                    viewId = viewId.substring(0, dot) + suffix;
+                    viewId = viewId.substring(0, extensionPos) + suffix;
                 }
                 facesContext.getViewRoot().setViewId(viewId);
             }

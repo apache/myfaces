@@ -227,15 +227,16 @@ public class JspViewHandlerImpl
             DebugUtils.assertError(suffix.charAt(0) == '.',
                                    log, "Default suffix must start with a dot!");
             if (!viewId.endsWith(suffix)) {
-                int dot = viewId.lastIndexOf('.');
-                if (dot == -1) {
+                int slashPos = viewId.lastIndexOf('/');
+                int extensionPos = viewId.lastIndexOf('.');
+                if (extensionPos == -1 || extensionPos <= slashPos) {
                     if (log.isTraceEnabled())
                         log.trace("Current viewId has no extension, appending default suffix " + suffix);
                     viewId = viewId + suffix;
                 }
                 else {
                     if (log.isTraceEnabled()) log.trace("Replacing extension of current viewId by suffix " + suffix);
-                    viewId = viewId.substring(0, dot) + suffix;
+                    viewId = viewId.substring(0, extensionPos) + suffix;
                 }
                 facesContext.getViewRoot().setViewId(viewId);
             }
@@ -346,12 +347,14 @@ public class JspViewHandlerImpl
                     return viewId;
                 }
                 else {
-                    int idx = viewId.lastIndexOf(".");
-                    if (idx >= 0) {
-                        return viewId.substring(0, idx) + urlpattern;
+                    int slashPos = viewId.lastIndexOf('/');
+                    int extensionPos = viewId.lastIndexOf('.');
+                    
+                    if (extensionPos == -1 || extensionPos <= slashPos) {
+                        return viewId + urlpattern;
                     }
                     else {
-                        return viewId + urlpattern;
+                        return viewId.substring(0, extensionPos) + urlpattern;
                     }
 
                 }
