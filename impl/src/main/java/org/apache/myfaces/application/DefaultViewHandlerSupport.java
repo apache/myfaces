@@ -153,8 +153,9 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             // Actually, if there was an exact match no "extra path"
             // is available (e.g. if the url-pattern is "/faces/*"
             // and the request-uri is "/context/faces").
+            int slashPos = servletPath.lastIndexOf('/');
             int extensionPos = servletPath.lastIndexOf('.');
-            if (extensionPos > -1)
+            if (extensionPos > -1 && extensionPos > slashPos)
             {
                 String extension = servletPath.substring(extensionPos);
                 return FacesServletMapping.createExtensionMapping(extension);
