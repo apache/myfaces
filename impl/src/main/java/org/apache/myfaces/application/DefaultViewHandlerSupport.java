@@ -197,10 +197,11 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         if (!viewId.endsWith(defaultSuffix))
         {
             StringBuilder builder = new StringBuilder(viewId);
-            int index = viewId.lastIndexOf('.');
-            if (index != -1)
+            int slashPos = viewId.lastIndexOf('/');
+            int extensionPos = viewId.lastIndexOf('.');
+            if (extensionPos > -1 && extensionPos > slashPos)
             {
-                builder.replace(index, viewId.length(), defaultSuffix);
+                builder.replace(extensionPos, viewId.length(), defaultSuffix);
             }
             else
             {
