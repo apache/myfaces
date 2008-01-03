@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation Maven//EN" "http://maven.apache.org/dtd/maven-xdoc.dtd">
+
+<document>
+    <body>
+        <section name="Examples Application">
+            <p>
+                Your first step with Apache MyFaces should be to have
+                a look at our examples application. You can do that
+                by going to our working distribution on <a href="http://www.irian.at/myfaces.jsf">
+                http://www.irian.at/myfaces.jsf</a>
+                or by deploying the examples application yourself. All
+                you need to do to get up and running is to follow the steps below!
+            </p>
+        </section>
+        <section name="What you need for the Examples Application">
+            <ul>
+                <li>Tomcat 5.x. Download <a href="http://jakarta.apache.org/tomcat/index.html">here</a>.</li>
+                <li>MyFaces examples. Latest milestone webapp archive (myfaces-X.X.X-examples.zip or myfaces-X.X.X-examples.tgz) is <a href="http://myfaces.apache.org/download.html">here</a>.</li>
+            </ul>
+        </section>
+        <section name="Installing and Running the Examples">
+            <ul>
+                <li>Unpack the MyFaces examples archive myfaces-X.X.X-examples.zip (or myfaces-X.X.X-examples.tgz) to a directory of your choice.</li>
+                <li>Remove any previous MyFaces webapps from your Tomcat installation and clean up your Tomcat work dir. Also make sure that there is no jsf-api.jar or jsf-impl.jar (i.e. Suns API and implementation) in the classpath or in one of Tomcat's lib directories (common/lib or shared/lib).</li>
+                <li>Copy the file simple.war (or any of the other example war-files) to the webapps dir of your Tomcat installation directory - and check once more that there is no old myfaces-examples directory there ;-)</li>
+                <li>Start Tomcat, if its not already running.</li>
+                <li> Start your browser and enjoy it at <a href="http://localhost:8080/myfaces-examples">http://localhost:8080/simple</a></li>
+            </ul>
+        </section>
+        <section name="Installing and Running Sun JSF-RI Samples with MyFaces">
+            <ul>
+                <li><a href="risamples.html">see detailed description</a></li>
+            </ul>
+        </section>
+        <section name="Using MyFaces in your own web application">
+            <p>
+                Suggested step:
+                <ul>
+                    <li>Look at the <a href="compatibility.html">compatibility list</a> to find out if your servlet container is supported.</li>
+                </ul>
+            </p>
+            <p>
+                There are two possible ways to start off with MyFaces, one is to start from the example-app:
+                <ul>
+                    <li>If you want to have it simple, take the myfaces-X.X.X-examples.zip you downloaded before for looking at the examples, and extract the blank.war file (<a href="http://myfaces.apache.org/download.html">MyFaces binary</a>)</li>
+                    <li>Rename the blank.war file to blank.zip, and extract this file - you have a working directory structure for a MyFaces application at hand after this step.</li>
+                </ul>
+            </p>
+            <p>
+                The second possibility is to download the core implementation and/or tomahawk (dependent on if you want to use the RI and the tomahawk components, or only MyFaces), and start from there:
+                <ul>
+                    <li>Alternatively, download the latest <a href="http://myfaces.apache.org/download.html">MyFaces binary</a> release. You can download only the implementation (aka core) or the implementation and tomahawk.</li>
+                    <li>Copy all *.jar files into your WEB-INF/lib directory. Some of the jar-files are optional, you can find more info on: <a
+                            href="http://myfaces.apache.org/impl/dependencies.html">http://myfaces.apache.org/impl/dependencies.html</a> and <a
+                            href="http://myfaces.apache.org/tomahawk/dependencies.html">http://myfaces.apache.org/tomahawk/dependencies.html</a></li>
+                </ul>
+            </p>
+
+            <p>
+                After you have downloaded the necessary packages and setup your project hierarchy, do this:
+
+                <ul>
+                    <li>Make sure that there is no jsf-api.jar (i.e. Suns API implementation) in the classpath or in one of your container's shared lib directories (e.g. common/lib or shared/lib for Tomcat).</li>
+                    <li>Configure your webapp's web.xml file (see conf/web.xml for example and documentation)</li>
+                    <li>Add the following lines to your JSPs:</li>
+                    <ul>
+                        <li><source xml:space="preserve">&lt;%@ taglib uri="http://java.sun.com/jsf/html" prefix="h"%&gt;</source></li>
+                        <li><source xml:space="preserve">&lt;%@ taglib uri="http://java.sun.com/jsf/core" prefix="f"%&gt;</source></li>
+                    </ul>
+                </ul>
+            </p>
+        </section>
+        <section name="Using the MyFaces extensions (aka Tomahawk) in your own web application">
+            <ul>
+                <li>If you don't use the MyFaces implementation, you will need to add the file tomahawk.jar and its dependencies (see above) to your web-app directory.</li>
+                <li> To be able to use the MyFaces extensions (aka Tomahawk) add the following line to your JSPs:</li>
+                <ul>
+                    <li><source xml:space="preserve">&lt;%@ taglib uri="http://myfaces.apache.org/tomahawk" prefix="t"%&gt;</source></li>
+                    <li><source xml:space="preserve">&lt;%@ taglib uri="http://myfaces.apache.org/wap" prefix="wap" %&gt;</source></li>
+                </ul>
+
+                For using the Tomahawk components, it's also very important to setup the MyFaces Extensions-Filter. You find the explanations
+                for doing this under: <a href="http://myfaces.apache.org/tomahawk/extensionsFilter.html">http://myfaces.apache.org/tomahawk/extensionsFilter.html</a>
+            </ul>
+        </section>
+        <section name="Tutorials for getting started with JSF">
+            <ul>
+                <li><a href="http://www.coreservlets.com/JSF-Tutorial/"> Core-Servlets JSF Tutorial by Marty Hall</a></li>
+            </ul>
+        </section>
+    </body>
+    <!--
+    <footer>
+    	<legal>Java, J2EE, and JCP are trademarks or registered trademarks of Sun Microsystems, Inc. in the United States and other countries.<br />
+	&copy; 2004, Apache Software Foundation
+	</legal>
+    </footer>
+    -->
+</document>

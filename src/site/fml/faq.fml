@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<faqs id="Frequently Asked Questions">
+  <part id="General">
+    <faq id="1">
+      <question>What is MyFaces?</question>
+      <answer>
+        <p>
+          MyFaces is a Open Source Implementation of the JavaServer Faces Framework.
+          See the <a href="http://jcp.org/en/jsr/detail?id=127">JSR 127</a> and
+          <a href="http://jcp.org/en/jsr/detail?id=252">JSR 252</a>for more info.
+        </p>
+      </answer>
+    </faq>
+    <faq id="2">
+      <question>Does MyFaces work with Tomcat 5.5?</question>
+      <answer>
+        <p>
+          Yes, Apache MyFaces works with Tomcat5.5.
+          If you see a blank page in your browser, try to remove the JAR files
+          <code>jsp-2.0.jar</code> and <code>commons-el.jar</code> of the
+          folder <code>WEB-INF/lib</code>.
+        </p>
+      </answer>
+    </faq>
+    <faq id="3">
+      <question>Can I use MyFaces extensions (aka Tomahawk) with the JSF RI?</question>
+      <answer>
+        <p>
+          Yes, most of the Apache MyFaces extensions work with JSF RI. Follow the
+          instructions in the section "Using the MyFaces extensions (aka Tomahawk)
+          in your own web application" under
+          <a href="http://myfaces.apache.org/gettingstarted.html">http://myfaces.apache.org/gettingstarted.html</a>.
+          If you notice problems please submit a ticket on <a href="issue.html">JIRA</a>.
+        </p>
+      </answer>
+    </faq>
+  </part>
+</faqs>
