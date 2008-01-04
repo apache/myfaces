@@ -9,8 +9,7 @@
   <artifactId>myfaces-api</artifactId>
   <name>Apache MyFaces JSF-1.1 API</name>
   <description>
-    The Apache MyFaces JSF-1.1 API project provides a full set of the API interfaces and classes
-    (javax.faces.*) as defined in JSR-127 (see also http://www.jcp.org/en/jsr/detail?id=127).
+    The public API classes of the Apache MyFaces Core JSF-1.1 API project.
   </description>
   <scm>
     <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk/api</connection>
@@ -49,50 +48,6 @@
                 </goals>
               </execution>
             </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>regenerate-component-code</id>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>regenerate-component-code-parts</id>
-                <phase>process-sources</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <tasks>
-                    <property value="${project.basedir}/src/main/java" name="src.dir" />
-                    <ant inheritRefs="true" inheritAll="true" antfile="build.xml" dir="${project.basedir}">
-                      <target name="generate-components" />
-                    </ant>
-                  </tasks>
-                </configuration>
-              </execution>
-            </executions>
-            <dependencies>
-                <dependency>
-                  <groupId>commons-logging</groupId>
-                  <artifactId>commons-logging</artifactId>
-                  <version>1.1.1</version>
-                </dependency>
-                <dependency>
-                  <groupId>velocity</groupId>
-                  <artifactId>velocity</artifactId>
-                  <version>1.5</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.myfaces.maven</groupId>
-                    <artifactId>build-tools</artifactId>
-                    <version>1.0.7-SNAPSHOT</version>
-                </dependency>
-            </dependencies> 
           </plugin>
         </plugins>
       </build>
