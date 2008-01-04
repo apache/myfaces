@@ -52,6 +52,57 @@
         </plugins>
       </build>
     </profile>
+    <profile>
+      <!--
+        - Apply the MyFaces core 1.1 code generation approach. Here, an ant task is executed to
+        - scan the sources directory for component and tag classes with special markers in them,
+        - and modify those java files in-place, adding properties etc. The modified classes are
+        - then checked back in; this task therefore only needs to be run when the config files
+        - that drives the code generation are modified.
+        -->
+      <id>regenerate-component-code</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>regenerate-component-code-parts</id>
+                <phase>process-sources</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <property value="${project.basedir}/src/main/java" name="src.dir" />
+                    <ant inheritRefs="true" inheritAll="true" antfile="build.xml" dir="${project.basedir}">
+                      <target name="generate-components" />
+                    </ant>
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+                <dependency>
+                  <groupId>commons-logging</groupId>
+                  <artifactId>commons-logging</artifactId>
+                  <version>1.1.1</version>
+                </dependency>
+                <dependency>
+                  <groupId>velocity</groupId>
+                  <artifactId>velocity</artifactId>
+                  <version>1.5</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.myfaces.maven</groupId>
+                    <artifactId>build-tools</artifactId>
+                    <version>1.0.7-SNAPSHOT</version>
+                </dependency>
+            </dependencies> 
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
   <dependencies>
     <dependency>
