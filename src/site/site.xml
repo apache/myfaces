@@ -74,11 +74,11 @@
         </menu>
         
         <menu name="Documentation" inherit="top">
-            <item name="Getting Started" href="gettingstarted.html"/>
-            <item name="MyFaces and RI"  href="risamples.html"/>
-            <item name="Tomcat Config"   href="tomcat.html"/>
-            <item name="Javadocs"        href="javadoc.html"/>
-            <item name="FAQ"             href="faq.html"/>
+            <item name="Getting Started" href="http://myfaces.apache.org/core12/gettingstarted.html"/>
+            <item name="MyFaces and RI"  href="http://myfaces.apache.org/core12/risamples.html"/>
+            <item name="Tomcat Config"   href="http://myfaces.apache.org/core12/tomcat.html"/>
+            <item name="Javadocs"        href="http://myfaces.apache.org/core12/javadoc.html"/>
+            <item name="FAQ"             href="http://myfaces.apache.org/core12/faq.html"/>
         </menu>
 
         <menu ref="reports" inherit="top"/>
