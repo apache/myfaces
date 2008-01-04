@@ -1,0 +1,11 @@
+ ------
+ Myfaces Core 1.1 Impl
+ ------
+
+MyFaces Core 1.1 Implementation Project
+
+  This Implementation submodule implements all of the classes that are needed to 
+  provide the functionality of the JSF specification, but which are not public
+  classes, ie which should not directly be invoked by user code.
+
+  None of the classes in this project are in the javax.faces namespace.
