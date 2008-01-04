@@ -4,6 +4,12 @@
 
 MyFaces Core 1.1 API Project
 
-  The API submodule implements all of the classes that are defined in the specification. 
+  This API submodule implements all of the classes that are defined in the specification. 
   If you are looking for API documentation about the classes that your JSF application
   needs to use, then see the javadoc for this module.
+
+  All the classes in this project are in the javax.faces namespace. In addition, it is
+  forbidden for this module to provide a single public or protected class, method or
+  constant that is not in the JSF specification; this ensures that user code compiled
+  against one implementation of the specification will always be binary-compatible with
+  other implementations of the specification.
