@@ -113,7 +113,7 @@
     <profile>
       <!--
         - Whenever the full website is generated, the command
-        -   mvn -Pgenerate-site site:site
+        -   mvn -Pgenerate-site site
         - should be used. This will create the "tlddoc" directory containing
         - nicely-formatted versions of the docs in the jsp taglib file, ie
         - docs on all the available tags and their properties.
