@@ -47,6 +47,14 @@
       </plugin>
 
       <plugin>
+        <!--
+          - Using the metadata from the "build" module, generate the JSP "h" taglib.
+          -
+          - The "f" taglib currently appears to instead be hand-coded; not sure why.
+          - Maybe because the maven-faces-plugin only supports generating one taglib?
+          - Or because people just haven't got around to defining the metadata and
+          - templates for it in the build module?
+          -->
         <groupId>org.apache.myfaces.trinidadbuild</groupId>
         <artifactId>maven-faces-plugin</artifactId>
         <configuration>
@@ -126,6 +134,7 @@
           -->  
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.0</version>
         <executions>
           <execution>
             <id>add-source</id>
@@ -146,48 +155,14 @@
   <profiles>
     <profile>
       <id>generate-site</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>xslt-maven-plugin</artifactId>
-            <version>1.0</version>
-            <executions>
-              <execution>
-                <id>generate-tld-for-tlddoc</id>
-                <goals>
-                  <goal>transform</goal>
-                </goals>
-                <configuration>
-                  <xslFile>src/main/tld/misc/resolve_entities-tlddoc.xsl</xslFile>
-                  <srcIncludes>**/*.tld</srcIncludes>
-                  <srcDir>src/main/tld</srcDir>
-                  <destDir>target/tlddoc-site</destDir>
-                </configuration>
-              </execution>
-              <execution>
-                <id>generate-tld-for-jar</id>
-                <goals>
-                  <goal>transform</goal>
-                </goals>
-                <configuration>
-                  <xslFile>src/main/tld/misc/resolve_entities.xsl</xslFile>
-                  <srcIncludes>**/*.tld</srcIncludes>
-                  <srcDir>src/main/tld</srcDir>
-                  <destDir>target/classes/META-INF</destDir>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
       <reporting>
         <plugins>
           <plugin>
             <groupId>net.sourceforge.maven-taglib</groupId>
             <artifactId>maven-taglib-plugin</artifactId>
+            <version>2.3.1</version>
             <configuration>
-              <taglib.src.dir>${basedir}/target/tlddoc-site</taglib.src.dir>
+              <taglib.src.dir>${basedir}/target/classes/META-INF</taglib.src.dir>
               <tldDocDir>${basedir}/target/site/tlddoc</tldDocDir>
             </configuration>
           </plugin>
@@ -198,37 +173,6 @@
       <id>generate-assembly</id>
       <build>
         <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>xslt-maven-plugin</artifactId>
-            <version>1.0</version>
-            <executions>
-              <execution>
-                <id>generate-tld-for-tlddoc</id>
-                <goals>
-                  <goal>transform</goal>
-                </goals>
-                <configuration>
-                  <xslFile>src/main/tld/misc/resolve_entities-tlddoc.xsl</xslFile>
-                  <srcIncludes>**/*.tld</srcIncludes>
-                  <srcDir>src/main/tld</srcDir>
-                  <destDir>target/tlddoc-site</destDir>
-                </configuration>
-              </execution>
-              <execution>
-                <id>generate-tld-for-jar</id>
-                <goals>
-                  <goal>transform</goal>
-                </goals>
-                <configuration>
-                  <xslFile>src/main/tld/misc/resolve_entities.xsl</xslFile>
-                  <srcIncludes>**/*.tld</srcIncludes>
-                  <srcDir>src/main/tld</srcDir>
-                  <destDir>target/classes/META-INF</destDir>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
           <plugin>
             <artifactId>maven-javadoc-plugin</artifactId>
             <executions>
@@ -243,6 +187,7 @@
           <plugin>
             <groupId>net.sourceforge.maven-taglib</groupId>
             <artifactId>maven-taglib-plugin</artifactId>
+            <version>2.3.1</version>
             <executions>
               <execution>
                 <id>attach-tlddoc</id>
@@ -252,7 +197,7 @@
               </execution>
             </executions>
             <configuration>
-              <taglib.src.dir>${basedir}/target/tlddoc-site</taglib.src.dir>
+              <taglib.src.dir>${basedir}/target/classes/META-INF</taglib.src.dir>
               <tldDocDir>${basedir}/target/tlddoc</tldDocDir>
             </configuration>
           </plugin>
