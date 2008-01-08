@@ -73,6 +73,11 @@
         </executions>
       </plugin>
       <plugin>
+        <!--
+          - The shared-impl project generates a modified version of the "shared" module
+          - source and classes. The result is a jar full of files in the "shared_impl"
+          - package that we can merge into the jar for this project.
+          -->
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>dependency-maven-plugin</artifactId>
         <executions>
@@ -87,10 +92,51 @@
                 <artifactItem>
                   <groupId>org.apache.myfaces.shared</groupId>
                   <artifactId>myfaces-shared-impl</artifactId>
-                  <version>3.0.1-SNAPSHOT</version>
+                  <version>${myfaces-shared.version}</version>
                 </artifactItem>
               </artifactItems>
               <outputDirectory>${project.build.directory}/classes</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>unpack-shared-impl-sources</id>
+            <phase>process-sources</phase>
+            <goals>
+                <goal>unpack</goal>
+            </goals>
+            <configuration>
+                <artifactItems>
+                    <artifactItem>
+                        <groupId>org.apache.myfaces.shared</groupId>
+                        <artifactId>myfaces-shared-impl</artifactId>
+                        <version>${myfaces-shared.version}</version>
+                        <classifier>sources</classifier>
+                    </artifactItem>
+                </artifactItems>
+                <outputDirectory>${project.build.directory}/shared_sources</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <!-- 
+          - Add the unpacked shared sources directory as source directory into the pom datastructure,
+          - so that the -source jar includes them too; every .class file in the jar should have its
+          - source in the -source jar.
+          -->  
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${project.build.directory}/shared_sources</source>
+              </sources>
             </configuration>
           </execution>
         </executions>
@@ -240,9 +286,9 @@
       <!-- this dependency will be packed together with the main artifact of this pom -->
       <groupId>org.apache.myfaces.shared</groupId>
       <artifactId>myfaces-shared-impl</artifactId>
+      <version>${myfaces-shared.version}</version>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>jstl</groupId>
       <artifactId>jstl</artifactId>
@@ -390,4 +436,8 @@
        <url>http://tomcat.apache.org/dev/dist/m2-repository</url>
      </repository>
   </repositories>
+
+  <properties>
+    <myfaces-shared.version>3.0.1-SNAPSHOT</myfaces-shared.version>
+  </properties>
 </project>
