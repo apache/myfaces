@@ -62,8 +62,18 @@ public class ConvertDateTimeTag
     static
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        CONVERTER_ID = facesContext.getApplication().getExpressionFactory().createValueExpression(
+        if (facesContext != null)
+        {
+            CONVERTER_ID = facesContext.getApplication().getExpressionFactory().createValueExpression(
                     facesContext.getELContext(),"javax.faces.DateTime",String.class);
+        }
+        else
+        {
+            // Handle null facesContext because some tools (eg the tlddoc generator)
+            // load classes in order to introspect them. Of course this class will
+            // never work correctly in its normal JSF environment if this case is used.
+            CONVERTER_ID = null;
+        }
     }
         
     public void release()
