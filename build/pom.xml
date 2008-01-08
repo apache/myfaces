@@ -14,6 +14,26 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
+
+<!--
+  - This project uses a custom plugin to process metadata held by this project and generate
+  - a jarfile that contains just config data. The main api and impl projects then run a plugin
+  - against this jarfile in order to generate various jsf-specific artifacts, including:
+  -   * jsf component classes
+  -   * jsp taglib classes
+  -   * a faces-config file
+  -
+  - This is done because JSF has a lot of "boilerplate" type code: 
+  -  * Component classes have getters and setters for many properties.
+  -  * There is a JSP tag class for each component, with exactly the same
+  -    properties, and code that just passes the data through to the component
+  -    class in a very standard manner.
+  -  * A JSP taglib file must then declare the same properties in xml tags
+  -  * A JSF faces-config.xml file must declare each component
+  -
+  - If you want to improve the documentation for a public property of a JSF component,
+  - then the meta-data files in this project is where it needs to be done.
+  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <groupId>org.apache.myfaces.core</groupId>
