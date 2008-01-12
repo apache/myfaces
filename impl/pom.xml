@@ -9,7 +9,9 @@
   <groupId>org.apache.myfaces.core</groupId>
   <artifactId>myfaces-impl</artifactId>
   <name>Apache MyFaces JSF-1.2 Core Impl</name>
-  <description>MyFaces Implementation - JSR 252 ( http://www.jcp.org/en/jsr/detail?id=252 )</description>
+  <description>
+    The private implementation classes of the Apache MyFaces Core JSF/1.2 Implementation
+  </description>
   <url>http://myfaces.apache.org/core12/myfaces-impl</url>
   <scm>
     <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/1_2_1/impl</connection>
@@ -36,8 +38,8 @@
               <goal>jar</goal>
             </goals>
           </execution>
-         </executions>
-        </plugin>
+        </executions>
+      </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.3.1</version>
@@ -158,6 +160,13 @@
   </build>
   <profiles>
     <profile>
+      <!--
+        - Whenever the full website is generated, the command
+        -   mvn -Pgenerate-site site
+        - should be used. This will create the "tlddoc" directory containing
+        - nicely-formatted versions of the docs in the jsp taglib file, ie
+        - docs on all the available tags and their properties.
+        -->
       <id>generate-site</id>
       <reporting>
         <plugins>
@@ -174,6 +183,13 @@
       </reporting>
     </profile>
     <profile>
+      <!--
+        - Whenever files are deployed to a snapshot or release repository,
+        -   mvn -Pgenerate-assembly deploy
+        - should be used. This will create additional artifacts that are
+        - useful but too time-consuming to create when just doing a local
+        - "mvn install" operation.
+        -->
       <id>generate-assembly</id>
       <build>
         <plugins>
@@ -205,18 +221,6 @@
               <taglib.src.dir>${basedir}/target/classes/META-INF</taglib.src.dir>
               <tldDocDir>${basedir}/target/tlddoc</tldDocDir>
             </configuration>
-          </plugin>
-          <plugin>
-            <artifactId>maven-source-plugin</artifactId>
-            <version>2.0.4</version>
-            <executions>
-              <execution>
-                <id>attach-source</id>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
           </plugin>
         </plugins>
       </build>
