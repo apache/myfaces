@@ -90,50 +90,18 @@
   <reporting>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>cobertura-maven-plugin</artifactId>
-      </plugin>
-      <!-- override PMD settings to set targetJdk -->
-      <plugin>
+        <!-- disable the plugin for this site project -->
         <artifactId>maven-pmd-plugin</artifactId>
         <version>2.2</version>
-        <configuration>
-          <rulesets>
-            <ruleset>/rulesets/basic.xml</ruleset>
-            <ruleset>/rulesets/unusedcode.xml</ruleset>
-          </rulesets>
-          <linkXref>true</linkXref>
-          <minimumTokens>100</minimumTokens>
-          <targetJdk>1.5</targetJdk>
-          <excludes>
-            <!-- these class make the PMD plugin crash (NullPointerException). -->
-            <exclude>org/apache/myfaces/el/convert/PropertyResolverToELResolver.java</exclude>
-            <exclude>org/apache/myfaces/el/PropertyResolverImpl.java</exclude>
-          </excludes>
-        </configuration>
+        <reportSets>
+          <reportSet/>
+        </reportSets>
       </plugin>
     </plugins>
   </reporting>
 
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.apache.myfaces.core</groupId>
-        <artifactId>myfaces-api</artifactId>
-        <version>1.2.1-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.myfaces.core</groupId>
-        <artifactId>myfaces-api</artifactId>
-        <version>1.2.1-SNAPSHOT</version>
-        <classifier>tests</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.myfaces.shared</groupId>
-        <artifactId>myfaces-shared-impl</artifactId>
-        <version>3.0.1-SNAPSHOT</version>
-      </dependency>
-
       <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>servlet-api</artifactId>

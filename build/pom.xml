@@ -43,8 +43,8 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Apache MyFaces 1.2 Build</name>
-  <description>Apache MyFaces 1.2 Build</description>
+  <name>Apache MyFaces Core 1.2 Build</name>
+  <description>Apache MyFaces 1.2 Core Build</description>
 
   <artifactId>myfaces-build</artifactId>
   <packaging>jar</packaging>
@@ -60,6 +60,7 @@
       <plugin>
         <groupId>org.apache.myfaces.trinidadbuild</groupId>
         <artifactId>maven-faces-plugin</artifactId>
+        <version>1.2.6-SNAPSHOT</version>
         <configuration>
           <excludes>
             <exclude>**/includes/**</exclude>

@@ -7,7 +7,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.myfaces.core</groupId>
   <artifactId>myfaces-api</artifactId>
-  <name>API</name>
+  <name>Apache Myfaces JSF Core-1.2 API</name>
   <description>
     MyFaces API - JSR 252 ( http://www.jcp.org/en/jsr/detail?id=252 )
   </description>
@@ -21,6 +21,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
+        <version>2.1</version>
         <executions>
           <execution>
             <goals>
@@ -31,6 +32,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-source-plugin</artifactId>
+        <version>2.0.4</version>
         <executions>
           <execution>
             <id>attach-source</id>
@@ -43,6 +45,7 @@
       <plugin>
         <groupId>org.apache.myfaces.trinidadbuild</groupId>
         <artifactId>maven-faces-plugin</artifactId>
+        <version>1.2.5</version>
         <configuration>
           <typePrefix>javax.faces</typePrefix>
           <packageContains>javax.faces</packageContains>
@@ -81,6 +84,7 @@
         <plugins>
           <plugin>
             <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.3</version>
             <executions>
               <execution>
                 <id>attach-javadoc</id>
@@ -92,6 +96,7 @@
           </plugin>
           <plugin>
             <artifactId>maven-source-plugin</artifactId>
+            <version>2.0.4</version>
             <executions>
               <execution>
                 <id>attach-source</id>
@@ -154,16 +159,19 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
+      <version>2.5</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>javax.servlet.jsp</groupId>
       <artifactId>jsp-api</artifactId>
+      <version>2.1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>jstl</groupId>
       <artifactId>jstl</artifactId>
+      <!-- version defined in parent -->
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -172,49 +180,53 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.1.1</version>
+    </dependency>
 
     <dependency>
       <groupId>commons-beanutils</groupId>
       <artifactId>commons-beanutils</artifactId>
+      <version>1.7.0</version>
+      <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-digester</groupId>
-      <artifactId>commons-digester</artifactId>
-    </dependency>
-
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
       <classifier>jdk15</classifier>
+      <version>5.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.shale</groupId>
       <artifactId>shale-test</artifactId>
+      <version>1.0.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>jmock</groupId>
       <artifactId>jmock</artifactId>
+      <version>1.1.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>jmock</groupId>
       <artifactId>jmock-cglib</artifactId>
+      <version>1.1.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.easymock</groupId>
       <artifactId>easymock</artifactId>
+      <version>2.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.easymock</groupId>
       <artifactId>easymockclassextension</artifactId>
+      <version>2.2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -246,15 +258,49 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>jxr-maven-plugin</artifactId>
+        <version>2.0-beta-1</version>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>surefire-report-maven-plugin</artifactId>
+        <version>2.0-beta-1</version>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>taglist-maven-plugin</artifactId>
         <version>2.1</version>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <version>2.2</version>
+      </plugin>
+      <!-- override PMD settings to set targetJdk -->
+      <plugin>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <rulesets>
+            <ruleset>/rulesets/basic.xml</ruleset>
+            <ruleset>/rulesets/unusedcode.xml</ruleset>
+          </rulesets>
+          <linkXref>true</linkXref>
+          <minimumTokens>100</minimumTokens>
+          <targetJdk>1.5</targetJdk>
+          <excludes>
+            <!-- these class make the PMD plugin crash (NullPointerException). -->
+            <exclude>org/apache/myfaces/el/convert/PropertyResolverToELResolver.java</exclude>
+            <exclude>org/apache/myfaces/el/PropertyResolverImpl.java</exclude>
+          </excludes>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>pmd</report>
+              <report>cpd</report>
+            </reports>
+          </reportSet>
+        </reportSets>
       </plugin>
     </plugins>
   </reporting>
