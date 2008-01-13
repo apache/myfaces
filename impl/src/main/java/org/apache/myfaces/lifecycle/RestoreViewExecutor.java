@@ -45,7 +45,7 @@ import org.apache.myfaces.util.DebugUtils;
 class RestoreViewExecutor implements PhaseExecutor
 {
 
-    private static final Log log = LogFactory.getLog(LifecycleImpl.class);
+    private static final Log log = LogFactory.getLog(RestoreViewExecutor.class);
     private RestoreViewSupport _restoreViewSupport;
 
     public boolean execute(FacesContext facesContext)
