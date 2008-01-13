@@ -20,6 +20,8 @@ package javax.faces.component;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+
+import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -32,6 +34,7 @@ import java.util.ResourceBundle;
 class _MessageUtils
 {
     private static final String DETAIL_SUFFIX = "_detail";
+    private static final Class[] NO_ARGS = new Class[0];
 
 	static void addErrorMessage(FacesContext facesContext,
 								UIComponent component,
@@ -62,20 +65,46 @@ class _MessageUtils
     {
         StringBuffer buf = new StringBuffer();
 
-        while(cause != null && cause.getCause()!=cause)
+        while(cause != null)
         {
-            if(buf.length()>0)
+        	Throwable parentCause = getCause(cause);
+        	if (parentCause == cause)
+        	{
+        		break;
+        	}
+
+        	if(buf.length()>0)
+        	{
                 buf.append(", ");
+        	}
             
             buf.append(cause.getLocalizedMessage());
 
-            cause = cause.getCause();
+            cause = parentCause;
         }
 
         facesContext.addMessage(component.getClientId(facesContext),
                 new FacesMessage(FacesMessage.SEVERITY_ERROR, buf.toString(), buf.toString()));
     }
 
+
+    /**
+     * Get the cause of an exception, if available. Reflection must be used because
+     * JSF11 supports java1.3 but Throwable.getCause was added in java1.4.
+     */
+    static Throwable getCause(Throwable ex)
+    {
+        try
+        {
+            Method causeGetter = ex.getClass().getMethod("getCause", NO_ARGS);
+            Throwable cause = (Throwable) causeGetter.invoke(ex, NO_ARGS);
+            return cause;
+        }
+        catch (Exception e1)
+        {
+            return null;
+        }
+    }
     
     static FacesMessage getMessage(FacesContext facesContext,
                                    Locale locale,

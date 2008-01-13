@@ -18,11 +18,6 @@
  */
 package javax.faces.webapp;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import javax.faces.context.FacesContext;
-import java.io.Writer;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -32,19 +27,31 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
 import java.text.DateFormat;
-import java.util.*;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.faces.el.MethodBinding;
 import javax.faces.el.ValueBinding;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * @author Jacob Hookom (ICLA with ASF filed)
@@ -52,6 +59,7 @@ import javax.servlet.ServletException;
 class _ErrorPageWriter {
 
     private static final Log log = LogFactory.getLog(_ErrorPageWriter.class);
+    private static final Class[] NO_ARGS = new Class[0];
 
     private final static String TS = "&lt;";
 
@@ -111,8 +119,12 @@ class _ErrorPageWriter {
 
     public static void writeCause(Writer writer, Throwable ex) throws IOException {
         String msg = ex.getMessage();
-        while (ex.getCause()!=null){
-            ex=ex.getCause();
+        for(;;) {
+        	Throwable t = getCause(ex);
+        	if (t == null)
+        		break;
+        	
+        	ex = t;
             if (ex.getMessage()!=null) msg = ex.getMessage();
         }
 
@@ -381,13 +393,27 @@ class _ErrorPageWriter {
            initCausePerReflection(ex,"getCause");
         }
 
-        prepareExceptionStack(ex.getCause());
+        prepareExceptionStack(getCause(ex));
     }
 
+    /**
+     * Get the cause of an exception, if available. Reflection must be used because
+     * JSF11 supports java1.3 but Throwable.getCause was added in java1.4.
+     */
+    private static Throwable getCause(Throwable ex) {
+        try {
+            Method causeGetter = ex.getClass().getMethod("getCause", NO_ARGS);
+            Throwable cause = (Throwable) causeGetter.invoke(ex, NO_ARGS);
+            return cause;
+        } catch (Exception e1) {
+            return null;
+        }
+    }
+    
     private static boolean initCausePerReflection(Throwable ex, String methodName) {
         try {
-            Method causeGetter = ex.getClass().getMethod(methodName,new Class[]{});
-            Throwable rootCause = (Throwable) causeGetter.invoke(ex,new Class[]{});
+            Method causeGetter = ex.getClass().getMethod(methodName, NO_ARGS);
+            Throwable rootCause = (Throwable) causeGetter.invoke(ex, NO_ARGS);
             return initCauseIfAvailable(ex,rootCause);
         } catch (Exception e1) {
             return false;
