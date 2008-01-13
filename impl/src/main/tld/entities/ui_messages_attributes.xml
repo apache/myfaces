@@ -27,6 +27,6 @@
     <type>java.lang.String</type>
     <description>
         A boolean value that controls whether global messages (those without
-        IDs) should be displayed. Default: true.
+        IDs) should be displayed. Default: false.
     </description>
 </attribute>
