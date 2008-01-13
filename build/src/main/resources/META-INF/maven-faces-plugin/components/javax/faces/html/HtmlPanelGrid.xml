@@ -45,68 +45,68 @@ or EL expressions.</description>
         <xi:include href="../../../includes/html/_TableProperties.xml" xpointer="/faces_config/component/*" />
 
         <property>
-			<description>Specifies the number of columns in the grid.</description>
-			<property-name>columns</property-name>
+            <description>Specifies the number of columns in the grid.</description>
+            <property-name>columns</property-name>
             <property-class>int</property-class>
             <default-value>1</default-value>
             <property-extension>
-				<mfp:required>false</mfp:required>
-			</property-extension>
-		</property>
+                <mfp:required>false</mfp:required>
+            </property-extension>
+        </property>
 
         <property>
-			<description>CSS style to be used for the caption.</description>
-			<property-name>captionStyle</property-name>
+            <description>CSS style to be used for the caption.</description>
+            <property-name>captionStyle</property-name>
             <property-class>java.lang.String</property-class>
             <property-extension>
-				<mfp:required>false</mfp:required>
-			</property-extension>
-		</property>
+                <mfp:required>false</mfp:required>
+            </property-extension>
+        </property>
 
         <property>
-			<description>CSS class to be used for the caption.</description>
-			<property-name>captionClass</property-name>
+            <description>CSS class to be used for the caption.</description>
+            <property-name>captionClass</property-name>
             <property-class>java.lang.String</property-class>
             <property-extension>
-				<mfp:required>false</mfp:required>
-			</property-extension>
-		</property>
+                <mfp:required>false</mfp:required>
+            </property-extension>
+        </property>
 
         <property>
-			<description>CSS class to be used for the columns.</description>
-			<property-name>columnClasses</property-name>
+            <description>CSS class to be used for the columns.</description>
+            <property-name>columnClasses</property-name>
             <property-class>java.lang.String</property-class>
             <property-extension>
-				<mfp:required>false</mfp:required>
-			</property-extension>
-		</property>
+                <mfp:required>false</mfp:required>
+            </property-extension>
+        </property>
 
         <property>
-			<description>CSS class to be used for the footer.</description>
-			<property-name>footerClass</property-name>
+            <description>CSS class to be used for the footer.</description>
+            <property-name>footerClass</property-name>
             <property-class>java.lang.String</property-class>
             <property-extension>
-				<mfp:required>false</mfp:required>
-			</property-extension>
-		</property>
+                <mfp:required>false</mfp:required>
+            </property-extension>
+        </property>
 
         <property>
-			<description>CSS class to be used for the header.</description>
-			<property-name>headerClass</property-name>
+            <description>CSS class to be used for the header.</description>
+            <property-name>headerClass</property-name>
             <property-class>java.lang.String</property-class>
             <property-extension>
-				<mfp:required>false</mfp:required>
-			</property-extension>
-		</property>
+                <mfp:required>false</mfp:required>
+            </property-extension>
+        </property>
 
         <property>
-			<description>CSS class to be used for the rows.</description>
-			<property-name>rowClasses</property-name>
+            <description>CSS class to be used for the rows.</description>
+            <property-name>rowClasses</property-name>
             <property-class>java.lang.String</property-class>
             <property-extension>
-				<mfp:required>false</mfp:required>
-			</property-extension>
-		</property>
+                <mfp:required>false</mfp:required>
+            </property-extension>
+        </property>
 
         <component-extension>
             <mfp:component-family>javax.faces.Panel</mfp:component-family>
