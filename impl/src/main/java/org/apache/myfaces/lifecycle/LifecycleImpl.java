@@ -82,7 +82,9 @@ public class LifecycleImpl
 
     private boolean executePhase(FacesContext facesContext, PhaseExecutor executor,
     		PhaseListenerManager phaseListenerMgr) throws FacesException {
-		boolean skipFurtherProcessing = false;
+
+        boolean skipFurtherProcessing = false;
+
         if (log.isTraceEnabled()) {
         	log.trace("entering " + executor.getPhase() + " in " + LifecycleImpl.class.getName());
         }
