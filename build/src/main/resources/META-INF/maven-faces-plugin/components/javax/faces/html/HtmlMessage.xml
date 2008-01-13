@@ -19,10 +19,10 @@
               xmlns:h="http://java.sun.com/jsf/html"
               xmlns:xi="http://www.w3.org/2001/XInclude">
     <component>
-        <description>Renders the first FacesMessage that is assigned to the component
-referenced by the "for" attribute.
-Unless otherwise specified, all attributes accept static values
-or EL expressions.</description>
+        <description>
+          Renders text displaying information about the first FacesMessage
+          that is assigned to the component referenced by the "for" attribute.
+        </description>
         <component-class>javax.faces.component.html.HtmlMessage</component-class>
         <component-type>javax.faces.HtmlMessage</component-type>
 

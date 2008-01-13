@@ -31,7 +31,11 @@
 that display a multiple messages on behalf of a component.</description>
 
         <property>
-            <description>Indicates that only global messages should be diplayed</description>
+            <description>
+              Specifies whether only messages (FacesMessage objects) not associated with a
+              specific component should be displayed, ie whether messages should be ignored
+              if they are attached to a particular component. Defaults to false.
+            </description>
             <property-name>globalOnly</property-name>
             <property-class>boolean</property-class>
             <default-value>false</default-value>
@@ -39,7 +43,9 @@ that display a multiple messages on behalf of a component.</description>
 
         <!--showDetail-->
         <property>
-            <description>Indicates that details are shown.</description>
+            <description>
+              Specifies whether the detailed information from the message should be shown. Defaults to false.
+            </description>
             <property-name>showDetail</property-name>
             <property-class>boolean</property-class>
             <default-value>false</default-value>
@@ -47,7 +53,9 @@ that display a multiple messages on behalf of a component.</description>
 
         <!--showSummary-->
         <property>
-            <description>Indicates that the summary should be included into the Message.</description>
+            <description>
+              Specifies whether the summary information from the message should be shown. Defaults to true.
+            </description>
             <property-name>showSummary</property-name>
             <property-class>boolean</property-class>
             <default-value>true</default-value>

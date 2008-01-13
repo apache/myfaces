@@ -51,7 +51,11 @@
             </property-extension>
         </property>
         <property>
-            <description>Validator Method, which should be invoked for validation.</description>
+            <description>
+              A method which is invoked during the validation phase for this component. It is
+              expected to check the submitted value for this component, and if not acceptable
+              then report a validation error for the component.
+            </description>
             <property-name>validator</property-name>
             <property-class>javax.faces.el.MethodBinding</property-class>
             <property-extension>
@@ -74,7 +78,12 @@
             </property-extension>
         </property>
         <property>
-            <description>A Method which is called when the value changed.</description>
+            <description>
+              A method which is invoked during postback processing for the current view if the
+              submitted value for this component is not equal to the value which the "value" expression
+              for this component returns. The phase in which this method is invoked can be controlled
+              via the immediate attribute.
+            </description>
             <property-name>valueChangeListener</property-name>
             <property-class>javax.faces.el.MethodBinding</property-class>
             <property-extension>

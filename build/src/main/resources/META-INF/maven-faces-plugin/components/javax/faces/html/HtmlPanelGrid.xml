@@ -19,14 +19,17 @@
               xmlns:h="http://java.sun.com/jsf/html"
               xmlns:xi="http://www.w3.org/2001/XInclude">
     <component>
-        <description>This element renders as an HTML table with specified number of
-columns.  Children of this element are rendered as cells in the
-table, filling rows from left to right.  Facets named "header"
-and "footer" are optional and specify the content of the thead
-and tfoot rows, respectively.
-
-Unless otherwise specified, all attributes accept static values
-or EL expressions.</description>
+        <description><![CDATA[
+           <p>
+           This element renders as an HTML table with specified number of columns.
+           </p>
+           <p>
+           Children of this element are rendered as cells in the table, filling
+           rows from left to right.  Facets named "header" and "footer" are optional
+           and specify the content of the thead and tfoot rows, respectively.
+           </p>
+           ]]>
+        </description>
         <component-class>javax.faces.component.html.HtmlPanelGrid</component-class>
         <component-type>javax.faces.HtmlPanelGrid</component-type>
 
@@ -73,7 +76,12 @@ or EL expressions.</description>
         </property>
 
         <property>
-            <description>CSS class to be used for the columns.</description>
+            <description>
+              A comma separated list of CSS class names to apply to td elements in each column.
+              The first item in the list gets applied to the first column, the second item in
+              the list gets applied to the second column, etc. After all entries in the list
+              have been used, the list repeats again.
+            </description>
             <property-name>columnClasses</property-name>
             <property-class>java.lang.String</property-class>
             <property-extension>
@@ -100,7 +108,13 @@ or EL expressions.</description>
         </property>
 
         <property>
-            <description>CSS class to be used for the rows.</description>
+            <description><![CDATA[
+              A comma separated list of CSS class names to apply to td elements in each row.
+              The first item in the list gets applied to the first row, the second item in
+              the list gets applied to the second row, etc. After all entries in the list
+              have been used, the list repeats again.
+              ]]>
+            </description>
             <property-name>rowClasses</property-name>
             <property-class>java.lang.String</property-class>
             <property-extension>

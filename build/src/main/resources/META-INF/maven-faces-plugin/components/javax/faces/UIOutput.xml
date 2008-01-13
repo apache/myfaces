@@ -39,7 +39,14 @@
         </property>
 
         <property>
-            <description>An Instance ot the Converter</description>
+            <description><![CDATA[
+              An expression that specifies the Converter for this component. If
+              the expression is a static string or is a value expression which
+              returns a String, the String is used as an ID to look up a
+              registered Converter. If the value expression returns a Converter,
+              then that object is used.
+              ]]>
+            </description>
             <property-name>converter</property-name>
             <property-class>javax.faces.convert.Converter</property-class>
             <property-extension>

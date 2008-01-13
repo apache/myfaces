@@ -39,7 +39,16 @@
         </property>
 
         <property>
-            <description>The image URL</description>
+            <description><![CDATA[
+                <p>
+                The URL of the image. If the URL starts with a '/', it is relative
+                to the context path of the web application.
+                </p>
+                <p>
+                This attribute is an alias for the "value" property.
+                </p>
+                ]]>
+            </description>
             <property-name>url</property-name>
             <property-class>java.lang.String</property-class>
             <property-extension>

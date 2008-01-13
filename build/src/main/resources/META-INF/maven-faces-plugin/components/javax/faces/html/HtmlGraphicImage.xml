@@ -19,9 +19,14 @@
               xmlns:h="http://java.sun.com/jsf/html"
               xmlns:xi="http://www.w3.org/2001/XInclude">
     <component>
-        <description>Renders an HTML img element.
-Unless otherwise specified, all attributes accept static values
-or EL expressions.</description>
+        <description><![CDATA[
+          <p>Renders an HTML img element.</p>
+          <p>
+          The value attribute specifies the url of the image to be displayed;
+          see the documentation for attribute "url" for more details.
+          </p>
+          ]]>
+        </description>
         <component-type>javax.faces.HtmlGraphicImage</component-type>
         <component-class>javax.faces.component.html.HtmlGraphicImage</component-class>
 

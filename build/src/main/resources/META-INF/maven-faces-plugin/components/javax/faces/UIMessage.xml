@@ -31,7 +31,10 @@
 that display a single message on behalf of a component.</description>
 
         <property>
-            <description>The ID of the component the Message should be diplayed for.</description>
+            <description>
+              The ID of the component whose attached FacesMessage object (if present) should be
+              diplayed by this component.
+            </description>
             <property-name>for</property-name>
             <property-class>java.lang.String</property-class>
             <property-extension>
@@ -41,7 +44,9 @@ that display a single message on behalf of a component.</description>
 
         <!--showDetail-->
         <property>
-            <description>Indicates that details are shown.</description>
+            <description>
+              Specifies whether the detailed information from the message should be shown. Default to false.
+            </description>
             <property-name>showDetail</property-name>
             <property-class>boolean</property-class>
             <default-value>true</default-value>
@@ -49,7 +54,9 @@ that display a single message on behalf of a component.</description>
 
         <!--showSummary-->
         <property>
-            <description>Indicates that the summary should be included into the Message.</description>
+            <description>
+              Specifies whether the summary information from the message should be shown. Defaults to true.
+            </description>
             <property-name>showSummary</property-name>
             <property-class>boolean</property-class>
             <default-value>false</default-value>

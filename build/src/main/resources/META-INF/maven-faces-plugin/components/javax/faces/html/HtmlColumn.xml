@@ -19,7 +19,22 @@
               xmlns:h="http://java.sun.com/jsf/html"
               xmlns:xi="http://www.w3.org/2001/XInclude">
     <component>
-        <description>Renders a UIComponent that represents a single column of data within a parent UIData component.</description>
+        <description><![CDATA[
+          <p>
+          Creates a UIComponent that represents a single column of data within a parent UIData component.
+          </p>
+          <p>
+          This tag is commonly used as a child of the h:dataTable tag, to represent a column of
+          data within an html table. It can be decorated with nested "header" and "footer" facets
+          which cause the output of header and footer rows.
+          </p>
+          <p>
+          The non-facet child components of this column are re-rendered on each table row
+          to generate the content of the cell. Those child components can reference the "var"
+          attribute of the containing h:dataTable to generate appropriate output for each row.
+          </p>
+          ]]>
+        </description>
         <component-type>javax.faces.HtmlColumn</component-type>
         <component-class>javax.faces.component.html.HtmlColumn</component-class>
 

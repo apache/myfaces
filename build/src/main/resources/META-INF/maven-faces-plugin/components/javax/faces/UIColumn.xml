@@ -25,7 +25,7 @@
         <!-- #################################################################################### -->
         <component-type>javax.faces.Column</component-type>
         <component-class>javax.faces.component.UIColumn</component-class>
-        <description></description>
+        <description>Base class for table columns</description>
 
         <component-extension>
             <mfp:component-supertype>javax.faces.ComponentBase</mfp:component-supertype>

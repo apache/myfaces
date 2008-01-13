@@ -19,14 +19,19 @@
               xmlns:h="http://java.sun.com/jsf/html"
               xmlns:xi="http://www.w3.org/2001/XInclude">
     <component>
-        <description>
-            This component renders as an HTML table element.  It has as its
-            children h:column entities, which describe the columns of the table.
-            It can be decorated with facets named "header" and "footer" to
-            specify header and footer rows.
-
-            Unless otherwise specified, all attributes accept static values
-            or EL expressions.
+        <description><![CDATA[
+            <p>
+            This component renders an HTML table element.
+            </p>
+            <p>
+            This component may have nested facets with names "header" and "footer"
+            to specify header and footer rows.
+            </p>
+            <p>
+            The non-facet children of this component are expected to be
+            h:column components which describe the columns of the table.
+            </p>
+            ]]>
         </description>
 
         <!-- SPEC PAGE 299-300 column 1-->
