@@ -61,7 +61,7 @@
           -->
         <groupId>org.apache.myfaces.trinidadbuild</groupId>
         <artifactId>maven-faces-plugin</artifactId>
-        <version>1.2.5</version>
+        <version>1.2.6-SNAPSHOT</version>
         <configuration>
           <taglibs>
             <h>http://java.sun.com/jsf/html</h>
