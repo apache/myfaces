@@ -26,7 +26,7 @@ public class ImplClassElementTestCase extends AbstractClassElementTestCase
     public ImplClassElementTestCase(){
         
         //resource.add("META-INF/f.tld");
-        resource.add("META-INF/h.tld");
+        resource.add("META-INF/myfaces-html.tld");
         resource.add("META-INF/standard-faces-config.xml");
         
     }

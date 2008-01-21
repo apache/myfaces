@@ -43,8 +43,12 @@
          </executions>
         </plugin>
       <plugin>
+	<!--
         <groupId>org.apache.myfaces.buildtools</groupId>
         <artifactId>myfaces-faces-plugin</artifactId>
+	-->
+        <groupId>org.apache.myfaces.trinidadbuild</groupId>
+	<artifactId>maven-faces-plugin</artifactId>
         <configuration>
           <typePrefix>javax.faces</typePrefix>
           <packageContains>javax.faces</packageContains>
