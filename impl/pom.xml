@@ -64,7 +64,7 @@
         <version>1.2.6-SNAPSHOT</version>
         <configuration>
           <taglibs>
-            <h>http://java.sun.com/jsf/html</h>
+            <myfaces-html>http://java.sun.com/jsf/html</myfaces-html>
           </taglibs>
           <targetPath>META-INF/standard-faces-config.xml</targetPath>
           <packageContains>org.apache</packageContains>
