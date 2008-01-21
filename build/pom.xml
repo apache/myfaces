@@ -58,9 +58,8 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.myfaces.trinidadbuild</groupId>
-        <artifactId>maven-faces-plugin</artifactId>
-        <version>1.2.6-SNAPSHOT</version>
+        <groupId>org.apache.myfaces.buildtools</groupId>
+        <artifactId>myfaces-faces-plugin</artifactId>
         <configuration>
           <excludes>
             <exclude>**/includes/**</exclude>

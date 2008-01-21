@@ -59,9 +59,8 @@
           - Or because people just haven't got around to defining the metadata and
           - templates for it in the build module?
           -->
-        <groupId>org.apache.myfaces.trinidadbuild</groupId>
-        <artifactId>maven-faces-plugin</artifactId>
-        <version>1.2.6-SNAPSHOT</version>
+        <groupId>org.apache.myfaces.buildtools</groupId>
+        <artifactId>myfaces-faces-plugin</artifactId>
         <configuration>
           <taglibs>
             <myfaces-html>http://java.sun.com/jsf/html</myfaces-html>
