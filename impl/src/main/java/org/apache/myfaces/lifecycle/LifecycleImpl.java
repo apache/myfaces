@@ -67,6 +67,10 @@ public class LifecycleImpl
     }
 
     public void execute(FacesContext facesContext) throws FacesException {
+        if(facesContext == null) {
+            throw new NullPointerException("FacesContext is null");
+        }
+
         //refresh all configuration information if according web-xml parameter is set.
         WebXml.update(facesContext.getExternalContext());        
         new FacesConfigurator(facesContext.getExternalContext()).update();
@@ -120,6 +124,10 @@ public class LifecycleImpl
     }
 
     public void render(FacesContext facesContext) throws FacesException {
+        if(facesContext == null) {
+            throw new NullPointerException("FacesContext is null");
+        }
+
     	// if the response is complete we should not be invoking the phase listeners
         if(isResponseComplete(facesContext, renderExecutor.getPhase(), true)) {
         	return;
