@@ -66,7 +66,7 @@ public class ValidatorImplTag
     
     protected Validator createValidator() throws javax.servlet.jsp.JspException
     {
-        Thread.dumpStack();
+
         if (_validatorIdString != null)
         {
             return this.createClassicValidator();
