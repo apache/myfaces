@@ -484,12 +484,6 @@ public class FacesConfigurator
         return connection.getInputStream();
     }
 
-    /*
-     * private Map expandFactoryNames(Set factoryNames) { Map names = new HashMap(); Iterator itr =
-     * factoryNames.iterator(); while (itr.hasNext()) { String name = (String) itr.next();
-     * names.put(META_INF_SERVICES_LOCATION + name, name); } return names; }
-     */
-
     /**
      * This method fixes MYFACES-208
      */
@@ -497,16 +491,30 @@ public class FacesConfigurator
     {
         try
         {
+            Map<String,URL> facesConfigs = new TreeMap<String,URL>();
             Iterator it = ClassUtils.getResources(FACES_CONFIG_RESOURCE, this);
             while (it.hasNext())
             {
                 URL url = (URL) it.next();
-                InputStream stream = openStreamWithoutCache(url);
                 String systemId = url.toExternalForm();
-                if (log.isInfoEnabled())
-                    log.info("Reading config " + systemId);
-                getDispenser().feed(getUnmarshaller().getFacesConfig(stream, systemId));
-                stream.close();
+                facesConfigs.put(systemId,url);
+            }
+
+            Iterator<Map.Entry<String,URL>> facesConfigIt=facesConfigs.entrySet().iterator();
+
+            while(facesConfigIt.hasNext()) {
+                Map.Entry<String,URL> entry = facesConfigIt.next();
+                InputStream stream = null;
+                try {
+                    openStreamWithoutCache(entry.getValue());
+                    if (log.isInfoEnabled())
+                        log.info("Reading config : " + entry.getKey());
+                    getDispenser().feed(getUnmarshaller().getFacesConfig(stream, entry.getKey()));
+                }
+                finally {
+                    if(stream!=null)
+                        stream.close();
+                }
             }
         }
         catch (Throwable e)
