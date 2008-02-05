@@ -35,6 +35,20 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * Initialise the MyFaces system.
+ * <p>
+ * This context listener is registered by the JSP TLD file for the standard
+ * JSF "f" components. Normally, servlet containers will automatically load
+ * and process .tld files at startup time, and therefore register and run
+ * this class automatically.
+ * <p>
+ * Some very old servlet containers do not do this correctly, so in those
+ * cases this listener may be registered manually in web.xml. Registering
+ * it twice (ie in both .tld and web.xml) will result in a harmless warning
+ * message being generated. Very old versions of MyFaces Core do not register
+ * the listener in the .tld file, so those also need a manual entry in web.xml.
+ * However all versions since at least 1.1.2 have this entry in the tld.
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
