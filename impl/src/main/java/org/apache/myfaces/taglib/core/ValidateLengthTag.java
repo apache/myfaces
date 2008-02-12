@@ -50,7 +50,7 @@ public class ValidateLengthTag
 
     protected boolean isMinLTMax()
     {
-        return _min < _max;
+        return _min <= _max;
     }
 
     protected Integer getValue(Object value)
