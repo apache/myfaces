@@ -79,7 +79,13 @@ class _SharedRendererUtils
         Class arrayComponentType = null;
         if (expression != null)
         {
-            valueType = expression.getType(facesContext.getELContext());
+            //By some strange reason vb.getType(facesContext.getELContext());
+            //does not return the same as vb.getValue(facesContext.getELContext()).getClass(),
+            //so we need to use this instead.
+            Object value = expression.getValue(facesContext.getELContext()); 
+            valueType = (value != null) ? value.getClass() :
+                expression.getType(facesContext.getELContext()) ;
+            
             if (valueType != null && valueType.isArray())
             {
                 arrayComponentType = valueType.getComponentType();
