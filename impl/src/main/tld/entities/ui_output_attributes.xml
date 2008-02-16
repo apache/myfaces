@@ -30,11 +30,10 @@
     <rtexprvalue>false</rtexprvalue>
     <type>java.lang.String</type>
     <description>
-        An expression that specifies the Converter for this component.  
-        If the value binding expression is a String, the String is used
-        as an ID to look up a Converter. If the value binding expression
-        is a Converter, uses that instance as the converter.
-            
-        The value can either be a static value (ID case only) or an EL expression.
+        The value can either be a static value (ID) or an EL expression.
+        When a static id is specified, an instance of the converter type
+        registered with that id is used. When this is an EL expression,
+        the result of evaluating the expression must be an object that
+        implements the Converter interface.
     </description>
 </attribute>
