@@ -40,11 +40,12 @@
 
         <property>
             <description><![CDATA[
-              An expression that specifies the Converter for this component. If
-              the expression is a static string or is a value expression which
-              returns a String, the String is used as an ID to look up a
-              registered Converter. If the value expression returns a Converter,
-              then that object is used.
+              An expression that specifies the Converter for this component.
+              The value can either be a static value (ID) or an EL expression.
+              When a static id is specified, an instance of the converter type
+              registered with that id is used. When this is an EL expression,
+              the result of evaluating the expression must be an object that
+              implements the Converter interface.
               ]]>
             </description>
             <property-name>converter</property-name>
