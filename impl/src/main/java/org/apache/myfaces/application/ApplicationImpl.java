@@ -662,6 +662,35 @@ public class ApplicationImpl extends Application
         return createComponent(valExpression, facesContext, componentType);
     }
 
+    /**
+     * Return an instance of the converter class that has been registered under
+     * the specified id.
+     * <p>
+     * Converters are registered via faces-config.xml files, and can also be registered
+     * via the addConverter(String id, Class converterClass) method on this class. Here
+     * the the appropriate Class definition is found, then an instance is created and
+     * returned.
+     * <p>
+     * A converter registered via a config file can have any number of nested attribute or
+     * property tags. The JSF specification is very vague about what effect these nested
+     * tags have. This method ignores nested attribute definitions, but for each nested
+     * property tag the corresponding setter is invoked on the new Converter instance
+     * passing the property's defaultValuer. Basic typeconversion is done so the target
+     * properties on the Converter instance can be String, int, boolean, etc. Note that:
+     * <ol>
+     * <li>the Sun Mojarra JSF implemenation ignores nested property tags completely, so
+     * this behaviour cannot be relied on across implementations.
+     * <li>there is no equivalent functionality for converter classes registered via
+     * the Application.addConverter api method.
+     * </ol>
+     * <p>
+     * Note that this method is most commonly called from the standard f:attribute tag.
+     * As an alternative, most components provide a "converter" attribute which uses an
+     * EL expression to create a Converter instance, in which case this method is not
+     * invoked at all. The converter attribute allows the returned Converter instance to
+     * be configured via normal dependency-injection, and is generally a better choice
+     * than using this method.
+     */
     @Override
     public Converter createConverter(String converterId)
     {
