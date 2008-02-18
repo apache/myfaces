@@ -401,7 +401,8 @@ public class JspViewHandlerImpl extends ViewHandler
 
         if (afterViewTagResponse != null)
         {
-            afterViewTagResponse.flushToWriter(response.getWriter());
+            afterViewTagResponse.flushToWriter(response.getWriter(),
+                    facesContext.getExternalContext().getResponseCharacterEncoding());
         }
 
         response.flushBuffer();
