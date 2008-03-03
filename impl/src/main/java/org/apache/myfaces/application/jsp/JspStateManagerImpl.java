@@ -336,9 +336,9 @@ public class JspStateManagerImpl
                 getPathToComponent(component));
         }
         Iterator it = component.getFacetsAndChildren();
-        boolean namingContainer = component instanceof NamingContainer;
         while (it.hasNext()) {
             UIComponent kid = (UIComponent) it.next();
+            boolean namingContainer = kid instanceof NamingContainer;            
             if (namingContainer) {
                 checkForDuplicateIds(context, kid, new HashSet());
             }
