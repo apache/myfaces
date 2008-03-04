@@ -241,45 +241,45 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
      */
     private static class UIComponentTagWrapper extends UIComponentTag
     {
-    	private UIComponentClassicTagBase target;
+        private UIComponentClassicTagBase target;
 
-    	public UIComponentTagWrapper(UIComponentClassicTagBase classicTag)
+        public UIComponentTagWrapper(UIComponentClassicTagBase classicTag)
         {
-    		target = classicTag;
+            target = classicTag;
         }
 
-    	// -----------------------------------------------------------
-    	// Methods that can reasonably be called on a parent tag object
-    	// -----------------------------------------------------------
+        // -----------------------------------------------------------
+        // Methods that can reasonably be called on a parent tag object
+        // -----------------------------------------------------------
 
-    	@Override
+        @Override
         public String getComponentType()
         {
-        	return target.getComponentType();
+            return target.getComponentType();
         }
 
         @Override
         public String getRendererType()
         {
-        	return target.getRendererType();
+            return target.getRendererType();
         }
 
         @Override
         public boolean getCreated()
         {
-        	return target.getCreated();
+            return target.getCreated();
         }
 
         @Override
         public String getId()
         {
-        	return target.getId();
+            return target.getId();
         }
 
         @Override
         public UIComponent getComponentInstance()
         {
-        	return target.getComponentInstance();
+            return target.getComponentInstance();
         }
 
         @Override
@@ -289,61 +289,61 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
         }
 
         // -----------------------------------------------------------
-    	// Methods that should never be called on a parent tag object
-    	// -----------------------------------------------------------
+        // Methods that should never be called on a parent tag object
+        // -----------------------------------------------------------
 
         @Override
         public void release()
         {
-        	throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public void setBinding(String binding) throws JspException
         {
-        	throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public void setId(String id)
         {
-        	throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public void setRendered(String state)
         {
-        	throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException();
         }
 
         @Override
         protected UIComponent createComponent(FacesContext context, String newId)
         {
-        	throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public void setPageContext(PageContext context)
         {
-        	throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public void setParent(Tag parent)
         {
-        	throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException();
         }
 
         @Override
         protected UIComponent findComponent(FacesContext context) throws JspException
         {
-        	throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException();
         }
 
         @Override
         protected FacesContext getFacesContext()
         {
-        	throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException();
         }
 
         // Methods that no sane user of this class would call, so we do not need to override here:
