@@ -21,6 +21,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
+import javax.servlet.jsp.tagext.Tag;
 
 /**
  * Base class for all JSP tags that represent a JSF UIComponent.
@@ -232,33 +233,123 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
     }
 
     /**
-     * Class used to create an UIComponentTag from a UIComponentClassicTagBase
+     * Class used to create an UIComponentTag from a UIComponentClassicTagBase.
+     * <p>
+     * This is a standard use of the decorator pattern, to make the logic of the JSF12
+     * UIComponentClassicTagBase class available via the old JSF11 UIComponentTag
+     * api.
      */
     private static class UIComponentTagWrapper extends UIComponentTag
     {
-        public UIComponentTagWrapper(UIComponentClassicTagBase classicTag)
+    	private UIComponentClassicTagBase target;
+
+    	public UIComponentTagWrapper(UIComponentClassicTagBase classicTag)
         {
-            setId(classicTag.getId());
-            setJspId(classicTag.getJspId());
-            setParent(classicTag.getParent());
+    		target = classicTag;
         }
 
+    	// -----------------------------------------------------------
+    	// Methods that can reasonably be called on a parent tag object
+    	// -----------------------------------------------------------
+
+    	@Override
         public String getComponentType()
         {
-            return null;
+        	return target.getComponentType();
         }
 
+        @Override
         public String getRendererType()
         {
-            return null;
+        	return target.getRendererType();
         }
 
+        @Override
+        public boolean getCreated()
+        {
+        	return target.getCreated();
+        }
+
+        @Override
+        public String getId()
+        {
+        	return target.getId();
+        }
+
+        @Override
+        public UIComponent getComponentInstance()
+        {
+        	return target.getComponentInstance();
+        }
+
+        @Override
+        public Tag getParent()
+        {
+            return target.getParent();
+        }
+
+        // -----------------------------------------------------------
+    	// Methods that should never be called on a parent tag object
+    	// -----------------------------------------------------------
+
+        @Override
+        public void release()
+        {
+        	throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setBinding(String binding) throws JspException
+        {
+        	throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setId(String id)
+        {
+        	throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setRendered(String state)
+        {
+        	throw new UnsupportedOperationException();
+        }
+
+        @Override
         protected UIComponent createComponent(FacesContext context, String newId)
         {
-            return null;
+        	throw new UnsupportedOperationException();
         }
 
+        @Override
+        public void setPageContext(PageContext context)
+        {
+        	throw new UnsupportedOperationException();
+        }
 
+        @Override
+        public void setParent(Tag parent)
+        {
+        	throw new UnsupportedOperationException();
+        }
+
+        @Override
+        protected UIComponent findComponent(FacesContext context) throws JspException
+        {
+        	throw new UnsupportedOperationException();
+        }
+
+        @Override
+        protected FacesContext getFacesContext()
+        {
+        	throw new UnsupportedOperationException();
+        }
+
+        // Methods that no sane user of this class would call, so we do not need to override here:
+        //   doStartTag, doEndTag, getDoStartValue, getDoEndValue, isSupressed
+        //   encodeBegin, encodeChildren, encodeEnd, getFacetName
+        //   setProperties, setupResponseWriter
     }
 
     @Override
@@ -266,5 +357,4 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
     {
         return _binding != null;
     }
-
 }
