@@ -15,9 +15,10 @@
  */
 package javax.faces.context;
 
+import java.util.Iterator;
+
 import javax.el.ELContext;
 import javax.faces.application.FacesMessage;
-import java.util.Iterator;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -27,20 +28,63 @@ import java.util.Iterator;
  */
 public abstract class FacesContext
 {
-    // The following concrete method was added for JSF 1.2.  It supplies a default 
-    // implementation that throws UnsupportedOperationException.  
-    // This allows old FacesContext implementations to still work.
-    public ELContext getELContext() {
-        
-    	FacesContext ctx = getCurrentInstance();
+    /**
+     * Return the context within which all EL-expressions are evaluated.
+     * <p>
+     * A JSF implementation is expected to provide a full implementation of this
+     * class. However JSF also explicitly allows user code to apply the "decorator"
+     * pattern to this type, by overriding the FacesContextFactory class. In that
+     * pattern, the decorating class has a reference to an "underlying" implementation
+     * and forward calls to it, possibly after taking other related actions.
+     * <p>
+     * The decorator pattern does have difficulties with backwards-compatibility when
+     * new methods are added to the class being decorated, as with this method which
+     * was added in JSF1.2. Decorator classes that were written for JSF1.1 will subclass
+     * this class, but will not override this method to pass the call on to the 
+     * "underlying" instance. This base implementation therefore must do that for it.
+     * <p>
+     * Unfortunately the JSF designers stuffed up the design; this base class has no way
+     * of knowing what the "underlying" instance is! The current implementation here
+     * is therefore to delegate directly to the very <i>first</i> FacesContext instance
+     * registered within this request (via setCurrentInstance). This instance should
+     * be the "full" implementation provided by the JSF framework. The drawback is that
+     * when any decorator class is present which defaults to this base implementation,
+     * then any following decorator instances that do override this method do not get
+     * it invoked.
+     * <p>
+     * It is believed that the Sun JSF implementation (Mojarra) does something similar.
+     * 
+     * @since 1.2
+     */
+    public ELContext getELContext()
+    {
+        // Do NOT use getCurrentInstance here. For FacesContext decorators that
+        // register themselves as "the current instance" that will cause an
+        // infinite loop. For FacesContext decorators that do not register
+        // themselves as "the current instance", if they are themselves wrapped
+        // by a decorator that *does* register itself, then an infinite loop
+        // also occurs.
+        //
+        // As noted above, we really want to do something like
+        //   ctx = getWrappedInstance();
+        // where the subclass can return the object it is delegating to. 
+        // As there is no such method, however, the best we can do is pass the
+        // method call on to the first-registered FacesContext instance. That
+        // instance will never be "this", as the real original FacesContext
+        // object will provide a proper implementation of this method.
+        FacesContext ctx = _firstInstance.get();
 
         if (ctx == null)
+        {
             throw new NullPointerException(FacesContext.class.getName());
+        }
 
         ELContext elctx = ctx.getELContext();
 
         if (elctx == null)
+        {
             throw new UnsupportedOperationException();
+        }
 
         return elctx;
     }
@@ -84,10 +128,17 @@ public abstract class FacesContext
 
     public abstract void responseComplete();
 
-
-    private static ThreadLocal<FacesContext> _currentInstance = new ThreadLocal()
+    private static ThreadLocal<FacesContext> _currentInstance = new ThreadLocal<FacesContext>()
     {
-        protected Object initialValue()
+        protected FacesContext initialValue()
+        {
+            return null;
+        }
+    };
+
+    private static ThreadLocal<FacesContext> _firstInstance = new ThreadLocal<FacesContext>()
+    {
+        protected FacesContext initialValue()
         {
             return null;
         }
@@ -100,7 +151,19 @@ public abstract class FacesContext
 
     protected static void setCurrentInstance(javax.faces.context.FacesContext context)
     {
-        _currentInstance.set(context);
-
+        if (context == null)
+        {
+            _currentInstance.remove();
+            _firstInstance.remove();
+        }
+        else
+        {
+            _currentInstance.set(context);
+            
+            if (_firstInstance.get() == null)
+            {
+                _firstInstance.set(context);
+            }
+        }
     }
 }
