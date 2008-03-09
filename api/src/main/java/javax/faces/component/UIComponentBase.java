@@ -491,6 +491,9 @@ public abstract class UIComponentBase
             }
         }
         catch(Exception ex) {
+            if (ex instanceof AbortProcessingException) {
+                throw (AbortProcessingException) ex;
+            }
             throw new FacesException("Exception while calling broadcast on component : "+getPathToComponent(this), ex);
         }
     }
