@@ -639,6 +639,9 @@ public abstract class UIComponentBase
                 }
             }
         } catch (Exception e) {
+            if (e instanceof AbortProcessingException) {
+                throw (AbortProcessingException) e;
+            }
             throw new FacesException("Exception while calling broadcast on : "+getPathToComponent(this), e);
         }
     }
@@ -658,6 +661,7 @@ public abstract class UIComponentBase
                 renderer.decode(context, this);
             }
         } catch (Exception e) {
+            if (e instanceof AbortProcessingException)
             throw new FacesException("Exception while calling decode on : "+getPathToComponent(this), e);
         }
     }
