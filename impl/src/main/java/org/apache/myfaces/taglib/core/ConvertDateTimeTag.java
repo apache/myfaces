@@ -235,14 +235,12 @@ public class ConvertDateTimeTag
             {
                 type = DEFAULT_TYPE;
             }
-            else
+            if (!TYPE_DATE.equals(type) && 
+                    !TYPE_TIME.equals(type) &&
+                    !TYPE_BOTH.equals(type))
             {
-                if (_dateStyle != null) {
-                    type = TYPE_BOTH;
-                } else {
-                    type = TYPE_TIME;
-                }
-           }
+                type = DEFAULT_TYPE;
+            }
 
             converter.setType(type);
         }
