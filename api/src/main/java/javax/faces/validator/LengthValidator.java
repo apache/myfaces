@@ -97,7 +97,7 @@ public class LengthValidator
     // SETTER & GETTER
     public int getMaximum()
     {
-        return _maximum != null ? _maximum.intValue() : Integer.MAX_VALUE;
+        return _maximum != null ? _maximum.intValue() : 0;
     }
 
     public void setMaximum(int maximum)
