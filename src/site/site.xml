@@ -25,19 +25,24 @@
 <project name="MyFaces Core JSF-1.2">
     <bannerLeft>
         <name>Apache MyFaces</name>
-        <src>http://myfaces.apache.org/images/myfaces-logo.png</src>
+        <src>img/banners/MyFaces_logo.jpg</src>
         <href>http://myfaces.apache.org/</href>
     </bannerLeft>
+    
     <bannerRight>
-        <name>Easter Island</name>
-        <src>http://myfaces.apache.org/images/easter.png</src>
+        <name>Apache Banner</name>
+        <src>img/banners/apache_banner.png</src>
         <href>http://myfaces.apache.org/</href>
     </bannerRight>
+    
+    <publishDate format="dd MMM yyyy" />
+    
     <skin>
       <groupId>org.apache.myfaces.maven</groupId>
       <artifactId>myfaces-site-skin</artifactId>
       <version>1-SNAPSHOT</version>
     </skin>
+    
     <body>
         <links>
             <item name="Apache"         href="http://www.apache.org/"/>
