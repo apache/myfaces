@@ -131,8 +131,26 @@ public class ApplicationImpl extends Application
     {
         if (initializingRuntimeConfig.get() == null)
         {
-            throw new IllegalStateException("The runtime config instance which is created while initialize myfaces "
-                    + "must be set through ApplicationImpl.setInitializingRuntimeConfig");
+            //It may happen that the current thread value
+            //for initializingRuntimeConfig is not set 
+            //(note that this value is final, so it just 
+            //allow set only once per thread).
+            //So the better for this case is try to get
+            //the value using RuntimeConfig.getCurrentInstance()
+            //instead throw an IllegalStateException (only fails if
+            //the constructor is called before setInitializingRuntimeConfig).
+            //From other point of view, AbstractFacesInitializer do 
+            //the same as below, so there is not problem if
+            //we do this here and this is the best place to do
+            //this.
+            //log.info("initializingRuntimeConfig.get() == null, so loading from ExternalContext");
+            ApplicationImpl.setInitializingRuntimeConfig(
+                    RuntimeConfig.getCurrentInstance(
+                            FacesContext.getCurrentInstance()
+                            .getExternalContext()));
+
+            //throw new IllegalStateException("The runtime config instance which is created while initialize myfaces "
+            //        + "must be set through ApplicationImpl.setInitializingRuntimeConfig");
         }
         return initializingRuntimeConfig.get();
     }
