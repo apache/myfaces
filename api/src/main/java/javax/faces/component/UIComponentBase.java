@@ -217,7 +217,15 @@ public abstract class UIComponentBase
         UIComponent namingContainer = _ComponentUtils.findParentNamingContainer(this, false);
         if (namingContainer != null)
         {
-            _clientId = namingContainer.getContainerClientId(context) + NamingContainer.SEPARATOR_CHAR + id;
+            String containerClientId = namingContainer.getContainerClientId(context); 
+            if (containerClientId != null )
+            {
+                _clientId = containerClientId + NamingContainer.SEPARATOR_CHAR + id;
+            }
+            else
+            {
+                _clientId = id;
+            }
         }
         else
         {
