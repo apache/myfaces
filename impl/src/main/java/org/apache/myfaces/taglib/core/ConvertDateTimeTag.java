@@ -227,19 +227,58 @@ public class ConvertDateTimeTag
                                              DateTimeConverter converter,
                                              ValueExpression value)
         {
-            if (value == null) return;
-
-            String type = (String) UIComponentELTagUtils.evaluateValueExpression(elContext, value);
+            String type;
+            
+            if (value == null)
+            {
+                type = null;
+            }
+            else
+            {
+                type = (String) UIComponentELTagUtils.evaluateValueExpression(elContext, value);
+            }
 
             if (type == null)
             {
-                type = DEFAULT_TYPE;
-            }
-            if (!TYPE_DATE.equals(type) && 
+                //Now check the conditions on the spec, for type is not defined
+                // page 9-20
+                String timeStyle = (_timeStyle == null) ? null : 
+                    (String) UIComponentELTagUtils.evaluateValueExpression(elContext, _timeStyle);
+                String dateStyle = (_dateStyle == null) ? null : 
+                    (String) UIComponentELTagUtils.evaluateValueExpression(elContext, _dateStyle);
+                if (dateStyle == null)
+                {
+                    if (timeStyle == null)
+                    {
+                        // if none type defaults to DEFAULT_TYPE
+                        type = DEFAULT_TYPE;
+                    }
+                    else
+                    {
+                        // if timeStyle is set and dateStyle is not, type defaults to TYPE_TIME
+                        type = TYPE_TIME;
+                    }
+                }
+                else
+                {
+                    if (timeStyle == null)
+                    {
+                        // if dateStyle is set and timeStyle is not, type defaults to TYPE_DATE
+                        type = TYPE_DATE;
+                    }
+                    else
+                    {
+                        // if both dateStyle and timeStyle are set, type defaults to TYPE_BOTH                        
+                        type = TYPE_BOTH;
+                    }
+                }
+            }else {
+                if (!TYPE_DATE.equals(type) && 
                     !TYPE_TIME.equals(type) &&
                     !TYPE_BOTH.equals(type))
-            {
-                type = DEFAULT_TYPE;
+                {
+                    type = DEFAULT_TYPE;
+                }
             }
 
             converter.setType(type);
