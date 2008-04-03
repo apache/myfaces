@@ -74,40 +74,47 @@ public final class FactoryFinder
             throw new NullPointerException("factoryName may not be null");
 
         ClassLoader classLoader = getClassLoader();
-        Map factoryClassNames = _registeredFactoryNames.get(classLoader);
 
-        if (factoryClassNames == null)
+        //This code must be synchronized because this could cause a problem when
+        //using update feature each time of myfaces (org.apache.myfaces.CONFIG_REFRESH_PERIOD)
+        //In this moment, a concurrency problem could happen
+        synchronized(_registeredFactoryNames)
         {
-            String message = "No Factories configured for this Application. This happens if the faces-initialization "+
-            "does not work at all - make sure that you properly include all configuration settings necessary for a basic faces application " +
-            "and that all the necessary libs are included. Also check the logging output of your web application and your container for any exceptions!" +
-            "\nIf you did that and find nothing, the mistake might be due to the fact that you use some special web-containers which "+
-            "do not support registering context-listeners via TLD files and " +
-            "a context listener is not setup in your web.xml.\n" +
-            "A typical config looks like this;\n<listener>\n" +
-            "  <listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>\n" +
-            "</listener>\n";
-            throw new IllegalStateException(message);
-        }
+            Map factoryClassNames = _registeredFactoryNames.get(classLoader);
 
-        if (! factoryClassNames.containsKey(factoryName)) {
-            throw new IllegalArgumentException("no factory " + factoryName + " configured for this application.");
-        }
+            if (factoryClassNames == null)
+            {
+                String message = "No Factories configured for this Application. This happens if the faces-initialization "+
+                    "does not work at all - make sure that you properly include all configuration settings necessary for a basic faces application " +
+                    "and that all the necessary libs are included. Also check the logging output of your web application and your container for any exceptions!" +
+                    "\nIf you did that and find nothing, the mistake might be due to the fact that you use some special web-containers which "+
+                    "do not support registering context-listeners via TLD files and " +
+                    "a context listener is not setup in your web.xml.\n" +
+                    "A typical config looks like this;\n<listener>\n" +
+                    "  <listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>\n" +
+                    "</listener>\n";
+                throw new IllegalStateException(message);
+            }
 
-        Map<String, Object> factoryMap = _factories.get(classLoader);
+            if (! factoryClassNames.containsKey(factoryName)) {
+                throw new IllegalArgumentException("no factory " + factoryName + " configured for this application.");
+            }
 
-        if (factoryMap == null) {
-            factoryMap = new HashMap<String, Object>();
-            _factories.put(classLoader, factoryMap);
-        }
-        Object factory = factoryMap.get(factoryName);
+            Map<String, Object> factoryMap = _factories.get(classLoader);
 
-        if (factory == null) {
-            List classNames = (List) factoryClassNames.get(factoryName);
-            factory = newFactoryInstance(ABSTRACT_FACTORY_CLASSES.get(factoryName), classNames.iterator(), classLoader);
-            factoryMap.put(factoryName, factory);
+            if (factoryMap == null) {
+                factoryMap = new HashMap<String, Object>();
+                _factories.put(classLoader, factoryMap);
+            }
+            Object factory = factoryMap.get(factoryName);
+
+            if (factory == null) {
+                List classNames = (List) factoryClassNames.get(factoryName);
+                factory = newFactoryInstance(ABSTRACT_FACTORY_CLASSES.get(factoryName), classNames.iterator(), classLoader);
+                factoryMap.put(factoryName, factory);
+            }
+            return factory;
         }
-        return factory;
     }
 
 
@@ -214,7 +221,18 @@ public final class FactoryFinder
             throws FacesException
     {
         ClassLoader classLoader = getClassLoader();
-        _factories.remove(classLoader);
+
+        //This code must be synchronized
+        synchronized(_registeredFactoryNames)
+        {
+            _factories.remove(classLoader);            
+            
+            // _registeredFactoryNames has as value type Map<String,List> and this must
+            //be cleaned before release (for gc).
+            Map factoryClassNames = _registeredFactoryNames.get(classLoader);
+            if (factoryClassNames != null) factoryClassNames.clear();
+            _registeredFactoryNames.remove(classLoader);
+        }
     }
 
     private static void checkFactoryName(String factoryName)
