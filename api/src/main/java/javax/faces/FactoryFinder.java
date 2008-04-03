@@ -37,6 +37,10 @@ public final class FactoryFinder
     public static final String LIFECYCLE_FACTORY = "javax.faces.lifecycle.LifecycleFactory";
     public static final String RENDER_KIT_FACTORY = "javax.faces.render.RenderKitFactory";
 
+    /**
+     * used as a monitor for itself and _factories.
+     * Maps in this map are used as monitors for themselves and the corresponding maps in _factories.
+     */
     private static Map<ClassLoader, Map> _registeredFactoryNames = new HashMap<ClassLoader, Map>();
     /**
      * Maps from classLoader to another map, the container (i.e. Tomcat) will create a class loader for
@@ -78,9 +82,12 @@ public final class FactoryFinder
         //This code must be synchronized because this could cause a problem when
         //using update feature each time of myfaces (org.apache.myfaces.CONFIG_REFRESH_PERIOD)
         //In this moment, a concurrency problem could happen
+        Map factoryClassNames = null;
+        Map<String, Object> factoryMap = null;
+        
         synchronized(_registeredFactoryNames)
         {
-            Map factoryClassNames = _registeredFactoryNames.get(classLoader);
+            factoryClassNames = _registeredFactoryNames.get(classLoader);
 
             if (factoryClassNames == null)
             {
@@ -96,25 +103,44 @@ public final class FactoryFinder
                 throw new IllegalStateException(message);
             }
 
-            if (! factoryClassNames.containsKey(factoryName)) {
+            if (! factoryClassNames.containsKey(factoryName))
+            {
                 throw new IllegalArgumentException("no factory " + factoryName + " configured for this application.");
             }
 
-            Map<String, Object> factoryMap = _factories.get(classLoader);
+            factoryMap = _factories.get(classLoader);
 
-            if (factoryMap == null) {
+            if (factoryMap == null)
+            {
                 factoryMap = new HashMap<String, Object>();
                 _factories.put(classLoader, factoryMap);
             }
-            Object factory = factoryMap.get(factoryName);
-
-            if (factory == null) {
-                List classNames = (List) factoryClassNames.get(factoryName);
-                factory = newFactoryInstance(ABSTRACT_FACTORY_CLASSES.get(factoryName), classNames.iterator(), classLoader);
-                factoryMap.put(factoryName, factory);
-            }
-            return factory;
         }
+        
+        List classNames = null;
+        Object factory = null;
+        synchronized (factoryClassNames)
+        {
+            factory = factoryMap.get(factoryName);
+            if (factory != null)
+            {
+                return factory;
+            }
+            classNames = (List) factoryClassNames.get(factoryName);
+        }
+        
+        //release lock while calling out
+        factory = newFactoryInstance(ABSTRACT_FACTORY_CLASSES.get(factoryName), classNames.iterator(), classLoader);
+        
+        synchronized (factoryClassNames)
+        {
+            //check if someone else already installed the factory
+            if (factoryMap.get(factoryName) == null)
+            {
+                factoryMap.put(factoryName, factory);
+            }            
+        }
+        return factory;
     }
 
 
@@ -188,6 +214,7 @@ public final class FactoryFinder
         checkFactoryName(factoryName);
 
         ClassLoader classLoader = getClassLoader();
+        Map<String, List> factoryClassNames = null;
         synchronized(_registeredFactoryNames)
         {
             Map factories = _factories.get(classLoader);
@@ -198,17 +225,20 @@ public final class FactoryFinder
                 return;
             }
 
-            Map<String, List> factoryClassNames = _registeredFactoryNames.get(classLoader);
+            factoryClassNames = _registeredFactoryNames.get(classLoader);
 
             if (factoryClassNames == null)
             {
                 factoryClassNames = new HashMap<String, List>();
                 _registeredFactoryNames.put(classLoader, factoryClassNames);
             }
-
+        }
+        synchronized (factoryClassNames)
+        {
             List<String> classNameList = factoryClassNames.get(factoryName);
 
-            if (classNameList == null) {
+            if (classNameList == null) 
+            {
                 classNameList = new ArrayList<String>();
                 factoryClassNames.put(factoryName, classNameList);
             }
@@ -229,7 +259,7 @@ public final class FactoryFinder
             
             // _registeredFactoryNames has as value type Map<String,List> and this must
             //be cleaned before release (for gc).
-            Map factoryClassNames = _registeredFactoryNames.get(classLoader);
+            Map factoryClassNames = (Map) _registeredFactoryNames.get(classLoader);
             if (factoryClassNames != null) factoryClassNames.clear();
             _registeredFactoryNames.remove(classLoader);
         }
@@ -237,7 +267,8 @@ public final class FactoryFinder
 
     private static void checkFactoryName(String factoryName)
     {
-        if (! VALID_FACTORY_NAMES.contains(factoryName)) {
+        if (! VALID_FACTORY_NAMES.contains(factoryName))
+        {
             throw new IllegalArgumentException("factoryName '" + factoryName + "'");
         }
     }
