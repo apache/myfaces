@@ -60,4 +60,29 @@ public class JspStateManagerImplTest extends AbstractJsfTestCase {
         UIViewRoot restoredViewRoot = stateManager.restoreView(facesContext, "/root", RenderKitFactory.HTML_BASIC_RENDER_KIT);
         assertNotNull("restored view root should not be null", restoredViewRoot);
     }
+
+    public void testSaveInSessionWithoutSerialize() throws Exception
+    {
+        // create a fake viewRoot
+        UIViewRoot root = new UIViewRoot();
+        root.getAttributes().put("key", "value");
+
+        // simulate server-side-state-saving without serialization
+        Object state = root.saveState(facesContext);
+
+        // restore view
+        UIViewRoot root1 = new UIViewRoot();
+        root1.restoreState(facesContext, state);
+
+        // restore view .. next request
+        UIViewRoot root2 = new UIViewRoot();
+        root2.restoreState(facesContext, state);
+
+        // chaange attribute in root1
+        root1.getAttributes().put("key", "borken");
+
+        // other values should not have been changed
+        assertEquals("value", root2.getAttributes().get("key"));
+        assertEquals("value", root.getAttributes().get("key"));
+    }
 }
