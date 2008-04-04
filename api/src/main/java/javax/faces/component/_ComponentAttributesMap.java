@@ -90,7 +90,7 @@ class _ComponentAttributesMap
     _ComponentAttributesMap(UIComponent component, Map<Object, Object> attributes)
     {
         _component = component;
-        _attributes = attributes;
+        _attributes = new HashMap(attributes);
     }
 
     /**
