@@ -329,8 +329,12 @@ public class ELParserHelper
     {
         if (expression instanceof BinaryOperatorExpression)
         {
-            replaceSuffixes(((BinaryOperatorExpression) expression)
-                .getExpression());
+            BinaryOperatorExpression boe = (BinaryOperatorExpression) expression;
+            replaceSuffixes(boe.getExpression());
+            for (int i = 0; i < boe.getExpressions().size(); i++)
+            {
+                replaceSuffixes(boe.getExpressions().get(i));
+            }
         }
         else if (expression instanceof ComplexValue)
         {
