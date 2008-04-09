@@ -137,7 +137,7 @@ public class LoadBundleTag
         }
         catch (MissingResourceException e)
         {
-            log.error("Resource bundle '" + resolvedBasename + "' could not be found.");
+            log.error("Resource bundle '" + resolvedBasename + "' could not be found.",e);
         }
         //ATTENTION: read comment above before changing this!
     }

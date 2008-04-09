@@ -107,7 +107,7 @@ public class HtmlFormatRenderer
         }
         catch (Exception e)
         {
-            log.error("Error formatting message of component " + htmlOutputFormat.getClientId(facesContext));
+            log.error("Error formatting message of component " + htmlOutputFormat.getClientId(facesContext),e);
             return "";
         }
     }

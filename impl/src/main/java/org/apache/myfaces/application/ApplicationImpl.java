@@ -575,7 +575,7 @@ public class ApplicationImpl
                 }
                 catch(Throwable th) {
                     log.error("Initializing converter : "+converterClass.getName()+" with property : "+
-                            property.getPropertyName()+" and value : "+property.getDefaultValue()+" failed.");
+                            property.getPropertyName()+" and value : "+property.getDefaultValue()+" failed.",th);
                 }
             }
         }

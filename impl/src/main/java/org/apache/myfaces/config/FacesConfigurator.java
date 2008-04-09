@@ -187,12 +187,12 @@ public class FacesConfigurator
 
             // factories and serial factory need not be purged...
         } catch (NoSuchMethodException e) {
-            log.error("Configuration objects do not support clean-up. Update aborted");
+            log.error("Configuration objects do not support clean-up. Update aborted",e);
             return;
         } catch (IllegalAccessException e) {
-            log.fatal("Error during configuration clean-up" + e.getMessage());
+            log.fatal("Error during configuration clean-up" + e.getMessage(),e);
         } catch (InvocationTargetException e) {
-            log.fatal("Error during configuration clean-up" + e.getMessage());
+            log.fatal("Error during configuration clean-up" + e.getMessage(),e);
         }
     }
 
@@ -904,7 +904,7 @@ public class FacesConfigurator
                 lifecycle.addPhaseListener((PhaseListener) ClassUtils.newInstance(listenerClassName));
             } catch (ClassCastException e)
             {
-                log.error("Class " + listenerClassName + " does not implement PhaseListener");
+                log.error("Class " + listenerClassName + " does not implement PhaseListener",e);
             }
         }
     }
