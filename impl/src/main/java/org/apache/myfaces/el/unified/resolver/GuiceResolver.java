@@ -50,6 +50,7 @@ import com.google.inject.Injector;
  *
  *	public void contextInitialized(ServletContextEvent event) {
  *		ServletContext ctx = event.getServletContext();
+ *              //when on Java6, use ServiceLoader.load(com.google.inject.Module.class);
  *		Injector injector = Guice.createInjector(new YourModule());
  *		ctx.setAttribute(GuiceResolver.KEY, injector);
  *	}
