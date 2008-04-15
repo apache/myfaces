@@ -492,7 +492,9 @@ abstract public class UIDataTemplate extends UIComponentBase implements NamingCo
         {
             return clientId;
         }
-        return clientId + NamingContainer.SEPARATOR_CHAR + rowIndex;
+        
+        StringBuilder bld = __getSharedStringBuilder();
+        return bld.append(clientId).append(NamingContainer.SEPARATOR_CHAR).append(rowIndex).toString();
     }
 
     /**

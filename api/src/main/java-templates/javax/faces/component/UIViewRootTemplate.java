@@ -156,7 +156,8 @@ public class UIViewRootTemplate
     public String createUniqueId()
     {
         ExternalContext extCtx = FacesContext.getCurrentInstance().getExternalContext();
-        return extCtx.encodeNamespace(UNIQUE_ID_PREFIX + _uniqueIdCounter++);
+        StringBuilder bld = __getSharedStringBuilder();
+        return extCtx.encodeNamespace(bld.append(UNIQUE_ID_PREFIX).append(_uniqueIdCounter++).toString());
     }
 
     /**
