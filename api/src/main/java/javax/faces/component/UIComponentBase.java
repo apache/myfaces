@@ -63,6 +63,9 @@ public abstract class UIComponentBase
     private static Log log = LogFactory.getLog(UIComponentBase.class);
     
     private static final ThreadLocal _STRING_BUILDER = new ThreadLocal();
+    
+    private static final Iterator _EMPTY_UICOMPONENT_ITERATOR = 
+        new _EmptyIterator();    
 
     private _ComponentAttributesMap _attributesMap = null;
     private Map _valueBindingMap = null;
@@ -602,7 +605,39 @@ public abstract class UIComponentBase
 
     public Iterator getFacetsAndChildren()
     {
-        return new _FacetsAndChildrenIterator(_facetMap, _childrenList);
+        if (_facetMap == null)
+        {
+            if (_childrenList == null)
+                return _EMPTY_UICOMPONENT_ITERATOR;
+
+            if (_childrenList.size() == 0)
+                return _EMPTY_UICOMPONENT_ITERATOR;
+            
+            return _childrenList.iterator();
+        }
+        else
+        {
+            if (_facetMap.size() == 0)
+            {
+                if (_childrenList == null)
+                    return _EMPTY_UICOMPONENT_ITERATOR;
+              
+                if (_childrenList.size() == 0)
+                    return _EMPTY_UICOMPONENT_ITERATOR;
+            
+                return _childrenList.iterator();  
+            }
+            else
+            {
+                if (_childrenList == null)
+                    return _facetMap.values().iterator();
+              
+                if (_childrenList.size() == 0)
+                    return _facetMap.values().iterator();
+              
+                return new _FacetsAndChildrenIterator(_facetMap, _childrenList);                            
+            }
+        }
     }
 
     /**

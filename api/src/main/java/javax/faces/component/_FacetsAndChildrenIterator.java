@@ -41,8 +41,14 @@ class _FacetsAndChildrenIterator
 
     public boolean hasNext()
     {
-        return (_facetsIterator != null && _facetsIterator.hasNext()) ||
-               (_childrenIterator != null && _childrenIterator.hasNext());
+        boolean hasNext = (_facetsIterator != null && _facetsIterator.hasNext()) ||
+        (_childrenIterator != null && _childrenIterator.hasNext());
+        if (!hasNext)
+        {
+            _facetsIterator = null;
+            _childrenIterator = null;
+        }
+        return hasNext;
     }
 
     public Object next()
