@@ -61,6 +61,9 @@ public abstract class UIComponentBase
     
     private static final ThreadLocal<StringBuilder> _STRING_BUILDER =
         new ThreadLocal<StringBuilder>();
+
+    private static final Iterator<UIComponent> _EMPTY_UICOMPONENT_ITERATOR = 
+        new _EmptyIterator<UIComponent>();
     
     private _ComponentAttributesMap _attributesMap = null;
     private List<UIComponent> _childrenList = null;
@@ -70,6 +73,7 @@ public abstract class UIComponentBase
     private String _id = null;
     private UIComponent _parent = null;
     private boolean _transient = false;
+    
     
     public UIComponentBase()
     {
@@ -460,7 +464,39 @@ public abstract class UIComponentBase
 
     public Iterator<UIComponent> getFacetsAndChildren()
     {
-        return new _FacetsAndChildrenIterator<UIComponent>(_facetMap, _childrenList);
+        if (_facetMap == null)
+        {
+            if (_childrenList == null)
+                return _EMPTY_UICOMPONENT_ITERATOR;
+
+            if (_childrenList.size() == 0)
+                return _EMPTY_UICOMPONENT_ITERATOR;
+            
+            return _childrenList.iterator();
+        }
+        else
+        {
+            if (_facetMap.size() == 0)
+            {
+                if (_childrenList == null)
+                    return _EMPTY_UICOMPONENT_ITERATOR;
+              
+                if (_childrenList.size() == 0)
+                    return _EMPTY_UICOMPONENT_ITERATOR;
+            
+                return _childrenList.iterator();  
+            }
+            else
+            {
+                if (_childrenList == null)
+                    return _facetMap.values().iterator();
+              
+                if (_childrenList.size() == 0)
+                    return _facetMap.values().iterator();
+              
+                return new _FacetsAndChildrenIterator<UIComponent>(_facetMap, _childrenList);                            
+            }
+        }
     }
 
     /**
