@@ -213,10 +213,18 @@ public class JspStateManagerImpl
         if (log.isTraceEnabled()) log.trace("Exiting restoreComponentState");
     }
 
-	protected Integer getServerStateId(Object[] state)
-	{
-		return Integer.valueOf((String) state[JSF_SEQUENCE_INDEX], Character.MAX_RADIX);
-	}
+	  protected Integer getServerStateId(Object[] state)
+	  {
+        if (state != null)
+        {
+            Object serverStateId = state[JSF_SEQUENCE_INDEX];
+            if (serverStateId != null)
+            {
+                return Integer.valueOf((String) serverStateId, Character.MAX_RADIX);
+            }
+        }
+        return null;
+    }
 
 	/**
      * See getTreeStructureToSave.
