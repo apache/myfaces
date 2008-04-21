@@ -187,8 +187,7 @@ public class UIViewRoot
     public String createUniqueId()
     {
         ExternalContext extCtx = FacesContext.getCurrentInstance().getExternalContext();
-        StringBuilder bld = __getSharedStringBuilder();
-        return extCtx.encodeNamespace(bld.append(UNIQUE_ID_PREFIX).append(_uniqueIdCounter++).toString());
+        return extCtx.encodeNamespace(UNIQUE_ID_PREFIX + _uniqueIdCounter++);
     }
 
     public Locale getLocale()

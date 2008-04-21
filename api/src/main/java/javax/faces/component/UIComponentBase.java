@@ -62,8 +62,6 @@ public abstract class UIComponentBase
 {
     private static Log log = LogFactory.getLog(UIComponentBase.class);
     
-    private static final ThreadLocal _STRING_BUILDER = new ThreadLocal();
-    
     private static final Iterator _EMPTY_UICOMPONENT_ITERATOR = 
         new _EmptyIterator();    
 
@@ -225,9 +223,7 @@ public abstract class UIComponentBase
         UIComponent namingContainer = findParentNamingContainer(this, false);
         if (namingContainer != null)
         {
-            StringBuilder bld = __getSharedStringBuilder();
-            String containerClientId = namingContainer.getClientId(context);
-            _clientId = bld.append(containerClientId).append(NamingContainer.SEPARATOR_CHAR).append(id).toString();
+            _clientId = namingContainer.getClientId(context) + NamingContainer.SEPARATOR_CHAR + id;
         }
         else
         {
@@ -1274,55 +1270,6 @@ public abstract class UIComponentBase
                 throw new IllegalArgumentException("Subsequent characters of component identifier must be a letter, a digit, an underscore ('_'), or a dash ('-')! But component identifier contains \""+chars[i]+"\"");
             }
         }
-    }
-
-    /**
-     * <p>
-     * This gets a single threadlocal shared stringbuilder instance, each time you call
-     * __getSharedStringBuilder it sets the length of the stringBuilder instance to 0.
-     * </p><p>
-     * This allows you to use the same StringBuilder instance over and over.
-     * You must call toString on the instance before calling __getSharedStringBuilder again.
-     * </p>
-     * Example that works
-     * <pre><code>
-     * StringBuilder sb1 = __getSharedStringBuilder();
-     * sb1.append(a).append(b);
-     * String c = sb1.toString();
-     *
-     * StringBuilder sb2 = __getSharedStringBuilder();
-     * sb2.append(b).append(a);
-     * String d = sb2.toString();
-     * </code></pre>
-     * <br><br>
-     * Example that doesn't work, you must call toString on sb1 before
-     * calling __getSharedStringBuilder again.
-     * <pre><code>
-     * StringBuilder sb1 = __getSharedStringBuilder();
-     * StringBuilder sb2 = __getSharedStringBuilder();
-     *
-     * sb1.append(a).append(b);
-     * String c = sb1.toString();
-     *
-     * sb2.append(b).append(a);
-     * String d = sb2.toString();
-     * </code></pre>
-     *
-     */
-    static StringBuilder __getSharedStringBuilder()
-    {
-      StringBuilder sb = (StringBuilder) _STRING_BUILDER.get();
-
-      if (sb == null)
-      {
-        sb = new StringBuilder();
-        _STRING_BUILDER.set(sb);
-      }
-
-      // clear out the stringBuilder by setting the length to 0
-      sb.setLength(0);
-
-      return sb;
     }
 
     //------------------ GENERATED CODE BEGIN (do not modify!) --------------------

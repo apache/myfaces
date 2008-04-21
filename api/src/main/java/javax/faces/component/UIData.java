@@ -470,9 +470,7 @@ public class UIData extends UIComponentBase implements NamingContainer
         {
             return clientId;
         }
-        
-        StringBuilder bld = __getSharedStringBuilder();
-        return bld.append(clientId).append(NamingContainer.SEPARATOR_CHAR).append(rowIndex).toString();
+        return clientId + NamingContainer.SEPARATOR_CHAR + rowIndex;
     }
 
     /**
