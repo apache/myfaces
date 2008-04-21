@@ -377,19 +377,15 @@ public class JspStateManagerImpl
                                             " is duplicated in the faces tree. Component : "+component.getClientId(context)+", path: "+
                                             getPathToComponent(component));
         }
+        if (component instanceof NamingContainer)
+        {
+            ids = new HashSet<String>();
+        }
         Iterator it = component.getFacetsAndChildren();
         while (it.hasNext())
         {
             UIComponent kid = (UIComponent) it.next();
-            boolean namingContainer = kid instanceof NamingContainer;
-            if (namingContainer)
-            {
-                checkForDuplicateIds(context, kid, new HashSet<String>());
-            }
-            else
-            {
-                checkForDuplicateIds(context, kid, ids);
-            }
+            checkForDuplicateIds(context, kid, ids);
         }
     }
 
