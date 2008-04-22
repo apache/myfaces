@@ -1,5 +1,5 @@
 <assembly>
-  <id>bin</id>
+  <id>corebin</id>
   <formats>
     <format>tar.gz</format>
     <format>zip</format>
@@ -35,6 +35,5 @@
         <include>*.jar</include>
       </includes>
     </fileSet>
-
   </fileSets>
 </assembly>

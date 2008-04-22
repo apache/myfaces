@@ -89,14 +89,18 @@
             </goals>
             <configuration>
               <artifactItems>
-
+                <artifactItem>
+                  <groupId>org.apache.myfaces.core</groupId>
+                  <artifactId>myfaces-api</artifactId>
+                  <version>${version}</version>
+                  <classifier>sources</classifier>
+                </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.myfaces.core</groupId>
                   <artifactId>myfaces-impl</artifactId>
                   <version>${version}</version>
                   <classifier>sources</classifier>
                 </artifactItem>
-
                </artifactItems>
                <outputDirectory>${project.build.directory}/src</outputDirectory>
              </configuration>
@@ -105,20 +109,48 @@
       </plugin>
 
       <plugin>
+        <!-- EXECUTE mvn package to generate assembly files -->
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.0-beta-1</version>
-        <configuration>
-          <descriptor>src/main/assembly/dep.xml</descriptor>
-          <finalName>myfaces-core-${version}</finalName>
-          <outputDirectory>target/assembly/out</outputDirectory>
-          <workDirectory>target/assembly/work</workDirectory>
-        </configuration>
+        <executions>
+        	<execution>
+        	    <id>make_assembly_src</id>
+        	    <configuration>
+        	      <descriptors>
+			    	 <descriptor>src/main/assembly/coresrc.xml</descriptor>
+	    		  </descriptors>
+        	      <finalName>myfaces-core-${version}-src</finalName>	    		  
+        	      <appendAssemblyId>false</appendAssemblyId>
+		          <outputDirectory>target/assembly/out</outputDirectory>
+        		  <workDirectory>target/assembly/work</workDirectory>
+        	    </configuration>
+        	    <phase>package</phase>
+        	    <goals>
+        	       <goal>attached</goal>
+        	    </goals>        	    
+        	</execution>
+        	<execution>
+        	    <id>make_assembly_bin</id>
+        	    <configuration>
+		          <descriptors>
+	    			<descriptor>${basedir}/src/main/assembly/corebin.xml</descriptor>
+        	      </descriptors>
+        	      <finalName>myfaces-core-${version}-bin</finalName>
+        	      <appendAssemblyId>false</appendAssemblyId>
+		          <outputDirectory>target/assembly/out</outputDirectory>
+        		  <workDirectory>target/assembly/work</workDirectory>        	      
+                </configuration>
+                <phase>package</phase>
+        	    <goals>
+        	       <goal>attached</goal>
+        	    </goals>
+            </execution>
+        </executions>
       </plugin>
 
       <plugin>
         <groupId>org.apache.myfaces.maven</groupId>
         <artifactId>wagon-maven-plugin</artifactId>
-        <version>1.0.3-SNAPSHOT</version>
+        <version>1.0.6</version>
         <configuration>
           <id>myfaces-nightly-builds</id>
           <url>scpexe://minotaur.apache.org/www/cvs.apache.org/builds/myfaces/nightly</url>
@@ -143,7 +175,6 @@
       <artifactId>myfaces-api</artifactId>
       <version>${version}</version>
     </dependency>
-
 
   </dependencies>
 
