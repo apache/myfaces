@@ -337,7 +337,7 @@ public class JspStateManagerImpl
         }
         if (component instanceof NamingContainer)
         {
-            ids = new HashSet<String>();
+            ids = new HashSet();
         }
         Iterator it = component.getFacetsAndChildren();
         while (it.hasNext()) {
