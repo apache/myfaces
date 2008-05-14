@@ -477,23 +477,33 @@ public class MyFacesGenericPortlet extends GenericPortlet
 
         setPortletRequestFlag(request);
 
-        ServletFacesContextImpl facesContext = null;
+        FacesContext facesContext = null;
         try
         {
-            facesContext = (ServletFacesContextImpl)request.
+            facesContext = (FacesContext)request.
                                                     getPortletSession().
                                                     getAttribute(CURRENT_FACES_CONTEXT);
             
             if (facesContext == null) // processAction was not called
             {
-               facesContext = (ServletFacesContextImpl)facesContext(request, response);
+               facesContext = (FacesContext)facesContext(request, response);
                setViewRootOnFacesContext(facesContext, viewId);
             }
             
             // TODO: not sure if this can happen.  Also double check this against spec section 2.1.3
             if (facesContext.getResponseComplete()) return;
 
-            facesContext.setExternalContext(makeExternalContext(request, response));
+            if (facesContext instanceof ServletFacesContextImpl){
+                ((ServletFacesContextImpl)facesContext).setExternalContext(makeExternalContext(request, response));                
+            }
+            else
+            {
+                facesContext.getClass().getMethod("setExternalContext",
+                        new Class[]{ExternalContext.class}).invoke(
+                                facesContext, 
+                                new Object[]{makeExternalContext(request, response)});
+            }
+
             restoreRequestAttributes(request);
             lifecycle.render(facesContext);
         }
