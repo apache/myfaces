@@ -38,6 +38,11 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * @JSFRenderer
+ *   renderKitId="HTML_BASIC"
+ *   family="javax.faces.Output"
+ *   type="javax.faces.Format"
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @author Thomas Spiegl
  * @version $Revision$ $Date$

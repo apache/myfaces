@@ -35,6 +35,9 @@ import java.util.*;
 
 
 /**
+ * @JSFRenderKit
+ *   renderKitId = "HTML_BASIC"
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */

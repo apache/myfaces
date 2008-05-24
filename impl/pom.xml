@@ -21,12 +21,94 @@
     <resources>
       <resource>
         <directory>src/main/resources</directory>
+        <excludes>
+            <exclude>**/*.vm</exclude>
+        </excludes>
       </resource>
       <resource>
         <directory>src/main/resources-facesconfig</directory>
       </resource>
     </resources>
     <plugins>
+      <plugin>
+        <groupId>org.apache.myfaces.buildtools</groupId>
+        <artifactId>myfaces-builder-plugin</artifactId>
+        <version>1.0.1-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>build-metadata</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>maketags</id>
+            <configuration>
+                <packageContains>org.apache</packageContains>
+                <typePrefix>javax.faces</typePrefix>
+                <modelIds>
+                    <modelId>myfaces-api</modelId>
+                </modelIds>
+            </configuration>
+            <goals>
+                <goal>make-tags</goal>
+            </goals>
+          </execution>
+          <execution>
+          	<id>makefacesconfig</id>
+          	<configuration>
+          		<xmlFile>org/apache/myfaces/resource/standard-faces-config.xml</xmlFile>
+          		<modelIds>
+          		    <modelId>myfaces-api</modelId>
+          		    <modelId>myfaces-impl</modelId>
+          		</modelIds>
+          	</configuration>
+          	<goals>
+          		<goal>make-config</goal>
+          	</goals>
+          </execution>
+          <execution>
+            <id>makehtmltld</id>
+            <configuration>
+                <xmlFile>META-INF/myfaces_html.tld</xmlFile>
+                <xmlBaseFile>src/main/conf/META-INF/myfaces_html-base.tld</xmlBaseFile>
+                <templateFile>myfaces_html.vm</templateFile>
+                <params>
+                   <shortname>h</shortname>
+                   <uri>http://java.sun.com/jsf/html</uri>
+                   <displayname>JSF HTML tag library.</displayname>
+                   <description>This tag library implements the standard JSF HTML tags.</description>
+                </params>
+                <modelIds>
+                    <modelId>myfaces-api</modelId>
+                </modelIds>
+            </configuration>
+            <goals>
+                <goal>make-config</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>makecoretld</id>
+            <configuration>
+                <xmlFile>META-INF/myfaces_core.tld</xmlFile>
+                <xmlBaseFile>src/main/conf/META-INF/myfaces_core-base.tld</xmlBaseFile>
+                <templateFile>myfaces_core.vm</templateFile>
+                <modelIds>
+                    <modelId>myfaces-api</modelId>
+                    <modelId>myfaces-impl</modelId>
+                </modelIds>
+                <params>
+                    <shortname>f</shortname>
+                    <uri>http://java.sun.com/jsf/core</uri>
+                    <displayname>JSF core tag library.</displayname>
+                    <description>This tag library implements the standard JSF core tags.</description>
+                </params>
+            </configuration>
+            <goals>
+                <goal>make-config</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>        
       <plugin>
         <artifactId>maven-source-plugin</artifactId>
         <version>2.0.4</version>
@@ -40,6 +122,7 @@
         </executions>
       </plugin>
  
+      <!-- 
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>xslt-maven-plugin</artifactId>
@@ -58,6 +141,7 @@
           <destDir>target/classes/META-INF</destDir>
         </configuration>
       </plugin>
+       -->
       <plugin>
         <!--
           - The shared-impl project generates a modified version of the "shared" module
@@ -144,6 +228,7 @@
       <id>generate-site</id>
       <build>
         <plugins>
+          <!-- 
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>xslt-maven-plugin</artifactId>
@@ -175,6 +260,36 @@
               </execution>
             </executions>
           </plugin>
+           -->
+           <!-- 
+	      <plugin>
+	        <groupId>org.apache.myfaces.buildtools</groupId>
+	        <artifactId>myfaces-builder-plugin</artifactId>
+	        <version>1.0.1-SNAPSHOT</version>
+	        <executions>
+	          <execution>
+	            <goals>
+	              <goal>build-metadata</goal>
+	            </goals>
+	          </execution>
+	          <execution>
+	            <id>makehtmltld</id>
+	            <configuration>
+	                <xmlFile>classes/META-INF/myfaces_html.tld</xmlFile>
+	                <xmlBaseFile>src/main/conf/META-INF/myfaces_html-base.tld</xmlBaseFile>
+	                <templateFile>myfaces_html.vm</templateFile>
+	                
+	                <modelIds>
+	                    <modelId>myfaces-api</modelId>
+	                </modelIds>
+	            </configuration>
+	            <goals>
+	                <goal>make-config</goal>
+	            </goals>
+	          </execution>          
+	        </executions>
+	      </plugin>
+	       -->           
         </plugins>
       </build>
       <reporting>
@@ -183,7 +298,7 @@
             <groupId>net.sourceforge.maven-taglib</groupId>
             <artifactId>maven-taglib-plugin</artifactId>
             <configuration>
-              <taglib.src.dir>${basedir}/target/tlddoc-site</taglib.src.dir>
+              <taglib.src.dir>${basedir}/target/classes/META-INF</taglib.src.dir>
               <tldDocDir>${basedir}/target/site/tlddoc</tldDocDir>
             </configuration>
           </plugin>
@@ -208,6 +323,7 @@
       </activation>
       <build>
         <plugins>
+          <!-- 
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>xslt-maven-plugin</artifactId>
@@ -239,6 +355,7 @@
               </execution>
             </executions>
           </plugin>
+           -->
           <plugin>
             <artifactId>maven-javadoc-plugin</artifactId>
             <version>2.3</version>
@@ -264,7 +381,7 @@
               </execution>
             </executions>
             <configuration>
-              <taglib.src.dir>${basedir}/target/tlddoc-site</taglib.src.dir>
+              <taglib.src.dir>${basedir}/target/classes/META-INF</taglib.src.dir>
               <tldDocDir>${basedir}/target/tlddoc</tldDocDir>
             </configuration>
           </plugin>

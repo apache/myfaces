@@ -22,6 +22,16 @@ import org.apache.myfaces.shared_impl.renderkit.html.HtmlLinkRendererBase;
 
 
 /**
+ * @JSFRenderer
+ *   renderKitId="HTML_BASIC"
+ *   family="javax.faces.Output"
+ *   type="javax.faces.Link"
+ *   
+ * @JSFRenderer
+ *   renderKitId="HTML_BASIC"
+ *   family="javax.faces.Command"
+ *   type="javax.faces.Link"
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */

@@ -24,6 +24,11 @@ import javax.faces.el.ValueBinding;
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
+ * @JSFComponent
+ *   type = "javax.faces.Messages"
+ *   family = "javax.faces.Messages"
+ *   desc = "UIMessages"
+ *   
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -58,6 +63,12 @@ public class UIMessages
         _globalOnly = Boolean.valueOf(globalOnly);
     }
 
+    /**
+     * A boolean value that controls whether global messages (those without
+     * IDs) should be displayed. Default: false.
+     * 
+     * @JSFProperty
+     */
     public boolean isGlobalOnly()
     {
         if (_globalOnly != null) return _globalOnly.booleanValue();
@@ -71,6 +82,12 @@ public class UIMessages
         _showDetail = Boolean.valueOf(showDetail);
     }
 
+    /**
+     * An EL expression, returning a boolean, that controls whether the
+     * detail text of the associated messages is displayed.  Default: false.
+     * 
+     * @JSFProperty
+     */
     public boolean isShowDetail()
     {
         if (_showDetail != null) return _showDetail.booleanValue();
@@ -84,6 +101,12 @@ public class UIMessages
         _showSummary = Boolean.valueOf(showSummary);
     }
 
+    /**
+     * An EL expression, returning a boolean, that controls whether the
+     * summary text of the associated messages is displayed.  Default: true.
+     * 
+     * @JSFProperty
+     */
     public boolean isShowSummary()
     {
         if (_showSummary != null) return _showSummary.booleanValue();

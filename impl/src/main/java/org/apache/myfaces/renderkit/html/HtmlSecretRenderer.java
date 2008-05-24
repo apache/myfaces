@@ -22,6 +22,11 @@ import org.apache.myfaces.shared_impl.renderkit.html.HtmlSecretRendererBase;
 
 
 /**
+ * @JSFRenderer
+ *   renderKitId="HTML_BASIC"
+ *   family="javax.faces.Input"
+ *   type="javax.faces.Secret"
+ *   
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */

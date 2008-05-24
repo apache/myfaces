@@ -29,8 +29,17 @@ import javax.faces.webapp.UIComponentTag;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
-
 /**
+ * This tag creates an instance of the specified ActionListener, and
+ * associates it with the nearest parent UIComponent.
+ * 
+ * Unless otherwise specified, all attributes accept static values
+ * or EL expressions.
+ * 
+ * @JSFJspTag
+ *   name="f:actionListener"
+ *   bodyContent="empty"
+ *   
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -45,6 +54,12 @@ public class ActionListenerTag
     {
     }
 
+    /**
+     * The fully qualified class name of the ActionListener class.
+     * 
+     * @JSFJspAttribute
+     *   required="true"
+     */
     public void setType(String type)
     {
         _type = type;

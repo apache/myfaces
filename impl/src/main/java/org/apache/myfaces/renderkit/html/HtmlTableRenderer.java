@@ -22,6 +22,11 @@ import org.apache.myfaces.shared_impl.renderkit.html.HtmlTableRendererBase;
 
 
 /**
+ * @JSFRenderer
+ *   renderKitId="HTML_BASIC"
+ *   family="javax.faces.Data"
+ *   type="javax.faces.Table"
+ * 
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
  */

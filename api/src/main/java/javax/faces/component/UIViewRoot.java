@@ -32,7 +32,18 @@ import javax.faces.event.FacesEvent;
 import javax.faces.event.PhaseId;
 
 /**
+ * Creates a JSF View, which is a container that holds all of the
+ * components that are part of the view.
+ * 
+ * Unless otherwise specified, all attributes accept static values or EL expressions.
+ * 
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ *
+ * @JSFComponent
+ *   name = "f:view"
+ *   bodyContent = "JSP"
+ *   tagClass = "org.apache.myfaces.taglib.core.ViewTag"
+ *   desc = "UIViewRoot"
  *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
@@ -190,6 +201,11 @@ public class UIViewRoot
         return extCtx.encodeNamespace(UNIQUE_ID_PREFIX + _uniqueIdCounter++);
     }
 
+    /**
+     * The locale of this view.  Default: the default locale from the configuration file.
+     * 
+     * @JSFProperty
+     */    
     public Locale getLocale()
     {
         if (_locale != null) return _locale;

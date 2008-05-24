@@ -26,9 +26,17 @@ import java.util.TimeZone;
 import javax.faces.component.StateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-
 /**
+ * This tag associates a date time converter with the nearest parent UIComponent.
+ * 
+ * Unless otherwise specified, all attributes accept static values or EL expressions.
+ * 
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ *
+ * @JSFConverter
+ *   name="f:convertDateTime"
+ *   bodyContent="empty"
+ *   tagClass="org.apache.myfaces.taglib.core.ConvertDateTimeTag"
  *
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
@@ -154,6 +162,13 @@ public class DateTimeConverter implements Converter, StateHolder {
 	}
 
 	// GETTER & SETTER
+	
+    /**
+     * The style of the date.  Values include: default, short, medium, 
+     * long, and full.
+     * 
+     * @JSFProperty
+     */
 	public String getDateStyle() {
 		return _dateStyle != null ? _dateStyle : Style.DEFAULT.getName();
 	}
@@ -163,6 +178,11 @@ public class DateTimeConverter implements Converter, StateHolder {
 		_dateStyle = dateStyle;
 	}
 
+    /**
+     * The name of the locale to be used, instead of the default.
+     * 
+     * @JSFProperty
+     */
 	public Locale getLocale() {
 		if (_locale != null)
 			return _locale;
@@ -174,6 +194,11 @@ public class DateTimeConverter implements Converter, StateHolder {
 		_locale = locale;
 	}
 
+    /**
+     * A custom Date formatting pattern, in the format used by java.text.SimpleDateFormat.
+     * 
+     * @JSFProperty
+     */
 	public String getPattern() {
 		return _pattern;
 	}
@@ -182,6 +207,12 @@ public class DateTimeConverter implements Converter, StateHolder {
 		_pattern = pattern;
 	}
 
+    /**
+     * The style of the time.  Values include:  default, short, medium, long, 
+     * and full.
+     * 
+     * @JSFProperty
+     */
 	public String getTimeStyle() {
 		return _timeStyle != null ? _timeStyle : Style.DEFAULT.getName();
 	}
@@ -191,6 +222,15 @@ public class DateTimeConverter implements Converter, StateHolder {
 		_timeStyle = timeStyle;
 	}
 
+    /**
+     * The time zone to use instead of GMT (the default timezone). When
+     * this value is a value-binding to a TimeZone instance, that
+     * timezone is used. Otherwise this value is treated as a String
+     * containing a timezone id, ie as the ID parameter of method
+     * java.util.TimeZone.getTimeZone(String).
+     * 
+     * @JSFProperty
+     */
 	public TimeZone getTimeZone() {
 		return _timeZone != null ? _timeZone : TIMEZONE_DEFAULT;
 	}
@@ -207,6 +247,13 @@ public class DateTimeConverter implements Converter, StateHolder {
 		_transient = aTransient;
 	}
 
+    /**
+     * Specifies whether the date, time, or both should be 
+     * parsed/formatted.  Values include:  date, time, and both.
+     * Default based on setting of timeStyle and dateStyle.
+     * 
+     * @JSFProperty
+     */
 	public String getType() {
 		return _type != null ? _type : Type.DATE.getName();
 	}

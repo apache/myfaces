@@ -22,6 +22,11 @@ import org.apache.myfaces.shared_impl.renderkit.html.HtmlGroupRendererBase;
 
 
 /**
+ * @JSFRenderer
+ *   renderKitId="HTML_BASIC"
+ *   family="javax.faces.Panel"
+ *   type="javax.faces.Group"
+ *   
  * @author Thomas Spiegl (latest modification by $Author$)
  * @author Manfred Geiler
  * @version $Revision$ $Date$

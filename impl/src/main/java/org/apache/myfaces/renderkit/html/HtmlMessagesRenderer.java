@@ -26,7 +26,10 @@ import javax.faces.context.FacesContext;
 import java.io.IOException;
 
 /**
- *
+ * @JSFRenderer
+ *   renderKitId="HTML_BASIC"
+ *   family="javax.faces.Messages"
+ *   type="javax.faces.Messages"
  *
  * @author Manfred Geiler (latest modification by $Author$)
  * @author Thomas Spiegl

@@ -21,7 +21,23 @@ package javax.faces.component;
 
 
 /**
+ *
+ * This tag is commonly used as a child of the dataTable tag, to
+ * represent a column of data. It can be decorated with "header" and
+ * "footer" facets to drive the output of header and footer rows.
+ * Row values are specified via its children.
+ * Unless otherwise specified, all attributes accept static values
+ * or EL expressions.
+ * 
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ *
+ * @JSFComponent
+ *   name = "h:column"
+ *   type = "javax.faces.Column"
+ *   family = "javax.faces.Column"
+ *   tagClass = "org.apache.myfaces.taglib.html.HtmlColumnTag"
+ *   tagSuperclass = "javax.faces.webapp.UIComponentBodyTag"
+ *   desc = "UIData"
  *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$

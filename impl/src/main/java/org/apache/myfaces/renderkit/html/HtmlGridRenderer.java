@@ -24,6 +24,11 @@ import org.apache.myfaces.shared_impl.renderkit.html.HtmlGridRendererBase;
 /**
  * X-CHECKED: tlddoc h:panelGrid 1.0 final
  *
+ * @JSFRenderer
+ *   renderKitId="HTML_BASIC"
+ *   family="javax.faces.Panel"
+ *   type="javax.faces.Grid"
+ *
  * @author Manfred Geiler (latest modification by $Author$)
  * @author Thomas Spiegl
  * @version $Revision$ $Date$

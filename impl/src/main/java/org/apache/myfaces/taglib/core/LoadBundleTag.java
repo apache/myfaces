@@ -38,13 +38,14 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 /**
- * TODO:
- * We should find a way to save loaded bundles in the state, because otherwise
- * on the next request the bundle map will not be present before the render phase
- * and value bindings that reference to the bundle will always log annoying
- * "Variable 'xxx' could not be resolved" error messages.
+ * Loads a resource bundle and saves it as a variable in the request scope.
+ * 
+ * Unless otherwise specified, all attributes accept static values or EL expressions.
+ * 
+ * @JSFJspTag
+ *   name="f:loadBundle"
+ *   bodyContent="empty"
  *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
@@ -52,6 +53,14 @@ import org.apache.commons.logging.LogFactory;
 public class LoadBundleTag
         extends TagSupport
 {
+ /*
+ * TODO:
+ * We should find a way to save loaded bundles in the state, because otherwise
+ * on the next request the bundle map will not be present before the render phase
+ * and value bindings that reference to the bundle will always log annoying
+ * "Variable 'xxx' could not be resolved" error messages.
+ */
+    
     private static final long serialVersionUID = -8892145684062838928L;
 
     private static final Log log = LogFactory.getLog(LoadBundleTag.class);
@@ -59,11 +68,24 @@ public class LoadBundleTag
     private String _basename;
     private String _var;
 
+    /**
+     * The base name of the resource bundle.
+     * 
+     * @JSFJspAttribute
+     *   required="true"
+     */
     public void setBasename(String basename)
     {
         _basename = basename;
     }
 
+    /**
+     * The name of the variable in request scope that the resources
+     * are saved to.  This must be a static value.
+     *  
+     * @JSFJspAttribute
+     *   required="true"
+     */
     public void setVar(String var)
     {
         _var = var;

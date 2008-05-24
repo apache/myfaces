@@ -23,16 +23,23 @@ import javax.faces.el.ValueBinding;
 
 /**
  * A component representing a single option that the user can choose.
- * <p>
+ * <p></p>
  * The option attributes can either be defined directly on this component
  * (via the itemValue, itemLabel, itemDescription properties) or the value
  * property can reference a SelectItem object (directly or via an EL expression).
- * <p>
+ * <p></p>
  * The value expression (if defined) is read-only; the parent select component
  * will have a value attribute specifying where the value for the chosen
  * selection will be stored.
  * 
  * See Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ *
+ * @JSFComponent
+ *   name = "f:selectItem"
+ *   bodyContent = "empty"
+ *   tagClass = "org.apache.myfaces.taglib.core.SelectItemTag"
+ *   desc = "UISelectItem"
+ * @JSFJspProperty name = "rendered" returnType = "boolean" tagExcluded = "true"
  *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
@@ -67,12 +74,14 @@ public class UISelectItem
     }
 
     /**
+     * An optional description for this item.
      * For use in development tools.
-     * <p>
-     * Q: what use is an EL expression for this???
+     * 
+     * @JSFProperty 
      */
     public String getItemDescription()
     {
+        //Q: what use is an EL expression for this???
         if (_itemDescription != null) return _itemDescription;
         ValueBinding vb = getValueBinding("itemDescription");
         return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null;
@@ -90,6 +99,8 @@ public class UISelectItem
 
     /**
      * Determine whether this item can be chosen by the user.
+     * 
+     * @JSFProperty
      */
     public boolean isItemDisabled()
     {
@@ -106,6 +117,8 @@ public class UISelectItem
 
     /**
      * Get the string which will be presented to the user for this option.
+     * 
+     * @JSFProperty
      */
     public String getItemLabel()
     {
@@ -119,6 +132,11 @@ public class UISelectItem
         _itemValue = itemValue;
     }
 
+    /**
+     * The value of this item, of the same type as the parent component's value.
+     * 
+     * @JSFProperty
+     */
     public Object getItemValue()
     {
         if (_itemValue != null) return _itemValue;
@@ -131,6 +149,11 @@ public class UISelectItem
         _value = value;
     }
 
+    /**
+     * An EL expression that refers to a javax.faces.model.SelectItem instance.
+     * 
+     * @JSFProperty
+     */
     public Object getValue()
     {
         if (_value != null) return _value;

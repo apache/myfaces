@@ -29,8 +29,15 @@ import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
 
 /**
+ * This tag creates an instance of the specified Converter, and
+ * associates it with the nearest parent UIComponent.
+ * 
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
+ * @JSFJspTag
+ *   name="f:converter"
+ *   bodyContent="empty"
+ *   
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -45,6 +52,12 @@ public class ConverterTag
         super();
     }
 
+    /**
+     * The converter's registered ID.
+     * 
+     * @JSFJspAttribute
+     *   required="true"
+     */
     public void setConverterId(String converterId)
     {
         _converterId = converterId;

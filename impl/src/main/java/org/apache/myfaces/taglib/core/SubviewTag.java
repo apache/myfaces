@@ -22,6 +22,30 @@ import javax.faces.webapp.UIComponentTag;
 import javax.faces.component.UINamingContainer;
 
 /**
+ * This tag associates a set of UIComponents with the nearest parent
+ * UIComponent.  It acts as a naming container to make the IDs of its
+ * component elements unique.
+ * 
+ * Unless otherwise specified, all attributes accept static values or EL expressions.
+ * 
+ * @JSFJspTag
+ *   name="f:subview"
+ *   bodyContent="JSP" 
+ * @JSFJspAttribute
+ *   name="id"
+ *   className="java.lang.String"
+ *   required="true"
+ *   longDescription="The developer-assigned ID of this component."
+ * @JSFJspAttribute
+ *   name="binding"
+ *   className="java.lang.String"
+ *   longDescription="Identifies a backing bean property to bind to this component instance."
+ * @JSFJspAttribute
+ *   name="rendered"
+ *   className="java.lang.String"
+ *   longDescription="A boolean value that indicates whether this component should be rendered."
+ *   
+ *   
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
  */

@@ -29,6 +29,11 @@ import javax.faces.context.FacesContext;
  * <p>
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
+ * @JSFComponent
+ *   type = "javax.faces.SelectOne"
+ *   family = "javax.faces.SelectOne"
+ *   desc = "UISelectOne"
+ *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */

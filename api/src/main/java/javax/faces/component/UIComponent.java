@@ -23,6 +23,11 @@ import javax.faces.event.AbortProcessingException;
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
+ * @JSFComponent
+ *   type = "javax.faces.Component"
+ *   family = "javax.faces.Component"
+ *   desc = "abstract base component"
+ *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */

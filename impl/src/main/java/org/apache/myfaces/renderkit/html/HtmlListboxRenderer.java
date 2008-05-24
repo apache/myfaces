@@ -22,6 +22,16 @@ import org.apache.myfaces.shared_impl.renderkit.html.HtmlListboxRendererBase;
 
 
 /**
+ * @JSFRenderer
+ *   renderKitId="HTML_BASIC"
+ *   family="javax.faces.SelectOne"
+ *   type="javax.faces.Listbox"
+ *   
+ * @JSFRenderer
+ *   renderKitId="HTML_BASIC"
+ *   family="javax.faces.SelectMany"
+ *   type="javax.faces.Listbox"
+ *   
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */

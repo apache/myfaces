@@ -18,7 +18,33 @@
   </scm>
 
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <excludes>
+            <exclude>**/*.vm</exclude>
+        </excludes>
+      </resource>
+    </resources>  
     <plugins>
+      <plugin>
+        <groupId>org.apache.myfaces.buildtools</groupId>
+        <artifactId>myfaces-builder-plugin</artifactId>
+        <version>1.0.1-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>build-metadata</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>makecomp</id>
+            <goals>
+              <goal>make-components</goal>
+            </goals>
+          </execution>          
+        </executions>
+      </plugin>    
       <plugin>
         <artifactId>maven-source-plugin</artifactId>
         <version>2.0.4</version>

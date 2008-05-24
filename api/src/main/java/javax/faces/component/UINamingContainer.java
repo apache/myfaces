@@ -23,6 +23,11 @@ package javax.faces.component;
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
+ * @JSFComponent
+ *   type = "javax.faces.NamingContainer"
+ *   family = "javax.faces.NamingContainer"
+ *   desc = "UINamingContainer"
+ *   
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */

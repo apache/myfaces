@@ -22,6 +22,11 @@ import org.apache.myfaces.shared_impl.renderkit.html.HtmlImageRendererBase;
 
 
 /**
+ * @JSFRenderer
+ *   renderKitId="HTML_BASIC"
+ *   family="javax.faces.Graphic"
+ *   type="javax.faces.Image"
+ *   
  * @author Thomas Spiegl (latest modification by $Author$)
  * @author Anton Koinov
  * @version $Revision$ $Date$

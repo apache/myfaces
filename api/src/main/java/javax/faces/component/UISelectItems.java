@@ -20,9 +20,21 @@ package javax.faces.component;
 
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
-
 /**
+ * This tag associates a set of selection list items with the nearest
+ * parent UIComponent. The set of SelectItem objects is retrieved via
+ * a value-binding.
+ * &lt;p&gt;
+ * Unless otherwise specified, all attributes accept static values
+ * or EL expressions.
+ * 
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ *
+ * @JSFComponent
+ *   name = "f:selectItems"
+ *   bodyContent = "empty"
+ *   tagClass = "org.apache.myfaces.taglib.core.SelectItemsTag"
+ *   desc = "UISelectItems"
  *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
@@ -51,6 +63,23 @@ public class UISelectItems
         _value = value;
     }
 
+    /**
+     * An EL expression that specifies the contents of the selection list.
+     * The expression can refer to one of the following:
+     * &lt;ol&gt;
+     *     &lt;li&gt;A single SelectItem&lt;/li&gt;
+     *     &lt;li&gt;An array or Collection of SelectItem instances&lt;/li&gt;
+     *     &lt;li&gt;A Map. The contents of the Map are used to create SelectItem
+     *         instances, where the SelectItem's label is the map's key value, 
+     *         and the SelectItem's value is the map's value. When using a
+     *         map, it is recommended that an ordered implementation such as
+     *         java.util.TreeMap is used.&lt;/li&gt;
+     * &lt;/ol&gt;
+     * The value properties of each of the SelectItems must be of the same
+     * basic type as the parent component's value.
+     * 
+     * @JSFProperty
+     */
     public Object getValue()
     {
         if (_value != null) return _value;

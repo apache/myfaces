@@ -27,6 +27,17 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyContent;
 
 /**
+ * Outputs its body as verbatim text. No JSP tags within the verbatim
+ * tag (including JSF tags) are evaluated; the content is treated
+ * simply as literal text to be copied to the response.
+ * &lt;p&gt;
+ * Unless otherwise specified, all attributes accept static values
+ * or EL expressions.
+ * 
+ * @JSFJspTag
+ *   name="f:verbatim"
+ *   bodyContent="JSP" 
+ *   
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -66,6 +77,11 @@ public class VerbatimTag
         component.setTransient(true);
     }
 
+    /**
+     * If true, generated markup is escaped.  Default:  false.
+     * 
+     * @JSFJspAttribute
+     */
     public void setEscape(String escape)
     {
         _escape = escape;

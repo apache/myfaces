@@ -29,7 +29,17 @@ import java.util.Currency;
 import java.util.Locale;
 
 /**
+ * This tag creates a number formatting converter and associates it
+ * with the nearest parent UIComponent.
+ * 
+ * Unless otherwise specified, all attributes accept static values or EL expressions.
+ * 
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ *
+ * @JSFConverter
+ *   name="f:convertNumber"
+ *   bodyContent="empty"
+ *   tagClass="org.apache.myfaces.taglib.core.ConvertNumberTag"
  *
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
@@ -252,6 +262,12 @@ public class NumberConverter
     }
 
     // GETTER & SETTER
+    
+    /**
+     * ISO 4217 currency code
+     * 
+     * @JSFProperty
+     */    
     public String getCurrencyCode()
     {
         return _currencyCode != null ?
@@ -264,6 +280,12 @@ public class NumberConverter
         _currencyCode = currencyCode;
     }
 
+    /**
+     * The currency symbol used to format a currency value.  Defaults
+     * to the currency symbol for locale.
+     * 
+     * @JSFProperty
+     */
     public String getCurrencySymbol()
     {
         return _currencySymbol != null ?
@@ -276,6 +298,11 @@ public class NumberConverter
         _currencySymbol = currencySymbol;
     }
 
+    /**
+     * Specifies whether output will contain grouping separators.  Default: true.
+     * 
+     * @JSFProperty
+     */
     public boolean isGroupingUsed()
     {
         return _groupingUsed;
@@ -286,6 +313,11 @@ public class NumberConverter
         _groupingUsed = groupingUsed;
     }
 
+    /**
+     * Specifies whether only the integer part of the input will be parsed.  Default: false.
+     * 
+     * @JSFProperty
+     */
     public boolean isIntegerOnly()
     {
         return _integerOnly;
@@ -296,6 +328,12 @@ public class NumberConverter
         _integerOnly = integerOnly;
     }
 
+    /**
+     * The name of the locale to be used, instead of the default as
+     * specified in the faces configuration file.
+     * 
+     * @JSFProperty
+     */
     public Locale getLocale()
     {
         if (_locale != null) return _locale;
@@ -308,6 +346,11 @@ public class NumberConverter
         _locale = locale;
     }
 
+    /**
+     * The maximum number of digits in the fractional portion of the number.
+     * 
+     * @JSFProperty
+     */
     public int getMaxFractionDigits()
     {
         return _maxFractionDigits;
@@ -319,6 +362,11 @@ public class NumberConverter
         _maxFractionDigits = maxFractionDigits;
     }
 
+    /**
+     * The maximum number of digits in the integer portion of the number.
+     * 
+     * @JSFProperty
+     */
     public int getMaxIntegerDigits()
     {
         return _maxIntegerDigits;
@@ -330,6 +378,11 @@ public class NumberConverter
         _maxIntegerDigits = maxIntegerDigits;
     }
 
+    /**
+     * The minimum number of digits in the fractional portion of the number.
+     * 
+     * @JSFProperty
+     */
     public int getMinFractionDigits()
     {
         return _minFractionDigits;
@@ -341,6 +394,11 @@ public class NumberConverter
         _minFractionDigits = minFractionDigits;
     }
 
+    /**
+     * The minimum number of digits in the integer portion of the number.
+     * 
+     * @JSFProperty
+     */
     public int getMinIntegerDigits()
     {
         return _minIntegerDigits;
@@ -352,6 +410,11 @@ public class NumberConverter
         _minIntegerDigits = minIntegerDigits;
     }
 
+    /**
+     * A custom Date formatting pattern, in the format used by java.text.SimpleDateFormat.
+     * 
+     * @JSFProperty
+     */
     public String getPattern()
     {
         return _pattern;
@@ -372,6 +435,12 @@ public class NumberConverter
         _transient = aTransient;
     }
 
+    /**
+     * The type of formatting/parsing to be performed.  Values include:
+     * number, currency, and percent.  Default: number.
+     * 
+     * @JSFProperty
+     */
     public String getType()
     {
         return _type;

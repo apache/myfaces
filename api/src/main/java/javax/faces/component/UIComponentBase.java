@@ -54,6 +54,18 @@ import org.apache.commons.logging.LogFactory;
  *
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a> for more.
  * 
+ * @JSFComponent
+ *   type = "javax.faces.ComponentBase"
+ *   family = "javax.faces.ComponentBase"
+ *   desc = "base component when all components must inherit"
+ *   tagClass = "javax.faces.webapp.UIComponentTag"
+ *   
+ * @JSFJspProperty
+ *   name = "binding" 
+ *   returnType = "java.lang.String"
+ *   longDesc = "Identifies a backing bean property (of type UIComponent or appropriate subclass) to bind to this component instance. This value must be an EL expression."
+ *   desc="backing bean property to bind to this component instance"
+ *   
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -251,6 +263,8 @@ public abstract class UIComponentBase
      * Get a string which uniquely identifies this UIComponent within the
      * scope of the nearest ancestor NamingContainer component. The id is
      * not necessarily unique across all components in the current view.
+     * 
+     * @JSFProperty
      */
     public String getId()
     {
@@ -1015,6 +1029,12 @@ public abstract class UIComponentBase
         getPathToComponent(component.getParent(), buf);
     }
 
+    /**
+     * @JSFProperty
+     *   literalOnly = "true"
+     *   transient = "true"
+     *   tagExcluded ="true"
+     */
     public boolean isTransient()
     {
         return _transient;
@@ -1286,6 +1306,12 @@ public abstract class UIComponentBase
         _rendered = Boolean.valueOf(rendered);
     }
 
+    /**
+     * A boolean value that indicates whether this component should be rendered.
+     * Default value: true.
+     * 
+     * @JSFProperty
+     */
     public boolean isRendered()
     {
         if (_rendered != null) return _rendered.booleanValue();

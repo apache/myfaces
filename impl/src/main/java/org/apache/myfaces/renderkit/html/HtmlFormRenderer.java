@@ -22,6 +22,12 @@ import org.apache.myfaces.shared_impl.renderkit.html.HtmlFormRendererBase;
 
 
 /**
+ * 
+ * @JSFRenderer
+ *   renderKitId="HTML_BASIC"
+ *   family="javax.faces.Form"
+ *   type="javax.faces.Form"
+ *   
  * @author Manfred Geiler (latest modification by $Author$)
  * @author Thomas Spiegl
  * @author Anton Koinov

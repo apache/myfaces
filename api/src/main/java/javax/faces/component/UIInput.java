@@ -38,6 +38,11 @@ import java.util.List;
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
+ * @JSFComponent
+ *   type = "javax.faces.Input"
+ *   family = "javax.faces.Input"
+ *   desc = "UIInput"
+ *   
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -59,6 +64,10 @@ public class UIInput
     private List _validatorList = null;
 
     // use javadoc inherited from EditableValueHolder
+    /**
+     * @JSFProperty
+     *   tagExcluded = "true"
+     */
     public Object getSubmittedValue()
     {
         return _submittedValue;
@@ -91,6 +100,10 @@ public class UIInput
     }
 
     // use javadoc inherited from EditableValueHolder
+    /**
+     * @JSFProperty
+     *   tagExcluded = "true"
+     */
     public boolean isLocalValueSet()
     {
         return _localValueSet;
@@ -103,6 +116,10 @@ public class UIInput
     }
 
     // use javadoc inherited from EditableValueHolder
+    /**
+     * @JSFProperty
+     *   tagExcluded = "true"
+     */
     public boolean isValid()
     {
         return _valid;
@@ -114,7 +131,17 @@ public class UIInput
         _valid = valid;
     }
 
-    // use javadoc inherited from EditableValueHolder
+    // use javadoc inherited from EditableValueHolder    
+    /**
+     * A method binding EL expression, accepting FacesContext, UIComponent,
+     * and Object parameters, and returning void, that validates the
+     * component's local value.
+     * 
+     * @JSFProperty
+     *   stateHolder="true"
+     *   returnSignature="void"
+     *   methodSignature="javax.faces.context.FacesContext,javax.faces.component.UIComponent,java.lang.Object"
+     */
     public MethodBinding getValidator()
     {
         return _validator;
@@ -127,6 +154,17 @@ public class UIInput
     }
 
     // use javadoc inherited from EditableValueHolder
+    /**
+     * A method binding EL expression, accepting a ValueChangeEvent parameter
+     * and returning void. The specified method is invoked if this component
+     * is modified. The phase that this handler is fired in can be controlled
+     * via the immediate attribute.
+     * 
+     * @JSFProperty
+     *   stateHolder="true"
+     *   returnSignature="void"
+     *   methodSignature="javax.faces.event.ValueChangeEvent"
+     */
     public MethodBinding getValueChangeListener()
     {
         return _valueChangeListener;
@@ -553,6 +591,15 @@ public class UIInput
         _immediate = Boolean.valueOf(immediate);
     }
 
+    /**
+     * A boolean value that identifies the phase during which value change
+     * events should fire. During normal event processing, value change
+     * events are fired during the "process validations" phase of request
+     * processing. If this attribute is set to "true", these methods are
+     * fired instead at the end of the "apply request values" phase.
+     * 
+     * @JSFProperty
+     */
     public boolean isImmediate()
     {
         if (_immediate != null) return _immediate.booleanValue();
@@ -566,6 +613,13 @@ public class UIInput
         _required = Boolean.valueOf(required);
     }
 
+    /**
+     * A boolean value that indicates whether an input value is required.
+     * If this value is true, and no input value is provided, the error
+     * message javax.faces.component.UIInput.REQUIRED is posted.
+     * 
+     * @JSFProperty
+     */
     public boolean isRequired()
     {
         if (_required != null) return _required.booleanValue();

@@ -31,6 +31,23 @@ import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
 
 /**
+ * Adds the specified ValueChangeListener to the nearest parent
+ * UIComponent (which is expected to be a UIInput component).
+ * Whenever the form containing the parent UIComponent is submitted,
+ * an instance of the specified type is created. If the submitted
+ * value from the component is different from the component's current
+ * value then a ValueChangeEvent is queued. When the ValueChangeEvent
+ * is processed (at end of the validate phase for non-immediate components,
+ * or at end of the apply-request-values phase for immediate components)
+ * the object's processValueChange method is invoked.
+ * &lt;p&gt;
+ * Unless otherwise specified, all attributes accept static values
+ * or EL expressions.
+ * 
+ * @JSFJspTag
+ *   name="f:valueChangeListener"
+ *   bodyContent="empty"
+ *   
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -46,6 +63,11 @@ public class ValueChangeListenerTag
     {
     }
 
+    /**
+     * The name of a Java class that implements ValueChangeListener.
+     * 
+     * @JSFJspAttribute
+     */
     public void setType(String type)
     {
         _type = type;

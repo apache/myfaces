@@ -34,6 +34,11 @@ import java.io.IOException;
 
 
 /**
+ * @JSFRenderer
+ *   renderKitId="HTML_BASIC"
+ *   family="javax.faces.Input"
+ *   type="javax.faces.Hidden"
+ *   
  * @author Thomas Spiegl (latest modification by $Author$)
  * @author Anton Koinov
  * @version $Revision$ $Date$

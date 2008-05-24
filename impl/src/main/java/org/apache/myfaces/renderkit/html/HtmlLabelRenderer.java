@@ -36,6 +36,11 @@ import org.apache.myfaces.shared_impl.renderkit.html.HtmlRendererUtils;
 
 
 /**
+ * @JSFRenderer
+ *   renderKitId="HTML_BASIC"
+ *   family="javax.faces.Output"
+ *   type="javax.faces.Label"
+ *   
  * @author Thomas Spiegl (latest modification by $Author$)
  * @author Anton Koinov
  * @author Martin Marinschek

@@ -27,6 +27,11 @@ import javax.faces.event.*;
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
+ * @JSFComponent
+ *   type = "javax.faces.Command"
+ *   family = "javax.faces.Command"
+ *   desc = "UICommand executes an action"
+ *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -42,6 +47,22 @@ public class UICommand
         _action = action;
     }
 
+    /**
+     * Specifies the action to take when this command is invoked.
+     *
+     * If the value is an expression, it is expected to be a method 
+     * binding EL expression that identifies an action method. An action method
+     * accepts no parameters and has a String return value, called the action
+     * outcome, that identifies the next view displayed. The phase that this
+     * event is fired in can be controlled via the immediate attribute.
+     *
+     * If the value is a string literal, it is treated as a navigation outcome
+     * for the current view.  This is functionally equivalent to a reference to
+     * an action method that returns the string literal.
+     * 
+     * @JSFProperty
+     *   returnSignature="java.lang.String"
+     */
     public MethodBinding getAction()
     {
         return _action;
@@ -52,6 +73,17 @@ public class UICommand
         _actionListener = actionListener;
     }
 
+    /**
+     * A method binding EL expression that identifies an action listener method
+     * to be invoked if this component is activated by the user. An action
+     * listener method accepts a parameter of type javax.faces.event.ActionEvent
+     * and returns void. The phase that this event is fired in can be controlled
+     * via the immediate attribute.
+     *  
+     * @JSFProperty
+     *   returnSignature="void"
+     *   methodSignature="javax.faces.event.ActionEvent"
+     */
     public MethodBinding getActionListener()
     {
         return _actionListener;
@@ -153,6 +185,19 @@ public class UICommand
         _immediate = Boolean.valueOf(immediate);
     }
 
+    
+
+    /**
+     * A boolean value that identifies the phase during which action events
+     * should fire. During normal event processing, action methods and
+     * action listener methods are fired during the "invoke application"
+     * phase of request processing. If this attribute is set to "true",
+     * these methods are fired instead at the end of the "apply request
+     * values" phase.
+     * 
+     * @JSFProperty
+     *   defaultValue="false"
+     */
     public boolean isImmediate()
     {
         if (_immediate != null) return _immediate.booleanValue();
@@ -166,6 +211,11 @@ public class UICommand
         _value = value;
     }
 
+    /**
+     * The initial value of this component.
+     * 
+     * @JSFProperty
+     */
     public Object getValue()
     {
         if (_value != null) return _value;

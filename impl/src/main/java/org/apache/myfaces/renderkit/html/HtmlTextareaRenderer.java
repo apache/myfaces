@@ -22,6 +22,11 @@ import org.apache.myfaces.shared_impl.renderkit.html.HtmlTextareaRendererBase;
 
 
 /**
+ * @JSFRenderer
+ *   renderKitId="HTML_BASIC"
+ *   family="javax.faces.Input"
+ *   type="javax.faces.Textarea"
+ *   
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */

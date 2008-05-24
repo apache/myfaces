@@ -22,6 +22,16 @@ import org.apache.myfaces.shared_impl.renderkit.html.HtmlTextRendererBase;
 
 
 /**
+ * @JSFRenderer
+ *   renderKitId="HTML_BASIC"
+ *   family="javax.faces.Input"
+ *   type="javax.faces.Text"
+ *   
+ * @JSFRenderer
+ *   renderKitId="HTML_BASIC"
+ *   family="javax.faces.Output"
+ *   type="javax.faces.Text"
+ *   
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */

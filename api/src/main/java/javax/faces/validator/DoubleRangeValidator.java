@@ -23,7 +23,20 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
 /**
+ * Creates a validator and associateds it with the nearest parent
+ * UIComponent.  When invoked, the validator ensures that values are
+ * valid doubles that lie within the minimum and maximum values specified.
+ * 
+ * Commonly associated with a h:inputText entity.
+ * 
+ * Unless otherwise specified, all attributes accept static values or EL expressions.
+ * 
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ *
+ * @JSFValidator
+ *   name="f:validateDoubleRange"
+ *   bodyContent="empty"
+ *   tagClass="org.apache.myfaces.taglib.core.ValidateDoubleRangeTag" 
  *
  * @author Manfred Geiler (latest modification by $Author$)
  * @author Thomas Spiegl
@@ -124,6 +137,12 @@ public class DoubleRangeValidator
 
 
     // GETTER & SETTER
+    
+    /** 
+     * The largest value that should be considered valid.
+     * 
+     * @JSFProperty
+     */
     public double getMaximum()
     {
         return _maximum != null ? _maximum.doubleValue() : Double.MAX_VALUE;
@@ -134,6 +153,11 @@ public class DoubleRangeValidator
         _maximum = new Double(maximum);
     }
 
+    /**
+     * The smallest value that should be considered valid.
+     *  
+     * @JSFProperty
+     */
     public double getMinimum()
     {
         return _minimum != null ? _minimum.doubleValue() : Double.MIN_VALUE;

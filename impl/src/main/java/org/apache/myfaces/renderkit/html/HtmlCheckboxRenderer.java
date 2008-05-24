@@ -22,6 +22,17 @@ import org.apache.myfaces.shared_impl.renderkit.html.HtmlCheckboxRendererBase;
 
 
 /**
+ * 
+ * @JSFRenderer
+ *   renderKitId="HTML_BASIC"
+ *   family="javax.faces.SelectBoolean"
+ *   type="javax.faces.Checkbox"
+ *   
+ * @JSFRenderer
+ *   renderKitId="HTML_BASIC"
+ *   family="javax.faces.SelectMany"
+ *   type="javax.faces.Checkbox"
+ *
  * @author Thomas Spiegl (latest modification by $Author$)
  * @author Anton Koinov
  * @version $Revision$ $Date$

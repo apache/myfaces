@@ -22,6 +22,16 @@ import org.apache.myfaces.shared_impl.renderkit.html.HtmlMenuRendererBase;
 
 
 /**
+ * @JSFRenderer
+ *   renderKitId="HTML_BASIC"
+ *   family="javax.faces.SelectOne"
+ *   type="javax.faces.Menu"
+ *   
+ * @JSFRenderer
+ *   renderKitId="HTML_BASIC"
+ *   family="javax.faces.SelectMany"
+ *   type="javax.faces.Menu"
+ *   
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */

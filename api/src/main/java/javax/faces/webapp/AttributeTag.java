@@ -26,8 +26,35 @@ import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
 
 /**
+ * This tag associates an attribute with the nearest parent
+ * UIComponent. 
+ * &lt;p&gt;
+ * When the value is not an EL expression, this tag has the same effect
+ * as calling component.getAttributes.put(name, value). When the attribute
+ * name specified matches a standard property of the component, that
+ * property is set. However it is also valid to assign attributes
+ * to components using any arbitrary name; the component itself won't
+ * make any use of these but other objects such as custom renderers,
+ * validators or action listeners can later retrieve the attribute
+ * from the component by name.
+ * &lt;p&gt;
+ * When the value is an EL expression, this tag has the same effect
+ * as calling component.setValueBinding. A call to method
+ * component.getAttributes().get(name) will then cause that
+ * expression to be evaluated and the result of the expression is
+ * returned, not the original EL expression string.
+ * &lt;p&gt;
+ * See the javadoc for UIComponent.getAttributes for more details.
+ * &lt;p&gt;
+ * Unless otherwise specified, all attributes accept static values
+ * or EL expressions.
+ * 
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
+ * @JSFJspTag 
+ *   name="f:attribute"
+ *   bodyContent="empty"
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -38,11 +65,23 @@ public class AttributeTag
     private String _name;
     private String _value;
 
+    /**
+     * The name of the attribute.
+     * 
+     * @JSFJspAttribute
+     *   required="true"
+     */
     public void setName(String name)
     {
         _name = name;
     }
 
+    /**
+     * The attribute's value.
+     * 
+     * @JSFJspAttribute
+     *   required="true"
+     */
     public void setValue(String value)
     {
         _value = value;

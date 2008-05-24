@@ -23,7 +23,21 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
 /**
+ * Creates a validator and associateds it with the nearest parent
+ * UIComponent.  When invoked, the validator ensures that values are
+ * valid strings with a length that lies within the minimum and maximum
+ * values specified.
+ * 
+ * Commonly associated with a h:inputText entity.
+ * 
+ * Unless otherwise specified, all attributes accept static values or EL expressions.
+ * 
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ *
+ * @JSFValidator
+ *   name="f:validateLength"
+ *   bodyContent="empty"
+ *   tagClass="org.apache.myfaces.taglib.core.ValidateLengthTag" 
  *
  * @author Manfred Geiler (latest modification by $Author$)
  * @author Thomas Spiegl
@@ -95,6 +109,12 @@ public class LengthValidator
     }
 
     // SETTER & GETTER
+    
+    /** 
+     * The largest value that should be considered valid.
+     * 
+     * @JSFProperty
+     */
     public int getMaximum()
     {
         return _maximum != null ? _maximum.intValue() : 0;
@@ -105,6 +125,11 @@ public class LengthValidator
         _maximum = new Integer(maximum);
     }
 
+    /**
+     * The smallest value that should be considered valid.
+     *  
+     * @JSFProperty
+     */
     public int getMinimum()
     {
         return _minimum != null ? _minimum.intValue() : 0;

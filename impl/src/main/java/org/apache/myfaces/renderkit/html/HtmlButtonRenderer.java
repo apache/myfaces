@@ -22,6 +22,12 @@ import org.apache.myfaces.shared_impl.renderkit.html.HtmlButtonRendererBase;
 
 
 /**
+ * 
+ * @JSFRenderer
+ *   renderKitId="HTML_BASIC"
+ *   family="javax.faces.Command"
+ *   type="javax.faces.Button"
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
