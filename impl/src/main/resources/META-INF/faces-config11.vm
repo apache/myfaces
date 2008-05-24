@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!DOCTYPE faces-config PUBLIC
+ "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN"
+ "http://java.sun.com/dtd/web-facesconfig_1_1.dtd">
+
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+
+<faces-config xmlns="http://java.sun.com/JSF/Configuration">
+
+$baseContent
+
+#set ($componentList = ${model.getComponents()})
+#foreach( $component in $componentList )
+#if ($modelIds.contains($component.modelId) 
+    && !($component.className.contains("UIComponent"))
+    && !($component.isConfigExcluded()))
+  <component>
+    <component-type>$component.type</component-type>
+    <component-class>$component.className</component-class>
+  </component>    
+#end
+#end
+#set ($converterList = ${model.getConverters()})
+#foreach( $converter in $converterList )
+#if ($modelIds.contains($converter.modelId))
+  <converter>
+    <converter-id>$converter.converterId</converter-id>
+    <converter-class>$converter.className</converter-class>
+  </converter>
+#end
+#end
+#set ($validatorList = ${model.getValidators()})
+#foreach( $validator in $validatorList )
+#if ($modelIds.contains($validator.modelId))
+  <validator>
+    <validator-id>$validator.validatorId</validator-id>
+    <validator-class>$validator.className</validator-class>
+  </validator>
+#end
+#end
+#set ($renderKitList = ${model.getRenderKits()})
+#foreach( $renderKit in $renderKitList )
+  <render-kit>
+    <render-kit-id>$renderKit.renderKitId</render-kit-id>
+#if ($renderKit.className)
+    <render-kit-class>$renderKit.className</render-kit-class>
+#end
+#set ($rendererList = ${renderKit.getRenderers()})
+#foreach( $renderer in $rendererList )
+      <renderer>
+        <component-family>$renderer.componentFamily</component-family>
+        <renderer-type>$renderer.rendererType</renderer-type>
+        <renderer-class>$renderer.className</renderer-class>
+      </renderer>
+#end
+  </render-kit>
+#end
+</faces-config>
