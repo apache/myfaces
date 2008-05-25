@@ -49,7 +49,7 @@
     <site>
       <id>apache-site</id>
       <name>Apache Website</name>
-      <url>scpexe://minotaur.apache.org/www/myfaces.apache.org/core11/</url>
+      <url>scpexe://people.apache.org/www/myfaces.apache.org/core11/</url>
     </site>
   </distributionManagement>
 </project>
