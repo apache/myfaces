@@ -55,7 +55,7 @@ public class IntegerConverter
             {
                 try
                 {
-                    return Integer.valueOf(value);
+                    return new Integer(value);
                 }
                 catch (NumberFormatException e)
                 {
