@@ -172,7 +172,11 @@ $innersource
 #elseif ( $property.isStateHolder() )## || $utils.isConverter($type)
         values[$arrayIndex] = saveAttachedState(facesContext,$field);
 #elseif($utils.isPrimitiveClass($type))
+#if ($type == "boolean")
         values[$arrayIndex] = ${utils.getBoxedClass($type)}.valueOf($field);
+#else
+        values[$arrayIndex] = new ${utils.getBoxedClass($type)}($field);
+#end
 #else
         values[$arrayIndex] = $field;
 #end
