@@ -41,7 +41,6 @@ import javax.faces.render.Renderer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-
 /**
  * Standard implementation of the UIComponent base class; all standard JSF
  * components extend this class.
@@ -51,13 +50,13 @@ import org.apache.commons.logging.LogFactory;
  * specification cannot be replicated here. Any javadoc here therefore
  * describes the current implementation rather than the spec, though
  * this class has been verified as correctly implementing the spec.
- *
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a> for more.
+ * <p>
+ * See Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a> for more.
  * 
  * @JSFComponent
  *   type = "javax.faces.ComponentBase"
  *   family = "javax.faces.ComponentBase"
- *   desc = "base component when all components must inherit"
+ *   desc = "base component from which all components should inherit"
  *   tagClass = "javax.faces.webapp.UIComponentTag"
  *   
  * @JSFJspProperty

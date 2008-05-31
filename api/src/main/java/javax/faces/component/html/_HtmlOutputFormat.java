@@ -19,18 +19,16 @@
 package javax.faces.component.html;
 
 import javax.faces.component.UIOutput;
-import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 
 /**
  * Renders as text, applying the child f:param values to the value
  * attribute as a MessageFormat string.  If this element has an ID
  * or CSS style properties, the text is wrapped in a span element.
- * 
+ * <p>
  * Unless otherwise specified, all attributes accept static values
  * or EL expressions.
- * 
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * <p>
+ * See Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
  * @JSFComponent
  *   name = "h:outputFormat"

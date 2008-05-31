@@ -19,24 +19,22 @@
 package javax.faces.component.html;
 
 import javax.faces.component.UISelectMany;
-import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 
 /**
  * Allow the user to select zero or more items from a set of
  * available options. This is presented as a listbox which allows
  * multiple rows in the list to be selected simultaneously.
- * &lt;p&gt;
+ * <p>
  * The set of available options is defined by adding child
  * f:selectItem or f:selectItems components to this component.
- * &lt;p&gt;
+ * <p>
  * The list is rendered as an HTML select element. The "multiple"
  * attribute is set on the element and the size attribute is set to
  * the provided value, defaulting to the number of items in the list
  * if no value is provided. If the size is set to 1, then a
  * "drop-down" list (aka "combo-box") is presented, though if this is
  * the intention then a selectManyMenu should be used instead.
- * &lt;p&gt;
+ * <p>
  * The value attribute must be a value-binding expression to a
  * property of type List, Object array or primitive array. That
  * "collection" is expected to contain objects of the same type as
@@ -45,11 +43,11 @@ import javax.faces.el.ValueBinding;
  * selected initially. During the update phase, the property is set
  * to contain a "collection" of values for those child SelectItem
  * objects that are currently selected.
- * &lt;p&gt;
+ * <p>
  * Unless otherwise specified, all attributes accept static values
  * or EL expressions.
- * 
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * <p>
+ * See Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
  * @JSFComponent
  *   name = "h:selectManyListbox"

@@ -21,7 +21,9 @@ package javax.faces.component;
 import javax.faces.event.AbortProcessingException;
 
 /**
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * A base class for all JSF component classes.
+ * <p>
+ * See Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
  * @JSFComponent
  *   type = "javax.faces.Component"

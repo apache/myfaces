@@ -33,7 +33,17 @@ import javax.faces.el.ValueBinding;
 import javax.faces.render.Renderer;
 
 /**
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * Base class for the various component classes that allow a user to select zero or
+ * more options from a set.
+ * <p>
+ * This is not an abstract class; java code can create an instance of this, configure
+ * its rendererType appropriately, and add it to a view. However there is no tag class
+ * for this component, ie it cannot be added directly to a page when using JSP (and
+ * other presentation technologies are expected to behave similarly). Instead, there
+ * is a family of subclasses that extend this base functionality, and they do have
+ * tag classes. 
+ * <p>
+ * See Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
  * @JSFComponent
  *   type = "javax.faces.SelectMany"

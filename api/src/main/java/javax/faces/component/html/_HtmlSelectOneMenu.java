@@ -19,29 +19,27 @@
 package javax.faces.component.html;
 
 import javax.faces.component.UISelectOne;
-import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 
 /**
  * Allow the user to choose one option from a set of options.
- * &lt;p&gt;
+ * <p>
  * Renders a drop-down menu (aka "combo-box") containing a set of
  * choices, of which only one can be chosen at a time. The available
  * choices are defined via child f:selectItem or f:selectItems
  * elements.
- * &lt;p&gt;
+ * <p>
  * The value attribute of this component is read to determine
  * which of the available options is initially selected; its value
  * should match the "value" property of one of the child SelectItem
  * objects.
- * &lt;p&gt;
+ * <p>
  * On submit of the enclosing form, the value attribute's bound property
  * is updated to contain the "value" property from the chosen SelectItem.
- * &lt;p&gt;
+ * <p>
  * Unless otherwise specified, all attributes accept static values
  * or EL expressions.
- * 
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * <p> 
+ * See Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
  * @JSFComponent
  *   name = "h:selectOneMenu"

@@ -34,10 +34,10 @@ import javax.faces.event.PhaseId;
 /**
  * Creates a JSF View, which is a container that holds all of the
  * components that are part of the view.
- * 
+ * <p> 
  * Unless otherwise specified, all attributes accept static values or EL expressions.
- * 
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * <p>
+ * See Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
  * @JSFComponent
  *   name = "f:view"
