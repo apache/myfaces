@@ -259,9 +259,16 @@ public abstract class UIComponentBase
     }
 
     /**
-     * Get a string which uniquely identifies this UIComponent within the
-     * scope of the nearest ancestor NamingContainer component. The id is
-     * not necessarily unique across all components in the current view.
+     * An identifier for this particular component instance within
+     * a component view.
+     * <p>
+     * The id must be unique within the scope of the tag's enclosing 
+     * NamingContainer (eg h:form or f:subview). The id is
+     * not necessarily unique across all components in the current view
+     * <p>
+     * This value must be a static value, ie not change over the lifetime
+     * of a component. It cannot be defined via an EL expression; only
+     * a string is permitted.
      * 
      * @JSFProperty
      */

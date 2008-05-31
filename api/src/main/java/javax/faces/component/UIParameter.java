@@ -22,14 +22,25 @@ import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 
 /**
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * This tag associates a parameter name-value pair with the nearest parent
+ * UIComponent.
+ * <p>
+ * A UIComponent is created to represent this name-value pair, and stored as
+ * a child of the parent component; what effect this has depends upon the
+ * renderer of that parent component.
+ * <p>
+ * Unless otherwise specified, all attributes accept static values or EL expressions.
+ * <p>
+ * See Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
  * @JSFComponent
  *   name="f:param"
  *   bodyContent="empty"
  *   tagClass = "org.apache.myfaces.taglib.core.ParamTag"
  *   desc = "UIParameter"
+ *   
  * @JSFJspProperty name = "rendered" returnType = "boolean" tagExcluded = "true"
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
