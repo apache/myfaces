@@ -22,17 +22,16 @@ import java.io.IOException;
 
 import javax.faces.component.UIData;
 import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 
 /**
  * This component renders as an HTML table element.  It has as its
  * children h:column entities, which describe the columns of the table.
  * It can be decorated with facets named "header" and "footer" to
  * specify header and footer rows.
- * 
+ * <p>
  * Unless otherwise specified, all attributes accept static values
  * or EL expressions. 
- * 
+ * <p>
  * Extend standard UIData component to add support for html-specific features
  * such as CSS style attributes and event handler scripts.
  * <p>

@@ -19,17 +19,15 @@
 package javax.faces.component.html;
 
 import javax.faces.component.UIOutput;
-import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 
 /**
  * Renders a HTML a element.  Child f:param elements are added to the href
  * attribute as query parameters.  Other children are rendered as the link text or image.
- * 
+ * <p>
  * Unless otherwise specified, all attributes accept static values
  * or EL expressions.
- * 
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * <p>
+ * See Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
  * @JSFComponent
  *   name = "h:outputLink"

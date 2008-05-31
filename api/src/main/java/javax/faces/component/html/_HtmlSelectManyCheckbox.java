@@ -19,19 +19,18 @@
 package javax.faces.component.html;
 
 import javax.faces.component.UISelectMany;
-import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 
 /**
  * Allow the user to select zero or more items from a set of
- * available options. This is presented as a table with one cell per
- * available option; each cell contains a checkbox and the option's
- * label. The "layout" attribute determines whether the checkboxes
- * are laid out horizontally or vertically.
- * &lt;p&gt;
+ * available options.
+ * <p>
+ * This is presented as a table with one cell per available option; each
+ * cell contains a checkbox and the option's label. The "layout" attribute
+ * determines whether the checkboxes are laid out horizontally or vertically.
+ * <p>
  * The set of available options is defined by adding child
  * f:selectItem or f:selectItems components to this component.
- * &lt;p&gt;
+ * <p>
  * The value attribute must be a value-binding expression to a
  * property of type List, Object array or primitive array. That
  * "collection" is expected to contain objects of the same type as
@@ -42,11 +41,11 @@ import javax.faces.el.ValueBinding;
  * new collection object of the appropriate type. The new collection
  * object contains the value of each child SelectItem object that
  * is currently selected.
- * &lt;p&gt;
+ * <p>
  * Unless otherwise specified, all attributes accept static values
  * or EL expressions.
- * 
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * <p>
+ * See Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
  * @JSFComponent
  *   name = "h:selectManyCheckbox"

@@ -21,11 +21,11 @@ package javax.faces.component.html;
 import javax.faces.component.UIInput;
 /**
  * Renders as an HTML input tag with its type set to "hidden".
- *
+ * <p>
  * Unless otherwise specified, all attributes accept static values
  * or EL expressions.
- *
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * <p>
+ * See Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
  * @JSFComponent
  *   name = "h:inputHidden"

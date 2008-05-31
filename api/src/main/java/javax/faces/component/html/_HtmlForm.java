@@ -19,13 +19,11 @@
 package javax.faces.component.html;
 
 import javax.faces.component.UIForm;
-import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 
 /**
  * Renders an HTML form element.
- * 
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * <p>
+ * See Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
  * @JSFComponent
  *   name = "h:form"

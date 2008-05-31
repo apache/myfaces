@@ -19,19 +19,17 @@
 package javax.faces.component.html;
 
 import javax.faces.component.UIOutput;
-import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 
 /**
  * Renders a HTML label element.
- * 
+ * <p>
  * In addition to the JSF specification, MyFaces allows it to directly
  * give an output text via the "value" attribute.
- * 
+ * <p>
  * Unless otherwise specified, all attributes accept static values
  * or EL expressions.
- * 
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * <p>
+ * See Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
  * @JSFComponent
  *   name = "h:outputLabel"

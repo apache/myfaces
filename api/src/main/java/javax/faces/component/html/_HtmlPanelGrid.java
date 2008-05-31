@@ -19,8 +19,6 @@
 package javax.faces.component.html;
 
 import javax.faces.component.UIPanel;
-import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 
 /**
  * This element renders as an HTML table with specified number of
@@ -28,11 +26,11 @@ import javax.faces.el.ValueBinding;
  * table, filling rows from left to right.  Facets named "header"
  * and "footer" are optional and specify the content of the thead
  * and tfoot rows, respectively.
- * 
+ * <p>
  * Unless otherwise specified, all attributes accept static values
  * or EL expressions.
- * 
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * <p>
+ * See Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
  * @JSFComponent
  *   name = "h:panelGrid"
