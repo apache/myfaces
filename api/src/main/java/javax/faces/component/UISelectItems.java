@@ -36,6 +36,7 @@ import javax.faces.el.ValueBinding;
  *   bodyContent = "empty"
  *   tagClass = "org.apache.myfaces.taglib.core.SelectItemsTag"
  *   desc = "UISelectItems"
+ * @JSFJspProperty name = "rendered" returnType = "boolean" tagExcluded = "true"
  *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
