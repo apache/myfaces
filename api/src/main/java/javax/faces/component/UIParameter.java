@@ -38,8 +38,6 @@ import javax.faces.el.ValueBinding;
  *   bodyContent="empty"
  *   tagClass = "org.apache.myfaces.taglib.core.ParamTag"
  *   desc = "UIParameter"
- *   
- * @JSFJspProperty name = "rendered" returnType = "boolean" tagExcluded = "true"
  * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
@@ -62,6 +60,22 @@ public class UIParameter
     public String getFamily()
     {
         return COMPONENT_FAMILY;
+    }
+
+    /**
+     * Disable this property; although this class extends a base-class that
+     * defines a read/write rendered property, this particular subclass
+     * does not support setting it. Yes, this is broken OO design: direct
+     * all complaints to the JSF spec group.
+     *
+     * @JSFProperty tagExcluded="true"
+     */
+    public void setRendered(boolean state) {
+       throw new UnsupportedOperationException();
+    }
+
+    public boolean isRendered() {
+    	return true;
     }
 
     public void setName(String name)

@@ -79,6 +79,10 @@ public class UISelectItem
        throw new UnsupportedOperationException();
     }
 
+    public boolean isRendered() {
+    	return true;
+    }
+
     public void setItemDescription(String itemDescription)
     {
         _itemDescription = itemDescription;
