@@ -35,6 +35,7 @@ import javax.faces.component.UIOutput;
  *   name = "h:outputLabel"
  *   class = "javax.faces.component.html.HtmlOutputLabel"
  *   tagClass = "org.apache.myfaces.taglib.html.HtmlOutputLabelTag"
+ *   template = "true"
  *   desc = "h:outputLabel"
  * 
  * @author Thomas Spiegl (latest modification by $Author$)

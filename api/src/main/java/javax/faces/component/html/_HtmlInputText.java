@@ -29,6 +29,7 @@ import javax.faces.component.UIInput;
  *   name = "h:inputText"
  *   class = "javax.faces.component.html.HtmlInputText"
  *   tagClass = "org.apache.myfaces.taglib.html.HtmlInputTextTag"
+ *   template = "true"
  *   desc = "h:inputText"
  *
  * @author Thomas Spiegl (latest modification by $Author$)

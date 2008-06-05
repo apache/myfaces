@@ -32,6 +32,7 @@ import javax.faces.component.UIInput;
  *   name = "h:inputSecret"
  *   class = "javax.faces.component.html.HtmlInputSecret"
  *   tagClass = "org.apache.myfaces.taglib.html.HtmlInputSecretTag"
+ *   template = "true"
  *   desc = "h:inputSecret"
  *   
  * @author Thomas Spiegl (latest modification by $Author$)

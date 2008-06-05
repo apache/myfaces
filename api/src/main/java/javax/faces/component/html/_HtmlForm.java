@@ -29,6 +29,7 @@ import javax.faces.component.UIForm;
  *   name = "h:form"
  *   class = "javax.faces.component.html.HtmlForm"
  *   tagClass = "org.apache.myfaces.taglib.html.HtmlFormTag"
+ *   template = "true"
  *   desc = "h:form"
  *   
  * @author Thomas Spiegl (latest modification by $Author$)

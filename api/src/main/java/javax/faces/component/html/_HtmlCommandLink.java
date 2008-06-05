@@ -32,6 +32,7 @@ import javax.faces.component.UICommand;
  *   name = "h:commandLink"
  *   class = "javax.faces.component.html.HtmlCommandLink"
  *   tagClass = "org.apache.myfaces.taglib.html.HtmlCommandLinkTag"
+ *   template = "true"
  *   desc = "h:commandLink"
  *   
  * @author Thomas Spiegl (latest modification by $Author$)

@@ -50,6 +50,7 @@ import javax.faces.component.UISelectOne;
  *   name = "h:selectOneListbox"
  *   class = "javax.faces.component.html.HtmlSelectOneListbox"
  *   tagClass = "org.apache.myfaces.taglib.html.HtmlSelectOneListboxTag"
+ *   template = "true"
  *   desc = "h:selectOneListbox"
  *   
  * @author Thomas Spiegl (latest modification by $Author$)

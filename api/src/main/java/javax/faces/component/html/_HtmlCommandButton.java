@@ -32,6 +32,7 @@ import javax.faces.component.UICommand;
  *   name = "h:commandButton"
  *   class = "javax.faces.component.html.HtmlCommandButton"
  *   tagClass = "org.apache.myfaces.taglib.html.HtmlCommandButtonTag"
+ *   template = "true"
  *   desc = "h:commandButton"
  *   
  * @author Manfred Geiler (latest modification by $Author$)

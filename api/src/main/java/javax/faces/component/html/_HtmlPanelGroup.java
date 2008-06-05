@@ -35,6 +35,7 @@ import javax.faces.component.UIPanel;
  *   class = "javax.faces.component.html.HtmlPanelGroup"
  *   tagClass = "org.apache.myfaces.taglib.html.HtmlPanelGroupTag"
  *   tagSuperclass = "javax.faces.webapp.UIComponentBodyTag"
+ *   template = "true"
  *   desc = "h:panelGroup
  *
  * @author Thomas Spiegl (latest modification by $Author$)

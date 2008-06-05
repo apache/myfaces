@@ -32,6 +32,7 @@ import javax.faces.component.UIInput;
  *   name = "h:inputTextarea"
  *   class = "javax.faces.component.html.HtmlInputTextarea"
  *   tagClass = "org.apache.myfaces.taglib.html.HtmlInputTextareaTag"
+ *   template = "true"
  *   desc = "h:inputTextarea"
  *
  * @author Thomas Spiegl (latest modification by $Author$)

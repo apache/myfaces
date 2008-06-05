@@ -34,6 +34,7 @@ import javax.faces.component.UIOutput;
  *   name = "h:outputFormat"
  *   class = "javax.faces.component.html.HtmlOutputFormat"
  *   tagClass = "org.apache.myfaces.taglib.html.HtmlOutputFormatTag"
+ *   template = "true"
  *   desc = "h:outputFormat"
  *   
  * @author Thomas Spiegl (latest modification by $Author$)

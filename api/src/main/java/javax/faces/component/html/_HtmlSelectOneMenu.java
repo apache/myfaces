@@ -45,6 +45,7 @@ import javax.faces.component.UISelectOne;
  *   name = "h:selectOneMenu"
  *   class = "javax.faces.component.html.HtmlSelectOneMenu"
  *   tagClass = "org.apache.myfaces.taglib.html.HtmlSelectOneMenuTag"
+ *   template = "true"
  *   desc = "h:selectOneMenu"
  *   
  * @author Thomas Spiegl (latest modification by $Author$)

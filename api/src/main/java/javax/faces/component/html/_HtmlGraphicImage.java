@@ -32,6 +32,7 @@ import javax.faces.component.UIGraphic;
  *   name = "h:graphicImage"
  *   class = "javax.faces.component.html.HtmlGraphicImage"
  *   tagClass = "org.apache.myfaces.taglib.html.HtmlGraphicImageTag"
+ *   template = "true"
  *   desc = "h:graphicImage"
  *   
  * @author Thomas Spiegl (latest modification by $Author$)

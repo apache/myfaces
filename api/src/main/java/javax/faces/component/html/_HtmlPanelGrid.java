@@ -37,6 +37,7 @@ import javax.faces.component.UIPanel;
  *   class = "javax.faces.component.html.HtmlPanelGrid"
  *   tagClass = "org.apache.myfaces.taglib.html.HtmlPanelGridTag"
  *   tagSuperclass = "javax.faces.webapp.UIComponentBodyTag"
+ *   template = "true"
  *   desc = "h:panelGrid"
  *
  * @author Thomas Spiegl (latest modification by $Author$)

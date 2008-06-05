@@ -43,6 +43,7 @@ import javax.faces.component.UISelectOne;
  *   name = "h:selectOneRadio"
  *   class = "javax.faces.component.html.HtmlSelectOneRadio"
  *   tagClass = "org.apache.myfaces.taglib.html.HtmlSelectOneRadioTag"
+ *   template = "true"
  *   desc = "h:selectOneRadio"
  *   
  * @author Thomas Spiegl (latest modification by $Author$)

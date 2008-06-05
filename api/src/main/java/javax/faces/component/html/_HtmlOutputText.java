@@ -34,6 +34,7 @@ import javax.faces.component.UIOutput;
  *   name = "h:outputText"
  *   class = "javax.faces.component.html.HtmlOutputText"
  *   tagClass = "org.apache.myfaces.taglib.html.HtmlOutputTextTag"
+ *   template = "true"
  *   desc = "UIOutput displays a value to the user"
  *   
  * @author Thomas Spiegl (latest modification by $Author$)

@@ -53,6 +53,7 @@ import javax.faces.component.UISelectMany;
  *   name = "h:selectManyListbox"
  *   class = "javax.faces.component.html.HtmlSelectManyListbox"
  *   tagClass = "org.apache.myfaces.taglib.html.HtmlSelectManyListboxTag"
+ *   template = "true"
  *   desc = "h:selectManyListbox"
  *
  * @author Thomas Spiegl (latest modification by $Author$)

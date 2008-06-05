@@ -33,6 +33,7 @@ import javax.faces.component.UIMessage;
  *   name = "h:message"
  *   class = "javax.faces.component.html.HtmlMessage"
  *   tagClass = "org.apache.myfaces.taglib.html.HtmlMessageTag"
+ *   template = "true"
  *   desc = "h:message"
  *   
  * @author Thomas Spiegl (latest modification by $Author$)

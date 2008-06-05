@@ -37,6 +37,7 @@ import javax.faces.component.UISelectBoolean;
  *   name = "h:selectBooleanCheckbox"
  *   class = "javax.faces.component.html.HtmlSelectBooleanCheckbox"
  *   tagClass = "org.apache.myfaces.taglib.html.HtmlSelectBooleanCheckboxTag"
+ *   template = "true"
  *   desc = "h:selectBooleanCheckbox"
  *
  * @author Thomas Spiegl (latest modification by $Author$)

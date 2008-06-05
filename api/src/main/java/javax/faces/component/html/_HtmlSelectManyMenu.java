@@ -50,6 +50,7 @@ import javax.faces.component.UISelectMany;
  *   name = "h:selectManyMenu"
  *   class = "javax.faces.component.html.HtmlSelectManyMenu"
  *   tagClass = "org.apache.myfaces.taglib.html.HtmlSelectManyMenuTag"
+ *   template = "true"
  *   desc = "h:selectManyMenu"
  *   
  * @author Thomas Spiegl (latest modification by $Author$)

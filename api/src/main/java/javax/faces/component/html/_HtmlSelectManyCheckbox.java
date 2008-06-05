@@ -51,6 +51,7 @@ import javax.faces.component.UISelectMany;
  *   name = "h:selectManyCheckbox"
  *   class = "javax.faces.component.html.HtmlSelectManyCheckbox"
  *   tagClass = "org.apache.myfaces.taglib.html.HtmlSelectManyCheckboxTag"
+ *   template = "true"
  *   desc = "h:selectManyCheckbox"
  *
  * @author Thomas Spiegl (latest modification by $Author$)

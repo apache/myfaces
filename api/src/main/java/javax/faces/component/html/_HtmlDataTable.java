@@ -43,6 +43,7 @@ import javax.faces.context.FacesContext;
  *   class = "javax.faces.component.html.HtmlDataTable"
  *   tagClass = "org.apache.myfaces.taglib.html.HtmlDataTableTag"
  *   tagSuperclass = "javax.faces.webapp.UIComponentBodyTag"
+ *   template = "true"
  *   desc = "h:dataTable"
  *
  * @author Thomas Spiegl (latest modification by $Author$)

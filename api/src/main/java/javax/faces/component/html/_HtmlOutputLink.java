@@ -33,6 +33,7 @@ import javax.faces.component.UIOutput;
  *   name = "h:outputLink"
  *   class = "javax.faces.component.html.HtmlOutputLink"
  *   tagClass = "org.apache.myfaces.taglib.html.HtmlOutputLinkTag"
+ *   template = "true"
  *   desc = "h:outputLink"
  * 
  * @author Thomas Spiegl (latest modification by $Author$)
