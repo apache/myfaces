@@ -19,6 +19,9 @@ import java.util.Iterator;
 
 import javax.faces.context.FacesContext;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
+
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -26,6 +29,8 @@ import javax.faces.context.FacesContext;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
+@JSFComponent(type = "javax.faces.Form",
+    family = "javax.faces.Form")
 public class UIForm
         extends UIComponentBase
         implements NamingContainer
@@ -142,6 +147,7 @@ public class UIForm
         return null;
     }
     
+    @JSFProperty(defaultValue = "true")
     public boolean isPrependId()
     {
         return getExpressionValue("prependId", _prependId, true);

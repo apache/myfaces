@@ -42,6 +42,7 @@
           </execution>
          </executions>
         </plugin>
+        <!-- 
       <plugin>
         <groupId>org.apache.myfaces.buildtools</groupId>
         <artifactId>myfaces-faces-plugin</artifactId>
@@ -69,6 +70,28 @@
             </dependency>
         </dependencies>
       </plugin>
+       -->
+      <plugin>
+        <groupId>org.apache.myfaces.buildtools</groupId>
+        <artifactId>myfaces-builder-plugin</artifactId>
+        <version>1.0.1-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>build-metadata</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>makecomp</id>
+            <configuration>
+               <jsfVersion>12</jsfVersion>
+            </configuration>            
+            <goals>
+              <goal>make-components</goal>
+            </goals>
+          </execution>        
+        </executions>
+      </plugin>          
     </plugins>
   </build>
   <profiles>
@@ -172,7 +195,12 @@
       <artifactId>commons-logging</artifactId>
       <version>1.1.1</version>
     </dependency>
-
+    <dependency>
+      <groupId>org.apache.myfaces.buildtools</groupId>
+      <artifactId>myfaces-builder-annotations</artifactId> 
+      <version>1.0.1-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>commons-beanutils</groupId>
       <artifactId>commons-beanutils</artifactId>

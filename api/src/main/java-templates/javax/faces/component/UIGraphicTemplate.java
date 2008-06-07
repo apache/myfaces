@@ -36,6 +36,7 @@ public class UIGraphicTemplate extends UIComponentBase
         setValue(url);        
     }
     
+    @JSFProperty
     /**///getUrl
     public String getUrl()
     {

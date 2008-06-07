@@ -17,6 +17,9 @@ package javax.faces.component;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
@@ -54,6 +57,14 @@ import java.util.Map.Entry;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
+@JSFComponent(type = "javax.faces.ComponentBase",
+              family = "javax.faces.ComponentBase",
+              desc = "base component when all components must inherit",
+              tagClass = "javax.faces.webapp.UIComponentELTag")
+@JSFJspProperty(name = "binding" ,
+                returnType = "java.lang.String",
+                longDesc = "Identifies a backing bean property (of type UIComponent or appropriate subclass) to bind to this component instance. This value must be an EL expression.",
+                desc="backing bean property to bind to this component instance")
 public abstract class UIComponentBase
         extends UIComponent
 {
@@ -263,6 +274,8 @@ public abstract class UIComponentBase
      * Get a string which uniquely identifies this UIComponent within the scope of the nearest ancestor NamingContainer
      * component. The id is not necessarily unique across all components in the current view.
      */
+    @JSFProperty
+      (literalOnly = true)
     public String getId()
     {
         return _id;
@@ -902,6 +915,10 @@ public abstract class UIComponentBase
         getPathToComponent(component.getParent(), buf);
     }
 
+    @JSFProperty(
+       literalOnly = true,
+       istransient = true,
+       tagExcluded = true)
     public boolean isTransient()
     {
         return _transient;
@@ -1220,6 +1237,11 @@ public abstract class UIComponentBase
         _rendered = Boolean.valueOf(rendered);
     }
 
+    /**
+     * A boolean value that indicates whether this component should be rendered.
+     * Default value: true.
+     **/
+    @JSFProperty
     public boolean isRendered()
     {
         return getExpressionValue("rendered", _rendered, DEFAULT_RENDERED);

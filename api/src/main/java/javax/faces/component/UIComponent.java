@@ -27,12 +27,20 @@ import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
+@JSFComponent(
+        type="javax.faces.Component",
+        family="javax.faces.Component",
+        desc = "abstract base component",
+        configExcluded = true
+        )
 public abstract class UIComponent
         implements StateHolder
 {
