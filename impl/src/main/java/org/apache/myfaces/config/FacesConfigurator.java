@@ -111,6 +111,7 @@ public class FacesConfigurator
     public static final String MYFACES_IMPL_PACKAGE_NAME = "myfaces-impl";
     public static final String MYFACES_TOMAHAWK_PACKAGE_NAME = "tomahawk";
     public static final String MYFACES_TOMAHAWK_SANDBOX_PACKAGE_NAME = "tomahawk-sandbox";
+    public static final String MYFACES_TOMAHAWK_SANDBOX15_PACKAGE_NAME = "tomahawk-sandbox15";
     public static final String COMMONS_EL_PACKAGE_NAME = "commons-el";
     public static final String JSP_API_PACKAGE_NAME = "jsp-api";
 
@@ -304,6 +305,7 @@ public class FacesConfigurator
             List<VersionInfo> li = new ArrayList<VersionInfo>();
             li.add(new VersionInfo(MYFACES_API_PACKAGE_NAME));
             li.add(new VersionInfo(MYFACES_IMPL_PACKAGE_NAME));
+            li.add(new VersionInfo(MYFACES_TOMAHAWK_SANDBOX15_PACKAGE_NAME));
             li.add(new VersionInfo(MYFACES_TOMAHAWK_SANDBOX_PACKAGE_NAME));
             li.add(new VersionInfo(MYFACES_TOMAHAWK_PACKAGE_NAME));
 
@@ -917,11 +919,6 @@ public class FacesConfigurator
             return packageName;
         }
 
-        public void setPackageName(String packageName)
-        {
-            this.packageName = packageName;
-        }
-
         public void addJarInfo(String path, String version)
         {
             if (jarInfos == null)
@@ -992,19 +989,9 @@ public class FacesConfigurator
             return version;
         }
 
-        public void setVersion(String version)
-        {
-            this.version = version;
-        }
-
         public String getUrl()
         {
             return url;
-        }
-
-        public void setUrl(String url)
-        {
-            this.url = url;
         }
     }
 
