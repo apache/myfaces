@@ -1,6 +1,3 @@
-// WARNING: This file was automatically generated. Do not edit it directly,
-//          or you will lose your changes.
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -53,10 +50,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  * The root element.
  */
 @JSFComponent
-@JSFJspProperties(properties={
-@JSFJspProperty(name = "rendered",returnType = "boolean",tagExcluded = true),
-@JSFJspProperty(name = "binding",returnType = "java.lang.String",tagExcluded = true),
-@JSFJspProperty(name = "id",returnType = "java.lang.String",tagExcluded = true)})
+@JSFJspProperty(name = "binding",returnType = "java.lang.String",tagExcluded = true)
 public class UIViewRoot extends UIComponentBase
 {
 
@@ -429,6 +423,52 @@ public class UIViewRoot extends UIComponentBase
   public void setRenderKitId(String renderKitId)
   {
     this._renderKitId = renderKitId;
+  }
+
+  /**
+   * Disable this property; although this class extends a base-class that
+   * defines a read/write rendered property, this particular subclass
+   * does not support setting it. Yes, this is broken OO design: direct
+   * all complaints to the JSF spec group.
+   *
+   * @JSFProperty tagExcluded="true"
+   */
+  @Override
+  public void setRendered(boolean state)
+  {
+     throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public boolean isRendered()
+  {
+  	return true;
+  }
+
+  /**
+   * Disable this property; although this class extends a base-class that
+   * defines a read/write id property, this particular subclass
+   * does not support setting it. Yes, this is broken OO design: direct
+   * all complaints to the JSF spec group.
+   *
+   * @JSFProperty tagExcluded="true"
+   */
+  public void setId(String id)
+  {
+     throw new UnsupportedOperationException();
+  }
+
+  public String getId()
+  {
+  	return null;
+  }
+
+  /**
+   * As this component has no "id" property, it has no clientId property either.
+   */
+  public String getClientId(FacesContext context)
+  {
+	  return null;
   }
 
   // Property: viewId
