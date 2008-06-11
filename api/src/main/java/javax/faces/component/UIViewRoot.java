@@ -45,9 +45,7 @@ import javax.faces.event.PhaseId;
  *   tagClass = "org.apache.myfaces.taglib.core.ViewTag"
  *   desc = "UIViewRoot"
  *
- * @JSFJspProperty name = "rendered" returnType = "boolean" tagExcluded = "true"
  * @JSFJspProperty name = "binding" returnType = "java.lang.String" tagExcluded = "true"
- * @JSFJspProperty name = "id" returnType = "java.lang.String" tagExcluded = "true"
  *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
@@ -289,8 +287,6 @@ public class UIViewRoot
         _locale = locale;
     }
 
-    //------------------ GENERATED CODE BEGIN (do not modify!) --------------------
-
     public static final String COMPONENT_TYPE = "javax.faces.ViewRoot";
     public static final String COMPONENT_FAMILY = "javax.faces.ViewRoot";
     //private static final String DEFAULT_RENDERKITID = RenderKitFactory.HTML_BASIC_RENDER_KIT;
@@ -315,7 +311,49 @@ public class UIViewRoot
         return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null; //DEFAULT_RENDERKITID
     }
 
+    /**
+     * Disable this property; although this class extends a base-class that
+     * defines a read/write rendered property, this particular subclass
+     * does not support setting it. Yes, this is broken OO design: direct
+     * all complaints to the JSF spec group.
+     *
+     * @JSFProperty tagExcluded="true"
+     */
+    public void setRendered(boolean state)
+    {
+       throw new UnsupportedOperationException();
+    }
 
+    public boolean isRendered()
+    {
+    	return true;
+    }
+
+    /**
+     * Disable this property; although this class extends a base-class that
+     * defines a read/write id property, this particular subclass
+     * does not support setting it. Yes, this is broken OO design: direct
+     * all complaints to the JSF spec group.
+     *
+     * @JSFProperty tagExcluded="true"
+     */
+    public void setId(String id)
+    {
+       throw new UnsupportedOperationException();
+    }
+
+    public String getId()
+    {
+    	return null;
+    }
+
+    /**
+     * As this component has no "id" property, it has no clientId property either.
+     */
+    public String getClientId(FacesContext context)
+    {
+  	  return null;
+    }
 
     public Object saveState(FacesContext context)
     {
