@@ -144,7 +144,6 @@ public class UIComponentBaseTest extends AbstractJsfTestCase {
 
 	private UIInput createInputInTree() {
 		UIViewRoot viewRoot = facesContext.getViewRoot();
-		viewRoot.setId("root");
 
 		UIData uiData = new UIData();
 		uiData.setId("data");
