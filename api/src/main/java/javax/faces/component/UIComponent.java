@@ -152,8 +152,8 @@ public abstract class UIComponent
     	}
     	
     	//searching for this component?
-    	boolean returnValue = this.getClientId(context).equals(clientId); 
-    	if(returnValue)
+    	boolean found = clientId.equals(this.getClientId(context)); 
+    	if(found)
     	{
     		try
     		{
@@ -162,14 +162,14 @@ public abstract class UIComponent
     		{
     			throw new FacesException(e);
     		}
-    		return returnValue;
+    		return found;
     	}
 		//Searching for this component's children/facets 
-    	for (Iterator<UIComponent> it = this.getFacetsAndChildren(); !returnValue && it.hasNext();){
-    		returnValue = it.next().invokeOnComponent(context, clientId, callback);
+    	for (Iterator<UIComponent> it = this.getFacetsAndChildren(); !found && it.hasNext();){
+    		found = it.next().invokeOnComponent(context, clientId, callback);
     	}
     		
-    	return returnValue;
+    	return found;
     }
 
     public abstract java.lang.String getClientId(javax.faces.context.FacesContext context);
