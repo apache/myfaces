@@ -25,6 +25,7 @@ import javax.faces.el.ValueBinding;
 import javax.faces.context.FacesContext;
 $utils.importTagClasses($component)
 
+// generated from class $component.classSource
 public class ${utils.getClassFromFullClass($component.className)} extends $component.superClassName
 #if ($component.implements)
     implements $component.implements
