@@ -867,7 +867,7 @@ public class UIInput extends UIOutput
   @Override
   public Object saveState(FacesContext facesContext)
   {
-    Object[] values = new Object[15];
+    Object[] values = new Object[14];
     values[0] = super.saveState(facesContext);
     values[1] = _immediate;
     values[2] = _immediateSet;
@@ -875,12 +875,14 @@ public class UIInput extends UIOutput
     values[4] = _requiredSet;
     values[5] = _converterMessage;
     values[6] = _requiredMessage;
+    values[7] = saveAttachedState(facesContext, _validator);
     values[8] = saveAttachedState(facesContext, _validatorList);
     values[9] = _validatorMessage;
     values[10] = saveAttachedState(facesContext, _valueChangeListener);
     values[11] = _valid;
     values[12] = _localValueSet;
     values[13] = _submittedValue;
+    
 
     return values;
   }
@@ -896,6 +898,7 @@ public class UIInput extends UIOutput
     _requiredSet = (Boolean)values[4];
     _converterMessage = (String)values[5];
     _requiredMessage = (String)values[6];
+    _validator = (MethodBinding)restoreAttachedState(facesContext, values[7]);
     _validatorList = (List<Validator>) restoreAttachedState(facesContext, values[8]);
     _validatorMessage = (String)values[9];
     _valueChangeListener = (MethodBinding)restoreAttachedState(facesContext, values[10]);
