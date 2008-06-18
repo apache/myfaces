@@ -38,10 +38,16 @@ import javax.faces.el.ValueBinding;
 import javax.faces.context.FacesContext;
 $utils.importTagClasses($component)
 
-// generated from class $component.classSource
+#if ($component.isTemplate())
+#set ($generatedClassParent = $component.sourceClassParentClassName)
+#else
+#set ($generatedClassParent = $component.sourceClassName)
+#end
+// Generated from class ${component.sourceClassName}.
+//
 // WARNING: This file was automatically generated. Do not edit it directly,
 //          or you will lose your changes.
-public class ${utils.getClassFromFullClass($component.className)} extends $component.superClassName
+public class ${utils.getClassFromFullClass($component.className)} extends $generatedClassParent
 #if ($component.implements)
     implements $component.implements
 #end
@@ -56,9 +62,9 @@ public class ${utils.getClassFromFullClass($component.className)} extends $compo
         "$component.type";
 
 #if ($innersource)
-    //BEGIN CODE COPIED FROM $component.classSource 
+    //BEGIN CODE COPIED FROM $component.sourceClassName 
 $innersource
-    //END CODE COPIED FROM $component.classSource
+    //END CODE COPIED FROM $component.sourceClassName
 #end
 
     public ${utils.getClassFromFullClass($component.className)}()
