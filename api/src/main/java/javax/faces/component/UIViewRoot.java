@@ -455,12 +455,14 @@ public class UIViewRoot extends UIComponentBase
    */
   public void setId(String id)
   {
-     throw new UnsupportedOperationException();
+     //throw new UnsupportedOperationException();
+     super.setId(id);
   }
 
   public String getId()
   {
-  	return null;
+  	//return null;
+    return super.getId();
   }
 
   /**
