@@ -15,14 +15,15 @@
  */
 package javax.faces.component;
 
-
-
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacet;
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
+@JSFComponent
 public class UIColumn
         extends UIComponentBase
 {
@@ -34,6 +35,7 @@ public class UIColumn
         getFacets().put(FOOTER_FACET_NAME, footer);
     }
 
+    @JSFFacet
     public UIComponent getFooter()
     {
         return getFacet(FOOTER_FACET_NAME);
@@ -44,6 +46,7 @@ public class UIColumn
         getFacets().put(HEADER_FACET_NAME, header);
     }
 
+    @JSFFacet
     public UIComponent getHeader()
     {
         return getFacet(HEADER_FACET_NAME);
