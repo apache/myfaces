@@ -330,21 +330,37 @@ public class UIViewRoot
     }
 
     /**
-     * Disable this property; although this class extends a base-class that
-     * defines a read/write id property, this particular subclass
-     * does not support setting it. Yes, this is broken OO design: direct
-     * all complaints to the JSF spec group.
+     * DO NOT USE.
+     * <p>
+
+     * Although this class extends a base-class that defines a read/write
+     * id property, it makes no sense for this particular subclass to support
+     * it. The tag library does not export this property for use, but there 
+     * is no way to "undeclare" a java method. Yes, this is broken OO design:
+     * direct all complaints to the JSF spec group.
+     * <p>
+     * This property should be disabled (ie throw an exception if invoked).
+     * However there are currently several places that call this method
+     * (eg during restoreState) so it just does the normal thing for the
+     * moment. TODO: fix callers then make this throw an exception.
      *
      * @JSFProperty tagExcluded="true"
      */
     public void setId(String id)
     {
-       throw new UnsupportedOperationException();
+        //  throw new UnsupportedOperationException();
+
+        // Re-enable for now. Things like the TreeStructureManager call this,
+        // even though they probably should not.
+        super.setId(id);
     }
 
     public String getId()
     {
-    	return null;
+    	// return null;
+
+        // Re-enable for now.
+        return super.getId();
     }
 
     /**
