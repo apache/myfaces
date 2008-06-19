@@ -41,7 +41,6 @@ import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.webapp.FacesServlet;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperties;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
@@ -446,10 +445,18 @@ public class UIViewRoot extends UIComponentBase
   }
 
   /**
-   * Disable this property; although this class extends a base-class that
-   * defines a read/write id property, this particular subclass
-   * does not support setting it. Yes, this is broken OO design: direct
-   * all complaints to the JSF spec group.
+   * DO NOT USE.
+   * <p>
+   * Although this class extends a base-class that defines a read/write
+   * id property, it makes no sense for this particular subclass to support
+   * it. The tag library does not export this property for use, but there 
+   * is no way to "undeclare" a java method. Yes, this is broken OO design:
+   * direct all complaints to the JSF spec group.
+   * <p>
+   * This property should be disabled (ie throw an exception if invoked).
+   * However there are currently several places that call this method
+   * (eg during restoreState) so it just does the normal thing for the
+   * moment. TODO: fix callers then make this throw an exception.
    *
    * @JSFProperty tagExcluded="true"
    */
