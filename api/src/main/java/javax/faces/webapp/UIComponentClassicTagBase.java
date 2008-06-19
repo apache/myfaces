@@ -282,7 +282,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
             {
                 _facesJspId = UNIQUE_ID_PREFIX + _jspId;
 
-                if (isIdDuplicated(_facesJspId) || isIncludedOrForwarded()) {
+                if (isIdDuplicated(_facesJspId)) {
                     _facesJspId = createNextId(_facesJspId);
                 }
             }
@@ -1143,7 +1143,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         {
             if (isInAnIterator)
             {
-                setId(createNextId(id));
+                setId(createNextId(id));              
                 id = getId();
             }
             else
@@ -1194,16 +1194,23 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
 
         getFacesContext().getExternalContext().getRequestMap().put(componentId, new Integer(iCurrentCounter));
 
-        componentId = componentId + UNIQUE_ID_PREFIX + iCurrentCounter;
+        if (isIncludedOrForwarded())
+        {
+            componentId = componentId + "pc" + iCurrentCounter;
+        }
+        else
+        {
+            componentId = componentId + UNIQUE_ID_PREFIX + iCurrentCounter;            
+        }
 
         return componentId;
     }
-
+        
     private void checkIfItIsInAnIterator(String jspId)
     {
         Set<String> previousJspIdsSet = getPreviousJspIdsSet();
 
-        if (previousJspIdsSet.contains(jspId) || isIncludedOrForwarded())
+        if (previousJspIdsSet.contains(jspId))
         {
             isInAnIterator = true;
         }
