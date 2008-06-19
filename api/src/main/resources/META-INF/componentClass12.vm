@@ -1,5 +1,18 @@
-// WARNING: This file was automatically generated. Do not edit it directly,
-//          or you will lose your changes.
+## Velocity template used to generate JSF1.2-compatible component classes
+## from component meta-data.
+##
+## Note that there are two types of component generation:
+##  * "subclass mode" (use annotated class as a parent class)
+##  * "template mode" (use annotated class as a template)
+## This template file is used for both.
+##
+## Variable $component refers to a ComponentMeta object to process
+## Variable $utils refers to an instance of MyfacesUtils.
+##
+## When "template mode" is being used then variable $innersource
+## holds a String containing all the non-abstract functions defined
+## in the annotated class.
+##
 /*
  *  Licensed to the Apache Software Foundation (ASF) under one
  *  or more contributor license agreements.  See the NOTICE file
@@ -24,7 +37,16 @@ import javax.el.ValueExpression;
 import javax.faces.context.FacesContext;
 $utils.importTagClasses($component)
 
-public class ${utils.getClassFromFullClass($component.className)} extends $component.superClassName
+#if ($component.isTemplate())
+#set ($generatedClassParent = $component.sourceClassParentClassName)
+#else
+#set ($generatedClassParent = $component.sourceClassName)
+#end
+// Generated from class ${component.sourceClassName}.
+//
+// WARNING: This file was automatically generated. Do not edit it directly,
+//          or you will lose your changes.
+public class ${utils.getClassFromFullClass($component.className)} extends $generatedClassParent
 #if ($component.implements)
     implements $component.implements
 #end
@@ -45,9 +67,9 @@ public class ${utils.getClassFromFullClass($component.className)} extends $compo
 ##end
 
 #if ($innersource)
-    //BEGIN CODE COPIED FROM $component.classSource 
+    //BEGIN CODE COPIED FROM $component.sourceClassName 
 $innersource
-    //END CODE COPIED FROM $component.classSource
+    //END CODE COPIED FROM $component.sourceClassName
 #end
 
     public ${utils.getClassFromFullClass($component.className)}()
