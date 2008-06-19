@@ -613,11 +613,14 @@ public class FacesConfigurator
             {
                 String systemId = st.nextToken().trim();
 
-                if(log.isWarnEnabled() && DEFAULT_FACES_CONFIG.equals(systemId))
-                    log.warn(DEFAULT_FACES_CONFIG + " has been specified in the " +
-                            FacesServlet.CONFIG_FILES_ATTR + " context parameter of " +
-                            "the deployment descriptor. This will automatically be removed, " +
-                            "if we wouldn't do this, it would be loaded twice.  See JSF spec 1.1, 10.3.2");
+                if (DEFAULT_FACES_CONFIG.equals(systemId))
+                {
+                	if(log.isWarnEnabled())
+	                    log.warn(DEFAULT_FACES_CONFIG + " has been specified in the " +
+	                            FacesServlet.CONFIG_FILES_ATTR + " context parameter of " +
+	                            "the deployment descriptor. This will automatically be removed, " +
+	                            "if we wouldn't do this, it would be loaded twice.  See JSF spec 1.1, 10.3.2");
+                }
                 else
                     configFilesList.add(systemId);
 
