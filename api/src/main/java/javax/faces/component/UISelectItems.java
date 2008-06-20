@@ -79,15 +79,15 @@ public class UISelectItems
     /**
      * An EL expression that specifies the contents of the selection list.
      * The expression can refer to one of the following:
-     * &lt;ol&gt;
-     *     &lt;li&gt;A single SelectItem&lt;/li&gt;
-     *     &lt;li&gt;An array or Collection of SelectItem instances&lt;/li&gt;
-     *     &lt;li&gt;A Map. The contents of the Map are used to create SelectItem
-     *         instances, where the SelectItem's label is the map's key value, 
-     *         and the SelectItem's value is the map's value. When using a
-     *         map, it is recommended that an ordered implementation such as
-     *         java.util.TreeMap is used.&lt;/li&gt;
-     * &lt;/ol&gt;
+     * <ol>
+     * <li>A single SelectItem</li>
+     * <li>An array or Collection of SelectItem instances</li>
+     * <li>A Map. The contents of the Map are used to create SelectItem
+     *     instances, where the SelectItem's label is the map's key value, 
+     *     and the SelectItem's value is the map's value. When using a
+     *     map, it is recommended that an ordered implementation such as
+     *     java.util.TreeMap is used.</li>
+     * </ol>
      * The value properties of each of the SelectItems must be of the same
      * basic type as the parent component's value.
      * 
