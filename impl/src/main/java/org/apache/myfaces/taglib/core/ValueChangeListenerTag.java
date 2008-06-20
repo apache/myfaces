@@ -66,7 +66,7 @@ public class ValueChangeListenerTag
     /**
      * The name of a Java class that implements ValueChangeListener.
      * 
-     * @JSFJspAttribute
+     * @JSFJspAttribute required="true"
      */
     public void setType(String type)
     {
