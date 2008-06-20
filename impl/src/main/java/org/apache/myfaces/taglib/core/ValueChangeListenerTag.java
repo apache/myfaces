@@ -40,7 +40,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * is processed (at end of the validate phase for non-immediate components,
  * or at end of the apply-request-values phase for immediate components)
  * the object's processValueChange method is invoked.
- * &lt;p&gt;
+ * <p>
  * Unless otherwise specified, all attributes accept static values
  * or EL expressions.
  * 

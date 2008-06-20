@@ -30,7 +30,7 @@ import javax.servlet.jsp.tagext.BodyContent;
  * Outputs its body as verbatim text. No JSP tags within the verbatim
  * tag (including JSF tags) are evaluated; the content is treated
  * simply as literal text to be copied to the response.
- * &lt;p&gt;
+ * <p>
  * Unless otherwise specified, all attributes accept static values
  * or EL expressions.
  * 
