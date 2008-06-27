@@ -273,33 +273,31 @@ public class UIInput
     public void broadcast(FacesEvent event)
             throws AbortProcessingException
     {
-        if (!(event instanceof ValueChangeEvent))
-        {
-            throw new IllegalArgumentException("FacesEvent of class " + event.getClass().getName() + " not supported by UIInput");
-        }
-
         // invoke standard listeners attached to this component first
         super.broadcast(event);
 
-        // invoke the single listener defined directly on the component
-        MethodBinding valueChangeListenerBinding = getValueChangeListener();
-        if (valueChangeListenerBinding != null)
-        {
-            try
+        //Check if the event is applicable for ValueChangeListener
+        if (event instanceof ValueChangeEvent){
+            // invoke the single listener defined directly on the component
+            MethodBinding valueChangeListenerBinding = getValueChangeListener();
+            if (valueChangeListenerBinding != null)
             {
-                valueChangeListenerBinding.invoke(getFacesContext(),
-                                                  new Object[]{event});
-            }
-            catch (EvaluationException e)
-            {
-                Throwable cause = e.getCause();
-                if (cause != null && cause instanceof AbortProcessingException)
+                try
                 {
-                    throw (AbortProcessingException)cause;
+                    valueChangeListenerBinding.invoke(getFacesContext(),
+                                                      new Object[]{event});
                 }
-                else
+                catch (EvaluationException e)
                 {
-                    throw e;
+                    Throwable cause = e.getCause();
+                    if (cause != null && cause instanceof AbortProcessingException)
+                    {
+                        throw (AbortProcessingException)cause;
+                    }
+                    else
+                    {
+                        throw e;
+                    }
                 }
             }
         }
