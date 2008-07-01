@@ -265,10 +265,12 @@ public abstract class UIComponentBase
      * The id must be unique within the scope of the tag's enclosing 
      * NamingContainer (eg h:form or f:subview). The id is
      * not necessarily unique across all components in the current view
+     * </p>
      * <p>
      * This value must be a static value, ie not change over the lifetime
      * of a component. It cannot be defined via an EL expression; only
      * a string is permitted.
+     * </p>
      * 
      * @JSFProperty
      */
