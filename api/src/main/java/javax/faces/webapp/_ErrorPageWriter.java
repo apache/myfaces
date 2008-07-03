@@ -84,7 +84,7 @@ final class _ErrorPageWriter {
         return str.split("@@");
     }
 
-    private static ArrayList getErrorId(Exception e){
+    private static ArrayList getErrorId(Throwable e){
         String message = e.getMessage();
 
         if(message==null)
@@ -115,8 +115,8 @@ final class _ErrorPageWriter {
             writer.write(ex.getClass().getName());
         }
     }
-    
-    public static void debugHtml(Writer writer, FacesContext faces, Exception e) throws IOException {
+
+    public static void debugHtml(Writer writer, FacesContext faces, Throwable e) throws IOException {
         init();
         Date now = new Date();
         for (int i = 0; i < ERROR_PARTS.length; i++) {
@@ -226,7 +226,7 @@ final class _ErrorPageWriter {
         }
     }    
 
-    private static void writeException(Writer writer, Exception e) throws IOException {
+    private static void writeException(Writer writer, Throwable e) throws IOException {
         StringWriter str = new StringWriter(256);
         PrintWriter pstr = new PrintWriter(str);
         e.printStackTrace(pstr);
@@ -414,7 +414,12 @@ final class _ErrorPageWriter {
         return (c.getClass().getName().startsWith("com.sun.facelets.compiler"));
     }
 
-    public static void handleException(FacesContext facesContext, Exception ex) throws ServletException, IOException {
+    public static void handleException(FacesContext facesContext, Exception ex) throws ServletException, IOException
+    {
+        handleThrowable(facesContext, ex);
+    }
+    
+    public static void handleThrowable(FacesContext facesContext, Throwable ex) throws ServletException, IOException {
 
         prepareExceptionStack(ex);
 
@@ -497,7 +502,7 @@ final class _ErrorPageWriter {
         }
     }
 
-    static void throwException(Exception e) throws IOException, ServletException {
+    static void throwException(Throwable e) throws IOException, ServletException {
 
         prepareExceptionStack(e);
 

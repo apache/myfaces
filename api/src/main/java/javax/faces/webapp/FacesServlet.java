@@ -156,6 +156,10 @@ public final class FacesServlet
         {
             handleLifecycleException(facesContext, e);
         }
+        catch (Throwable e)
+        {
+            handleLifecycleThrowable(facesContext, e);
+        }
         finally
         {
             facesContext.release();
@@ -244,13 +248,51 @@ public final class FacesServlet
                 } catch (InstantiationException ex) {
                     throw new ServletException("Error-Handler : " +errorHandlerClass+ " could not be instantiated. Error-Handler is specified in web.xml-parameter : "+ERROR_HANDLER_PARAMETER,ex);
                 } catch (NoSuchMethodException ex) {
-                    throw new ServletException("Error-Handler : " +errorHandlerClass+ " did not have a method with name : handleException and parameters : javax.faces.context.FacesContext, java.lang.Exception. Error-Handler is specified in web.xml-parameter : "+ERROR_HANDLER_PARAMETER,ex);
+                    log.error("Error-Handler : " +errorHandlerClass+ " did not have a method with name : handleException and parameters : javax.faces.context.FacesContext, java.lang.Exception. Error-Handler is specified in web.xml-parameter : "+ERROR_HANDLER_PARAMETER,ex);
+                    //Try to look if it is implemented more general method handleThrowable
+                    handleLifecycleThrowable(facesContext, e);
                 } catch (InvocationTargetException ex) {
                     throw new ServletException("Excecution of method handleException in Error-Handler : " +errorHandlerClass+ " caused an exception. Error-Handler is specified in web.xml-parameter : "+ERROR_HANDLER_PARAMETER,ex);
                 }
             }
             else {
                 _ErrorPageWriter.handleException(facesContext, e);
+            }
+        }
+        else {
+            _ErrorPageWriter.throwException(e);
+        }
+    }
+    
+    private void handleLifecycleThrowable(FacesContext facesContext, Throwable e) throws IOException, ServletException {
+
+        boolean errorHandling = getBooleanValue(facesContext.getExternalContext().getInitParameter(ERROR_HANDLING_PARAMETER), true);
+
+        if(errorHandling) {
+            String errorHandlerClass = facesContext.getExternalContext().getInitParameter(ERROR_HANDLER_PARAMETER);            
+            if(errorHandlerClass != null) {
+                try {
+                    Class clazz = Class.forName(errorHandlerClass);
+
+                    Object errorHandler = clazz.newInstance();
+
+                    Method m = clazz.getMethod("handleThrowable", new Class[]{FacesContext.class,Throwable.class});
+                    m.invoke(errorHandler, new Object[]{facesContext, e});
+                }
+                catch(ClassNotFoundException ex) {
+                    throw new ServletException("Error-Handler : " +errorHandlerClass+ " was not found. Fix your web.xml-parameter : "+ERROR_HANDLER_PARAMETER,ex);
+                } catch (IllegalAccessException ex) {
+                    throw new ServletException("Constructor of error-Handler : " +errorHandlerClass+ " is not accessible. Error-Handler is specified in web.xml-parameter : "+ERROR_HANDLER_PARAMETER,ex);
+                } catch (InstantiationException ex) {
+                    throw new ServletException("Error-Handler : " +errorHandlerClass+ " could not be instantiated. Error-Handler is specified in web.xml-parameter : "+ERROR_HANDLER_PARAMETER,ex);
+                } catch (NoSuchMethodException ex) {
+                    throw new ServletException("Error-Handler : " +errorHandlerClass+ " did not have a method with name : handleException and parameters : javax.faces.context.FacesContext, java.lang.Exception. Error-Handler is specified in web.xml-parameter : "+ERROR_HANDLER_PARAMETER,ex);
+                } catch (InvocationTargetException ex) {
+                    throw new ServletException("Excecution of method handleException in Error-Handler : " +errorHandlerClass+ " threw an exception. Error-Handler is specified in web.xml-parameter : "+ERROR_HANDLER_PARAMETER,ex);
+                }
+            }
+            else {
+                _ErrorPageWriter.handleThrowable(facesContext, e);
             }
         }
         else {
