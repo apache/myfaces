@@ -29,26 +29,26 @@ import javax.faces.FacesException;
 public class EvaluationException extends FacesException
 {
   private static final long serialVersionUID = 4668524591042216006L;
-	// FIELDS
+    // FIELDS
 
   // CONSTRUCTORS
-	public EvaluationException()
+    public EvaluationException()
     {
-		super();
-	}
+        super();
+    }
 
-	public EvaluationException(String message)
-	{
-		super(message);
-	}
+    public EvaluationException(String message)
+    {
+        super(message);
+    }
 
-	public EvaluationException(String message, Throwable cause)
-	{
-		super(message, cause);
-	}
+    public EvaluationException(String message, Throwable cause)
+    {
+        super(message, cause);
+    }
     
-	public EvaluationException(Throwable cause)
-	{
+    public EvaluationException(Throwable cause)
+    {
         super(cause);
-	}
+    }
 }

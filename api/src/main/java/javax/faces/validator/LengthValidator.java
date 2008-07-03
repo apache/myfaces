@@ -47,9 +47,9 @@ public class LengthValidator
         implements Validator, StateHolder
 {
     // FIELDS
-    public static final String 	MAXIMUM_MESSAGE_ID = "javax.faces.validator.LengthValidator.MAXIMUM";
-    public static final String 	MINIMUM_MESSAGE_ID = "javax.faces.validator.LengthValidator.MINIMUM";
-    public static final String 	VALIDATOR_ID 	   = "javax.faces.Length";
+    public static final String     MAXIMUM_MESSAGE_ID = "javax.faces.validator.LengthValidator.MAXIMUM";
+    public static final String     MINIMUM_MESSAGE_ID = "javax.faces.validator.LengthValidator.MINIMUM";
+    public static final String     VALIDATOR_ID        = "javax.faces.Length";
 
     private Integer _minimum = null;
     private Integer _maximum = null;

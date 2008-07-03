@@ -45,58 +45,58 @@ import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
  */
 class RestoreViewExecutor implements PhaseExecutor {
 
-	private static final Log log = LogFactory.getLog(LifecycleImpl.class);
+    private static final Log log = LogFactory.getLog(LifecycleImpl.class);
 
-	public boolean execute(FacesContext facesContext) {
-		if(facesContext.getViewRoot() != null) {
-			facesContext.getViewRoot().setLocale(facesContext.getExternalContext().getRequestLocale());
-			RestoreStateUtils.recursivelyHandleComponentReferencesAndSetValid(facesContext, facesContext.getViewRoot());
-			return false;
-		}
+    public boolean execute(FacesContext facesContext) {
+        if(facesContext.getViewRoot() != null) {
+            facesContext.getViewRoot().setLocale(facesContext.getExternalContext().getRequestLocale());
+            RestoreStateUtils.recursivelyHandleComponentReferencesAndSetValid(facesContext, facesContext.getViewRoot());
+            return false;
+        }
 
-		// Derive view identifier
-		String viewId = deriveViewId(facesContext);
+        // Derive view identifier
+        String viewId = deriveViewId(facesContext);
 
-		if (viewId == null) {
-			ExternalContext externalContext = facesContext.getExternalContext();
+        if (viewId == null) {
+            ExternalContext externalContext = facesContext.getExternalContext();
 
-			if(externalContext.getRequestServletPath() == null) {
-				return true;
-			}
-			
-			if (!externalContext.getRequestServletPath().endsWith("/")) {
-				try {
-					externalContext.redirect(externalContext.getRequestServletPath() + "/");
-					facesContext.responseComplete();
-					return true;
-				} catch (IOException e) {
-					throw new FacesException("redirect failed", e);
-				}
-			}
-		}
+            if(externalContext.getRequestServletPath() == null) {
+                return true;
+            }
+            
+            if (!externalContext.getRequestServletPath().endsWith("/")) {
+                try {
+                    externalContext.redirect(externalContext.getRequestServletPath() + "/");
+                    facesContext.responseComplete();
+                    return true;
+                } catch (IOException e) {
+                    throw new FacesException("redirect failed", e);
+                }
+            }
+        }
 
-		Application application = facesContext.getApplication();
-		ViewHandler viewHandler = application.getViewHandler();
+        Application application = facesContext.getApplication();
+        ViewHandler viewHandler = application.getViewHandler();
 
-		// boolean viewCreated = false;
-		UIViewRoot viewRoot = viewHandler.restoreView(facesContext, viewId);
-		if (viewRoot == null) {
-			viewRoot = viewHandler.createView(facesContext, viewId);
-			viewRoot.setViewId(viewId);
-			facesContext.renderResponse();
-			// viewCreated = true;
-		}
+        // boolean viewCreated = false;
+        UIViewRoot viewRoot = viewHandler.restoreView(facesContext, viewId);
+        if (viewRoot == null) {
+            viewRoot = viewHandler.createView(facesContext, viewId);
+            viewRoot.setViewId(viewId);
+            facesContext.renderResponse();
+            // viewCreated = true;
+        }
 
-		facesContext.setViewRoot(viewRoot);
+        facesContext.setViewRoot(viewRoot);
 
     if (!isPostback(facesContext)) {
-			// no POST or query parameters --> set render response flag
-			facesContext.renderResponse();
-		}
+            // no POST or query parameters --> set render response flag
+            facesContext.renderResponse();
+        }
 
-		RestoreStateUtils.recursivelyHandleComponentReferencesAndSetValid(facesContext, viewRoot);
-		return false;
-	}
+        RestoreStateUtils.recursivelyHandleComponentReferencesAndSetValid(facesContext, viewRoot);
+        return false;
+    }
   
     
   /**
@@ -111,43 +111,43 @@ class RestoreViewExecutor implements PhaseExecutor {
       return facesContext.getExternalContext().getRequestParameterMap().containsKey(HtmlResponseStateManager.STANDARD_STATE_SAVING_PARAM);
   } 
 
-	public PhaseId getPhase() {
-		return PhaseId.RESTORE_VIEW;
-	}
+    public PhaseId getPhase() {
+        return PhaseId.RESTORE_VIEW;
+    }
 
-	private static String deriveViewId(FacesContext facesContext) {
-		ExternalContext externalContext = facesContext.getExternalContext();
+    private static String deriveViewId(FacesContext facesContext) {
+        ExternalContext externalContext = facesContext.getExternalContext();
 
-		if (PortletUtil.isPortletRequest(facesContext)) {
-			PortletRequest request = (PortletRequest) externalContext.getRequest();
-			return request.getParameter(MyFacesGenericPortlet.VIEW_ID);
-		}
+        if (PortletUtil.isPortletRequest(facesContext)) {
+            PortletRequest request = (PortletRequest) externalContext.getRequest();
+            return request.getParameter(MyFacesGenericPortlet.VIEW_ID);
+        }
 
-		String viewId = externalContext.getRequestPathInfo(); // getPathInfo
-		if (viewId == null) {
-			// No extra path info found, so it is probably extension mapping
-			viewId = externalContext.getRequestServletPath(); // getServletPath
-			DebugUtils.assertError(viewId != null, log,
-					"RequestServletPath is null, cannot determine viewId of current page.");
-			if (viewId == null)
-				return null;
+        String viewId = externalContext.getRequestPathInfo(); // getPathInfo
+        if (viewId == null) {
+            // No extra path info found, so it is probably extension mapping
+            viewId = externalContext.getRequestServletPath(); // getServletPath
+            DebugUtils.assertError(viewId != null, log,
+                    "RequestServletPath is null, cannot determine viewId of current page.");
+            if (viewId == null)
+                return null;
 
-			// TODO: JSF Spec 2.2.1 - what do they mean by "if the default
-			// ViewHandler implementation is used..." ?
-			String defaultSuffix = externalContext.getInitParameter(ViewHandler.DEFAULT_SUFFIX_PARAM_NAME);
-			String suffix = defaultSuffix != null ? defaultSuffix : ViewHandler.DEFAULT_SUFFIX;
-			DebugUtils.assertError(suffix.charAt(0) == '.', log, "Default suffix must start with a dot!");
+            // TODO: JSF Spec 2.2.1 - what do they mean by "if the default
+            // ViewHandler implementation is used..." ?
+            String defaultSuffix = externalContext.getInitParameter(ViewHandler.DEFAULT_SUFFIX_PARAM_NAME);
+            String suffix = defaultSuffix != null ? defaultSuffix : ViewHandler.DEFAULT_SUFFIX;
+            DebugUtils.assertError(suffix.charAt(0) == '.', log, "Default suffix must start with a dot!");
 
-			int slashPos = viewId.lastIndexOf('/');
-			int extensionPos = viewId.lastIndexOf('.');
-			if (extensionPos == -1 || extensionPos <= slashPos) {
-				log.error("Assumed extension mapping, but there is no extension in " + viewId);
-				viewId = null;
-			} else {
-				viewId = viewId.substring(0, extensionPos) + suffix;
-			}
-		}
+            int slashPos = viewId.lastIndexOf('/');
+            int extensionPos = viewId.lastIndexOf('.');
+            if (extensionPos == -1 || extensionPos <= slashPos) {
+                log.error("Assumed extension mapping, but there is no extension in " + viewId);
+                viewId = null;
+            } else {
+                viewId = viewId.substring(0, extensionPos) + suffix;
+            }
+        }
 
-		return viewId;
-	}
+        return viewId;
+    }
 }

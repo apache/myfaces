@@ -29,12 +29,12 @@ import javax.faces.event.PhaseId;
  * Update model values phase (JSF Spec 2.2.4)
  */
 class UpdateModelValuesExecutor implements PhaseExecutor {
-	public boolean execute(FacesContext facesContext) {
-		facesContext.getViewRoot().processUpdates(facesContext);
-		return false;
-	}
+    public boolean execute(FacesContext facesContext) {
+        facesContext.getViewRoot().processUpdates(facesContext);
+        return false;
+    }
 
-	public PhaseId getPhase() {
-		return PhaseId.UPDATE_MODEL_VALUES;
-	}
+    public PhaseId getPhase() {
+        return PhaseId.UPDATE_MODEL_VALUES;
+    }
 }

@@ -35,27 +35,27 @@ public class PhaseEvent extends EventObject
     private FacesContext _facesContext;
     private PhaseId _phaseId;
 
-	// CONSTRUCTORS
-	public PhaseEvent(FacesContext facesContext, PhaseId phaseId, Lifecycle lifecycle)
-	{
-		super(lifecycle);
+    // CONSTRUCTORS
+    public PhaseEvent(FacesContext facesContext, PhaseId phaseId, Lifecycle lifecycle)
+    {
+        super(lifecycle);
         if (facesContext == null) throw new NullPointerException("facesContext");
         if (phaseId == null) throw new NullPointerException("phaseId");
         if (lifecycle == null) throw new NullPointerException("lifecycle");
 
         _facesContext = facesContext;
         _phaseId = phaseId;
-	}
+    }
 
-	// METHODS
-	public FacesContext getFacesContext()
-	{
-		return _facesContext;
-	}
+    // METHODS
+    public FacesContext getFacesContext()
+    {
+        return _facesContext;
+    }
 
-	public PhaseId getPhaseId()
-	{
-		return _phaseId;
-	}
+    public PhaseId getPhaseId()
+    {
+        return _phaseId;
+    }
 
 }

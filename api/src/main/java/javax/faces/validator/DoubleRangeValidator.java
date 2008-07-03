@@ -129,7 +129,7 @@ public class DoubleRangeValidator
             }
             catch (NumberFormatException e)
             {
-				Object[] args = {uiComponent.getId()};
+                Object[] args = {uiComponent.getId()};
                throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, TYPE_MESSAGE_ID, args));
             }
         }

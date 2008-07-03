@@ -56,9 +56,9 @@ import javax.faces.el.ValueBinding;
 class _ComponentAttributesMap
         implements Map, Serializable
 {
-	private static final long serialVersionUID = -9106832179394257866L;
+    private static final long serialVersionUID = -9106832179394257866L;
 
-	private static final Object[] EMPTY_ARGS = new Object[0];
+    private static final Object[] EMPTY_ARGS = new Object[0];
 
     // The component that is read/written via this map.
     private UIComponent _component;

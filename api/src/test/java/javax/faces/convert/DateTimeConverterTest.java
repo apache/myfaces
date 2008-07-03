@@ -119,8 +119,8 @@ public class DateTimeConverterTest extends AbstractJsfTestCase
         df.setTimeZone(timeZone);
         mock.setType("time");
         mock.setTimeZone(timeZone);
-		mock.setLocale(Locale.US);
-		String current = df.format(new Date());
+        mock.setLocale(Locale.US);
+        String current = df.format(new Date());
         UIInput input = new UIInput();
         input.setValue(new Date());
         Date date = (Date) mock.getAsObject(FacesContext.getCurrentInstance(), input, current);

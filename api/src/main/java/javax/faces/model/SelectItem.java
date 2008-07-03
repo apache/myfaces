@@ -35,7 +35,7 @@ public class SelectItem implements Serializable
     private String _description;
     private boolean _disabled;
 
-	// CONSTRUCTORS
+    // CONSTRUCTORS
     public SelectItem()
     {
     }
@@ -79,7 +79,7 @@ public class SelectItem implements Serializable
         _disabled = disabled;
     }
 
-	// METHODS
+    // METHODS
     public String getDescription()
     {
         return _description;

@@ -33,19 +33,19 @@ import javax.faces.event.PhaseId;
  * render response phase (JSF Spec 2.2.6)
  */
 class RenderResponseExecutor implements PhaseExecutor {
-	public boolean execute(FacesContext facesContext) {
-		Application application = facesContext.getApplication();
-		ViewHandler viewHandler = application.getViewHandler();
+    public boolean execute(FacesContext facesContext) {
+        Application application = facesContext.getApplication();
+        ViewHandler viewHandler = application.getViewHandler();
 
-		try {
-			viewHandler.renderView(facesContext, facesContext.getViewRoot());
-		} catch (IOException e) {
-			throw new FacesException(e.getMessage(), e);
-		}
-		return false;
-	}
+        try {
+            viewHandler.renderView(facesContext, facesContext.getViewRoot());
+        } catch (IOException e) {
+            throw new FacesException(e.getMessage(), e);
+        }
+        return false;
+    }
 
-	public PhaseId getPhase() {
-		return PhaseId.RENDER_RESPONSE;
-	}
+    public PhaseId getPhase() {
+        return PhaseId.RENDER_RESPONSE;
+    }
 }

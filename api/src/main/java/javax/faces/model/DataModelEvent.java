@@ -40,20 +40,20 @@ public class DataModelEvent extends java.util.EventObject
     }
 
 
-	// METHODS
-	public DataModel getDataModel()
-	{
-		return (DataModel) getSource();
-	}
+    // METHODS
+    public DataModel getDataModel()
+    {
+        return (DataModel) getSource();
+    }
 
-	public Object getRowData()
-	{
-		return _data;
-	}
+    public Object getRowData()
+    {
+        return _data;
+    }
 
-	public int getRowIndex()
-	{
-		return _index;
-	}
+    public int getRowIndex()
+    {
+        return _index;
+    }
 
 }

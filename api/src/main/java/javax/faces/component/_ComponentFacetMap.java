@@ -28,8 +28,8 @@ import java.util.*;
 class _ComponentFacetMap
         implements Map, Serializable
 {
-	private static final long serialVersionUID = -3456937594422167629L;
-	private UIComponent _component;
+    private static final long serialVersionUID = -3456937594422167629L;
+    private UIComponent _component;
     private Map _map = new HashMap();
 
     _ComponentFacetMap(UIComponent component)

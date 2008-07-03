@@ -28,7 +28,7 @@ package javax.faces;
 public class FacesException
         extends RuntimeException
 {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The cause of this exception, i.e. the Throwable that caused this exception to be thrown.

@@ -426,7 +426,7 @@ public class ServletExternalContextImpl
         }
         catch (ServletException e)
         {
-        	if (e.getMessage() != null)
+            if (e.getMessage() != null)
             {
                 throw new FacesException(e.getMessage(), e);
             }

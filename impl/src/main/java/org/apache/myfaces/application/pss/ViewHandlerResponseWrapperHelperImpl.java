@@ -77,12 +77,12 @@ public class ViewHandlerResponseWrapperHelperImpl extends HttpServletResponseWra
 
     public String toString() {
         String result = null;
-	if (caw != null) {
-	    result = caw.toString();
-	}
-	else if (tempOS != null) {
-	    result = tempOS.toString();
-	}
+    if (caw != null) {
+        result = caw.toString();
+    }
+    else if (tempOS != null) {
+        result = tempOS.toString();
+    }
 
     return result;
     }

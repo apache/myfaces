@@ -102,16 +102,16 @@ public class AttributeTag
         String name = getName();
         if (component.getAttributes().get(name) == null)
         {
-        	if (UIComponentTag.isValueReference(_value))
-        	{
-            	FacesContext facesContext = FacesContext.getCurrentInstance();
-            	ValueBinding vb = facesContext.getApplication().createValueBinding(_value);
-            	component.setValueBinding(name, vb);
-        	}
-        	else
-        	{
-			if(_value != null) component.getAttributes().put(name, _value);
-        	}
+            if (UIComponentTag.isValueReference(_value))
+            {
+                FacesContext facesContext = FacesContext.getCurrentInstance();
+                ValueBinding vb = facesContext.getApplication().createValueBinding(_value);
+                component.setValueBinding(name, vb);
+            }
+            else
+            {
+            if(_value != null) component.getAttributes().put(name, _value);
+            }
         }
         return Tag.SKIP_BODY;
     }

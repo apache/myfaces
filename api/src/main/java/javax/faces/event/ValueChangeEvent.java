@@ -32,28 +32,28 @@ public class ValueChangeEvent extends FacesEvent {
     private Object _oldValue;
     private Object _newValue;
 
-	// CONSTRUCTORS
-	public ValueChangeEvent(UIComponent uiComponent, Object oldValue, Object newValue)
-	{
+    // CONSTRUCTORS
+    public ValueChangeEvent(UIComponent uiComponent, Object oldValue, Object newValue)
+    {
         super(uiComponent);
         if (uiComponent == null) throw new IllegalArgumentException("uiComponent");
         _oldValue = oldValue;
         _newValue = newValue;
-	}
+    }
 
-	// METHODS
-	public Object getNewValue()
-	{
-		return _newValue;
-	}
+    // METHODS
+    public Object getNewValue()
+    {
+        return _newValue;
+    }
 
-	public Object getOldValue()
-	{
-		return _oldValue;
-	}
+    public Object getOldValue()
+    {
+        return _oldValue;
+    }
 
-	public boolean isAppropriateListener(FacesListener facesListeners)
-	{
+    public boolean isAppropriateListener(FacesListener facesListeners)
+    {
         return facesListeners instanceof ValueChangeListener;
     }
 

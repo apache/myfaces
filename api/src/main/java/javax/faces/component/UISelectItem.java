@@ -80,7 +80,7 @@ public class UISelectItem
     }
 
     public boolean isRendered() {
-    	return true;
+        return true;
     }
 
     public void setItemDescription(String itemDescription)

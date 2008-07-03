@@ -29,8 +29,8 @@ class _ComponentChildrenList
         extends AbstractList
         implements Serializable
 {
-	private static final long serialVersionUID = -6775078929331154224L;
-	private UIComponent _component;
+    private static final long serialVersionUID = -6775078929331154224L;
+    private UIComponent _component;
     private List _list = new ArrayList();
     private Map _idIndexedMap = new HashMap();
 

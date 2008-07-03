@@ -29,22 +29,22 @@ import javax.faces.context.FacesContext;
 public abstract class MethodBinding
 {
 
-	// FIELDS
+    // FIELDS
 
-	// CONSTRUCTORS
-	public MethodBinding()
-	{
-	}
+    // CONSTRUCTORS
+    public MethodBinding()
+    {
+    }
 
-	// METHODS
-	
-	/**
-	 * returns the <code>String</code> of your expression like <code>#{bean.foo}</code>.
-	 */
-	public String getExpressionString()
-	{
+    // METHODS
+    
+    /**
+     * returns the <code>String</code> of your expression like <code>#{bean.foo}</code>.
+     */
+    public String getExpressionString()
+    {
         return null;
-	}
+    }
     
     public abstract Class getType(FacesContext facescontext) throws MethodNotFoundException;
 

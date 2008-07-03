@@ -369,7 +369,7 @@ public class DebugUtils
             }
             else if (value instanceof MethodBinding)
             {
-            	stream.print(((MethodBinding)value).getExpressionString());
+                stream.print(((MethodBinding)value).getExpressionString());
             }
             else
             {

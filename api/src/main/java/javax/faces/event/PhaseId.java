@@ -29,15 +29,15 @@ import java.util.Collections;
  */
 public class PhaseId implements Comparable{
 
-	// FIELDS
-	public static final javax.faces.event.PhaseId ANY_PHASE;
-	public static final javax.faces.event.PhaseId APPLY_REQUEST_VALUES;
-	public static final javax.faces.event.PhaseId INVOKE_APPLICATION;
-	public static final javax.faces.event.PhaseId PROCESS_VALIDATIONS;
-	public static final javax.faces.event.PhaseId RENDER_RESPONSE;
-	public static final javax.faces.event.PhaseId RESTORE_VIEW;
-	public static final javax.faces.event.PhaseId UPDATE_MODEL_VALUES;
-	public static final java.util.List VALUES;
+    // FIELDS
+    public static final javax.faces.event.PhaseId ANY_PHASE;
+    public static final javax.faces.event.PhaseId APPLY_REQUEST_VALUES;
+    public static final javax.faces.event.PhaseId INVOKE_APPLICATION;
+    public static final javax.faces.event.PhaseId PROCESS_VALIDATIONS;
+    public static final javax.faces.event.PhaseId RENDER_RESPONSE;
+    public static final javax.faces.event.PhaseId RESTORE_VIEW;
+    public static final javax.faces.event.PhaseId UPDATE_MODEL_VALUES;
+    public static final java.util.List VALUES;
 
     static
     {
@@ -65,27 +65,27 @@ public class PhaseId implements Comparable{
     private final String _name;
     private final int _ordinal;
 
-	// CONSTRUCTORS
+    // CONSTRUCTORS
     private PhaseId(String name, int ordinal)
     {
         this._name = name;
         this._ordinal = ordinal;
     }
 
-	// METHODS
-	public int compareTo(Object other)
-	{
-		return _ordinal - ((PhaseId)other)._ordinal;
-	}
+    // METHODS
+    public int compareTo(Object other)
+    {
+        return _ordinal - ((PhaseId)other)._ordinal;
+    }
 
-	public int getOrdinal()
-	{
-		return _ordinal;
-	}
+    public int getOrdinal()
+    {
+        return _ordinal;
+    }
 
-	public String toString()
-	{
-		return _name + "(" + _ordinal + ")";
-	}
+    public String toString()
+    {
+        return _name + "(" + _ordinal + ")";
+    }
 
 }

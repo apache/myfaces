@@ -36,29 +36,29 @@ class _MessageUtils
     private static final String DETAIL_SUFFIX = "_detail";
     private static final Class[] NO_ARGS = new Class[0];
 
-	static void addErrorMessage(FacesContext facesContext,
-								UIComponent component,
-								String messageId)
-	{
-		facesContext.addMessage(component.getClientId(facesContext),
-								getMessage(facesContext,
-										   facesContext.getViewRoot().getLocale(),
-										   FacesMessage.SEVERITY_ERROR,
-										   messageId,
-										   null));
-	}
+    static void addErrorMessage(FacesContext facesContext,
+                                UIComponent component,
+                                String messageId)
+    {
+        facesContext.addMessage(component.getClientId(facesContext),
+                                getMessage(facesContext,
+                                           facesContext.getViewRoot().getLocale(),
+                                           FacesMessage.SEVERITY_ERROR,
+                                           messageId,
+                                           null));
+    }
 
-	static void addErrorMessage(FacesContext facesContext,
-								UIComponent component,
-								String messageId, Object[] args)
-	{
-		facesContext.addMessage(component.getClientId(facesContext),
-								getMessage(facesContext,
-										   facesContext.getViewRoot().getLocale(),
-										   FacesMessage.SEVERITY_ERROR,
-										   messageId,
-										   args));
-	}
+    static void addErrorMessage(FacesContext facesContext,
+                                UIComponent component,
+                                String messageId, Object[] args)
+    {
+        facesContext.addMessage(component.getClientId(facesContext),
+                                getMessage(facesContext,
+                                           facesContext.getViewRoot().getLocale(),
+                                           FacesMessage.SEVERITY_ERROR,
+                                           messageId,
+                                           args));
+    }
 
     static void addErrorMessage(FacesContext facesContext,
             UIComponent component, Throwable cause)
@@ -67,16 +67,16 @@ class _MessageUtils
 
         while(cause != null)
         {
-        	Throwable parentCause = getCause(cause);
-        	if (parentCause == cause)
-        	{
-        		break;
-        	}
+            Throwable parentCause = getCause(cause);
+            if (parentCause == cause)
+            {
+                break;
+            }
 
-        	if(buf.length()>0)
-        	{
+            if(buf.length()>0)
+            {
                 buf.append(", ");
-        	}
+            }
             
             buf.append(cause.getLocalizedMessage());
 

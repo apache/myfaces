@@ -118,14 +118,14 @@ public class ELParserHelper
         {
             if (posOpenBrace > 0)
             {
-				if( posOpenBrace-1 > remainsPos )
-					sb.append(expressionString.substring(remainsPos, posOpenBrace - 1));
+                if( posOpenBrace-1 > remainsPos )
+                    sb.append(expressionString.substring(remainsPos, posOpenBrace - 1));
 
                 if (expressionString.charAt(posOpenBrace - 1) == '$')
                 {
                     sb.append("${'${'}");
-					remainsPos = posOpenBrace+1;
-					continue;
+                    remainsPos = posOpenBrace+1;
+                    continue;
                 }
                 else if (expressionString.charAt(posOpenBrace - 1) == '#')
                 {
@@ -150,23 +150,23 @@ public class ELParserHelper
 //                    else
 //                    {
                         sb.append("${");
-						int posCloseBrace = indexOfMatchingClosingBrace(expressionString, posOpenBrace);
+                        int posCloseBrace = indexOfMatchingClosingBrace(expressionString, posOpenBrace);
                         sb.append(expressionString.substring(posOpenBrace + 1, posCloseBrace + 1));
-						remainsPos = posCloseBrace + 1;
-						continue;
+                        remainsPos = posCloseBrace + 1;
+                        continue;
 //                    }
                 }else{
-					if( posOpenBrace > remainsPos )
-						sb.append( expressionString.charAt(posOpenBrace - 1) );
+                    if( posOpenBrace > remainsPos )
+                        sb.append( expressionString.charAt(posOpenBrace - 1) );
                 }
             }
 
-			// Standalone brace
-			sb.append('{');
-			remainsPos = posOpenBrace + 1;
+            // Standalone brace
+            sb.append('{');
+            remainsPos = posOpenBrace + 1;
         }
 
-		sb.append(expressionString.substring(remainsPos));
+        sb.append(expressionString.substring(remainsPos));
 
         // Create a new String to shrink mem size since we are caching
         return new String(sb.toString());

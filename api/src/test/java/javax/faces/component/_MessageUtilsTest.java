@@ -48,17 +48,17 @@ public class _MessageUtilsTest extends TestCase
 
   public void testGetCause() throws Exception
   {
-	  IllegalStateException e1 = new IllegalStateException("e1");
-	  FacesException e2 = new FacesException("e2");
-	  FacesException e3 = new FacesException("e3", e1);
-	  
-	  Throwable t1 = _MessageUtils.getCause(e1);
-	  assertNull(t1);
-	  
-	  Throwable t2 = _MessageUtils.getCause(e2);
-	  assertNull(t2);
-	  
-	  Throwable t3 = _MessageUtils.getCause(e3);
-	  assertSame(e1, t3);
+      IllegalStateException e1 = new IllegalStateException("e1");
+      FacesException e2 = new FacesException("e2");
+      FacesException e3 = new FacesException("e3", e1);
+      
+      Throwable t1 = _MessageUtils.getCause(e1);
+      assertNull(t1);
+      
+      Throwable t2 = _MessageUtils.getCause(e2);
+      assertNull(t2);
+      
+      Throwable t3 = _MessageUtils.getCause(e3);
+      assertSame(e1, t3);
   }
 }

@@ -118,16 +118,16 @@ public class UIViewRoot
                     break;
                 } finally {
 
-	                try
-	                {
+                    try
+                    {
                         listiterator.remove();
-	                }
-	                catch(ConcurrentModificationException cme)
-	                {
-		                int eventIndex = listiterator.previousIndex();
-		                _events.remove(eventIndex);
-		                listiterator = _events.listIterator();
-	                }
+                    }
+                    catch(ConcurrentModificationException cme)
+                    {
+                        int eventIndex = listiterator.previousIndex();
+                        _events.remove(eventIndex);
+                        listiterator = _events.listIterator();
+                    }
                 }
             }
         }
@@ -326,7 +326,7 @@ public class UIViewRoot
 
     public boolean isRendered()
     {
-    	return true;
+        return true;
     }
 
     /**
@@ -357,7 +357,7 @@ public class UIViewRoot
 
     public String getId()
     {
-    	// return null;
+        // return null;
 
         // Re-enable for now.
         return super.getId();
@@ -368,7 +368,7 @@ public class UIViewRoot
      */
     public String getClientId(FacesContext context)
     {
-  	  return null;
+        return null;
     }
 
     public Object saveState(FacesContext context)

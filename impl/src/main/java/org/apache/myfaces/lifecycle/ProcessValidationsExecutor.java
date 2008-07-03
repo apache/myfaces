@@ -28,12 +28,12 @@ import javax.faces.event.PhaseId;
  * Process validations phase (JSF Spec 2.2.3)
  */
 class ProcessValidationsExecutor implements PhaseExecutor {
-	public boolean execute(FacesContext facesContext) {
-		facesContext.getViewRoot().processValidators(facesContext);
-		return false;
-	}
+    public boolean execute(FacesContext facesContext) {
+        facesContext.getViewRoot().processValidators(facesContext);
+        return false;
+    }
 
-	public PhaseId getPhase() {
-		return PhaseId.PROCESS_VALIDATIONS;
-	}
+    public PhaseId getPhase() {
+        return PhaseId.PROCESS_VALIDATIONS;
+    }
 }

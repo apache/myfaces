@@ -75,7 +75,7 @@ public class UIParameter
     }
 
     public boolean isRendered() {
-    	return true;
+        return true;
     }
 
     public void setName(String name)

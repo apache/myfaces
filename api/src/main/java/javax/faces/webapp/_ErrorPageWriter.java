@@ -120,11 +120,11 @@ class _ErrorPageWriter {
     public static void writeCause(Writer writer, Throwable ex) throws IOException {
         String msg = ex.getMessage();
         for(;;) {
-        	Throwable t = getCause(ex);
-        	if (t == null)
-        		break;
-        	
-        	ex = t;
+            Throwable t = getCause(ex);
+            if (t == null)
+                break;
+            
+            ex = t;
             if (ex.getMessage()!=null) msg = ex.getMessage();
         }
 
@@ -152,10 +152,10 @@ class _ErrorPageWriter {
             } else if ("now".equals(ERROR_PARTS[i])) {
                 writer.write(DateFormat.getDateTimeInstance().format(now));
             } else if ("tree".equals(ERROR_PARTS[i])) {
-				if (faces.getViewRoot() != null) {
-					writeComponent(writer, faces.getViewRoot(), getErrorId(e));
-				}
-			} else if ("vars".equals(ERROR_PARTS[i])) {
+                if (faces.getViewRoot() != null) {
+                    writeComponent(writer, faces.getViewRoot(), getErrorId(e));
+                }
+            } else if ("vars".equals(ERROR_PARTS[i])) {
                 writeVariables(writer, faces);
             } else if ("cause".equals(ERROR_PARTS[i])) {
                 writeCause(writer, e);

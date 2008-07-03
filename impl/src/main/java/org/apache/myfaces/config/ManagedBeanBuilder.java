@@ -111,15 +111,15 @@ public class ManagedBeanBuilder
             switch (property.getType())
             {
                 case ManagedProperty.TYPE_LIST:
-                	
-                	// JSF 1.1, 5.3.1.3 
-                	// Call the property getter, if it exists.
-                	// If the getter returns null or doesn't exist, create a java.util.ArrayList,
-                	// otherwise use the returned Object ...
-                	if(PropertyUtils.isReadable(bean, property.getPropertyName()))
-                		value = propertyResolver.getValue(bean, property.getPropertyName());
-                	value = value == null ? new ArrayList() : value;
-                	
+                    
+                    // JSF 1.1, 5.3.1.3 
+                    // Call the property getter, if it exists.
+                    // If the getter returns null or doesn't exist, create a java.util.ArrayList,
+                    // otherwise use the returned Object ...
+                    if(PropertyUtils.isReadable(bean, property.getPropertyName()))
+                        value = propertyResolver.getValue(bean, property.getPropertyName());
+                    value = value == null ? new ArrayList() : value;
+                    
                     if (value instanceof List) {
                         initializeList(facesContext, property.getListEntries(), (List) value);
 
@@ -144,14 +144,14 @@ public class ManagedBeanBuilder
                     break;
                 case ManagedProperty.TYPE_MAP:
 
-                	// JSF 1.1, 5.3.1.3 
-                	// Call the property getter, if it exists.
-                	// If the getter returns null or doesn't exist, create a java.util.HashMap,
-                	// otherwise use the returned java.util.Map .
-                	if(PropertyUtils.isReadable(bean, property.getPropertyName()))
-                		value = propertyResolver.getValue(bean, property.getPropertyName());
-                	value = value == null ? new HashMap() : value;
-                	
+                    // JSF 1.1, 5.3.1.3 
+                    // Call the property getter, if it exists.
+                    // If the getter returns null or doesn't exist, create a java.util.HashMap,
+                    // otherwise use the returned java.util.Map .
+                    if(PropertyUtils.isReadable(bean, property.getPropertyName()))
+                        value = propertyResolver.getValue(bean, property.getPropertyName());
+                    value = value == null ? new HashMap() : value;
+                    
                     if (! (value instanceof Map)) {
                         value = new HashMap();
                     }
@@ -268,9 +268,9 @@ public class ManagedBeanBuilder
             return "application";
         }
 
-	    // check implicit objects
+        // check implicit objects
         if (beanName.equalsIgnoreCase("cookie")) {
-	    return "request";
+        return "request";
         }
         if (beanName.equalsIgnoreCase("facesContext")) {
             return "request";
@@ -284,7 +284,7 @@ public class ManagedBeanBuilder
         }
 
         if (beanName.equalsIgnoreCase("initParam")) {
-	    return "application";
+        return "application";
         }
         if (beanName.equalsIgnoreCase("param")) {
             return "request";

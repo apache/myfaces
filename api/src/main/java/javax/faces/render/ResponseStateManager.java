@@ -30,7 +30,7 @@ import java.io.IOException;
  */
 public abstract class ResponseStateManager
 {
-	
+    
     public abstract void writeState(FacesContext context,
                                     StateManager.SerializedView state)
             throws IOException;

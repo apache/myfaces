@@ -27,24 +27,24 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 
 public class TestConverter implements Converter, Serializable {
-	private static final long serialVersionUID = 8573936507630310334L;
+    private static final long serialVersionUID = 8573936507630310334L;
 
-	public Object getAsObject(FacesContext context, UIComponent component,
-			String value) throws ConverterException {
-		return new Integer(value);
-	}
+    public Object getAsObject(FacesContext context, UIComponent component,
+            String value) throws ConverterException {
+        return new Integer(value);
+    }
 
-	public String getAsString(FacesContext context, UIComponent component,
-			Object value) throws ConverterException {
-		String asString = null;
-		if(value == null) {
-			asString = "";
-		} else if(value instanceof String) {
-			asString = value.toString();
-		} else {
-			asString = ((Integer)value).intValue() + "";
-		}
-		return asString;
-	}
+    public String getAsString(FacesContext context, UIComponent component,
+            Object value) throws ConverterException {
+        String asString = null;
+        if(value == null) {
+            asString = "";
+        } else if(value instanceof String) {
+            asString = value.toString();
+        } else {
+            asString = ((Integer)value).intValue() + "";
+        }
+        return asString;
+    }
 
 }

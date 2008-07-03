@@ -389,20 +389,20 @@ public abstract class UIComponentTag
     private void addOutputComponentAfterComponent(UIComponentTag parentTag,
                                                   UIComponent outputComponent,
                                                   UIComponent component) {
-	int indexOfComponentInParent = 0;
-	UIComponent parent = component.getParent();
+    int indexOfComponentInParent = 0;
+    UIComponent parent = component.getParent();
 
-	if (null == parent) {
-	    return;
-	}
-	List children = parent.getChildren();
-	indexOfComponentInParent = children.indexOf(component);
-	if (children.size() - 1 == indexOfComponentInParent) {
-	    children.add(outputComponent);
-	}
-	else {
-	    children.add(indexOfComponentInParent + 1, outputComponent);
-	}
+    if (null == parent) {
+        return;
+    }
+    List children = parent.getChildren();
+    indexOfComponentInParent = children.indexOf(component);
+    if (children.size() - 1 == indexOfComponentInParent) {
+        children.add(outputComponent);
+    }
+    else {
+        children.add(indexOfComponentInParent + 1, outputComponent);
+    }
     parentTag.addChildIdToParentTag(parentTag,outputComponent.getId());
 
     }
@@ -530,14 +530,14 @@ public abstract class UIComponentTag
         {
             if (!isSuppressed())
             {
-            	// Note that encodeBegin is inside this if-clause because for components that do
-            	// NOT render their children, begin was already called during the doStartTag method.
-            	// However for components that do render their children, we want those children to
-            	// exist before the begin method gets called, so delay until here. Of course that
-            	// causes nasty problems when this tag has non-JSF stuff inside it, eg plain text.
-            	// That plain text will be output before encodeBegin is invoked. The spec authors
-            	// presumably decided this was an acceptable tradeoff to allow encodeBegin to have
-            	// access to the children.
+                // Note that encodeBegin is inside this if-clause because for components that do
+                // NOT render their children, begin was already called during the doStartTag method.
+                // However for components that do render their children, we want those children to
+                // exist before the begin method gets called, so delay until here. Of course that
+                // causes nasty problems when this tag has non-JSF stuff inside it, eg plain text.
+                // That plain text will be output before encodeBegin is invoked. The spec authors
+                // presumably decided this was an acceptable tradeoff to allow encodeBegin to have
+                // access to the children.
                 if (component.getRendersChildren())
                 {
                     encodeBegin();
@@ -732,17 +732,17 @@ public abstract class UIComponentTag
             _componentInstance = parent.getFacet(facetName);
             if (_componentInstance == null)
             {
-            	_componentInstance = createComponentInstance(context, id);
+                _componentInstance = createComponentInstance(context, id);
                 setProperties(_componentInstance);
                 parent.getFacets().put(facetName, _componentInstance);
             }
             else
             {
-            	if (checkFacetNameOnParentExists(parentTag, facetName))
-            	{
-            		throw new IllegalStateException("facet '" + facetName + "' already has a child associated. current associated component id: "
-            			+ _componentInstance.getClientId(context) + " class: " + _componentInstance.getClass().getName());
-            	}
+                if (checkFacetNameOnParentExists(parentTag, facetName))
+                {
+                    throw new IllegalStateException("facet '" + facetName + "' already has a child associated. current associated component id: "
+                        + _componentInstance.getClientId(context) + " class: " + _componentInstance.getClass().getName());
+                }
             }
             
             addFacetNameToParentTag(parentTag, facetName);

@@ -33,7 +33,7 @@ public class DoubleConverter
         implements Converter
 {
     // API FIELDS
-	// the wrong string javax.faces.DoubleTime is required to be compatible with JSF RI and its TCK tests
+    // the wrong string javax.faces.DoubleTime is required to be compatible with JSF RI and its TCK tests
     public static final String CONVERTER_ID = "javax.faces.DoubleTime";
 
 
