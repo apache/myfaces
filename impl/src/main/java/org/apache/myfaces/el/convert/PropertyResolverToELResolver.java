@@ -195,7 +195,7 @@ public class PropertyResolverToELResolver extends ELResolver
             
             // see: https://issues.apache.org/jira/browse/MYFACES-1670
             context.setPropertyResolved(
-            		FacesContext.getCurrentInstance().getELContext().isPropertyResolved());
+                    FacesContext.getCurrentInstance().getELContext().isPropertyResolved());
             
             return value;
         }

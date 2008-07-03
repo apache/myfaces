@@ -98,23 +98,23 @@ public class HtmlResponseStateManager
                                        ResponseWriter responseWriter,
                                        Object savedState) throws IOException
     {
-    	String serializedState = StateUtils.construct(savedState,
+        String serializedState = StateUtils.construct(savedState,
                 facesContext.getExternalContext());
         ExternalContext extContext = facesContext.getExternalContext();
         MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(extContext);
         // Write Javascript viewstate if enabled and if javascript is allowed,
         // otherwise write hidden input
         if (JavascriptUtils.isJavascriptAllowed(extContext) && myfacesConfig.isViewStateJavascript()) {
-        	HtmlRendererUtils.renderViewStateJavascript(facesContext, STANDARD_STATE_SAVING_PARAM, serializedState);
+            HtmlRendererUtils.renderViewStateJavascript(facesContext, STANDARD_STATE_SAVING_PARAM, serializedState);
         } else {
-        	responseWriter.startElement(HTML.INPUT_ELEM, null);
-        	responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
-        	responseWriter.writeAttribute(HTML.NAME_ATTR, STANDARD_STATE_SAVING_PARAM, null);
+            responseWriter.startElement(HTML.INPUT_ELEM, null);
+            responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
+            responseWriter.writeAttribute(HTML.NAME_ATTR, STANDARD_STATE_SAVING_PARAM, null);
             if (myfacesConfig.isRenderViewStateId()) {
                 responseWriter.writeAttribute(HTML.ID_ATTR, STANDARD_STATE_SAVING_PARAM, null);
             }
             responseWriter.writeAttribute(HTML.VALUE_ATTR, serializedState, null);
-        	responseWriter.endElement(HTML.INPUT_ELEM);
+            responseWriter.endElement(HTML.INPUT_ELEM);
         }
     }
 

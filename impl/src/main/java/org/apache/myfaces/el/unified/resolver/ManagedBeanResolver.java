@@ -203,27 +203,27 @@ public class ManagedBeanResolver extends ELResolver {
         return obj;
     }
     
-	private void putInScope(ManagedBean managedBean, ExternalContext extContext, Object obj) {
+    private void putInScope(ManagedBean managedBean, ExternalContext extContext, Object obj) {
 
-		final String managedBeanName = managedBean.getManagedBeanName();
-		
-		if (obj == null) {
-			if (log.isDebugEnabled())
-				log.debug("Variable '" + managedBeanName + "' could not be resolved.");
-		} else {
+        final String managedBeanName = managedBean.getManagedBeanName();
+        
+        if (obj == null) {
+            if (log.isDebugEnabled())
+                log.debug("Variable '" + managedBeanName + "' could not be resolved.");
+        } else {
 
-			String scopeKey = managedBean.getManagedBeanScope();
+            String scopeKey = managedBean.getManagedBeanScope();
 
-			// find the scope handler object
-			Scope scope = (Scope) _scopes.get(scopeKey);
-			if (scope == null) {
-				log.error("Managed bean '" + managedBeanName + "' has illegal scope: " + scopeKey);
-			} else {
-				scope.put(extContext, managedBeanName, obj);
-			}
-		}
+            // find the scope handler object
+            Scope scope = (Scope) _scopes.get(scopeKey);
+            if (scope == null) {
+                log.error("Managed bean '" + managedBeanName + "' has illegal scope: " + scopeKey);
+            } else {
+                scope.put(extContext, managedBeanName, obj);
+            }
+        }
 
-	}
+    }
     
     // get the FacesContext from the ELContext
     private FacesContext facesContext(ELContext context) {

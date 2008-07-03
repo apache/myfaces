@@ -32,29 +32,29 @@ class _MessageUtils
 {
     private static final String DETAIL_SUFFIX = "_detail";
 
-	static void addErrorMessage(FacesContext facesContext,
-								UIComponent component,
-								String messageId)
-	{
-		facesContext.addMessage(component.getClientId(facesContext),
-								getMessage(facesContext,
-										   facesContext.getViewRoot().getLocale(),
-										   FacesMessage.SEVERITY_ERROR,
-										   messageId,
-										   null));
-	}
+    static void addErrorMessage(FacesContext facesContext,
+                                UIComponent component,
+                                String messageId)
+    {
+        facesContext.addMessage(component.getClientId(facesContext),
+                                getMessage(facesContext,
+                                           facesContext.getViewRoot().getLocale(),
+                                           FacesMessage.SEVERITY_ERROR,
+                                           messageId,
+                                           null));
+    }
 
-	static void addErrorMessage(FacesContext facesContext,
-								UIComponent component,
-								String messageId, Object[] args)
-	{
-		facesContext.addMessage(component.getClientId(facesContext),
-								getMessage(facesContext,
-										   facesContext.getViewRoot().getLocale(),
-										   FacesMessage.SEVERITY_ERROR,
-										   messageId,
-										   args));
-	}
+    static void addErrorMessage(FacesContext facesContext,
+                                UIComponent component,
+                                String messageId, Object[] args)
+    {
+        facesContext.addMessage(component.getClientId(facesContext),
+                                getMessage(facesContext,
+                                           facesContext.getViewRoot().getLocale(),
+                                           FacesMessage.SEVERITY_ERROR,
+                                           messageId,
+                                           args));
+    }
 
     static void addErrorMessage(FacesContext facesContext,
             UIComponent component, Throwable cause)
@@ -200,16 +200,16 @@ class _MessageUtils
     }
     
     static String getLabel(FacesContext facesContext, UIComponent component) {
-    	Object label = component.getAttributes().get("label");
-    	if(label != null)
-    		return label.toString();
-    	
-    	ValueExpression expression = component.getValueExpression("label");
-    	if(expression != null)
-    		return expression.getExpressionString();
-    		//return (String)expression.getValue(facesContext.getELContext());
-    	
-    	//If no label is not specified, use clientId
-    	return component.getClientId( facesContext );
+        Object label = component.getAttributes().get("label");
+        if(label != null)
+            return label.toString();
+        
+        ValueExpression expression = component.getValueExpression("label");
+        if(expression != null)
+            return expression.getExpressionString();
+            //return (String)expression.getValue(facesContext.getELContext());
+        
+        //If no label is not specified, use clientId
+        return component.getClientId( facesContext );
     }
 }

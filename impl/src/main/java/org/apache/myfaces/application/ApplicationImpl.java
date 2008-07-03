@@ -721,7 +721,7 @@ public class ApplicationImpl extends Application
             throw new FacesException("Could not find any registered converter-class by converterId : "+converterId);
         }
 
-		try
+        try
         {
             Converter converter = (Converter) converterClass.newInstance();
 
@@ -752,7 +752,7 @@ public class ApplicationImpl extends Application
         // Get EnumConverter for enum classes with no special converter, check
         // here as recursive call with java.lang.Enum will not work
         if (converterClassName == null && targetClass.isEnum()) {
-        	converterClassName = _converterClassNameToClassMap.get(Enum.class);
+            converterClassName = _converterClassNameToClassMap.get(Enum.class);
         }
 
         // Locate a Converter registered for interfaces that are

@@ -21,8 +21,8 @@ package org.apache.myfaces.el.unified.resolver;
 
 public class BulkOrder implements Order {
 
-	public String toString() {
-		return "I am a Bulk Order";
-	}
-	
+    public String toString() {
+        return "I am a Bulk Order";
+    }
+    
 }

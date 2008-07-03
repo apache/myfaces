@@ -86,8 +86,8 @@ public class UISelectManyTest extends AbstractJsfTestCase {
 
   public void testValidateIntArray() {
     
-	facesContext.getViewRoot().setLocale(_TEST_LOCALE);
-	  
+    facesContext.getViewRoot().setLocale(_TEST_LOCALE);
+      
     UISelectMany selectMany = new UISelectMany();
     selectMany.setId("selectMany");
     selectMany.setRendererType(null);
@@ -112,7 +112,7 @@ public class UISelectManyTest extends AbstractJsfTestCase {
 
   public void testValidateStringArray() {
 
-	facesContext.getViewRoot().setLocale(_TEST_LOCALE);
+    facesContext.getViewRoot().setLocale(_TEST_LOCALE);
 
     UISelectMany selectMany = new UISelectMany();
     selectMany.setId("selectMany");
@@ -138,8 +138,8 @@ public class UISelectManyTest extends AbstractJsfTestCase {
 
   public void testValidateStringList() {
 
-	facesContext.getViewRoot().setLocale(_TEST_LOCALE);
-	  
+    facesContext.getViewRoot().setLocale(_TEST_LOCALE);
+      
     UISelectMany selectMany = new UISelectMany();
     selectMany.setId("selectMany");
     selectMany.setRendererType(null);

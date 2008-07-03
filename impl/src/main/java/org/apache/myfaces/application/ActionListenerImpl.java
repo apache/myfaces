@@ -36,7 +36,7 @@ public class ActionListenerImpl
     implements ActionListener
 {
 
-	public void processAction(ActionEvent actionEvent) throws AbortProcessingException
+    public void processAction(ActionEvent actionEvent) throws AbortProcessingException
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Application application = facesContext.getApplication();
@@ -79,8 +79,8 @@ public class ActionListenerImpl
         navigationHandler.handleNavigation(facesContext,
                                            fromAction,
                                            outcome);
-		//Render Response if needed
-		facesContext.renderResponse();
+        //Render Response if needed
+        facesContext.renderResponse();
 
     }
 }

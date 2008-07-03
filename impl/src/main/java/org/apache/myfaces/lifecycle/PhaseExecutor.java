@@ -36,8 +36,8 @@ interface PhaseExecutor {
    * @param facesContext The <code>FacesContext</code> for the current request we are processing 
    * @return <code>true</code> if execution should be stopped
    */
-	boolean execute(FacesContext facesContext);
-	
+    boolean execute(FacesContext facesContext);
+    
   /**
    * Returns the <code>PhaseId</code> for which the implemented executor is invoked 
    * @return

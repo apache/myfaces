@@ -9,11 +9,11 @@ import javax.annotation.PreDestroy;
 
 class AnnotatedManagedBean {
 
-	private boolean postConstructCalled = false; // using a stub for a mock
+    private boolean postConstructCalled = false; // using a stub for a mock
 
-	private boolean preDestroyCalled = false; // using a stob for a mock here
+    private boolean preDestroyCalled = false; // using a stob for a mock here
 
-	boolean throwExcetion;
+    boolean throwExcetion;
 
 
     public AnnotatedManagedBean()
@@ -21,33 +21,33 @@ class AnnotatedManagedBean {
     }
 
     public AnnotatedManagedBean(boolean throwExcetion) {
-		this.throwExcetion = throwExcetion;
-	}
+        this.throwExcetion = throwExcetion;
+    }
 
-	@PostConstruct
-	public void postConstruct()  {
-		postConstructCalled = true;
+    @PostConstruct
+    public void postConstruct()  {
+        postConstructCalled = true;
 
-		if (throwExcetion) {
-			throw new RuntimeException();
+        if (throwExcetion) {
+            throw new RuntimeException();
         }
     }
 
-	@PreDestroy
-	public void preDestroy() {
-		preDestroyCalled = true;
+    @PreDestroy
+    public void preDestroy() {
+        preDestroyCalled = true;
 
-		if (throwExcetion) {
-			throw new RuntimeException();
+        if (throwExcetion) {
+            throw new RuntimeException();
         }
-	}
+    }
 
-	boolean isPostConstructCalled() {
-		return postConstructCalled;
-	}
+    boolean isPostConstructCalled() {
+        return postConstructCalled;
+    }
 
-	boolean isPreDestroyCalled() {
-		return preDestroyCalled;
-	}
+    boolean isPreDestroyCalled() {
+        return preDestroyCalled;
+    }
 
 }

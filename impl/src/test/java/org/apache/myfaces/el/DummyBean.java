@@ -18,27 +18,27 @@ package org.apache.myfaces.el;
 import java.util.Map;
 
 public class DummyBean {
-	private Map map;
-	
-	private int integerPrimitive = 0;
+    private Map map;
+    
+    private int integerPrimitive = 0;
 
-	public DummyBean(Map map) {
-		this.map = map;
-	}
+    public DummyBean(Map map) {
+        this.map = map;
+    }
 
-	public Map getMap() {
-		return map;
-	}
+    public Map getMap() {
+        return map;
+    }
 
-	public void setMap(Map map) {
-		this.map = map;
-	}
-	
-	public int getIntegerPrimitive(){
-		return integerPrimitive;
-	}
-	public void setIntegerPrimitive(int integerPrimitive){
-		this.integerPrimitive = integerPrimitive;
-	}
+    public void setMap(Map map) {
+        this.map = map;
+    }
+    
+    public int getIntegerPrimitive(){
+        return integerPrimitive;
+    }
+    public void setIntegerPrimitive(int integerPrimitive){
+        this.integerPrimitive = integerPrimitive;
+    }
 }
 

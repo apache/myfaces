@@ -70,7 +70,7 @@ public final class FacesServlet
         _servletConfig = null;
         _facesContextFactory = null;
         _lifecycle = null;
-		if(log.isTraceEnabled()) log.trace("destroy");
+        if(log.isTraceEnabled()) log.trace("destroy");
     }
 
     public ServletConfig getServletConfig()
@@ -97,7 +97,7 @@ public final class FacesServlet
     public void init(ServletConfig servletConfig)
             throws ServletException
     {
-		if(log.isTraceEnabled()) log.trace("init begin");
+        if(log.isTraceEnabled()) log.trace("init begin");
         _servletConfig = servletConfig;
         _facesContextFactory = (FacesContextFactory)FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
         //TODO: null-check for Weblogic, that tries to initialize Servlet before ContextListener
@@ -106,7 +106,7 @@ public final class FacesServlet
         //So we can acquire it here once:
         LifecycleFactory lifecycleFactory = (LifecycleFactory)FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
         _lifecycle = lifecycleFactory.getLifecycle(getLifecycleId());
-		if(log.isTraceEnabled()) log.trace("init end");
+        if(log.isTraceEnabled()) log.trace("init end");
     }
 
     public void service(ServletRequest request,
@@ -140,18 +140,18 @@ public final class FacesServlet
             return;
         }
 
-		if(log.isTraceEnabled()) log.trace("service begin");
+        if(log.isTraceEnabled()) log.trace("service begin");
 
         FacesContext facesContext = prepareFacesContext(request, response);
 
         try {
-			_lifecycle.execute(facesContext);
+            _lifecycle.execute(facesContext);
 
             if (!handleQueuedExceptions(facesContext))
             {
                 _lifecycle.render(facesContext);
             }
-		}
+        }
         catch (Exception e)
         {
             handleLifecycleException(facesContext, e);
@@ -160,7 +160,7 @@ public final class FacesServlet
         {
             facesContext.release();
         }
-		if(log.isTraceEnabled()) log.trace("service end");
+        if(log.isTraceEnabled()) log.trace("service end");
     }
 
     /**This method makes sure we see an exception page also

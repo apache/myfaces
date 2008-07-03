@@ -38,12 +38,12 @@ public class HtmlFormRenderer
         extends HtmlFormRendererBase
 {
     //private static final Log log = LogFactory.getLog(HtmlFormRenderer.class);
-	
-	@Override
-	protected void afterFormElementsEnd(FacesContext facesContext,
-			UIComponent component) throws IOException {
-		super.afterFormElementsEnd(facesContext, component);
-		
+    
+    @Override
+    protected void afterFormElementsEnd(FacesContext facesContext,
+            UIComponent component) throws IOException {
+        super.afterFormElementsEnd(facesContext, component);
+        
         ResponseWriter writer = facesContext.getResponseWriter();
         ExternalContext extContext = facesContext.getExternalContext();
         
@@ -56,5 +56,5 @@ public class HtmlFormRenderer
             writer.writeAttribute(HTML.VALUE_ATTR, "", null);
             writer.endElement(HTML.INPUT_ELEM);
         }
-	}
+    }
 }

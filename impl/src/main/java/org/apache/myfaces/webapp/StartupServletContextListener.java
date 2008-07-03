@@ -49,7 +49,7 @@ import javax.servlet.ServletContextListener;
  * @version $Revision$ $Date$
  */
 public class StartupServletContextListener extends AbstractMyFacesListener
-	implements ServletContextListener
+    implements ServletContextListener
 {
     static final String FACES_INIT_DONE = StartupServletContextListener.class.getName() + ".FACES_INIT_DONE";
 
@@ -115,8 +115,8 @@ public class StartupServletContextListener extends AbstractMyFacesListener
 
     public void contextDestroyed(ServletContextEvent event)
     {
-    	doPredestroy(event);
-    	
+        doPredestroy(event);
+        
         if (_facesInitializer != null && _servletContext != null)
         {
             _facesInitializer.destroyFaces(_servletContext);
@@ -126,15 +126,15 @@ public class StartupServletContextListener extends AbstractMyFacesListener
     }
     
     private void doPredestroy(ServletContextEvent event) {
-    			
-    	ServletContext ctx = event.getServletContext();
-       	Enumeration<String> attributes = ctx.getAttributeNames();
-       	
-       	while(attributes.hasMoreElements()) 
-       	{
-       		String name = attributes.nextElement();
-       		Object value = ctx.getAttribute(name);
-       		doPreDestroy(value, name, ManagedBeanBuilder.APPLICATION);
-       	}
+                
+        ServletContext ctx = event.getServletContext();
+           Enumeration<String> attributes = ctx.getAttributeNames();
+           
+           while(attributes.hasMoreElements()) 
+           {
+               String name = attributes.nextElement();
+               Object value = ctx.getAttribute(name);
+               doPreDestroy(value, name, ManagedBeanBuilder.APPLICATION);
+           }
     }
 }

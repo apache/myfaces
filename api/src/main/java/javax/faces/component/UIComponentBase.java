@@ -286,7 +286,7 @@ public abstract class UIComponentBase
      * <code>invokeOnComponent</code> must be implemented in <code>UIComponentBase</code> too...
      */
     public boolean invokeOnComponent(FacesContext context, String clientId, ContextCallback callback) throws FacesException{
-    	return super.invokeOnComponent(context, clientId, callback);
+        return super.invokeOnComponent(context, clientId, callback);
     }
 
     /**
@@ -449,7 +449,7 @@ public abstract class UIComponentBase
         findBase = _ComponentUtils.findComponent(findBase, id);
         if (findBase == null)
         {
-        	return null;
+            return null;
         }
         
         if (!(findBase instanceof NamingContainer))
@@ -1076,7 +1076,7 @@ public abstract class UIComponentBase
 
     private Object saveAttributesMap()
     {
-    	return _attributesMap != null ? _attributesMap.getUnderlyingMap() : null;
+        return _attributesMap != null ? _attributesMap.getUnderlyingMap() : null;
     }
 
     private void restoreAttributesMap(Object stateObj)
@@ -1148,7 +1148,7 @@ public abstract class UIComponentBase
 
         // If new id is the same as old it must be valid
         if (string.equals(_id)) {
-        	return;
+            return;
         }
         
         //2. First character must be a letter or an underscore ('_').
@@ -1158,7 +1158,7 @@ public abstract class UIComponentBase
         }
         for (int i = 1; i < string.length(); i++)
         {
-        	char c = string.charAt(i);
+            char c = string.charAt(i);
             //3. Subsequent characters must be a letter, a digit, an underscore ('_'), or a dash ('-').
             if(!Character.isLetterOrDigit(c) && c !='-' && c !='_')
             {

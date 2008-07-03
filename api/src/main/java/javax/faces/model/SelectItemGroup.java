@@ -30,35 +30,35 @@ public class SelectItemGroup extends SelectItem
     // FIELDS
     private SelectItem[] _selectItems;
 
-	// CONSTRUCTORS
-	public SelectItemGroup()
-	{
+    // CONSTRUCTORS
+    public SelectItemGroup()
+    {
         super();
         _selectItems = EMPTY_SELECT_ITEMS;
-	}
+    }
 
-	public SelectItemGroup(String label)
-	{
-		super("", label, null, false);
+    public SelectItemGroup(String label)
+    {
+        super("", label, null, false);
         _selectItems = EMPTY_SELECT_ITEMS;
-	}
+    }
 
-	public SelectItemGroup(String label, String description, boolean disabled, SelectItem[] selectItems)
-	{
+    public SelectItemGroup(String label, String description, boolean disabled, SelectItem[] selectItems)
+    {
         super("", label, description, disabled);
         if (selectItems == null) throw new NullPointerException("selectItems");
-		_selectItems = selectItems;
-	}
+        _selectItems = selectItems;
+    }
 
-	// METHODS
-	public SelectItem[] getSelectItems()
-	{
-		return _selectItems;
-	}
+    // METHODS
+    public SelectItem[] getSelectItems()
+    {
+        return _selectItems;
+    }
 
-	public void setSelectItems(SelectItem[] selectItems)
-	{
-		if (selectItems == null) throw new NullPointerException("selectItems");
-		_selectItems = selectItems;
-	}
+    public void setSelectItems(SelectItem[] selectItems)
+    {
+        if (selectItems == null) throw new NullPointerException("selectItems");
+        _selectItems = selectItems;
+    }
 }

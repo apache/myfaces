@@ -82,7 +82,7 @@ public class ResultSetDataModel extends DataModel
     {
         if (_resultSet == null)
         {
-	        return null;
+            return null;
         }
         else if (!isRowAvailable())
         {
@@ -114,7 +114,7 @@ public class ResultSetDataModel extends DataModel
     {
         if (_resultSet == null)
         {
-	        return false;
+            return false;
         }
         else if (_currentIndex < 0)
         {

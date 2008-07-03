@@ -11,15 +11,15 @@ import org.apache.myfaces.config.ManagedBeanBuilder;
 
 public class MyFacesServletContextListener extends AbstractMyFacesListener implements ServletContextAttributeListener {
 
-	public void attributeAdded(ServletContextAttributeEvent event) { // noop
-	}
+    public void attributeAdded(ServletContextAttributeEvent event) { // noop
+    }
 
-	public void attributeRemoved(ServletContextAttributeEvent event) {
-		doPreDestroy(event, ManagedBeanBuilder.APPLICATION);
-	}
+    public void attributeRemoved(ServletContextAttributeEvent event) {
+        doPreDestroy(event, ManagedBeanBuilder.APPLICATION);
+    }
 
-	public void attributeReplaced(ServletContextAttributeEvent event) {
-		doPreDestroy(event, ManagedBeanBuilder.APPLICATION);
-	}
+    public void attributeReplaced(ServletContextAttributeEvent event) {
+        doPreDestroy(event, ManagedBeanBuilder.APPLICATION);
+    }
 
 }

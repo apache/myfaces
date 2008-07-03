@@ -30,14 +30,14 @@ import javax.faces.context.FacesContext;
 public abstract class ViewHandlerWrapper extends ViewHandler {
     
     @Override
-	public String calculateCharacterEncoding(FacesContext context) {
-		return getWrapped().calculateCharacterEncoding(context);
-	}
+    public String calculateCharacterEncoding(FacesContext context) {
+        return getWrapped().calculateCharacterEncoding(context);
+    }
 
-	@Override
-	public void initView(FacesContext context) throws FacesException {
-		getWrapped().initView(context);
-	}
+    @Override
+    public void initView(FacesContext context) throws FacesException {
+        getWrapped().initView(context);
+    }
 
     protected abstract ViewHandler getWrapped();
     

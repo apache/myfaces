@@ -59,19 +59,19 @@ public class DefaultViewHandlerSupportTest extends FacesTestCase
     }
     
     private void assertCalculateViewId(
-    		String expectedViewId, String servletPath, String pathInfo, 
-    			String contextSuffix, String viewId) throws Exception
+            String expectedViewId, String servletPath, String pathInfo, 
+                String contextSuffix, String viewId) throws Exception
     {
-    	DefaultViewHandlerSupport support = createdMockedViewHandlerSupport();
-    	
-    	expect(support.getContextSuffix(same(_facesContext))).andReturn(contextSuffix);
-    	expect(support.getFacesServletMapping(same(_facesContext))).andReturn(
-    			DefaultViewHandlerSupport.calculateFacesServletMapping(servletPath, pathInfo));
-    	expect(_facesContext.getExternalContext()).andReturn(_externalContext).anyTimes();
-    	
-    	_mocksControl.replay();
-    	assertEquals(expectedViewId, support.calculateViewId(_facesContext, viewId));
-    	_mocksControl.reset();
+        DefaultViewHandlerSupport support = createdMockedViewHandlerSupport();
+        
+        expect(support.getContextSuffix(same(_facesContext))).andReturn(contextSuffix);
+        expect(support.getFacesServletMapping(same(_facesContext))).andReturn(
+                DefaultViewHandlerSupport.calculateFacesServletMapping(servletPath, pathInfo));
+        expect(_facesContext.getExternalContext()).andReturn(_externalContext).anyTimes();
+        
+        _mocksControl.replay();
+        assertEquals(expectedViewId, support.calculateViewId(_facesContext, viewId));
+        _mocksControl.reset();
     }
 
     /**
@@ -110,20 +110,20 @@ public class DefaultViewHandlerSupportTest extends FacesTestCase
     }
     
     private void assertActionUrl(
-    		String expectedActionUrl, String contextPath, String servletPath, 
-    			String pathInfo, String viewId) throws Exception 
+            String expectedActionUrl, String contextPath, String servletPath, 
+                String pathInfo, String viewId) throws Exception 
     {
-    	DefaultViewHandlerSupport support = createdMockedViewHandlerSupport();
-    	
-    	expect(support.getContextSuffix(same(_facesContext))).andReturn(DEFAULT_SUFFIX);
-    	expect(support.getFacesServletMapping(same(_facesContext))).andReturn(
-    			DefaultViewHandlerSupport.calculateFacesServletMapping(servletPath, pathInfo));
-    	expect(_facesContext.getExternalContext()).andReturn(_externalContext).anyTimes();
-    	expect(_externalContext.getRequestContextPath()).andReturn(contextPath);
-    	
-    	_mocksControl.replay();
-    	assertEquals(expectedActionUrl, support.calculateActionURL(_facesContext, viewId));
-    	_mocksControl.reset();
+        DefaultViewHandlerSupport support = createdMockedViewHandlerSupport();
+        
+        expect(support.getContextSuffix(same(_facesContext))).andReturn(DEFAULT_SUFFIX);
+        expect(support.getFacesServletMapping(same(_facesContext))).andReturn(
+                DefaultViewHandlerSupport.calculateFacesServletMapping(servletPath, pathInfo));
+        expect(_facesContext.getExternalContext()).andReturn(_externalContext).anyTimes();
+        expect(_externalContext.getRequestContextPath()).andReturn(contextPath);
+        
+        _mocksControl.replay();
+        assertEquals(expectedActionUrl, support.calculateActionURL(_facesContext, viewId));
+        _mocksControl.reset();
     }
 
     private DefaultViewHandlerSupport createdMockedViewHandlerSupport() throws Exception
@@ -146,7 +146,7 @@ public class DefaultViewHandlerSupportTest extends FacesTestCase
      * Test method for
      * {@link org.apache.myfaces.application.DefaultViewHandlerSupport#calculateFacesServletMapping(String, String)}.
      */
-	public void testCalculateFacesServletMapping() throws Exception
+    public void testCalculateFacesServletMapping() throws Exception
     {
         assertExtensionMapping(".jsf", "/index.jsf", null);
         assertExtensionMapping(".jsf", "/secure/login.jsf", null);
@@ -172,13 +172,13 @@ public class DefaultViewHandlerSupportTest extends FacesTestCase
     private void assertExtensionMapping(
             String extension, String servletPath, String pathInfo)
     {
-		FacesServletMapping mapping = 
-		    DefaultViewHandlerSupport.calculateFacesServletMapping(servletPath, pathInfo);
+        FacesServletMapping mapping = 
+            DefaultViewHandlerSupport.calculateFacesServletMapping(servletPath, pathInfo);
         assertTrue(mapping.isExtensionMapping());
         assertEquals(extension, mapping.getExtension());
     }
-	
-	/**
+    
+    /**
      * Convenience method that tests if the ViewHandlerSupport object knows that
      * the "given request" has been handled by a FacesServlet being prefix
      * mapped. Extract the path elements of a Request-URI according to the
@@ -194,11 +194,11 @@ public class DefaultViewHandlerSupportTest extends FacesTestCase
     private void assertPathBasedMapping(
             String prefix, String servletPath, String pathInfo)
     {
-		FacesServletMapping mapping = 
-		    DefaultViewHandlerSupport.calculateFacesServletMapping(servletPath, pathInfo);
+        FacesServletMapping mapping = 
+            DefaultViewHandlerSupport.calculateFacesServletMapping(servletPath, pathInfo);
         assertFalse(mapping.isExtensionMapping());
         assertEquals(prefix, mapping.getPrefix());
-	}
+    }
     
     /**
      * Test method for

@@ -31,9 +31,9 @@ public class LongRangeValidator
 {
     // FIELDS
     public static final String MAXIMUM_MESSAGE_ID = "javax.faces.validator.LongRangeValidator.MAXIMUM";
-    public static final String MINIMUM_MESSAGE_ID =	"javax.faces.validator.LongRangeValidator.MINIMUM";
-    public static final String TYPE_MESSAGE_ID 	  = "javax.faces.validator.LongRangeValidator.TYPE";
-    public static final String VALIDATOR_ID 	  = "javax.faces.LongRange";
+    public static final String MINIMUM_MESSAGE_ID =    "javax.faces.validator.LongRangeValidator.MINIMUM";
+    public static final String TYPE_MESSAGE_ID       = "javax.faces.validator.LongRangeValidator.TYPE";
+    public static final String VALIDATOR_ID       = "javax.faces.LongRange";
     public static final String NOT_IN_RANGE_MESSAGE_ID = "javax.faces.validator.LongRangeValidator.NOT_IN_RANGE";
     
     private Long _minimum = null;
@@ -113,7 +113,7 @@ public class LongRangeValidator
         }
         catch (NumberFormatException e)
         {
-			Object[] args = {_MessageUtils.getLabel(facesContext, uiComponent)};
+            Object[] args = {_MessageUtils.getLabel(facesContext, uiComponent)};
             throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, TYPE_MESSAGE_ID, args));
         }
         

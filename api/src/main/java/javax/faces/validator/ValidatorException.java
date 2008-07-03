@@ -53,9 +53,9 @@ public class ValidatorException
     private static String facesMessageToString(FacesMessage message)
     {
         final String summary = message.getSummary();
-		final String detail = message.getDetail();
-		
-		if (summary != null)
+        final String detail = message.getDetail();
+        
+        if (summary != null)
         {
             if (detail != null)
             {

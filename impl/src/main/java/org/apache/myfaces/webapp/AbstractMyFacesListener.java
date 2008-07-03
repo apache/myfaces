@@ -34,25 +34,25 @@ public abstract class AbstractMyFacesListener {
     private static Log log = LogFactory.getLog(AbstractMyFacesListener.class);
 
     protected void doPreDestroy(ServletRequestAttributeEvent event, String scope) {
-		doPreDestroy(event.getValue(), event.getName(), scope);
-	}
+        doPreDestroy(event.getValue(), event.getName(), scope);
+    }
 
-	protected void doPreDestroy(HttpSessionBindingEvent event, String scope) {
-		doPreDestroy(event.getValue(), event.getName(), scope);
-	}
+    protected void doPreDestroy(HttpSessionBindingEvent event, String scope) {
+        doPreDestroy(event.getValue(), event.getName(), scope);
+    }
 
-	protected void doPreDestroy(ServletContextAttributeEvent event, String scope) {
-		doPreDestroy(event.getValue(), event.getName(), scope);
-	}
-	
-	protected void doPreDestroy(Object value, String name, String scope) {
+    protected void doPreDestroy(ServletContextAttributeEvent event, String scope) {
+        doPreDestroy(event.getValue(), event.getName(), scope);
+    }
+    
+    protected void doPreDestroy(Object value, String name, String scope) {
         
         if(value != null)
-		{
-			//AnnotatedManagedBeanHandler handler =
-			//	new AnnotatedManagedBeanHandler(value, scope, name);
+        {
+            //AnnotatedManagedBeanHandler handler =
+            //    new AnnotatedManagedBeanHandler(value, scope, name);
 
-			//handler.invokePreDestroy();
+            //handler.invokePreDestroy();
 
             try
             {
@@ -65,5 +65,5 @@ public abstract class AbstractMyFacesListener {
                 log.error("", e);
             }
         }
-	}
+    }
 }

@@ -27,26 +27,26 @@ import javax.faces.context.FacesContext;
 public abstract class MethodBinding
 {
 
-	// FIELDS
+    // FIELDS
 
-	// CONSTRUCTORS
+    // CONSTRUCTORS
         /**
          * @deprecated
          */
-	public MethodBinding()
-	{
-	}
+    public MethodBinding()
+    {
+    }
 
-	// METHODS
-	
-	/**
-	 * returns the <code>String</code> of your expression like <code>#{bean.foo}</code>.
+    // METHODS
+    
+    /**
+     * returns the <code>String</code> of your expression like <code>#{bean.foo}</code>.
          * @deprecated
-	 */
-	public String getExpressionString()
-	{
+     */
+    public String getExpressionString()
+    {
         return null;
-	}
+    }
     
     /**
      * @deprecated

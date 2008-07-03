@@ -10,17 +10,17 @@ import org.apache.myfaces.config.ManagedBeanBuilder;
  */
 
 public class MyfacesServletRequestAttributeListener extends AbstractMyFacesListener
-		implements ServletRequestAttributeListener {
-	
-	public void attributeAdded(ServletRequestAttributeEvent event) { // noop
-	}
+        implements ServletRequestAttributeListener {
+    
+    public void attributeAdded(ServletRequestAttributeEvent event) { // noop
+    }
 
-	public void attributeRemoved(ServletRequestAttributeEvent event) { 
-		doPreDestroy(event, ManagedBeanBuilder.REQUEST);
-	}
+    public void attributeRemoved(ServletRequestAttributeEvent event) { 
+        doPreDestroy(event, ManagedBeanBuilder.REQUEST);
+    }
 
-	public void attributeReplaced(ServletRequestAttributeEvent event) {
-		doPreDestroy(event, ManagedBeanBuilder.REQUEST);		
-	}
+    public void attributeReplaced(ServletRequestAttributeEvent event) {
+        doPreDestroy(event, ManagedBeanBuilder.REQUEST);        
+    }
 
 }

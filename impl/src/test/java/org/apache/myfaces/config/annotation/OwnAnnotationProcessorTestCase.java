@@ -22,8 +22,8 @@ import org.apache.shale.test.base.AbstractJsfTestCase;
 
 public class OwnAnnotationProcessorTestCase extends AbstractJsfTestCase
 {
-	protected LifecycleProvider lifecycleProvider;
-	protected AnnotatedManagedBean managedBean;
+    protected LifecycleProvider lifecycleProvider;
+    protected AnnotatedManagedBean managedBean;
     private static final String TEST_LIFECYCLE_PROVIDER = "org.apache.myfaces.config.annotation.TestLifecycleProvider";
 
 
@@ -43,6 +43,6 @@ public class OwnAnnotationProcessorTestCase extends AbstractJsfTestCase
 
     public void testOwnProcessor()
     {
-		assertEquals(TEST_LIFECYCLE_PROVIDER, lifecycleProvider.getClass().getName());
-	}
+        assertEquals(TEST_LIFECYCLE_PROVIDER, lifecycleProvider.getClass().getName());
+    }
 }

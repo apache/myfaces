@@ -32,41 +32,41 @@ import com.google.inject.Injector;
 
 public class GuiceResolverTestCase extends AbstractJsfTestCase {
 
-	public GuiceResolverTestCase(String name) {
-		super(name);
-	}
+    public GuiceResolverTestCase(String name) {
+        super(name);
+    }
 
-	@Override
-	protected void setUp() throws Exception {
-		
-		super.setUp();
-		
-		// simulate a ServletContextListener
-		Injector injector = Guice.createInjector(new ShoppingModule());
-		servletContext.setAttribute(GuiceResolver.KEY, injector);
-		
-		// simulate Myfaces starting up
-		RuntimeConfig rc = RuntimeConfig.getCurrentInstance(externalContext);
-		ManagedBean bean = new ManagedBean();
-		bean.setBeanClass(ShoppingCart.class.getName());
-		bean.setScope("request");
-		rc.addManagedBean("shoppingCart", bean);
-		
-	}
+    @Override
+    protected void setUp() throws Exception {
+        
+        super.setUp();
+        
+        // simulate a ServletContextListener
+        Injector injector = Guice.createInjector(new ShoppingModule());
+        servletContext.setAttribute(GuiceResolver.KEY, injector);
+        
+        // simulate Myfaces starting up
+        RuntimeConfig rc = RuntimeConfig.getCurrentInstance(externalContext);
+        ManagedBean bean = new ManagedBean();
+        bean.setBeanClass(ShoppingCart.class.getName());
+        bean.setScope("request");
+        rc.addManagedBean("shoppingCart", bean);
+        
+    }
 
-	public void testResolve() {
-		
-		ELResolver resolver = new GuiceResolver();
-		
-		ShoppingCart cart = (ShoppingCart) resolver.getValue(facesContext.getELContext(), ((Object)null), ((Object)"shoppingCart"));
-		
-		assertNotNull(cart);
-		
-		assertEquals(new BulkOrder().toString(), cart.getOrder().toString());
-		
-		cart = (ShoppingCart) resolver.getValue(facesContext.getELContext(), ((Object)null), ((Object)"XXXshoppingCart"));
-		
-		assertNull(cart);
-	}
-	
+    public void testResolve() {
+        
+        ELResolver resolver = new GuiceResolver();
+        
+        ShoppingCart cart = (ShoppingCart) resolver.getValue(facesContext.getELContext(), ((Object)null), ((Object)"shoppingCart"));
+        
+        assertNotNull(cart);
+        
+        assertEquals(new BulkOrder().toString(), cart.getOrder().toString());
+        
+        cart = (ShoppingCart) resolver.getValue(facesContext.getELContext(), ((Object)null), ((Object)"XXXshoppingCart"));
+        
+        assertNull(cart);
+    }
+    
 }

@@ -24,8 +24,8 @@ import java.io.Serializable;
 class _AttachedStateWrapper
         implements Serializable
 {
-	private static final long serialVersionUID = 4948301780259917764L;
-	private Class _class;
+    private static final long serialVersionUID = 4948301780259917764L;
+    private Class _class;
     private Object _wrappedStateObject;
 
     /**

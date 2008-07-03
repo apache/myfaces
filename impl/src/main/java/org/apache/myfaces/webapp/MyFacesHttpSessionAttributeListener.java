@@ -10,17 +10,17 @@ import org.apache.myfaces.config.ManagedBeanBuilder;
  */
 
 public class MyFacesHttpSessionAttributeListener extends AbstractMyFacesListener
-		implements HttpSessionAttributeListener {
+        implements HttpSessionAttributeListener {
 
-	public void attributeAdded(HttpSessionBindingEvent event) { // noop
-	}
+    public void attributeAdded(HttpSessionBindingEvent event) { // noop
+    }
 
-	public void attributeRemoved(HttpSessionBindingEvent event) {
-		doPreDestroy(event, ManagedBeanBuilder.SESSION);
-	}
+    public void attributeRemoved(HttpSessionBindingEvent event) {
+        doPreDestroy(event, ManagedBeanBuilder.SESSION);
+    }
 
-	public void attributeReplaced(HttpSessionBindingEvent event) {
-		doPreDestroy(event, ManagedBeanBuilder.SESSION);
-	}
+    public void attributeReplaced(HttpSessionBindingEvent event) {
+        doPreDestroy(event, ManagedBeanBuilder.SESSION);
+    }
 
 }

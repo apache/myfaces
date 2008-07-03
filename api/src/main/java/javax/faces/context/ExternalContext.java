@@ -58,12 +58,12 @@ public abstract class ExternalContext
     
     public String getRequestCharacterEncoding()
     {
-    	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
     
     public String getRequestContentType()
     {
-    	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
     
     public abstract String getRequestContextPath();
@@ -121,7 +121,7 @@ public abstract class ExternalContext
      */
     public void setRequest(java.lang.Object request)
     {
-    	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
     
     /**
@@ -131,9 +131,9 @@ public abstract class ExternalContext
      * @throws java.io.UnsupportedEncodingException
      */
     public void setRequestCharacterEncoding(java.lang.String encoding)
-    		throws java.io.UnsupportedEncodingException{
-    	
-    	throw new UnsupportedOperationException();
+            throws java.io.UnsupportedEncodingException{
+        
+        throw new UnsupportedOperationException();
     }
     
     /**
@@ -143,7 +143,7 @@ public abstract class ExternalContext
      */
     public void setResponse(java.lang.Object response)
     {
-    	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
     
     /**
@@ -153,7 +153,7 @@ public abstract class ExternalContext
      */
     public void setResponseCharacterEncoding(java.lang.String encoding)
     {
-    	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
     
     public String getResponseCharacterEncoding()

@@ -338,8 +338,8 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             else
             {
                 return prefix + "/*";
-			}
-		}
+            }
+        }
 
-	}
+    }
 }

@@ -27,25 +27,25 @@ public class ActionEvent extends FacesEvent
 {
   private static final long serialVersionUID = 3693030212414392259L;
 
-	// FIELDS
+    // FIELDS
 
 
   // CONSTRUCTORS
-	public ActionEvent(UIComponent uiComponent)
-	{
+    public ActionEvent(UIComponent uiComponent)
+    {
         super(uiComponent);
         if (uiComponent == null) throw new IllegalArgumentException("uiComponent");
-	}
+    }
 
-	// METHODS
-	public boolean isAppropriateListener(FacesListener facesListeners)
-	{
-		return facesListeners instanceof ActionListener;
-	}
+    // METHODS
+    public boolean isAppropriateListener(FacesListener facesListeners)
+    {
+        return facesListeners instanceof ActionListener;
+    }
 
-	public void processListener(FacesListener facesListeners)
-	{
-		((ActionListener)facesListeners).processAction(this);
-	}
+    public void processListener(FacesListener facesListeners)
+    {
+        ((ActionListener)facesListeners).processAction(this);
+    }
 
 }

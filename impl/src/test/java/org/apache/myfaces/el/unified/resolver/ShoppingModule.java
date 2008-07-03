@@ -24,10 +24,10 @@ import com.google.inject.Module;
 
 public class ShoppingModule implements Module {
 
-	public void configure(Binder binder) {
+    public void configure(Binder binder) {
 
-		binder.bind(Order.class).to(BulkOrder.class);
-		
-	}
+        binder.bind(Order.class).to(BulkOrder.class);
+        
+    }
 
 }

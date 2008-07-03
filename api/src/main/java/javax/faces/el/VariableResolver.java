@@ -27,20 +27,20 @@ import javax.faces.context.FacesContext;
  */
 public abstract class VariableResolver
 {
-	// FIELDS
+    // FIELDS
 
-	// CONSTRUCTORS
+    // CONSTRUCTORS
         /**
          * @deprecated
          */
-	public VariableResolver()
-	{
-	}
+    public VariableResolver()
+    {
+    }
 
-	// METHODS
+    // METHODS
         /**
          * @deprecated
          */
-	public abstract Object resolveVariable(FacesContext facesContext, String name)
+    public abstract Object resolveVariable(FacesContext facesContext, String name)
         throws EvaluationException;
 }

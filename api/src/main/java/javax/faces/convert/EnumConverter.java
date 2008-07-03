@@ -80,14 +80,14 @@ public class EnumConverter implements Converter, StateHolder {
         }
     }
 
-	private void checkTargetClass(FacesContext facesContext, UIComponent uiComponent, Object value) {
-		if (targetClass == null) {
+    private void checkTargetClass(FacesContext facesContext, UIComponent uiComponent, Object value) {
+        if (targetClass == null) {
             Object[] params = new Object[]{value, _MessageUtils.getLabel(facesContext, uiComponent)};
             throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, 
                                                                        ENUM_NO_CLASS_ID, 
                                                                        params));
         }
-	}
+    }
 
     // find the first constant value of the targetClass and return as a String
     private String firstConstantOfEnum() {

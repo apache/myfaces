@@ -33,7 +33,7 @@ public class SelectItem implements Serializable
     private boolean _disabled;
     private boolean escape;
 
-	// CONSTRUCTORS
+    // CONSTRUCTORS
     public SelectItem()
     {
     }
@@ -79,7 +79,7 @@ public class SelectItem implements Serializable
         this.escape = escape;
     }
     
-	// METHODS
+    // METHODS
     public String getDescription()
     {
         return _description;

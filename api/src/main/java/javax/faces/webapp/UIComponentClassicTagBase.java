@@ -45,7 +45,7 @@ import java.util.logging.Level;
 public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         implements BodyTag, JspIdConsumer
 {
-	
+    
     //  do not change this w/out doing likewise in UIComponentTag
     private static final String COMPONENT_STACK_ATTR = "org.apache.myfaces.COMPONENT_STACK";
 

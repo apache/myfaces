@@ -25,8 +25,8 @@ import java.lang.reflect.InvocationTargetException;
 
 public class AnnotationProcessorTestCase extends AbstractJsfTestCase
 {
-	protected LifecycleProvider lifecycleProvider;
-	protected AnnotatedManagedBean managedBean;
+    protected LifecycleProvider lifecycleProvider;
+    protected AnnotatedManagedBean managedBean;
 
 
     public AnnotationProcessorTestCase(String string)
@@ -38,22 +38,22 @@ public class AnnotationProcessorTestCase extends AbstractJsfTestCase
         super.setUp();
         lifecycleProvider = new AllAnnotationLifecycleProvider(null);
         managedBean = new AnnotatedManagedBean();
-	}
+    }
 
-	public void testPostConstruct() throws IllegalAccessException, InvocationTargetException, NamingException, InstantiationException, ClassNotFoundException
+    public void testPostConstruct() throws IllegalAccessException, InvocationTargetException, NamingException, InstantiationException, ClassNotFoundException
     {
-		AnnotatedManagedBean managedBean = (AnnotatedManagedBean) lifecycleProvider.newInstance(AnnotatedManagedBean.class.getName());
-		assertTrue(managedBean.isPostConstructCalled());
-		assertFalse(managedBean.isPreDestroyCalled());
-	}
+        AnnotatedManagedBean managedBean = (AnnotatedManagedBean) lifecycleProvider.newInstance(AnnotatedManagedBean.class.getName());
+        assertTrue(managedBean.isPostConstructCalled());
+        assertFalse(managedBean.isPreDestroyCalled());
+    }
 
-	public void testPreDestroy() throws IllegalAccessException, InvocationTargetException, NamingException, InstantiationException, ClassNotFoundException
+    public void testPreDestroy() throws IllegalAccessException, InvocationTargetException, NamingException, InstantiationException, ClassNotFoundException
     {
         AnnotatedManagedBean managedBean = (AnnotatedManagedBean) lifecycleProvider.newInstance(AnnotatedManagedBean.class.getName());
         lifecycleProvider.destroyInstance(managedBean);
         assertTrue(managedBean.isPostConstructCalled());
-		assertTrue(managedBean.isPreDestroyCalled());
-	}
+        assertTrue(managedBean.isPreDestroyCalled());
+    }
 
     public void testPostConstructException() throws IllegalAccessException, InvocationTargetException
     {
@@ -65,5 +65,5 @@ public class AnnotationProcessorTestCase extends AbstractJsfTestCase
         }
         assertTrue(false);
 
-	}
+    }
 }

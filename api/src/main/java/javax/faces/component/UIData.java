@@ -966,10 +966,10 @@ public class UIData extends UIComponentBase
   /**
    * Gets An EL expression that specifies the data model that backs this table.  The value can be of any type.
    * 
-   * 				A value of type DataModel is used directly.  Array-like parameters of type java.util.List, array of Object,
-   * 				java.sql.ResultSet, or javax.servlet.jsp.jstl.sql.Result are wrapped in a DataModel.
+   *                 A value of type DataModel is used directly.  Array-like parameters of type java.util.List, array of Object,
+   *                 java.sql.ResultSet, or javax.servlet.jsp.jstl.sql.Result are wrapped in a DataModel.
    * 
-   * 				Other values are wrapped in a DataModel as a single row.
+   *                 Other values are wrapped in a DataModel as a single row.
    *
    * @return  the new value value
    */

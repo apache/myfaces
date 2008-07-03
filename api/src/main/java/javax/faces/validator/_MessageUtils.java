@@ -185,17 +185,17 @@ class _MessageUtils
     }
     
     static String getLabel(FacesContext facesContext, UIComponent component) {
-    	Object label = component.getAttributes().get("label");
-    	if(label != null)
-    		return label.toString();
-    	
-    	ValueExpression expression = component.getValueExpression("label");
-    	if(expression != null)
-    		return expression.getExpressionString();
-    		//return (String)expression.getValue(facesContext.getELContext());
-    	
-    	//If no label is not specified, use clientId
-    	return component.getClientId( facesContext );
+        Object label = component.getAttributes().get("label");
+        if(label != null)
+            return label.toString();
+        
+        ValueExpression expression = component.getValueExpression("label");
+        if(expression != null)
+            return expression.getExpressionString();
+            //return (String)expression.getValue(facesContext.getELContext());
+        
+        //If no label is not specified, use clientId
+        return component.getClientId( facesContext );
     }
 
 }

@@ -28,12 +28,12 @@ import javax.faces.event.PhaseId;
  * Invoke application phase (JSF Spec 2.2.5)
  */
 class InvokeApplicationExecutor implements PhaseExecutor {
-	public boolean execute(FacesContext facesContext) {
-		facesContext.getViewRoot().processApplication(facesContext);
-		return false;
-	}
+    public boolean execute(FacesContext facesContext) {
+        facesContext.getViewRoot().processApplication(facesContext);
+        return false;
+    }
 
-	public PhaseId getPhase() {
-		return PhaseId.INVOKE_APPLICATION;
-	}
+    public PhaseId getPhase() {
+        return PhaseId.INVOKE_APPLICATION;
+    }
 }

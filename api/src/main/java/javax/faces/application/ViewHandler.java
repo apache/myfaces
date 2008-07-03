@@ -70,29 +70,29 @@ public abstract class ViewHandler
      */
     public String calculateCharacterEncoding(javax.faces.context.FacesContext context)
     {
-    	String _encoding = null;
-    	ExternalContext externalContext = context.getExternalContext();
+        String _encoding = null;
+        ExternalContext externalContext = context.getExternalContext();
         String _contentType = (String) externalContext.getRequestHeaderMap().get("Content-Type");
-    	int _indexOf = _contentType == null ? -1 :_contentType.indexOf("charset");
-    	if(_indexOf != -1)
-    	{
-			String _tempEnc =_contentType.substring(_indexOf); //charset=UTF-8 
-    		_encoding = _tempEnc.substring(_tempEnc.indexOf("=")+1); //UTF-8
-    	}
-    	else 
-    	{
-    		boolean _sessionAvailable = externalContext.getSession(false) != null;
-    		if(_sessionAvailable)
-    		{
-    			Object _sessionParam = externalContext.getSessionMap().get(CHARACTER_ENCODING_KEY); 
-    			if (_sessionParam != null)
-    			{
-    				_encoding = _sessionParam.toString();
-    			}
-    		}
-    	}
-    	
-    	return _encoding;
+        int _indexOf = _contentType == null ? -1 :_contentType.indexOf("charset");
+        if(_indexOf != -1)
+        {
+            String _tempEnc =_contentType.substring(_indexOf); //charset=UTF-8 
+            _encoding = _tempEnc.substring(_tempEnc.indexOf("=")+1); //UTF-8
+        }
+        else 
+        {
+            boolean _sessionAvailable = externalContext.getSession(false) != null;
+            if(_sessionAvailable)
+            {
+                Object _sessionParam = externalContext.getSessionMap().get(CHARACTER_ENCODING_KEY); 
+                if (_sessionParam != null)
+                {
+                    _encoding = _sessionParam.toString();
+                }
+            }
+        }
+        
+        return _encoding;
     }
     
     /**
@@ -155,18 +155,18 @@ public abstract class ViewHandler
      */
     public void initView(javax.faces.context.FacesContext context) throws FacesException
     {
-    	String _encoding = this.calculateCharacterEncoding(context);
-    	if(_encoding != null)
-    	{
-    		try
-    		{
-        		context.getExternalContext().setRequestCharacterEncoding(_encoding);
-    		}
-    		catch(UnsupportedEncodingException uee)
-    		{
-    			throw new FacesException(uee);
-    		}
-    	}
+        String _encoding = this.calculateCharacterEncoding(context);
+        if(_encoding != null)
+        {
+            try
+            {
+                context.getExternalContext().setRequestCharacterEncoding(_encoding);
+            }
+            catch(UnsupportedEncodingException uee)
+            {
+                throw new FacesException(uee);
+            }
+        }
     }
     
     /**

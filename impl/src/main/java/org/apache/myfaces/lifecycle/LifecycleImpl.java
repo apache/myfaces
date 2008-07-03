@@ -55,15 +55,15 @@ public class LifecycleImpl
 
     public LifecycleImpl() {
         // hide from public access
-    	lifecycleExecutors = new PhaseExecutor[] {
-    			new RestoreViewExecutor(),
-    			new ApplyRequestValuesExecutor(),
-    			new ProcessValidationsExecutor(),
-    			new UpdateModelValuesExecutor(),
-    			new InvokeApplicationExecutor()
-    	};
+        lifecycleExecutors = new PhaseExecutor[] {
+                new RestoreViewExecutor(),
+                new ApplyRequestValuesExecutor(),
+                new ProcessValidationsExecutor(),
+                new UpdateModelValuesExecutor(),
+                new InvokeApplicationExecutor()
+        };
 
-    	renderExecutor = new RenderResponseExecutor();
+        renderExecutor = new RenderResponseExecutor();
     }
 
     public void execute(FacesContext facesContext) throws FacesException {
@@ -73,20 +73,20 @@ public class LifecycleImpl
 
         PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, facesContext, getPhaseListeners());
         for(int executorIndex = 0;executorIndex < lifecycleExecutors.length;executorIndex++) {
-        	if(executePhase(facesContext, lifecycleExecutors[executorIndex], phaseListenerMgr)) {
-        		return;
-        	}
+            if(executePhase(facesContext, lifecycleExecutors[executorIndex], phaseListenerMgr)) {
+                return;
+            }
         }
     }
 
 
     private boolean executePhase(FacesContext facesContext, PhaseExecutor executor,
-    		PhaseListenerManager phaseListenerMgr) throws FacesException {
+            PhaseListenerManager phaseListenerMgr) throws FacesException {
 
         boolean skipFurtherProcessing = false;
 
         if (log.isTraceEnabled()) {
-        	log.trace("entering " + executor.getPhase() + " in " + LifecycleImpl.class.getName());
+            log.trace("entering " + executor.getPhase() + " in " + LifecycleImpl.class.getName());
         }
 
         try {
@@ -94,14 +94,14 @@ public class LifecycleImpl
 
             if(isResponseComplete(facesContext, executor.getPhase(), true)) {
                 // have to return right away
-            	return true;
+                return true;
             }
             if(shouldRenderResponse(facesContext, executor.getPhase(), true)) {
-            	skipFurtherProcessing = true;
+                skipFurtherProcessing = true;
             }
 
             if(executor.execute(facesContext)) {
-            	return true;
+                return true;
             }
         } finally {
             phaseListenerMgr.informPhaseListenersAfter(executor.getPhase());
@@ -109,22 +109,22 @@ public class LifecycleImpl
 
 
         if (isResponseComplete(facesContext, executor.getPhase(), false)
-        		|| shouldRenderResponse(facesContext, executor.getPhase(), false)) {
-        	// since this phase is completed we don't need to return right away even if the response is completed
-        	skipFurtherProcessing = true;
+                || shouldRenderResponse(facesContext, executor.getPhase(), false)) {
+            // since this phase is completed we don't need to return right away even if the response is completed
+            skipFurtherProcessing = true;
         }
 
         if (!skipFurtherProcessing && log.isTraceEnabled()) {
-			log.trace("exiting " + executor.getPhase() + " in " + LifecycleImpl.class.getName());
+            log.trace("exiting " + executor.getPhase() + " in " + LifecycleImpl.class.getName());
         }
 
         return skipFurtherProcessing;
     }
 
     public void render(FacesContext facesContext) throws FacesException {
-    	// if the response is complete we should not be invoking the phase listeners
+        // if the response is complete we should not be invoking the phase listeners
         if(isResponseComplete(facesContext, renderExecutor.getPhase(), true)) {
-        	return;
+            return;
         }
         if (log.isTraceEnabled()) log.trace("entering " + renderExecutor.getPhase() + " in " + LifecycleImpl.class.getName());
 
@@ -134,7 +134,7 @@ public class LifecycleImpl
             phaseListenerMgr.informPhaseListenersBefore(renderExecutor.getPhase());
             // also possible that one of the listeners completed the response
             if(isResponseComplete(facesContext, renderExecutor.getPhase(), true)) {
-            	return;
+                return;
             }
 
             renderExecutor.execute(facesContext);
@@ -148,64 +148,64 @@ public class LifecycleImpl
         }
 
         if (log.isTraceEnabled()) {
-        	log.trace("exiting " + renderExecutor.getPhase() + " in " + LifecycleImpl.class.getName());
+            log.trace("exiting " + renderExecutor.getPhase() + " in " + LifecycleImpl.class.getName());
         }
     }
 
     private boolean isResponseComplete(FacesContext facesContext, PhaseId phase, boolean before) {
-		boolean flag = false;
-	    if (facesContext.getResponseComplete()) {
-	        if (log.isDebugEnabled()) {
-				log.debug("exiting from lifecycle.execute in " + phase
-						+ " because getResponseComplete is true from one of the " +
-						(before ? "before" : "after") + " listeners");
-	        }
-	        flag = true;
-	    }
-	    return flag;
-	}
+        boolean flag = false;
+        if (facesContext.getResponseComplete()) {
+            if (log.isDebugEnabled()) {
+                log.debug("exiting from lifecycle.execute in " + phase
+                        + " because getResponseComplete is true from one of the " +
+                        (before ? "before" : "after") + " listeners");
+            }
+            flag = true;
+        }
+        return flag;
+    }
 
-	private boolean shouldRenderResponse(FacesContext facesContext, PhaseId phase, boolean before) {
-			boolean flag = false;
-	    if (facesContext.getRenderResponse()) {
-	        if (log.isDebugEnabled()) {
-				log.debug("exiting from lifecycle.execute in " + phase
-						+ " because getRenderResponse is true from one of the " +
-						(before ? "before" : "after") + " listeners");
-	        }
-	        flag = true;
-	    }
-	    return flag;
-	}
+    private boolean shouldRenderResponse(FacesContext facesContext, PhaseId phase, boolean before) {
+            boolean flag = false;
+        if (facesContext.getRenderResponse()) {
+            if (log.isDebugEnabled()) {
+                log.debug("exiting from lifecycle.execute in " + phase
+                        + " because getRenderResponse is true from one of the " +
+                        (before ? "before" : "after") + " listeners");
+            }
+            flag = true;
+        }
+        return flag;
+    }
 
     public void addPhaseListener(PhaseListener phaseListener) {
-		if (phaseListener == null) {
-			throw new NullPointerException("PhaseListener must not be null.");
-		}
-		synchronized (_phaseListenerList) {
-			_phaseListenerList.add(phaseListener);
-			_phaseListenerArray = null; // reset lazy cache array
-		}
-	}
+        if (phaseListener == null) {
+            throw new NullPointerException("PhaseListener must not be null.");
+        }
+        synchronized (_phaseListenerList) {
+            _phaseListenerList.add(phaseListener);
+            _phaseListenerArray = null; // reset lazy cache array
+        }
+    }
 
-	public void removePhaseListener(PhaseListener phaseListener) {
-		if (phaseListener == null) {
-			throw new NullPointerException("PhaseListener must not be null.");
-		}
-		synchronized (_phaseListenerList) {
-			_phaseListenerList.remove(phaseListener);
-			_phaseListenerArray = null; // reset lazy cache array
-		}
-	}
+    public void removePhaseListener(PhaseListener phaseListener) {
+        if (phaseListener == null) {
+            throw new NullPointerException("PhaseListener must not be null.");
+        }
+        synchronized (_phaseListenerList) {
+            _phaseListenerList.remove(phaseListener);
+            _phaseListenerArray = null; // reset lazy cache array
+        }
+    }
 
-	public PhaseListener[] getPhaseListeners() {
-		synchronized (_phaseListenerList) {
-			// (re)build lazy cache array if necessary
-			if (_phaseListenerArray == null) {
-				_phaseListenerArray = _phaseListenerList.toArray(new PhaseListener[_phaseListenerList
-						.size()]);
-			}
-			return _phaseListenerArray;
-		}
-	}
+    public PhaseListener[] getPhaseListeners() {
+        synchronized (_phaseListenerList) {
+            // (re)build lazy cache array if necessary
+            if (_phaseListenerArray == null) {
+                _phaseListenerArray = _phaseListenerList.toArray(new PhaseListener[_phaseListenerList
+                        .size()]);
+            }
+            return _phaseListenerArray;
+        }
+    }
 }

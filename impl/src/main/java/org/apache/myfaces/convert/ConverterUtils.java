@@ -29,51 +29,51 @@ public final class ConverterUtils
     private ConverterUtils() {}
 
 
-	public static int convertToInt(Object value)
-	{
-		if (value instanceof Number)
-		{
-			return ((Number)value).intValue();
-		}
-		else if (value instanceof String)
-		{
-			try
-			{
-				return Integer.parseInt((String)value);
-			}
-			catch (NumberFormatException e)
-			{
-				throw new IllegalArgumentException("Cannot convert " + value.toString() + " to int");
-			}
-		}
-		else
-		{
-			throw new IllegalArgumentException("Cannot convert " + value.toString() + " to int");
-		}
-	}
+    public static int convertToInt(Object value)
+    {
+        if (value instanceof Number)
+        {
+            return ((Number)value).intValue();
+        }
+        else if (value instanceof String)
+        {
+            try
+            {
+                return Integer.parseInt((String)value);
+            }
+            catch (NumberFormatException e)
+            {
+                throw new IllegalArgumentException("Cannot convert " + value.toString() + " to int");
+            }
+        }
+        else
+        {
+            throw new IllegalArgumentException("Cannot convert " + value.toString() + " to int");
+        }
+    }
 
-	public static boolean convertToBoolean(Object value)
-	{
-		if (value instanceof Boolean)
-		{
-			return ((Boolean)value).booleanValue();
-		}
-		else if (value instanceof String)
-		{
-			try
-			{
-				return new Boolean((String)value).booleanValue();
-			}
-			catch (Exception e)
-			{
-				throw new IllegalArgumentException("Cannot convert " + value.toString() + " to boolean");
-			}
-		}
-		else
-		{
-			throw new IllegalArgumentException("Cannot convert " + value.toString() + " to boolean");
-		}
-	}	
+    public static boolean convertToBoolean(Object value)
+    {
+        if (value instanceof Boolean)
+        {
+            return ((Boolean)value).booleanValue();
+        }
+        else if (value instanceof String)
+        {
+            try
+            {
+                return new Boolean((String)value).booleanValue();
+            }
+            catch (Exception e)
+            {
+                throw new IllegalArgumentException("Cannot convert " + value.toString() + " to boolean");
+            }
+        }
+        else
+        {
+            throw new IllegalArgumentException("Cannot convert " + value.toString() + " to boolean");
+        }
+    }    
 
     public static long convertToLong(Object value)
     {

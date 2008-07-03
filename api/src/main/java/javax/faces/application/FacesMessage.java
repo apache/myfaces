@@ -27,9 +27,9 @@ import java.util.*;
 public class FacesMessage
         implements Serializable
 {
-	private static final long serialVersionUID = 4851488727794169661L;
+    private static final long serialVersionUID = 4851488727794169661L;
 
-	public static final String FACES_MESSAGES = "javax.faces.Messages";
+    public static final String FACES_MESSAGES = "javax.faces.Messages";
 
     public static final FacesMessage.Severity SEVERITY_INFO = new Severity("Info", 1);
     public static final FacesMessage.Severity SEVERITY_WARN = new Severity("Warn", 2);

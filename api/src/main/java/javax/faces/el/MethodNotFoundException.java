@@ -25,38 +25,38 @@ package javax.faces.el;
 public class MethodNotFoundException extends EvaluationException
 {
   private static final long serialVersionUID = 7107789255726890536L;
-	// FIELDS
+    // FIELDS
 
   // CONSTRUCTORS
         /**
          * @deprecated
          */
-	public MethodNotFoundException()
-	{
-		super();
-	}
+    public MethodNotFoundException()
+    {
+        super();
+    }
 
         /**
          * @deprecated
          */
-	public MethodNotFoundException(String message)
-	{
+    public MethodNotFoundException(String message)
+    {
         super(message);
-	}
+    }
 
         /**
          * @deprecated
          */
-	public MethodNotFoundException(String message, Throwable cause)
-	{
-		super(message, cause);
-	}
+    public MethodNotFoundException(String message, Throwable cause)
+    {
+        super(message, cause);
+    }
 
         /**
          * @deprecated
          */
-	public MethodNotFoundException(Throwable cause)
-	{
-		super(cause);
-	}
+    public MethodNotFoundException(Throwable cause)
+    {
+        super(cause);
+    }
 }

@@ -157,19 +157,19 @@ class _ComponentUtils
             }
             catch (ValidatorException e)
             {
-            	input.setValid(false);
-            	
-            	String validatorMessage = input.getValidatorMessage();
-            	if(validatorMessage != null) {
-            		context.addMessage(input.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR,validatorMessage,validatorMessage));
-            	} else {
-            		FacesMessage facesMessage = e.getFacesMessage();
-            		if (facesMessage != null)
+                input.setValid(false);
+                
+                String validatorMessage = input.getValidatorMessage();
+                if(validatorMessage != null) {
+                    context.addMessage(input.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR,validatorMessage,validatorMessage));
+                } else {
+                    FacesMessage facesMessage = e.getFacesMessage();
+                    if (facesMessage != null)
                     {
-            			facesMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
-            			context.addMessage(input.getClientId(context), facesMessage);
+                        facesMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
+                        context.addMessage(input.getClientId(context), facesMessage);
                     }
-            	}
+                }
             }
         }
 
@@ -189,17 +189,17 @@ class _ComponentUtils
                 Throwable cause = e.getCause();
                 if (cause instanceof ValidatorException)
                 {
-                	String validatorMessage = input.getValidatorMessage();
-                	if(validatorMessage != null) {
-                		context.addMessage(input.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR,validatorMessage,validatorMessage));
-                	} 
-                	else {
-                		FacesMessage facesMessage = ((ValidatorException)cause).getFacesMessage();
-                    	if (facesMessage != null)
-                    	{
-                    		facesMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
-                    		context.addMessage(input.getClientId(context), facesMessage);
-                    	}
+                    String validatorMessage = input.getValidatorMessage();
+                    if(validatorMessage != null) {
+                        context.addMessage(input.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR,validatorMessage,validatorMessage));
+                    } 
+                    else {
+                        FacesMessage facesMessage = ((ValidatorException)cause).getFacesMessage();
+                        if (facesMessage != null)
+                        {
+                            facesMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
+                            context.addMessage(input.getClientId(context), facesMessage);
+                        }
                     }
                 }
                 else

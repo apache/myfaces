@@ -14,21 +14,21 @@ import org.apache.myfaces.config.ManagedBeanBuilder;
 
 public class MyFacesHttpSessionListener extends AbstractMyFacesListener implements HttpSessionListener {
 
-	public void sessionCreated(HttpSessionEvent event) { // noop
-	}
+    public void sessionCreated(HttpSessionEvent event) { // noop
+    }
 
-	public void sessionDestroyed(HttpSessionEvent event) {
-		
-		HttpSession session = event.getSession();
-		Enumeration<String> attributes = session.getAttributeNames();
-		
-		while(attributes.hasMoreElements())
-		{
-			String name = attributes.nextElement();
-			Object value = session.getAttribute(name);
-			doPreDestroy(value, name, ManagedBeanBuilder.SESSION);
-		}
-		
-	}
+    public void sessionDestroyed(HttpSessionEvent event) {
+        
+        HttpSession session = event.getSession();
+        Enumeration<String> attributes = session.getAttributeNames();
+        
+        while(attributes.hasMoreElements())
+        {
+            String name = attributes.nextElement();
+            Object value = session.getAttribute(name);
+            doPreDestroy(value, name, ManagedBeanBuilder.SESSION);
+        }
+        
+    }
 
 }

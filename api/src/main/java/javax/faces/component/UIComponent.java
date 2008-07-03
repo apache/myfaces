@@ -145,31 +145,31 @@ public abstract class UIComponent
      */
     public boolean invokeOnComponent(javax.faces.context.FacesContext context, String clientId, javax.faces.component.ContextCallback callback) throws javax.faces.FacesException
     {
-    	//java.lang.NullPointerException - if any of the arguments are null
-    	if(context == null || clientId == null || callback == null)
-    	{
-    		throw new NullPointerException();
-    	}
-    	
-    	//searching for this component?
-    	boolean found = clientId.equals(this.getClientId(context)); 
-    	if(found)
-    	{
-    		try
-    		{
-    			callback.invokeContextCallback(context, this);
-    		} catch(Exception e)
-    		{
-    			throw new FacesException(e);
-    		}
-    		return found;
-    	}
-		//Searching for this component's children/facets 
-    	for (Iterator<UIComponent> it = this.getFacetsAndChildren(); !found && it.hasNext();){
-    		found = it.next().invokeOnComponent(context, clientId, callback);
-    	}
-    		
-    	return found;
+        //java.lang.NullPointerException - if any of the arguments are null
+        if(context == null || clientId == null || callback == null)
+        {
+            throw new NullPointerException();
+        }
+        
+        //searching for this component?
+        boolean found = clientId.equals(this.getClientId(context)); 
+        if(found)
+        {
+            try
+            {
+                callback.invokeContextCallback(context, this);
+            } catch(Exception e)
+            {
+                throw new FacesException(e);
+            }
+            return found;
+        }
+        //Searching for this component's children/facets 
+        for (Iterator<UIComponent> it = this.getFacetsAndChildren(); !found && it.hasNext();){
+            found = it.next().invokeOnComponent(context, clientId, callback);
+        }
+            
+        return found;
     }
 
     public abstract java.lang.String getClientId(javax.faces.context.FacesContext context);
@@ -228,35 +228,35 @@ public abstract class UIComponent
             throws java.io.IOException;
 
     public abstract void encodeEnd(javax.faces.context.FacesContext context)
-    		throws java.io.IOException;
+            throws java.io.IOException;
 
     public void encodeAll(javax.faces.context.FacesContext context) throws java.io.IOException
     {
-    	if(context == null)
-    	{
-    		throw new NullPointerException();
-    	}
-    	
-    	if(isRendered())
-    	{
-    		this.encodeBegin(context);
-    		
-    		//rendering children
-    		if(this.getRendersChildren())
-    		{
-    			this.encodeChildren(context);
-    		}
-    		//let children render itself
-    		else
-    		{
+        if(context == null)
+        {
+            throw new NullPointerException();
+        }
+        
+        if(isRendered())
+        {
+            this.encodeBegin(context);
+            
+            //rendering children
+            if(this.getRendersChildren())
+            {
+                this.encodeChildren(context);
+            }
+            //let children render itself
+            else
+            {
           if(this.getChildCount()>0) {
-      			for (UIComponent comp : this.getChildren()) {
-    					comp.encodeAll(context);
-    				}
+                  for (UIComponent comp : this.getChildren()) {
+                        comp.encodeAll(context);
+                    }
           }
-    		}
+            }
             this.encodeEnd(context);
-    	}
+        }
     }
 
 

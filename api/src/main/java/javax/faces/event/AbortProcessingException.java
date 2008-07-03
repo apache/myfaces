@@ -26,26 +26,26 @@ import javax.faces.FacesException;
 public class AbortProcessingException extends FacesException
 {
   private static final long serialVersionUID = 612682812558934753L;
-	// FIELDS
+    // FIELDS
 
   // CONSTRUCTORS
-	public AbortProcessingException()
-	{
-		super();
-	}
+    public AbortProcessingException()
+    {
+        super();
+    }
 
-	public AbortProcessingException(String message)
-	{
-		super(message);
-	}
+    public AbortProcessingException(String message)
+    {
+        super(message);
+    }
 
-	public AbortProcessingException(String message, Throwable cause)
-	{
-		super(message, cause);
-	}
+    public AbortProcessingException(String message, Throwable cause)
+    {
+        super(message, cause);
+    }
     
-	public AbortProcessingException(Throwable cause)
-	{
-		super(cause);
-	}
+    public AbortProcessingException(Throwable cause)
+    {
+        super(cause);
+    }
 }

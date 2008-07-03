@@ -34,7 +34,7 @@ import java.util.List;
  */
 class _SharedRendererUtils
 {
-	static Converter findUIOutputConverter(FacesContext facesContext, UIOutput component)
+    static Converter findUIOutputConverter(FacesContext facesContext, UIOutput component)
     {
         // Attention!
         // This code is duplicated in jsfapi component package.

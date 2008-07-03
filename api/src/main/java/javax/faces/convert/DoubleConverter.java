@@ -55,7 +55,7 @@ public class DoubleConverter
                 catch (NumberFormatException e)
                 {
                     throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
-                    														   DOUBLE_ID,
+                                                                               DOUBLE_ID,
                                                                                new Object[]{value,"4214",_MessageUtils.getLabel(facesContext, uiComponent)}), e);
                 }
             }
@@ -82,7 +82,7 @@ public class DoubleConverter
         }
         catch (Exception e)
         {
-        	throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, STRING_ID, new Object[]{value,_MessageUtils.getLabel(facesContext, uiComponent)}),e);
+            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, STRING_ID, new Object[]{value,_MessageUtils.getLabel(facesContext, uiComponent)}),e);
         }
     }
 }

@@ -441,7 +441,7 @@ public class UIViewRoot extends UIComponentBase
   @Override
   public boolean isRendered()
   {
-  	return true;
+      return true;
   }
 
   /**
@@ -468,7 +468,7 @@ public class UIViewRoot extends UIComponentBase
 
   public String getId()
   {
-  	//return null;
+      //return null;
     return super.getId();
   }
 
@@ -477,7 +477,7 @@ public class UIViewRoot extends UIComponentBase
    */
   public String getClientId(FacesContext context)
   {
-	  return null;
+      return null;
   }
 
   // Property: viewId

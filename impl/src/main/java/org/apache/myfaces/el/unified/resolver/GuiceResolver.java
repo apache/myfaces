@@ -33,9 +33,9 @@ import com.google.inject.Injector;
 /**
  * <p>Register this ELResolver in faces-config.xml.</p>
  * 
- * 	&ltapplication>
- *		&ltel-resolver>org.apache.myfaces.el.unified.resolver.GuiceResolver&lt/el-resolver>
- *	&lt/application>
+ *     &ltapplication>
+ *        &ltel-resolver>org.apache.myfaces.el.unified.resolver.GuiceResolver&lt/el-resolver>
+ *    &lt/application>
  *
  * <p>Implement and configure a ServletContextListener in web.xml .</p>
  * 
@@ -48,17 +48,17 @@ import com.google.inject.Injector;
  * 
  * public class GuiceServletContextListener implements ServletContextListener {
  *
- *	public void contextInitialized(ServletContextEvent event) {
- *		ServletContext ctx = event.getServletContext();
+ *    public void contextInitialized(ServletContextEvent event) {
+ *        ServletContext ctx = event.getServletContext();
  *              //when on Java6, use ServiceLoader.load(com.google.inject.Module.class);
- *		Injector injector = Guice.createInjector(new YourModule());
- *		ctx.setAttribute(GuiceResolver.KEY, injector);
- *	}
+ *        Injector injector = Guice.createInjector(new YourModule());
+ *        ctx.setAttribute(GuiceResolver.KEY, injector);
+ *    }
  *
- *	public void contextDestroyed(ServletContextEvent event) {
- *		ServletContext ctx = event.getServletContext();
- *		ctx.removeAttribute(GuiceResolver.KEY);
- *	}
+ *    public void contextDestroyed(ServletContextEvent event) {
+ *        ServletContext ctx = event.getServletContext();
+ *        ctx.removeAttribute(GuiceResolver.KEY);
+ *    }
  *
  *}
  * 
@@ -67,14 +67,14 @@ import com.google.inject.Injector;
 
 public class GuiceResolver extends ManagedBeanResolver {
 
-	public static final String KEY = "oam." + Injector.class.getName();
-	
-	@Override
-	public Object getValue(ELContext ctx, Object base, Object property) 
-		throws NullPointerException, PropertyNotFoundException, ELException {
-		
+    public static final String KEY = "oam." + Injector.class.getName();
+    
+    @Override
+    public Object getValue(ELContext ctx, Object base, Object property) 
+        throws NullPointerException, PropertyNotFoundException, ELException {
+        
         if (base != null || !(property instanceof String)) 
-        	return null;
+            return null;
         
         if (property == null)
             throw new PropertyNotFoundException();
@@ -82,32 +82,32 @@ public class GuiceResolver extends ManagedBeanResolver {
         FacesContext fctx = (FacesContext) ctx.getContext(FacesContext.class);
         
         if(fctx == null)
-        	return null;
+            return null;
         
         ExternalContext ectx = fctx.getExternalContext();
         
         if (ectx == null || 
-        	ectx.getRequestMap().containsKey(property) || 
-        	ectx.getSessionMap().containsKey(property) ||
-        	ectx.getApplicationMap().containsKey(property) ) 
-        	return null;
+            ectx.getRequestMap().containsKey(property) || 
+            ectx.getSessionMap().containsKey(property) ||
+            ectx.getApplicationMap().containsKey(property) ) 
+            return null;
         
         ManagedBean managedBean = runtimeConfig(ctx).getManagedBean((String)property);
         
         return managedBean == null ? null : getValue(ctx, ectx, managedBean.getManagedBeanClass());
-	}
+    }
 
-	private Object getValue(ELContext ctx, ExternalContext ectx, Class managedBeanClass) {
-		
+    private Object getValue(ELContext ctx, ExternalContext ectx, Class managedBeanClass) {
+        
         Injector injector = (Injector) ectx.getApplicationMap().get(KEY);
         
         if(injector == null)
-        	throw new FacesException("Could not find an instance of " + Injector.class.getName() 
-        			+ " in application scope using key '" + KEY + "'");
+            throw new FacesException("Could not find an instance of " + Injector.class.getName() 
+                    + " in application scope using key '" + KEY + "'");
         
         Object value = injector.getInstance(managedBeanClass);
         ctx.setPropertyResolved(true);
         return value;
-	}
+    }
 
 }

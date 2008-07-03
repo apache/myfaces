@@ -25,8 +25,8 @@ import java.util.List;
 class _AttachedListStateWrapper
         implements Serializable
 {
-	private static final long serialVersionUID = -3958718149793179776L;
-	private List<Object> _wrappedStateList;
+    private static final long serialVersionUID = -3958718149793179776L;
+    private List<Object> _wrappedStateList;
 
     public _AttachedListStateWrapper(List<Object> wrappedStateList)
     {

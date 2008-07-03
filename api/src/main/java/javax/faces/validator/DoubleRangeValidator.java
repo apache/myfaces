@@ -109,11 +109,11 @@ public class DoubleRangeValidator
         
         try
         {
-        	return Double.parseDouble(value.toString());
+            return Double.parseDouble(value.toString());
         }
         catch (NumberFormatException e)
         {
-			Object[] args = {_MessageUtils.getLabel(facesContext, uiComponent)};
+            Object[] args = {_MessageUtils.getLabel(facesContext, uiComponent)};
             throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, TYPE_MESSAGE_ID, args));
         }
     }

@@ -237,10 +237,10 @@ public class ApplicationImplTest extends TestCase
      */
     public void testCreateEnumConverter() throws Exception
     {
-    	app.addConverter(Enum.class, EnumConverter.class.getName());
+        app.addConverter(Enum.class, EnumConverter.class.getName());
 
-    	Converter converter = app.createConverter(MyEnum.class);
-    	assertNotNull(converter);
-    	assertEquals(converter.getClass(), EnumConverter.class);
+        Converter converter = app.createConverter(MyEnum.class);
+        assertNotNull(converter);
+        assertEquals(converter.getClass(), EnumConverter.class);
     }    
 }

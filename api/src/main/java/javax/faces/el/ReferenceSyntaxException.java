@@ -26,38 +26,38 @@ public class ReferenceSyntaxException extends EvaluationException
 {
   private static final long serialVersionUID = -2099185257291689817L;
 
-	// FIELDS
+    // FIELDS
 
   // CONSTRUCTORS
         /**
          * @deprecated
          */
-	public ReferenceSyntaxException()
-	{
-		super();
-	}
+    public ReferenceSyntaxException()
+    {
+        super();
+    }
 
         /**
          * @deprecated
          */
-	public ReferenceSyntaxException(String message)
-	{
-		super(message);
-	}
+    public ReferenceSyntaxException(String message)
+    {
+        super(message);
+    }
 
         /**
          * @deprecated
          */
-	public ReferenceSyntaxException(String message, Throwable cause)
-	{
-		super(message, cause);
-	}
+    public ReferenceSyntaxException(String message, Throwable cause)
+    {
+        super(message, cause);
+    }
 
         /**
          * @deprecated
          */
-	public ReferenceSyntaxException(Throwable cause)
-	{
-		super(cause);
-	}
+    public ReferenceSyntaxException(Throwable cause)
+    {
+        super(cause);
+    }
 }

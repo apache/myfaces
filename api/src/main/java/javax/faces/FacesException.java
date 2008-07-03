@@ -24,9 +24,9 @@ package javax.faces;
 public class FacesException
         extends RuntimeException
 {
-	private static final long serialVersionUID = 6592152487577416317L;
+    private static final long serialVersionUID = 6592152487577416317L;
 
-	public FacesException()
+    public FacesException()
     {
         super();
     }

@@ -28,31 +28,31 @@ import javax.faces.component.UIComponent;
  */
 public abstract class FacesEvent extends EventObject
 {
-	// FIELDS
+    // FIELDS
     private PhaseId _phaseId;
 
-	// CONSTRUCTORS
-	public FacesEvent(UIComponent uiComponent)
-	{
+    // CONSTRUCTORS
+    public FacesEvent(UIComponent uiComponent)
+    {
         super(uiComponent);
         if (uiComponent == null) throw new IllegalArgumentException("uiComponent");
         _phaseId = PhaseId.ANY_PHASE;
-	}
+    }
 
-	// METHODS
+    // METHODS
     public abstract boolean isAppropriateListener(FacesListener faceslistener);
 
     public abstract void processListener(FacesListener faceslistener);
 
-	public UIComponent getComponent()
-	{
+    public UIComponent getComponent()
+    {
         return (UIComponent)getSource();
-	}
+    }
 
-	public void queue()
-	{
+    public void queue()
+    {
         ((UIComponent)getSource()).queueEvent(this);
-	}
+    }
 
     public PhaseId getPhaseId()
     {

@@ -232,7 +232,7 @@ public class UIInput extends UIOutput
         if (expression == null) return;
         try
         {
-        	expression.setValue(context.getELContext(), getLocalValue());
+            expression.setValue(context.getELContext(), getLocalValue());
             setValue(null);
             setLocalValueSet(false);
         }
@@ -277,14 +277,14 @@ public class UIInput extends UIOutput
 
         if (isRequired() && empty)
         {
-        	if(getRequiredMessage() != null) {
-        		String requiredMessage = getRequiredMessage();
-        		context.addMessage(this.getClientId(context),new FacesMessage(FacesMessage.SEVERITY_ERROR,requiredMessage,requiredMessage));
-        	} else {
-        		_MessageUtils.addErrorMessage(context, this, REQUIRED_MESSAGE_ID,new Object[]{_MessageUtils.getLabel(context,this)});
-        	}
-        	setValid(false);
-        	return;
+            if(getRequiredMessage() != null) {
+                String requiredMessage = getRequiredMessage();
+                context.addMessage(this.getClientId(context),new FacesMessage(FacesMessage.SEVERITY_ERROR,requiredMessage,requiredMessage));
+            } else {
+                _MessageUtils.addErrorMessage(context, this, REQUIRED_MESSAGE_ID,new Object[]{_MessageUtils.getLabel(context,this)});
+            }
+            setValid(false);
+            return;
         }
 
         if (!empty)
@@ -394,11 +394,11 @@ public class UIInput extends UIOutput
         }
         catch (ConverterException e)
         {
-        	String converterMessage = getConverterMessage();
-        	if(converterMessage != null) {
-        		context.addMessage(getClientId(context),new FacesMessage(FacesMessage.SEVERITY_ERROR,converterMessage,converterMessage));
-        	} else {
-        		 FacesMessage facesMessage = e.getFacesMessage();
+            String converterMessage = getConverterMessage();
+            if(converterMessage != null) {
+                context.addMessage(getClientId(context),new FacesMessage(FacesMessage.SEVERITY_ERROR,converterMessage,converterMessage));
+            } else {
+                 FacesMessage facesMessage = e.getFacesMessage();
                  if (facesMessage != null)
                  {
                      context.addMessage(getClientId(context), facesMessage);
@@ -407,8 +407,8 @@ public class UIInput extends UIOutput
                  {
                      _MessageUtils.addErrorMessage(context, this, CONVERSION_MESSAGE_ID,new Object[]{_MessageUtils.getLabel(context,this)});
                  }
-        	}
-        	setValid(false);
+            }
+            setValid(false);
         }
         return submittedValue;
     }
