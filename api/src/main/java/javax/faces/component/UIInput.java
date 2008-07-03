@@ -263,11 +263,10 @@ public class UIInput extends UIOutput
         if(null==li) {
             li = new ArrayList();
             context.getExternalContext().getRequestMap().put(ERROR_HANDLING_EXCEPTION_LIST, li);
-
-            li.add(new FacesException("Exception while setting value for expression : "+
-                expression.getExpressionString()+" of component with path : "
-                + _ComponentUtils.getPathToComponent(this),e));
         }
+        li.add(new FacesException("Exception while setting value for expression : "+
+            expression.getExpressionString()+" of component with path : "
+            + _ComponentUtils.getPathToComponent(this),e));
     }
 
     protected void validateValue(FacesContext context,Object convertedValue)

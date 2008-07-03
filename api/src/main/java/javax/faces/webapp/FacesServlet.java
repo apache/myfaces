@@ -147,9 +147,10 @@ public final class FacesServlet
         try {
 			_lifecycle.execute(facesContext);
 
-            handleQueuedExceptions(facesContext);
-
-            _lifecycle.render(facesContext);
+            if (!handleQueuedExceptions(facesContext))
+            {
+                _lifecycle.render(facesContext);
+            }
 		}
         catch (Exception e)
         {
@@ -174,7 +175,7 @@ public final class FacesServlet
      * @param facesContext
      * @throws FacesException
      */
-    private void handleQueuedExceptions(FacesContext facesContext) throws FacesException {
+    private boolean handleQueuedExceptions(FacesContext facesContext) throws IOException, ServletException {
         List li = (List)
                 facesContext.getExternalContext().getRequestMap().get(ERROR_HANDLING_EXCEPTION_LIST);
 
@@ -182,8 +183,43 @@ public final class FacesServlet
             //todo: for now, we only handle the first exception out of the list - we just rethrow this
             //first exception.
             //in the end, we should enable the error handler to show all the exceptions at once
-            throw (FacesException) li.get(0);
+            boolean errorHandling = getBooleanValue(facesContext.getExternalContext().getInitParameter(ERROR_HANDLING_PARAMETER), true);
+
+            if(errorHandling) {
+                String errorHandlerClass = facesContext.getExternalContext().getInitParameter(ERROR_HANDLER_PARAMETER);            
+                if(errorHandlerClass != null) {
+                    try {
+                        Class clazz = Class.forName(errorHandlerClass);
+
+                        Object errorHandler = clazz.newInstance();
+
+                        Method m = clazz.getMethod("handleExceptionList", new Class[]{FacesContext.class,Exception.class});
+                        m.invoke(errorHandler, new Object[]{facesContext, li});
+                    }
+                    catch(ClassNotFoundException ex) {
+                        throw new ServletException("Error-Handler : " +errorHandlerClass+ " was not found. Fix your web.xml-parameter : "+ERROR_HANDLER_PARAMETER,ex);
+                    } catch (IllegalAccessException ex) {
+                        throw new ServletException("Constructor of error-Handler : " +errorHandlerClass+ " is not accessible. Error-Handler is specified in web.xml-parameter : "+ERROR_HANDLER_PARAMETER,ex);
+                    } catch (InstantiationException ex) {
+                        throw new ServletException("Error-Handler : " +errorHandlerClass+ " could not be instantiated. Error-Handler is specified in web.xml-parameter : "+ERROR_HANDLER_PARAMETER,ex);
+                    } catch (NoSuchMethodException ex) {
+                        //Handle in the old way, since no custom method handleExceptionList found,
+                        //throwing the first FacesException on the list.
+                        throw (FacesException) li.get(0);
+                    } catch (InvocationTargetException ex) {
+                        throw new ServletException("Excecution of method handleException in Error-Handler : " +errorHandlerClass+ " threw an exception. Error-Handler is specified in web.xml-parameter : "+ERROR_HANDLER_PARAMETER,ex);
+                    }
+                }
+                else {
+                    _ErrorPageWriter.handleExceptionList(facesContext, li);
+                }
+            }
+            else {
+                _ErrorPageWriter.throwException((Exception) li.get(0));
+            }
+            return true;
         }
+        return false;
     }
 
     private void handleLifecycleException(FacesContext facesContext, Exception e) throws IOException, ServletException {
