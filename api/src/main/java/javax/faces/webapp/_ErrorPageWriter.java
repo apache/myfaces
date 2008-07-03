@@ -164,6 +164,87 @@ class _ErrorPageWriter {
             }
         }
     }
+    
+    public static void debugHtml(Writer writer, FacesContext faces, List exceptionList) throws IOException
+    {
+        init();
+        Date now = new Date();
+        for (int i = 0; i < ERROR_PARTS.length; i++)
+        {
+            if ("message".equals(ERROR_PARTS[i]))
+            {
+                for (int j = 0; j < exceptionList.size(); j++)
+                {
+                    Exception e = (Exception) exceptionList.get(j);
+                    String msg = e.getMessage();
+                    if (msg != null)
+                    {
+                        writer.write(msg.replaceAll("<", TS));
+                    }
+                    else 
+                    {
+                        writer.write(e.getClass().getName());
+                    }
+                    if (!(j+1==exceptionList.size()))
+                    {
+                        writer.write("<br>");
+                    }
+                }
+            }
+            else if ("trace".equals(ERROR_PARTS[i]))
+            {
+                for (int j = 0; j < exceptionList.size(); j++)
+                {
+                    Exception e = (Exception) exceptionList.get(j);
+                    writeException(writer, e);
+                }
+            }
+            else if ("now".equals(ERROR_PARTS[i]))
+            {
+                writer.write(DateFormat.getDateTimeInstance().format(now));
+            }
+            else if ("tree".equals(ERROR_PARTS[i]))
+            {
+                if (faces.getViewRoot() != null)
+                {
+                    List highlightId = null;
+                    for (int j = 0; j < exceptionList.size(); j++)
+                    {
+                        Exception e = (Exception) exceptionList.get(j);
+                        if (highlightId == null)
+                        {
+                            highlightId = getErrorId(e);
+                        }
+                        else
+                        {
+                            highlightId.addAll(getErrorId(e));
+                        }
+                    }
+                    writeComponent(writer, faces.getViewRoot(), highlightId);
+                }
+            }
+            else if ("vars".equals(ERROR_PARTS[i]))
+            {
+                writeVariables(writer, faces);
+            }
+            else if ("cause".equals(ERROR_PARTS[i]))
+            {
+                for (int j = 0; j < exceptionList.size(); j++)
+                {
+                    Exception e = (Exception) exceptionList.get(j);
+                    writeCause(writer, e);
+                    if (!(j+1==exceptionList.size()))
+                    {
+                        writer.write("<br>");
+                    }
+                }
+            }
+            else
+            {
+                writer.write(ERROR_PARTS[i]);
+            }
+        }
+    }    
 
     private static void writeException(Writer writer, Exception e) throws IOException {
         StringWriter str = new StringWriter(256);
@@ -380,6 +461,41 @@ class _ErrorPageWriter {
         }
         else {
             throwException(ex);
+        }
+    }
+    
+    public static void handleExceptionList(FacesContext facesContext, List exceptionList) throws ServletException, IOException
+    {
+        for (int i = 0; i < exceptionList.size(); i++)
+        {
+            prepareExceptionStack( (Exception) exceptionList.get(i));
+        }
+
+        Object response = facesContext.getExternalContext().getResponse();
+        if(response instanceof HttpServletResponse)
+        {
+            HttpServletResponse httpResp = (HttpServletResponse) response;
+            if (!httpResp.isCommitted())
+            {
+                httpResp.reset();
+                httpResp.setContentType("text/html; charset=UTF-8");
+                Writer writer = httpResp.getWriter();
+
+                debugHtml(writer, facesContext, exceptionList);
+
+                for (int i = 0; i < exceptionList.size(); i++)
+                {
+                    log.error("An exception occurred", (Exception) exceptionList.get(i));
+                }
+            }
+            else
+            {
+                throwException((Exception)exceptionList.get(0));
+            }
+        }
+        else
+        {
+            throwException((Exception)exceptionList.get(0));
         }
     }
 
