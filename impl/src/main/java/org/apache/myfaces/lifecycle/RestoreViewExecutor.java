@@ -85,7 +85,8 @@ class RestoreViewExecutor implements PhaseExecutor
             viewRoot = viewHandler.restoreView(facesContext, viewId);
             if (viewRoot == null)
             {
-                throw new ViewExpiredException("The expected view was not returned " + "for the view identifier: "
+                throw new ViewExpiredException(
+                    "No saved view state could be found for the view identifier: "
                         + viewId, viewId);
             }
             restoreViewSupport.processComponentBinding(facesContext, viewRoot);
