@@ -63,25 +63,49 @@ class _ErrorPageWriter {
 
     private final static String TS = "&lt;";
 
-    private static final String ERROR_TEMPLATE = "META-INF/rsc/facelet-dev-error.xml";
+    private static final String ERROR_TEMPLATE = "META-INF/rsc/myfaces-dev-error.xml";
+
+    private static final String ERROR_TEMPLATE_RESOURCE = "org.apache.myfaces.ERROR_TEMPLATE_RESOURCE";
 
     private static String[] ERROR_PARTS;
 
-    private static final String DEBUG_TEMPLATE = "META-INF/rsc/facelet-dev-debug.xml";
+    private static final String DEBUG_TEMPLATE = "META-INF/rsc/myfaces-dev-debug.xml";
+    
+    private static final String DEBUG_TEMPLATE_RESOURCE = "org.apache.myfaces.DEBUG_TEMPLATE_RESOURCE";    
 
     private static String[] DEBUG_PARTS;
 
     public _ErrorPageWriter() {
         super();
     }
-
-    private static void init() throws IOException {
+    
+    private static String getErrorTemplate(FacesContext context)
+    {
+        String errorTemplate = context.getExternalContext().getInitParameter(ERROR_TEMPLATE_RESOURCE);
+        if (errorTemplate != null)
+        {
+            return errorTemplate;
+        }
+        return ERROR_TEMPLATE;
+    }
+    
+    private static String getDebugTemplate(FacesContext context)
+    {
+        String debugTemplate = context.getExternalContext().getInitParameter(DEBUG_TEMPLATE_RESOURCE);
+        if (debugTemplate != null)
+        {
+            return debugTemplate;
+        }        
+        return DEBUG_TEMPLATE;
+    }
+    
+    private static void init(FacesContext context) throws IOException {
         if (ERROR_PARTS == null) {
-            ERROR_PARTS = splitTemplate(ERROR_TEMPLATE);
+            ERROR_PARTS = splitTemplate(getErrorTemplate(context));
         }
 
         if (DEBUG_PARTS == null) {
-            DEBUG_PARTS = splitTemplate(DEBUG_TEMPLATE);
+            DEBUG_PARTS = splitTemplate(getDebugTemplate(context));
         }
     }
 
@@ -137,7 +161,7 @@ class _ErrorPageWriter {
     }
 
     public static void debugHtml(Writer writer, FacesContext faces, Throwable e) throws IOException {
-        init();
+        init(faces);
         Date now = new Date();
         for (int i = 0; i < ERROR_PARTS.length; i++) {
             if ("message".equals(ERROR_PARTS[i])) {
@@ -167,7 +191,7 @@ class _ErrorPageWriter {
     
     public static void debugHtml(Writer writer, FacesContext faces, List exceptionList) throws IOException
     {
-        init();
+        init(faces);
         Date now = new Date();
         for (int i = 0; i < ERROR_PARTS.length; i++)
         {
@@ -255,7 +279,7 @@ class _ErrorPageWriter {
     }
 
     public static void debugHtml(Writer writer, FacesContext faces) throws IOException {
-        init();
+        init(faces);
         Date now = new Date();
         for (int i = 0; i < DEBUG_PARTS.length; i++) {
             if ("message".equals(DEBUG_PARTS[i])) {
