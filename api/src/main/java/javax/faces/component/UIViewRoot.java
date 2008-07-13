@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
-*/
+ */
 package javax.faces.component;
 
 import java.util.ArrayList;
@@ -332,7 +332,6 @@ public class UIViewRoot
     /**
      * DO NOT USE.
      * <p>
-
      * Although this class extends a base-class that defines a read/write
      * id property, it makes no sense for this particular subclass to support
      * it. The tag library does not export this property for use, but there 
