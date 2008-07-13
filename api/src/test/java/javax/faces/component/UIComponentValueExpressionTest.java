@@ -1,5 +1,4 @@
 package javax.faces.component;
-
 import static org.easymock.EasyMock.expect;
 import static org.testng.Assert.*;
 
