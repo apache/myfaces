@@ -57,9 +57,9 @@ import javax.faces.component.UISelectOne;
  * @version $Revision$ $Date$
  */
 abstract class _HtmlSelectOneListbox extends UISelectOne implements
-    _AccesskeyProperty, _UniversalProperties, _Disabled_ReadonlyProperties,
-    _Focus_BlurProperties, _Change_SelectProperties, _EventProperties,
-    _StyleProperties, _TabindexProperty, _DisabledClass_EnabledClassProperties
+    _AccesskeyProperty, _UniversalProperties, _DisabledReadonlyProperties,
+    _FocusBlurProperties, _ChangeSelectProperties, _EventProperties,
+    _StyleProperties, _TabindexProperty, _DisabledClassEnabledClassProperties
 {
 
     public static final String COMPONENT_TYPE = "javax.faces.HtmlSelectOneListbox";

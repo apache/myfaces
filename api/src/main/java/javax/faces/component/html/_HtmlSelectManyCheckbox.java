@@ -58,10 +58,10 @@ import javax.faces.component.UISelectMany;
  * @version $Revision$ $Date$
  */
 abstract class _HtmlSelectManyCheckbox extends UISelectMany implements 
-    _AccesskeyProperty, _UniversalProperties, _Focus_BlurProperties,
-    _Change_SelectProperties, _EventProperties, _StyleProperties,
-    _TabindexProperty, _Disabled_ReadonlyProperties, 
-    _DisabledClass_EnabledClassProperties
+    _AccesskeyProperty, _UniversalProperties, _FocusBlurProperties,
+    _ChangeSelectProperties, _EventProperties, _StyleProperties,
+    _TabindexProperty, _DisabledReadonlyProperties, 
+    _DisabledClassEnabledClassProperties
 {
 
     public static final String COMPONENT_TYPE = "javax.faces.HtmlSelectManyCheckbox";

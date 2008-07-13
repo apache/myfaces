@@ -18,21 +18,22 @@
  */
 package javax.faces.component.html;
 
-interface _Change_SelectProperties
+interface _DisabledReadonlyProperties
 {
     /**
-     * HTML: Specifies a script to be invoked when the element is modified.
+     * HTML: When true, this element cannot receive focus.
      * 
      * @JSFProperty
+     *   defaultValue = "false"
      */
-    public abstract String getOnchange();
-
+    public abstract boolean isDisabled();
 
     /**
-     * HTML: Specifies a script to be invoked when the element is selected.
+     * HTML: When true, indicates that this component cannot be modified by the user.
+     * The element may receive focus unless it has also been disabled.
      * 
      * @JSFProperty
+     *   defaultValue = "false"
      */
-    public abstract String getOnselect();
-
+    public abstract boolean isReadonly();
 }

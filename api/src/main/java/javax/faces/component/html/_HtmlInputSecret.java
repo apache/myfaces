@@ -39,9 +39,9 @@ import javax.faces.component.UIInput;
  * @version $Revision$ $Date$
  */
 abstract class _HtmlInputSecret extends UIInput implements _AccesskeyProperty,
-    _AltProperty, _UniversalProperties, _Focus_BlurProperties, _EventProperties,
-    _StyleProperties, _TabindexProperty, _Change_SelectProperties, 
-    _Disabled_ReadonlyProperties
+    _AltProperty, _UniversalProperties, _FocusBlurProperties, _EventProperties,
+    _StyleProperties, _TabindexProperty, _ChangeSelectProperties, 
+    _DisabledReadonlyProperties
 {
     public static final String COMPONENT_TYPE = "javax.faces.HtmlInputSecret";
     private static final String DEFAULT_RENDERER_TYPE = "javax.faces.Secret";

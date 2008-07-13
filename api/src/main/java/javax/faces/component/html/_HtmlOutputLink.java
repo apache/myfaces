@@ -40,7 +40,7 @@ import javax.faces.component.UIOutput;
  * @version $Revision$ $Date$
  */
 abstract class _HtmlOutputLink extends UIOutput implements _AccesskeyProperty,
-    _UniversalProperties, _Focus_BlurProperties, _EventProperties, _StyleProperties,
+    _UniversalProperties, _FocusBlurProperties, _EventProperties, _StyleProperties,
     _TabindexProperty, _LinkProperties
 {
 

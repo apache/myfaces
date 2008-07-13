@@ -39,9 +39,9 @@ import javax.faces.component.UIInput;
  * @version $Revision$ $Date$
  */
 abstract class _HtmlInputTextarea extends UIInput implements _AccesskeyProperty,
-    _UniversalProperties, _Focus_BlurProperties, _Change_SelectProperties,
+    _UniversalProperties, _FocusBlurProperties, _ChangeSelectProperties,
     _EventProperties, _StyleProperties, _TabindexProperty, 
-    _Disabled_ReadonlyProperties
+    _DisabledReadonlyProperties
 {
 
     public static final String COMPONENT_TYPE = "javax.faces.HtmlInputTextarea";

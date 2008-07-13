@@ -41,7 +41,7 @@ import javax.faces.component.UIOutput;
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-abstract class _HtmlOutputLabel extends UIOutput implements _Focus_BlurProperties,
+abstract class _HtmlOutputLabel extends UIOutput implements _FocusBlurProperties,
     _EventProperties, _StyleProperties, _UniversalProperties, _AccesskeyProperty,
     _TabindexProperty
 {

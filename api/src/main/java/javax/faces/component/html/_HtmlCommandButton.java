@@ -39,10 +39,10 @@ import javax.faces.component.UICommand;
  * @version $Revision$ $Date$
  */
 abstract class _HtmlCommandButton
-        extends UICommand implements _Focus_BlurProperties, 
+        extends UICommand implements _FocusBlurProperties, 
         _EventProperties, _StyleProperties, _UniversalProperties,
         _AccesskeyProperty, _TabindexProperty, _AltProperty, 
-        _Change_SelectProperties, _Disabled_ReadonlyProperties
+        _ChangeSelectProperties, _DisabledReadonlyProperties
 {
     public static final String COMPONENT_TYPE = "javax.faces.HtmlCommandButton";
     private static final String DEFAULT_RENDERER_TYPE = "javax.faces.Button";

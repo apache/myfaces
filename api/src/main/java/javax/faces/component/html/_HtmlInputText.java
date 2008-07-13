@@ -36,8 +36,8 @@ import javax.faces.component.UIInput;
  * @version $Revision$ $Date$
  */
 abstract class _HtmlInputText extends UIInput implements _AccesskeyProperty,
-    _AltProperty, _UniversalProperties, _Disabled_ReadonlyProperties,
-    _Focus_BlurProperties, _Change_SelectProperties, _EventProperties,
+    _AltProperty, _UniversalProperties, _DisabledReadonlyProperties,
+    _FocusBlurProperties, _ChangeSelectProperties, _EventProperties,
     _StyleProperties, _TabindexProperty
 {
     //------------------ GENERATED CODE BEGIN (do not modify!) --------------------

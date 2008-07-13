@@ -40,7 +40,7 @@ import javax.faces.component.UICommand;
  */
 abstract class _HtmlCommandLink extends UICommand 
     implements _EventProperties, _UniversalProperties, _StyleProperties,
-    _Focus_BlurProperties, _AccesskeyProperty, _TabindexProperty,
+    _FocusBlurProperties, _AccesskeyProperty, _TabindexProperty,
     _LinkProperties
 {
 
