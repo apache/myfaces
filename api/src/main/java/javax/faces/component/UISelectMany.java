@@ -1,6 +1,3 @@
-// WARNING: This file was automatically generated. Do not edit it directly,
-//          or you will lose your changes.
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
