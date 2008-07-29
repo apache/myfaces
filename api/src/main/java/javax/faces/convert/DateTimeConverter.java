@@ -90,21 +90,17 @@ public class DateTimeConverter
                 }
                 catch (ParseException e)
                 {
-                    try {
-                        String type = getType();
-                        Object[] args = new Object[]{value,format.parse(new Date().toString()),_MessageUtils.getLabel(facesContext, uiComponent)};
-                        
-                        if(type.equals(TYPE_DATE))
-                            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,DATE_ID,args));
-                        else if (type.equals(TYPE_TIME))
-                            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,TIME_ID,args));
-                        else if (type.equals(TYPE_BOTH))
-                            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,DATETIME_ID,args));
-                        else
-                            throw new ConverterException("invalid type '" + _type + "'");
-                    }catch(ParseException exception) {
-                        throw new ConverterException(exception);
-                    }
+                    String type = getType();
+                    Object[] args = new Object[]{value,format.format(new Date()),_MessageUtils.getLabel(facesContext, uiComponent)};
+                    
+                    if(type.equals(TYPE_DATE))
+                        throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,DATE_ID,args));
+                    else if (type.equals(TYPE_TIME))
+                        throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,TIME_ID,args));
+                    else if (type.equals(TYPE_BOTH))
+                        throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,DATETIME_ID,args));
+                    else
+                        throw new ConverterException("invalid type '" + _type + "'");
                 }
             }
         }
