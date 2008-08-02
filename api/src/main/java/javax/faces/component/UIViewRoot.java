@@ -614,16 +614,15 @@ public class UIViewRoot extends UIComponentBase
   @Override
   public Object saveState(FacesContext facesContext)
   {
-    Object[] values = new Object[10];
+    Object[] values = new Object[8];
     values[0] = super.saveState(facesContext);
     values[1] = _locale;
     values[2] = _renderKitId;
     values[3] = _viewId;
-    values[4] = saveAttachedState(facesContext, _events);
-    values[5] = _uniqueIdCounter;
-    values[7] = saveAttachedState(facesContext, _phaseListeners);
-    values[8] = saveAttachedState(facesContext, _beforePhaseListener);
-    values[9] = saveAttachedState(facesContext, _afterPhaseListener);
+    values[4] = _uniqueIdCounter;
+    values[5] = saveAttachedState(facesContext, _phaseListeners);
+    values[6] = saveAttachedState(facesContext, _beforePhaseListener);
+    values[7] = saveAttachedState(facesContext, _afterPhaseListener);
 
     return values;
   }
@@ -636,11 +635,10 @@ public class UIViewRoot extends UIComponentBase
     _locale = (Locale)values[1];
     _renderKitId = (String)values[2];
     _viewId = (String)values[3];
-    _events = (List)restoreAttachedState(facesContext, values[4]);
-    _uniqueIdCounter = (Long)values[5];
-    _phaseListeners = (List) restoreAttachedState(facesContext, values[7]);
-    _beforePhaseListener = (MethodExpression)restoreAttachedState(facesContext, values[8]);
-    _afterPhaseListener = (MethodExpression)restoreAttachedState(facesContext, values[9]);
+    _uniqueIdCounter = (Long)values[4];
+    _phaseListeners = (List) restoreAttachedState(facesContext, values[5]);
+    _beforePhaseListener = (MethodExpression)restoreAttachedState(facesContext, values[6]);
+    _afterPhaseListener = (MethodExpression)restoreAttachedState(facesContext, values[7]);
   }
 
   @Override
