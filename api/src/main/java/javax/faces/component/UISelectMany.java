@@ -312,7 +312,15 @@ public class UISelectMany extends UIInput
         // if UISelectMany is required, then there must be some selected values
         if (isRequired() && !hasValues)
         {
-            _MessageUtils.addErrorMessage(context, this, REQUIRED_MESSAGE_ID, new Object[]{_MessageUtils.getLabel(context,this)});
+            if(getRequiredMessage() != null)
+            {
+                String requiredMessage = getRequiredMessage();
+                context.addMessage(this.getClientId(context),new FacesMessage(FacesMessage.SEVERITY_ERROR,requiredMessage,requiredMessage));
+            }
+            else
+            {
+                _MessageUtils.addErrorMessage(context, this, REQUIRED_MESSAGE_ID, new Object[]{_MessageUtils.getLabel(context,this)});
+            }
             setValid(false);
             return;
         }
