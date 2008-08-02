@@ -218,12 +218,12 @@ public class UIViewRoot extends UIComponentBase
             if (broadcast)
             {
                 _broadcastForPhase(phaseId);
-                if (context.getRenderResponse() || context.getResponseComplete())
-                {
-                    clearEvents();
-                }
             }
         }
+        if (context.getRenderResponse() || context.getResponseComplete())
+        {
+            clearEvents();
+        }        
         return notifyListeners(context, phaseId, getAfterPhaseListener(), false);
     }
 
