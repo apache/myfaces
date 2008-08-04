@@ -57,6 +57,28 @@ class _SelectItemsIterator implements Iterator
         if (_childs.hasNext())
         {
             UIComponent child = (UIComponent) _childs.next();
+            // When there is other components nested that does
+            // not extends from UISelectItem or UISelectItems
+            // the behavior for this iterator is just skip this
+            // element(s) until an element that extends from these
+            // classes are found. If there is no more elements
+            // that conform this condition, just return false.
+            while (!(child instanceof UISelectItem)
+                    && !(child instanceof UISelectItems))
+            {
+                //Try to skip it
+                if (_childs.hasNext())
+                {
+                    //Skip and do the same check
+                    child = (UIComponent) _childs.next();
+                }
+                else
+                {
+                    //End loop, so the final result is return false,
+                    //since there are no more components to iterate.
+                    return false;
+                }
+            }
             if (child instanceof UISelectItem)
             {
                 UISelectItem uiSelectItem = (UISelectItem) child;
@@ -142,11 +164,6 @@ class _SelectItemsIterator implements Iterator
                                         .getClass()
                                         .getName()));
                 }
-            }
-            else
-            {
-                //todo: may other objects than selectItems be nested or not?
-                //log.error("Invalid component : " + getPathToComponent(child) + " : must be UISelectItem or UISelectItems, is of type : "+((child==null)?"null":child.getClass().getName()));
             }
         }
         return false;
