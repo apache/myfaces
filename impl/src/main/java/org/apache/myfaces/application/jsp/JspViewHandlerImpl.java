@@ -478,8 +478,14 @@ public class JspViewHandlerImpl extends ViewHandler
         ViewResponseWrapper wrappedResponse = new ViewResponseWrapper((HttpServletResponse) response);
 
         externalContext.setResponse(wrappedResponse);
-        externalContext.dispatch(viewId);
-        externalContext.setResponse(response);
+        try
+        {
+            externalContext.dispatch(viewId);
+        }
+        finally
+        {
+            externalContext.setResponse(response);
+        }
 
         boolean errorResponse = wrappedResponse.getStatus() < 200 || wrappedResponse.getStatus() > 299;
         if (errorResponse)
