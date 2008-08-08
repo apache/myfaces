@@ -321,12 +321,17 @@ public class UIViewRoot
      */
     public void setRendered(boolean state)
     {
-       throw new UnsupportedOperationException();
+       //It should throw UnsupportedOperationException
+       //throw new UnsupportedOperationException();
+       //Restored due to compatibility with TCK tests.
+       super.setRendered(state);
     }
 
     public boolean isRendered()
     {
-        return true;
+        //return true;
+        //Restored due to compatibility with TCK tests.
+        return super.isRendered();
     }
 
     /**
@@ -367,7 +372,9 @@ public class UIViewRoot
      */
     public String getClientId(FacesContext context)
     {
-        return null;
+        //return null;
+        //Restored due to compatibility with TCK tests.
+        return super.getClientId(context);
     }
 
     public Object saveState(FacesContext context)

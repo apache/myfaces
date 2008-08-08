@@ -71,11 +71,15 @@ public class UIParameter
      * @JSFProperty tagExcluded="true"
      */
     public void setRendered(boolean state) {
-       throw new UnsupportedOperationException();
+       //throw new UnsupportedOperationException();
+        //Restored due to compatibility with TCK tests.
+        super.setRendered(state);
     }
 
     public boolean isRendered() {
-        return true;
+        //return true;
+        //Restored due to compatibility with TCK tests.
+        return super.isRendered();        
     }
 
     public void setName(String name)

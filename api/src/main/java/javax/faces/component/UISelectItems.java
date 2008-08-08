@@ -68,7 +68,15 @@ public class UISelectItems
      * @JSFProperty tagExcluded="true"
      */
     public void setRendered(boolean state) {
-       throw new UnsupportedOperationException();
+        //throw new UnsupportedOperationException();
+        //Restored due to compatibility with TCK tests.
+        super.setRendered(state);
+    }
+
+    public boolean isRendered() {
+        //return true;
+        //Restored due to compatibility with TCK tests.
+        return super.isRendered();
     }
 
     public void setValue(Object value)
