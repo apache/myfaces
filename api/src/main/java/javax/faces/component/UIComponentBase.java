@@ -566,8 +566,19 @@ public abstract class UIComponentBase
         for (Iterator it = findBase.getFacetsAndChildren(); it.hasNext(); )
         {
             UIComponent childOrFacet = (UIComponent)it.next();
-            UIComponent find = findComponentNormal(id, childOrFacet);
-            if (find != null) return find;
+            // If a descendant NamingContainer is found, 
+            // child components including facets are not searched,
+            // so just check if this component is and continue
+            // if not.
+            if (childOrFacet instanceof NamingContainer){
+                if (idsAreEqual(id, childOrFacet))
+                {
+                    return childOrFacet;
+                }
+            }else{
+                UIComponent find = findComponentNormal(id, childOrFacet);
+                if (find != null) return find;
+            }
         }
 
         return null;
