@@ -20,20 +20,21 @@ package javax.faces.component.html;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
-interface _DisabledClass_EnabledClassProperties
+interface _FocusBlurProperties
 {
+
     /**
-     * The CSS class assigned to the label element for enabled choices.
+     * HTML: Specifies a script to be invoked when the element loses focus.
      * 
      */
     @JSFProperty
-    public String getDisabledClass();
-
+    public String getOnblur();
+    
     /**
-     * The CSS class assigned to the label element for enabled choices.
+     * HTML: Specifies a script to be invoked when the element receives focus.
      * 
      */
     @JSFProperty
-    public String getEnabledClass();
-
+    public String getOnfocus();
+    
 }

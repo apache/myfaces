@@ -65,10 +65,10 @@ tagClass = "org.apache.myfaces.taglib.html.HtmlSelectManyCheckboxTag",
 defaultRendererType = "javax.faces.Checkbox"
 )
 abstract class _HtmlSelectManyCheckbox extends UISelectMany implements 
-    _AccesskeyProperty, _UniversalProperties, _Focus_BlurProperties,
-    _Change_SelectProperties, _EventProperties, _StyleProperties,
-    _TabindexProperty, _Disabled_ReadonlyProperties, 
-    _DisabledClass_EnabledClassProperties, _LabelProperty
+    _AccesskeyProperty, _UniversalProperties, _FocusBlurProperties,
+    _ChangeSelectProperties, _EventProperties, _StyleProperties,
+    _TabindexProperty, _DisabledReadonlyProperties, 
+    _DisabledClassEnabledClassProperties, _LabelProperty
 {
 
   static public final String COMPONENT_FAMILY =

@@ -68,9 +68,9 @@ tagClass = "org.apache.myfaces.taglib.html.HtmlSelectManyListboxTag",
 defaultRendererType = "javax.faces.Listbox"
 )
 abstract class _HtmlSelectManyListbox extends UISelectMany implements 
-_AccesskeyProperty, _UniversalProperties, _Disabled_ReadonlyProperties,
-_Focus_BlurProperties, _Change_SelectProperties, _EventProperties,
-_StyleProperties, _TabindexProperty, _DisabledClass_EnabledClassProperties,
+_AccesskeyProperty, _UniversalProperties, _DisabledReadonlyProperties,
+_FocusBlurProperties, _ChangeSelectProperties, _EventProperties,
+_StyleProperties, _TabindexProperty, _DisabledClassEnabledClassProperties,
 _LabelProperty
 {
 

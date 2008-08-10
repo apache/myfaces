@@ -49,8 +49,8 @@ defaultRendererType = "javax.faces.Text"
 )
 abstract class _HtmlInputText extends UIInput
     implements _AccesskeyProperty,
-    _AltProperty, _UniversalProperties, _Disabled_ReadonlyProperties,
-    _Focus_BlurProperties, _Change_SelectProperties, _EventProperties,
+    _AltProperty, _UniversalProperties, _DisabledReadonlyProperties,
+    _FocusBlurProperties, _ChangeSelectProperties, _EventProperties,
     _StyleProperties, _TabindexProperty, _LabelProperty
 {
 

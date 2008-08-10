@@ -60,9 +60,9 @@ tagClass = "org.apache.myfaces.taglib.html.HtmlSelectOneMenuTag",
 defaultRendererType = "javax.faces.Menu"
 )
 abstract class _HtmlSelectOneMenu extends UISelectOne implements
-_AccesskeyProperty, _UniversalProperties, _Disabled_ReadonlyProperties,
-_Focus_BlurProperties, _Change_SelectProperties, _EventProperties,
-_StyleProperties, _TabindexProperty, _DisabledClass_EnabledClassProperties,
+_AccesskeyProperty, _UniversalProperties, _DisabledReadonlyProperties,
+_FocusBlurProperties, _ChangeSelectProperties, _EventProperties,
+_StyleProperties, _TabindexProperty, _DisabledClassEnabledClassProperties,
 _LabelProperty
 {
 

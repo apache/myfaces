@@ -20,21 +20,20 @@ package javax.faces.component.html;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
-interface _Change_SelectProperties
+interface _DisabledClassEnabledClassProperties
 {
     /**
-     * HTML: Specifies a script to be invoked when the element is modified.
+     * The CSS class assigned to the label element for enabled choices.
      * 
      */
     @JSFProperty
-    public abstract String getOnchange();
-
+    public String getDisabledClass();
 
     /**
-     * HTML: Specifies a script to be invoked when the element is selected.
+     * The CSS class assigned to the label element for enabled choices.
      * 
      */
     @JSFProperty
-    public abstract String getOnselect();
+    public String getEnabledClass();
 
 }

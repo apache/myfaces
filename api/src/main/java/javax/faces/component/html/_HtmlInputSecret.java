@@ -48,9 +48,9 @@ tagClass = "org.apache.myfaces.taglib.html.HtmlInputSecretTag",
 defaultRendererType = "javax.faces.Secret"
 )
 abstract class _HtmlInputSecret extends UIInput implements _AccesskeyProperty,
-    _AltProperty, _UniversalProperties, _Focus_BlurProperties, _EventProperties,
-    _StyleProperties, _TabindexProperty, _Change_SelectProperties, 
-    _Disabled_ReadonlyProperties, _LabelProperty
+    _AltProperty, _UniversalProperties, _FocusBlurProperties, _EventProperties,
+    _StyleProperties, _TabindexProperty, _ChangeSelectProperties, 
+    _DisabledReadonlyProperties, _LabelProperty
 {
 
   static public final String COMPONENT_FAMILY =

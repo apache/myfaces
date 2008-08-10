@@ -53,8 +53,8 @@ tagClass = "org.apache.myfaces.taglib.html.HtmlSelectBooleanCheckboxTag",
 defaultRendererType = "javax.faces.Checkbox"
 )
 abstract class _HtmlSelectBooleanCheckbox extends UISelectBoolean implements
-_AccesskeyProperty, _UniversalProperties, _Disabled_ReadonlyProperties,
-_Focus_BlurProperties, _Change_SelectProperties, _EventProperties,
+_AccesskeyProperty, _UniversalProperties, _DisabledReadonlyProperties,
+_FocusBlurProperties, _ChangeSelectProperties, _EventProperties,
 _StyleProperties, _TabindexProperty, _LabelProperty
 {
 

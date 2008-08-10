@@ -33,7 +33,7 @@ clazz = "javax.faces.component.html.HtmlOutputLabel",template=true,
 tagClass = "org.apache.myfaces.taglib.html.HtmlOutputLabelTag",
 defaultRendererType = "javax.faces.Label"
 )
-abstract class _HtmlOutputLabel extends UIOutput implements _Focus_BlurProperties,
+abstract class _HtmlOutputLabel extends UIOutput implements _FocusBlurProperties,
 _EventProperties, _StyleProperties, _UniversalProperties, _AccesskeyProperty,
 _TabindexProperty, _EscapeProperty
 {

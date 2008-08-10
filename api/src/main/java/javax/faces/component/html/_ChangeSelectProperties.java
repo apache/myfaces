@@ -20,21 +20,21 @@ package javax.faces.component.html;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
-interface _Focus_BlurProperties
+interface _ChangeSelectProperties
 {
+    /**
+     * HTML: Specifies a script to be invoked when the element is modified.
+     * 
+     */
+    @JSFProperty
+    public abstract String getOnchange();
+
 
     /**
-     * HTML: Specifies a script to be invoked when the element loses focus.
+     * HTML: Specifies a script to be invoked when the element is selected.
      * 
      */
     @JSFProperty
-    public String getOnblur();
-    
-    /**
-     * HTML: Specifies a script to be invoked when the element receives focus.
-     * 
-     */
-    @JSFProperty
-    public String getOnfocus();
-    
+    public abstract String getOnselect();
+
 }

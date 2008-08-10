@@ -49,10 +49,10 @@ tagClass = "org.apache.myfaces.taglib.html.HtmlCommandButtonTag",
 defaultRendererType = "javax.faces.Button"
 )
 abstract class _HtmlCommandButton extends UICommand
-    implements _Focus_BlurProperties, 
+    implements _FocusBlurProperties, 
     _EventProperties, _StyleProperties, _UniversalProperties,
     _AccesskeyProperty, _TabindexProperty, _AltProperty, 
-    _Change_SelectProperties, _Disabled_ReadonlyProperties,
+    _ChangeSelectProperties, _DisabledReadonlyProperties,
     _LabelProperty
 {
 
