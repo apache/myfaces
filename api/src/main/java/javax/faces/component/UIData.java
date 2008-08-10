@@ -35,37 +35,91 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
+ * Represents an abstraction of a component which has multiple "rows" of data.
+ * <p>
+ * The children of this component are expected to be UIColumn components.
+ * <p>
+ * Note that the same set of child components are reused to implement each row of the table in turn during
+ * such phases as apply-request-values and render-response. Altering any of the members of these components
+ * therefore affects the attribute for every row, except for the following members:
+ * <ul>
+ * <li>submittedValue
+ * <li>value (where no EL binding is used)
+ * <li>valid
+ * </ul>
+ * <p>
+ * This reuse of the child components also means that it is not possible to save a reference to a component
+ * during table processing, then access it later and expect it to still represent the same row of the table.
+ * <h1>
+ * Implementation Notes
+ * </h1>
+ * <p>
+ * Each of the UIColumn children of this component has a few component children of its own to render the contents
+ * of the table cell. However there can be a very large number of rows in a table, so it isn't efficient for the
+ * UIColumn and all its child objects to be duplicated for each row in the table. Instead the "flyweight" pattern
+ * is used where a serialized state is held for each row. When setRowIndex is invoked, the UIColumn objects and
+ * their children serialize their current state then reinitialise themselves from the appropriate saved state.
+ * This allows a single set of real objects to represent multiple objects which have the same types but potentially
+ * different internal state. When a row is selected for the first time, its state is set to a clean "initial" state.
+ * Transient components (including any read-only component) do not save their state; they are just reinitialised as
+ * required. The state saved/restored when changing rows is not the complete component state, just the fields that
+ * are expected to vary between rows: "submittedValue", "value", "isValid".
+ * </p>
+ * <p>
+ * Note that a table is a "naming container", so that components within the table have their ids prefixed with the
+ * id of the table. Actually, when setRowIndex has been called on a table with id of "zzz" the table pretends to
+ * its children that its ID is "zzz_n" where n is the row index. This means that renderers for child components which
+ * call component.getClientId automatically get ids of form "zzz_n:childId" thus ensuring that components in
+ * different rows of the table get different ids.
+ * </p>
+ * <p>
+ * When decoding a submitted page, this class iterates over all its possible rowIndex values, restoring the
+ * appropriate serialized row state then calling processDecodes on the child components. Because the child
+ * components (or their renderers) use getClientId to get the request key to look for parameter data, and because
+ * this object pretends to have a different id per row ("zzz_n") a single child component can decode data from each
+ * table row in turn without being aware that it is within a table. The table's data model is updated before each
+ * call to child.processDecodes, so the child decode method can assume that the data model's rowData points to the
+ * model object associated with the row currently being decoded. Exactly the same process applies for the later
+ * validation and updateModel phases.
+ * </p>
+ * <p>
+ * When the data model for the table is bound to a backing bean property, and no validation errors have occured
+ * during processing of a postback, the data model is refetched at the start of the rendering phase (ie after the
+ * update model phase) so that the contents of the data model can be changed as a result of the latest form
+ * submission. Because the saved row state must correspond to the elements within the data model, the row state
+ * must be discarded whenever a new data model is fetched; not doing this would cause all sorts of inconsistency
+ * issues. This does imply that changing the state of any of the members "submittedValue", "value" or "valid" of
+ * a component within the table during the invokeApplication phase has no effect on the rendering of the table.
+ * When a validation error has occurred, a new DataModel is <i>not</i> fetched, and the saved state of the child
+ * components is <i>not</i> discarded.
+ * </p>
+ * see Javadoc of the <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
+ * for more information.
  *
- * UIData is a base abstraction for components that holds Data.
+ * @JSFComponent
+ *   type = "javax.faces.Data"
+ *   family = "javax.faces.Data"
+ *   desc = "UIData"
+ *
+ * @author Manfred Geiler (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
-@JSFComponent
-(defaultRendererType = "javax.faces.Table"
-)
+@JSFComponent(defaultRendererType = "javax.faces.Table")
 public class UIData extends UIComponentBase
                     implements NamingContainer
 {
+    public static final String COMPONENT_FAMILY = "javax.faces.Data";
+    static final String COMPONENT_TYPE = "javax.faces.Data"; // for unit tests
 
-  static public final String COMPONENT_FAMILY =
-    "javax.faces.Data";
-  static public final String COMPONENT_TYPE =
-    "javax.faces.Data";
-
-  /**
-   * Construct an instance of the UIData.
-   */
-  public UIData()
-  {
-    setRendererType("javax.faces.Table");
-  }
-      private static final String FOOTER_FACET_NAME = "footer";
+    private static final String FOOTER_FACET_NAME = "footer";
     private static final String HEADER_FACET_NAME = "header";
     private static final Class OBJECT_ARRAY_CLASS = (new Object[0]).getClass();
     private static final int PROCESS_DECODES = 1;
     private static final int PROCESS_VALIDATORS = 2;
     private static final int PROCESS_UPDATES = 3;
 
-    
     private int _rowIndex = -1;
+    private String _var;
 
     // Holds for each row the states of the child components of this UIData.
     // Note that only "partial" component state is saved: the component fields
@@ -86,31 +140,190 @@ public class UIData extends UIComponentBase
 
     private Object _initialDescendantComponentState = null;
 
+    private int _first;
+    private boolean _firstSet;
+    private int _rows;
+    private boolean _rowsSet;
+    private Object _value;
+
+    private static class FacesEventWrapper extends FacesEvent
+    {
+        private static final long serialVersionUID = 6648047974065628773L;
+        private FacesEvent _wrappedFacesEvent;
+        private int _rowIndex;
+
+        public FacesEventWrapper(FacesEvent facesEvent, int rowIndex,
+                UIData redirectComponent)
+        {
+            super(redirectComponent);
+            _wrappedFacesEvent = facesEvent;
+            _rowIndex = rowIndex;
+        }
+
+        @Override
+        public PhaseId getPhaseId()
+        {
+            return _wrappedFacesEvent.getPhaseId();
+        }
+
+        @Override
+        public void setPhaseId(PhaseId phaseId)
+        {
+            _wrappedFacesEvent.setPhaseId(phaseId);
+        }
+
+        @Override
+        public void queue()
+        {
+            _wrappedFacesEvent.queue();
+        }
+
+        @Override
+        public String toString()
+        {
+            return _wrappedFacesEvent.toString();
+        }
+
+        @Override
+        public boolean isAppropriateListener(FacesListener faceslistener)
+        {
+            return _wrappedFacesEvent.isAppropriateListener(faceslistener);
+        }
+
+        @Override
+        public void processListener(FacesListener faceslistener)
+        {
+            _wrappedFacesEvent.processListener(faceslistener);
+        }
+
+        public FacesEvent getWrappedFacesEvent()
+        {
+            return _wrappedFacesEvent;
+        }
+
+        public int getRowIndex()
+        {
+            return _rowIndex;
+        }
+    }
+
+
+    private static final DataModel EMPTY_DATA_MODEL = new DataModel()
+    {
+        @Override
+        public boolean isRowAvailable()
+        {
+            return false;
+        }
+
+        @Override
+        public int getRowCount()
+        {
+            return 0;
+        }
+
+        @Override
+        public Object getRowData()
+        {
+            throw new IllegalArgumentException();
+        }
+
+        @Override
+        public int getRowIndex()
+        {
+            return -1;
+        }
+
+        @Override
+        public void setRowIndex(int i)
+        {
+            if (i < -1)
+                throw new IllegalArgumentException();
+        }
+
+        @Override
+        public Object getWrappedData()
+        {
+            return null;
+        }
+
+        @Override
+        public void setWrappedData(Object obj)
+        {
+            if (obj == null)
+            {
+                return; //Clearing is allowed
+            }
+            throw new UnsupportedOperationException(this.getClass().getName()
+                    + " UnsupportedOperationException");
+        }
+    };
+
+    private class EditableValueHolderState
+    {
+        private final Object _value;
+        private final boolean _localValueSet;
+        private final boolean _valid;
+        private final Object _submittedValue;
+
+        public EditableValueHolderState(EditableValueHolder evh)
+        {
+            _value = evh.getLocalValue();
+            _localValueSet = evh.isLocalValueSet();
+            _valid = evh.isValid();
+            _submittedValue = evh.getSubmittedValue();
+        }
+
+        public void restoreState(EditableValueHolder evh)
+        {
+            evh.setValue(_value);
+            evh.setLocalValueSet(_localValueSet);
+            evh.setValid(_valid);
+            evh.setSubmittedValue(_submittedValue);
+        }
+    }
+
+    /**
+     * Construct an instance of the UIData.
+     */
+    public UIData()
+    {
+        setRendererType("javax.faces.Table");
+    }
+
     @Override
     public boolean invokeOnComponent(FacesContext context, String clientId, ContextCallback callback) throws FacesException {
-        if (context == null || clientId == null || callback == null) {
+        if (context == null || clientId == null || callback == null)
+        {
             throw new NullPointerException();
         }
 
         //searching for this component?
         boolean returnValue = this.getClientId(context).equals(clientId);
 
-        if (returnValue) {
-            try {
+        if (returnValue)
+        {
+            try
+            {
                 callback.invokeContextCallback(context, this);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 throw new FacesException(e);
             }
             return returnValue;
         }
 
         //Now Look throught facets on this UIComponent
-        for (Iterator<UIComponent> it = this.getFacets().values().iterator(); !returnValue && it.hasNext();) {
+        for (Iterator<UIComponent> it = this.getFacets().values().iterator(); !returnValue && it.hasNext();)
+        {
             returnValue = it.next().invokeOnComponent(context, clientId, callback);
         }
 
         if (returnValue == true)
+        {
             return returnValue;
+        }
 
         //Now we have to check if it is searching an inner component
         String baseClientId = super.getClientId(context);
@@ -118,7 +331,8 @@ public class UIData extends UIComponentBase
         //First check if the clientId starts with the baseClientId of
         //this component, to check if continue trying to find the component
         //inside the children of this component.
-        if (clientId.matches(baseClientId + ":[0-9]+:.*")) {
+        if (clientId.matches(baseClientId + ":[0-9]+:.*"))
+        {
 
             String subId = clientId.substring(baseClientId.length() + 1);
             String clientRow = subId.substring(0, subId.indexOf(':'));
@@ -130,7 +344,8 @@ public class UIData extends UIComponentBase
             //regular expresion
             this.setRowIndex(Integer.parseInt(clientRow));
 
-            for (Iterator<UIComponent> it1 = getChildren().iterator(); !returnValue && it1.hasNext();) {
+            for (Iterator<UIComponent> it1 = getChildren().iterator(); !returnValue && it1.hasNext();)
+            {
                 //recursive call to find the component
                 UIComponent child = it1.next();
                 returnValue = child.invokeOnComponent(context, clientId, callback);
@@ -139,7 +354,9 @@ public class UIData extends UIComponentBase
             //Restore the old position. Doing this prevent
             //side effects.
             this.setRowIndex(oldRow);
-        } else {
+        }
+        else
+        {
             //The component that matches this clientId must be outside
             //of this component
             return false;
@@ -428,7 +645,7 @@ public class UIData extends UIComponentBase
         {
             return clientId;
         }
-        
+
         StringBuilder bld = __getSharedStringBuilder();
         return bld.append(clientId).append(NamingContainer.SEPARATOR_CHAR).append(rowIndex).toString();
     }
@@ -541,9 +758,13 @@ public class UIData extends UIComponentBase
     public void processDecodes(FacesContext context)
     {
         if (context == null)
+        {
             throw new NullPointerException("context");
+        }
         if (!isRendered())
+        {
             return;
+        }
         setRowIndex(-1);
         processFacets(context, PROCESS_DECODES);
         processColumnFacets(context, PROCESS_DECODES);
@@ -564,9 +785,15 @@ public class UIData extends UIComponentBase
     public void processValidators(FacesContext context)
     {
         if (context == null)
+        {
             throw new NullPointerException("context");
+        }
+
         if (!isRendered())
+        {
             return;
+        }
+
         setRowIndex(-1);
         processFacets(context, PROCESS_VALIDATORS);
         processColumnFacets(context, PROCESS_VALIDATORS);
@@ -584,9 +811,13 @@ public class UIData extends UIComponentBase
     public void processUpdates(FacesContext context)
     {
         if (context == null)
+        {
             throw new NullPointerException("context");
+        }
         if (!isRendered())
+        {
             return;
+        }
         setRowIndex(-1);
         processFacets(context, PROCESS_UPDATES);
         processColumnFacets(context, PROCESS_UPDATES);
@@ -665,7 +896,9 @@ public class UIData extends UIComponentBase
 
             //scrolled past the last row
             if (!isRowAvailable())
+            {
                 break;
+            }
 
             for (Iterator it = getChildren().iterator(); it.hasNext();)
             {
@@ -727,7 +960,8 @@ public class UIData extends UIComponentBase
         String clientID = "";
 
         UIComponent parent = getParent();
-        if (parent != null) {
+        if (parent != null)
+        {
             clientID = parent.getClientId(getFacesContext());
         }
         dataModel = (DataModel) _dataModelMap.get(clientID);
@@ -791,65 +1025,35 @@ public class UIData extends UIComponentBase
         }
     }
 
-    private static class FacesEventWrapper extends FacesEvent
+    /**
+     * An EL expression that specifies the data model that backs this table.
+     * <p>
+     * The value referenced by the EL expression can be of any type.
+     * <p>
+     * <ul>
+     * <li>A value of type DataModel is used directly.</li>
+     * <li>Array-like parameters of type array-of-Object, java.util.List, java.sql.ResultSet
+     *  or javax.servlet.jsp.jstl.sql.Result are wrapped in a corresponding DataModel that
+     *  knows how to iterate over the elements.</li>
+     * <li>Other values are wrapped in a DataModel as a single row.</li>
+     * </ul>
+     * Note in particular that unordered collections, eg Set are not supported. Therefore if the
+     * value expression references such an object then the table will be considered to contain just
+     * one element - the collection itself.
+     */
+    @JSFProperty
+    public Object getValue()
     {
-        private static final long serialVersionUID = 6648047974065628773L;
-        private FacesEvent _wrappedFacesEvent;
-        private int _rowIndex;
-
-        public FacesEventWrapper(FacesEvent facesEvent, int rowIndex,
-                UIData redirectComponent)
-        {
-            super(redirectComponent);
-            _wrappedFacesEvent = facesEvent;
-            _rowIndex = rowIndex;
-        }
-
-        @Override
-        public PhaseId getPhaseId()
-        {
-            return _wrappedFacesEvent.getPhaseId();
-        }
-
-        @Override
-        public void setPhaseId(PhaseId phaseId)
-        {
-            _wrappedFacesEvent.setPhaseId(phaseId);
-        }
-
-        @Override
-        public void queue()
-        {
-            _wrappedFacesEvent.queue();
-        }
-
-        @Override
-        public String toString()
-        {
-            return _wrappedFacesEvent.toString();
-        }
-
-        @Override
-        public boolean isAppropriateListener(FacesListener faceslistener)
-        {
-            return _wrappedFacesEvent.isAppropriateListener(faceslistener);
-        }
-
-        @Override
-        public void processListener(FacesListener faceslistener)
-        {
-            _wrappedFacesEvent.processListener(faceslistener);
-        }
-
-        public FacesEvent getWrappedFacesEvent()
-        {
-            return _wrappedFacesEvent;
-        }
-
-        public int getRowIndex()
-        {
-            return _rowIndex;
-        }
+      if (_value != null)
+      {
+        return _value;
+      }
+      ValueExpression expression = getValueExpression("value");
+      if (expression != null)
+      {
+        return expression.getValue(getFacesContext().getELContext());
+      }
+      return null;
     }
 
     public void setValue(Object value)
@@ -861,202 +1065,86 @@ public class UIData extends UIComponentBase
     }
 
     /**
-     * Set the maximum number of rows displayed in the table.
+     * Defines the index of the first row to be displayed, starting from 0.
      */
-    public void setRows(int rows)
+    @JSFProperty
+    public int getFirst()
     {
-        if (rows < 0){
-            throw new IllegalArgumentException("rows: " + rows);
-        }
-        _rows = rows;        
-        _rowsSet = true;        
+      if (_firstSet)
+      {
+        return _first;
+      }
+      ValueExpression expression = getValueExpression("first");
+      if (expression != null)
+      {
+        return (Integer)expression.getValue(getFacesContext().getELContext());
+      }
+      return 0;
     }
 
-    /**
-     * Set the index of the first row to be displayed, where 0 is the first row.
-     */
     public void setFirst(int first)
     {
-        if (first < 0) {
+        if (first < 0)
+        {
             throw new IllegalArgumentException("Illegal value for first row: " + first);
         }
         _first = first;
         _firstSet=true;
     }
 
-    private static final DataModel EMPTY_DATA_MODEL = new DataModel()
+    /**
+     * Defines the maximum number of rows of data to be displayed.
+     * <p>
+     * Specify zero to display all rows from the "first" row to the end
+     * of available data.
+     */
+    @JSFProperty
+    public int getRows()
     {
-        @Override
-        public boolean isRowAvailable()
-        {
-            return false;
-        }
-
-        @Override
-        public int getRowCount()
-        {
-            return 0;
-        }
-
-        @Override
-        public Object getRowData()
-        {
-            throw new IllegalArgumentException();
-        }
-
-        @Override
-        public int getRowIndex()
-        {
-            return -1;
-        }
-
-        @Override
-        public void setRowIndex(int i)
-        {
-            if (i < -1)
-                throw new IllegalArgumentException();
-        }
-
-        @Override
-        public Object getWrappedData()
-        {
-            return null;
-        }
-
-        @Override
-        public void setWrappedData(Object obj)
-        {
-            if (obj == null)
-                return; //Clearing is allowed
-            throw new UnsupportedOperationException(this.getClass().getName()
-                    + " UnsupportedOperationException");
-        }
-    };
-
-    private class EditableValueHolderState
-    {
-        private final Object _value;
-        private final boolean _localValueSet;
-        private final boolean _valid;
-        private final Object _submittedValue;
-
-        public EditableValueHolderState(EditableValueHolder evh)
-        {
-            _value = evh.getLocalValue();
-            _localValueSet = evh.isLocalValueSet();
-            _valid = evh.isValid();
-            _submittedValue = evh.getSubmittedValue();
-        }
-
-        public void restoreState(EditableValueHolder evh)
-        {
-            evh.setValue(_value);
-            evh.setLocalValueSet(_localValueSet);
-            evh.setValid(_valid);
-            evh.setSubmittedValue(_submittedValue);
-        }
+      if (_rowsSet)
+      {
+        return _rows;
+      }
+      ValueExpression expression = getValueExpression("rows");
+      if (expression != null)
+      {
+        return (Integer)expression.getValue(getFacesContext().getELContext());
+      }
+      return 0;
     }
 
-  // Property: value
-  private Object _value;
+    /**
+     * Set the maximum number of rows displayed in the table.
+     */
+    public void setRows(int rows)
+    {
+        if (rows < 0)
+        {
+            throw new IllegalArgumentException("rows: " + rows);
+        }
+        _rows = rows;
+        _rowsSet = true;
+    }
 
   /**
-   * Gets An EL expression that specifies the data model that backs this table.  The value can be of any type.
-   * 
-   *                 A value of type DataModel is used directly.  Array-like parameters of type java.util.List, array of Object,
-   *                 java.sql.ResultSet, or javax.servlet.jsp.jstl.sql.Result are wrapped in a DataModel.
-   * 
-   *                 Other values are wrapped in a DataModel as a single row.
-   *
-   * @return  the new value value
+   * Defines the name of the request-scope variable that will hold the current row during iteration.
+   * <p>
+   * During rendering of child components of this UIData, the variable with this name can be read to
+   * learn what the "rowData" object for the row currently being rendered is.
+   * <p>
+   * This value must be a static value, ie an EL expression is not permitted.
    */
-  @JSFProperty
-  public Object getValue()
-  {
-    if (_value != null)
-    {
-      return _value;
-    }
-    ValueExpression expression = getValueExpression("value");
-    if (expression != null)
-    {
-      return expression.getValue(getFacesContext().getELContext());
-    }
-    return null;
-  }
-
-  // Property: var
-  private String _var;
-
-  /**
-   * Gets Defines the name of the request-scope variable that will hold the current row during iteration.  This value must be a static value.
-   *
-   * @return  the new var value
-   */
-  @JSFProperty
-  (literalOnly = true)
+  @JSFProperty(literalOnly = true)
   public String getVar()
   {
     return _var;
   }
 
-  /**
-   * Sets Defines the name of the request-scope variable that will hold the current row during iteration.  This value must be a static value.
-   * 
-   * @param var  the new var value
-   */
   public void setVar(String var)
   {
     this._var = var;
   }
 
-  // Property: rows
-  private int _rows;
-  private boolean _rowsSet;
-
-  /**
-   * Gets The number of rows to be displayed.  Specify zero for all remaining rows in the table.
-   *
-   * @return  the new rows value
-   */
-  @JSFProperty
-  public int getRows()
-  {
-    if (_rowsSet)
-    {
-      return _rows;
-    }
-    ValueExpression expression = getValueExpression("rows");
-    if (expression != null)
-    {
-      return (Integer)expression.getValue(getFacesContext().getELContext());
-    }
-    return 0;
-  }
-
-  // Property: first
-  private int _first;
-  private boolean _firstSet;
-
-  /**
-   * Gets The index of the first row to be displayed, where 0 is the first row.
-   *
-   * @return  the new first value
-   */
-  @JSFProperty
-  public int getFirst()
-  {
-    if (_firstSet)
-    {
-      return _first;
-    }
-    ValueExpression expression = getValueExpression("first");
-    if (expression != null)
-    {
-      return (Integer)expression.getValue(getFacesContext().getELContext());
-    }
-    return 0;
-  }
 
   @Override
   public Object saveState(FacesContext facesContext)
