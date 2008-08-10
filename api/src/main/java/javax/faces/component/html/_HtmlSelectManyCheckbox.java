@@ -1,6 +1,3 @@
-// WARNING: This file was automatically generated. Do not edit it directly,
-//          or you will lose your changes.
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
-*/
+ */
 package javax.faces.component.html;
 
 import javax.faces.component.UISelectMany;
@@ -26,11 +23,10 @@ import javax.faces.component.UISelectMany;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 
 /**
- *
- * Allow the user to select zero or more items from a set of
- * available options. This is presented as a table with one cell per
- * available option; each cell contains a checkbox and the option's
- * label. The "layout" attribute determines whether the checkboxes
+ * Allow the user to select zero or more items from a set of available options.
+ * 
+ * This is presented as a table with one cell per available option; each cell contains a
+ * checkbox and the option's label. The "layout" attribute determines whether the checkboxes
  * are laid out horizontally or vertically.
  * <p>
  * The set of available options is defined by adding child
@@ -46,9 +42,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
  * new collection object of the appropriate type. The new collection
  * object contains the value of each child SelectItem object that
  * is currently selected.
- * <p>
- * Unless otherwise specified, all attributes accept static values
- * or EL expressions.
  *
  * <h4>Events:</h4>
  * <table border="1" width="100%" cellpadding="3" summary="">

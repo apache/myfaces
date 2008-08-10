@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
-*/
+ */
 package javax.faces.component.html;
 
 import javax.faces.component.UIForm;
@@ -24,10 +24,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
- *
  * Renders an HTML form element.
- * Unless otherwise specified, all attributes accept static values
- * or EL expressions.
  */
 @JSFComponent
 (name = "h:form",

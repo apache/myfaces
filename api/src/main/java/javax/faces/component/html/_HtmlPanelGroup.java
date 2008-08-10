@@ -1,6 +1,3 @@
-// WARNING: This file was automatically generated. Do not edit it directly,
-//          or you will lose your changes.
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
-*/
+ */
 package javax.faces.component.html;
 
 import javax.faces.component.UIPanel;
@@ -27,12 +24,9 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
- *
- * This element is used to group other components where the
- * specification requires one child element. If any of the HTML or
- * CSS attributes are set, its content is rendered within a span element.
- * Unless otherwise specified, all attributes accept static values
- * or EL expressions.
+ * This element is used to group other components where the specification requires one child element.
+ * 
+ * If any of the HTML or CSS attributes are set, its content is rendered within a span element.
  */
 @JSFComponent
 (name = "h:panelGroup",

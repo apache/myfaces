@@ -1,6 +1,3 @@
-// WARNING: This file was automatically generated. Do not edit it directly,
-//          or you will lose your changes.
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
-*/
+ */
 package javax.faces.component.html;
 
 import javax.faces.component.UISelectOne;
@@ -26,7 +23,6 @@ import javax.faces.component.UISelectOne;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 
 /**
- *
  * Allow the user to choose one option from a set of options.
  * <p>
  * Renders as an HTML table element, containing an input element for
@@ -39,9 +35,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
  * <p>
  * On submit of the enclosing form, the value attribute's bound property
  * is updated to contain the "value" property from the chosen SelectItem.
- * <p>
- * Unless otherwise specified, all attributes accept static values
- * or EL expressions.
  *
  * <h4>Events:</h4>
  * <table border="1" width="100%" cellpadding="3" summary="">
@@ -53,8 +46,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
  * <tr class="TableRowColor">
  * <td valign="top"><code>javax.faces.event.ValueChangeEvent</code></td>
  * <td valign="top" nowrap></td>
- * <td valign="top">The valueChange event is delivered when the value
-                attribute is changed.</td>
+ * <td valign="top">The valueChange event is delivered when the value attribute is changed.</td>
  * </tr>
  * </table>
  */

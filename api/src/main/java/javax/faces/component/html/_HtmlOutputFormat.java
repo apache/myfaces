@@ -1,6 +1,3 @@
-// WARNING: This file was automatically generated. Do not edit it directly,
-//          or you will lose your changes.
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
-*/
+ */
 package javax.faces.component.html;
 
 import javax.faces.component.UIOutput;
@@ -26,13 +23,9 @@ import javax.faces.component.UIOutput;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 
 /**
- *
- * Renders as text, applying the child f:param values to the value
- * attribute as a MessageFormat string.  If this element has an ID
- * or CSS style properties, the text is wrapped in a span element.
+ * Renders as text, applying the child f:param values to the value attribute as a MessageFormat string.
  * 
- * Unless otherwise specified, all attributes accept static values
- * or EL expressions.
+ * If this element has an ID or CSS style properties, the text is wrapped in a span element.
  */
 @JSFComponent
 (name = "h:outputFormat",

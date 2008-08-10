@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
-*/
+ */
 package javax.faces.component.html;
 
 import javax.faces.component.UICommand;
@@ -24,11 +24,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
- *
  * This tag renders as an HTML a element.
- * 
- * Unless otherwise specified, all attributes accept static values
- * or EL expressions.
  *
  * <h4>Events:</h4>
  * <table border="1" width="100%" cellpadding="3" summary="">
@@ -41,8 +37,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  * <td valign="top"><code>javax.faces.event.ActionEvent</code></td>
  * <td valign="top" nowrap>Invoke Application<br>Apply Request Values</td>
  * <td valign="top">Event delivered when the "action" of the component has been
-invoked;  for example, by clicking on a button.  The action may result
-in page navigation.</td>
+ * invoked;  for example, by clicking on a button.  The action may result
+ * in page navigation.</td>
  * </tr>
  * </table>
  */

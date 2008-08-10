@@ -1,6 +1,3 @@
-// WARNING: This file was automatically generated. Do not edit it directly,
-//          or you will lose your changes.
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
-*/
+ */
 package javax.faces.component.html;
 
 import javax.faces.component.UIOutput;
@@ -26,11 +23,10 @@ import javax.faces.component.UIOutput;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 
 /**
- *
- * Renders a HTML a element.  Child f:param elements are added to the href
- * attribute as query parameters.  Other children are rendered as the link text or image.
- * Unless otherwise specified, all attributes accept static values
- * or EL expressions.
+ * Renders a HTML a element.
+ * 
+ * Child f:param elements are added to the href attribute as query parameters.  Other children
+ * are rendered as the link text or image.
  */
 @JSFComponent
 (name = "h:outputLink",

@@ -1,6 +1,3 @@
-// WARNING: This file was automatically generated. Do not edit it directly,
-//          or you will lose your changes.
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
-*/
+ */
 package javax.faces.component.html;
 
 import javax.faces.component.UISelectBoolean;
@@ -26,16 +23,13 @@ import javax.faces.component.UISelectBoolean;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 
 /**
- *
  * Allow the user to choose a "true" or "false" value, presented as a
  * checkbox.
  * <p>
  * Renders as an HTML input tag with its type set to "checkbox", and
  * its name attribute set to the id. The "checked" attribute is rendered
  * if the value of this component is true.
- * <p>
- * Unless otherwise specified, all attributes accept static values
- * or EL expressions.
+ * </p>
  *
  * <h4>Events:</h4>
  * <table border="1" width="100%" cellpadding="3" summary="">

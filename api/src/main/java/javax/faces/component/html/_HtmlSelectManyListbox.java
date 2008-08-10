@@ -1,6 +1,3 @@
-// WARNING: This file was automatically generated. Do not edit it directly,
-//          or you will lose your changes.
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
-*/
+ */
 package javax.faces.component.html;
 
 import javax.faces.component.UISelectMany;
@@ -26,7 +23,6 @@ import javax.faces.component.UISelectMany;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 
 /**
- *
  * Allow the user to select zero or more items from a set of
  * available options. This is presented as a listbox which allows
  * multiple rows in the list to be selected simultaneously.
@@ -49,9 +45,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
  * selected initially. During the update phase, the property is set
  * to contain a "collection" of values for those child SelectItem
  * objects that are currently selected.
- * <p>
- * Unless otherwise specified, all attributes accept static values
- * or EL expressions.
  *
  * <h4>Events:</h4>
  * <table border="1" width="100%" cellpadding="3" summary="">
