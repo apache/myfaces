@@ -43,16 +43,17 @@ import javax.faces.event.PhaseId;
  *   name = "f:view"
  *   bodyContent = "JSP"
  *   tagClass = "org.apache.myfaces.taglib.core.ViewTag"
- *   desc = "UIViewRoot"
  *
  * @JSFJspProperty name = "binding" returnType = "java.lang.String" tagExcluded = "true"
  *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class UIViewRoot
-        extends UIComponentBase
+public class UIViewRoot extends UIComponentBase
 {
+    public static final String COMPONENT_TYPE = "javax.faces.ViewRoot";
+    public static final String COMPONENT_FAMILY = "javax.faces.ViewRoot";
+
     public static final String UNIQUE_ID_PREFIX = "_id";
 
     private static final int ANY_PHASE_ORDINAL = PhaseId.ANY_PHASE.getOrdinal();
@@ -64,6 +65,7 @@ public class UIViewRoot
      */
     private long _uniqueIdCounter = 0;
 
+    private String _renderKitId = null;
     private String _viewId = null;
     private Locale _locale = null;
     private List _events = null;
@@ -75,14 +77,18 @@ public class UIViewRoot
 
     public void setViewId(String viewId)
     {
-//      The spec does not require to check this, so we don't check it      
-//        if (viewId == null) throw new NullPointerException("viewId");
+        // It really doesn't make much sense to allow null here.
+        // However the TCK does not check for it, and sun's implementation
+        // allows it so here we allow it too.
         _viewId = viewId;
     }
 
     public void queueEvent(FacesEvent event)
     {
-        if (event == null) throw new NullPointerException("event");
+        if (event == null)
+        {
+            throw new NullPointerException("event");
+        }
         if (_events == null)
         {
             _events = new ArrayList();
@@ -101,8 +107,7 @@ public class UIViewRoot
         {
             FacesEvent event = (FacesEvent) listiterator.next();
             int ordinal = event.getPhaseId().getOrdinal();
-            if (ordinal == ANY_PHASE_ORDINAL ||
-                ordinal == phaseIdOrdinal)
+            if (ordinal == ANY_PHASE_ORDINAL || ordinal == phaseIdOrdinal)
             {
                 UIComponent source = event.getComponent();
                 try
@@ -116,8 +121,9 @@ public class UIViewRoot
                     //  that no further broadcast of this event, or any further events, should take place."
                     abort = true;
                     break;
-                } finally {
-
+                }
+                finally
+                {
                     try
                     {
                         listiterator.remove();
@@ -132,7 +138,8 @@ public class UIViewRoot
             }
         }
 
-        if (abort) {
+        if (abort)
+        {
             // TODO: abort processing of any event of any phase or just of any event of the current phase???
             clearEvents();
         }
@@ -195,8 +202,9 @@ public class UIViewRoot
         super.encodeBegin(context);
     }
 
-    /* Provides a unique id for this component instance.
-    */
+    /**
+     *  Provides a unique id for this component instance.
+     */
     public String createUniqueId()
     {
         ExternalContext extCtx = FacesContext.getCurrentInstance().getExternalContext();
@@ -234,6 +242,11 @@ public class UIViewRoot
         {
             throw new IllegalArgumentException("locale binding"); //TODO: not specified!?
         }
+    }
+
+    public void setLocale(Locale locale)
+    {
+        _locale = locale;
     }
 
     /**
@@ -281,29 +294,17 @@ public class UIViewRoot
         return l;
     }
 
-
-    public void setLocale(Locale locale)
-    {
-        _locale = locale;
-    }
-
-    public static final String COMPONENT_TYPE = "javax.faces.ViewRoot";
-    public static final String COMPONENT_FAMILY = "javax.faces.ViewRoot";
-    //private static final String DEFAULT_RENDERKITID = RenderKitFactory.HTML_BASIC_RENDER_KIT;
-
-    private String _renderKitId = null;
-
     public String getFamily()
     {
         return COMPONENT_FAMILY;
     }
 
-
-    public void setRenderKitId(String renderKitId)
-    {
-        _renderKitId = renderKitId;
-    }
-
+    /**
+     * Defines what renderkit should be used to render this view.
+     * <p>
+     * Note that in JSF1.1 this property cannot be set via the f:view tag
+     * (this is possible in JSF1.2).
+     */
     public String getRenderKitId()
     {
         if (_renderKitId != null) return _renderKitId;
@@ -311,26 +312,33 @@ public class UIViewRoot
         return vb != null ? _ComponentUtils.getStringValue(getFacesContext(), vb) : null; //DEFAULT_RENDERKITID
     }
 
+    public void setRenderKitId(String renderKitId)
+    {
+        _renderKitId = renderKitId;
+    }
+
     /**
-     * Disable this property; although this class extends a base-class that
-     * defines a read/write rendered property, this particular subclass
-     * does not support setting it. Yes, this is broken OO design: direct
-     * all complaints to the JSF spec group.
+     * DO NOT USE.
+     * <p>
+     * Although this class extends a base-class that defines a read/write
+     * rendered property, it makes no sense for this particular subclass to
+     * support it. Yes, this is broken OO design: direct all complaints to
+     * the JSF spec group.
+     * <p>
+     * Ideally this method would throw an UnsupportedOperationException when
+     * invoked. Unfortunately, the JSF TCK calls this method, so instead we
+     * just pass on the call to the default inherited implementation.
      *
      * @JSFProperty tagExcluded="true"
      */
     public void setRendered(boolean state)
     {
-       //It should throw UnsupportedOperationException
-       //throw new UnsupportedOperationException();
-       //Restored due to compatibility with TCK tests.
        super.setRendered(state);
     }
 
     public boolean isRendered()
     {
-        //return true;
-        //Restored due to compatibility with TCK tests.
+        // Should just return true. But due to damned faulty TCK, we cannot do that.
         return super.isRendered();
     }
 
@@ -354,26 +362,29 @@ public class UIViewRoot
     {
         //  throw new UnsupportedOperationException();
 
-        // Re-enable for now. Things like the TreeStructureManager call this,
+        // Leave enabled for now. Things like the TreeStructureManager call this,
         // even though they probably should not.
         super.setId(id);
     }
 
     public String getId()
     {
-        // return null;
-
-        // Re-enable for now.
+        // Should just return null. But as setId passes the method on, do same here.
         return super.getId();
     }
 
     /**
+     * DO NOT USE.
+     * <p>
      * As this component has no "id" property, it has no clientId property either.
+     * <p>
+     * Ideally, this method would just return null when called (or even throw an
+     * exception) Unforunately, the TCK invokes it so we just invoke the interited
+     * implementation instead.
      */
     public String getClientId(FacesContext context)
     {
-        //return null;
-        //Restored due to compatibility with TCK tests.
+        // Should return null, but cannot due to flawed TCK tests.
         return super.getClientId(context);
     }
 
@@ -397,5 +408,4 @@ public class UIViewRoot
         _viewId = (String)values[3];
         _uniqueIdCounter = values[4]==null?0:((Long)values[4]).longValue();
     }
-    //------------------ GENERATED CODE END ---------------------------------------
 }
