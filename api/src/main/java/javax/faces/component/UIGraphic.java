@@ -20,47 +20,56 @@ package javax.faces.component;
 
 import javax.el.ValueExpression;
 import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
+
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
- *
  * Displays a graphical image.
+ * <p>
+ * See the javadoc for this class in the
+ * <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
+ * for further details.
  */
-@JSFComponent
-(defaultRendererType = "javax.faces.Image"
-)
+@JSFComponent(defaultRendererType = "javax.faces.Image")
 public class UIGraphic extends UIComponentBase
 {
+    static final String COMPONENT_TYPE = "javax.faces.Graphic";
+    private static final String COMPONENT_FAMILY = "javax.faces.Graphic";
 
-  static public final String COMPONENT_FAMILY =
-    "javax.faces.Graphic";
-  static public final String COMPONENT_TYPE =
-    "javax.faces.Graphic";
-
-  /**
-   * Construct an instance of the UIGraphic.
-   */
-  public UIGraphic()
-  {
-    setRendererType("javax.faces.Image");
-  }
-      private static final String URL_PROPERTY = "url";
+    private static final String URL_PROPERTY = "url";
     private static final String VALUE_PROPERTY = "value";
-    
-    
-    public void setUrl(String url)
+
+    private Object _value;
+
+    /**
+     * Construct an instance of the UIGraphic.
+     */
+    public UIGraphic()
     {
-        setValue(url);        
+        setRendererType("javax.faces.Image");
     }
-    
+
+    @Override
+    public String getFamily()
+    {
+        return COMPONENT_FAMILY;
+    }
+
+    /**
+     * An alias for the "value" attribute.
+     */
     @JSFProperty
     public String getUrl()
     {
-        return (String)getValue();
+        return (String) getValue();
     }
-    
+
+    public void setUrl(String url)
+    {
+        setValue(url);
+    }
+
     @Override
     public ValueExpression getValueExpression(String name)
     {
@@ -75,8 +84,7 @@ public class UIGraphic extends UIComponentBase
     }
 
     @Override
-    public void setValueExpression(String name,
-                                   ValueExpression binding)
+    public void setValueExpression(String name, ValueExpression binding)
     {
         if (URL_PROPERTY.equals(name))
         {
@@ -88,65 +96,46 @@ public class UIGraphic extends UIComponentBase
         }
     }
 
-  // Property: value
-  private Object _value;
-
-  /**
-   * Gets The value property of the UIGraphic
-   *
-   * @return  the new value value
-   */
-  @JSFProperty
-  public Object getValue()
-  {
-    if (_value != null)
+    /**
+     * The URL of the image.
+     * <p>
+     * If the URL starts with a '/', it is relative to the context path of the web application.
+     */
+    @JSFProperty
+    public Object getValue()
     {
-      return _value;
+        if (_value != null)
+        {
+            return _value;
+        }
+        ValueExpression expression = getValueExpression("value");
+        if (expression != null)
+        {
+            return expression.getValue(getFacesContext().getELContext());
+        }
+        return null;
     }
-    ValueExpression expression = getValueExpression("value");
-    if (expression != null)
+
+    public void setValue(Object value)
     {
-      return expression.getValue(getFacesContext().getELContext());
+        this._value = value;
     }
-    return null;
-  }
 
-  /**
-   * Sets The value property of the UIGraphic
-   * 
-   * @param value  the new value value
-   */
-  public void setValue(Object value)
-  {
-    this._value = value;
-  }
+    @Override
+    public Object saveState(FacesContext facesContext)
+    {
+        Object[] values = new Object[2];
+        values[0] = super.saveState(facesContext);
+        values[1] = _value;
 
-  // Property: url
-  private String _url;
+        return values;
+    }
 
-  @Override
-  public Object saveState(FacesContext facesContext)
-  {
-    Object[] values = new Object[3];
-    values[0] = super.saveState(facesContext);
-    values[1] = _value;
-    values[2] = _url;
-
-    return values;
-  }
-
-  @Override
-  public void restoreState(FacesContext facesContext, Object state)
-  {
-    Object[] values = (Object[])state;
-    super.restoreState(facesContext,values[0]);
-    _value = values[1];
-    _url = (String)values[2];
-  }
-
-  @Override
-  public String getFamily()
-  {
-    return COMPONENT_FAMILY;
-  }
+    @Override
+    public void restoreState(FacesContext facesContext, Object state)
+    {
+        Object[] values = (Object[]) state;
+        super.restoreState(facesContext, values[0]);
+        _value = values[1];
+    }
 }

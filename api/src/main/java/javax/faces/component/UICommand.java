@@ -31,9 +31,9 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
- *
+ * 
  * UICommand is a base abstraction for components that implement ActionSource.
- *
+ * 
  * <h4>Events:</h4>
  * <table border="1" width="100%" cellpadding="3" summary="">
  * <tr bgcolor="#CCCCFF" class="TableHeadingColor">
@@ -43,86 +43,103 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  * </tr>
  * <tr class="TableRowColor">
  * <td valign="top"><code>javax.faces.event.ActionEvent</code></td>
- * <td valign="top" nowrap>Invoke Application<br>Apply Request Values</td>
+ * <td valign="top" nowrap>Invoke Application<br>
+ * Apply Request Values</td>
  * <td valign="top">Event delivered when the "action" of the component has been
-invoked;  for example, by clicking on a button.  The action may result
-in page navigation.</td>
+ * invoked; for example, by clicking on a button. The action may result in page
+ * navigation.</td>
  * </tr>
  * </table>
  */
-@JSFComponent
-(defaultRendererType = "javax.faces.Button"
-)
-public class UICommand extends UIComponentBase
-                       implements ActionSource2
+@JSFComponent(defaultRendererType = "javax.faces.Button")
+public class UICommand extends UIComponentBase implements ActionSource2
 {
+    static final String COMPONENT_TYPE = "javax.faces.Command";
+    private static final String COMPONENT_FAMILY = "javax.faces.Command";
 
-  static public final String COMPONENT_FAMILY =
-    "javax.faces.Command";
-  static public final String COMPONENT_TYPE =
-    "javax.faces.Command";
-
-  /**
-   * Construct an instance of the UICommand.
-   */
-  public UICommand()
-  {
-    setRendererType("javax.faces.Button");
-  }
-  
+    private boolean _immediate;
+    private boolean _immediateSet;
+    private Object _value;
+    private MethodExpression _actionExpression;
+    private MethodBinding _actionListener;
 
     /**
-     * @deprecated Use setActionExpression instead.
+     * Construct an instance of the UICommand.
      */
-    public void setAction(MethodBinding action)
+    public UICommand()
     {
-        if(action != null)
-        {
-            setActionExpression(new _MethodBindingToMethodExpression(action));
-        } 
-        else
-        {
-            setActionExpression(null);
-        }
+        setRendererType("javax.faces.Button");
     }
 
     /**
+     * Specifies the action to take when this command is invoked.
+     * <p>
+     * If the value is an expression, it is expected to be a method 
+     * binding EL expression that identifies an action method. An action method
+     * accepts no parameters and has a String return value, called the action
+     * outcome, that identifies the next view displayed. The phase that this
+     * event is fired in can be controlled via the immediate attribute.
+     * <p>
+     * If the value is a string literal, it is treated as a navigation outcome
+     * for the current view.  This is functionally equivalent to a reference to
+     * an action method that returns the string literal.
+     * 
      * @deprecated Use getActionExpression() instead.
      */
+    @Deprecated
+    @JSFProperty(returnSignature="java.lang.String")
     public MethodBinding getAction()
     {
         MethodExpression actionExpression = getActionExpression();
-        if (actionExpression instanceof _MethodBindingToMethodExpression) {
-            return ((_MethodBindingToMethodExpression)actionExpression).getMethodBinding();
+        if (actionExpression instanceof _MethodBindingToMethodExpression)
+        {
+            return ((_MethodBindingToMethodExpression) actionExpression)
+                    .getMethodBinding();
         }
-        if(actionExpression != null)
+        if (actionExpression != null)
         {
             return new _MethodExpressionToMethodBinding(actionExpression);
         }
         return null;
     }
 
+    /**
+     * @deprecated Use setActionExpression instead.
+     */
+    @Deprecated
+    public void setAction(MethodBinding action)
+    {
+        if (action != null)
+        {
+            setActionExpression(new _MethodBindingToMethodExpression(action));
+        }
+        else
+        {
+            setActionExpression(null);
+        }
+    }
+
     @Override
-    public void broadcast(FacesEvent event)
-            throws AbortProcessingException
+    public void broadcast(FacesEvent event) throws AbortProcessingException
     {
         super.broadcast(event);
 
         if (event instanceof ActionEvent)
         {
             FacesContext context = getFacesContext();
-            
+
             MethodBinding mb = getActionListener();
-            if(mb != null)
+            if (mb != null)
             {
-                mb.invoke(context, new Object[] { event });
+                mb.invoke(context, new Object[]
+                { event });
             }
 
-            ActionListener defaultActionListener
-                    = context.getApplication().getActionListener();
+            ActionListener defaultActionListener = context.getApplication()
+                    .getActionListener();
             if (defaultActionListener != null)
             {
-                defaultActionListener.processAction((ActionEvent)event);
+                defaultActionListener.processAction((ActionEvent) event);
             }
         }
     }
@@ -144,245 +161,170 @@ public class UICommand extends UIComponentBase
         super.queueEvent(event);
     }
 
-  // Property: immediate
-  private boolean _immediate;
-  private boolean _immediateSet;
-
-  /**
-   * Gets A boolean value that identifies the phase during which action events
-   *         should fire. During normal event processing, action methods and
-   *         action listener methods are fired during the "invoke application"
-   *         phase of request processing. If this attribute is set to "true",
-   *         these methods are fired instead at the end of the "apply request
-   *         values" phase.
-   *
-   * @return  the new immediate value
-   */
-  @JSFProperty
-  public boolean isImmediate()
-  {
-    if (_immediateSet)
+    /**
+     * A boolean value that identifies the phase during which action events
+     * should fire.
+     * <p>
+     * During normal event processing, action methods and action listener methods are fired during the
+     * "invoke application" phase of request processing. If this attribute is set to "true", these methods
+     * are fired instead at the end of the "apply request values" phase.
+     */
+    @JSFProperty
+    public boolean isImmediate()
     {
-      return _immediate;
+        if (_immediateSet)
+        {
+            return _immediate;
+        }
+        ValueExpression expression = getValueExpression("immediate");
+        if (expression != null)
+        {
+            return (Boolean) expression.getValue(getFacesContext()
+                    .getELContext());
+        }
+        return false;
     }
-    ValueExpression expression = getValueExpression("immediate");
-    if (expression != null)
+
+    public void setImmediate(boolean immediate)
     {
-      return (Boolean)expression.getValue(getFacesContext().getELContext());
+        this._immediate = immediate;
+        this._immediateSet = true;
     }
-    return false;
-  }
 
-  /**
-   * Sets A boolean value that identifies the phase during which action events
-   *         should fire. During normal event processing, action methods and
-   *         action listener methods are fired during the "invoke application"
-   *         phase of request processing. If this attribute is set to "true",
-   *         these methods are fired instead at the end of the "apply request
-   *         values" phase.
-   * 
-   * @param immediate  the new immediate value
-   */
-  public void setImmediate(boolean immediate)
-  {
-    this._immediate = immediate;
-    this._immediateSet = true;
-  }
-
-  // Property: value
-  private Object _value;
-
-  /**
-   * Gets The initial value of this component.
-   *
-   * @return  the new value value
-   */
-  @JSFProperty
-  public Object getValue()
-  {
-    if (_value != null)
+    /**
+     * The text to display to the user for this command component.
+     */
+    @JSFProperty
+    public Object getValue()
     {
-      return _value;
+        if (_value != null)
+        {
+            return _value;
+        }
+        ValueExpression expression = getValueExpression("value");
+        if (expression != null)
+        {
+            return expression.getValue(getFacesContext().getELContext());
+        }
+        return null;
     }
-    ValueExpression expression = getValueExpression("value");
-    if (expression != null)
+
+    public void setValue(Object value)
     {
-      return expression.getValue(getFacesContext().getELContext());
+        this._value = value;
     }
-    return null;
-  }
 
-  /**
-   * Sets The initial value of this component.
-   * 
-   * @param value  the new value value
-   */
-  public void setValue(Object value)
-  {
-    this._value = value;
-  }
-
-  // Property: actionExpression
-  private MethodExpression _actionExpression;
-
-  /**
-   * Gets Specifies the action to take when this command is invoked.
-   *         If the value is an expression, it is expected to be a method
-   *         binding EL expression that identifies an action method. An action method
-   *         accepts no parameters and has a String return value, called the action
-   *         outcome, that identifies the next view displayed. The phase that this
-   *         event is fired in can be controlled via the immediate attribute.
-   * 
-   *         If the value is a string literal, it is treated as a navigation outcome
-   *         for the current view.  This is functionally equivalent to a reference to
-   *         an action method that returns the string literal.
-   *
-   * @return  the new actionExpression value
-   */
-  @JSFProperty
-  (stateHolder = true,
-  returnSignature = "java.lang.Object",
-  jspName = "action")
-  public MethodExpression getActionExpression()
-  {
-    if (_actionExpression != null)
+    /**
+     * The action to take when this command is invoked.
+     * <p>
+     * If the value is an expression, it is expected to be a method binding EL expression that identifies
+     * an action method. An action method accepts no parameters and has a String return value, called the
+     * action outcome, that identifies the next view displayed. The phase that this event is fired in
+     * can be controlled via the immediate attribute.
+     * <p> 
+     * If the value is a string literal, it is treated as a navigation outcome for the current view. This
+     * is functionally equivalent to a reference to an action method that returns the string literal.
+     */
+    @JSFProperty(stateHolder = true, returnSignature = "java.lang.Object", jspName = "action")
+    public MethodExpression getActionExpression()
     {
-      return _actionExpression;
+        if (_actionExpression != null)
+        {
+            return _actionExpression;
+        }
+        ValueExpression expression = getValueExpression("actionExpression");
+        if (expression != null)
+        {
+            return (MethodExpression) expression.getValue(getFacesContext()
+                    .getELContext());
+        }
+        return null;
     }
-    ValueExpression expression = getValueExpression("actionExpression");
-    if (expression != null)
+
+    public void setActionExpression(MethodExpression actionExpression)
     {
-      return (MethodExpression)expression.getValue(getFacesContext().getELContext());
+        this._actionExpression = actionExpression;
     }
-    return null;
-  }
 
-  /**
-   * Sets Specifies the action to take when this command is invoked.
-   *         If the value is an expression, it is expected to be a method
-   *         binding EL expression that identifies an action method. An action method
-   *         accepts no parameters and has a String return value, called the action
-   *         outcome, that identifies the next view displayed. The phase that this
-   *         event is fired in can be controlled via the immediate attribute.
-   * 
-   *         If the value is a string literal, it is treated as a navigation outcome
-   *         for the current view.  This is functionally equivalent to a reference to
-   *         an action method that returns the string literal.
-   * 
-   * @param actionExpression  the new actionExpression value
-   */
-  public void setActionExpression(MethodExpression actionExpression)
-  {
-    this._actionExpression = actionExpression;
-  }
-
-  // Property: actionListener
-  private MethodBinding _actionListener;
-
-  /**
-   * Gets A method binding EL expression that identifies an action listener method
-   *         to be invoked if this component is activated by the user. An action
-   *         listener method accepts a parameter of type javax.faces.event.ActionEvent
-   *         and returns void. The phase that this event is fired in can be controlled
-   *         via the immediate attribute.
-   *
-   * @return  the new actionListener value
-   * @deprecated
-   */
-  @JSFProperty
-  (stateHolder = true,
-  returnSignature = "void",
-  methodSignature = "javax.faces.event.ActionEvent")
-  public MethodBinding getActionListener()
-  {
-    if (_actionListener != null)
+    /**
+     * A method binding EL expression that identifies an action listener method to be invoked if
+     * this component is activated by the user.
+     * <p>
+     * An action listener method accepts a parameter of type javax.faces.event.ActionEvent and returns void.
+     * The phase that this event is fired in can be controlled via the immediate attribute.
+     * 
+     * @deprecated
+     */
+    @Deprecated
+    @JSFProperty(stateHolder = true, returnSignature = "void", methodSignature = "javax.faces.event.ActionEvent")
+    public MethodBinding getActionListener()
     {
-      return _actionListener;
+        if (_actionListener != null)
+        {
+            return _actionListener;
+        }
+        ValueExpression expression = getValueExpression("actionListener");
+        if (expression != null)
+        {
+            return (MethodBinding) expression.getValue(getFacesContext()
+                    .getELContext());
+        }
+        return null;
     }
-    ValueExpression expression = getValueExpression("actionListener");
-    if (expression != null)
+
+    @Deprecated
+    @JSFProperty(returnSignature="void",methodSignature="javax.faces.event.ActionEvent")
+    public void setActionListener(MethodBinding actionListener)
     {
-      return (MethodBinding)expression.getValue(getFacesContext().getELContext());
+        this._actionListener = actionListener;
     }
-    return null;
-  }
 
-  /**
-   * Sets A method binding EL expression that identifies an action listener method
-   *         to be invoked if this component is activated by the user. An action
-   *         listener method accepts a parameter of type javax.faces.event.ActionEvent
-   *         and returns void. The phase that this event is fired in can be controlled
-   *         via the immediate attribute.
-   * 
-   * @param actionListener  the new actionListener value
-   * @deprecated
-   */
-  public void setActionListener(MethodBinding actionListener)
-  {
-    this._actionListener = actionListener;
-  }
+    public void addActionListener(ActionListener listener)
+    {
+        addFacesListener(listener);
+    }
 
-  /**
-   * Adds a action listener.
-   *
-   * @param listener  the action listener to add
-   */
-  public void addActionListener(
-    ActionListener listener)
-  {
-    addFacesListener(listener);
-  }
+    public void removeActionListener(ActionListener listener)
+    {
+        removeFacesListener(listener);
+    }
 
-  /**
-   * Removes a action listener.
-   *
-   * @param listener  the action listener to remove
-   */
-  public void removeActionListener(
-    ActionListener listener)
-  {
-    removeFacesListener(listener);
-  }
+    public ActionListener[] getActionListeners()
+    {
+        return (ActionListener[]) getFacesListeners(ActionListener.class);
+    }
 
-  /**
-   * Returns an array of attached action listeners.
-   *
-   * @return  an array of attached action listeners.
-   */
-  public ActionListener[] getActionListeners()
-  {
-    return (ActionListener[])getFacesListeners(ActionListener.class);
-  }
+    @Override
+    public Object saveState(FacesContext facesContext)
+    {
+        Object[] values = new Object[6];
+        values[0] = super.saveState(facesContext);
+        values[1] = _immediate;
+        values[2] = _immediateSet;
+        values[3] = _value;
+        values[4] = saveAttachedState(facesContext, _actionExpression);
+        values[5] = saveAttachedState(facesContext, _actionListener);
 
-  @Override
-  public Object saveState(FacesContext facesContext)
-  {
-    Object[] values = new Object[6];
-    values[0] = super.saveState(facesContext);
-    values[1] = _immediate;
-    values[2] = _immediateSet;
-    values[3] = _value;
-    values[4] = saveAttachedState(facesContext, _actionExpression);
-    values[5] = saveAttachedState(facesContext, _actionListener);
+        return values;
+    }
 
-    return values;
-  }
+    @Override
+    public void restoreState(FacesContext facesContext, Object state)
+    {
+        Object[] values = (Object[]) state;
+        super.restoreState(facesContext, values[0]);
+        _immediate = (Boolean) values[1];
+        _immediateSet = (Boolean) values[2];
+        _value = values[3];
+        _actionExpression = (MethodExpression) restoreAttachedState(
+                facesContext, values[4]);
+        _actionListener = (MethodBinding) restoreAttachedState(facesContext,
+                values[5]);
+    }
 
-  @Override
-  public void restoreState(FacesContext facesContext, Object state)
-  {
-    Object[] values = (Object[])state;
-    super.restoreState(facesContext,values[0]);
-    _immediate = (Boolean)values[1];
-    _immediateSet = (Boolean)values[2];
-    _value = values[3];
-    _actionExpression = (MethodExpression)restoreAttachedState(facesContext, values[4]);
-    _actionListener = (MethodBinding)restoreAttachedState(facesContext, values[5]);
-  }
-
-  @Override
-  public String getFamily()
-  {
-    return COMPONENT_FAMILY;
-  }
+    @Override
+    public String getFamily()
+    {
+        return COMPONENT_FAMILY;
+    }
 }
