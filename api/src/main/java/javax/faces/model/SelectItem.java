@@ -34,7 +34,7 @@ public class SelectItem implements Serializable
     private String _label;
     private String _description;
     private boolean _disabled;
-    private boolean escape;
+    private boolean _escape;
 
     // CONSTRUCTORS
     public SelectItem()
@@ -47,6 +47,7 @@ public class SelectItem implements Serializable
         _label = value == null ? null : value.toString();
         _description = null;
         _disabled = false;
+        _escape=true;
     }
 
     public SelectItem(Object value, String label)
@@ -55,6 +56,7 @@ public class SelectItem implements Serializable
         _label = label;
         _description = null;
         _disabled = false;
+        _escape = true;
     }
 
     public SelectItem(Object value, String label, String description)
@@ -63,6 +65,7 @@ public class SelectItem implements Serializable
         _label = label;
         _description = description;
         _disabled = false;
+        _escape = true;
     }
 
     public SelectItem(Object value, String label, String description, boolean disabled)
@@ -71,6 +74,7 @@ public class SelectItem implements Serializable
         _label = label;
         _description = description;
         _disabled = disabled;
+        _escape = true;
     }
 
     public SelectItem(Object value, String label, String description, boolean disabled, boolean escape)
@@ -79,7 +83,7 @@ public class SelectItem implements Serializable
         _label = label;
         _description = description;
         _disabled = disabled;
-        this.escape = escape;
+        this._escape = escape;
     }
     
     // METHODS
@@ -127,12 +131,12 @@ public class SelectItem implements Serializable
 
     public boolean isEscape()
     {
-        return escape;
+        return _escape;
     }
 
     public void setEscape(boolean escape)
     {
-        this.escape = escape;
+        this._escape = escape;
     }
     
 }
