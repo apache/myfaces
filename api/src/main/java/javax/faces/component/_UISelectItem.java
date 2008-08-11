@@ -71,7 +71,7 @@ abstract class _UISelectItem extends UIComponentBase
    *
    * @return  the new itemEscaped value
    */
-  @JSFProperty(defaultValue="false")
+  @JSFProperty(defaultValue="false", jspName="escape")
   public abstract boolean isItemEscaped();
 
   /**
