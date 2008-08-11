@@ -34,8 +34,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 @JSFComponent(defaultRendererType = "javax.faces.Image")
 public class UIGraphic extends UIComponentBase
 {
-    static final String COMPONENT_TYPE = "javax.faces.Graphic";
-    private static final String COMPONENT_FAMILY = "javax.faces.Graphic";
+    public static final String COMPONENT_TYPE = "javax.faces.Graphic";
+    public static final String COMPONENT_FAMILY = "javax.faces.Graphic";
 
     private static final String URL_PROPERTY = "url";
     private static final String VALUE_PROPERTY = "value";

@@ -60,7 +60,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 public class UIViewRoot extends UIComponentBase
 {
     public static final String COMPONENT_TYPE = "javax.faces.ViewRoot";
-    private static final String COMPONENT_FAMILY = "javax.faces.ViewRoot";
+    public static final String COMPONENT_FAMILY = "javax.faces.ViewRoot";
 
     public static final String UNIQUE_ID_PREFIX = "j_id";
     private static final int ANY_PHASE_ORDINAL = PhaseId.ANY_PHASE.getOrdinal();

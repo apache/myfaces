@@ -54,8 +54,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 @JSFComponent(defaultRendererType = "javax.faces.Button")
 public class UICommand extends UIComponentBase implements ActionSource2
 {
-    static final String COMPONENT_TYPE = "javax.faces.Command";
-    private static final String COMPONENT_FAMILY = "javax.faces.Command";
+    public static final String COMPONENT_TYPE = "javax.faces.Command";
+    public static final String COMPONENT_FAMILY = "javax.faces.Command";
 
     private boolean _immediate;
     private boolean _immediateSet;
@@ -87,7 +87,6 @@ public class UICommand extends UIComponentBase implements ActionSource2
      * @deprecated Use getActionExpression() instead.
      */
     @Deprecated
-    @JSFProperty(returnSignature="java.lang.String")
     public MethodBinding getAction()
     {
         MethodExpression actionExpression = getActionExpression();

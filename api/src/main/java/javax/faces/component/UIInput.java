@@ -62,7 +62,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 @JSFComponent(defaultRendererType = "javax.faces.Text")
 public class UIInput extends UIOutput implements EditableValueHolder
 {
-    static final String COMPONENT_TYPE = "javax.faces.Input";
+    public static final String COMPONENT_TYPE = "javax.faces.Input";
     public static final String COMPONENT_FAMILY = "javax.faces.Input";
 
     public static final String CONVERSION_MESSAGE_ID = "javax.faces.component.UIInput.CONVERSION";

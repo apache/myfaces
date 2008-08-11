@@ -109,7 +109,7 @@ public class UIData extends UIComponentBase
                     implements NamingContainer
 {
     public static final String COMPONENT_FAMILY = "javax.faces.Data";
-    static final String COMPONENT_TYPE = "javax.faces.Data"; // for unit tests
+    public static final String COMPONENT_TYPE = "javax.faces.Data"; // for unit tests
 
     private static final String FOOTER_FACET_NAME = "footer";
     private static final String HEADER_FACET_NAME = "header";
