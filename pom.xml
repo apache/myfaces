@@ -1,8 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
     <groupId>org.apache.myfaces</groupId>
@@ -19,7 +15,7 @@
     This project is the home of the MyFaces implementation of the JavaServer Faces 1.1 specification, and
     consists of an API module (javax.faces.* classes) and an implementation module (org.apache.myfaces.* classes).
   </description>
-  <version>1.1.6-SNAPSHOT</version>
+  <version>1.1.6</version>
   <url>http://myfaces.apache.org/core11</url>
 
   <issueManagement>
@@ -28,9 +24,9 @@
   </issueManagement>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk</developerConnection>
-    <url>http://svn.apache.org/viewvc/myfaces/core/trunk</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/tags/1_1_6</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/tags/1_1_6</developerConnection>
+    <url>http://svn.apache.org/viewvc/myfaces/core/tags/1_1_6</url>
   </scm>
 
   <modules>
