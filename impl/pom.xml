@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.apache.myfaces.core</groupId>
     <artifactId>myfaces-core-project</artifactId>
-    <version>1.1.6-SNAPSHOT</version>
+    <version>1.1.6</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.myfaces.core</groupId>
@@ -13,9 +13,9 @@
     The private implementation classes of the Apache MyFaces Core JSF-1.1 Implementation.
   </description>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk/impl</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk/impl</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/trunk/impl</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/tags/1_1_6/impl</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/tags/1_1_6/impl</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/tags/1_1_6/impl</url>
   </scm>
   <build>
     <resources>
@@ -507,7 +507,7 @@
   </reporting>
 
   <properties>
-    <myfaces-shared.version>2.0.8-SNAPSHOT</myfaces-shared.version>
+    <myfaces-shared.version>2.0.8</myfaces-shared.version>
   </properties>
 
 </project>
