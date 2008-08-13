@@ -21,28 +21,28 @@ package javax.faces.component;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 
 /**
+ * Base class for components that provide a new "namespace" for the ids of their
+ * child components.
+ * <p>
+ * See the javadocs for interface NamingContainer for further details.
  */
 @JSFComponent
-public class UINamingContainer extends UIComponentBase
-                               implements NamingContainer
+public class UINamingContainer extends UIComponentBase implements NamingContainer
 {
+    public static final String COMPONENT_TYPE = "javax.faces.NamingContainer";
+    public static final String COMPONENT_FAMILY = "javax.faces.NamingContainer";
 
-  static public final String COMPONENT_FAMILY =
-    "javax.faces.NamingContainer";
-  static public final String COMPONENT_TYPE =
-    "javax.faces.NamingContainer";
+    /**
+     * Construct an instance of the UINamingContainer.
+     */
+    public UINamingContainer()
+    {
+        setRendererType(null);
+    }
 
-  /**
-   * Construct an instance of the UINamingContainer.
-   */
-  public UINamingContainer()
-  {
-    setRendererType(null);
-  }
-
-  @Override
-  public String getFamily()
-  {
-    return COMPONENT_FAMILY;
-  }
+    @Override
+    public String getFamily()
+    {
+        return COMPONENT_FAMILY;
+    }
 }

@@ -25,132 +25,109 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
- *
- * UIOutput displays a value to the user
+ * Displays a value to the user.
  */
-@JSFComponent
-(defaultRendererType = "javax.faces.Text"
-)
-public class UIOutput extends UIComponentBase
-                      implements ValueHolder
+@JSFComponent(defaultRendererType = "javax.faces.Text")
+public class UIOutput extends UIComponentBase implements ValueHolder
 {
+    public static final String COMPONENT_TYPE = "javax.faces.Output";
+    public static final String COMPONENT_FAMILY = "javax.faces.Output";
 
-  static public final String COMPONENT_FAMILY =
-    "javax.faces.Output";
-  static public final String COMPONENT_TYPE =
-    "javax.faces.Output";
+    private Object _value;
+    private Converter _converter;
 
-  /**
-   * Construct an instance of the UIOutput.
-   */
-  public UIOutput()
-  {
-    setRendererType("javax.faces.Text");
-  }
-      public Object getLocalValue()
+    /**
+     * Construct an instance of the UIOutput.
+     */
+    public UIOutput()
+    {
+        setRendererType("javax.faces.Text");
+    }
+
+    @Override
+    public String getFamily()
+    {
+        return COMPONENT_FAMILY;
+    }
+
+    public Object getLocalValue()
     {
         return _value;
     }
 
-  // Property: value
-  private Object _value;
-
-  /**
-   * Gets The initial value of this component.
-   *
-   * @return  the new value value
-   */
-  @JSFProperty
-  public Object getValue()
-  {
-    if (_value != null)
+    /**
+     * Gets The initial value of this component.
+     * 
+     * @return the new value value
+     */
+    @JSFProperty
+    public Object getValue()
     {
-      return _value;
+        if (_value != null)
+        {
+            return _value;
+        }
+        ValueExpression expression = getValueExpression("value");
+        if (expression != null)
+        {
+            return expression.getValue(getFacesContext().getELContext());
+        }
+        return null;
     }
-    ValueExpression expression = getValueExpression("value");
-    if (expression != null)
+
+    /**
+     * The initial value of this component.
+     */
+    public void setValue(Object value)
     {
-      return expression.getValue(getFacesContext().getELContext());
+        this._value = value;
     }
-    return null;
-  }
 
-  /**
-   * Sets The initial value of this component.
-   * 
-   * @param value  the new value value
-   */
-  public void setValue(Object value)
-  {
-    this._value = value;
-  }
-
-  // Property: converter
-  private Converter _converter;
-
-  /**
-   * Gets An expression that specifies the Converter for this component.
-   *               The value can either be a static value (ID) or an EL expression.
-   *               When a static id is specified, an instance of the converter type
-   *               registered with that id is used. When this is an EL expression,
-   *               the result of evaluating the expression must be an object that
-   *               implements the Converter interface.
-   *
-   * @return  the new converter value
-   */
-  @JSFProperty
-  public Converter getConverter()
-  {
-    if (_converter != null)
+    /**
+     * An expression that specifies the Converter for this component.
+     * <p>
+     * The value can either be a static value (ID) or an EL expression. When a static id is
+     * specified, an instance of the converter type registered with that id is used. When this
+     * is an EL expression, the result of evaluating the expression must be an object that
+     * implements the Converter interface.
+     */
+    @JSFProperty
+    public Converter getConverter()
     {
-      return _converter;
+        if (_converter != null)
+        {
+            return _converter;
+        }
+        ValueExpression expression = getValueExpression("converter");
+        if (expression != null)
+        {
+            return (Converter) expression.getValue(getFacesContext().getELContext());
+        }
+        return null;
     }
-    ValueExpression expression = getValueExpression("converter");
-    if (expression != null)
+
+    public void setConverter(Converter converter)
     {
-      return (Converter)expression.getValue(getFacesContext().getELContext());
+        this._converter = converter;
     }
-    return null;
-  }
 
-  /**
-   * Sets An expression that specifies the Converter for this component.
-   *               The value can either be a static value (ID) or an EL expression.
-   *               When a static id is specified, an instance of the converter type
-   *               registered with that id is used. When this is an EL expression,
-   *               the result of evaluating the expression must be an object that
-   *               implements the Converter interface.
-   * 
-   * @param converter  the new converter value
-   */
-  public void setConverter(Converter converter)
-  {
-    this._converter = converter;
-  }
+    @Override
+    public Object saveState(FacesContext facesContext)
+    {
+        Object[] values = new Object[3];
+        values[0] = super.saveState(facesContext);
+        values[1] = _value;
+        values[2] = saveAttachedState(facesContext, _converter);
 
-  @Override
-  public Object saveState(FacesContext facesContext)
-  {
-    Object[] values = new Object[3];
-    values[0] = super.saveState(facesContext);
-    values[1] = _value;
-    values[2] = saveAttachedState(facesContext, _converter);
+        return values;
+    }
 
-    return values;
-  }
-
-  @Override
-  public void restoreState(FacesContext facesContext, Object state)
-  {
-    Object[] values = (Object[])state;
-    super.restoreState(facesContext,values[0]);
-    _value = values[1];
-    _converter = (Converter) restoreAttachedState(facesContext, values[2]);
-  }
-
-  @Override
-  public String getFamily()
-  {
-    return COMPONENT_FAMILY;
-  }
+    @Override
+    public void restoreState(FacesContext facesContext, Object state)
+    {
+        Object[] values = (Object[]) state;
+        super.restoreState(facesContext, values[0]);
+        _value = values[1];
+        _converter = (Converter) restoreAttachedState(facesContext, values[2]);
+    }
 }
