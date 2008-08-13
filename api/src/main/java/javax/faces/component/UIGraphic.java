@@ -22,7 +22,11 @@ import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 
 /**
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * Displays a graphical image.
+ * <p>
+ * See the javadoc for this class in the
+ * <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * for further details.
  *
  * @JSFComponent
  *   type = "javax.faces.Graphic"
@@ -35,8 +39,14 @@ import javax.faces.el.ValueBinding;
 public class UIGraphic
         extends UIComponentBase
 {
+    public static final String COMPONENT_TYPE = "javax.faces.Graphic";
+    public static final String COMPONENT_FAMILY = "javax.faces.Graphic";
+    private static final String DEFAULT_RENDERER_TYPE = "javax.faces.Image";
+
     private static final String URL_PROPERTY = "url";
     private static final String VALUE_PROPERTY = "value";
+
+    private Object _value = null;
 
     /**
      * An alias for the "value" attribute.
@@ -78,15 +88,6 @@ public class UIGraphic
         }
     }
 
-
-    //------------------ GENERATED CODE BEGIN (do not modify!) --------------------
-
-    public static final String COMPONENT_TYPE = "javax.faces.Graphic";
-    public static final String COMPONENT_FAMILY = "javax.faces.Graphic";
-    private static final String DEFAULT_RENDERER_TYPE = "javax.faces.Image";
-
-    private Object _value = null;
-
     public UIGraphic()
     {
         setRendererType(DEFAULT_RENDERER_TYPE);
@@ -115,7 +116,6 @@ public class UIGraphic
         return vb != null ? vb.getValue(getFacesContext()) : null;
     }
 
-
     public Object saveState(FacesContext context)
     {
         Object values[] = new Object[2];
@@ -130,5 +130,4 @@ public class UIGraphic
         super.restoreState(context, values[0]);
         _value = values[1];
     }
-    //------------------ GENERATED CODE END ---------------------------------------
 }

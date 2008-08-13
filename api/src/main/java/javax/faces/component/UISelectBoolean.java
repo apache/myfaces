@@ -22,7 +22,13 @@ import javax.faces.el.ValueBinding;
 
 
 /**
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * A component that allows the user to select or unselect an object.
+ * <p>
+ * This can also be used to choose between two states such as true/false or on/off.
+ * <p>
+ * See the javadoc for this class in the
+ * <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * for further details.
  *
  * @JSFComponent
  *   type = "javax.faces.SelectBoolean"
@@ -34,13 +40,20 @@ import javax.faces.el.ValueBinding;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class UISelectBoolean
-        extends UIInput
+public class UISelectBoolean extends UIInput
 {
+    public static final String COMPONENT_TYPE = "javax.faces.SelectBoolean";
+    public static final String COMPONENT_FAMILY = "javax.faces.SelectBoolean";
+    private static final String DEFAULT_RENDERER_TYPE = "javax.faces.Checkbox";
 
-    public void setSelected(boolean selected)
+    public UISelectBoolean()
     {
-        setValue(Boolean.valueOf(selected));
+        setRendererType(DEFAULT_RENDERER_TYPE);
+    }
+
+    public String getFamily()
+    {
+        return COMPONENT_FAMILY;
     }
 
     public boolean isSelected()
@@ -50,6 +63,11 @@ public class UISelectBoolean
             value = (Boolean)getValue();
 
         return value != null && value.booleanValue();
+    }
+
+    public void setSelected(boolean selected)
+    {
+        setValue(Boolean.valueOf(selected));
     }
 
     public ValueBinding getValueBinding(String name)
@@ -78,24 +96,4 @@ public class UISelectBoolean
             super.setValueBinding(name, binding);
         }
     }
-
-    //------------------ GENERATED CODE BEGIN (do not modify!) --------------------
-
-    public static final String COMPONENT_TYPE = "javax.faces.SelectBoolean";
-    public static final String COMPONENT_FAMILY = "javax.faces.SelectBoolean";
-    private static final String DEFAULT_RENDERER_TYPE = "javax.faces.Checkbox";
-
-
-    public UISelectBoolean()
-    {
-        setRendererType(DEFAULT_RENDERER_TYPE);
-    }
-
-    public String getFamily()
-    {
-        return COMPONENT_FAMILY;
-    }
-
-
-    //------------------ GENERATED CODE END ---------------------------------------
 }

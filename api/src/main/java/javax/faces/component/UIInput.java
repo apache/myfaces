@@ -46,15 +46,22 @@ import java.util.List;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class UIInput
-        extends UIOutput
-        implements EditableValueHolder
+public class UIInput extends UIOutput implements EditableValueHolder
 {
+    public static final String COMPONENT_TYPE = "javax.faces.Input";
+    public static final String COMPONENT_FAMILY = "javax.faces.Input";
+    private static final String DEFAULT_RENDERER_TYPE = "javax.faces.Text";
+    private static final boolean DEFAULT_IMMEDIATE = false;
+    private static final boolean DEFAULT_REQUIRED = false;
+
     public static final String CONVERSION_MESSAGE_ID = "javax.faces.component.UIInput.CONVERSION";
     public static final String REQUIRED_MESSAGE_ID = "javax.faces.component.UIInput.REQUIRED";
     private static final String ERROR_HANDLING_EXCEPTION_LIST = "org.apache.myfaces.errorHandling.exceptionList";
 
     private static final Validator[] EMPTY_VALIDATOR_ARRAY = new Validator[0];
+
+    private Boolean _immediate = null;
+    private Boolean _required = null;
 
     private Object _submittedValue = null;
     private boolean _localValueSet = false;
@@ -333,10 +340,6 @@ public class UIInput
      * For development and production, we want to offer a single point
      * to which error-handlers can attach. So we queue up all ocurring
      * exceptions and later pass them to the configured error-handler.
-     *
-     * @param context
-     * @param binding
-     * @param e
      */
     private void queueExceptionInRequest(FacesContext context, ValueBinding binding, Exception e) {
         List li = (List) context.getExternalContext().getRequestMap().get(ERROR_HANDLING_EXCEPTION_LIST);
@@ -561,18 +564,6 @@ public class UIInput
 
     }
 
-
-    //------------------ GENERATED CODE BEGIN (do not modify!) --------------------
-
-    public static final String COMPONENT_TYPE = "javax.faces.Input";
-    public static final String COMPONENT_FAMILY = "javax.faces.Input";
-    private static final String DEFAULT_RENDERER_TYPE = "javax.faces.Text";
-    private static final boolean DEFAULT_IMMEDIATE = false;
-    private static final boolean DEFAULT_REQUIRED = false;
-
-    private Boolean _immediate = null;
-    private Boolean _required = null;
-
     public UIInput()
     {
         setRendererType(DEFAULT_RENDERER_TYPE);
@@ -624,7 +615,4 @@ public class UIInput
         Boolean v = vb != null ? (Boolean)vb.getValue(getFacesContext()) : null;
         return v != null ? v.booleanValue() : DEFAULT_REQUIRED;
     }
-
-
-    //------------------ GENERATED CODE END ---------------------------------------
 }

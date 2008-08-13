@@ -18,28 +18,21 @@
  */
 package javax.faces.component;
 
-
-
 /**
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
- *
- * @JSFComponent
- *   type = "javax.faces.NamingContainer"
- *   family = "javax.faces.NamingContainer"
- *   desc = "UINamingContainer"
- *   
+ * Base class for components that provide a new "namespace" for the ids of their child components.
+ * <p>
+ * See the documentation on interface NamingContainer for more details.
+ * 
+ * @JSFComponent type = "javax.faces.NamingContainer" family = "javax.faces.NamingContainer" desc =
+ *               "UINamingContainer"
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class UINamingContainer
-        extends UIComponentBase
-        implements NamingContainer
+public class UINamingContainer extends UIComponentBase implements NamingContainer
 {
-    //------------------ GENERATED CODE BEGIN (do not modify!) --------------------
-
     public static final String COMPONENT_TYPE = "javax.faces.NamingContainer";
     public static final String COMPONENT_FAMILY = "javax.faces.NamingContainer";
-
 
     public UINamingContainer()
     {
@@ -49,7 +42,4 @@ public class UINamingContainer
     {
         return COMPONENT_FAMILY;
     }
-
-
-    //------------------ GENERATED CODE END ---------------------------------------
 }

@@ -25,7 +25,11 @@ import javax.faces.el.ValueBinding;
 import javax.faces.event.*;
 
 /**
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * UICommand is a base abstraction for components that implement ActionSource.
+ * <p>
+ * See the javadoc for this class in the
+ * <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * for further details.
  *
  * @JSFComponent
  *   type = "javax.faces.Command"
@@ -35,10 +39,16 @@ import javax.faces.event.*;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class UICommand
-        extends UIComponentBase
-        implements ActionSource
+public class UICommand extends UIComponentBase implements ActionSource
 {
+    public static final String COMPONENT_TYPE = "javax.faces.Command";
+    public static final String COMPONENT_FAMILY = "javax.faces.Command";
+    private static final String DEFAULT_RENDERER_TYPE = "javax.faces.Button";
+    private static final boolean DEFAULT_IMMEDIATE = false;
+
+    private Boolean _immediate = null;
+    private Object _value = null;
+
     private MethodBinding _action = null;
     private MethodBinding _actionListener = null;
 
@@ -160,16 +170,6 @@ public class UICommand
     }
 
 
-    //------------------ GENERATED CODE BEGIN (do not modify!) --------------------
-
-    public static final String COMPONENT_TYPE = "javax.faces.Command";
-    public static final String COMPONENT_FAMILY = "javax.faces.Command";
-    private static final String DEFAULT_RENDERER_TYPE = "javax.faces.Button";
-    private static final boolean DEFAULT_IMMEDIATE = false;
-
-    private Boolean _immediate = null;
-    private Object _value = null;
-
     public UICommand()
     {
         setRendererType(DEFAULT_RENDERER_TYPE);
@@ -245,5 +245,4 @@ public class UICommand
         _immediate = (Boolean)values[3];
         _value = values[4];
     }
-    //------------------ GENERATED CODE END ---------------------------------------
 }

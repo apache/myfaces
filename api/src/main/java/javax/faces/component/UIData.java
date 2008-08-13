@@ -133,6 +133,12 @@ import javax.servlet.jsp.jstl.sql.Result;
  */
 public class UIData extends UIComponentBase implements NamingContainer
 {
+    public static final String COMPONENT_TYPE = "javax.faces.Data";
+    public static final String COMPONENT_FAMILY = "javax.faces.Data";
+    private static final String DEFAULT_RENDERER_TYPE = "javax.faces.Table";
+    private static final int DEFAULT_FIRST = 0;
+    private static final int DEFAULT_ROWS = 0;
+
     private static final int STATE_SIZE = 5;
     private static final int SUPER_STATE_INDEX = 0;
     private static final int FIRST_STATE_INDEX = 1;
@@ -146,6 +152,10 @@ public class UIData extends UIComponentBase implements NamingContainer
     private static final int PROCESS_DECODES = 1;
     private static final int PROCESS_VALIDATORS = 2;
     private static final int PROCESS_UPDATES = 3;
+
+    private Integer _first = null;
+    private Integer _rows = null;
+    private Object _value = null;
 
     private int _rowIndex = -1;
     private String _var = null;
@@ -979,18 +989,6 @@ public class UIData extends UIComponentBase implements NamingContainer
         }
     }
 
-    //------------------ GENERATED CODE BEGIN (do not modify!) --------------------
-
-    public static final String COMPONENT_TYPE = "javax.faces.Data";
-    public static final String COMPONENT_FAMILY = "javax.faces.Data";
-    private static final String DEFAULT_RENDERER_TYPE = "javax.faces.Table";
-    private static final int DEFAULT_FIRST = 0;
-    private static final int DEFAULT_ROWS = 0;
-
-    private Integer _first = null;
-    private Integer _rows = null;
-    private Object _value = null;
-
     public UIData()
     {
         setRendererType(DEFAULT_RENDERER_TYPE);
@@ -1003,7 +1001,8 @@ public class UIData extends UIComponentBase implements NamingContainer
 
     public void setFirst(int first)
     {
-        if (first < 0) {
+        if (first < 0)
+        {
             throw new IllegalArgumentException("Illegal value for first row: " + first);
         }
         _first = new Integer(first);
@@ -1017,7 +1016,9 @@ public class UIData extends UIComponentBase implements NamingContainer
     public int getFirst()
     {
         if (_first != null)
+        {
             return _first.intValue();
+        }
         ValueBinding vb = getValueBinding("first");
         Number v = vb != null ? (Number) vb.getValue(getFacesContext()) : null;
         return v != null ? v.intValue() : DEFAULT_FIRST;
@@ -1031,7 +1032,9 @@ public class UIData extends UIComponentBase implements NamingContainer
     public int getRows()
     {
         if (_rows != null)
+        {
             return _rows.intValue();
+        }
         ValueBinding vb = getValueBinding("rows");
         Number v = vb != null ? (Number) vb.getValue(getFacesContext()) : null;
         return v != null ? v.intValue() : DEFAULT_ROWS;
@@ -1053,7 +1056,4 @@ public class UIData extends UIComponentBase implements NamingContainer
         ValueBinding vb = getValueBinding("value");
         return vb != null ? vb.getValue(getFacesContext()) : null;
     }
-
-    //------------------ GENERATED CODE END ---------------------------------------
-
 }

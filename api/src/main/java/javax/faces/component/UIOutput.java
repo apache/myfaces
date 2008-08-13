@@ -23,33 +23,33 @@ import javax.faces.convert.Converter;
 import javax.faces.el.ValueBinding;
 
 /**
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
- *
+ * Displays a value to the user.
+ * <p>
+ * See the javadoc for this class in the
+ * <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * for further details.
+ * 
  * @JSFComponent
  *   type = "javax.faces.Output"
  *   family = "javax.faces.Output"
  *   desc = "UIOutput displays a value to the user"
- *
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class UIOutput
-        extends UIComponentBase
-        implements ValueHolder
+public class UIOutput extends UIComponentBase implements ValueHolder
 {
-    public Object getLocalValue()
-    {
-        return _value;
-    }
-
-    //------------------ GENERATED CODE BEGIN (do not modify!) --------------------
-
     public static final String COMPONENT_TYPE = "javax.faces.Output";
     public static final String COMPONENT_FAMILY = "javax.faces.Output";
     private static final String DEFAULT_RENDERER_TYPE = "javax.faces.Text";
 
     private Converter _converter = null;
     private Object _value = null;
+
+    public Object getLocalValue()
+    {
+        return _value;
+    }
 
     public UIOutput()
     {
@@ -67,19 +67,21 @@ public class UIOutput
     }
 
     /**
-     * The value can either be a static value (ID) or an EL expression.
-     * When a static id is specified, an instance of the converter type
-     * registered with that id is used. When this is an EL expression,
-     * the result of evaluating the expression must be an object that
-     * implements the Converter interface.
-     *  
+     * The value can either be a static value (ID) or an EL expression. When a static id is
+     * specified, an instance of the converter type registered with that id is used. When this is an
+     * EL expression, the result of evaluating the expression must be an object that implements the
+     * Converter interface.
+     * 
      * @JSFProperty
      */
     public Converter getConverter()
     {
-        if (_converter != null) return _converter;
+        if (_converter != null)
+        {
+            return _converter;
+        }
         ValueBinding vb = getValueBinding("converter");
-        return vb != null ? (Converter)vb.getValue(getFacesContext()) : null;
+        return vb != null ? (Converter) vb.getValue(getFacesContext()) : null;
     }
 
     public void setValue(Object value)
@@ -88,32 +90,33 @@ public class UIOutput
     }
 
     /**
-     * The initial value of this component. This value is generally
-     * set as a value-binding in the form #{myBean.myProperty}, where
-     * myProperty can be any data-type of Java (also user-defined data-types),
-     * if a converter for this data-type exists.
+     * The initial value of this component. This value is generally set as a value-binding in the
+     * form #{myBean.myProperty}, where myProperty can be any data-type of Java (also user-defined
+     * data-types), if a converter for this data-type exists.
      * 
      * Special cases:
      * 
-     * 1) f:selectItems - value needs to bind to a list (or an array) of javax.faces.model.SelectItem-instances
+     * 1) f:selectItems - value needs to bind to a list (or an array) of
+     * javax.faces.model.SelectItem-instances
      * 
-     * 2) components implementing UISelectMany (e.g. h:selectManyCheckbox) -
-     * value needs to bind to a list (or an array) of values, where the values need to be
-     * of the same data-type as the choices of the associated f:selectItems-component
+     * 2) components implementing UISelectMany (e.g. h:selectManyCheckbox) - value needs to bind to
+     * a list (or an array) of values, where the values need to be of the same data-type as the
+     * choices of the associated f:selectItems-component
      * 
-     * 3) components implementing UIData (e.g. h:dataTable) -
-     * value needs to bind to a list (or an array) of values,
-     * which will be iterated over when the data-table is processed
+     * 3) components implementing UIData (e.g. h:dataTable) - value needs to bind to a list (or an
+     * array) of values, which will be iterated over when the data-table is processed
      * 
      * @JSFProperty
      */
     public Object getValue()
     {
-        if (_value != null) return _value;
+        if (_value != null)
+        {
+            return _value;
+        }
         ValueBinding vb = getValueBinding("value");
         return vb != null ? vb.getValue(getFacesContext()) : null;
     }
-
 
     public Object saveState(FacesContext context)
     {
@@ -126,10 +129,9 @@ public class UIOutput
 
     public void restoreState(FacesContext context, Object state)
     {
-        Object values[] = (Object[])state;
+        Object values[] = (Object[]) state;
         super.restoreState(context, values[0]);
-        _converter = (Converter)restoreAttachedState(context, values[1]);
+        _converter = (Converter) restoreAttachedState(context, values[1]);
         _value = values[2];
     }
-    //------------------ GENERATED CODE END ---------------------------------------
 }

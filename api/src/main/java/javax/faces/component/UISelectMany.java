@@ -55,7 +55,21 @@ import javax.faces.render.Renderer;
  */
 public class UISelectMany extends UIInput
 {
+    public static final String COMPONENT_TYPE = "javax.faces.SelectMany";
+    public static final String COMPONENT_FAMILY = "javax.faces.SelectMany";
     public static final String INVALID_MESSAGE_ID = "javax.faces.component.UISelectMany.INVALID";
+
+    private static final String DEFAULT_RENDERER_TYPE = "javax.faces.Listbox";
+
+    public UISelectMany()
+    {
+        setRendererType(DEFAULT_RENDERER_TYPE);
+    }
+
+    public String getFamily()
+    {
+        return COMPONENT_FAMILY;
+    }
 
     public Object[] getSelectedValues()
     {
@@ -380,22 +394,4 @@ public class UISelectMany extends UIInput
             }
         }
     }
-
-    //------------------ GENERATED CODE BEGIN (do not modify!) --------------------
-
-    public static final String COMPONENT_TYPE = "javax.faces.SelectMany";
-    public static final String COMPONENT_FAMILY = "javax.faces.SelectMany";
-    private static final String DEFAULT_RENDERER_TYPE = "javax.faces.Listbox";
-
-    public UISelectMany()
-    {
-        setRendererType(DEFAULT_RENDERER_TYPE);
-    }
-
-    public String getFamily()
-    {
-        return COMPONENT_FAMILY;
-    }
-
-    //------------------ GENERATED CODE END ---------------------------------------
 }

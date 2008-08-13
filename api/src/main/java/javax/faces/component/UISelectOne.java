@@ -27,7 +27,9 @@ import javax.faces.context.FacesContext;
  * UISelectItems; these define the set of possible options that the
  * user can choose from.
  * <p>
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * See the javadoc for this class in the
+ * <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * for further details.
  *
  * @JSFComponent
  *   type = "javax.faces.SelectOne"
@@ -39,7 +41,21 @@ import javax.faces.context.FacesContext;
  */
 public class UISelectOne extends UIInput
 {
+    public static final String COMPONENT_TYPE = "javax.faces.SelectOne";
+    public static final String COMPONENT_FAMILY = "javax.faces.SelectOne";
     public static final String INVALID_MESSAGE_ID = "javax.faces.component.UISelectOne.INVALID";
+
+    private static final String DEFAULT_RENDERER_TYPE = "javax.faces.Menu";
+
+    public UISelectOne()
+    {
+        setRendererType(DEFAULT_RENDERER_TYPE);
+    }
+
+    public String getFamily()
+    {
+        return COMPONENT_FAMILY;
+    }
 
     /**
      * Verify that the result of converting the newly submitted value is
@@ -65,22 +81,4 @@ public class UISelectOne extends UIInput
             setValid(false);
         }
     }
-
-    //------------------ GENERATED CODE BEGIN (do not modify!) --------------------
-
-    public static final String COMPONENT_TYPE = "javax.faces.SelectOne";
-    public static final String COMPONENT_FAMILY = "javax.faces.SelectOne";
-    private static final String DEFAULT_RENDERER_TYPE = "javax.faces.Menu";
-
-    public UISelectOne()
-    {
-        setRendererType(DEFAULT_RENDERER_TYPE);
-    }
-
-    public String getFamily()
-    {
-        return COMPONENT_FAMILY;
-    }
-
-    //------------------ GENERATED CODE END ---------------------------------------
 }
