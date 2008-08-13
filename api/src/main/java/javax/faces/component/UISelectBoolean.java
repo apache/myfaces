@@ -23,9 +23,10 @@ import javax.faces.el.ValueBinding;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 
 /**
- *
- * UISelectBoolean is a Comonent which represents a boolean value.
- *
+ * A component that allows the user to select or unselect an object.
+ * <p>
+ * This can also be used to choose between two states such as true/false or on/off.
+ * <p>
  * <h4>Events:</h4>
  * <table border="1" width="100%" cellpadding="3" summary="">
  * <tr bgcolor="#CCCCFF" class="TableHeadingColor">
@@ -36,30 +37,31 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
  * <tr class="TableRowColor">
  * <td valign="top"><code>javax.faces.event.ValueChangeEvent</code></td>
  * <td valign="top" nowrap></td>
- * <td valign="top">The valueChange event is delivered when the value
-                attribute is changed.</td>
+ * <td valign="top">The valueChange event is delivered when the value attribute is changed.</td>
  * </tr>
  * </table>
+ * <p>
+ * See the javadoc for this class in the
+ * <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
+ * for further details.
  */
-@JSFComponent
-(defaultRendererType = "javax.faces.Checkbox"
-)
+@JSFComponent(defaultRendererType = "javax.faces.Checkbox")
 public class UISelectBoolean extends UIInput
 {
+    public static final String COMPONENT_TYPE = "javax.faces.SelectBoolean";
+    public static final String COMPONENT_FAMILY = "javax.faces.SelectBoolean";
 
-  static public final String COMPONENT_FAMILY =
-    "javax.faces.SelectBoolean";
-  static public final String COMPONENT_TYPE =
-    "javax.faces.SelectBoolean";
+    public UISelectBoolean()
+    {
+        setRendererType("javax.faces.Checkbox");
+    }
 
-  /**
-   * Construct an instance of the UISelectBoolean.
-   */
-  public UISelectBoolean()
-  {
-    setRendererType("javax.faces.Checkbox");
-  }
-  
+    @Override
+    public String getFamily()
+    {
+        return COMPONENT_FAMILY;
+    }
+
     public void setSelected(boolean selected)
     {
         setValue(Boolean.valueOf(selected));
@@ -67,9 +69,11 @@ public class UISelectBoolean extends UIInput
 
     public boolean isSelected()
     {
-        Boolean value = (Boolean)getSubmittedValue();
-        if( value == null )
-            value = (Boolean)getValue();
+        Boolean value = (Boolean) getSubmittedValue();
+        if (value == null)
+        {
+            value = (Boolean) getValue();
+        }
 
         return value != null ? value.booleanValue() : false;
     }
@@ -79,7 +83,10 @@ public class UISelectBoolean extends UIInput
      */
     public ValueBinding getValueBinding(String name)
     {
-        if (name == null) throw new NullPointerException("name");
+        if (name == null)
+        {
+            throw new NullPointerException("name");
+        }
         if (name.equals("selected"))
         {
             return super.getValueBinding("value");
@@ -93,10 +100,12 @@ public class UISelectBoolean extends UIInput
     /**
      * @deprecated Use setValueExpression instead
      */
-    public void setValueBinding(String name,
-                                ValueBinding binding)
+    public void setValueBinding(String name, ValueBinding binding)
     {
-        if (name == null) throw new NullPointerException("name");
+        if (name == null)
+        {
+            throw new NullPointerException("name");
+        }
         if (name.equals("selected"))
         {
             super.setValueBinding("value", binding);
@@ -109,7 +118,10 @@ public class UISelectBoolean extends UIInput
 
     public ValueExpression getValueExpression(String name)
     {
-        if (name == null) throw new NullPointerException("name");
+        if (name == null)
+        {
+            throw new NullPointerException("name");
+        }
         if (name.equals("selected"))
         {
             return super.getValueExpression("value");
@@ -120,10 +132,12 @@ public class UISelectBoolean extends UIInput
         }
     }
 
-    public void setValueExpression(String name,
-                                   ValueExpression binding)
+    public void setValueExpression(String name, ValueExpression binding)
     {
-        if (name == null) throw new NullPointerException("name");
+        if (name == null)
+        {
+            throw new NullPointerException("name");
+        }
         if (name.equals("selected"))
         {
             super.setValueExpression("value", binding);
@@ -132,11 +146,5 @@ public class UISelectBoolean extends UIInput
         {
             super.setValueExpression(name, binding);
         }
-    }    
-
-  @Override
-  public String getFamily()
-  {
-    return COMPONENT_FAMILY;
-  }
+    }
 }

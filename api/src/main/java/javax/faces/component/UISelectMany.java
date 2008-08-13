@@ -34,9 +34,15 @@ import javax.faces.render.Renderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 
 /**
- *
- * UISelectMany is a Component which represents a user choice of 0..n values.
- *
+ * Base class for the various component classes that allow a user to select zero or more options
+ * from a set.
+ * <p>
+ * This is not an abstract class; java code can create an instance of this, configure its
+ * rendererType appropriately, and add it to a view. However there is no tag class for this
+ * component, ie it cannot be added directly to a page when using JSP (and other presentation
+ * technologies are expected to behave similarly). Instead, there is a family of subclasses that
+ * extend this base functionality, and they do have tag classes.
+ * <p>
  * <h4>Events:</h4>
  * <table border="1" width="100%" cellpadding="3" summary="">
  * <tr bgcolor="#CCCCFF" class="TableHeadingColor">
@@ -47,31 +53,32 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
  * <tr class="TableRowColor">
  * <td valign="top"><code>javax.faces.event.ValueChangeEvent</code></td>
  * <td valign="top" nowrap></td>
- * <td valign="top">The valueChange event is delivered when the value
-                attribute is changed.</td>
+ * <td valign="top">The valueChange event is delivered when the value attribute is changed.</td>
  * </tr>
  * </table>
+ * <p>
+ * See the javadoc for this class in the
+ * <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
+ * for further details.
  */
-@JSFComponent
-(defaultRendererType = "javax.faces.Listbox"
-)
+@JSFComponent(defaultRendererType = "javax.faces.Listbox")
 public class UISelectMany extends UIInput
 {
+    public static final String COMPONENT_TYPE = "javax.faces.SelectMany";
+    public static final String COMPONENT_FAMILY = "javax.faces.SelectMany";
 
-  static public final String COMPONENT_FAMILY =
-    "javax.faces.SelectMany";
-  static public final String COMPONENT_TYPE =
-    "javax.faces.SelectMany";
+    public static final String INVALID_MESSAGE_ID = "javax.faces.component.UISelectMany.INVALID";
 
-  /**
-   * Construct an instance of the UISelectMany.
-   */
-  public UISelectMany()
-  {
-    setRendererType("javax.faces.Listbox");
-  }
-      public static final String INVALID_MESSAGE_ID = "javax.faces.component.UISelectMany.INVALID";
+    public UISelectMany()
+    {
+        setRendererType("javax.faces.Listbox");
+    }
 
+    @Override
+    public String getFamily()
+    {
+        return COMPONENT_FAMILY;
+    }
 
     public Object[] getSelectedValues()
     {
@@ -95,7 +102,8 @@ public class UISelectMany extends UIInput
         if (name.equals("selectedValues"))
         {
             return super.getValueBinding("value");
-        } else
+        }
+        else
         {
             return super.getValueBinding(name);
         }
@@ -113,7 +121,8 @@ public class UISelectMany extends UIInput
         if (name.equals("selectedValues"))
         {
             super.setValueBinding("value", binding);
-        } else
+        }
+        else
         {
             super.setValueBinding(name, binding);
         }
@@ -128,7 +137,8 @@ public class UISelectMany extends UIInput
         if (name.equals("selectedValues"))
         {
             return super.getValueExpression("value");
-        } else
+        }
+        else
         {
             return super.getValueExpression(name);
         }
@@ -143,7 +153,8 @@ public class UISelectMany extends UIInput
         if (name.equals("selectedValues"))
         {
             super.setValueExpression("value", binding);
-        } else
+        }
+        else
         {
             super.setValueExpression(name, binding);
         }
@@ -158,26 +169,29 @@ public class UISelectMany extends UIInput
         {
             // one is null, the other not
             return value != null;
-        } else if (value == null)
+        }
+        else if (value == null)
         {
             // one is null, the other not
             return previous != null;
-        } else
+        }
+        else
         {
             if (previous instanceof Object[] && value instanceof Object[])
             {
-                return compareObjectArrays((Object[]) previous,
-                        (Object[]) value);
-            } else if (previous instanceof List && value instanceof List)
+                return compareObjectArrays((Object[]) previous, (Object[]) value);
+            }
+            else if (previous instanceof List && value instanceof List)
             {
                 return compareLists((List) previous, (List) value);
-            } else if (previous.getClass().isArray()
-                    && value.getClass().isArray())
+            }
+            else if (previous.getClass().isArray() && value.getClass().isArray())
             {
                 return comparePrimitiveArrays(previous, value);
-            } else
+            }
+            else
             {
-                //Objects have different classes
+                // Objects have different classes
                 return true;
             }
         }
@@ -188,7 +202,7 @@ public class UISelectMany extends UIInput
         int length = value.length;
         if (previous.length != length)
         {
-            //different length
+            // different length
             return true;
         }
 
@@ -202,8 +216,7 @@ public class UISelectMany extends UIInput
                 if (scoreBoard[j] == false)
                 {
                     Object v = value[j];
-                    if ((p == null && v == null)
-                            || (p != null && v != null && p.equals(v)))
+                    if ((p == null && v == null) || (p != null && v != null && p.equals(v)))
                     {
                         scoreBoard[j] = true;
                         found = true;
@@ -213,7 +226,7 @@ public class UISelectMany extends UIInput
             }
             if (!found)
             {
-                return true; //current element of previous array not found in new array
+                return true; // current element of previous array not found in new array
             }
         }
 
@@ -225,7 +238,7 @@ public class UISelectMany extends UIInput
         int length = value.size();
         if (previous.size() != length)
         {
-            //different length
+            // different length
             return true;
         }
 
@@ -239,8 +252,7 @@ public class UISelectMany extends UIInput
                 if (scoreBoard[j] == false)
                 {
                     Object v = value.get(j);
-                    if ((p == null && v == null)
-                            || (p != null && v != null && p.equals(v)))
+                    if ((p == null && v == null) || (p != null && v != null && p.equals(v)))
                     {
                         scoreBoard[j] = true;
                         found = true;
@@ -250,7 +262,7 @@ public class UISelectMany extends UIInput
             }
             if (!found)
             {
-                return true; //current element of previous List not found in new List
+                return true; // current element of previous List not found in new List
             }
         }
 
@@ -262,7 +274,7 @@ public class UISelectMany extends UIInput
         int length = Array.getLength(value);
         if (Array.getLength(previous) != length)
         {
-            //different length
+            // different length
             return true;
         }
 
@@ -276,8 +288,7 @@ public class UISelectMany extends UIInput
                 if (scoreBoard[j] == false)
                 {
                     Object v = Array.get(value, j);
-                    if ((p == null && v == null)
-                            || (p != null && v != null && p.equals(v)))
+                    if ((p == null && v == null) || (p != null && v != null && p.equals(v)))
                     {
                         scoreBoard[j] = true;
                         found = true;
@@ -287,7 +298,7 @@ public class UISelectMany extends UIInput
             }
             if (!found)
             {
-                return true; //current element of previous array not found in new array
+                return true; // current element of previous array not found in new array
             }
         }
 
@@ -301,7 +312,8 @@ public class UISelectMany extends UIInput
         // verify that iterator was successfully created for convertedValue type
         if (itemValues == null)
         {
-            _MessageUtils.addErrorMessage(context, this, INVALID_MESSAGE_ID, new Object[]{_MessageUtils.getLabel(context,this)});
+            _MessageUtils.addErrorMessage(context, this, INVALID_MESSAGE_ID, new Object[]
+            { _MessageUtils.getLabel(context, this) });
             setValid(false);
             return;
         }
@@ -311,14 +323,16 @@ public class UISelectMany extends UIInput
         // if UISelectMany is required, then there must be some selected values
         if (isRequired() && !hasValues)
         {
-            if(getRequiredMessage() != null)
+            if (getRequiredMessage() != null)
             {
                 String requiredMessage = getRequiredMessage();
-                context.addMessage(this.getClientId(context),new FacesMessage(FacesMessage.SEVERITY_ERROR,requiredMessage,requiredMessage));
+                context.addMessage(this.getClientId(context), new FacesMessage(
+                        FacesMessage.SEVERITY_ERROR, requiredMessage, requiredMessage));
             }
             else
             {
-                _MessageUtils.addErrorMessage(context, this, REQUIRED_MESSAGE_ID, new Object[]{_MessageUtils.getLabel(context,this)});
+                _MessageUtils.addErrorMessage(context, this, REQUIRED_MESSAGE_ID, new Object[]
+                { _MessageUtils.getLabel(context, this) });
             }
             setValid(false);
             return;
@@ -338,7 +352,9 @@ public class UISelectMany extends UIInput
             {
                 public Object getConvertedValue(FacesContext context, String value)
                 {
-                    Object convertedValue = UISelectMany.this.getConvertedValue(context, new String[]{value});
+                    Object convertedValue = UISelectMany.this.getConvertedValue(context,
+                            new String[]
+                            { value });
                     if (convertedValue instanceof Collection)
                     {
                         Iterator iter = ((Collection) convertedValue).iterator();
@@ -361,10 +377,10 @@ public class UISelectMany extends UIInput
             {
                 Object itemValue = itemValues.next();
 
-                if (!_SelectItemsUtil.matchValue(context, itemValue,
-                        items.iterator(), converter))
+                if (!_SelectItemsUtil.matchValue(context, itemValue, items.iterator(), converter))
                 {
-                    _MessageUtils.addErrorMessage(context, this, INVALID_MESSAGE_ID, new Object[]{_MessageUtils.getLabel(context,this)});
+                    _MessageUtils.addErrorMessage(context, this, INVALID_MESSAGE_ID, new Object[]
+                    { _MessageUtils.getLabel(context, this) });
                     setValid(false);
                     return;
                 }
@@ -373,35 +389,35 @@ public class UISelectMany extends UIInput
     }
 
     /**
-     * First part is identical to super.validate except the empty condition.
-     * Second part: iterate through UISelectItem and UISelectItems and check
-     * current values against these items
+     * First part is identical to super.validate except the empty condition. Second part: iterate
+     * through UISelectItem and UISelectItems and check current values against these items
      */
     public void validate(FacesContext context)
     {
-        // TODO : Setting the submitted value to null in the super class causes a bug, if set to null, you'll get the following error :
-        // java.lang.NullPointerException at org.apache.myfaces.renderkit._SharedRendererUtils.getConvertedUISelectManyValue(_SharedRendererUtils.java:118)
+        // TODO : Setting the submitted value to null in the super class causes a bug, if set to
+        // null, you'll get the following error :
+        // java.lang.NullPointerException at
+        // org.apache.myfaces.renderkit._SharedRendererUtils.getConvertedUISelectManyValue(_SharedRendererUtils.java:118)
         super.validate(context);
     }
 
-    protected Object getConvertedValue(FacesContext context,
-                                       Object submittedValue)
+    protected Object getConvertedValue(FacesContext context, Object submittedValue)
     {
         try
         {
             Renderer renderer = getRenderer(context);
             if (renderer != null)
             {
-                return renderer
-                        .getConvertedValue(context, this,
-                                submittedValue);
-            } else if (submittedValue == null)
+                return renderer.getConvertedValue(context, this, submittedValue);
+            }
+            else if (submittedValue == null)
             {
                 return null;
-            } else if (submittedValue instanceof String[])
+            }
+            else if (submittedValue instanceof String[])
             {
-                return _SharedRendererUtils.getConvertedUISelectManyValue(
-                        context, this, (String[]) submittedValue);
+                return _SharedRendererUtils.getConvertedUISelectManyValue(context, this,
+                        (String[]) submittedValue);
             }
         }
         catch (ConverterException e)
@@ -410,9 +426,11 @@ public class UISelectMany extends UIInput
             if (facesMessage != null)
             {
                 context.addMessage(getClientId(context), facesMessage);
-            } else
+            }
+            else
             {
-                _MessageUtils.addErrorMessage(context, this, CONVERSION_MESSAGE_ID, new Object[]{_MessageUtils.getLabel(context,this)});
+                _MessageUtils.addErrorMessage(context, this, CONVERSION_MESSAGE_ID, new Object[]
+                { _MessageUtils.getLabel(context, this) });
             }
             setValid(false);
         }
@@ -424,31 +442,29 @@ public class UISelectMany extends UIInput
         if (convertedValue == null)
         {
             return Collections.EMPTY_LIST.iterator();
-        } else
+        }
+        else
         {
             Class valueClass = convertedValue.getClass();
             if (valueClass.isArray())
             {
                 return new _PrimitiveArrayIterator(convertedValue);
-            } else if (convertedValue instanceof Object[])
+            }
+            else if (convertedValue instanceof Object[])
             {
                 Object[] values = (Object[]) convertedValue;
                 return Arrays.asList(values).iterator();
-            } else if (convertedValue instanceof List)
+            }
+            else if (convertedValue instanceof List)
             {
                 List values = (List) convertedValue;
                 return values.iterator();
-            } else
+            }
+            else
             {
                 // unsupported type for iteration
                 return null;
             }
         }
     }
-
-  @Override
-  public String getFamily()
-  {
-    return COMPONENT_FAMILY;
-  }
 }
