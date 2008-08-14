@@ -134,18 +134,29 @@ public abstract class ViewHandler
      * This method is also invoked when navigation occurs from one view to another, where
      * the viewId passed is the id of the new view to be displayed. Again it is the responsibility
      * of renderView to then populate the viewroot with descendants.
+     * <p>
+     * The locale and renderKit settings are inherited from the current UIViewRoot that is
+     * configured before this method is called. That means of course that they do NOT
+     * get set for GET requests, including navigation that has the redirect flag set.
      */
     public abstract javax.faces.component.UIViewRoot createView(javax.faces.context.FacesContext context,
                                                                 String viewId);
 
     /**
      * Return a URL that a remote system can invoke in order to access the specified view.
+     * <p>
+     * Note that the URL a user enters and the viewId which is invoked can be
+     * different. The simplest difference is a change in suffix (eg url "foo.jsf"
+     * references view "foo.jsp").
      */
     public abstract String getActionURL(javax.faces.context.FacesContext context,
                                         String viewId);
 
     /**
-     * Return a URL that a remote system can invoke in order to access the specified resource..
+     * Return a URL that a remote system can invoke in order to access the specified resource.
+     * <p>
+     * When path starts with a slash, it is relative to the webapp root. Otherwise it is
+     * relative to the value returned by getActionURL.
      */
     public abstract String getResourceURL(javax.faces.context.FacesContext context,
                                           String path);
