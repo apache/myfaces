@@ -100,6 +100,14 @@ public class UIInput extends UIOutput implements EditableValueHolder
         super.setValue(value);
     }
 
+    /**
+     * Return the current value of this component.
+     * <p>
+     * If a submitted value has been converted but not yet pushed into the
+     * model, then return that locally-cached value (see isLocalValueSet).
+     * <p>
+     * Otherwise, evaluate an EL expression to fetch a value from the model. 
+     */
     public Object getValue()
     {
         if (isLocalValueSet()) return super.getLocalValue();
@@ -394,9 +402,15 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * <ul>
      * <li> isValid() is true
      * <li> isLocalValueSet() is true
+     * <li> getValue() will return the converted value, NOT evaluate the
+     * EL expression bound to the "value" attribute. Note that the getValue
+     * method will return to normal behaviour (evaluating its EL expression)
+     * after a successful update-model phase, ie after pushing this converted
+     * value into the model.
      * <li> submittedValue is reset to null
      * <li> a ValueChangeEvent is queued if the new value != old value
      * </ul> 
+     * 
      */
     public void validate(FacesContext context)
     {
