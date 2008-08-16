@@ -473,13 +473,16 @@ public class UIViewRoot extends UIComponentBase
     @JSFProperty(tagExcluded=true)
     public void setRendered(boolean state)
     {
-        throw new UnsupportedOperationException();
+        //Call parent method due to TCK problems
+        super.setRendered(state);
+        //throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean isRendered()
     {
-        return true;
+        //Call parent method due to TCK problems
+        return super.isRendered();
     }
 
     /**
@@ -520,7 +523,9 @@ public class UIViewRoot extends UIComponentBase
      */
     public String getClientId(FacesContext context)
     {
-        return null;
+        return super.getClientId(context);
+        //Call parent method due to TCK problems
+        //return null;
     }
 
     /**

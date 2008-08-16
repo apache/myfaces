@@ -45,7 +45,9 @@ abstract class _UISelectItem extends UIComponentBase
    */
   @JSFProperty(tagExcluded=true)
   public void setRendered(boolean state) {
-      throw new UnsupportedOperationException();
+      super.setRendered(state);
+      //call parent method due TCK problems
+      //throw new UnsupportedOperationException();
   }
   
   /**
