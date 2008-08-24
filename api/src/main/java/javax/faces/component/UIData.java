@@ -1029,7 +1029,7 @@ public class UIData extends UIComponentBase
      * An EL expression that specifies the data model that backs this table.
      * <p>
      * The value referenced by the EL expression can be of any type.
-     * <p>
+     * </p>
      * <ul>
      * <li>A value of type DataModel is used directly.</li>
      * <li>Array-like parameters of type array-of-Object, java.util.List, java.sql.ResultSet
@@ -1037,9 +1037,11 @@ public class UIData extends UIComponentBase
      *  knows how to iterate over the elements.</li>
      * <li>Other values are wrapped in a DataModel as a single row.</li>
      * </ul>
+     * <p>
      * Note in particular that unordered collections, eg Set are not supported. Therefore if the
      * value expression references such an object then the table will be considered to contain just
      * one element - the collection itself.
+     * </p>
      */
     @JSFProperty
     public Object getValue()
@@ -1097,6 +1099,7 @@ public class UIData extends UIComponentBase
      * <p>
      * Specify zero to display all rows from the "first" row to the end
      * of available data.
+     * </p>
      */
     @JSFProperty
     public int getRows()
@@ -1131,8 +1134,10 @@ public class UIData extends UIComponentBase
    * <p>
    * During rendering of child components of this UIData, the variable with this name can be read to
    * learn what the "rowData" object for the row currently being rendered is.
+   * </p>
    * <p>
    * This value must be a static value, ie an EL expression is not permitted.
+   * </p>
    */
   @JSFProperty(literalOnly = true)
   public String getVar()

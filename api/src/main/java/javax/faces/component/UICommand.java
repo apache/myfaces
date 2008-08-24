@@ -79,10 +79,12 @@ public class UICommand extends UIComponentBase implements ActionSource2
      * accepts no parameters and has a String return value, called the action
      * outcome, that identifies the next view displayed. The phase that this
      * event is fired in can be controlled via the immediate attribute.
+     * </p>
      * <p>
      * If the value is a string literal, it is treated as a navigation outcome
      * for the current view.  This is functionally equivalent to a reference to
      * an action method that returns the string literal.
+     * </p>
      * 
      * @deprecated Use getActionExpression() instead.
      */
@@ -167,6 +169,7 @@ public class UICommand extends UIComponentBase implements ActionSource2
      * During normal event processing, action methods and action listener methods are fired during the
      * "invoke application" phase of request processing. If this attribute is set to "true", these methods
      * are fired instead at the end of the "apply request values" phase.
+     * </p>
      */
     @JSFProperty
     public boolean isImmediate()
@@ -220,9 +223,11 @@ public class UICommand extends UIComponentBase implements ActionSource2
      * an action method. An action method accepts no parameters and has a String return value, called the
      * action outcome, that identifies the next view displayed. The phase that this event is fired in
      * can be controlled via the immediate attribute.
+     * </p>
      * <p> 
      * If the value is a string literal, it is treated as a navigation outcome for the current view. This
      * is functionally equivalent to a reference to an action method that returns the string literal.
+     * </p>
      */
     @JSFProperty(stateHolder = true, returnSignature = "java.lang.Object", jspName = "action")
     public MethodExpression getActionExpression()

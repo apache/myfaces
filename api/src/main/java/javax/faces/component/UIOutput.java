@@ -90,6 +90,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder
      * specified, an instance of the converter type registered with that id is used. When this
      * is an EL expression, the result of evaluating the expression must be an object that
      * implements the Converter interface.
+     * </p>
      */
     @JSFProperty
     public Converter getConverter()

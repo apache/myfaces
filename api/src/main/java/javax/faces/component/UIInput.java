@@ -516,6 +516,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * During normal event processing, action methods and action listener methods are fired during
      * the "invoke application" phase of request processing. If this attribute is set to "true",
      * these methods are fired instead at the end of the "apply request values" phase.
+     * </p>
      */
     @JSFProperty
     public boolean isImmediate()
@@ -545,8 +546,10 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * If this value is true and no input value is provided by a postback operation, then
      * the "requiredMessage" text is registered as a FacesMessage for the request, and
      * validation fails. 
+     * </p>
      * <p>
      * Default value: false.
+     * </p>
      */
     @JSFProperty(defaultValue = "false")
     public boolean isRequired()
@@ -574,6 +577,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * Text to be displayed to the user as an error message when conversion of a
      * submitted value to the target type fails.
      * <p>
+     * </p>
      */
     @JSFProperty
     public String getConverterMessage()
@@ -628,8 +632,10 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * <p>
      * The invoked method is expected to check the submitted value for this component, and if not
      * acceptable then report a validation error for the component.
+     * </p>
      * <p>
      * The method is expected to have the prototype
+     * </p>
      * <code>public void aMethod(FacesContext, UIComponent,Object)</code>
      * 
      * @deprecated
@@ -715,6 +721,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * <p>
      * The phase in which this method is invoked can be controlled via the immediate
      * attribute.
+     * </p>
      * 
      * @deprecated
      */

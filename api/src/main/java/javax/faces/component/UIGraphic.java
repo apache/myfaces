@@ -100,6 +100,7 @@ public class UIGraphic extends UIComponentBase
      * The URL of the image.
      * <p>
      * If the URL starts with a '/', it is relative to the context path of the web application.
+     * </p>
      */
     @JSFProperty
     public Object getValue()
