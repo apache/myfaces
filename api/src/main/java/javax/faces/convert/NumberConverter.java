@@ -91,7 +91,7 @@ public class NumberConverter
                 format.setParseIntegerOnly(_integerOnly);
                 
                 DecimalFormat df = (DecimalFormat)format;
-                df.setParseBigDecimal(true);
+                //df.setParseBigDecimal(true);
                 DecimalFormatSymbols dfs = df.getDecimalFormatSymbols();
                 boolean changed = false;
                 if(dfs.getGroupingSeparator() == '\u00a0')
