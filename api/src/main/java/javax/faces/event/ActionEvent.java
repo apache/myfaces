@@ -22,25 +22,23 @@ import javax.faces.component.UIComponent;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
 public class ActionEvent extends FacesEvent
 {
-  private static final long serialVersionUID = 3693030212414392259L;
+    private static final long serialVersionUID = 3693030212414392259L;
 
-    // FIELDS
-
-
-  // CONSTRUCTORS
     public ActionEvent(UIComponent uiComponent)
     {
         super(uiComponent);
-        if (uiComponent == null) throw new IllegalArgumentException("uiComponent");
+        if (uiComponent == null)
+        {
+            throw new IllegalArgumentException("uiComponent");
+        }
     }
 
-    // METHODS
     public boolean isAppropriateListener(FacesListener facesListeners)
     {
         return facesListeners instanceof ActionListener;
@@ -48,7 +46,7 @@ public class ActionEvent extends FacesEvent
 
     public void processListener(FacesListener facesListeners)
     {
-        ((ActionListener)facesListeners).processAction(this);
+        ((ActionListener) facesListeners).processAction(this);
     }
 
 }

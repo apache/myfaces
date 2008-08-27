@@ -21,17 +21,15 @@ package javax.faces.event;
 import javax.faces.FacesException;
 
 /**
- * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/2.0/docs/api/index.html">JSF Specification</a>
+ * 
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
 public class AbortProcessingException extends FacesException
 {
-  private static final long serialVersionUID = 612682812558934753L;
-    // FIELDS
+    private static final long serialVersionUID = 612682812558934753L;
 
-  // CONSTRUCTORS
     public AbortProcessingException()
     {
         super();
@@ -46,7 +44,7 @@ public class AbortProcessingException extends FacesException
     {
         super(message, cause);
     }
-    
+
     public AbortProcessingException(Throwable cause)
     {
         super(cause);
