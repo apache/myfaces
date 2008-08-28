@@ -205,4 +205,15 @@ public interface EditableValueHolder
     public ValueChangeListener[] getValueChangeListeners();
 
     public void removeValueChangeListener(ValueChangeListener listener);
+
+    /**
+     * Convenience method to reset this component's value to an
+     * uninitialized state, by resetting the local value and
+     * submitted values to null (ensuring that {@link #isLocalValueSet}
+     * is false), and setting "valid" to true.
+     * 
+     * @since 2.0
+     */
+    public void resetValue();
+
 }
