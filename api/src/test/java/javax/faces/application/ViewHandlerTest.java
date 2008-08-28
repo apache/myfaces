@@ -18,9 +18,7 @@
  */
 package javax.faces.application;
 
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.*;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

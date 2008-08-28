@@ -18,15 +18,14 @@
  */
 package javax.faces.component;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The util methods in this class are shared between the javax.faces.component package and
@@ -110,7 +109,7 @@ class _SharedRendererUtils
             {
                 // expected type is a List
                 // --> according to javadoc of UISelectMany we assume that the element type
-                //     is String, and copy the String array to a new List
+                //     is java.lang.String, and copy the String array to a new List
                 int len = submittedValue.length;
                 List lst = new ArrayList(len);
                 for (int i = 0; i < len; i++)
@@ -167,7 +166,7 @@ class _SharedRendererUtils
         if (List.class.isAssignableFrom(valueType))
         {
             // Curious case: According to specs we should assume, that the element type
-            // of this List is String. But there is a Converter set for this
+            // of this List is java.lang.String. But there is a Converter set for this
             // component. Because the user must know what he is doing, we will convert the values.
             int len = submittedValue.length;
             List lst = new ArrayList(len);

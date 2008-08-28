@@ -1,9 +1,5 @@
 package javax.faces.component;
 
-import static org.easymock.EasyMock.expect;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,6 +10,8 @@ import java.util.Map;
 import javax.faces.context.FacesContext;
 
 import org.easymock.EasyMock;
+import static org.easymock.EasyMock.*;
+import static org.testng.Assert.*;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

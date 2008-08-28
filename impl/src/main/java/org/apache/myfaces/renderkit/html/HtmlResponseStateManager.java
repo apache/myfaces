@@ -18,15 +18,6 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import java.io.IOException;
-
-import javax.faces.application.StateManager;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.render.ResponseStateManager;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
@@ -35,6 +26,14 @@ import org.apache.myfaces.shared_impl.renderkit.html.HTML;
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlRendererUtils;
 import org.apache.myfaces.shared_impl.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.shared_impl.util.StateUtils;
+
+import javax.faces.application.StateManager;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.faces.context.ResponseWriter;
+import javax.faces.render.RenderKitFactory;
+import javax.faces.render.ResponseStateManager;
+import java.io.IOException;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)

@@ -18,15 +18,14 @@
  */
 package org.apache.myfaces.config.annotation;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.naming.NamingException;
-
-import org.apache.myfaces.shared_impl.util.ClassUtils;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 /**
  * See SRV.14.5 Servlet Specification Version 2.5 JSR 154

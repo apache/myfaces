@@ -18,11 +18,6 @@
  */
 package org.apache.myfaces.el.convert;
 
-import java.beans.FeatureDescriptor;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ELResolver;
@@ -31,6 +26,11 @@ import javax.el.PropertyNotWritableException;
 import javax.faces.context.FacesContext;
 import javax.faces.el.EvaluationException;
 import javax.faces.el.VariableResolver;
+
+import java.beans.FeatureDescriptor;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  * Wrapper that converts a VariableResolver into an ELResolver. See JSF 1.2 spec section 5.6.1.5

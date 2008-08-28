@@ -18,16 +18,15 @@
  */
 package org.apache.myfaces.application;
 
+import org.apache.myfaces.shared_impl.util.ClassUtils;
+
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-
-import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)

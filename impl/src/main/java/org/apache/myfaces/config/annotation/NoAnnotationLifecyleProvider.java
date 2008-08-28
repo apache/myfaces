@@ -18,9 +18,9 @@
  */
 package org.apache.myfaces.config.annotation;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.apache.myfaces.shared_impl.util.ClassUtils;
+
+import java.lang.reflect.InvocationTargetException;
 
 public class NoAnnotationLifecyleProvider implements LifecycleProvider
 {

@@ -19,8 +19,10 @@
 package org.apache.myfaces.config.impl.digester.elements;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Collection;
+
+import org.apache.myfaces.config.impl.digester.elements.NavigationCase;
 
 
 /**

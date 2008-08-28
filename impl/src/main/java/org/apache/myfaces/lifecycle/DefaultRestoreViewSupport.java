@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.lifecycle;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.el.ValueExpression;

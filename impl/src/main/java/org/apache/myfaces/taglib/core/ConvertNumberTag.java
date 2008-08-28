@@ -19,7 +19,7 @@
 package org.apache.myfaces.taglib.core;
 
 
-import java.util.Locale;
+import org.apache.myfaces.shared_impl.taglib.UIComponentELTagUtils;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
@@ -28,8 +28,7 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.NumberConverter;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-
-import org.apache.myfaces.shared_impl.taglib.UIComponentELTagUtils;
+import java.util.Locale;
 
 
 /**

@@ -44,7 +44,7 @@ public abstract class UIComponentTagBase extends Object implements JspTag
     protected abstract void addChild(UIComponent child);
 
     /**
-     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#addFacet(String)
+     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#addFacet(java.lang.String)
      * @param name
      */
 
@@ -122,7 +122,7 @@ public abstract class UIComponentTagBase extends Object implements JspTag
     public abstract String getRendererType();
 
     /**
-     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#setId(String)
+     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#setId(java.lang.String)
      * @param id
      */
 

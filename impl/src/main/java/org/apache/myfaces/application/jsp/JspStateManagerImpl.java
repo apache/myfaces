@@ -18,25 +18,15 @@
  */
 package org.apache.myfaces.application.jsp;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
+import org.apache.commons.collections.map.AbstractReferenceMap;
+import org.apache.commons.collections.map.ReferenceMap;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.application.MyfacesStateManager;
+import org.apache.myfaces.application.TreeStructureManager;
+import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
+import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
+import org.apache.myfaces.shared_impl.util.MyFacesObjectInputStream;
 
 import javax.faces.FactoryFinder;
 import javax.faces.component.NamingContainer;
@@ -47,16 +37,11 @@ import javax.faces.context.FacesContext;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
-
-import org.apache.commons.collections.map.AbstractReferenceMap;
-import org.apache.commons.collections.map.ReferenceMap;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.application.MyfacesStateManager;
-import org.apache.myfaces.application.TreeStructureManager;
-import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
-import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
-import org.apache.myfaces.shared_impl.util.MyFacesObjectInputStream;
+import java.io.*;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Default StateManager implementation for use when views are defined

@@ -1,17 +1,17 @@
 package javax.faces.component;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.context.FacesContext;
 
-import org.apache.myfaces.Assert;
-import org.apache.myfaces.TestRunner;
-import org.easymock.EasyMock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.apache.myfaces.TestRunner;
+import org.apache.myfaces.Assert;
+import org.easymock.EasyMock;
 
 /**
      * Tests for {@link UIComponent#encodeAll(javax.faces.context.FacesContext)}.

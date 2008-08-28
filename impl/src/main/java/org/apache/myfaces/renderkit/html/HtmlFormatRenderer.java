@@ -18,24 +18,24 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
+import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
+import org.apache.myfaces.shared_impl.renderkit.html.HtmlRenderer;
+import org.apache.myfaces.shared_impl.renderkit.html.HtmlTextRendererBase;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIParameter;
 import javax.faces.component.html.HtmlOutputFormat;
 import javax.faces.context.FacesContext;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
-import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
-import org.apache.myfaces.shared_impl.renderkit.html.HtmlRenderer;
-import org.apache.myfaces.shared_impl.renderkit.html.HtmlTextRendererBase;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)

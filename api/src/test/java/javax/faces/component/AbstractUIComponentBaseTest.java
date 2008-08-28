@@ -1,14 +1,14 @@
 package javax.faces.component;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.ArrayList;
 
 import javax.faces.context.FacesContext;
 import javax.faces.render.Renderer;
 
-import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
+import org.easymock.classextension.EasyMock;
 import org.testng.annotations.BeforeMethod;
 
 /**

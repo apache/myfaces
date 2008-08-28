@@ -18,13 +18,12 @@
  */
 package org.apache.myfaces.lifecycle;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import javax.faces.FacesException;
 import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)

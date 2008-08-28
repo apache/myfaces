@@ -29,9 +29,9 @@ import javax.faces.lifecycle.Lifecycle;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.util.DebugUtils;
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
-import org.apache.myfaces.util.DebugUtils;
 
 /**
  * Implements the lifecycle as described in Spec. 1.0 PFD Chapter 2

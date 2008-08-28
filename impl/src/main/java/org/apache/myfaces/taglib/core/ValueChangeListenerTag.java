@@ -20,6 +20,7 @@ package org.apache.myfaces.taglib.core;
 
 import javax.el.ValueExpression;
 import javax.faces.component.EditableValueHolder;
+import javax.faces.event.ActionListener;
 import javax.faces.event.ValueChangeListener;
 
 /**

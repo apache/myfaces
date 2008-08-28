@@ -18,7 +18,11 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import java.io.IOException;
+import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
+import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
+import org.apache.myfaces.shared_impl.renderkit.html.HTML;
+import org.apache.myfaces.shared_impl.renderkit.html.HtmlRenderer;
+import org.apache.myfaces.shared_impl.renderkit.html.HtmlRendererUtils;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
@@ -26,12 +30,7 @@ import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.convert.ConverterException;
-
-import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
-import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
-import org.apache.myfaces.shared_impl.renderkit.html.HTML;
-import org.apache.myfaces.shared_impl.renderkit.html.HtmlRenderer;
-import org.apache.myfaces.shared_impl.renderkit.html.HtmlRendererUtils;
+import java.io.IOException;
 
 
 /**

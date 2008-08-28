@@ -18,15 +18,14 @@
  */
 package org.apache.myfaces.el.unified.resolver;
 
-import java.beans.FeatureDescriptor;
-import java.util.Iterator;
+import org.apache.myfaces.el.VariableResolverImpl;
 
 import javax.el.ELContext;
 import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
 import javax.servlet.jsp.JspApplicationContext;
-
-import org.apache.myfaces.el.VariableResolverImpl;
+import java.beans.FeatureDescriptor;
+import java.util.Iterator;
 
 /**
  * <p>

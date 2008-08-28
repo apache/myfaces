@@ -1,15 +1,13 @@
 package javax.faces.component;
 
-import static org.easymock.EasyMock.expect;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
-
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
 import org.easymock.EasyMock;
+import static org.easymock.EasyMock.*;
+import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
 /**

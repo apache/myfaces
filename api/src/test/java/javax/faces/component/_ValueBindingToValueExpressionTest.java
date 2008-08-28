@@ -75,7 +75,7 @@ public class _ValueBindingToValueExpressionTest extends TestCase
     }
 
     /**
-     * Test method for {@link org.apache.myfaces.el.convert.ValueBindingToValueExpression#equals(Object)}.
+     * Test method for {@link org.apache.myfaces.el.convert.ValueBindingToValueExpression#equals(java.lang.Object)}.
      */
     public void testEqualsObject()
     {
@@ -204,7 +204,7 @@ public class _ValueBindingToValueExpressionTest extends TestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.el.convert.ValueBindingToValueExpression#setValue(javax.el.ELContext, Object)}.
+     * {@link org.apache.myfaces.el.convert.ValueBindingToValueExpression#setValue(javax.el.ELContext, java.lang.Object)}.
      */
     public void testSetValueELContextObject()
     {
@@ -218,7 +218,7 @@ public class _ValueBindingToValueExpressionTest extends TestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.el.convert.ValueBindingToValueExpression#setValue(javax.el.ELContext, Object)}.
+     * {@link org.apache.myfaces.el.convert.ValueBindingToValueExpression#setValue(javax.el.ELContext, java.lang.Object)}.
      */
     public void testSetValueELContextObjectExceptions() throws Exception
     {

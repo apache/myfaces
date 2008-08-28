@@ -18,15 +18,15 @@
  */
 package org.apache.myfaces.el.unified;
 
+import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.el.convert.PropertyResolverToELResolver;
+import org.apache.myfaces.el.convert.VariableResolverToELResolver;
+
 import javax.el.CompositeELResolver;
 import javax.el.ELResolver;
 import javax.faces.application.Application;
 import javax.faces.el.PropertyResolver;
 import javax.faces.el.VariableResolver;
-
-import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.el.convert.PropertyResolverToELResolver;
-import org.apache.myfaces.el.convert.VariableResolverToELResolver;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)

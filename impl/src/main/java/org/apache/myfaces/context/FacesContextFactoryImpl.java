@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.context;
 
+import org.apache.myfaces.context.servlet.FacesContextImpl;
+
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextFactory;
@@ -28,8 +30,6 @@ import javax.portlet.PortletResponse;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-
-import org.apache.myfaces.context.servlet.FacesContextImpl;
 
 /**
  * DOCUMENT ME!

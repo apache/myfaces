@@ -18,10 +18,6 @@
  */
 package org.apache.myfaces.el.convert;
 
-import java.beans.FeatureDescriptor;
-import java.util.Iterator;
-import java.util.List;
-
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ELResolver;
@@ -33,6 +29,10 @@ import javax.faces.application.ApplicationFactory;
 import javax.faces.context.FacesContext;
 import javax.faces.el.EvaluationException;
 import javax.faces.el.PropertyResolver;
+
+import java.beans.FeatureDescriptor;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Wrapper that converts a VariableResolver into an ELResolver. See JSF 1.2 spec section 5.6.1.6

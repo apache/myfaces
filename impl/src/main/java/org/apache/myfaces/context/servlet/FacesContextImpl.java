@@ -18,12 +18,10 @@
  */
 package org.apache.myfaces.context.servlet;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import org.apache.myfaces.context.ReleaseableExternalContext;
+import org.apache.myfaces.context.portlet.PortletExternalContextImpl;
+import org.apache.myfaces.el.unified.FacesELContext;
+import org.apache.myfaces.shared_impl.util.NullIterator;
 
 import javax.el.ELContext;
 import javax.el.ELContextEvent;
@@ -45,11 +43,7 @@ import javax.portlet.PortletResponse;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-
-import org.apache.myfaces.context.ReleaseableExternalContext;
-import org.apache.myfaces.context.portlet.PortletExternalContextImpl;
-import org.apache.myfaces.el.unified.FacesELContext;
-import org.apache.myfaces.shared_impl.util.NullIterator;
+import java.util.*;
 
 
 /**

@@ -18,10 +18,10 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import javax.el.ValueExpression;
-import javax.faces.component.UIComponent;
-
 import org.apache.myfaces.shared_impl.taglib.UIComponentELTagBase;
+
+import javax.faces.component.UIComponent;
+import javax.el.ValueExpression;
 
 /**
  * DOCUMENT ME!

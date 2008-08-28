@@ -26,10 +26,10 @@ package javax.faces.component;
  */
 public interface StateHolder
 {
-    public Object saveState(javax.faces.context.FacesContext context);
+    public java.lang.Object saveState(javax.faces.context.FacesContext context);
 
     public void restoreState(javax.faces.context.FacesContext context,
-                             Object state);
+                             java.lang.Object state);
 
     public boolean isTransient();
 

@@ -44,7 +44,7 @@ public class _MessageUtilsTest
 
     /**
      * Test method for
-     * {@link javax.faces.validator._MessageUtils#getErrorMessage(javax.faces.context.FacesContext, String, Object[])}.
+     * {@link javax.faces.validator._MessageUtils#getErrorMessage(javax.faces.context.FacesContext, java.lang.String, java.lang.Object[])}.
      */
     @Test
     public void testErrorMessage()

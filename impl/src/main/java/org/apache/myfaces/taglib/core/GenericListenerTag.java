@@ -18,17 +18,18 @@
  */
 package org.apache.myfaces.taglib.core;
 
+import org.apache.myfaces.shared_impl.util.ClassUtils;
+
 import javax.el.ELException;
 import javax.el.ValueExpression;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionListener;
 import javax.faces.webapp.UIComponentClassicTagBase;
 import javax.faces.webapp.UIComponentELTag;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
-
-import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 /**
  * @author Andreas Berger (latest modification by $Author$)

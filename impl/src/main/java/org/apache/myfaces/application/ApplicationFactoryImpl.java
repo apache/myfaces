@@ -18,11 +18,11 @@
  */
 package org.apache.myfaces.application;
 
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import javax.faces.application.Application;
+import javax.faces.application.ApplicationFactory;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)

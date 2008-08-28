@@ -20,6 +20,8 @@ package org.apache.myfaces.config.element;
 
 import java.util.Iterator;
 
+import org.apache.myfaces.config.element.ListEntries;
+
 /**
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$

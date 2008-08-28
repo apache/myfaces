@@ -69,7 +69,7 @@ public class UISelectOne extends UIInput
      * property of one of the child SelectItem objects. If this is not true, a validation error is
      * reported.
      * 
-     * @see javax.faces.component.UIInput#validateValue(javax.faces.context.FacesContext,Object)
+     * @see javax.faces.component.UIInput#validateValue(javax.faces.context.FacesContext,java.lang.Object)
      */
     protected void validateValue(FacesContext context, Object value)
     {

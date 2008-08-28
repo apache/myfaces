@@ -186,7 +186,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
 
     /**
      * @param name
-     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#addFacet(String)
+     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#addFacet(java.lang.String)
      */
     protected void addFacet(String name)
     {
@@ -258,7 +258,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
 
     /**
      * @param id
-     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#setId(String)
+     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#setId(java.lang.String)
      */
     public void setId(String id)
     {

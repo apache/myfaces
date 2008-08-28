@@ -18,6 +18,16 @@
  */
 package org.apache.myfaces.util;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import javax.faces.FacesException;
+import javax.faces.component.*;
+import javax.faces.context.FacesContext;
+import javax.faces.el.MethodBinding;
+import javax.faces.el.ValueBinding;
+import javax.faces.event.FacesListener;
+import javax.faces.validator.Validator;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -28,21 +38,6 @@ import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-
-import javax.faces.FacesException;
-import javax.faces.component.UICommand;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.ValueHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.el.MethodBinding;
-import javax.faces.el.ValueBinding;
-import javax.faces.event.FacesListener;
-import javax.faces.validator.Validator;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 
 /**

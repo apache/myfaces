@@ -1,12 +1,5 @@
 package javax.faces.component;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
-
 import java.lang.reflect.Method;
 import java.util.Collection;
 
@@ -14,7 +7,9 @@ import javax.el.ValueExpression;
 import javax.faces.el.ValueBinding;
 
 import org.easymock.EasyMock;
+import static org.easymock.EasyMock.*;
 import org.easymock.IAnswer;
+import static org.testng.Assert.*;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

@@ -438,7 +438,7 @@ public class ServletExternalContextImpl extends ExternalContext implements Relea
      * @param request
      */
     @Override
-    public void setRequest(Object request)
+    public void setRequest(java.lang.Object request)
     {
         this._servletRequest = (ServletRequest) request;
         this._httpServletRequest = isHttpServletRequest(_servletRequest) ? (HttpServletRequest) _servletRequest : null;
@@ -451,7 +451,7 @@ public class ServletExternalContextImpl extends ExternalContext implements Relea
      * @throws java.io.UnsupportedEncodingException
      */
     @Override
-    public void setRequestCharacterEncoding(String encoding) throws java.io.UnsupportedEncodingException
+    public void setRequestCharacterEncoding(java.lang.String encoding) throws java.io.UnsupportedEncodingException
     {
 
         this._servletRequest.setCharacterEncoding(encoding);
@@ -481,7 +481,7 @@ public class ServletExternalContextImpl extends ExternalContext implements Relea
      * @param response
      */
     @Override
-    public void setResponse(Object response)
+    public void setResponse(java.lang.Object response)
     {
         this._servletResponse = (ServletResponse) response;
     }
@@ -491,7 +491,7 @@ public class ServletExternalContextImpl extends ExternalContext implements Relea
      * @param encoding
      */
     @Override
-    public void setResponseCharacterEncoding(String encoding)
+    public void setResponseCharacterEncoding(java.lang.String encoding)
     {
         this._servletResponse.setCharacterEncoding(encoding);
     }

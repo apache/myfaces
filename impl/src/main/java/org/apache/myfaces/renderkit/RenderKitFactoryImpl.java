@@ -18,17 +18,16 @@
  */
 package org.apache.myfaces.renderkit;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * RenderKitFactory implementation as defined in Spec. JSF.7.3

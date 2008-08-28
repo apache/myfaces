@@ -18,14 +18,13 @@
  */
 package org.apache.myfaces.context.portlet;
 
-import java.util.Enumeration;
-import java.util.Map;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletSession;
-
 import org.apache.myfaces.shared_impl.util.NullEnumeration;
 import org.apache.myfaces.util.AbstractAttributeMap;
+
+import java.util.Enumeration;
+import java.util.Map;
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletSession;
 
 /**
  * Portlet scope PortletSession attibutes as Map.

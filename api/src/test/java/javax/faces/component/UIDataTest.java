@@ -49,7 +49,7 @@ public class UIDataTest extends AbstractJsfTestCase
 
     /**
      * Test method for
-     * {@link javax.faces.component.UIData#setValueExpression(String, javax.el.ValueExpression)}.
+     * {@link javax.faces.component.UIData#setValueExpression(java.lang.String, javax.el.ValueExpression)}.
      */
     public void testValueExpression()
     {
@@ -83,7 +83,7 @@ public class UIDataTest extends AbstractJsfTestCase
 
     /**
      * Test method for
-     * {@link javax.faces.component.UIData#invokeOnComponent(javax.faces.context.FacesContext, String, javax.faces.component.ContextCallback)}.
+     * {@link javax.faces.component.UIData#invokeOnComponent(javax.faces.context.FacesContext, java.lang.String, javax.faces.component.ContextCallback)}.
      */
     public void testInvokeOnComponentFacesContextStringContextCallback()
     {
@@ -156,7 +156,7 @@ public class UIDataTest extends AbstractJsfTestCase
 
     /**
      * Test method for
-     * {@link javax.faces.component.UIData#restoreState(javax.faces.context.FacesContext, Object)}.
+     * {@link javax.faces.component.UIData#restoreState(javax.faces.context.FacesContext, java.lang.Object)}.
      */
     public void testRestoreState()
     {
@@ -260,7 +260,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#setValue(Object)}.
+     * Test method for {@link javax.faces.component.UIData#setValue(java.lang.Object)}.
      */
     public void testSetValue()
     {
@@ -300,7 +300,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#setVar(String)}.
+     * Test method for {@link javax.faces.component.UIData#setVar(java.lang.String)}.
      */
     public void testSetVar()
     {

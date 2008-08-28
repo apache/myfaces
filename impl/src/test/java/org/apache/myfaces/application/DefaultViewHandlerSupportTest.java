@@ -18,8 +18,7 @@
  */
 package org.apache.myfaces.application;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.same;
+import static org.easymock.EasyMock.*;
 
 import java.lang.reflect.Method;
 
@@ -42,7 +41,7 @@ public class DefaultViewHandlerSupportTest extends FacesTestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.application.DefaultViewHandlerSupport#calculateViewId(javax.faces.context.FacesContext, String)}.
+     * {@link org.apache.myfaces.application.DefaultViewHandlerSupport#calculateViewId(javax.faces.context.FacesContext, java.lang.String)}.
      * 
      * @throws Exception
      */
@@ -77,7 +76,7 @@ public class DefaultViewHandlerSupportTest extends FacesTestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.application.DefaultViewHandlerSupport#applyDefaultSuffix(javax.faces.context.FacesContext, String)}.
+     * {@link org.apache.myfaces.application.DefaultViewHandlerSupport#applyDefaultSuffix(javax.faces.context.FacesContext, java.lang.String)}.
      */
     public void testApplyDefaultSuffix()
     {
@@ -86,7 +85,7 @@ public class DefaultViewHandlerSupportTest extends FacesTestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.application.DefaultViewHandlerSupport#calculateActionURL(javax.faces.context.FacesContext, String)}.
+     * {@link org.apache.myfaces.application.DefaultViewHandlerSupport#calculateActionURL(javax.faces.context.FacesContext, java.lang.String)}.
      * 
      * @throws
      * @throws Exception

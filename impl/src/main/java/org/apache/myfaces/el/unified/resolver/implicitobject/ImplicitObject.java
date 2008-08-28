@@ -19,7 +19,6 @@
 package org.apache.myfaces.el.unified.resolver.implicitobject;
 
 import java.beans.FeatureDescriptor;
-
 import javax.el.ELContext;
 import javax.el.ELResolver;
 import javax.faces.context.ExternalContext;

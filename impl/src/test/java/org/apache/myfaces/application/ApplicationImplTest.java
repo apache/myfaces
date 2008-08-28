@@ -76,7 +76,7 @@ public class ApplicationImplTest extends TestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.application.ApplicationImpl#getResourceBundle(javax.faces.context.FacesContext, String)}.
+     * {@link org.apache.myfaces.application.ApplicationImpl#getResourceBundle(javax.faces.context.FacesContext, java.lang.String)}.
      */
     public void testGetResourceBundleNPE()
     {
@@ -101,7 +101,7 @@ public class ApplicationImplTest extends TestCase
      * Test if a {@link FacesException} is thrown if the specified resource bundle can not be found.
      * </p>
      * Test method for
-     * {@link org.apache.myfaces.application.ApplicationImpl#getResourceBundle(javax.faces.context.FacesContext, String)}.
+     * {@link org.apache.myfaces.application.ApplicationImpl#getResourceBundle(javax.faces.context.FacesContext, java.lang.String)}.
      */
     public void testGetResourceBundleFacesException()
     {
@@ -124,7 +124,7 @@ public class ApplicationImplTest extends TestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.application.ApplicationImpl#getResourceBundle(javax.faces.context.FacesContext, String)}.
+     * {@link org.apache.myfaces.application.ApplicationImpl#getResourceBundle(javax.faces.context.FacesContext, java.lang.String)}.
      */
     public void testGetResourceBundleWithDefaultLocale()
     {
@@ -133,7 +133,7 @@ public class ApplicationImplTest extends TestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.application.ApplicationImpl#getResourceBundle(javax.faces.context.FacesContext, String)}.
+     * {@link org.apache.myfaces.application.ApplicationImpl#getResourceBundle(javax.faces.context.FacesContext, java.lang.String)}.
      */
     public void testGetResourceBundleWithUIViewRootLocale()
     {
@@ -233,7 +233,7 @@ public class ApplicationImplTest extends TestCase
 
     /**
      * Test method for
-     * {@link javax.faces.application.Application#createConverter(Class)}.
+     * {@link javax.faces.application.Application#createConverter(java.lang.Class)}.
      */
     public void testCreateEnumConverter() throws Exception
     {

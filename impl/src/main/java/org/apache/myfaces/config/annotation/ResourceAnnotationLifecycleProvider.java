@@ -18,13 +18,12 @@
  */
 package org.apache.myfaces.config.annotation;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import javax.annotation.Resource;
-import javax.naming.Context;
 import javax.naming.NamingException;
+import javax.naming.Context;
+import javax.annotation.Resource;
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Field;
 
 // TODO @Resources
 public class ResourceAnnotationLifecycleProvider extends NoInjectionAnnotationLifecycleProvider

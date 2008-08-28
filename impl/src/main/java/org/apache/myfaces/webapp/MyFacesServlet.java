@@ -18,20 +18,14 @@
  */
 package org.apache.myfaces.webapp;
 
-import java.io.IOException;
-
-import javax.faces.webapp.FacesServlet;
-import javax.servlet.Servlet;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.shared_impl.webapp.webxml.DelegatedFacesServlet;
 import org.apache.myfaces.util.ContainerUtils;
+
+import javax.faces.webapp.FacesServlet;
+import javax.servlet.*;
+import java.io.IOException;
 
 /**
  * Derived FacesServlet that can be used for debugging purpose
