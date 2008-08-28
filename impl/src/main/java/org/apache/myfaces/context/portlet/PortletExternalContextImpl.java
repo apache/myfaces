@@ -405,7 +405,7 @@ public class PortletExternalContextImpl extends ExternalContext implements Relea
      * @param request
      */
     @Override
-    public void setRequest(java.lang.Object request)
+    public void setRequest(Object request)
     {
         this._portletRequest = (PortletRequest) request;
         this._actionRequest = isActionRequest(_portletRequest) ? (ActionRequest) request : null;
@@ -416,7 +416,7 @@ public class PortletExternalContextImpl extends ExternalContext implements Relea
      * @param encoding
      * @throws java.io.UnsupportedEncodingException
      */
-    public void setRequestCharacterEncoding(java.lang.String encoding)
+    public void setRequestCharacterEncoding(String encoding)
         throws java.io.UnsupportedEncodingException{
       
         if(_actionRequest != null)
@@ -445,7 +445,7 @@ public class PortletExternalContextImpl extends ExternalContext implements Relea
      * @param response
      */
     @Override
-    public void setResponse(java.lang.Object response)
+    public void setResponse(Object response)
     {
         this._portletResponse = (PortletResponse) response;
     }
@@ -455,7 +455,7 @@ public class PortletExternalContextImpl extends ExternalContext implements Relea
      * @param encoding
      */
     @Override
-    public void setResponseCharacterEncoding(java.lang.String encoding)
+    public void setResponseCharacterEncoding(String encoding)
     {
         // nope!
     }

@@ -17,10 +17,11 @@ package org.apache.myfaces.config.annotation;
  * limitations under the License.
  */
 
-import org.apache.shale.test.base.AbstractJsfTestCase;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.naming.NamingException;
-import java.lang.reflect.InvocationTargetException;
+
+import org.apache.shale.test.base.AbstractJsfTestCase;
 
 
 public class AnnotationProcessorTestCase extends AbstractJsfTestCase

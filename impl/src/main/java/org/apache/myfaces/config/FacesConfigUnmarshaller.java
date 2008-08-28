@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.config;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.xml.sax.SAXException;
 

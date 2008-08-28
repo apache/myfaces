@@ -18,14 +18,15 @@
  */
 package org.apache.myfaces.config.annotation;
 
-import org.apache.myfaces.shared_impl.util.ClassUtils;
+import java.lang.reflect.InvocationTargetException;
+
+import javax.faces.context.ExternalContext;
+import javax.naming.NamingException;
+import javax.servlet.ServletContext;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import javax.naming.NamingException;
-import javax.faces.context.ExternalContext;
-import javax.servlet.ServletContext;
-import java.lang.reflect.InvocationTargetException;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 public class TomcatAnnotationLifecycleProvider implements DiscoverableLifecycleProvider
 {

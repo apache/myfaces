@@ -18,9 +18,9 @@
  */
 package org.apache.myfaces.config;
 
-import javax.faces.el.VariableResolver;
-import javax.faces.el.EvaluationException;
 import javax.faces.context.FacesContext;
+import javax.faces.el.EvaluationException;
+import javax.faces.el.VariableResolver;
 
 /**
  * Represents the last Variable resolver in the chain - is added to be able to

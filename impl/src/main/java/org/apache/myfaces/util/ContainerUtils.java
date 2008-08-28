@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.util;
 
+import javax.faces.webapp.UIComponentTag;
+
 /**
  * Utilities for determining the current container and for the unified
  * expression language.

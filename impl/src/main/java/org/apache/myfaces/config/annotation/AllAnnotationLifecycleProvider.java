@@ -18,17 +18,16 @@
  */
 package org.apache.myfaces.config.annotation;
 
-import javax.naming.NamingException;
-import javax.naming.Context;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.naming.Context;
+import javax.naming.NamingException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
-
-
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Field;
 
 // TODO @EJBs
 public class AllAnnotationLifecycleProvider extends ResourceAnnotationLifecycleProvider

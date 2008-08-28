@@ -19,8 +19,8 @@
 package org.apache.myfaces.config.impl.digester.elements;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 
 
 /**

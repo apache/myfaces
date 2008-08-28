@@ -18,9 +18,10 @@
  */
 package org.apache.myfaces.application;
 
+import java.io.IOException;
+
 import javax.faces.application.StateManager;
 import javax.faces.context.FacesContext;
-import java.io.IOException;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)

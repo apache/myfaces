@@ -18,6 +18,16 @@
  */
 package org.apache.myfaces.config.impl.digester;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.faces.render.RenderKitFactory;
+
 import org.apache.myfaces.config.FacesConfigDispenser;
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
@@ -29,16 +39,6 @@ import org.apache.myfaces.config.impl.digester.elements.Factory;
 import org.apache.myfaces.config.impl.digester.elements.LocaleConfig;
 import org.apache.myfaces.config.impl.digester.elements.RenderKit;
 import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
-
-import javax.faces.render.RenderKitFactory;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>

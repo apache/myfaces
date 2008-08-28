@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import org.apache.myfaces.shared_impl.taglib.UIComponentELTagUtils;
-import org.apache.myfaces.shared_impl.util.LocaleUtils;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
@@ -27,8 +27,9 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.DateTimeConverter;
 import javax.servlet.jsp.JspException;
-import java.util.Locale;
-import java.util.TimeZone;
+
+import org.apache.myfaces.shared_impl.taglib.UIComponentELTagUtils;
+import org.apache.myfaces.shared_impl.util.LocaleUtils;
 
 
 /**

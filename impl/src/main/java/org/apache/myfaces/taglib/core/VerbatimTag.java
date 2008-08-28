@@ -18,14 +18,14 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
-import org.apache.myfaces.shared_impl.taglib.UIComponentELTagBase;
-
 import javax.el.ValueExpression;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIOutput;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyContent;
+
+import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
+import org.apache.myfaces.shared_impl.taglib.UIComponentELTagBase;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)

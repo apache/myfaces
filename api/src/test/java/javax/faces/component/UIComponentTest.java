@@ -18,19 +18,20 @@
  */
 package javax.faces.component;
 
+import static org.apache.myfaces.Assert.assertException;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.same;
+import static org.testng.Assert.assertEquals;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.el.ValueExpression;
 import javax.faces.context.FacesContext;
 
-import static org.apache.myfaces.Assert.*;
 import org.apache.myfaces.TestRunner;
-import static org.easymock.EasyMock.*;
-import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
 /**

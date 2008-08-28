@@ -18,9 +18,7 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
+import java.io.Serializable;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
@@ -34,7 +32,10 @@ import javax.faces.webapp.UIComponentELTag;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
-import java.io.Serializable;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 /**
  * @author martin.haimberger

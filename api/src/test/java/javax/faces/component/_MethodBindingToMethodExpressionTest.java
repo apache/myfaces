@@ -149,7 +149,7 @@ public class _MethodBindingToMethodExpressionTest extends TestCase
 
     /**
      * Test method for
-     * {@link javax.faces.component._MethodBindingToMethodExpression#invoke(javax.el.ELContext, java.lang.Object[])}.
+     * {@link javax.faces.component._MethodBindingToMethodExpression#invoke(javax.el.ELContext, Object[])}.
      */
     public void testInvoke()
     {
@@ -196,7 +196,7 @@ public class _MethodBindingToMethodExpressionTest extends TestCase
 
     /**
      * Test method for
-     * {@link javax.faces.component._MethodBindingToMethodExpression#restoreState(javax.faces.context.FacesContext, java.lang.Object)}.
+     * {@link javax.faces.component._MethodBindingToMethodExpression#restoreState(javax.faces.context.FacesContext, Object)}.
      * 
      * @throws Exception
      */

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
+
 import org.apache.myfaces.mock.api.Mock2ApplicationFactory;
 import org.apache.myfaces.mock.api.MockApplicationFactory;
 

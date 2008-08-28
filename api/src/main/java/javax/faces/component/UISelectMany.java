@@ -25,12 +25,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.el.ValueExpression;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.ConverterException;
 import javax.faces.el.ValueBinding;
 import javax.faces.render.Renderer;
+
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 
 /**
@@ -396,7 +398,7 @@ public class UISelectMany extends UIInput
     {
         // TODO : Setting the submitted value to null in the super class causes a bug, if set to
         // null, you'll get the following error :
-        // java.lang.NullPointerException at
+        // NullPointerException at
         // org.apache.myfaces.renderkit._SharedRendererUtils.getConvertedUISelectManyValue(_SharedRendererUtils.java:118)
         super.validate(context);
     }

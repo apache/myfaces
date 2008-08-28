@@ -18,11 +18,15 @@
  */
 package javax.faces.component;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
+import java.io.IOException;
+import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
@@ -35,15 +39,12 @@ import javax.faces.event.FacesListener;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.render.Renderer;
-import java.io.IOException;
-import java.io.Serializable;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
  * Standard implementation of the UIComponent base class; all standard JSF
@@ -65,7 +66,7 @@ import java.util.Map.Entry;
               desc = "base component when all components must inherit",
               tagClass = "javax.faces.webapp.UIComponentELTag")
 @JSFJspProperty(name = "binding" ,
-                returnType = "java.lang.String",
+                returnType = "String",
                 longDesc = "Identifies a backing bean property (of type UIComponent or appropriate subclass) to bind to this component instance. This value must be an EL expression.",
                 desc="backing bean property to bind to this component instance")
 public abstract class UIComponentBase

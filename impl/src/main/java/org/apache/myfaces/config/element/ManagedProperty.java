@@ -21,8 +21,6 @@ package org.apache.myfaces.config.element;
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 
-import org.apache.myfaces.config.element.ListEntries;
-
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)

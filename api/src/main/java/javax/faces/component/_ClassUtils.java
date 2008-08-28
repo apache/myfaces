@@ -18,16 +18,22 @@
  */
 package javax.faces.component;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
+import javax.el.ExpressionFactory;
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
-import javax.el.ExpressionFactory;
-import java.io.InputStream;
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.*;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 /**
@@ -72,16 +78,16 @@ final class _ClassUtils
         COMMON_TYPES.put("short", Short.TYPE);
         COMMON_TYPES.put("boolean", Boolean.TYPE);
         COMMON_TYPES.put("void", Void.TYPE);
-        COMMON_TYPES.put("java.lang.Object", Object.class);
-        COMMON_TYPES.put("java.lang.Boolean", Boolean.class);
-        COMMON_TYPES.put("java.lang.Byte", Byte.class);
-        COMMON_TYPES.put("java.lang.Character", Character.class);
-        COMMON_TYPES.put("java.lang.Short", Short.class);
-        COMMON_TYPES.put("java.lang.Integer", Integer.class);
-        COMMON_TYPES.put("java.lang.Long", Long.class);
-        COMMON_TYPES.put("java.lang.Float", Float.class);
-        COMMON_TYPES.put("java.lang.Double", Double.class);
-        COMMON_TYPES.put("java.lang.String", String.class);
+        COMMON_TYPES.put("Object", Object.class);
+        COMMON_TYPES.put("Boolean", Boolean.class);
+        COMMON_TYPES.put("Byte", Byte.class);
+        COMMON_TYPES.put("Character", Character.class);
+        COMMON_TYPES.put("Short", Short.class);
+        COMMON_TYPES.put("Integer", Integer.class);
+        COMMON_TYPES.put("Long", Long.class);
+        COMMON_TYPES.put("Float", Float.class);
+        COMMON_TYPES.put("Double", Double.class);
+        COMMON_TYPES.put("String", String.class);
 
         COMMON_TYPES.put("byte[]", BYTE_ARRAY_CLASS);
         COMMON_TYPES.put("char[]", CHAR_ARRAY_CLASS);
@@ -91,16 +97,16 @@ final class _ClassUtils
         COMMON_TYPES.put("long[]", LONG_ARRAY_CLASS);
         COMMON_TYPES.put("short[]", SHORT_ARRAY_CLASS);
         COMMON_TYPES.put("boolean[]", BOOLEAN_ARRAY_CLASS);
-        COMMON_TYPES.put("java.lang.Object[]", OBJECT_ARRAY_CLASS);
-        COMMON_TYPES.put("java.lang.Boolean[]", BOOLEAN_OBJECT_ARRAY_CLASS);
-        COMMON_TYPES.put("java.lang.Byte[]", BYTE_OBJECT_ARRAY_CLASS);
-        COMMON_TYPES.put("java.lang.Character[]", CHARACTER_OBJECT_ARRAY_CLASS);
-        COMMON_TYPES.put("java.lang.Short[]", SHORT_OBJECT_ARRAY_CLASS);
-        COMMON_TYPES.put("java.lang.Integer[]", INTEGER_OBJECT_ARRAY_CLASS);
-        COMMON_TYPES.put("java.lang.Long[]", LONG_OBJECT_ARRAY_CLASS);
-        COMMON_TYPES.put("java.lang.Float[]", FLOAT_OBJECT_ARRAY_CLASS);
-        COMMON_TYPES.put("java.lang.Double[]", DOUBLE_OBJECT_ARRAY_CLASS);
-        COMMON_TYPES.put("java.lang.String[]", STRING_OBJECT_ARRAY_CLASS);
+        COMMON_TYPES.put("Object[]", OBJECT_ARRAY_CLASS);
+        COMMON_TYPES.put("Boolean[]", BOOLEAN_OBJECT_ARRAY_CLASS);
+        COMMON_TYPES.put("Byte[]", BYTE_OBJECT_ARRAY_CLASS);
+        COMMON_TYPES.put("Character[]", CHARACTER_OBJECT_ARRAY_CLASS);
+        COMMON_TYPES.put("Short[]", SHORT_OBJECT_ARRAY_CLASS);
+        COMMON_TYPES.put("Integer[]", INTEGER_OBJECT_ARRAY_CLASS);
+        COMMON_TYPES.put("Long[]", LONG_OBJECT_ARRAY_CLASS);
+        COMMON_TYPES.put("Float[]", FLOAT_OBJECT_ARRAY_CLASS);
+        COMMON_TYPES.put("Double[]", DOUBLE_OBJECT_ARRAY_CLASS);
+        COMMON_TYPES.put("String[]", STRING_OBJECT_ARRAY_CLASS);
         // array of void is not a valid type
     }
 

@@ -18,21 +18,22 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.shared_impl.renderkit.html.HtmlRendererUtils;
-import org.apache.myfaces.shared_impl.renderkit.html.HtmlResponseWriterImpl;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.faces.context.ResponseStream;
 import javax.faces.context.ResponseWriter;
 import javax.faces.render.RenderKit;
 import javax.faces.render.Renderer;
 import javax.faces.render.ResponseStateManager;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Writer;
-import java.util.HashMap;
-import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.shared_impl.renderkit.html.HtmlRendererUtils;
+import org.apache.myfaces.shared_impl.renderkit.html.HtmlResponseWriterImpl;
 
 
 /**

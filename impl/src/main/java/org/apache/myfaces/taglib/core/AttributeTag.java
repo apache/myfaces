@@ -18,14 +18,14 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import javax.servlet.jsp.tagext.TagSupport;
-import javax.servlet.jsp.JspException;
-import javax.faces.webapp.UIComponentClassicTagBase;
-import javax.faces.webapp.UIComponentELTag;
+import javax.el.ELContext;
+import javax.el.ValueExpression;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.el.ValueExpression;
-import javax.el.ELContext;
+import javax.faces.webapp.UIComponentClassicTagBase;
+import javax.faces.webapp.UIComponentELTag;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.TagSupport;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)

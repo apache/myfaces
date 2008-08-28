@@ -68,7 +68,7 @@ public abstract class PropertyResolver
      *  must not be an empty string.
      * @deprecated
      */
-    public abstract Class getType(Object base, java.lang.Object property)
+    public abstract Class getType(Object base, Object property)
         throws EvaluationException, PropertyNotFoundException;
 
     /**
@@ -102,7 +102,7 @@ public abstract class PropertyResolver
      * not have the specified property.
      * @deprecated
      */
-    public abstract Object getValue(Object base, java.lang.Object property)
+    public abstract Object getValue(Object base, Object property)
         throws EvaluationException, PropertyNotFoundException;
 
     /**
@@ -114,7 +114,7 @@ public abstract class PropertyResolver
     /**
      * @deprecated
      */
-    public abstract boolean isReadOnly(Object base, java.lang.Object property)
+    public abstract boolean isReadOnly(Object base, Object property)
         throws EvaluationException, PropertyNotFoundException;
 
     /**
@@ -128,7 +128,7 @@ public abstract class PropertyResolver
      *
      * @deprecated
      */
-    public abstract void setValue(Object base, int index, java.lang.Object value)
+    public abstract void setValue(Object base, int index, Object value)
         throws EvaluationException, PropertyNotFoundException;
 
     /**
@@ -136,6 +136,6 @@ public abstract class PropertyResolver
      *
      * @deprecated
      */
-    public abstract void setValue(Object base, Object property, java.lang.Object value)
+    public abstract void setValue(Object base, Object property, Object value)
         throws EvaluationException, PropertyNotFoundException;
 }

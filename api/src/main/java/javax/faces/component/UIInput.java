@@ -640,7 +640,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * 
      * @deprecated
      */
-    @JSFProperty(stateHolder = true, returnSignature = "void", methodSignature = "javax.faces.context.FacesContext,javax.faces.component.UIComponent,java.lang.Object")
+    @JSFProperty(stateHolder = true, returnSignature = "void", methodSignature = "javax.faces.context.FacesContext,javax.faces.component.UIComponent,Object")
     public MethodBinding getValidator()
     {
         if (_validator != null)

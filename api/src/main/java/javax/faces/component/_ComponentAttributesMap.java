@@ -18,16 +18,22 @@
  */
 package javax.faces.component;
 
-import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
+
+import javax.el.ValueExpression;
+import javax.faces.FacesException;
+import javax.faces.context.FacesContext;
 
 /**
  * A custom implementation of the Map interface, where get and put calls

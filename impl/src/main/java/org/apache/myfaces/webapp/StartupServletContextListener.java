@@ -20,15 +20,15 @@ package org.apache.myfaces.webapp;
 
 import java.util.Enumeration;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.config.ManagedBeanBuilder;
-import org.apache.myfaces.util.ContainerUtils;
-
 import javax.faces.FactoryFinder;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.config.ManagedBeanBuilder;
+import org.apache.myfaces.util.ContainerUtils;
 
 /**
  * Initialise the MyFaces system.

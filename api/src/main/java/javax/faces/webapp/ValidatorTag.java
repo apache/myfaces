@@ -117,7 +117,7 @@ public class ValidatorTag
      * 
      * @deprecated
      */
-    public void setBinding(java.lang.String binding)
+    public void setBinding(String binding)
             throws javax.servlet.jsp.JspException
     {
         if (binding != null && !UIComponentTag.isValueReference(binding))

@@ -18,19 +18,19 @@
  */
 package org.apache.myfaces.config.impl;
 
-import org.apache.myfaces.shared_impl.util.ClassUtils;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import javax.faces.context.ExternalContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.jar.JarEntry;
+
+import javax.faces.context.ExternalContext;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
 
 /**
  * DOCUMENT ME!

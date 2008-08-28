@@ -19,9 +19,11 @@
 package javax.faces.context;
 
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.el.ELContext;
 import javax.faces.application.FacesMessage;
+import javax.faces.event.PhaseId;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -94,7 +96,21 @@ public abstract class FacesContext
     
     public abstract javax.faces.application.Application getApplication();
 
+    public Map<Object,Object> getAttributes()
+    {
+        // TODO: JSF 2.0 #32
+        // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
+        return null;
+    }
+
     public abstract Iterator<String> getClientIdsWithMessages();
+    
+    public PhaseId getCurrentPhaseId()
+    {
+        // TODO: JSF 2.0 #33
+        // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
+        return null;
+    }
 
     public abstract javax.faces.context.ExternalContext getExternalContext();
 
@@ -119,6 +135,18 @@ public abstract class FacesContext
     public abstract void setResponseWriter(javax.faces.context.ResponseWriter responseWriter);
 
     public abstract javax.faces.component.UIViewRoot getViewRoot();
+    
+    public boolean isPostback()
+    {
+        // TODO: JSF 2.0 #34
+        return false;
+    }
+    
+    public void setCurrentPhaseId(PhaseId currentPhaseId)
+    {
+        // TODO: JSF 2.0 #35
+        // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
+    }
 
     public abstract void setViewRoot(javax.faces.component.UIViewRoot root);
 

@@ -1,18 +1,18 @@
 package javax.faces.component;
 
 import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 
-import javax.faces.context.FacesContext;
 import javax.faces.FacesException;
+import javax.faces.context.FacesContext;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-import org.testng.Assert;
 import org.apache.myfaces.TestRunner;
 import org.easymock.EasyMock;
+import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 /**
      * Tests for

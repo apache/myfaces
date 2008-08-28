@@ -18,10 +18,9 @@
  */
 package org.apache.myfaces.config.annotation;
 
-import org.apache.commons.discovery.tools.DiscoverSingleton;
-
-
 import javax.faces.context.ExternalContext;
+
+import org.apache.commons.discovery.tools.DiscoverSingleton;
 
 
 public abstract class LifecycleProviderFactory {

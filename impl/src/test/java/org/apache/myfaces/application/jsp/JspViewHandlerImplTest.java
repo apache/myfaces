@@ -232,7 +232,7 @@ public class JspViewHandlerImplTest extends FacesTestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.application.jsp.JspViewHandlerImpl#createView(javax.faces.context.FacesContext, java.lang.String)}.
+     * {@link org.apache.myfaces.application.jsp.JspViewHandlerImpl#createView(javax.faces.context.FacesContext, String)}.
      */
     public void testCreateView()
     {
@@ -261,7 +261,7 @@ public class JspViewHandlerImplTest extends FacesTestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.application.jsp.JspViewHandlerImpl#createView(javax.faces.context.FacesContext, java.lang.String)}.
+     * {@link org.apache.myfaces.application.jsp.JspViewHandlerImpl#createView(javax.faces.context.FacesContext, String)}.
      * 
      * @throws Exception
      */
@@ -300,7 +300,7 @@ public class JspViewHandlerImplTest extends FacesTestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.application.jsp.JspViewHandlerImpl#createView(javax.faces.context.FacesContext, java.lang.String)}.
+     * {@link org.apache.myfaces.application.jsp.JspViewHandlerImpl#createView(javax.faces.context.FacesContext, String)}.
      */
     public void testCreateViewWithExistingViewRoot()
     {
@@ -331,7 +331,7 @@ public class JspViewHandlerImplTest extends FacesTestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.application.jsp.JspViewHandlerImpl#getActionURL(javax.faces.context.FacesContext, java.lang.String)}.
+     * {@link org.apache.myfaces.application.jsp.JspViewHandlerImpl#getActionURL(javax.faces.context.FacesContext, String)}.
      */
     public void testGetActionURL()
     {
@@ -340,7 +340,7 @@ public class JspViewHandlerImplTest extends FacesTestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.application.jsp.JspViewHandlerImpl#getResourceURL(javax.faces.context.FacesContext, java.lang.String)}.
+     * {@link org.apache.myfaces.application.jsp.JspViewHandlerImpl#getResourceURL(javax.faces.context.FacesContext, String)}.
      */
     public void testGetResourceURL()
     {
@@ -358,7 +358,7 @@ public class JspViewHandlerImplTest extends FacesTestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.application.jsp.JspViewHandlerImpl#restoreView(javax.faces.context.FacesContext, java.lang.String)}.
+     * {@link org.apache.myfaces.application.jsp.JspViewHandlerImpl#restoreView(javax.faces.context.FacesContext, String)}.
      */
     public void testRestoreView()
     {

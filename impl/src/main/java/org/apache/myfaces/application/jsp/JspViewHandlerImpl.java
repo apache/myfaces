@@ -18,13 +18,11 @@
  */
 package org.apache.myfaces.application.jsp;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.application.DefaultViewHandlerSupport;
-import org.apache.myfaces.application.InvalidViewIdException;
-import org.apache.myfaces.application.ViewHandlerSupport;
-import org.apache.myfaces.shared_impl.config.MyfacesConfig;
-import org.apache.myfaces.shared_impl.renderkit.html.util.JavascriptUtils;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.Iterator;
+import java.util.Locale;
 
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
@@ -44,11 +42,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.jstl.core.Config;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.Iterator;
-import java.util.Locale;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.application.DefaultViewHandlerSupport;
+import org.apache.myfaces.application.InvalidViewIdException;
+import org.apache.myfaces.application.ViewHandlerSupport;
+import org.apache.myfaces.shared_impl.config.MyfacesConfig;
+import org.apache.myfaces.shared_impl.renderkit.html.util.JavascriptUtils;
 
 /**
  * Implementation of the ViewHandler interface that knows how to use JSP pages

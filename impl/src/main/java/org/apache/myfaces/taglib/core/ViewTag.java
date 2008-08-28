@@ -18,10 +18,8 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.application.jsp.ViewResponseWrapper;
-import org.apache.myfaces.shared_impl.util.LocaleUtils;
+import java.io.IOException;
+import java.util.Locale;
 
 import javax.el.ELContext;
 import javax.el.MethodExpression;
@@ -34,8 +32,11 @@ import javax.faces.render.RenderKitFactory;
 import javax.faces.webapp.UIComponentELTag;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.jstl.core.Config;
-import java.io.IOException;
-import java.util.Locale;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.application.jsp.ViewResponseWrapper;
+import org.apache.myfaces.shared_impl.util.LocaleUtils;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)

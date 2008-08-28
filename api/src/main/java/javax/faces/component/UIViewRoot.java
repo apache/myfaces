@@ -23,6 +23,7 @@ import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,6 +33,7 @@ import javax.faces.FactoryFinder;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
+import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.FacesEvent;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
@@ -56,7 +58,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  * Specification</a> for further details.
  */
 @JSFComponent(name="f:view", bodyContent="JSP", tagClass="org.apache.myfaces.taglib.core.ViewTag")
-@JSFJspProperty(name="binding", returnType="java.lang.String", tagExcluded=true)
+@JSFJspProperty(name="binding", returnType="String", tagExcluded=true)
 public class UIViewRoot extends UIComponentBase
 {
     public static final String COMPONENT_TYPE = "javax.faces.ViewRoot";
@@ -107,6 +109,11 @@ public class UIViewRoot extends UIComponentBase
             _events = new ArrayList<FacesEvent>();
         }
         _events.add(event);
+    }
+    
+    public void processEvent(ComponentSystemEvent event)
+    {
+        // TODO: JSF 2.0 #22
     }
 
     public void processDecodes(final FacesContext context)
@@ -528,6 +535,13 @@ public class UIViewRoot extends UIComponentBase
         //return null;
     }
 
+    public List<UIComponent> getComponentResources(FacesContext context, String target)
+    {
+        // TODO: JSF 2.0 #19
+        
+        return null;
+    }
+    
     /**
      * A unique identifier for the "template" from which this view was generated.
      * <p>
@@ -539,6 +553,20 @@ public class UIViewRoot extends UIComponentBase
     {
         return _viewId;
     }
+    
+    public Map<String,Object> getViewMap()
+    {
+        // TODO: JSF 2.0 #20
+        
+        return null;
+    }
+    
+    public Map<String,Object> getViewMap(boolean create)
+    {
+        // TODO: JSF 2.0 #21
+        
+        return null;
+    }
 
     public void setViewId(String viewId)
     {
@@ -546,6 +574,16 @@ public class UIViewRoot extends UIComponentBase
         // However the TCK does not check for it, and sun's implementation
         // allows it so here we allow it too.
         this._viewId = viewId;
+    }
+    
+    public void addComponentResource(FacesContext context, UIComponent componentResource)
+    {
+        // TODO: JSF 2.0 #17
+    }
+    
+    public void addComponentResource(FacesContext context, UIComponent componentResource, String target)
+    {
+        // TODO: JSF 2.0 #18
     }
 
     /**
@@ -559,6 +597,16 @@ public class UIViewRoot extends UIComponentBase
             _phaseListeners = new ArrayList<PhaseListener>();
 
         _phaseListeners.add(phaseListener);
+    }
+    
+    public void removeComponentResource(FacesContext context, UIComponent componentResource)
+    {
+        // TODO: JSF 2.0 #22
+    }
+    
+    public void removeComponentResource(FacesContext context, UIComponent componentResource, String target)
+    {
+        // TODO: JSF 2.0 #23
     }
 
     /**

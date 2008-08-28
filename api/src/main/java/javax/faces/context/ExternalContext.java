@@ -18,6 +18,7 @@
  */
 package javax.faces.context;
 
+import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
@@ -35,6 +36,12 @@ public abstract class ExternalContext
     public static final String CLIENT_CERT_AUTH = "CLIENT_CERT";
     public static final String DIGEST_AUTH = "DIGEST";
     public static final String FORM_AUTH = "FORM";
+    
+    public void addResponseCookie(String name, String value, Map<String,Object> properties)
+    {
+        // TODO: JSF 2.0 #24
+        // VALIDATE: Should this be asbtract? Check with the EG
+    }
 
     public abstract void dispatch(String path)
             throws java.io.IOException;
@@ -54,6 +61,20 @@ public abstract class ExternalContext
     public abstract String getInitParameter(String name);
 
     public abstract Map getInitParameterMap();
+    
+    public String getMimeType(String file)
+    {
+        // TODO: JSF 2.0 #24
+        // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
+        return null;
+    }
+    
+    public String getRealPath(String path)
+    {
+        // TODO: JSF 2.0 #25
+        // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
+        return null;
+    }
 
     public abstract String getRemoteUser();
 
@@ -90,6 +111,27 @@ public abstract class ExternalContext
     public abstract Map<String, String[]> getRequestParameterValuesMap();
 
     public abstract String getRequestPathInfo();
+    
+    public String getRequestScheme()
+    {
+        // TODO: JSF 2.0 #26
+        // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
+        return null;
+    }
+
+    public String getRequestServerName()
+    {
+        // TODO: JSF 2.0 #27
+        // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
+        return null;
+    }
+
+    public int getRequestServerPort()
+    {
+        // TODO: JSF 2.0 #28
+        // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
+        return 0;
+    }
 
     public abstract String getRequestServletPath();
 
@@ -111,6 +153,13 @@ public abstract class ExternalContext
         throw new UnsupportedOperationException();
     }
 
+    public OutputStream getResponseOutputStream()
+    {
+        // TODO: JSF 2.0 #29
+        // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
+        return null;
+    }
+
     public abstract Object getSession(boolean create);
 
     public abstract Map<String, Object> getSessionMap();
@@ -122,7 +171,7 @@ public abstract class ExternalContext
      * @since JSF 1.2
      * @param request
      */
-    public void setRequest(java.lang.Object request)
+    public void setRequest(Object request)
     {
         throw new UnsupportedOperationException();
     }
@@ -133,7 +182,7 @@ public abstract class ExternalContext
      * @param encoding
      * @throws java.io.UnsupportedEncodingException
      */
-    public void setRequestCharacterEncoding(java.lang.String encoding)
+    public void setRequestCharacterEncoding(String encoding)
             throws java.io.UnsupportedEncodingException{
         
         throw new UnsupportedOperationException();
@@ -144,7 +193,7 @@ public abstract class ExternalContext
      * @since JSF 1.2
      * @param response
      */
-    public void setResponse(java.lang.Object response)
+    public void setResponse(Object response)
     {
         throw new UnsupportedOperationException();
     }
@@ -154,15 +203,27 @@ public abstract class ExternalContext
      * @since JSF 1.2
      * @param encoding
      */
-    public void setResponseCharacterEncoding(java.lang.String encoding)
+    public void setResponseCharacterEncoding(String encoding)
     {
         throw new UnsupportedOperationException();
+    }
+
+    public void setResponseContentType(String contentType)
+    {
+        // TODO: JSF 2.0 #31
+        // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
     }
     
     public String getResponseCharacterEncoding()
     {
         throw new UnsupportedOperationException(
                 "JSF 1.2 : figure out how to tell if this is a Portlet request");
+    }
+
+    public void invalidateSession()
+    {
+        // TODO: JSF 2.0 #30
+        // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
     }
     
     public abstract boolean isUserInRole(String role);

@@ -18,11 +18,11 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import org.apache.myfaces.convert.ConverterUtils;
-
 import javax.faces.validator.DoubleRangeValidator;
 import javax.faces.validator.Validator;
 import javax.servlet.jsp.JspException;
+
+import org.apache.myfaces.convert.ConverterUtils;
 
 /**
  * @author Thomas Spiegl (latest modification by $Author$)

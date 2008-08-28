@@ -21,11 +21,13 @@ package org.apache.myfaces.lifecycle;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 import javax.faces.lifecycle.Lifecycle;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

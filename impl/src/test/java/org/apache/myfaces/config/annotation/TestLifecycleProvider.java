@@ -18,8 +18,9 @@ package org.apache.myfaces.config.annotation;
  */
 
 
-import javax.naming.NamingException;
 import java.lang.reflect.InvocationTargetException;
+
+import javax.naming.NamingException;
 
 
 public class TestLifecycleProvider implements LifecycleProvider

@@ -18,15 +18,15 @@
  */
 package org.apache.myfaces.webapp;
 
+import java.lang.reflect.InvocationTargetException;
+
 import javax.servlet.ServletContextAttributeEvent;
 import javax.servlet.ServletRequestAttributeEvent;
 import javax.servlet.http.HttpSessionBindingEvent;
 
-import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import java.lang.reflect.InvocationTargetException;
+import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
 
 /**
  * @author Dennis Byrne

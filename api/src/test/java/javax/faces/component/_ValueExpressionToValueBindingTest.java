@@ -226,7 +226,7 @@ public class _ValueExpressionToValueBindingTest extends TestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.el.convert._ValueExpressionToValueBinding#setValue(javax.faces.context.FacesContext, java.lang.Object)}.
+     * {@link org.apache.myfaces.el.convert._ValueExpressionToValueBinding#setValue(javax.faces.context.FacesContext, Object)}.
      */
     public void testSetValue()
     {
@@ -240,7 +240,7 @@ public class _ValueExpressionToValueBindingTest extends TestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.el.convert._ValueExpressionToValueBinding#setValue(javax.faces.context.FacesContext, java.lang.Object)}.
+     * {@link org.apache.myfaces.el.convert._ValueExpressionToValueBinding#setValue(javax.faces.context.FacesContext, Object)}.
      */
     public void testSetValueExceptions()
     {

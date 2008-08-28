@@ -21,12 +21,28 @@ package org.apache.myfaces.config.impl.digester;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+
 import javax.faces.context.ExternalContext;
 
-import org.apache.myfaces.config.FacesConfigUnmarshaller;
-import org.apache.myfaces.config.impl.digester.elements.*;
-import org.apache.myfaces.config.impl.FacesConfigEntityResolver;
 import org.apache.commons.digester.Digester;
+import org.apache.myfaces.config.FacesConfigUnmarshaller;
+import org.apache.myfaces.config.impl.FacesConfigEntityResolver;
+import org.apache.myfaces.config.impl.digester.elements.Application;
+import org.apache.myfaces.config.impl.digester.elements.Attribute;
+import org.apache.myfaces.config.impl.digester.elements.Converter;
+import org.apache.myfaces.config.impl.digester.elements.FacesConfig;
+import org.apache.myfaces.config.impl.digester.elements.Factory;
+import org.apache.myfaces.config.impl.digester.elements.ListEntries;
+import org.apache.myfaces.config.impl.digester.elements.LocaleConfig;
+import org.apache.myfaces.config.impl.digester.elements.ManagedBean;
+import org.apache.myfaces.config.impl.digester.elements.ManagedProperty;
+import org.apache.myfaces.config.impl.digester.elements.MapEntries;
+import org.apache.myfaces.config.impl.digester.elements.NavigationCase;
+import org.apache.myfaces.config.impl.digester.elements.NavigationRule;
+import org.apache.myfaces.config.impl.digester.elements.Property;
+import org.apache.myfaces.config.impl.digester.elements.RenderKit;
+import org.apache.myfaces.config.impl.digester.elements.Renderer;
+import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 

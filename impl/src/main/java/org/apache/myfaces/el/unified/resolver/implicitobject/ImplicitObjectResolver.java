@@ -18,12 +18,17 @@
  */
 package org.apache.myfaces.el.unified.resolver.implicitobject;
 
-import javax.el.*;
 import java.beans.FeatureDescriptor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import javax.el.ELContext;
+import javax.el.ELException;
+import javax.el.ELResolver;
+import javax.el.PropertyNotFoundException;
+import javax.el.PropertyNotWritableException;
 
 /**
  * See JSF 1.2 spec sections 5.6.1.1 and 5.6.2.1

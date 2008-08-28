@@ -20,6 +20,7 @@ package org.apache.myfaces.context.portlet;
 
 import java.util.Enumeration;
 import java.util.Map;
+
 import javax.portlet.PortletContext;
 
 import org.apache.myfaces.util.AbstractAttributeMap;

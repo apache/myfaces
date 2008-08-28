@@ -73,7 +73,7 @@ public class ApplicationTest extends TestCase
 
     /**
      * Test method for
-     * {@link javax.faces.application.Application#getResourceBundle(javax.faces.context.FacesContext, java.lang.String)}.
+     * {@link javax.faces.application.Application#getResourceBundle(javax.faces.context.FacesContext, String)}.
      */
     public void testGetResourceBundle()
     {
@@ -88,7 +88,7 @@ public class ApplicationTest extends TestCase
 
     /**
      * Test method for
-     * {@link javax.faces.application.Application#createComponent(javax.el.ValueExpression, javax.faces.context.FacesContext, java.lang.String)}.
+     * {@link javax.faces.application.Application#createComponent(javax.el.ValueExpression, javax.faces.context.FacesContext, String)}.
      */
     public void testCreateComponentValueExpressionFacesContextString()
     {
@@ -159,7 +159,7 @@ public class ApplicationTest extends TestCase
 
     /**
      * Test method for
-     * {@link javax.faces.application.Application#evaluateExpressionGet(javax.faces.context.FacesContext, java.lang.String, java.lang.Class)}.
+     * {@link javax.faces.application.Application#evaluateExpressionGet(javax.faces.context.FacesContext, String, Class)}.
      */
     public void testEvaluateExpressionGet()
     {

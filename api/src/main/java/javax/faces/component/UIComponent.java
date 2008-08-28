@@ -18,6 +18,7 @@
  */
 package javax.faces.component;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -29,6 +30,11 @@ import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
+import javax.faces.event.ComponentSystemEventListener;
+import javax.faces.event.FacesEvent;
+import javax.faces.event.SystemEvent;
+import javax.faces.event.SystemEventListener;
+import javax.faces.render.Renderer;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 
@@ -53,13 +59,20 @@ public abstract class UIComponent
     public UIComponent()
     {
     }
+    
+    public static UIComponent getCurrentComponent()
+    {
+        // TODO: JSF 2.0 #11
+        
+        return null;
+    }
 
-    public abstract java.util.Map<String, Object> getAttributes();
+    public abstract Map<String, Object> getAttributes();
 
     /**
      * @deprecated Replaced by getValueExpression
      */
-    public abstract javax.faces.el.ValueBinding getValueBinding(java.lang.String name);
+    public abstract ValueBinding getValueBinding(String name);
 
     public ValueExpression getValueExpression(String name)
     {
@@ -92,8 +105,7 @@ public abstract class UIComponent
     /**
      * @deprecated Replaced by setValueExpression
      */
-    public abstract void setValueBinding(java.lang.String name,
-                                         javax.faces.el.ValueBinding binding);
+    public abstract void setValueBinding(String name, ValueBinding binding);
 
     public void setValueExpression(String name, ValueExpression expression)
     {
@@ -146,9 +158,9 @@ public abstract class UIComponent
      * @return has component been found ?
      * @throws javax.faces.FacesException
      */
-    public boolean invokeOnComponent(javax.faces.context.FacesContext context, String clientId, javax.faces.component.ContextCallback callback) throws javax.faces.FacesException
+    public boolean invokeOnComponent(FacesContext context, String clientId, javax.faces.component.ContextCallback callback) throws javax.faces.FacesException
     {
-        //java.lang.NullPointerException - if any of the arguments are null
+        //NullPointerException - if any of the arguments are null
         if(context == null || clientId == null || callback == null)
         {
             throw new NullPointerException();
@@ -175,35 +187,42 @@ public abstract class UIComponent
         return found;
     }
 
-    public abstract java.lang.String getClientId(javax.faces.context.FacesContext context);
+    public abstract String getClientId(FacesContext context);
 
-    public abstract java.lang.String getFamily();
+    public abstract String getFamily();
 
-    public abstract java.lang.String getId();
+    public abstract String getId();
+    
+    public List<SystemEventListener> getListenersForEventClass(Class<? extends SystemEvent> eventClass)
+    {
+        // TODO: JSF 2.0 #12
+        
+        return null;
+    }
 
-    public abstract void setId(java.lang.String id);
+    public abstract void setId(String id);
 
     /**
      * Returns the parent of the component.
      * Children can be added to or removed from a component even if this method returns null
      * for the child.
      */
-    public abstract javax.faces.component.UIComponent getParent();
+    public abstract UIComponent getParent();
 
     /**
      * For JSF-framework internal use only.   Don't call this method to
      * add components to the component tree.
      * Use <code>parent.getChildren().add(child)</code> instead.
      */
-    public abstract void setParent(javax.faces.component.UIComponent parent);
+    public abstract void setParent(UIComponent parent);
 
     public abstract boolean isRendered();
 
     public abstract void setRendered(boolean rendered);
 
-    public abstract java.lang.String getRendererType();
+    public abstract String getRendererType();
 
-    public abstract void setRendererType(java.lang.String rendererType);
+    public abstract void setRendererType(String rendererType);
 
     public abstract boolean getRendersChildren();
 
@@ -211,29 +230,29 @@ public abstract class UIComponent
 
     public abstract int getChildCount();
 
-    public abstract javax.faces.component.UIComponent findComponent(java.lang.String expr);
+    public abstract UIComponent findComponent(String expr);
 
-    public abstract java.util.Map<String, UIComponent> getFacets();
+    public abstract Map<String, UIComponent> getFacets();
 
-    public abstract javax.faces.component.UIComponent getFacet(java.lang.String name);
+    public abstract UIComponent getFacet(String name);
 
-    public abstract java.util.Iterator<UIComponent> getFacetsAndChildren();
+    public abstract Iterator<UIComponent> getFacetsAndChildren();
 
-    public abstract void broadcast(javax.faces.event.FacesEvent event)
+    public abstract void broadcast(FacesEvent event)
             throws AbortProcessingException;
 
-    public abstract void decode(javax.faces.context.FacesContext context);
+    public abstract void decode(FacesContext context);
 
-    public abstract void encodeBegin(javax.faces.context.FacesContext context)
-            throws java.io.IOException;
+    public abstract void encodeBegin(FacesContext context)
+            throws IOException;
 
-    public abstract void encodeChildren(javax.faces.context.FacesContext context)
-            throws java.io.IOException;
+    public abstract void encodeChildren(FacesContext context)
+            throws IOException;
 
-    public abstract void encodeEnd(javax.faces.context.FacesContext context)
-            throws java.io.IOException;
+    public abstract void encodeEnd(FacesContext context)
+            throws IOException;
 
-    public void encodeAll(javax.faces.context.FacesContext context) throws java.io.IOException
+    public void encodeAll(FacesContext context) throws IOException
     {
         if(context == null)
         {
@@ -266,26 +285,48 @@ public abstract class UIComponent
 
     protected abstract void addFacesListener(javax.faces.event.FacesListener listener);
 
-    protected abstract javax.faces.event.FacesListener[] getFacesListeners(java.lang.Class clazz);
+    protected abstract javax.faces.event.FacesListener[] getFacesListeners(Class clazz);
 
     protected abstract void removeFacesListener(javax.faces.event.FacesListener listener);
 
-    public abstract void queueEvent(javax.faces.event.FacesEvent event);
+    public abstract void queueEvent(FacesEvent event);
 
-    public abstract void processRestoreState(javax.faces.context.FacesContext context,
-                                             java.lang.Object state);
+    public abstract void processRestoreState(FacesContext context,
+                                             Object state);
 
-    public abstract void processDecodes(javax.faces.context.FacesContext context);
+    public abstract void processDecodes(FacesContext context);
 
-    public abstract void processValidators(javax.faces.context.FacesContext context);
+    public abstract void processValidators(FacesContext context);
 
-    public abstract void processUpdates(javax.faces.context.FacesContext context);
+    public abstract void processUpdates(FacesContext context);
 
-    public abstract java.lang.Object processSaveState(javax.faces.context.FacesContext context);
+    public abstract Object processSaveState(FacesContext context);
+    
+    public void subscribeToEvent(Class<? extends SystemEvent> eventClass, 
+                                 ComponentSystemEventListener componentListener)
+    {
+        // TODO: JSF 2.0 #15
+    }
 
-    protected abstract javax.faces.context.FacesContext getFacesContext();
+    public void unsubscribeToEvent(Class<? extends SystemEvent> eventClass, 
+                                   ComponentSystemEventListener componentListener)
+    {
+        // TODO: JSF 2.0 #16
+    }
 
-    protected abstract javax.faces.render.Renderer getRenderer(javax.faces.context.FacesContext context);
+    protected abstract FacesContext getFacesContext();
+
+    protected abstract Renderer getRenderer(FacesContext context);
+    
+    protected void popComponentFromEL(FacesContext context)
+    {
+        // TODO: JSF 2.0 #13
+    }
+    
+    protected void pushComponentToEL(FacesContext context)
+    {
+        // TODO: JSF 2.0 #14
+    }
 
     /**
      * @since 1.2
