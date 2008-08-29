@@ -37,6 +37,9 @@ public abstract class ExternalContext
     public static final String DIGEST_AUTH = "DIGEST";
     public static final String FORM_AUTH = "FORM";
     
+    /**
+     * @since JSF 2.0
+     */
     public void addResponseCookie(String name, String value, Map<String,Object> properties)
     {
         // TODO: JSF 2.0 #24
@@ -55,13 +58,41 @@ public abstract class ExternalContext
     public abstract Map<String, Object> getApplicationMap();
 
     public abstract String getAuthType();
+    
+    /**
+     * Returns the content length or -1 if the unknown.
+     *
+     * @since JSF 2.0
+     * @return the length or -1
+     */
+    public int getContentLength()
+    {
+        // TODO: JSF 2.0 MYFACES-1950
+        // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
+        return -1;
+    }
 
     public abstract Object getContext();
+    
+    /**
+     * Returns the name of the underlying context
+     * @since JSF 2.0
+     * @return the name or null
+     */
+    public String getContextName()
+    {
+        // TODO: JSF 2.0 MYFACES-1950
+        // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
+        return null;
+    }
 
     public abstract String getInitParameter(String name);
 
     public abstract Map getInitParameterMap();
     
+    /**
+     * @since JSF 2.0
+     */
     public String getMimeType(String file)
     {
         // TODO: JSF 2.0 #24
@@ -69,6 +100,9 @@ public abstract class ExternalContext
         return null;
     }
     
+    /**
+     * @since JSF 2.0
+     */
     public String getRealPath(String path)
     {
         // TODO: JSF 2.0 #25
@@ -112,6 +146,9 @@ public abstract class ExternalContext
 
     public abstract String getRequestPathInfo();
     
+    /**
+     * @since JSF 2.0
+     */
     public String getRequestScheme()
     {
         // TODO: JSF 2.0 #26
@@ -119,6 +156,9 @@ public abstract class ExternalContext
         return null;
     }
 
+    /**
+     * @since JSF 2.0
+     */
     public String getRequestServerName()
     {
         // TODO: JSF 2.0 #27
@@ -126,6 +166,9 @@ public abstract class ExternalContext
         return null;
     }
 
+    /**
+     * @since JSF 2.0
+     */
     public int getRequestServerPort()
     {
         // TODO: JSF 2.0 #28
@@ -153,6 +196,9 @@ public abstract class ExternalContext
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * @since JSF 2.0
+     */
     public OutputStream getResponseOutputStream()
     {
         // TODO: JSF 2.0 #29
@@ -208,6 +254,9 @@ public abstract class ExternalContext
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * @since JSF 2.0
+     */
     public void setResponseContentType(String contentType)
     {
         // TODO: JSF 2.0 #31
@@ -220,6 +269,9 @@ public abstract class ExternalContext
                 "JSF 1.2 : figure out how to tell if this is a Portlet request");
     }
 
+    /**
+     * @since JSF 2.0
+     */
     public void invalidateSession()
     {
         // TODO: JSF 2.0 #30
