@@ -278,6 +278,15 @@ public abstract class ExternalContext
         // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
     }
     
+    /**
+     * @since JSF 2.0
+     */
+    public boolean isNewSession()
+    {
+        // TODO: JSF 2.0 MYFACES-1950
+        // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
+        return false;
+    }
     public abstract boolean isUserInRole(String role);
 
     public abstract void log(String message);
