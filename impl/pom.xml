@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.apache.myfaces.core</groupId>
     <artifactId>myfaces-core-project</artifactId>
-    <version>1.2.4-SNAPSHOT</version>
+    <version>1.2.5-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.myfaces.core</groupId>
@@ -452,6 +452,6 @@
   </repositories>
 
   <properties>
-    <myfaces-shared.version>3.0.4-SNAPSHOT</myfaces-shared.version>
+    <myfaces-shared.version>3.0.5-SNAPSHOT</myfaces-shared.version>
   </properties>
 </project>
