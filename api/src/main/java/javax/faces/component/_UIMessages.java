@@ -56,7 +56,7 @@ abstract class _UIMessages extends UIComponentBase
    * @return  the new showDetail value
    */
   @JSFProperty
-  (defaultValue = "true")
+  (defaultValue = "false")
   public abstract boolean isShowDetail();
 
   /**
@@ -66,7 +66,7 @@ abstract class _UIMessages extends UIComponentBase
    * @return  the new showSummary value
    */
   @JSFProperty
-  (defaultValue = "false")
+  (defaultValue = "true")
   public abstract boolean isShowSummary();
   
 }
