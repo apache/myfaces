@@ -39,6 +39,7 @@ import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.application.Application;
 import javax.faces.application.NavigationHandler;
+import javax.faces.application.ProjectStage;
 import javax.faces.application.StateManager;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIComponent;
@@ -52,6 +53,9 @@ import javax.faces.el.ValueBinding;
 import javax.faces.el.VariableResolver;
 import javax.faces.event.ActionListener;
 import javax.faces.validator.Validator;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
@@ -121,6 +125,8 @@ public class ApplicationImpl extends Application
     private ELResolver elResolver;
 
     private ELResolverBuilder resolverBuilderForFaces;
+
+    private ProjectStage _projectStage;
 
     // ~ Constructors
     // -------------------------------------------------------------------------------
@@ -471,6 +477,82 @@ public class ApplicationImpl extends Application
 
         if (log.isTraceEnabled())
             log.trace("set PropertyResolver = " + propertyResolver.getClass().getName());
+    }
+
+    @Override
+    public ProjectStage getProjectStage()
+    {
+        // If the value has already been determined by a previous call to this method, simply return that value.
+        if (_projectStage == null)
+        {
+            String stageName = null;
+            // Look for a JNDI environment entry under the key given by the value of
+            // ProjectStage.PROJECT_STAGE_JNDI_NAME (return type of java.lang.String).
+            try
+            {
+                Context ctx = new InitialContext();
+                Object temp = ctx.lookup(ProjectStage.PROJECT_STAGE_JNDI_NAME);
+                if (temp != null)
+                {
+                    if (temp instanceof String)
+                    {
+                        stageName = (String)temp;
+                    }
+                    else
+                    {
+                        log.error("JNDI lookup for key " + ProjectStage.PROJECT_STAGE_JNDI_NAME +
+                                  " should return a java.lang.String value");
+                    }
+                }
+            }
+            catch (NamingException e)
+            {
+                // no-op
+            }
+
+            /*
+             * If found, continue with the algorithm below, otherwise, look for an entry in the initParamMap of the
+             * ExternalContext from the current FacesContext with the key ProjectStage.PROJECT_STAGE_PARAM_NAME
+             */
+            if (stageName == null)
+            {
+                FacesContext context = FacesContext.getCurrentInstance();
+                stageName = context.getExternalContext().getInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME);
+            }
+
+            // If a value is found found
+            if (stageName != null)
+            {
+                /*
+                 * see if an enum constant can be obtained by calling ProjectStage.valueOf(), passing the value from the
+                 * initParamMap. If this succeeds without exception, save the value and return it.
+                 */
+                try
+                {
+                    _projectStage = ProjectStage.valueOf(stageName);
+                    return _projectStage;
+                }
+                catch (IllegalArgumentException e)
+                {
+                    log.error("Couldn't discover the current project stage", e);
+                }
+            }
+            else
+            {
+                if (log.isInfoEnabled())
+                {
+                    log.info("Couldn't discover the current project stage, using " + ProjectStage.Production);
+                }
+            }
+
+            /* If not found, or any of the previous attempts to discover the enum constant value have failed, log a
+             * descriptive error message, assign the value as ProjectStage.Production and return it.
+             */
+            
+            _projectStage = ProjectStage.Production;
+        }
+
+        return _projectStage;
     }
 
     /**
