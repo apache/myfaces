@@ -32,7 +32,9 @@ import javax.faces.event.PhaseId;
  * @version $Revision$ $Date$
  */
 public abstract class FacesContext
-{
+{    
+    private PhaseId _currentPhaseId;
+    
     /**
      * Return the context within which all EL-expressions are evaluated.
      * <p>
@@ -78,7 +80,8 @@ public abstract class FacesContext
         // instance will never be "this", as the real original FacesContext
         // object will provide a proper implementation of this method.
         FacesContext ctx = _firstInstance.get();
-
+        
+        
         if (ctx == null)
         {
             throw new NullPointerException(FacesContext.class.getName());
@@ -107,9 +110,7 @@ public abstract class FacesContext
     
     public PhaseId getCurrentPhaseId()
     {
-        // TODO: JSF 2.0 #33
-        // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
-        return null;
+        return _currentPhaseId;
     }
 
     public abstract javax.faces.context.ExternalContext getExternalContext();
@@ -144,8 +145,7 @@ public abstract class FacesContext
     
     public void setCurrentPhaseId(PhaseId currentPhaseId)
     {
-        // TODO: JSF 2.0 #35
-        // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
+        _currentPhaseId = currentPhaseId;
     }
 
     public abstract void setViewRoot(javax.faces.component.UIViewRoot root);
