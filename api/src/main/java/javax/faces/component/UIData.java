@@ -184,6 +184,9 @@ public class UIData extends UIComponentBase implements NamingContainer
         getFacets().put(FOOTER_FACET_NAME, footer);
     }
 
+    /**
+     * @JSFFacet
+     */
     public UIComponent getFooter()
     {
         return (UIComponent) getFacets().get(FOOTER_FACET_NAME);
@@ -194,6 +197,9 @@ public class UIData extends UIComponentBase implements NamingContainer
         getFacets().put(HEADER_FACET_NAME, header);
     }
 
+    /**
+     * @JSFFacet
+     */
     public UIComponent getHeader()
     {
         return (UIComponent) getFacets().get(HEADER_FACET_NAME);
