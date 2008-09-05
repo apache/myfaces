@@ -32,6 +32,7 @@ import javax.faces.event.PhaseId;
 import javax.faces.model.*;
 import javax.servlet.jsp.jstl.sql.Result;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacet;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
@@ -95,11 +96,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  * </p>
  * see Javadoc of the <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  * for more information.
- *
- * @JSFComponent
- *   type = "javax.faces.Data"
- *   family = "javax.faces.Data"
- *   desc = "UIData"
  *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
@@ -370,6 +366,7 @@ public class UIData extends UIComponentBase
         getFacets().put(FOOTER_FACET_NAME, footer);
     }
 
+    @JSFFacet
     public UIComponent getFooter()
     {
         return (UIComponent) getFacets().get(FOOTER_FACET_NAME);
@@ -380,6 +377,7 @@ public class UIData extends UIComponentBase
         getFacets().put(HEADER_FACET_NAME, header);
     }
 
+    @JSFFacet
     public UIComponent getHeader()
     {
         return (UIComponent) getFacets().get(HEADER_FACET_NAME);
