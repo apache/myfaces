@@ -29,7 +29,7 @@ import javax.faces.el.PropertyResolver;
  *
  * @author Stan Silvert
  */
-public class NullPropertyResolver extends PropertyResolver {
+public final class NullPropertyResolver extends PropertyResolver {
     
     /** Creates a new instance of NullPropertyResolver */
     public NullPropertyResolver() {

@@ -30,7 +30,7 @@ import javax.faces.el.PropertyResolver;
  * @version $Revision$ $Date$
  */
 @SuppressWarnings("deprecation")
-public class DefaultPropertyResolver extends PropertyResolver
+public final class DefaultPropertyResolver extends PropertyResolver
 {
     private void updatePropertyResolved()
     {

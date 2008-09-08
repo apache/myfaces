@@ -38,7 +38,7 @@ import org.apache.myfaces.config.RuntimeConfig;
  *
  * @author Stan Silvert
  */
-public class ResourceBundleResolver extends ELResolver {
+public final class ResourceBundleResolver extends ELResolver {
     
     /**
      * RuntimeConfig is instantiated once per servlet and never changes--we can
@@ -50,28 +50,28 @@ public class ResourceBundleResolver extends ELResolver {
     public ResourceBundleResolver() {
     }
 
-    public void setValue(ELContext context, Object base, Object property, Object value) 
+    public void setValue(final ELContext context, final Object base, final Object property, final Object value)
         throws NullPointerException, PropertyNotFoundException, PropertyNotWritableException, ELException {
         
         if ((base == null) && (property == null)) throw new PropertyNotFoundException();
 
         if (!(property instanceof String)) return;
         
-        ResourceBundle bundle = getResourceBundle(context, (String)property);
+        final ResourceBundle bundle = getResourceBundle(context, (String)property);
         
         if (bundle != null) {
             throw new PropertyNotWritableException("ResourceBundles are read-only");
         }
     }
 
-    public boolean isReadOnly(ELContext context, Object base, Object property) 
+    public boolean isReadOnly(final ELContext context, final Object base, final Object property)
         throws NullPointerException, PropertyNotFoundException, ELException {
         
         if (base != null) return false;
         if (property == null) throw new PropertyNotFoundException();
         if (!(property instanceof String)) return false;
         
-        ResourceBundle bundle = getResourceBundle(context, (String)property);
+        final ResourceBundle bundle = getResourceBundle(context, (String)property);
         
         if (bundle != null) {
             context.setPropertyResolved(true);
@@ -81,14 +81,14 @@ public class ResourceBundleResolver extends ELResolver {
         return false;
     }
 
-    public Object getValue(ELContext context, Object base, Object property) 
+    public Object getValue(final ELContext context, final Object base, final Object property)
         throws NullPointerException, PropertyNotFoundException, ELException {
         
         if (base != null) return null;
         if (property == null) throw new PropertyNotFoundException();
         if (!(property instanceof String)) return null;
         
-        ResourceBundle bundle = getResourceBundle(context, (String)property);
+        final ResourceBundle bundle = getResourceBundle(context, (String)property);
         
         if (bundle != null) {
             context.setPropertyResolved(true);
@@ -98,14 +98,14 @@ public class ResourceBundleResolver extends ELResolver {
         return null;
     }
     
-    public Class<?> getType(ELContext context, Object base, Object property) 
+    public Class<?> getType(final ELContext context, final Object base, final Object property)
         throws NullPointerException, PropertyNotFoundException, ELException {
         
         if (base != null) return null;
         if (property == null) throw new PropertyNotFoundException();
         if (!(property instanceof String)) return null;
         
-        ResourceBundle bundle = getResourceBundle(context, (String)property);
+        final ResourceBundle bundle = getResourceBundle(context, (String)property);
         
         if (bundle != null) {
             context.setPropertyResolved(true);
@@ -115,13 +115,13 @@ public class ResourceBundleResolver extends ELResolver {
         return null;
     }
 
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(final ELContext context, final Object base) {
        
         if (base != null) return null;
         
-        ArrayList<FeatureDescriptor> descriptors = new ArrayList<FeatureDescriptor>();
+        final ArrayList<FeatureDescriptor> descriptors = new ArrayList<FeatureDescriptor>();
         
-        Map<String, org.apache.myfaces.config.impl.digester.elements.ResourceBundle> resourceBundles = runtimeConfig(context).getResourceBundles();
+        final Map<String, org.apache.myfaces.config.impl.digester.elements.ResourceBundle> resourceBundles = runtimeConfig(context).getResourceBundles();
         
         for (org.apache.myfaces.config.impl.digester.elements.ResourceBundle resourceBundle : resourceBundles.values()) {
             descriptors.add(makeDescriptor(resourceBundle));
@@ -130,7 +130,7 @@ public class ResourceBundleResolver extends ELResolver {
         return descriptors.iterator();
     }
 
-    public Class<?> getCommonPropertyType(ELContext context, Object base) {
+    public Class<?> getCommonPropertyType(final ELContext context, final Object base) {
         
         if (base != null) return null;
         
@@ -138,14 +138,14 @@ public class ResourceBundleResolver extends ELResolver {
     }
     
     // get the FacesContext from the ELContext
-    private FacesContext facesContext(ELContext context) {
+    private static FacesContext facesContext(final ELContext context) {
         return (FacesContext)context.getContext(FacesContext.class);
     }
 
-    private ResourceBundle getResourceBundle(ELContext context, String property) {
-        FacesContext facesContext = facesContext(context);
+    private static ResourceBundle getResourceBundle(final ELContext context, final String property) {
+        final FacesContext facesContext = facesContext(context);
         if (facesContext != null) {
-            Application application = facesContext.getApplication();
+            final Application application = facesContext.getApplication();
             return application.getResourceBundle(facesContext, property);
         }
         
@@ -153,7 +153,7 @@ public class ResourceBundleResolver extends ELResolver {
     }
     
     protected RuntimeConfig runtimeConfig(ELContext context) {
-        FacesContext facesContext = facesContext(context);
+        final FacesContext facesContext = facesContext(context);
         
         // application-level singleton - we can safely cache this
         if (this.runtimeConfig == null) {
@@ -163,8 +163,8 @@ public class ResourceBundleResolver extends ELResolver {
         return runtimeConfig;
     }
 
-    private FeatureDescriptor makeDescriptor(org.apache.myfaces.config.impl.digester.elements.ResourceBundle bundle) {
-        FeatureDescriptor fd = new FeatureDescriptor();
+    private static FeatureDescriptor makeDescriptor(org.apache.myfaces.config.impl.digester.elements.ResourceBundle bundle) {
+        final FeatureDescriptor fd = new FeatureDescriptor();
         fd.setValue(ELResolver.RESOLVABLE_AT_DESIGN_TIME, Boolean.TRUE);
         fd.setName(bundle.getVar());
         fd.setDisplayName(bundle.getDisplayName());

@@ -139,38 +139,39 @@ public class HtmlRenderKitImpl
 
     public ResponseStream createResponseStream(OutputStream outputStream)
     {
-        final OutputStream output = outputStream;
+        return new MyFacesResponseStream(outputStream);       
+    }
 
-        return new ResponseStream()
+    private static class MyFacesResponseStream extends ResponseStream {
+        private OutputStream output;
+
+        public MyFacesResponseStream(OutputStream output) {
+            this.output = output;
+        }
+
+        public void write(int b) throws IOException
         {
-            public void write(int b) throws IOException
-            {
-                output.write(b);
-            }
+            output.write(b);
+        }
 
+        public void write(byte b[]) throws IOException
+        {
+            output.write(b);
+        }
 
-            public void write(byte b[]) throws IOException
-            {
-                output.write(b);
-            }
+        public void write(byte b[], int off, int len) throws IOException
+        {
+            output.write(b, off, len);
+        }
 
+        public void flush() throws IOException
+        {
+            output.flush();
+        }
 
-            public void write(byte b[], int off, int len) throws IOException
-            {
-                output.write(b, off, len);
-            }
-
-
-            public void flush() throws IOException
-            {
-                output.flush();
-            }
-
-
-            public void close() throws IOException
-            {
-                output.close();
-            }
-        };
+        public void close() throws IOException
+        {
+            output.close();
+        }
     }
 }

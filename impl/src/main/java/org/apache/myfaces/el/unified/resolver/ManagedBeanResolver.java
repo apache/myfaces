@@ -117,7 +117,7 @@ public class ManagedBeanResolver extends ELResolver {
     public ManagedBeanResolver() {
     }
 
-    public void setValue(ELContext context, Object base, Object property, Object value) 
+    public void setValue(final ELContext context, final Object base, final Object property, final Object value)
         throws NullPointerException, PropertyNotFoundException, PropertyNotWritableException, ELException {
         
         if ( (base == null) && (property == null)) {
@@ -126,7 +126,7 @@ public class ManagedBeanResolver extends ELResolver {
         
     }
 
-    public boolean isReadOnly(ELContext context, Object base, Object property) 
+    public boolean isReadOnly(final ELContext context, final Object base, final Object property)
         throws NullPointerException, PropertyNotFoundException, ELException {
         
        if ( (base == null) && (property == null)) {
@@ -136,7 +136,7 @@ public class ManagedBeanResolver extends ELResolver {
         return false;
     }
 
-    public Object getValue(ELContext context, Object base, Object property) 
+    public Object getValue(final ELContext context, final Object base, final Object property)
         throws NullPointerException, PropertyNotFoundException, ELException {
         
         if (base != null) return null;
@@ -145,7 +145,7 @@ public class ManagedBeanResolver extends ELResolver {
             throw new PropertyNotFoundException();
         }
         
-        ExternalContext extContext = externalContext(context);
+        final ExternalContext extContext = externalContext(context);
         
         if (extContext == null) return null;
         if (extContext.getRequestMap().containsKey(property)) return null;
@@ -154,9 +154,9 @@ public class ManagedBeanResolver extends ELResolver {
         
         if ( !(property instanceof String) ) return null;
         
-        String strProperty = (String)property;
+        final String strProperty = (String)property;
         
-        ManagedBean managedBean = runtimeConfig(context).getManagedBean(strProperty);
+        final ManagedBean managedBean = runtimeConfig(context).getManagedBean(strProperty);
         Object beanInstance = null;
         if (managedBean != null) {
             FacesContext facesContext = facesContext(context);
@@ -172,12 +172,12 @@ public class ManagedBeanResolver extends ELResolver {
     // scope and return null.
     //
     // adapted from Manfred's JSF 1.1 VariableResolverImpl
-    private Object createManagedBean(ManagedBean managedBean,
-                                  FacesContext facesContext) 
+    private Object createManagedBean(final ManagedBean managedBean,
+                                  final FacesContext facesContext)
         throws ELException {
         
-        ExternalContext extContext = facesContext.getExternalContext();
-        Map requestMap = extContext.getRequestMap();
+        final ExternalContext extContext = facesContext.getExternalContext();
+        final Map requestMap = extContext.getRequestMap();
         
         // check for cyclic references
         List beansUnderConstruction = (List)requestMap.get(BEANS_UNDER_CONSTRUCTION);
@@ -186,7 +186,7 @@ public class ManagedBeanResolver extends ELResolver {
             requestMap.put(BEANS_UNDER_CONSTRUCTION, beansUnderConstruction);
         }
 
-        String managedBeanName = managedBean.getManagedBeanName();
+        final String managedBeanName = managedBean.getManagedBeanName();
         if (beansUnderConstruction.contains(managedBeanName)) {
             throw new ELException( "Detected cyclic reference to managedBean " + managedBeanName);
         }
@@ -205,7 +205,7 @@ public class ManagedBeanResolver extends ELResolver {
         return obj;
     }
     
-    private void putInScope(ManagedBean managedBean, ExternalContext extContext, Object obj) {
+    private void putInScope(final ManagedBean managedBean, final ExternalContext extContext, final Object obj) {
 
         final String managedBeanName = managedBean.getManagedBeanName();
         
@@ -214,10 +214,10 @@ public class ManagedBeanResolver extends ELResolver {
                 log.debug("Variable '" + managedBeanName + "' could not be resolved.");
         } else {
 
-            String scopeKey = managedBean.getManagedBeanScope();
+            final String scopeKey = managedBean.getManagedBeanScope();
 
             // find the scope handler object
-            Scope scope = (Scope) _scopes.get(scopeKey);
+            final Scope scope = (Scope) _scopes.get(scopeKey);
             if (scope == null) {
                 log.error("Managed bean '" + managedBeanName + "' has illegal scope: " + scopeKey);
             } else {
@@ -228,17 +228,17 @@ public class ManagedBeanResolver extends ELResolver {
     }
     
     // get the FacesContext from the ELContext
-    private FacesContext facesContext(ELContext context) {
+    private static FacesContext facesContext(final ELContext context) {
         return (FacesContext)context.getContext(FacesContext.class);
     }
     
-    private ExternalContext externalContext(ELContext context) {
-        FacesContext facesContext = facesContext(context);
+    private static ExternalContext externalContext(final ELContext context) {
+        final FacesContext facesContext = facesContext(context);
 
         return facesContext != null ? facesContext.getExternalContext() : null;
     }
 
-    public Class<?> getType(ELContext context, Object base, Object property) 
+    public Class<?> getType(final ELContext context, final Object base, final Object property)
         throws NullPointerException, PropertyNotFoundException, ELException {
         
         if ( (base == null) && (property == null)) {
@@ -248,22 +248,22 @@ public class ManagedBeanResolver extends ELResolver {
         return null;
     }
 
-    public Iterator getFeatureDescriptors(ELContext context, Object base) {
+    public Iterator getFeatureDescriptors(final ELContext context, final Object base) {
         
         if (base != null) return null;
         
-        ArrayList<FeatureDescriptor> descriptors = new ArrayList<FeatureDescriptor>();
+        final ArrayList<FeatureDescriptor> descriptors = new ArrayList<FeatureDescriptor>();
         
-        Map<String, ManagedBean> managedBeans = runtimeConfig(context).getManagedBeans();
-        for (String beanName : managedBeans.keySet()) {
-            descriptors.add(makeDescriptor(beanName, managedBeans.get(beanName)));
+        final Map<String, ManagedBean> managedBeans = runtimeConfig(context).getManagedBeans();
+        for (Map.Entry<String, ManagedBean> managedBean : managedBeans.entrySet()) {
+            descriptors.add(makeDescriptor(managedBean.getKey(), managedBean.getValue()));
         }
         
         return descriptors.iterator();
     }
     
-    private FeatureDescriptor makeDescriptor(String beanName, ManagedBean managedBean) {
-        FeatureDescriptor fd = new FeatureDescriptor();
+    private static FeatureDescriptor makeDescriptor(final String beanName, final ManagedBean managedBean) {
+        final FeatureDescriptor fd = new FeatureDescriptor();
         fd.setValue(ELResolver.RESOLVABLE_AT_DESIGN_TIME, Boolean.TRUE);
         fd.setValue(ELResolver.TYPE, managedBean.getManagedBeanClass());
         fd.setName(beanName);
@@ -275,8 +275,8 @@ public class ManagedBeanResolver extends ELResolver {
         return fd;
     }
 
-    protected RuntimeConfig runtimeConfig(ELContext context) {
-        FacesContext facesContext = facesContext(context);
+    protected RuntimeConfig runtimeConfig(final ELContext context) {
+        final FacesContext facesContext = facesContext(context);
         
         // application-level singleton - we can safely cache this
         if (this.runtimeConfig == null) {
@@ -286,7 +286,7 @@ public class ManagedBeanResolver extends ELResolver {
         return runtimeConfig;
     }
     
-    public Class<?> getCommonPropertyType(ELContext context, Object base) {
+    public Class<?> getCommonPropertyType(final ELContext context, final Object base) {
         
         if (base != null) return null;
         

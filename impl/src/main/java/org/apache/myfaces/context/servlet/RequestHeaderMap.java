@@ -32,30 +32,30 @@ import org.apache.myfaces.util.AbstractAttributeMap;
  * @author Anton Koinov (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class RequestHeaderMap extends AbstractAttributeMap<String>
+public final class RequestHeaderMap extends AbstractAttributeMap<String>
 {
     private final HttpServletRequest _httpServletRequest;
 
-    RequestHeaderMap(HttpServletRequest httpServletRequest)
+    RequestHeaderMap(final HttpServletRequest httpServletRequest)
     {
         _httpServletRequest = httpServletRequest;
     }
 
     @Override
-    protected String getAttribute(String key)
+    protected String getAttribute(final String key)
     {
         return _httpServletRequest.getHeader(key);
     }
 
     @Override
-    protected void setAttribute(String key, String value)
+    protected void setAttribute(final String key, final String value)
     {
         throw new UnsupportedOperationException(
             "Cannot set HttpServletRequest Header");
     }
 
     @Override
-    protected void removeAttribute(String key)
+    protected void removeAttribute(final String key)
     {
         throw new UnsupportedOperationException(
             "Cannot remove HttpServletRequest Header");
@@ -69,7 +69,7 @@ public class RequestHeaderMap extends AbstractAttributeMap<String>
     }
 
     @Override
-    public void putAll(Map t)
+    public void putAll(final Map t)
     {
         throw new UnsupportedOperationException();
     }

@@ -645,8 +645,8 @@ public class JspViewHandlerImpl extends ViewHandler
          * <code>beginIndex</code> to index <code>endIndex - 1</code>.
          *
          * @param contentBuffer  the <code>StringBuffer</code> to copy content from
-         * @param begin  the beginning index, inclusive.
-         * @param end  the ending index, exclusive
+         * @param beginIndex  the beginning index, inclusive.
+         * @param endIndex  the ending index, exclusive
          * @param writer  the <code>Writer</code> to write to
          * @throws IOException  if an error occurs writing to specified <code>Writer</code>
          */

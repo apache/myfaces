@@ -601,11 +601,11 @@ public class JspStateManagerImpl
             Integer sequence = (Integer) map.get(RendererUtils.SEQUENCE_PARAM);
             if(sequence == null || sequence.intValue() == Integer.MAX_VALUE)
             {
-                sequence = new Integer(1);
+                sequence = Integer.valueOf(1);
             }
             else
             {
-                sequence = new Integer(sequence.intValue() + 1);
+                sequence = Integer.valueOf(sequence.intValue() + 1);
             }
             map.put(RendererUtils.SEQUENCE_PARAM, sequence);
             externalContext.getRequestMap().put(RendererUtils.SEQUENCE_PARAM, sequence);

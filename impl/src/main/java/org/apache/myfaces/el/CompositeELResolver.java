@@ -37,7 +37,7 @@ public class CompositeELResolver extends javax.el.CompositeELResolver
     private Collection<ELResolver> _elResolvers = Collections.EMPTY_LIST;
 
     @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base)
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(final ELContext context, final Object base)
     {
         return new CompositeIterator(context, base, _elResolvers.iterator());
     }
@@ -45,7 +45,7 @@ public class CompositeELResolver extends javax.el.CompositeELResolver
     /**
      * @param elResolver
      */
-    public void add(ELResolver elResolver)
+    public final void add(final ELResolver elResolver)
     {
         super.add(elResolver);
 
@@ -67,7 +67,7 @@ public class CompositeELResolver extends javax.el.CompositeELResolver
 
         private Iterator<FeatureDescriptor> _currentFDIter;
 
-        public CompositeIterator(ELContext context, Object base, Iterator<ELResolver> elResolvers)
+        public CompositeIterator(final ELContext context, final Object base, final Iterator<ELResolver> elResolvers)
         {
             _context = context;
             _base = base;

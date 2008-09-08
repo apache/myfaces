@@ -30,30 +30,30 @@ import org.apache.myfaces.util.AbstractAttributeMap;
  * @author Anton Koinov (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class RequestParameterValuesMap extends AbstractAttributeMap<String[]>
+public final class RequestParameterValuesMap extends AbstractAttributeMap<String[]>
 {
     private final ServletRequest _servletRequest;
 
-    RequestParameterValuesMap(ServletRequest servletRequest)
+    RequestParameterValuesMap(final ServletRequest servletRequest)
     {
         _servletRequest = servletRequest;
     }
 
     @Override
-    protected String[] getAttribute(String key)
+    protected String[] getAttribute(final String key)
     {
         return _servletRequest.getParameterValues(key);
     }
 
     @Override
-    protected void setAttribute(String key, String[] value)
+    protected void setAttribute(final String key, final String[] value)
     {
         throw new UnsupportedOperationException(
             "Cannot set ServletRequest ParameterValues");
     }
 
     @Override
-    protected void removeAttribute(String key)
+    protected void removeAttribute(final String key)
     {
         throw new UnsupportedOperationException(
             "Cannot remove ServletRequest ParameterValues");

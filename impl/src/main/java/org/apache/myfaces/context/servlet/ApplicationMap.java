@@ -32,26 +32,26 @@ import org.apache.myfaces.util.AbstractAttributeMap;
  * @author Anton Koinov (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ApplicationMap extends AbstractAttributeMap<Object>
+public final class ApplicationMap extends AbstractAttributeMap<Object>
 {
     final ServletContext _servletContext;
 
-    ApplicationMap(ServletContext servletContext)
+    ApplicationMap(final ServletContext servletContext)
     {
         _servletContext = servletContext;
     }
 
-    protected Object getAttribute(String key)
+    protected Object getAttribute(final String key)
     {
         return _servletContext.getAttribute(key);
     }
 
-    protected void setAttribute(String key, Object value)
+    protected void setAttribute(final String key, final Object value)
     {
         _servletContext.setAttribute(key, value);
     }
 
-    protected void removeAttribute(String key)
+    protected void removeAttribute(final String key)
     {
         _servletContext.removeAttribute(key);
     }
@@ -63,7 +63,7 @@ public class ApplicationMap extends AbstractAttributeMap<Object>
     }
 
 
-    public void putAll(Map t)
+    public void putAll(final Map t)
     {
         throw new UnsupportedOperationException();
     }

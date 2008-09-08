@@ -158,7 +158,7 @@ public class ApplicationImpl extends Application
         return initializingRuntimeConfig.get();
     }
 
-    ApplicationImpl(RuntimeConfig runtimeConfig)
+    ApplicationImpl(final RuntimeConfig runtimeConfig)
     {
         if (runtimeConfig == null)
         {
@@ -187,7 +187,7 @@ public class ApplicationImpl extends Application
     // ------------------------------------------------------------------------------------
 
     @Override
-    public void addELResolver(ELResolver resolver)
+    public final void addELResolver(final ELResolver resolver)
     {
         if (FacesContext.getCurrentInstance() != null)
         {
@@ -200,7 +200,7 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public ELResolver getELResolver()
+    public final ELResolver getELResolver()
     {
         // we don't need synchronization here since it is ok to have multiple instances of the elresolver
         if (elResolver == null)
@@ -212,12 +212,12 @@ public class ApplicationImpl extends Application
 
     private ELResolver createFacesResolver()
     {
-        CompositeELResolver resolver = new FacesCompositeELResolver(Scope.Faces);
+        final CompositeELResolver resolver = new FacesCompositeELResolver(Scope.Faces);
         getResolverBuilderForFaces().build(resolver);
         return resolver;
     }
 
-    protected ELResolverBuilder getResolverBuilderForFaces()
+    protected final ELResolverBuilder getResolverBuilderForFaces()
     {
         if (resolverBuilderForFaces == null)
         {
@@ -226,20 +226,20 @@ public class ApplicationImpl extends Application
         return resolverBuilderForFaces;
     }
 
-    public void setResolverBuilderForFaces(ELResolverBuilder factory)
+    public final void setResolverBuilderForFaces(final ELResolverBuilder factory)
     {
         resolverBuilderForFaces = factory;
     }
 
     @Override
-    public java.util.ResourceBundle getResourceBundle(FacesContext facesContext, String name) throws FacesException,
+    public final java.util.ResourceBundle getResourceBundle(final FacesContext facesContext, final String name) throws FacesException,
             NullPointerException
     {
 
         checkNull(facesContext, "facesContext");
         checkNull(name, "name");
 
-        String bundleName = getBundleName(facesContext, name);
+        final String bundleName = getBundleName(facesContext, name);
 
         if (bundleName == null)
         {
@@ -248,7 +248,7 @@ public class ApplicationImpl extends Application
 
         Locale locale = Locale.getDefault();
 
-        UIViewRoot viewRoot = facesContext.getViewRoot();
+        final UIViewRoot viewRoot = facesContext.getViewRoot();
         if (viewRoot != null && viewRoot.getLocale() != null)
         {
             locale = viewRoot.getLocale();
@@ -264,47 +264,47 @@ public class ApplicationImpl extends Application
         }
     }
 
-    ClassLoader getClassLoader()
+    private ClassLoader getClassLoader()
     {
         return Thread.currentThread().getContextClassLoader();
     }
 
-    String getBundleName(FacesContext facesContext, String name)
+    String getBundleName(final FacesContext facesContext, final String name)
     {
         ResourceBundle bundle = getRuntimeConfig(facesContext).getResourceBundle(name);
         return bundle != null ? bundle.getBaseName() : null;
     }
 
-    java.util.ResourceBundle getResourceBundle(String name, Locale locale, ClassLoader loader)
+    java.util.ResourceBundle getResourceBundle(final String name, final Locale locale, final ClassLoader loader)
             throws MissingResourceException
     {
         return java.util.ResourceBundle.getBundle(name, locale, loader);
     }
 
-    RuntimeConfig getRuntimeConfig(FacesContext facesContext)
+    final RuntimeConfig getRuntimeConfig(final FacesContext facesContext)
     {
         return RuntimeConfig.getCurrentInstance(facesContext.getExternalContext());
     }
 
-    FacesContext getFaceContext()
+    final FacesContext getFaceContext()
     {
         return FacesContext.getCurrentInstance();
     }
 
     @Override
-    public UIComponent createComponent(ValueExpression componentExpression, FacesContext facesContext,
-            String componentType) throws FacesException, NullPointerException
+    public final UIComponent createComponent(final ValueExpression componentExpression, final FacesContext facesContext,
+            final String componentType) throws FacesException, NullPointerException
     {
 
         checkNull(componentExpression, "componentExpression");
         checkNull(facesContext, "facesContext");
         checkNull(componentType, "componentType");
 
-        ELContext elContext = facesContext.getELContext();
+        final ELContext elContext = facesContext.getELContext();
 
         try
         {
-            Object retVal = componentExpression.getValue(elContext);
+            final Object retVal = componentExpression.getValue(elContext);
 
             UIComponent createdComponent;
 
@@ -331,20 +331,20 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public ExpressionFactory getExpressionFactory()
+    public final ExpressionFactory getExpressionFactory()
     {
         return _runtimeConfig.getExpressionFactory();
     }
 
     @Override
-    public Object evaluateExpressionGet(FacesContext context, String expression, Class expectedType) throws ELException
+    public final Object evaluateExpressionGet(final FacesContext context, final String expression, final Class expectedType) throws ELException
     {
         ELContext elContext = context.getELContext();
         return getExpressionFactory().createValueExpression(elContext, expression, expectedType).getValue(elContext);
     }
 
     @Override
-    public void addELContextListener(ELContextListener listener)
+    public final void addELContextListener(final ELContextListener listener)
     {
 
         synchronized (_elContextListeners)
@@ -354,7 +354,7 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public void removeELContextListener(ELContextListener listener)
+    public final void removeELContextListener(final ELContextListener listener)
     {
         synchronized (_elContextListeners)
         {
@@ -363,16 +363,16 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public ELContextListener[] getELContextListeners()
+    public final ELContextListener[] getELContextListeners()
     {
         // this gets called on every request, so I can't afford to synchronize
         // I just have to trust that toArray() with do the right thing if the
         // list is changing (not likely)
-        return _elContextListeners.toArray(new ELContextListener[0]);
+        return _elContextListeners.toArray(new ELContextListener[_elContextListeners.size()]);
     }
 
     @Override
-    public void setActionListener(ActionListener actionListener)
+    public final void setActionListener(final ActionListener actionListener)
     {
         checkNull(actionListener, "actionListener");
 
@@ -382,31 +382,31 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public ActionListener getActionListener()
+    public final ActionListener getActionListener()
     {
         return _actionListener;
     }
 
     @Override
-    public Iterator<String> getComponentTypes()
+    public final Iterator<String> getComponentTypes()
     {
         return _componentClassMap.keySet().iterator();
     }
 
     @Override
-    public Iterator<String> getConverterIds()
+    public final Iterator<String> getConverterIds()
     {
         return _converterIdToClassMap.keySet().iterator();
     }
 
     @Override
-    public Iterator<Class> getConverterTypes()
+    public final Iterator<Class> getConverterTypes()
     {
         return _converterClassNameToClassMap.keySet().iterator();
     }
 
     @Override
-    public void setDefaultLocale(Locale locale)
+    public final void setDefaultLocale(final Locale locale)
     {
         checkNull(locale, "locale");
 
@@ -416,13 +416,13 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public Locale getDefaultLocale()
+    public final Locale getDefaultLocale()
     {
         return _defaultLocale;
     }
 
     @Override
-    public void setMessageBundle(String messageBundle)
+    public final void setMessageBundle(final String messageBundle)
     {
         checkNull(messageBundle, "messageBundle");
 
@@ -432,13 +432,13 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public String getMessageBundle()
+    public final String getMessageBundle()
     {
         return _messageBundle;
     }
 
     @Override
-    public void setNavigationHandler(NavigationHandler navigationHandler)
+    public final void setNavigationHandler(final NavigationHandler navigationHandler)
     {
         checkNull(navigationHandler, "navigationHandler");
 
@@ -448,7 +448,7 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public NavigationHandler getNavigationHandler()
+    public final NavigationHandler getNavigationHandler()
     {
         return _navigationHandler;
     }
@@ -458,7 +458,7 @@ public class ApplicationImpl extends Application
      */
     @Deprecated
     @Override
-    public void setPropertyResolver(PropertyResolver propertyResolver)
+    public final void setPropertyResolver(final PropertyResolver propertyResolver)
     {
         checkNull(propertyResolver, "propertyResolver");
 
@@ -478,13 +478,13 @@ public class ApplicationImpl extends Application
      */
     @Deprecated
     @Override
-    public PropertyResolver getPropertyResolver()
+    public final PropertyResolver getPropertyResolver()
     {
         return PROPERTYRESOLVER;
     }
 
     @Override
-    public void setSupportedLocales(Collection<Locale> locales)
+    public final void setSupportedLocales(final Collection<Locale> locales)
     {
         checkNull(locales, "locales");
 
@@ -494,13 +494,13 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public Iterator<Locale> getSupportedLocales()
+    public final Iterator<Locale> getSupportedLocales()
     {
         return _supportedLocales.iterator();
     }
 
     @Override
-    public Iterator<String> getValidatorIds()
+    public final Iterator<String> getValidatorIds()
     {
         return _validatorClassMap.keySet().iterator();
     }
@@ -510,7 +510,7 @@ public class ApplicationImpl extends Application
      */
     @Deprecated
     @Override
-    public void setVariableResolver(VariableResolver variableResolver)
+    public final void setVariableResolver(final VariableResolver variableResolver)
     {
         checkNull(variableResolver, "variableResolver");
 
@@ -530,13 +530,13 @@ public class ApplicationImpl extends Application
      */
     @Deprecated
     @Override
-    public VariableResolver getVariableResolver()
+    public final VariableResolver getVariableResolver()
     {
         return VARIABLERESOLVER;
     }
 
     @Override
-    public void setViewHandler(ViewHandler viewHandler)
+    public final void setViewHandler(final ViewHandler viewHandler)
     {
         checkNull(viewHandler, "viewHandler");
 
@@ -546,13 +546,13 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public ViewHandler getViewHandler()
+    public final ViewHandler getViewHandler()
     {
         return _viewHandler;
     }
 
     @Override
-    public void addComponent(String componentType, String componentClassName)
+    public final void addComponent(final String componentType, final String componentClassName)
     {
         checkNull(componentType, "componentType");
         checkEmpty(componentType, "componentType");
@@ -572,7 +572,7 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public void addConverter(String converterId, String converterClass)
+    public final void addConverter(final String converterId, final String converterClass)
     {
         checkNull(converterId, "converterId");
         checkEmpty(converterId, "converterId");
@@ -592,7 +592,7 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public void addConverter(Class targetClass, String converterClass)
+    public final void addConverter(final Class targetClass, final String converterClass)
     {
         checkNull(targetClass, "targetClass");
         checkNull(converterClass, "converterClass");
@@ -610,8 +610,8 @@ public class ApplicationImpl extends Application
         }
     }
 
-    public void addConverterConfiguration(String converterClassName,
-            org.apache.myfaces.config.impl.digester.elements.Converter configuration)
+    public final void addConverterConfiguration(final String converterClassName,
+            final org.apache.myfaces.config.impl.digester.elements.Converter configuration)
     {
         checkNull(converterClassName, "converterClassName");
         checkEmpty(converterClassName, "converterClassName");
@@ -621,7 +621,7 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public void addValidator(String validatorId, String validatorClass)
+    public final void addValidator(final String validatorId, final String validatorClass)
     {
         checkNull(validatorId, "validatorId");
         checkEmpty(validatorId, "validatorId");
@@ -641,12 +641,12 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public UIComponent createComponent(String componentType) throws FacesException
+    public final UIComponent createComponent(final String componentType) throws FacesException
     {
         checkNull(componentType, "componentType");
         checkEmpty(componentType, "componentType");
 
-        Class componentClass = _componentClassMap.get(componentType);
+        final Class componentClass = _componentClassMap.get(componentType);
         if (componentClass == null)
         {
             log.error("Undefined component type " + componentType);
@@ -669,8 +669,8 @@ public class ApplicationImpl extends Application
      */
     @Deprecated
     @Override
-    public UIComponent createComponent(ValueBinding valueBinding, FacesContext facesContext, String componentType)
-            throws FacesException
+    public final UIComponent createComponent(final ValueBinding valueBinding, final FacesContext facesContext,
+            final String componentType) throws FacesException
     {
 
         checkNull(valueBinding, "valueBinding");
@@ -678,7 +678,7 @@ public class ApplicationImpl extends Application
         checkNull(componentType, "componentType");
         checkEmpty(componentType, "componentType");
 
-        ValueExpression valExpression = new ValueBindingToValueExpression(valueBinding);
+        final ValueExpression valExpression = new ValueBindingToValueExpression(valueBinding);
 
         return createComponent(valExpression, facesContext, componentType);
     }
@@ -713,12 +713,12 @@ public class ApplicationImpl extends Application
      * than using this method.
      */
     @Override
-    public Converter createConverter(String converterId)
+    public final Converter createConverter(final String converterId)
     {
         checkNull(converterId, "converterId");
         checkEmpty(converterId, "converterId");
 
-        Class converterClass = _converterIdToClassMap.get(converterId);
+        final Class converterClass = _converterIdToClassMap.get(converterId);
         if(converterClass == null)
         {
             throw new FacesException("Could not find any registered converter-class by converterId : "+converterId);
@@ -726,7 +726,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            Converter converter = (Converter) converterClass.newInstance();
+            final Converter converter = (Converter) converterClass.newInstance();
 
             setConverterProperties(converterClass, converter);
 
@@ -740,14 +740,14 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public Converter createConverter(Class targetClass)
+    public final Converter createConverter(final Class targetClass)
     {
         checkNull(targetClass, "targetClass");
 
         return internalCreateConverter(targetClass);
     }
 
-    private Converter internalCreateConverter(Class targetClass)
+    private Converter internalCreateConverter(final Class targetClass)
     {
         // Locate a Converter registered for the target class itself.
         String converterClassName = _converterClassNameToClassMap.get(targetClass);
@@ -762,14 +762,14 @@ public class ApplicationImpl extends Application
         // implemented by the target class (directly or indirectly).
         if (converterClassName == null)
         {
-            Class interfaces[] = targetClass.getInterfaces();
+            final Class interfaces[] = targetClass.getInterfaces();
             if (interfaces != null)
             {
                 for (int i = 0, len = interfaces.length; i < len; i++)
                 {
                     // search all superinterfaces for a matching converter,
                     // create it
-                    Converter converter = internalCreateConverter(interfaces[i]);
+                    final Converter converter = internalCreateConverter(interfaces[i]);
                     if (converter != null)
                     {
                         return converter;
@@ -782,14 +782,14 @@ public class ApplicationImpl extends Application
         {
             try
             {
-                Class converterClass = ClassUtils.simpleClassForName(converterClassName);
+                final Class converterClass = ClassUtils.simpleClassForName(converterClassName);
 
                 Converter converter = null;
                 try
                 {
                     // look for a constructor that takes a single Class object
                     // See JSF 1.2 javadoc for Converter
-                    Constructor constructor = converterClass.getConstructor(new Class[] { Class.class });
+                    final Constructor constructor = converterClass.getConstructor(new Class[] { Class.class });
                     converter = (Converter) constructor.newInstance(new Object[] { targetClass });
                 }
                 catch (Exception e)
@@ -853,19 +853,19 @@ public class ApplicationImpl extends Application
 
     }
 
-    private void setConverterProperties(Class converterClass, Converter converter)
+    private void setConverterProperties(final Class converterClass, final Converter converter)
     {
-        org.apache.myfaces.config.impl.digester.elements.Converter converterConfig = _converterClassNameToConfigurationMap
+        final org.apache.myfaces.config.impl.digester.elements.Converter converterConfig = _converterClassNameToConfigurationMap
                 .get(converterClass.getName());
 
         if (converterConfig != null)
         {
 
-            Iterator it = converterConfig.getProperties();
+            final Iterator it = converterConfig.getProperties();
 
             while (it.hasNext())
             {
-                Property property = (Property) it.next();
+                final Property property = (Property) it.next();
 
                 try
                 {
@@ -886,7 +886,7 @@ public class ApplicationImpl extends Application
      */
     @Deprecated
     @Override
-    public MethodBinding createMethodBinding(String reference, Class[] params) throws ReferenceSyntaxException
+    public final MethodBinding createMethodBinding(final String reference, Class[] params) throws ReferenceSyntaxException
     {
         checkNull(reference, "reference");
         checkEmpty(reference, "reference");
@@ -916,7 +916,7 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public Validator createValidator(String validatorId) throws FacesException
+    public final Validator createValidator(final String validatorId) throws FacesException
     {
         checkNull(validatorId, "validatorId");
         checkEmpty(validatorId, "validatorId");
@@ -944,7 +944,7 @@ public class ApplicationImpl extends Application
      * @deprecated
      */
     @Override
-    public ValueBinding createValueBinding(String reference) throws ReferenceSyntaxException
+    public final ValueBinding createValueBinding(final String reference) throws ReferenceSyntaxException
     {
         checkNull(reference, "reference");
         checkEmpty(reference, "reference");
@@ -964,36 +964,36 @@ public class ApplicationImpl extends Application
     }
 
     // gets the elContext from the current FacesContext()
-    private ELContext threadELContext()
+    private final ELContext threadELContext()
     {
         return getFaceContext().getELContext();
     }
 
     @Override
-    public String getDefaultRenderKitId()
+    public final String getDefaultRenderKitId()
     {
         return _defaultRenderKitId;
     }
 
     @Override
-    public void setDefaultRenderKitId(String defaultRenderKitId)
+    public final void setDefaultRenderKitId(final String defaultRenderKitId)
     {
         _defaultRenderKitId = defaultRenderKitId;
     }
 
     @Override
-    public StateManager getStateManager()
+    public final StateManager getStateManager()
     {
         return _stateManager;
     }
 
     @Override
-    public void setStateManager(StateManager stateManager)
+    public final void setStateManager(final StateManager stateManager)
     {
         _stateManager = stateManager;
     }
 
-    private void checkNull(Object param, String paramName)
+    private void checkNull(final Object param, final String paramName)
     {
         if (param == null)
         {
@@ -1001,7 +1001,7 @@ public class ApplicationImpl extends Application
         }
     }
 
-    private void checkEmpty(String param, String paramName)
+    private void checkEmpty(final String param, final String paramName)
     {
         if (param.length() == 0)
         {

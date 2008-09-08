@@ -46,7 +46,7 @@ public class SessionMap extends AbstractAttributeMap<Object>
     {
         PortletSession portletSession = getSession();
         return (portletSession == null)
-               ? null : portletSession.getAttribute(key.toString(), PortletSession.PORTLET_SCOPE);
+               ? null : portletSession.getAttribute(key, PortletSession.PORTLET_SCOPE);
     }
 
     @Override

@@ -34,19 +34,19 @@ import org.apache.myfaces.el.unified.ELResolverBuilder;
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ResolverForJSPInitializer implements PhaseListener
+public final class ResolverForJSPInitializer implements PhaseListener
 {
     private final ELResolverBuilder _resolverBuilder;
     private boolean initialized;
     private final javax.el.CompositeELResolver _resolverForJSP;
 
-    public ResolverForJSPInitializer(ELResolverBuilder resolverBuilder, javax.el.CompositeELResolver resolverForJSP)
+    public ResolverForJSPInitializer(final ELResolverBuilder resolverBuilder, final javax.el.CompositeELResolver resolverForJSP)
     {
         _resolverBuilder = resolverBuilder;
         _resolverForJSP = resolverForJSP;
     }
 
-    public void beforePhase(PhaseEvent event)
+    public void beforePhase(final PhaseEvent event)
     {
         if (!initialized)
         {
@@ -61,7 +61,7 @@ public class ResolverForJSPInitializer implements PhaseListener
         }
     }
 
-    public void afterPhase(PhaseEvent event)
+    public void afterPhase(final PhaseEvent event)
     {
     }
 

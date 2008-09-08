@@ -43,33 +43,32 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
 
     public void clear()
     {
-        List<String> names = new ArrayList<String>();
-        for (Enumeration<String> e = getAttributeNames(); e.hasMoreElements();)
+        final List<String> names = new ArrayList<String>();
+        for (final Enumeration<String> e = getAttributeNames(); e.hasMoreElements();)
         {
             names.add(e.nextElement());
         }
 
-        for (Iterator it = names.iterator(); it.hasNext();)
-        {
-            removeAttribute((String) it.next());
+        for (String name : names) {
+          removeAttribute(name);
         }
     }
 
-    public boolean containsKey(Object key)
+    public final boolean containsKey(final Object key)
     {
         return getAttribute(key.toString()) != null;
     }
 
-    public boolean containsValue(Object findValue)
+    public boolean containsValue(final Object findValue)
     {
         if (findValue == null)
         {
             return false;
         }
 
-        for (Enumeration<String> e = getAttributeNames(); e.hasMoreElements();)
+        for (final Enumeration<String> e = getAttributeNames(); e.hasMoreElements();)
         {
-            Object value = getAttribute(e.nextElement());
+            final Object value = getAttribute(e.nextElement());
             if (findValue.equals(value))
             {
                 return true;
@@ -85,7 +84,7 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
         return (_entrySet != null) ? _entrySet : (_entrySet = new EntrySet());
     }
 
-    public V get(Object key)
+    public V get(final Object key)
     {
         return getAttribute(key.toString());
     }
@@ -100,27 +99,25 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
         return (_keySet != null) ? _keySet : (_keySet = new KeySet());
     }
 
-    public V put(String key, V value)
+    public final V put(final String key, final V value)
     {
-        V retval = getAttribute(key);
+        final V retval = getAttribute(key);
         setAttribute(key, value);
         return retval;
     }
 
-    public void putAll(Map<? extends String, ? extends V> t)
+    public void putAll(final Map<? extends String, ? extends V> t)
     {
-        for (Iterator<? extends Entry<? extends String, ? extends V>> it = t.entrySet().iterator(); it.hasNext();)
-        {
-            Entry<? extends String, ? extends V> entry = it.next();
-            setAttribute(entry.getKey(), entry.getValue());
-        }
+      for (final Entry<? extends String, ? extends V> entry : t.entrySet()) {
+        setAttribute(entry.getKey(), entry.getValue());
+      }
     }
 
     @Override
-    public V remove(Object key)
+    public final V remove(final Object key)
     {
-        String key_ = key.toString();
-        V retval = getAttribute(key_);
+        final String key_ = key.toString();
+        final V retval = getAttribute(key_);
         removeAttribute(key_);
         return retval;
     }
@@ -129,7 +126,7 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
     public int size()
     {
         int size = 0;
-        for (Enumeration e = getAttributeNames(); e.hasMoreElements();)
+        for (final Enumeration e = getAttributeNames(); e.hasMoreElements();)
         {
             size++;
             e.nextElement();
@@ -172,7 +169,7 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
         }
     }
 
-    private class KeySet extends AbstractAttributeSet<String>
+    private final class KeySet extends AbstractAttributeSet<String>
     {
         @Override
         public Iterator<String> iterator()
@@ -181,13 +178,13 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
         }
 
         @Override
-        public boolean contains(Object o)
+        public boolean contains(final Object o)
         {
             return AbstractAttributeMap.this.containsKey(o);
         }
 
         @Override
-        public boolean remove(Object o)
+        public boolean remove(final Object o)
         {
             return AbstractAttributeMap.this.remove(o) != null;
         }
@@ -224,10 +221,10 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
         protected abstract E getValue(String attributeName);
     }
 
-    private class KeyIterator extends AbstractAttributeIterator<String>
+    private final class KeyIterator extends AbstractAttributeIterator<String>
     {
         @Override
-        protected String getValue(String attributeName)
+        protected String getValue(final String attributeName)
         {
             return attributeName;
         }
@@ -242,14 +239,14 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
         }
 
         @Override
-        public boolean contains(Object o)
+        public boolean contains(final Object o)
         {
             if (o == null)
             {
                 return false;
             }
 
-            for (Iterator it = iterator(); it.hasNext();)
+            for (final Iterator it = iterator(); it.hasNext();)
             {
                 if (o.equals(it.next()))
                 {
@@ -261,14 +258,14 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
         }
 
         @Override
-        public boolean remove(Object o)
+        public boolean remove(final Object o)
         {
             if (o == null)
             {
                 return false;
             }
 
-            for (Iterator it = iterator(); it.hasNext();)
+            for (final Iterator it = iterator(); it.hasNext();)
             {
                 if (o.equals(it.next()))
                 {
@@ -284,13 +281,13 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
     private class ValuesIterator extends AbstractAttributeIterator<V>
     {
         @Override
-        protected V getValue(String attributeName)
+        protected V getValue(final String attributeName)
         {
             return AbstractAttributeMap.this.get(attributeName);
         }
     }
 
-    private class EntrySet extends AbstractAttributeSet<Entry<String, V>>
+    private final class EntrySet extends AbstractAttributeSet<Entry<String, V>>
     {
         @Override
         public Iterator<Entry<String, V>> iterator()
@@ -299,16 +296,16 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
         }
 
         @Override
-        public boolean contains(Object o)
+        public boolean contains(final Object o)
         {
             if (!(o instanceof Entry))
             {
                 return false;
             }
 
-            Entry entry = (Entry) o;
-            Object key = entry.getKey();
-            Object value = entry.getValue();
+            final Entry entry = (Entry) o;
+            final Object key = entry.getKey();
+            final Object value = entry.getValue();
             if (key == null || value == null)
             {
                 return false;
@@ -318,16 +315,16 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
         }
 
         @Override
-        public boolean remove(Object o)
+        public boolean remove(final Object o)
         {
             if (!(o instanceof Entry))
             {
                 return false;
             }
 
-            Entry entry = (Entry) o;
-            Object key = entry.getKey();
-            Object value = entry.getValue();
+            final Entry entry = (Entry) o;
+            final Object key = entry.getKey();
+            final Object value = entry.getValue();
             if (key == null || value == null || !value.equals(AbstractAttributeMap.this.get(key)))
             {
                 return false;
@@ -341,10 +338,10 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
      * Not very efficient since it generates a new instance of <code>Entry</code> for each element and still internaly
      * uses the <code>KeyIterator</code>. It is more efficient to use the <code>KeyIterator</code> directly.
      */
-    private class EntryIterator extends AbstractAttributeIterator<Entry<String, V>>
+    private final class EntryIterator extends AbstractAttributeIterator<Entry<String, V>>
     {
         @Override
-        protected Entry<String, V> getValue(String attributeName)
+        protected Entry<String, V> getValue(final String attributeName)
         {
             // Must create new Entry every time--value of the entry must stay
             // linked to the same attribute name
@@ -352,11 +349,11 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
         }
     }
 
-    private class EntrySetEntry implements Entry<String, V>
+    private final class EntrySetEntry implements Entry<String, V>
     {
         private final String _currentKey;
 
-        public EntrySetEntry(String currentKey)
+        public EntrySetEntry(final String currentKey)
         {
             _currentKey = currentKey;
         }
@@ -371,7 +368,7 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
             return AbstractAttributeMap.this.get(_currentKey);
         }
 
-        public V setValue(V value)
+        public V setValue(final V value)
         {
             return AbstractAttributeMap.this.put(_currentKey, value);
         }
@@ -379,14 +376,13 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
         @Override
         public int hashCode()
         {
-            final int PRIME = 31;
             int result = 1;
-            result = PRIME * result + ((_currentKey == null) ? 0 : _currentKey.hashCode());
+            result = 31 * result + ((_currentKey == null) ? 0 : _currentKey.hashCode());
             return result;
         }
 
         @Override
-        public boolean equals(Object obj)
+        public boolean equals(final Object obj)
         {
             if (this == obj)
                 return true;

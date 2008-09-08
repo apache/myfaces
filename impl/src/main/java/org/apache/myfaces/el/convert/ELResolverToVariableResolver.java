@@ -31,19 +31,19 @@ import javax.faces.el.VariableResolver;
  *
  * @author Stan Silvert
  */
-public class ELResolverToVariableResolver extends VariableResolver {
+public final class ELResolverToVariableResolver extends VariableResolver {
     
-    private ELResolver elResolver;
+    private final ELResolver elResolver;
     
     /**
      * Creates a new instance of ELResolverToVariableResolver
      */
-    public ELResolverToVariableResolver(ELResolver elResolver) {
+    public ELResolverToVariableResolver(final ELResolver elResolver) {
         if (elResolver == null) throw new NullPointerException();
         this.elResolver = elResolver;
     }
 
-    public Object resolveVariable(FacesContext facesContext, String name) throws EvaluationException {
+    public Object resolveVariable(final FacesContext facesContext, final String name) throws EvaluationException {
         
         try {
             return elResolver.getValue(facesContext.getELContext(), null, name);
