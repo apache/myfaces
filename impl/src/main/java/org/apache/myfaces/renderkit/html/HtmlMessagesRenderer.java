@@ -18,12 +18,14 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import org.apache.myfaces.shared_impl.renderkit.html.HtmlMessagesRendererBase;
+import java.io.IOException;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import java.io.IOException;
+
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
+import org.apache.myfaces.shared_impl.renderkit.html.HtmlMessagesRendererBase;
 
 /**
  *
@@ -32,6 +34,10 @@ import java.io.IOException;
  * @author Thomas Spiegl
  * @version $Revision$ $Date$
  */
+@JSFRenderer(
+    renderKitId="HTML_BASIC",
+    family="javax.faces.Messages",
+    type="javax.faces.Messages")
 public class HtmlMessagesRenderer
         extends HtmlMessagesRendererBase
 {

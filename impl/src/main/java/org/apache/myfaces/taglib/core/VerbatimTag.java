@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.taglib.core;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspAttribute;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;
 import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
 import org.apache.myfaces.shared_impl.taglib.UIComponentELTagBase;
 
@@ -31,6 +33,7 @@ import javax.servlet.jsp.tagext.BodyContent;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
+@JSFJspTag(name="f:verbatim",bodyContent="JSP")
 public class VerbatimTag
         extends UIComponentELTagBase
 {
@@ -61,11 +64,25 @@ public class VerbatimTag
         component.setTransient(true);
     }
 
+    /**
+     * If true, generated markup is escaped.  Default:  false.
+     */
+    @JSFJspAttribute(
+            rtexprvalue=true,
+            className="java.lang.Boolean")
     public void setEscape(ValueExpression escape)
     {
         _escape = escape;
     }
 
+    /**
+     * Flag indicating whether or not this component should be rendered
+     * (during Render Response Phase), or processed on any subsequent
+     * form submit.  The default value for this property is true.
+     */
+    @JSFJspAttribute(
+            rtexprvalue=true,
+            className="java.lang.Boolean")
     public void setRendered(ValueExpression rendered)
     {
         _rendered = rendered;

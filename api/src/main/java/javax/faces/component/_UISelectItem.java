@@ -22,13 +22,25 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
- *
+ * This tag associates a single SelectItem with the nearest
+ * parent UIComponent. The item represents a single option
+ * for a component such as an h:selectBooleanCheckbox or h:selectOneMenu.
+ * See also component selectItems.
+ * <p>
+ * Unless otherwise specified, all attributes accept static values 
+ * or EL expressions.
+ * </p>
+ * <p>
  * UISelectItem should be nestetd inside a UISelectMany or UISelectOne component,
  * and results in  the addition of a SelectItem instance to the list of available options
  * for the parent component
+ * </p>
  */
 @JSFComponent
-(clazz = "javax.faces.component.UISelectItem",template=true)
+(clazz = "javax.faces.component.UISelectItem",template=true,
+ name = "f:selectItem",
+ tagClass = "org.apache.myfaces.taglib.core.SelectItemTag",
+ bodyContent = "empty")
 abstract class _UISelectItem extends UIComponentBase
 {
 

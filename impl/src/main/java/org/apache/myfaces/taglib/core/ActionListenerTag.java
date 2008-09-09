@@ -22,10 +22,22 @@ import javax.el.ValueExpression;
 import javax.faces.component.ActionSource;
 import javax.faces.event.ActionListener;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspAttribute;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;
+
 /**
+ * This tag creates an instance of the specified ActionListener, and
+ * associates it with the nearest parent UIComponent.
+ * <p>
+ * Unless otherwise specified, all attributes accept static values
+ * or EL expressions.
+ * </p>
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
+@JSFJspTag(
+        name="f:actionListener",
+        bodyContent="empty")
 public class ActionListenerTag
         extends GenericListenerTag<ActionSource, ActionListener>
 {
@@ -45,6 +57,29 @@ public class ActionListenerTag
             ValueExpression binding)
     {
         return new DelegateActionListener(type,binding);
+    }
+    
+    /**
+     * The fully qualified class name of the ActionListener class.
+     */
+    @JSFJspAttribute(
+            className="java.lang.String",
+            rtexprvalue=true)
+    public void setType(ValueExpression type)
+    {
+        super.setType(type);
+    }
+    
+    /**
+     * Value binding expression that evaluates to an object that
+     * implements javax.faces.event.ActionListener.
+     */
+    @JSFJspAttribute(
+            className="javax.faces.event.ActionListener",
+            rtexprvalue=true)
+    public void setBinding(ValueExpression binding)
+    {
+        super.setBinding(binding);
     }
 }
 

@@ -25,6 +25,7 @@ import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.application.jsp.ViewResponseWrapper;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;
 
 /**
  * @author Thomas Spiegl (latest modification by $Author$)

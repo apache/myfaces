@@ -18,14 +18,27 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderers;
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlCheckboxRendererBase;
 
 
 /**
+ * 
  * @author Thomas Spiegl (latest modification by $Author$)
  * @author Anton Koinov
  * @version $Revision$ $Date$
  */
+@JSFRenderers(renderers={
+    @JSFRenderer(
+        renderKitId="HTML_BASIC",
+        family="javax.faces.SelectBoolean",
+        type="javax.faces.Checkbox"),   
+    @JSFRenderer(
+        renderKitId="HTML_BASIC",
+        family="javax.faces.SelectMany",
+        type="javax.faces.Checkbox")
+})
 public class HtmlCheckboxRenderer
         extends HtmlCheckboxRendererBase
 {

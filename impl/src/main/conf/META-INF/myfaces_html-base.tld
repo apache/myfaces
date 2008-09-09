@@ -1,4 +1,5 @@
-/*
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,27 +16,10 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- */
-package org.apache.myfaces.renderkit.html;
-
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
-import org.apache.myfaces.shared_impl.renderkit.html.HtmlGridRendererBase;
-
-
-/**
- * X-CHECKED: tlddoc h:panelGrid 1.0 final
- *
- *
- * @author Manfred Geiler (latest modification by $Author$)
- * @author Thomas Spiegl
- * @version $Revision$ $Date$
- */
-@JSFRenderer(
-    renderKitId="HTML_BASIC",
-    family="javax.faces.Panel",
-    type="javax.faces.Grid")
-public class HtmlGridRenderer
-    extends HtmlGridRendererBase
-{
-
-}
+-->
+<taglib xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+    version="2.1">
+   
+</taglib>

@@ -22,12 +22,105 @@
     <resources>
       <resource>
         <directory>src/main/resources</directory>
-      </resource>
+        <excludes>
+           <exclude>**/*.vm</exclude>
+        </excludes>
+      </resource>    
       <resource>
         <directory>src/main/resources-facesconfig</directory>
       </resource>
     </resources>
     <plugins>
+      <plugin>
+        <groupId>org.apache.myfaces.buildtools</groupId>
+        <artifactId>myfaces-builder-plugin</artifactId>
+        <version>1.0.2-SNAPSHOT</version>
+        <executions>          
+          <execution>
+            <id>makemyfacesmetadata</id>
+            <configuration>
+                <!-- Qdox 1.6.3 does not parse inner enums on classes
+                so we have to exclude some files temporally. -->
+                <includes>**/*.java</includes>
+                <excludes>**/FacesCompositeELResolver.java</excludes>
+            </configuration>
+            <goals>
+              <goal>build-metadata</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>makefacesconfig</id>
+            <configuration>
+                <templateFile>faces-config12.vm</templateFile>
+                <xmlFile>META-INF/standard-faces-config.xml</xmlFile>
+                <xmlBaseFile>src/main/conf/META-INF/standard-faces-config-base.xml</xmlBaseFile>
+                <modelIds>
+                    <modelId>myfaces-api</modelId>
+                    <modelId>myfaces-impl</modelId>
+                </modelIds>
+            </configuration>
+            <goals>
+                <goal>make-config</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>make_tags</id>
+            <configuration>
+               <jsfVersion>12</jsfVersion>
+               <templateTagName>tagClass12.vm</templateTagName>
+               <packageContains>org.apache</packageContains>
+               <typePrefix>javax.faces</typePrefix>
+               <modelIds>
+                   <modelId>myfaces-api</modelId>
+               </modelIds>
+            </configuration>            
+            <goals>
+                <goal>make-tags</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>makecoretld</id>
+            <configuration>
+                <xmlFile>META-INF/myfaces_core.tld</xmlFile>
+                <xmlBaseFile>src/main/conf/META-INF/myfaces_core-base.tld</xmlBaseFile>
+                <templateFile>myfaces_core12.vm</templateFile>
+                <modelIds>
+                    <modelId>myfaces-api</modelId>
+                    <modelId>myfaces-impl</modelId>
+                </modelIds>
+                <params>
+                    <shortname>f</shortname>
+                    <uri>http://java.sun.com/jsf/core</uri>
+                    <displayname>JSF core tag library.</displayname>
+                    <description>This tag library implements the standard JSF core tags.</description>
+                </params>
+            </configuration>
+            <goals>
+                <goal>make-config</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>makehtmltld</id>
+            <configuration>
+                <xmlFile>META-INF/myfaces_html.tld</xmlFile>
+                <xmlBaseFile>src/main/conf/META-INF/myfaces_html-base.tld</xmlBaseFile>
+                <templateFile>myfaces_html12.vm</templateFile>
+                <params>
+                   <shortname>h</shortname>
+                   <uri>http://java.sun.com/jsf/html</uri>
+                   <displayname>JSF HTML tag library.</displayname>
+                   <description>This tag library implements the standard JSF HTML tags.</description>
+                </params>
+                <modelIds>
+                    <modelId>myfaces-api</modelId>
+                </modelIds>
+            </configuration>
+            <goals>
+                <goal>make-config</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <artifactId>maven-source-plugin</artifactId>
         <version>2.0.4</version>
@@ -50,7 +143,8 @@
         </configuration>
       </plugin>
 
-      <plugin>
+      <!-- 
+      <plugin> -->
         <!--
           - Using the metadata from the "build" module, generate the JSP "h" taglib.
           -
@@ -59,6 +153,7 @@
           - Or because people just haven't got around to defining the metadata and
           - templates for it in the build module?
           -->
+          <!-- 
         <groupId>org.apache.myfaces.buildtools</groupId>
         <artifactId>myfaces-faces-plugin</artifactId>
         <configuration>
@@ -84,6 +179,7 @@
           </execution>
         </executions>
       </plugin>
+               -->
       <plugin>
         <!--
           - The shared-impl project generates a modified version of the "shared" module
@@ -323,7 +419,13 @@
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>
-
+    <dependency>
+      <groupId>org.apache.myfaces.buildtools</groupId>
+      <artifactId>myfaces-builder-annotations</artifactId> 
+      <version>1.0.2-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>

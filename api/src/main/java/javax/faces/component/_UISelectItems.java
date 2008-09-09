@@ -22,13 +22,24 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
- *
- * UISelectItems should be nestetd inside a UISelectMany or UISelectOne component,
+ * This tag associates a set of selection list items with the nearest
+ * parent UIComponent. The set of SelectItem objects is retrieved via
+ * a value-binding.
+ * <p>
+ * Unless otherwise specified, all attributes accept static values
+ * or EL expressions.
+ * </p>
+ * <p>
+ * UISelectItems should be nested inside a UISelectMany or UISelectOne component,
  * and results in  the addition of one ore more SelectItem instance to the list of available options
  * for the parent component
+ * </p>
  */
 @JSFComponent
-(clazz = "javax.faces.component.UISelectItems",template=true)
+(clazz = "javax.faces.component.UISelectItems",template=true,
+ name = "f:selectItems",
+ tagClass = "org.apache.myfaces.taglib.core.SelectItemsTag",
+ bodyContent = "empty")
 abstract class _UISelectItems extends UIComponentBase
 {
 

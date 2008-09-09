@@ -36,16 +36,27 @@ import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
 import javax.el.ValueExpression;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspAttribute;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;
 /**
+ * Loads a resource bundle and saves it as a variable in the request scope.
+ * <p>
+ * Unless otherwise specified, all attributes accept static values or EL expressions.
+ * </p>
+ * <p> 
  * TODO:
  * We should find a way to save loaded bundles in the state, because otherwise
  * on the next request the bundle map will not be present before the render phase
  * and value bindings that reference to the bundle will always log annoying
  * "Variable 'xxx' could not be resolved" error messages.
+ * </p>
  *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
+@JSFJspTag(
+        name="f:loadBundle",
+        bodyContent="empty")
 public class LoadBundleTag
         extends TagSupport
 {
@@ -54,11 +65,23 @@ public class LoadBundleTag
     private ValueExpression _basename;
     private String _var;
 
+    /**
+     * The base name of the resource bundle.
+     */
+    @JSFJspAttribute(
+            required=true,
+            rtexprvalue=true,
+            className="java.lang.String")
     public void setBasename(ValueExpression basename)
     {
         _basename = basename;
     }
 
+    /**
+     * The name of the variable in request scope that the resources
+     * are saved to.  This must be a static value.
+     */
+    @JSFJspAttribute(required=true)
     public void setVar(String var)
     {
         _var = var;
