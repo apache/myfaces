@@ -568,7 +568,7 @@ public class UIViewRoot extends UIComponentBase
     
     public void removeComponentResource(FacesContext context, UIComponent componentResource)
     {
-        // TODO: JSF 2.0 #22
+        removeComponentResource(context, componentResource, null);
     }
     
     public void removeComponentResource(FacesContext context, UIComponent componentResource, String target)
