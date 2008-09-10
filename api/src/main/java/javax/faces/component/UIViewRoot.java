@@ -537,7 +537,7 @@ public class UIViewRoot extends UIComponentBase
     
     public void addComponentResource(FacesContext context, UIComponent componentResource)
     {
-        // TODO: JSF 2.0 #17
+        addComponentResource(context, componentResource, null);
     }
     
     public void addComponentResource(FacesContext context, UIComponent componentResource, String target)
