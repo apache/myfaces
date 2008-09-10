@@ -542,7 +542,25 @@ public class UIViewRoot extends UIComponentBase
     
     public void addComponentResource(FacesContext context, UIComponent componentResource, String target)
     {
-        // TODO: JSF 2.0 #18
+        // If the target argument is null
+        if (target == null)
+        {
+            // Look for a target attribute on the component
+            target = (String) componentResource.getAttributes().get("target");
+            
+            // If there is no target attribute, set target to be the default value head
+            if (target == null)
+            {
+                target = "head";
+            }
+        }
+        
+        // Call getComponentResources to obtain the child list for the given target
+        List<UIComponent> componentResources = getComponentResources(context, target);
+        
+        // Add the component resource to the list
+        // TODO: Validate if we should check for duplicates, spec don't say anything about it
+        componentResources.add(componentResource);
     }
 
     public List<UIComponent> getComponentResources(FacesContext context, String target)
