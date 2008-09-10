@@ -547,9 +547,21 @@ public class UIViewRoot extends UIComponentBase
 
     public List<UIComponent> getComponentResources(FacesContext context, String target)
     {
-        // TODO: JSF 2.0 #19
+        // Locate the facet for the component by calling getFacet() using target as the argument
+        UIComponent facet = getFacet(target);
         
-        return null;
+        // If the facet is not found
+        if (facet == null)
+        {
+            facet = context.getApplication().createComponent("javax.faces.Panel");            
+            facet.setId(target);
+            
+            // Add the facet to the facets Map using target as the key
+            getFacets().put(target, facet);
+        }
+        
+        // Return the children of the facet
+        return facet.getChildren();
     }
     
     public Map<String,Object> getViewMap()
