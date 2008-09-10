@@ -23,9 +23,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
+import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
@@ -180,6 +182,21 @@ public abstract class UIComponent
 
     public abstract java.lang.String getClientId(javax.faces.context.FacesContext context);
 
+    public static UIComponent getCurrentComponent()
+    {
+        /* Return the UIComponent instance that is currently processing. This 
+         * is equivalent to evaluating the EL expression "#{component}" and 
+         * doing a getValue operation on the resultant ValueExpression. 
+         */        
+        FacesContext context = FacesContext.getCurrentInstance();
+        Application application = context.getApplication();
+        
+        ELContext elContext = context.getELContext();
+        Object result = application.getELResolver().getValue(context.getELContext(), null, "component");
+        
+        return elContext.isPropertyResolved() ? (UIComponent)result : null;
+    }
+    
     public abstract java.lang.String getFamily();
 
     public abstract java.lang.String getId();
