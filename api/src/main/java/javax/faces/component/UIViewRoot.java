@@ -573,7 +573,25 @@ public class UIViewRoot extends UIComponentBase
     
     public void removeComponentResource(FacesContext context, UIComponent componentResource, String target)
     {
-        // TODO: JSF 2.0 #23
+        // If the target argument is null
+        if (target == null)
+        {
+            // Look for a target attribute on the component
+            target = (String) componentResource.getAttributes().get("target");
+            
+            // If there is no target attribute
+            if (target == null)
+            {
+                // Set target to be the default value head
+                target = "head";
+            }
+        }
+        
+        // Call getComponentResources to obtain the child list for the given target.
+        List<UIComponent> componentResources = getComponentResources(context, target);
+        
+        // Remove the component resource from the child list
+        componentResources.remove(componentResource);
     }
 
     /**
