@@ -208,8 +208,7 @@ public abstract class Application
     
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener)
     {
-        // TODO: JSF 2.0 #8
-        // VALIDATE: Shouldn't this be abstract?
+        subscribeToEvent(systemEventClass, null, listener);
     }
     
     public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, 
