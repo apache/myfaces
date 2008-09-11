@@ -201,6 +201,7 @@ $baseContent
 #set ($tagList = $model.getTags())
 #foreach( $tag in $tagList )
 #if ($modelIds.contains($tag.modelId))
+#if ($utils.getTagPrefix($tag.name) == $shortname)
    <tag>
       <description><![CDATA[$tag.longDescription]]></description>
       <name>$utils.getTagName($tag.name)</name>
@@ -236,6 +237,7 @@ $baseContent
       </attribute>
 #end
    </tag>
+#end
 #end
 #end
 </taglib>
