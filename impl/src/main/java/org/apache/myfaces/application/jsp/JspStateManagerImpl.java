@@ -105,6 +105,46 @@ public class JspStateManagerImpl
      */
     private static final boolean DEFAULT_SERIALIZE_STATE_IN_SESSION = true;
 
+    /**
+     * Define the way of handle old view references(views removed from session), making possible to
+     * store it in a cache, so the state manager first try to get the view from the session. If is it
+     * not found and soft or weak ReferenceMap is used, it try to get from it.
+     * <p>
+     * Only applicable if state saving method is "server" (= default).
+     * </p>
+     * <p>
+     * The gc is responsible for remove the views, according to the rules used for soft, weak or phantom
+     * references. If a key in soft and weak mode is garbage collected, its values are purged.
+     * </p>
+     * <p>
+     * By default no cache is used, so views removed from session became phantom references.
+     * </p>
+     * <ul> 
+     * <li> off, no: default, no cache is used</li> 
+     * <li> hard-soft: use an ReferenceMap(AbstractReferenceMap.HARD, AbstractReferenceMap.SOFT)</li>
+     * <li> soft: use an ReferenceMap(AbstractReferenceMap.SOFT, AbstractReferenceMap.SOFT, true) </li>
+     * <li> soft-weak: use an ReferenceMap(AbstractReferenceMap.SOFT, AbstractReferenceMap.WEAK, true) </li>
+     * <li> weak: use an ReferenceMap(AbstractReferenceMap.WEAK, AbstractReferenceMap.WEAK, true) </li>
+     * </ul>
+     * 
+     */
+    private static final String CACHE_OLD_VIEWS_IN_SESSION_MODE = "org.apache.myfaces.CACHE_OLD_VIEWS_IN_SESSION_MODE";
+    
+    /**
+     * This option uses an hard-soft ReferenceMap, but it could cause a 
+     * memory leak, because the keys are not removed by any method
+     * (MYFACES-1660). So use with caution.
+     */
+    private static final String CACHE_OLD_VIEWS_IN_SESSION_MODE_HARD_SOFT = "hard-soft";
+    
+    private static final String CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT = "soft";
+    
+    private static final String CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT_WEAK = "soft-weak";
+    
+    private static final String CACHE_OLD_VIEWS_IN_SESSION_MODE_WEAK = "weak";
+    
+    private static final String CACHE_OLD_VIEWS_IN_SESSION_MODE_OFF = "off";
+
     private static final int UNCOMPRESSED_FLAG = 0;
     private static final int COMPRESSED_FLAG = 1;
 
@@ -627,7 +667,9 @@ public class JspStateManagerImpl
             while (_keys.size() > views) {
                 key = _keys.remove(0);
                 Object oldView = _serializedViews.remove(key);
-                if (oldView != null) {
+                if (oldView != null && 
+                    !CACHE_OLD_VIEWS_IN_SESSION_MODE_OFF.equals(getCacheOldViewsInSessionMode(context))) 
+                {
                     getOldSerializedViewsMap().put(key, oldView);
                 }
             }
@@ -667,17 +709,77 @@ public class JspStateManagerImpl
          * @return old serialized views map
          */
         protected Map getOldSerializedViewsMap() {
-            if (_oldSerializedViews == null) {
-                _oldSerializedViews = new ReferenceMap(AbstractReferenceMap.WEAK, AbstractReferenceMap.WEAK, true);
+            FacesContext context = FacesContext.getCurrentInstance();
+            if (_oldSerializedViews == null && context != null)
+            {
+                String cacheMode = getCacheOldViewsInSessionMode(context); 
+                if (CACHE_OLD_VIEWS_IN_SESSION_MODE_WEAK.equals(cacheMode))
+                {
+                    _oldSerializedViews = new ReferenceMap(AbstractReferenceMap.WEAK, AbstractReferenceMap.WEAK, true);
+                }
+                else if (CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT_WEAK.equals(cacheMode))
+                {
+                    _oldSerializedViews = new ReferenceMap(AbstractReferenceMap.SOFT, AbstractReferenceMap.WEAK, true);
+                }
+                else if (CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT.equals(cacheMode))
+                {
+                    _oldSerializedViews = new ReferenceMap(AbstractReferenceMap.SOFT, AbstractReferenceMap.SOFT, true);
+                }
+                else if (CACHE_OLD_VIEWS_IN_SESSION_MODE_HARD_SOFT.equals(cacheMode))
+                {
+                    _oldSerializedViews = new ReferenceMap(AbstractReferenceMap.HARD, AbstractReferenceMap.SOFT);
+                }
             }
             return _oldSerializedViews;
         }
-
+        
+        /**
+         * Reads the value of the <code>org.apache.myfaces.CACHE_OLD_VIEWS_IN_SESSION_MODE</code> context parameter.
+         * 
+         * @since 1.1.7
+         * @param context
+         * @return constant indicating caching mode
+         * @see CACHE_OLD_VIEWS_IN_SESSION_MODE
+         */
+        protected String getCacheOldViewsInSessionMode(FacesContext context) {
+            String value = context.getExternalContext().getInitParameter(
+                    CACHE_OLD_VIEWS_IN_SESSION_MODE);
+            if (value == null)
+            {
+                return CACHE_OLD_VIEWS_IN_SESSION_MODE_OFF;
+            }
+            else if (value.equalsIgnoreCase(CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT))
+            {
+                return CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT;
+            }
+            else if (value.equalsIgnoreCase(CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT_WEAK))
+            {
+                return CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT_WEAK;
+            }            
+            else if (value.equalsIgnoreCase(CACHE_OLD_VIEWS_IN_SESSION_MODE_WEAK))
+            {
+                return CACHE_OLD_VIEWS_IN_SESSION_MODE_WEAK;
+            }
+            else if (value.equalsIgnoreCase(CACHE_OLD_VIEWS_IN_SESSION_MODE_HARD_SOFT))
+            {
+                return CACHE_OLD_VIEWS_IN_SESSION_MODE_HARD_SOFT;
+            }
+            else
+            {
+                return CACHE_OLD_VIEWS_IN_SESSION_MODE_OFF;
+            }
+        }
+        
         public Object get(Integer sequence, String viewId) {
             Object key = new SerializedViewKey(viewId, sequence);
             Object value = _serializedViews.get(key);
-            if (value == null) {
-                value = getOldSerializedViewsMap().get(key);
+            if (value == null)
+            {
+                Map oldSerializedViewMap = getOldSerializedViewsMap();
+                if (oldSerializedViewMap != null)
+                {
+                    value = oldSerializedViewMap.get(key);
+                }
             }
             return value;
         }
