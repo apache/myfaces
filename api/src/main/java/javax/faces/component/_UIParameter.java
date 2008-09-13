@@ -22,10 +22,19 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
- * 
+ * This tag associates a parameter name-value pair with the nearest
+ * parent UIComponent. A UIComponent is created to represent this
+ * name-value pair, and stored as a child of the parent component; what
+ * effect this has depends upon the renderer of that parent component.
+ * <p>
+ * Unless otherwise specified, all attributes accept static values
+ * or EL expressions.
+ * </p>
  */
 @JSFComponent
-(clazz = "javax.faces.component.UIParameter",template=true)
+(clazz = "javax.faces.component.UIParameter",template=true,
+name = "f:param",
+tagClass="org.apache.myfaces.taglib.core.ParamTag")
 abstract class _UIParameter extends UIComponentBase
 {
 

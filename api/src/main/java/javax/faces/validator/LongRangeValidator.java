@@ -22,13 +22,33 @@ import javax.faces.component.StateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidator;
+
 /**
+ * Creates a validator and associateds it with the nearest parent
+ * UIComponent.  When invoked, the validator ensures that values
+ * are valid longs that lie within the minimum and maximum values specified.
+ * 
+ * Commonly associated with a h:inputText entity.
+ * 
+ * Unless otherwise specified, all attributes accept static values or EL expressions.
+ * 
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  *
  * @author Manfred Geiler (latest modification by $Author$)
  * @author Thomas Spiegl
  * @version $Revision$ $Date$
  */
+@JSFValidator(
+    name="f:validateLongRange",
+    bodyContent="empty",
+    tagClass="org.apache.myfaces.taglib.core.ValidateLongRangeTag")
+@JSFJspProperty(
+    name="binding", 
+    returnType = "javax.faces.validator.LongRangeValidator",
+    longDesc = "A ValueExpression that evaluates to a LongRangeValidator.")
 public class LongRangeValidator
         implements Validator, StateHolder
 {
@@ -124,6 +144,12 @@ public class LongRangeValidator
 
 
      // GETTER & SETTER
+    
+    /** 
+     * The largest value that should be considered valid.
+     * 
+     */
+    @JSFProperty
     public long getMaximum()
     {
         return _maximum != null ? _maximum.longValue() : Long.MAX_VALUE;
@@ -134,6 +160,11 @@ public class LongRangeValidator
         _maximum = new Long(maximum);
     }
 
+    /**
+     * The smallest value that should be considered valid.
+     *  
+     */
+    @JSFProperty
     public long getMinimum()
     {
         return _minimum != null ? _minimum.longValue() : Long.MIN_VALUE;

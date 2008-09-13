@@ -32,7 +32,7 @@
     <url>http://svn.apache.org/repos/asf/myfaces/branches/2_0__x</url>
   </scm>
   <modules>
-    <module>build</module>
+    <!-- module>build</module -->
     <module>api</module>
     <module>impl</module>
   </modules>

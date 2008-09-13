@@ -25,15 +25,20 @@ import javax.faces.convert.Converter;
 import javax.faces.webapp.ConverterELTag;
 import javax.servlet.jsp.JspException;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspAttribute;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;
+
 /**
- * Implementation of ConverterELTag
- * 
- * Implements the Tag class of f:converter
+ * This tag creates an instance of the specified Converter, and
+ * associates it with the nearest parent UIComponent.
  * 
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  *
  */
+@JSFJspTag(
+        name="f:converter",
+        bodyContent="empty")
 public class ConverterImplTag extends ConverterELTag
 {
 
@@ -47,11 +52,23 @@ public class ConverterImplTag extends ConverterELTag
         super();
     }
 
+    /**
+     * The converter's registered ID.
+     */
+    @JSFJspAttribute(
+            rtexprvalue=true,
+            className="java.lang.String")
     public void setConverterId(ValueExpression converterId)
     {
         _converterId = converterId;
     }
 
+    /**
+     * A ValueExpression that evaluates to a Converter.
+     */
+    @JSFJspAttribute(
+            rtexprvalue=true,
+            className="javax.faces.convert.Converter")
     public void setBinding(ValueExpression binding)
     {
         _binding = binding;

@@ -63,9 +63,10 @@ import java.util.Map.Entry;
 @JSFComponent(type = "javax.faces.ComponentBase",
               family = "javax.faces.ComponentBase",
               desc = "base component when all components must inherit",
-              tagClass = "javax.faces.webapp.UIComponentELTag")
+              tagClass = "javax.faces.webapp.UIComponentELTag",
+              configExcluded = true)
 @JSFJspProperty(name = "binding" ,
-                returnType = "java.lang.String",
+                returnType = "javax.faces.component.UIComponent",
                 longDesc = "Identifies a backing bean property (of type UIComponent or appropriate subclass) to bind to this component instance. This value must be an EL expression.",
                 desc="backing bean property to bind to this component instance")
 public abstract class UIComponentBase

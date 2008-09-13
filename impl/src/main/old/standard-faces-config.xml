@@ -1,0 +1,3411 @@
+<?xml version="1.0" encoding="utf-8"?>
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd" version="1.2">
+   <application>
+      <action-listener>org.apache.myfaces.application.ActionListenerImpl</action-listener>
+      <view-handler>org.apache.myfaces.application.jsp.JspViewHandlerImpl</view-handler>
+      <state-manager>org.apache.myfaces.application.jsp.JspStateManagerImpl</state-manager>
+      <navigation-handler>org.apache.myfaces.application.NavigationHandlerImpl</navigation-handler>
+      <locale-config>
+         <supported-locale>en</supported-locale>
+         <supported-locale>de</supported-locale>
+         <supported-locale>fr</supported-locale>
+         <supported-locale>ja</supported-locale>
+         <supported-locale>it</supported-locale>
+         <supported-locale>es</supported-locale>
+         <supported-locale>ca</supported-locale>
+         <supported-locale>ar</supported-locale>
+         <supported-locale>pt_BR</supported-locale>
+         <supported-locale>ru</supported-locale>
+         <supported-locale>zh_CN</supported-locale>
+      </locale-config>
+   </application>
+   <factory>
+      <application-factory>org.apache.myfaces.application.ApplicationFactoryImpl</application-factory>
+      <faces-context-factory>org.apache.myfaces.context.FacesContextFactoryImpl</faces-context-factory>
+      <lifecycle-factory>org.apache.myfaces.lifecycle.LifecycleFactoryImpl</lifecycle-factory>
+      <render-kit-factory>org.apache.myfaces.renderkit.RenderKitFactoryImpl</render-kit-factory>
+   </factory>
+   <component>
+      <description>
+          &lt;p&gt;
+          Creates a UIComponent that represents a single column of data within a parent UIData component.
+          &lt;/p&gt;
+          &lt;p&gt;
+          This tag is commonly used as a child of the h:dataTable tag, to represent a column of
+          data within an html table. It can be decorated with nested "header" and "footer" facets
+          which cause the output of header and footer rows.
+          &lt;/p&gt;
+          &lt;p&gt;
+          The non-facet child components of this column are re-rendered on each table row
+          to generate the content of the cell. Those child components can reference the "var"
+          attribute of the containing h:dataTable to generate appropriate output for each row.
+          &lt;/p&gt;
+          
+        </description>
+      <component-type>javax.faces.HtmlColumn</component-type>
+      <component-class>javax.faces.component.html.HtmlColumn</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.HtmlColumn properties-->
+      <property>
+         <description>CSS class to be used for the header.</description>
+         <property-name>headerClass</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>CSS class to be used for the footer.</description>
+         <property-name>footerClass</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.Column</component-family>
+      </component-extension>
+   </component>
+   <component>
+      <description>
+            This tag renders as an HTML input element.
+
+            Unless otherwise specified, all attributes accept static values
+            or EL expressions.
+        </description>
+      <component-type>javax.faces.HtmlCommandButton</component-type>
+      <component-class>javax.faces.component.html.HtmlCommandButton</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Command properties-->
+      <property>
+         <description>A boolean value that identifies the phase during which action events
+        should fire. During normal event processing, action methods and
+        action listener methods are fired during the "invoke application"
+        phase of request processing. If this attribute is set to "true",
+        these methods are fired instead at the end of the "apply request
+        values" phase.</description>
+         <property-name>immediate</property-name>
+         <property-class>boolean</property-class>
+      </property>
+      <property>
+         <description>The initial value of this component.</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>Specifies the action to take when this command is invoked.
+        If the value is an expression, it is expected to be a method
+        binding EL expression that identifies an action method. An action method
+        accepts no parameters and has a String return value, called the action
+        outcome, that identifies the next view displayed. The phase that this
+        event is fired in can be controlled via the immediate attribute.
+
+        If the value is a string literal, it is treated as a navigation outcome
+        for the current view.  This is functionally equivalent to a reference to
+        an action method that returns the string literal.</description>
+         <property-name>actionExpression</property-name>
+         <property-class>javax.el.MethodExpression</property-class>
+         <property-extension>
+            <property-metadata>
+               <preferred>true</preferred>
+            </property-metadata>
+         </property-extension>
+      </property>
+      <property>
+         <description>A method binding EL expression that identifies an action listener method
+        to be invoked if this component is activated by the user. An action
+        listener method accepts a parameter of type javax.faces.event.ActionEvent
+        and returns void. The phase that this event is fired in can be controlled
+        via the immediate attribute.</description>
+         <property-name>actionListener</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+         <property-extension>
+            <property-metadata>
+               <preferred>true</preferred>
+            </property-metadata>
+         </property-extension>
+      </property><!--javax.faces.HtmlCommandButton properties-->
+      <property>
+         <description>CSS styling instructions.</description>
+         <property-name>style</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>The CSS class for this element. Corresponds to the HTML 'class' attribute.</description>
+         <property-name>styleClass</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>The direction of text display, either 'ltr' (left-to-right) or 'rtl' (right-to-left).</description>
+         <property-name>dir</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>The base language of this document.</description>
+         <property-name>lang</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>An advisory title for this element. Often used by the user agent as a tooltip.
+            </description>
+         <property-name>title</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Specifies a script to be invoked when the element loses focus.</description>
+         <property-name>onblur</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Specifies a script to be invoked when the element receives focus.</description>
+         <property-name>onfocus</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Specifies a script to be invoked when the element is modified.</description>
+         <property-name>onchange</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Specifies a script to be invoked when the element is selected.</description>
+         <property-name>onselect</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Absolute or relative URL of the image</description>
+         <property-name>image</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Specifies alternative text that can be used by a browser that can't show this element.
+            </description>
+         <property-name>alt</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>A hint to the user agent about the content type of the linked resource.</description>
+         <property-name>type</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.Command</component-family>
+         <renderer-type>javax.faces.Button</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>
+            This tag renders as an HTML a element.
+
+            Unless otherwise specified, all attributes accept static values
+            or EL expressions.
+        </description>
+      <component-type>javax.faces.HtmlCommandLink</component-type>
+      <component-class>javax.faces.component.html.HtmlCommandLink</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Command properties-->
+      <property>
+         <description>A boolean value that identifies the phase during which action events
+        should fire. During normal event processing, action methods and
+        action listener methods are fired during the "invoke application"
+        phase of request processing. If this attribute is set to "true",
+        these methods are fired instead at the end of the "apply request
+        values" phase.</description>
+         <property-name>immediate</property-name>
+         <property-class>boolean</property-class>
+      </property>
+      <property>
+         <description>The initial value of this component.</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>Specifies the action to take when this command is invoked.
+        If the value is an expression, it is expected to be a method
+        binding EL expression that identifies an action method. An action method
+        accepts no parameters and has a String return value, called the action
+        outcome, that identifies the next view displayed. The phase that this
+        event is fired in can be controlled via the immediate attribute.
+
+        If the value is a string literal, it is treated as a navigation outcome
+        for the current view.  This is functionally equivalent to a reference to
+        an action method that returns the string literal.</description>
+         <property-name>actionExpression</property-name>
+         <property-class>javax.el.MethodExpression</property-class>
+         <property-extension>
+            <property-metadata>
+               <preferred>true</preferred>
+            </property-metadata>
+         </property-extension>
+      </property>
+      <property>
+         <description>A method binding EL expression that identifies an action listener method
+        to be invoked if this component is activated by the user. An action
+        listener method accepts a parameter of type javax.faces.event.ActionEvent
+        and returns void. The phase that this event is fired in can be controlled
+        via the immediate attribute.</description>
+         <property-name>actionListener</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+         <property-extension>
+            <property-metadata>
+               <preferred>true</preferred>
+            </property-metadata>
+         </property-extension>
+      </property><!--javax.faces.HtmlCommandLink properties-->
+      <property>
+         <description>CSS styling instructions.</description>
+         <property-name>style</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>The CSS class for this element. Corresponds to the HTML 'class' attribute.</description>
+         <property-name>styleClass</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>The direction of text display, either 'ltr' (left-to-right) or 'rtl' (right-to-left).</description>
+         <property-name>dir</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>The base language of this document.</description>
+         <property-name>lang</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>An advisory title for this element. Often used by the user agent as a tooltip.
+            </description>
+         <property-name>title</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Script to be invoked when the element is clicked.</description>
+         <property-name>onclick</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Script to be invoked when the element is double-clicked.</description>
+         <property-name>ondblclick</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Script to be invoked when the pointing device is pressed over this element.</description>
+         <property-name>onmousedown</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Script to be invoked when the pointing device is released over this element.
+            </description>
+         <property-name>onmouseup</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Script to be invoked when the pointing device is moved into this element.</description>
+         <property-name>onmouseover</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Script to be invoked when the pointing device is moved while it is in this element.
+            </description>
+         <property-name>onmousemove</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Script to be invoked when the pointing device is moves out of this element.</description>
+         <property-name>onmouseout</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Script to be invoked when a key is pressed over this element.</description>
+         <property-name>onkeypress</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Script to be invoked when a key is pressed down over this element.</description>
+         <property-name>onkeydown</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Script to be invoked when a key is released over this element.</description>
+         <property-name>onkeyup</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Specifies a script to be invoked when the element loses focus.</description>
+         <property-name>onblur</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Specifies a script to be invoked when the element receives focus.</description>
+         <property-name>onfocus</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Sets the access key for this element.</description>
+         <property-name>accesskey</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Specifies the character encoding of the linked resource.</description>
+         <property-name>charset</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>The position and the shape of the hotspot.</description>
+         <property-name>coords</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>The language code for teh link.</description>
+         <property-name>hreflang</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>When true, this element cannot receive focus.</description>
+         <property-name>disabled</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>A space-separated list of links defining the relationship from the current document
+                to the anchor specified by this hyperlink</description>
+         <property-name>rel</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>A space-separated list of Reverselinks.</description>
+         <property-name>rev</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>The shape of the hot spot on the screen (for use in client-side image maps). Valid values are: default (entire region); rect (rectangular region); circle (circular region); and poly (polygonal region).</description>
+         <property-name>shape</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Names the frame that should display content generated by invoking this action.
+            </description>
+         <property-name>target</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Specifies the position of this element within the tab order of the document.
+            </description>
+         <property-name>tabindex</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>A hint to the user agent about the content type of the linked resource.</description>
+         <property-name>type</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.Command</component-family>
+         <renderer-type>javax.faces.Link</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>
+            &lt;p&gt;
+            This component renders an HTML table element.
+            &lt;/p&gt;
+            &lt;p&gt;
+            This component may have nested facets with names "header" and "footer"
+            to specify header and footer rows.
+            &lt;/p&gt;
+            &lt;p&gt;
+            The non-facet children of this component are expected to be
+            h:column components which describe the columns of the table.
+            &lt;/p&gt;
+            
+        </description>
+      <component-type>javax.faces.HtmlDataTable</component-type>
+      <component-class>javax.faces.component.html.HtmlDataTable</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Data properties-->
+      <property>
+         <description>An EL expression that specifies the data model that backs this table.  The value can be of any type.
+
+				A value of type DataModel is used directly.  Array-like parameters of type java.util.List, array of Object,
+				java.sql.ResultSet, or javax.servlet.jsp.jstl.sql.Result are wrapped in a DataModel.
+
+				Other values are wrapped in a DataModel as a single row.</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>Defines the name of the request-scope variable that will hold the current row during iteration.  This value must be a static value.</description>
+         <property-name>var</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>The number of rows to be displayed.  Specify zero for all remaining rows in the table.</description>
+         <property-name>rows</property-name>
+         <property-class>int</property-class>
+      </property>
+      <property>
+         <description>The index of the first row to be displayed, where 0 is the first row.</description>
+         <property-name>first</property-name>
+         <property-class>int</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.Data</component-family>
+         <renderer-type>javax.faces.Table</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>Renders an HTML form element.
+Unless otherwise specified, all attributes accept static values
+or EL expressions.</description>
+      <component-type>javax.faces.HtmlForm</component-type>
+      <component-class>javax.faces.component.html.HtmlForm</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Form properties-->
+      <property>
+         <description>Defines a flag indicating whether or not this form should prepend its id to its descendent's id during the clientId generation process. If this flag is not set, the default value is true.</description>
+         <property-name>prependId</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.HtmlForm properties-->
+      <property>
+         <description>Names the frame that should display content generated by invoking this action.
+            </description>
+         <property-name>target</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Provides a comma-separated list of content types that the
+server processing this form can handle.</description>
+         <property-name>accept</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>The list of character encodings accepted by the server for this form.</description>
+         <property-name>acceptcharset</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>The content type used to submit this form to the server.</description>
+         <property-name>enctype</property-name>
+         <property-class>java.lang.String</property-class>
+         <default-value>application/x-www-form-urlencoded</default-value>
+      </property>
+      <property>
+         <description>Script to be invoked when this form is reset.</description>
+         <property-name>onreset</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Script to be invoked when this form is submitted.</description>
+         <property-name>onsubmit</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.Form</component-family>
+         <renderer-type>javax.faces.Form</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>
+          &lt;p&gt;Renders an HTML img element.&lt;/p&gt;
+          &lt;p&gt;
+          The value attribute specifies the url of the image to be displayed;
+          see the documentation for attribute "url" for more details.
+          &lt;/p&gt;
+          
+        </description>
+      <component-type>javax.faces.HtmlGraphicImage</component-type>
+      <component-class>javax.faces.component.html.HtmlGraphicImage</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Graphic properties-->
+      <property>
+         <description>The value property of the UIGraphic</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>
+                &lt;p&gt;
+                The URL of the image. If the URL starts with a '/', it is relative
+                to the context path of the web application.
+                &lt;/p&gt;
+                &lt;p&gt;
+                This attribute is an alias for the "value" property.
+                &lt;/p&gt;
+                
+            </description>
+         <property-name>url</property-name>
+         <property-class>java.lang.String</property-class>
+      </property><!--javax.faces.HtmlGraphicImage properties-->
+      <property>
+         <description>Overrides the natural height of this image, by specifying height in pixels.</description>
+         <property-name>height</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Overrides the natural width of this image, by specifying width in pixels.</description>
+         <property-name>width</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>A link to a long description of the image.</description>
+         <property-name>longdesc</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Specifies an image map to use with this image.</description>
+         <property-name>usemap</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Specifies server-side image map handling for this image.</description>
+         <property-name>ismap</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.Graphic</component-family>
+         <renderer-type>javax.faces.Image</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>Renders as an HTML input tag with its type set to "hidden".
+Unless otherwise specified, all attributes accept static values
+or EL expressions.</description>
+      <component-type>javax.faces.HtmlInputHidden</component-type>
+      <component-class>javax.faces.component.html.HtmlInputHidden</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Output properties-->
+      <property>
+         <description>The initial value of this component.</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>
+              An expression that specifies the Converter for this component.
+              The value can either be a static value (ID) or an EL expression.
+              When a static id is specified, an instance of the converter type
+              registered with that id is used. When this is an EL expression,
+              the result of evaluating the expression must be an object that
+              implements the Converter interface.
+              
+            </description>
+         <property-name>converter</property-name>
+         <property-class>javax.faces.convert.Converter</property-class>
+      </property><!--javax.faces.Input properties-->
+      <property>
+         <description>A boolean value that identifies the phase during which action events
+        should fire. During normal event processing, action methods and
+        action listener methods are fired during the "invoke application"
+        phase of request processing. If this attribute is set to "true",
+        these methods are fired instead at the end of the "apply request
+        values" phase.</description>
+         <property-name>immediate</property-name>
+         <property-class>boolean</property-class>
+      </property>
+      <property>
+         <description>A boolean value that indicates whether a value is required. Default value: false.</description>
+         <property-name>required</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>Text of the converter message.</description>
+         <property-name>converterMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown if a required value is not submitted.</description>
+         <property-name>requiredMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during the validation phase for this component. It is
+              expected to check the submitted value for this component, and if not acceptable
+              then report a validation error for the component.
+            </description>
+         <property-name>validator</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown, if validation fails.</description>
+         <property-name>validatorMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during postback processing for the current view if the
+              submitted value for this component is not equal to the value which the "value" expression
+              for this component returns. The phase in which this method is invoked can be controlled
+              via the immediate attribute.
+            </description>
+         <property-name>valueChangeListener</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>whether the component's value is currently valid</description>
+         <property-name>valid</property-name>
+         <property-class>boolean</property-class>
+         <default-value>true</default-value>
+      </property>
+      <property>
+         <description>
+                whether a local value is currently set.  If false, values are being retrieved from any attached ValueBinding
+            </description>
+         <property-name>localValueSet</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>the current submitted value.  This value,
+if non-null, is set by the Renderer to store a possibly invalid value
+for later conversion or redisplay, and has not yet been converted
+into the proper type for this component instance.   This method
+should only be used by the decode() and validate() method
+of this component, or its corresponding Renderer;  however, user code
+may manually set it to null to erase any submitted value.
+            </description>
+         <property-name>submittedValue</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.Input</component-family>
+         <renderer-type>javax.faces.Hidden</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>Renders as an HTML input tag with its type set to "password".
+Unless otherwise specified, all attributes accept static values
+or EL expressions.</description>
+      <component-type>javax.faces.HtmlInputSecret</component-type>
+      <component-class>javax.faces.component.html.HtmlInputSecret</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Output properties-->
+      <property>
+         <description>The initial value of this component.</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>
+              An expression that specifies the Converter for this component.
+              The value can either be a static value (ID) or an EL expression.
+              When a static id is specified, an instance of the converter type
+              registered with that id is used. When this is an EL expression,
+              the result of evaluating the expression must be an object that
+              implements the Converter interface.
+              
+            </description>
+         <property-name>converter</property-name>
+         <property-class>javax.faces.convert.Converter</property-class>
+      </property><!--javax.faces.Input properties-->
+      <property>
+         <description>A boolean value that identifies the phase during which action events
+        should fire. During normal event processing, action methods and
+        action listener methods are fired during the "invoke application"
+        phase of request processing. If this attribute is set to "true",
+        these methods are fired instead at the end of the "apply request
+        values" phase.</description>
+         <property-name>immediate</property-name>
+         <property-class>boolean</property-class>
+      </property>
+      <property>
+         <description>A boolean value that indicates whether a value is required. Default value: false.</description>
+         <property-name>required</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>Text of the converter message.</description>
+         <property-name>converterMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown if a required value is not submitted.</description>
+         <property-name>requiredMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during the validation phase for this component. It is
+              expected to check the submitted value for this component, and if not acceptable
+              then report a validation error for the component.
+            </description>
+         <property-name>validator</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown, if validation fails.</description>
+         <property-name>validatorMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during postback processing for the current view if the
+              submitted value for this component is not equal to the value which the "value" expression
+              for this component returns. The phase in which this method is invoked can be controlled
+              via the immediate attribute.
+            </description>
+         <property-name>valueChangeListener</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>whether the component's value is currently valid</description>
+         <property-name>valid</property-name>
+         <property-class>boolean</property-class>
+         <default-value>true</default-value>
+      </property>
+      <property>
+         <description>
+                whether a local value is currently set.  If false, values are being retrieved from any attached ValueBinding
+            </description>
+         <property-name>localValueSet</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>the current submitted value.  This value,
+if non-null, is set by the Renderer to store a possibly invalid value
+for later conversion or redisplay, and has not yet been converted
+into the proper type for this component instance.   This method
+should only be used by the decode() and validate() method
+of this component, or its corresponding Renderer;  however, user code
+may manually set it to null to erase any submitted value.
+            </description>
+         <property-name>submittedValue</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property><!--javax.faces.HtmlInputSecret properties-->
+      <property>
+         <description>Flag indicating that any existing value in this field should be rendered when the form is created. Because this is a potential security risk, password values are not displayed by default.</description>
+         <property-name>redisplay</property-name>
+         <property-class>boolean</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.Input</component-family>
+         <renderer-type>javax.faces.Secret</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>Renders a HTML input element.
+Unless otherwise specified, all attributes accept static values
+or EL expressions.</description>
+      <component-type>javax.faces.HtmlInputText</component-type>
+      <component-class>javax.faces.component.html.HtmlInputText</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Output properties-->
+      <property>
+         <description>The initial value of this component.</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>
+              An expression that specifies the Converter for this component.
+              The value can either be a static value (ID) or an EL expression.
+              When a static id is specified, an instance of the converter type
+              registered with that id is used. When this is an EL expression,
+              the result of evaluating the expression must be an object that
+              implements the Converter interface.
+              
+            </description>
+         <property-name>converter</property-name>
+         <property-class>javax.faces.convert.Converter</property-class>
+      </property><!--javax.faces.Input properties-->
+      <property>
+         <description>A boolean value that identifies the phase during which action events
+        should fire. During normal event processing, action methods and
+        action listener methods are fired during the "invoke application"
+        phase of request processing. If this attribute is set to "true",
+        these methods are fired instead at the end of the "apply request
+        values" phase.</description>
+         <property-name>immediate</property-name>
+         <property-class>boolean</property-class>
+      </property>
+      <property>
+         <description>A boolean value that indicates whether a value is required. Default value: false.</description>
+         <property-name>required</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>Text of the converter message.</description>
+         <property-name>converterMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown if a required value is not submitted.</description>
+         <property-name>requiredMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during the validation phase for this component. It is
+              expected to check the submitted value for this component, and if not acceptable
+              then report a validation error for the component.
+            </description>
+         <property-name>validator</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown, if validation fails.</description>
+         <property-name>validatorMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during postback processing for the current view if the
+              submitted value for this component is not equal to the value which the "value" expression
+              for this component returns. The phase in which this method is invoked can be controlled
+              via the immediate attribute.
+            </description>
+         <property-name>valueChangeListener</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>whether the component's value is currently valid</description>
+         <property-name>valid</property-name>
+         <property-class>boolean</property-class>
+         <default-value>true</default-value>
+      </property>
+      <property>
+         <description>
+                whether a local value is currently set.  If false, values are being retrieved from any attached ValueBinding
+            </description>
+         <property-name>localValueSet</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>the current submitted value.  This value,
+if non-null, is set by the Renderer to store a possibly invalid value
+for later conversion or redisplay, and has not yet been converted
+into the proper type for this component instance.   This method
+should only be used by the decode() and validate() method
+of this component, or its corresponding Renderer;  however, user code
+may manually set it to null to erase any submitted value.
+            </description>
+         <property-name>submittedValue</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.Input</component-family>
+         <renderer-type>javax.faces.Text</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>Renders a HTML textarea element.
+Unless otherwise specified, all attributes accept static values
+or EL expressions.</description>
+      <component-type>javax.faces.HtmlInputTextarea</component-type>
+      <component-class>javax.faces.component.html.HtmlInputTextarea</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Output properties-->
+      <property>
+         <description>The initial value of this component.</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>
+              An expression that specifies the Converter for this component.
+              The value can either be a static value (ID) or an EL expression.
+              When a static id is specified, an instance of the converter type
+              registered with that id is used. When this is an EL expression,
+              the result of evaluating the expression must be an object that
+              implements the Converter interface.
+              
+            </description>
+         <property-name>converter</property-name>
+         <property-class>javax.faces.convert.Converter</property-class>
+      </property><!--javax.faces.Input properties-->
+      <property>
+         <description>A boolean value that identifies the phase during which action events
+        should fire. During normal event processing, action methods and
+        action listener methods are fired during the "invoke application"
+        phase of request processing. If this attribute is set to "true",
+        these methods are fired instead at the end of the "apply request
+        values" phase.</description>
+         <property-name>immediate</property-name>
+         <property-class>boolean</property-class>
+      </property>
+      <property>
+         <description>A boolean value that indicates whether a value is required. Default value: false.</description>
+         <property-name>required</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>Text of the converter message.</description>
+         <property-name>converterMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown if a required value is not submitted.</description>
+         <property-name>requiredMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during the validation phase for this component. It is
+              expected to check the submitted value for this component, and if not acceptable
+              then report a validation error for the component.
+            </description>
+         <property-name>validator</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown, if validation fails.</description>
+         <property-name>validatorMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during postback processing for the current view if the
+              submitted value for this component is not equal to the value which the "value" expression
+              for this component returns. The phase in which this method is invoked can be controlled
+              via the immediate attribute.
+            </description>
+         <property-name>valueChangeListener</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>whether the component's value is currently valid</description>
+         <property-name>valid</property-name>
+         <property-class>boolean</property-class>
+         <default-value>true</default-value>
+      </property>
+      <property>
+         <description>
+                whether a local value is currently set.  If false, values are being retrieved from any attached ValueBinding
+            </description>
+         <property-name>localValueSet</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>the current submitted value.  This value,
+if non-null, is set by the Renderer to store a possibly invalid value
+for later conversion or redisplay, and has not yet been converted
+into the proper type for this component instance.   This method
+should only be used by the decode() and validate() method
+of this component, or its corresponding Renderer;  however, user code
+may manually set it to null to erase any submitted value.
+            </description>
+         <property-name>submittedValue</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property><!--javax.faces.HtmlInputTextarea properties-->
+      <property>
+         <description>The width of this element, in characters.</description>
+         <property-name>cols</property-name>
+         <property-class>int</property-class>
+         <default-value>-2147483648</default-value>
+      </property>
+      <property>
+         <description>The height of this element, in characters.</description>
+         <property-name>rows</property-name>
+         <property-class>int</property-class>
+         <default-value>-2147483648</default-value>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.Input</component-family>
+         <renderer-type>javax.faces.Textarea</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>
+          Renders text displaying information about the first FacesMessage
+          that is assigned to the component referenced by the "for" attribute.
+        </description>
+      <component-type>javax.faces.HtmlMessage</component-type>
+      <component-class>javax.faces.component.html.HtmlMessage</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Message properties-->
+      <property>
+         <description>
+              The ID of the component whose attached FacesMessage object (if present) should be
+              diplayed by this component.
+            </description>
+         <property-name>for</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              Specifies whether the detailed information from the message should be shown. Default to false.
+            </description>
+         <property-name>showDetail</property-name>
+         <property-class>boolean</property-class>
+         <default-value>true</default-value>
+      </property>
+      <property>
+         <description>
+              Specifies whether the summary information from the message should be shown. Defaults to true.
+            </description>
+         <property-name>showSummary</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.Message</component-family>
+         <renderer-type>javax.faces.Message</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>Renders all or some FacesMessages depending on the "for" and
+"globalOnly" attributes:&lt;br&gt;
+&lt;ul&gt;
+&lt;li&gt;If globalOnly = true, only global messages, that have no
+associated clientId, will be displayed.&lt;/li&gt;
+&lt;li&gt;else if there is a "for" attribute, only messages that are
+assigned to the component referenced by the "for" attribute
+are displayed.&lt;/li&gt;
+&lt;li&gt;else all messages are displayed.&lt;/li&gt;
+&lt;/ul&gt;
+
+Unless otherwise specified, all attributes accept static values
+or EL expressions.</description>
+      <component-type>javax.faces.HtmlMessages</component-type>
+      <component-class>javax.faces.component.html.HtmlMessages</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Messages properties-->
+      <property>
+         <description>
+              Specifies whether only messages (FacesMessage objects) not associated with a
+              specific component should be displayed, ie whether messages should be ignored
+              if they are attached to a particular component. Defaults to false.
+            </description>
+         <property-name>globalOnly</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>
+              Specifies whether the detailed information from the message should be shown. Defaults to false.
+            </description>
+         <property-name>showDetail</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>
+              Specifies whether the summary information from the message should be shown. Defaults to true.
+            </description>
+         <property-name>showSummary</property-name>
+         <property-class>boolean</property-class>
+         <default-value>true</default-value>
+      </property><!--javax.faces.HtmlMessages properties-->
+      <property>
+         <description>The layout: "table" or "list". Default: list</description>
+         <property-name>layout</property-name>
+         <property-class>java.lang.String</property-class>
+         <default-value>list</default-value>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.Messages</component-family>
+         <renderer-type>javax.faces.Messages</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>Renders as text, applying the child f:param values to the value
+attribute as a MessageFormat string.  If this element has an ID
+or CSS style properties, the text is wrapped in a span element.
+
+Unless otherwise specified, all attributes accept static values
+or EL expressions.</description>
+      <component-type>javax.faces.HtmlOutputFormat</component-type>
+      <component-class>javax.faces.component.html.HtmlOutputFormat</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Output properties-->
+      <property>
+         <description>The initial value of this component.</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>
+              An expression that specifies the Converter for this component.
+              The value can either be a static value (ID) or an EL expression.
+              When a static id is specified, an instance of the converter type
+              registered with that id is used. When this is an EL expression,
+              the result of evaluating the expression must be an object that
+              implements the Converter interface.
+              
+            </description>
+         <property-name>converter</property-name>
+         <property-class>javax.faces.convert.Converter</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.Output</component-family>
+         <renderer-type>javax.faces.Format</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>Renders a HTML label element.
+    In addition to the JSF specification, MyFaces allows it to directly
+    give an output text via the "value" attribute.
+    Unless otherwise specified, all attributes accept static values
+    or EL expressions.</description>
+      <component-type>javax.faces.HtmlOutputLabel</component-type>
+      <component-class>javax.faces.component.html.HtmlOutputLabel</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Output properties-->
+      <property>
+         <description>The initial value of this component.</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>
+              An expression that specifies the Converter for this component.
+              The value can either be a static value (ID) or an EL expression.
+              When a static id is specified, an instance of the converter type
+              registered with that id is used. When this is an EL expression,
+              the result of evaluating the expression must be an object that
+              implements the Converter interface.
+              
+            </description>
+         <property-name>converter</property-name>
+         <property-class>javax.faces.convert.Converter</property-class>
+      </property><!--javax.faces.HtmlOutputLabel properties-->
+      <property>
+         <description>Client ID the label should be displayed for.</description>
+         <property-name>for</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.Output</component-family>
+         <renderer-type>javax.faces.Label</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>Renders a HTML a element.  Child f:param elements are added to the href
+attribute as query parameters.  Other children are rendered as the link text or image.
+Unless otherwise specified, all attributes accept static values
+or EL expressions.</description>
+      <component-type>javax.faces.HtmlOutputLink</component-type>
+      <component-class>javax.faces.component.html.HtmlOutputLink</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Output properties-->
+      <property>
+         <description>The initial value of this component.</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>
+              An expression that specifies the Converter for this component.
+              The value can either be a static value (ID) or an EL expression.
+              When a static id is specified, an instance of the converter type
+              registered with that id is used. When this is an EL expression,
+              the result of evaluating the expression must be an object that
+              implements the Converter interface.
+              
+            </description>
+         <property-name>converter</property-name>
+         <property-class>javax.faces.convert.Converter</property-class>
+      </property><!--javax.faces.HtmlOutputLink properties-->
+      <property>
+         <description>Sets the access key for this element.</description>
+         <property-name>accesskey</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Specifies the character encoding of the linked resource.</description>
+         <property-name>charset</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>The position and the shape of the hotspot.</description>
+         <property-name>coords</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>The language code for teh link.</description>
+         <property-name>hreflang</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>When true, this element cannot receive focus.</description>
+         <property-name>disabled</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>A space-separated list of links defining the relationship from the current document
+                to the anchor specified by this hyperlink</description>
+         <property-name>rel</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>A space-separated list of Reverselinks.</description>
+         <property-name>rev</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>The shape of the hot spot on the screen (for use in client-side image maps). Valid values are: default (entire region); rect (rectangular region); circle (circular region); and poly (polygonal region).</description>
+         <property-name>shape</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Names the frame that should display content generated by invoking this action.
+            </description>
+         <property-name>target</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Specifies the position of this element within the tab order of the document.
+            </description>
+         <property-name>tabindex</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>A hint to the user agent about the content type of the linked resource.</description>
+         <property-name>type</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.Output</component-family>
+         <renderer-type>javax.faces.Link</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>Renders the value of the associated UIOutput component.  If this
+element has an ID or CSS style properties, the text is wrapped in
+a span element.
+Unless otherwise specified, all attributes accept static values
+or EL expressions.</description>
+      <component-type>javax.faces.HtmlOutputText</component-type>
+      <component-class>javax.faces.component.html.HtmlOutputText</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Output properties-->
+      <property>
+         <description>The initial value of this component.</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>
+              An expression that specifies the Converter for this component.
+              The value can either be a static value (ID) or an EL expression.
+              When a static id is specified, an instance of the converter type
+              registered with that id is used. When this is an EL expression,
+              the result of evaluating the expression must be an object that
+              implements the Converter interface.
+              
+            </description>
+         <property-name>converter</property-name>
+         <property-class>javax.faces.convert.Converter</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.Output</component-family>
+         <renderer-type>javax.faces.Text</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>
+           &lt;p&gt;
+           This element renders as an HTML table with specified number of columns.
+           &lt;/p&gt;
+           &lt;p&gt;
+           Children of this element are rendered as cells in the table, filling
+           rows from left to right.  Facets named "header" and "footer" are optional
+           and specify the content of the thead and tfoot rows, respectively.
+           &lt;/p&gt;
+           
+        </description>
+      <component-type>javax.faces.HtmlPanelGrid</component-type>
+      <component-class>javax.faces.component.html.HtmlPanelGrid</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.HtmlPanelGrid properties-->
+      <property>
+         <description>Specifies the number of columns in the grid.</description>
+         <property-name>columns</property-name>
+         <property-class>int</property-class>
+         <default-value>1</default-value>
+      </property>
+      <property>
+         <description>CSS style to be used for the caption.</description>
+         <property-name>captionStyle</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>CSS class to be used for the caption.</description>
+         <property-name>captionClass</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A comma separated list of CSS class names to apply to td elements in each column.
+              The first item in the list gets applied to the first column, the second item in
+              the list gets applied to the second column, etc. After all entries in the list
+              have been used, the list repeats again.
+            </description>
+         <property-name>columnClasses</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>CSS class to be used for the footer.</description>
+         <property-name>footerClass</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>CSS class to be used for the header.</description>
+         <property-name>headerClass</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A comma separated list of CSS class names to apply to td elements in each row.
+              The first item in the list gets applied to the first row, the second item in
+              the list gets applied to the second row, etc. After all entries in the list
+              have been used, the list repeats again.
+              
+            </description>
+         <property-name>rowClasses</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.Panel</component-family>
+         <renderer-type>javax.faces.Grid</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>This element is used to group other components where the
+specification requires one child element. If any of the HTML or
+CSS attributes are set, its content is rendered within a span element.
+Unless otherwise specified, all attributes accept static values
+or EL expressions.</description>
+      <component-type>javax.faces.HtmlPanelGroup</component-type>
+      <component-class>javax.faces.component.html.HtmlPanelGroup</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.HtmlPanelGroup properties-->
+      <property>
+         <description>CSS styling instructions.</description>
+         <property-name>style</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>The CSS class for this element. Corresponds to the HTML 'class' attribute.</description>
+         <property-name>styleClass</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>The type of layout markup to use when rendering this group. If the value is "block"
+the renderer must produce an HTML "div" element. Otherwise HTML "span" element must be produced.</description>
+         <property-name>layout</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.Panel</component-family>
+         <renderer-type>javax.faces.Group</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>Allow the user to choose a "true" or "false" value, presented as a
+checkbox.
+&lt;p&gt;
+Renders as an HTML input tag with its type set to "checkbox", and
+its name attribute set to the id. The "checked" attribute is rendered
+if the value of this component is true.
+&lt;p&gt;
+Unless otherwise specified, all attributes accept static values
+or EL expressions.</description>
+      <component-type>javax.faces.HtmlSelectBooleanCheckbox</component-type>
+      <component-class>javax.faces.component.html.HtmlSelectBooleanCheckbox</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Output properties-->
+      <property>
+         <description>The initial value of this component.</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>
+              An expression that specifies the Converter for this component.
+              The value can either be a static value (ID) or an EL expression.
+              When a static id is specified, an instance of the converter type
+              registered with that id is used. When this is an EL expression,
+              the result of evaluating the expression must be an object that
+              implements the Converter interface.
+              
+            </description>
+         <property-name>converter</property-name>
+         <property-class>javax.faces.convert.Converter</property-class>
+      </property><!--javax.faces.Input properties-->
+      <property>
+         <description>A boolean value that identifies the phase during which action events
+        should fire. During normal event processing, action methods and
+        action listener methods are fired during the "invoke application"
+        phase of request processing. If this attribute is set to "true",
+        these methods are fired instead at the end of the "apply request
+        values" phase.</description>
+         <property-name>immediate</property-name>
+         <property-class>boolean</property-class>
+      </property>
+      <property>
+         <description>A boolean value that indicates whether a value is required. Default value: false.</description>
+         <property-name>required</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>Text of the converter message.</description>
+         <property-name>converterMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown if a required value is not submitted.</description>
+         <property-name>requiredMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during the validation phase for this component. It is
+              expected to check the submitted value for this component, and if not acceptable
+              then report a validation error for the component.
+            </description>
+         <property-name>validator</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown, if validation fails.</description>
+         <property-name>validatorMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during postback processing for the current view if the
+              submitted value for this component is not equal to the value which the "value" expression
+              for this component returns. The phase in which this method is invoked can be controlled
+              via the immediate attribute.
+            </description>
+         <property-name>valueChangeListener</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>whether the component's value is currently valid</description>
+         <property-name>valid</property-name>
+         <property-class>boolean</property-class>
+         <default-value>true</default-value>
+      </property>
+      <property>
+         <description>
+                whether a local value is currently set.  If false, values are being retrieved from any attached ValueBinding
+            </description>
+         <property-name>localValueSet</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>the current submitted value.  This value,
+if non-null, is set by the Renderer to store a possibly invalid value
+for later conversion or redisplay, and has not yet been converted
+into the proper type for this component instance.   This method
+should only be used by the decode() and validate() method
+of this component, or its corresponding Renderer;  however, user code
+may manually set it to null to erase any submitted value.
+            </description>
+         <property-name>submittedValue</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.SelectBoolean</component-family>
+         <renderer-type>javax.faces.Checkbox</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>Allow the user to select zero or more items from a set of
+available options. This is presented as a table with one cell per
+available option; each cell contains a checkbox and the option's
+label. The "layout" attribute determines whether the checkboxes
+are laid out horizontally or vertically.
+&lt;p&gt;
+The set of available options is defined by adding child
+f:selectItem or f:selectItems components to this component.
+&lt;p&gt;
+The value attribute must be a value-binding expression to a
+property of type List, Object array or primitive array. That
+"collection" is expected to contain objects of the same type as
+SelectItem.getValue() returns for the child SelectItem objects.
+On rendering, any child whose value is in the list will be
+selected initially. During the update phase, the property setter
+is called to replace the original collection with a completely
+new collection object of the appropriate type. The new collection
+object contains the value of each child SelectItem object that
+is currently selected.
+&lt;p&gt;
+Unless otherwise specified, all attributes accept static values
+or EL expressions.</description>
+      <component-type>javax.faces.HtmlSelectManyCheckbox</component-type>
+      <component-class>javax.faces.component.html.HtmlSelectManyCheckbox</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Output properties-->
+      <property>
+         <description>The initial value of this component.</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>
+              An expression that specifies the Converter for this component.
+              The value can either be a static value (ID) or an EL expression.
+              When a static id is specified, an instance of the converter type
+              registered with that id is used. When this is an EL expression,
+              the result of evaluating the expression must be an object that
+              implements the Converter interface.
+              
+            </description>
+         <property-name>converter</property-name>
+         <property-class>javax.faces.convert.Converter</property-class>
+      </property><!--javax.faces.Input properties-->
+      <property>
+         <description>A boolean value that identifies the phase during which action events
+        should fire. During normal event processing, action methods and
+        action listener methods are fired during the "invoke application"
+        phase of request processing. If this attribute is set to "true",
+        these methods are fired instead at the end of the "apply request
+        values" phase.</description>
+         <property-name>immediate</property-name>
+         <property-class>boolean</property-class>
+      </property>
+      <property>
+         <description>A boolean value that indicates whether a value is required. Default value: false.</description>
+         <property-name>required</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>Text of the converter message.</description>
+         <property-name>converterMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown if a required value is not submitted.</description>
+         <property-name>requiredMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during the validation phase for this component. It is
+              expected to check the submitted value for this component, and if not acceptable
+              then report a validation error for the component.
+            </description>
+         <property-name>validator</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown, if validation fails.</description>
+         <property-name>validatorMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during postback processing for the current view if the
+              submitted value for this component is not equal to the value which the "value" expression
+              for this component returns. The phase in which this method is invoked can be controlled
+              via the immediate attribute.
+            </description>
+         <property-name>valueChangeListener</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>whether the component's value is currently valid</description>
+         <property-name>valid</property-name>
+         <property-class>boolean</property-class>
+         <default-value>true</default-value>
+      </property>
+      <property>
+         <description>
+                whether a local value is currently set.  If false, values are being retrieved from any attached ValueBinding
+            </description>
+         <property-name>localValueSet</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>the current submitted value.  This value,
+if non-null, is set by the Renderer to store a possibly invalid value
+for later conversion or redisplay, and has not yet been converted
+into the proper type for this component instance.   This method
+should only be used by the decode() and validate() method
+of this component, or its corresponding Renderer;  however, user code
+may manually set it to null to erase any submitted value.
+            </description>
+         <property-name>submittedValue</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.SelectMany</component-family>
+         <renderer-type>javax.faces.Checkbox</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>Allow the user to select zero or more items from a set of
+available options. This is presented as a listbox which allows
+multiple rows in the list to be selected simultaneously.
+&lt;p&gt;
+The set of available options is defined by adding child
+f:selectItem or f:selectItems components to this component.
+&lt;p&gt;
+The list is rendered as an HTML select element. The "multiple"
+attribute is set on the element and the size attribute is set to
+the provided value, defaulting to the number of items in the list
+if no value is provided. If the size is set to 1, then a
+"drop-down" list (aka "combo-box") is presented, though if this is
+the intention then a selectManyMenu should be used instead.
+&lt;p&gt;
+The value attribute must be a value-binding expression to a
+property of type List, Object array or primitive array. That
+"collection" is expected to contain objects of the same type as
+SelectItem.getValue() returns for the child SelectItem objects.
+On rendering, any child whose value is in the list will be
+selected initially. During the update phase, the property is set
+to contain a "collection" of values for those child SelectItem
+objects that are currently selected.
+&lt;p&gt;
+Unless otherwise specified, all attributes accept static values
+or EL expressions.</description>
+      <component-type>javax.faces.HtmlSelectManyListbox</component-type>
+      <component-class>javax.faces.component.html.HtmlSelectManyListbox</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Output properties-->
+      <property>
+         <description>The initial value of this component.</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>
+              An expression that specifies the Converter for this component.
+              The value can either be a static value (ID) or an EL expression.
+              When a static id is specified, an instance of the converter type
+              registered with that id is used. When this is an EL expression,
+              the result of evaluating the expression must be an object that
+              implements the Converter interface.
+              
+            </description>
+         <property-name>converter</property-name>
+         <property-class>javax.faces.convert.Converter</property-class>
+      </property><!--javax.faces.Input properties-->
+      <property>
+         <description>A boolean value that identifies the phase during which action events
+        should fire. During normal event processing, action methods and
+        action listener methods are fired during the "invoke application"
+        phase of request processing. If this attribute is set to "true",
+        these methods are fired instead at the end of the "apply request
+        values" phase.</description>
+         <property-name>immediate</property-name>
+         <property-class>boolean</property-class>
+      </property>
+      <property>
+         <description>A boolean value that indicates whether a value is required. Default value: false.</description>
+         <property-name>required</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>Text of the converter message.</description>
+         <property-name>converterMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown if a required value is not submitted.</description>
+         <property-name>requiredMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during the validation phase for this component. It is
+              expected to check the submitted value for this component, and if not acceptable
+              then report a validation error for the component.
+            </description>
+         <property-name>validator</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown, if validation fails.</description>
+         <property-name>validatorMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during postback processing for the current view if the
+              submitted value for this component is not equal to the value which the "value" expression
+              for this component returns. The phase in which this method is invoked can be controlled
+              via the immediate attribute.
+            </description>
+         <property-name>valueChangeListener</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>whether the component's value is currently valid</description>
+         <property-name>valid</property-name>
+         <property-class>boolean</property-class>
+         <default-value>true</default-value>
+      </property>
+      <property>
+         <description>
+                whether a local value is currently set.  If false, values are being retrieved from any attached ValueBinding
+            </description>
+         <property-name>localValueSet</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>the current submitted value.  This value,
+if non-null, is set by the Renderer to store a possibly invalid value
+for later conversion or redisplay, and has not yet been converted
+into the proper type for this component instance.   This method
+should only be used by the decode() and validate() method
+of this component, or its corresponding Renderer;  however, user code
+may manually set it to null to erase any submitted value.
+            </description>
+         <property-name>submittedValue</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.SelectMany</component-family>
+         <renderer-type>javax.faces.Listbox</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>Allow the user to select zero or more items from a set of available
+options. This is presented as a drop-down "combo-box" which allows
+multiple rows in the list to be selected simultaneously.
+&lt;p&gt;
+The set of available options is defined by adding child
+f:selectItem or f:selectItems components to this component.
+&lt;p&gt;
+Renders as an HTML select element, with the choices made up of
+child f:selectItem or f:selectItems elements. The multiple
+attribute is set and the size attribute is set to 1.
+&lt;p&gt;
+The value attribute must be a value-binding expression to a
+property of type List, Object array or primitive array. That
+"collection" is expected to contain objects of the same type as
+SelectItem.getValue() returns for the child SelectItem objects.
+On rendering, any child whose value is in the list will be
+selected initially. During the update phase, the property is set
+to contain a "collection" of values for those child SelectItem
+objects that are currently selected.
+&lt;p&gt;
+Unless otherwise specified, all attributes accept static values
+or EL expressions.</description>
+      <component-type>javax.faces.HtmlSelectManyMenu</component-type>
+      <component-class>javax.faces.component.html.HtmlSelectManyMenu</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Output properties-->
+      <property>
+         <description>The initial value of this component.</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>
+              An expression that specifies the Converter for this component.
+              The value can either be a static value (ID) or an EL expression.
+              When a static id is specified, an instance of the converter type
+              registered with that id is used. When this is an EL expression,
+              the result of evaluating the expression must be an object that
+              implements the Converter interface.
+              
+            </description>
+         <property-name>converter</property-name>
+         <property-class>javax.faces.convert.Converter</property-class>
+      </property><!--javax.faces.Input properties-->
+      <property>
+         <description>A boolean value that identifies the phase during which action events
+        should fire. During normal event processing, action methods and
+        action listener methods are fired during the "invoke application"
+        phase of request processing. If this attribute is set to "true",
+        these methods are fired instead at the end of the "apply request
+        values" phase.</description>
+         <property-name>immediate</property-name>
+         <property-class>boolean</property-class>
+      </property>
+      <property>
+         <description>A boolean value that indicates whether a value is required. Default value: false.</description>
+         <property-name>required</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>Text of the converter message.</description>
+         <property-name>converterMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown if a required value is not submitted.</description>
+         <property-name>requiredMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during the validation phase for this component. It is
+              expected to check the submitted value for this component, and if not acceptable
+              then report a validation error for the component.
+            </description>
+         <property-name>validator</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown, if validation fails.</description>
+         <property-name>validatorMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during postback processing for the current view if the
+              submitted value for this component is not equal to the value which the "value" expression
+              for this component returns. The phase in which this method is invoked can be controlled
+              via the immediate attribute.
+            </description>
+         <property-name>valueChangeListener</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>whether the component's value is currently valid</description>
+         <property-name>valid</property-name>
+         <property-class>boolean</property-class>
+         <default-value>true</default-value>
+      </property>
+      <property>
+         <description>
+                whether a local value is currently set.  If false, values are being retrieved from any attached ValueBinding
+            </description>
+         <property-name>localValueSet</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>the current submitted value.  This value,
+if non-null, is set by the Renderer to store a possibly invalid value
+for later conversion or redisplay, and has not yet been converted
+into the proper type for this component instance.   This method
+should only be used by the decode() and validate() method
+of this component, or its corresponding Renderer;  however, user code
+may manually set it to null to erase any submitted value.
+            </description>
+         <property-name>submittedValue</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.SelectMany</component-family>
+         <renderer-type>javax.faces.Menu</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>Allow the user to choose one option from a set of options.
+&lt;p&gt;
+Rendered as a listbox with the MULTIPLE attribute set to false.
+&lt;p&gt;
+The available choices are defined via child f:selectItem or
+f:selectItems elements. The size of the listbox defaults to the
+number of available choices; if size is explicitly set to a
+smaller value, then scrollbars will be rendered. If size is set
+to 1 then a "drop-down menu" (aka "combo-box") is rendered, though
+if this is the intent then selectOneMenu should be used instead.
+&lt;p&gt;
+The value attribute of this component is read to determine
+which of the available options is initially selected; its value
+should match the "value" property of one of the child SelectItem
+objects.
+&lt;p&gt;
+On submit of the enclosing form, the value attribute's bound
+property is updated to contain the "value" property from the
+chosen SelectItem.
+&lt;p&gt;
+Unless otherwise specified, all attributes accept static values
+or EL expressions.</description>
+      <component-type>javax.faces.HtmlSelectOneListbox</component-type>
+      <component-class>javax.faces.component.html.HtmlSelectOneListbox</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Output properties-->
+      <property>
+         <description>The initial value of this component.</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>
+              An expression that specifies the Converter for this component.
+              The value can either be a static value (ID) or an EL expression.
+              When a static id is specified, an instance of the converter type
+              registered with that id is used. When this is an EL expression,
+              the result of evaluating the expression must be an object that
+              implements the Converter interface.
+              
+            </description>
+         <property-name>converter</property-name>
+         <property-class>javax.faces.convert.Converter</property-class>
+      </property><!--javax.faces.Input properties-->
+      <property>
+         <description>A boolean value that identifies the phase during which action events
+        should fire. During normal event processing, action methods and
+        action listener methods are fired during the "invoke application"
+        phase of request processing. If this attribute is set to "true",
+        these methods are fired instead at the end of the "apply request
+        values" phase.</description>
+         <property-name>immediate</property-name>
+         <property-class>boolean</property-class>
+      </property>
+      <property>
+         <description>A boolean value that indicates whether a value is required. Default value: false.</description>
+         <property-name>required</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>Text of the converter message.</description>
+         <property-name>converterMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown if a required value is not submitted.</description>
+         <property-name>requiredMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during the validation phase for this component. It is
+              expected to check the submitted value for this component, and if not acceptable
+              then report a validation error for the component.
+            </description>
+         <property-name>validator</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown, if validation fails.</description>
+         <property-name>validatorMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during postback processing for the current view if the
+              submitted value for this component is not equal to the value which the "value" expression
+              for this component returns. The phase in which this method is invoked can be controlled
+              via the immediate attribute.
+            </description>
+         <property-name>valueChangeListener</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>whether the component's value is currently valid</description>
+         <property-name>valid</property-name>
+         <property-class>boolean</property-class>
+         <default-value>true</default-value>
+      </property>
+      <property>
+         <description>
+                whether a local value is currently set.  If false, values are being retrieved from any attached ValueBinding
+            </description>
+         <property-name>localValueSet</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>the current submitted value.  This value,
+if non-null, is set by the Renderer to store a possibly invalid value
+for later conversion or redisplay, and has not yet been converted
+into the proper type for this component instance.   This method
+should only be used by the decode() and validate() method
+of this component, or its corresponding Renderer;  however, user code
+may manually set it to null to erase any submitted value.
+            </description>
+         <property-name>submittedValue</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.SelectOne</component-family>
+         <renderer-type>javax.faces.Listbox</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>Allow the user to choose one option from a set of options.
+&lt;p&gt;
+Renders a drop-down menu (aka "combo-box") containing a set of
+choices, of which only one can be chosen at a time. The available
+choices are defined via child f:selectItem or f:selectItems
+elements.
+&lt;p&gt;
+The value attribute of this component is read to determine
+which of the available options is initially selected; its value
+should match the "value" property of one of the child SelectItem
+objects.
+&lt;p&gt;
+On submit of the enclosing form, the value attribute's bound property
+is updated to contain the "value" property from the chosen SelectItem.
+&lt;p&gt;
+Unless otherwise specified, all attributes accept static values
+or EL expressions.</description>
+      <component-type>javax.faces.HtmlSelectOneMenu</component-type>
+      <component-class>javax.faces.component.html.HtmlSelectOneMenu</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Output properties-->
+      <property>
+         <description>The initial value of this component.</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>
+              An expression that specifies the Converter for this component.
+              The value can either be a static value (ID) or an EL expression.
+              When a static id is specified, an instance of the converter type
+              registered with that id is used. When this is an EL expression,
+              the result of evaluating the expression must be an object that
+              implements the Converter interface.
+              
+            </description>
+         <property-name>converter</property-name>
+         <property-class>javax.faces.convert.Converter</property-class>
+      </property><!--javax.faces.Input properties-->
+      <property>
+         <description>A boolean value that identifies the phase during which action events
+        should fire. During normal event processing, action methods and
+        action listener methods are fired during the "invoke application"
+        phase of request processing. If this attribute is set to "true",
+        these methods are fired instead at the end of the "apply request
+        values" phase.</description>
+         <property-name>immediate</property-name>
+         <property-class>boolean</property-class>
+      </property>
+      <property>
+         <description>A boolean value that indicates whether a value is required. Default value: false.</description>
+         <property-name>required</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>Text of the converter message.</description>
+         <property-name>converterMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown if a required value is not submitted.</description>
+         <property-name>requiredMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during the validation phase for this component. It is
+              expected to check the submitted value for this component, and if not acceptable
+              then report a validation error for the component.
+            </description>
+         <property-name>validator</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown, if validation fails.</description>
+         <property-name>validatorMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during postback processing for the current view if the
+              submitted value for this component is not equal to the value which the "value" expression
+              for this component returns. The phase in which this method is invoked can be controlled
+              via the immediate attribute.
+            </description>
+         <property-name>valueChangeListener</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>whether the component's value is currently valid</description>
+         <property-name>valid</property-name>
+         <property-class>boolean</property-class>
+         <default-value>true</default-value>
+      </property>
+      <property>
+         <description>
+                whether a local value is currently set.  If false, values are being retrieved from any attached ValueBinding
+            </description>
+         <property-name>localValueSet</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>the current submitted value.  This value,
+if non-null, is set by the Renderer to store a possibly invalid value
+for later conversion or redisplay, and has not yet been converted
+into the proper type for this component instance.   This method
+should only be used by the decode() and validate() method
+of this component, or its corresponding Renderer;  however, user code
+may manually set it to null to erase any submitted value.
+            </description>
+         <property-name>submittedValue</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.SelectOne</component-family>
+         <renderer-type>javax.faces.Menu</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>Allow the user to choose one option from a set of options.
+&lt;p&gt;
+Renders as an HTML table element, containing an input element for
+each child f:selectItem or f:selectItems elements.  The input
+elements are rendered as type radio.
+&lt;p&gt;
+The value attribute of this component is read to determine
+which of the available options is initially selected; its value should
+match the "value" property of one of the child SelectItem objects.
+&lt;p&gt;
+On submit of the enclosing form, the value attribute's bound property
+is updated to contain the "value" property from the chosen SelectItem.
+&lt;p&gt;
+Unless otherwise specified, all attributes accept static values
+or EL expressions.</description>
+      <component-type>javax.faces.HtmlSelectOneRadio</component-type>
+      <component-class>javax.faces.component.html.HtmlSelectOneRadio</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Output properties-->
+      <property>
+         <description>The initial value of this component.</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>
+              An expression that specifies the Converter for this component.
+              The value can either be a static value (ID) or an EL expression.
+              When a static id is specified, an instance of the converter type
+              registered with that id is used. When this is an EL expression,
+              the result of evaluating the expression must be an object that
+              implements the Converter interface.
+              
+            </description>
+         <property-name>converter</property-name>
+         <property-class>javax.faces.convert.Converter</property-class>
+      </property><!--javax.faces.Input properties-->
+      <property>
+         <description>A boolean value that identifies the phase during which action events
+        should fire. During normal event processing, action methods and
+        action listener methods are fired during the "invoke application"
+        phase of request processing. If this attribute is set to "true",
+        these methods are fired instead at the end of the "apply request
+        values" phase.</description>
+         <property-name>immediate</property-name>
+         <property-class>boolean</property-class>
+      </property>
+      <property>
+         <description>A boolean value that indicates whether a value is required. Default value: false.</description>
+         <property-name>required</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>Text of the converter message.</description>
+         <property-name>converterMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown if a required value is not submitted.</description>
+         <property-name>requiredMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during the validation phase for this component. It is
+              expected to check the submitted value for this component, and if not acceptable
+              then report a validation error for the component.
+            </description>
+         <property-name>validator</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown, if validation fails.</description>
+         <property-name>validatorMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during postback processing for the current view if the
+              submitted value for this component is not equal to the value which the "value" expression
+              for this component returns. The phase in which this method is invoked can be controlled
+              via the immediate attribute.
+            </description>
+         <property-name>valueChangeListener</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>whether the component's value is currently valid</description>
+         <property-name>valid</property-name>
+         <property-class>boolean</property-class>
+         <default-value>true</default-value>
+      </property>
+      <property>
+         <description>
+                whether a local value is currently set.  If false, values are being retrieved from any attached ValueBinding
+            </description>
+         <property-name>localValueSet</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>the current submitted value.  This value,
+if non-null, is set by the Renderer to store a possibly invalid value
+for later conversion or redisplay, and has not yet been converted
+into the proper type for this component instance.   This method
+should only be used by the decode() and validate() method
+of this component, or its corresponding Renderer;  however, user code
+may manually set it to null to erase any submitted value.
+            </description>
+         <property-name>submittedValue</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.SelectOne</component-family>
+         <renderer-type>javax.faces.Radio</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>Base class for table columns</description>
+      <component-type>javax.faces.Column</component-type>
+      <component-class>javax.faces.component.UIColumn</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property>
+      <component-extension>
+         <component-family/>
+      </component-extension>
+   </component>
+   <component>
+      <description>UICommand is a base abstraction for components that implement ActionSource.</description>
+      <component-type>javax.faces.Command</component-type>
+      <component-class>javax.faces.component.UICommand</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Command properties-->
+      <property>
+         <description>A boolean value that identifies the phase during which action events
+        should fire. During normal event processing, action methods and
+        action listener methods are fired during the "invoke application"
+        phase of request processing. If this attribute is set to "true",
+        these methods are fired instead at the end of the "apply request
+        values" phase.</description>
+         <property-name>immediate</property-name>
+         <property-class>boolean</property-class>
+      </property>
+      <property>
+         <description>The initial value of this component.</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>Specifies the action to take when this command is invoked.
+        If the value is an expression, it is expected to be a method
+        binding EL expression that identifies an action method. An action method
+        accepts no parameters and has a String return value, called the action
+        outcome, that identifies the next view displayed. The phase that this
+        event is fired in can be controlled via the immediate attribute.
+
+        If the value is a string literal, it is treated as a navigation outcome
+        for the current view.  This is functionally equivalent to a reference to
+        an action method that returns the string literal.</description>
+         <property-name>actionExpression</property-name>
+         <property-class>javax.el.MethodExpression</property-class>
+         <property-extension>
+            <property-metadata>
+               <preferred>true</preferred>
+            </property-metadata>
+         </property-extension>
+      </property>
+      <property>
+         <description>A method binding EL expression that identifies an action listener method
+        to be invoked if this component is activated by the user. An action
+        listener method accepts a parameter of type javax.faces.event.ActionEvent
+        and returns void. The phase that this event is fired in can be controlled
+        via the immediate attribute.</description>
+         <property-name>actionListener</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+         <property-extension>
+            <property-metadata>
+               <preferred>true</preferred>
+            </property-metadata>
+         </property-extension>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.Command</component-family>
+         <renderer-type>javax.faces.Button</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>UIData is a base abstraction for components that holds Data.</description>
+      <component-type>javax.faces.Data</component-type>
+      <component-class>javax.faces.component.UIData</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Data properties-->
+      <property>
+         <description>An EL expression that specifies the data model that backs this table.  The value can be of any type.
+
+				A value of type DataModel is used directly.  Array-like parameters of type java.util.List, array of Object,
+				java.sql.ResultSet, or javax.servlet.jsp.jstl.sql.Result are wrapped in a DataModel.
+
+				Other values are wrapped in a DataModel as a single row.</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>Defines the name of the request-scope variable that will hold the current row during iteration.  This value must be a static value.</description>
+         <property-name>var</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>The number of rows to be displayed.  Specify zero for all remaining rows in the table.</description>
+         <property-name>rows</property-name>
+         <property-class>int</property-class>
+      </property>
+      <property>
+         <description>The index of the first row to be displayed, where 0 is the first row.</description>
+         <property-name>first</property-name>
+         <property-class>int</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.Data</component-family>
+         <renderer-type>javax.faces.Table</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description/>
+      <component-type>javax.faces.Form</component-type>
+      <component-class>javax.faces.component.UIForm</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Form properties-->
+      <property>
+         <description>Defines a flag indicating whether or not this form should prepend its id to its descendent's id during the clientId generation process. If this flag is not set, the default value is true.</description>
+         <property-name>prependId</property-name>
+         <property-class>boolean</property-class>
+      </property>
+      <component-extension>
+         <component-family/>
+         <renderer-type>javax.faces.Form</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>Displays a graphical image.</description>
+      <component-type>javax.faces.Graphic</component-type>
+      <component-class>javax.faces.component.UIGraphic</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Graphic properties-->
+      <property>
+         <description>The value property of the UIGraphic</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>
+                &lt;p&gt;
+                The URL of the image. If the URL starts with a '/', it is relative
+                to the context path of the web application.
+                &lt;/p&gt;
+                &lt;p&gt;
+                This attribute is an alias for the "value" property.
+                &lt;/p&gt;
+                
+            </description>
+         <property-name>url</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.Graphic</component-family>
+         <renderer-type>javax.faces.Image</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>UICommand is a base abstraction for components that implement ActionSource.</description>
+      <component-type>javax.faces.Input</component-type>
+      <component-class>javax.faces.component.UIInput</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Output properties-->
+      <property>
+         <description>The initial value of this component.</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>
+              An expression that specifies the Converter for this component.
+              The value can either be a static value (ID) or an EL expression.
+              When a static id is specified, an instance of the converter type
+              registered with that id is used. When this is an EL expression,
+              the result of evaluating the expression must be an object that
+              implements the Converter interface.
+              
+            </description>
+         <property-name>converter</property-name>
+         <property-class>javax.faces.convert.Converter</property-class>
+      </property><!--javax.faces.Input properties-->
+      <property>
+         <description>A boolean value that identifies the phase during which action events
+        should fire. During normal event processing, action methods and
+        action listener methods are fired during the "invoke application"
+        phase of request processing. If this attribute is set to "true",
+        these methods are fired instead at the end of the "apply request
+        values" phase.</description>
+         <property-name>immediate</property-name>
+         <property-class>boolean</property-class>
+      </property>
+      <property>
+         <description>A boolean value that indicates whether a value is required. Default value: false.</description>
+         <property-name>required</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>Text of the converter message.</description>
+         <property-name>converterMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown if a required value is not submitted.</description>
+         <property-name>requiredMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during the validation phase for this component. It is
+              expected to check the submitted value for this component, and if not acceptable
+              then report a validation error for the component.
+            </description>
+         <property-name>validator</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown, if validation fails.</description>
+         <property-name>validatorMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during postback processing for the current view if the
+              submitted value for this component is not equal to the value which the "value" expression
+              for this component returns. The phase in which this method is invoked can be controlled
+              via the immediate attribute.
+            </description>
+         <property-name>valueChangeListener</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>whether the component's value is currently valid</description>
+         <property-name>valid</property-name>
+         <property-class>boolean</property-class>
+         <default-value>true</default-value>
+      </property>
+      <property>
+         <description>
+                whether a local value is currently set.  If false, values are being retrieved from any attached ValueBinding
+            </description>
+         <property-name>localValueSet</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>the current submitted value.  This value,
+if non-null, is set by the Renderer to store a possibly invalid value
+for later conversion or redisplay, and has not yet been converted
+into the proper type for this component instance.   This method
+should only be used by the decode() and validate() method
+of this component, or its corresponding Renderer;  however, user code
+may manually set it to null to erase any submitted value.
+            </description>
+         <property-name>submittedValue</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.Input</component-family>
+         <renderer-type>javax.faces.Text</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>UIMessage is the base component class for components
+that display a single message on behalf of a component.</description>
+      <component-type>javax.faces.Message</component-type>
+      <component-class>javax.faces.component.UIMessage</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Message properties-->
+      <property>
+         <description>
+              The ID of the component whose attached FacesMessage object (if present) should be
+              diplayed by this component.
+            </description>
+         <property-name>for</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              Specifies whether the detailed information from the message should be shown. Default to false.
+            </description>
+         <property-name>showDetail</property-name>
+         <property-class>boolean</property-class>
+         <default-value>true</default-value>
+      </property>
+      <property>
+         <description>
+              Specifies whether the summary information from the message should be shown. Defaults to true.
+            </description>
+         <property-name>showSummary</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.Message</component-family>
+         <renderer-type>javax.faces.Message</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>UIMessage is the base component class for components
+that display a multiple messages on behalf of a component.</description>
+      <component-type>javax.faces.Messages</component-type>
+      <component-class>javax.faces.component.UIMessages</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Messages properties-->
+      <property>
+         <description>
+              Specifies whether only messages (FacesMessage objects) not associated with a
+              specific component should be displayed, ie whether messages should be ignored
+              if they are attached to a particular component. Defaults to false.
+            </description>
+         <property-name>globalOnly</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>
+              Specifies whether the detailed information from the message should be shown. Defaults to false.
+            </description>
+         <property-name>showDetail</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>
+              Specifies whether the summary information from the message should be shown. Defaults to true.
+            </description>
+         <property-name>showSummary</property-name>
+         <property-class>boolean</property-class>
+         <default-value>true</default-value>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.Messages</component-family>
+         <renderer-type>javax.faces.Messages</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <component-type>javax.faces.NamingContainer</component-type>
+      <component-class>javax.faces.component.UINamingContainer</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.NamingContainer</component-family>
+      </component-extension>
+   </component>
+   <component>
+      <description>UIOutput displays a value to the user</description>
+      <component-type>javax.faces.Output</component-type>
+      <component-class>javax.faces.component.UIOutput</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Output properties-->
+      <property>
+         <description>The initial value of this component.</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>
+              An expression that specifies the Converter for this component.
+              The value can either be a static value (ID) or an EL expression.
+              When a static id is specified, an instance of the converter type
+              registered with that id is used. When this is an EL expression,
+              the result of evaluating the expression must be an object that
+              implements the Converter interface.
+              
+            </description>
+         <property-name>converter</property-name>
+         <property-class>javax.faces.convert.Converter</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.Output</component-family>
+         <renderer-type>javax.faces.Text</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <component-type>javax.faces.Panel</component-type>
+      <component-class>javax.faces.component.UIPanel</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.Panel</component-family>
+      </component-extension>
+   </component>
+   <component>
+      <component-type>javax.faces.Parameter</component-type>
+      <component-class>javax.faces.component.UIParameter</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Parameter properties-->
+      <property>
+         <description>The value of this component.</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>The name under which the value is stored.</description>
+         <property-name>name</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.Parameter</component-family>
+      </component-extension>
+   </component>
+   <component>
+      <description>UISelectBoolean is a Comonent which represents a boolean value.</description>
+      <component-type>javax.faces.SelectBoolean</component-type>
+      <component-class>javax.faces.component.UISelectBoolean</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Output properties-->
+      <property>
+         <description>The initial value of this component.</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>
+              An expression that specifies the Converter for this component.
+              The value can either be a static value (ID) or an EL expression.
+              When a static id is specified, an instance of the converter type
+              registered with that id is used. When this is an EL expression,
+              the result of evaluating the expression must be an object that
+              implements the Converter interface.
+              
+            </description>
+         <property-name>converter</property-name>
+         <property-class>javax.faces.convert.Converter</property-class>
+      </property><!--javax.faces.Input properties-->
+      <property>
+         <description>A boolean value that identifies the phase during which action events
+        should fire. During normal event processing, action methods and
+        action listener methods are fired during the "invoke application"
+        phase of request processing. If this attribute is set to "true",
+        these methods are fired instead at the end of the "apply request
+        values" phase.</description>
+         <property-name>immediate</property-name>
+         <property-class>boolean</property-class>
+      </property>
+      <property>
+         <description>A boolean value that indicates whether a value is required. Default value: false.</description>
+         <property-name>required</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>Text of the converter message.</description>
+         <property-name>converterMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown if a required value is not submitted.</description>
+         <property-name>requiredMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during the validation phase for this component. It is
+              expected to check the submitted value for this component, and if not acceptable
+              then report a validation error for the component.
+            </description>
+         <property-name>validator</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown, if validation fails.</description>
+         <property-name>validatorMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during postback processing for the current view if the
+              submitted value for this component is not equal to the value which the "value" expression
+              for this component returns. The phase in which this method is invoked can be controlled
+              via the immediate attribute.
+            </description>
+         <property-name>valueChangeListener</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>whether the component's value is currently valid</description>
+         <property-name>valid</property-name>
+         <property-class>boolean</property-class>
+         <default-value>true</default-value>
+      </property>
+      <property>
+         <description>
+                whether a local value is currently set.  If false, values are being retrieved from any attached ValueBinding
+            </description>
+         <property-name>localValueSet</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>the current submitted value.  This value,
+if non-null, is set by the Renderer to store a possibly invalid value
+for later conversion or redisplay, and has not yet been converted
+into the proper type for this component instance.   This method
+should only be used by the decode() and validate() method
+of this component, or its corresponding Renderer;  however, user code
+may manually set it to null to erase any submitted value.
+            </description>
+         <property-name>submittedValue</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.SelectBoolean</component-family>
+         <renderer-type>javax.faces.Checkbox</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>UISelectItem should be nestetd inside a UISelectMany or UISelectOne component,
+and results in  the addition of a SelectItem instance to the list of available options
+for the parent component</description>
+      <component-type>javax.faces.SelectItem</component-type>
+      <component-class>javax.faces.component.UISelectItem</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.SelectItem properties-->
+      <property>
+         <description>The initial value of this component.</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>Determine whether this item can be chosen by the user.
+When true, this item cannot be chosen by the user. If this method is
+ever called, then any EL-binding for the disabled property will be ignored.</description>
+         <property-name>itemDisabled</property-name>
+         <property-class>boolean</property-class>
+      </property>
+      <property>
+         <description>The escape setting for the label of this selection item.</description>
+         <property-name>itemEscaped</property-name>
+         <property-class>boolean</property-class>
+      </property>
+      <property>
+         <description>For use in development tools.</description>
+         <property-name>itemDescription</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>The string which will be presented to the user for this option.</description>
+         <property-name>itemLabel</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>The value for this Item.</description>
+         <property-name>itemValue</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.SelectItem</component-family>
+      </component-extension>
+   </component>
+   <component>
+      <description>UISelectItems should be nestetd inside a UISelectMany or UISelectOne component,
+and results in  the addition of one ore more SelectItem instance to the list of available options
+for the parent component</description>
+      <component-type>javax.faces.SelectItems</component-type>
+      <component-class>javax.faces.component.UISelectItems</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.SelectItems properties-->
+      <property>
+         <description>The initial value of this component.</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.SelectItems</component-family>
+      </component-extension>
+   </component>
+   <component>
+      <description>UISelectMany is a Component which represents a user choice of 0..n values.</description>
+      <component-type>javax.faces.SelectMany</component-type>
+      <component-class>javax.faces.component.UISelectMany</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Output properties-->
+      <property>
+         <description>The initial value of this component.</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>
+              An expression that specifies the Converter for this component.
+              The value can either be a static value (ID) or an EL expression.
+              When a static id is specified, an instance of the converter type
+              registered with that id is used. When this is an EL expression,
+              the result of evaluating the expression must be an object that
+              implements the Converter interface.
+              
+            </description>
+         <property-name>converter</property-name>
+         <property-class>javax.faces.convert.Converter</property-class>
+      </property><!--javax.faces.Input properties-->
+      <property>
+         <description>A boolean value that identifies the phase during which action events
+        should fire. During normal event processing, action methods and
+        action listener methods are fired during the "invoke application"
+        phase of request processing. If this attribute is set to "true",
+        these methods are fired instead at the end of the "apply request
+        values" phase.</description>
+         <property-name>immediate</property-name>
+         <property-class>boolean</property-class>
+      </property>
+      <property>
+         <description>A boolean value that indicates whether a value is required. Default value: false.</description>
+         <property-name>required</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>Text of the converter message.</description>
+         <property-name>converterMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown if a required value is not submitted.</description>
+         <property-name>requiredMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during the validation phase for this component. It is
+              expected to check the submitted value for this component, and if not acceptable
+              then report a validation error for the component.
+            </description>
+         <property-name>validator</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown, if validation fails.</description>
+         <property-name>validatorMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during postback processing for the current view if the
+              submitted value for this component is not equal to the value which the "value" expression
+              for this component returns. The phase in which this method is invoked can be controlled
+              via the immediate attribute.
+            </description>
+         <property-name>valueChangeListener</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>whether the component's value is currently valid</description>
+         <property-name>valid</property-name>
+         <property-class>boolean</property-class>
+         <default-value>true</default-value>
+      </property>
+      <property>
+         <description>
+                whether a local value is currently set.  If false, values are being retrieved from any attached ValueBinding
+            </description>
+         <property-name>localValueSet</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>the current submitted value.  This value,
+if non-null, is set by the Renderer to store a possibly invalid value
+for later conversion or redisplay, and has not yet been converted
+into the proper type for this component instance.   This method
+should only be used by the decode() and validate() method
+of this component, or its corresponding Renderer;  however, user code
+may manually set it to null to erase any submitted value.
+            </description>
+         <property-name>submittedValue</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.SelectMany</component-family>
+         <renderer-type>javax.faces.Listbox</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>UISelectOne is a Component which represents a user choice of 0..1 value.</description>
+      <component-type>javax.faces.SelectOne</component-type>
+      <component-class>javax.faces.component.UISelectOne</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.Output properties-->
+      <property>
+         <description>The initial value of this component.</description>
+         <property-name>value</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <property>
+         <description>
+              An expression that specifies the Converter for this component.
+              The value can either be a static value (ID) or an EL expression.
+              When a static id is specified, an instance of the converter type
+              registered with that id is used. When this is an EL expression,
+              the result of evaluating the expression must be an object that
+              implements the Converter interface.
+              
+            </description>
+         <property-name>converter</property-name>
+         <property-class>javax.faces.convert.Converter</property-class>
+      </property><!--javax.faces.Input properties-->
+      <property>
+         <description>A boolean value that identifies the phase during which action events
+        should fire. During normal event processing, action methods and
+        action listener methods are fired during the "invoke application"
+        phase of request processing. If this attribute is set to "true",
+        these methods are fired instead at the end of the "apply request
+        values" phase.</description>
+         <property-name>immediate</property-name>
+         <property-class>boolean</property-class>
+      </property>
+      <property>
+         <description>A boolean value that indicates whether a value is required. Default value: false.</description>
+         <property-name>required</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>Text of the converter message.</description>
+         <property-name>converterMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown if a required value is not submitted.</description>
+         <property-name>requiredMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during the validation phase for this component. It is
+              expected to check the submitted value for this component, and if not acceptable
+              then report a validation error for the component.
+            </description>
+         <property-name>validator</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>Text which will be shown, if validation fails.</description>
+         <property-name>validatorMessage</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>
+              A method which is invoked during postback processing for the current view if the
+              submitted value for this component is not equal to the value which the "value" expression
+              for this component returns. The phase in which this method is invoked can be controlled
+              via the immediate attribute.
+            </description>
+         <property-name>valueChangeListener</property-name>
+         <property-class>javax.faces.el.MethodBinding</property-class>
+      </property>
+      <property>
+         <description>whether the component's value is currently valid</description>
+         <property-name>valid</property-name>
+         <property-class>boolean</property-class>
+         <default-value>true</default-value>
+      </property>
+      <property>
+         <description>
+                whether a local value is currently set.  If false, values are being retrieved from any attached ValueBinding
+            </description>
+         <property-name>localValueSet</property-name>
+         <property-class>boolean</property-class>
+         <default-value>false</default-value>
+      </property>
+      <property>
+         <description>the current submitted value.  This value,
+if non-null, is set by the Renderer to store a possibly invalid value
+for later conversion or redisplay, and has not yet been converted
+into the proper type for this component instance.   This method
+should only be used by the decode() and validate() method
+of this component, or its corresponding Renderer;  however, user code
+may manually set it to null to erase any submitted value.
+            </description>
+         <property-name>submittedValue</property-name>
+         <property-class>java.lang.Object</property-class>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.SelectOne</component-family>
+         <renderer-type>javax.faces.Menu</renderer-type>
+      </component-extension>
+   </component>
+   <component>
+      <description>The root element.</description>
+      <component-type>javax.faces.ViewRoot</component-type>
+      <component-class>javax.faces.component.UIViewRoot</component-class><!--javax.faces.Component properties-->
+      <property>
+         <property-name>transient</property-name>
+         <property-class>boolean</property-class>
+      </property><!--javax.faces.ViewRoot properties-->
+      <property>
+         <description>The locale for this ViewRoot.</description>
+         <property-name>locale</property-name>
+         <property-class>java.util.Locale</property-class>
+      </property>
+      <property>
+         <description>The initial value of this component.</description>
+         <property-name>renderKitId</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>The viewId.</description>
+         <property-name>viewId</property-name>
+         <property-class>java.lang.String</property-class>
+      </property>
+      <property>
+         <description>The events within this ViewRoot.</description>
+         <property-name>events</property-name>
+         <property-class>java.util.List</property-class>
+      </property>
+      <property>
+         <description>The counter which will ensure a unique component id
+for every component instance in the tree that doesn't have
+an id attribute set.</description>
+         <property-name>uniqueIdCounter</property-name>
+         <property-class>long</property-class>
+         <default-value>0</default-value>
+      </property>
+      <property>
+         <description>The phaseListeners attached to ViewRoot.</description>
+         <property-name>phaseListeners</property-name>
+         <property-class>java.util.List</property-class>
+      </property>
+      <property>
+         <description/>
+         <property-name>beforePhaseListener</property-name>
+         <property-class>javax.el.MethodExpression</property-class>
+         <property-extension>
+            <property-metadata>
+               <preferred>true</preferred>
+            </property-metadata>
+         </property-extension>
+      </property>
+      <property>
+         <description/>
+         <property-name>afterPhaseListener</property-name>
+         <property-class>javax.el.MethodExpression</property-class>
+         <property-extension>
+            <property-metadata>
+               <preferred>true</preferred>
+            </property-metadata>
+         </property-extension>
+      </property>
+      <component-extension>
+         <component-family>javax.faces.ViewRoot</component-family>
+      </component-extension>
+   </component>
+   <converter>
+      <converter-id>javax.faces.BigDecimal</converter-id>
+      <converter-class>javax.faces.convert.BigDecimalConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-for-class>java.math.BigDecimal</converter-for-class>
+      <converter-class>javax.faces.convert.BigDecimalConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-id>javax.faces.BigInteger</converter-id>
+      <converter-class>javax.faces.convert.BigIntegerConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-for-class>java.math.BigInteger</converter-for-class>
+      <converter-class>javax.faces.convert.BigIntegerConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-id>javax.faces.Boolean</converter-id>
+      <converter-class>javax.faces.convert.BooleanConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-for-class>java.lang.Boolean</converter-for-class>
+      <converter-class>javax.faces.convert.BooleanConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-id>javax.faces.Byte</converter-id>
+      <converter-class>javax.faces.convert.ByteConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-for-class>java.lang.Byte</converter-for-class>
+      <converter-class>javax.faces.convert.ByteConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-id>javax.faces.Character</converter-id>
+      <converter-class>javax.faces.convert.CharacterConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-for-class>java.lang.Character</converter-for-class>
+      <converter-class>javax.faces.convert.CharacterConverter</converter-class>
+   </converter>
+   <converter>
+      <display-name>Date Time Converter</display-name>
+      <converter-id>javax.faces.DateTime</converter-id>
+      <converter-class>javax.faces.convert.DateTimeConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-id>javax.faces.Double</converter-id>
+      <converter-class>javax.faces.convert.DoubleConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-for-class>java.lang.Double</converter-for-class>
+      <converter-class>javax.faces.convert.DoubleConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-id>javax.faces.Enum</converter-id>
+      <converter-class>javax.faces.convert.EnumConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-for-class>java.lang.Enum</converter-for-class>
+      <converter-class>javax.faces.convert.EnumConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-id>javax.faces.Float</converter-id>
+      <converter-class>javax.faces.convert.FloatConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-for-class>java.lang.Float</converter-for-class>
+      <converter-class>javax.faces.convert.FloatConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-id>javax.faces.Integer</converter-id>
+      <converter-class>javax.faces.convert.IntegerConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-for-class>java.lang.Integer</converter-for-class>
+      <converter-class>javax.faces.convert.IntegerConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-id>javax.faces.Long</converter-id>
+      <converter-class>javax.faces.convert.LongConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-for-class>java.lang.Long</converter-for-class>
+      <converter-class>javax.faces.convert.LongConverter</converter-class>
+   </converter>
+   <converter>
+      <display-name>Number Converter</display-name>
+      <converter-id>javax.faces.Number</converter-id>
+      <converter-class>javax.faces.convert.NumberConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-id>javax.faces.Short</converter-id>
+      <converter-class>javax.faces.convert.ShortConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-for-class>java.lang.Short</converter-for-class>
+      <converter-class>javax.faces.convert.ShortConverter</converter-class>
+   </converter>
+   <render-kit>
+      <render-kit-id>HTML_BASIC</render-kit-id>
+      <render-kit-class>org.apache.myfaces.renderkit.html.HtmlRenderKitImpl</render-kit-class>
+      <renderer>
+         <component-family>javax.faces.Command</component-family>
+         <renderer-type>javax.faces.Button</renderer-type>
+         <renderer-class>org.apache.myfaces.renderkit.html.HtmlButtonRenderer</renderer-class>
+      </renderer>
+      <renderer>
+         <component-family>javax.faces.Command</component-family>
+         <renderer-type>javax.faces.Link</renderer-type>
+         <renderer-class>org.apache.myfaces.renderkit.html.HtmlLinkRenderer</renderer-class>
+      </renderer>
+      <renderer>
+         <component-family>javax.faces.Data</component-family>
+         <renderer-type>javax.faces.Table</renderer-type>
+         <renderer-class>org.apache.myfaces.renderkit.html.HtmlTableRenderer</renderer-class>
+      </renderer>
+      <renderer>
+         <component-family>javax.faces.Form</component-family>
+         <renderer-type>javax.faces.Form</renderer-type>
+         <renderer-class>org.apache.myfaces.renderkit.html.HtmlFormRenderer</renderer-class>
+      </renderer>
+      <renderer>
+         <component-family>javax.faces.Graphic</component-family>
+         <renderer-type>javax.faces.Image</renderer-type>
+         <renderer-class>org.apache.myfaces.renderkit.html.HtmlImageRenderer</renderer-class>
+      </renderer>
+      <renderer>
+         <component-family>javax.faces.Panel</component-family>
+         <renderer-type>javax.faces.Grid</renderer-type>
+         <renderer-class>org.apache.myfaces.renderkit.html.HtmlGridRenderer</renderer-class>
+      </renderer>
+      <renderer>
+         <component-family>javax.faces.Panel</component-family>
+         <renderer-type>javax.faces.Group</renderer-type>
+         <renderer-class>org.apache.myfaces.renderkit.html.HtmlGroupRenderer</renderer-class>
+      </renderer>
+      <renderer>
+         <component-family>javax.faces.Input</component-family>
+         <renderer-type>javax.faces.Hidden</renderer-type>
+         <renderer-class>org.apache.myfaces.renderkit.html.HtmlHiddenRenderer</renderer-class>
+      </renderer>
+      <renderer>
+         <component-family>javax.faces.Input</component-family>
+         <renderer-type>javax.faces.Secret</renderer-type>
+         <renderer-class>org.apache.myfaces.renderkit.html.HtmlSecretRenderer</renderer-class>
+      </renderer>
+      <renderer>
+         <component-family>javax.faces.Input</component-family>
+         <renderer-type>javax.faces.Text</renderer-type>
+         <renderer-class>org.apache.myfaces.renderkit.html.HtmlTextRenderer</renderer-class>
+      </renderer>
+      <renderer>
+         <component-family>javax.faces.Input</component-family>
+         <renderer-type>javax.faces.Textarea</renderer-type>
+         <renderer-class>org.apache.myfaces.renderkit.html.HtmlTextareaRenderer</renderer-class>
+      </renderer>
+      <renderer>
+         <component-family>javax.faces.Message</component-family>
+         <renderer-type>javax.faces.Message</renderer-type>
+         <renderer-class>org.apache.myfaces.renderkit.html.HtmlMessageRenderer</renderer-class>
+      </renderer>
+      <renderer>
+         <component-family>javax.faces.Messages</component-family>
+         <renderer-type>javax.faces.Messages</renderer-type>
+         <renderer-class>org.apache.myfaces.renderkit.html.HtmlMessagesRenderer</renderer-class>
+      </renderer>
+      <renderer>
+         <component-family>javax.faces.Output</component-family>
+         <renderer-type>javax.faces.Format</renderer-type>
+         <renderer-class>org.apache.myfaces.renderkit.html.HtmlFormatRenderer</renderer-class>
+      </renderer>
+      <renderer>
+         <component-family>javax.faces.Output</component-family>
+         <renderer-type>javax.faces.Label</renderer-type>
+         <renderer-class>org.apache.myfaces.renderkit.html.HtmlLabelRenderer</renderer-class>
+      </renderer>
+      <renderer>
+         <component-family>javax.faces.Output</component-family>
+         <renderer-type>javax.faces.Link</renderer-type>
+         <renderer-class>org.apache.myfaces.renderkit.html.HtmlLinkRenderer</renderer-class>
+      </renderer>
+      <renderer>
+         <component-family>javax.faces.Output</component-family>
+         <renderer-type>javax.faces.Text</renderer-type>
+         <renderer-class>org.apache.myfaces.renderkit.html.HtmlTextRenderer</renderer-class>
+      </renderer>
+      <renderer>
+         <component-family>javax.faces.SelectBoolean</component-family>
+         <renderer-type>javax.faces.Checkbox</renderer-type>
+         <renderer-class>org.apache.myfaces.renderkit.html.HtmlCheckboxRenderer</renderer-class>
+      </renderer>
+      <renderer>
+         <component-family>javax.faces.SelectMany</component-family>
+         <renderer-type>javax.faces.Checkbox</renderer-type>
+         <renderer-class>org.apache.myfaces.renderkit.html.HtmlCheckboxRenderer</renderer-class>
+      </renderer>
+      <renderer>
+         <component-family>javax.faces.SelectMany</component-family>
+         <renderer-type>javax.faces.Listbox</renderer-type>
+         <renderer-class>org.apache.myfaces.renderkit.html.HtmlListboxRenderer</renderer-class>
+      </renderer>
+      <renderer>
+         <component-family>javax.faces.SelectMany</component-family>
+         <renderer-type>javax.faces.Menu</renderer-type>
+         <renderer-class>org.apache.myfaces.renderkit.html.HtmlMenuRenderer</renderer-class>
+      </renderer>
+      <renderer>
+         <component-family>javax.faces.SelectOne</component-family>
+         <renderer-type>javax.faces.Listbox</renderer-type>
+         <renderer-class>org.apache.myfaces.renderkit.html.HtmlListboxRenderer</renderer-class>
+      </renderer>
+      <renderer>
+         <component-family>javax.faces.SelectOne</component-family>
+         <renderer-type>javax.faces.Menu</renderer-type>
+         <renderer-class>org.apache.myfaces.renderkit.html.HtmlMenuRenderer</renderer-class>
+      </renderer>
+      <renderer>
+         <component-family>javax.faces.SelectOne</component-family>
+         <renderer-type>javax.faces.Radio</renderer-type>
+         <renderer-class>org.apache.myfaces.renderkit.html.HtmlRadioRenderer</renderer-class>
+      </renderer>
+   </render-kit>
+   <validator>
+      <validator-id>javax.faces.DoubleRange</validator-id>
+      <validator-class>javax.faces.validator.DoubleRangeValidator</validator-class>
+   </validator>
+   <validator>
+      <validator-id>javax.faces.Length</validator-id>
+      <validator-class>javax.faces.validator.LengthValidator</validator-class>
+   </validator>
+   <validator>
+      <validator-id>javax.faces.LongRange</validator-id>
+      <validator-class>javax.faces.validator.LongRangeValidator</validator-class>
+   </validator>
+</faces-config>

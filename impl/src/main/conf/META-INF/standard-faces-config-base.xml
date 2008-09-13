@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee" 
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd" 
+              version="1.2">
+
+   <!-- Initial application element with partial values -->
+
+   <application>
+      <action-listener>org.apache.myfaces.application.ActionListenerImpl</action-listener>
+      <view-handler>org.apache.myfaces.application.jsp.JspViewHandlerImpl</view-handler>
+      <state-manager>org.apache.myfaces.application.jsp.JspStateManagerImpl</state-manager>
+      <navigation-handler>org.apache.myfaces.application.NavigationHandlerImpl</navigation-handler>
+      <locale-config>
+         <supported-locale>en</supported-locale>
+         <supported-locale>de</supported-locale>
+         <supported-locale>fr</supported-locale>
+         <supported-locale>ja</supported-locale>
+         <supported-locale>it</supported-locale>
+         <supported-locale>es</supported-locale>
+         <supported-locale>ca</supported-locale>
+         <supported-locale>ar</supported-locale>
+         <supported-locale>pt_BR</supported-locale>
+         <supported-locale>ru</supported-locale>
+         <supported-locale>zh_CN</supported-locale>
+      </locale-config>
+   </application>
+   <factory>
+      <application-factory>org.apache.myfaces.application.ApplicationFactoryImpl</application-factory>
+      <faces-context-factory>org.apache.myfaces.context.FacesContextFactoryImpl</faces-context-factory>
+      <lifecycle-factory>org.apache.myfaces.lifecycle.LifecycleFactoryImpl</lifecycle-factory>
+      <render-kit-factory>org.apache.myfaces.renderkit.RenderKitFactoryImpl</render-kit-factory>
+   </factory>
+   
+   <!-- standard converters by class -->
+   
+   <converter>
+      <converter-for-class>java.math.BigDecimal</converter-for-class>
+      <converter-class>javax.faces.convert.BigDecimalConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-for-class>java.math.BigInteger</converter-for-class>
+      <converter-class>javax.faces.convert.BigIntegerConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-for-class>java.lang.Boolean</converter-for-class>
+      <converter-class>javax.faces.convert.BooleanConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-for-class>java.lang.Byte</converter-for-class>
+      <converter-class>javax.faces.convert.ByteConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-for-class>java.lang.Character</converter-for-class>
+      <converter-class>javax.faces.convert.CharacterConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-for-class>java.lang.Double</converter-for-class>
+      <converter-class>javax.faces.convert.DoubleConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-for-class>java.lang.Enum</converter-for-class>
+      <converter-class>javax.faces.convert.EnumConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-for-class>java.lang.Float</converter-for-class>
+      <converter-class>javax.faces.convert.FloatConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-for-class>java.lang.Integer</converter-for-class>
+      <converter-class>javax.faces.convert.IntegerConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-for-class>java.lang.Long</converter-for-class>
+      <converter-class>javax.faces.convert.LongConverter</converter-class>
+   </converter>
+   <converter>
+      <converter-for-class>java.lang.Short</converter-for-class>
+      <converter-class>javax.faces.convert.ShortConverter</converter-class>
+   </converter>
+
+</faces-config>

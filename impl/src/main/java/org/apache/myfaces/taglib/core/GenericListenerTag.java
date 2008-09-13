@@ -78,19 +78,14 @@ public abstract class GenericListenerTag<_Holder, _Listener>
             throw new JspException("no parent UIComponentTag found");
         }
 
-        if (_type == null)
+        if (_type == null && _binding == null)
         {
-            throw new JspException("type attribute not set");
+            throw new JspException("\"actionListener\" must have binding and/or type attribute.");
         }
 
         if (!componentTag.getCreated())
         {
             return Tag.SKIP_BODY;
-        }
-
-        if (_type == null)
-        {
-            throw new JspException("type attribute not set");
         }
 
         _Holder holder = null;

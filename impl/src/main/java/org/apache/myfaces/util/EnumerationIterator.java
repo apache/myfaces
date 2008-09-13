@@ -25,14 +25,14 @@ import java.util.Iterator;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class EnumerationIterator
+public final class EnumerationIterator
         implements Iterator
 {
     //private static final Log log = LogFactory.getLog(EnumerationIterator.class);
 
-    private Enumeration _enumeration;
+    private final Enumeration _enumeration;
 
-    public EnumerationIterator(Enumeration enumeration)
+    public EnumerationIterator(final Enumeration enumeration)
     {
         _enumeration = enumeration;
     }

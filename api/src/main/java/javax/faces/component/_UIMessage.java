@@ -53,7 +53,7 @@ abstract class _UIMessage extends UIComponentBase
 
   /**
    * Specifies whether the detailed information from the message should be shown. 
-   * Default to false.
+   * Default to true.
    *
    * @return  the new showDetail value
    */
@@ -63,7 +63,7 @@ abstract class _UIMessage extends UIComponentBase
 
   /**
    * Specifies whether the summary information from the message should be shown.
-   * Defaults to true.
+   * Defaults to false.
    *
    * @return  the new showSummary value
    */

@@ -52,10 +52,12 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  * <p>
  * Unless otherwise specified, all attributes accept static values or EL
  * expressions.
+ * </p>
  * <p>
  * See the javadoc for this class in the <a
  * href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF
  * Specification</a> for further details.
+ * </p>
  */
 @JSFComponent(name="f:view", bodyContent="JSP", tagClass="org.apache.myfaces.taglib.core.ViewTag")
 @JSFJspProperty(name="binding", returnType="java.lang.String", tagExcluded=true)
@@ -217,6 +219,7 @@ public class UIViewRoot extends UIComponentBase
      * The locale for this view.
      * <p>
      * Defaults to the default locale specified in the faces configuration file.
+     * </p>
      */
     @JSFProperty
     public Locale getLocale()
@@ -669,7 +672,9 @@ public class UIViewRoot extends UIComponentBase
     }
 
     /**
-     * Gets
+     * MethodBinding pointing to a method that takes a
+     * javax.faces.event.PhaseEvent and returns void,
+     * called before every phase except for restore view.
      * 
      * @return the new beforePhaseListener value
      */
@@ -701,7 +706,9 @@ public class UIViewRoot extends UIComponentBase
     }
 
     /**
-     * Gets
+     * MethodBinding pointing to a method that takes a
+     * javax.faces.event.PhaseEvent and returns void,
+     * called after every phase except for restore view.
      * 
      * @return the new afterPhaseListener value
      */

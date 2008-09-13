@@ -139,10 +139,9 @@ public class ValueBindingToValueExpression extends ValueExpression implements St
     @Override
     public int hashCode()
     {
-        final int PRIME = 31;
         int result = 1;
-        result = PRIME * result + (_transient ? 1231 : 1237);
-        result = PRIME * result + ((_valueBinding == null) ? 0 : _valueBinding.hashCode());
+        result = 31 * result + (_transient ? 1231 : 1237);
+        result = 31 * result + ((_valueBinding == null) ? 0 : _valueBinding.hashCode());
         return result;
     }
 
@@ -249,7 +248,7 @@ public class ValueBindingToValueExpression extends ValueExpression implements St
             throw new IllegalArgumentException("el context must not be null.");
         }
         FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
-        if (context == null)
+        if (facesContext == null)
         {
             throw new IllegalStateException("faces context not available in el context.");
         }

@@ -18,11 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
-import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
-import org.apache.myfaces.shared_impl.renderkit.html.HTML;
-import org.apache.myfaces.shared_impl.renderkit.html.HtmlRenderer;
-import org.apache.myfaces.shared_impl.renderkit.html.HtmlRendererUtils;
+import java.io.IOException;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
@@ -30,14 +26,25 @@ import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.convert.ConverterException;
-import java.io.IOException;
+
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
+import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
+import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
+import org.apache.myfaces.shared_impl.renderkit.html.HTML;
+import org.apache.myfaces.shared_impl.renderkit.html.HtmlRenderer;
+import org.apache.myfaces.shared_impl.renderkit.html.HtmlRendererUtils;
 
 
 /**
+ *   
  * @author Thomas Spiegl (latest modification by $Author$)
  * @author Anton Koinov
  * @version $Revision$ $Date$
  */
+@JSFRenderer(
+    renderKitId="HTML_BASIC",
+    family="javax.faces.Input",
+    type="javax.faces.Hidden")
 public class HtmlHiddenRenderer
 extends HtmlRenderer
 {

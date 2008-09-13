@@ -32,27 +32,27 @@ import org.apache.myfaces.util.AbstractAttributeMap;
  * @author Anton Koinov (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class InitParameterMap extends AbstractAttributeMap<String>
+public final class InitParameterMap extends AbstractAttributeMap<String>
 {
-    final ServletContext _servletContext;
+    private final ServletContext _servletContext;
 
-    InitParameterMap(ServletContext servletContext)
+    InitParameterMap(final ServletContext servletContext)
     {
         _servletContext = servletContext;
     }
 
-    protected String getAttribute(String key)
+    protected String getAttribute(final String key)
     {
         return _servletContext.getInitParameter(key);
     }
 
-    protected void setAttribute(String key, String value)
+    protected void setAttribute(final String key, final String value)
     {
         throw new UnsupportedOperationException(
             "Cannot set ServletContext InitParameter");
     }
 
-    protected void removeAttribute(String key)
+    protected void removeAttribute(final String key)
     {
         throw new UnsupportedOperationException(
             "Cannot remove ServletContext InitParameter");
@@ -64,7 +64,7 @@ public class InitParameterMap extends AbstractAttributeMap<String>
         return _servletContext.getInitParameterNames();
     }
     
-    public void putAll(Map t)
+    public void putAll(final Map t)
     {
         throw new UnsupportedOperationException();
     }

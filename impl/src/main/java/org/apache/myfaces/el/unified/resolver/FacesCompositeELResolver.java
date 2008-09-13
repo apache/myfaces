@@ -26,6 +26,8 @@ import javax.faces.context.FacesContext;
 import javax.servlet.jsp.JspApplicationContext;
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Arrays;
 
 /**
  * <p>
@@ -39,11 +41,11 @@ import java.util.Iterator;
  * resolvers into the jsp engine. Therefore we have to make sure that jsp only pages where no faces context is available
  * are still working
  * </p>
- * 
+ *
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class FacesCompositeELResolver extends org.apache.myfaces.el.CompositeELResolver
+public final class FacesCompositeELResolver extends org.apache.myfaces.el.CompositeELResolver
 {
     private final Scope _scope;
 
@@ -52,11 +54,11 @@ public class FacesCompositeELResolver extends org.apache.myfaces.el.CompositeELR
         Faces, JSP
     }
 
-    public FacesCompositeELResolver(Scope scope)
+    public FacesCompositeELResolver(final Scope scope)
     {
         if (scope == null)
         {
-            throw new IllegalArgumentException("scope must not be one of " + Scope.values());
+            throw new IllegalArgumentException("scope must not be one of " + Arrays.toString(Scope.values()));
         }
         _scope = scope;
     }
@@ -64,108 +66,133 @@ public class FacesCompositeELResolver extends org.apache.myfaces.el.CompositeELR
     @Override
     public Class<?> getCommonPropertyType(final ELContext context, final Object base)
     {
-        return invoke(new ResolverInvoker<Class<?>>()
+        final FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext == null)
         {
-            public Class<?> invoke()
-            {
-                return FacesCompositeELResolver.super.getCommonPropertyType(context, base);
-            }
-        });
+            return null;
+        }
+        final Map<String, Object> requestMap = facesContext.getExternalContext().getRequestMap();
+        try
+        {
+            setScope(requestMap);
+            return super.getCommonPropertyType(context, base);
+        }
+        finally
+        {
+            unsetScope(requestMap);
+        }
+
     }
 
     @Override
     public Iterator<FeatureDescriptor> getFeatureDescriptors(final ELContext context, final Object base)
     {
-        return invoke(new ResolverInvoker<Iterator<FeatureDescriptor>>()
+        final FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext == null)
         {
-            public Iterator<FeatureDescriptor> invoke()
-            {
-                return FacesCompositeELResolver.super.getFeatureDescriptors(context, base);
-            }
-        });
+            return null;
+        }
+        final Map<String, Object> requestMap = facesContext.getExternalContext().getRequestMap();
+        try
+        {
+            setScope(requestMap);
+            return super.getFeatureDescriptors(context, base);
+
+        }
+        finally
+        {
+            unsetScope(requestMap);
+        }
     }
 
     @Override
     public Class<?> getType(final ELContext context, final Object base, final Object property)
     {
-        return invoke(new ResolverInvoker<Class<?>>()
+        final FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext == null)
         {
-            public Class<?> invoke()
-            {
-                context.setPropertyResolved(false);  
-                return FacesCompositeELResolver.super.getType(context, base, property);
-            }
-        });
+            return null;
+        }
+        final Map<String, Object> requestMap = facesContext.getExternalContext().getRequestMap();
+        try
+        {
+            setScope(requestMap);
+            return super.getType(context, base, property);
+        }
+        finally
+        {
+            unsetScope(requestMap);
+        }
     }
 
     @Override
     public Object getValue(final ELContext context, final Object base, final Object property)
     {
-        return invoke(new ResolverInvoker<Object>()
+        final FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext == null)
         {
-            public Object invoke()
-            {
-                return FacesCompositeELResolver.super.getValue(context, base, property);
-            }
-        });
+            return null;
+        }
+        final Map<String, Object> requestMap = facesContext.getExternalContext().getRequestMap();
+        try
+        {
+            setScope(requestMap);
+            return super.getValue(context, base, property);
+        }
+        finally
+        {
+            unsetScope(requestMap);
+        }
     }
 
     @Override
     public boolean isReadOnly(final ELContext context, final Object base, final Object property)
     {
-        return invoke(new ResolverInvoker<Boolean>()
+        final FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext == null)
         {
-            public Boolean invoke()
-            {
-                return FacesCompositeELResolver.super.isReadOnly(context, base, property);
-            }
-        });
+            return false;
+        }
+        final Map<String, Object> requestMap = facesContext.getExternalContext().getRequestMap();
+        try
+        {
+            setScope(requestMap);
+            return super.isReadOnly(context, base, property);
+        }
+        finally
+        {
+            unsetScope(requestMap);
+        }
     }
 
     @Override
     public void setValue(final ELContext context, final Object base, final Object property, final Object val)
     {
-        invoke(new ResolverInvoker<Object>()
+        final FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext == null)
         {
-            public Object invoke()
-            {
-                FacesCompositeELResolver.super.setValue(context, base, property, val);
-                return null;
-            }
-        });
-    }
-
-    <T> T invoke(ResolverInvoker<T> invoker)
-    {
-        FacesContext context = FacesContext.getCurrentInstance();
-        if (context == null)
-        {
-            return null;
+            return;
         }
+        final Map<String, Object> requestMap = facesContext.getExternalContext().getRequestMap();
         try
         {
-            setScope(context);
-            return invoker.invoke();
+            setScope(requestMap);
+            super.setValue(context, base, property, val);
+
         }
         finally
         {
-            unsetScope(context);
+            unsetScope(requestMap);
         }
     }
 
-    private void setScope(FacesContext context)
+    private void setScope(final Map<String, Object> requestMap)
     {
-        context.getExternalContext().getRequestMap().put(Scope.class.getName(), _scope);
+        requestMap.put(Scope.class.getName(), _scope);
     }
 
-    private void unsetScope(FacesContext context)
+    private static void unsetScope(final Map<String, Object> requestMap)
     {
-        context.getExternalContext().getRequestMap().remove(Scope.class.getName());
+        requestMap.remove(Scope.class.getName());
     }
-
-    interface ResolverInvoker<T>
-    {
-        T invoke();
-    }
-
 }

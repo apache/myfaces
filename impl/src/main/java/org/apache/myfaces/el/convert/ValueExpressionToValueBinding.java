@@ -53,10 +53,9 @@ public class ValueExpressionToValueBinding extends ValueBinding implements State
     @Override
     public int hashCode()
     {
-        final int PRIME = 31;
         int result = 1;
-        result = PRIME * result + ((_valueExpression == null) ? 0 : _valueExpression.hashCode());
-        result = PRIME * result + (isTransient ? 1231 : 1237);
+        result = 31 * result + ((_valueExpression == null) ? 0 : _valueExpression.hashCode());
+        result = 31 * result + (isTransient ? 1231 : 1237);
         return result;
     }
 

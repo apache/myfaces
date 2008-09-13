@@ -18,13 +18,26 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderers;
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlTextRendererBase;
 
 
 /**
+ *   
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
+@JSFRenderers(renderers={
+    @JSFRenderer(
+        renderKitId="HTML_BASIC",
+        family="javax.faces.Input",
+        type="javax.faces.Text"),
+    @JSFRenderer(
+        renderKitId="HTML_BASIC",
+        family="javax.faces.Output",
+        type="javax.faces.Text")
+})
 public class HtmlTextRenderer
         extends HtmlTextRendererBase
 {

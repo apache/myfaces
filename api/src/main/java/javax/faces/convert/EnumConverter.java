@@ -23,11 +23,14 @@ import javax.faces.component.StateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFConverter;
+
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  *
  * @author Stan Silvert
  */
+@JSFConverter
 public class EnumConverter implements Converter, StateHolder {
     
     public static final String CONVERTER_ID = "javax.faces.Enum";

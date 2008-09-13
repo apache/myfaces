@@ -20,6 +20,9 @@ package javax.faces.convert;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFConverter;
+
 import java.math.BigInteger;
 
 /**
@@ -28,6 +31,7 @@ import java.math.BigInteger;
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
+@JSFConverter
 public class BigIntegerConverter
         implements Converter
 {

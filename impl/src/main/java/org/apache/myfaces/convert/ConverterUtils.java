@@ -36,13 +36,13 @@ public final class ConverterUtils
     {
         if (value instanceof Number)
         {
-            return ((Number)value).intValue();
+            return ((Number) value).intValue();
         }
         else if (value instanceof String)
         {
             try
             {
-                return Integer.parseInt((String)value);
+                return Integer.parseInt((String) value);
             }
             catch (NumberFormatException e)
             {
@@ -59,13 +59,13 @@ public final class ConverterUtils
     {
         if (value instanceof Boolean)
         {
-            return ((Boolean)value).booleanValue();
+            return ((Boolean) value);
         }
         else if (value instanceof String)
         {
             try
             {
-                return new Boolean((String)value).booleanValue();
+                return Boolean.parseBoolean((String) value);
             }
             catch (Exception e)
             {
@@ -82,13 +82,13 @@ public final class ConverterUtils
     {
         if (value instanceof Number)
         {
-            return ((Number)value).longValue();
+            return ((Number) value).longValue();
         }
         else if (value instanceof String)
         {
             try
             {
-                return Long.parseLong((String)value);
+                return Long.parseLong((String) value);
             }
             catch (NumberFormatException e)
             {
@@ -105,13 +105,13 @@ public final class ConverterUtils
     {
         if (value instanceof Number)
         {
-            return ((Number)value).doubleValue();
+            return ((Number) value).doubleValue();
         }
         else if (value instanceof String)
         {
             try
             {
-                return Double.parseDouble((String)value);
+                return Double.parseDouble((String) value);
             }
             catch (NumberFormatException e)
             {

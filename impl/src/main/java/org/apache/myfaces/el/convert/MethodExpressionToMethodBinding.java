@@ -37,7 +37,7 @@ import javax.faces.el.MethodNotFoundException;
  * @author Stan Silvert
  * @see javax.faces.component._MethodExpressionToMethodBinding
  */
-public class MethodExpressionToMethodBinding extends MethodBinding implements StateHolder {
+public final class MethodExpressionToMethodBinding extends MethodBinding implements StateHolder {
     
     private MethodExpression methodExpression;
     
@@ -48,7 +48,7 @@ public class MethodExpressionToMethodBinding extends MethodBinding implements St
     }
 
     /** Creates a new instance of MethodExpressionToMethodBinding */
-    public MethodExpressionToMethodBinding(MethodExpression methodExpression) {
+    public MethodExpressionToMethodBinding(final MethodExpression methodExpression) {
         this.methodExpression = methodExpression;
     }
     
@@ -68,7 +68,7 @@ public class MethodExpressionToMethodBinding extends MethodBinding implements St
         }
     }
 
-    public Object invoke(FacesContext facesContext, Object[] params) 
+    public Object invoke(final FacesContext facesContext, final Object[] params)
         throws EvaluationException, MethodNotFoundException {
         
         try {
@@ -82,15 +82,15 @@ public class MethodExpressionToMethodBinding extends MethodBinding implements St
 
 // -------- StateHolder methods -------------------------------------------    
     
-    public void restoreState(FacesContext context, Object state) {
+    public void restoreState(final FacesContext context, final Object state) {
         methodExpression = (MethodExpression)state;
     }
 
-    public Object saveState(FacesContext context) {
+    public Object saveState(final FacesContext context) {
         return methodExpression;
     }
 
-    public void setTransient(boolean newTransientValue) {
+    public void setTransient(final boolean newTransientValue) {
         isTransient = newTransientValue;
     }
 

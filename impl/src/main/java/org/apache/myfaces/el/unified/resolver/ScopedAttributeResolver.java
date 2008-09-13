@@ -37,7 +37,7 @@ import javax.faces.context.FacesContext;
  *
  * @author Stan Silvert
  */
-public class ScopedAttributeResolver extends ELResolver {
+public final class ScopedAttributeResolver extends ELResolver {
     
     /**
      * Creates a new instance of ScopedAttributeResolver
@@ -45,13 +45,13 @@ public class ScopedAttributeResolver extends ELResolver {
     public ScopedAttributeResolver() {
     }
 
-    public void setValue(ELContext context, Object base, Object property, Object value) 
+    public void setValue(final ELContext context, final Object base, final Object property, final Object value)
         throws NullPointerException, PropertyNotFoundException, PropertyNotWritableException, ELException {
         
         if (base != null) return;
         if (property == null) throw new PropertyNotFoundException();
         
-        Map<String, Object> scopedMap = findScopedMap(externalContext(context), property);
+        final Map<String, Object> scopedMap = findScopedMap(externalContext(context), property);
         if (scopedMap != null) {
             scopedMap.put((String)property, value);
         } else {
@@ -61,7 +61,7 @@ public class ScopedAttributeResolver extends ELResolver {
         context.setPropertyResolved(true);
     }
 
-    public boolean isReadOnly(ELContext context, Object base, Object property) 
+    public boolean isReadOnly(final ELContext context, final Object base, final Object property)
         throws NullPointerException, PropertyNotFoundException, ELException {
         
         if (base == null) context.setPropertyResolved(true);
@@ -69,7 +69,7 @@ public class ScopedAttributeResolver extends ELResolver {
         return false;
     }
 
-    public Object getValue(ELContext context, Object base, Object property) 
+    public Object getValue(final ELContext context, final Object base, final Object property)
         throws NullPointerException, PropertyNotFoundException, ELException {
         
         if (base != null) return null;
@@ -77,7 +77,7 @@ public class ScopedAttributeResolver extends ELResolver {
 
         context.setPropertyResolved(true);
 
-        Map scopedMap = findScopedMap(externalContext(context), property);
+        final Map scopedMap = findScopedMap(externalContext(context), property);
         if (scopedMap != null) {
             return scopedMap.get(property);
         }
@@ -85,7 +85,7 @@ public class ScopedAttributeResolver extends ELResolver {
         return null;
     }
 
-    public Class<?> getType(ELContext context, Object base, Object property) 
+    public Class<?> getType(final ELContext context, final Object base, final Object property)
         throws NullPointerException, PropertyNotFoundException, ELException {
         
         if (base != null) return null;
@@ -95,12 +95,12 @@ public class ScopedAttributeResolver extends ELResolver {
         return Object.class;
     }
 
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(final ELContext context, final Object base) {
         
         if (base != null) return null;
         
-        List<FeatureDescriptor> descriptorList = new ArrayList<FeatureDescriptor>();
-        ExternalContext extContext = externalContext(context);
+        final List<FeatureDescriptor> descriptorList = new ArrayList<FeatureDescriptor>();
+        final ExternalContext extContext = externalContext(context);
         addDescriptorsToList(descriptorList, extContext.getRequestMap());
         addDescriptorsToList(descriptorList, extContext.getSessionMap());
         addDescriptorsToList(descriptorList, extContext.getApplicationMap());
@@ -108,7 +108,7 @@ public class ScopedAttributeResolver extends ELResolver {
         return descriptorList.iterator();
     }
 
-    public Class<?> getCommonPropertyType(ELContext context, Object base) {
+    public Class<?> getCommonPropertyType(final ELContext context, final Object base) {
         
         if (base != null) return null;
         
@@ -116,7 +116,7 @@ public class ScopedAttributeResolver extends ELResolver {
     }
     
     // side effect: modifies the list
-    private void addDescriptorsToList(List<FeatureDescriptor> descriptorList, Map scopeMap) {
+    private static void addDescriptorsToList(final List<FeatureDescriptor> descriptorList, final Map scopeMap) {
         for (Object name: scopeMap.keySet()) {
             String strName = (String)name;
             Class runtimeType = scopeMap.get(strName).getClass();
@@ -124,7 +124,7 @@ public class ScopedAttributeResolver extends ELResolver {
         }
     }
     
-    private FeatureDescriptor makeDescriptor(String name, Class runtimeType) {
+    private static FeatureDescriptor makeDescriptor(final String name, final Class runtimeType) {
         FeatureDescriptor fd = new FeatureDescriptor();
         fd.setValue(ELResolver.RESOLVABLE_AT_DESIGN_TIME, Boolean.TRUE);
         fd.setValue(ELResolver.TYPE, runtimeType);
@@ -138,7 +138,7 @@ public class ScopedAttributeResolver extends ELResolver {
     }
     
     // returns null if not found
-    private Map<String, Object> findScopedMap(ExternalContext extContext, Object property) {
+    private static Map<String, Object> findScopedMap(final ExternalContext extContext, final Object property) {
         
         if (extContext == null) return null;
 
@@ -155,11 +155,11 @@ public class ScopedAttributeResolver extends ELResolver {
     }
     
     // get the FacesContext from the ELContext
-    private FacesContext facesContext(ELContext context) {
+    private static FacesContext facesContext(final ELContext context) {
         return (FacesContext)context.getContext(FacesContext.class);
     }
     
-    private ExternalContext externalContext(ELContext context) {
+    private static ExternalContext externalContext(final ELContext context) {
         FacesContext facesContext = facesContext(context);
         if (facesContext != null) {
             return facesContext(context).getExternalContext();

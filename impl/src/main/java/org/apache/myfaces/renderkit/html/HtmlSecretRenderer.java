@@ -18,13 +18,19 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlSecretRendererBase;
 
 
 /**
+ *   
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
+@JSFRenderer(
+    renderKitId="HTML_BASIC",
+    family="javax.faces.Input",
+    type="javax.faces.Secret")
 public class HtmlSecretRenderer
         extends HtmlSecretRendererBase
 {

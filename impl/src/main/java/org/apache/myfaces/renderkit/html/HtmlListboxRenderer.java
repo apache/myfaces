@@ -18,13 +18,26 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderers;
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlListboxRendererBase;
 
 
 /**
+ *   
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
+@JSFRenderers(renderers={
+    @JSFRenderer(
+        renderKitId="HTML_BASIC",
+        family="javax.faces.SelectOne",
+        type="javax.faces.Listbox"),   
+    @JSFRenderer(
+        renderKitId="HTML_BASIC",
+        family="javax.faces.SelectMany",
+        type="javax.faces.Listbox")
+})
 public class HtmlListboxRenderer
         extends HtmlListboxRendererBase
 {

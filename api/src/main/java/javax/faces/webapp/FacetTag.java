@@ -22,8 +22,19 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
 /**
+ * This tag adds its child as a facet of the nearest parent UIComponent.
+ * A child consisting of multiple elements should be nested within a
+ * container component (i.e., within an h:panelGroup for HTML library
+ * components).
+ * 
+ * Unless otherwise specified, all attributes accept static values or EL expressions.
+ * 
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  *
+ * @JSFJspTag
+ *   name="f:facet"
+ *   bodyContent="JSP"
+ *   
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -38,6 +49,12 @@ public class FacetTag
         return _name;
     }
 
+    /**
+     * The name of the facet to be created.  This must be a static value.
+     * 
+     * @JSFJspAttribute
+     *   required="true"
+     */
     public void setName(String name)
     {
         _name = name;

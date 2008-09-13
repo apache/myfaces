@@ -18,16 +18,22 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlGridRendererBase;
 
 
 /**
  * X-CHECKED: tlddoc h:panelGrid 1.0 final
  *
+ *
  * @author Manfred Geiler (latest modification by $Author$)
  * @author Thomas Spiegl
  * @version $Revision$ $Date$
  */
+@JSFRenderer(
+    renderKitId="HTML_BASIC",
+    family="javax.faces.Panel",
+    type="javax.faces.Grid")
 public class HtmlGridRenderer
     extends HtmlGridRendererBase
 {

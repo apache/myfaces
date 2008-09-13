@@ -29,13 +29,17 @@ import javax.servlet.jsp.tagext.TagSupport;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspAttribute;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;
 import org.apache.myfaces.event.SetPropertyActionListener;
 
 /**
  * @author Dennis Byrne
  * @since 1.2
  */
-
+@JSFJspTag(
+        name="f:setPropertyActionListener",
+        bodyContent="empty")
 public class SetPropertyActionListenerTag extends TagSupport
 {
     
@@ -88,6 +92,10 @@ public class SetPropertyActionListenerTag extends TagSupport
         return SKIP_BODY;
     }
     
+    /**
+     * ValueExpression for the destination of the value attribute.
+     */
+    @JSFJspAttribute(required=true)
     public ValueExpression getTarget()
     {
         return target;
@@ -98,6 +106,12 @@ public class SetPropertyActionListenerTag extends TagSupport
         this.target = target;
     }
 
+    /**
+     * ValueExpression for the value of the target attribute.
+     * 
+     * @return
+     */
+    @JSFJspAttribute(required=true)
     public ValueExpression getValue()
     {
         return value;

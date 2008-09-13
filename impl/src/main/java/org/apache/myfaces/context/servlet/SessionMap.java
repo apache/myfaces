@@ -34,32 +34,32 @@ import org.apache.myfaces.util.AbstractAttributeMap;
  * @author Anton Koinov (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class SessionMap extends AbstractAttributeMap<Object>
+public final class SessionMap extends AbstractAttributeMap<Object>
 {
     private final HttpServletRequest _httpRequest;
 
-    SessionMap(HttpServletRequest httpRequest)
+    SessionMap(final HttpServletRequest httpRequest)
     {
         _httpRequest = httpRequest;
     }
 
     @Override
-    protected Object getAttribute(String key)
+    protected Object getAttribute(final String key)
     {
-        HttpSession httpSession = getSession();
-        return (httpSession == null) ? null : httpSession.getAttribute(key.toString());
+        final HttpSession httpSession = getSession();
+        return (httpSession == null) ? null : httpSession.getAttribute(key);
     }
 
     @Override
-    protected void setAttribute(String key, Object value)
+    protected void setAttribute(final String key, final Object value)
     {
         _httpRequest.getSession(true).setAttribute(key, value);
     }
 
     @Override
-    protected void removeAttribute(String key)
+    protected void removeAttribute(final String key)
     {
-        HttpSession httpSession = getSession();
+        final HttpSession httpSession = getSession();
         if (httpSession != null)
         {
             httpSession.removeAttribute(key);
@@ -70,7 +70,7 @@ public class SessionMap extends AbstractAttributeMap<Object>
     @SuppressWarnings("unchecked")
     protected Enumeration<String> getAttributeNames()
     {
-        HttpSession httpSession = getSession();
+        final HttpSession httpSession = getSession();
         return (httpSession == null) ? NullEnumeration.instance() : httpSession.getAttributeNames();
     }
 
@@ -80,7 +80,7 @@ public class SessionMap extends AbstractAttributeMap<Object>
     }
 
     @Override
-    public void putAll(Map t)
+    public void putAll(final Map t)
     {
         throw new UnsupportedOperationException();
     }
@@ -91,12 +91,12 @@ public class SessionMap extends AbstractAttributeMap<Object>
     @Override
     public void clear()
     {
-        HttpSession session = getSession();
+        final HttpSession session = getSession();
         if (session == null)
             return;
-        for (Enumeration attributeNames = session.getAttributeNames(); attributeNames.hasMoreElements();)
+        for (final Enumeration attributeNames = session.getAttributeNames(); attributeNames.hasMoreElements();)
         {
-            String attributeName = (String) attributeNames.nextElement();
+            final String attributeName = (String) attributeNames.nextElement();
             session.removeAttribute(attributeName);
         }
     }

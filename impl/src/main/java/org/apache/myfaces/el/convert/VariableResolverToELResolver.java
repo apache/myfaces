@@ -40,7 +40,7 @@ import java.util.Iterator;
  * @version $Revision$ $Date$
  */
 @SuppressWarnings("deprecation")
-public class VariableResolverToELResolver extends ELResolver
+public final class VariableResolverToELResolver extends ELResolver
 {
 
     // holds a flag to check if this instance is already called in current thread 
@@ -57,7 +57,7 @@ public class VariableResolverToELResolver extends ELResolver
     /**
      * Creates a new instance of VariableResolverToELResolver
      */
-    public VariableResolverToELResolver(VariableResolver variableResolver)
+    public VariableResolverToELResolver(final VariableResolver variableResolver)
     {
         this.variableResolver = variableResolver;
     }
@@ -84,7 +84,7 @@ public class VariableResolverToELResolver extends ELResolver
         if (!(property instanceof String))
             return null;
 
-        String strProperty = (String) property;
+        final String strProperty = (String) property;
 
         Object result = null;
         try
@@ -121,7 +121,7 @@ public class VariableResolverToELResolver extends ELResolver
     }
 
     // get the FacesContext from the ELContext
-    private FacesContext facesContext(ELContext context)
+    private static FacesContext facesContext(ELContext context)
     {
         return (FacesContext) context.getContext(FacesContext.class);
     }

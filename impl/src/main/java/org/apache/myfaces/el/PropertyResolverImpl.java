@@ -34,7 +34,7 @@ import javax.faces.el.PropertyResolver;
  * @version $Revision$ $Date$
  */
 @SuppressWarnings("deprecation")
-public class PropertyResolverImpl extends PropertyResolver
+public final class PropertyResolverImpl extends PropertyResolver
 {
     // ~ Public PropertyResolver Methods
     // ----------------------------------------
@@ -55,7 +55,7 @@ public class PropertyResolverImpl extends PropertyResolver
     @Override
     public Object getValue(final Object base, final int index) throws EvaluationException, PropertyNotFoundException
     {
-        return getValue(base, new Integer(index));
+        return getValue(base, Integer.valueOf(index));
     }
 
     @Override
@@ -98,7 +98,7 @@ public class PropertyResolverImpl extends PropertyResolver
             }
         }
         
-        setValue(base, new Integer(index), newValue);
+        setValue(base, Integer.valueOf(index), newValue);
     }
 
     @Override
@@ -114,9 +114,9 @@ public class PropertyResolverImpl extends PropertyResolver
     }
 
     @Override
-    public boolean isReadOnly(Object base, int index)
+    public boolean isReadOnly(final Object base, final int index)
     {
-        return isReadOnly(base, new Integer(index));
+        return isReadOnly(base, Integer.valueOf(index));
     }
 
     @Override
@@ -127,7 +127,7 @@ public class PropertyResolverImpl extends PropertyResolver
         
         return invokeResolver(new ResolverInvoker<Class>(base, property)
         {
-            public Class invoke(ELResolver resolver, ELContext context)
+            public Class invoke(final ELResolver resolver, final ELContext context)
             {
                 return resolver.getType(context, base, property);
             }
@@ -150,7 +150,7 @@ public class PropertyResolverImpl extends PropertyResolver
             }
         }
         
-        return getType(base, new Integer(index));
+        return getType(base, Integer.valueOf(index));
     }
     
     // ~ Internal Helper Methods
@@ -197,7 +197,7 @@ public class PropertyResolverImpl extends PropertyResolver
         private final Object _base;
         private final Object _property;
 
-        ResolverInvoker(Object base, Object property)
+        ResolverInvoker(final Object base, final Object property)
         {
             _base = base;
             _property = property;

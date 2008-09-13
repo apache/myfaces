@@ -20,6 +20,8 @@ package org.apache.myfaces.taglib.core;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspAttribute;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 import javax.el.ValueExpression;
@@ -37,9 +39,14 @@ import javax.servlet.jsp.tagext.TagSupport;
 import java.io.Serializable;
 
 /**
+ * Register a PhaseListener instance
+ * 
  * @author martin.haimberger
  * @version $Revision: 462929 $ $Date: 2006-10-11 21:26:36 +0100 (mi�, 11 oct 2006) $
  */
+@JSFJspTag(
+        name="f:phaseListener",
+        bodyContent="empty")
 public class PhaseListenerTag extends TagSupport {
 
     private final Log log = LogFactory.getLog(PhaseListenerTag.class);
@@ -53,12 +60,23 @@ public class PhaseListenerTag extends TagSupport {
      * A value binding expression used to create a PhaseListener instance.
      */
     private ValueExpression binding = null;
-
-    /*--- Setter ---*/
+    
+    /**
+     * Class name of the PhaseListener to be created and registered.
+     */
+    @JSFJspAttribute(
+            rtexprvalue=true,
+            className="java.lang.String")
     public void setType(ValueExpression type) {
         this.type = type;
     }
 
+    /**
+     * Value binding expression that evaluates to a PhaseListener.
+     */
+    @JSFJspAttribute(
+            className="javax.faces.event.PhaseListener",
+            rtexprvalue=true)
     public void setBinding(ValueExpression binding) {
         this.binding = binding;
     }

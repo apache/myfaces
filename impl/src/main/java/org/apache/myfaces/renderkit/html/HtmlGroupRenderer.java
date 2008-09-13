@@ -18,14 +18,20 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlGroupRendererBase;
 
 
 /**
+ *   
  * @author Thomas Spiegl (latest modification by $Author$)
  * @author Manfred Geiler
  * @version $Revision$ $Date$
  */
+@JSFRenderer(
+    renderKitId="HTML_BASIC",
+    family="javax.faces.Panel",
+    type="javax.faces.Group")
 public class HtmlGroupRenderer
     extends HtmlGroupRendererBase
 {

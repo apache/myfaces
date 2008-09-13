@@ -19,6 +19,7 @@
 package javax.faces.component;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
 
 /**
  * Base class for components that provide a new "namespace" for the ids of their
@@ -26,7 +27,11 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
  * <p>
  * See the javadocs for interface NamingContainer for further details.
  */
-@JSFComponent
+@JSFComponent(
+        name="f:subview",
+        bodyContent="JSP",
+        tagClass="org.apache.myfaces.taglib.core.SubviewTag")
+@JSFJspProperty(name="id",required=true)
 public class UINamingContainer extends UIComponentBase implements NamingContainer
 {
     public static final String COMPONENT_TYPE = "javax.faces.NamingContainer";

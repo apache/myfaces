@@ -40,10 +40,10 @@ import javax.faces.el.VariableResolver;
  * @version $Revision$ $Date$
  */
 @SuppressWarnings("deprecation")
-public class VariableResolverImpl extends VariableResolver
+public final class VariableResolverImpl extends VariableResolver
 {
     @Override
-    public Object resolveVariable(FacesContext context, String name) throws EvaluationException
+    public Object resolveVariable(final FacesContext context, final String name) throws EvaluationException
     {
         if (context == null)
         {
@@ -56,9 +56,9 @@ public class VariableResolverImpl extends VariableResolver
 
         try
         {
-            Scope scope = getScope(context);
-            ELContext elcontext = context.getELContext();
-            Application application = context.getApplication();
+            final Scope scope = getScope(context);
+            final ELContext elcontext = context.getELContext();
+            final Application application = context.getApplication();
             if (Scope.Faces.equals(scope))
             {
                 return application.getELResolver().getValue(elcontext, null, name);
@@ -80,7 +80,7 @@ public class VariableResolverImpl extends VariableResolver
         }
     }
 
-    protected Scope getScope(FacesContext context)
+    protected Scope getScope(final FacesContext context)
     {
         return (Scope) context.getExternalContext().getRequestMap().get(Scope.class.getName());
     }

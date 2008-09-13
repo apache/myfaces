@@ -49,7 +49,7 @@ import org.apache.myfaces.util.EnumerationIterator;
  * @author Anton Koinov
  * @version $Revision$ $Date$
  */
-public class ServletExternalContextImpl extends ExternalContext implements ReleaseableExternalContext
+public final class ServletExternalContextImpl extends ExternalContext implements ReleaseableExternalContext
 {
     private static final String INIT_PARAMETER_MAP_ATTRIBUTE = InitParameterMap.class.getName();
 
@@ -69,8 +69,8 @@ public class ServletExternalContextImpl extends ExternalContext implements Relea
     private String _requestServletPath;
     private String _requestPathInfo;
 
-    public ServletExternalContextImpl(ServletContext servletContext, ServletRequest servletRequest,
-            ServletResponse servletResponse)
+    public ServletExternalContextImpl(final ServletContext servletContext, final ServletRequest servletRequest,
+            final ServletResponse servletResponse)
     {
         _servletContext = servletContext;
         _servletRequest = servletRequest;
@@ -265,7 +265,7 @@ public class ServletExternalContextImpl extends ExternalContext implements Relea
     }
 
     @Override
-    public String getInitParameter(String s)
+    public String getInitParameter(final String s)
     {
         return _servletContext.getInitParameter(s);
     }
@@ -288,21 +288,21 @@ public class ServletExternalContextImpl extends ExternalContext implements Relea
 
     @Override
     @SuppressWarnings("unchecked")
-    public Set<String> getResourcePaths(String path)
+    public Set<String> getResourcePaths(final String path)
     {
         checkNull(path, "path");
         return _servletContext.getResourcePaths(path);
     }
 
     @Override
-    public InputStream getResourceAsStream(String path)
+    public InputStream getResourceAsStream(final String path)
     {
         checkNull(path, "path");
         return _servletContext.getResourceAsStream(path);
     }
 
     @Override
-    public String encodeActionURL(String url)
+    public String encodeActionURL(final String url)
     {
         checkNull(url, "url");
         checkHttpServletRequest();
@@ -310,7 +310,7 @@ public class ServletExternalContextImpl extends ExternalContext implements Relea
     }
 
     @Override
-    public String encodeResourceURL(String url)
+    public String encodeResourceURL(final String url)
     {
         checkNull(url, "url");
         checkHttpServletRequest();
@@ -318,13 +318,13 @@ public class ServletExternalContextImpl extends ExternalContext implements Relea
     }
 
     @Override
-    public String encodeNamespace(String s)
+    public String encodeNamespace(final String s)
     {
         return s;
     }
 
     @Override
-    public void dispatch(String requestURI) throws IOException, FacesException
+    public void dispatch(final String requestURI) throws IOException, FacesException
     {
         RequestDispatcher requestDispatcher = _servletRequest.getRequestDispatcher(requestURI);
 
@@ -376,7 +376,7 @@ public class ServletExternalContextImpl extends ExternalContext implements Relea
     }
 
     @Override
-    public boolean isUserInRole(String role)
+    public boolean isUserInRole(final String role)
     {
         checkNull(role, "role");
         checkHttpServletRequest();
@@ -391,14 +391,14 @@ public class ServletExternalContextImpl extends ExternalContext implements Relea
     }
 
     @Override
-    public void log(String message)
+    public void log(final String message)
     {
         checkNull(message, "message");
         _servletContext.log(message);
     }
 
     @Override
-    public void log(String message, Throwable exception)
+    public void log(final String message, final Throwable exception)
     {
         checkNull(message, "message");
         checkNull(exception, "exception");
@@ -406,7 +406,7 @@ public class ServletExternalContextImpl extends ExternalContext implements Relea
     }
 
     @Override
-    public void redirect(String url) throws IOException
+    public void redirect(final String url) throws IOException
     {
         if (_servletResponse instanceof HttpServletResponse)
         {
@@ -427,7 +427,7 @@ public class ServletExternalContextImpl extends ExternalContext implements Relea
     }
 
     @Override
-    public URL getResource(String path) throws MalformedURLException
+    public URL getResource(final String path) throws MalformedURLException
     {
         checkNull(path, "path");
         return _servletContext.getResource(path);
@@ -438,7 +438,7 @@ public class ServletExternalContextImpl extends ExternalContext implements Relea
      * @param request
      */
     @Override
-    public void setRequest(java.lang.Object request)
+    public void setRequest(final java.lang.Object request)
     {
         this._servletRequest = (ServletRequest) request;
         this._httpServletRequest = isHttpServletRequest(_servletRequest) ? (HttpServletRequest) _servletRequest : null;
@@ -451,7 +451,7 @@ public class ServletExternalContextImpl extends ExternalContext implements Relea
      * @throws java.io.UnsupportedEncodingException
      */
     @Override
-    public void setRequestCharacterEncoding(java.lang.String encoding) throws java.io.UnsupportedEncodingException
+    public void setRequestCharacterEncoding(final java.lang.String encoding) throws java.io.UnsupportedEncodingException
     {
 
         this._servletRequest.setCharacterEncoding(encoding);
@@ -481,7 +481,7 @@ public class ServletExternalContextImpl extends ExternalContext implements Relea
      * @param response
      */
     @Override
-    public void setResponse(java.lang.Object response)
+    public void setResponse(final java.lang.Object response)
     {
         this._servletResponse = (ServletResponse) response;
     }
@@ -491,12 +491,12 @@ public class ServletExternalContextImpl extends ExternalContext implements Relea
      * @param encoding
      */
     @Override
-    public void setResponseCharacterEncoding(java.lang.String encoding)
+    public void setResponseCharacterEncoding(final java.lang.String encoding)
     {
         this._servletResponse.setCharacterEncoding(encoding);
     }
 
-    private void checkNull(Object o, String param)
+    private void checkNull(final Object o, final String param)
     {
         if (o == null)
         {
@@ -512,7 +512,7 @@ public class ServletExternalContextImpl extends ExternalContext implements Relea
         }
     }
 
-    private boolean isHttpServletRequest(ServletRequest servletRequest)
+    private boolean isHttpServletRequest(final ServletRequest servletRequest)
     {
         return servletRequest instanceof HttpServletRequest;
     }

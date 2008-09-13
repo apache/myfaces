@@ -18,14 +18,20 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlImageRendererBase;
 
 
 /**
+ *   
  * @author Thomas Spiegl (latest modification by $Author$)
  * @author Anton Koinov
  * @version $Revision$ $Date$
  */
+@JSFRenderer(
+    renderKitId="HTML_BASIC",
+    family="javax.faces.Graphic",
+    type="javax.faces.Image")
 public class HtmlImageRenderer
 extends HtmlImageRendererBase
 {
