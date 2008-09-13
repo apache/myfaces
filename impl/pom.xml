@@ -327,12 +327,12 @@
       <artifactId>myfaces-api</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <dependency>
+    <!-- dependency>
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-build</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
-    </dependency>
+    </dependency -->
     <dependency>
       <!-- this dependency will be packed together with the main artifact of this pom -->
       <groupId>org.apache.myfaces.shared</groupId>

@@ -156,16 +156,16 @@
     </profile>
   </profiles>
   <dependencies>
+    <!-- 
+      - The file with config metadata for generating component classes. The contents
+      - of this jarfile are processed using the maven-faces-plugin.
+      -  This is no longer necessary because it is using myfaces-builder-plugin.
     <dependency>
-       <!-- 
-         - The file with config metadata for generating component classes. The contents
-         - of this jarfile are processed using the maven-faces-plugin.
-         -->
        <groupId>org.apache.myfaces.core</groupId>
        <artifactId>myfaces-build</artifactId>
        <version>1.2.4-SNAPSHOT</version>
        <scope>provided</scope>
-    </dependency>
+    </dependency> -->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
