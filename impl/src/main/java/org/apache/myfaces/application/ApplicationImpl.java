@@ -40,6 +40,7 @@ import javax.faces.FacesException;
 import javax.faces.application.Application;
 import javax.faces.application.NavigationHandler;
 import javax.faces.application.ProjectStage;
+import javax.faces.application.ResourceHandler;
 import javax.faces.application.StateManager;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIComponent;
@@ -108,6 +109,7 @@ public class ApplicationImpl extends Application
     private NavigationHandler _navigationHandler;
     private ActionListener _actionListener;
     private String _defaultRenderKitId;
+    private ResourceHandler _resourceHandler;
     private StateManager _stateManager;
 
     private ArrayList<ELContextListener> _elContextListeners;
@@ -178,6 +180,7 @@ public class ApplicationImpl extends Application
         _defaultRenderKitId = "HTML_BASIC";
         _stateManager = new JspStateManagerImpl();
         _elContextListeners = new ArrayList<ELContextListener>();
+        _resourceHandler = new ResourceHandlerImpl();
         _runtimeConfig = runtimeConfig;
 
         if (log.isTraceEnabled())
@@ -563,6 +566,20 @@ public class ApplicationImpl extends Application
     public final PropertyResolver getPropertyResolver()
     {
         return PROPERTYRESOLVER;
+    }
+    
+    @Override
+    public final void setResourceHandler(ResourceHandler resourceHandler)
+    {
+        checkNull(resourceHandler, "resourceHandler");
+
+        _resourceHandler = resourceHandler;
+    }
+    
+    @Override
+    public final ResourceHandler getResourceHandler()
+    {
+        return _resourceHandler;
     }
 
     @Override
@@ -1072,6 +1089,8 @@ public class ApplicationImpl extends Application
     @Override
     public final void setStateManager(final StateManager stateManager)
     {
+        checkNull(stateManager, "stateManager");
+
         _stateManager = stateManager;
     }
 
@@ -1079,7 +1098,7 @@ public class ApplicationImpl extends Application
     {
         if (param == null)
         {
-            throw new NullPointerException(paramName + " can not be null.");
+            throw new NullPointerException(paramName + " cannot be null.");
         }
     }
 
@@ -1087,7 +1106,7 @@ public class ApplicationImpl extends Application
     {
         if (param.length() == 0)
         {
-            throw new NullPointerException("String " + paramName + " can not be empty.");
+            throw new NullPointerException("String " + paramName + " cannot be empty.");
         }
     }
 }

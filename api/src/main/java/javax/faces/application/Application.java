@@ -107,9 +107,7 @@ public abstract class Application
     
     public ResourceHandler getResourceHandler()
     {
-        // TODO: JSF 2.0 #3
-        // VALIDATE: Shouldn't this be abstract or throw UnsupportedOperationException?
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     public void addELContextListener(ELContextListener listener)
@@ -229,8 +227,7 @@ public abstract class Application
     
     public void setResourceHandler(ResourceHandler resourceHandler)
     {
-        // TODO: JSF 2.0 #6
-        // VALIDATE: Shouldn't this be abstract?
+        throw new UnsupportedOperationException();
     }
 
     public abstract void setStateManager(javax.faces.application.StateManager manager);
