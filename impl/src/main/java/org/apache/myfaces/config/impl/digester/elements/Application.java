@@ -31,6 +31,7 @@ public class Application
     private final List<String> defaultRenderkitId = new ArrayList<String>();
     private final List<String> messageBundle = new ArrayList<String>();
     private final List<String> navigationHandler = new ArrayList<String>();
+    private final List<String> resourceHandler = new ArrayList<String>();
     private final List<String> viewHandler = new ArrayList<String>();
     private final List<String> stateManager = new ArrayList<String>();
     private final List<String> propertyResolver = new ArrayList<String>();
@@ -79,6 +80,11 @@ public class Application
         localeConfig.add(config);
     }
 
+    public void addResourceHandler(String handler)
+    {
+        resourceHandler.add(handler);
+    }
+
     public void addViewHandler(String handler)
     {
         viewHandler.add(handler);
@@ -112,6 +118,11 @@ public class Application
     public List<String> getNavigationHandler()
     {
         return navigationHandler;
+    }
+
+    public List<String> getResourceHandler()
+    {
+        return resourceHandler;
     }
 
     public List<String> getViewHandler()

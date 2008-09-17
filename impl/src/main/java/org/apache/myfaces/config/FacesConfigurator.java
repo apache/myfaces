@@ -47,6 +47,7 @@ import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
 import javax.faces.application.ApplicationFactory;
 import javax.faces.application.NavigationHandler;
+import javax.faces.application.ResourceHandler;
 import javax.faces.application.StateManager;
 import javax.faces.application.ViewHandler;
 import javax.faces.context.ExternalContext;
@@ -636,11 +637,12 @@ public class FacesConfigurator
 
     private void configureApplication()
     {
-        Application application = ((ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY))
-                .getApplication();
+        Application application = 
+            ((ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY)).getApplication();
+        
         FacesConfigDispenser dispenser = getDispenser();
-        application.setActionListener((ActionListener) getApplicationObject(ActionListener.class, dispenser
-                .getActionListenerIterator(), null));
+        application.setActionListener((ActionListener) getApplicationObject(ActionListener.class, 
+                dispenser.getActionListenerIterator(), null));
 
         if (dispenser.getDefaultLocale() != null)
         {
@@ -657,20 +659,25 @@ public class FacesConfigurator
             application.setMessageBundle(dispenser.getMessageBundle());
         }
 
-        application.setNavigationHandler((NavigationHandler) getApplicationObject(NavigationHandler.class, dispenser
-                .getNavigationHandlerIterator(), application.getNavigationHandler()));
+        application.setNavigationHandler((NavigationHandler) getApplicationObject(NavigationHandler.class, 
+                dispenser.getNavigationHandlerIterator(), application.getNavigationHandler()));
         
-        application.setStateManager((StateManager) getApplicationObject(StateManager.class, dispenser
-                .getStateManagerIterator(), application.getStateManager()));
+        application.setStateManager((StateManager) getApplicationObject(StateManager.class, 
+                dispenser.getStateManagerIterator(), application.getStateManager()));
+        
+        application.setResourceHandler((ResourceHandler) getApplicationObject(ResourceHandler.class, 
+                dispenser.getResourceHandlerIterator(), application.getResourceHandler()));
+                                                                
         List<Locale> locales = new ArrayList<Locale>();
         for (Iterator it = dispenser.getSupportedLocalesIterator(); it.hasNext();)
         {
             locales.add(LocaleUtils.toLocale((String) it.next()));
         }
+        
         application.setSupportedLocales(locales);
 
-        application.setViewHandler((ViewHandler) getApplicationObject(ViewHandler.class, dispenser
-                .getViewHandlerIterator(), application.getViewHandler()));
+        application.setViewHandler((ViewHandler) getApplicationObject(ViewHandler.class,
+                dispenser.getViewHandlerIterator(), application.getViewHandler()));
 
         for (Iterator it = dispenser.getComponentTypes(); it.hasNext();)
         {
@@ -689,8 +696,8 @@ public class FacesConfigurator
             String converterClass = (String) it.next();
             try
             {
-                application.addConverter(ClassUtils.simpleClassForName(converterClass), dispenser
-                        .getConverterClassByClass(converterClass));
+                application.addConverter(ClassUtils.simpleClassForName(converterClass), 
+                    dispenser.getConverterClassByClass(converterClass));
             }
             catch (Exception ex)
             {
@@ -704,8 +711,8 @@ public class FacesConfigurator
             {
                 String converterClassName = (String) it.next();
 
-                ((ApplicationImpl) application).addConverterConfiguration(converterClassName, dispenser
-                        .getConverterConfiguration(converterClassName));
+                ((ApplicationImpl) application).addConverterConfiguration(converterClassName, 
+                     dispenser.getConverterConfiguration(converterClassName));
             }
         }
 
@@ -717,11 +724,11 @@ public class FacesConfigurator
 
         RuntimeConfig runtimeConfig = getRuntimeConfig();
         
-        runtimeConfig.setPropertyResolverChainHead((PropertyResolver) getApplicationObject(PropertyResolver.class, dispenser
-                .getPropertyResolverIterator(), new DefaultPropertyResolver()));
+        runtimeConfig.setPropertyResolverChainHead((PropertyResolver) getApplicationObject(PropertyResolver.class, 
+                dispenser.getPropertyResolverIterator(), new DefaultPropertyResolver()));
         
-        runtimeConfig.setVariableResolverChainHead((VariableResolver) getApplicationObject(VariableResolver.class, dispenser
-                .getVariableResolverIterator(), new VariableResolverImpl()));
+        runtimeConfig.setVariableResolverChainHead((VariableResolver) getApplicationObject(VariableResolver.class, 
+                dispenser.getVariableResolverIterator(), new VariableResolverImpl()));
     }
 
     /**
@@ -741,14 +748,15 @@ public class FacesConfigurator
         _runtimeConfig = runtimeConfig;
     }
 
-    private Object getApplicationObject(Class interfaceClass, Iterator classNamesIterator, Object defaultObject)
+    @SuppressWarnings("unchecked")
+    private <T> T getApplicationObject(Class<T> interfaceClass, Iterator<String> classNamesIterator, T defaultObject)
     {
-        Object current = defaultObject;
+        T current = defaultObject;
 
         while (classNamesIterator.hasNext())
         {
             String implClassName = (String) classNamesIterator.next();
-            Class implClass = ClassUtils.simpleClassForName(implClassName);
+            Class<T> implClass = ClassUtils.simpleClassForName(implClassName);
 
             // check, if class is of expected interface type
             if (!interfaceClass.isAssignableFrom(implClass))
@@ -766,7 +774,7 @@ public class FacesConfigurator
                 // let's check if class supports the decorator pattern
                 try
                 {
-                    Constructor delegationConstructor = implClass.getConstructor(new Class[] { interfaceClass });
+                    Constructor<T> delegationConstructor = implClass.getConstructor(new Class[] { interfaceClass });
                     // impl class supports decorator pattern,
                     try
                     {

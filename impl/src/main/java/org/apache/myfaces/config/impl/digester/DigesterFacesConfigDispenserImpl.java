@@ -61,6 +61,7 @@ public class DigesterFacesConfigDispenserImpl implements
     private String messageBundle;
     private List<String> navigationHandlers = new ArrayList<String>();
     private List<String> viewHandlers = new ArrayList<String>();
+    private List<String> resourceHandlers = new ArrayList<String>();
     private List<String> stateManagers = new ArrayList<String>();
     private List<String> propertyResolver = new ArrayList<String>();
     private List<String> variableResolver = new ArrayList<String>();
@@ -116,6 +117,7 @@ public class DigesterFacesConfigDispenserImpl implements
             }
             actionListeners.addAll(application.getActionListener());
             navigationHandlers.addAll(application.getNavigationHandler());
+            resourceHandlers.addAll(application.getResourceHandler());
             viewHandlers.addAll(application.getViewHandler());
             stateManagers.addAll(application.getStateManager());
             propertyResolver.addAll(application.getPropertyResolver());
@@ -277,6 +279,15 @@ public class DigesterFacesConfigDispenserImpl implements
     public Iterator<String> getNavigationHandlerIterator()
     {
         List<String> handlers = new ArrayList<String>(navigationHandlers);
+        return handlers.iterator();
+    }
+
+    /**
+     * @return Iterator over ResourceHandler class names
+     */
+    public Iterator<String> getResourceHandlerIterator()
+    {
+        List<String> handlers = new ArrayList<String>(resourceHandlers);
         return handlers.iterator();
     }
 

@@ -23,10 +23,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.el.CompositeELResolver;
 import javax.el.ELContext;
@@ -53,6 +55,9 @@ import javax.faces.el.ReferenceSyntaxException;
 import javax.faces.el.ValueBinding;
 import javax.faces.el.VariableResolver;
 import javax.faces.event.ActionListener;
+import javax.faces.event.SystemEvent;
+import javax.faces.event.SystemEventListener;
+import javax.faces.event.SystemEventListenerHolder;
 import javax.faces.validator.Validator;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -79,12 +84,13 @@ import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @author Anton Koinov
  * @author Thomas Spiegl
  * @author Stan Silvert
- * @version $Revision$ $Date$
+ * @version $Revision$ $Date: 2008-09-13 19:10:53 -0400 (sam., 13 sept.
+ *          2008) $
  */
 @SuppressWarnings("deprecation")
 public class ApplicationImpl extends Application
@@ -99,7 +105,8 @@ public class ApplicationImpl extends Application
     private final static ThreadLocal<RuntimeConfig> initializingRuntimeConfig = new ThreadLocal<RuntimeConfig>();
 
     // ~ Instance fields
-    // ----------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // --
 
     private Collection<Locale> _supportedLocales = Collections.emptySet();
     private Locale _defaultLocale;
@@ -121,6 +128,7 @@ public class ApplicationImpl extends Application
     private final Map<String, org.apache.myfaces.config.impl.digester.elements.Converter> _converterClassNameToConfigurationMap = new ConcurrentHashMap<String, org.apache.myfaces.config.impl.digester.elements.Converter>();
     private final Map<String, Class> _componentClassMap = new ConcurrentHashMap<String, Class>();
     private final Map<String, Class> _validatorClassMap = new ConcurrentHashMap<String, Class>();
+    private final Map<Class<? extends SystemEvent>, SystemListenerEntry> _systemEventListenerClassMap = new ConcurrentHashMap<Class<? extends SystemEvent>, SystemListenerEntry>();
 
     private final RuntimeConfig _runtimeConfig;
 
@@ -131,7 +139,8 @@ public class ApplicationImpl extends Application
     private ProjectStage _projectStage;
 
     // ~ Constructors
-    // -------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // -----
 
     public ApplicationImpl()
     {
@@ -142,26 +151,29 @@ public class ApplicationImpl extends Application
     {
         if (initializingRuntimeConfig.get() == null)
         {
-            //It may happen that the current thread value
-            //for initializingRuntimeConfig is not set 
-            //(note that this value is final, so it just 
-            //allow set only once per thread).
-            //So the better for this case is try to get
-            //the value using RuntimeConfig.getCurrentInstance()
-            //instead throw an IllegalStateException (only fails if
-            //the constructor is called before setInitializingRuntimeConfig).
-            //From other point of view, AbstractFacesInitializer do 
-            //the same as below, so there is not problem if
-            //we do this here and this is the best place to do
-            //this.
-            //log.info("initializingRuntimeConfig.get() == null, so loading from ExternalContext");
-            ApplicationImpl.setInitializingRuntimeConfig(
-                    RuntimeConfig.getCurrentInstance(
-                            FacesContext.getCurrentInstance()
-                            .getExternalContext()));
+            // It may happen that the current thread value
+            // for initializingRuntimeConfig is not set
+            // (note that this value is final, so it just
+            // allow set only once per thread).
+            // So the better for this case is try to get
+            // the value using RuntimeConfig.getCurrentInstance()
+            // instead throw an IllegalStateException (only fails if
+            // the constructor is called before setInitializingRuntimeConfig).
+            // From other point of view, AbstractFacesInitializer do
+            // the same as below, so there is not problem if
+            // we do this here and this is the best place to do
+            // this.
+            // log.info(
+            // "initializingRuntimeConfig.get() == null, so loading from ExternalContext"
+            // );
+            ApplicationImpl.setInitializingRuntimeConfig(RuntimeConfig.getCurrentInstance(FacesContext
+                    .getCurrentInstance().getExternalContext()));
 
-            //throw new IllegalStateException("The runtime config instance which is created while initialize myfaces "
-            //        + "must be set through ApplicationImpl.setInitializingRuntimeConfig");
+            // throw new IllegalStateException(
+            // "The runtime config instance which is created while initialize myfaces "
+            // +
+            // "must be set through ApplicationImpl.setInitializingRuntimeConfig"
+            // );
         }
         return initializingRuntimeConfig.get();
     }
@@ -193,7 +205,8 @@ public class ApplicationImpl extends Application
     }
 
     // ~ Methods
-    // ------------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // ----------
 
     @Override
     public final void addELResolver(final ELResolver resolver)
@@ -211,7 +224,8 @@ public class ApplicationImpl extends Application
     @Override
     public final ELResolver getELResolver()
     {
-        // we don't need synchronization here since it is ok to have multiple instances of the elresolver
+        // we don't need synchronization here since it is ok to have multiple
+        // instances of the elresolver
         if (elResolver == null)
         {
             elResolver = createFacesResolver();
@@ -241,8 +255,9 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public final java.util.ResourceBundle getResourceBundle(final FacesContext facesContext, final String name) throws FacesException,
-            NullPointerException
+    public final java.util.ResourceBundle getResourceBundle(final FacesContext facesContext, final String name)
+                                                                                                               throws FacesException,
+                                                                                                               NullPointerException
     {
 
         checkNull(facesContext, "facesContext");
@@ -285,7 +300,7 @@ public class ApplicationImpl extends Application
     }
 
     java.util.ResourceBundle getResourceBundle(final String name, final Locale locale, final ClassLoader loader)
-            throws MissingResourceException
+                                                                                                                throws MissingResourceException
     {
         return java.util.ResourceBundle.getBundle(name, locale, loader);
     }
@@ -301,8 +316,9 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public final UIComponent createComponent(final ValueExpression componentExpression, final FacesContext facesContext,
-            final String componentType) throws FacesException, NullPointerException
+    public final UIComponent createComponent(final ValueExpression componentExpression,
+                                             final FacesContext facesContext, 
+                                             final String componentType) throws FacesException, NullPointerException
     {
 
         checkNull(componentExpression, "componentExpression");
@@ -346,7 +362,8 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public final Object evaluateExpressionGet(final FacesContext context, final String expression, final Class expectedType) throws ELException
+    public final Object evaluateExpressionGet(final FacesContext context, final String expression,
+                                              final Class expectedType) throws ELException
     {
         ELContext elContext = context.getELContext();
         return getExpressionFactory().createValueExpression(elContext, expression, expectedType).getValue(elContext);
@@ -355,11 +372,31 @@ public class ApplicationImpl extends Application
     @Override
     public final void addELContextListener(final ELContextListener listener)
     {
-
         synchronized (_elContextListeners)
         {
             _elContextListeners.add(listener);
         }
+    }
+    
+    @Override
+    public void publishEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListenerHolder source)
+    {
+        checkNull(systemEventClass, "systemEventClass");
+        checkNull(source, "source");
+        
+        SystemEvent event = null;
+        if (source instanceof SystemEventListenerHolder)
+        {
+            SystemEventListenerHolder holder = (SystemEventListenerHolder)source;
+            event = _traverseListenerList(holder.getListenersForEventClass(systemEventClass), systemEventClass, 
+                                          source, event);
+        }
+        
+        SystemListenerEntry systemListenerEntry  = _systemEventListenerClassMap.get(systemEventClass);
+        if (systemListenerEntry != null)
+        {
+            systemListenerEntry.publish(systemEventClass, source, event);
+        }     
     }
 
     @Override
@@ -485,12 +522,15 @@ public class ApplicationImpl extends Application
     @Override
     public ProjectStage getProjectStage()
     {
-        // If the value has already been determined by a previous call to this method, simply return that value.
+        // If the value has already been determined by a previous call to this
+        // method, simply return that value.
         if (_projectStage == null)
         {
             String stageName = null;
-            // Look for a JNDI environment entry under the key given by the value of
-            // ProjectStage.PROJECT_STAGE_JNDI_NAME (return type of java.lang.String).
+            // Look for a JNDI environment entry under the key given by the
+            // value of
+            // ProjectStage.PROJECT_STAGE_JNDI_NAME (return type of
+            // java.lang.String).
             try
             {
                 Context ctx = new InitialContext();
@@ -499,12 +539,12 @@ public class ApplicationImpl extends Application
                 {
                     if (temp instanceof String)
                     {
-                        stageName = (String)temp;
+                        stageName = (String) temp;
                     }
                     else
                     {
-                        log.error("JNDI lookup for key " + ProjectStage.PROJECT_STAGE_JNDI_NAME +
-                                  " should return a java.lang.String value");
+                        log.error("JNDI lookup for key " + ProjectStage.PROJECT_STAGE_JNDI_NAME
+                                + " should return a java.lang.String value");
                     }
                 }
             }
@@ -514,8 +554,10 @@ public class ApplicationImpl extends Application
             }
 
             /*
-             * If found, continue with the algorithm below, otherwise, look for an entry in the initParamMap of the
-             * ExternalContext from the current FacesContext with the key ProjectStage.PROJECT_STAGE_PARAM_NAME
+             * If found, continue with the algorithm below, otherwise, look for
+             * an entry in the initParamMap of the ExternalContext from the
+             * current FacesContext with the key
+             * ProjectStage.PROJECT_STAGE_PARAM_NAME
              */
             if (stageName == null)
             {
@@ -527,8 +569,10 @@ public class ApplicationImpl extends Application
             if (stageName != null)
             {
                 /*
-                 * see if an enum constant can be obtained by calling ProjectStage.valueOf(), passing the value from the
-                 * initParamMap. If this succeeds without exception, save the value and return it.
+                 * see if an enum constant can be obtained by calling
+                 * ProjectStage.valueOf(), passing the value from the
+                 * initParamMap. If this succeeds without exception, save the
+                 * value and return it.
                  */
                 try
                 {
@@ -548,10 +592,12 @@ public class ApplicationImpl extends Application
                 }
             }
 
-            /* If not found, or any of the previous attempts to discover the enum constant value have failed, log a
-             * descriptive error message, assign the value as ProjectStage.Production and return it.
+            /*
+             * If not found, or any of the previous attempts to discover the
+             * enum constant value have failed, log a descriptive error message,
+             * assign the value as ProjectStage.Production and return it.
              */
-            
+
             _projectStage = ProjectStage.Production;
         }
 
@@ -645,6 +691,41 @@ public class ApplicationImpl extends Application
     }
 
     @Override
+    public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class sourceClass,
+                                 SystemEventListener listener)
+    {
+        checkNull(systemEventClass, "systemEventClass");
+        checkNull(listener, "listener");
+
+        SystemListenerEntry systemListenerEntry;
+        synchronized (_systemEventListenerClassMap)
+        {
+            systemListenerEntry = _systemEventListenerClassMap.get(systemEventClass);
+            if (systemListenerEntry == null)
+            {
+                systemListenerEntry = new SystemListenerEntry();
+                _systemEventListenerClassMap.put(systemEventClass, systemListenerEntry);
+            }
+        }
+
+        systemListenerEntry.addListener(listener, sourceClass);
+    }
+    
+    @Override
+    public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, 
+                                     Class sourceClass, SystemEventListener listener)
+    {
+        checkNull(systemEventClass, "systemEventClass");
+        checkNull(listener, "listener");
+        
+        SystemListenerEntry systemListenerEntry = _systemEventListenerClassMap.get(systemEventClass);
+        if (systemListenerEntry != null)
+        {
+            systemListenerEntry.removeListener(listener, sourceClass);
+        }
+    }
+
+    @Override
     public final ViewHandler getViewHandler()
     {
         return _viewHandler;
@@ -709,8 +790,9 @@ public class ApplicationImpl extends Application
         }
     }
 
-    public final void addConverterConfiguration(final String converterClassName,
-            final org.apache.myfaces.config.impl.digester.elements.Converter configuration)
+    public final void addConverterConfiguration(
+                                                final String converterClassName,
+                                                final org.apache.myfaces.config.impl.digester.elements.Converter configuration)
     {
         checkNull(converterClassName, "converterClassName");
         checkEmpty(converterClassName, "converterClassName");
@@ -764,12 +846,13 @@ public class ApplicationImpl extends Application
     }
 
     /**
-     * @deprecated Use createComponent(ValueExpression, FacesContext, String) instead.
+     * @deprecated Use createComponent(ValueExpression, FacesContext, String)
+     *             instead.
      */
     @Deprecated
     @Override
     public final UIComponent createComponent(final ValueBinding valueBinding, final FacesContext facesContext,
-            final String componentType) throws FacesException
+                                             final String componentType) throws FacesException
     {
 
         checkNull(valueBinding, "valueBinding");
@@ -786,30 +869,32 @@ public class ApplicationImpl extends Application
      * Return an instance of the converter class that has been registered under
      * the specified id.
      * <p>
-     * Converters are registered via faces-config.xml files, and can also be registered
-     * via the addConverter(String id, Class converterClass) method on this class. Here
-     * the the appropriate Class definition is found, then an instance is created and
-     * returned.
+     * Converters are registered via faces-config.xml files, and can also be
+     * registered via the addConverter(String id, Class converterClass) method
+     * on this class. Here the the appropriate Class definition is found, then
+     * an instance is created and returned.
      * <p>
-     * A converter registered via a config file can have any number of nested attribute or
-     * property tags. The JSF specification is very vague about what effect these nested
-     * tags have. This method ignores nested attribute definitions, but for each nested
-     * property tag the corresponding setter is invoked on the new Converter instance
-     * passing the property's defaultValuer. Basic typeconversion is done so the target
-     * properties on the Converter instance can be String, int, boolean, etc. Note that:
+     * A converter registered via a config file can have any number of nested
+     * attribute or property tags. The JSF specification is very vague about
+     * what effect these nested tags have. This method ignores nested attribute
+     * definitions, but for each nested property tag the corresponding setter is
+     * invoked on the new Converter instance passing the property's
+     * defaultValuer. Basic typeconversion is done so the target properties on
+     * the Converter instance can be String, int, boolean, etc. Note that:
      * <ol>
-     * <li>the Sun Mojarra JSF implemenation ignores nested property tags completely, so
-     * this behaviour cannot be relied on across implementations.
-     * <li>there is no equivalent functionality for converter classes registered via
-     * the Application.addConverter api method.
+     * <li>the Sun Mojarra JSF implemenation ignores nested property tags
+     * completely, so this behaviour cannot be relied on across implementations.
+     * <li>there is no equivalent functionality for converter classes registered
+     * via the Application.addConverter api method.
      * </ol>
      * <p>
-     * Note that this method is most commonly called from the standard f:attribute tag.
-     * As an alternative, most components provide a "converter" attribute which uses an
-     * EL expression to create a Converter instance, in which case this method is not
-     * invoked at all. The converter attribute allows the returned Converter instance to
-     * be configured via normal dependency-injection, and is generally a better choice
-     * than using this method.
+     * Note that this method is most commonly called from the standard
+     * f:attribute tag. As an alternative, most components provide a "converter"
+     * attribute which uses an EL expression to create a Converter instance, in
+     * which case this method is not invoked at all. The converter attribute
+     * allows the returned Converter instance to be configured via normal
+     * dependency-injection, and is generally a better choice than using this
+     * method.
      */
     @Override
     public final Converter createConverter(final String converterId)
@@ -818,9 +903,9 @@ public class ApplicationImpl extends Application
         checkEmpty(converterId, "converterId");
 
         final Class converterClass = _converterIdToClassMap.get(converterId);
-        if(converterClass == null)
+        if (converterClass == null)
         {
-            throw new FacesException("Could not find any registered converter-class by converterId : "+converterId);
+            throw new FacesException("Could not find any registered converter-class by converterId : " + converterId);
         }
 
         try
@@ -853,7 +938,8 @@ public class ApplicationImpl extends Application
 
         // Get EnumConverter for enum classes with no special converter, check
         // here as recursive call with java.lang.Enum will not work
-        if (converterClassName == null && targetClass.isEnum()) {
+        if (converterClassName == null && targetClass.isEnum())
+        {
             converterClassName = _converterClassNameToClassMap.get(Enum.class);
         }
 
@@ -985,12 +1071,14 @@ public class ApplicationImpl extends Application
      */
     @Deprecated
     @Override
-    public final MethodBinding createMethodBinding(final String reference, Class[] params) throws ReferenceSyntaxException
+    public final MethodBinding createMethodBinding(final String reference, Class[] params)
+                                                                                          throws ReferenceSyntaxException
     {
         checkNull(reference, "reference");
         checkEmpty(reference, "reference");
 
-        // TODO: this check should be performed by the expression factory. It is a requirement of the TCK
+        // TODO: this check should be performed by the expression factory. It is
+        // a requirement of the TCK
         if (!(reference.startsWith("#{") && reference.endsWith("}")))
         {
             throw new ReferenceSyntaxException("Invalid method reference: '" + reference + "'");
@@ -1004,7 +1092,7 @@ public class ApplicationImpl extends Application
         try
         {
             methodExpression = getExpressionFactory().createMethodExpression(threadELContext(), reference,
-                    Object.class, params);
+                                                                             Object.class, params);
         }
         catch (ELException e)
         {
@@ -1107,6 +1195,176 @@ public class ApplicationImpl extends Application
         if (param.length() == 0)
         {
             throw new NullPointerException("String " + paramName + " cannot be empty.");
+        }
+    }
+
+    private static SystemEvent _createEvent(Class<? extends SystemEvent> systemEventClass, Object source,
+                                            SystemEvent event)
+    {
+        if (event == null)
+        {
+            try
+            {
+                Constructor<? extends SystemEvent> constructor = systemEventClass.getConstructor(Object.class);
+                event = constructor.newInstance(source);
+            }
+            catch (Exception e)
+            {
+                throw new FacesException("Couldn't instanciate system event of type " + systemEventClass.getName(), e);
+            }
+        }
+
+        return event;
+    }
+
+    private static SystemEvent _traverseListenerList(List<? extends SystemEventListener> listeners,
+                                                     Class<? extends SystemEvent> systemEventClass, Object source,
+                                                     SystemEvent event)
+    {
+        if (listeners != null && !listeners.isEmpty())
+        {
+            for (SystemEventListener listener : listeners)
+            {
+                // Call
+                // SystemEventListener.isListenerForSource(java.lang.Object),
+                // passing the source argument.
+                // If this returns false, take no action on the listener.
+                if (listener.isListenerForSource(source))
+                {
+                    // Otherwise, if the event to be passed to the listener
+                    // instances has not yet been constructed,
+                    // construct the event, passing source as the argument to
+                    // the one-argument constructor that takes
+                    // an Object. This same event instance must be passed to all
+                    // listener instances.
+                    event = _createEvent(systemEventClass, source, event);
+
+                    // Call SystemEvent.isAppropriateListener(javax.faces.event.
+                    // FacesListener), passing the listener
+                    // instance as the argument. If this returns false, take no
+                    // action on the listener.
+                    if (event.isAppropriateListener(listener))
+                    {
+                        // Call SystemEvent.processListener(javax.faces.event.
+                        // FacesListener), passing the listener
+                        // instance.
+                        event.processListener(listener);
+                    }
+                }
+            }
+        }
+
+        return event;
+    }
+
+    private static class SystemListenerEntry
+    {
+        private List<SystemEventListener> _lstSystemEventListener;
+        private Map<Class<?>, List<SystemEventListener>> _sourceClassMap;
+
+        public SystemListenerEntry()
+        {
+        }
+
+        public void addListener(SystemEventListener listener)
+        {
+            assert listener != null;
+
+            addListenerNoDuplicate(getAnySourceListenersNotNull(), listener);
+        }
+
+        public void addListener(SystemEventListener listener, Class<?> source)
+        {
+            assert listener != null;
+
+            if (source == null)
+            {
+                addListener(listener);
+            }
+            else
+            {
+                addListenerNoDuplicate(getSpecificSourceListenersNotNull(source), listener);
+            }
+        }
+
+        public void removeListener(SystemEventListener listener)
+        {
+            assert listener != null;
+            
+            if (_lstSystemEventListener != null)
+            {
+                _lstSystemEventListener.remove(listener);
+            }
+        }
+
+        public void removeListener(SystemEventListener listener, Class<?> sourceClass)
+        {
+            assert listener != null;
+            
+            if (sourceClass == null)
+            {
+                removeListener(listener);
+            }
+            else
+            {
+                if (_sourceClassMap != null)
+                {
+                    List<SystemEventListener> listeners = _sourceClassMap.get(sourceClass);
+                    if (listeners != null)
+                    {
+                        listeners.remove(listener);
+                    }
+                }
+            }
+        }
+
+        public void publish(Class<? extends SystemEvent> systemEventClass, Object source, SystemEvent event)
+        {
+            if (source != null && _sourceClassMap != null)
+            {
+                event = _traverseListenerList(_sourceClassMap.get(source.getClass()), systemEventClass, source, event);
+            }
+
+            _traverseListenerList(_lstSystemEventListener, systemEventClass, source, event);
+        }
+
+        private void addListenerNoDuplicate(List<SystemEventListener> listeners, SystemEventListener listener)
+        {
+            if (!listeners.contains(listener))
+            {
+                listeners.add(listener);
+            }
+        }
+
+        private synchronized List<SystemEventListener> getAnySourceListenersNotNull()
+        {
+            if (_lstSystemEventListener == null)
+            {
+                // TODO: Check if modification occurs often or not, might have to use a synchronized 
+                //       list instead
+                _lstSystemEventListener = new CopyOnWriteArrayList<SystemEventListener>();
+            }
+
+            return _lstSystemEventListener;
+        }
+
+        private synchronized List<SystemEventListener> getSpecificSourceListenersNotNull(Class<?> sourceClass)
+        {
+            if (_sourceClassMap == null)
+            {
+                _sourceClassMap = new ConcurrentHashMap<Class<?>, List<SystemEventListener>>();
+            }
+
+            List<SystemEventListener> list = _sourceClassMap.get(sourceClass);
+            if (list == null)
+            {
+                // TODO: Check if modification occurs often or not, might have to use a synchronized 
+                //       list instead
+                list = new CopyOnWriteArrayList<SystemEventListener>();
+                _sourceClassMap.put(sourceClass, list);
+            }
+
+            return list;
         }
     }
 }

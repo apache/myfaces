@@ -56,6 +56,7 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addCallMethod("faces-config/application/default-render-kit-id", "addDefaultRenderkitId", 0);
         digester.addCallMethod("faces-config/application/message-bundle", "addMessageBundle", 0);
         digester.addCallMethod("faces-config/application/navigation-handler", "addNavigationHandler", 0);
+        digester.addCallMethod("faces-config/application/resource-handler", "addResourceHandler", 0);
         digester.addCallMethod("faces-config/application/view-handler", "addViewHandler", 0);
         digester.addCallMethod("faces-config/application/state-manager", "addStateManager", 0);
         digester.addCallMethod("faces-config/application/property-resolver", "addPropertyResolver", 0);

@@ -99,6 +99,9 @@ public interface FacesConfigDispenser<C>
 
     /** @return Iterator over StateManager class names*/
     public Iterator getStateManagerIterator();
+    
+    /** @return Iterator over ResourceHandler class names*/
+    public Iterator getResourceHandlerIterator();
 
     /** @return Iterator over PropertyResolver class names */
     public Iterator<String> getPropertyResolverIterator();
