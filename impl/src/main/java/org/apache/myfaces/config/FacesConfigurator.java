@@ -18,6 +18,48 @@
  */
 package org.apache.myfaces.config;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.el.ELResolver;
+import javax.faces.FacesException;
+import javax.faces.FactoryFinder;
+import javax.faces.application.Application;
+import javax.faces.application.ApplicationFactory;
+import javax.faces.application.NavigationHandler;
+import javax.faces.application.StateManager;
+import javax.faces.application.ViewHandler;
+import javax.faces.context.ExternalContext;
+import javax.faces.el.PropertyResolver;
+import javax.faces.el.VariableResolver;
+import javax.faces.event.ActionListener;
+import javax.faces.event.PhaseListener;
+import javax.faces.lifecycle.Lifecycle;
+import javax.faces.lifecycle.LifecycleFactory;
+import javax.faces.render.RenderKit;
+import javax.faces.render.RenderKitFactory;
+import javax.faces.webapp.FacesServlet;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.ApplicationFactoryImpl;
@@ -41,28 +83,6 @@ import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
 import org.apache.myfaces.shared_impl.util.serial.SerialFactory;
 import org.xml.sax.SAXException;
-
-import javax.el.ELResolver;
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.*;
-import javax.faces.context.ExternalContext;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.VariableResolver;
-import javax.faces.event.ActionListener;
-import javax.faces.event.PhaseListener;
-import javax.faces.lifecycle.Lifecycle;
-import javax.faces.lifecycle.LifecycleFactory;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.webapp.FacesServlet;
-import java.io.*;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.*;
 
 /**
  * Configures everything for a given context. The FacesConfigurator is independent of the concrete implementations that
@@ -114,6 +134,24 @@ public class FacesConfigurator
     public static final String MYFACES_TOMAHAWK_SANDBOX15_PACKAGE_NAME = "tomahawk-sandbox15";
     public static final String COMMONS_EL_PACKAGE_NAME = "commons-el";
     public static final String JSP_API_PACKAGE_NAME = "jsp-api";
+    
+    /**
+     * Regular expression used to extract the jar information from the 
+     * files present in the classpath.
+     * <p>The groups found with the regular expression are:</p>
+     * <ul>
+     *   <li>Group 1: file path (required)</li>
+     *   <li>Group 2: artifact id (required)</li>
+     *   <li>Group 3: major version (required)</li>
+     *   <li>Group 5: minor version (optional)</li>
+     *   <li>Group 7: maintenance version (optional)</li>
+     *   <li>Group 9: extra version (optional)</li>
+     *   <li>Group 10: SNAPSHOT marker (optional)</li>
+     * </ul>
+     */
+    public static final String REGEX_LIBRARY = "jar:(file:.*/(.+)-" +
+            "(\\d+)(\\.(\\d+)(\\.(\\d+)(\\.(\\d+))?)?)?(-SNAPSHOT)?" +
+            "\\.jar)!/META-INF/MANIFEST.MF";
 
     public FacesConfigurator(ExternalContext externalContext)
     {
@@ -298,48 +336,91 @@ public class FacesConfigurator
     /**
      * This method performs part of the factory search outlined in section 10.2.6.1.
      */
+    @SuppressWarnings("unchecked")
     protected void logMetaInf()
     {
         try
         {
-            List<VersionInfo> li = new ArrayList<VersionInfo>();
-            li.add(new VersionInfo(MYFACES_API_PACKAGE_NAME));
-            li.add(new VersionInfo(MYFACES_IMPL_PACKAGE_NAME));
-            li.add(new VersionInfo(MYFACES_TOMAHAWK_SANDBOX15_PACKAGE_NAME));
-            li.add(new VersionInfo(MYFACES_TOMAHAWK_SANDBOX_PACKAGE_NAME));
-            li.add(new VersionInfo(MYFACES_TOMAHAWK_PACKAGE_NAME));
-
-            Iterator it = ClassUtils.getResources("META-INF/MANIFEST.MF", this);
+            Map<String, List<JarInfo>> libs = new HashMap<String, List<JarInfo>>(30);
+            
+            Pattern pattern = Pattern.compile(REGEX_LIBRARY);
+            
+            Iterator<URL> it = ClassUtils.getResources("META-INF/MANIFEST.MF", this);
             while (it.hasNext())
             {
-                URL url = (URL) it.next();
-
-                for (int i = 0; i < li.size(); i++)
+                URL url = it.next();
+                Matcher matcher = pattern.matcher(url.toString());
+                if (matcher.matches())
                 {
-                    VersionInfo versionInfo = li.get(i);
-                    if (checkJar(versionInfo, url))
-                        break;
+                    // We have a valid JAR
+                    String artifactId = matcher.group(2);
+                    List<JarInfo> versions = libs.get(artifactId);
+                    if (versions == null)
+                    {
+                        versions = new ArrayList<JarInfo>(2);
+                        libs.put(artifactId, versions);
+                    }
+                    
+                    String path = matcher.group(1);
+                    
+                    Version version = new Version(matcher.group(3), matcher.group(5), 
+                                                  matcher.group(7), matcher.group(9),
+                                                  matcher.group(10));
+
+                    JarInfo newInfo = new JarInfo(path, version);
+                    if (!versions.contains(newInfo))
+                    {
+                        versions.add(newInfo);
+                    }
                 }
             }
-
-            for (int i = 0; i < li.size(); i++)
+            
+            if (log.isInfoEnabled())
             {
-                VersionInfo versionInfo = li.get(i);
-
-                if (versionInfo.getUsedVersion() != null)
+                String[] artifactIds = {MYFACES_API_PACKAGE_NAME, MYFACES_IMPL_PACKAGE_NAME, MYFACES_TOMAHAWK_PACKAGE_NAME, 
+                                        MYFACES_TOMAHAWK_SANDBOX_PACKAGE_NAME, MYFACES_TOMAHAWK_SANDBOX15_PACKAGE_NAME, 
+                                        COMMONS_EL_PACKAGE_NAME, JSP_API_PACKAGE_NAME};
+                
+                if (log.isWarnEnabled())
                 {
-                    if (log.isInfoEnabled())
+                    for (String artifactId : artifactIds)
                     {
-                        log.info("Starting up MyFaces-package : " + versionInfo.getPackageName() + " in version : "
-                                + versionInfo.getUsedVersion() + " from path : " + versionInfo.getUsedVersionPath());
+                        List<JarInfo> versions = libs.get(artifactId);
+                        if (versions != null && versions.size() > 1)
+                        {
+                            StringBuilder builder = new StringBuilder(1024);
+                            builder.append("You are using the library: ");
+                            builder.append(artifactId);
+                            builder.append(" in different versions; first (and probably used) version is: ");
+                            builder.append(versions.get(0).getVersion());
+                            builder.append(" loaded from: ");
+                            builder.append(versions.get(0).getUrl());
+                            builder.append(", but also found the following versions: ");
+                            
+                            boolean needComma = false;
+                            for (int i = 1; i < versions.size(); i++)
+                            {
+                                JarInfo info = versions.get(i);
+                                if (needComma)
+                                {
+                                    builder.append(", ");
+                                }
+                                
+                                builder.append(info.getVersion());
+                                builder.append(" loaded from: ");
+                                builder.append(info.getUrl());
+                                
+                                needComma = true;
+                            }
+                            
+                            log.warn(builder);
+                        }
                     }
                 }
-                else
+                
+                for (String artifactId : artifactIds)
                 {
-                    if (log.isInfoEnabled())
-                    {
-                        log.info("MyFaces-package : " + versionInfo.getPackageName() + " not found.");
-                    }
+                    startLib(artifactId, libs);
                 }
             }
         }
@@ -347,74 +428,6 @@ public class FacesConfigurator
         {
             throw new FacesException(e);
         }
-    }
-
-    private static boolean checkJar(VersionInfo versionInfo, URL path)
-    {
-        int index;
-
-        String version = versionInfo.getLastVersion();
-
-        String pathString = path.toString();
-
-        if (!pathString.startsWith(JAR_PREFIX))
-            return false;
-
-        if (!(pathString.length() > (META_INF_MANIFEST_SUFFIX.length() + JAR_PREFIX.length())))
-        {
-            if (log.isDebugEnabled())
-                log.debug("PathString : " + pathString + " not long enough to be parsed.");
-            return false;
-        }
-
-        pathString = pathString.substring(JAR_PREFIX.length(), pathString.length() - META_INF_MANIFEST_SUFFIX.length());
-
-        File file = new File(pathString);
-
-        String fileName = file.getName();
-
-        if (fileName.endsWith(JAR_EXTENSION) && ((index = fileName.indexOf(versionInfo.getPackageName())) != -1))
-        {
-            int beginIndex = index + versionInfo.getPackageName().length() + 1;
-
-            if (beginIndex > fileName.length() - 1)
-            {
-                log.debug("beginIndex out of bounds. fileName: " + fileName);
-                return false;
-            }
-
-            int endIndex = fileName.length() - JAR_EXTENSION.length();
-
-            if (endIndex < 0 || endIndex <= beginIndex)
-            {
-                log.debug("endIndex out of bounds. fileName: " + fileName);
-                return false;
-            }
-
-            String newVersion = fileName.substring(beginIndex, endIndex);
-
-            if (version == null)
-            {
-                versionInfo.addJarInfo(pathString, newVersion);
-            }
-            else if (version.equals(newVersion))
-            {
-                versionInfo.addJarInfo(pathString, version);
-            }
-            else
-            {
-                log.error("You are using the MyFaces-package : " + versionInfo.getPackageName()
-                        + " in different versions; first (and probably used) version is : "
-                        + versionInfo.getUsedVersion() + ", currently encountered version is : " + newVersion
-                        + ". This will cause undesired behaviour. Please clean out your class-path."
-                        + " The first encountered version is loaded from : " + versionInfo.getUsedVersionPath()
-                        + ". The currently encountered version is loaded from : " + path);
-            }
-
-            return true;
-        }
-
-        return false;
     }
 
     /**
@@ -603,6 +616,21 @@ public class FacesConfigurator
             String factory = (String) factories.next();
             if (!factory.equals(defaultFactory))
                 FactoryFinder.setFactory(factoryName, factory);
+        }
+    }
+    
+    private void startLib(String artifactId, Map<String, List<JarInfo>> libs)
+    {
+        List<JarInfo> versions = libs.get(artifactId);
+        if (versions == null)
+        {
+            log.info("MyFaces-package : " + artifactId + " not found.");
+        }
+        else
+        {
+            JarInfo info = versions.get(0);
+            log.info("Starting up MyFaces-package : " + artifactId + " in version : "
+                     + info.getVersion() + " from path : " + info.getUrl());
         }
     }
 
@@ -905,29 +933,34 @@ public class FacesConfigurator
 
         return LifecycleFactory.DEFAULT_LIFECYCLE;
     }
-
+/*
     public static class VersionInfo
     {
-        private String packageName;
+        private String artifactId;
         private List<JarInfo> jarInfos;
 
-        public VersionInfo(String packageName)
+        public VersionInfo(String artifactId)
         {
-
-            this.packageName = packageName;
+            this.artifactId = artifactId;
         }
 
-        public String getPackageName()
+        public String getArtifactId()
         {
             return packageName;
         }
 
-        public void addJarInfo(String path, String version)
+        public void addJarInfo(Matcher matcher)
         {
             if (jarInfos == null)
             {
                 jarInfos = new ArrayList<JarInfo>();
             }
+            
+            String path = matcher.group(1);
+            
+            Version version = new Version(matcher.group(3), matcher.group(5), 
+                                          matcher.group(7), matcher.group(9),
+                                          matcher.group(10));
 
             jarInfos.add(new JarInfo(path, version));
         }
@@ -939,14 +972,15 @@ public class FacesConfigurator
             if (jarInfos.size() == 0)
                 return null;
 
-            return jarInfos.get(jarInfos.size() - 1).getVersion();
+return "";
+            //return jarInfos.get(jarInfos.size() - 1).getVersion();
         }
 
         /**
          * Probably, the first encountered version will be used.
          * 
          * @return probably used version
-         */
+         *
         public String getUsedVersion()
         {
 
@@ -954,15 +988,15 @@ public class FacesConfigurator
                 return null;
             if (jarInfos.size() == 0)
                 return null;
-
-            return jarInfos.get(0).getVersion();
+return "";
+            //return jarInfos.get(0).getVersion();
         }
 
         /**
          * Probably, the first encountered version will be used.
          * 
          * @return probably used classpath
-         */
+         *
         public String getUsedVersionPath()
         {
 
@@ -975,19 +1009,19 @@ public class FacesConfigurator
 
         }
     }
-
-    public static class JarInfo
+*/
+    private static class JarInfo implements Comparable<JarInfo>
     {
         private String url;
-        private String version;
+        private Version version;
 
-        public JarInfo(String url, String version)
+        public JarInfo(String url, Version version)
         {
             this.url = url;
             this.version = version;
         }
 
-        public String getVersion()
+        public Version getVersion()
         {
             return version;
         }
@@ -995,6 +1029,182 @@ public class FacesConfigurator
         public String getUrl()
         {
             return url;
+        }
+
+        public int compareTo(JarInfo info)
+        {
+            return version.compareTo(info.version);
+        }
+        
+        @Override
+        public boolean equals(Object o)
+        {
+            if (o == this)
+            {
+                return true;
+            }
+            else if (o instanceof JarInfo)
+            {
+                JarInfo other = (JarInfo)o;
+                return version.equals(other.version);
+            }
+            else
+            {
+                return false;
+            }
+        }
+        
+        @Override
+        public int hashCode()
+        {
+            return version.hashCode();
+        }
+    }
+    
+    private static class Version implements Comparable<Version>
+    {
+        private Integer[] parts;
+        
+        private boolean snapshot;
+        
+        public Version(String major, String minor, String maintenance,
+                       String extra, String snapshot)
+        {
+            parts = new Integer[4];
+            parts[0] = Integer.valueOf(major);
+            
+            if (minor != null)
+            {
+                parts[1] = Integer.valueOf(minor);
+                
+                if (maintenance != null)
+                {
+                    parts[2] = Integer.valueOf(maintenance);
+                    
+                    if (extra != null)
+                    {
+                        parts[3] = Integer.valueOf(extra);
+                    }
+                }
+            }
+            
+            this.snapshot = snapshot != null;
+        }
+
+        public int compareTo(Version v)
+        {
+            for (int i = 0; i < parts.length; i++)
+            {
+                Integer left = parts[i];
+                Integer right = v.parts[i];
+                if (left == null)
+                {
+                    if (right == null)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        return -1;
+                    }
+                }
+                else
+                {
+                    if (right == null)
+                    {
+                        return 1;
+                    }
+                    else if (left < right)
+                    {
+                        return -1;
+                    }
+                    else if (left > right)
+                    {
+                        return 1;
+                    }
+                }
+            }
+            
+            if (snapshot)
+            {
+                return v.snapshot ? 0 : -1;
+            }
+            else
+            {
+                return v.snapshot ? 1 : 0;
+            }
+        }
+        
+        @Override
+        public boolean equals(Object o)
+        {
+            if (o == this)
+            {
+                return true;
+            }
+            else if (o instanceof Version)
+            {
+                Version other = (Version)o;
+                if (snapshot != other.snapshot)
+                {
+                    return false;
+                }
+                
+                for (int i = 0; i < parts.length; i++)
+                {
+                    Integer thisPart = parts[i];
+                    Integer otherPart = other.parts[i];
+                    if (thisPart == null ? otherPart != null : !thisPart.equals(otherPart))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        
+        @Override
+        public int hashCode()
+        {
+            int hash = 0;
+            for (int i = 0; i < parts.length; i++)
+            {
+                if (parts[i] != null)
+                {
+                    hash ^= parts[i].hashCode();
+                }
+            }
+            
+            hash ^= Boolean.valueOf(snapshot).hashCode();
+            
+            return hash;
+        }
+        
+        @Override
+        public String toString()
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.append(parts[0]);
+            for (int i = 1; i < parts.length; i++)
+            {
+                Integer val = parts[i];
+                if (val != null)
+                {
+                    builder.append('.').append(val);
+                }
+            }
+            
+            if (snapshot)
+            {
+                builder.append("-SNAPSHOT");
+            }
+            
+            return builder.toString();
         }
     }
 
@@ -1036,7 +1246,30 @@ public class FacesConfigurator
 
         log.info("Serialization provider : " + serialFactory.getClass());
         _externalContext.getApplicationMap().put(StateUtils.SERIAL_FACTORY, serialFactory);
-
     }
+    
+    public static void main(String... args)
+    {
+        Pattern pattern = Pattern.compile(REGEX_LIBRARY);
+        List<Version> l = new ArrayList<Version>();
+        l.add(testJar(pattern, "jar:file:/C:/Program%20Files/Apache%20Software%20Foundation/Tomcat%206.0/webapps/ProjetBidonJSF/WEB-INF/lib/commons-collections-3.jar!/META-INF/MANIFEST.MF"));
+        l.add(testJar(pattern, "jar:file:/C:/Program%20Files/Apache%20Software%20Foundation/Tomcat%206.0/webapps/ProjetBidonJSF/WEB-INF/lib/commons-codec-1.3.jar!/META-INF/MANIFEST.MF"));
+        l.add(testJar(pattern, "jar:file:/C:/Program%20Files/Apache%20Software%20Foundation/Tomcat%206.0/webapps/ProjetBidonJSF/WEB-INF/lib/commons-beanutils-1.7.0.jar!/META-INF/MANIFEST.MF"));
+        l.add(testJar(pattern, "jar:file:/C:/Program%20Files/Apache%20Software%20Foundation/Tomcat%206.0/webapps/ProjetBidonJSF/WEB-INF/lib/commons-beanutils-1.7.0.6.jar!/META-INF/MANIFEST.MF"));
+        l.add(testJar(pattern, "jar:file:/C:/Program%20Files/Apache%20Software%20Foundation/Tomcat%206.0/webapps/ProjetBidonJSF/WEB-INF/lib/commons-beanutils-1.7.0-SNAPSHOT.jar!/META-INF/MANIFEST.MF"));
 
+        Collections.sort(l);
+    }
+    
+    private static Version testJar(Pattern pattern, String libName)
+    {
+        Matcher matcher = pattern.matcher(libName);
+        if (matcher.matches())
+        {
+            return new Version(matcher.group(3), matcher.group(5), matcher.group(7), matcher.group(9), 
+                               matcher.group(10));
+        }
+        
+        return null;
+    }
 }
