@@ -25,51 +25,50 @@ import javax.faces.context.FacesContext;
 /**
  * DOCUMENT ME!
  *
- * @author Simon Lessard (latest modification by $Author: lu4242 $)
+ * @author Simon Lessard (latest modification by $Author: slessard $)
  * 
- * @version $Revision: 695059 $ $Date: 2008-09-13 19:10:53 -0400 (sam., 13 sept. 2008) $
+ * @version $Revision: 696515 $ $Date: 2008-09-17 19:37:53 -0500 (mer., 17 sept. 2008) $
  */
 public class ResourceHandlerImpl extends ResourceHandler
 {
     @Override
     public Resource createResource(String resourceName)
     {
-        // TODO Auto-generated method stub
+        // TODO: JSF 2.0 #35
         return null;
     }
 
     @Override
     public Resource createResource(String resourceName, String libraryName)
     {
-        // TODO Auto-generated method stub
+        // TODO: JSF 2.0 #36
         return null;
     }
 
     @Override
     public Resource createResource(String resourceName, String libraryName, String contentType)
     {
-        // TODO Auto-generated method stub
+        // TODO: JSF 2.0 #37
         return null;
     }
 
     @Override
     public String getRendererTypeForResourceName(String resourceName)
     {
-        // TODO Auto-generated method stub
+        // TODO: JSF 2.0 #38
         return null;
     }
 
     @Override
     public void handleResourceRequest(FacesContext context)
     {
-        // TODO Auto-generated method stub
-        
+        // TODO: JSF 2.0 #39
     }
 
     @Override
     public boolean isResourceRequest(FacesContext context)
     {
-        // TODO Auto-generated method stub
+        // TODO: JSF 2.0 #40
         return false;
     }
 }
