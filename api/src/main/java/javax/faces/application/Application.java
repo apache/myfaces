@@ -117,8 +117,7 @@ public abstract class Application
     
     public void publishEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListenerHolder source)
     {
-        // TODO: JSF 2.0 #5
-        // VALIDATE: Shouldn't this be abstract or throw UnsupportedOperationException?
+        throw new UnsupportedOperationException();
     }
 
     public void removeELContextListener(ELContextListener listener)
@@ -199,9 +198,7 @@ public abstract class Application
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, 
                                  Class sourceClass, SystemEventListener listener)
     {
-        // TODO: JSF 2.0 #7
-        // VALIDATE: Shouldn't this be abstract?
-        // FIXME: Parameter sourceClass should be Class<?>, need to notify the EG
+        throw new UnsupportedOperationException();
     }
     
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener)
@@ -212,15 +209,12 @@ public abstract class Application
     public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, 
                                      Class sourceClass, SystemEventListener listener)
     {
-        // TODO: JSF 2.0 #9
-        // VALIDATE: Shouldn't this be abstract?
-        // FIXME: Parameter sourceClass should be Class<?>, need to notify the EG
+        throw new UnsupportedOperationException();
     }
     
     public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener)
     {
-        // TODO: JSF 2.0 #10
-        // VALIDATE: Shouldn't this be abstract?
+        throw new UnsupportedOperationException();
     }
 
     public abstract javax.faces.application.StateManager getStateManager();
