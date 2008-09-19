@@ -255,7 +255,7 @@ public class RuntimeConfig
         return _variableResolverChainHead;
     }
 
-    public Map getManagedBeansNotReaddedAfterPurge()
+    public Map<String, ManagedBean> getManagedBeansNotReaddedAfterPurge()
     {
         return _oldManagedBeans;
     }

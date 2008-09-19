@@ -98,10 +98,10 @@ public interface FacesConfigDispenser<C>
     public Iterator<String> getViewHandlerIterator();
 
     /** @return Iterator over StateManager class names*/
-    public Iterator getStateManagerIterator();
+    public Iterator<String> getStateManagerIterator();
     
     /** @return Iterator over ResourceHandler class names*/
-    public Iterator getResourceHandlerIterator();
+    public Iterator<String> getResourceHandlerIterator();
 
     /** @return Iterator over PropertyResolver class names */
     public Iterator<String> getPropertyResolverIterator();
