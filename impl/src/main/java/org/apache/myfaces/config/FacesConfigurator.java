@@ -756,7 +756,7 @@ public class FacesConfigurator
         while (classNamesIterator.hasNext())
         {
             String implClassName = (String) classNamesIterator.next();
-            Class<T> implClass = ClassUtils.simpleClassForName(implClassName);
+            Class<? extends T> implClass = ClassUtils.simpleClassForName(implClassName);
 
             // check, if class is of expected interface type
             if (!interfaceClass.isAssignableFrom(implClass))
@@ -774,7 +774,7 @@ public class FacesConfigurator
                 // let's check if class supports the decorator pattern
                 try
                 {
-                    Constructor<T> delegationConstructor = implClass.getConstructor(new Class[] { interfaceClass });
+                    Constructor<? extends T> delegationConstructor = implClass.getConstructor(new Class[] { interfaceClass });
                     // impl class supports decorator pattern,
                     try
                     {
