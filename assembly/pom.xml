@@ -40,14 +40,14 @@
                 <artifactItem>
                   <groupId>org.apache.myfaces.core</groupId>
                   <artifactId>myfaces-api</artifactId>
-                  <version>${version}</version>
+                  <version>${project.version}</version>
                   <classifier>javadoc</classifier>
                   <outputDirectory>${project.build.directory}/javadoc/api</outputDirectory>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.myfaces.core</groupId>
                   <artifactId>myfaces-impl</artifactId>
-                  <version>${version}</version>
+                  <version>${project.version}</version>
                   <classifier>javadoc</classifier>
                   <outputDirectory>${project.build.directory}/javadoc/impl</outputDirectory>
                 </artifactItem>
@@ -66,7 +66,7 @@
                 <artifactItem>
                   <groupId>org.apache.myfaces.core</groupId>
                   <artifactId>myfaces-impl</artifactId>
-                  <version>${version}</version>
+                  <version>${project.version}</version>
                   <classifier>tlddoc</classifier>
                 </artifactItem>
                </artifactItems>
@@ -85,13 +85,13 @@
   		          <artifactItem>
                   <groupId>org.apache.myfaces.core</groupId>
                   <artifactId>myfaces-api</artifactId>
-                  <version>${version}</version>
+                  <version>${project.version}</version>
 		              <classifier>sources</classifier>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.myfaces.core</groupId>
                   <artifactId>myfaces-impl</artifactId>
-                  <version>${version}</version>
+                  <version>${project.version}</version>
 		              <classifier>sources</classifier>
                 </artifactItem>
 		            <artifactItem>
@@ -115,7 +115,7 @@
              <descriptor>src/main/assembly/bin.xml</descriptor>
 	           <descriptor>src/main/assembly/src.xml</descriptor>
 	        </descriptors>
-          <finalName>myfaces-core-${version}</finalName>
+          <finalName>myfaces-core-${project.version}</finalName>
           <outputDirectory>target/assembly/out</outputDirectory>
           <workDirectory>target/assembly/work</workDirectory>
         </configuration>
@@ -141,13 +141,13 @@
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-impl</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-api</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
 
 
