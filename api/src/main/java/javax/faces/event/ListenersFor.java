@@ -31,5 +31,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface ListenersFor
 {
-    public ListenerFor[] name();
+    public ListenerFor[] value();
 }

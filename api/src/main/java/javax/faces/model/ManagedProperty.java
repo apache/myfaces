@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package javax.faces.application;
+package javax.faces.model;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -25,11 +25,19 @@ import java.lang.annotation.Target;
 
 /**
  * @author Simon Lessard (latest modification by $Author: slessard $)
- * @version $Revision: 696523 $ $Date: 2008-09-17 20:02:05 -0400 (mer., 17 sept. 2008) $
+ * @version $Revision: 696523 $ $Date: 2008-09-24 18:49:25 -0400 (mer., 17 sept. 2008) $
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface ResourceDependencies
+@Target(ElementType.FIELD)
+public @interface ManagedProperty
 {
-    public ResourceDependency[] value();
+    /**
+     * Taken to be the managed-property-name.
+     */
+    public String name() default "";
+    
+    /**
+     * Taken to be the value that is injected into the field.
+     */
+    public String value();
 }
