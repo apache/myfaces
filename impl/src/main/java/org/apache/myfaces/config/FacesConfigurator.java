@@ -793,7 +793,7 @@ public class FacesConfigurator
             if (current == null)
             {
                 // nothing to decorate
-                current = ClassUtils.newInstance(implClass);
+                current = (T) ClassUtils.newInstance(implClass);
             }
             else
             {
@@ -827,7 +827,7 @@ public class FacesConfigurator
                 catch (NoSuchMethodException e)
                 {
                     // no decorator pattern support
-                    current = ClassUtils.newInstance(implClass);
+                    current = (T) ClassUtils.newInstance(implClass);
                 }
             }
         }
