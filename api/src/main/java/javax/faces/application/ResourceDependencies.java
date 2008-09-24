@@ -29,9 +29,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface ResourceDependency
+public @interface ResourceDependencies
 {
-    public String library() default "";
-    public String name();
-    public String target() default "";
+    public ResourceDependency[] name();
 }
