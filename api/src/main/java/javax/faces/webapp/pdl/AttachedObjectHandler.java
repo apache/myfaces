@@ -33,6 +33,12 @@ import javax.faces.context.FacesContext;
 public interface AttachedObjectHandler
 {
     /**
+     * The key in the value set of the <em>composite component</em> <code>BeanDescriptor</code>, the value for which is
+     * a <code>List&lt;AttachedObjectTarget&gt;</code>.
+     */
+    public static final String ATTACHED_OBJECT_TARGETS_KEY = "javax.faces.webapp.pdl.AttachedObjectTargets";
+
+    /**
      * Take the argument <code>parent</code> and apply this attached <code>object</code> to it. The action taken varies
      * with class that implements one of the subinterfaces of this interface.
      * 
