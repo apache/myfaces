@@ -23,14 +23,17 @@ import javax.faces.component.UIComponent;
 /**
  * see Javadoc /javax/faces/event/AfterAddToParentEvent.html
  */
-public class AfterAddToParentEvent extends ComponentSystemEvent {
+public class AfterAddToParentEvent extends ComponentSystemEvent
+{
 
-    public AfterAddToParentEvent(UIComponent component) {
+    public AfterAddToParentEvent(UIComponent component)
+    {
         super(component);
     }
 
-    public boolean isAppropriateListener(FacesListener listener) {
-        //FIXME
+    public boolean isAppropriateListener(FacesListener listener)
+    {
+        // FIXME
         throw new NullPointerException("FIXME");
     }
 }

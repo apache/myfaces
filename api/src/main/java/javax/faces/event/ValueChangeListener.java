@@ -20,12 +20,11 @@ package javax.faces.event;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
 public interface ValueChangeListener extends FacesListener
 {
-    public void processValueChange(javax.faces.event.ValueChangeEvent event)
-        throws AbortProcessingException;
+    public void processValueChange(javax.faces.event.ValueChangeEvent event) throws AbortProcessingException;
 }

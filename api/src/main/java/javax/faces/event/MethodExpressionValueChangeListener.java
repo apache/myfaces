@@ -26,49 +26,61 @@ import javax.faces.context.FacesContext;
 
 /**
  * See Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Stan Silvert
  */
-public class MethodExpressionValueChangeListener implements ValueChangeListener, StateHolder {
-    
+public class MethodExpressionValueChangeListener implements ValueChangeListener, StateHolder
+{
+
     private MethodExpression methodExpression;
-    
+
     private boolean isTransient = false;
-    
+
     /** Creates a new instance of MethodExpressionValueChangeListener */
-    public MethodExpressionValueChangeListener() {
+    public MethodExpressionValueChangeListener()
+    {
     }
-    
-    public MethodExpressionValueChangeListener(MethodExpression methodExpression) {
+
+    public MethodExpressionValueChangeListener(MethodExpression methodExpression)
+    {
         this.methodExpression = methodExpression;
     }
-    
-    public void processValueChange(ValueChangeEvent event) throws AbortProcessingException {
-        try {
-            Object[] params = new Object[]{event};
+
+    public void processValueChange(ValueChangeEvent event) throws AbortProcessingException
+    {
+        try
+        {
+            Object[] params = new Object[] { event };
             methodExpression.invoke(elContext(), params);
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             throw new AbortProcessingException(e);
         }
     }
-    
-    private ELContext elContext() {
+
+    private ELContext elContext()
+    {
         return FacesContext.getCurrentInstance().getELContext();
     }
-    
-    public void restoreState(FacesContext context, Object state) {
-        methodExpression = (MethodExpression)state;
+
+    public void restoreState(FacesContext context, Object state)
+    {
+        methodExpression = (MethodExpression) state;
     }
 
-    public Object saveState(FacesContext context) {
+    public Object saveState(FacesContext context)
+    {
         return methodExpression;
     }
 
-    public void setTransient(boolean newTransientValue) {
+    public void setTransient(boolean newTransientValue)
+    {
         isTransient = newTransientValue;
     }
 
-    public boolean isTransient() {
+    public boolean isTransient()
+    {
         return isTransient;
     }
 

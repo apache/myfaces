@@ -29,9 +29,9 @@ public abstract class ComponentSystemEvent extends SystemEvent
     {
         super(component);
     }
-    
+
     public UIComponent getComponent()
     {
-        return (UIComponent)getSource();
+        return (UIComponent) getSource();
     }
 }

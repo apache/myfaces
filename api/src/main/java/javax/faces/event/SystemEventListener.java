@@ -24,6 +24,6 @@ package javax.faces.event;
 public interface SystemEventListener extends FacesListener
 {
     public boolean isListenerForSource(Object source);
-    
+
     public void processEvent(SystemEvent event);
 }

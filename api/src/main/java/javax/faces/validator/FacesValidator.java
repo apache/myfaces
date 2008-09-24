@@ -16,27 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package javax.faces.event;
+package javax.faces.validator;
 
-import java.util.EventObject;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * 
+ * @author Simon Lessard (latest modification by $Author: slessard $)
+ * @version $Revision: 696523 $ $Date: 2008-09-24 18:59:05 -0400 (mer., 17 sept. 2008) $
  */
-public abstract class SystemEvent extends EventObject
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface FacesValidator
 {
-    public SystemEvent(Object source)
-    {
-        super(source);
-    }
-
-    public boolean isAppropriateListener(FacesListener listener)
-    {
-        return listener instanceof SystemEventListener;
-    }
-
-    public void processListener(FacesListener listener)
-    {
-        ((SystemEventListener) listener).processEvent(this);
-    }
+    /**
+     * The value of this annotation attribute is taken to be the <i>validator-id</i> with which instances of this class
+     * of component can be instantiated by calling {@link Application#createValidator(java.lang.String)}.
+     */
+    public String value();
 }

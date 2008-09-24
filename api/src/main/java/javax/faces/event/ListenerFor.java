@@ -31,7 +31,7 @@ import java.lang.annotation.Target;
 public @interface ListenerFor
 {
     public Class<? extends SystemEvent> systemEventClass();
-    
+
     // FIXME: Spec is not Java 5 compliant, specified signature is Class sourceClass()
     public Class<?> sourceClass();
 }

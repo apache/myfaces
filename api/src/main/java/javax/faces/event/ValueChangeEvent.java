@@ -22,11 +22,12 @@ import javax.faces.component.UIComponent;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ValueChangeEvent extends FacesEvent {
+public class ValueChangeEvent extends FacesEvent
+{
     private static final long serialVersionUID = -2490528664421353795L;
     // FIELDS
     private Object _oldValue;
@@ -36,7 +37,8 @@ public class ValueChangeEvent extends FacesEvent {
     public ValueChangeEvent(UIComponent uiComponent, Object oldValue, Object newValue)
     {
         super(uiComponent);
-        if (uiComponent == null) throw new IllegalArgumentException("uiComponent");
+        if (uiComponent == null)
+            throw new IllegalArgumentException("uiComponent");
         _oldValue = oldValue;
         _newValue = newValue;
     }
@@ -59,6 +61,6 @@ public class ValueChangeEvent extends FacesEvent {
 
     public void processListener(FacesListener facesListeners)
     {
-        ((ValueChangeListener)facesListeners).processValueChange(this);
+        ((ValueChangeListener) facesListeners).processValueChange(this);
     }
 }

@@ -24,7 +24,7 @@ import java.util.EventObject;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -39,9 +39,12 @@ public class PhaseEvent extends EventObject
     public PhaseEvent(FacesContext facesContext, PhaseId phaseId, Lifecycle lifecycle)
     {
         super(lifecycle);
-        if (facesContext == null) throw new NullPointerException("facesContext");
-        if (phaseId == null) throw new NullPointerException("phaseId");
-        if (lifecycle == null) throw new NullPointerException("lifecycle");
+        if (facesContext == null)
+            throw new NullPointerException("facesContext");
+        if (phaseId == null)
+            throw new NullPointerException("phaseId");
+        if (lifecycle == null)
+            throw new NullPointerException("lifecycle");
 
         _facesContext = facesContext;
         _phaseId = phaseId;
@@ -102,7 +105,5 @@ public class PhaseEvent extends EventObject
             return false;
         return true;
     }
-    
 
-    
 }

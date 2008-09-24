@@ -23,9 +23,11 @@ import javax.faces.component.UIViewRoot;
 /**
  * see Javadoc /javax/faces/event/ViewMapCreatedEvent .html
  */
-public class ViewMapCreatedEvent extends ComponentSystemEvent {
+public class ViewMapCreatedEvent extends ComponentSystemEvent
+{
 
-    public ViewMapCreatedEvent(UIViewRoot component) {
+    public ViewMapCreatedEvent(UIViewRoot component)
+    {
         super(component);
     }
 
