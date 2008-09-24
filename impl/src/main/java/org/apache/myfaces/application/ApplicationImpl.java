@@ -379,7 +379,7 @@ public class ApplicationImpl extends Application
     }
     
     @Override
-    public void publishEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListenerHolder source)
+    public void publishEvent(Class<? extends SystemEvent> systemEventClass, Object source)
     {
         checkNull(systemEventClass, "systemEventClass");
         checkNull(source, "source");
