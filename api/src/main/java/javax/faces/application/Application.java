@@ -115,7 +115,7 @@ public abstract class Application
         throw new UnsupportedOperationException();
     }
     
-    public void publishEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListenerHolder source)
+    public void publishEvent(Class<? extends SystemEvent> systemEventClass, Object source)
     {
         throw new UnsupportedOperationException();
     }
