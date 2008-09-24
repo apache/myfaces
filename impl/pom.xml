@@ -51,7 +51,7 @@
           <execution>
             <id>makefacesconfig</id>
             <configuration>
-                <templateFile>faces-config12.vm</templateFile>
+                <templateFile>faces-config20.vm</templateFile>
                 <xmlFile>META-INF/standard-faces-config.xml</xmlFile>
                 <xmlBaseFile>src/main/conf/META-INF/standard-faces-config-base.xml</xmlBaseFile>
                 <modelIds>

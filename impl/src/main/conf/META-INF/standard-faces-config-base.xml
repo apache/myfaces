@@ -21,8 +21,8 @@
 
 <faces-config xmlns="http://java.sun.com/xml/ns/javaee" 
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd" 
-              version="1.2">
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd" 
+              version="2.0">
 
    <!-- Initial application element with partial values -->
 
@@ -31,6 +31,7 @@
       <view-handler>org.apache.myfaces.application.jsp.JspViewHandlerImpl</view-handler>
       <state-manager>org.apache.myfaces.application.jsp.JspStateManagerImpl</state-manager>
       <navigation-handler>org.apache.myfaces.application.NavigationHandlerImpl</navigation-handler>
+      <resource-handler>org.apache.myfaces.application.ResourceHandlerImpl</resource-handler>
       <locale-config>
          <supported-locale>en</supported-locale>
          <supported-locale>de</supported-locale>

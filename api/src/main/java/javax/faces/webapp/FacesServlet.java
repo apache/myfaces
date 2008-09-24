@@ -19,12 +19,13 @@
 package javax.faces.webapp;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 
-import javax.faces.FactoryFinder;
 import javax.faces.FacesException;
+import javax.faces.FactoryFinder;
+import javax.faces.application.ResourceHandler;
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextFactory;
 import javax.faces.lifecycle.Lifecycle;
@@ -146,13 +147,27 @@ public final class FacesServlet
         if(log.isTraceEnabled()) log.trace("service begin");
 
         FacesContext facesContext = prepareFacesContext(request, response);
-
-        try {
-            _lifecycle.execute(facesContext);
-
-            if (!handleQueuedExceptions(facesContext))
+        
+        try
+        {
+            //jsf 2.0 : get the current ResourceHandler and
+            //check if it is a resource request, if true
+            //delegate to ResourceHandler, if continue with            
+            //the lifecycle.
+            ResourceHandler resourceHandler = facesContext.getApplication().getResourceHandler();
+            
+            if (resourceHandler.isResourceRequest(facesContext))
             {
-                _lifecycle.render(facesContext);
+                resourceHandler.handleResourceRequest(facesContext);
+            }
+            else
+            {
+                _lifecycle.execute(facesContext);
+
+                if (!handleQueuedExceptions(facesContext))
+                {
+                    _lifecycle.render(facesContext);
+                }                
             }
         }
         catch (Exception e)
