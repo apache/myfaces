@@ -16,23 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package javax.faces.event;
-
-import javax.faces.component.UIComponent;
+package javax.faces.webapp.pdl;
 
 /**
+ * A marker interface for PDL tags that represent <code>&lt;composite:valueHolder/&gt;</code> for use by the
+ * <em>composite component page author</em>.
+ * 
+ * @author Simon Lessard (latest modification by $Author: slessard $)
+ * @version $Revision: 696523 $ $Date: 2008-09-24 19:30:38 -0400 (mer., 17 sept. 2008) $
  * 
  * @since 2.0
  */
-public abstract class ComponentSystemEvent extends SystemEvent
+public interface ValueHolderAttachedObjectTarget extends AttachedObjectTarget
 {
-    public ComponentSystemEvent(UIComponent component)
-    {
-        super(component);
-    }
 
-    public UIComponent getComponent()
-    {
-        return (UIComponent) getSource();
-    }
 }

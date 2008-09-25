@@ -23,6 +23,8 @@ import javax.faces.application.Application;
 /**
  * @author Simon Lessard (latest modification by $Author: slessard $)
  * @version $Revision: 696523 $ $Date: 2008-09-24 18:27:16 -0400 (mer., 17 sept. 2008) $
+ * 
+ * @since 2.0
  */
 public class ApplicationPostConstructEvent extends SystemEvent
 {

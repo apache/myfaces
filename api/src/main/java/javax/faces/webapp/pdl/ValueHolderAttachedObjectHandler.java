@@ -16,23 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package javax.faces.event;
-
-import javax.faces.component.UIComponent;
+package javax.faces.webapp.pdl;
 
 /**
+ * A PDL handler that exposes {@link javax.faces.convert.Converter Converter} to a <em>page author</em>. The default
+ * implementation of Facelets must provide an implemention of this in the handler for the
+ * <code>&lt;f:converter&gt;</code> (and any tags for any of the standard converters) tags.
+ * 
+ * @author Simon Lessard (latest modification by $Author: slessard $)
+ * @version $Revision: 696523 $ $Date: 2008-09-24 19:26:04 -0400 (mer., 17 sept. 2008) $
  * 
  * @since 2.0
  */
-public abstract class ComponentSystemEvent extends SystemEvent
+public interface ValueHolderAttachedObjectHandler extends AttachedObjectHandler
 {
-    public ComponentSystemEvent(UIComponent component)
-    {
-        super(component);
-    }
 
-    public UIComponent getComponent()
-    {
-        return (UIComponent) getSource();
-    }
 }

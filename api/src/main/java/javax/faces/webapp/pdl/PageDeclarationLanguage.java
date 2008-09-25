@@ -16,23 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package javax.faces.event;
+package javax.faces.webapp.pdl;
 
-import javax.faces.component.UIComponent;
+import java.beans.BeanInfo;
+
+import javax.faces.application.Resource;
+import javax.faces.context.FacesContext;
 
 /**
- * 
+ * @author Simon Lessard (latest modification by $Author: slessard $)
+ * @version $Revision: 696523 $ $Date: 2008-09-24 19:54:04 -0400 (mer., 17 sept. 2008) $
+ *
  * @since 2.0
  */
-public abstract class ComponentSystemEvent extends SystemEvent
+public abstract class PageDeclarationLanguage
 {
-    public ComponentSystemEvent(UIComponent component)
-    {
-        super(component);
-    }
-
-    public UIComponent getComponent()
-    {
-        return (UIComponent) getSource();
-    }
+    public abstract BeanInfo getComponentMetadata(FacesContext context, Resource componentResource);
+    
+    public abstract Resource getScriptComponentResource(FacesContext context, Resource componentResource);
 }

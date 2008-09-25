@@ -25,6 +25,8 @@ package javax.faces.webapp.pdl;
  * 
  * @author Simon Lessard (latest modification by $Author: slessard $)
  * @version $Revision: 696523 $ $Date: 2008-09-24 19:04:31 -0400 (mer., 17 sept. 2008) $
+ * 
+ * @since 2.0
  */
 public interface ActionSource2AttachedObjectHandler extends AttachedObjectHandler
 {

@@ -16,23 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package javax.faces.event;
+package javax.faces.webapp.pdl;
+
+import java.util.List;
 
 import javax.faces.component.UIComponent;
 
 /**
+ * @author Simon Lessard (latest modification by $Author: slessard $)
+ * @version $Revision: 696523 $ $Date: 2008-09-24 19:18:02 -0400 (mer., 17 sept. 2008) $
  * 
  * @since 2.0
  */
-public abstract class ComponentSystemEvent extends SystemEvent
+public interface AttachedObjectTarget
 {
-    public ComponentSystemEvent(UIComponent component)
-    {
-        super(component);
-    }
+    /**
+     * The key in the value set of the <em>composite component</em> <code>BeanDescriptor</code>, the value for which is
+     * a <code>List&lt;AttachedObjectTarget&gt;</code>.
+     */
+    public static final String ATTACHED_OBJECT_TARGETS_KEY = "javax.faces.webapp.pdl.AttachedObjectTargets";
 
-    public UIComponent getComponent()
-    {
-        return (UIComponent) getSource();
-    }
+    public String getName();
+
+    public List<UIComponent> getTargets();
 }

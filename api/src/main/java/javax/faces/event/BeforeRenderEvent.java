@@ -22,6 +22,8 @@ import javax.faces.component.UIComponent;
 
 /**
  * see Javadoc /javax/faces/event/BeforeRenderEvent.html
+ * 
+ * @since 2.0
  */
 public class BeforeRenderEvent extends ComponentSystemEvent
 {

@@ -22,6 +22,8 @@ import javax.faces.component.UIComponent;
 
 /**
  * see Javadoc /javax/faces/event/AfterAddToParentEvent.html
+ * 
+ * @since 2.0
  */
 public class AfterAddToParentEvent extends ComponentSystemEvent
 {

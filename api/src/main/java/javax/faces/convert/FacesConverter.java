@@ -25,7 +25,9 @@ import java.lang.annotation.Target;
 
 /**
  * @author Simon Lessard (latest modification by $Author: slessard $)
- * @version $Revision: 696523 $ $Date: 2008-09-24 18:24:29 -0400 (mer., 17 sept. 2008) $
+ * @version $Revision: 696523 $ $Date: 2008-09-24 18:31:37 -0400 (mer., 17 sept. 2008) $
+ * 
+ * @since 2.0
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
