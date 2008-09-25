@@ -586,10 +586,8 @@ public class UIViewRoot extends UIComponentBase
     }
     
     public Map<String,Object> getViewMap()
-    {
-        // TODO: JSF 2.0 #20
-        
-        return null;
+    { 
+        return this.getViewMap(true);
     }
     
     public Map<String,Object> getViewMap(boolean create)
