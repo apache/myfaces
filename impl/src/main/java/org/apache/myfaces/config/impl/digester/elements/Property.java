@@ -18,10 +18,10 @@
  */
 package org.apache.myfaces.config.impl.digester.elements;
 
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Martin Marinschek
@@ -59,44 +59,54 @@ public class Property
         _description.add(value);
     }
 
-    public Iterator<String> getDescriptions()
+    public Collection<? extends String> getDescriptions()
     {
-        if(_description==null)
-            return Collections.EMPTY_LIST.iterator();
+        if(_description == null)
+        {
+            return Collections.emptyList();
+        }
 
-        return _description.iterator();
+        return _description;
     }
 
     public void addDisplayName(String value)
     {
         if(_displayName == null)
+        {
             _displayName = new ArrayList<String>();
+        }
 
         _displayName.add(value);
     }
 
-    public Iterator<String> getDisplayNames()
+    public Collection<? extends String> getDisplayNames()
     {
         if(_displayName==null)
-            return Collections.EMPTY_LIST.iterator();
+        {
+            return Collections.emptyList();
+        }
 
-        return _displayName.iterator();
+        return _displayName;
     }
 
     public void addIcon(String value)
     {
         if(_icon == null)
+        {
             _icon = new ArrayList<String>();
+        }
 
         _icon.add(value);
     }
 
-    public Iterator<String> getIcons()
+    public Collection<? extends String> getIcons()
     {
-        if(_icon==null)
-            return Collections.EMPTY_LIST.iterator();
+        if(_icon == null)
+        {
+            return Collections.emptyList();
+        }
 
-        return _icon.iterator();
+        return _icon;
     }
 
     public void setPropertyName(String propertyName)
@@ -142,17 +152,21 @@ public class Property
     public void addPropertyExtension(String propertyExtension)
     {
         if(_propertyExtension == null)
+        {
             _propertyExtension = new ArrayList<String>();
+        }
 
         _propertyExtension.add(propertyExtension);
     }
 
-    public Iterator<String> getPropertyExtensions()
+    public Collection<? extends String> getPropertyExtensions()
     {
-        if(_propertyExtension==null)
-            return Collections.EMPTY_LIST.iterator();
+        if(_propertyExtension == null)
+        {
+            return Collections.emptyList();
+        }
 
-        return _propertyExtension.iterator();
+        return _propertyExtension;
     }
 
 }

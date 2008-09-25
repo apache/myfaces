@@ -26,7 +26,8 @@ import javax.faces.FacesException;
  *
  * @author Stan Silvert
  */
-public class ViewExpiredException extends FacesException {
+public class ViewExpiredException extends FacesException
+{
     
     private String viewId;
     

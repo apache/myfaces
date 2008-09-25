@@ -18,18 +18,21 @@
 package org.apache.myfaces.config;
 
 import java.io.ByteArrayInputStream;
-import java.util.Iterator;
+import java.util.Collection;
 import java.util.List;
 
+import org.apache.myfaces.config.element.ManagedBean;
+import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigDispenserImpl;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
+import org.apache.myfaces.config.impl.digester.elements.FacesConfig;
 import org.apache.shale.test.base.AbstractJsfTestCase;
 
 public class FacesConfigValidatorTestCase extends AbstractJsfTestCase
 {
 
-    private FacesConfigDispenser dispenser;
-    private FacesConfigUnmarshaller unmarshaller;
+    private FacesConfigDispenser<FacesConfig> dispenser;
+    private FacesConfigUnmarshaller<FacesConfig> unmarshaller;
     
     public FacesConfigValidatorTestCase(String name)
     {
@@ -57,10 +60,10 @@ public class FacesConfigValidatorTestCase extends AbstractJsfTestCase
     
     public void testVerifyExistence(){
         
-        Iterator managedBeans = dispenser.getManagedBeans();
-        Iterator navRules = dispenser.getNavigationRules();
+        Collection<ManagedBean> managedBeans = dispenser.getManagedBeans();
+        Collection<NavigationRule> navRules = dispenser.getNavigationRules();
         
-        List list = FacesConfigValidator.validate(managedBeans, navRules, "C:/somePath/");
+        List<String> list = FacesConfigValidator.validate(managedBeans, navRules, "C:/somePath/");
         
         int expected = 3;
         

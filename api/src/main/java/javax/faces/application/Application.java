@@ -59,8 +59,6 @@ import org.apache.commons.logging.LogFactory;
 @SuppressWarnings("deprecation")
 public abstract class Application
 {
-    private static final Log log = LogFactory.getLog(Application.class);
-
     // The following concrete methods were added for JSF 1.2. They supply default
     // implementations that throw UnsupportedOperationException.
     // This allows old Application implementations to still work.

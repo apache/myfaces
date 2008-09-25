@@ -27,122 +27,166 @@ import javax.faces.el.PropertyNotFoundException;
 import javax.faces.el.PropertyResolver;
 
 /**
- *
+ * 
  * @author Stan Silvert
  */
-public final class ELResolverToPropertyResolver extends PropertyResolver {
-    
+public final class ELResolverToPropertyResolver extends PropertyResolver
+{
+
     private final ELResolver elResolver;
-    
+
     /**
      * Creates a new instance of ELResolverToPropertyResolver
      */
-    public ELResolverToPropertyResolver(final ELResolver elResolver) {
+    public ELResolverToPropertyResolver(final ELResolver elResolver)
+    {
         this.elResolver = elResolver;
     }
 
-    public boolean isReadOnly(final Object base, final int index)
-        throws EvaluationException, PropertyNotFoundException {
-        
-        try {
+    public boolean isReadOnly(final Object base, final int index) throws EvaluationException, PropertyNotFoundException
+    {
+
+        try
+        {
             return elResolver.isReadOnly(elContext(), base, Integer.valueOf(index));
-        } catch (javax.el.PropertyNotFoundException e) {
+        }
+        catch (javax.el.PropertyNotFoundException e)
+        {
             throw new javax.faces.el.PropertyNotFoundException(e);
-        } catch (ELException e) {
+        }
+        catch (ELException e)
+        {
             throw new EvaluationException(e);
         }
-        
+
     }
-    
-    public boolean isReadOnly(final Object base, final Object property)
-        throws EvaluationException, PropertyNotFoundException {
-        
-        try {
+
+    public boolean isReadOnly(final Object base, final Object property) throws EvaluationException, PropertyNotFoundException
+    {
+
+        try
+        {
             return elResolver.isReadOnly(elContext(), base, property);
-        } catch (javax.el.PropertyNotFoundException e) {
+        }
+        catch (javax.el.PropertyNotFoundException e)
+        {
             throw new javax.faces.el.PropertyNotFoundException(e);
-        } catch (ELException e) {
+        }
+        catch (ELException e)
+        {
             throw new EvaluationException(e);
         }
-        
+
     }
 
-    public Object getValue(final Object base, final int index)
-        throws EvaluationException, PropertyNotFoundException {
-        
-        try {
+    public Object getValue(final Object base, final int index) throws EvaluationException, PropertyNotFoundException
+    {
+
+        try
+        {
             return elResolver.getValue(elContext(), base, Integer.valueOf(index));
-        } catch (javax.el.PropertyNotFoundException e) {
+        }
+        catch (javax.el.PropertyNotFoundException e)
+        {
             throw new javax.faces.el.PropertyNotFoundException(e);
-        } catch (ELException e) {
+        }
+        catch (ELException e)
+        {
             throw new EvaluationException(e);
         }
-        
+
     }
 
-    public Object getValue(final Object base, final Object property)
-        throws EvaluationException, PropertyNotFoundException {
-        
-        try {
+    public Object getValue(final Object base, final Object property) throws EvaluationException, PropertyNotFoundException
+    {
+
+        try
+        {
             return elResolver.getValue(elContext(), base, property);
-        } catch (javax.el.PropertyNotFoundException e) {
+        }
+        catch (javax.el.PropertyNotFoundException e)
+        {
             throw new javax.faces.el.PropertyNotFoundException(e);
-        } catch (ELException e) {
+        }
+        catch (ELException e)
+        {
             throw new EvaluationException(e);
         }
     }
-    
-    public Class getType(final Object base, int index)
-        throws EvaluationException, PropertyNotFoundException {
-        
-        try {
+
+    public Class getType(final Object base, int index) throws EvaluationException, PropertyNotFoundException
+    {
+
+        try
+        {
             return elResolver.getType(elContext(), base, Integer.valueOf(index));
-        } catch (javax.el.PropertyNotFoundException e) {
+        }
+        catch (javax.el.PropertyNotFoundException e)
+        {
             throw new javax.faces.el.PropertyNotFoundException(e);
-        } catch (ELException e) {
+        }
+        catch (ELException e)
+        {
             throw new EvaluationException(e);
         }
     }
-    
-    public Class getType(final Object base, final Object property)
-        throws EvaluationException, PropertyNotFoundException {
-        
-        try {
+
+    public Class getType(final Object base, final Object property) throws EvaluationException, PropertyNotFoundException
+    {
+
+        try
+        {
             return elResolver.getType(elContext(), base, property);
-        } catch (javax.el.PropertyNotFoundException e) {
+        }
+        catch (javax.el.PropertyNotFoundException e)
+        {
             throw new javax.faces.el.PropertyNotFoundException(e);
-        } catch (ELException e) {
+        }
+        catch (ELException e)
+        {
             throw new EvaluationException(e);
         }
     }
 
-    public void setValue(final Object base, final Object property, final Object value)
-        throws EvaluationException, PropertyNotFoundException {
-        
-        try {
+    public void setValue(final Object base, final Object property, final Object value) throws EvaluationException,
+                                                                                      PropertyNotFoundException
+    {
+
+        try
+        {
             elResolver.setValue(elContext(), base, property, value);
-        } catch (javax.el.PropertyNotFoundException e) {
+        }
+        catch (javax.el.PropertyNotFoundException e)
+        {
             throw new javax.faces.el.PropertyNotFoundException(e);
-        } catch (ELException e) {
+        }
+        catch (ELException e)
+        {
             throw new EvaluationException(e);
         }
     }
 
-    public void setValue(final Object base, int index, final Object value)
-        throws EvaluationException, PropertyNotFoundException {
-        
-        try {
+    public void setValue(final Object base, int index, final Object value) throws EvaluationException, PropertyNotFoundException
+    {
+
+        try
+        {
             elResolver.setValue(elContext(), base, Integer.valueOf(index), value);
-        } catch (javax.el.PropertyNotFoundException e) {
+        }
+        catch (javax.el.PropertyNotFoundException e)
+        {
             throw new javax.faces.el.PropertyNotFoundException(e);
-        } catch (ELException e) {
+        }
+        catch (ELException e)
+        {
             throw new EvaluationException(e);
         }
-        
+
     }
 
-    private ELContext elContext() {
+    private ELContext elContext()
+    {
         return FacesContext.getCurrentInstance().getELContext();
     }
-    
+
 }

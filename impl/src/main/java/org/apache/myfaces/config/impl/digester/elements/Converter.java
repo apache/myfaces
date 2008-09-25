@@ -19,9 +19,9 @@
 package org.apache.myfaces.config.impl.digester.elements;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Iterator;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -74,33 +74,41 @@ public class Converter
 
     public void addProperty(Property value)
     {
-        if(_properties==null)
+        if(_properties == null)
+        {
             _properties = new ArrayList<Property>();
+        }
 
         _properties.add(value);
     }
 
-    public Iterator<Property> getProperties()
+    public Collection<? extends Property> getProperties()
     {
-        if(_properties==null)
-            return Collections.EMPTY_LIST.iterator();
+        if(_properties == null)
+        {
+            return Collections.emptyList();
+        }
 
-        return _properties.iterator();
+        return _properties;
     }
     
     public void addAttribute(Attribute value)
     {
         if(_attributes == null)
+        {
             _attributes = new ArrayList<Attribute>();
+        }
 
         _attributes.add(value);
     }
 
-    public Iterator<Attribute> getAttributes()
+    public Collection<? extends Attribute> getAttributes()
     {
-        if(_attributes==null)
-            return Collections.EMPTY_LIST.iterator();
+        if(_attributes == null)
+        {
+            return Collections.emptyList();
+        }
 
-        return _attributes.iterator();
+        return _attributes;
     }
 }

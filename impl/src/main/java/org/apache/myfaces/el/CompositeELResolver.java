@@ -34,12 +34,18 @@ import javax.el.ELResolver;
  */
 public class CompositeELResolver extends javax.el.CompositeELResolver
 {
-    private Collection<ELResolver> _elResolvers = Collections.EMPTY_LIST;
+    private Collection<ELResolver> _elResolvers;
 
     @Override
     public Iterator<FeatureDescriptor> getFeatureDescriptors(final ELContext context, final Object base)
     {
-        return new CompositeIterator(context, base, _elResolvers.iterator());
+        Collection<ELResolver> resolvers = _elResolvers;
+        if (resolvers == null)
+        {
+            resolvers = Collections.emptyList();
+        }
+        
+        return new CompositeIterator(context, base, resolvers.iterator());
     }
 
     /**
@@ -49,9 +55,9 @@ public class CompositeELResolver extends javax.el.CompositeELResolver
     {
         super.add(elResolver);
 
-        if (_elResolvers == Collections.EMPTY_LIST)
+        if (_elResolvers == null)
         {
-            _elResolvers = new ArrayList();
+            _elResolvers = new ArrayList<ELResolver>();
         }
 
         _elResolvers.add(elResolver);

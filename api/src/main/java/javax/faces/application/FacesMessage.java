@@ -27,8 +27,7 @@ import java.util.*;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class FacesMessage
-        implements Serializable
+public class FacesMessage implements Serializable
 {
     private static final long serialVersionUID = 4851488727794169661L;
 
@@ -38,8 +37,9 @@ public class FacesMessage
     public static final FacesMessage.Severity SEVERITY_WARN = new Severity("Warn", 2);
     public static final FacesMessage.Severity SEVERITY_ERROR = new Severity("Error", 3);
     public static final FacesMessage.Severity SEVERITY_FATAL = new Severity("Fatal", 4);
-    public static final List VALUES;
-    public static final Map VALUES_MAP;
+    public static final List<FacesMessage.Severity> VALUES;
+    public static final Map<String, FacesMessage.Severity> VALUES_MAP;
+    
     static
     {
         Map<String, FacesMessage.Severity> map = new HashMap<String, FacesMessage.Severity>(7);
@@ -121,8 +121,7 @@ public class FacesMessage
     }
 
 
-    public static class Severity
-            implements Comparable
+    public static class Severity implements Comparable<Severity>
     {
         private String _name;
         private int _ordinal;
@@ -143,13 +142,9 @@ public class FacesMessage
             return _name;
         }
 
-        public int compareTo(Object o)
+        public int compareTo(Severity o)
         {
-            if (!(o instanceof Severity))
-            {
-                throw new IllegalArgumentException(o.getClass().getName());
-            }
-            return getOrdinal() - ((Severity)o).getOrdinal();
+            return getOrdinal() - o.getOrdinal();
         }
     }
 

@@ -85,7 +85,7 @@ public class InitParameterMap extends AbstractAttributeMap<String>
     }
     
     @Override
-    public void putAll(Map t)
+    public void putAll(Map<? extends String, ? extends String> t)
     {
         throw new UnsupportedOperationException();
     }

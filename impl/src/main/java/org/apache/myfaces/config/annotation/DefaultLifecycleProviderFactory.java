@@ -159,12 +159,12 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
     private Object createClass(String className, ExternalContext externalContext)
             throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException
     {
-        Class clazz = ClassUtils.classForName(className);
+        Class<?> clazz = ClassUtils.classForName(className);
 
         Object obj;
         try
         {
-            Constructor constructor = clazz.getConstructor(ExternalContext.class);
+            Constructor<?> constructor = clazz.getConstructor(ExternalContext.class);
             obj = constructor.newInstance(externalContext);
         }
         catch (NoSuchMethodException e)

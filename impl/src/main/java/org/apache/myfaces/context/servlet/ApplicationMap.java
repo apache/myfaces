@@ -63,7 +63,7 @@ public final class ApplicationMap extends AbstractAttributeMap<Object>
     }
 
 
-    public void putAll(final Map t)
+    public void putAll(final Map<? extends String, ? extends Object> t)
     {
         throw new UnsupportedOperationException();
     }

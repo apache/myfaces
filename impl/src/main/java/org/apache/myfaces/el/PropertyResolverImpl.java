@@ -40,8 +40,7 @@ public final class PropertyResolverImpl extends PropertyResolver
     // ----------------------------------------
 
     @Override
-    public Object getValue(final Object base, final Object property) throws EvaluationException,
-            PropertyNotFoundException
+    public Object getValue(final Object base, final Object property) throws EvaluationException, PropertyNotFoundException
     {
         return invokeResolver(new ResolverInvoker<Object>(base, property)
         {
@@ -60,11 +59,11 @@ public final class PropertyResolverImpl extends PropertyResolver
 
     @Override
     public void setValue(final Object base, final Object property, final Object newValue) throws EvaluationException,
-            PropertyNotFoundException
+                                                                                         PropertyNotFoundException
     {
         if (base == null || property == null)
             throw new PropertyNotFoundException();
-        
+
         invokeResolver(new ResolverInvoker<Object>(base, property)
         {
             @Override
@@ -87,17 +86,22 @@ public final class PropertyResolverImpl extends PropertyResolver
     {
         if (base == null)
             throw new PropertyNotFoundException();
-        
-        if (base instanceof Object[]) {
-            if (index < 0 || index>=((Object[])base).length) {
-                throw new PropertyNotFoundException();
-            }
-        } else if (base instanceof List) {
-            if (index < 0 || index>=((List)base).size()) {
+
+        if (base instanceof Object[])
+        {
+            if (index < 0 || index >= ((Object[]) base).length)
+            {
                 throw new PropertyNotFoundException();
             }
         }
-        
+        else if (base instanceof List)
+        {
+            if (index < 0 || index >= ((List<?>) base).size())
+            {
+                throw new PropertyNotFoundException();
+            }
+        }
+
         setValue(base, Integer.valueOf(index), newValue);
     }
 
@@ -124,10 +128,10 @@ public final class PropertyResolverImpl extends PropertyResolver
     {
         if (base == null || property == null)
             throw new PropertyNotFoundException();
-        
-        return invokeResolver(new ResolverInvoker<Class>(base, property)
+
+        return invokeResolver(new ResolverInvoker<Class<?>>(base, property)
         {
-            public Class invoke(final ELResolver resolver, final ELContext context)
+            public Class<?> invoke(final ELResolver resolver, final ELContext context)
             {
                 return resolver.getType(context, base, property);
             }
@@ -139,20 +143,25 @@ public final class PropertyResolverImpl extends PropertyResolver
     {
         if (base == null)
             throw new PropertyNotFoundException();
-        
-        if (base instanceof Object[]) {
-            if (index < 0 || index>=((Object[])base).length) {
-                throw new PropertyNotFoundException();
-            }
-        } else if (base instanceof List) {
-            if (index < 0 || index>=((List)base).size()) {
+
+        if (base instanceof Object[])
+        {
+            if (index < 0 || index >= ((Object[]) base).length)
+            {
                 throw new PropertyNotFoundException();
             }
         }
-        
+        else if (base instanceof List)
+        {
+            if (index < 0 || index >= ((List<?>) base).size())
+            {
+                throw new PropertyNotFoundException();
+            }
+        }
+
         return getType(base, Integer.valueOf(index));
     }
-    
+
     // ~ Internal Helper Methods
     // ------------------------------------------------
 
@@ -179,8 +188,7 @@ public final class PropertyResolverImpl extends PropertyResolver
         }
         catch (javax.el.PropertyNotFoundException e)
         {
-            throw new PropertyNotFoundException("property not found: " + invoker.getMessage() + ": " + e.getMessage(),
-                    e);
+            throw new PropertyNotFoundException("property not found: " + invoker.getMessage() + ": " + e.getMessage(), e);
         }
         catch (ELException e)
         {

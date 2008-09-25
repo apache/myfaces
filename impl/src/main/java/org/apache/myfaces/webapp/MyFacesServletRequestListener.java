@@ -30,23 +30,26 @@ import org.apache.myfaces.config.ManagedBeanBuilder;
  * @author Dennis Byrne
  */
 
-public class MyFacesServletRequestListener extends AbstractMyFacesListener implements ServletRequestListener {
+public class MyFacesServletRequestListener extends AbstractMyFacesListener implements ServletRequestListener
+{
 
-    public void requestDestroyed(ServletRequestEvent event) {
-
+    @SuppressWarnings("unchecked")
+    public void requestDestroyed(ServletRequestEvent event)
+    {
         ServletRequest request = event.getServletRequest();
         Enumeration<String> attributes = request.getAttributeNames();
-        
-        while(attributes.hasMoreElements()) 
+
+        while (attributes.hasMoreElements())
         {
             String name = attributes.nextElement();
             Object attribute = request.getAttribute(name);
             doPreDestroy(attribute, name, ManagedBeanBuilder.REQUEST);
         }
-        
+
     }
-        
-    public void requestInitialized(ServletRequestEvent event) { // noop
+
+    public void requestInitialized(ServletRequestEvent event)
+    { // noop
     }
 
 }

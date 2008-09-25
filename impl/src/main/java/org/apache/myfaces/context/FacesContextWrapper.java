@@ -58,7 +58,7 @@ public class FacesContextWrapper
         return _facesContext.getApplication();
     }
 
-    public Iterator getClientIdsWithMessages()
+    public Iterator<String> getClientIdsWithMessages()
     {
         return _facesContext.getClientIdsWithMessages();
     }
@@ -73,12 +73,12 @@ public class FacesContextWrapper
         return _facesContext.getMaximumSeverity();
     }
 
-    public Iterator getMessages()
+    public Iterator<FacesMessage> getMessages()
     {
         return _facesContext.getMessages();
     }
 
-    public Iterator getMessages(String clientId)
+    public Iterator<FacesMessage> getMessages(String clientId)
     {
         return _facesContext.getMessages(clientId);
     }

@@ -23,33 +23,37 @@ import javax.el.ELContext;
 
 /**
  * Encapsulates information needed by the ImplicitObjectResolver
- *
+ * 
  * @author Stan Silvert
  */
-public class SessionImplicitObject extends ImplicitObject {
-    
+public class SessionImplicitObject extends ImplicitObject
+{
+
     private static final String NAME = "session".intern();
-    
+
     /** Creates a new instance of SessionImplicitObject */
-    public SessionImplicitObject() {
+    public SessionImplicitObject()
+    {
     }
 
-    public Object getValue(ELContext context) {
+    public Object getValue(ELContext context)
+    {
         return externalContext(context).getSession(false);
     }
 
-    public String getName() {
+    public String getName()
+    {
         return NAME;
     }
-    
-    public Class getType() {
+
+    public Class<?> getType()
+    {
         return null;
     }
 
-    public FeatureDescriptor getDescriptor() {
-        return makeDescriptor(NAME, 
-                             "Session instance for the current request or null if no session exists", 
-                             Object.class);
+    public FeatureDescriptor getDescriptor()
+    {
+        return makeDescriptor(NAME, "Session instance for the current request or null if no session exists", Object.class);
     }
-    
+
 }

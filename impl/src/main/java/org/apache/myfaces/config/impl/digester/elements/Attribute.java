@@ -18,10 +18,10 @@
  */
 package org.apache.myfaces.config.impl.digester.elements;
 
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Martin Marinschek
@@ -52,49 +52,61 @@ public class Attribute
     public void addDescription(String value)
     {
         if(_description == null)
+        {
             _description = new ArrayList<String>();
-
+        }
+        
         _description.add(value);
     }
 
-    public Iterator<String> getDescriptions()
+    public Collection<? extends String> getDescriptions()
     {
-        if(_description==null)
-            return Collections.EMPTY_LIST.iterator();
-
-        return _description.iterator();
+        if(_description == null)
+        {
+            return Collections.emptyList();
+        }
+        
+        return _description;
     }
 
     public void addDisplayName(String value)
     {
         if(_displayName == null)
+        {
             _displayName = new ArrayList<String>();
+        }
 
         _displayName.add(value);
     }
 
-    public Iterator<String> getDisplayNames()
+    public Collection<? extends String> getDisplayNames()
     {
-        if(_displayName==null)
-            return Collections.EMPTY_LIST.iterator();
-
-        return _displayName.iterator();
+        if(_displayName == null)
+        {
+            return Collections.emptyList();
+        }
+        
+        return _displayName;
     }
 
     public void addIcon(String value)
     {
         if(_icon == null)
+        {
             _icon = new ArrayList<String>();
-
+        }
+        
         _icon.add(value);
     }
 
-    public Iterator<String> getIcons()
+    public Collection<? extends String> getIcons()
     {
-        if(_icon==null)
-            return Collections.EMPTY_LIST.iterator();
+        if(_icon == null)
+        {
+            return Collections.emptyList();
+        }
 
-        return _icon.iterator();
+        return _icon;
     }
 
     public void setAttributeName(String attributeName)
@@ -140,16 +152,20 @@ public class Attribute
     public void addAttributeExtension(String attributeExtension)
     {
         if(_attributeExtension == null)
+        {
             _attributeExtension = new ArrayList<String>();
+        }
 
         _attributeExtension.add(attributeExtension);
     }
 
-    public Iterator<String> getAttributeExtensions()
+    public Collection<? extends String> getAttributeExtensions()
     {
-        if(_attributeExtension==null)
-            return Collections.EMPTY_LIST.iterator();
+        if(_attributeExtension == null)
+        {
+            return Collections.emptyList();
+        }
 
-        return _attributeExtension.iterator();
+        return _attributeExtension;
     }
 }

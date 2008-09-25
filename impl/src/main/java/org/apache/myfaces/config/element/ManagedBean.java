@@ -18,9 +18,7 @@
  */
 package org.apache.myfaces.config.element;
 
-import java.util.Iterator;
-
-import org.apache.myfaces.config.element.ListEntries;
+import java.util.Collection;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
@@ -38,7 +36,7 @@ public interface ManagedBean
     public String getDescription();
     public String getManagedBeanName();
     public String getManagedBeanClassName();
-    public Class getManagedBeanClass();
+    public Class<?> getManagedBeanClass();
     public String getManagedBeanScope();
 
     public int getInitMode();
@@ -46,7 +44,7 @@ public interface ManagedBean
     /**
      * @return Iterator over {@link ManagedProperty} entries
      */
-    public Iterator getManagedProperties();
+    public Collection<? extends ManagedProperty> getManagedProperties();
 
     public MapEntries getMapEntries();
 

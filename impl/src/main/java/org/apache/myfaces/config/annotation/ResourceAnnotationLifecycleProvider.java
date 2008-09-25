@@ -66,7 +66,7 @@ public class ResourceAnnotationLifecycleProvider extends NoInjectionAnnotationLi
         } */
     }
 
-    private void checkAnnotation(Class clazz, Object instance)
+    private void checkAnnotation(Class<?> clazz, Object instance)
             throws NamingException, IllegalAccessException, InvocationTargetException
     {
         // Initialize fields annotations

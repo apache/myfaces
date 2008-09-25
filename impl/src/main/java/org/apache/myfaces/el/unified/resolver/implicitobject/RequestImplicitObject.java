@@ -23,33 +23,37 @@ import javax.el.ELContext;
 
 /**
  * Encapsulates information needed by the ImplicitObjectResolver
- *
+ * 
  * @author Stan Silvert
  */
-public class RequestImplicitObject extends ImplicitObject {
-    
+public class RequestImplicitObject extends ImplicitObject
+{
+
     private static final String NAME = "request".intern();
-    
+
     /** Creates a new instance of ParamValueRequestImplicitObject */
-    public RequestImplicitObject() {
+    public RequestImplicitObject()
+    {
     }
 
-    public Object getValue(ELContext context) {
+    public Object getValue(ELContext context)
+    {
         return externalContext(context).getRequest();
     }
 
-    public String getName() {
+    public String getName()
+    {
         return NAME;
     }
-    
-    public Class getType() {
+
+    public Class<?> getType()
+    {
         return null;
     }
 
-    public FeatureDescriptor getDescriptor() {
-        return makeDescriptor(NAME, 
-                             "Environment-specific object instance for the current request", 
-                             Object.class);
+    public FeatureDescriptor getDescriptor()
+    {
+        return makeDescriptor(NAME, "Environment-specific object instance for the current request", Object.class);
     }
-    
+
 }

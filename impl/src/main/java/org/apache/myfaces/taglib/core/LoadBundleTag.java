@@ -38,27 +38,23 @@ import javax.el.ValueExpression;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;
+
 /**
  * Loads a resource bundle and saves it as a variable in the request scope.
  * <p>
  * Unless otherwise specified, all attributes accept static values or EL expressions.
  * </p>
- * <p> 
- * TODO:
- * We should find a way to save loaded bundles in the state, because otherwise
- * on the next request the bundle map will not be present before the render phase
- * and value bindings that reference to the bundle will always log annoying
+ * <p>
+ * TODO: We should find a way to save loaded bundles in the state, because otherwise on the next request the bundle map
+ * will not be present before the render phase and value bindings that reference to the bundle will always log annoying
  * "Variable 'xxx' could not be resolved" error messages.
  * </p>
- *
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-@JSFJspTag(
-        name="f:loadBundle",
-        bodyContent="empty")
-public class LoadBundleTag
-        extends TagSupport
+@JSFJspTag(name = "f:loadBundle", bodyContent = "empty")
+public class LoadBundleTag extends TagSupport
 {
     private static final long serialVersionUID = -8892145684062838928L;
 
@@ -68,20 +64,16 @@ public class LoadBundleTag
     /**
      * The base name of the resource bundle.
      */
-    @JSFJspAttribute(
-            required=true,
-            rtexprvalue=true,
-            className="java.lang.String")
+    @JSFJspAttribute(required = true, rtexprvalue = true, className = "java.lang.String")
     public void setBasename(ValueExpression basename)
     {
         _basename = basename;
     }
 
     /**
-     * The name of the variable in request scope that the resources
-     * are saved to.  This must be a static value.
+     * The name of the variable in request scope that the resources are saved to. This must be a static value.
      */
-    @JSFJspAttribute(required=true)
+    @JSFJspAttribute(required = true)
     public void setVar(String var)
     {
         _var = var;
@@ -113,10 +105,14 @@ public class LoadBundleTag
         }
 
         String basename = null;
-        if (_basename!=null) {
-            if (_basename.isLiteralText()) {
+        if (_basename != null)
+        {
+            if (_basename.isLiteralText())
+            {
                 basename = _basename.getExpressionString();
-            } else {
+            }
+            else
+            {
                 basename = (String) _basename.getValue(facesContext.getELContext());
             }
         }
@@ -129,22 +125,18 @@ public class LoadBundleTag
         final ResourceBundle bundle;
         try
         {
-            bundle = ResourceBundle.getBundle(basename,
-                                              locale,
-                                              Thread.currentThread().getContextClassLoader());
+            bundle = ResourceBundle.getBundle(basename, locale, Thread.currentThread().getContextClassLoader());
         }
         catch (MissingResourceException e)
         {
             throw new JspException("Resource bundle '" + basename + "' could not be found.", e);
         }
 
-        facesContext.getExternalContext().getRequestMap().put(_var,
-                                                              new BundleMap(bundle));
+        facesContext.getExternalContext().getRequestMap().put(_var, new BundleMap(bundle));
         return Tag.SKIP_BODY;
     }
 
-
-    private static class BundleMap implements Map
+    private static class BundleMap implements Map<String, String>
     {
         private ResourceBundle _bundle;
         private List<String> _values;
@@ -154,13 +146,16 @@ public class LoadBundleTag
             _bundle = bundle;
         }
 
-        //Optimized methods
+        // Optimized methods
 
-        public Object get(Object key)
+        public String get(Object key)
         {
-            try {
-                return _bundle.getObject(key.toString());
-            } catch (Exception e) {
+            try
+            {
+                return (String)_bundle.getObject(key.toString());
+            }
+            catch (Exception e)
+            {
                 return "???" + key + "???";
             }
         }
@@ -182,10 +177,9 @@ public class LoadBundleTag
             }
         }
 
+        // Unoptimized methods
 
-        //Unoptimized methods
-
-        public Collection values()
+        public Collection<String> values()
         {
             if (_values == null)
             {
@@ -209,24 +203,25 @@ public class LoadBundleTag
             return values().contains(value);
         }
 
-        public Set entrySet()
+        public Set<Map.Entry<String, String>> entrySet()
         {
-            Set<Entry> set = new HashSet<Entry>();
-            for (Enumeration<String> enumer = _bundle.getKeys(); enumer.hasMoreElements(); )
+            Set<Entry<String, String>> set = new HashSet<Entry<String, String>>();
+            for (Enumeration<String> enumer = _bundle.getKeys(); enumer.hasMoreElements();)
             {
                 final String k = enumer.nextElement();
-                set.add(new Map.Entry() {
-                    public Object getKey()
+                set.add(new Map.Entry<String, String>()
+                {
+                    public String getKey()
                     {
                         return k;
                     }
 
-                    public Object getValue()
+                    public String getValue()
                     {
-                        return _bundle.getObject(k);
+                        return (String)_bundle.getObject(k);
                     }
 
-                    public Object setValue(Object value)
+                    public String setValue(String value)
                     {
                         throw new UnsupportedOperationException(this.getClass().getName() + " UnsupportedOperationException");
                     }
@@ -235,30 +230,29 @@ public class LoadBundleTag
             return set;
         }
 
-        public Set keySet()
+        public Set<String> keySet()
         {
             Set<String> set = new HashSet<String>();
-            for (Enumeration<String> enumer = _bundle.getKeys(); enumer.hasMoreElements(); )
+            for (Enumeration<String> enumer = _bundle.getKeys(); enumer.hasMoreElements();)
             {
                 set.add(enumer.nextElement());
             }
             return set;
         }
 
+        // Unsupported methods
 
-        //Unsupported methods
-
-        public Object remove(Object key)
+        public String remove(Object key)
         {
             throw new UnsupportedOperationException(this.getClass().getName() + " UnsupportedOperationException");
         }
 
-        public void putAll(Map t)
+        public void putAll(Map<? extends String, ? extends String> t)
         {
             throw new UnsupportedOperationException(this.getClass().getName() + " UnsupportedOperationException");
         }
 
-        public Object put(Object key, Object value)
+        public String put(String key, String value)
         {
             throw new UnsupportedOperationException(this.getClass().getName() + " UnsupportedOperationException");
         }

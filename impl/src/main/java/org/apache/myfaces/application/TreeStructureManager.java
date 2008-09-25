@@ -24,7 +24,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -56,17 +55,16 @@ public class TreeStructureManager
         //children
         if (component.getChildCount() > 0)
         {
-            List childList = component.getChildren();
             List<TreeStructComponent> structChildList = new ArrayList<TreeStructComponent>();
-            for (int i = 0, len = childList.size(); i < len; i++)
+            for (UIComponent child : component.getChildren())
             {
-                UIComponent child = (UIComponent)childList.get(i);
                 if (!child.isTransient())
                 {
                     TreeStructComponent structChild = internalBuildTreeStructureToSave(child);
                     structChildList.add(structChild);
                 }
             }
+            
             TreeStructComponent[] childArray = structChildList.toArray(new TreeStructComponent[structChildList.size()]);
             structComp.setChildren(childArray);
         }
@@ -76,17 +74,17 @@ public class TreeStructureManager
         if (!facetMap.isEmpty())
         {
             List<Object[]> structFacetList = new ArrayList<Object[]>();
-            for (Iterator it = facetMap.entrySet().iterator(); it.hasNext(); )
+            for (Map.Entry<String, UIComponent> entry : facetMap.entrySet())
             {
-                Map.Entry entry = (Map.Entry)it.next();
-                UIComponent child = (UIComponent)entry.getValue();
+                UIComponent child = entry.getValue();
                 if (!child.isTransient())
                 {
-                    String facetName = (String)entry.getKey();
+                    String facetName = entry.getKey();
                     TreeStructComponent structChild = internalBuildTreeStructureToSave(child);
                     structFacetList.add(new Object[] {facetName, structChild});
                 }
             }
+            
             Object[] facetArray = structFacetList.toArray(new Object[structFacetList.size()]);
             structComp.setFacets(facetArray);
         }
@@ -103,7 +101,8 @@ public class TreeStructureManager
         }
         
         
-        throw new IllegalArgumentException("TreeStructure of type " + treeStructRoot.getClass().getName() + " is not supported.");
+        throw new IllegalArgumentException("TreeStructure of type " + treeStructRoot.getClass().getName() + 
+                                           " is not supported.");
         
     }
 

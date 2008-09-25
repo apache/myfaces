@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +54,7 @@ public class NavigationHandlerImpl
 
     private static final String ASTERISK = "*";
 
-    private Map<String, List> _navigationCases = null;
+    private Map<String, List<NavigationCase>> _navigationCases = null;
     private List<String> _wildcardKeys = new ArrayList<String>();
 
     public NavigationHandlerImpl()
@@ -125,10 +124,10 @@ public class NavigationHandlerImpl
     public NavigationCase getNavigationCase(FacesContext facesContext, String fromAction, String outcome)
     {
         String viewId = facesContext.getViewRoot().getViewId();
-        Map<String, List> casesMap = getNavigationCases(facesContext);
+        Map<String, List<NavigationCase>> casesMap = getNavigationCases(facesContext);
         NavigationCase navigationCase = null;
 
-        List casesList = casesMap.get(viewId);
+        List<? extends NavigationCase> casesList = casesMap.get(viewId);
         if (casesList != null)
         {
             // Exact match?
@@ -138,10 +137,8 @@ public class NavigationHandlerImpl
         if (navigationCase == null)
         {
             // Wildcard match?
-            List<String> keys = getSortedWildcardKeys();
-            for (int i = 0, size = keys.size(); i < size; i++)
+            for (String fromViewId : getSortedWildcardKeys())
             {
-                String fromViewId = keys.get(i);
                 if (fromViewId.length() > 2)
                 {
                     String prefix = fromViewId.substring(0, fromViewId.length() - 1);
@@ -166,6 +163,7 @@ public class NavigationHandlerImpl
                 }
             }
         }
+        
         return navigationCase;
     }
 
@@ -189,11 +187,11 @@ public class NavigationHandlerImpl
         return null;
     }
 
-    private NavigationCase calcMatchingNavigationCase(List casesList, String actionRef, String outcome)
+    private NavigationCase calcMatchingNavigationCase(List<? extends NavigationCase> casesList, String actionRef, 
+                                                      String outcome)
     {
-        for (int i = 0, size = casesList.size(); i < size; i++)
+        for (NavigationCase caze : casesList)
         {
-            NavigationCase caze = (NavigationCase)casesList.get(i);
             String cazeOutcome = caze.getFromOutcome();
             String cazeActionRef = caze.getFromAction();
             if ((cazeOutcome == null || cazeOutcome.equals(outcome)) &&
@@ -202,6 +200,7 @@ public class NavigationHandlerImpl
                 return caze;
             }
         }
+        
         return null;
     }
 
@@ -210,7 +209,7 @@ public class NavigationHandlerImpl
         return _wildcardKeys;
     }
 
-    private Map<String, List> getNavigationCases(FacesContext facesContext)
+    private Map<String, List<NavigationCase>> getNavigationCases(FacesContext facesContext)
     {
         ExternalContext externalContext = facesContext.getExternalContext();
         RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
@@ -221,14 +220,16 @@ public class NavigationHandlerImpl
             {
                 if (_navigationCases == null || runtimeConfig.isNavigationRulesChanged())
                 {
-                    Collection rules = runtimeConfig.getNavigationRules();
+                    Collection<? extends NavigationRule> rules = runtimeConfig.getNavigationRules();
                     int rulesSize = rules.size();
-                    Map<String, List> cases = new HashMap<String, List>(HashMapUtils.calcCapacity(rulesSize));
+                    
+                    Map<String, List<NavigationCase>> cases = 
+                        new HashMap<String, List<NavigationCase>>(HashMapUtils.calcCapacity(rulesSize));
+                    
                     List<String> wildcardKeys = new ArrayList<String>();
 
-                    for (Iterator iterator = rules.iterator(); iterator.hasNext();)
+                    for (NavigationRule rule : rules)
                     {
-                        NavigationRule rule = (NavigationRule) iterator.next();
                         String fromViewId = rule.getFromViewId();
 
                         //specification 7.4.2 footnote 4 - missing fromViewId is allowed:
@@ -241,20 +242,22 @@ public class NavigationHandlerImpl
                             fromViewId = fromViewId.trim();
                         }
 
-                        List list = cases.get(fromViewId);
+                        List<NavigationCase> list = cases.get(fromViewId);
                         if (list == null)
                         {
-                            list = new ArrayList(rule.getNavigationCases());
+                            list = new ArrayList<NavigationCase>(rule.getNavigationCases());
                             cases.put(fromViewId, list);
                             if (fromViewId.endsWith(ASTERISK))
                             {
                                 wildcardKeys.add(fromViewId);
                             }
-                        } else {
+                        }
+                        else
+                        {
                             list.addAll(rule.getNavigationCases());
                         }
-
                     }
+                    
                     Collections.sort(wildcardKeys, new KeyComparator());
 
                     synchronized (cases)
@@ -274,12 +277,11 @@ public class NavigationHandlerImpl
         return _navigationCases;
     }
 
-    private static final class KeyComparator
-        implements Comparator
+    private static final class KeyComparator implements Comparator<String>
     {
-        public int compare(Object o1, Object o2)
+        public int compare(String s1, String s2)
         {
-            return -(((String)o1).compareTo((String)o2));
+            return -s1.compareTo(s2);
         }
     }
 }

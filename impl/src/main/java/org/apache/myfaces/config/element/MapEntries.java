@@ -36,6 +36,6 @@ public interface MapEntries
     /**
      * @return Iterator over {@link MapEntry} entries
      */
-    public Iterator getMapEntries();
+    public Iterator<? extends MapEntry> getMapEntries();
 
 }

@@ -20,7 +20,6 @@ package org.apache.myfaces.config.impl.digester;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import javax.faces.context.ExternalContext;
 
 import org.apache.myfaces.config.FacesConfigUnmarshaller;
@@ -201,24 +200,17 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         //Fix for http://issues.apache.org/jira/browse/MYFACES-236
         FacesConfig config = (FacesConfig) digester.parse(is);
 
-        List li =config.getApplications();
-
-        for (int i = 0; i < li.size(); i++)
+        for (Application application : config.getApplications())
         {
-            Application application = (Application) li.get(i);
-            List localeList = application.getLocaleConfig();
-
-            for (int j = 0; j < localeList.size(); j++)
+            for (LocaleConfig localeConfig : application.getLocaleConfig())
             {
-                LocaleConfig localeConfig = (LocaleConfig) localeList.get(j);
-
                 if(!localeConfig.getSupportedLocales().contains(localeConfig.getDefaultLocale()))
+                {
                     localeConfig.getSupportedLocales().add(localeConfig.getDefaultLocale());
+                }
             }
         }
 
         return config;
     }
-
-
 }

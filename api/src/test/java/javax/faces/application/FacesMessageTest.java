@@ -152,15 +152,6 @@ public class FacesMessageTest extends TestCase {
         assertTrue(0 < FacesMessage.SEVERITY_WARN.compareTo(FacesMessage.SEVERITY_INFO));
     }
 
-    public void testSeverityCompareWithString() {
-        // make sure the compare fails when it should
-        try {
-            FacesMessage.SEVERITY_ERROR.compareTo("Hello There");
-            fail("should throw");
-        } catch(IllegalArgumentException e) {
-        }
-    }
-
     public void testSeverityEquality() {
         // make sure they all respond as equals when they should
         assertEquals(0, FacesMessage.SEVERITY_INFO.compareTo(FacesMessage.SEVERITY_INFO));

@@ -24,25 +24,22 @@ import javax.faces.FacesException;
 import javax.faces.component.StateHolder;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ActionEvent;
-import javax.faces.event.ActionListener;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.event.ValueChangeListener;
 
-
 /**
- * This class is used in conjunction with ValueChangeListenerTag. 
+ * This class is used in conjunction with ValueChangeListenerTag.
  * 
  * When a tag like this is in a jsp page:
  * 
  * <f:valueChangeListener binding="#{mybean}"/>
- *  
- *  or
- *  
+ * 
+ * or
+ * 
  * <f:valueChangeListener type="#{'anyid'}" binding="#{mybean}"/>
  * 
- * The value of mybean could be already on the context, so this
- * converter avoid creating a new variable and use the previous one.
+ * The value of mybean could be already on the context, so this converter avoid creating a new variable and use the
+ * previous one.
  * 
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
@@ -86,7 +83,7 @@ public class DelegateValueChangeListener implements ValueChangeListener, StateHo
 
     public void setTransient(boolean arg0)
     {
-        // Do nothing        
+        // Do nothing
     }
 
     private ValueChangeListener _getDelegate()
@@ -105,8 +102,7 @@ public class DelegateValueChangeListener implements ValueChangeListener, StateHo
             {
                 try
                 {
-                    listener = (ValueChangeListener) _binding.getValue(facesContext
-                            .getELContext());
+                    listener = (ValueChangeListener)_binding.getValue(facesContext.getELContext());
                     if (null != listener)
                     {
                         return listener;
@@ -114,37 +110,39 @@ public class DelegateValueChangeListener implements ValueChangeListener, StateHo
                 }
                 catch (ELException e)
                 {
-                    //throw new JspException("Exception while evaluating the binding attribute of Component "
-                    //        + component.getId(), e);
+                    // throw new JspException("Exception while evaluating the binding attribute of Component "
+                    // + component.getId(), e);
                 }
             }
+
             if (null != _type)
             {
-                String className;
+                // FIXME: The listener never get created, check when this class is really used.
+                /*String className;
                 if (_type.isLiteralText())
                 {
                     className = _type.getExpressionString();
                 }
                 else
                 {
-                    className = (String) _type.getValue(facesContext
-                            .getELContext());
-                }
+                    className = (String) _type.getValue(facesContext.getELContext());
+                }*/
+
                 listener = null;
-                //listener = (ActionListener) ClassUtils.newInstance(className);
+                // listener = (ActionListener) ClassUtils.newInstance(className);
                 if (null != _binding)
                 {
                     try
                     {
-                        _binding
-                                .setValue(facesContext.getELContext(), listener);
+                        _binding.setValue(facesContext.getELContext(), listener);
                     }
                     catch (ELException e)
                     {
-                        //throw new JspException("Exception while evaluating the binding attribute of Component "
-                        //        + component.getId(), e);
+                        // throw new JspException("Exception while evaluating the binding attribute of Component "
+                        // + component.getId(), e);
                     }
                 }
+                
                 return listener;
             }
         }
@@ -152,13 +150,12 @@ public class DelegateValueChangeListener implements ValueChangeListener, StateHo
         {
             throw new FacesException(e);
         }
+        
         return listener;
     }
 
-    public void processValueChange(ValueChangeEvent event)
-            throws AbortProcessingException
+    public void processValueChange(ValueChangeEvent event) throws AbortProcessingException
     {
         _getDelegate().processValueChange(event);
     }
-
 }

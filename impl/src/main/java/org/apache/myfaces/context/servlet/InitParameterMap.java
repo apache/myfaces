@@ -64,7 +64,7 @@ public final class InitParameterMap extends AbstractAttributeMap<String>
         return _servletContext.getInitParameterNames();
     }
     
-    public void putAll(final Map t)
+    public void putAll(final Map<? extends String, ? extends String> t)
     {
         throw new UnsupportedOperationException();
     }

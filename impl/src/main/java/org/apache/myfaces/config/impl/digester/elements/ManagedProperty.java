@@ -47,70 +47,59 @@ public class ManagedProperty implements org.apache.myfaces.config.element.Manage
     {
         return _type;
     }
-
-
+    
     public org.apache.myfaces.config.element.MapEntries getMapEntries()
     {
         return _mapEntries;
     }
-
-
+    
     public void setMapEntries(MapEntries mapEntries)
     {
         _mapEntries = mapEntries;
         _type = TYPE_MAP;
     }
-
-
+    
     public org.apache.myfaces.config.element.ListEntries getListEntries()
     {
         return _listEntries;
     }
-
-
+    
     public void setListEntries(ListEntries listEntries)
     {
         _listEntries = listEntries;
         _type = TYPE_LIST;
     }
-
-
+    
     public String getPropertyName()
     {
         return _propertyName;
     }
-
-
+    
     public void setPropertyName(String propertyName)
     {
         _propertyName = propertyName;
     }
-
-
+    
     public String getPropertyClass()
     {
         return _propertyClass;
     }
-
-
+    
     public void setPropertyClass(String propertyClass)
     {
         _propertyClass = propertyClass;
     }
-
-
+    
     public boolean isNullValue()
     {
         return _type == TYPE_NULL;
     }
-
-
+    
     public void setNullValue()
     {
         _type = TYPE_NULL;
     }
-
-
+    
     public void setValue(String value)
     {
         _value = value;
@@ -121,8 +110,7 @@ public class ManagedProperty implements org.apache.myfaces.config.element.Manage
     {
         return _value;
     }
-
-
+    
     public Object getRuntimeValue(FacesContext facesContext)
     {
         getValueBinding(facesContext);
@@ -130,8 +118,7 @@ public class ManagedProperty implements org.apache.myfaces.config.element.Manage
         return (_valueBinding == DUMMY_VB)
             ? _value : _valueBinding.getValue(facesContext);
     }
-
-
+    
     public ValueBinding getValueBinding(FacesContext facesContext)
     {
         if (_valueBinding == null)
@@ -143,14 +130,12 @@ public class ManagedProperty implements org.apache.myfaces.config.element.Manage
         }
         return _valueBinding;
     }
-
-
+    
     public boolean isValueReference()
     {
         return ContainerUtils.isValueReference(_value);
     }
-
-
+    
     private static class DummyValueBinding extends ValueBinding
     {
         public String getExpressionString()
@@ -158,7 +143,7 @@ public class ManagedProperty implements org.apache.myfaces.config.element.Manage
             throw new UnsupportedOperationException();
         }
 
-        public Class getType(FacesContext facesContext)
+        public Class<?> getType(FacesContext facesContext)
         {
             throw new UnsupportedOperationException();
         }

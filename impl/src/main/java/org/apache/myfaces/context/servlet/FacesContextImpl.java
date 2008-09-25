@@ -45,132 +45,149 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import java.util.*;
 
-
 /**
  * @author Manfred Geiler (latest modification by $Author$)
  * @author Anton Koinov
  * @version $Revision$ $Date$
  */
-public class FacesContextImpl
-        extends FacesContext
+public class FacesContextImpl extends FacesContext
 {
-    //~ Instance fields ----------------------------------------------------------------------------
+    // ~ Instance fields ----------------------------------------------------------------------------
 
-    private List                        _messageClientIds = null;
-    private List                        _messages         = null;
-    private Application                 _application;
-    private ReleaseableExternalContext  _externalContext;
-    private ResponseStream              _responseStream   = null;
-    private ResponseWriter              _responseWriter   = null;
-    private FacesMessage.Severity       _maximumSeverity  = null;
-    private UIViewRoot                  _viewRoot;
-    private boolean                     _renderResponse   = false;
-    private boolean                     _responseComplete = false;
-    private RenderKitFactory            _renderKitFactory;
-    private boolean                     _released = false;
-    private ELContext                   _elContext;
+    
+    // TODO: I think a Map<String, List<FacesMessage>> would more efficient than those two -= Simon Lessard =-
+    private List<FacesMessage> _messages = null;
+    private List<String> _messageClientIds = null;
+    
+    private Application _application;
+    private ReleaseableExternalContext _externalContext;
+    private ResponseStream _responseStream = null;
+    private ResponseWriter _responseWriter = null;
+    private FacesMessage.Severity _maximumSeverity = null;
+    private UIViewRoot _viewRoot;
+    private boolean _renderResponse = false;
+    private boolean _responseComplete = false;
+    private RenderKitFactory _renderKitFactory;
+    private boolean _released = false;
+    private ELContext _elContext;
 
-    //~ Constructors -------------------------------------------------------------------------------
+    // ~ Constructors -------------------------------------------------------------------------------
 
-    public FacesContextImpl(final PortletContext portletContext,
-                            final PortletRequest portletRequest,
+    public FacesContextImpl(final PortletContext portletContext, final PortletRequest portletRequest,
                             final PortletResponse portletResponse)
     {
-        this(new PortletExternalContextImpl(portletContext,
-                                            portletRequest,
-                                            portletResponse));
+        this(new PortletExternalContextImpl(portletContext, portletRequest, portletResponse));
     }
 
-    public FacesContextImpl(final ServletContext servletContext,
-                            final ServletRequest servletRequest,
+    public FacesContextImpl(final ServletContext servletContext, final ServletRequest servletRequest,
                             final ServletResponse servletResponse)
     {
-        this(new ServletExternalContextImpl(servletContext,
-                                            servletRequest,
-                                            servletResponse));
+        this(new ServletExternalContextImpl(servletContext, servletRequest, servletResponse));
     }
 
     private FacesContextImpl(final ReleaseableExternalContext externalContext)
     {
-        _application = ((ApplicationFactory)FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY))
-                .getApplication();
+        _application = ((ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY)).getApplication();
         _renderKitFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
         _externalContext = externalContext;
-        FacesContext.setCurrentInstance(this);  //protected method, therefore must be called from here
+        FacesContext.setCurrentInstance(this); // protected method, therefore must be called from here
     }
 
-    //~ Methods ------------------------------------------------------------------------------------
+    // ~ Methods ------------------------------------------------------------------------------------
 
     public final ExternalContext getExternalContext()
     {
-        if (_released) {
+        if (_released)
+        {
             throw new IllegalStateException("FacesContext already released");
         }
-        return (ExternalContext)_externalContext;
+        return (ExternalContext) _externalContext;
     }
 
     public final FacesMessage.Severity getMaximumSeverity()
     {
-        if (_released) {
+        if (_released)
+        {
             throw new IllegalStateException("FacesContext already released");
         }
+        
         return _maximumSeverity;
     }
 
-    public final Iterator getMessages()
+    public final Iterator<FacesMessage> getMessages()
     {
-        if (_released) {
+        if (_released)
+        {
             throw new IllegalStateException("FacesContext already released");
         }
-        return (_messages != null) ? _messages.iterator() : Collections.EMPTY_LIST.iterator();
+        
+        if (_messages == null)
+        {
+            return NullIterator.instance();
+        }
+        
+        return _messages.iterator();
     }
 
     public final Application getApplication()
     {
-        if (_released) {
+        if (_released)
+        {
             throw new IllegalStateException("FacesContext already released");
         }
 
         return _application;
     }
-
-    public final Iterator getClientIdsWithMessages()
+    
+    public final Iterator<String> getClientIdsWithMessages()
     {
-        if (_released) {
+        if (_released)
+        {
             throw new IllegalStateException("FacesContext already released");
         }
+        
         if (_messages == null || _messages.isEmpty())
         {
             return NullIterator.instance();
         }
 
-        final Set uniqueClientIds = new LinkedHashSet(_messageClientIds);
+        final Set<String> uniqueClientIds = new LinkedHashSet<String>(_messageClientIds);
+        
         return uniqueClientIds.iterator();
     }
 
-    public final Iterator getMessages(final String clientId)
+    public final Iterator<FacesMessage> getMessages(final String clientId)
     {
-        if (_released) {
+        if (_released)
+        {
             throw new IllegalStateException("FacesContext already released");
         }
+        
         if (_messages == null)
         {
             return NullIterator.instance();
         }
 
-        List lst = new ArrayList();
+        List<FacesMessage> lst = new ArrayList<FacesMessage>();
         for (int i = 0; i < _messages.size(); i++)
         {
             Object savedClientId = _messageClientIds.get(i);
             if (clientId == null)
             {
-                if (savedClientId == null) lst.add(_messages.get(i));
+                if (savedClientId == null)
+                {
+                    lst.add(_messages.get(i));
+                }
             }
             else
             {
-                if (clientId.equals(savedClientId)) lst.add(_messages.get(i));
+                if (clientId.equals(savedClientId))
+                {
+                    lst.add(_messages.get(i));
+                }
             }
         }
+        
         return lst.iterator();
     }
 
@@ -193,7 +210,8 @@ public class FacesContextImpl
 
     public final boolean getRenderResponse()
     {
-        if (_released) {
+        if (_released)
+        {
             throw new IllegalStateException("FacesContext already released");
         }
         return _renderResponse;
@@ -201,7 +219,8 @@ public class FacesContextImpl
 
     public final boolean getResponseComplete()
     {
-        if (_released) {
+        if (_released)
+        {
             throw new IllegalStateException("FacesContext already released");
         }
         return _responseComplete;
@@ -209,7 +228,8 @@ public class FacesContextImpl
 
     public final void setResponseStream(final ResponseStream responseStream)
     {
-        if (_released) {
+        if (_released)
+        {
             throw new IllegalStateException("FacesContext already released");
         }
         if (responseStream == null)
@@ -221,7 +241,8 @@ public class FacesContextImpl
 
     public final ResponseStream getResponseStream()
     {
-        if (_released) {
+        if (_released)
+        {
             throw new IllegalStateException("FacesContext already released");
         }
         return _responseStream;
@@ -229,7 +250,8 @@ public class FacesContextImpl
 
     public final void setResponseWriter(final ResponseWriter responseWriter)
     {
-        if (_released) {
+        if (_released)
+        {
             throw new IllegalStateException("FacesContext already released");
         }
         if (responseWriter == null)
@@ -241,7 +263,8 @@ public class FacesContextImpl
 
     public final ResponseWriter getResponseWriter()
     {
-        if (_released) {
+        if (_released)
+        {
             throw new IllegalStateException("FacesContext already released");
         }
         return _responseWriter;
@@ -249,7 +272,8 @@ public class FacesContextImpl
 
     public final void setViewRoot(final UIViewRoot viewRoot)
     {
-        if (_released) {
+        if (_released)
+        {
             throw new IllegalStateException("FacesContext already released");
         }
         if (viewRoot == null)
@@ -261,7 +285,8 @@ public class FacesContextImpl
 
     public final UIViewRoot getViewRoot()
     {
-        if (_released) {
+        if (_released)
+        {
             throw new IllegalStateException("FacesContext already released");
         }
         return _viewRoot;
@@ -269,7 +294,8 @@ public class FacesContextImpl
 
     public final void addMessage(final String clientId, final FacesMessage message)
     {
-        if (_released) {
+        if (_released)
+        {
             throw new IllegalStateException("FacesContext already released");
         }
         if (message == null)
@@ -279,13 +305,14 @@ public class FacesContextImpl
 
         if (_messages == null)
         {
-            _messages             = new ArrayList();
-            _messageClientIds     = new ArrayList();
+            _messages = new ArrayList<FacesMessage>();
+            _messageClientIds = new ArrayList<String>();
         }
         _messages.add(message);
         _messageClientIds.add((clientId != null) ? clientId : null);
-        FacesMessage.Severity serSeverity =  message.getSeverity();
-        if (serSeverity != null) {
+        FacesMessage.Severity serSeverity = message.getSeverity();
+        if (serSeverity != null)
+        {
             if (_maximumSeverity == null)
             {
                 _maximumSeverity = serSeverity;
@@ -299,7 +326,8 @@ public class FacesContextImpl
 
     public final void release()
     {
-        if (_released) {
+        if (_released)
+        {
             throw new IllegalStateException("FacesContext already released");
         }
         if (_externalContext != null)
@@ -308,20 +336,21 @@ public class FacesContextImpl
             _externalContext = null;
         }
 
-        _messageClientIds     = null;
-        _messages             = null;
-        _application          = null;
-        _responseStream       = null;
-        _responseWriter       = null;
-        _viewRoot             = null;
+        _messageClientIds = null;
+        _messages = null;
+        _application = null;
+        _responseStream = null;
+        _responseWriter = null;
+        _viewRoot = null;
 
-        _released             = true;
+        _released = true;
         FacesContext.setCurrentInstance(null);
     }
 
     public final void renderResponse()
     {
-        if (_released) {
+        if (_released)
+        {
             throw new IllegalStateException("FacesContext already released");
         }
         _renderResponse = true;
@@ -329,7 +358,8 @@ public class FacesContextImpl
 
     public final void responseComplete()
     {
-        if (_released) {
+        if (_released)
+        {
             throw new IllegalStateException("FacesContext already released");
         }
         _responseComplete = true;
@@ -340,21 +370,23 @@ public class FacesContextImpl
     public final void setExternalContext(ReleaseableExternalContext extContext)
     {
         _externalContext = extContext;
-        FacesContext.setCurrentInstance(this); //TODO: figure out if I really need to do this
+        FacesContext.setCurrentInstance(this); // TODO: figure out if I really need to do this
     }
 
-    public final ELContext getELContext() {
-        if (_elContext != null) return _elContext;
-        
-        
+    public final ELContext getELContext()
+    {
+        if (_elContext != null)
+            return _elContext;
+
         _elContext = new FacesELContext(getApplication().getELResolver(), this);
-        
+
         ELContextEvent event = new ELContextEvent(_elContext);
-        for (ELContextListener listener : getApplication().getELContextListeners()) {
+        for (ELContextListener listener : getApplication().getELContextListeners())
+        {
             listener.contextCreated(event);
         }
-        
+
         return _elContext;
     }
-    
+
 }

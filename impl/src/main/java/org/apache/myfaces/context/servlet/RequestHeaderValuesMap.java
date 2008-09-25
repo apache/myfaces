@@ -44,6 +44,7 @@ public final class RequestHeaderValuesMap extends AbstractAttributeMap<String[]>
         _httpServletRequest = httpServletRequest;
     }
 
+    @SuppressWarnings("unchecked")
     protected String[] getAttribute(final String key)
     {
         String[] ret = _valueCache.get(key);

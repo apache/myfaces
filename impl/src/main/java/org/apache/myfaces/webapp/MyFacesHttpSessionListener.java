@@ -35,6 +35,7 @@ public class MyFacesHttpSessionListener extends AbstractMyFacesListener implemen
     public void sessionCreated(HttpSessionEvent event) { // noop
     }
 
+    @SuppressWarnings("unchecked")
     public void sessionDestroyed(HttpSessionEvent event) {
         
         HttpSession session = event.getSession();

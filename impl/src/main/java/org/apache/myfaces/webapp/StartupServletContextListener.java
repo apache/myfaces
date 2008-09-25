@@ -33,23 +33,19 @@ import javax.servlet.ServletContextListener;
 /**
  * Initialise the MyFaces system.
  * <p>
- * This context listener is registered by the JSP TLD file for the standard
- * JSF "f" components. Normally, servlet containers will automatically load
- * and process .tld files at startup time, and therefore register and run
- * this class automatically.
+ * This context listener is registered by the JSP TLD file for the standard JSF "f" components. Normally, servlet
+ * containers will automatically load and process .tld files at startup time, and therefore register and run this class
+ * automatically.
  * <p>
- * Some very old servlet containers do not do this correctly, so in those
- * cases this listener may be registered manually in web.xml. Registering
- * it twice (ie in both .tld and web.xml) will result in a harmless warning
- * message being generated. Very old versions of MyFaces Core do not register
- * the listener in the .tld file, so those also need a manual entry in web.xml.
- * However all versions since at least 1.1.2 have this entry in the tld.
+ * Some very old servlet containers do not do this correctly, so in those cases this listener may be registered manually
+ * in web.xml. Registering it twice (ie in both .tld and web.xml) will result in a harmless warning message being
+ * generated. Very old versions of MyFaces Core do not register the listener in the .tld file, so those also need a
+ * manual entry in web.xml. However all versions since at least 1.1.2 have this entry in the tld.
  * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class StartupServletContextListener extends AbstractMyFacesListener
-    implements ServletContextListener
+public class StartupServletContextListener extends AbstractMyFacesListener implements ServletContextListener
 {
     static final String FACES_INIT_DONE = StartupServletContextListener.class.getName() + ".FACES_INIT_DONE";
 
@@ -82,16 +78,16 @@ public class StartupServletContextListener extends AbstractMyFacesListener
     {
         if (_facesInitializer == null)
         {
-            if (ContainerUtils.isJsp21()) 
+            if (ContainerUtils.isJsp21())
             {
                 _facesInitializer = new Jsp21FacesInitializer();
-            } 
-            else 
+            }
+            else
             {
                 _facesInitializer = new Jsp20FacesInitializer();
             }
         }
-        
+
         return _facesInitializer;
     }
 
@@ -116,7 +112,7 @@ public class StartupServletContextListener extends AbstractMyFacesListener
     public void contextDestroyed(ServletContextEvent event)
     {
         doPredestroy(event);
-        
+
         if (_facesInitializer != null && _servletContext != null)
         {
             _facesInitializer.destroyFaces(_servletContext);
@@ -124,17 +120,18 @@ public class StartupServletContextListener extends AbstractMyFacesListener
         FactoryFinder.releaseFactories();
         _servletContext = null;
     }
-    
-    private void doPredestroy(ServletContextEvent event) {
-                
+
+    @SuppressWarnings("unchecked")
+    private void doPredestroy(ServletContextEvent event)
+    {
         ServletContext ctx = event.getServletContext();
-           Enumeration<String> attributes = ctx.getAttributeNames();
-           
-           while(attributes.hasMoreElements()) 
-           {
-               String name = attributes.nextElement();
-               Object value = ctx.getAttribute(name);
-               doPreDestroy(value, name, ManagedBeanBuilder.APPLICATION);
-           }
+        Enumeration<String> attributes = ctx.getAttributeNames();
+
+        while (attributes.hasMoreElements())
+        {
+            String name = attributes.nextElement();
+            Object value = ctx.getAttribute(name);
+            doPreDestroy(value, name, ManagedBeanBuilder.APPLICATION);
+        }
     }
 }

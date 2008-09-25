@@ -24,33 +24,37 @@ import javax.el.ELContext;
 
 /**
  * Encapsulates information needed by the ImplicitObjectResolver
- *
+ * 
  * @author Stan Silvert
  */
-public class CookieImplicitObject extends ImplicitObject {
-    
+public class CookieImplicitObject extends ImplicitObject
+{
+
     private static final String NAME = "cookie".intern();
-    
+
     /** Creates a new instance of CookieImplicitObject */
-    public CookieImplicitObject() {
+    public CookieImplicitObject()
+    {
     }
 
-    public Object getValue(ELContext context) {
+    public Object getValue(ELContext context)
+    {
         return externalContext(context).getRequestCookieMap();
     }
 
-    public String getName() {
+    public String getName()
+    {
         return NAME;
     }
-    
-    public Class getType() {
+
+    public Class<?> getType()
+    {
         return null;
     }
 
-    public FeatureDescriptor getDescriptor() {
-        return makeDescriptor(NAME, 
-                             "Map whose keys are a set of cookie names in the current request", 
-                             Map.class);
+    public FeatureDescriptor getDescriptor()
+    {
+        return makeDescriptor(NAME, "Map whose keys are a set of cookie names in the current request", Map.class);
     }
-    
+
 }

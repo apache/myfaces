@@ -36,5 +36,5 @@ public interface NavigationRule
     /**
      * @return a Collection of {@link org.apache.myfaces.config.element.NavigationCase}s
      */
-    public Collection getNavigationCases();
+    public Collection<? extends NavigationCase> getNavigationCases();
 }

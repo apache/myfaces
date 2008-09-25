@@ -97,7 +97,7 @@ public class GuiceResolver extends ManagedBeanResolver {
         return managedBean == null ? null : getValue(ctx, ectx, managedBean.getManagedBeanClass());
     }
 
-    private Object getValue(ELContext ctx, ExternalContext ectx, Class managedBeanClass) {
+    private Object getValue(ELContext ctx, ExternalContext ectx, Class<?> managedBeanClass) {
         
         Injector injector = (Injector) ectx.getApplicationMap().get(KEY);
         

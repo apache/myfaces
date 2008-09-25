@@ -49,8 +49,9 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
             names.add(e.nextElement());
         }
 
-        for (String name : names) {
-          removeAttribute(name);
+        for (String name : names)
+        {
+            removeAttribute(name);
         }
     }
 
@@ -108,9 +109,10 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
 
     public void putAll(final Map<? extends String, ? extends V> t)
     {
-      for (final Entry<? extends String, ? extends V> entry : t.entrySet()) {
-        setAttribute(entry.getKey(), entry.getValue());
-      }
+        for (final Entry<? extends String, ? extends V> entry : t.entrySet())
+        {
+            setAttribute(entry.getKey(), entry.getValue());
+        }
     }
 
     @Override
@@ -126,7 +128,7 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
     public int size()
     {
         int size = 0;
-        for (final Enumeration e = getAttributeNames(); e.hasMoreElements();)
+        for (final Enumeration<String> e = getAttributeNames(); e.hasMoreElements();)
         {
             size++;
             e.nextElement();
@@ -246,7 +248,7 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
                 return false;
             }
 
-            for (final Iterator it = iterator(); it.hasNext();)
+            for (final Iterator<V> it = iterator(); it.hasNext();)
             {
                 if (o.equals(it.next()))
                 {
@@ -265,7 +267,7 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
                 return false;
             }
 
-            for (final Iterator it = iterator(); it.hasNext();)
+            for (final Iterator<V> it = iterator(); it.hasNext();)
             {
                 if (o.equals(it.next()))
                 {
@@ -295,6 +297,7 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
             return new EntryIterator();
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public boolean contains(final Object o)
         {
@@ -303,7 +306,7 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
                 return false;
             }
 
-            final Entry entry = (Entry) o;
+            final Entry<String, V> entry = (Entry<String, V>) o;
             final Object key = entry.getKey();
             final Object value = entry.getValue();
             if (key == null || value == null)
@@ -314,6 +317,7 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
             return value.equals(AbstractAttributeMap.this.get(key));
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public boolean remove(final Object o)
         {
@@ -322,7 +326,7 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
                 return false;
             }
 
-            final Entry entry = (Entry) o;
+            final Entry<String, V> entry = (Entry<String, V>) o;
             final Object key = entry.getKey();
             final Object value = entry.getValue();
             if (key == null || value == null || !value.equals(AbstractAttributeMap.this.get(key)))
@@ -330,7 +334,7 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
                 return false;
             }
 
-            return AbstractAttributeMap.this.remove(((Entry) o).getKey()) != null;
+            return AbstractAttributeMap.this.remove(((Entry<String, V>) o).getKey()) != null;
         }
     }
 

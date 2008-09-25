@@ -51,16 +51,18 @@ import java.util.zip.GZIPOutputStream;
  * @author Manfred Geiler
  * @version $Revision$ $Date$
  */
-public class JspStateManagerImpl
-    extends MyfacesStateManager
+public class JspStateManagerImpl extends MyfacesStateManager
 {
     private static final Log log = LogFactory.getLog(JspStateManagerImpl.class);
-    private static final String SERIALIZED_VIEW_SESSION_ATTR
-            = JspStateManagerImpl.class.getName() + ".SERIALIZED_VIEW";
-    private static final String SERIALIZED_VIEW_REQUEST_ATTR
-            = JspStateManagerImpl.class.getName() + ".SERIALIZED_VIEW";
-    private static final String RESTORED_SERIALIZED_VIEW_REQUEST_ATTR
-    = JspStateManagerImpl.class.getName() + ".RESTORED_SERIALIZED_VIEW";
+    
+    private static final String SERIALIZED_VIEW_SESSION_ATTR= 
+        JspStateManagerImpl.class.getName() + ".SERIALIZED_VIEW";
+    
+    private static final String SERIALIZED_VIEW_REQUEST_ATTR = 
+        JspStateManagerImpl.class.getName() + ".SERIALIZED_VIEW";
+    
+    private static final String RESTORED_SERIALIZED_VIEW_REQUEST_ATTR = 
+        JspStateManagerImpl.class.getName() + ".RESTORED_SERIALIZED_VIEW";
 
     /**
      * Only applicable if state saving method is "server" (= default).
@@ -416,18 +418,21 @@ public class JspStateManagerImpl
         String id = component.getId();
         if (id != null && !ids.add(id))
         {
-            throw new IllegalStateException("Client-id : "+id +
-                                            " is duplicated in the faces tree. Component : "+component.getClientId(context)+", path: "+
+            throw new IllegalStateException("Client-id : " + id +
+                                            " is duplicated in the faces tree. Component : " + 
+                                            component.getClientId(context)+", path: " +
                                             getPathToComponent(component));
         }
+        
         if (component instanceof NamingContainer)
         {
             ids = new HashSet<String>();
         }
-        Iterator it = component.getFacetsAndChildren();
+        
+        Iterator<UIComponent> it = component.getFacetsAndChildren();
         while (it.hasNext())
         {
-            UIComponent kid = (UIComponent) it.next();
+            UIComponent kid = it.next();
             checkForDuplicateIds(context, kid, ids);
         }
     }
@@ -873,6 +878,7 @@ public class JspStateManagerImpl
         /**
          * @return old serialized views map
          */
+        @SuppressWarnings("unchecked")
         protected Map<Object, Object> getOldSerializedViewsMap()
         {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -896,6 +902,7 @@ public class JspStateManagerImpl
                     _oldSerializedViews = new ReferenceMap(AbstractReferenceMap.HARD, AbstractReferenceMap.SOFT);
                 }
             }
+            
             return _oldSerializedViews;
         }
         
@@ -907,7 +914,8 @@ public class JspStateManagerImpl
          * @return constant indicating caching mode
          * @see CACHE_OLD_VIEWS_IN_SESSION_MODE
          */
-        protected String getCacheOldViewsInSessionMode(FacesContext context) {
+        protected String getCacheOldViewsInSessionMode(FacesContext context)
+        {
             String value = context.getExternalContext().getInitParameter(
                     CACHE_OLD_VIEWS_IN_SESSION_MODE);
             if (value == null)

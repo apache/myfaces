@@ -24,33 +24,37 @@ import javax.el.ELContext;
 
 /**
  * Encapsulates information needed by the ImplicitObjectResolver
- *
+ * 
  * @author Stan Silvert
  */
-public class HeaderImplicitObject extends ImplicitObject {
-    
+public class HeaderImplicitObject extends ImplicitObject
+{
+
     private static final String NAME = "header".intern();
-    
+
     /** Creates a new instance of HeaderImplicitObject */
-    public HeaderImplicitObject() {
+    public HeaderImplicitObject()
+    {
     }
 
-    public Object getValue(ELContext context) {
+    public Object getValue(ELContext context)
+    {
         return externalContext(context).getRequestHeaderMap();
     }
 
-    public String getName() {
+    public String getName()
+    {
         return NAME;
     }
-    
-    public Class getType() {
+
+    public Class<?> getType()
+    {
         return null;
     }
 
-    public FeatureDescriptor getDescriptor() {
-        return makeDescriptor(NAME, 
-                             "Map whose keys are a set of request header names in the current request", 
-                             Map.class);
+    public FeatureDescriptor getDescriptor()
+    {
+        return makeDescriptor(NAME, "Map whose keys are a set of request header names in the current request", Map.class);
     }
-    
+
 }

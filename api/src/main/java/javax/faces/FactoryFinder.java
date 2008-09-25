@@ -51,7 +51,9 @@ public final class FactoryFinder
      * used as a monitor for itself and _factories.
      * Maps in this map are used as monitors for themselves and the corresponding maps in _factories.
      */
-    private static Map<ClassLoader, Map> _registeredFactoryNames = new HashMap<ClassLoader, Map>();
+    private static Map<ClassLoader, Map<String, List<String>>> _registeredFactoryNames = 
+        new HashMap<ClassLoader, Map<String, List<String>>>();
+    
     /**
      * Maps from classLoader to another map, the container (i.e. Tomcat) will create a class loader for
      * each web app that it controls (typically anyway) and that class loader is used as the key.
@@ -60,11 +62,14 @@ public final class FactoryFinder
      * that are created via getFactory. The instances will be of the class specified in the setFactory method
      * for the factory name, i.e. FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, MyFactory.class).
      */
-    private static Map<ClassLoader, Map> _factories = new HashMap<ClassLoader, Map>();
+    private static Map<ClassLoader, Map<String, Object>> _factories = 
+        new HashMap<ClassLoader, Map<String, Object>>();
 
     private static final Set<String> VALID_FACTORY_NAMES = new HashSet<String>();
-    private static final Map<String, Class> ABSTRACT_FACTORY_CLASSES = new HashMap<String, Class>();
-    static {
+    private static final Map<String, Class<?>> ABSTRACT_FACTORY_CLASSES = new HashMap<String, Class<?>>();
+    
+    static
+    {
         VALID_FACTORY_NAMES.add(APPLICATION_FACTORY);
         VALID_FACTORY_NAMES.add(FACES_CONTEXT_FACTORY);
         VALID_FACTORY_NAMES.add(LIFECYCLE_FACTORY);
@@ -81,18 +86,19 @@ public final class FactoryFinder
   FactoryFinder() {
   }
 
-  public static Object getFactory(String factoryName)
-            throws FacesException
-    {
+  public static Object getFactory(String factoryName) throws FacesException
+  {
         if(factoryName == null)
+        {
             throw new NullPointerException("factoryName may not be null");
+        }
 
         ClassLoader classLoader = getClassLoader();
 
         //This code must be synchronized because this could cause a problem when
         //using update feature each time of myfaces (org.apache.myfaces.CONFIG_REFRESH_PERIOD)
         //In this moment, a concurrency problem could happen
-        Map factoryClassNames = null;
+        Map<String, List<String>> factoryClassNames = null;
         Map<String, Object> factoryMap = null;
         
         synchronized(_registeredFactoryNames)
@@ -127,7 +133,7 @@ public final class FactoryFinder
             }
         }
         
-        List classNames = null;
+        List<String> classNames = null;
         Object factory = null;
         synchronized (factoryClassNames)
         {
@@ -136,7 +142,8 @@ public final class FactoryFinder
             {
                 return factory;
             }
-            classNames = (List) factoryClassNames.get(factoryName);
+            
+            classNames = factoryClassNames.get(factoryName);
         }
         
         //release lock while calling out
@@ -150,11 +157,11 @@ public final class FactoryFinder
                 factoryMap.put(factoryName, factory);
             }            
         }
+        
         return factory;
     }
 
-
-    private static Object newFactoryInstance(Class interfaceClass, Iterator classNamesIterator, ClassLoader classLoader)
+    private static Object newFactoryInstance(Class<?> interfaceClass, Iterator<String> classNamesIterator, ClassLoader classLoader)
     {
         try
         {
@@ -162,8 +169,8 @@ public final class FactoryFinder
 
             while (classNamesIterator.hasNext())
             {
-                String implClassName = (String) classNamesIterator.next();
-                Class implClass = classLoader.loadClass(implClassName);
+                String implClassName = classNamesIterator.next();
+                Class<?> implClass = classLoader.loadClass(implClassName);
 
                 // check, if class is of expected interface type
                 if (!interfaceClass.isAssignableFrom(implClass))
@@ -175,28 +182,33 @@ public final class FactoryFinder
                 {
                     // nothing to decorate
                     current = implClass.newInstance();
-                } else
+                }
+                else
                 {
                     // let's check if class supports the decorator pattern
                     try
                     {
-                        Constructor delegationConstructor = implClass.getConstructor(new Class[]{interfaceClass});
+                        Constructor<?> delegationConstructor = implClass.getConstructor(new Class[]{interfaceClass});
                         // impl class supports decorator pattern,
                         try
                         {
                             // create new decorator wrapping current
                             current = delegationConstructor.newInstance(new Object[]{current});
-                        } catch (InstantiationException e)
-                        {
-                            throw new FacesException(e);
-                        } catch (IllegalAccessException e)
-                        {
-                            throw new FacesException(e);
-                        } catch (InvocationTargetException e)
+                        }
+                        catch (InstantiationException e)
                         {
                             throw new FacesException(e);
                         }
-                    } catch (NoSuchMethodException e)
+                        catch (IllegalAccessException e)
+                        {
+                            throw new FacesException(e);
+                        }
+                        catch (InvocationTargetException e)
+                        {
+                            throw new FacesException(e);
+                        }
+                    }
+                    catch (NoSuchMethodException e)
                     {
                         // no decorator pattern support
                         current = implClass.newInstance();
@@ -205,29 +217,31 @@ public final class FactoryFinder
             }
 
             return current;
-        } catch (ClassNotFoundException e)
+        }
+        catch (ClassNotFoundException e)
         {
             throw new FacesException(e);
-        } catch (InstantiationException e)
+        }
+        catch (InstantiationException e)
         {
             throw new FacesException(e);
-        } catch (IllegalAccessException e)
+        }
+        catch (IllegalAccessException e)
         {
             throw new FacesException(e);
         }
     }
 
 
-    public static void setFactory(String factoryName,
-                                  String implName)
+    public static void setFactory(String factoryName, String implName)
     {
         checkFactoryName(factoryName);
 
         ClassLoader classLoader = getClassLoader();
-        Map<String, List> factoryClassNames = null;
+        Map<String, List<String>> factoryClassNames = null;
         synchronized(_registeredFactoryNames)
         {
-            Map factories = _factories.get(classLoader);
+            Map<String, Object> factories = _factories.get(classLoader);
 
             if (factories != null && factories.containsKey(factoryName)) {
                 // Javadoc says ... This method has no effect if getFactory() has already been
@@ -239,10 +253,11 @@ public final class FactoryFinder
 
             if (factoryClassNames == null)
             {
-                factoryClassNames = new HashMap<String, List>();
+                factoryClassNames = new HashMap<String, List<String>>();
                 _registeredFactoryNames.put(classLoader, factoryClassNames);
             }
         }
+        
         synchronized (factoryClassNames)
         {
             List<String> classNameList = factoryClassNames.get(factoryName);
@@ -252,13 +267,13 @@ public final class FactoryFinder
                 classNameList = new ArrayList<String>();
                 factoryClassNames.put(factoryName, classNameList);
             }
+            
             classNameList.add(implName);
         }
     }
 
 
-    public static void releaseFactories()
-            throws FacesException
+    public static void releaseFactories() throws FacesException
     {
         ClassLoader classLoader = getClassLoader();
 
@@ -269,8 +284,12 @@ public final class FactoryFinder
             
             // _registeredFactoryNames has as value type Map<String,List> and this must
             //be cleaned before release (for gc).
-            Map factoryClassNames = (Map) _registeredFactoryNames.get(classLoader);
-            if (factoryClassNames != null) factoryClassNames.clear();
+            Map<String, List<String>> factoryClassNames = _registeredFactoryNames.get(classLoader);
+            if (factoryClassNames != null)
+            {
+                factoryClassNames.clear();
+            }
+            
             _registeredFactoryNames.remove(classLoader);
         }
     }
@@ -282,8 +301,7 @@ public final class FactoryFinder
             throw new IllegalArgumentException("factoryName '" + factoryName + "'");
         }
     }
-
-
+    
     private static ClassLoader getClassLoader()
     {
         try

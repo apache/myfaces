@@ -21,7 +21,6 @@ package org.apache.myfaces.renderkit.html;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.faces.component.UIComponent;
@@ -44,29 +43,22 @@ import org.apache.myfaces.shared_impl.renderkit.html.HtmlTextRendererBase;
  * @author Thomas Spiegl
  * @version $Revision$ $Date$
  */
-@JSFRenderer(
-    renderKitId="HTML_BASIC",
-    family="javax.faces.Output",
-    type="javax.faces.Format")
-public class HtmlFormatRenderer
-        extends HtmlRenderer
+@JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Output", type = "javax.faces.Format")
+public class HtmlFormatRenderer extends HtmlRenderer
 {
     private static final Log log = LogFactory.getLog(HtmlFormatRenderer.class);
 
     private static final Object[] EMPTY_ARGS = new Object[0];
 
-    public void encodeBegin(FacesContext facesContext, UIComponent uiComponent)
-            throws IOException
+    public void encodeBegin(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
     }
 
-    public void encodeChildren(FacesContext facescontext, UIComponent uicomponent)
-            throws IOException
+    public void encodeChildren(FacesContext facescontext, UIComponent uicomponent) throws IOException
     {
     }
 
-    public void encodeEnd(FacesContext facesContext, UIComponent component)
-            throws IOException
+    public void encodeEnd(FacesContext facesContext, UIComponent component) throws IOException
     {
         RendererUtils.checkParamValidity(facesContext, component, UIOutput.class);
 
@@ -74,7 +66,7 @@ public class HtmlFormatRenderer
         boolean isEscape;
         if (component instanceof HtmlOutputFormat)
         {
-            isEscape = ((HtmlOutputFormat)component).isEscape();
+            isEscape = ((HtmlOutputFormat) component).isEscape();
         }
         else
         {
@@ -83,8 +75,7 @@ public class HtmlFormatRenderer
         HtmlTextRendererBase.renderOutputText(facesContext, component, text, isEscape);
     }
 
-    private String getOutputFormatText(FacesContext facesContext,
-                                       UIComponent htmlOutputFormat)
+    private String getOutputFormatText(FacesContext facesContext, UIComponent htmlOutputFormat)
     {
         String pattern = RendererUtils.getStringValue(facesContext, htmlOutputFormat);
         Object[] args;
@@ -94,15 +85,15 @@ public class HtmlFormatRenderer
         }
         else
         {
-            List argsList = new ArrayList();
-            for (Iterator it = htmlOutputFormat.getChildren().iterator(); it.hasNext(); )
+            List<Object> argsList = new ArrayList<Object>();
+            for (UIComponent child : htmlOutputFormat.getChildren())
             {
-                UIComponent child = (UIComponent)it.next();
                 if (child instanceof UIParameter)
                 {
                     argsList.add(((UIParameter)child).getValue());
                 }
             }
+            
             args = argsList.toArray(new Object[argsList.size()]);
         }
 

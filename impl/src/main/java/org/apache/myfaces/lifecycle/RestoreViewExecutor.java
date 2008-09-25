@@ -23,16 +23,11 @@ import javax.faces.application.Application;
 import javax.faces.application.ViewExpiredException;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
-import javax.portlet.PortletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.portlet.MyFacesGenericPortlet;
-import org.apache.myfaces.portlet.PortletUtil;
-import org.apache.myfaces.util.DebugUtils;
 
 /**
  * Implements the Restore View Phase (JSF Spec 2.2.1)
@@ -126,52 +121,5 @@ class RestoreViewExecutor implements PhaseExecutor
     public PhaseId getPhase()
     {
         return PhaseId.RESTORE_VIEW;
-    }
-
-    /**
-     * TODO place that stuff into the default view handler implementation.
-     */
-    private static String deriveViewId(FacesContext facesContext)
-    {
-        ExternalContext externalContext = facesContext.getExternalContext();
-
-        if (PortletUtil.isPortletRequest(facesContext))
-        {
-            PortletRequest request = (PortletRequest) externalContext.getRequest();
-            return request.getParameter(MyFacesGenericPortlet.VIEW_ID);
-        }
-
-        String viewId = externalContext.getRequestPathInfo(); // getPathInfo
-        if (viewId == null)
-        {
-            // No extra path info found, so it is probably extension mapping
-            viewId = externalContext.getRequestServletPath(); // getServletPath
-            DebugUtils.assertError(viewId != null, log,
-                    "RequestServletPath is null, cannot determine viewId of current page.");
-            if (viewId == null)
-                return null;
-
-            // TODO: JSF Spec 2.2.1 - what do they mean by "if the default
-            // ViewHandler implementation is used..." ?
-            // - probably that this should use DefaultViewHandlerSupport.calculateServletFacesMapping
-            // rather than duplicating the logic here.
-            String defaultSuffix = externalContext.getInitParameter(ViewHandler.DEFAULT_SUFFIX_PARAM_NAME);
-            String suffix = defaultSuffix != null ? defaultSuffix : ViewHandler.DEFAULT_SUFFIX;
-            DebugUtils.assertError(suffix.charAt(0) == '.', log, "Default suffix must start with a dot!");
-
-            int slashPos = viewId.lastIndexOf('/');
-            int extensionPos = viewId.lastIndexOf('.');
-            if (extensionPos == -1 || extensionPos <= slashPos)
-            {
-                log.error("Assumed extension mapping, but there is no extension in " + viewId);
-                viewId = null;
-            }
-            else
-            {
-                viewId = viewId.substring(0, extensionPos) + suffix;
-            }
-        }
-
-        return viewId;
     }
 }

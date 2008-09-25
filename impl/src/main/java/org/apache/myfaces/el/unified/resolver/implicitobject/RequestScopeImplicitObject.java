@@ -24,33 +24,37 @@ import java.util.Map;
 
 /**
  * Encapsulates information needed by the ImplicitObjectResolver
- *
+ * 
  * @author Stan Silvert
  */
-public class RequestScopeImplicitObject extends ImplicitObject {
-    
+public class RequestScopeImplicitObject extends ImplicitObject
+{
+
     private static final String NAME = "requestScope".intern();
-    
+
     /** Creates a new instance of RequestScopeImplicitObject */
-    public RequestScopeImplicitObject() {
+    public RequestScopeImplicitObject()
+    {
     }
 
-    public Object getValue(ELContext context) {
+    public Object getValue(ELContext context)
+    {
         return externalContext(context).getRequestMap();
     }
 
-    public String getName() {
+    public String getName()
+    {
         return NAME;
     }
-    
-    public Class getType() {
+
+    public Class<?> getType()
+    {
         return null;
     }
 
-    public FeatureDescriptor getDescriptor() {
-        return makeDescriptor(NAME, 
-                             "Request scope attributes", 
-                             Map.class);
+    public FeatureDescriptor getDescriptor()
+    {
+        return makeDescriptor(NAME, "Request scope attributes", Map.class);
     }
-    
+
 }

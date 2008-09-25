@@ -741,9 +741,8 @@ public class FacesConfigurator
             }
         }
 
-        for (Iterator<String> it = dispenser.getValidatorIds(); it.hasNext();)
+        for (String validatorId : dispenser.getValidatorIds())
         {
-            String validatorId = it.next();
             application.addValidator(validatorId, dispenser.getValidatorClass(validatorId));
         }
 
@@ -800,8 +799,8 @@ public class FacesConfigurator
                 // let's check if class supports the decorator pattern
                 try
                 {
-                    Constructor<? extends T> delegationConstructor = implClass
-                                                                              .getConstructor(new Class[] { interfaceClass });
+                    Constructor<? extends T> delegationConstructor = 
+                        implClass.getConstructor(new Class[] {interfaceClass});
                     // impl class supports decorator pattern,
                     try
                     {
@@ -840,10 +839,8 @@ public class FacesConfigurator
         RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(_externalContext);
 
         FacesConfigDispenser<FacesConfig> dispenser = getDispenser();
-        for (Iterator<ManagedBean> iterator = dispenser.getManagedBeans(); iterator.hasNext();)
+        for (ManagedBean bean : dispenser.getManagedBeans())
         {
-            ManagedBean bean = iterator.next();
-
             if (log.isWarnEnabled() && runtimeConfig.getManagedBean(bean.getManagedBeanName()) != null)
             {
                 log.warn("More than one managed bean w/ the name of '" + bean.getManagedBeanName()
@@ -856,21 +853,19 @@ public class FacesConfigurator
 
         removePurgedBeansFromSessionAndApplication(runtimeConfig);
 
-        for (Iterator<NavigationRule> iterator = dispenser.getNavigationRules(); iterator.hasNext();)
+        for (NavigationRule rule : dispenser.getNavigationRules())
         {
-            NavigationRule rule = iterator.next();
             runtimeConfig.addNavigationRule(rule);
-
         }
 
-        for (Iterator<ResourceBundle> iter = dispenser.getResourceBundles(); iter.hasNext();)
+        for (ResourceBundle bundle : dispenser.getResourceBundles())
         {
-            runtimeConfig.addResourceBundle(iter.next());
+            runtimeConfig.addResourceBundle(bundle);
         }
 
-        for (Iterator<String> iter = dispenser.getElResolvers(); iter.hasNext();)
+        for (String className : dispenser.getElResolvers())
         {
-            runtimeConfig.addFacesConfigElResolver((ELResolver) ClassUtils.newInstance(iter.next(), ELResolver.class));
+            runtimeConfig.addFacesConfigElResolver((ELResolver)ClassUtils.newInstance(className, ELResolver.class));
         }
 
     }
@@ -905,9 +900,8 @@ public class FacesConfigurator
         RenderKitFactory renderKitFactory = (RenderKitFactory)FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
 
         FacesConfigDispenser<FacesConfig> dispenser = getDispenser();
-        for (Iterator<String> iterator = dispenser.getRenderKitIds(); iterator.hasNext();)
+        for (String renderKitId : dispenser.getRenderKitIds())
         {
-            String renderKitId = iterator.next();
             String renderKitClass = dispenser.getRenderKitClass(renderKitId);
 
             if (renderKitClass == null)
@@ -917,9 +911,8 @@ public class FacesConfigurator
 
             RenderKit renderKit = (RenderKit) ClassUtils.newInstance(renderKitClass);
 
-            for (Iterator<Renderer> renderers = dispenser.getRenderers(renderKitId); renderers.hasNext();)
+            for (Renderer element : dispenser.getRenderers(renderKitId))
             {
-                Renderer element = renderers.next();
                 javax.faces.render.Renderer renderer;
                 try
                 {
@@ -946,12 +939,11 @@ public class FacesConfigurator
         Lifecycle lifecycle = lifecycleFactory.getLifecycle(getLifecycleId());
 
         // add phase listeners
-        for (Iterator<String> iterator = getDispenser().getLifecyclePhaseListeners(); iterator.hasNext();)
+        for (String listenerClassName : getDispenser().getLifecyclePhaseListeners())
         {
-            String listenerClassName = iterator.next();
             try
             {
-                lifecycle.addPhaseListener((PhaseListener) ClassUtils.newInstance(listenerClassName));
+                lifecycle.addPhaseListener((PhaseListener) ClassUtils.newInstance(listenerClassName, PhaseListener.class));
             }
             catch (ClassCastException e)
             {

@@ -123,11 +123,21 @@ public class ApplicationImpl extends Application
 
     // components, converters, and validators can be added at runtime--must
     // synchronize, uses ConcurrentHashMap to allow concurrent read of map
-    private final Map<String, Class> _converterIdToClassMap = new ConcurrentHashMap<String, Class>();
-    private final Map<Class, String> _converterClassNameToClassMap = new ConcurrentHashMap<Class, String>();
-    private final Map<String, org.apache.myfaces.config.impl.digester.elements.Converter> _converterClassNameToConfigurationMap = new ConcurrentHashMap<String, org.apache.myfaces.config.impl.digester.elements.Converter>();
-    private final Map<String, Class> _componentClassMap = new ConcurrentHashMap<String, Class>();
-    private final Map<String, Class> _validatorClassMap = new ConcurrentHashMap<String, Class>();
+    private final Map<String, Class<? extends Converter>> _converterIdToClassMap = 
+        new ConcurrentHashMap<String, Class<? extends Converter>>();
+    
+    private final Map<Class, String> _converterClassNameToClassMap = 
+        new ConcurrentHashMap<Class, String>();
+    
+    private final Map<String, org.apache.myfaces.config.impl.digester.elements.Converter> _converterClassNameToConfigurationMap = 
+        new ConcurrentHashMap<String, org.apache.myfaces.config.impl.digester.elements.Converter>();
+    
+    private final Map<String, Class<? extends UIComponent>> _componentClassMap = 
+        new ConcurrentHashMap<String, Class<? extends UIComponent>>();
+    
+    private final Map<String, Class<? extends Validator>> _validatorClassMap = 
+        new ConcurrentHashMap<String, Class<? extends Validator>>();
+    
     private final Map<Class<? extends SystemEvent>, SystemListenerEntry> _systemEventListenerClassMap = new ConcurrentHashMap<Class<? extends SystemEvent>, SystemListenerEntry>();
 
     private final RuntimeConfig _runtimeConfig;
@@ -731,6 +741,7 @@ public class ApplicationImpl extends Application
         return _viewHandler;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public final void addComponent(final String componentType, final String componentClassName)
     {
@@ -741,7 +752,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            _componentClassMap.put(componentType, ClassUtils.simpleClassForName(componentClassName));
+            _componentClassMap.put(componentType, (Class<? extends UIComponent>)ClassUtils.simpleClassForName(componentClassName));
             if (log.isTraceEnabled())
                 log.trace("add Component class = " + componentClassName + " for type = " + componentType);
         }
@@ -751,6 +762,7 @@ public class ApplicationImpl extends Application
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public final void addConverter(final String converterId, final String converterClass)
     {
@@ -761,7 +773,8 @@ public class ApplicationImpl extends Application
 
         try
         {
-            _converterIdToClassMap.put(converterId, ClassUtils.simpleClassForName(converterClass));
+            _converterIdToClassMap.put(converterId, 
+                                       (Class<? extends Converter>)ClassUtils.simpleClassForName(converterClass));
             if (log.isTraceEnabled())
                 log.trace("add Converter id = " + converterId + " converterClass = " + converterClass);
         }
@@ -790,8 +803,7 @@ public class ApplicationImpl extends Application
         }
     }
 
-    public final void addConverterConfiguration(
-                                                final String converterClassName,
+    public final void addConverterConfiguration(final String converterClassName,
                                                 final org.apache.myfaces.config.impl.digester.elements.Converter configuration)
     {
         checkNull(converterClassName, "converterClassName");
@@ -801,6 +813,7 @@ public class ApplicationImpl extends Application
         _converterClassNameToConfigurationMap.put(converterClassName, configuration);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public final void addValidator(final String validatorId, final String validatorClass)
     {
@@ -811,7 +824,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            _validatorClassMap.put(validatorId, ClassUtils.simpleClassForName(validatorClass));
+            _validatorClassMap.put(validatorId, (Class<? extends Validator>)ClassUtils.simpleClassForName(validatorClass));
             if (log.isTraceEnabled())
                 log.trace("add Validator id = " + validatorId + " class = " + validatorClass);
         }
@@ -827,7 +840,7 @@ public class ApplicationImpl extends Application
         checkNull(componentType, "componentType");
         checkEmpty(componentType, "componentType");
 
-        final Class componentClass = _componentClassMap.get(componentType);
+        final Class<? extends UIComponent> componentClass = _componentClassMap.get(componentType);
         if (componentClass == null)
         {
             log.error("Undefined component type " + componentType);
@@ -902,7 +915,8 @@ public class ApplicationImpl extends Application
         checkNull(converterId, "converterId");
         checkEmpty(converterId, "converterId");
 
-        final Class converterClass = _converterIdToClassMap.get(converterId);
+        final Class<? extends Converter> converterClass = 
+            (Class<? extends Converter>)_converterIdToClassMap.get(converterId);
         if (converterClass == null)
         {
             throw new FacesException("Could not find any registered converter-class by converterId : " + converterId);
@@ -910,7 +924,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            final Converter converter = (Converter) converterClass.newInstance();
+            final Converter converter = converterClass.newInstance();
 
             setConverterProperties(converterClass, converter);
 
@@ -947,7 +961,7 @@ public class ApplicationImpl extends Application
         // implemented by the target class (directly or indirectly).
         if (converterClassName == null)
         {
-            final Class interfaces[] = targetClass.getInterfaces();
+            final Class<?> interfaces[] = targetClass.getInterfaces();
             if (interfaces != null)
             {
                 for (int i = 0, len = interfaces.length; i < len; i++)
@@ -967,21 +981,24 @@ public class ApplicationImpl extends Application
         {
             try
             {
-                final Class converterClass = ClassUtils.simpleClassForName(converterClassName);
+                final Class<? extends Converter> converterClass = 
+                    ClassUtils.simpleClassForName(converterClassName);
 
                 Converter converter = null;
                 try
                 {
                     // look for a constructor that takes a single Class object
                     // See JSF 1.2 javadoc for Converter
-                    final Constructor constructor = converterClass.getConstructor(new Class[] { Class.class });
-                    converter = (Converter) constructor.newInstance(new Object[] { targetClass });
+                    final Constructor<? extends Converter> constructor = 
+                        converterClass.getConstructor(new Class[]{Class.class});
+                    
+                    converter = constructor.newInstance(new Object[]{targetClass});
                 }
                 catch (Exception e)
                 {
                     // if there is no matching constructor use no-arg
                     // constructor
-                    converter = (Converter) converterClass.newInstance();
+                    converter = converterClass.newInstance();
                 }
 
                 setConverterProperties(converterClass, converter);
@@ -1032,26 +1049,21 @@ public class ApplicationImpl extends Application
         // Locate a Converter registered for the superclass (if any) of the
         // target class,
         // recursively working up the inheritance hierarchy.
-        Class superClazz = targetClass.getSuperclass();
+        Class<?> superClazz = targetClass.getSuperclass();
 
         return superClazz != null ? internalCreateConverter(superClazz) : null;
 
     }
 
-    private void setConverterProperties(final Class converterClass, final Converter converter)
+    private void setConverterProperties(final Class<?> converterClass, final Converter converter)
     {
-        final org.apache.myfaces.config.impl.digester.elements.Converter converterConfig = _converterClassNameToConfigurationMap
-                .get(converterClass.getName());
+        final org.apache.myfaces.config.impl.digester.elements.Converter converterConfig = 
+            _converterClassNameToConfigurationMap.get(converterClass.getName());
 
         if (converterConfig != null)
         {
-
-            final Iterator it = converterConfig.getProperties();
-
-            while (it.hasNext())
+            for (Property property : converterConfig.getProperties())
             {
-                final Property property = (Property) it.next();
-
                 try
                 {
                     BeanUtils.setProperty(converter, property.getPropertyName(), property.getDefaultValue());
@@ -1071,8 +1083,8 @@ public class ApplicationImpl extends Application
      */
     @Deprecated
     @Override
-    public final MethodBinding createMethodBinding(final String reference, Class[] params)
-                                                                                          throws ReferenceSyntaxException
+    public final MethodBinding createMethodBinding(final String reference, Class[] params) 
+      throws ReferenceSyntaxException
     {
         checkNull(reference, "reference");
         checkEmpty(reference, "reference");
@@ -1108,7 +1120,7 @@ public class ApplicationImpl extends Application
         checkNull(validatorId, "validatorId");
         checkEmpty(validatorId, "validatorId");
 
-        Class validatorClass = _validatorClassMap.get(validatorId);
+        Class<?> validatorClass = _validatorClassMap.get(validatorId);
         if (validatorClass == null)
         {
             String message = "Unknown validator id '" + validatorId + "'.";

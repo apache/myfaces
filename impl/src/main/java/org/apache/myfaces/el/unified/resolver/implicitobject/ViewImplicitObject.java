@@ -24,33 +24,37 @@ import javax.faces.component.UIViewRoot;
 
 /**
  * Encapsulates information needed by the ImplicitObjectResolver
- *
+ * 
  * @author Stan Silvert
  */
-public class ViewImplicitObject extends ImplicitObject {
-    
+public class ViewImplicitObject extends ImplicitObject
+{
+
     private static final String NAME = "view".intern();
-    
+
     /** Creates a new instance of ViewImplicitObject */
-    public ViewImplicitObject() {
+    public ViewImplicitObject()
+    {
     }
 
-    public Object getValue(ELContext context) {
+    public Object getValue(ELContext context)
+    {
         return facesContext(context).getViewRoot();
     }
 
-    public String getName() {
+    public String getName()
+    {
         return NAME;
     }
-    
-    public Class getType() {
+
+    public Class<?> getType()
+    {
         return null;
     }
 
-    public FeatureDescriptor getDescriptor() {
-        return makeDescriptor(NAME, 
-                             "The root object of a JSF component tree", 
-                             UIViewRoot.class);
+    public FeatureDescriptor getDescriptor()
+    {
+        return makeDescriptor(NAME, "The root object of a JSF component tree", UIViewRoot.class);
     }
-    
+
 }

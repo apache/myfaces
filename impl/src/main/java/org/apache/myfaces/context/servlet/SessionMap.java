@@ -80,7 +80,7 @@ public final class SessionMap extends AbstractAttributeMap<Object>
     }
 
     @Override
-    public void putAll(final Map t)
+    public void putAll(final Map<? extends String, ? extends Object> t)
     {
         throw new UnsupportedOperationException();
     }
@@ -88,16 +88,20 @@ public final class SessionMap extends AbstractAttributeMap<Object>
     /**
      * This will clear the session without invalidation. If no session has been created, it will simply return.
      */
+    @SuppressWarnings("unchecked")
     @Override
     public void clear()
     {
         final HttpSession session = getSession();
         if (session == null)
-            return;
-        for (final Enumeration attributeNames = session.getAttributeNames(); attributeNames.hasMoreElements();)
         {
-            final String attributeName = (String) attributeNames.nextElement();
-            session.removeAttribute(attributeName);
+            return;
+        }
+        
+        Enumeration<String> attributeNames = (Enumeration<String>)session.getAttributeNames();
+        while (attributeNames.hasMoreElements())
+        {
+            session.removeAttribute(attributeNames.nextElement());
         }
     }
 }

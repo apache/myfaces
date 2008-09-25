@@ -66,7 +66,7 @@ public class RequestMap extends AbstractAttributeMap<Object>
     }
 
     @Override
-    public void putAll(Map t)
+    public void putAll(Map<? extends String, ? extends Object> t)
     {
         throw new UnsupportedOperationException();
     }

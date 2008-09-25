@@ -21,6 +21,7 @@ package org.apache.myfaces.config;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -40,8 +41,8 @@ import javax.naming.NamingException;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
 import org.apache.myfaces.config.annotation.LifecycleProvider;
+import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
 import org.apache.myfaces.config.element.ListEntries;
 import org.apache.myfaces.config.element.ListEntry;
 import org.apache.myfaces.config.element.ManagedBean;
@@ -67,6 +68,7 @@ public class ManagedBeanBuilder
     public final static String SESSION = "session";
     public final static String NONE = "none";
 
+    @SuppressWarnings("unchecked")
     public Object buildManagedBean(FacesContext facesContext, ManagedBean beanConfiguration) throws FacesException
     {
 
@@ -81,6 +83,7 @@ public class ManagedBeanBuilder
         {
             LifecycleProvider lifecycleProvider =
                     LifecycleProviderFactory.getLifecycleProviderFactory().getLifecycleProvider(facesContext.getExternalContext());
+            
             final Object bean = lifecycleProvider.newInstance(beanConfiguration.getManagedBeanClassName());
 
             switch (beanConfiguration.getInitMode())
@@ -89,7 +92,7 @@ public class ManagedBeanBuilder
                     try
                     {
                         initializeProperties(facesContext, beanConfiguration.getManagedProperties(),
-                                beanConfiguration.getManagedBeanScope(), bean);
+                                             beanConfiguration.getManagedBeanScope(), bean);
                     }
                     catch (IllegalArgumentException e)
                     {
@@ -109,7 +112,7 @@ public class ManagedBeanBuilder
                                 + beanConfiguration.getManagedBeanName()
                                 + " is not a Map.");
                     }
-                    initializeMap(facesContext, beanConfiguration.getMapEntries(), (Map) bean);
+                    initializeMap(facesContext, beanConfiguration.getMapEntries(), (Map<Object, Object>) bean);
                     break;
 
                 case ManagedBean.INIT_MODE_LIST:
@@ -120,7 +123,7 @@ public class ManagedBeanBuilder
                                 + beanConfiguration.getManagedBeanName()
                                 + " is not a List.");
                     }
-                    initializeList(facesContext, beanConfiguration.getListEntries(), (List) bean);
+                    initializeList(facesContext, beanConfiguration.getListEntries(), (List<Object>) bean);
                     break;
 
                 case ManagedBean.INIT_MODE_NO_INIT:
@@ -158,14 +161,16 @@ public class ManagedBeanBuilder
     }
 
 
-    private void initializeProperties(FacesContext facesContext, Iterator managedProperties, String targetScope, Object bean)
+    @SuppressWarnings("unchecked")
+    private void initializeProperties(FacesContext facesContext, 
+                                      Collection<? extends ManagedProperty> managedProperties, 
+                                      String targetScope, Object bean)
     {
         ELResolver elResolver = facesContext.getApplication().getELResolver();
         ELContext elContext = facesContext.getELContext();
 
-        while (managedProperties.hasNext())
+        for (ManagedProperty property : managedProperties)
         {
-            ManagedProperty property = (ManagedProperty) managedProperties.next();
             Object value = null;
 
             switch (property.getType())
@@ -177,18 +182,21 @@ public class ManagedBeanBuilder
                     // If the getter returns null or doesn't exist, create a java.util.ArrayList,
                     // otherwise use the returned Object ...
                     if (PropertyUtils.isReadable(bean, property.getPropertyName()))
+                    {
                         value = elResolver.getValue(elContext, bean, property.getPropertyName());
-                    value = value == null ? new ArrayList() : value;
+                    }
+                    
+                    value = value == null ? new ArrayList<Object>() : value;
 
                     if (value instanceof List)
                     {
-                        initializeList(facesContext, property.getListEntries(), (List) value);
+                        initializeList(facesContext, property.getListEntries(), (List<Object>)value);
 
                     }
                     else if (value != null && value.getClass().isArray())
                     {
                         int length = Array.getLength(value);
-                        ArrayList temp = new ArrayList(length);
+                        ArrayList<Object> temp = new ArrayList<Object>(length);
                         for (int i = 0; i < length; i++)
                         {
                             temp.add(Array.get(value, i));
@@ -204,8 +212,8 @@ public class ManagedBeanBuilder
                     }
                     else
                     {
-                        value = new ArrayList();
-                        initializeList(facesContext, property.getListEntries(), (List) value);
+                        value = new ArrayList<Object>();
+                        initializeList(facesContext, property.getListEntries(), (List<Object>) value);
                     }
 
                     break;
@@ -217,14 +225,14 @@ public class ManagedBeanBuilder
                     // otherwise use the returned java.util.Map .
                     if (PropertyUtils.isReadable(bean, property.getPropertyName()))
                         value = elResolver.getValue(elContext, bean, property.getPropertyName());
-                    value = value == null ? new HashMap() : value;
+                    value = value == null ? new HashMap<Object, Object>() : value;
 
                     if (!(value instanceof Map))
                     {
-                        value = new HashMap();
+                        value = new HashMap<Object, Object>();
                     }
 
-                    initializeMap(facesContext, property.getMapEntries(), (Map) value);
+                    initializeMap(facesContext, property.getMapEntries(), (Map<Object, Object>) value);
                     break;
                 case ManagedProperty.TYPE_NULL:
                     value = null;
@@ -239,31 +247,32 @@ public class ManagedBeanBuilder
                     value = property.getRuntimeValue(facesContext);
                     break;
             }
-            Class propertyClass = null;
+            
+            Class<?> propertyClass = null;
 
             if (property.getPropertyClass() == null)
             {
-                propertyClass = elResolver
-                        .getType(elContext, bean, property.getPropertyName());
+                propertyClass = elResolver.getType(elContext, bean, property.getPropertyName());
             }
             else
             {
-                propertyClass = ClassUtils
-                        .simpleJavaTypeToClass(property.getPropertyClass());
+                propertyClass = ClassUtils.simpleJavaTypeToClass(property.getPropertyClass());
             }
+            
             if (null == propertyClass)
             {
                 throw new IllegalArgumentException("unable to find the type of property " + property.getPropertyName());
             }
+            
             Object coercedValue = coerceToType(facesContext, value, propertyClass);
-            elResolver.setValue(
-                    elContext, bean, property.getPropertyName(), coercedValue);
+            elResolver.setValue(elContext, bean, property.getPropertyName(), coercedValue);
         }
     }
 
     // We no longer use the convertToType from shared impl because we switched
     // to unified EL in JSF 1.2
-    public static Object coerceToType(FacesContext facesContext, Object value, Class desiredClass)
+    @SuppressWarnings("unchecked")
+    public static <T> T coerceToType(FacesContext facesContext, Object value, Class<? extends T> desiredClass)
     {
         if (value == null) return null;
 
@@ -272,7 +281,7 @@ public class ManagedBeanBuilder
             ExpressionFactory expFactory = facesContext.getApplication().getExpressionFactory();
             // Use coersion implemented by JSP EL for consistency with EL
             // expressions. Additionally, it caches some of the coersions.
-            return expFactory.coerceToType(value, desiredClass);
+            return (T)expFactory.coerceToType(value, desiredClass);
         }
         catch (ELException e)
         {
@@ -485,20 +494,24 @@ public class ManagedBeanBuilder
     }
 
 
-    private void initializeMap(FacesContext facesContext, MapEntries mapEntries, Map map)
+    private void initializeMap(FacesContext facesContext, MapEntries mapEntries, 
+                               Map<? super Object, ? super Object> map)
     {
         Application application = facesContext.getApplication();
-        Class keyClass = (mapEntries.getKeyClass() == null)
+        
+        Class<?> keyClass = (mapEntries.getKeyClass() == null)
                 ? String.class : ClassUtils.simpleJavaTypeToClass(mapEntries.getKeyClass());
-        Class valueClass = (mapEntries.getValueClass() == null)
+        
+        Class<?> valueClass = (mapEntries.getValueClass() == null)
                 ? String.class : ClassUtils.simpleJavaTypeToClass(mapEntries.getValueClass());
+        
         ValueExpression valueExpression;
         ExpressionFactory expFactory = application.getExpressionFactory();
         ELContext elContext = facesContext.getELContext();
 
-        for (Iterator iterator = mapEntries.getMapEntries(); iterator.hasNext();)
+        for (Iterator<? extends MapEntry> iterator = mapEntries.getMapEntries(); iterator.hasNext();)
         {
-            MapEntry entry = (MapEntry) iterator.next();
+            MapEntry entry = iterator.next();
             Object key = entry.getKey();
 
             if (ContainerUtils.isValueReference((String) key))
@@ -519,22 +532,26 @@ public class ManagedBeanBuilder
                     valueExpression = expFactory.createValueExpression(elContext, (String) value, Object.class);
                     value = valueExpression.getValue(elContext);
                 }
+                
                 map.put(coerceToType(facesContext, key, keyClass), coerceToType(facesContext, value, valueClass));
             }
         }
     }
 
 
-    private void initializeList(FacesContext facesContext, ListEntries listEntries, List list)
+    private void initializeList(FacesContext facesContext, ListEntries listEntries, List<? super Object> list)
     {
         Application application = facesContext.getApplication();
-        Class valueClass = listEntries.getValueClass() == null ? String.class : ClassUtils.simpleJavaTypeToClass(listEntries.getValueClass());
+        
+        Class<?> valueClass = (listEntries.getValueClass() == null)
+                ? String.class : ClassUtils.simpleJavaTypeToClass(listEntries.getValueClass());
+        
         ExpressionFactory expFactory = application.getExpressionFactory();
         ELContext elContext = facesContext.getELContext();
 
-        for (Iterator iterator = listEntries.getListEntries(); iterator.hasNext();)
+        for (Iterator<? extends ListEntry> iterator = listEntries.getListEntries(); iterator.hasNext();)
         {
-            ListEntry entry = (ListEntry) iterator.next();
+            ListEntry entry = iterator.next();
             if (entry.isNullValue())
             {
                 list.add(null);
@@ -547,6 +564,7 @@ public class ManagedBeanBuilder
                     ValueExpression valueExpression = expFactory.createValueExpression(elContext, (String) value, Object.class);
                     value = valueExpression.getValue(elContext);
                 }
+                
                 list.add(coerceToType(facesContext, value, valueClass));
             }
         }
@@ -558,6 +576,7 @@ public class ManagedBeanBuilder
         {
             _runtimeConfig = RuntimeConfig.getCurrentInstance(facesContext.getExternalContext());
         }
+        
         return _runtimeConfig;
     }
 }

@@ -18,16 +18,6 @@
  */
 package org.apache.myfaces.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import javax.faces.FacesException;
-import javax.faces.component.*;
-import javax.faces.context.FacesContext;
-import javax.faces.el.MethodBinding;
-import javax.faces.el.ValueBinding;
-import javax.faces.event.FacesListener;
-import javax.faces.validator.Validator;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -36,13 +26,26 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 
+import javax.faces.FacesException;
+import javax.faces.component.UICommand;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
+import javax.faces.component.UIViewRoot;
+import javax.faces.component.ValueHolder;
+import javax.faces.context.FacesContext;
+import javax.faces.el.MethodBinding;
+import javax.faces.el.ValueBinding;
+import javax.faces.event.FacesListener;
+import javax.faces.validator.Validator;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Utilities for logging.
- *
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -50,7 +53,7 @@ public class DebugUtils
 {
     private static final Log log = LogFactory.getLog(DebugUtils.class);
 
-    //Attributes that should not be printed
+    // Attributes that should not be printed
     private static final HashSet<String> IGNORE_ATTRIBUTES;
     static
     {
@@ -74,14 +77,12 @@ public class DebugUtils
     private static final String JSF_COMPONENT_PACKAGE = "javax.faces.component.";
     private static final String MYFACES_COMPONENT_PACKAGE = "org.apache.myfaces.component.";
 
-
     private DebugUtils()
     {
         // hide from public access
     }
 
-    public static void assertError(boolean condition, Log log_, String msg)
-            throws FacesException
+    public static void assertError(boolean condition, Log log_, String msg) throws FacesException
     {
         if (!condition)
         {
@@ -90,8 +91,7 @@ public class DebugUtils
         }
     }
 
-    public static void assertFatal(boolean condition, Log log_, String msg)
-        throws FacesException
+    public static void assertFatal(boolean condition, Log log_, String msg) throws FacesException
     {
         if (!condition)
         {
@@ -99,8 +99,6 @@ public class DebugUtils
             throw new FacesException(msg);
         }
     }
-
-
 
     public static void traceView(String additionalMsg)
     {
@@ -124,9 +122,9 @@ public class DebugUtils
     }
 
     /**
-     * Be careful, when using this version of traceView:
-     * Some component properties (e.g. getRenderer) assume, that there is a
-     * valid viewRoot set in the FacesContext!
+     * Be careful, when using this version of traceView: Some component properties (e.g. getRenderer) assume, that there
+     * is a valid viewRoot set in the FacesContext!
+     * 
      * @param additionalMsg
      * @param viewRoot
      */
@@ -155,10 +153,7 @@ public class DebugUtils
         printComponent(comp, stream, 0, false, null);
     }
 
-    private static void printComponent(UIComponent comp,
-                                       PrintStream stream,
-                                       int indent,
-                                       boolean withChildrenAndFacets,
+    private static void printComponent(UIComponent comp, PrintStream stream, int indent, boolean withChildrenAndFacets,
                                        String facetName)
     {
         printIndent(stream, indent);
@@ -182,18 +177,17 @@ public class DebugUtils
             printAttribute(stream, "facetName", facetName);
         }
 
-        for (Iterator it = comp.getAttributes().entrySet().iterator(); it.hasNext(); )
+        for (Map.Entry<String, Object> entry : comp.getAttributes().entrySet())
         {
-            Map.Entry entry = (Map.Entry)it.next();
             if (!"id".equals(entry.getKey()))
             {
-                printAttribute(stream, (String)entry.getKey(), entry.getValue());
+                printAttribute(stream, (String) entry.getKey(), entry.getValue());
             }
         }
 
-        //HACK: comp.getAttributes() only returns attributes, that are NOT backed
-        //by a corresponding component property. So, we must explicitly get the
-        //available properties by Introspection:
+        // HACK: comp.getAttributes() only returns attributes, that are NOT backed
+        // by a corresponding component property. So, we must explicitly get the
+        // available properties by Introspection:
         BeanInfo beanInfo;
         try
         {
@@ -221,7 +215,7 @@ public class DebugUtils
                     {
                         if (name.equals("value") && comp instanceof ValueHolder)
                         {
-                            //-> localValue
+                            // -> localValue
                         }
                         else if (!IGNORE_ATTRIBUTES.contains(name))
                         {
@@ -246,11 +240,12 @@ public class DebugUtils
 
         if (comp instanceof UICommand)
         {
-            FacesListener[] listeners = ((UICommand)comp).getActionListeners();
+            FacesListener[] listeners = ((UICommand) comp).getActionListeners();
             if (listeners != null && listeners.length > 0)
             {
                 nestedObjects = true;
-                stream.println('>'); mustClose = false;
+                stream.println('>');
+                mustClose = false;
                 for (int i = 0; i < listeners.length; i++)
                 {
                     FacesListener listener = listeners[i];
@@ -264,11 +259,12 @@ public class DebugUtils
 
         if (comp instanceof UIInput)
         {
-            FacesListener[] listeners = ((UIInput)comp).getValueChangeListeners();
+            FacesListener[] listeners = ((UIInput) comp).getValueChangeListeners();
             if (listeners != null && listeners.length > 0)
             {
                 nestedObjects = true;
-                stream.println('>'); mustClose = false;
+                stream.println('>');
+                mustClose = false;
                 for (int i = 0; i < listeners.length; i++)
                 {
                     FacesListener listener = listeners[i];
@@ -279,11 +275,12 @@ public class DebugUtils
                 }
             }
 
-            Validator[] validators = ((UIInput)comp).getValidators();
+            Validator[] validators = ((UIInput) comp).getValidators();
             if (validators != null && validators.length > 0)
             {
                 nestedObjects = true;
-                stream.println('>'); mustClose = false;
+                stream.println('>');
+                mustClose = false;
                 for (int i = 0; i < validators.length; i++)
                 {
                     Validator validator = validators[i];
@@ -310,19 +307,15 @@ public class DebugUtils
 
                 if (childCount > 0)
                 {
-                    for (Iterator it = comp.getChildren().iterator(); it.hasNext(); )
+                    for (UIComponent child : comp.getChildren())
                     {
-                        UIComponent child = (UIComponent)it.next();
                         printComponent(child, stream, indent + 1, true, null);
                     }
                 }
 
-                for (Iterator it = facetsMap.entrySet().iterator(); it.hasNext(); )
+                for (Map.Entry<String, UIComponent> entry : facetsMap.entrySet())
                 {
-                    Map.Entry entry = (Map.Entry)it.next();
-                    printComponent((UIComponent)entry.getValue(),
-                                   stream, indent + 1, true,
-                                   (String)entry.getKey());
+                    printComponent((UIComponent) entry.getValue(), stream, indent + 1, true, (String) entry.getKey());
                 }
             }
         }
@@ -347,11 +340,10 @@ public class DebugUtils
         }
     }
 
-    private static void printAttribute(PrintStream stream,
-                                       String name,
-                                       Object value)
+    private static void printAttribute(PrintStream stream, String name, Object value)
     {
-        if (IGNORE_ATTRIBUTES.contains(name)) return;
+        if (IGNORE_ATTRIBUTES.contains(name))
+            return;
         if (name.startsWith("javax.faces.webapp.UIComponentTag."))
         {
             name = name.substring("javax.faces.webapp.UIComponentTag.".length());
@@ -364,12 +356,12 @@ public class DebugUtils
             if (value instanceof UIComponent)
             {
                 stream.print("[id:");
-                stream.print(((UIComponent)value).getId());
+                stream.print(((UIComponent) value).getId());
                 stream.print(']');
             }
             else if (value instanceof MethodBinding)
             {
-                stream.print(((MethodBinding)value).getExpressionString());
+                stream.print(((MethodBinding) value).getExpressionString());
             }
             else
             {
@@ -382,7 +374,6 @@ public class DebugUtils
         }
         stream.print('"');
     }
-
 
     private static void printIndent(PrintStream stream, int depth)
     {

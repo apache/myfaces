@@ -24,33 +24,37 @@ import java.util.Map;
 
 /**
  * Encapsulates information needed by the ImplicitObjectResolver
- *
+ * 
  * @author Stan Silvert
  */
-public class SessionScopeImplicitObject extends ImplicitObject {
-    
+public class SessionScopeImplicitObject extends ImplicitObject
+{
+
     private static final String NAME = "sessionScope".intern();
-    
+
     /** Creates a new instance of SessionScopeImplicitObject */
-    public SessionScopeImplicitObject() {
+    public SessionScopeImplicitObject()
+    {
     }
 
-    public Object getValue(ELContext context) {
+    public Object getValue(ELContext context)
+    {
         return externalContext(context).getSessionMap();
     }
 
-    public String getName() {
+    public String getName()
+    {
         return NAME;
     }
-    
-    public Class getType() {
+
+    public Class<?> getType()
+    {
         return null;
     }
 
-    public FeatureDescriptor getDescriptor() {
-        return makeDescriptor(NAME, 
-                             "Session scope attributes", 
-                             Map.class);
+    public FeatureDescriptor getDescriptor()
+    {
+        return makeDescriptor(NAME, "Session scope attributes", Map.class);
     }
-    
+
 }

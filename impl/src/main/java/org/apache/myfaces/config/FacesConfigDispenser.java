@@ -18,15 +18,16 @@
  */
 package org.apache.myfaces.config;
 
+import java.util.Collection;
+import java.util.Iterator;
+
+import javax.el.ELResolver;
+
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.Renderer;
 import org.apache.myfaces.config.impl.digester.elements.Converter;
 import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
-
-import javax.el.ELResolver;
-
-import java.util.Iterator;
 
 /**
  * Subsumes several unmarshalled faces config objects and presents a simple interface
@@ -143,7 +144,7 @@ public interface FacesConfigDispenser<C>
 
 
     /** @return Iterator over all defined validator ids */
-    public Iterator<String> getValidatorIds();
+    public Collection<String> getValidatorIds();
 
     /** @return validator class name that belongs to the given validator id */
     public String getValidatorClass(String validatorId);
@@ -152,17 +153,17 @@ public interface FacesConfigDispenser<C>
     /**
      * @return Iterator over {@link org.apache.myfaces.config.element.ManagedBean ManagedBean}s
      */
-    public Iterator<ManagedBean> getManagedBeans();
+    public Collection<ManagedBean> getManagedBeans();
 
     /**
      * @return Iterator over {@link org.apache.myfaces.config.element.NavigationRule NavigationRule}s
      */
-    public Iterator<NavigationRule> getNavigationRules();
+    public Collection<NavigationRule> getNavigationRules();
 
 
 
     /** @return Iterator over all defined renderkit ids */
-    public Iterator<String> getRenderKitIds();
+    public Collection<String> getRenderKitIds();
 
     /** @return renderkit class name for given renderkit id */
     public String getRenderKitClass(String renderKitId);
@@ -170,21 +171,21 @@ public interface FacesConfigDispenser<C>
     /**
      * @return Iterator over {@link org.apache.myfaces.config.element.Renderer Renderer}s for the given renderKitId
      */
-    public Iterator<Renderer> getRenderers(String renderKitId);
+    public Collection<Renderer> getRenderers(String renderKitId);
 
 
     /**
      * @return Iterator over {@link javax.faces.event.PhaseListener} implementation class names
      */
-    public Iterator<String> getLifecyclePhaseListeners();
+    public Collection<String> getLifecyclePhaseListeners();
 
     /**
      * @return Iterator over {@link ResourceBundle}
      */
-    public Iterator<ResourceBundle> getResourceBundles();
+    public Collection<ResourceBundle> getResourceBundles();
 
     /**
      * @return Iterator over {@link ELResolver} implementation class names
      */
-    public Iterator<String> getElResolvers();
+    public Collection<String> getElResolvers();
 }

@@ -24,33 +24,37 @@ import javax.faces.context.FacesContext;
 
 /**
  * Encapsulates information needed by the ImplicitObjectResolver
- *
+ * 
  * @author Stan Silvert
  */
-public class FacesContextImplicitObject extends ImplicitObject {
-    
+public class FacesContextImplicitObject extends ImplicitObject
+{
+
     private static final String NAME = "facesContext".intern();
-    
+
     /** Creates a new instance of FacesContextImplicitObject */
-    public FacesContextImplicitObject() {
+    public FacesContextImplicitObject()
+    {
     }
-    
-    public String getName() {
+
+    public String getName()
+    {
         return NAME;
     }
-    
-    public Object getValue(ELContext context) {
+
+    public Object getValue(ELContext context)
+    {
         return facesContext(context);
     }
-    
-    public Class getType() {
+
+    public Class<?> getType()
+    {
         return null;
     }
-    
-    public FeatureDescriptor getDescriptor() {
-        return makeDescriptor(NAME, 
-                              "Per-request information for a JSF request", 
-                              FacesContext.class);
+
+    public FeatureDescriptor getDescriptor()
+    {
+        return makeDescriptor(NAME, "Per-request information for a JSF request", FacesContext.class);
     }
-    
+
 }

@@ -24,33 +24,39 @@ import javax.el.ELContext;
 
 /**
  * Encapsulates information needed by the ImplicitObjectResolver
- *
+ * 
  * @author Stan Silvert
  */
-public class ParamImplicitObject extends ImplicitObject {
-    
+public class ParamImplicitObject extends ImplicitObject
+{
+
     private static final String NAME = "param".intern();
-    
+
     /** Creates a new instance of InitParamImplicitObject */
-    public ParamImplicitObject() {
+    public ParamImplicitObject()
+    {
     }
 
-    public Object getValue(ELContext context) {
+    public Object getValue(ELContext context)
+    {
         return externalContext(context).getRequestParameterMap();
     }
 
-    public String getName() {
+    public String getName()
+    {
         return NAME;
     }
-    
-    public Class getType() {
+
+    public Class<?> getType()
+    {
         return null;
     }
 
-    public FeatureDescriptor getDescriptor() {
-        return makeDescriptor(NAME, 
-                             "Map whose keys are a set of request param names and whose values are the first (or only) values for each name in the request", 
-                             Map.class);
+    public FeatureDescriptor getDescriptor()
+    {
+        return makeDescriptor(NAME,
+                              "Map whose keys are a set of request param names and whose values are the first (or only) values for each name in the request",
+                              Map.class);
     }
-    
+
 }

@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.lifecycle;
 
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.el.ValueExpression;
@@ -72,7 +71,7 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
     {
         Assert.notNull(facesContext);
         ExternalContext externalContext = facesContext.getExternalContext();
-        Map requestMap = externalContext.getRequestMap();
+        Map<String, Object> requestMap = externalContext.getRequestMap();
 
         String viewId = (String) requestMap.get(JAVAX_SERVLET_INCLUDE_PATH_INFO);
         boolean traceEnabled = log.isTraceEnabled();

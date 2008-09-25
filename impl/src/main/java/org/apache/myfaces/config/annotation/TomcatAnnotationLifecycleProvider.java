@@ -42,7 +42,7 @@ public class TomcatAnnotationLifecycleProvider implements DiscoverableLifecycleP
 
     public Object newInstance(String className)
             throws InstantiationException, IllegalAccessException, InvocationTargetException, NamingException, ClassNotFoundException {
-        Class clazz = ClassUtils.classForName(className);
+        Class<?> clazz = ClassUtils.classForName(className);
         log.info("Creating instance of " + className);
         Object object = clazz.newInstance();
         annotationProcessor.processAnnotations(object);

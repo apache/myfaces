@@ -63,7 +63,7 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     private Map<String, String[]> _requestParameterValuesMap;
     private Map<String, String> _requestHeaderMap;
     private Map<String, String[]> _requestHeaderValuesMap;
-    private Map _requestCookieMap;
+    private Map<String, Object> _requestCookieMap;
     private Map<String, String> _initParameterMap;
     private HttpServletRequest _httpServletRequest;
     private String _requestServletPath;
@@ -224,8 +224,9 @@ public final class ServletExternalContextImpl extends ExternalContext implements
         return _requestHeaderValuesMap;
     }
 
+    // FIXME: See with the EG if we can get the return value changed to Map<String, Cookie> as it
+    //        would be more elegant -= Simon Lessard =-
     @Override
-    @SuppressWarnings("unchecked")
     public Map<String, Object> getRequestCookieMap()
     {
         if (_requestCookieMap == null)
@@ -233,6 +234,7 @@ public final class ServletExternalContextImpl extends ExternalContext implements
             checkHttpServletRequest();
             _requestCookieMap = new CookieMap(_httpServletRequest);
         }
+        
         return _requestCookieMap;
     }
 

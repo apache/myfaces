@@ -81,7 +81,7 @@ public class SessionMap extends AbstractAttributeMap<Object>
     }
 
     @Override
-    public void putAll(Map t)
+    public void putAll(Map<? extends String, ? extends Object> t)
     {
         throw new UnsupportedOperationException();
     }
@@ -91,15 +91,21 @@ public class SessionMap extends AbstractAttributeMap<Object>
      * This will clear the session without invalidation.  If no session has
      * been created, it will simply return.
      */
+    @SuppressWarnings("unchecked")
     @Override
     public void clear()
     {
         PortletSession session = getSession();
-        if (session == null) return;
-        for (Enumeration attributeNames = session.getAttributeNames(PortletSession.PORTLET_SCOPE); 
-             attributeNames.hasMoreElements(); ) {
-            String attributeName = (String)attributeNames.nextElement();
-            session.removeAttribute(attributeName);
+        if (session == null)
+        {
+            return;
+        }
+        
+        Enumeration<String> attributeNames = 
+            (Enumeration<String>)session.getAttributeNames(PortletSession.PORTLET_SCOPE);
+        while (attributeNames.hasMoreElements())
+        {
+            session.removeAttribute(attributeNames.nextElement());
         }
     }
 }

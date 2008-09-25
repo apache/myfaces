@@ -18,14 +18,13 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import javax.faces.webapp.UIComponentELTag;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
+import javax.faces.webapp.UIComponentELTag;
 
 import org.apache.myfaces.application.jsp.ViewResponseWrapper;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;
 
 /**
  * @author Thomas Spiegl (latest modification by $Author$)
@@ -33,10 +32,11 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;
  */
 public class SubviewTag extends UIComponentELTag
 {
-    public SubviewTag() {
+    public SubviewTag()
+    {
         super();
     }
-    
+
     public String getComponentType()
     {
         return UINamingContainer.COMPONENT_TYPE;
@@ -46,17 +46,17 @@ public class SubviewTag extends UIComponentELTag
     {
         return null;
     }
-    
+
     /**
-     * Creates a UIComponent from the BodyContent
-     * If a Subview is included via the <jsp:include> tag
-     * the corresponding jsp is rendered with
-     * getServletContext().getRequestDispatcher("includedSite").include(request,response)
-     * and it is possible that something was written to the Response direct.
-     * So is is necessary that the content of the wrapped response is added to the componenttree.
+     * Creates a UIComponent from the BodyContent If a Subview is included via the <jsp:include> tag the corresponding
+     * jsp is rendered with getServletContext().getRequestDispatcher("includedSite").include(request,response) and it is
+     * possible that something was written to the Response direct. So is is necessary that the content of the wrapped
+     * response is added to the componenttree.
+     * 
      * @return UIComponent or null
      */
-    protected UIComponent createVerbatimComponentFromBodyContent() {
+    protected UIComponent createVerbatimComponentFromBodyContent()
+    {
         UIOutput component = (UIOutput) super.createVerbatimComponentFromBodyContent();
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Object response = facesContext.getExternalContext().getResponse();
@@ -71,8 +71,8 @@ public class SubviewTag extends UIComponentELTag
                 String componentvalue = null;
                 if (component != null)
                 {
-                    //save the Value of the Bodycontent
-                  componentvalue = (String) component.getValue();
+                    // save the Value of the Bodycontent
+                    componentvalue = (String) component.getValue();
                 }
                 component = super.createVerbatimComponent();
                 if (componentvalue != null)
@@ -87,6 +87,6 @@ public class SubviewTag extends UIComponentELTag
             }
         }
         return component;
-    }    
-    
+    }
+
 }

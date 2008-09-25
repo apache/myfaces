@@ -18,11 +18,11 @@
  */
 package org.apache.myfaces.config.impl.digester.elements;
 
-import org.apache.myfaces.shared_impl.util.ClassUtils;
-
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collection;
 import java.util.List;
+
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 
 /**
@@ -34,7 +34,7 @@ public class ManagedBean implements org.apache.myfaces.config.element.ManagedBea
     private String description;
     private String name;
     private String beanClassName;
-    private Class beanClass;
+    private Class<?> beanClass;
     private String scope;
     private List<ManagedProperty> property = new ArrayList<ManagedProperty>();
     private MapEntries mapEntries;
@@ -107,16 +107,18 @@ public class ManagedBean implements org.apache.myfaces.config.element.ManagedBea
     }
 
 
-    public Class getManagedBeanClass()
+    public Class<?> getManagedBeanClass()
     {
         if (beanClassName == null)
         {
             return null;
         }
+        
         if (beanClass == null)
         {
             beanClass = ClassUtils.simpleClassForName(beanClassName);
         }
+        
         return beanClass;
     }
 
@@ -145,8 +147,8 @@ public class ManagedBean implements org.apache.myfaces.config.element.ManagedBea
     }
 
 
-    public Iterator<ManagedProperty> getManagedProperties()
+    public Collection<? extends ManagedProperty> getManagedProperties()
     {
-        return property.iterator();
+        return property;
     }
 }

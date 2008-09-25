@@ -33,6 +33,6 @@ public interface ListEntries
     /**
      * @return Iterator over {@link ListEntry} entries
      */
-    public Iterator getListEntries();
+    public Iterator<? extends ListEntry> getListEntries();
 
 }
