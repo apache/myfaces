@@ -20,6 +20,7 @@ package javax.faces.component;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
@@ -38,6 +39,7 @@ import javax.faces.event.FacesEvent;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
+import javax.faces.event.ViewMapCreatedEvent;
 import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.webapp.FacesServlet;
@@ -47,20 +49,17 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProp
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
- * Creates a JSF View, which is a container that holds all of the components
- * that are part of the view.
+ * Creates a JSF View, which is a container that holds all of the components that are part of the view.
  * <p>
- * Unless otherwise specified, all attributes accept static values or EL
- * expressions.
+ * Unless otherwise specified, all attributes accept static values or EL expressions.
  * </p>
  * <p>
- * See the javadoc for this class in the <a
- * href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF
+ * See the javadoc for this class in the <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF
  * Specification</a> for further details.
  * </p>
  */
-@JSFComponent(name="f:view", bodyContent="JSP", tagClass="org.apache.myfaces.taglib.core.ViewTag")
-@JSFJspProperty(name="binding", returnType="java.lang.String", tagExcluded=true)
+@JSFComponent(name = "f:view", bodyContent = "JSP", tagClass = "org.apache.myfaces.taglib.core.ViewTag")
+@JSFJspProperty(name = "binding", returnType = "java.lang.String", tagExcluded = true)
 public class UIViewRoot extends UIComponentBase
 {
     public static final String COMPONENT_TYPE = "javax.faces.ViewRoot";
@@ -72,8 +71,8 @@ public class UIViewRoot extends UIComponentBase
     private final Logger logger = Logger.getLogger(UIViewRoot.class.getName());
 
     /**
-     * The counter which will ensure a unique component id for every component instance in the tree that
-     * doesn't have an id attribute set.
+     * The counter which will ensure a unique component id for every component instance in the tree that doesn't have an
+     * id attribute set.
      */
     private long _uniqueIdCounter = 0;
 
@@ -87,6 +86,8 @@ public class UIViewRoot extends UIComponentBase
 
     private MethodExpression _beforePhaseListener;
     private MethodExpression _afterPhaseListener;
+
+    private Map<String, Object> _viewScope;
 
     private transient Lifecycle _lifecycle = null;
 
@@ -102,7 +103,7 @@ public class UIViewRoot extends UIComponentBase
     {
         setRendererType(null);
     }
-    
+
     public void processEvent(ComponentSystemEvent event)
     {
         // TODO: JSF 2.0 #22
@@ -168,15 +169,12 @@ public class UIViewRoot extends UIComponentBase
 
         try
         {
-            skipPhase = notifyListeners(context, PhaseId.RENDER_RESPONSE,
-                    getBeforePhaseListener(), true);
+            skipPhase = notifyListeners(context, PhaseId.RENDER_RESPONSE, getBeforePhaseListener(), true);
         }
         catch (Exception e)
         {
             // following the spec we have to swallow the exception
-            logger.log(Level.SEVERE,
-                    "Exception while processing phase listener: "
-                            + e.getMessage(), e);
+            logger.log(Level.SEVERE, "Exception while processing phase listener: " + e.getMessage(), e);
         }
 
         if (!skipPhase)
@@ -191,15 +189,12 @@ public class UIViewRoot extends UIComponentBase
         super.encodeEnd(context);
         try
         {
-            notifyListeners(context, PhaseId.RENDER_RESPONSE,
-                    getAfterPhaseListener(), false);
+            notifyListeners(context, PhaseId.RENDER_RESPONSE, getAfterPhaseListener(), false);
         }
         catch (Exception e)
         {
             // following the spec we have to swallow the exception
-            logger.log(Level.SEVERE,
-                    "Exception while processing phase listener: "
-                            + e.getMessage(), e);
+            logger.log(Level.SEVERE, "Exception while processing phase listener: " + e.getMessage(), e);
         }
     }
 
@@ -208,11 +203,9 @@ public class UIViewRoot extends UIComponentBase
      */
     public String createUniqueId()
     {
-        ExternalContext extCtx = FacesContext.getCurrentInstance()
-                .getExternalContext();
+        ExternalContext extCtx = FacesContext.getCurrentInstance().getExternalContext();
         StringBuilder bld = __getSharedStringBuilder();
-        return extCtx.encodeNamespace(bld.append(UNIQUE_ID_PREFIX).append(
-                _uniqueIdCounter++).toString());
+        return extCtx.encodeNamespace(bld.append(UNIQUE_ID_PREFIX).append(_uniqueIdCounter++).toString());
     }
 
     /**
@@ -231,13 +224,11 @@ public class UIViewRoot extends UIComponentBase
         ValueExpression expression = getValueExpression("locale");
         if (expression != null)
         {
-            return (Locale) expression.getValue(getFacesContext()
-                    .getELContext());
+            return (Locale) expression.getValue(getFacesContext().getELContext());
         }
         else
         {
-            Object locale = getFacesContext().getApplication().getViewHandler()
-                    .calculateLocale(getFacesContext());
+            Object locale = getFacesContext().getApplication().getViewHandler().calculateLocale(getFacesContext());
 
             if (locale instanceof Locale)
             {
@@ -249,8 +240,7 @@ public class UIViewRoot extends UIComponentBase
             }
         }
 
-        return getFacesContext().getApplication().getViewHandler()
-                .calculateLocale(getFacesContext());
+        return getFacesContext().getApplication().getViewHandler().calculateLocale(getFacesContext());
     }
 
     public void setLocale(Locale locale)
@@ -258,8 +248,7 @@ public class UIViewRoot extends UIComponentBase
         this._locale = locale;
     }
 
-    private boolean process(FacesContext context, PhaseId phaseId,
-            Processor processor, boolean broadcast)
+    private boolean process(FacesContext context, PhaseId phaseId, Processor processor, boolean broadcast)
     {
         if (!notifyListeners(context, phaseId, getBeforePhaseListener(), true))
         {
@@ -281,33 +270,28 @@ public class UIViewRoot extends UIComponentBase
     /**
      * Invoke view-specific phase listeners, plus an optional EL MethodExpression.
      * <p>
-     * JSF1.2 adds the ability for PhaseListener objects to be added to a UIViewRoot instance,
-     * and for "beforePhaseListener" and "afterPhaseListener" EL expressions to be defined
-     * on the viewroot. This method is expected to be called at appropriate times, and will
-     * then execute the relevant listener callbacks.
+     * JSF1.2 adds the ability for PhaseListener objects to be added to a UIViewRoot instance, and for
+     * "beforePhaseListener" and "afterPhaseListener" EL expressions to be defined on the viewroot. This method is
+     * expected to be called at appropriate times, and will then execute the relevant listener callbacks.
      * <p>
-     * Parameter "listener" may be null. If not null, then it is an EL expression pointing
-     * to a user method that will be invoked.
+     * Parameter "listener" may be null. If not null, then it is an EL expression pointing to a user method that will be
+     * invoked.
      * <p>
-     * Note that the global PhaseListeners are invoked via the Lifecycle implementation, not
-     * from this method here.
+     * Note that the global PhaseListeners are invoked via the Lifecycle implementation, not from this method here.
      */
-    private boolean notifyListeners(FacesContext context, PhaseId phaseId,
-            MethodExpression listener, boolean beforePhase)
+    private boolean notifyListeners(FacesContext context, PhaseId phaseId, MethodExpression listener,
+                                    boolean beforePhase)
     {
         boolean skipPhase = false;
 
-        if (listener != null
-                || (_phaseListeners != null && !_phaseListeners.isEmpty()))
+        if (listener != null || (_phaseListeners != null && !_phaseListeners.isEmpty()))
         {
             PhaseEvent event = createEvent(context, phaseId);
 
             if (listener != null)
             {
-                listener.invoke(context.getELContext(), new Object[]
-                { event });
-                skipPhase = context.getResponseComplete()
-                        || context.getRenderResponse();
+                listener.invoke(context.getELContext(), new Object[] { event });
+                skipPhase = context.getResponseComplete() || context.getRenderResponse();
             }
 
             if (_phaseListeners != null && !_phaseListeners.isEmpty())
@@ -315,8 +299,7 @@ public class UIViewRoot extends UIComponentBase
                 for (PhaseListener phaseListener : _phaseListeners)
                 {
                     PhaseId listenerPhaseId = phaseListener.getPhaseId();
-                    if (phaseId.equals(listenerPhaseId)
-                            || PhaseId.ANY_PHASE.equals(listenerPhaseId))
+                    if (phaseId.equals(listenerPhaseId) || PhaseId.ANY_PHASE.equals(listenerPhaseId))
                     {
                         if (beforePhase)
                         {
@@ -326,8 +309,7 @@ public class UIViewRoot extends UIComponentBase
                         {
                             phaseListener.afterPhase(event);
                         }
-                        skipPhase = context.getResponseComplete()
-                                || context.getRenderResponse();
+                        skipPhase = context.getResponseComplete() || context.getRenderResponse();
                     }
                 }
             }
@@ -340,10 +322,8 @@ public class UIViewRoot extends UIComponentBase
     {
         if (_lifecycle == null)
         {
-            LifecycleFactory factory = (LifecycleFactory) FactoryFinder
-                    .getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-            String id = context.getExternalContext().getInitParameter(
-                    FacesServlet.LIFECYCLE_ID_ATTR);
+            LifecycleFactory factory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
+            String id = context.getExternalContext().getInitParameter(FacesServlet.LIFECYCLE_ID_ATTR);
             if (id == null)
             {
                 id = LifecycleFactory.DEFAULT_LIFECYCLE;
@@ -363,8 +343,7 @@ public class UIViewRoot extends UIComponentBase
         boolean abort = false;
 
         int phaseIdOrdinal = phaseId.getOrdinal();
-        for (ListIterator<FacesEvent> listiterator = _events.listIterator(); listiterator
-                .hasNext();)
+        for (ListIterator<FacesEvent> listiterator = _events.listIterator(); listiterator.hasNext();)
         {
             FacesEvent event = listiterator.next();
             int ordinal = event.getPhaseId().getOrdinal();
@@ -460,8 +439,7 @@ public class UIViewRoot extends UIComponentBase
         ValueExpression expression = getValueExpression("renderKitId");
         if (expression != null)
         {
-            return (String) expression.getValue(getFacesContext()
-                    .getELContext());
+            return (String) expression.getValue(getFacesContext().getELContext());
         }
         return null;
     }
@@ -474,40 +452,36 @@ public class UIViewRoot extends UIComponentBase
     /**
      * DO NOT USE.
      * <p>
-     * This inherited property is disabled. Although this class extends a base-class that
-     * defines a read/write rendered property, this particular subclass does not
-     * support setting it. Yes, this is broken OO design: direct all complaints
-     * to the JSF spec group.
+     * This inherited property is disabled. Although this class extends a base-class that defines a read/write rendered
+     * property, this particular subclass does not support setting it. Yes, this is broken OO design: direct all
+     * complaints to the JSF spec group.
      */
     @Override
-    @JSFProperty(tagExcluded=true)
+    @JSFProperty(tagExcluded = true)
     public void setRendered(boolean state)
     {
-        //Call parent method due to TCK problems
+        // Call parent method due to TCK problems
         super.setRendered(state);
-        //throw new UnsupportedOperationException();
+        // throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean isRendered()
     {
-        //Call parent method due to TCK problems
+        // Call parent method due to TCK problems
         return super.isRendered();
     }
 
     /**
      * DO NOT USE.
      * <p>
-     * Although this class extends a base-class that defines a read/write id
-     * property, it makes no sense for this particular subclass to support it.
-     * The tag library does not export this property for use, but there is no
-     * way to "undeclare" a java method. Yes, this is broken OO design: direct
-     * all complaints to the JSF spec group.
+     * Although this class extends a base-class that defines a read/write id property, it makes no sense for this
+     * particular subclass to support it. The tag library does not export this property for use, but there is no way to
+     * "undeclare" a java method. Yes, this is broken OO design: direct all complaints to the JSF spec group.
      * <p>
-     * This property should be disabled (ie throw an exception if invoked).
-     * However there are currently several places that call this method (eg
-     * during restoreState) so it just does the normal thing for the moment.
-     * TODO: fix callers then make this throw an exception.
+     * This property should be disabled (ie throw an exception if invoked). However there are currently several places
+     * that call this method (eg during restoreState) so it just does the normal thing for the moment. TODO: fix callers
+     * then make this throw an exception.
      * 
      * @JSFProperty tagExcluded="true"
      */
@@ -534,15 +508,15 @@ public class UIViewRoot extends UIComponentBase
     public String getClientId(FacesContext context)
     {
         return super.getClientId(context);
-        //Call parent method due to TCK problems
-        //return null;
+        // Call parent method due to TCK problems
+        // return null;
     }
-    
+
     public void addComponentResource(FacesContext context, UIComponent componentResource)
     {
         addComponentResource(context, componentResource, null);
     }
-    
+
     public void addComponentResource(FacesContext context, UIComponent componentResource, String target)
     {
         // If the target argument is null
@@ -550,17 +524,17 @@ public class UIViewRoot extends UIComponentBase
         {
             // Look for a target attribute on the component
             target = (String) componentResource.getAttributes().get("target");
-            
+
             // If there is no target attribute, set target to be the default value head
             if (target == null)
             {
                 target = "head";
             }
         }
-        
+
         // Call getComponentResources to obtain the child list for the given target
         List<UIComponent> componentResources = getComponentResources(context, target);
-        
+
         // Add the component resource to the list
         // TODO: Validate if we should check for duplicates, spec don't say anything about it
         componentResources.add(componentResource);
@@ -570,38 +544,41 @@ public class UIViewRoot extends UIComponentBase
     {
         // Locate the facet for the component by calling getFacet() using target as the argument
         UIComponent facet = getFacet(target);
-        
+
         // If the facet is not found
         if (facet == null)
         {
-            facet = context.getApplication().createComponent("javax.faces.Panel");            
+            facet = context.getApplication().createComponent("javax.faces.Panel");
             facet.setId(target);
-            
+
             // Add the facet to the facets Map using target as the key
             getFacets().put(target, facet);
         }
-        
+
         // Return the children of the facet
         return facet.getChildren();
     }
-    
-    public Map<String,Object> getViewMap()
-    { 
+
+    public Map<String, Object> getViewMap()
+    {
         return this.getViewMap(true);
     }
-    
-    public Map<String,Object> getViewMap(boolean create)
+
+    public Map<String, Object> getViewMap(boolean create)
     {
-        // TODO: JSF 2.0 #21
-        
-        return null;
+        if (_viewScope == null && create)
+        {
+            _viewScope = new ViewScope();
+        }
+
+        return _viewScope;
     }
-    
+
     public void removeComponentResource(FacesContext context, UIComponent componentResource)
     {
         removeComponentResource(context, componentResource, null);
     }
-    
+
     public void removeComponentResource(FacesContext context, UIComponent componentResource, String target)
     {
         // If the target argument is null
@@ -609,7 +586,7 @@ public class UIViewRoot extends UIComponentBase
         {
             // Look for a target attribute on the component
             target = (String) componentResource.getAttributes().get("target");
-            
+
             // If there is no target attribute
             if (target == null)
             {
@@ -617,10 +594,10 @@ public class UIViewRoot extends UIComponentBase
                 target = "head";
             }
         }
-        
+
         // Call getComponentResources to obtain the child list for the given target.
         List<UIComponent> componentResources = getComponentResources(context, target);
-        
+
         // Remove the component resource from the child list
         componentResources.remove(componentResource);
     }
@@ -628,8 +605,8 @@ public class UIViewRoot extends UIComponentBase
     /**
      * A unique identifier for the "template" from which this view was generated.
      * <p>
-     * Typically this is the filesystem path to the template file, but the exact
-     * details are the responsibility of the current ViewHandler implementation.
+     * Typically this is the filesystem path to the template file, but the exact details are the responsibility of the
+     * current ViewHandler implementation.
      */
     @JSFProperty(tagExcluded = true)
     public String getViewId()
@@ -670,9 +647,8 @@ public class UIViewRoot extends UIComponentBase
     }
 
     /**
-     * MethodBinding pointing to a method that takes a
-     * javax.faces.event.PhaseEvent and returns void,
-     * called before every phase except for restore view.
+     * MethodBinding pointing to a method that takes a javax.faces.event.PhaseEvent and returns void, called before
+     * every phase except for restore view.
      * 
      * @return the new beforePhaseListener value
      */
@@ -686,8 +662,7 @@ public class UIViewRoot extends UIComponentBase
         ValueExpression expression = getValueExpression("beforePhaseListener");
         if (expression != null)
         {
-            return (MethodExpression) expression.getValue(getFacesContext()
-                    .getELContext());
+            return (MethodExpression) expression.getValue(getFacesContext().getELContext());
         }
         return null;
     }
@@ -704,9 +679,8 @@ public class UIViewRoot extends UIComponentBase
     }
 
     /**
-     * MethodBinding pointing to a method that takes a
-     * javax.faces.event.PhaseEvent and returns void,
-     * called after every phase except for restore view.
+     * MethodBinding pointing to a method that takes a javax.faces.event.PhaseEvent and returns void, called after every
+     * phase except for restore view.
      * 
      * @return the new afterPhaseListener value
      */
@@ -720,8 +694,7 @@ public class UIViewRoot extends UIComponentBase
         ValueExpression expression = getValueExpression("afterPhaseListener");
         if (expression != null)
         {
-            return (MethodExpression) expression.getValue(getFacesContext()
-                    .getELContext());
+            return (MethodExpression) expression.getValue(getFacesContext().getELContext());
         }
         return null;
     }
@@ -763,15 +736,30 @@ public class UIViewRoot extends UIComponentBase
         _viewId = (String) values[3];
         _uniqueIdCounter = (Long) values[4];
         _phaseListeners = (List) restoreAttachedState(facesContext, values[5]);
-        _beforePhaseListener = (MethodExpression) restoreAttachedState(
-                facesContext, values[6]);
-        _afterPhaseListener = (MethodExpression) restoreAttachedState(
-                facesContext, values[7]);
+        _beforePhaseListener = (MethodExpression) restoreAttachedState(facesContext, values[6]);
+        _afterPhaseListener = (MethodExpression) restoreAttachedState(facesContext, values[7]);
     }
 
     @Override
     public String getFamily()
     {
         return COMPONENT_FAMILY;
+    }
+
+    private class ViewScope extends HashMap<String, Object>
+    {
+        @Override
+        public void clear()
+        {
+            super.clear();
+            
+            /* 
+             * The returned Map must be implemented such that calling clear() on the Map causes 
+             * Application.publishEvent(java.lang.Class, java.lang.Object) to be called, passing 
+             * ViewMapDestroyedEvent.class  as the first argument and this UIViewRoot instance as 
+             * the second argument.
+             */
+            getFacesContext().getApplication().publishEvent(ViewMapCreatedEvent.class, UIViewRoot.this);
+        }
     }
 }
