@@ -23,17 +23,21 @@ import javax.faces.event.PhaseId;
 
 /**
  * Implements the lifecycle as described in Spec. 1.0 PFD Chapter 2
+ * 
  * @author Nikolay Petrov
- *
- * Invoke application phase (JSF Spec 2.2.5)
+ * 
+ *         Invoke application phase (JSF Spec 2.2.5)
  */
-class InvokeApplicationExecutor implements PhaseExecutor {
-    public boolean execute(FacesContext facesContext) {
+class InvokeApplicationExecutor implements PhaseExecutor
+{
+    public boolean execute(FacesContext facesContext)
+    {
         facesContext.getViewRoot().processApplication(facesContext);
         return false;
     }
 
-    public PhaseId getPhase() {
+    public PhaseId getPhase()
+    {
         return PhaseId.INVOKE_APPLICATION;
     }
 }

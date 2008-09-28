@@ -53,18 +53,18 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
         {
             binding.setValue(facesContext.getELContext(), component);
         }
-        
-        //This part is for make compatibility with t:aliasBean, because
-        //this components has its own code before and after binding is 
-        //set for child components.
-        RestoreStateUtils.recursivelyHandleComponentReferencesAndSetValid(facesContext,component);
 
-        //The required behavior for the spec is call recursively this method
-        //for walk the component tree. 
-        //for (Iterator<UIComponent> iter = component.getFacetsAndChildren(); iter.hasNext();)
-        //{
-        //    processComponentBinding(facesContext, iter.next());
-        //}
+        // This part is for make compatibility with t:aliasBean, because
+        // this components has its own code before and after binding is
+        // set for child components.
+        RestoreStateUtils.recursivelyHandleComponentReferencesAndSetValid(facesContext, component);
+
+        // The required behavior for the spec is call recursively this method
+        // for walk the component tree.
+        // for (Iterator<UIComponent> iter = component.getFacetsAndChildren(); iter.hasNext();)
+        // {
+        // processComponentBinding(facesContext, iter.next());
+        // }
     }
 
     public String calculateViewId(FacesContext facesContext)

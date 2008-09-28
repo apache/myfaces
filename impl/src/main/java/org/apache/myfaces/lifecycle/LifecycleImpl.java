@@ -35,11 +35,11 @@ import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
 
 /**
  * Implements the lifecycle as described in Spec. 1.0 PFD Chapter 2
+ * 
  * @author Manfred Geiler
  * @author Nikolay Petrov
  */
-public class LifecycleImpl
-        extends Lifecycle
+public class LifecycleImpl extends Lifecycle
 {
     private static final Log log = LogFactory.getLog(LifecycleImpl.class);
 
@@ -53,157 +53,200 @@ public class LifecycleImpl
      */
     private PhaseListener[] _phaseListenerArray = null;
 
-    public LifecycleImpl() {
+    public LifecycleImpl()
+    {
         // hide from public access
-        lifecycleExecutors = new PhaseExecutor[] {
-                new RestoreViewExecutor(),
-                new ApplyRequestValuesExecutor(),
-                new ProcessValidationsExecutor(),
-                new UpdateModelValuesExecutor(),
-                new InvokeApplicationExecutor()
-        };
+        lifecycleExecutors = new PhaseExecutor[] { new RestoreViewExecutor(), new ApplyRequestValuesExecutor(),
+                new ProcessValidationsExecutor(), new UpdateModelValuesExecutor(), new InvokeApplicationExecutor() };
 
         renderExecutor = new RenderResponseExecutor();
     }
 
-    public void execute(FacesContext facesContext) throws FacesException {
-         //refresh all configuration information if according web-xml parameter is set.
+    public void execute(FacesContext facesContext) throws FacesException
+    {
+        // refresh all configuration information if according web-xml parameter is set.
+        // TODO: Performance wise, shouldn't the lifecycle be configured with a local boolean attribute
+        // specifying if the system should look for file modification because this code seems like
+        // a developement facility, but at the cost of scalability. I think a context param like
+        // Trinidad is a better idea -= Simon Lessard =-
         WebXml.update(facesContext.getExternalContext());
+
         new FacesConfigurator(facesContext.getExternalContext()).update();
 
         PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, facesContext, getPhaseListeners());
-        for(int executorIndex = 0;executorIndex < lifecycleExecutors.length;executorIndex++) {
-            if(executePhase(facesContext, lifecycleExecutors[executorIndex], phaseListenerMgr)) {
+        for (PhaseExecutor executor : lifecycleExecutors)
+        {
+            if (executePhase(facesContext, executor, phaseListenerMgr))
+            {
                 return;
             }
         }
     }
 
-
-    private boolean executePhase(FacesContext facesContext, PhaseExecutor executor,
-            PhaseListenerManager phaseListenerMgr) throws FacesException {
-
+    private boolean executePhase(FacesContext context, PhaseExecutor executor, PhaseListenerManager phaseListenerMgr)
+        throws FacesException
+    {
         boolean skipFurtherProcessing = false;
 
-        if (log.isTraceEnabled()) {
+        if (log.isTraceEnabled())
+        {
             log.trace("entering " + executor.getPhase() + " in " + LifecycleImpl.class.getName());
         }
 
-        try {
-            phaseListenerMgr.informPhaseListenersBefore(executor.getPhase());
+        PhaseId currentPhaseId = executor.getPhase();
 
-            if(isResponseComplete(facesContext, executor.getPhase(), true)) {
+        try
+        {
+            /* 
+             * Specification, section 2.2
+             * The default request lifecycle processing implementation must ensure that the currentPhaseId property 
+             * of the FacesContext instance for this request is set with the proper PhaseId constant for the current 
+             * phase as the first instruction at the beginning of each phase
+             */
+            context.setCurrentPhaseId(currentPhaseId);
+
+            phaseListenerMgr.informPhaseListenersBefore(currentPhaseId);
+
+            if (isResponseComplete(context, currentPhaseId, true))
+            {
                 // have to return right away
                 return true;
             }
-            if(shouldRenderResponse(facesContext, executor.getPhase(), true)) {
+            if (shouldRenderResponse(context, currentPhaseId, true))
+            {
                 skipFurtherProcessing = true;
             }
 
-            if(executor.execute(facesContext)) {
+            if (executor.execute(context))
+            {
                 return true;
             }
-        } finally {
-            phaseListenerMgr.informPhaseListenersAfter(executor.getPhase());
+        }
+        finally
+        {
+            phaseListenerMgr.informPhaseListenersAfter(currentPhaseId);
         }
 
-
-        if (isResponseComplete(facesContext, executor.getPhase(), false)
-                || shouldRenderResponse(facesContext, executor.getPhase(), false)) {
+        if (isResponseComplete(context, currentPhaseId, false) || shouldRenderResponse(context, currentPhaseId, false))
+        {
             // since this phase is completed we don't need to return right away even if the response is completed
             skipFurtherProcessing = true;
         }
 
-        if (!skipFurtherProcessing && log.isTraceEnabled()) {
+        if (!skipFurtherProcessing && log.isTraceEnabled())
+        {
             log.trace("exiting " + executor.getPhase() + " in " + LifecycleImpl.class.getName());
         }
 
         return skipFurtherProcessing;
     }
 
-    public void render(FacesContext facesContext) throws FacesException {
+    public void render(FacesContext facesContext) throws FacesException
+    {
         // if the response is complete we should not be invoking the phase listeners
-        if(isResponseComplete(facesContext, renderExecutor.getPhase(), true)) {
+        if (isResponseComplete(facesContext, renderExecutor.getPhase(), true))
+        {
             return;
         }
-        if (log.isTraceEnabled()) log.trace("entering " + renderExecutor.getPhase() + " in " + LifecycleImpl.class.getName());
+        if (log.isTraceEnabled())
+            log.trace("entering " + renderExecutor.getPhase() + " in " + LifecycleImpl.class.getName());
 
         PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, facesContext, getPhaseListeners());
 
-        try {
+        try
+        {
             phaseListenerMgr.informPhaseListenersBefore(renderExecutor.getPhase());
             // also possible that one of the listeners completed the response
-            if(isResponseComplete(facesContext, renderExecutor.getPhase(), true)) {
+            if (isResponseComplete(facesContext, renderExecutor.getPhase(), true))
+            {
                 return;
             }
 
             renderExecutor.execute(facesContext);
-        } finally {
+        }
+        finally
+        {
             phaseListenerMgr.informPhaseListenersAfter(renderExecutor.getPhase());
         }
 
-        if (log.isTraceEnabled()) {
-            //Note: DebugUtils Logger must also be in trace level
+        if (log.isTraceEnabled())
+        {
+            // Note: DebugUtils Logger must also be in trace level
             DebugUtils.traceView("View after rendering");
         }
 
-        if (log.isTraceEnabled()) {
+        if (log.isTraceEnabled())
+        {
             log.trace("exiting " + renderExecutor.getPhase() + " in " + LifecycleImpl.class.getName());
         }
     }
 
-    private boolean isResponseComplete(FacesContext facesContext, PhaseId phase, boolean before) {
+    private boolean isResponseComplete(FacesContext facesContext, PhaseId phase, boolean before)
+    {
         boolean flag = false;
-        if (facesContext.getResponseComplete()) {
-            if (log.isDebugEnabled()) {
+        if (facesContext.getResponseComplete())
+        {
+            if (log.isDebugEnabled())
+            {
                 log.debug("exiting from lifecycle.execute in " + phase
-                        + " because getResponseComplete is true from one of the " +
-                        (before ? "before" : "after") + " listeners");
+                        + " because getResponseComplete is true from one of the " + (before ? "before" : "after")
+                        + " listeners");
             }
             flag = true;
         }
         return flag;
     }
 
-    private boolean shouldRenderResponse(FacesContext facesContext, PhaseId phase, boolean before) {
-            boolean flag = false;
-        if (facesContext.getRenderResponse()) {
-            if (log.isDebugEnabled()) {
+    private boolean shouldRenderResponse(FacesContext facesContext, PhaseId phase, boolean before)
+    {
+        boolean flag = false;
+        if (facesContext.getRenderResponse())
+        {
+            if (log.isDebugEnabled())
+            {
                 log.debug("exiting from lifecycle.execute in " + phase
-                        + " because getRenderResponse is true from one of the " +
-                        (before ? "before" : "after") + " listeners");
+                        + " because getRenderResponse is true from one of the " + (before ? "before" : "after")
+                        + " listeners");
             }
             flag = true;
         }
         return flag;
     }
 
-    public void addPhaseListener(PhaseListener phaseListener) {
-        if (phaseListener == null) {
+    public void addPhaseListener(PhaseListener phaseListener)
+    {
+        if (phaseListener == null)
+        {
             throw new NullPointerException("PhaseListener must not be null.");
         }
-        synchronized (_phaseListenerList) {
+        synchronized (_phaseListenerList)
+        {
             _phaseListenerList.add(phaseListener);
             _phaseListenerArray = null; // reset lazy cache array
         }
     }
 
-    public void removePhaseListener(PhaseListener phaseListener) {
-        if (phaseListener == null) {
+    public void removePhaseListener(PhaseListener phaseListener)
+    {
+        if (phaseListener == null)
+        {
             throw new NullPointerException("PhaseListener must not be null.");
         }
-        synchronized (_phaseListenerList) {
+        synchronized (_phaseListenerList)
+        {
             _phaseListenerList.remove(phaseListener);
             _phaseListenerArray = null; // reset lazy cache array
         }
     }
 
-    public PhaseListener[] getPhaseListeners() {
-        synchronized (_phaseListenerList) {
+    public PhaseListener[] getPhaseListeners()
+    {
+        synchronized (_phaseListenerList)
+        {
             // (re)build lazy cache array if necessary
-            if (_phaseListenerArray == null) {
-                _phaseListenerArray = _phaseListenerList.toArray(new PhaseListener[_phaseListenerList
-                        .size()]);
+            if (_phaseListenerArray == null)
+            {
+                _phaseListenerArray = _phaseListenerList.toArray(new PhaseListener[_phaseListenerList.size()]);
             }
             return _phaseListenerArray;
         }

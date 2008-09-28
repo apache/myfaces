@@ -23,17 +23,21 @@ import javax.faces.event.PhaseId;
 
 /**
  * Implements the lifecycle as described in Spec. 1.0 PFD Chapter 2
+ * 
  * @author Nikolay Petrov
- *
- * Apply request values phase (JSF Spec 2.2.2)
+ * 
+ *         Apply request values phase (JSF Spec 2.2.2)
  */
-class ApplyRequestValuesExecutor implements PhaseExecutor {
-    public boolean execute(FacesContext facesContext) {
+class ApplyRequestValuesExecutor implements PhaseExecutor
+{
+    public boolean execute(FacesContext facesContext)
+    {
         facesContext.getViewRoot().processDecodes(facesContext);
         return false;
     }
 
-    public PhaseId getPhase() {
+    public PhaseId getPhase()
+    {
         return PhaseId.APPLY_REQUEST_VALUES;
     }
 }

@@ -30,8 +30,7 @@ import java.util.Map;
  * @author Anton Koinov
  * @version $Revision$ $Date$
  */
-public class LifecycleFactoryImpl
-        extends LifecycleFactory
+public class LifecycleFactoryImpl extends LifecycleFactory
 {
     private final Map<String, Lifecycle> _lifecycles = new HashMap<String, Lifecycle>();
 
@@ -41,7 +40,7 @@ public class LifecycleFactoryImpl
     }
 
     public void purgeLifecycle()
-    {        
+    {
         _lifecycles.clear();
         addLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE, new LifecycleImpl());
     }
@@ -58,8 +57,7 @@ public class LifecycleFactoryImpl
         }
     }
 
-    public Lifecycle getLifecycle(String id)
-            throws FacesException
+    public Lifecycle getLifecycle(String id) throws FacesException
     {
         synchronized (_lifecycles)
         {

@@ -58,7 +58,7 @@ class RestoreViewExecutor implements PhaseExecutor
         UIViewRoot viewRoot = facesContext.getViewRoot();
 
         RestoreViewSupport restoreViewSupport = getRestoreViewSupport();
-        
+
         if (viewRoot != null)
         {
             if (log.isTraceEnabled())
@@ -80,9 +80,8 @@ class RestoreViewExecutor implements PhaseExecutor
             viewRoot = viewHandler.restoreView(facesContext, viewId);
             if (viewRoot == null)
             {
-                throw new ViewExpiredException(
-                    "No saved view state could be found for the view identifier: "
-                        + viewId, viewId);
+                throw new ViewExpiredException("No saved view state could be found for the view identifier: " + viewId,
+                    viewId);
             }
             restoreViewSupport.processComponentBinding(facesContext, viewRoot);
         }

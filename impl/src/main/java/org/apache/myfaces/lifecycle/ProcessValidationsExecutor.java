@@ -23,17 +23,21 @@ import javax.faces.event.PhaseId;
 
 /**
  * Implements the lifecycle as described in Spec. 1.0 PFD Chapter 2
+ * 
  * @author Nikolay Petrov
- *
- * Process validations phase (JSF Spec 2.2.3)
+ * 
+ *         Process validations phase (JSF Spec 2.2.3)
  */
-class ProcessValidationsExecutor implements PhaseExecutor {
-    public boolean execute(FacesContext facesContext) {
+class ProcessValidationsExecutor implements PhaseExecutor
+{
+    public boolean execute(FacesContext facesContext)
+    {
         facesContext.getViewRoot().processValidators(facesContext);
         return false;
     }
 
-    public PhaseId getPhase() {
+    public PhaseId getPhase()
+    {
         return PhaseId.PROCESS_VALIDATIONS;
     }
 }
