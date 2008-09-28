@@ -425,6 +425,13 @@ public class UIViewRoot extends UIComponentBase
 
         return Locale.getDefault();
     }
+    
+    public List<PhaseListener> getPhaseListeners()
+    {
+        // TODO: JSF 2.0 #57
+        
+        return null;
+    }
 
     /**
      * Defines what renderkit should be used to render this view.
