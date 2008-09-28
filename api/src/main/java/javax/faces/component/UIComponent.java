@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import javax.el.ELContext;
 import javax.el.ELException;
@@ -376,8 +375,8 @@ public abstract class UIComponent implements StateHolder
         // TODO: JSF 2.0 #15
     }
 
-    public void unsubscribeToEvent(Class<? extends SystemEvent> eventClass,
-                                   ComponentSystemEventListener componentListener)
+    public void unsubscribeFromEvent(Class<? extends SystemEvent> eventClass,
+                                     ComponentSystemEventListener componentListener)
     {
         // TODO: JSF 2.0 #16
     }
