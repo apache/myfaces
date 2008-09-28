@@ -36,8 +36,8 @@ public class UIComponentValueExpressionTest extends UIComponentTestBase
         super.setUp();
         Collection<Method> mockedMethods = new ArrayList<Method>();
         Class<UIComponent> clazz = UIComponent.class;
-        mockedMethods.add(clazz.getDeclaredMethod("getAttributes", null));
-        mockedMethods.add(clazz.getDeclaredMethod("getFacesContext", null));
+        mockedMethods.add(clazz.getDeclaredMethod("getAttributes", (Class<?>[])null));
+        mockedMethods.add(clazz.getDeclaredMethod("getFacesContext", (Class<?>[])null));
         mockedMethods.add(clazz.getDeclaredMethod("getValueBinding", new Class[] { String.class }));
 
         _testimpl = _mocksControl.createMock(clazz, mockedMethods.toArray(new Method[mockedMethods.size()]));
@@ -86,7 +86,7 @@ public class UIComponentValueExpressionTest extends UIComponentTestBase
         expect(_testimpl.getFacesContext()).andReturn(_facesContext);
         expect(_facesContext.getELContext()).andReturn(_elContext);
         expect(_expression.getValue(EasyMock.eq(_elContext))).andThrow(new ELException());
-        Map map = new HashMap();
+        Map<String, Object> map = new HashMap<String, Object>();
         expect(_testimpl.getAttributes()).andReturn(map);
         _mocksControl.replay();
         _testimpl.setValueExpression("xxx", _expression);
@@ -99,7 +99,7 @@ public class UIComponentValueExpressionTest extends UIComponentTestBase
         expect(_testimpl.getFacesContext()).andReturn(_facesContext);
         expect(_facesContext.getELContext()).andReturn(_elContext);
         expect(_expression.getValue(EasyMock.eq(_elContext))).andReturn("abc");
-        Map map = new HashMap();
+        Map<String, Object> map = new HashMap<String, Object>();
         expect(_testimpl.getAttributes()).andReturn(map);
         _mocksControl.replay();
         _testimpl.setValueExpression("xxx", _expression);

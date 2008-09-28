@@ -25,22 +25,27 @@ import javax.faces.application.ApplicationFactory;
 /**
  * Necessary for testing application-factory-setup with to application-factories;
  */
-public class Mock2ApplicationFactory extends ApplicationFactory {
-    private Application app = null;
-    private ApplicationFactory factory = null;
+public class Mock2ApplicationFactory extends ApplicationFactory
+{
+    private Application app;
+    //private ApplicationFactory factory;
 
-    public Mock2ApplicationFactory() {
+    public Mock2ApplicationFactory()
+    {
     }
 
-    public Mock2ApplicationFactory(ApplicationFactory factory) {
-        this.factory = factory;
+    public Mock2ApplicationFactory(ApplicationFactory factory)
+    {
+        //this.factory = factory;
     }
 
-    public Application getApplication() {
+    public Application getApplication()
+    {
         return app;
     }
 
-    public void setApplication(Application application) {
+    public void setApplication(Application application)
+    {
         this.app = application;
     }
 

@@ -35,7 +35,7 @@ public class AbstractAttributeMapTest extends TestCase
     @Override
     protected void setUp() throws Exception
     {
-        Map map = new HashMap();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put("key", "value");
         _testimpl = new TestAttributeMap(map);
     }
@@ -54,11 +54,11 @@ public class AbstractAttributeMapTest extends TestCase
         assertTrue(_testimpl.values().contains("myValue"));
     }
 
-    private static final class TestAttributeMap extends AbstractAttributeMap
+    private static final class TestAttributeMap extends AbstractAttributeMap<Object>
     {
-        private final Map _values;
+        private final Map<String, Object> _values;
 
-        public TestAttributeMap(Map values)
+        public TestAttributeMap(Map<String, Object> values)
         {
             _values = values;
         }
@@ -70,9 +70,9 @@ public class AbstractAttributeMapTest extends TestCase
         }
 
         @Override
-        protected Enumeration getAttributeNames()
+        protected Enumeration<String> getAttributeNames()
         {
-            return new IteratorEnumeration(_values.keySet().iterator());
+            return new IteratorEnumeration<String>(_values.keySet().iterator());
         }
 
         @Override

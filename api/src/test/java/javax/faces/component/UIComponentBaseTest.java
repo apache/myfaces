@@ -19,6 +19,14 @@
 
 package javax.faces.component;
 
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.isNull;
+import static org.easymock.EasyMock.same;
+import static org.easymock.classextension.EasyMock.createControl;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,13 +39,7 @@ import javax.faces.event.FacesEvent;
 import javax.faces.event.FacesListener;
 import javax.faces.render.Renderer;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.isNull;
-import static org.easymock.EasyMock.same;
-import static org.easymock.classextension.EasyMock.createControl;
 import org.easymock.classextension.IMocksControl;
-import static org.testng.Assert.*;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Factory;
 import org.testng.annotations.Test;
@@ -72,8 +74,8 @@ public class UIComponentBaseTest
         {
             Collection<Method> methods = new ArrayList<Method>();
             methods.add(UIComponentBase.class.getDeclaredMethod("getRenderer", new Class[] { FacesContext.class }));
-            methods.add(UIComponentBase.class.getDeclaredMethod("getFacesContext", null));
-            methods.add(UIComponentBase.class.getDeclaredMethod("getParent", null));
+            methods.add(UIComponentBase.class.getDeclaredMethod("getFacesContext", (Class<?>[])null));
+            methods.add(UIComponentBase.class.getDeclaredMethod("getParent", (Class<?>[])null));
             methods.add(UIComponentBase.class
                     .getDeclaredMethod("getPathToComponent", new Class[] { UIComponent.class }));
 
@@ -281,7 +283,9 @@ public class UIComponentBaseTest
     @Test(expectedExceptions = { RuntimeException.class })
     public void testProcessDecodesCallsRenderResoponseIfDecodeThrowsException()
     {
-        expect(_testImpl.getFacetsAndChildren()).andReturn(Collections.EMPTY_LIST.iterator());
+        List<UIComponent> emptyList = Collections.emptyList();
+        
+        expect(_testImpl.getFacetsAndChildren()).andReturn(emptyList.iterator());
         _testImpl.decode(same(_facesContext));
         expectLastCall().andThrow(new RuntimeException());
         _facesContext.renderResponse();
@@ -308,7 +312,7 @@ public class UIComponentBaseTest
     public void testProcessDecodesWithRenderedTrue() throws Exception
     {
         Collection<Method> methods = getMockedMethods();
-        methods.add(UIComponentBase.class.getDeclaredMethod("getFacetsAndChildren", null));
+        methods.add(UIComponentBase.class.getDeclaredMethod("getFacetsAndChildren", (Class<?>[])null));
         methods.add(UIComponentBase.class.getDeclaredMethod("decode", new Class[] { FacesContext.class }));
         _testImpl = _mocksControl.createMock(UIComponentBase.class, methods.toArray(new Method[methods.size()]));
         UIComponent child = _mocksControl.createMock(UIComponent.class);
@@ -347,7 +351,7 @@ public class UIComponentBaseTest
     private UIComponent setupProcessXYZTest() throws Exception
     {
         Collection<Method> methods = getMockedMethods();
-        methods.add(UIComponentBase.class.getDeclaredMethod("getFacetsAndChildren", null));
+        methods.add(UIComponentBase.class.getDeclaredMethod("getFacetsAndChildren", (Class<?>[])null));
         _testImpl = _mocksControl.createMock(UIComponentBase.class, methods.toArray(new Method[methods.size()]));
         UIComponent child = _mocksControl.createMock(UIComponent.class);
         expect(_testImpl.getFacetsAndChildren()).andReturn(Arrays.asList(new UIComponent[] { child }).iterator());

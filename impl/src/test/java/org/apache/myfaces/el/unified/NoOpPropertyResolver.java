@@ -30,12 +30,14 @@ import javax.faces.el.PropertyResolver;
 public class NoOpPropertyResolver extends PropertyResolver
 {
 
+    @SuppressWarnings("unchecked")
     @Override
     public Class getType(Object base, int index) throws EvaluationException, PropertyNotFoundException
     {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Class getType(Object base, Object property) throws EvaluationException, PropertyNotFoundException
     {

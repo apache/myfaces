@@ -74,8 +74,8 @@ public class UIComponentFindComponentTest extends AbstractUIComponentBaseTest
     {
         String expression = "child1_1:testimpl";
         Collection<Method> mockedMethods = getMockedMethods();
-        mockedMethods.add(UIComponentBase.class.getDeclaredMethod("getFacetsAndChildren", null));
-        mockedMethods.add(UIComponentBase.class.getDeclaredMethod("getId", null));
+        mockedMethods.add(UIComponentBase.class.getDeclaredMethod("getFacetsAndChildren", (Class<?>[])null));
+        mockedMethods.add(UIComponentBase.class.getDeclaredMethod("getId", (Class<?>[])null));
         UIComponent namingContainer = _mocksControl.createMock(TestNamingContainerBaseComponent.class,
                 mockedMethods.toArray(new Method[mockedMethods.size()]));
 
@@ -97,8 +97,8 @@ public class UIComponentFindComponentTest extends AbstractUIComponentBaseTest
     {
         String expression = "testimpl";
         Collection<Method> mockedMethods = getMockedMethods();
-        mockedMethods.add(UIComponentBase.class.getDeclaredMethod("getFacetsAndChildren", null));
-        mockedMethods.add(UIComponentBase.class.getDeclaredMethod("getId", null));
+        mockedMethods.add(UIComponentBase.class.getDeclaredMethod("getFacetsAndChildren", (Class<?>[])null));
+        mockedMethods.add(UIComponentBase.class.getDeclaredMethod("getId", (Class<?>[])null));
         UIComponent namingContainer = _mocksControl.createMock(TestNamingContainerBaseComponent.class,
                 mockedMethods.toArray(new Method[mockedMethods.size()]));
         UIComponent parent = _mocksControl.createMock(UIComponent.class);

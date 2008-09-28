@@ -66,7 +66,7 @@ public class HtmlListboxRendererTest extends AbstractJsfTestCase
 
     public void testRenderDefault() throws Exception
     {
-        List items = new ArrayList();
+        List<SelectItem> items = new ArrayList<SelectItem>();
         items.add(new SelectItem("mars"));
         items.add(new SelectItem("jupiter"));
 
@@ -86,7 +86,7 @@ public class HtmlListboxRendererTest extends AbstractJsfTestCase
 
     public void testRenderSizeSet() throws Exception
     {
-        List items = new ArrayList();
+        List<SelectItem> items = new ArrayList<SelectItem>();
         items.add(new SelectItem("mars"));
         items.add(new SelectItem("jupiter"));
 

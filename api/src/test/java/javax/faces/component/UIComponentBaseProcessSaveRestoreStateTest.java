@@ -43,10 +43,10 @@ public class UIComponentBaseProcessSaveRestoreStateTest extends AbstractUICompon
     protected Collection<Method> getMockedMethods() throws Exception
     {
         Collection<Method> methods = super.getMockedMethods();
-        methods.add(UIComponentBase.class.getDeclaredMethod("getFacets", null));
-        methods.add(UIComponentBase.class.getDeclaredMethod("getChildren", null));
-        methods.add(UIComponentBase.class.getDeclaredMethod("getFacetCount", null));
-        methods.add(UIComponentBase.class.getDeclaredMethod("getChildCount", null));
+        methods.add(UIComponentBase.class.getDeclaredMethod("getFacets", (Class<?>[])null));
+        methods.add(UIComponentBase.class.getDeclaredMethod("getChildren", (Class<?>[])null));
+        methods.add(UIComponentBase.class.getDeclaredMethod("getFacetCount", (Class<?>[])null));
+        methods.add(UIComponentBase.class.getDeclaredMethod("getChildCount", (Class<?>[])null));
         methods.add(UIComponentBase.class.getDeclaredMethod("saveState", new Class[]{FacesContext.class}));
         methods.add(UIComponentBase.class.getDeclaredMethod("restoreState", new Class[]{FacesContext.class,
                 Object.class}));

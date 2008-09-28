@@ -7,51 +7,62 @@ package org.apache.myfaces.config;
 import java.util.List;
 import java.util.Map;
 
-public class MangedBeanExample {
+public class MangedBeanExample
+{
 
-    private String managedProperty ;
-    private List managedList;
-    private List writeOnlyList;
-    private Map managedMap;
-    private Map writeOnlyMap;
-    
-    public List getManagedList() {
+    private String managedProperty;
+    private List<String> managedList;
+    private List<String> writeOnlyList;
+    private Map<String, String> managedMap;
+    private Map<String, String> writeOnlyMap;
+
+    public List<String> getManagedList()
+    {
         return managedList;
     }
 
-    public void setManagedList(List managedList) {
+    public void setManagedList(List<String> managedList)
+    {
         this.managedList = managedList;
     }
 
-    public String getManagedProperty() {
+    public String getManagedProperty()
+    {
         return managedProperty;
     }
 
-    public void setManagedProperty(String managedProperty) {
+    public void setManagedProperty(String managedProperty)
+    {
         this.managedProperty = managedProperty;
     }
 
-    public Map getManagedMap() {
+    public Map<String, String> getManagedMap()
+    {
         return managedMap;
     }
 
-    public void setManagedMap(Map managedMap) {
+    public void setManagedMap(Map<String, String> managedMap)
+    {
         this.managedMap = managedMap;
     }
 
-    public void setWriteOnlyList(List writeOnlyList) {
+    public void setWriteOnlyList(List<String> writeOnlyList)
+    {
         this.writeOnlyList = writeOnlyList;
     }
 
-    public void setWriteOnlyMap(Map writeOnlyMap) {
+    public void setWriteOnlyMap(Map<String, String> writeOnlyMap)
+    {
         this.writeOnlyMap = writeOnlyMap;
     }
 
-    public Map getHiddenWriteOnlyMap() {
+    public Map<String, String> getHiddenWriteOnlyMap()
+    {
         return writeOnlyMap;
     }
 
-    public List getHiddenWriteOnlyList() {
+    public List<String> getHiddenWriteOnlyList()
+    {
         return writeOnlyList;
     }
 

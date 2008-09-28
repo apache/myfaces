@@ -25,8 +25,6 @@ import java.util.Locale;
 
 import org.apache.shale.test.base.AbstractJsfTestCase;
 
-import junit.framework.Test;
-
 public class UISelectManyTest extends AbstractJsfTestCase {
 
   public UISelectManyTest(String name) {
@@ -41,7 +39,7 @@ public class UISelectManyTest extends AbstractJsfTestCase {
     selectMany.setId("selectMany");
     selectMany.setRendererType(null);
     selectMany.setRequired(true);
-    List children = selectMany.getChildren();
+    List<UIComponent> children = selectMany.getChildren();
 
     UISelectItem one = new UISelectItem();
     one.setItemValue(new Integer(1));
@@ -68,7 +66,7 @@ public class UISelectManyTest extends AbstractJsfTestCase {
     selectMany.setId("selectMany");
     selectMany.setRendererType(null);
     selectMany.setRequired(true);
-    List children = selectMany.getChildren();
+    List<UIComponent> children = selectMany.getChildren();
 
     UISelectItem one = new UISelectItem();
     one.setItemValue(new Integer(1));
@@ -94,7 +92,7 @@ public class UISelectManyTest extends AbstractJsfTestCase {
     UISelectMany selectMany = new UISelectMany();
     selectMany.setId("selectMany");
     selectMany.setRendererType(null);
-    List children = selectMany.getChildren();
+    List<UIComponent> children = selectMany.getChildren();
 
     UISelectItem one = new UISelectItem();
     one.setItemValue(new Integer(1));
@@ -120,7 +118,7 @@ public class UISelectManyTest extends AbstractJsfTestCase {
     UISelectMany selectMany = new UISelectMany();
     selectMany.setId("selectMany");
     selectMany.setRendererType(null);
-    List children = selectMany.getChildren();
+    List<UIComponent> children = selectMany.getChildren();
 
     UISelectItem one = new UISelectItem();
     one.setItemValue("1");
@@ -146,7 +144,7 @@ public class UISelectManyTest extends AbstractJsfTestCase {
     UISelectMany selectMany = new UISelectMany();
     selectMany.setId("selectMany");
     selectMany.setRendererType(null);
-    List children = selectMany.getChildren();
+    List<UIComponent> children = selectMany.getChildren();
 
     UISelectItem one = new UISelectItem();
     one.setItemValue("1");

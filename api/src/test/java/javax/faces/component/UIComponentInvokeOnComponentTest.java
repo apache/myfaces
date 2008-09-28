@@ -1,18 +1,19 @@
 package javax.faces.component;
 
 import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
-import javax.faces.context.FacesContext;
 import javax.faces.FacesException;
+import javax.faces.context.FacesContext;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-import org.testng.Assert;
 import org.apache.myfaces.TestRunner;
 import org.easymock.EasyMock;
+import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 /**
      * Tests for
@@ -31,7 +32,7 @@ public class UIComponentInvokeOnComponentTest extends UIComponentTestBase
         Collection<Method> mockedMethods = new ArrayList<Method>();
         Class<UIComponent> clazz = UIComponent.class;
         mockedMethods.add(clazz.getDeclaredMethod("getClientId", new Class[] { FacesContext.class }));
-        mockedMethods.add(clazz.getDeclaredMethod("getFacetsAndChildren", null));
+        mockedMethods.add(clazz.getDeclaredMethod("getFacetsAndChildren", (Class<?>[])null));
 
         _testimpl = _mocksControl.createMock(clazz, mockedMethods.toArray(new Method[mockedMethods.size()]));
         _contextCallback = _mocksControl.createMock(ContextCallback.class);
@@ -67,8 +68,10 @@ public class UIComponentInvokeOnComponentTest extends UIComponentTestBase
     @Test
     public void testInvokeOnComponentAndNotFindComponentWithClientId() throws Exception
     {
+        List<UIComponent> emptyList = Collections.emptyList();
+        
         EasyMock.expect(_testimpl.getClientId(EasyMock.same(_facesContext))).andReturn("xxxId");
-        EasyMock.expect(_testimpl.getFacetsAndChildren()).andReturn(Collections.EMPTY_LIST.iterator());
+        EasyMock.expect(_testimpl.getFacetsAndChildren()).andReturn(emptyList.iterator());
         _mocksControl.replay();
         Assert.assertFalse(_testimpl.invokeOnComponent(_facesContext, "xxId", _contextCallback));
         _mocksControl.verify();

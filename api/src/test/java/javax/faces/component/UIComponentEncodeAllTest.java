@@ -27,12 +27,12 @@ public class UIComponentEncodeAllTest extends UIComponentTestBase
         super.setUp();
         Collection<Method> mockedMethods = new ArrayList<Method>();
         Class<UIComponent> clazz = UIComponent.class;
-        mockedMethods.add(clazz.getDeclaredMethod("isRendered", null));
+        mockedMethods.add(clazz.getDeclaredMethod("isRendered", (Class<?>[])null));
         mockedMethods.add(clazz.getDeclaredMethod("encodeBegin", new Class[] { FacesContext.class }));
-        mockedMethods.add(clazz.getDeclaredMethod("getRendersChildren", null));
+        mockedMethods.add(clazz.getDeclaredMethod("getRendersChildren", (Class<?>[])null));
         mockedMethods.add(clazz.getDeclaredMethod("encodeChildren", new Class[] { FacesContext.class }));
-        mockedMethods.add(clazz.getDeclaredMethod("getChildren", null));
-        mockedMethods.add(clazz.getDeclaredMethod("getChildCount", null));
+        mockedMethods.add(clazz.getDeclaredMethod("getChildren", (Class<?>[])null));
+        mockedMethods.add(clazz.getDeclaredMethod("getChildCount", (Class<?>[])null));
         mockedMethods.add(clazz.getDeclaredMethod("encodeEnd", new Class[] { FacesContext.class }));
 
         _testimpl = _mocksControl.createMock(clazz, mockedMethods.toArray(new Method[mockedMethods.size()]));

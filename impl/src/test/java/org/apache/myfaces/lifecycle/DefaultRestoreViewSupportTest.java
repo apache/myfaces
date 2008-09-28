@@ -18,11 +18,14 @@
  */
 package org.apache.myfaces.lifecycle;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.same;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.el.ValueExpression;
@@ -67,7 +70,9 @@ public class DefaultRestoreViewSupportTest extends FacesTestCase
         expect(testcomponent.getValueExpression(eq("binding"))).andReturn(testExpression);
         expect(_facesContext.getELContext()).andReturn(_elContext);
         testExpression.setValue(same(_elContext), same(testcomponent));
-        expect(testcomponent.getFacetsAndChildren()).andReturn(Collections.EMPTY_LIST.iterator());
+        
+        List<UIComponent> emptyList = Collections.emptyList();
+        expect(testcomponent.getFacetsAndChildren()).andReturn(emptyList.iterator());
 
         _mocksControl.replay();
         _testimpl.processComponentBinding(_facesContext, root);
@@ -82,7 +87,7 @@ public class DefaultRestoreViewSupportTest extends FacesTestCase
     {
         _mocksControl.checkOrder(true);
         expect(_facesContext.getExternalContext()).andReturn(_externalContext);
-        Map map = new HashMap();
+        Map<String, Object> map = new HashMap<String, Object>();
         String expectedValue = "javax.servlet.include.path_info_VIEWID";
         map.put("javax.servlet.include.path_info", expectedValue);
         expect(_externalContext.getRequestMap()).andReturn(map);
@@ -100,7 +105,9 @@ public class DefaultRestoreViewSupportTest extends FacesTestCase
     {
         _mocksControl.checkOrder(true);
         expect(_facesContext.getExternalContext()).andReturn(_externalContext);
-        expect(_externalContext.getRequestMap()).andReturn(Collections.EMPTY_MAP);
+        
+        Map<String, Object> emptyMap = Collections.emptyMap();
+        expect(_externalContext.getRequestMap()).andReturn(emptyMap);
         String expectedValue = "requestPathInfo_VIEWID";
         expect(_externalContext.getRequestPathInfo()).andReturn(expectedValue);
 
@@ -117,7 +124,7 @@ public class DefaultRestoreViewSupportTest extends FacesTestCase
     {
         _mocksControl.checkOrder(true);
         expect(_facesContext.getExternalContext()).andReturn(_externalContext);
-        Map map = new HashMap();
+        Map<String, Object> map = new HashMap<String, Object>();
         String expectedValue = "javax.servlet.include.servlet_path_VIEWID";
         map.put("javax.servlet.include.servlet_path", expectedValue);
         expect(_externalContext.getRequestMap()).andReturn(map);
@@ -136,7 +143,10 @@ public class DefaultRestoreViewSupportTest extends FacesTestCase
     {
         _mocksControl.checkOrder(true);
         expect(_facesContext.getExternalContext()).andReturn(_externalContext);
-        expect(_externalContext.getRequestMap()).andReturn(Collections.EMPTY_MAP);
+        
+        Map<String, Object> emptyMap = Collections.emptyMap();
+        
+        expect(_externalContext.getRequestMap()).andReturn(emptyMap);
         expect(_externalContext.getRequestPathInfo()).andReturn(null);
         String expectedValue = "RequestServletPath_VIEWID";
         expect(_externalContext.getRequestServletPath()).andReturn(expectedValue);
@@ -154,7 +164,10 @@ public class DefaultRestoreViewSupportTest extends FacesTestCase
     {
         _mocksControl.checkOrder(true);
         expect(_facesContext.getExternalContext()).andReturn(_externalContext);
-        expect(_externalContext.getRequestMap()).andReturn(Collections.EMPTY_MAP);
+        
+        Map<String, Object> emptyMap = Collections.emptyMap();
+        
+        expect(_externalContext.getRequestMap()).andReturn(emptyMap);
         expect(_externalContext.getRequestPathInfo()).andReturn(null);
         expect(_externalContext.getRequestServletPath()).andReturn(null);
 

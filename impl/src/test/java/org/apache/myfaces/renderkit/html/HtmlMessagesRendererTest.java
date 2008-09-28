@@ -81,7 +81,7 @@ public class HtmlMessagesRendererTest extends AbstractJsfTestCase
 
         facesContext.renderResponse();
 
-        String output = writer.getWriter().toString();
+        //String output = writer.getWriter().toString();
 
         // TODO: test don't work on different jvms (messages are in different order)
         // assertEquals("<table style=\"left: 48px; top: 432px; position: absolute\"><tr><td><span class=\"warnClass\">warnSumary</span></td></tr>" +

@@ -32,9 +32,6 @@ import java.util.List;
  */
 public class HtmlMenuRendererTest extends AbstractJsfTestCase
 {
-    private static final String LINE_SEPARATOR = System.getProperty(
-            "line.separator", "\r\n");
-
     private MockResponseWriter writer ;
     private HtmlSelectOneMenu selectOneMenu;
 
@@ -69,7 +66,7 @@ public class HtmlMenuRendererTest extends AbstractJsfTestCase
 
     public void testRenderDefault() throws Exception
     {
-        List items = new ArrayList();
+        List<SelectItem> items = new ArrayList<SelectItem>();
         items.add(new SelectItem("mars"));
         items.add(new SelectItem("jupiter"));
 
@@ -89,7 +86,7 @@ public class HtmlMenuRendererTest extends AbstractJsfTestCase
 
     public void testRenderReadonly() throws Exception
     {
-        List items = new ArrayList();
+        List<SelectItem> items = new ArrayList<SelectItem>();
         items.add(new SelectItem("mars"));
         items.add(new SelectItem("jupiter"));
 

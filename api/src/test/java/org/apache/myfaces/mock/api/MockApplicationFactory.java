@@ -22,22 +22,27 @@ package org.apache.myfaces.mock.api;
 import javax.faces.application.Application;
 import javax.faces.application.ApplicationFactory;
 
-public class MockApplicationFactory extends ApplicationFactory {
-    private Application app = null;
-    private ApplicationFactory factory;
+public class MockApplicationFactory extends ApplicationFactory
+{
+    private Application app;
+    //private ApplicationFactory factory;
 
-    public MockApplicationFactory() {
+    public MockApplicationFactory()
+    {
     }
 
-    public MockApplicationFactory(ApplicationFactory factory) {
-        this.factory = factory;
+    public MockApplicationFactory(ApplicationFactory factory)
+    {
+        //this.factory = factory;
     }
-    
-    public Application getApplication() {
+
+    public Application getApplication()
+    {
         return app;
     }
 
-    public void setApplication(Application application) {
+    public void setApplication(Application application)
+    {
         this.app = application;
     }
 

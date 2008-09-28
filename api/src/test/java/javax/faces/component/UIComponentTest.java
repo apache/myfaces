@@ -18,19 +18,20 @@
  */
 package javax.faces.component;
 
+import static org.apache.myfaces.Assert.assertException;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.same;
+import static org.testng.Assert.assertEquals;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.el.ValueExpression;
 import javax.faces.context.FacesContext;
 
-import static org.apache.myfaces.Assert.*;
 import org.apache.myfaces.TestRunner;
-import static org.easymock.EasyMock.*;
-import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
 /**
@@ -45,8 +46,8 @@ public class UIComponentTest extends UIComponentTestBase
     @Test
     public void testGetFacetCount() throws Exception
     {
-        UIComponent component = _mocksControl.createMock(UIComponent.class, new Method[] { UIComponent.class
-                .getDeclaredMethod("getFacets", null) });
+        Method[] methods = {UIComponent.class.getDeclaredMethod("getFacets", (Class<?>[])null)};
+        UIComponent component = _mocksControl.createMock(UIComponent.class, methods);
         Map<String, UIComponent> map = new HashMap<String, UIComponent>();
         map.put("xxx1", new UIInput());
         map.put("xxx2", new UIInput());

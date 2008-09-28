@@ -18,12 +18,13 @@
  */
 package javax.faces.component;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.isNull;
+import static org.easymock.EasyMock.same;
 
 import java.util.Date;
 
 import javax.el.ELException;
-import javax.el.ExpressionFactory;
 import javax.el.MethodInfo;
 import javax.el.MethodNotFoundException;
 import javax.faces.application.Application;
@@ -52,7 +53,7 @@ public class _MethodBindingToMethodExpressionTest extends TestCase
     private MockELContext _elContext;
     private MockFacesContext12 _facesContext;
     private Application _application;
-    private ExpressionFactory _expressionFactory;
+    //private ExpressionFactory _expressionFactory;
 
     protected void setUp() throws Exception
     {
@@ -60,7 +61,7 @@ public class _MethodBindingToMethodExpressionTest extends TestCase
         _facesContext = new MockFacesContext12();
         _application = _mocksControl.createMock(Application.class);
         _facesContext.setApplication(_application);
-        _expressionFactory = _mocksControl.createMock(ExpressionFactory.class);
+        //_expressionFactory = _mocksControl.createMock(ExpressionFactory.class);
         _elContext = new MockELContext();
         _elContext.putContext(FacesContext.class, _facesContext);
         _methodBinding = _mocksControl.createMock(MethodBinding.class);
@@ -116,7 +117,7 @@ public class _MethodBindingToMethodExpressionTest extends TestCase
     public void testGetMethodInfoELContext()
     {
         _MethodBindingToMethodExpression testimpl = new _MethodBindingToMethodExpression(_methodBinding);
-        Class expectedReturnType = Date.class;
+        Class<Date> expectedReturnType = Date.class;
         expect(_methodBinding.getType(same(_facesContext))).andReturn(expectedReturnType);
         _mocksControl.replay();
         MethodInfo methodInfo = testimpl.getMethodInfo(_elContext);

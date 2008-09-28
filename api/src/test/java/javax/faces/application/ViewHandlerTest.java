@@ -63,9 +63,10 @@ public class ViewHandlerTest extends TestCase
      * Test method for
      * {@link javax.faces.application.ViewHandler#calculateCharacterEncoding(javax.faces.context.FacesContext)}.
      */
+    @SuppressWarnings("unchecked")
     public void testCalculateCharacterEncodingWithRequestHeaderContentType()
     {
-        Map map = _mocksControl.createMock(Map.class);
+        Map<String, String> map = (Map<String, String>)_mocksControl.createMock(Map.class);
         expect(_externalContext.getRequestHeaderMap()).andReturn(map);
         expect(map.get(eq("Content-Type"))).andReturn("text/html;charset=UTF-8");
         _mocksControl.replay();
@@ -79,7 +80,9 @@ public class ViewHandlerTest extends TestCase
      */
     public void testCalculateCharacterEncodingWithNoRequestContentTypeAndNoSession()
     {
-        expect(_externalContext.getRequestHeaderMap()).andReturn(Collections.EMPTY_MAP);
+        Map<String, String> emptyMap = Collections.emptyMap();
+
+        expect(_externalContext.getRequestHeaderMap()).andReturn(emptyMap);
         expect(_externalContext.getSession(eq(false))).andReturn(null);
         _mocksControl.replay();
         assertNull(_testimpl.calculateCharacterEncoding(_facesContext));
@@ -90,11 +93,14 @@ public class ViewHandlerTest extends TestCase
      * Test method for
      * {@link javax.faces.application.ViewHandler#calculateCharacterEncoding(javax.faces.context.FacesContext)}.
      */
+    @SuppressWarnings("unchecked")
     public void testCalculateCharacterEncodingWithNoRequestContentTypeAndWithSessionButNoSessionValue()
     {
-        expect(_externalContext.getRequestHeaderMap()).andReturn(Collections.EMPTY_MAP);
+        Map<String, String> emptyMap = Collections.emptyMap();
+
+        expect(_externalContext.getRequestHeaderMap()).andReturn(emptyMap);
         expect(_externalContext.getSession(eq(false))).andReturn(new Object());
-        Map map = _mocksControl.createMock(Map.class);
+        Map<String, Object> map = (Map<String, Object>)_mocksControl.createMock(Map.class);
         expect(_externalContext.getSessionMap()).andReturn(map);
         expect(map.get(eq(ViewHandler.CHARACTER_ENCODING_KEY))).andReturn(null);
         _mocksControl.replay();
@@ -106,11 +112,14 @@ public class ViewHandlerTest extends TestCase
      * Test method for
      * {@link javax.faces.application.ViewHandler#calculateCharacterEncoding(javax.faces.context.FacesContext)}.
      */
+    @SuppressWarnings("unchecked")
     public void testCalculateCharacterEncodingWithNoRequestContentTypeAndWithSessionAndNoSessionValue()
     {
-        expect(_externalContext.getRequestHeaderMap()).andReturn(Collections.EMPTY_MAP);
+        Map<String, String> emptyMap = Collections.emptyMap();
+
+        expect(_externalContext.getRequestHeaderMap()).andReturn(emptyMap);
         expect(_externalContext.getSession(eq(false))).andReturn(new Object());
-        Map map = _mocksControl.createMock(Map.class);
+        Map<String, Object> map = (Map<String, Object>)_mocksControl.createMock(Map.class);
         expect(_externalContext.getSessionMap()).andReturn(map);
         expect(map.get(eq(ViewHandler.CHARACTER_ENCODING_KEY))).andReturn("UTF-8");
         _mocksControl.replay();
@@ -125,8 +134,13 @@ public class ViewHandlerTest extends TestCase
      */
     public void testInitView() throws Exception
     {
-        ViewHandler handler = _mocksControl.createMock(ViewHandler.class, new Method[] { ViewHandler.class.getMethod(
-                "calculateCharacterEncoding", new Class[] { FacesContext.class }) });
+        ViewHandler handler = _mocksControl
+                                           .createMock(
+                                                       ViewHandler.class,
+                                                       new Method[] { ViewHandler.class
+                                                                                       .getMethod(
+                                                                                                  "calculateCharacterEncoding",
+                                                                                                  new Class[] { FacesContext.class }) });
         expect(handler.calculateCharacterEncoding(_facesContext)).andReturn("xxx");
         _externalContext.setRequestCharacterEncoding(eq("xxx"));
         _mocksControl.replay();
@@ -141,8 +155,13 @@ public class ViewHandlerTest extends TestCase
      */
     public void testInitViewWithUnsupportedEncodingException() throws Exception
     {
-        final ViewHandler handler = _mocksControl.createMock(ViewHandler.class, new Method[] { ViewHandler.class.getMethod(
-                "calculateCharacterEncoding", new Class[] { FacesContext.class }) });
+        final ViewHandler handler = _mocksControl
+                                                 .createMock(
+                                                             ViewHandler.class,
+                                                             new Method[] { ViewHandler.class
+                                                                                             .getMethod(
+                                                                                                        "calculateCharacterEncoding",
+                                                                                                        new Class[] { FacesContext.class }) });
         expect(handler.calculateCharacterEncoding(_facesContext)).andReturn("xxx");
         _externalContext.setRequestCharacterEncoding(eq("xxx"));
         expectLastCall().andThrow(new UnsupportedEncodingException());

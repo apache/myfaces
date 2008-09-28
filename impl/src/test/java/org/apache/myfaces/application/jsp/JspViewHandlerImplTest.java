@@ -71,8 +71,10 @@ public class JspViewHandlerImplTest extends FacesTestCase
      */
     public void testCalculateLocaleWithNoRequestLocaleAndNoDefaultLocale()
     {
+        List<Locale> emptyList = Collections.emptyList();
+        
         expectApplicationAndExternalContextGet();
-        expect(_externalContext.getRequestLocales()).andReturn(Collections.EMPTY_LIST.iterator());
+        expect(_externalContext.getRequestLocales()).andReturn(emptyList.iterator());
         expect(_application.getDefaultLocale()).andReturn(null);
         _mocksControl.replay();
         assertEquals(Locale.getDefault(), _testimpl.calculateLocale(_facesContext));
@@ -85,8 +87,10 @@ public class JspViewHandlerImplTest extends FacesTestCase
      */
     public void testCalculateLocaleWithNoRequestLocaleAndDefaultLocale()
     {
+        List<Locale> emptyList = Collections.emptyList();
+        
         expectApplicationAndExternalContextGet();
-        expect(_externalContext.getRequestLocales()).andReturn(Collections.EMPTY_LIST.iterator());
+        expect(_externalContext.getRequestLocales()).andReturn(emptyList.iterator());
         expect(_application.getDefaultLocale()).andReturn(Locale.KOREAN);
         _mocksControl.replay();
         assertEquals(Locale.KOREAN, _testimpl.calculateLocale(_facesContext));
@@ -99,10 +103,12 @@ public class JspViewHandlerImplTest extends FacesTestCase
      */
     public void testCalculateLocaleWithNoMatchingRequestLocaleAndNoSupportedLocaleAndDefaultLocale()
     {
+        List<Locale> emptyList = Collections.emptyList();
+        
         expectApplicationAndExternalContextGet();
         Iterator<Locale> requestLocales = Arrays.asList(new Locale[] { Locale.KOREAN }).iterator();
         expect(_externalContext.getRequestLocales()).andReturn(requestLocales);
-        expect(_application.getSupportedLocales()).andReturn(Collections.EMPTY_LIST.iterator());
+        expect(_application.getSupportedLocales()).andReturn(emptyList.iterator());
         expect(_application.getDefaultLocale()).andReturn(Locale.GERMAN);
         _mocksControl.replay();
         assertEquals(Locale.GERMAN, _testimpl.calculateLocale(_facesContext));
@@ -202,8 +208,10 @@ public class JspViewHandlerImplTest extends FacesTestCase
      */
     public void testCalculateRenderKitIdFromApplicationDefault()
     {
+        Map<String, Object> emptyMap = Collections.emptyMap();
+        
         expectApplicationAndExternalContextGet();
-        expect(_externalContext.getRequestMap()).andReturn(Collections.EMPTY_MAP);
+        expect(_externalContext.getRequestMap()).andReturn(emptyMap);
         expect(_application.getDefaultRenderKitId()).andReturn("xxx");
         _mocksControl.replay();
         assertEquals("xxx", _testimpl.calculateRenderKitId(_facesContext));
@@ -216,8 +224,10 @@ public class JspViewHandlerImplTest extends FacesTestCase
      */
     public void testCalculateRenderKitIdFinalFallBack()
     {
+        Map<String, Object> emptyMap = Collections.emptyMap();
+        
         expectApplicationAndExternalContextGet();
-        expect(_externalContext.getRequestMap()).andReturn(Collections.EMPTY_MAP);
+        expect(_externalContext.getRequestMap()).andReturn(emptyMap);
         expect(_application.getDefaultRenderKitId()).andReturn(null);
         _mocksControl.replay();
         assertEquals(RenderKitFactory.HTML_BASIC_RENDER_KIT, _testimpl.calculateRenderKitId(_facesContext));

@@ -44,8 +44,8 @@ public abstract class AbstractUIComponentBaseTest
     {
         Collection<Method> methods = new ArrayList<Method>();
         methods.add(UIComponentBase.class.getDeclaredMethod("getRenderer", new Class[]{FacesContext.class}));
-        methods.add(UIComponentBase.class.getDeclaredMethod("getFacesContext", null));
-        methods.add(UIComponentBase.class.getDeclaredMethod("getParent", null));
+        methods.add(UIComponentBase.class.getDeclaredMethod("getFacesContext", (Class<?>[])null));
+        methods.add(UIComponentBase.class.getDeclaredMethod("getParent", (Class<?>[])null));
         methods.add(UIComponentBase.class
                 .getDeclaredMethod("getPathToComponent", new Class[]{UIComponent.class}));
 

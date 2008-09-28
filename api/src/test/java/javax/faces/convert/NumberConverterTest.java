@@ -19,11 +19,11 @@
 
 package javax.faces.convert;
 
-import org.apache.shale.test.base.AbstractJsfTestCase;
-
-import javax.faces.component.UIInput;
-import javax.faces.context.FacesContext;
 import java.util.Locale;
+
+import javax.faces.context.FacesContext;
+
+import org.apache.shale.test.base.AbstractJsfTestCase;
 
 public class NumberConverterTest extends AbstractJsfTestCase
 {

@@ -132,7 +132,7 @@ public class UIViewRootTest
             }
         }).anyTimes();
         _mocksControl.replay();
-        Collection createdIds = new HashSet();
+        Collection<String> createdIds = new HashSet<String>();
         for (int i = 0; i < 10000; i++)
         {
             if (!createdIds.add(_testimpl.createUniqueId()))

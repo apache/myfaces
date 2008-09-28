@@ -66,7 +66,7 @@ public class HtmlRadioRendererTest extends AbstractJsfTestCase
 
     public void testDefault() throws Exception
     {
-        List items = new ArrayList();
+        List<SelectItem> items = new ArrayList<SelectItem>();
         items.add(new SelectItem("mars"));
         items.add(new SelectItem("jupiter"));
 
@@ -88,7 +88,7 @@ public class HtmlRadioRendererTest extends AbstractJsfTestCase
 
     public void testDefaultStylePassthru() throws Exception
     {
-        List items = new ArrayList();
+        List<SelectItem> items = new ArrayList<SelectItem>();
         items.add(new SelectItem("mars"));
         items.add(new SelectItem("jupiter"));
 

@@ -19,16 +19,15 @@
 
 package javax.faces.convert;
 
-import org.apache.shale.test.base.AbstractJsfTestCase;
-
-import javax.faces.component.UIInput;
-import javax.faces.context.FacesContext;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.text.SimpleDateFormat;
 
-import junit.framework.Test;
+import javax.faces.component.UIInput;
+import javax.faces.context.FacesContext;
+
+import org.apache.shale.test.base.AbstractJsfTestCase;
 
 public class DateTimeConverterTest extends AbstractJsfTestCase
 {

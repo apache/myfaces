@@ -28,44 +28,54 @@ import org.apache.shale.test.mock.MockStateManager;
 import org.easymock.MockControl;
 import org.easymock.classextension.MockClassControl;
 
-public class StateManagerTest extends TestCase {
+public class StateManagerTest extends TestCase
+{
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         junit.textui.TestRunner.run(StateManagerTest.class);
     }
 
-    public StateManagerTest(String name) {
+    public StateManagerTest(String name)
+    {
         super(name);
     }
 
-    protected void setUp() throws Exception {
+    protected void setUp() throws Exception
+    {
         super.setUp();
     }
 
-    protected void tearDown() throws Exception {
+    protected void tearDown() throws Exception
+    {
         super.tearDown();
     }
 
     /*
-      * Test method for 'javax.faces.application.StateManager.isSavingStateInClient(FacesContext)'
-      */
-    public void testNullThrowsIsSavingStateInClient() {
+     * Test method for 'javax.faces.application.StateManager.isSavingStateInClient(FacesContext)'
+     */
+    public void testNullThrowsIsSavingStateInClient()
+    {
         MockStateManager subject = new MockStateManager();
-        try {
+        try
+        {
             subject.isSavingStateInClient(null);
             fail("should have thrown an exception");
-        } catch (RuntimeException e) {
+        }
+        catch (RuntimeException e)
+        {
         }
     }
 
     /*
-      * Test method for 'javax.faces.application.StateManager.isSavingStateInClient(FacesContext)'
-      */
-    public void testIsSavingStateInClientTrue() {
+     * Test method for 'javax.faces.application.StateManager.isSavingStateInClient(FacesContext)'
+     */
+    public void testIsSavingStateInClientTrue()
+    {
         MockControl contextControl = MockClassControl.createControl(FacesContext.class);
         MockControl externalControl = MockClassControl.createControl(ExternalContext.class);
-        FacesContext context = (FacesContext)contextControl.getMock();
-        ExternalContext external = (ExternalContext)externalControl.getMock();
+        FacesContext context = (FacesContext) contextControl.getMock();
+        ExternalContext external = (ExternalContext) externalControl.getMock();
         context.getExternalContext();
         contextControl.setReturnValue(external);
         contextControl.replay();
@@ -78,13 +88,14 @@ public class StateManagerTest extends TestCase {
     }
 
     /*
-      * Test method for 'javax.faces.application.StateManager.isSavingStateInClient(FacesContext)'
-      */
-    public void testIsSavingStateInClientFalse() {
+     * Test method for 'javax.faces.application.StateManager.isSavingStateInClient(FacesContext)'
+     */
+    public void testIsSavingStateInClientFalse()
+    {
         MockControl contextControl = MockClassControl.createControl(FacesContext.class);
         MockControl externalControl = MockClassControl.createControl(ExternalContext.class);
-        FacesContext context = (FacesContext)contextControl.getMock();
-        ExternalContext external = (ExternalContext)externalControl.getMock();
+        FacesContext context = (FacesContext) contextControl.getMock();
+        ExternalContext external = (ExternalContext) externalControl.getMock();
         context.getExternalContext();
         contextControl.setReturnValue(external);
         contextControl.replay();
@@ -99,13 +110,14 @@ public class StateManagerTest extends TestCase {
     }
 
     /*
-      * Test method for 'javax.faces.application.StateManager.isSavingStateInClient(FacesContext)'
-      */
-    public void testIsSavingStateInClientBogus() {
+     * Test method for 'javax.faces.application.StateManager.isSavingStateInClient(FacesContext)'
+     */
+    public void testIsSavingStateInClientBogus()
+    {
         MockControl contextControl = MockClassControl.createControl(FacesContext.class);
         MockControl externalControl = MockClassControl.createControl(ExternalContext.class);
-        FacesContext context = (FacesContext)contextControl.getMock();
-        ExternalContext external = (ExternalContext)externalControl.getMock();
+        FacesContext context = (FacesContext) contextControl.getMock();
+        ExternalContext external = (ExternalContext) externalControl.getMock();
         context.getExternalContext();
         contextControl.setReturnValue(external);
         context.getExternalContext();
@@ -122,13 +134,14 @@ public class StateManagerTest extends TestCase {
     }
 
     /*
-      * Test method for 'javax.faces.application.StateManager.isSavingStateInClient(FacesContext)'
-      */
-    public void testIsSavingStateInClientNull() {
+     * Test method for 'javax.faces.application.StateManager.isSavingStateInClient(FacesContext)'
+     */
+    public void testIsSavingStateInClientNull()
+    {
         MockControl contextControl = MockClassControl.createControl(FacesContext.class);
         MockControl externalControl = MockClassControl.createControl(ExternalContext.class);
-        FacesContext context = (FacesContext)contextControl.getMock();
-        ExternalContext external = (ExternalContext)externalControl.getMock();
+        FacesContext context = (FacesContext) contextControl.getMock();
+        ExternalContext external = (ExternalContext) externalControl.getMock();
         context.getExternalContext();
         contextControl.setReturnValue(external);
         context.getExternalContext();

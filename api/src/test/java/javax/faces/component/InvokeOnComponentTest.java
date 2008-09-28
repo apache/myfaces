@@ -6,9 +6,6 @@ import java.util.List;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.apache.myfaces.dummy.data.Data;
 import org.jmock.Mock;
 

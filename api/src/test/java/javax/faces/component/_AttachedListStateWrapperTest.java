@@ -50,7 +50,7 @@ public class _AttachedListStateWrapperTest extends TestCase {
    * Test method for 'javax.faces.component._AttachedListStateWrapper._AttachedListStateWrapper(List)'
    */
   public void test_AttachedListStateWrapper() {
-    List foo = new ArrayList();
+    List<Object> foo = new ArrayList<Object>();
     _AttachedListStateWrapper subject = new _AttachedListStateWrapper(foo);
     assertNotNull(subject.getWrappedStateList());
     assertTrue(subject.getWrappedStateList() == foo);
@@ -58,7 +58,7 @@ public class _AttachedListStateWrapperTest extends TestCase {
 
   public void testSerialize() throws Exception {
     String foo = "foo";
-    List list = new ArrayList();
+    List<Object> list = new ArrayList<Object>();
     list.add(foo);
     _AttachedListStateWrapper subject = new _AttachedListStateWrapper(list);
     ByteArrayOutputStream baos = new ByteArrayOutputStream(128);

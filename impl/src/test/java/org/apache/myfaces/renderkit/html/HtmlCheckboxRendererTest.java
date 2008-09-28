@@ -73,7 +73,7 @@ public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
 
     public void testSelectManyDefault() throws Exception
     {
-        List items = new ArrayList();
+        List<SelectItem> items = new ArrayList<SelectItem>();
         items.add(new SelectItem("mars"));
         items.add(new SelectItem("jupiter"));
 
@@ -94,7 +94,7 @@ public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
 
     public void testSelectManySelectItemWithoutValue() throws Exception
     {
-        List items = new ArrayList();
+        List<SelectItem> items = new ArrayList<SelectItem>();
         items.add(new SelectItem(null, "mars"));
         items.add(new SelectItem(null, "jupiter"));
 
@@ -115,7 +115,7 @@ public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
 
     public void testSelectManyDisabledEnabledClass() throws Exception
     {
-        List items = new ArrayList();
+        List<SelectItem> items = new ArrayList<SelectItem>();
         SelectItem disabledItem = new SelectItem("mars", "mars");
         disabledItem.setDisabled(true);
 
@@ -142,7 +142,7 @@ public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
 
     public void testSelectManyStylePassthru() throws Exception
     {
-        List items = new ArrayList();
+        List<SelectItem> items = new ArrayList<SelectItem>();
         items.add(new SelectItem(null, "mars"));
         items.add(new SelectItem(null, "jupiter"));
 

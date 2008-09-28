@@ -164,7 +164,7 @@ public class ValueBindingToValueExpressionTest extends TestCase
     public void testGetTypeELContext()
     {
         expect(elContext.getContext(eq(FacesContext.class))).andReturn(facesContext);
-        Class expectedType = Date.class;
+        Class<Date> expectedType = Date.class;
         expect(binding.getType(eq(facesContext))).andReturn(expectedType);
         mockControl.replay();
         assertEquals(expectedType, testimpl.getType(elContext));

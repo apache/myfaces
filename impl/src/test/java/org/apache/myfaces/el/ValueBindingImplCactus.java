@@ -95,7 +95,7 @@ public class ValueBindingImplCactus extends ServletTestCase {
      * 'org.apache.myfaces.el.ValueBindingImpl.setValue(FacesContext, Object)'
      */
     public void testSetValueSimpleMap() {
-        facesContext.getExternalContext().getRequestMap().put("foo", new HashMap());
+        facesContext.getExternalContext().getRequestMap().put("foo", new HashMap<String, Integer>());
         ValueBinding binding = application.createValueBinding("#{foo['baz']}");
         Integer value = new Integer(14);
         binding.setValue(facesContext, value);
@@ -103,7 +103,7 @@ public class ValueBindingImplCactus extends ServletTestCase {
     }
 
     public void testSetValueSimpleBeanInRequestMapNoInitialValue() {
-        Map map = new HashMap();
+        Map<String, Object> map = new HashMap<String, Object>();
         DummyBean bean = new DummyBean(map);
         facesContext.getExternalContext().getRequestMap().put("bean", bean);
         ValueBinding binding = application.createValueBinding("#{bean.map['baz']}");
@@ -113,7 +113,7 @@ public class ValueBindingImplCactus extends ServletTestCase {
     }
 
     public void testSetValueSimpleBeanInRequestMapWithInitialValue() {
-        Map map = new HashMap();
+        Map<String, Object> map = new HashMap<String, Object>();
         String initialValue = "hello world";
         map.put("baz", initialValue);
         DummyBean bean = new DummyBean(map);
@@ -126,7 +126,7 @@ public class ValueBindingImplCactus extends ServletTestCase {
     }
 
     public void testSetValueSimpleBeanInRequestMapWithConverter() {
-        Map map = new HashMap();
+        Map<String, Object> map = new HashMap<String, Object>();
         DummyBean bean = new DummyBean(map);
         facesContext.getExternalContext().getRequestMap().put("bean", bean);
         ValueBinding binding = application.createValueBinding("#{bean.map['baz']}");
@@ -135,7 +135,7 @@ public class ValueBindingImplCactus extends ServletTestCase {
     }
 
     public void testSetValueSimpleBeanInSessionMap() {
-        DummyBean bean = new DummyBean(new HashMap());
+        DummyBean bean = new DummyBean(new HashMap<String, Object>());
         facesContext.getExternalContext().getSessionMap().put("bean", bean);
         ValueBinding binding = application.createValueBinding("#{bean.map['baz']}");
         Integer value = new Integer(14);
@@ -144,7 +144,7 @@ public class ValueBindingImplCactus extends ServletTestCase {
     }
     
     public void setSetIntegerPrimitive() {
-        DummyBean bean = new DummyBean(new HashMap());
+        DummyBean bean = new DummyBean(new HashMap<String, Object>());
         facesContext.getExternalContext().getSessionMap().put("bean", bean);
         ValueBinding binding = application.createValueBinding("#{bean.integerPrimitive}");
         Integer value = new Integer(14);

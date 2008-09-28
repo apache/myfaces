@@ -18,19 +18,18 @@
  */
 package javax.faces.component;
 
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.testng.Assert.assertEquals;
+
 import javax.el.ELContext;
 import javax.el.ValueExpression;
-import javax.faces.el.ValueBinding;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.shale.test.mock.MockFacesContext12;
-import static org.easymock.EasyMock.*;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
-import static org.testng.Assert.*;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 /**
@@ -45,7 +44,7 @@ public abstract class AbstractUIComponentPropertyTest<T extends Object>
 
     private IMocksControl _mocksControl;
     private MockFacesContext12 _facesContext;
-    private ValueBinding _valueBinding;
+    //private ValueBinding _valueBinding;
     private ValueExpression _valueExpression;
     private ELContext _elContext;
     private UIComponent _component;
@@ -64,7 +63,7 @@ public abstract class AbstractUIComponentPropertyTest<T extends Object>
         _facesContext = new MockFacesContext12();
         _elContext = _mocksControl.createMock(ELContext.class);
         _facesContext.setELContext(_elContext);
-        _valueBinding = _mocksControl.createMock(ValueBinding.class);
+        //_valueBinding = _mocksControl.createMock(ValueBinding.class);
         _valueExpression = _mocksControl.createMock(ValueExpression.class);
         _component = createComponent();
     }

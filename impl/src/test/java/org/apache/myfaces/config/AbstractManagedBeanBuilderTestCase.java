@@ -28,8 +28,8 @@ public abstract class AbstractManagedBeanBuilderTestCase extends AbstractJsfTest
     protected MangedBeanExample example;
     
     // managed property values
-    protected static final List MANAGED_LIST = new ArrayList();
-    protected static final Map MANAGED_MAP = new HashMap();
+    protected static final List<String> MANAGED_LIST = new ArrayList<String>();
+    protected static final Map<String, String> MANAGED_MAP = new HashMap<String, String>();
     protected static final String INJECTED_VALUE = "tatiana";
     
     /**

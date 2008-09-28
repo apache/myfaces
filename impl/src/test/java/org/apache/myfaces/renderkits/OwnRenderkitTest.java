@@ -1,17 +1,17 @@
 package org.apache.myfaces.renderkits;
 
-import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
-import org.apache.shale.test.base.AbstractJsfTestCase;
-import org.apache.shale.test.mock.MockFacesContext12;
-import org.apache.shale.test.mock.MockRenderKitFactory;
-import org.apache.shale.test.mock.MockResponseWriter;
+import java.io.StringWriter;
 
 import javax.faces.FactoryFinder;
 import javax.faces.component.html.HtmlInputText;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
-import java.io.StringWriter;
+
+import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.shale.test.base.AbstractJsfTestCase;
+import org.apache.shale.test.mock.MockFacesContext12;
+import org.apache.shale.test.mock.MockResponseWriter;
 
 /**
  * @author martin.haimberger
@@ -39,7 +39,6 @@ public class OwnRenderkitTest extends AbstractJsfTestCase {
         writer = new MockResponseWriter(new StringWriter(), null, null);
         facesContext.setResponseWriter(writer);
         MockFacesContext12.getCurrentInstance();
-        MockRenderKitFactory factory = new MockRenderKitFactory();
 
         facesContext.getViewRoot().setRenderKitId("OWN_BASIC");
         facesContext.getRenderKit().addRenderer(

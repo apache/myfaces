@@ -18,7 +18,11 @@
  */
 package javax.faces.component;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 
 import javax.el.ValueExpression;
 import javax.faces.application.FacesMessage;
@@ -26,8 +30,6 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
-
-import junit.framework.Test;
 
 import org.apache.shale.test.base.AbstractJsfTestCase;
 import org.apache.shale.test.el.MockValueExpression;

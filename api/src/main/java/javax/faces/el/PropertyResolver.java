@@ -47,6 +47,7 @@ public abstract class PropertyResolver
      *
      * @deprecated
      */
+    @SuppressWarnings("unchecked")
     public abstract Class getType(Object base, int index)
         throws EvaluationException, PropertyNotFoundException;
 
@@ -68,6 +69,7 @@ public abstract class PropertyResolver
      *  must not be an empty string.
      * @deprecated
      */
+    @SuppressWarnings("unchecked")
     public abstract Class getType(Object base, java.lang.Object property)
         throws EvaluationException, PropertyNotFoundException;
 

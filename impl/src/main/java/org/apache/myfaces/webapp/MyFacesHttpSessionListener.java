@@ -29,25 +29,23 @@ import org.apache.myfaces.config.ManagedBeanBuilder;
 /**
  * @author Dennis Byrne
  */
-
-public class MyFacesHttpSessionListener extends AbstractMyFacesListener implements HttpSessionListener {
-
-    public void sessionCreated(HttpSessionEvent event) { // noop
+public class MyFacesHttpSessionListener extends AbstractMyFacesListener implements HttpSessionListener
+{
+    public void sessionCreated(HttpSessionEvent event)
+    { // noop
     }
 
     @SuppressWarnings("unchecked")
-    public void sessionDestroyed(HttpSessionEvent event) {
-        
+    public void sessionDestroyed(HttpSessionEvent event)
+    {
         HttpSession session = event.getSession();
         Enumeration<String> attributes = session.getAttributeNames();
-        
-        while(attributes.hasMoreElements())
+
+        while (attributes.hasMoreElements())
         {
             String name = attributes.nextElement();
             Object value = session.getAttribute(name);
             doPreDestroy(value, name, ManagedBeanBuilder.SESSION);
         }
-        
     }
-
 }

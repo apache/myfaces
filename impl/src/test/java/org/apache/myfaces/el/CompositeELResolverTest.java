@@ -18,14 +18,14 @@
  */
 package org.apache.myfaces.el;
 
-import static org.easymock.EasyMock.*;
-import static org.testng.AssertJUnit.*;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertNotNull;
 
 import java.beans.FeatureDescriptor;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -81,8 +81,8 @@ public class CompositeELResolverTest
                     }
                 }).anyTimes();
 
-        expect(emptyFDResolver.getFeatureDescriptors(eq(_elContext), eq(base))).andReturn(
-                Collections.EMPTY_LIST.iterator());
+        List<FeatureDescriptor> emptyList = Collections.emptyList();
+        expect(emptyFDResolver.getFeatureDescriptors(eq(_elContext), eq(base))).andReturn(emptyList.iterator());
 
         _mocksControl.replay();
 
