@@ -31,13 +31,17 @@ import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
+import javax.faces.el.MethodBinding;
+import javax.faces.el.PropertyResolver;
 import javax.faces.el.ReferenceSyntaxException;
+import javax.faces.el.ValueBinding;
+import javax.faces.el.VariableResolver;
+import javax.faces.event.ActionListener;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
-import javax.faces.event.SystemEventListenerHolder;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import javax.faces.validator.Validator;
+import javax.faces.webapp.pdl.PageDeclarationLanguage;
 
 /**
  * Holds webapp-wide resources for a JSF application. There is a single one of these for a web application, accessable
@@ -59,170 +63,8 @@ import org.apache.commons.logging.LogFactory;
 @SuppressWarnings("deprecation")
 public abstract class Application
 {
-    // The following concrete methods were added for JSF 1.2. They supply default
-    // implementations that throw UnsupportedOperationException.
-    // This allows old Application implementations to still work.
-    public void addELResolver(ELResolver resolver)
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    public ELResolver getELResolver()
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    public ResourceBundle getResourceBundle(FacesContext ctx, String name) throws FacesException, NullPointerException
-    {
-        throw new UnsupportedOperationException();
-    }
-    
-    public UIComponent createComponent(FacesContext context, String componentType, String rendererType)
-    {
-        // TODO: JSF 2.0 #1
-        // VALIDATE: Shouldn't this be abstract or throw UnsupportedOperationException?
-        return null;
-    }
-
-    public UIComponent createComponent(ValueExpression componentExpression, FacesContext facesContext,
-                                       String componentType) throws FacesException, NullPointerException
-    {
-        throw new UnsupportedOperationException();
-    }
-    
-    public UIComponent createComponent(ValueExpression componentExpression, FacesContext context,
-                                       String componentType, String rendererType)
-    {
-        // TODO: JSF 2.0 #2
-        // VALIDATE: Shouldn't this be abstract or throw UnsupportedOperationException?
-        return null;
-    }
-
-    public ExpressionFactory getExpressionFactory()
-    {
-        throw new UnsupportedOperationException();
-    }
-    
-    public ResourceHandler getResourceHandler()
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    public void addELContextListener(ELContextListener listener)
-    {
-        throw new UnsupportedOperationException();
-    }
-    
-    public void publishEvent(Class<? extends SystemEvent> systemEventClass, Object source)
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    public void removeELContextListener(ELContextListener listener)
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    public ELContextListener[] getELContextListeners()
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    public Object evaluateExpressionGet(FacesContext context, String expression, Class expectedType) throws ELException
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    // -------- abstract methods -------------------
-    public abstract javax.faces.event.ActionListener getActionListener();
-
-    public abstract void setActionListener(javax.faces.event.ActionListener listener);
-
-    public abstract Locale getDefaultLocale();
-
-    public abstract void setDefaultLocale(Locale locale);
-
-    public abstract String getDefaultRenderKitId();
-
-    public abstract void setDefaultRenderKitId(String renderKitId);
-
-    public abstract String getMessageBundle();
-
-    public abstract void setMessageBundle(String bundle);
-
-    /**
-     * Return the NavigationHandler object which is responsible for mapping from a logical (viewid, fromAction, outcome)
-     * to the URL of a view to be rendered.
-     */
-    public abstract javax.faces.application.NavigationHandler getNavigationHandler();
-
-    public abstract void setNavigationHandler(javax.faces.application.NavigationHandler handler);
-
-    public ProjectStage getProjectStage()
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Get the object used by the VariableResolver to read and write named properties on java beans, Arrays, Lists and
-     * Maps. This object is used by the ValueBinding implementation, and during the process of configuring
-     * "managed bean" properties.
-     * 
-     * @deprecated
-     */
-    public abstract javax.faces.el.PropertyResolver getPropertyResolver();
-
-    /**
-     * @deprecated
-     */
-    public abstract void setPropertyResolver(javax.faces.el.PropertyResolver resolver);
-
-    /**
-     * Get the object used to resolve expressions of form "#{...}".
-     * 
-     * @deprecated
-     */
-    public abstract javax.faces.el.VariableResolver getVariableResolver();
-
-    /**
-     * @deprecated
-     */
-    public abstract void setVariableResolver(javax.faces.el.VariableResolver resolver);
-
-    public abstract javax.faces.application.ViewHandler getViewHandler();
-
-    public abstract void setViewHandler(javax.faces.application.ViewHandler handler);
-    
-    public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, 
-                                 Class sourceClass, SystemEventListener listener)
-    {
-        throw new UnsupportedOperationException();
-    }
-    
-    public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener)
-    {
-        subscribeToEvent(systemEventClass, null, listener);
-    }
-    
-    public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, 
-                                     Class sourceClass, SystemEventListener listener)
-    {
-        throw new UnsupportedOperationException();
-    }
-    
-    public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener)
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    public abstract javax.faces.application.StateManager getStateManager();
-    
-    public void setResourceHandler(ResourceHandler resourceHandler)
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    public abstract void setStateManager(javax.faces.application.StateManager manager);
+    // The concrete methods throwing UnsupportedOperationExceptiom were added for JSF 1.2.
+    // They supply default to allows old Application implementations to still work.
 
     /**
      * Define a new mapping from a logical "component type" to an actual java class name. This controls what type is
@@ -236,6 +78,34 @@ public abstract class Application
      */
     public abstract void addComponent(String componentType, String componentClass);
 
+    public abstract void addConverter(Class targetClass, String converterClass);
+
+    public abstract void addConverter(String converterId, String converterClass);
+
+    public void addELContextListener(ELContextListener listener)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public void addELResolver(ELResolver resolver)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public abstract void addValidator(String validatorId, String validatorClass);
+
+    public UIComponent createComponent(FacesContext context, Resource componentResource)
+    {
+        // TODO: JSF 2.0 #43
+        throw new UnsupportedOperationException();
+    }
+
+    public UIComponent createComponent(FacesContext context, String componentType, String rendererType)
+    {
+        // TODO: JSF 2.0 #1
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * Create a new UIComponent subclass, using the mappings defined by previous calls to the addComponent method of
      * this class.
@@ -245,7 +115,7 @@ public abstract class Application
      *             if there is no mapping defined for the specified componentType, or if an instance of the specified
      *             type could not be created for any reason.
      */
-    public abstract javax.faces.component.UIComponent createComponent(String componentType) throws FacesException;
+    public abstract UIComponent createComponent(String componentType) throws FacesException;
 
     /**
      * Create an object which has an associating "binding" expression tying the component to a user property.
@@ -258,54 +128,211 @@ public abstract class Application
      * 
      * @deprecated
      */
-    public abstract javax.faces.component.UIComponent createComponent(javax.faces.el.ValueBinding componentBinding,
-                                                                      javax.faces.context.FacesContext context,
-                                                                      String componentType) throws FacesException;
+    @Deprecated
+    public abstract UIComponent createComponent(ValueBinding componentBinding, FacesContext context,
+                                                String componentType) throws FacesException;
+
+    public UIComponent createComponent(ValueExpression componentExpression, FacesContext facesContext,
+                                       String componentType) throws FacesException, NullPointerException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType,
+                                       String rendererType)
+    {
+        // TODO: JSF 2.0 #2
+        throw new UnsupportedOperationException();
+    }
+
+    public abstract Converter createConverter(Class targetClass);
+
+    public abstract Converter createConverter(String converterId);
+
+    /**
+     * Create an object which can be used to invoke an arbitrary method via an EL expression at a later time. This is
+     * similar to createValueBinding except that it can invoke an arbitrary method (with parameters) rather than just
+     * get/set a javabean property.
+     * <p>
+     * This is used to invoke ActionListener method, and ValueChangeListener methods.
+     * 
+     * @deprecated
+     */
+    @Deprecated
+    public abstract MethodBinding createMethodBinding(String ref, Class[] params) throws ReferenceSyntaxException;
+
+    public abstract Validator createValidator(String validatorId) throws FacesException;
+
+    /**
+     * Create an object which can be used to invoke an arbitrary method via an EL expression at a later time. This is
+     * similar to createValueBinding except that it can invoke an arbitrary method (with parameters) rather than just
+     * get/set a javabean property.
+     * <p>
+     * This is used to invoke ActionListener method, and ValueChangeListener methods.
+     * 
+     * @deprecated
+     */
+    @Deprecated
+    public abstract ValueBinding createValueBinding(String ref) throws ReferenceSyntaxException;
+
+    public Object evaluateExpressionGet(FacesContext context, String expression, Class expectedType) throws ELException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public abstract ActionListener getActionListener();
 
     public abstract Iterator<String> getComponentTypes();
-
-    public abstract void addConverter(String converterId, String converterClass);
-
-    public abstract void addConverter(Class targetClass, String converterClass);
-
-    public abstract javax.faces.convert.Converter createConverter(String converterId);
-
-    public abstract javax.faces.convert.Converter createConverter(Class targetClass);
 
     public abstract Iterator<String> getConverterIds();
 
     public abstract Iterator<Class> getConverterTypes();
 
+    public abstract Locale getDefaultLocale();
+
+    public abstract String getDefaultRenderKitId();
+
+    public ELContextListener[] getELContextListeners()
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public ELResolver getELResolver()
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public ExpressionFactory getExpressionFactory()
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public abstract String getMessageBundle();
+
     /**
-     * Create an object which can be used to invoke an arbitrary method via an EL expression at a later time. This is
-     * similar to createValueBinding except that it can invoke an arbitrary method (with parameters) rather than just
-     * get/set a javabean property.
-     * <p>
-     * This is used to invoke ActionListener method, and ValueChangeListener methods.
+     * Return the NavigationHandler object which is responsible for mapping from a logical (viewid, fromAction, outcome)
+     * to the URL of a view to be rendered.
+     */
+    public abstract NavigationHandler getNavigationHandler();
+
+    public PageDeclarationLanguage getPageDeclarationLanguage()
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public ProjectStage getProjectStage()
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Get the object used by the VariableResolver to read and write named properties on java beans, Arrays, Lists and
+     * Maps. This object is used by the ValueBinding implementation, and during the process of configuring
+     * "managed bean" properties.
      * 
      * @deprecated
      */
-    public abstract javax.faces.el.MethodBinding createMethodBinding(String ref, Class[] params)
-            throws ReferenceSyntaxException;
+    @Deprecated
+    public abstract PropertyResolver getPropertyResolver();
+
+    public ResourceBundle getResourceBundle(FacesContext ctx, String name) throws FacesException, NullPointerException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public ResourceHandler getResourceHandler()
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public abstract StateManager getStateManager();
 
     public abstract Iterator<Locale> getSupportedLocales();
-
-    public abstract void setSupportedLocales(Collection<Locale> locales);
-
-    public abstract void addValidator(String validatorId, String validatorClass);
-
-    public abstract javax.faces.validator.Validator createValidator(String validatorId) throws FacesException;
 
     public abstract Iterator<String> getValidatorIds();
 
     /**
-     * Create an object which can be used to invoke an arbitrary method via an EL expression at a later time. This is
-     * similar to createValueBinding except that it can invoke an arbitrary method (with parameters) rather than just
-     * get/set a javabean property.
-     * <p>
-     * This is used to invoke ActionListener method, and ValueChangeListener methods.
+     * Get the object used to resolve expressions of form "#{...}".
      * 
      * @deprecated
      */
-    public abstract javax.faces.el.ValueBinding createValueBinding(String ref) throws ReferenceSyntaxException;
+    @Deprecated
+    public abstract VariableResolver getVariableResolver();
+
+    public abstract ViewHandler getViewHandler();
+
+    public void publishEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public void publishEvent(Class<? extends SystemEvent> systemEventClass, Object source)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public void removeELContextListener(ELContextListener listener)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public abstract void setActionListener(ActionListener listener);
+
+    public abstract void setDefaultLocale(Locale locale);
+
+    public abstract void setDefaultRenderKitId(String renderKitId);
+
+    public abstract void setMessageBundle(String bundle);
+
+    public abstract void setNavigationHandler(NavigationHandler handler);
+    
+    public void setPageDeclarationLanguage(PageDeclarationLanguage pdl)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public abstract void setPropertyResolver(PropertyResolver resolver);
+
+    public void setResourceHandler(ResourceHandler resourceHandler)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public abstract void setStateManager(StateManager manager);
+
+    public abstract void setSupportedLocales(Collection<Locale> locales);
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public abstract void setVariableResolver(VariableResolver resolver);
+
+    public abstract void setViewHandler(ViewHandler handler);
+
+    public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class sourceClass,
+                                 SystemEventListener listener)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener)
+    {
+        subscribeToEvent(systemEventClass, null, listener);
+    }
+
+    public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, Class sourceClass,
+                                     SystemEventListener listener)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener)
+    {
+        throw new UnsupportedOperationException();
+    }
 }

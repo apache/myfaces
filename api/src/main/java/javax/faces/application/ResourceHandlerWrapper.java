@@ -64,5 +64,11 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler
         return getWrapped().isResourceRequest(context);
     }
     
+    @Override
+    public boolean libraryExists(String libraryName)
+    {
+        return getWrapped().libraryExists(libraryName);
+    }
+    
     protected abstract ResourceHandler getWrapped();
 }

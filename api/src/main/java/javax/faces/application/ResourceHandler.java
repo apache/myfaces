@@ -44,4 +44,6 @@ public abstract class ResourceHandler
     public abstract void handleResourceRequest(FacesContext context);
     
     public abstract boolean isResourceRequest(FacesContext context);
+    
+    public abstract  boolean libraryExists(String libraryName);
 }

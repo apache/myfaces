@@ -18,10 +18,21 @@
  */
 package javax.faces.component;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.el.ELContext;
 import javax.el.ELException;
@@ -32,39 +43,66 @@ import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ComponentSystemEventListener;
+import javax.faces.event.FacesEvent;
+import javax.faces.event.FacesListener;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
+import javax.faces.render.Renderer;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-@JSFComponent(
-        type="javax.faces.Component",
-        family="javax.faces.Component",
-        desc = "abstract base component",
-        configExcluded = true
-        )
-public abstract class UIComponent
-        implements StateHolder
+@JSFComponent(type = "javax.faces.Component", family = "javax.faces.Component", desc = "abstract base component", configExcluded = true)
+public abstract class UIComponent implements StateHolder
 {
-    
-    protected Map<String,ValueExpression> bindings;
-    
+    public static final String BEANINFO_KEY = "javax.faces.component.BEANINFO_KEY";
+    public static final String COMPOSITE_COMPONENT_TYPE_KEY = "javax.faces.component.COMPOSITE_COMPONENT_TYPE";
+    public static final String COMPOSITE_FACET_NAME = "javax.faces.component.COMPOSITE_FACET_NAME";
+    public static final String CURRENT_COMPONENT = "javax.faces.component.CURRENT_COMPONENT";
+    public static final String CURRENT_COMPOSITE_COMPONENT = "javax.faces.component.CURRENT_COMPOSITE_COMPONENT";
+    public static final String FACETS_KEY = "javax.faces.component.FACETS_KEY";
+
+    protected Map<String, ValueExpression> bindings;
+
     public UIComponent()
     {
     }
 
-    public abstract java.util.Map<String, Object> getAttributes();
+    public static UIComponent getCurrentComponent(FacesContext context)
+    {
+        /*
+         * Return the UIComponent instance that is currently processing. This is equivalent to evaluating the EL
+         * expression "#{component}" and doing a getValue operation on the resultant ValueExpression.
+         */
+        Application application = context.getApplication();
+
+        ELContext elContext = context.getELContext();
+        Object result = application.getELResolver().getValue(context.getELContext(), null, "component");
+
+        return elContext.isPropertyResolved() ? (UIComponent) result : null;
+    }
+
+    public static UIComponent getCurrentCompositeComponent(FacesContext context)
+    {
+        // TODO: JSF 2.0 #46
+        // UIComponent currentComponent = getCurrentComponent(context);
+        // Loop through parents to find a composite component
+
+        throw new UnsupportedOperationException();
+    }
+
+    public abstract Map<String, Object> getAttributes();
 
     /**
      * @deprecated Replaced by getValueExpression
      */
-    public abstract javax.faces.el.ValueBinding getValueBinding(java.lang.String name);
+    @Deprecated
+    public abstract ValueBinding getValueBinding(String name);
 
     public ValueExpression getValueExpression(String name)
     {
@@ -93,12 +131,12 @@ public abstract class UIComponent
 
         return null;
     }
-    
+
     /**
      * @deprecated Replaced by setValueExpression
      */
-    public abstract void setValueBinding(java.lang.String name,
-                                         javax.faces.el.ValueBinding binding);
+    @Deprecated
+    public abstract void setValueBinding(String name, ValueBinding binding);
 
     public void setValueExpression(String name, ValueExpression expression)
     {
@@ -108,13 +146,13 @@ public abstract class UIComponent
             throw new IllegalArgumentException("Can't set a ValueExpression for the 'id' property.");
         if (name.equals("parent"))
             throw new IllegalArgumentException("Can't set a ValueExpression for the 'parent' property.");
-        
+
         if (expression == null)
         {
             if (bindings != null)
             {
                 bindings.remove(name);
-                if(bindings.isEmpty())
+                if (bindings.isEmpty())
                     bindings = null;
             }
         }
@@ -142,195 +180,217 @@ public abstract class UIComponent
             bindings.put(name, expression);
         }
     }
-    
+
     /**
      * Invokes the <code>invokeContextCallback</code> method with the component, specified by <code>clientId</code>.
-     * @param context <code>FacesContext</code> for the current request
-     * @param clientId the id of the desired <code>UIComponent</code> clazz 
-     * @param callback Implementation of the <code>ContextCallback</code> to be called
+     * 
+     * @param context
+     *            <code>FacesContext</code> for the current request
+     * @param clientId
+     *            the id of the desired <code>UIComponent</code> clazz
+     * @param callback
+     *            Implementation of the <code>ContextCallback</code> to be called
      * @return has component been found ?
      * @throws javax.faces.FacesException
      */
-    public boolean invokeOnComponent(javax.faces.context.FacesContext context, String clientId, javax.faces.component.ContextCallback callback) throws javax.faces.FacesException
+    public boolean invokeOnComponent(FacesContext context, String clientId, ContextCallback callback)
+        throws FacesException
     {
-        //java.lang.NullPointerException - if any of the arguments are null
-        if(context == null || clientId == null || callback == null)
+        // java.lang.NullPointerException - if any of the arguments are null
+        if (context == null || clientId == null || callback == null)
         {
             throw new NullPointerException();
         }
-        
-        //searching for this component?
-        boolean found = clientId.equals(this.getClientId(context)); 
-        if(found)
+
+        // searching for this component?
+        boolean found = clientId.equals(this.getClientId(context));
+        if (found)
         {
             try
             {
                 callback.invokeContextCallback(context, this);
-            } catch(Exception e)
+            }
+            catch (Exception e)
             {
                 throw new FacesException(e);
             }
             return found;
         }
-        //Searching for this component's children/facets 
-        for (Iterator<UIComponent> it = this.getFacetsAndChildren(); !found && it.hasNext();){
+        // Searching for this component's children/facets
+        for (Iterator<UIComponent> it = this.getFacetsAndChildren(); !found && it.hasNext();)
+        {
             found = it.next().invokeOnComponent(context, clientId, callback);
         }
-            
+
         return found;
     }
 
-    public abstract java.lang.String getClientId(javax.faces.context.FacesContext context);
+    public abstract String getClientId(FacesContext context);
 
-    public static UIComponent getCurrentComponent()
-    {
-        /* Return the UIComponent instance that is currently processing. This 
-         * is equivalent to evaluating the EL expression "#{component}" and 
-         * doing a getValue operation on the resultant ValueExpression. 
-         */        
-        FacesContext context = FacesContext.getCurrentInstance();
-        Application application = context.getApplication();
-        
-        ELContext elContext = context.getELContext();
-        Object result = application.getELResolver().getValue(context.getELContext(), null, "component");
-        
-        return elContext.isPropertyResolved() ? (UIComponent)result : null;
-    }
-    
-    public abstract java.lang.String getFamily();
+    public abstract String getFamily();
 
-    public abstract java.lang.String getId();
-    
+    public abstract String getId();
+
     public List<SystemEventListener> getListenersForEventClass(Class<? extends SystemEvent> eventClass)
     {
         // TODO: JSF 2.0 #12
-        
+
         return null;
     }
 
-    public abstract void setId(java.lang.String id);
+    public abstract void setId(String id);
 
     /**
-     * Returns the parent of the component.
-     * Children can be added to or removed from a component even if this method returns null
-     * for the child.
+     * Returns the parent of the component. Children can be added to or removed from a component even if this method
+     * returns null for the child.
      */
-    public abstract javax.faces.component.UIComponent getParent();
+    public abstract UIComponent getParent();
 
     /**
-     * For JSF-framework internal use only.   Don't call this method to
-     * add components to the component tree.
-     * Use <code>parent.getChildren().add(child)</code> instead.
+     * For JSF-framework internal use only. Don't call this method to add components to the component tree. Use
+     * <code>parent.getChildren().add(child)</code> instead.
      */
-    public abstract void setParent(javax.faces.component.UIComponent parent);
+    public abstract void setParent(UIComponent parent);
 
     public abstract boolean isRendered();
 
     public abstract void setRendered(boolean rendered);
 
-    public abstract java.lang.String getRendererType();
+    public abstract String getRendererType();
 
-    public abstract void setRendererType(java.lang.String rendererType);
+    public abstract void setRendererType(String rendererType);
 
     public abstract boolean getRendersChildren();
 
-    public abstract java.util.List<UIComponent> getChildren();
+    public Map<String, String> getResourceBundleMap()
+    {
+        Map<String, String> resourceMap;
+
+        FacesContext context = getFacesContext();
+        Locale locale = context.getViewRoot().getLocale();
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        
+        try
+        {
+            // looks for a ResourceBundle with a base name equal to the fully qualified class
+            // name of the current UIComponent this and Locale equal to the Locale of the current UIViewRoot.
+            resourceMap = new BundleMap(ResourceBundle.getBundle(getClass().getName(), locale, loader));
+        }
+        catch (MissingResourceException e)
+        {
+            /* 
+             * If no such bundle is found, and the component is a composite component, let resourceName be the 
+             * resourceName of the Resource for this composite component, replacing the file extension with 
+             * ".properties". Let libraryName be the libraryName of the the Resource for this composite component. 
+             * Call ResourceHandler.createResource(java.lang.String,java.lang.String), passing the derived resourceName 
+             * and libraryName. Note that this will automatically allow for the localization of the ResourceBundle due 
+             * to the localization facility implemented in createResource, which is specified in section 2.6.1.3 of 
+             * the spec prose document. If the resultant Resource exists and can be found, the InputStream for the 
+             * resource is used to create a ResourceBundle. If either of the two previous steps for obtaining the 
+             * ResourceBundle for this component is successful, the ResourceBundle is wrapped in a Map<String, String> 
+             * and returned.
+             */
+            
+            // TODO: JSF 2.0 #44
+            
+            // Otherwise Collections.EMPTY_MAP is returned.
+            resourceMap = Collections.emptyMap();
+        }
+
+        return resourceMap;
+    }
+
+    public abstract List<UIComponent> getChildren();
 
     public abstract int getChildCount();
 
-    public abstract javax.faces.component.UIComponent findComponent(java.lang.String expr);
+    public abstract UIComponent findComponent(String expr);
 
-    public abstract java.util.Map<String, UIComponent> getFacets();
+    public abstract Map<String, UIComponent> getFacets();
 
-    public abstract javax.faces.component.UIComponent getFacet(java.lang.String name);
+    public abstract UIComponent getFacet(String name);
 
-    public abstract java.util.Iterator<UIComponent> getFacetsAndChildren();
+    public abstract Iterator<UIComponent> getFacetsAndChildren();
 
-    public abstract void broadcast(javax.faces.event.FacesEvent event)
-            throws AbortProcessingException;
+    public abstract void broadcast(FacesEvent event) throws AbortProcessingException;
 
-    public abstract void decode(javax.faces.context.FacesContext context);
+    public abstract void decode(FacesContext context);
 
-    public abstract void encodeBegin(javax.faces.context.FacesContext context)
-            throws java.io.IOException;
+    public abstract void encodeBegin(FacesContext context) throws IOException;
 
-    public abstract void encodeChildren(javax.faces.context.FacesContext context)
-            throws java.io.IOException;
+    public abstract void encodeChildren(FacesContext context) throws IOException;
 
-    public abstract void encodeEnd(javax.faces.context.FacesContext context)
-            throws java.io.IOException;
+    public abstract void encodeEnd(FacesContext context) throws IOException;
 
-    public void encodeAll(javax.faces.context.FacesContext context) throws java.io.IOException
+    public void encodeAll(FacesContext context) throws IOException
     {
-        if(context == null)
+        if (context == null)
         {
             throw new NullPointerException();
         }
-        
-        if(isRendered())
+
+        if (isRendered())
         {
             this.encodeBegin(context);
-            
-            //rendering children
-            if(this.getRendersChildren())
+
+            // rendering children
+            if (this.getRendersChildren())
             {
                 this.encodeChildren(context);
             }
-            //let children render itself
+            // let children render itself
             else
             {
-          if(this.getChildCount()>0) {
-                  for (UIComponent comp : this.getChildren()) {
+                if (this.getChildCount() > 0)
+                {
+                    for (UIComponent comp : this.getChildren())
+                    {
                         comp.encodeAll(context);
                     }
-          }
+                }
             }
             this.encodeEnd(context);
         }
     }
 
+    protected abstract void addFacesListener(FacesListener listener);
 
+    protected abstract FacesListener[] getFacesListeners(Class clazz);
 
-    protected abstract void addFacesListener(javax.faces.event.FacesListener listener);
-
-    protected abstract javax.faces.event.FacesListener[] getFacesListeners(java.lang.Class clazz);
-
-    protected abstract void removeFacesListener(javax.faces.event.FacesListener listener);
+    protected abstract void removeFacesListener(FacesListener listener);
 
     public abstract void queueEvent(javax.faces.event.FacesEvent event);
 
-    public abstract void processRestoreState(javax.faces.context.FacesContext context,
-                                             java.lang.Object state);
+    public abstract void processRestoreState(FacesContext context, Object state);
 
-    public abstract void processDecodes(javax.faces.context.FacesContext context);
+    public abstract void processDecodes(FacesContext context);
 
-    public abstract void processValidators(javax.faces.context.FacesContext context);
+    public abstract void processValidators(FacesContext context);
 
-    public abstract void processUpdates(javax.faces.context.FacesContext context);
+    public abstract void processUpdates(FacesContext context);
 
-    public abstract java.lang.Object processSaveState(javax.faces.context.FacesContext context);
-    
-    public void subscribeToEvent(Class<? extends SystemEvent> eventClass, 
-                                 ComponentSystemEventListener componentListener)
+    public abstract java.lang.Object processSaveState(FacesContext context);
+
+    public void subscribeToEvent(Class<? extends SystemEvent> eventClass, ComponentSystemEventListener componentListener)
     {
         // TODO: JSF 2.0 #15
     }
 
-    public void unsubscribeToEvent(Class<? extends SystemEvent> eventClass, 
+    public void unsubscribeToEvent(Class<? extends SystemEvent> eventClass,
                                    ComponentSystemEventListener componentListener)
     {
         // TODO: JSF 2.0 #16
     }
 
-    protected abstract javax.faces.context.FacesContext getFacesContext();
+    protected abstract FacesContext getFacesContext();
 
-    protected abstract javax.faces.render.Renderer getRenderer(javax.faces.context.FacesContext context);
-    
+    protected abstract Renderer getRenderer(FacesContext context);
+
     protected void popComponentFromEL(FacesContext context)
     {
         // TODO: JSF 2.0 #13
     }
-    
+
     protected void pushComponentToEL(FacesContext context)
     {
         // TODO: JSF 2.0 #14
@@ -339,24 +399,153 @@ public abstract class UIComponent
     /**
      * @since 1.2
      */
-    
+
     public int getFacetCount()
     {
-        // not sure why the RI has this method in both 
+        // not sure why the RI has this method in both
         // UIComponent and UIComponentBase
         Map<String, UIComponent> facets = getFacets();
         return facets == null ? 0 : facets.size();
     }
-    
+
     /**
      * @since 1.2
      */
-    
+
     public String getContainerClientId(FacesContext ctx)
     {
-        if( ctx == null )
+        if (ctx == null)
             throw new NullPointerException("FacesContext ctx");
-        
+
         return getClientId(ctx);
+    }
+
+    private static class BundleMap implements Map<String, String>
+    {
+        private ResourceBundle _bundle;
+        private List<String> _values;
+
+        public BundleMap(ResourceBundle bundle)
+        {
+            _bundle = bundle;
+        }
+
+        // Optimized methods
+
+        public String get(Object key)
+        {
+            try
+            {
+                return (String) _bundle.getObject(key.toString());
+            }
+            catch (Exception e)
+            {
+                return "???" + key + "???";
+            }
+        }
+
+        public boolean isEmpty()
+        {
+            return !_bundle.getKeys().hasMoreElements();
+        }
+
+        public boolean containsKey(Object key)
+        {
+            try
+            {
+                return _bundle.getObject(key.toString()) != null;
+            }
+            catch (MissingResourceException e)
+            {
+                return false;
+            }
+        }
+
+        // Unoptimized methods
+
+        public Collection<String> values()
+        {
+            if (_values == null)
+            {
+                _values = new ArrayList<String>();
+                for (Enumeration<String> enumer = _bundle.getKeys(); enumer.hasMoreElements();)
+                {
+                    String v = _bundle.getString(enumer.nextElement());
+                    _values.add(v);
+                }
+            }
+            return _values;
+        }
+
+        public int size()
+        {
+            return values().size();
+        }
+
+        public boolean containsValue(Object value)
+        {
+            return values().contains(value);
+        }
+
+        public Set<Map.Entry<String, String>> entrySet()
+        {
+            Set<Entry<String, String>> set = new HashSet<Entry<String, String>>();
+            for (Enumeration<String> enumer = _bundle.getKeys(); enumer.hasMoreElements();)
+            {
+                final String k = enumer.nextElement();
+                set.add(new Map.Entry<String, String>()
+                {
+                    public String getKey()
+                    {
+                        return k;
+                    }
+
+                    public String getValue()
+                    {
+                        return (String) _bundle.getObject(k);
+                    }
+
+                    public String setValue(String value)
+                    {
+                        throw new UnsupportedOperationException();
+                    }
+                });
+            }
+            
+            return set;
+        }
+
+        public Set<String> keySet()
+        {
+            Set<String> set = new HashSet<String>();
+            for (Enumeration<String> enumer = _bundle.getKeys(); enumer.hasMoreElements();)
+            {
+                set.add(enumer.nextElement());
+            }
+            return set;
+        }
+
+        // Unsupported methods
+
+        public String remove(Object key)
+        {
+            throw new UnsupportedOperationException();
+        }
+
+        public void putAll(Map<? extends String, ? extends String> t)
+        {
+            throw new UnsupportedOperationException();
+        }
+
+        public String put(String key, String value)
+        {
+            throw new UnsupportedOperationException();
+        }
+
+        public void clear()
+        {
+            throw new UnsupportedOperationException();
+        }
+
     }
 }

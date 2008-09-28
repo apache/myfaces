@@ -30,58 +30,61 @@ import javax.faces.webapp.FacesServlet;
 import org.apache.cactus.ServletTestCase;
 import org.apache.cactus.WebRequest;
 
-public class LifecycleImplCactus extends ServletTestCase {
+public class LifecycleImplCactus extends ServletTestCase
+{
     private FacesServlet servlet;
 
     private FacesContext facesContext;
 
     private Lifecycle lifecycle;
 
-    protected void setUp() throws Exception {
+    protected void setUp() throws Exception
+    {
         super.setUp();
         servlet = new FacesServlet();
         servlet.init(this.config);
         LifecycleFactory lifecycleFactory = (LifecycleFactory) FactoryFinder
-                .getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-        String lifecycleId = this.config.getServletContext().getInitParameter(
-                FacesServlet.LIFECYCLE_ID_ATTR);
-        lifecycleId = (lifecycleId != null ? lifecycleId
-                : LifecycleFactory.DEFAULT_LIFECYCLE);
+                                                                            .getFactory(FactoryFinder.LIFECYCLE_FACTORY);
+        String lifecycleId = this.config.getServletContext().getInitParameter(FacesServlet.LIFECYCLE_ID_ATTR);
+        lifecycleId = (lifecycleId != null ? lifecycleId : LifecycleFactory.DEFAULT_LIFECYCLE);
         lifecycle = lifecycleFactory.getLifecycle(lifecycleId);
-        for (int i = 0; i < lifecycle.getPhaseListeners().length; i++) {
-            if (lifecycle.getPhaseListeners()[i] instanceof InstrumentingPhaseListener) {
+        for (int i = 0; i < lifecycle.getPhaseListeners().length; i++)
+        {
+            if (lifecycle.getPhaseListeners()[i] instanceof InstrumentingPhaseListener)
+            {
                 lifecycle.removePhaseListener(lifecycle.getPhaseListeners()[i]);
             }
         }
         FacesContextFactory facesContextFactory = (FacesContextFactory) FactoryFinder
-                .getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
-        facesContext = facesContextFactory.getFacesContext(this.config
-                .getServletContext(), request, response, lifecycle);
+                                                                                     .getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
+        facesContext = facesContextFactory.getFacesContext(this.config.getServletContext(), request, response,
+            lifecycle);
     }
 
-    protected void tearDown() throws Exception {
+    protected void tearDown() throws Exception
+    {
         super.tearDown();
     }
 
     /*
-     * Test method for
-     * 'javax.faces.lifecycle.Lifecycle.addPhaseListener(PhaseListener)'
+     * Test method for 'javax.faces.lifecycle.Lifecycle.addPhaseListener(PhaseListener)'
      */
-    public void testAddPhaseListenerPhaseListener() {
+    public void testAddPhaseListenerPhaseListener()
+    {
     }
 
-    public void beginExecuteRestoreViewRenderBefore(WebRequest request) {
+    public void beginExecuteRestoreViewRenderBefore(WebRequest request)
+    {
         request.addParameter("foo", "bar");
-        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp",
-                null);
+        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp", null);
     }
 
-    public void testExecuteRestoreViewRenderBefore() throws Exception {
+    public void testExecuteRestoreViewRenderBefore() throws Exception
+    {
         setViewRoot("/index.jsp");
         // simulate that this is the 2nd request for this page
         // so that we would go through all 6 phases
-        StateManager stateManager = facesContext.getApplication()
-                .getStateManager();
+        StateManager stateManager = facesContext.getApplication().getStateManager();
         stateManager.saveSerializedView(facesContext);
         InstrumentingPhaseListener listener = new InstrumentingPhaseListener();
         listener.setEventPhaseId(PhaseId.RESTORE_VIEW);
@@ -98,18 +101,18 @@ public class LifecycleImplCactus extends ServletTestCase {
         lifecycle.removePhaseListener(listener);
     }
 
-    public void beginExecuteRestoreViewRenderAfter(WebRequest request) {
+    public void beginExecuteRestoreViewRenderAfter(WebRequest request)
+    {
         request.addParameter("foo", "bar");
-        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp",
-                null);
+        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp", null);
     }
 
-    public void testExecuteRestoreViewRenderAfter() throws Exception {
+    public void testExecuteRestoreViewRenderAfter() throws Exception
+    {
         setViewRoot("/index.jsp");
         // simulate that this is the 2nd request for this page
         // so that we would go through all 6 phases
-        StateManager stateManager = facesContext.getApplication()
-                .getStateManager();
+        StateManager stateManager = facesContext.getApplication().getStateManager();
         stateManager.saveSerializedView(facesContext);
         InstrumentingPhaseListener listener = new InstrumentingPhaseListener();
         listener.setEventPhaseId(PhaseId.RESTORE_VIEW);
@@ -126,18 +129,18 @@ public class LifecycleImplCactus extends ServletTestCase {
         lifecycle.removePhaseListener(listener);
     }
 
-    public void beginExecuteRestoreViewCompleteBefore(WebRequest request) {
+    public void beginExecuteRestoreViewCompleteBefore(WebRequest request)
+    {
         request.addParameter("foo", "bar");
-        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp",
-                null);
+        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp", null);
     }
 
-    public void testExecuteRestoreViewCompleteBefore() throws Exception {
+    public void testExecuteRestoreViewCompleteBefore() throws Exception
+    {
         setViewRoot("/index.jsp");
         // simulate that this is the 2nd request for this page
         // so that we would go through all 6 phases
-        StateManager stateManager = facesContext.getApplication()
-                .getStateManager();
+        StateManager stateManager = facesContext.getApplication().getStateManager();
         stateManager.saveSerializedView(facesContext);
         InstrumentingPhaseListener listener = new InstrumentingPhaseListener();
         listener.setEventPhaseId(PhaseId.RESTORE_VIEW);
@@ -151,18 +154,18 @@ public class LifecycleImplCactus extends ServletTestCase {
         lifecycle.removePhaseListener(listener);
     }
 
-    public void beginExecuteRestoreViewCompleteAfter(WebRequest request) {
+    public void beginExecuteRestoreViewCompleteAfter(WebRequest request)
+    {
         request.addParameter("foo", "bar");
-        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp",
-                null);
+        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp", null);
     }
 
-    public void testExecuteRestoreViewCompleteAfter() throws Exception {
+    public void testExecuteRestoreViewCompleteAfter() throws Exception
+    {
         setViewRoot("/index.jsp");
         // simulate that this is the 2nd request for this page
         // so that we would go through all 6 phases
-        StateManager stateManager = facesContext.getApplication()
-                .getStateManager();
+        StateManager stateManager = facesContext.getApplication().getStateManager();
         stateManager.saveSerializedView(facesContext);
         InstrumentingPhaseListener listener = new InstrumentingPhaseListener();
         listener.setEventPhaseId(PhaseId.RESTORE_VIEW);
@@ -178,18 +181,18 @@ public class LifecycleImplCactus extends ServletTestCase {
         lifecycle.removePhaseListener(listener);
     }
 
-    public void beginExecuteApplyRequestValuesRenderBefore(WebRequest request) {
+    public void beginExecuteApplyRequestValuesRenderBefore(WebRequest request)
+    {
         request.addParameter("foo", "bar");
-        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp",
-                null);
+        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp", null);
     }
 
-    public void testExecuteApplyRequestValuesRenderBefore() throws Exception {
+    public void testExecuteApplyRequestValuesRenderBefore() throws Exception
+    {
         setViewRoot("/index.jsp");
         // simulate that this is the 2nd request for this page
         // so that we would go through all 6 phases
-        StateManager stateManager = facesContext.getApplication()
-                .getStateManager();
+        StateManager stateManager = facesContext.getApplication().getStateManager();
         stateManager.saveSerializedView(facesContext);
         InstrumentingPhaseListener listener = new InstrumentingPhaseListener();
         listener.setEventPhaseId(PhaseId.APPLY_REQUEST_VALUES);
@@ -199,29 +202,27 @@ public class LifecycleImplCactus extends ServletTestCase {
         servlet.service(this.request, this.response);
         assertEquals(3, listener.getBeforePhases().size());
         assertEquals(PhaseId.RESTORE_VIEW, listener.getBeforePhases().get(0));
-        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getBeforePhases()
-                .get(1));
+        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getBeforePhases().get(1));
         assertEquals(PhaseId.RENDER_RESPONSE, listener.getBeforePhases().get(2));
         assertEquals(3, listener.getAfterPhases().size());
         assertEquals(PhaseId.RESTORE_VIEW, listener.getAfterPhases().get(0));
-        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getAfterPhases()
-                .get(1));
+        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getAfterPhases().get(1));
         assertEquals(PhaseId.RENDER_RESPONSE, listener.getAfterPhases().get(2));
         lifecycle.removePhaseListener(listener);
     }
 
-    public void beginExecuteApplyRequestValuesRenderAfter(WebRequest request) {
+    public void beginExecuteApplyRequestValuesRenderAfter(WebRequest request)
+    {
         request.addParameter("foo", "bar");
-        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp",
-                null);
+        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp", null);
     }
 
-    public void testExecuteApplyRequestValuesRenderAfter() throws Exception {
+    public void testExecuteApplyRequestValuesRenderAfter() throws Exception
+    {
         setViewRoot("/index.jsp");
         // simulate that this is the 2nd request for this page
         // so that we would go through all 6 phases
-        StateManager stateManager = facesContext.getApplication()
-                .getStateManager();
+        StateManager stateManager = facesContext.getApplication().getStateManager();
         stateManager.saveSerializedView(facesContext);
         InstrumentingPhaseListener listener = new InstrumentingPhaseListener();
         listener.setEventPhaseId(PhaseId.APPLY_REQUEST_VALUES);
@@ -231,29 +232,27 @@ public class LifecycleImplCactus extends ServletTestCase {
         servlet.service(this.request, this.response);
         assertEquals(3, listener.getBeforePhases().size());
         assertEquals(PhaseId.RESTORE_VIEW, listener.getBeforePhases().get(0));
-        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getBeforePhases()
-                .get(1));
+        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getBeforePhases().get(1));
         assertEquals(PhaseId.RENDER_RESPONSE, listener.getBeforePhases().get(2));
         assertEquals(3, listener.getAfterPhases().size());
         assertEquals(PhaseId.RESTORE_VIEW, listener.getAfterPhases().get(0));
-        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getAfterPhases()
-                .get(1));
+        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getAfterPhases().get(1));
         assertEquals(PhaseId.RENDER_RESPONSE, listener.getAfterPhases().get(2));
         lifecycle.removePhaseListener(listener);
     }
 
-    public void beginExecuteApplyRequestValuesCompleteBefore(WebRequest request) {
+    public void beginExecuteApplyRequestValuesCompleteBefore(WebRequest request)
+    {
         request.addParameter("foo", "bar");
-        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp",
-                null);
+        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp", null);
     }
 
-    public void testExecuteApplyRequestValuesCompleteBefore() throws Exception {
+    public void testExecuteApplyRequestValuesCompleteBefore() throws Exception
+    {
         setViewRoot("/index.jsp");
         // simulate that this is the 2nd request for this page
         // so that we would go through all 6 phases
-        StateManager stateManager = facesContext.getApplication()
-                .getStateManager();
+        StateManager stateManager = facesContext.getApplication().getStateManager();
         stateManager.saveSerializedView(facesContext);
         InstrumentingPhaseListener listener = new InstrumentingPhaseListener();
         listener.setEventPhaseId(PhaseId.APPLY_REQUEST_VALUES);
@@ -263,25 +262,24 @@ public class LifecycleImplCactus extends ServletTestCase {
         servlet.service(this.request, this.response);
         assertEquals(2, listener.getBeforePhases().size());
         assertEquals(PhaseId.RESTORE_VIEW, listener.getBeforePhases().get(0));
-        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getBeforePhases()
-                .get(1));
+        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getBeforePhases().get(1));
         assertEquals(1, listener.getAfterPhases().size());
         assertEquals(PhaseId.RESTORE_VIEW, listener.getAfterPhases().get(0));
         lifecycle.removePhaseListener(listener);
     }
 
-    public void beginExecuteApplyRequestValuesCompleteAfter(WebRequest request) {
+    public void beginExecuteApplyRequestValuesCompleteAfter(WebRequest request)
+    {
         request.addParameter("foo", "bar");
-        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp",
-                null);
+        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp", null);
     }
 
-    public void testExecuteApplyRequestValuesCompleteAfter() throws Exception {
+    public void testExecuteApplyRequestValuesCompleteAfter() throws Exception
+    {
         setViewRoot("/index.jsp");
         // simulate that this is the 2nd request for this page
         // so that we would go through all 6 phases
-        StateManager stateManager = facesContext.getApplication()
-                .getStateManager();
+        StateManager stateManager = facesContext.getApplication().getStateManager();
         stateManager.saveSerializedView(facesContext);
         InstrumentingPhaseListener listener = new InstrumentingPhaseListener();
         listener.setEventPhaseId(PhaseId.APPLY_REQUEST_VALUES);
@@ -292,27 +290,25 @@ public class LifecycleImplCactus extends ServletTestCase {
         servlet.service(this.request, this.response);
         assertEquals(2, listener.getBeforePhases().size());
         assertEquals(PhaseId.RESTORE_VIEW, listener.getBeforePhases().get(0));
-        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getBeforePhases()
-                .get(1));
+        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getBeforePhases().get(1));
         assertEquals(2, listener.getAfterPhases().size());
         assertEquals(PhaseId.RESTORE_VIEW, listener.getAfterPhases().get(0));
-        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getAfterPhases()
-                .get(1));
+        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getAfterPhases().get(1));
         lifecycle.removePhaseListener(listener);
     }
 
-    public void beginExecuteProcessValidationsRenderBefore(WebRequest request) {
+    public void beginExecuteProcessValidationsRenderBefore(WebRequest request)
+    {
         request.addParameter("foo", "bar");
-        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp",
-                null);
+        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp", null);
     }
 
-    public void testExecuteProcessValidationsRenderBefore() throws Exception {
+    public void testExecuteProcessValidationsRenderBefore() throws Exception
+    {
         setViewRoot("/index.jsp");
         // simulate that this is the 2nd request for this page
         // so that we would go through all 6 phases
-        StateManager stateManager = facesContext.getApplication()
-                .getStateManager();
+        StateManager stateManager = facesContext.getApplication().getStateManager();
         stateManager.saveSerializedView(facesContext);
         InstrumentingPhaseListener listener = new InstrumentingPhaseListener();
         listener.setEventPhaseId(PhaseId.PROCESS_VALIDATIONS);
@@ -322,35 +318,29 @@ public class LifecycleImplCactus extends ServletTestCase {
         servlet.service(this.request, this.response);
         assertEquals(4, listener.getBeforePhases().size());
         assertEquals(PhaseId.RESTORE_VIEW, listener.getBeforePhases().get(0));
-        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getBeforePhases()
-                .get(1));
-        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getBeforePhases()
-                .get(2));
-        assertEquals(PhaseId.RENDER_RESPONSE, listener.getBeforePhases()
-                .get(3));
+        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getBeforePhases().get(1));
+        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getBeforePhases().get(2));
+        assertEquals(PhaseId.RENDER_RESPONSE, listener.getBeforePhases().get(3));
         assertEquals(4, listener.getAfterPhases().size());
         assertEquals(PhaseId.RESTORE_VIEW, listener.getAfterPhases().get(0));
-        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getAfterPhases()
-                .get(1));
-        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getAfterPhases()
-                .get(2));
-        assertEquals(PhaseId.RENDER_RESPONSE, listener.getAfterPhases()
-                .get(3));
+        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getAfterPhases().get(1));
+        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getAfterPhases().get(2));
+        assertEquals(PhaseId.RENDER_RESPONSE, listener.getAfterPhases().get(3));
         lifecycle.removePhaseListener(listener);
     }
 
-    public void beginExecuteProcessValidationsRenderAfter(WebRequest request) {
+    public void beginExecuteProcessValidationsRenderAfter(WebRequest request)
+    {
         request.addParameter("foo", "bar");
-        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp",
-                null);
+        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp", null);
     }
 
-    public void testExecuteProcessValidationsRenderAfter() throws Exception {
+    public void testExecuteProcessValidationsRenderAfter() throws Exception
+    {
         setViewRoot("/index.jsp");
         // simulate that this is the 2nd request for this page
         // so that we would go through all 6 phases
-        StateManager stateManager = facesContext.getApplication()
-                .getStateManager();
+        StateManager stateManager = facesContext.getApplication().getStateManager();
         stateManager.saveSerializedView(facesContext);
         InstrumentingPhaseListener listener = new InstrumentingPhaseListener();
         listener.setEventPhaseId(PhaseId.PROCESS_VALIDATIONS);
@@ -360,35 +350,29 @@ public class LifecycleImplCactus extends ServletTestCase {
         servlet.service(this.request, this.response);
         assertEquals(4, listener.getBeforePhases().size());
         assertEquals(PhaseId.RESTORE_VIEW, listener.getBeforePhases().get(0));
-        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getBeforePhases()
-                .get(1));
-        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getBeforePhases()
-                .get(2));
-        assertEquals(PhaseId.RENDER_RESPONSE, listener.getBeforePhases()
-                .get(3));
+        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getBeforePhases().get(1));
+        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getBeforePhases().get(2));
+        assertEquals(PhaseId.RENDER_RESPONSE, listener.getBeforePhases().get(3));
         assertEquals(4, listener.getAfterPhases().size());
         assertEquals(PhaseId.RESTORE_VIEW, listener.getAfterPhases().get(0));
-        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getAfterPhases()
-                .get(1));
-        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getAfterPhases()
-                .get(2));
-        assertEquals(PhaseId.RENDER_RESPONSE, listener.getAfterPhases()
-                .get(3));
+        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getAfterPhases().get(1));
+        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getAfterPhases().get(2));
+        assertEquals(PhaseId.RENDER_RESPONSE, listener.getAfterPhases().get(3));
         lifecycle.removePhaseListener(listener);
     }
 
-    public void beginExecuteProcessValidationsCompleteBefore(WebRequest request) {
+    public void beginExecuteProcessValidationsCompleteBefore(WebRequest request)
+    {
         request.addParameter("foo", "bar");
-        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp",
-                null);
+        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp", null);
     }
 
-    public void testExecuteProcessValidationsCompleteBefore() throws Exception {
+    public void testExecuteProcessValidationsCompleteBefore() throws Exception
+    {
         setViewRoot("/index.jsp");
         // simulate that this is the 2nd request for this page
         // so that we would go through all 6 phases
-        StateManager stateManager = facesContext.getApplication()
-                .getStateManager();
+        StateManager stateManager = facesContext.getApplication().getStateManager();
         stateManager.saveSerializedView(facesContext);
         InstrumentingPhaseListener listener = new InstrumentingPhaseListener();
         listener.setEventPhaseId(PhaseId.PROCESS_VALIDATIONS);
@@ -398,29 +382,26 @@ public class LifecycleImplCactus extends ServletTestCase {
         servlet.service(this.request, this.response);
         assertEquals(3, listener.getBeforePhases().size());
         assertEquals(PhaseId.RESTORE_VIEW, listener.getBeforePhases().get(0));
-        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getBeforePhases()
-                .get(1));
-        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getBeforePhases()
-                .get(2));
+        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getBeforePhases().get(1));
+        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getBeforePhases().get(2));
         assertEquals(2, listener.getAfterPhases().size());
         assertEquals(PhaseId.RESTORE_VIEW, listener.getAfterPhases().get(0));
-        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getAfterPhases()
-                .get(1));
+        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getAfterPhases().get(1));
         lifecycle.removePhaseListener(listener);
     }
 
-    public void beginExecuteProcessValidationsCompleteAfter(WebRequest request) {
+    public void beginExecuteProcessValidationsCompleteAfter(WebRequest request)
+    {
         request.addParameter("foo", "bar");
-        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp",
-                null);
+        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp", null);
     }
 
-    public void testExecuteProcessValidationsCompleteAfter() throws Exception {
+    public void testExecuteProcessValidationsCompleteAfter() throws Exception
+    {
         setViewRoot("/index.jsp");
         // simulate that this is the 2nd request for this page
         // so that we would go through all 6 phases
-        StateManager stateManager = facesContext.getApplication()
-                .getStateManager();
+        StateManager stateManager = facesContext.getApplication().getStateManager();
         stateManager.saveSerializedView(facesContext);
         InstrumentingPhaseListener listener = new InstrumentingPhaseListener();
         listener.setEventPhaseId(PhaseId.PROCESS_VALIDATIONS);
@@ -431,31 +412,27 @@ public class LifecycleImplCactus extends ServletTestCase {
         servlet.service(this.request, this.response);
         assertEquals(3, listener.getBeforePhases().size());
         assertEquals(PhaseId.RESTORE_VIEW, listener.getBeforePhases().get(0));
-        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getBeforePhases()
-                .get(1));
-        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getBeforePhases()
-                .get(2));
+        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getBeforePhases().get(1));
+        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getBeforePhases().get(2));
         assertEquals(3, listener.getAfterPhases().size());
         assertEquals(PhaseId.RESTORE_VIEW, listener.getAfterPhases().get(0));
-        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getAfterPhases()
-                .get(1));
-        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getAfterPhases()
-                .get(2));
+        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getAfterPhases().get(1));
+        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getAfterPhases().get(2));
         lifecycle.removePhaseListener(listener);
     }
 
-    public void beginExecuteUpdateModelValuesRenderBefore(WebRequest request) {
+    public void beginExecuteUpdateModelValuesRenderBefore(WebRequest request)
+    {
         request.addParameter("foo", "bar");
-        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp",
-                null);
+        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp", null);
     }
 
-    public void testExecuteUpdateModelValuesRenderBefore() throws Exception {
+    public void testExecuteUpdateModelValuesRenderBefore() throws Exception
+    {
         setViewRoot("/index.jsp");
         // simulate that this is the 2nd request for this page
         // so that we will go through all 6 phases
-        StateManager stateManager = facesContext.getApplication()
-                .getStateManager();
+        StateManager stateManager = facesContext.getApplication().getStateManager();
         stateManager.saveSerializedView(facesContext);
         InstrumentingPhaseListener listener = new InstrumentingPhaseListener();
         listener.setEventPhaseId(PhaseId.UPDATE_MODEL_VALUES);
@@ -467,39 +444,31 @@ public class LifecycleImplCactus extends ServletTestCase {
         // assert the phases were hit
         assertEquals(5, listener.getBeforePhases().size());
         assertEquals(PhaseId.RESTORE_VIEW, listener.getBeforePhases().get(0));
-        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getBeforePhases()
-                .get(1));
-        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getBeforePhases()
-                .get(2));
-        assertEquals(PhaseId.UPDATE_MODEL_VALUES, listener.getBeforePhases()
-                .get(3));
-        assertEquals(PhaseId.RENDER_RESPONSE, listener.getBeforePhases()
-                .get(4));
+        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getBeforePhases().get(1));
+        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getBeforePhases().get(2));
+        assertEquals(PhaseId.UPDATE_MODEL_VALUES, listener.getBeforePhases().get(3));
+        assertEquals(PhaseId.RENDER_RESPONSE, listener.getBeforePhases().get(4));
         assertEquals(5, listener.getAfterPhases().size());
         assertEquals(PhaseId.RESTORE_VIEW, listener.getAfterPhases().get(0));
-        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getAfterPhases()
-                .get(1));
-        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getAfterPhases()
-                .get(2));
-        assertEquals(PhaseId.UPDATE_MODEL_VALUES, listener.getAfterPhases()
-                .get(3));
-        assertEquals(PhaseId.RENDER_RESPONSE, listener.getAfterPhases()
-                .get(4));
+        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getAfterPhases().get(1));
+        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getAfterPhases().get(2));
+        assertEquals(PhaseId.UPDATE_MODEL_VALUES, listener.getAfterPhases().get(3));
+        assertEquals(PhaseId.RENDER_RESPONSE, listener.getAfterPhases().get(4));
         lifecycle.removePhaseListener(listener);
     }
 
-    public void beginExecuteUpdateModelValuesRenderAfter(WebRequest request) {
+    public void beginExecuteUpdateModelValuesRenderAfter(WebRequest request)
+    {
         request.addParameter("foo", "bar");
-        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp",
-                null);
+        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp", null);
     }
 
-    public void testExecuteUpdateModelValuesRenderAfter() throws Exception {
+    public void testExecuteUpdateModelValuesRenderAfter() throws Exception
+    {
         setViewRoot("/index.jsp");
         // simulate that this is the 2nd request for this page
         // so that we will go through all 6 phases
-        StateManager stateManager = facesContext.getApplication()
-                .getStateManager();
+        StateManager stateManager = facesContext.getApplication().getStateManager();
         stateManager.saveSerializedView(facesContext);
         InstrumentingPhaseListener listener = new InstrumentingPhaseListener();
         listener.setEventPhaseId(PhaseId.UPDATE_MODEL_VALUES);
@@ -511,39 +480,31 @@ public class LifecycleImplCactus extends ServletTestCase {
         // assert the phases were hit
         assertEquals(5, listener.getBeforePhases().size());
         assertEquals(PhaseId.RESTORE_VIEW, listener.getBeforePhases().get(0));
-        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getBeforePhases()
-                .get(1));
-        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getBeforePhases()
-                .get(2));
-        assertEquals(PhaseId.UPDATE_MODEL_VALUES, listener.getBeforePhases()
-                .get(3));
-        assertEquals(PhaseId.RENDER_RESPONSE, listener.getBeforePhases()
-                .get(4));
+        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getBeforePhases().get(1));
+        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getBeforePhases().get(2));
+        assertEquals(PhaseId.UPDATE_MODEL_VALUES, listener.getBeforePhases().get(3));
+        assertEquals(PhaseId.RENDER_RESPONSE, listener.getBeforePhases().get(4));
         assertEquals(5, listener.getAfterPhases().size());
         assertEquals(PhaseId.RESTORE_VIEW, listener.getAfterPhases().get(0));
-        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getAfterPhases()
-                .get(1));
-        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getAfterPhases()
-                .get(2));
-        assertEquals(PhaseId.UPDATE_MODEL_VALUES, listener.getAfterPhases()
-                .get(3));
-        assertEquals(PhaseId.RENDER_RESPONSE, listener.getAfterPhases()
-                .get(4));
+        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getAfterPhases().get(1));
+        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getAfterPhases().get(2));
+        assertEquals(PhaseId.UPDATE_MODEL_VALUES, listener.getAfterPhases().get(3));
+        assertEquals(PhaseId.RENDER_RESPONSE, listener.getAfterPhases().get(4));
         lifecycle.removePhaseListener(listener);
     }
 
-    public void beginExecuteUpdateModelValuesCompleteBefore(WebRequest request) {
+    public void beginExecuteUpdateModelValuesCompleteBefore(WebRequest request)
+    {
         request.addParameter("foo", "bar");
-        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp",
-                null);
+        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp", null);
     }
 
-    public void testExecuteUpdateModelValuesCompleteBefore() throws Exception {
+    public void testExecuteUpdateModelValuesCompleteBefore() throws Exception
+    {
         setViewRoot("/index.jsp");
         // simulate that this is the 2nd request for this page
         // so that we will go through all 6 phases
-        StateManager stateManager = facesContext.getApplication()
-                .getStateManager();
+        StateManager stateManager = facesContext.getApplication().getStateManager();
         stateManager.saveSerializedView(facesContext);
         InstrumentingPhaseListener listener = new InstrumentingPhaseListener();
         listener.setEventPhaseId(PhaseId.UPDATE_MODEL_VALUES);
@@ -555,33 +516,28 @@ public class LifecycleImplCactus extends ServletTestCase {
         // assert the phases were hit
         assertEquals(4, listener.getBeforePhases().size());
         assertEquals(PhaseId.RESTORE_VIEW, listener.getBeforePhases().get(0));
-        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getBeforePhases()
-                .get(1));
-        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getBeforePhases()
-                .get(2));
-        assertEquals(PhaseId.UPDATE_MODEL_VALUES, listener.getBeforePhases()
-                .get(3));
+        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getBeforePhases().get(1));
+        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getBeforePhases().get(2));
+        assertEquals(PhaseId.UPDATE_MODEL_VALUES, listener.getBeforePhases().get(3));
         assertEquals(3, listener.getAfterPhases().size());
         assertEquals(PhaseId.RESTORE_VIEW, listener.getAfterPhases().get(0));
-        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getAfterPhases()
-                .get(1));
-        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getAfterPhases()
-                .get(2));
+        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getAfterPhases().get(1));
+        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getAfterPhases().get(2));
         lifecycle.removePhaseListener(listener);
     }
 
-    public void beginExecuteUpdateModelValuesCompleteAfter(WebRequest request) {
+    public void beginExecuteUpdateModelValuesCompleteAfter(WebRequest request)
+    {
         request.addParameter("foo", "bar");
-        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp",
-                null);
+        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp", null);
     }
 
-    public void testExecuteUpdateModelValuesCompleteAfter() throws Exception {
+    public void testExecuteUpdateModelValuesCompleteAfter() throws Exception
+    {
         setViewRoot("/index.jsp");
         // simulate that this is the 2nd request for this page
         // so that we will go through all 6 phases
-        StateManager stateManager = facesContext.getApplication()
-                .getStateManager();
+        StateManager stateManager = facesContext.getApplication().getStateManager();
         stateManager.saveSerializedView(facesContext);
         InstrumentingPhaseListener listener = new InstrumentingPhaseListener();
         listener.setEventPhaseId(PhaseId.UPDATE_MODEL_VALUES);
@@ -593,35 +549,29 @@ public class LifecycleImplCactus extends ServletTestCase {
         // assert the phases were hit
         assertEquals(4, listener.getBeforePhases().size());
         assertEquals(PhaseId.RESTORE_VIEW, listener.getBeforePhases().get(0));
-        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getBeforePhases()
-                .get(1));
-        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getBeforePhases()
-                .get(2));
-        assertEquals(PhaseId.UPDATE_MODEL_VALUES, listener.getBeforePhases()
-                .get(3));
+        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getBeforePhases().get(1));
+        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getBeforePhases().get(2));
+        assertEquals(PhaseId.UPDATE_MODEL_VALUES, listener.getBeforePhases().get(3));
         assertEquals(4, listener.getAfterPhases().size());
         assertEquals(PhaseId.RESTORE_VIEW, listener.getAfterPhases().get(0));
-        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getAfterPhases()
-                .get(1));
-        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getAfterPhases()
-                .get(2));
-        assertEquals(PhaseId.UPDATE_MODEL_VALUES, listener.getAfterPhases()
-                .get(3));
+        assertEquals(PhaseId.APPLY_REQUEST_VALUES, listener.getAfterPhases().get(1));
+        assertEquals(PhaseId.PROCESS_VALIDATIONS, listener.getAfterPhases().get(2));
+        assertEquals(PhaseId.UPDATE_MODEL_VALUES, listener.getAfterPhases().get(3));
         lifecycle.removePhaseListener(listener);
     }
 
-    public void beginExecuteInvokeApplicationRenderBefore(WebRequest request) {
+    public void beginExecuteInvokeApplicationRenderBefore(WebRequest request)
+    {
         request.addParameter("foo", "bar");
-        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp",
-                null);
+        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp", null);
     }
 
-    public void testExecuteInvokeApplicationRenderBefore() throws Exception {
+    public void testExecuteInvokeApplicationRenderBefore() throws Exception
+    {
         setViewRoot("/index.jsp");
         // simulate that this is the 2nd request for this page
         // so that we will go through all 6 phases
-        StateManager stateManager = facesContext.getApplication()
-                .getStateManager();
+        StateManager stateManager = facesContext.getApplication().getStateManager();
         stateManager.saveSerializedView(facesContext);
         InstrumentingPhaseListener listener = new InstrumentingPhaseListener();
         listener.setEventPhaseId(PhaseId.INVOKE_APPLICATION);
@@ -636,18 +586,18 @@ public class LifecycleImplCactus extends ServletTestCase {
         lifecycle.removePhaseListener(listener);
     }
 
-    public void beginExecuteInvokeApplicationRenderAfter(WebRequest request) {
+    public void beginExecuteInvokeApplicationRenderAfter(WebRequest request)
+    {
         request.addParameter("foo", "bar");
-        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp",
-                null);
+        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp", null);
     }
 
-    public void testExecuteInvokeApplicationRenderAfter() throws Exception {
+    public void testExecuteInvokeApplicationRenderAfter() throws Exception
+    {
         setViewRoot("/index.jsp");
         // simulate that this is the 2nd request for this page
         // so that we will go through all 6 phases
-        StateManager stateManager = facesContext.getApplication()
-                .getStateManager();
+        StateManager stateManager = facesContext.getApplication().getStateManager();
         stateManager.saveSerializedView(facesContext);
         InstrumentingPhaseListener listener = new InstrumentingPhaseListener();
         listener.setEventPhaseId(PhaseId.INVOKE_APPLICATION);
@@ -662,18 +612,18 @@ public class LifecycleImplCactus extends ServletTestCase {
         lifecycle.removePhaseListener(listener);
     }
 
-    public void beginExecuteInvokeApplicationCompleteBefore(WebRequest request) {
+    public void beginExecuteInvokeApplicationCompleteBefore(WebRequest request)
+    {
         request.addParameter("foo", "bar");
-        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp",
-                null);
+        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp", null);
     }
 
-    public void testExecuteInvokeApplicationCompleteBefore() throws Exception {
+    public void testExecuteInvokeApplicationCompleteBefore() throws Exception
+    {
         setViewRoot("/index.jsp");
         // simulate that this is the 2nd request for this page
         // so that we will go through all 6 phases
-        StateManager stateManager = facesContext.getApplication()
-                .getStateManager();
+        StateManager stateManager = facesContext.getApplication().getStateManager();
         stateManager.saveSerializedView(facesContext);
         InstrumentingPhaseListener listener = new InstrumentingPhaseListener();
         listener.setEventPhaseId(PhaseId.INVOKE_APPLICATION);
@@ -688,18 +638,18 @@ public class LifecycleImplCactus extends ServletTestCase {
         lifecycle.removePhaseListener(listener);
     }
 
-    public void beginExecuteInvokeApplicationCompleteAfter(WebRequest request) {
+    public void beginExecuteInvokeApplicationCompleteAfter(WebRequest request)
+    {
         request.addParameter("foo", "bar");
-        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp",
-                null);
+        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp", null);
     }
 
-    public void testExecuteInvokeApplicationCompleteAfter() throws Exception {
+    public void testExecuteInvokeApplicationCompleteAfter() throws Exception
+    {
         setViewRoot("/index.jsp");
         // simulate that this is the 2nd request for this page
         // so that we will go through all 6 phases
-        StateManager stateManager = facesContext.getApplication()
-                .getStateManager();
+        StateManager stateManager = facesContext.getApplication().getStateManager();
         stateManager.saveSerializedView(facesContext);
         InstrumentingPhaseListener listener = new InstrumentingPhaseListener();
         listener.setEventPhaseId(PhaseId.INVOKE_APPLICATION);
@@ -714,19 +664,19 @@ public class LifecycleImplCactus extends ServletTestCase {
         lifecycle.removePhaseListener(listener);
     }
 
-    public void beginExecute(WebRequest request) {
+    public void beginExecute(WebRequest request)
+    {
         request.addParameter("foo", "bar");
-        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp",
-                null);
+        request.setURL("localhost:8080", "/test-app", "/faces", "/index.jsp", null);
     }
 
-    public void testExecute() throws Exception {
+    public void testExecute() throws Exception
+    {
         // set the view root
         setViewRoot("/index.jsp");
         // simulate that this is the 2nd request for this page
         // so that we will go through all 6 phases
-        StateManager stateManager = facesContext.getApplication()
-                .getStateManager();
+        StateManager stateManager = facesContext.getApplication().getStateManager();
         stateManager.saveSerializedView(facesContext);
         InstrumentingPhaseListener listener = new InstrumentingPhaseListener();
         lifecycle.addPhaseListener(listener);
@@ -740,28 +690,30 @@ public class LifecycleImplCactus extends ServletTestCase {
     /*
      * Test method for 'javax.faces.lifecycle.Lifecycle.getPhaseListeners()'
      */
-    public void testGetPhaseListeners() {
+    public void testGetPhaseListeners()
+    {
 
     }
 
     /*
-     * Test method for
-     * 'javax.faces.lifecycle.Lifecycle.removePhaseListener(PhaseListener)'
+     * Test method for 'javax.faces.lifecycle.Lifecycle.removePhaseListener(PhaseListener)'
      */
-    public void testRemovePhaseListenerPhaseListener() {
+    public void testRemovePhaseListenerPhaseListener()
+    {
 
     }
 
     /*
      * Test method for 'javax.faces.lifecycle.Lifecycle.render(FacesContext)'
      */
-    public void testRenderFacesContext() {
+    public void testRenderFacesContext()
+    {
 
     }
 
-    private void setViewRoot(String viewId) {
-        ViewHandler viewHandler = facesContext.getApplication()
-                .getViewHandler();
+    private void setViewRoot(String viewId)
+    {
+        ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
         UIViewRoot viewRoot = viewHandler.createView(facesContext, viewId);
         viewRoot.setViewId(viewId);
         facesContext.setViewRoot(viewRoot);

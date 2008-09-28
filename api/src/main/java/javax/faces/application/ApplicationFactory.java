@@ -26,7 +26,7 @@ package javax.faces.application;
  */
 public abstract class ApplicationFactory
 {
-    public abstract javax.faces.application.Application getApplication();
+    public abstract Application getApplication();
 
-    public abstract void setApplication(javax.faces.application.Application application);
+    public abstract void setApplication(Application application);
 }

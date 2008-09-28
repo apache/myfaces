@@ -31,21 +31,22 @@ import javax.faces.lifecycle.LifecycleFactory;
 
 import org.apache.cactus.ServletTestCase;
 
-public class ValueBindingImplCactus extends ServletTestCase {
+public class ValueBindingImplCactus extends ServletTestCase
+{
     private FacesContext facesContext;
     private UIViewRoot viewRoot;
     private Application application;
-    
-    protected void setUp() throws Exception {
+
+    protected void setUp() throws Exception
+    {
         super.setUp();
         FacesContextFactory facesContextFactory = (FacesContextFactory) FactoryFinder
-                .getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
+                                                                                     .getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
         LifecycleFactory lifecycleFactory = (LifecycleFactory) FactoryFinder
-                .getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-        Lifecycle lifecycle = lifecycleFactory
-                .getLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE);
-        facesContext = facesContextFactory.getFacesContext(this.config
-                .getServletContext(), request, response, lifecycle);
+                                                                            .getFactory(FactoryFinder.LIFECYCLE_FACTORY);
+        Lifecycle lifecycle = lifecycleFactory.getLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE);
+        facesContext = facesContextFactory.getFacesContext(this.config.getServletContext(), request, response,
+            lifecycle);
         assertNotNull(facesContext);
         application = facesContext.getApplication();
         ViewHandler viewHandler = application.getViewHandler();
@@ -55,64 +56,67 @@ public class ValueBindingImplCactus extends ServletTestCase {
         facesContext.setViewRoot(viewRoot);
     }
 
-    protected void tearDown() throws Exception {
+    protected void tearDown() throws Exception
+    {
         super.tearDown();
     }
 
     /*
-     * Test method for
-     * 'org.apache.myfaces.el.ValueBindingImpl.getExpressionString()'
+     * Test method for 'org.apache.myfaces.el.ValueBindingImpl.getExpressionString()'
      */
-    public void testGetExpressionString() {
+    public void testGetExpressionString()
+    {
 
     }
 
     /*
-     * Test method for
-     * 'org.apache.myfaces.el.ValueBindingImpl.getType(FacesContext)'
+     * Test method for 'org.apache.myfaces.el.ValueBindingImpl.getType(FacesContext)'
      */
-    public void testGetType() {
+    public void testGetType()
+    {
 
     }
 
     /*
-     * Test method for
-     * 'org.apache.myfaces.el.ValueBindingImpl.getValue(FacesContext)'
+     * Test method for 'org.apache.myfaces.el.ValueBindingImpl.getValue(FacesContext)'
      */
-    public void testGetValue() {
+    public void testGetValue()
+    {
     }
 
     /*
-     * Test method for
-     * 'org.apache.myfaces.el.ValueBindingImpl.isReadOnly(FacesContext)'
+     * Test method for 'org.apache.myfaces.el.ValueBindingImpl.isReadOnly(FacesContext)'
      */
-    public void testIsReadOnly() {
+    public void testIsReadOnly()
+    {
 
     }
 
     /*
-     * Test method for
-     * 'org.apache.myfaces.el.ValueBindingImpl.setValue(FacesContext, Object)'
+     * Test method for 'org.apache.myfaces.el.ValueBindingImpl.setValue(FacesContext, Object)'
      */
-    public void testSetValueSimpleMap() {
+    public void testSetValueSimpleMap()
+    {
         facesContext.getExternalContext().getRequestMap().put("foo", new HashMap<String, Integer>());
         ValueBinding binding = application.createValueBinding("#{foo['baz']}");
         Integer value = new Integer(14);
         binding.setValue(facesContext, value);
-        assertEquals(14, ((Integer)binding.getValue(facesContext)).intValue());
+        assertEquals(14, ((Integer) binding.getValue(facesContext)).intValue());
     }
 
-    public void testSetValueSimpleBeanInRequestMapNoInitialValue() {
+    public void testSetValueSimpleBeanInRequestMapNoInitialValue()
+    {
         Map<String, Object> map = new HashMap<String, Object>();
         DummyBean bean = new DummyBean(map);
         facesContext.getExternalContext().getRequestMap().put("bean", bean);
         ValueBinding binding = application.createValueBinding("#{bean.map['baz']}");
         Integer value = new Integer(14);
         binding.setValue(facesContext, value);
-        assertEquals(14, ((Integer)binding.getValue(facesContext)).intValue());
+        assertEquals(14, ((Integer) binding.getValue(facesContext)).intValue());
     }
 
-    public void testSetValueSimpleBeanInRequestMapWithInitialValue() {
+    public void testSetValueSimpleBeanInRequestMapWithInitialValue()
+    {
         Map<String, Object> map = new HashMap<String, Object>();
         String initialValue = "hello world";
         map.put("baz", initialValue);
@@ -122,28 +126,31 @@ public class ValueBindingImplCactus extends ServletTestCase {
         assertEquals(initialValue, binding.getValue(facesContext));
         Integer value = new Integer(14);
         binding.setValue(facesContext, value);
-        assertEquals(14, ((Integer)binding.getValue(facesContext)).intValue());
+        assertEquals(14, ((Integer) binding.getValue(facesContext)).intValue());
     }
 
-    public void testSetValueSimpleBeanInRequestMapWithConverter() {
+    public void testSetValueSimpleBeanInRequestMapWithConverter()
+    {
         Map<String, Object> map = new HashMap<String, Object>();
         DummyBean bean = new DummyBean(map);
         facesContext.getExternalContext().getRequestMap().put("bean", bean);
         ValueBinding binding = application.createValueBinding("#{bean.map['baz']}");
         binding.setValue(facesContext, new Integer(14));
-        assertEquals(14, ((Integer)binding.getValue(facesContext)).intValue());
+        assertEquals(14, ((Integer) binding.getValue(facesContext)).intValue());
     }
 
-    public void testSetValueSimpleBeanInSessionMap() {
+    public void testSetValueSimpleBeanInSessionMap()
+    {
         DummyBean bean = new DummyBean(new HashMap<String, Object>());
         facesContext.getExternalContext().getSessionMap().put("bean", bean);
         ValueBinding binding = application.createValueBinding("#{bean.map['baz']}");
         Integer value = new Integer(14);
         binding.setValue(facesContext, value);
-        assertEquals(14, ((Integer)binding.getValue(facesContext)).intValue());
+        assertEquals(14, ((Integer) binding.getValue(facesContext)).intValue());
     }
-    
-    public void setSetIntegerPrimitive() {
+
+    public void setSetIntegerPrimitive()
+    {
         DummyBean bean = new DummyBean(new HashMap<String, Object>());
         facesContext.getExternalContext().getSessionMap().put("bean", bean);
         ValueBinding binding = application.createValueBinding("#{bean.integerPrimitive}");
@@ -151,84 +158,86 @@ public class ValueBindingImplCactus extends ServletTestCase {
         binding.setValue(facesContext, value);
         assertEquals(14, bean.getIntegerPrimitive());
     }
-    
-    public void testUnaryNot() {
+
+    public void testUnaryNot()
+    {
         facesContext.getExternalContext().getRequestMap().put("trueBean", Boolean.TRUE);
         ValueBinding binding;
-        
+
         // First test #{trueBean} is working well
         binding = application.createValueBinding("#{trueBean}");
-        assertTrue( ((Boolean)binding.getValue(facesContext)).booleanValue() );
-        
+        assertTrue(((Boolean) binding.getValue(facesContext)).booleanValue());
+
         // Then test #{! trueBean} is false
         binding = application.createValueBinding("#{! trueBean}");
-        assertFalse( ((Boolean)binding.getValue(facesContext)).booleanValue() );
+        assertFalse(((Boolean) binding.getValue(facesContext)).booleanValue());
     }
-    
-    public void testNotEmpty() {
+
+    public void testNotEmpty()
+    {
         facesContext.getExternalContext().getRequestMap().put("dummyString", "dummy");
         ValueBinding binding;
-        
+
         binding = application.createValueBinding("#{! empty dummyString}");
-        assertTrue( ((Boolean)binding.getValue(facesContext)).booleanValue() );
-        
+        assertTrue(((Boolean) binding.getValue(facesContext)).booleanValue());
+
         binding = application.createValueBinding("#{! empty undefString}");
-        assertFalse( ((Boolean)binding.getValue(facesContext)).booleanValue() );
+        assertFalse(((Boolean) binding.getValue(facesContext)).booleanValue());
     }
 
     /*
-     * Test method for
-     * 'org.apache.myfaces.el.ValueBindingImpl.ValueBindingImpl(Application,
-     * String)'
+     * Test method for 'org.apache.myfaces.el.ValueBindingImpl.ValueBindingImpl(Application, String)'
      */
-    public void testValueBindingImplApplicationString() {
+    public void testValueBindingImplApplicationString()
+    {
 
     }
 
     /*
      * Test method for 'org.apache.myfaces.el.ValueBindingImpl.toString()'
      */
-    public void testToString() {
+    public void testToString()
+    {
 
     }
 
     /*
-     * Test method for
-     * 'org.apache.myfaces.el.ValueBindingImpl.ValueBindingImpl()'
+     * Test method for 'org.apache.myfaces.el.ValueBindingImpl.ValueBindingImpl()'
      */
-    public void testValueBindingImpl() {
+    public void testValueBindingImpl()
+    {
 
     }
 
     /*
-     * Test method for
-     * 'org.apache.myfaces.el.ValueBindingImpl.saveState(FacesContext)'
+     * Test method for 'org.apache.myfaces.el.ValueBindingImpl.saveState(FacesContext)'
      */
-    public void testSaveState() {
+    public void testSaveState()
+    {
 
     }
 
     /*
-     * Test method for
-     * 'org.apache.myfaces.el.ValueBindingImpl.restoreState(FacesContext,
-     * Object)'
+     * Test method for 'org.apache.myfaces.el.ValueBindingImpl.restoreState(FacesContext, Object)'
      */
-    public void testRestoreState() {
+    public void testRestoreState()
+    {
 
     }
 
     /*
      * Test method for 'org.apache.myfaces.el.ValueBindingImpl.isTransient()'
      */
-    public void testIsTransient() {
+    public void testIsTransient()
+    {
 
     }
 
     /*
-     * Test method for
-     * 'org.apache.myfaces.el.ValueBindingImpl.setTransient(boolean)'
+     * Test method for 'org.apache.myfaces.el.ValueBindingImpl.setTransient(boolean)'
      */
-    public void testSetTransient() {
+    public void testSetTransient()
+    {
 
     }
 

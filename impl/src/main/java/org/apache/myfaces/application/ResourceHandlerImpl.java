@@ -71,4 +71,11 @@ public class ResourceHandlerImpl extends ResourceHandler
         // TODO: JSF 2.0 #40
         return false;
     }
+
+    @Override
+    public boolean libraryExists(String libraryName)
+    {
+        // TODO: JSF 2.0 #42
+        return false;
+    }
 }

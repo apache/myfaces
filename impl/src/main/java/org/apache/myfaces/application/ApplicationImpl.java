@@ -59,6 +59,7 @@ import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 import javax.faces.event.SystemEventListenerHolder;
 import javax.faces.validator.Validator;
+import javax.faces.webapp.pdl.PageDeclarationLanguage;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -387,6 +388,12 @@ public class ApplicationImpl extends Application
             _elContextListeners.add(listener);
         }
     }
+
+    @Override
+    public void publishEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source)
+    {
+        // TODO: JSF 2.0 #44
+    }
     
     @Override
     public void publishEvent(Class<? extends SystemEvent> systemEventClass, Object source)
@@ -507,6 +514,19 @@ public class ApplicationImpl extends Application
     public final NavigationHandler getNavigationHandler()
     {
         return _navigationHandler;
+    }
+    
+    @Override
+    public PageDeclarationLanguage getPageDeclarationLanguage()
+    {
+        // TODO: JSF 2.0 #43
+        return null;
+    }
+    
+    @Override
+    public void setPageDeclarationLanguage(PageDeclarationLanguage pdl)
+    {
+        // TODO: JSF 2.0 #45
     }
 
     /**
