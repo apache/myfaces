@@ -35,6 +35,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseStream;
 import javax.faces.context.ResponseWriter;
+import javax.faces.event.PhaseId;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 import javax.portlet.PortletContext;
@@ -60,6 +61,7 @@ public class FacesContextImpl extends FacesContext
     private List<String> _messageClientIds = null;
     
     private Application _application;
+    private PhaseId _currentPhaseId;
     private ReleaseableExternalContext _externalContext;
     private ResponseStream _responseStream = null;
     private ResponseWriter _responseWriter = null;
@@ -154,6 +156,11 @@ public class FacesContextImpl extends FacesContext
         final Set<String> uniqueClientIds = new LinkedHashSet<String>(_messageClientIds);
         
         return uniqueClientIds.iterator();
+    }
+    
+    public PhaseId getCurrentPhaseId()
+    {
+        return _currentPhaseId;
     }
 
     public final Iterator<FacesMessage> getMessages(final String clientId)
@@ -363,6 +370,11 @@ public class FacesContextImpl extends FacesContext
             throw new IllegalStateException("FacesContext already released");
         }
         _responseComplete = true;
+    }
+    
+    public void setCurrentPhaseId(PhaseId currentPhaseId)
+    {
+        _currentPhaseId = currentPhaseId;
     }
 
     // Portlet need to do this to change from ActionRequest/Response to

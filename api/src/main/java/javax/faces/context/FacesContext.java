@@ -19,10 +19,13 @@
 package javax.faces.context;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.el.ELContext;
+import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UIViewRoot;
 import javax.faces.event.PhaseId;
 
 /**
@@ -32,8 +35,10 @@ import javax.faces.event.PhaseId;
  * @version $Revision$ $Date$
  */
 public abstract class FacesContext
-{    
-    private PhaseId _currentPhaseId;
+{
+    public static final String NO_PARTIAL_PHASE_CLIENT_IDS = "none";
+    public static final String PARTIAL_EXECUTE_PARAM_NAME = "javax.faces.partial.execute";
+    public static final String PARTIAL_RENDER_PARAM_NAME = "javax.faces.partial.render";
     
     /**
      * Return the context within which all EL-expressions are evaluated.
@@ -97,7 +102,12 @@ public abstract class FacesContext
         return elctx;
     }
     
-    public abstract javax.faces.application.Application getApplication();
+    public void enableResponseWriting(boolean enable)
+    {
+        // TODO: JSF 2.0 #48
+    }
+    
+    public abstract Application getApplication();
 
     public Map<Object,Object> getAttributes()
     {
@@ -110,10 +120,16 @@ public abstract class FacesContext
     
     public PhaseId getCurrentPhaseId()
     {
-        return _currentPhaseId;
+        throw new UnsupportedOperationException();
+    }
+    
+    public List<String> getExecutePhaseClientIds()
+    {
+        // TODO: JSF 2.0 #49
+        return null;
     }
 
-    public abstract javax.faces.context.ExternalContext getExternalContext();
+    public abstract ExternalContext getExternalContext();
 
     public abstract FacesMessage.Severity getMaximumSeverity();
 
@@ -127,15 +143,42 @@ public abstract class FacesContext
 
     public abstract boolean getResponseComplete();
 
-    public abstract javax.faces.context.ResponseStream getResponseStream();
+    public abstract ResponseStream getResponseStream();
+    
+    public void setExecutePhaseClientIds(List<String> executePhaseClientIds)
+    {
+        // TODO: JSF 2.0 #50
+    }
+    
+    public void setRenderAll(boolean renderAll)
+    {
+        // TODO: JSF 2.0 #55
+    }
+    
+    public void setRenderPhaseClientIds(List<String> renderPhaseClientIds)
+    {
+        // TODO: JSF 2.0 #56
+    }
 
-    public abstract void setResponseStream(javax.faces.context.ResponseStream responseStream);
+    public abstract void setResponseStream(ResponseStream responseStream);
 
-    public abstract javax.faces.context.ResponseWriter getResponseWriter();
+    public abstract ResponseWriter getResponseWriter();
 
-    public abstract void setResponseWriter(javax.faces.context.ResponseWriter responseWriter);
+    public abstract void setResponseWriter(ResponseWriter responseWriter);
 
-    public abstract javax.faces.component.UIViewRoot getViewRoot();
+    public abstract UIViewRoot getViewRoot();
+    
+    public boolean isAjaxRequest()
+    {
+        // TODO: JSF 2.0 #51
+        return false;
+    }
+    
+    public boolean isExecuteNone()
+    {
+        // TODO: JSF 2.0 #52
+        return false;
+    }
     
     public boolean isPostback()
     {
@@ -143,15 +186,26 @@ public abstract class FacesContext
         return false;
     }
     
+    public boolean isRenderAll()
+    {
+        // TODO: JSF 2.0 #53
+        return false;
+    }
+    
+    public boolean isRenderNone()
+    {
+        // TODO: JSF 2.0 #54
+        return false;
+    }
+    
     public void setCurrentPhaseId(PhaseId currentPhaseId)
     {
-        _currentPhaseId = currentPhaseId;
+        throw new UnsupportedOperationException();
     }
 
-    public abstract void setViewRoot(javax.faces.component.UIViewRoot root);
+    public abstract void setViewRoot(UIViewRoot root);
 
-    public abstract void addMessage(String clientId,
-                                    javax.faces.application.FacesMessage message);
+    public abstract void addMessage(String clientId, FacesMessage message);
 
     public abstract void release();
 
@@ -180,7 +234,7 @@ public abstract class FacesContext
         return _currentInstance.get();
     }
 
-    protected static void setCurrentInstance(javax.faces.context.FacesContext context)
+    protected static void setCurrentInstance(FacesContext context)
     {
         if (context == null)
         {
