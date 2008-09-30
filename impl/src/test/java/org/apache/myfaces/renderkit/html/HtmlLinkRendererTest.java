@@ -1,27 +1,42 @@
 /*
- * Copyright 2006 The Apache Software Foundation.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 package org.apache.myfaces.renderkit.html;
 
-import org.apache.shale.test.base.AbstractJsfTestCase;
-import org.apache.shale.test.mock.MockRenderKitFactory;
-import org.apache.shale.test.mock.MockResponseWriter;
+import java.io.StringWriter;
 
 import javax.faces.component.UIForm;
 import javax.faces.component.html.HtmlCommandLink;
-import java.io.StringWriter;
+import javax.faces.component.html.HtmlOutputLink;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
+import org.apache.myfaces.shared_impl.config.MyfacesConfig;
+import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
+import org.apache.myfaces.test.utils.HtmlRenderedAttr;
+import org.apache.shale.test.base.AbstractJsfTestCase;
+import org.apache.shale.test.mock.MockExternalContext;
+import org.apache.shale.test.mock.MockHttpServletRequest;
+import org.apache.shale.test.mock.MockHttpServletResponse;
+import org.apache.shale.test.mock.MockRenderKitFactory;
+import org.apache.shale.test.mock.MockResponseWriter;
+import org.apache.shale.test.mock.MockServletContext;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)
@@ -31,105 +46,175 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
 {
 
     private MockResponseWriter writer;
-    private HtmlCommandLink link;
+    private HtmlCommandLink commandLink;
+    private HtmlOutputLink outputLink;
 
     public HtmlLinkRendererTest(String name)
     {
         super(name);
     }
+    
+    public static Test suite() {
+        return new TestSuite(HtmlLinkRendererTest.class);
+    }
 
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
 
         UIForm form = new UIForm();
 
-        link = new HtmlCommandLink();
+        commandLink = new HtmlCommandLink();
+        outputLink = new HtmlOutputLink();
+        outputLink.setValue("http://someurl");
 
-        form.getChildren().add(link);
+        form.getChildren().add(commandLink);
 
         writer = new MockResponseWriter(new StringWriter(), null, null);
         facesContext.setResponseWriter(writer);
 
         facesContext.getViewRoot().setRenderKitId(MockRenderKitFactory.HTML_BASIC_RENDER_KIT);
         facesContext.getRenderKit().addRenderer(
-                link.getFamily(),
-                link.getRendererType(),
+                commandLink.getFamily(),
+                commandLink.getRendererType(),
+                new HtmlLinkRenderer());
+        facesContext.getRenderKit().addRenderer(
+                form.getFamily(),
+                form.getRendererType(),
+                new HtmlFormRenderer());
+        facesContext.getRenderKit().addRenderer(
+                outputLink.getFamily(),
+                outputLink.getRendererType(),
                 new HtmlLinkRenderer());
     }
 
-    protected void tearDown() throws Exception
+    public void tearDown() throws Exception
     {
         super.tearDown();
         writer = null;
     }
-
-    public void testLinkDisabled() throws Exception
+     
+    public void testHtmlPropertyPassTru() throws Exception
     {
-        link.setDisabled(true);
-        link.setValue("HelloLink");
-        link.setStyleClass("linkClass");
-        link.setTarget("testTarget");
-        link.setId("foo1");
-
-        HtmlLinkRenderer renderer = new HtmlLinkRenderer();
-        renderer.encodeBegin(facesContext, link);
-        renderer.encodeChildren(facesContext, link);
-        renderer.encodeEnd(facesContext, link);
-
-        facesContext.renderResponse();
-
-        String output = writer.getWriter().toString();
-
-        assertEquals("<span id=\"" + link.getClientId(facesContext) + "\" target=\"testTarget\" class=\"linkClass\">HelloLink</span>", output);
+        HtmlRenderedAttr[] attrs = {
+            //_AccesskeyProperty
+            new HtmlRenderedAttr("accesskey"),
+            //_UniversalProperties
+            new HtmlRenderedAttr("dir"), 
+            new HtmlRenderedAttr("lang"), 
+            new HtmlRenderedAttr("title"),
+            //_FocusBlurProperties
+            new HtmlRenderedAttr("onfocus"), 
+            new HtmlRenderedAttr("onblur"),
+            //_EventProperties
+            new HtmlRenderedAttr("onclick", "onclick", 
+                    "onclick=\"var cf = function(){onclick};var oamSF = function(){return oamSubmitForm(&apos;j_id1&apos;,&apos;j_id1:j_id0&apos;);};return (cf()==false)? false : oamSF();\""), 
+            new HtmlRenderedAttr("ondblclick"), 
+            new HtmlRenderedAttr("onkeydown"), 
+            new HtmlRenderedAttr("onkeypress"),
+            new HtmlRenderedAttr("onkeyup"), 
+            new HtmlRenderedAttr("onmousedown"), 
+            new HtmlRenderedAttr("onmousemove"), 
+            new HtmlRenderedAttr("onmouseout"),
+            new HtmlRenderedAttr("onmouseover"), 
+            new HtmlRenderedAttr("onmouseup"),
+            //_StyleProperties
+            new HtmlRenderedAttr("style"), 
+            new HtmlRenderedAttr("styleClass", "styleClass", "class=\"styleClass\""),
+            //_TabindexProperty
+            new HtmlRenderedAttr("tabindex")
+        };
+        
+        commandLink.setValue("outputdata");
+        
+        HtmlCheckAttributesUtil.checkRenderedAttributes(
+                commandLink, facesContext, writer, attrs);
+        if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+        }
     }
-
-     public void testLinkPassthrough() throws Exception
+    
+    public void testJSNotAllowedHtmlPropertyPassTru() throws Exception
     {
-        link.setAccesskey("accesskey");
-        link.setCharset("charset");
-        link.setCoords("coords");
-        link.setDir("dir");
-        link.setHreflang("hreflang");
-        link.setLang("lang");
-        link.setOnblur("onblur");
-        link.setOndblclick("ondblclick");
-        link.setOnfocus("onfocus");
-        link.setOnkeydown("onkeydown");
-        link.setOnkeypress("onkeypress");
-        link.setOnkeyup("onkeyup");
-        link.setOnmousedown("onmousedown");
-        link.setOnmousemove("onmousemove");
-        link.setOnmouseout("onmouseout");
-        link.setOnmouseover("onmouseover");
-        link.setOnmouseup("onmouseup");
-        link.setRel("rel");
-        link.setRev("rev");
-        link.setShape("shape");
-        link.setStyle("style");
-        link.setTabindex("tabindex");
-        link.setTitle("title");
-        link.setType("type");
+        HtmlRenderedAttr[] attrs = {
+            //_AccesskeyProperty
+            new HtmlRenderedAttr("accesskey"),
+            //_UniversalProperties
+            new HtmlRenderedAttr("dir"), 
+            new HtmlRenderedAttr("lang"), 
+            new HtmlRenderedAttr("title"),
+            //_FocusBlurProperties
+            new HtmlRenderedAttr("onfocus"), 
+            new HtmlRenderedAttr("onblur"),
+            //_EventProperties
+            new HtmlRenderedAttr("onclick"), 
+            new HtmlRenderedAttr("ondblclick"), 
+            new HtmlRenderedAttr("onkeydown"), 
+            new HtmlRenderedAttr("onkeypress"),
+            new HtmlRenderedAttr("onkeyup"), 
+            new HtmlRenderedAttr("onmousedown"), 
+            new HtmlRenderedAttr("onmousemove"), 
+            new HtmlRenderedAttr("onmouseout"),
+            new HtmlRenderedAttr("onmouseover"), 
+            new HtmlRenderedAttr("onmouseup"),
+            //_StyleProperties
+            new HtmlRenderedAttr("style"), 
+            new HtmlRenderedAttr("styleClass", "styleClass", "class=\"styleClass\""),
+            //_TabindexProperty
+            new HtmlRenderedAttr("tabindex")
+        };
 
-        HtmlLinkRenderer renderer = new HtmlLinkRenderer();
-        renderer.encodeBegin(facesContext, link);
-        renderer.encodeChildren(facesContext, link);
-        renderer.encodeEnd(facesContext, link);
+        
+        commandLink.setValue("outputdata");
+        
+        MockServletContext servletContext = new MockServletContext();
+        servletContext.addInitParameter("org.apache.myfaces.ALLOW_JAVASCRIPT", "false");
+        MockExternalContext mockExtCtx = new MockExternalContext(servletContext, 
+                new MockHttpServletRequest(), new MockHttpServletResponse());
+        MyfacesConfig config = MyfacesConfig.getCurrentInstance(mockExtCtx);
+        facesContext.setExternalContext(mockExtCtx);
+        
+        HtmlCheckAttributesUtil.checkRenderedAttributes(
+                commandLink, facesContext, writer, attrs);
+        if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+        }
+    }
+    
+    public void testOutputLink() throws Exception 
+    {
+        HtmlRenderedAttr[] attrs = {
+            //_AccesskeyProperty
+            new HtmlRenderedAttr("accesskey"),
+            //_UniversalProperties
+            new HtmlRenderedAttr("dir"), 
+            new HtmlRenderedAttr("lang"), 
+            new HtmlRenderedAttr("title"),
+            //_FocusBlurProperties
+            new HtmlRenderedAttr("onfocus"), 
+            new HtmlRenderedAttr("onblur"),
+            //_EventProperties
+            new HtmlRenderedAttr("onclick"), 
+            new HtmlRenderedAttr("ondblclick"), 
+            new HtmlRenderedAttr("onkeydown"), 
+            new HtmlRenderedAttr("onkeyup"), 
+            new HtmlRenderedAttr("onmousedown"), 
+            new HtmlRenderedAttr("onmousemove"), 
+            new HtmlRenderedAttr("onmouseout"),
+            new HtmlRenderedAttr("onmouseover"), 
+            new HtmlRenderedAttr("onmouseup"),
+            //_StyleProperties
+            new HtmlRenderedAttr("style"), 
+            new HtmlRenderedAttr("styleClass", "styleClass", "class=\"styleClass\""),
+            //_TabindexProperty
+            new HtmlRenderedAttr("tabindex")
+        };
 
-        facesContext.renderResponse();
-
-        String output = writer.getWriter().toString();
-
-        // just get what is rendered in the <a> element
-        output = output.substring(output.indexOf("<a href"));
-
-        assertEquals("<a href=\"#\" onclick=\"return oamSubmitForm(&apos;j_id1&apos;,&apos;j_id1:j_id0&apos;);\" " +
-                "accesskey=\"accesskey\" charset=\"charset\" coords=\"coords\" hreflang=\"hreflang\" " +
-                "rel=\"rel\" rev=\"rev\" shape=\"shape\" tabindex=\"tabindex\" type=\"type\" " +
-                "ondblclick=\"ondblclick\" onmousedown=\"onmousedown\" onmouseup=\"onmouseup\" " +
-                "onmouseover=\"onmouseover\" onmousemove=\"onmousemove\" onmouseout=\"onmouseout\" " +
-                "onkeypress=\"onkeypress\" onkeydown=\"onkeydown\" onkeyup=\"onkeyup\" onblur=\"onblur\" " +
-                "onfocus=\"onfocus\" dir=\"dir\" lang=\"lang\" title=\"title\" style=\"style\"></a>", output);
-
+        
+        HtmlCheckAttributesUtil.checkRenderedAttributes(
+                outputLink, facesContext, writer, attrs);
+        if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+        }
     }
 }

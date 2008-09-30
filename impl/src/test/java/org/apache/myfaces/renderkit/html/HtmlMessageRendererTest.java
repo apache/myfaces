@@ -20,9 +20,10 @@ package org.apache.myfaces.renderkit.html;
 
 import java.io.StringWriter;
 
-import javax.faces.component.UISelectItem;
-import javax.faces.component.html.HtmlSelectBooleanCheckbox;
-import javax.faces.component.html.HtmlSelectManyCheckbox;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.html.HtmlForm;
+import javax.faces.component.html.HtmlInputText;
+import javax.faces.component.html.HtmlMessage;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -33,70 +34,78 @@ import org.apache.shale.test.base.AbstractJsfTestCase;
 import org.apache.shale.test.mock.MockRenderKitFactory;
 import org.apache.shale.test.mock.MockResponseWriter;
 
-/**
- * @author Bruno Aranda (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
-public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
+public class HtmlMessageRendererTest extends AbstractJsfTestCase
 {
-    private MockResponseWriter writer ;
-    private HtmlSelectManyCheckbox selectManyCheckbox;
-    private HtmlSelectBooleanCheckbox selectBooleanCheckbox;
+    private static final String ERROR_CLASS = "errorClass";
+    private static final String WARN_CLASS = "warnClass";
+    private static final String INFO_CLASS = "infoClass";
+    
+    private MockResponseWriter writer;
+    private HtmlMessage message;
+    private HtmlForm form;
+    private HtmlInputText inputText;
 
-    public HtmlCheckboxRendererTest(String name)
+    public HtmlMessageRendererTest(String name)
     {
         super(name);
     }
     
     public static Test suite() {
-        return new TestSuite(HtmlCheckboxRendererTest.class);
+        return new TestSuite(HtmlMessageRendererTest.class);
     }
 
     public void setUp() throws Exception
     {
         super.setUp();
 
-        selectManyCheckbox = new HtmlSelectManyCheckbox();
-        selectBooleanCheckbox = new HtmlSelectBooleanCheckbox();
-
         writer = new MockResponseWriter(new StringWriter(), null, null);
+        message = new HtmlMessage();
+        form = new HtmlForm();
+        inputText = new HtmlInputText();
+        
         facesContext.setResponseWriter(writer);
 
         facesContext.getViewRoot().setRenderKitId(MockRenderKitFactory.HTML_BASIC_RENDER_KIT);
         facesContext.getRenderKit().addRenderer(
-                selectManyCheckbox.getFamily(),
-                selectManyCheckbox.getRendererType(),
-                new HtmlCheckboxRenderer());
+                message.getFamily(),
+                message.getRendererType(),
+                new HtmlMessageRenderer());
         facesContext.getRenderKit().addRenderer(
-                selectBooleanCheckbox.getFamily(),
-                selectBooleanCheckbox.getRendererType(),
-                new HtmlCheckboxRenderer());
-
+                inputText.getFamily(),
+                inputText.getRendererType(),
+                new HtmlTextRenderer());
+        facesContext.getRenderKit().addRenderer(
+                form.getFamily(),
+                form.getRendererType(),
+                new HtmlFormRenderer());        
+        
+        inputText.setParent(form);
+        inputText.setId("myInputId");
+        
+        message.setErrorClass(ERROR_CLASS);
+        message.setWarnClass(WARN_CLASS);
+        message.setInfoClass(INFO_CLASS);
+        message.setParent(form);
+        
+        form.getChildren().add(inputText);
+        form.getChildren().add(message);
+        
+        facesContext.addMessage(inputText.getClientId(facesContext), 
+                new FacesMessage("Validation message here."));
     }
 
     public void tearDown() throws Exception
     {
         super.tearDown();
-        selectManyCheckbox = null;
-        selectBooleanCheckbox = null;
-        writer = null;
-    }
-
-    public void testSelectManyHtmlPropertyPassTru() throws Exception 
+    }    
+    
+    public void testHtmlPropertyPassTru() throws Exception
     {
         HtmlRenderedAttr[] attrs = {
-            //_AccesskeyProperty
-            new HtmlRenderedAttr("accesskey"),
             //_UniversalProperties
             new HtmlRenderedAttr("dir"), 
             new HtmlRenderedAttr("lang"), 
             new HtmlRenderedAttr("title"),
-            //_FocusBlurProperties
-            new HtmlRenderedAttr("onfocus"), 
-            new HtmlRenderedAttr("onblur"),
-            //_ChangeSelectProperties
-            new HtmlRenderedAttr("onchange"), 
-            new HtmlRenderedAttr("onselect"),
             //_EventProperties
             new HtmlRenderedAttr("onclick"), 
             new HtmlRenderedAttr("ondblclick"), 
@@ -109,35 +118,35 @@ public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
             new HtmlRenderedAttr("onmouseover"), 
             new HtmlRenderedAttr("onmouseup"),
             //_StyleProperties
-            new HtmlRenderedAttr("style", 1), 
-            new HtmlRenderedAttr("styleClass", "styleClass", "class=\"styleClass\"", 1),
-            //_TabindexProperty
-            new HtmlRenderedAttr("tabindex")
+            new HtmlRenderedAttr("style"), 
+            new HtmlRenderedAttr("styleClass", "styleClass", "class=\"infoClass\""),
         };
         
-        UISelectItem item = new UISelectItem();
-        item.setItemLabel("mars");
-        item.setItemValue("mars");
-        selectManyCheckbox.getChildren().add(item);
-
+        facesContext.addMessage("test1", new FacesMessage(FacesMessage.SEVERITY_WARN, "warnSumary", "detailWarnSummary"));
+        message.setStyle("left: 48px; top: 432px; position: absolute");
+        message.setFor("myInputId");
+        
+        MockResponseWriter writer = (MockResponseWriter)facesContext.getResponseWriter();
         HtmlCheckAttributesUtil.checkRenderedAttributes(
-                selectManyCheckbox, facesContext, writer, attrs);
+                message, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
             fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
-    public void testSelectBooleanHtmlPropertyPasstru() throws Exception 
+    public void testHtmlPropertyPassTruNotRendered() throws Exception
     {
-        HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicAttrs();
+        HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnly();
         
-        selectBooleanCheckbox.setSelected(true);
-
+        facesContext.addMessage("test1", new FacesMessage(FacesMessage.SEVERITY_WARN, "warnSumary", "detailWarnSummary"));
+        message.setStyle("left: 48px; top: 432px; position: absolute");
+        message.setFor("myInputId");
+        
+        MockResponseWriter writer = (MockResponseWriter)facesContext.getResponseWriter();
         HtmlCheckAttributesUtil.checkRenderedAttributes(
-                selectBooleanCheckbox, facesContext, writer, attrs);
+                message, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
             fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
-    
-    }   
+    }
 }

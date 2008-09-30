@@ -20,7 +20,7 @@ package org.apache.myfaces.renderkit.html;
 
 import java.io.StringWriter;
 
-import javax.faces.component.html.HtmlDataTable;
+import javax.faces.component.html.HtmlOutputLabel;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -31,65 +31,72 @@ import org.apache.shale.test.base.AbstractJsfTestCase;
 import org.apache.shale.test.mock.MockRenderKitFactory;
 import org.apache.shale.test.mock.MockResponseWriter;
 
-/**
- * @author Bruno Aranda (latest modification by $Author: baranda $)
- * @version $Revision: 451814 $ $Date: 2006-10-01 22:28:42 +0100 (dom, 01 oct 2006) $
- */
-public class HtmlTableRendererTest extends AbstractJsfTestCase
+public class HtmlLabelRendererTest extends AbstractJsfTestCase
 {
-    private MockResponseWriter writer ;
-    private HtmlDataTable dataTable;
-
-    public HtmlTableRendererTest(String name)
+    private MockResponseWriter writer;
+    private HtmlOutputLabel label;
+    
+    public HtmlLabelRendererTest(String name)
     {
         super(name);
     }
     
     public static Test suite() {
-        return new TestSuite(HtmlTableRendererTest.class);
+        return new TestSuite(HtmlLabelRendererTest.class);
     }
-
-    public void setUp() throws Exception
-    {
+    
+    public void setUp() throws Exception {
         super.setUp();
-
-        dataTable = new HtmlDataTable();
-
+        label = new HtmlOutputLabel();
         writer = new MockResponseWriter(new StringWriter(), null, null);
         facesContext.setResponseWriter(writer);
-
+        
         facesContext.getViewRoot().setRenderKitId(MockRenderKitFactory.HTML_BASIC_RENDER_KIT);
         facesContext.getRenderKit().addRenderer(
-                dataTable.getFamily(),
-                dataTable.getRendererType(),
-                new HtmlTableRenderer());
-
+                label.getFamily(),
+                label.getRendererType(),
+                new HtmlLabelRenderer());
     }
-
-    public void tearDown() throws Exception
-    {
+    
+    public void tearDown() throws Exception {
         super.tearDown();
-        dataTable = null;
         writer = null;
+        label = null;
     }
 
     public void testHtmlPropertyPassTru() throws Exception
     {
-        HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicReadOnlyAttrs();
+        HtmlRenderedAttr[] attrs = {
+            //_AccesskeyProperty
+            new HtmlRenderedAttr("accesskey"),
+            //_UniversalProperties
+            new HtmlRenderedAttr("dir"), 
+            new HtmlRenderedAttr("lang"), 
+            new HtmlRenderedAttr("title"),
+            //_FocusBlurProperties
+            new HtmlRenderedAttr("onfocus"), 
+            new HtmlRenderedAttr("onblur"),
+            //_EventProperties
+            new HtmlRenderedAttr("onclick"), 
+            new HtmlRenderedAttr("ondblclick"), 
+            new HtmlRenderedAttr("onkeydown"), 
+            new HtmlRenderedAttr("onkeypress"),
+            new HtmlRenderedAttr("onkeyup"), 
+            new HtmlRenderedAttr("onmousedown"), 
+            new HtmlRenderedAttr("onmousemove"), 
+            new HtmlRenderedAttr("onmouseout"),
+            new HtmlRenderedAttr("onmouseover"), 
+            new HtmlRenderedAttr("onmouseup"),
+            //_StyleProperties
+            new HtmlRenderedAttr("style"), 
+            new HtmlRenderedAttr("styleClass", "styleClass", "class=\"styleClass\""),
+        };
+        
+        label.setValue("outputdata");
+        label.setFor("compId");
         
         HtmlCheckAttributesUtil.checkRenderedAttributes(
-                dataTable, facesContext, writer, attrs);
-        if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
-        }
-    }
-    
-    public void testHtmlPropertyPassTruNotRendered() throws Exception
-    {
-        HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnly();
-        
-        HtmlCheckAttributesUtil.checkRenderedAttributes(
-                dataTable, facesContext, writer, attrs);
+                label, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
             fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
