@@ -18,11 +18,10 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import java.io.IOException;
 import java.io.StringWriter;
 
-import javax.faces.component.html.HtmlInputText;
 import javax.faces.component.html.HtmlOutputText;
+import javax.faces.component.html.HtmlPanelGroup;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -33,77 +32,71 @@ import org.apache.shale.test.base.AbstractJsfTestCase;
 import org.apache.shale.test.mock.MockRenderKitFactory;
 import org.apache.shale.test.mock.MockResponseWriter;
 
-/**
- * @author Bruno Aranda (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
-public class HtmlTextRendererTest extends AbstractJsfTestCase
-{
 
-    public static Test suite()
-    {
-        return new TestSuite(HtmlTextRendererTest.class); // needed in maven
-    }
+public class HtmlGroupRendererTest extends AbstractJsfTestCase
+{
+    private static String PANEL_CHILD_TEXT = "PANEL";
 
     private MockResponseWriter writer ;
-    private HtmlOutputText outputText;
-    private HtmlInputText inputText;
+    private HtmlPanelGroup panelGroup;
 
-    public HtmlTextRendererTest(String name)
+    public HtmlGroupRendererTest(String name)
     {
         super(name);
+    }
+    
+    public static Test suite() {
+        return new TestSuite(HtmlGroupRendererTest.class);
     }
 
     public void setUp()
     {
         super.setUp();
 
-        outputText = new HtmlOutputText();
-        inputText = new HtmlInputText();
+        panelGroup = new HtmlPanelGroup();
+
+        HtmlOutputText panelChildOutputText = new HtmlOutputText();
+        panelChildOutputText.setValue(PANEL_CHILD_TEXT);
+        panelGroup.getChildren().add(panelChildOutputText);
 
         writer = new MockResponseWriter(new StringWriter(), null, null);
         facesContext.setResponseWriter(writer);
-        // TODO remove these two lines once shale-test goes alpha, see MYFACES-1155
+
         facesContext.getViewRoot().setRenderKitId(MockRenderKitFactory.HTML_BASIC_RENDER_KIT);
         facesContext.getRenderKit().addRenderer(
-                outputText.getFamily(),
-                outputText.getRendererType(),
-                new HtmlTextRenderer());
+                panelGroup.getFamily(),
+                panelGroup.getRendererType(),
+                new HtmlGroupRenderer());
         facesContext.getRenderKit().addRenderer(
-                inputText.getFamily(),
-                inputText.getRendererType(),
+                panelChildOutputText.getFamily(),
+                panelChildOutputText.getRendererType(),
                 new HtmlTextRenderer());
+
     }
 
     public void tearDown()
     {
         super.tearDown();
-        outputText = null;
-        inputText = null;
         writer = null;
     }
-
-    public void testStyleClassAttr() throws IOException
-    {
-        outputText.setValue("Output");
-        outputText.setStyleClass("myStyleClass");
-
-        outputText.encodeEnd(facesContext);
-        facesContext.renderResponse();
-
-        String output = writer.getWriter().toString();
-
-        assertEquals("<span class=\"myStyleClass\">Output</span>", output);
-        assertNotSame("Output", output);
-    }
-
+    
     public void testHtmlPropertyPassTru() throws Exception
-    {
-        HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicAttrs();
-        
+    { 
+        HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicReadOnlyAttrs();        
 
         HtmlCheckAttributesUtil.checkRenderedAttributes(
-                inputText, facesContext, writer, attrs);
+                panelGroup, facesContext, writer, attrs);
+        if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+        }
+    }
+    
+    public void testHtmlPropertyPassTruNotRendered() throws Exception
+    { 
+        HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnly();        
+
+        HtmlCheckAttributesUtil.checkRenderedAttributes(
+                panelGroup, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
             fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }

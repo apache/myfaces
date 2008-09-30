@@ -18,11 +18,9 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import java.io.IOException;
 import java.io.StringWriter;
 
-import javax.faces.component.html.HtmlInputText;
-import javax.faces.component.html.HtmlOutputText;
+import javax.faces.component.html.HtmlInputSecret;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -33,75 +31,58 @@ import org.apache.shale.test.base.AbstractJsfTestCase;
 import org.apache.shale.test.mock.MockRenderKitFactory;
 import org.apache.shale.test.mock.MockResponseWriter;
 
-/**
- * @author Bruno Aranda (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
-public class HtmlTextRendererTest extends AbstractJsfTestCase
+
+public class HtmlSecretRendererTest extends AbstractJsfTestCase
 {
-
-    public static Test suite()
-    {
-        return new TestSuite(HtmlTextRendererTest.class); // needed in maven
-    }
-
     private MockResponseWriter writer ;
-    private HtmlOutputText outputText;
-    private HtmlInputText inputText;
+    private HtmlInputSecret inputText;
 
-    public HtmlTextRendererTest(String name)
+    public HtmlSecretRendererTest(String name)
     {
         super(name);
+    }
+    
+    public static Test suite() {
+        return new TestSuite(HtmlSecretRendererTest.class);
     }
 
     public void setUp()
     {
         super.setUp();
 
-        outputText = new HtmlOutputText();
-        inputText = new HtmlInputText();
+        inputText = new HtmlInputSecret();
 
         writer = new MockResponseWriter(new StringWriter(), null, null);
         facesContext.setResponseWriter(writer);
-        // TODO remove these two lines once shale-test goes alpha, see MYFACES-1155
+
         facesContext.getViewRoot().setRenderKitId(MockRenderKitFactory.HTML_BASIC_RENDER_KIT);
-        facesContext.getRenderKit().addRenderer(
-                outputText.getFamily(),
-                outputText.getRendererType(),
-                new HtmlTextRenderer());
         facesContext.getRenderKit().addRenderer(
                 inputText.getFamily(),
                 inputText.getRendererType(),
-                new HtmlTextRenderer());
+                new HtmlSecretRenderer());
+
     }
 
     public void tearDown()
     {
         super.tearDown();
-        outputText = null;
         inputText = null;
         writer = null;
     }
 
-    public void testStyleClassAttr() throws IOException
+    public void testInputTextDefault() throws Exception
     {
-        outputText.setValue("Output");
-        outputText.setStyleClass("myStyleClass");
-
-        outputText.encodeEnd(facesContext);
+        inputText.encodeEnd(facesContext);
         facesContext.renderResponse();
 
         String output = writer.getWriter().toString();
-
-        assertEquals("<span class=\"myStyleClass\">Output</span>", output);
-        assertNotSame("Output", output);
+        assertEquals("<input type=\"password\" name=\"_id0\"/>", output);
     }
 
     public void testHtmlPropertyPassTru() throws Exception
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicAttrs();
         
-
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 inputText, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {

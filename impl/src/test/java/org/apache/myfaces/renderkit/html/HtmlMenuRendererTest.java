@@ -18,11 +18,14 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.faces.component.html.HtmlInputText;
-import javax.faces.component.html.HtmlOutputText;
+import javax.faces.component.UISelectItems;
+import javax.faces.component.html.HtmlSelectManyMenu;
+import javax.faces.component.html.HtmlSelectOneMenu;
+import javax.faces.model.SelectItem;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -33,77 +36,84 @@ import org.apache.shale.test.base.AbstractJsfTestCase;
 import org.apache.shale.test.mock.MockRenderKitFactory;
 import org.apache.shale.test.mock.MockResponseWriter;
 
-/**
- * @author Bruno Aranda (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
-public class HtmlTextRendererTest extends AbstractJsfTestCase
+public class HtmlMenuRendererTest extends AbstractJsfTestCase
 {
-
-    public static Test suite()
-    {
-        return new TestSuite(HtmlTextRendererTest.class); // needed in maven
-    }
-
     private MockResponseWriter writer ;
-    private HtmlOutputText outputText;
-    private HtmlInputText inputText;
+    private HtmlSelectOneMenu selectOneMenu;
+    private HtmlSelectManyMenu selectManyMenu;
 
-    public HtmlTextRendererTest(String name)
+    public HtmlMenuRendererTest(String name)
     {
         super(name);
+    }
+    
+    public static Test suite() {
+        return new TestSuite(HtmlMenuRendererTest.class);
     }
 
     public void setUp()
     {
         super.setUp();
 
-        outputText = new HtmlOutputText();
-        inputText = new HtmlInputText();
+        selectOneMenu = new HtmlSelectOneMenu();
+        selectManyMenu = new HtmlSelectManyMenu();
 
         writer = new MockResponseWriter(new StringWriter(), null, null);
         facesContext.setResponseWriter(writer);
-        // TODO remove these two lines once shale-test goes alpha, see MYFACES-1155
+
         facesContext.getViewRoot().setRenderKitId(MockRenderKitFactory.HTML_BASIC_RENDER_KIT);
         facesContext.getRenderKit().addRenderer(
-                outputText.getFamily(),
-                outputText.getRendererType(),
-                new HtmlTextRenderer());
+                selectOneMenu.getFamily(),
+                selectOneMenu.getRendererType(),
+                new HtmlMenuRenderer());
         facesContext.getRenderKit().addRenderer(
-                inputText.getFamily(),
-                inputText.getRendererType(),
-                new HtmlTextRenderer());
+                selectManyMenu.getFamily(),
+                selectManyMenu.getRendererType(),
+                new HtmlMenuRenderer());
+
     }
 
     public void tearDown()
     {
         super.tearDown();
-        outputText = null;
-        inputText = null;
+        selectOneMenu = null;
+        selectManyMenu = null;
         writer = null;
     }
 
-    public void testStyleClassAttr() throws IOException
-    {
-        outputText.setValue("Output");
-        outputText.setStyleClass("myStyleClass");
-
-        outputText.encodeEnd(facesContext);
-        facesContext.renderResponse();
-
-        String output = writer.getWriter().toString();
-
-        assertEquals("<span class=\"myStyleClass\">Output</span>", output);
-        assertNotSame("Output", output);
-    }
-
-    public void testHtmlPropertyPassTru() throws Exception
+    public void testSelectOneHtmlPropertyPassTru() throws Exception
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicAttrs();
         
+        List items = new ArrayList();
+        items.add(new SelectItem("mars"));
 
+        UISelectItems selectItems = new UISelectItems();
+        selectItems.setValue(items);
+
+        selectOneMenu.getChildren().add(selectItems);
+        
         HtmlCheckAttributesUtil.checkRenderedAttributes(
-                inputText, facesContext, writer, attrs);
+                selectOneMenu, facesContext, writer, attrs);
+        if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+        }
+    }
+    
+    public void testSelectManyHtmlPropertyPassTru() throws Exception
+    {
+        HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicAttrs();
+        
+        List items = new ArrayList();
+        items.add(new SelectItem("mars"));
+
+        UISelectItems selectItems = new UISelectItems();
+        selectItems.setValue(items);
+
+        selectManyMenu.getChildren().add(selectItems);
+        
+        HtmlCheckAttributesUtil.checkRenderedAttributes(
+                selectManyMenu, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
             fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }

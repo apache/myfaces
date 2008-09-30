@@ -18,11 +18,9 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import java.io.IOException;
 import java.io.StringWriter;
 
-import javax.faces.component.html.HtmlInputText;
-import javax.faces.component.html.HtmlOutputText;
+import javax.faces.component.html.HtmlOutputLabel;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -33,77 +31,72 @@ import org.apache.shale.test.base.AbstractJsfTestCase;
 import org.apache.shale.test.mock.MockRenderKitFactory;
 import org.apache.shale.test.mock.MockResponseWriter;
 
-/**
- * @author Bruno Aranda (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
-public class HtmlTextRendererTest extends AbstractJsfTestCase
+public class HtmlLabelRendererTest extends AbstractJsfTestCase
 {
-
-    public static Test suite()
-    {
-        return new TestSuite(HtmlTextRendererTest.class); // needed in maven
-    }
-
-    private MockResponseWriter writer ;
-    private HtmlOutputText outputText;
-    private HtmlInputText inputText;
-
-    public HtmlTextRendererTest(String name)
+    private MockResponseWriter writer;
+    private HtmlOutputLabel label;
+    
+    public HtmlLabelRendererTest(String name)
     {
         super(name);
     }
-
-    public void setUp()
-    {
+    
+    public static Test suite() {
+        return new TestSuite(HtmlLabelRendererTest.class);
+    }
+    
+    public void setUp() {
         super.setUp();
-
-        outputText = new HtmlOutputText();
-        inputText = new HtmlInputText();
-
+        label = new HtmlOutputLabel();
         writer = new MockResponseWriter(new StringWriter(), null, null);
         facesContext.setResponseWriter(writer);
-        // TODO remove these two lines once shale-test goes alpha, see MYFACES-1155
+        
         facesContext.getViewRoot().setRenderKitId(MockRenderKitFactory.HTML_BASIC_RENDER_KIT);
         facesContext.getRenderKit().addRenderer(
-                outputText.getFamily(),
-                outputText.getRendererType(),
-                new HtmlTextRenderer());
-        facesContext.getRenderKit().addRenderer(
-                inputText.getFamily(),
-                inputText.getRendererType(),
-                new HtmlTextRenderer());
+                label.getFamily(),
+                label.getRendererType(),
+                new HtmlLabelRenderer());
     }
-
-    public void tearDown()
-    {
+    
+    public void tearDown() {
         super.tearDown();
-        outputText = null;
-        inputText = null;
         writer = null;
-    }
-
-    public void testStyleClassAttr() throws IOException
-    {
-        outputText.setValue("Output");
-        outputText.setStyleClass("myStyleClass");
-
-        outputText.encodeEnd(facesContext);
-        facesContext.renderResponse();
-
-        String output = writer.getWriter().toString();
-
-        assertEquals("<span class=\"myStyleClass\">Output</span>", output);
-        assertNotSame("Output", output);
+        label = null;
     }
 
     public void testHtmlPropertyPassTru() throws Exception
     {
-        HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicAttrs();
+        HtmlRenderedAttr[] attrs = {
+            //_AccesskeyProperty
+            new HtmlRenderedAttr("accesskey"),
+            //_UniversalProperties
+            new HtmlRenderedAttr("dir"), 
+            new HtmlRenderedAttr("lang"), 
+            new HtmlRenderedAttr("title"),
+            //_FocusBlurProperties
+            new HtmlRenderedAttr("onfocus"), 
+            new HtmlRenderedAttr("onblur"),
+            //_EventProperties
+            new HtmlRenderedAttr("onclick"), 
+            new HtmlRenderedAttr("ondblclick"), 
+            new HtmlRenderedAttr("onkeydown"), 
+            new HtmlRenderedAttr("onkeypress"),
+            new HtmlRenderedAttr("onkeyup"), 
+            new HtmlRenderedAttr("onmousedown"), 
+            new HtmlRenderedAttr("onmousemove"), 
+            new HtmlRenderedAttr("onmouseout"),
+            new HtmlRenderedAttr("onmouseover"), 
+            new HtmlRenderedAttr("onmouseup"),
+            //_StyleProperties
+            new HtmlRenderedAttr("style"), 
+            new HtmlRenderedAttr("styleClass", "styleClass", "class=\"styleClass\""),
+        };
         
-
+        label.setValue("outputdata");
+        label.setFor("compId");
+        
         HtmlCheckAttributesUtil.checkRenderedAttributes(
-                inputText, facesContext, writer, attrs);
+                label, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
             fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
