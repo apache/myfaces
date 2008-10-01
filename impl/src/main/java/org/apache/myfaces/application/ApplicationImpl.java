@@ -148,6 +148,8 @@ public class ApplicationImpl extends Application
     private ELResolverBuilder resolverBuilderForFaces;
 
     private ProjectStage _projectStage;
+    
+    private PageDeclarationLanguage _pageDeclarationLanguage;
 
     // ~ Constructors
     //--------------------------------------------------------------------------
@@ -519,14 +521,14 @@ public class ApplicationImpl extends Application
     @Override
     public PageDeclarationLanguage getPageDeclarationLanguage()
     {
-        // TODO: JSF 2.0 #43
-        return null;
+        return _pageDeclarationLanguage;
     }
     
     @Override
     public void setPageDeclarationLanguage(PageDeclarationLanguage pdl)
     {
-        // TODO: JSF 2.0 #45
+        checkNull(pdl, "PageDeclarationLanguage");
+        _pageDeclarationLanguage = pdl;
     }
 
     /**
