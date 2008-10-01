@@ -39,7 +39,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.NavigationCase;
 import org.apache.myfaces.config.element.NavigationRule;
-import org.apache.myfaces.portlet.PortletUtil;
 import org.apache.myfaces.shared_impl.util.HashMapUtils;
 
 /**
@@ -80,9 +79,14 @@ public class NavigationHandlerImpl
                           " toViewId =" + navigationCase.getToViewId() +
                           " redirect=" + navigationCase.isRedirect());
             }
-            if (navigationCase.isRedirect() &&
-                (!PortletUtil.isPortletRequest(facesContext)))
-            { // Spec section 7.4.2 says "redirects not possible" in this case for portlets
+            if (navigationCase.isRedirect())
+            { 
+                //&& (!PortletUtil.isPortletRequest(facesContext)))
+                // Spec section 7.4.2 says "redirects not possible" in this case for portlets
+                //But since the introduction of portlet bridge and the 
+                //removal of portlet code in myfaces core 2.0, this condition
+                //no longer applies
+                
                 ExternalContext externalContext = facesContext.getExternalContext();
                 ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
                 String redirectPath = viewHandler.getActionURL(facesContext, navigationCase.getToViewId());

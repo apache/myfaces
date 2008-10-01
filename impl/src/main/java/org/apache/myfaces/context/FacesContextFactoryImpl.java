@@ -18,18 +18,15 @@
  */
 package org.apache.myfaces.context;
 
-import org.apache.myfaces.context.servlet.FacesContextImpl;
-
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextFactory;
 import javax.faces.lifecycle.Lifecycle;
-import javax.portlet.PortletContext;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+
+import org.apache.myfaces.context.servlet.FacesContextImpl;
 
 /**
  * DOCUMENT ME!
@@ -64,14 +61,7 @@ public class FacesContextFactoryImpl
                                                (ServletRequest)request,
                                                (ServletResponse)response);
         }
-        
-        if (context instanceof PortletContext)
-        {
-            return new FacesContextImpl((PortletContext)context,
-                                               (PortletRequest)request,
-                                               (PortletResponse)response);
-        }
-        
+                
         throw new FacesException("Unsupported context type " + context.getClass().getName());
     }
 }
