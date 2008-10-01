@@ -392,12 +392,6 @@ public class ApplicationImpl extends Application
     @Override
     public void publishEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source)
     {
-        // TODO: JSF 2.0 #44
-    }
-    
-    @Override
-    public void publishEvent(Class<? extends SystemEvent> systemEventClass, Object source)
-    {
         checkNull(systemEventClass, "systemEventClass");
         checkNull(source, "source");
         
@@ -412,8 +406,14 @@ public class ApplicationImpl extends Application
         SystemListenerEntry systemListenerEntry  = _systemEventListenerClassMap.get(systemEventClass);
         if (systemListenerEntry != null)
         {
-            systemListenerEntry.publish(systemEventClass, source, event);
-        }     
+            systemListenerEntry.publish(systemEventClass, sourceBaseType, source, event);
+        }  
+    }
+    
+    @Override
+    public void publishEvent(Class<? extends SystemEvent> systemEventClass, Object source)
+    {
+        publishEvent(systemEventClass, source.getClass(), source);  
     }
 
     @Override
@@ -1349,12 +1349,12 @@ public class ApplicationImpl extends Application
                 }
             }
         }
-
-        public void publish(Class<? extends SystemEvent> systemEventClass, Object source, SystemEvent event)
+        
+        public void publish(Class<? extends SystemEvent> systemEventClass, Class<?> classSource, Object source, SystemEvent event)
         {
             if (source != null && _sourceClassMap != null)
             {
-                event = _traverseListenerList(_sourceClassMap.get(source.getClass()), systemEventClass, source, event);
+                event = _traverseListenerList(_sourceClassMap.get(classSource), systemEventClass, source, event);
             }
 
             _traverseListenerList(_lstSystemEventListener, systemEventClass, source, event);

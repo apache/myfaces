@@ -554,6 +554,6 @@
   </repositories>
 
   <properties>
-    <myfaces-shared.version>3.0.4-SNAPSHOT</myfaces-shared.version>
+    <myfaces-shared.version>3.0.5-SNAPSHOT</myfaces-shared.version>
   </properties>
 </project>
