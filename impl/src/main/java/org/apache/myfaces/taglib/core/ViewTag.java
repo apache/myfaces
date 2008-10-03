@@ -33,7 +33,6 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.el.ValueBinding;
 import javax.faces.webapp.UIComponentBodyTag;
 import javax.faces.webapp.UIComponentTag;
-import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.jstl.core.Config;
 import javax.servlet.jsp.tagext.BodyContent;
@@ -274,7 +273,7 @@ public class ViewTag
                 locale = LocaleUtils.toLocale(_locale);
             }
             ((UIViewRoot)component).setLocale(locale);
-            Config.set((ServletRequest)getFacesContext().getExternalContext().getRequest(),
+            Config.set(pageContext.getRequest(),
                        Config.FMT_LOCALE,
                        locale);
         }
