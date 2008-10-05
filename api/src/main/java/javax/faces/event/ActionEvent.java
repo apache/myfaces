@@ -39,14 +39,16 @@ public class ActionEvent extends FacesEvent
         }
     }
 
+    @Override
     public boolean isAppropriateListener(FacesListener facesListeners)
     {
         return facesListeners instanceof ActionListener;
     }
 
+    @Override
     public void processListener(FacesListener facesListeners)
     {
-        ((ActionListener) facesListeners).processAction(this);
+        ((ActionListener)facesListeners).processAction(this);
     }
 
 }

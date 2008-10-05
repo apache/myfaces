@@ -31,80 +31,74 @@ import org.apache.myfaces.config.element.ManagedBean;
 import com.google.inject.Injector;
 
 /**
- * <p>Register this ELResolver in faces-config.xml.</p>
+ * <p>
+ * Register this ELResolver in faces-config.xml.
+ * </p>
  * 
- *     &ltapplication>
- *        &ltel-resolver>org.apache.myfaces.el.unified.resolver.GuiceResolver&lt/el-resolver>
- *    &lt/application>
- *
- * <p>Implement and configure a ServletContextListener in web.xml .</p>
+ * &ltapplication> &ltel-resolver>org.apache.myfaces.el.unified.resolver.GuiceResolver&lt/el-resolver> &lt/application>
  * 
- *  &ltlistener>
- *      <listener-class>com.your_company.GuiceServletContextListener&lt/listener-class>
- *  &lt/listener>
+ * <p>
+ * Implement and configure a ServletContextListener in web.xml .
+ * </p>
  * 
- * <p>Configure Guice in your ServletContextListener implementation, and place the 
- * Injector in application scope.</p>
+ * &ltlistener> <listener-class>com.your_company.GuiceServletContextListener&lt/listener-class> &lt/listener>
+ * 
+ * <p>
+ * Configure Guice in your ServletContextListener implementation, and place the Injector in application scope.
+ * </p>
  * 
  * public class GuiceServletContextListener implements ServletContextListener {
- *
- *    public void contextInitialized(ServletContextEvent event) {
- *        ServletContext ctx = event.getServletContext();
- *              //when on Java6, use ServiceLoader.load(com.google.inject.Module.class);
- *        Injector injector = Guice.createInjector(new YourModule());
- *        ctx.setAttribute(GuiceResolver.KEY, injector);
- *    }
- *
- *    public void contextDestroyed(ServletContextEvent event) {
- *        ServletContext ctx = event.getServletContext();
- *        ctx.removeAttribute(GuiceResolver.KEY);
- *    }
- *
+ * 
+ * public void contextInitialized(ServletContextEvent event) { ServletContext ctx = event.getServletContext(); //when on
+ * Java6, use ServiceLoader.load(com.google.inject.Module.class); Injector injector = Guice.createInjector(new
+ * YourModule()); ctx.setAttribute(GuiceResolver.KEY, injector); }
+ * 
+ * public void contextDestroyed(ServletContextEvent event) { ServletContext ctx = event.getServletContext();
+ * ctx.removeAttribute(GuiceResolver.KEY); }
+ * 
  *}
  * 
  * @author Dennis Byrne
  */
 
-public class GuiceResolver extends ManagedBeanResolver {
+public class GuiceResolver extends ManagedBeanResolver
+{
 
     public static final String KEY = "oam." + Injector.class.getName();
-    
+
     @Override
-    public Object getValue(ELContext ctx, Object base, Object property) 
-        throws NullPointerException, PropertyNotFoundException, ELException {
-        
-        if (base != null || !(property instanceof String)) 
+    public Object getValue(ELContext ctx, Object base, Object property) throws NullPointerException,
+        PropertyNotFoundException, ELException
+    {
+
+        if (base != null || !(property instanceof String))
             return null;
-        
-        if (property == null)
-            throw new PropertyNotFoundException();
-        
-        FacesContext fctx = (FacesContext) ctx.getContext(FacesContext.class);
-        
-        if(fctx == null)
+
+        FacesContext fctx = (FacesContext)ctx.getContext(FacesContext.class);
+
+        if (fctx == null)
             return null;
-        
+
         ExternalContext ectx = fctx.getExternalContext();
-        
-        if (ectx == null || 
-            ectx.getRequestMap().containsKey(property) || 
-            ectx.getSessionMap().containsKey(property) ||
-            ectx.getApplicationMap().containsKey(property) ) 
+
+        if (ectx == null || ectx.getRequestMap().containsKey(property) || ectx.getSessionMap().containsKey(property)
+                || ectx.getApplicationMap().containsKey(property))
             return null;
-        
+
         ManagedBean managedBean = runtimeConfig(ctx).getManagedBean((String)property);
-        
+
         return managedBean == null ? null : getValue(ctx, ectx, managedBean.getManagedBeanClass());
     }
 
-    private Object getValue(ELContext ctx, ExternalContext ectx, Class<?> managedBeanClass) {
-        
-        Injector injector = (Injector) ectx.getApplicationMap().get(KEY);
-        
-        if(injector == null)
-            throw new FacesException("Could not find an instance of " + Injector.class.getName() 
+    private Object getValue(ELContext ctx, ExternalContext ectx, Class<?> managedBeanClass)
+    {
+
+        Injector injector = (Injector)ectx.getApplicationMap().get(KEY);
+
+        if (injector == null)
+            throw new FacesException("Could not find an instance of " + Injector.class.getName()
                     + " in application scope using key '" + KEY + "'");
-        
+
         Object value = injector.getInstance(managedBeanClass);
         ctx.setPropertyResolved(true);
         return value;

@@ -79,6 +79,7 @@ public class LoadBundleTag extends TagSupport
         _var = var;
     }
 
+    @Override
     public int doStartTag() throws JspException
     {
         if (null == _var)
@@ -113,7 +114,7 @@ public class LoadBundleTag extends TagSupport
             }
             else
             {
-                basename = (String) _basename.getValue(facesContext.getELContext());
+                basename = (String)_basename.getValue(facesContext.getELContext());
             }
         }
 
@@ -223,7 +224,8 @@ public class LoadBundleTag extends TagSupport
 
                     public String setValue(String value)
                     {
-                        throw new UnsupportedOperationException(this.getClass().getName() + " UnsupportedOperationException");
+                        throw new UnsupportedOperationException(this.getClass().getName()
+                                + " UnsupportedOperationException");
                     }
                 });
             }

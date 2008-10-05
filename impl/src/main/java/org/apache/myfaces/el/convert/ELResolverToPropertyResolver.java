@@ -43,6 +43,7 @@ public final class ELResolverToPropertyResolver extends PropertyResolver
         this.elResolver = elResolver;
     }
 
+    @Override
     public boolean isReadOnly(final Object base, final int index) throws EvaluationException, PropertyNotFoundException
     {
 
@@ -61,6 +62,7 @@ public final class ELResolverToPropertyResolver extends PropertyResolver
 
     }
 
+    @Override
     public boolean isReadOnly(final Object base, final Object property) throws EvaluationException, PropertyNotFoundException
     {
 
@@ -79,6 +81,7 @@ public final class ELResolverToPropertyResolver extends PropertyResolver
 
     }
 
+    @Override
     public Object getValue(final Object base, final int index) throws EvaluationException, PropertyNotFoundException
     {
 
@@ -97,6 +100,7 @@ public final class ELResolverToPropertyResolver extends PropertyResolver
 
     }
 
+    @Override
     public Object getValue(final Object base, final Object property) throws EvaluationException, PropertyNotFoundException
     {
 
@@ -114,6 +118,7 @@ public final class ELResolverToPropertyResolver extends PropertyResolver
         }
     }
 
+    @Override
     public Class getType(final Object base, int index) throws EvaluationException, PropertyNotFoundException
     {
 
@@ -131,6 +136,7 @@ public final class ELResolverToPropertyResolver extends PropertyResolver
         }
     }
 
+    @Override
     public Class getType(final Object base, final Object property) throws EvaluationException, PropertyNotFoundException
     {
 
@@ -148,6 +154,7 @@ public final class ELResolverToPropertyResolver extends PropertyResolver
         }
     }
 
+    @Override
     public void setValue(final Object base, final Object property, final Object value) throws EvaluationException,
                                                                                       PropertyNotFoundException
     {
@@ -166,6 +173,7 @@ public final class ELResolverToPropertyResolver extends PropertyResolver
         }
     }
 
+    @Override
     public void setValue(final Object base, int index, final Object value) throws EvaluationException, PropertyNotFoundException
     {
 

@@ -45,7 +45,8 @@ import org.apache.myfaces.config.element.ManagedBean;
 public class ManagedBeanResolver extends ELResolver
 {
     private static final Log log = LogFactory.getLog(ManagedBeanResolver.class);
-    private static final String BEANS_UNDER_CONSTRUCTION = "org.apache.myfaces.el.unified.resolver.managedbean.beansUnderConstruction";
+    private static final String BEANS_UNDER_CONSTRUCTION =
+            "org.apache.myfaces.el.unified.resolver.managedbean.beansUnderConstruction";
 
     // adapted from Manfred's JSF 1.1 VariableResolverImpl
     protected static final Map<String, Scope> s_standardScopes = new HashMap<String, Scope>(16);
@@ -59,7 +60,7 @@ public class ManagedBeanResolver extends ELResolver
                 extContext.getRequestMap().put(name, obj);
             }
         });
-        
+
         s_standardScopes.put("session", new Scope()
         {
             public void put(ExternalContext extContext, String name, Object obj)
@@ -67,7 +68,7 @@ public class ManagedBeanResolver extends ELResolver
                 extContext.getSessionMap().put(name, obj);
             }
         });
-        
+
         s_standardScopes.put("application", new Scope()
         {
             public void put(ExternalContext extContext, String name, Object obj)
@@ -75,7 +76,7 @@ public class ManagedBeanResolver extends ELResolver
                 extContext.getApplicationMap().put(name, obj);
             }
         });
-        
+
         s_standardScopes.put("none", new Scope()
         {
             public void put(ExternalContext extContext, String name, Object obj)
@@ -114,11 +115,9 @@ public class ManagedBeanResolver extends ELResolver
     {
     }
 
+    @Override
     public void setValue(final ELContext context, final Object base, final Object property, final Object value)
-                                                                                                               throws NullPointerException,
-                                                                                                               PropertyNotFoundException,
-                                                                                                               PropertyNotWritableException,
-                                                                                                               ELException
+        throws NullPointerException, PropertyNotFoundException, PropertyNotWritableException, ELException
     {
 
         if ((base == null) && (property == null))
@@ -128,9 +127,9 @@ public class ManagedBeanResolver extends ELResolver
 
     }
 
-    public boolean isReadOnly(final ELContext context, final Object base, final Object property) throws NullPointerException,
-                                                                                                PropertyNotFoundException,
-                                                                                                ELException
+    @Override
+    public boolean isReadOnly(final ELContext context, final Object base, final Object property)
+        throws NullPointerException, PropertyNotFoundException, ELException
     {
 
         if ((base == null) && (property == null))
@@ -141,9 +140,9 @@ public class ManagedBeanResolver extends ELResolver
         return false;
     }
 
-    public Object getValue(final ELContext context, final Object base, final Object property) throws NullPointerException,
-                                                                                             PropertyNotFoundException,
-                                                                                             ELException
+    @Override
+    public Object getValue(final ELContext context, final Object base, final Object property)
+        throws NullPointerException, PropertyNotFoundException, ELException
     {
 
         if (base != null)
@@ -168,7 +167,7 @@ public class ManagedBeanResolver extends ELResolver
         if (!(property instanceof String))
             return null;
 
-        final String strProperty = (String) property;
+        final String strProperty = (String)property;
 
         final ManagedBean managedBean = runtimeConfig(context).getManagedBean(strProperty);
         Object beanInstance = null;
@@ -241,7 +240,7 @@ public class ManagedBeanResolver extends ELResolver
             final String scopeKey = managedBean.getManagedBeanScope();
 
             // find the scope handler object
-            final Scope scope = (Scope) _scopes.get(scopeKey);
+            final Scope scope = _scopes.get(scopeKey);
             if (scope == null)
             {
                 log.error("Managed bean '" + managedBeanName + "' has illegal scope: " + scopeKey);
@@ -257,7 +256,7 @@ public class ManagedBeanResolver extends ELResolver
     // get the FacesContext from the ELContext
     private static FacesContext facesContext(final ELContext context)
     {
-        return (FacesContext) context.getContext(FacesContext.class);
+        return (FacesContext)context.getContext(FacesContext.class);
     }
 
     private static ExternalContext externalContext(final ELContext context)
@@ -267,9 +266,9 @@ public class ManagedBeanResolver extends ELResolver
         return facesContext != null ? facesContext.getExternalContext() : null;
     }
 
-    public Class<?> getType(final ELContext context, final Object base, final Object property) throws NullPointerException,
-                                                                                              PropertyNotFoundException,
-                                                                                              ELException
+    @Override
+    public Class<?> getType(final ELContext context, final Object base, final Object property)
+        throws NullPointerException, PropertyNotFoundException, ELException
     {
 
         if ((base == null) && (property == null))
@@ -280,6 +279,7 @@ public class ManagedBeanResolver extends ELResolver
         return null;
     }
 
+    @Override
     public Iterator<FeatureDescriptor> getFeatureDescriptors(final ELContext context, final Object base)
     {
 
@@ -324,6 +324,7 @@ public class ManagedBeanResolver extends ELResolver
         return runtimeConfig;
     }
 
+    @Override
     public Class<?> getCommonPropertyType(final ELContext context, final Object base)
     {
 

@@ -36,21 +36,25 @@ public class ApplicationImplicitObject extends ImplicitObject
     {
     }
 
+    @Override
     public Object getValue(ELContext context)
     {
         return externalContext(context).getContext();
     }
 
+    @Override
     public String getName()
     {
         return NAME;
     }
 
+    @Override
     public Class<?> getType()
     {
         return null;
     }
 
+    @Override
     public FeatureDescriptor getDescriptor()
     {
         return makeDescriptor(NAME, "Represents the application environment", Object.class);

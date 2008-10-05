@@ -51,6 +51,7 @@ public class ViewHandlerTest extends TestCase
     private ExternalContext _externalContext;
     private TestViewHandler _testimpl;
 
+    @Override
     protected void setUp() throws Exception
     {
         _mocksControl = EasyMock.createControl();
@@ -66,7 +67,7 @@ public class ViewHandlerTest extends TestCase
     @SuppressWarnings("unchecked")
     public void testCalculateCharacterEncodingWithRequestHeaderContentType()
     {
-        Map<String, String> map = (Map<String, String>)_mocksControl.createMock(Map.class);
+        Map<String, String> map = _mocksControl.createMock(Map.class);
         expect(_externalContext.getRequestHeaderMap()).andReturn(map);
         expect(map.get(eq("Content-Type"))).andReturn("text/html;charset=UTF-8");
         _mocksControl.replay();
@@ -100,7 +101,7 @@ public class ViewHandlerTest extends TestCase
 
         expect(_externalContext.getRequestHeaderMap()).andReturn(emptyMap);
         expect(_externalContext.getSession(eq(false))).andReturn(new Object());
-        Map<String, Object> map = (Map<String, Object>)_mocksControl.createMock(Map.class);
+        Map<String, Object> map = _mocksControl.createMock(Map.class);
         expect(_externalContext.getSessionMap()).andReturn(map);
         expect(map.get(eq(ViewHandler.CHARACTER_ENCODING_KEY))).andReturn(null);
         _mocksControl.replay();
@@ -119,7 +120,7 @@ public class ViewHandlerTest extends TestCase
 
         expect(_externalContext.getRequestHeaderMap()).andReturn(emptyMap);
         expect(_externalContext.getSession(eq(false))).andReturn(new Object());
-        Map<String, Object> map = (Map<String, Object>)_mocksControl.createMock(Map.class);
+        Map<String, Object> map = _mocksControl.createMock(Map.class);
         expect(_externalContext.getSessionMap()).andReturn(map);
         expect(map.get(eq(ViewHandler.CHARACTER_ENCODING_KEY))).andReturn("UTF-8");
         _mocksControl.replay();

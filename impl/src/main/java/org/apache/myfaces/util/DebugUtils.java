@@ -181,7 +181,7 @@ public class DebugUtils
         {
             if (!"id".equals(entry.getKey()))
             {
-                printAttribute(stream, (String) entry.getKey(), entry.getValue());
+                printAttribute(stream, entry.getKey(), entry.getValue());
             }
         }
 
@@ -240,7 +240,7 @@ public class DebugUtils
 
         if (comp instanceof UICommand)
         {
-            FacesListener[] listeners = ((UICommand) comp).getActionListeners();
+            FacesListener[] listeners = ((UICommand)comp).getActionListeners();
             if (listeners != null && listeners.length > 0)
             {
                 nestedObjects = true;
@@ -259,7 +259,7 @@ public class DebugUtils
 
         if (comp instanceof UIInput)
         {
-            FacesListener[] listeners = ((UIInput) comp).getValueChangeListeners();
+            FacesListener[] listeners = ((UIInput)comp).getValueChangeListeners();
             if (listeners != null && listeners.length > 0)
             {
                 nestedObjects = true;
@@ -275,7 +275,7 @@ public class DebugUtils
                 }
             }
 
-            Validator[] validators = ((UIInput) comp).getValidators();
+            Validator[] validators = ((UIInput)comp).getValidators();
             if (validators != null && validators.length > 0)
             {
                 nestedObjects = true;
@@ -315,7 +315,7 @@ public class DebugUtils
 
                 for (Map.Entry<String, UIComponent> entry : facetsMap.entrySet())
                 {
-                    printComponent((UIComponent) entry.getValue(), stream, indent + 1, true, (String) entry.getKey());
+                    printComponent(entry.getValue(), stream, indent + 1, true, entry.getKey());
                 }
             }
         }
@@ -356,12 +356,12 @@ public class DebugUtils
             if (value instanceof UIComponent)
             {
                 stream.print("[id:");
-                stream.print(((UIComponent) value).getId());
+                stream.print(((UIComponent)value).getId());
                 stream.print(']');
             }
             else if (value instanceof MethodBinding)
             {
-                stream.print(((MethodBinding) value).getExpressionString());
+                stream.print(((MethodBinding)value).getExpressionString());
             }
             else
             {

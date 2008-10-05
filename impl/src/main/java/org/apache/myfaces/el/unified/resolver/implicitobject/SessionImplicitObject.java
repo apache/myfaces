@@ -36,21 +36,25 @@ public class SessionImplicitObject extends ImplicitObject
     {
     }
 
+    @Override
     public Object getValue(ELContext context)
     {
         return externalContext(context).getSession(false);
     }
 
+    @Override
     public String getName()
     {
         return NAME;
     }
 
+    @Override
     public Class<?> getType()
     {
         return null;
     }
 
+    @Override
     public FeatureDescriptor getDescriptor()
     {
         return makeDescriptor(NAME, "Session instance for the current request or null if no session exists", Object.class);

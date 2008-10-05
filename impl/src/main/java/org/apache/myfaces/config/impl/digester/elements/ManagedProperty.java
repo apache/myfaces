@@ -138,26 +138,31 @@ public class ManagedProperty implements org.apache.myfaces.config.element.Manage
     
     private static class DummyValueBinding extends ValueBinding
     {
+        @Override
         public String getExpressionString()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Class<?> getType(FacesContext facesContext)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Object getValue(FacesContext facesContext)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean isReadOnly(FacesContext facesContext)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public void setValue(FacesContext facesContext, Object value)
         {
             throw new UnsupportedOperationException();

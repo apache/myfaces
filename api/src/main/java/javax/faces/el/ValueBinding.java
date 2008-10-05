@@ -22,16 +22,18 @@ import javax.faces.context.FacesContext;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
  * @deprecated
  */
+@Deprecated
 public abstract class ValueBinding
 {
     /**
      * @deprecated
      */
+    @Deprecated
     public String getExpressionString()
     {
         return null;
@@ -40,23 +42,25 @@ public abstract class ValueBinding
     /**
      * @deprecated
      */
-    abstract public Class getType(FacesContext facesContext)
-            throws EvaluationException, PropertyNotFoundException;
+    @Deprecated
+    abstract public Class getType(FacesContext facesContext) throws EvaluationException, PropertyNotFoundException;
 
     /**
      * @deprecated
      */
-    public abstract Object getValue(FacesContext facesContext)
-            throws EvaluationException, PropertyNotFoundException;
-    /**
-     * @deprecated
-     */
-    public abstract boolean isReadOnly(FacesContext facesContext)
-            throws EvaluationException, PropertyNotFoundException;
+    @Deprecated
+    public abstract Object getValue(FacesContext facesContext) throws EvaluationException, PropertyNotFoundException;
 
     /**
      * @deprecated
      */
-    public abstract void setValue(FacesContext facesContext, Object value)
-            throws EvaluationException, PropertyNotFoundException;
+    @Deprecated
+    public abstract boolean isReadOnly(FacesContext facesContext) throws EvaluationException, PropertyNotFoundException;
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public abstract void setValue(FacesContext facesContext, Object value) throws EvaluationException,
+        PropertyNotFoundException;
 }

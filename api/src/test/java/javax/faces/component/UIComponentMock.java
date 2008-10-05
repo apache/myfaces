@@ -18,10 +18,11 @@
  */
 package javax.faces.component;
 
-public class UIComponentMock extends UIComponentBase {
-
-  public String getFamily() {
-    return "Mock Component Family";
-  }
-
+public class UIComponentMock extends UIComponentBase
+{
+    @Override
+    public String getFamily()
+    {
+        return "Mock Component Family";
+    }
 }

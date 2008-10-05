@@ -54,13 +54,15 @@ public class ValueChangeEvent extends FacesEvent
         return _oldValue;
     }
 
+    @Override
     public boolean isAppropriateListener(FacesListener facesListeners)
     {
         return facesListeners instanceof ValueChangeListener;
     }
 
+    @Override
     public void processListener(FacesListener facesListeners)
     {
-        ((ValueChangeListener) facesListeners).processValueChange(this);
+        ((ValueChangeListener)facesListeners).processValueChange(this);
     }
 }

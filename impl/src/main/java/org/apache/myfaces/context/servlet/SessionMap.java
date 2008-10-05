@@ -98,7 +98,7 @@ public final class SessionMap extends AbstractAttributeMap<Object>
             return;
         }
         
-        Enumeration<String> attributeNames = (Enumeration<String>)session.getAttributeNames();
+        Enumeration<String> attributeNames = session.getAttributeNames();
         while (attributeNames.hasMoreElements())
         {
             session.removeAttribute(attributeNames.nextElement());

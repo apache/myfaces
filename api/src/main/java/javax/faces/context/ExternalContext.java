@@ -26,7 +26,7 @@ import java.util.Set;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -36,18 +36,17 @@ public abstract class ExternalContext
     public static final String CLIENT_CERT_AUTH = "CLIENT_CERT";
     public static final String DIGEST_AUTH = "DIGEST";
     public static final String FORM_AUTH = "FORM";
-    
+
     /**
      * @since JSF 2.0
      */
-    public void addResponseCookie(String name, String value, Map<String,Object> properties)
+    public void addResponseCookie(String name, String value, Map<String, Object> properties)
     {
         // TODO: JSF 2.0 #24
         // VALIDATE: Should this be asbtract? Check with the EG
     }
 
-    public abstract void dispatch(String path)
-            throws java.io.IOException;
+    public abstract void dispatch(String path) throws java.io.IOException;
 
     public abstract String encodeActionURL(String url);
 
@@ -58,10 +57,10 @@ public abstract class ExternalContext
     public abstract Map<String, Object> getApplicationMap();
 
     public abstract String getAuthType();
-    
+
     /**
      * Returns the content length or -1 if the unknown.
-     *
+     * 
      * @since JSF 2.0
      * @return the length or -1
      */
@@ -73,9 +72,10 @@ public abstract class ExternalContext
     }
 
     public abstract Object getContext();
-    
+
     /**
      * Returns the name of the underlying context
+     * 
      * @since JSF 2.0
      * @return the name or null
      */
@@ -89,7 +89,7 @@ public abstract class ExternalContext
     public abstract String getInitParameter(String name);
 
     public abstract Map getInitParameterMap();
-    
+
     /**
      * @since JSF 2.0
      */
@@ -99,7 +99,7 @@ public abstract class ExternalContext
         // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
         return null;
     }
-    
+
     /**
      * @since JSF 2.0
      */
@@ -113,17 +113,17 @@ public abstract class ExternalContext
     public abstract String getRemoteUser();
 
     public abstract Object getRequest();
-    
+
     public String getRequestCharacterEncoding()
     {
         throw new UnsupportedOperationException();
     }
-    
+
     public String getRequestContentType()
     {
         throw new UnsupportedOperationException();
     }
-    
+
     public abstract String getRequestContextPath();
 
     public abstract Map<String, Object> getRequestCookieMap();
@@ -145,7 +145,7 @@ public abstract class ExternalContext
     public abstract Map<String, String[]> getRequestParameterValuesMap();
 
     public abstract String getRequestPathInfo();
-    
+
     /**
      * @since JSF 2.0
      */
@@ -178,17 +178,17 @@ public abstract class ExternalContext
 
     public abstract String getRequestServletPath();
 
-    public abstract java.net.URL getResource(String path)
-            throws java.net.MalformedURLException;
+    public abstract java.net.URL getResource(String path) throws java.net.MalformedURLException;
 
     public abstract java.io.InputStream getResourceAsStream(String path);
 
     public abstract Set<String> getResourcePaths(String path);
 
     public abstract Object getResponse();
-    
+
     /**
      * throws <code>UnsupportedOperationException</code> by default.
+     * 
      * @since JSF 1.2
      */
     public String getResponseContentType()
@@ -214,6 +214,7 @@ public abstract class ExternalContext
 
     /**
      * throws <code>UnsupportedOperationException</code> by default.
+     * 
      * @since JSF 1.2
      * @param request
      */
@@ -221,21 +222,23 @@ public abstract class ExternalContext
     {
         throw new UnsupportedOperationException();
     }
-    
+
     /**
      * throws <code>UnsupportedOperationException</code> by default.
+     * 
      * @since JSF 1.2
      * @param encoding
      * @throws java.io.UnsupportedEncodingException
      */
-    public void setRequestCharacterEncoding(String encoding)
-            throws java.io.UnsupportedEncodingException{
-        
+    public void setRequestCharacterEncoding(String encoding) throws java.io.UnsupportedEncodingException
+    {
+
         throw new UnsupportedOperationException();
     }
-    
+
     /**
      * throws <code>UnsupportedOperationException</code> by default.
+     * 
      * @since JSF 1.2
      * @param response
      */
@@ -243,9 +246,10 @@ public abstract class ExternalContext
     {
         throw new UnsupportedOperationException();
     }
-    
+
     /**
      * throws <code>UnsupportedOperationException</code> by default.
+     * 
      * @since JSF 1.2
      * @param encoding
      */
@@ -262,11 +266,10 @@ public abstract class ExternalContext
         // TODO: JSF 2.0 #31
         // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
     }
-    
+
     public String getResponseCharacterEncoding()
     {
-        throw new UnsupportedOperationException(
-                "JSF 1.2 : figure out how to tell if this is a Portlet request");
+        throw new UnsupportedOperationException("JSF 1.2 : figure out how to tell if this is a Portlet request");
     }
 
     /**
@@ -277,7 +280,7 @@ public abstract class ExternalContext
         // TODO: JSF 2.0 #30
         // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
     }
-    
+
     /**
      * @since JSF 2.0
      */
@@ -287,13 +290,12 @@ public abstract class ExternalContext
         // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
         return false;
     }
+
     public abstract boolean isUserInRole(String role);
 
     public abstract void log(String message);
 
-    public abstract void log(String message,
-                             Throwable exception);
+    public abstract void log(String message, Throwable exception);
 
-    public abstract void redirect(String url)
-            throws java.io.IOException;
+    public abstract void redirect(String url) throws java.io.IOException;
 }

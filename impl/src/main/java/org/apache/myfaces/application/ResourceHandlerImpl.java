@@ -108,7 +108,8 @@ public class ResourceHandlerImpl extends ResourceHandler
         {
             prefix = localePrefix;
         }
-        boolean prependPrefix = (prefix != null && !"".equals(prefix));
+        
+        boolean prependPrefix = !"".equals(prefix);
 
         if (null != libraryName)
         {

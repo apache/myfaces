@@ -39,6 +39,7 @@ public class AllAnnotationLifecycleProvider extends ResourceAnnotationLifecycleP
         super(context);
     }
 
+    @Override
     protected void checkMethodAnnotation(Method method, Object instance)
             throws NamingException, IllegalAccessException, InvocationTargetException
     {
@@ -71,6 +72,7 @@ public class AllAnnotationLifecycleProvider extends ResourceAnnotationLifecycleP
         }
     }
 
+    @Override
     protected void checkFieldAnnotation(Field field, Object instance)
             throws NamingException, IllegalAccessException
     {

@@ -38,6 +38,7 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception
     {
         super.setUp();
@@ -58,6 +59,7 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
                 new HtmlLinkRenderer());
     }
 
+    @Override
     protected void tearDown() throws Exception
     {
         super.tearDown();
@@ -128,8 +130,8 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
                 "rel=\"rel\" rev=\"rev\" shape=\"shape\" tabindex=\"tabindex\" type=\"type\" " +
                 "ondblclick=\"ondblclick\" onmousedown=\"onmousedown\" onmouseup=\"onmouseup\" " +
                 "onmouseover=\"onmouseover\" onmousemove=\"onmousemove\" onmouseout=\"onmouseout\" " +
-                "onkeypress=\"onkeypress\" onkeydown=\"onkeydown\" onkeyup=\"onkeyup\" onblur=\"onblur\" " +
-                "onfocus=\"onfocus\" dir=\"dir\" lang=\"lang\" title=\"title\" style=\"style\"></a>", output);
+                "onkeypress=\"onkeypress\" onkeydown=\"onkeydown\" onkeyup=\"onkeyup\" dir=\"dir\" " +
+                "lang=\"lang\" title=\"title\" onfocus=\"onfocus\" onblur=\"onblur\" style=\"style\"></a>", output);
 
     }
 }

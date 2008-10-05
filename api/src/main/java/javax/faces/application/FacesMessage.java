@@ -137,6 +137,7 @@ public class FacesMessage implements Serializable
             return _ordinal;
         }
 
+        @Override
         public String toString()
         {
             return _name;

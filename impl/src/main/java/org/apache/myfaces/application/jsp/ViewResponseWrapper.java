@@ -161,6 +161,7 @@ public class ViewResponseWrapper extends HttpServletResponseWrapper
             _byteArrayOutputStream = new WrappedByteArrayOutputStream(1024);
         }
 
+        @Override
         public void write(int i) throws IOException
         {
             _byteArrayOutputStream.write(i);

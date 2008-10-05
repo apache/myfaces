@@ -25,8 +25,7 @@ import java.util.*;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-class _ComponentFacetMap<V extends UIComponent>
-        implements Map<String, V>, Serializable
+class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Serializable
 {
     private static final long serialVersionUID = -3456937594422167629L;
     private UIComponent _component;
@@ -71,9 +70,8 @@ class _ComponentFacetMap<V extends UIComponent>
 
     public void putAll(Map<? extends String, ? extends V> t)
     {
-        for (Iterator it = t.entrySet().iterator(); it.hasNext(); )
+        for (Map.Entry<? extends String, ? extends V> entry : t.entrySet())
         {
-            Map.Entry<String, V> entry = (Entry<String, V>)it.next();
             put(entry.getKey(), entry.getValue());
         }
     }
@@ -98,7 +96,8 @@ class _ComponentFacetMap<V extends UIComponent>
     {
         checkKey(key);
         V facet = _map.remove(key);
-        if (facet != null) facet.setParent(null);
+        if (facet != null)
+            facet.setParent(null);
         return facet;
     }
 
@@ -109,7 +108,6 @@ class _ComponentFacetMap<V extends UIComponent>
         setNewParent(key, value);
         return _map.put(key, value);
     }
-
 
     private void setNewParent(String facetName, UIComponent facet)
     {
@@ -123,14 +121,18 @@ class _ComponentFacetMap<V extends UIComponent>
 
     private void checkKey(Object key)
     {
-        if (key == null) throw new NullPointerException("key");
-        if (!(key instanceof String)) throw new ClassCastException("key is not a String");
+        if (key == null)
+            throw new NullPointerException("key");
+        if (!(key instanceof String))
+            throw new ClassCastException("key is not a String");
     }
 
     private void checkValue(Object value)
     {
-        if (value == null) throw new NullPointerException("value");
-        if (!(value instanceof UIComponent)) throw new ClassCastException("value is not a UIComponent");
+        if (value == null)
+            throw new NullPointerException("value");
+        if (!(value instanceof UIComponent))
+            throw new ClassCastException("value is not a UIComponent");
     }
 
 }

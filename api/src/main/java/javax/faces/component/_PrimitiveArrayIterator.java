@@ -24,7 +24,7 @@ import java.util.Iterator;
 /**
  * This utility iterator uses reflection to iterate over primitive arrays.
  */
-class _PrimitiveArrayIterator implements Iterator
+class _PrimitiveArrayIterator implements Iterator<Object>
 {
     public _PrimitiveArrayIterator(Object primitiveArray)
     {

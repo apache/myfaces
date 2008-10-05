@@ -36,11 +36,13 @@ public class MockApplicationFactory extends ApplicationFactory
         //this.factory = factory;
     }
 
+    @Override
     public Application getApplication()
     {
         return app;
     }
 
+    @Override
     public void setApplication(Application application)
     {
         this.app = application;

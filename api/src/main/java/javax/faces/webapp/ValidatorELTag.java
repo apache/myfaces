@@ -29,13 +29,12 @@ import javax.servlet.jsp.tagext.TagSupport;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public abstract class ValidatorELTag
-        extends TagSupport
+public abstract class ValidatorELTag extends TagSupport
 {
     private static final long serialVersionUID = 8794036166323016663L;
 
-    public int doStartTag()
-            throws javax.servlet.jsp.JspException
+    @Override
+    public int doStartTag() throws JspException
     {
         UIComponentClassicTagBase componentTag = UIComponentELTag.getParentUIComponentClassicTagBase(pageContext);
         if (componentTag == null)
@@ -63,7 +62,6 @@ public abstract class ValidatorELTag
         return Tag.SKIP_BODY;
     }
 
-    protected abstract Validator createValidator()
-            throws JspException;
+    protected abstract Validator createValidator() throws JspException;
 
 }

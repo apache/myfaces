@@ -28,13 +28,12 @@ import javax.servlet.jsp.JspException;
 
 /**
  * Basic Validator implementation.
- *
+ * 
  * @author Andreas Berger (latest modification by $Author$)
  * @version $Revision$ $Date$
  * @since 1.2
  */
-public class ValidatorTag
-        extends ValidatorELTag
+public class ValidatorTag extends ValidatorELTag
 {
     private ValueExpression _validatorId;
     private ValueExpression _binding;
@@ -52,7 +51,7 @@ public class ValidatorTag
 
     /**
      * Use this method to specify the validatorId programmatically.
-     *
+     * 
      * @param validatorIdString
      */
     public void setValidatorIdString(String validatorIdString)
@@ -60,6 +59,7 @@ public class ValidatorTag
         _validatorIdString = validatorIdString;
     }
 
+    @Override
     public void release()
     {
         super.release();
@@ -68,6 +68,7 @@ public class ValidatorTag
         _validatorIdString = null;
     }
 
+    @Override
     protected Validator createValidator() throws javax.servlet.jsp.JspException
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -78,13 +79,14 @@ public class ValidatorTag
             try
             {
                 validator = _binding.getValue(elContext);
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 throw new JspException("Error while creating the Validator", e);
             }
             if (validator instanceof Validator)
             {
-                return (Validator) validator;
+                return (Validator)validator;
             }
         }
         Application application = facesContext.getApplication();
@@ -95,12 +97,14 @@ public class ValidatorTag
             if (null != _validatorIdString)
             {
                 validator = application.createValidator(_validatorIdString);
-            } else if (null != _validatorId)
+            }
+            else if (null != _validatorId)
             {
-                String validatorId = (String) _validatorId.getValue(elContext);
+                String validatorId = (String)_validatorId.getValue(elContext);
                 validator = application.createValidator(validatorId);
             }
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             throw new JspException("Error while creating the Validator", e);
         }

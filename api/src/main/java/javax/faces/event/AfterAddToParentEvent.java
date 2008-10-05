@@ -33,6 +33,7 @@ public class AfterAddToParentEvent extends ComponentSystemEvent
         super(component);
     }
 
+    @Override
     public boolean isAppropriateListener(FacesListener listener)
     {
         // FIXME

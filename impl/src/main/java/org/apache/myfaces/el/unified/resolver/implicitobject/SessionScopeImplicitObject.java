@@ -37,21 +37,25 @@ public class SessionScopeImplicitObject extends ImplicitObject
     {
     }
 
+    @Override
     public Object getValue(ELContext context)
     {
         return externalContext(context).getSessionMap();
     }
 
+    @Override
     public String getName()
     {
         return NAME;
     }
 
+    @Override
     public Class<?> getType()
     {
         return null;
     }
 
+    @Override
     public FeatureDescriptor getDescriptor()
     {
         return makeDescriptor(NAME, "Session scope attributes", Map.class);

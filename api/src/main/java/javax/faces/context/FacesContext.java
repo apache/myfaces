@@ -213,21 +213,9 @@ public abstract class FacesContext
 
     public abstract void responseComplete();
 
-    private static ThreadLocal<FacesContext> _currentInstance = new ThreadLocal<FacesContext>()
-    {
-        protected FacesContext initialValue()
-        {
-            return null;
-        }
-    };
+    private static ThreadLocal<FacesContext> _currentInstance = new ThreadLocal<FacesContext>();
 
-    private static ThreadLocal<FacesContext> _firstInstance = new ThreadLocal<FacesContext>()
-    {
-        protected FacesContext initialValue()
-        {
-            return null;
-        }
-    };
+    private static ThreadLocal<FacesContext> _firstInstance = new ThreadLocal<FacesContext>();
 
     public static FacesContext getCurrentInstance()
     {

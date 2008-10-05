@@ -21,28 +21,36 @@ package javax.faces;
 
 import junit.framework.TestCase;
 
-public class FacesExceptionTest extends TestCase {
+public class FacesExceptionTest extends TestCase
+{
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         junit.textui.TestRunner.run(FacesExceptionTest.class);
     }
 
-    public FacesExceptionTest(String name) {
+    public FacesExceptionTest(String name)
+    {
         super(name);
     }
 
-    protected void setUp() throws Exception {
+    @Override
+    protected void setUp() throws Exception
+    {
         super.setUp();
     }
 
-    protected void tearDown() throws Exception {
+    @Override
+    protected void tearDown() throws Exception
+    {
         super.tearDown();
     }
 
     /*
      * Test method for 'javax.faces.FacesException.FacesException()'
      */
-    public void testFacesException() {
+    public void testFacesException()
+    {
         FacesException e = new FacesException();
         assertNull(e.getCause());
         assertNull(e.getMessage());
@@ -51,7 +59,8 @@ public class FacesExceptionTest extends TestCase {
     /*
      * Test method for 'javax.faces.FacesException.FacesException(Throwable)'
      */
-    public void testFacesExceptionThrowable() {
+    public void testFacesExceptionThrowable()
+    {
         Throwable t = new Throwable();
         FacesException fe = new FacesException(t);
         assertEquals(t, fe.getCause());
@@ -60,7 +69,8 @@ public class FacesExceptionTest extends TestCase {
     /*
      * Test method for 'javax.faces.FacesException.FacesException(String)'
      */
-    public void testFacesExceptionString() {
+    public void testFacesExceptionString()
+    {
         String m = "Message";
         FacesException e = new FacesException(m);
         assertEquals(e.getMessage(), m);
@@ -69,7 +79,8 @@ public class FacesExceptionTest extends TestCase {
     /*
      * Test method for 'javax.faces.FacesException.FacesException(String, Throwable)'
      */
-    public void testFacesExceptionStringThrowable() {
+    public void testFacesExceptionStringThrowable()
+    {
         String m = "Message";
         Throwable t = new Throwable();
         FacesException fe = new FacesException(m, t);
@@ -80,7 +91,8 @@ public class FacesExceptionTest extends TestCase {
     /*
      * Test method for 'javax.faces.FacesException.getCause()'
      */
-    public void testGetCause() {
+    public void testGetCause()
+    {
 
     }
 

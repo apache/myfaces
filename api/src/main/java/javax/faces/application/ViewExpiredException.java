@@ -23,45 +23,54 @@ import javax.faces.FacesException;
 
 /**
  * See Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Stan Silvert
  */
 public class ViewExpiredException extends FacesException
 {
-    
+
     private String viewId;
-    
-    public ViewExpiredException() {
+
+    public ViewExpiredException()
+    {
     }
-    
-    public ViewExpiredException(String viewId) {
+
+    public ViewExpiredException(String viewId)
+    {
         this.viewId = viewId;
     }
-    
-    public ViewExpiredException(String message, String viewId) {
+
+    public ViewExpiredException(String message, String viewId)
+    {
         super(message);
         this.viewId = viewId;
     }
-    
-    public ViewExpiredException(String message, Throwable cause, String viewId) {
+
+    public ViewExpiredException(String message, Throwable cause, String viewId)
+    {
         super(message, cause);
         this.viewId = viewId;
     }
-    
-    public ViewExpiredException(Throwable cause, String viewId) {
+
+    public ViewExpiredException(Throwable cause, String viewId)
+    {
         super(cause);
         this.viewId = viewId;
     }
 
-    public String getViewId() {
+    public String getViewId()
+    {
         return viewId;
     }
-    
-    public String getMessage() {
-        if (viewId != null) {
+
+    @Override
+    public String getMessage()
+    {
+        if (viewId != null)
+        {
             return viewId + super.getMessage();
         }
-        
+
         return super.getMessage();
     }
 }

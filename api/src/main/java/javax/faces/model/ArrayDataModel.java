@@ -20,7 +20,7 @@ package javax.faces.model;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -38,11 +38,13 @@ public class ArrayDataModel extends DataModel
 
     public ArrayDataModel(Object[] array)
     {
-        if (array == null) throw new NullPointerException("array");
+        if (array == null)
+            throw new NullPointerException("array");
         setWrappedData(array);
     }
 
     // METHODS
+    @Override
     public int getRowCount()
     {
         if (_data == null)
@@ -52,6 +54,7 @@ public class ArrayDataModel extends DataModel
         return _data.length;
     }
 
+    @Override
     public Object getRowData()
     {
         if (_data == null)
@@ -65,16 +68,19 @@ public class ArrayDataModel extends DataModel
         return _data[_rowIndex];
     }
 
+    @Override
     public int getRowIndex()
     {
         return _rowIndex;
     }
 
+    @Override
     public Object getWrappedData()
     {
         return _data;
     }
 
+    @Override
     public boolean isRowAvailable()
     {
         if (_data == null)
@@ -84,6 +90,7 @@ public class ArrayDataModel extends DataModel
         return _rowIndex >= 0 && _rowIndex < _data.length;
     }
 
+    @Override
     public void setRowIndex(int rowIndex)
     {
         if (rowIndex < -1)
@@ -104,6 +111,7 @@ public class ArrayDataModel extends DataModel
         }
     }
 
+    @Override
     public void setWrappedData(Object data)
     {
         _data = (Object[])data;

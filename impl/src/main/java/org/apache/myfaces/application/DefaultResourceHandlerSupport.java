@@ -23,8 +23,6 @@ import java.util.Map;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.DefaultViewHandlerSupport.FacesServletMapping;
 import org.apache.myfaces.resource.ClassLoaderResourceLoader;
 import org.apache.myfaces.resource.ExternalContextResourceLoader;
@@ -47,8 +45,6 @@ public class DefaultResourceHandlerSupport implements ResourceHandlerSupport
         DefaultResourceHandlerSupport.class.getName() + ".CACHED_SERVLET_MAPPING";
     
     private ResourceLoader[] _resourceLoaders;
-    
-    private static final Log log = LogFactory.getLog(DefaultResourceHandlerSupport.class);
         
     public String calculateResourceBasePath(FacesContext facesContext)
     {        

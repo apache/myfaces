@@ -27,34 +27,43 @@ import javax.faces.webapp.UIComponentELTag;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class SelectItemsTag
-        extends UIComponentELTag {
-    //private static final Log log = LogFactory.getLog(SelectItemsTag.class);
+public class SelectItemsTag extends UIComponentELTag
+{
+    // private static final Log log = LogFactory.getLog(SelectItemsTag.class);
 
     private ValueExpression _value;
 
-    public void setValue(ValueExpression value) {
+    public void setValue(ValueExpression value)
+    {
         this._value = value;
     }
 
-    public String getComponentType() {
+    @Override
+    public String getComponentType()
+    {
         return "javax.faces.SelectItems";
     }
 
-    public String getRendererType() {
+    @Override
+    public String getRendererType()
+    {
         return null;
     }
 
-
-    protected void setProperties(UIComponent component) {
+    @Override
+    protected void setProperties(UIComponent component)
+    {
         super.setProperties(component);
 
-        if ( _value != null ) {
-            if (!_value.isLiteralText()) {
+        if (_value != null)
+        {
+            if (!_value.isLiteralText())
+            {
                 component.setValueExpression("value", _value);
-            } else {
-                ((UISelectItems) component).setValue(
-                        _value.getExpressionString());
+            }
+            else
+            {
+                ((UISelectItems)component).setValue(_value.getExpressionString());
             }
         }
     }

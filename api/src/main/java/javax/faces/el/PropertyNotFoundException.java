@@ -20,45 +20,50 @@ package javax.faces.el;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
  * @deprecated
  */
+@Deprecated
 public class PropertyNotFoundException extends EvaluationException
 {
-  private static final long serialVersionUID = -7271529989175141594L;
+    private static final long serialVersionUID = -7271529989175141594L;
 
     // FIELDS
 
-  // CONSTRUCTORS
-        /**
-         * @deprecated
-         */
+    // CONSTRUCTORS
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public PropertyNotFoundException()
     {
         super();
     }
 
-        /**
-         * @deprecated
-         */
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public PropertyNotFoundException(String message)
     {
         super(message);
     }
 
-        /**
-         * @deprecated
-         */
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public PropertyNotFoundException(String message, Throwable cause)
     {
         super(message, cause);
     }
 
-        /**
-         * @deprecated
-         */
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public PropertyNotFoundException(Throwable cause)
     {
         super(cause);

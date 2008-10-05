@@ -23,28 +23,25 @@ import javax.faces.application.Application;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.Tag;
 
 /**
  * Base class for all JSP tags that represent a JSF UIComponent.
  * <p>
- * <i>Disclaimer</i>: The official definition for the behaviour of
- * this class is the JSF specification but for legal reasons the
- * specification cannot be replicated here. Any javadoc present on this
- * class therefore describes the current implementation rather than the
- * officially required behaviour, though it is believed that this class
- * does comply with the specification.
- *
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a> for more.
- *
+ * <i>Disclaimer</i>: The official definition for the behaviour of this class is the JSF specification but for legal
+ * reasons the specification cannot be replicated here. Any javadoc present on this class therefore describes the
+ * current implementation rather than the officially required behaviour, though it is believed that this class does
+ * comply with the specification.
+ * 
+ * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a> for
+ * more.
+ * 
  * @author Bruno Aranda (latest modification by $Author$)
  * @author Manfred Geiler
  * @version $Revision$ $Date$
- *
+ * 
  * @since 1.2
  */
 public abstract class UIComponentELTag extends UIComponentClassicTagBase
-        implements Tag
 {
 
     private ValueExpression _binding = null;
@@ -55,6 +52,7 @@ public abstract class UIComponentELTag extends UIComponentClassicTagBase
 
     }
 
+    @Override
     public void release()
     {
         super.release();
@@ -62,7 +60,7 @@ public abstract class UIComponentELTag extends UIComponentClassicTagBase
         _rendered = null;
     }
 
-
+    @Override
     protected void setProperties(UIComponent component)
     {
         if (getRendererType() != null)
@@ -84,6 +82,7 @@ public abstract class UIComponentELTag extends UIComponentClassicTagBase
         }
     }
 
+    @Override
     protected UIComponent createComponent(FacesContext context, String newId) throws JspException
     {
         UIComponent component;
@@ -104,17 +103,21 @@ public abstract class UIComponentELTag extends UIComponentClassicTagBase
 
         return component;
     }
-    
+
+    /**
+     * @throws JspException  
+     */
     public void setBinding(ValueExpression binding) throws JspException
     {
         _binding = binding;
     }
-    
+
+    @Override
     protected boolean hasBinding()
     {
         return _binding != null;
     }
-    
+
     public void setRendered(ValueExpression rendered)
     {
         _rendered = rendered;

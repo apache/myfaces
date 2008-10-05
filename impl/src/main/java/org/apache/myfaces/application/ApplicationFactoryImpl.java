@@ -29,16 +29,14 @@ import javax.faces.application.ApplicationFactory;
  * @author Thomas Spiegl
  * @version $Revision$ $Date$
  */
-public class ApplicationFactoryImpl
-    extends ApplicationFactory
+public class ApplicationFactoryImpl extends ApplicationFactory
 {
     private static final Log log = LogFactory.getLog(ApplicationFactoryImpl.class);
 
     /**
      * Application is thread-safe (see Application javadoc)
-     * "Application represents a per-web-application singleton object..."
-     * FactoryFinder has a ClassLoader-Factory Map. Since each webapp has it's
-     * own ClassLoader, each webapp will have it's own private factory instances.
+     * "Application represents a per-web-application singleton object..." FactoryFinder has a ClassLoader-Factory Map.
+     * Since each webapp has it's own ClassLoader, each webapp will have it's own private factory instances.
      */
     private Application _application;
 
@@ -47,20 +45,25 @@ public class ApplicationFactoryImpl
         createAndLogNewApplication();
     }
 
-    private void createAndLogNewApplication() {
+    private void createAndLogNewApplication()
+    {
         _application = new ApplicationImpl();
-        if (log.isTraceEnabled()) log.trace("New ApplicationFactory instance created");
+        if (log.isTraceEnabled())
+            log.trace("New ApplicationFactory instance created");
     }
 
-    public void purgeApplication(){
+    public void purgeApplication()
+    {
         createAndLogNewApplication();
     }
 
+    @Override
     public Application getApplication()
     {
         return _application;
     }
 
+    @Override
     public void setApplication(Application application)
     {
         if (application == null)

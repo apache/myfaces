@@ -109,6 +109,7 @@ public class UIViewRoot extends UIComponentBase
         // TODO: JSF 2.0 #22
     }
 
+    @Override
     public void queueEvent(FacesEvent event)
     {
         checkNull(event, "event");
@@ -119,6 +120,7 @@ public class UIViewRoot extends UIComponentBase
         _events.add(event);
     }
 
+    @Override
     public void processDecodes(final FacesContext context)
     {
         checkNull(context, "context");
@@ -131,6 +133,7 @@ public class UIViewRoot extends UIComponentBase
         }, true);
     }
 
+    @Override
     public void processValidators(final FacesContext context)
     {
         checkNull(context, "context");
@@ -143,6 +146,7 @@ public class UIViewRoot extends UIComponentBase
         }, true);
     }
 
+    @Override
     public void processUpdates(final FacesContext context)
     {
         checkNull(context, "context");
@@ -161,6 +165,7 @@ public class UIViewRoot extends UIComponentBase
         process(context, PhaseId.INVOKE_APPLICATION, null, true);
     }
 
+    @Override
     public void encodeBegin(FacesContext context) throws java.io.IOException
     {
         checkNull(context, "context");
@@ -183,6 +188,7 @@ public class UIViewRoot extends UIComponentBase
         }
     }
 
+    @Override
     public void encodeEnd(FacesContext context) throws java.io.IOException
     {
         checkNull(context, "context");
@@ -224,7 +230,7 @@ public class UIViewRoot extends UIComponentBase
         ValueExpression expression = getValueExpression("locale");
         if (expression != null)
         {
-            return (Locale) expression.getValue(getFacesContext().getELContext());
+            return (Locale)expression.getValue(getFacesContext().getELContext());
         }
         else
         {
@@ -232,11 +238,11 @@ public class UIViewRoot extends UIComponentBase
 
             if (locale instanceof Locale)
             {
-                return (Locale) locale;
+                return (Locale)locale;
             }
             else if (locale instanceof String)
             {
-                return stringToLocale((String) locale);
+                return stringToLocale((String)locale);
             }
         }
 
@@ -322,7 +328,7 @@ public class UIViewRoot extends UIComponentBase
     {
         if (_lifecycle == null)
         {
-            LifecycleFactory factory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
+            LifecycleFactory factory = (LifecycleFactory)FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
             String id = context.getExternalContext().getInitParameter(FacesServlet.LIFECYCLE_ID_ATTR);
             if (id == null)
             {
@@ -425,11 +431,11 @@ public class UIViewRoot extends UIComponentBase
 
         return Locale.getDefault();
     }
-    
+
     public List<PhaseListener> getPhaseListeners()
     {
         // TODO: JSF 2.0 #57
-        
+
         return null;
     }
 
@@ -446,7 +452,7 @@ public class UIViewRoot extends UIComponentBase
         ValueExpression expression = getValueExpression("renderKitId");
         if (expression != null)
         {
-            return (String) expression.getValue(getFacesContext().getELContext());
+            return (String)expression.getValue(getFacesContext().getELContext());
         }
         return null;
     }
@@ -492,6 +498,7 @@ public class UIViewRoot extends UIComponentBase
      * 
      * @JSFProperty tagExcluded="true"
      */
+    @Override
     public void setId(String id)
     {
         // throw new UnsupportedOperationException();
@@ -501,6 +508,7 @@ public class UIViewRoot extends UIComponentBase
         super.setId(id);
     }
 
+    @Override
     public String getId()
     {
         // Should just return null. But as setId passes the method on, do same here.
@@ -512,6 +520,7 @@ public class UIViewRoot extends UIComponentBase
      * <p>
      * As this component has no "id" property, it has no clientId property either.
      */
+    @Override
     public String getClientId(FacesContext context)
     {
         return super.getClientId(context);
@@ -530,7 +539,7 @@ public class UIViewRoot extends UIComponentBase
         if (target == null)
         {
             // Look for a target attribute on the component
-            target = (String) componentResource.getAttributes().get("target");
+            target = (String)componentResource.getAttributes().get("target");
 
             // If there is no target attribute, set target to be the default value head
             if (target == null)
@@ -592,7 +601,7 @@ public class UIViewRoot extends UIComponentBase
         if (target == null)
         {
             // Look for a target attribute on the component
-            target = (String) componentResource.getAttributes().get("target");
+            target = (String)componentResource.getAttributes().get("target");
 
             // If there is no target attribute
             if (target == null)
@@ -669,7 +678,7 @@ public class UIViewRoot extends UIComponentBase
         ValueExpression expression = getValueExpression("beforePhaseListener");
         if (expression != null)
         {
-            return (MethodExpression) expression.getValue(getFacesContext().getELContext());
+            return (MethodExpression)expression.getValue(getFacesContext().getELContext());
         }
         return null;
     }
@@ -701,7 +710,7 @@ public class UIViewRoot extends UIComponentBase
         ValueExpression expression = getValueExpression("afterPhaseListener");
         if (expression != null)
         {
-            return (MethodExpression) expression.getValue(getFacesContext().getELContext());
+            return (MethodExpression)expression.getValue(getFacesContext().getELContext());
         }
         return null;
     }
@@ -733,18 +742,19 @@ public class UIViewRoot extends UIComponentBase
         return values;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void restoreState(FacesContext facesContext, Object state)
     {
-        Object[] values = (Object[]) state;
+        Object[] values = (Object[])state;
         super.restoreState(facesContext, values[0]);
-        _locale = (Locale) values[1];
-        _renderKitId = (String) values[2];
-        _viewId = (String) values[3];
-        _uniqueIdCounter = (Long) values[4];
-        _phaseListeners = (List) restoreAttachedState(facesContext, values[5]);
-        _beforePhaseListener = (MethodExpression) restoreAttachedState(facesContext, values[6]);
-        _afterPhaseListener = (MethodExpression) restoreAttachedState(facesContext, values[7]);
+        _locale = (Locale)values[1];
+        _renderKitId = (String)values[2];
+        _viewId = (String)values[3];
+        _uniqueIdCounter = (Long)values[4];
+        _phaseListeners = (List<PhaseListener>)restoreAttachedState(facesContext, values[5]);
+        _beforePhaseListener = (MethodExpression)restoreAttachedState(facesContext, values[6]);
+        _afterPhaseListener = (MethodExpression)restoreAttachedState(facesContext, values[7]);
     }
 
     @Override
@@ -759,12 +769,11 @@ public class UIViewRoot extends UIComponentBase
         public void clear()
         {
             super.clear();
-            
-            /* 
-             * The returned Map must be implemented such that calling clear() on the Map causes 
-             * Application.publishEvent(java.lang.Class, java.lang.Object) to be called, passing 
-             * ViewMapDestroyedEvent.class  as the first argument and this UIViewRoot instance as 
-             * the second argument.
+
+            /*
+             * The returned Map must be implemented such that calling clear() on the Map causes
+             * Application.publishEvent(java.lang.Class, java.lang.Object) to be called, passing
+             * ViewMapDestroyedEvent.class as the first argument and this UIViewRoot instance as the second argument.
              */
             getFacesContext().getApplication().publishEvent(ViewMapCreatedEvent.class, UIViewRoot.this);
         }

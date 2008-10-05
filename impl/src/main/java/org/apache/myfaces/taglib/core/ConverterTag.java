@@ -27,7 +27,7 @@ import javax.servlet.jsp.JspException;
 
 /**
  * Implementation of ConverterELTag
- *
+ * 
  * @author Bruno Aranda (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -56,7 +56,7 @@ public class ConverterTag extends ConverterELTag
 
     /**
      * Use this method to specify the converterId programmatically.
-     *
+     * 
      * @param converterIdString
      */
     public void setConverterIdString(String converterIdString)
@@ -64,6 +64,7 @@ public class ConverterTag extends ConverterELTag
         _converterIdString = converterIdString;
     }
 
+    @Override
     public void release()
     {
         super.release();
@@ -72,8 +73,8 @@ public class ConverterTag extends ConverterELTag
         _converterIdString = null;
     }
 
-    protected Converter createConverter()
-            throws JspException
+    @Override
+    protected Converter createConverter() throws JspException
     {
         Converter converter = null;
 
@@ -86,7 +87,7 @@ public class ConverterTag extends ConverterELTag
         {
             try
             {
-                converter = (Converter) _binding.getValue(elContext);
+                converter = (Converter)_binding.getValue(elContext);
 
                 if (converter != null)
                 {
@@ -106,9 +107,10 @@ public class ConverterTag extends ConverterELTag
                 if (null != _converterIdString)
                 {
                     converter = facesContext.getApplication().createConverter(_converterIdString);
-                } else 
+                }
+                else
                 {
-                    String converterId = (String) _converterId.getValue(elContext);
+                    String converterId = (String)_converterId.getValue(elContext);
                     converter = facesContext.getApplication().createConverter(converterId);
                 }
 

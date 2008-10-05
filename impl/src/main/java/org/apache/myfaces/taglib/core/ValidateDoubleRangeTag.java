@@ -29,22 +29,23 @@ import javax.servlet.jsp.JspException;
  * @author Manfred Geiler
  * @version $Revision$ $Date$
  */
-public class ValidateDoubleRangeTag
-    extends GenericMinMaxValidatorTag<Double>
+public class ValidateDoubleRangeTag extends GenericMinMaxValidatorTag<Double>
 {
     private static final long serialVersionUID = 6396116656224588016L;
 
     private static final String VALIDATOR_ID = "javax.faces.DoubleRange";
 
-    protected Validator createValidator()
-        throws JspException
+    @Override
+    protected Validator createValidator() throws JspException
     {
         setValidatorIdString(VALIDATOR_ID);
         DoubleRangeValidator validator = (DoubleRangeValidator)super.createValidator();
-        if (null != _min){
+        if (null != _min)
+        {
             validator.setMinimum(_min);
         }
-        if (null != _max){
+        if (null != _max)
+        {
             validator.setMaximum(_max);
         }
         return validator;

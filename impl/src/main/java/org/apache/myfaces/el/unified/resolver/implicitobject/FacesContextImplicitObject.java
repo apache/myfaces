@@ -37,21 +37,25 @@ public class FacesContextImplicitObject extends ImplicitObject
     {
     }
 
+    @Override
     public String getName()
     {
         return NAME;
     }
 
+    @Override
     public Object getValue(ELContext context)
     {
         return facesContext(context);
     }
 
+    @Override
     public Class<?> getType()
     {
         return null;
     }
 
+    @Override
     public FeatureDescriptor getDescriptor()
     {
         return makeDescriptor(NAME, "Per-request information for a JSF request", FacesContext.class);

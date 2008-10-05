@@ -30,13 +30,13 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  * @deprecated replaced by {@link ConverterELTag}
  */
-public class ConverterTag
-        extends TagSupport
+@Deprecated
+public class ConverterTag extends TagSupport
 {
     private static final long serialVersionUID = -6168345066829108081L;
     private String _converterId;
@@ -52,11 +52,12 @@ public class ConverterTag
         _converterId = converterId;
     }
 
-    public int doStartTag()
-            throws JspException
+    @Override
+    public int doStartTag() throws JspException
     {
 
-        UIComponentClassicTagBase componentTag = UIComponentClassicTagBase.getParentUIComponentClassicTagBase(pageContext);
+        UIComponentClassicTagBase componentTag =
+                UIComponentClassicTagBase.getParentUIComponentClassicTagBase(pageContext);
 
         if (componentTag == null)
         {
@@ -83,6 +84,7 @@ public class ConverterTag
         return Tag.SKIP_BODY;
     }
 
+    @Override
     public void release()
     {
         super.release();
@@ -90,17 +92,22 @@ public class ConverterTag
         _binding = null;
     }
 
-    protected Converter createConverter()
-            throws JspException
+    /**
+     * @throws JspException  
+     */
+    protected Converter createConverter() throws JspException
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Application application = facesContext.getApplication();
 
-        if(_binding != null) {
+        if (_binding != null)
+        {
             ValueBinding vb = application.createValueBinding(_binding);
-            if(vb != null) {
-                Converter converter = (Converter) vb.getValue(facesContext);
-                if(converter != null) {
+            if (vb != null)
+            {
+                Converter converter = (Converter)vb.getValue(facesContext);
+                if (converter != null)
+                {
                     return converter;
                 }
             }
@@ -116,7 +123,10 @@ public class ConverterTag
 
     }
 
-    public void setBinding(String binding) throws javax.servlet.jsp.JspException
+    /**
+     * @throws JspException  
+     */
+    public void setBinding(String binding) throws JspException
     {
         _binding = binding;
     }

@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -31,7 +31,7 @@ public class ListDataModel extends DataModel
 
     // FIELDS
     private int _rowIndex = -1;
-    private List _data;
+    private List<?> _data;
 
     // CONSTRUCTORS
     public ListDataModel()
@@ -41,11 +41,13 @@ public class ListDataModel extends DataModel
 
     public ListDataModel(List list)
     {
-        if (list == null) throw new NullPointerException("list");
+        if (list == null)
+            throw new NullPointerException("list");
         setWrappedData(list);
     }
 
     // METHODS
+    @Override
     public int getRowCount()
     {
         if (_data == null)
@@ -55,6 +57,7 @@ public class ListDataModel extends DataModel
         return _data.size();
     }
 
+    @Override
     public Object getRowData()
     {
         if (_data == null)
@@ -68,16 +71,19 @@ public class ListDataModel extends DataModel
         return _data.get(_rowIndex);
     }
 
+    @Override
     public int getRowIndex()
     {
         return _rowIndex;
     }
 
+    @Override
     public Object getWrappedData()
     {
         return _data;
     }
 
+    @Override
     public boolean isRowAvailable()
     {
         if (_data == null)
@@ -87,6 +93,7 @@ public class ListDataModel extends DataModel
         return _rowIndex >= 0 && _rowIndex < _data.size();
     }
 
+    @Override
     public void setRowIndex(int rowIndex)
     {
         if (rowIndex < -1)
@@ -107,9 +114,10 @@ public class ListDataModel extends DataModel
         }
     }
 
+    @Override
     public void setWrappedData(Object data)
     {
-        _data = (List)data;
+        _data = (List<?>)data;
         int rowIndex = _data != null ? 0 : -1;
         setRowIndex(rowIndex);
     }

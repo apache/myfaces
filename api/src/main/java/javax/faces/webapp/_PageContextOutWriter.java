@@ -24,12 +24,11 @@ import java.io.Writer;
 
 /**
  * This Writer writes always to the current pageContext.getOut() Writer.
- *
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-class _PageContextOutWriter
-        extends Writer
+class _PageContextOutWriter extends Writer
 {
     private PageContext _pageContext;
 
@@ -38,36 +37,43 @@ class _PageContextOutWriter
         _pageContext = pageContext;
     }
 
+    @Override
     public void close() throws IOException
     {
         _pageContext.getOut().close();
     }
 
+    @Override
     public void flush() throws IOException
     {
         _pageContext.getOut().flush();
     }
 
+    @Override
     public void write(char cbuf[], int off, int len) throws IOException
     {
         _pageContext.getOut().write(cbuf, off, len);
     }
 
+    @Override
     public void write(int c) throws IOException
     {
         _pageContext.getOut().write(c);
     }
 
+    @Override
     public void write(char cbuf[]) throws IOException
     {
         _pageContext.getOut().write(cbuf);
     }
 
+    @Override
     public void write(String str) throws IOException
     {
         _pageContext.getOut().write(str);
     }
 
+    @Override
     public void write(String str, int off, int len) throws IOException
     {
         _pageContext.getOut().write(str, off, len);

@@ -20,6 +20,8 @@ package javax.faces.component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
@@ -34,28 +36,25 @@ import javax.faces.event.ValueChangeEvent;
 import javax.faces.event.ValueChangeListener;
 import javax.faces.render.Renderer;
 import javax.faces.validator.Validator;
+
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
  * UICommand is a base abstraction for components that implement ActionSource.
  * <p>
- * See the javadoc for this class in the <a
- * href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF
+ * See the javadoc for this class in the <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF
  * Specification</a> for further details.
  * <p>
  * <h4>Events:</h4>
  * <table border="1" width="100%" cellpadding="3" summary="">
  * <tr bgcolor="#CCCCFF" class="TableHeadingColor">
- * <th align="left">Type</th>
- * <th align="left">Phases</th>
- * <th align="left">Description</th>
+ * <th align="left">Type</th> <th align="left">Phases</th> <th align="left">Description</th>
  * </tr>
  * <tr class="TableRowColor">
  * <td valign="top"><code>javax.faces.event.ValueChangeEvent</code></td>
  * <td valign="top" nowrap></td>
- * <td valign="top">The valueChange event is delivered when the value attribute
- * is changed.</td>
+ * <td valign="top">The valueChange event is delivered when the value attribute is changed.</td>
  * </tr>
  * </table>
  */
@@ -107,12 +106,12 @@ public class UIInput extends UIOutput implements EditableValueHolder
     }
 
     /**
-     * Store the specified object as the "local value" of this component. The
-     * value-binding named "value" (if any) is ignored; the object is only
-     * stored locally on this component. During the "update model" phase, if
-     * there is a value-binding named "value" then this local value will be
-     * stored via that value-binding and the "local value" reset to null.
+     * Store the specified object as the "local value" of this component. The value-binding named "value" (if any) is
+     * ignored; the object is only stored locally on this component. During the "update model" phase, if there is a
+     * value-binding named "value" then this local value will be stored via that value-binding and the "local value"
+     * reset to null.
      */
+    @Override
     public void setValue(Object value)
     {
         setLocalValueSet(true);
@@ -120,22 +119,19 @@ public class UIInput extends UIOutput implements EditableValueHolder
     }
 
     /**
-     * Set the "submitted value" of this component from the relevant data in the
-     * current servlet request object.
+     * Set the "submitted value" of this component from the relevant data in the current servlet request object.
      * <p>
-     * If this component is not rendered, then do nothing; no output would have
-     * been sent to the client so no input is expected.
+     * If this component is not rendered, then do nothing; no output would have been sent to the client so no input is
+     * expected.
      * <p>
-     * Invoke the inherited functionality, which typically invokes the renderer
-     * associated with this component to extract and set this component's
-     * "submitted value".
+     * Invoke the inherited functionality, which typically invokes the renderer associated with this component to
+     * extract and set this component's "submitted value".
      * <p>
-     * If this component is marked "immediate", then immediately apply
-     * validation to the submitted value found. On error, call context method
-     * "renderResponse" which will force processing to leap to the "render
-     * response" phase as soon as the "decode" step has completed for all other
-     * components.
+     * If this component is marked "immediate", then immediately apply validation to the submitted value found. On
+     * error, call context method "renderResponse" which will force processing to leap to the "render
+     * response" phase as soon as the "decode" step has completed for all other components.
      */
+    @Override
     public void processDecodes(FacesContext context)
     {
         if (context == null)
@@ -165,6 +161,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         }
     }
 
+    @Override
     public void processValidators(FacesContext context)
     {
         if (context == null)
@@ -196,6 +193,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         }
     }
 
+    @Override
     public void processUpdates(FacesContext context)
     {
         if (context == null)
@@ -224,6 +222,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         }
     }
 
+    @Override
     public void decode(FacesContext context)
     {
         // We (re)set to valid, so that component automatically gets (re)validated
@@ -231,6 +230,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         super.decode(context);
     }
 
+    @Override
     public void broadcast(FacesEvent event) throws AbortProcessingException
     {
         // invoke standard listeners attached to this component first
@@ -245,15 +245,12 @@ public class UIInput extends UIOutput implements EditableValueHolder
             {
                 try
                 {
-                    valueChangeListenerBinding.invoke(getFacesContext(),
-                            new Object[]
-                            { event });
+                    valueChangeListenerBinding.invoke(getFacesContext(), new Object[] { event });
                 }
                 catch (EvaluationException e)
                 {
                     Throwable cause = e.getCause();
-                    if (cause != null
-                            && cause instanceof AbortProcessingException)
+                    if (cause != null && cause instanceof AbortProcessingException)
                     {
                         throw (AbortProcessingException) cause;
                     }
@@ -291,61 +288,54 @@ public class UIInput extends UIOutput implements EditableValueHolder
         catch (Exception e)
         {
             context.getExternalContext().log(e.getMessage(), e);
-            _MessageUtils.addErrorMessage(context, this, UPDATE_MESSAGE_ID,
-                    new Object[]
-                    { _MessageUtils.getLabel(context, this) });
+            _MessageUtils.addErrorMessage(context, this, UPDATE_MESSAGE_ID, new Object[] { _MessageUtils.getLabel(
+                context, this) });
             setValid(false);
 
             /*
-             * we are not allowed to throw exceptions here - we still need the
-             * full stack-trace later on to process it later in our
-             * error-handler
+             * we are not allowed to throw exceptions here - we still need the full stack-trace later on to process it
+             * later in our error-handler
              */
             queueExceptionInRequest(context, expression, e);
         }
     }
 
     /**
-     * For development and production, we want to offer a single point to which
-     * error-handlers can attach. So we queue up all ocurring exceptions and
-     * later pass them to the configured error-handler.
+     * For development and production, we want to offer a single point to which error-handlers can attach. So we queue
+     * up all ocurring exceptions and later pass them to the configured error-handler.
      */
-    private void queueExceptionInRequest(FacesContext context,
-            ValueExpression expression, Exception e)
+    @SuppressWarnings("unchecked")
+    private void queueExceptionInRequest(FacesContext context, ValueExpression expression, Exception e)
     {
-        List li = (List) context.getExternalContext().getRequestMap().get(ERROR_HANDLING_EXCEPTION_LIST);
+        Map<String, Object> requestScope = context.getExternalContext().getRequestMap();
+        List<FacesException> li = (List<FacesException>) requestScope.get(ERROR_HANDLING_EXCEPTION_LIST);
         if (null == li)
         {
-            li = new ArrayList();
+            li = new ArrayList<FacesException>();
             context.getExternalContext().getRequestMap().put(ERROR_HANDLING_EXCEPTION_LIST, li);
         }
-        li.add(new FacesException(
-                "Exception while setting value for expression : "
-                        + expression.getExpressionString()
-                        + " of component with path : "
-                        + _ComponentUtils.getPathToComponent(this), e));
+
+        li.add(new FacesException("Exception while setting value for expression : " + expression.getExpressionString()
+                + " of component with path : " + _ComponentUtils.getPathToComponent(this), e));
     }
 
     protected void validateValue(FacesContext context, Object convertedValue)
     {
         boolean empty = convertedValue == null
-                || (convertedValue instanceof String && ((String) convertedValue)
-                        .length() == 0);
+                || (convertedValue instanceof String && ((String) convertedValue).length() == 0);
 
         if (isRequired() && empty)
         {
             if (getRequiredMessage() != null)
             {
                 String requiredMessage = getRequiredMessage();
-                context.addMessage(this.getClientId(context), new FacesMessage(
-                        FacesMessage.SEVERITY_ERROR, requiredMessage,
-                        requiredMessage));
+                context.addMessage(this.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    requiredMessage, requiredMessage));
             }
             else
             {
-                _MessageUtils.addErrorMessage(context, this,
-                        REQUIRED_MESSAGE_ID, new Object[]
-                        { _MessageUtils.getLabel(context, this) });
+                _MessageUtils.addErrorMessage(context, this, REQUIRED_MESSAGE_ID,
+                    new Object[] { _MessageUtils.getLabel(context, this) });
             }
             setValid(false);
             return;
@@ -359,29 +349,24 @@ public class UIInput extends UIOutput implements EditableValueHolder
     }
 
     /**
-     * Determine whether the new value is valid, and queue a ValueChangeEvent if
-     * necessary.
+     * Determine whether the new value is valid, and queue a ValueChangeEvent if necessary.
      * <p>
-     * The "submitted value" is converted to the necessary type; conversion
-     * failure is reported as an error and validation processing terminates for
-     * this component. See documentation for method getConvertedValue for
-     * details on the conversion process.
+     * The "submitted value" is converted to the necessary type; conversion failure is reported as an error and
+     * validation processing terminates for this component. See documentation for method getConvertedValue for details
+     * on the conversion process.
      * <p>
-     * Any validators attached to this component are then run, passing the
-     * converted value.
+     * Any validators attached to this component are then run, passing the converted value.
      * <p>
-     * The old value of this component is then fetched (possibly involving the
-     * evaluation of a value-binding expression, ie invoking a method on a user
-     * object). The old value is compared to the new validated value, and if
-     * they are different then a ValueChangeEvent is queued for later
-     * processing.
+     * The old value of this component is then fetched (possibly involving the evaluation of a value-binding expression,
+     * ie invoking a method on a user object). The old value is compared to the new validated value, and if they are
+     * different then a ValueChangeEvent is queued for later processing.
      * <p>
      * On successful completion of this method:
      * <ul>
-     * <li> isValid() is true
-     * <li> isLocalValueSet() is true
-     * <li> submittedValue is reset to null
-     * <li> a ValueChangeEvent is queued if the new value != old value
+     * <li>isValid() is true
+     * <li>isLocalValueSet() is true
+     * <li>submittedValue is reset to null
+     * <li>a ValueChangeEvent is queued if the new value != old value
      * </ul>
      */
     public void validate(FacesContext context)
@@ -411,15 +396,13 @@ public class UIInput extends UIOutput implements EditableValueHolder
             setSubmittedValue(null);
             if (compareValues(previousValue, convertedValue))
             {
-                queueEvent(new ValueChangeEvent(this, previousValue,
-                        convertedValue));
+                queueEvent(new ValueChangeEvent(this, previousValue, convertedValue));
             }
         }
         catch (Exception ex)
         {
-            throw new FacesException(
-                    "Exception while validating component with path : "
-                            + _ComponentUtils.getPathToComponent(this), ex);
+            throw new FacesException("Exception while validating component with path : "
+                    + _ComponentUtils.getPathToComponent(this), ex);
         }
 
     }
@@ -427,22 +410,17 @@ public class UIInput extends UIOutput implements EditableValueHolder
     /**
      * Convert the provided object to the desired value.
      * <p>
-     * If there is a renderer for this component, then call the renderer's
-     * getConvertedValue method. While this can of course be implemented in any
-     * way the renderer desires, it typically performs exactly the same
-     * processing that this method would have done anyway (ie that described
-     * below for the no-renderer case).
+     * If there is a renderer for this component, then call the renderer's getConvertedValue method. While this can of
+     * course be implemented in any way the renderer desires, it typically performs exactly the same processing that
+     * this method would have done anyway (ie that described below for the no-renderer case).
      * <p>
      * Otherwise:
      * <ul>
-     * <li>If the submittedValue is not a String then just return the
-     * submittedValue unconverted.
-     * <li>If there is no "value" value-binding then just return the
-     * submittedValue unconverted.
-     * <li>Use introspection to determine the type of the target property
-     * specified by the value-binding, and then use Application.createConverter
-     * to find a converter that can map from String to the required type. Apply
-     * the converter to the submittedValue and return the result.
+     * <li>If the submittedValue is not a String then just return the submittedValue unconverted.
+     * <li>If there is no "value" value-binding then just return the submittedValue unconverted.
+     * <li>Use introspection to determine the type of the target property specified by the value-binding, and then use
+     * Application.createConverter to find a converter that can map from String to the required type. Apply the
+     * converter to the submittedValue and return the result.
      * </ul>
      */
     protected Object getConvertedValue(FacesContext context, Object submittedValue)
@@ -452,17 +430,14 @@ public class UIInput extends UIOutput implements EditableValueHolder
             Renderer renderer = getRenderer(context);
             if (renderer != null)
             {
-                return renderer
-                        .getConvertedValue(context, this, submittedValue);
+                return renderer.getConvertedValue(context, this, submittedValue);
             }
             else if (submittedValue instanceof String)
             {
-                Converter converter = _SharedRendererUtils
-                        .findUIOutputConverter(context, this);
+                Converter converter = _SharedRendererUtils.findUIOutputConverter(context, this);
                 if (converter != null)
                 {
-                    return converter.getAsObject(context, this,
-                            (String) submittedValue);
+                    return converter.getAsObject(context, this, (String) submittedValue);
                 }
             }
         }
@@ -471,9 +446,8 @@ public class UIInput extends UIOutput implements EditableValueHolder
             String converterMessage = getConverterMessage();
             if (converterMessage != null)
             {
-                context.addMessage(getClientId(context), new FacesMessage(
-                        FacesMessage.SEVERITY_ERROR, converterMessage,
-                        converterMessage));
+                context.addMessage(getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    converterMessage, converterMessage));
             }
             else
             {
@@ -484,9 +458,8 @@ public class UIInput extends UIOutput implements EditableValueHolder
                 }
                 else
                 {
-                    _MessageUtils.addErrorMessage(context, this,
-                            CONVERSION_MESSAGE_ID, new Object[]
-                            { _MessageUtils.getLabel(context, this) });
+                    _MessageUtils.addErrorMessage(context, this, CONVERSION_MESSAGE_ID,
+                        new Object[] { _MessageUtils.getLabel(context, this) });
                 }
             }
             setValid(false);
@@ -513,9 +486,9 @@ public class UIInput extends UIOutput implements EditableValueHolder
     /**
      * A boolean value that identifies the phase during which action events should fire.
      * <p>
-     * During normal event processing, action methods and action listener methods are fired during
-     * the "invoke application" phase of request processing. If this attribute is set to "true",
-     * these methods are fired instead at the end of the "apply request values" phase.
+     * During normal event processing, action methods and action listener methods are fired during the
+     * "invoke application" phase of request processing. If this attribute is set to "true", these methods are fired
+     * instead at the end of the "apply request values" phase.
      * </p>
      */
     @JSFProperty
@@ -528,8 +501,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         ValueExpression expression = getValueExpression("immediate");
         if (expression != null)
         {
-            return (Boolean) expression.getValue(getFacesContext()
-                    .getELContext());
+            return (Boolean) expression.getValue(getFacesContext().getELContext());
         }
         return false;
     }
@@ -543,9 +515,8 @@ public class UIInput extends UIOutput implements EditableValueHolder
     /**
      * A boolean value that indicates whether an input value is required.
      * <p>
-     * If this value is true and no input value is provided by a postback operation, then
-     * the "requiredMessage" text is registered as a FacesMessage for the request, and
-     * validation fails. 
+     * If this value is true and no input value is provided by a postback operation, then the "requiredMessage" text is
+     * registered as a FacesMessage for the request, and validation fails.
      * </p>
      * <p>
      * Default value: false.
@@ -561,8 +532,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         ValueExpression expression = getValueExpression("required");
         if (expression != null)
         {
-            return (Boolean) expression.getValue(getFacesContext()
-                    .getELContext());
+            return (Boolean) expression.getValue(getFacesContext().getELContext());
         }
         return false;
     }
@@ -574,8 +544,8 @@ public class UIInput extends UIOutput implements EditableValueHolder
     }
 
     /**
-     * Text to be displayed to the user as an error message when conversion of a
-     * submitted value to the target type fails.
+     * Text to be displayed to the user as an error message when conversion of a submitted value to the target type
+     * fails.
      * <p>
      * </p>
      */
@@ -589,8 +559,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         ValueExpression expression = getValueExpression("converterMessage");
         if (expression != null)
         {
-            return (String) expression.getValue(getFacesContext()
-                    .getELContext());
+            return (String) expression.getValue(getFacesContext().getELContext());
         }
         return null;
     }
@@ -601,9 +570,8 @@ public class UIInput extends UIOutput implements EditableValueHolder
     }
 
     /**
-     * Text to be displayed to the user as an error message when this component is
-     * marked as "required" but no input data is present during a postback (ie the
-     * user left the required field blank).
+     * Text to be displayed to the user as an error message when this component is marked as "required" but no input
+     * data is present during a postback (ie the user left the required field blank).
      */
     @JSFProperty
     public String getRequiredMessage()
@@ -615,8 +583,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         ValueExpression expression = getValueExpression("requiredMessage");
         if (expression != null)
         {
-            return (String) expression.getValue(getFacesContext()
-                    .getELContext());
+            return (String) expression.getValue(getFacesContext().getELContext());
         }
         return null;
     }
@@ -627,11 +594,10 @@ public class UIInput extends UIOutput implements EditableValueHolder
     }
 
     /**
-     * A method-binding EL expression which is invoked during the validation phase for this
-     * component.
+     * A method-binding EL expression which is invoked during the validation phase for this component.
      * <p>
-     * The invoked method is expected to check the submitted value for this component, and if not
-     * acceptable then report a validation error for the component.
+     * The invoked method is expected to check the submitted value for this component, and if not acceptable then report
+     * a validation error for the component.
      * </p>
      * <p>
      * The method is expected to have the prototype
@@ -640,6 +606,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * 
      * @deprecated
      */
+    @SuppressWarnings("dep-ann")
     @JSFProperty(stateHolder = true, returnSignature = "void", methodSignature = "javax.faces.context.FacesContext,javax.faces.component.UIComponent,java.lang.Object")
     public MethodBinding getValidator()
     {
@@ -650,8 +617,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         ValueExpression expression = getValueExpression("validator");
         if (expression != null)
         {
-            return (MethodBinding) expression.getValue(getFacesContext()
-                    .getELContext());
+            return (MethodBinding) expression.getValue(getFacesContext().getELContext());
         }
         return null;
     }
@@ -686,8 +652,8 @@ public class UIInput extends UIOutput implements EditableValueHolder
     /** See getValidator. */
     public Validator[] getValidators()
     {
-        return _validatorList == null ? EMPTY_VALIDATOR_ARRAY : _validatorList
-                .toArray(new Validator[_validatorList.size()]);
+        return _validatorList == null ? EMPTY_VALIDATOR_ARRAY
+                : _validatorList.toArray(new Validator[_validatorList.size()]);
     }
 
     /**
@@ -703,8 +669,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         ValueExpression expression = getValueExpression("validatorMessage");
         if (expression != null)
         {
-            return (String) expression.getValue(getFacesContext()
-                    .getELContext());
+            return (String) expression.getValue(getFacesContext().getELContext());
         }
         return null;
     }
@@ -715,12 +680,10 @@ public class UIInput extends UIOutput implements EditableValueHolder
     }
 
     /**
-     * A method which is invoked during postback processing for the current
-     * view if the submitted value for this component is not equal to the value
-     * which the "value" expression for this component returns.
+     * A method which is invoked during postback processing for the current view if the submitted value for this
+     * component is not equal to the value which the "value" expression for this component returns.
      * <p>
-     * The phase in which this method is invoked can be controlled via the immediate
-     * attribute.
+     * The phase in which this method is invoked can be controlled via the immediate attribute.
      * </p>
      * 
      * @deprecated
@@ -736,8 +699,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         ValueExpression expression = getValueExpression("valueChangeListener");
         if (expression != null)
         {
-            return (MethodBinding) expression.getValue(getFacesContext()
-                    .getELContext());
+            return (MethodBinding) expression.getValue(getFacesContext().getELContext());
         }
         return null;
     }
@@ -754,8 +716,8 @@ public class UIInput extends UIOutput implements EditableValueHolder
     }
 
     /**
-     * Specifies whether the component's value is currently valid, ie whether the
-     * validators attached to this component have allowed it.
+     * Specifies whether the component's value is currently valid, ie whether the validators attached to this component
+     * have allowed it.
      */
     @JSFProperty(defaultValue = "true", tagExcluded = true)
     public boolean isValid()
@@ -785,13 +747,10 @@ public class UIInput extends UIOutput implements EditableValueHolder
     }
 
     /**
-     * Gets the current submitted value. This value, if non-null, is set by the
-     * Renderer to store a possibly invalid value for later conversion or
-     * redisplay, and has not yet been converted into the proper type for this
-     * component instance. This method should only be used by the decode() and
-     * validate() method of this component, or its corresponding Renderer;
-     * however, user code may manually set it to null to erase any submitted
-     * value.
+     * Gets the current submitted value. This value, if non-null, is set by the Renderer to store a possibly invalid
+     * value for later conversion or redisplay, and has not yet been converted into the proper type for this component
+     * instance. This method should only be used by the decode() and validate() method of this component, or its
+     * corresponding Renderer; however, user code may manually set it to null to erase any submitted value.
      */
     @JSFProperty(tagExcluded = true)
     public Object getSubmittedValue()
@@ -841,6 +800,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         return values;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void restoreState(FacesContext facesContext, Object state)
     {
@@ -852,13 +812,10 @@ public class UIInput extends UIOutput implements EditableValueHolder
         _requiredSet = (Boolean) values[4];
         _converterMessage = (String) values[5];
         _requiredMessage = (String) values[6];
-        _validator = (MethodBinding) restoreAttachedState(facesContext,
-                values[7]);
-        _validatorList = (List<Validator>) restoreAttachedState(facesContext,
-                values[8]);
+        _validator = (MethodBinding) restoreAttachedState(facesContext, values[7]);
+        _validatorList = (List<Validator>) restoreAttachedState(facesContext, values[8]);
         _validatorMessage = (String) values[9];
-        _valueChangeListener = (MethodBinding) restoreAttachedState(
-                facesContext, values[10]);
+        _valueChangeListener = (MethodBinding) restoreAttachedState(facesContext, values[10]);
         _valid = (Boolean) values[11];
         _localValueSet = (Boolean) values[12];
         _submittedValue = values[13];

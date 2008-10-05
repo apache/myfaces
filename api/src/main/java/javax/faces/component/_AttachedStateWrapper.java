@@ -24,28 +24,29 @@ import java.io.Serializable;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-class _AttachedStateWrapper
-        implements Serializable
+class _AttachedStateWrapper implements Serializable
 {
     private static final long serialVersionUID = 4948301780259917764L;
-    private Class _class;
+    private Class<?> _class;
     private Object _wrappedStateObject;
 
     /**
-     * @param clazz null means wrappedStateObject is a List of state objects
+     * @param clazz
+     *            null means wrappedStateObject is a List of state objects
      * @param wrappedStateObject
      */
-    public _AttachedStateWrapper(Class clazz, Object wrappedStateObject)
+    public _AttachedStateWrapper(Class<?> clazz, Object wrappedStateObject)
     {
         if (wrappedStateObject != null && !(wrappedStateObject instanceof Serializable))
         {
-            throw new IllegalArgumentException("Attached state for Object of type " + clazz + " (Class " + wrappedStateObject.getClass().getName() + ") is not serializable");
+            throw new IllegalArgumentException("Attached state for Object of type " + clazz + " (Class "
+                    + wrappedStateObject.getClass().getName() + ") is not serializable");
         }
         _class = clazz;
         _wrappedStateObject = wrappedStateObject;
     }
 
-    public Class getClazz()
+    public Class<?> getClazz()
     {
         return _class;
     }

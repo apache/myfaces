@@ -50,7 +50,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         {
             viewId = applyDefaultSuffix(context, viewId);
         }
-        else if (mapping != null && viewId != null && mapping.getUrlPattern().startsWith(viewId))
+        else if (viewId != null && mapping.getUrlPattern().startsWith(viewId))
         {
             throw new InvalidViewIdException(viewId);
         }

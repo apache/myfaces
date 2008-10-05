@@ -57,6 +57,7 @@ public abstract class GenericListenerTag<_Holder, _Listener> extends TagSupport
         _binding = binding;
     }
 
+    @Override
     public void release()
     {
         super.release();
@@ -68,6 +69,7 @@ public abstract class GenericListenerTag<_Holder, _Listener> extends TagSupport
 
     protected abstract _Listener createDelegateListener(ValueExpression type, ValueExpression binding);
 
+    @Override
     @SuppressWarnings("unchecked")
     public int doStartTag() throws JspException
     {
@@ -95,7 +97,7 @@ public abstract class GenericListenerTag<_Holder, _Listener> extends TagSupport
         }
         catch (ClassCastException e)
         {
-            throw new JspException("Component " + ((UIComponent) holder).getId() + " is not instance of "
+            throw new JspException("Component " + ((UIComponent)holder).getId() + " is not instance of "
                     + _holderClazz.getName());
         }
 
@@ -123,7 +125,7 @@ public abstract class GenericListenerTag<_Holder, _Listener> extends TagSupport
             {
                 try
                 {
-                    listener = (_Listener) _binding.getValue(facesContext.getELContext());
+                    listener = (_Listener)_binding.getValue(facesContext.getELContext());
                     if (null != listener)
                     {
                         addListener(holder, listener);
@@ -133,8 +135,8 @@ public abstract class GenericListenerTag<_Holder, _Listener> extends TagSupport
                 }
                 catch (ELException e)
                 {
-                    throw new JspException("Exception while evaluating the binding attribute of Component " + component.getId(),
-                                           e);
+                    throw new JspException("Exception while evaluating the binding attribute of Component "
+                            + component.getId(), e);
                 }
             }
             if (null != _type)
@@ -145,11 +147,11 @@ public abstract class GenericListenerTag<_Holder, _Listener> extends TagSupport
                     className = _type.getExpressionString();
                     // If type is literal text we should create
                     // a new instance
-                    listener = (_Listener) ClassUtils.newInstance(className);
+                    listener = (_Listener)ClassUtils.newInstance(className);
                 }
                 else
                 {
-                    className = (String) _type.getValue(facesContext.getELContext());
+                    className = (String)_type.getValue(facesContext.getELContext());
                     listener = null;
                 }
 
@@ -170,7 +172,7 @@ public abstract class GenericListenerTag<_Holder, _Listener> extends TagSupport
                     // Type is a EL expression, and there is
                     // no binding property so we should create
                     // a new instance
-                    listener = (_Listener) ClassUtils.newInstance(className);
+                    listener = (_Listener)ClassUtils.newInstance(className);
                 }
                 addListener(holder, listener);
             }

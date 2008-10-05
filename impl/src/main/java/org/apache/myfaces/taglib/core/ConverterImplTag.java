@@ -29,16 +29,13 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspAttr
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;
 
 /**
- * This tag creates an instance of the specified Converter, and
- * associates it with the nearest parent UIComponent.
+ * This tag creates an instance of the specified Converter, and associates it with the nearest parent UIComponent.
  * 
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
- *
+ * 
  */
-@JSFJspTag(
-        name="f:converter",
-        bodyContent="empty")
+@JSFJspTag(name = "f:converter", bodyContent = "empty")
 public class ConverterImplTag extends ConverterELTag
 {
 
@@ -55,9 +52,7 @@ public class ConverterImplTag extends ConverterELTag
     /**
      * The converter's registered ID.
      */
-    @JSFJspAttribute(
-            rtexprvalue=true,
-            className="java.lang.String")
+    @JSFJspAttribute(rtexprvalue = true, className = "java.lang.String")
     public void setConverterId(ValueExpression converterId)
     {
         _converterId = converterId;
@@ -66,9 +61,7 @@ public class ConverterImplTag extends ConverterELTag
     /**
      * A ValueExpression that evaluates to a Converter.
      */
-    @JSFJspAttribute(
-            rtexprvalue=true,
-            className="javax.faces.convert.Converter")
+    @JSFJspAttribute(rtexprvalue = true, className = "javax.faces.convert.Converter")
     public void setBinding(ValueExpression binding)
     {
         _binding = binding;
@@ -76,7 +69,7 @@ public class ConverterImplTag extends ConverterELTag
 
     /**
      * Use this method to specify the converterId programmatically.
-     *
+     * 
      * @param converterIdString
      */
     public void setConverterIdString(String converterIdString)
@@ -84,6 +77,7 @@ public class ConverterImplTag extends ConverterELTag
         _converterIdString = converterIdString;
     }
 
+    @Override
     public void release()
     {
         super.release();
@@ -92,18 +86,19 @@ public class ConverterImplTag extends ConverterELTag
         _converterIdString = null;
     }
 
+    @Override
     protected Converter createConverter() throws JspException
     {
         if (_converterId != null && _converterId.isLiteralText())
         {
             this.createClassicConverter();
         }
-        if (_converterIdString != null){
+        if (_converterIdString != null)
+        {
             this.createClassicConverter();
         }
-        
-        return new DelegateConverter(_converterId, _binding,
-                _converterIdString);
+
+        return new DelegateConverter(_converterId, _binding, _converterIdString);
     }
 
     protected Converter createClassicConverter() throws JspException
@@ -119,7 +114,7 @@ public class ConverterImplTag extends ConverterELTag
         {
             try
             {
-                converter = (Converter) _binding.getValue(elContext);
+                converter = (Converter)_binding.getValue(elContext);
 
                 if (converter != null)
                 {
@@ -128,8 +123,7 @@ public class ConverterImplTag extends ConverterELTag
             }
             catch (Exception e)
             {
-                throw new JspException(
-                        "Exception creating converter using binding", e);
+                throw new JspException("Exception creating converter using binding", e);
             }
         }
 
@@ -139,15 +133,12 @@ public class ConverterImplTag extends ConverterELTag
             {
                 if (null != _converterIdString)
                 {
-                    converter = facesContext.getApplication().createConverter(
-                            _converterIdString);
+                    converter = facesContext.getApplication().createConverter(_converterIdString);
                 }
                 else
                 {
-                    String converterId = (String) _converterId
-                            .getValue(elContext);
-                    converter = facesContext.getApplication().createConverter(
-                            converterId);
+                    String converterId = (String)_converterId.getValue(elContext);
+                    converter = facesContext.getApplication().createConverter(converterId);
                 }
 
                 // with binding no converter was created, set its value with the converter
@@ -159,9 +150,7 @@ public class ConverterImplTag extends ConverterELTag
             }
             catch (Exception e)
             {
-                throw new JspException(
-                        "Exception creating converter with converterId: "
-                                + _converterId, e);
+                throw new JspException("Exception creating converter with converterId: " + _converterId, e);
             }
         }
 

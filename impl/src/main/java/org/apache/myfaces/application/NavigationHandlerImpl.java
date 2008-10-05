@@ -61,6 +61,7 @@ public class NavigationHandlerImpl
         if (log.isTraceEnabled()) log.trace("New NavigationHandler instance created");
     }
 
+    @Override
     public void handleNavigation(FacesContext facesContext, String fromAction, String outcome)
     {
         if (outcome == null)

@@ -20,7 +20,7 @@ package javax.faces.component;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -29,16 +29,19 @@ public interface ActionSource
     /**
      * @deprecated Replaced by ActionSource2.getActionExpression
      */
+    @Deprecated
     public javax.faces.el.MethodBinding getAction();
 
     /**
      * @deprecated Replaced by ActionSource2.setActionExpression
      */
+    @Deprecated
     public void setAction(javax.faces.el.MethodBinding action);
 
     /**
      * @deprecated Replaced by getActionListeners
      */
+    @Deprecated
     public javax.faces.el.MethodBinding getActionListener();
 
     public void setActionListener(javax.faces.el.MethodBinding actionListener);

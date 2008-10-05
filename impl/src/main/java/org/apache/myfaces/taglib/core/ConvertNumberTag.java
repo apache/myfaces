@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.taglib.core;
 
-
 import org.apache.myfaces.shared_impl.taglib.UIComponentELTagUtils;
 
 import javax.el.ELContext;
@@ -30,13 +29,11 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import java.util.Locale;
 
-
 /**
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ConvertNumberTag
-        extends ConverterTag
+public class ConvertNumberTag extends ConverterTag
 {
     private static final long serialVersionUID = -8365745569697171573L;
     private ValueExpression _currencyCode = null;
@@ -111,37 +108,40 @@ public class ConvertNumberTag
         _type = type;
     }
 
+    @Override
     public void setPageContext(PageContext context)
     {
         super.setPageContext(context);
         setConverterIdString(NumberConverter.CONVERTER_ID);
     }
 
+    @Override
     protected Converter createConverter() throws JspException
     {
-        NumberConverter converter = (NumberConverter) super.createConverter();
+        NumberConverter converter = (NumberConverter)super.createConverter();
         ELContext elContext = FacesContext.getCurrentInstance().getELContext();
         if (null != _currencyCode)
         {
-            converter.setCurrencyCode(
-                    (String) UIComponentELTagUtils.evaluateValueExpression(elContext, _currencyCode));
+            converter.setCurrencyCode((String)UIComponentELTagUtils.evaluateValueExpression(elContext, _currencyCode));
         }
         if (null != _currencySymbol)
         {
-            converter.setCurrencySymbol(
-                    (String) UIComponentELTagUtils.evaluateValueExpression(elContext, _currencySymbol));
+            converter.setCurrencySymbol((String)UIComponentELTagUtils.evaluateValueExpression(elContext,
+                _currencySymbol));
         }
         if (null != _groupingUsed)
         {
             converter.setGroupingUsed(UIComponentELTagUtils.getBooleanValue(elContext, _groupingUsed));
-        } else
+        }
+        else
         {
             converter.setGroupingUsed(true);
         }
         if (null != _integerOnly)
         {
             converter.setIntegerOnly(UIComponentELTagUtils.getBooleanValue(elContext, _integerOnly));
-        } else
+        }
+        else
         {
             converter.setIntegerOnly(false);
         }
@@ -151,9 +151,10 @@ public class ConvertNumberTag
             if (_locale.isLiteralText())
             {
                 locale = new Locale(_locale.getExpressionString());
-            } else
+            }
+            else
             {
-                locale = (Locale) _locale.getValue(elContext);
+                locale = (Locale)_locale.getValue(elContext);
                 if (null == locale)
                 {
                     locale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
@@ -179,12 +180,13 @@ public class ConvertNumberTag
         }
         if (null != _pattern)
         {
-            converter.setPattern((String) UIComponentELTagUtils.evaluateValueExpression(elContext, _pattern));
+            converter.setPattern((String)UIComponentELTagUtils.evaluateValueExpression(elContext, _pattern));
         }
         if (null != _type)
         {
-            converter.setType((String) UIComponentELTagUtils.evaluateValueExpression(elContext, _type));
-        } else
+            converter.setType((String)UIComponentELTagUtils.evaluateValueExpression(elContext, _type));
+        }
+        else
         {
             converter.setType("number");
         }

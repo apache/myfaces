@@ -149,6 +149,7 @@ public class JspViewHandlerImpl extends ViewHandler
      * Get the locales specified as acceptable by the original request, compare them to the
      * locales supported by this Application and return the best match.
      */
+    @Override
     public Locale calculateLocale(FacesContext facesContext)
     {
         Application application = facesContext.getApplication();
@@ -177,6 +178,7 @@ public class JspViewHandlerImpl extends ViewHandler
         return defaultLocale != null ? defaultLocale : Locale.getDefault();
     }
 
+    @Override
     public String calculateRenderKitId(FacesContext facesContext)
     {
         Object renderKitId = facesContext.getExternalContext().getRequestMap().get(
@@ -199,6 +201,7 @@ public class JspViewHandlerImpl extends ViewHandler
      * the viewRoot currently configured for the facesContext (if any). This means that on navigation
      * from one view to another these settings are "inherited".
      */
+    @Override
     public UIViewRoot createView(FacesContext facesContext, String viewId)
     {
         String calculatedViewId = viewId;
@@ -278,11 +281,13 @@ public class JspViewHandlerImpl extends ViewHandler
      * <p>
      * This method simply delegates to ViewHandlerSupport.calculateActionURL.
      */
+    @Override
     public String getActionURL(FacesContext facesContext, String viewId)
     {
         return getViewHandlerSupport().calculateActionURL(facesContext, viewId);
     }
 
+    @Override
     public String getResourceURL(FacesContext facesContext, String path)
     {
         if (path.length() > 0 && path.charAt(0) == '/')
@@ -304,6 +309,7 @@ public class JspViewHandlerImpl extends ViewHandler
      * <p>
      * The component tree is then walked to generate the appropriate output for each component.
      */
+    @Override
     public void renderView(FacesContext facesContext, UIViewRoot viewToRender) throws IOException, FacesException
     {
         if (viewToRender == null)
@@ -506,6 +512,7 @@ public class JspViewHandlerImpl extends ViewHandler
     /**
      * Just invoke StateManager.restoreView.
      */
+    @Override
     public UIViewRoot restoreView(FacesContext facesContext, String viewId)
     {
         Application application = facesContext.getApplication();
@@ -540,6 +547,7 @@ public class JspViewHandlerImpl extends ViewHandler
      * @param facesContext
      * @throws IOException
      */
+    @Override
     public void writeState(FacesContext facesContext) throws IOException
     {
         StateManager stateManager = facesContext.getApplication().getStateManager();

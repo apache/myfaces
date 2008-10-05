@@ -41,35 +41,41 @@ public final class InitParameterMap extends AbstractAttributeMap<String>
         _servletContext = servletContext;
     }
 
+    @Override
     protected String getAttribute(final String key)
     {
         return _servletContext.getInitParameter(key);
     }
 
+    @Override
     protected void setAttribute(final String key, final String value)
     {
         throw new UnsupportedOperationException(
             "Cannot set ServletContext InitParameter");
     }
 
+    @Override
     protected void removeAttribute(final String key)
     {
         throw new UnsupportedOperationException(
             "Cannot remove ServletContext InitParameter");
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     protected Enumeration<String> getAttributeNames()
     {
         return _servletContext.getInitParameterNames();
     }
     
+    @Override
     public void putAll(final Map<? extends String, ? extends String> t)
     {
         throw new UnsupportedOperationException();
     }
 
 
+    @Override
     public void clear()
     {
         throw new UnsupportedOperationException();

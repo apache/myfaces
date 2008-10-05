@@ -19,7 +19,6 @@
 package org.apache.myfaces.config;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import javax.el.ELResolver;
 
@@ -71,20 +70,20 @@ public interface FacesConfigDispenser<C>
 
 
     /** @return Iterator over ApplicationFactory class names */
-    public Iterator<String> getApplicationFactoryIterator();
+    public Collection<String> getApplicationFactoryIterator();
 
     /** @return Iterator over FacesContextFactory class names */
-    public Iterator<String> getFacesContextFactoryIterator();
+    public Collection<String> getFacesContextFactoryIterator();
 
     /** @return Iterator over LifecycleFactory class names */
-    public Iterator<String> getLifecycleFactoryIterator();
+    public Collection<String> getLifecycleFactoryIterator();
 
     /** @return Iterator over RenderKit factory class names */
-    public Iterator<String> getRenderKitFactoryIterator();
+    public Collection<String> getRenderKitFactoryIterator();
 
 
     /** @return Iterator over ActionListener class names (in reverse order!) */
-    public Iterator<String> getActionListenerIterator();
+    public Collection<String> getActionListenerIterator();
 
     /** @return the default render kit id */
     public String getDefaultRenderKitId();
@@ -93,45 +92,45 @@ public interface FacesConfigDispenser<C>
     public String getMessageBundle();
 
     /** @return Iterator over NavigationHandler class names */
-    public Iterator<String> getNavigationHandlerIterator();
+    public Collection<String> getNavigationHandlerIterator();
 
     /** @return Iterator over ViewHandler class names */
-    public Iterator<String> getViewHandlerIterator();
+    public Collection<String> getViewHandlerIterator();
 
     /** @return Iterator over StateManager class names*/
-    public Iterator<String> getStateManagerIterator();
+    public Collection<String> getStateManagerIterator();
     
     /** @return Iterator over ResourceHandler class names*/
-    public Iterator<String> getResourceHandlerIterator();
+    public Collection<String> getResourceHandlerIterator();
 
     /** @return Iterator over PropertyResolver class names */
-    public Iterator<String> getPropertyResolverIterator();
+    public Collection<String> getPropertyResolverIterator();
 
     /** @return Iterator over VariableResolver class names  */
-    public Iterator<String> getVariableResolverIterator();
+    public Collection<String> getVariableResolverIterator();
 
     /** @return the default locale name */
     public String getDefaultLocale();
 
     /** @return Iterator over supported locale names */
-    public Iterator<String> getSupportedLocalesIterator();
+    public Collection<String> getSupportedLocalesIterator();
 
 
     /** @return Iterator over all defined component types */
-    public Iterator<String> getComponentTypes();
+    public Collection<String> getComponentTypes();
 
     /** @return component class that belongs to the given component type */
     public String getComponentClass(String componentType);
 
 
     /** @return Iterator over all defined converter ids */
-    public Iterator<String> getConverterIds();
+    public Collection<String> getConverterIds();
 
     /** @return Iterator over all classes with an associated converter  */
-    public Iterator<String> getConverterClasses();
+    public Collection<String> getConverterClasses();
 
     /** @return Iterator over the config classes for the converters  */
-    Iterator<String> getConverterConfigurationByClassName();
+    Collection<String> getConverterConfigurationByClassName();
 
     /** delivers a converter-configuration for one class-name */
     Converter getConverterConfiguration(String converterClassName);

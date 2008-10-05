@@ -22,28 +22,30 @@ import javax.faces.context.FacesContext;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
- *
+ * 
  * @deprecated
  */
+@Deprecated
 public abstract class VariableResolver
 {
     // FIELDS
 
     // CONSTRUCTORS
-        /**
-         * @deprecated
-         */
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public VariableResolver()
     {
     }
 
     // METHODS
-        /**
-         * @deprecated
-         */
-    public abstract Object resolveVariable(FacesContext facesContext, String name)
-        throws EvaluationException;
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public abstract Object resolveVariable(FacesContext facesContext, String name) throws EvaluationException;
 }

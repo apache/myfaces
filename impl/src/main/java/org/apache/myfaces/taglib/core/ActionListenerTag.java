@@ -26,20 +26,16 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspAttr
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;
 
 /**
- * This tag creates an instance of the specified ActionListener, and
- * associates it with the nearest parent UIComponent.
+ * This tag creates an instance of the specified ActionListener, and associates it with the nearest parent UIComponent.
  * <p>
- * Unless otherwise specified, all attributes accept static values
- * or EL expressions.
+ * Unless otherwise specified, all attributes accept static values or EL expressions.
  * </p>
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-@JSFJspTag(
-        name="f:actionListener",
-        bodyContent="empty")
-public class ActionListenerTag
-        extends GenericListenerTag<ActionSource, ActionListener>
+@JSFJspTag(name = "f:actionListener", bodyContent = "empty")
+public class ActionListenerTag extends GenericListenerTag<ActionSource, ActionListener>
 {
     private static final long serialVersionUID = -2021978765020549175L;
 
@@ -48,39 +44,35 @@ public class ActionListenerTag
         super(ActionSource.class);
     }
 
+    @Override
     protected void addListener(ActionSource actionSource, ActionListener actionListener)
     {
         actionSource.addActionListener(actionListener);
     }
 
-    protected ActionListener createDelegateListener(ValueExpression type,
-            ValueExpression binding)
+    @Override
+    protected ActionListener createDelegateListener(ValueExpression type, ValueExpression binding)
     {
-        return new DelegateActionListener(type,binding);
+        return new DelegateActionListener(type, binding);
     }
-    
+
     /**
      * The fully qualified class name of the ActionListener class.
      */
-    @JSFJspAttribute(
-            className="java.lang.String",
-            rtexprvalue=true)
+    @Override
+    @JSFJspAttribute(className = "java.lang.String", rtexprvalue = true)
     public void setType(ValueExpression type)
     {
         super.setType(type);
     }
-    
+
     /**
-     * Value binding expression that evaluates to an object that
-     * implements javax.faces.event.ActionListener.
+     * Value binding expression that evaluates to an object that implements javax.faces.event.ActionListener.
      */
-    @JSFJspAttribute(
-            className="javax.faces.event.ActionListener",
-            rtexprvalue=true)
+    @Override
+    @JSFJspAttribute(className = "javax.faces.event.ActionListener", rtexprvalue = true)
     public void setBinding(ValueExpression binding)
     {
         super.setBinding(binding);
     }
 }
-
-

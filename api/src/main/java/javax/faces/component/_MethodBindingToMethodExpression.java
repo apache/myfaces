@@ -39,7 +39,7 @@ import javax.faces.el.MethodBinding;
 @SuppressWarnings("deprecation")
 class _MethodBindingToMethodExpression extends MethodExpression implements StateHolder
 {
-    private static final Class[] EXPECTED_TYPES = new Class[] { MethodBinding.class, StateHolder.class };
+    private static final Class<?>[] EXPECTED_TYPES = new Class[] { MethodBinding.class, StateHolder.class };
 
     private MethodBinding methodBinding;
 
@@ -68,7 +68,7 @@ class _MethodBindingToMethodExpression extends MethodExpression implements State
     {
         return methodBinding;
     }
-    
+
     void setMethodBinding(MethodBinding methodBinding)
     {
         this.methodBinding = methodBinding;
@@ -80,15 +80,16 @@ class _MethodBindingToMethodExpression extends MethodExpression implements State
      * @throws IllegalStateException
      *             if expected params types have not been determined.
      */
+    @Override
     public MethodInfo getMethodInfo(ELContext context) throws PropertyNotFoundException, MethodNotFoundException,
-            ELException
+        ELException
     {
         checkNullArgument(context, "elcontext");
         checkNullState(methodBinding, "methodBinding");
 
         if (methodInfo == null)
         {
-            final FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
+            final FacesContext facesContext = (FacesContext)context.getContext(FacesContext.class);
             if (facesContext != null)
             {
                 methodInfo = invoke(new Invoker<MethodInfo>()
@@ -103,12 +104,13 @@ class _MethodBindingToMethodExpression extends MethodExpression implements State
         return methodInfo;
     }
 
+    @Override
     public Object invoke(ELContext context, final Object[] params) throws PropertyNotFoundException,
-            MethodNotFoundException, ELException
+        MethodNotFoundException, ELException
     {
         checkNullArgument(context, "elcontext");
         checkNullState(methodBinding, "methodBinding");
-        final FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
+        final FacesContext facesContext = (FacesContext)context.getContext(FacesContext.class);
         if (facesContext != null)
         {
             return invoke(new Invoker<Object>()
@@ -122,6 +124,7 @@ class _MethodBindingToMethodExpression extends MethodExpression implements State
         return null;
     }
 
+    @Override
     public boolean isLiteralText()
     {
         if (methodBinding == null)
@@ -130,6 +133,7 @@ class _MethodBindingToMethodExpression extends MethodExpression implements State
         return !(expr.startsWith("#{") && expr.endsWith("}"));
     }
 
+    @Override
     public String getExpressionString()
     {
         return methodBinding.getExpressionString();
@@ -143,7 +147,7 @@ class _MethodBindingToMethodExpression extends MethodExpression implements State
             {
                 Object[] state = new Object[2];
                 state[0] = methodBinding.getClass().getName();
-                state[1] = ((StateHolder) methodBinding).saveState(context);
+                state[1] = ((StateHolder)methodBinding).saveState(context);
                 return state;
             }
             else
@@ -158,14 +162,14 @@ class _MethodBindingToMethodExpression extends MethodExpression implements State
     {
         if (state instanceof MethodBinding)
         {
-            methodBinding = (MethodBinding) state;
+            methodBinding = (MethodBinding)state;
             methodInfo = null;
         }
         else if (state != null)
         {
-            Object[] values = (Object[]) state;
-            methodBinding = (MethodBinding) _ClassUtils.newInstance(values[0].toString(), EXPECTED_TYPES);
-            ((StateHolder) methodBinding).restoreState(context, values[1]);
+            Object[] values = (Object[])state;
+            methodBinding = (MethodBinding)_ClassUtils.newInstance(values[0].toString(), EXPECTED_TYPES);
+            ((StateHolder)methodBinding).restoreState(context, values[1]);
             methodInfo = null;
         }
     }
@@ -198,7 +202,7 @@ class _MethodBindingToMethodExpression extends MethodExpression implements State
             return false;
         if (getClass() != obj.getClass())
             return false;
-        final _MethodBindingToMethodExpression other = (_MethodBindingToMethodExpression) obj;
+        final _MethodBindingToMethodExpression other = (_MethodBindingToMethodExpression)obj;
         if (methodBinding == null)
         {
             if (other.methodBinding != null)

@@ -20,12 +20,11 @@ package javax.faces;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class FacesException
-        extends RuntimeException
+public class FacesException extends RuntimeException
 {
     private static final long serialVersionUID = 6592152487577416317L;
 
@@ -44,12 +43,12 @@ public class FacesException
         super(message);
     }
 
-    public FacesException(String message,
-                          Throwable cause)
+    public FacesException(String message, Throwable cause)
     {
         super(message, cause);
     }
 
+    @Override
     public Throwable getCause()
     {
         return super.getCause();

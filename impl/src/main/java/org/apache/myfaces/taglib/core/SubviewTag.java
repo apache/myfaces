@@ -37,11 +37,13 @@ public class SubviewTag extends UIComponentELTag
         super();
     }
 
+    @Override
     public String getComponentType()
     {
         return UINamingContainer.COMPONENT_TYPE;
     }
 
+    @Override
     public String getRendererType()
     {
         return null;
@@ -55,16 +57,17 @@ public class SubviewTag extends UIComponentELTag
      * 
      * @return UIComponent or null
      */
+    @Override
     protected UIComponent createVerbatimComponentFromBodyContent()
     {
-        UIOutput component = (UIOutput) super.createVerbatimComponentFromBodyContent();
+        UIOutput component = (UIOutput)super.createVerbatimComponentFromBodyContent();
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Object response = facesContext.getExternalContext().getResponse();
         String wrappedOutput;
 
         if (response instanceof ViewResponseWrapper)
         {
-            ViewResponseWrapper wrappedResponse = (ViewResponseWrapper) response;
+            ViewResponseWrapper wrappedResponse = (ViewResponseWrapper)response;
             wrappedOutput = wrappedResponse.toString();
             if (wrappedOutput != null && wrappedOutput.length() > 0)
             {
@@ -72,7 +75,7 @@ public class SubviewTag extends UIComponentELTag
                 if (component != null)
                 {
                     // save the Value of the Bodycontent
-                    componentvalue = (String) component.getValue();
+                    componentvalue = (String)component.getValue();
                 }
                 component = super.createVerbatimComponent();
                 if (componentvalue != null)

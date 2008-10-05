@@ -18,15 +18,15 @@
  */
 package javax.faces.validator;
 
-import javax.el.ValueExpression;
-import javax.faces.application.FacesMessage;
-import javax.faces.application.FacesMessage.Severity;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+
+import javax.el.ValueExpression;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
@@ -81,18 +81,10 @@ class _MessageUtils
             {
                 //Try to find detail alone
                 detail = getBundleString(appBundle, messageId + DETAIL_SUFFIX);
-                if (detail != null)
-                {
-                    summary = null;
-                }
-                else
+                if (detail == null)
                 {
                     detail = getBundleString(defBundle, messageId + DETAIL_SUFFIX);
-                    if (detail != null)
-                    {
-                        summary = null;
-                    }
-                    else
+                    if (detail == null)
                     {
                         //Neither detail nor summary found
                         facesContext.getExternalContext().log("No message with id " + messageId + " found in any bundle");

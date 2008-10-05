@@ -37,21 +37,25 @@ public class ViewImplicitObject extends ImplicitObject
     {
     }
 
+    @Override
     public Object getValue(ELContext context)
     {
         return facesContext(context).getViewRoot();
     }
 
+    @Override
     public String getName()
     {
         return NAME;
     }
 
+    @Override
     public Class<?> getType()
     {
         return null;
     }
 
+    @Override
     public FeatureDescriptor getDescriptor()
     {
         return makeDescriptor(NAME, "The root object of a JSF component tree", UIViewRoot.class);

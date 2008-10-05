@@ -26,7 +26,7 @@ import java.util.*;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Thomas Spiegl (latest modification by $Author$)
  * @author Martin Marinschek
  * @version $Revision$ $Date$
@@ -47,9 +47,8 @@ public class ResultSetDataModel extends DataModel
      */
     private ResultSetMetaData _resultSetMetadata = null;
 
-
     /**
-     *  Indicator for an updated row at the current position.
+     * Indicator for an updated row at the current position.
      */
     private boolean _currentRowUpdated = false;
 
@@ -67,20 +66,20 @@ public class ResultSetDataModel extends DataModel
 
     }
 
-    /** We don't know how many rows the result set has without scrolling
-     * through the whole thing.
+    /**
+     * We don't know how many rows the result set has without scrolling through the whole thing.
      */
+    @Override
     public int getRowCount()
     {
         return -1;
     }
 
-    /** Get the actual data of this row
-     *  wrapped into a map.
-     *  The specification is very strict about what has to be
-     *  returned from here, so check the spec before
-     *  modifying anything here.
+    /**
+     * Get the actual data of this row wrapped into a map. The specification is very strict about what has to be
+     * returned from here, so check the spec before modifying anything here.
      */
+    @Override
     public Object getRowData()
     {
         if (_resultSet == null)
@@ -90,7 +89,7 @@ public class ResultSetDataModel extends DataModel
         else if (!isRowAvailable())
         {
             throw new IllegalArgumentException(
-                    "the requested row is not available in the ResultSet - you have scrolled beyond the end.");
+                "the requested row is not available in the ResultSet - you have scrolled beyond the end.");
         }
 
         try
@@ -103,16 +102,19 @@ public class ResultSetDataModel extends DataModel
         }
     }
 
+    @Override
     public int getRowIndex()
     {
         return _currentIndex;
     }
 
+    @Override
     public Object getWrappedData()
     {
         return _resultSet;
     }
 
+    @Override
     public boolean isRowAvailable()
     {
         if (_resultSet == null)
@@ -134,12 +136,12 @@ public class ResultSetDataModel extends DataModel
         }
     }
 
+    @Override
     public void setRowIndex(int rowIndex)
     {
         if (rowIndex < -1)
         {
-            throw new IllegalArgumentException(
-                    "you cannot set the rowIndex to anything less than 0");
+            throw new IllegalArgumentException("you cannot set the rowIndex to anything less than 0");
         }
 
         // Handle the case of an updated row
@@ -161,13 +163,13 @@ public class ResultSetDataModel extends DataModel
         int old = _currentIndex;
         _currentIndex = rowIndex;
 
-        //if no underlying data has been set, the listeners
-        //need not be notified
+        // if no underlying data has been set, the listeners
+        // need not be notified
         if (_resultSet == null)
             return;
 
-        //Notify all listeners of the upated row
-        DataModelListener [] listeners = getDataModelListeners();
+        // Notify all listeners of the upated row
+        DataModelListener[] listeners = getDataModelListeners();
 
         if ((old != _currentIndex) && (listeners != null))
         {
@@ -178,14 +180,13 @@ public class ResultSetDataModel extends DataModel
                 rowData = getRowData();
             }
 
-            DataModelEvent event =
-                new DataModelEvent(this, _currentIndex, rowData);
+            DataModelEvent event = new DataModelEvent(this, _currentIndex, rowData);
 
             int n = listeners.length;
 
             for (int i = 0; i < n; i++)
             {
-                if (listeners[i]!=null)
+                if (listeners[i] != null)
                 {
                     listeners[i].rowSelected(event);
                 }
@@ -193,6 +194,7 @@ public class ResultSetDataModel extends DataModel
         }
     }
 
+    @Override
     public void setWrappedData(Object data)
     {
         if (data == null)
@@ -232,16 +234,17 @@ public class ResultSetDataModel extends DataModel
         _currentRowUpdated = currentRowUpdated;
     }
 
-    /* A map wrapping the result set and calling
-    * the corresponding operations on the result set,
-    * first setting the correct row index.
-    */
-    private class WrapResultSetMap extends TreeMap
+    /*
+     * A map wrapping the result set and calling the corresponding operations on the result set, first setting the
+     * correct row index.
+     * TODO: Implement Map, use internal TreeMap for keys instead, it's cleaner
+     */
+    private class WrapResultSetMap extends TreeMap<String, Object>
     {
         private static final long serialVersionUID = -4321143404567038922L;
         private int _currentIndex;
 
-        public WrapResultSetMap(Comparator comparator) throws SQLException
+        public WrapResultSetMap(Comparator<String> comparator) throws SQLException
         {
             super(comparator);
 
@@ -251,50 +254,56 @@ public class ResultSetDataModel extends DataModel
 
             int columnCount = getResultSetMetadata().getColumnCount();
 
-            for (int i = 1; i <= columnCount; i++) {
-                super.put(getResultSetMetadata().getColumnName(i),
-                          getResultSetMetadata().getColumnName(i));
+            for (int i = 1; i <= columnCount; i++)
+            {
+                super.put(getResultSetMetadata().getColumnName(i), getResultSetMetadata().getColumnName(i));
             }
         }
 
+        @Override
         public void clear()
         {
-            throw new UnsupportedOperationException(
-                    "It is not allowed to remove from this map");
+            throw new UnsupportedOperationException("It is not allowed to remove from this map");
         }
 
+        @Override
         public boolean containsValue(Object value)
         {
-            Set<Object> keys = keySet();
-            for (Iterator<Object> iterator = keys.iterator(); iterator.hasNext();) {
-                Object object = get(iterator.next());
-                if (object == null) {
+            for (String key : keySet())
+            {
+                Object object = get(key);
+                if (object == null)
+                {
                     return value == null;
                 }
-                if (object.equals(value)) {
+                else if (object.equals(value))
+                {
                     return true;
                 }
-
             }
+            
             return false;
         }
 
-        public Set entrySet()
+        @Override
+        public Set<Map.Entry<String, Object>> entrySet()
         {
             return new WrapResultSetEntries(this);
         }
 
+        @Override
         public Object get(Object key)
         {
             if (!containsKey(key))
+            {
                 return null;
+            }
 
             return basicGet(key);
         }
 
-
         private Object basicGet(Object key)
-        {  //#################################################### remove
+        { // #################################################### remove
             try
             {
                 _resultSet.absolute(_currentIndex + 1);
@@ -308,29 +317,27 @@ public class ResultSetDataModel extends DataModel
             }
         }
 
-
-        public Set<Object> keySet()
+        @Override
+        public Set<String> keySet()
         {
             return new WrapResultSetKeys(this);
         }
 
-        public Object put(Object key, Object value)
+        @Override
+        public Object put(String key, Object value)
         {
             if (!containsKey(key))
-                throw new IllegalArgumentException(
-                        "underlying result set does not provide this key");
-
-            if (!(key instanceof String))
-                throw new IllegalArgumentException(
-                        "key must be of type 'String', is of type : "+(key==null?"null":key.getClass().getName()));
-
+            {
+                throw new IllegalArgumentException("underlying result set does not provide this key");
+            }
+            
             try
             {
                 _resultSet.absolute(_currentIndex + 1);
 
                 Object oldValue = _resultSet.getObject((String) getUnderlyingKey(key));
 
-                if(oldValue==null?value==null:oldValue.equals(value))
+                if (oldValue == null ? value == null : oldValue.equals(value))
                     return oldValue;
 
                 _resultSet.updateObject((String) getUnderlyingKey(key), value);
@@ -345,21 +352,22 @@ public class ResultSetDataModel extends DataModel
             }
         }
 
-        public void putAll(Map map)
+        @Override
+        public void putAll(Map<? extends String, ? extends Object> map)
         {
-            for (Iterator i = map.entrySet().iterator(); i.hasNext(); )
+            for (Map.Entry<? extends String, ? extends Object> entry : map.entrySet())
             {
-                Map.Entry entry = (Map.Entry) i.next();
                 put(entry.getKey(), entry.getValue());
             }
         }
 
+        @Override
         public Object remove(Object key)
         {
-            throw new UnsupportedOperationException(
-                    "It is not allowed to remove entries from this set.");
+            throw new UnsupportedOperationException("It is not allowed to remove entries from this set.");
         }
 
+        @Override
         public Collection<Object> values()
         {
             return new WrapResultSetValues(this);
@@ -370,14 +378,14 @@ public class ResultSetDataModel extends DataModel
             return super.get(key);
         }
 
-        Iterator getUnderlyingKeys()
+        Iterator<String> getUnderlyingKeys()
         {
             return super.keySet().iterator();
         }
 
     }
 
-    private static class WrapResultSetEntries extends AbstractSet
+    private static class WrapResultSetEntries extends AbstractSet<Map.Entry<String, Object>>
     {
         private WrapResultSetMap _wrapMap;
 
@@ -386,25 +394,25 @@ public class ResultSetDataModel extends DataModel
             _wrapMap = wrapMap;
         }
 
-        public boolean add(Object o)
+        @Override
+        public boolean add(Map.Entry<String, Object> o)
         {
-            throw new UnsupportedOperationException(
-                    "it is not allowed to add to this set");
+            throw new UnsupportedOperationException("it is not allowed to add to this set");
         }
 
-        public boolean addAll(Collection c)
+        @Override
+        public boolean addAll(Collection<? extends Map.Entry<String, Object>> c)
         {
-            throw new UnsupportedOperationException(
-                    "it is not allowed to add to this set");
+            throw new UnsupportedOperationException("it is not allowed to add to this set");
         }
 
+        @Override
         public void clear()
         {
-            throw new UnsupportedOperationException(
-                    "it is not allowed to remove from this set"
-            );
+            throw new UnsupportedOperationException("it is not allowed to remove from this set");
         }
 
+        @Override
         public boolean contains(Object o)
         {
             if (o == null)
@@ -412,7 +420,7 @@ public class ResultSetDataModel extends DataModel
             if (!(o instanceof Map.Entry))
                 return false;
 
-            Map.Entry e = (Map.Entry) o;
+            Map.Entry<?, ?> e = (Map.Entry<?, ?>) o;
             Object key = e.getKey();
 
             if (!_wrapMap.containsKey(key))
@@ -421,49 +429,51 @@ public class ResultSetDataModel extends DataModel
             Object value = e.getValue();
             Object cmpValue = _wrapMap.get(key);
 
-            return value==null?cmpValue==null:value.equals(cmpValue);
+            return value == null ? cmpValue == null : value.equals(cmpValue);
         }
 
+        @Override
         public boolean isEmpty()
         {
             return _wrapMap.isEmpty();
         }
 
-        public Iterator iterator()
+        @Override
+        public Iterator<Map.Entry<String, Object>> iterator()
         {
             return new WrapResultSetEntriesIterator(_wrapMap);
         }
 
+        @Override
         public boolean remove(Object o)
         {
-            throw new UnsupportedOperationException(
-                    "it is not allowed to remove from this set");
+            throw new UnsupportedOperationException("it is not allowed to remove from this set");
         }
 
-        public boolean removeAll(Collection c)
+        @Override
+        public boolean removeAll(Collection<?> c)
         {
-            throw new UnsupportedOperationException(
-                    "it is not allowed to remove from this set");
+            throw new UnsupportedOperationException("it is not allowed to remove from this set");
         }
 
-        public boolean retainAll(Collection c)
+        @Override
+        public boolean retainAll(Collection<?> c)
         {
-            throw new UnsupportedOperationException(
-                    "it is not allowed to remove from this set");
+            throw new UnsupportedOperationException("it is not allowed to remove from this set");
         }
 
+        @Override
         public int size()
         {
             return _wrapMap.size();
         }
     }
 
-
-    private static class WrapResultSetEntriesIterator implements Iterator
+    private static class WrapResultSetEntriesIterator implements Iterator<Map.Entry<String, Object>>
     {
 
         private WrapResultSetMap _wrapMap = null;
-        private Iterator<Object> _keyIterator = null;
+        private Iterator<String> _keyIterator = null;
 
         public WrapResultSetEntriesIterator(WrapResultSetMap wrapMap)
         {
@@ -476,32 +486,31 @@ public class ResultSetDataModel extends DataModel
             return _keyIterator.hasNext();
         }
 
-        public Object next()
+        public Map.Entry<String, Object> next()
         {
             return new WrapResultSetEntry(_wrapMap, _keyIterator.next());
         }
 
         public void remove()
         {
-            throw new UnsupportedOperationException(
-                    "It is not allowed to remove from this iterator"
-            );
+            throw new UnsupportedOperationException("It is not allowed to remove from this iterator");
         }
 
     }
 
-    private static class WrapResultSetEntry implements Map.Entry {
+    private static class WrapResultSetEntry implements Map.Entry<String, Object>
+    {
 
         private WrapResultSetMap _wrapMap;
-        private Object _entryKey;
+        private String _entryKey;
 
-        public WrapResultSetEntry(WrapResultSetMap wrapMap, Object entryKey)
+        public WrapResultSetEntry(WrapResultSetMap wrapMap, String entryKey)
         {
             _wrapMap = wrapMap;
             _entryKey = entryKey;
         }
 
-
+        @Override
         public boolean equals(Object o)
         {
             if (o == null)
@@ -510,19 +519,18 @@ public class ResultSetDataModel extends DataModel
             if (!(o instanceof Map.Entry))
                 return false;
 
-            Map.Entry cmpEntry = (Map.Entry) o;
+            Map.Entry<?, ?> cmpEntry = (Map.Entry<?, ?>) o;
 
-            if(_entryKey ==null?cmpEntry.getKey()!=null:
-                    !_entryKey.equals(cmpEntry.getKey()))
+            if (_entryKey == null ? cmpEntry.getKey() != null : !_entryKey.equals(cmpEntry.getKey()))
                 return false;
 
             Object value = _wrapMap.get(_entryKey);
             Object cmpValue = cmpEntry.getValue();
 
-            return value==null?cmpValue!=null:value.equals(cmpValue);
+            return value == null ? cmpValue != null : value.equals(cmpValue);
         }
 
-        public Object getKey()
+        public String getKey()
         {
             return _entryKey;
         }
@@ -532,12 +540,12 @@ public class ResultSetDataModel extends DataModel
             return _wrapMap.get(_entryKey);
         }
 
+        @Override
         public int hashCode()
         {
             int result;
             result = (_entryKey != null ? _entryKey.hashCode() : 0);
-            result = 29 * result + (_wrapMap.get(_entryKey) != null ?
-                    _wrapMap.get(_entryKey).hashCode() : 0);
+            result = 29 * result + (_wrapMap.get(_entryKey) != null ? _wrapMap.get(_entryKey).hashCode() : 0);
             return result;
         }
 
@@ -549,75 +557,79 @@ public class ResultSetDataModel extends DataModel
         }
     }
 
-    private static class WrapResultSetKeys extends AbstractSet
+    private static class WrapResultSetKeys extends AbstractSet<String>
     {
         private WrapResultSetMap _wrapMap;
 
-        public WrapResultSetKeys(WrapResultSetMap wrapMap) {
+        public WrapResultSetKeys(WrapResultSetMap wrapMap)
+        {
             _wrapMap = wrapMap;
         }
 
-        public boolean add(Object o)
+        @Override
+        public boolean add(String o)
         {
-            throw new UnsupportedOperationException(
-                    "It is not allowed to add to this set");
+            throw new UnsupportedOperationException("It is not allowed to add to this set");
         }
 
-        public boolean addAll(Collection c)
+        @Override
+        public boolean addAll(Collection<? extends String> c)
         {
-            throw new UnsupportedOperationException(
-                    "It is not allowed to add to this set");
+            throw new UnsupportedOperationException("It is not allowed to add to this set");
         }
 
+        @Override
         public void clear()
         {
-            throw new UnsupportedOperationException(
-                    "It is not allowed to remove from this set"
-            );
+            throw new UnsupportedOperationException("It is not allowed to remove from this set");
         }
 
+        @Override
         public boolean contains(Object obj)
         {
             return _wrapMap.containsKey(obj);
         }
 
+        @Override
         public boolean isEmpty()
         {
             return _wrapMap.isEmpty();
         }
 
-        public Iterator iterator()
+        @Override
+        public Iterator<String> iterator()
         {
             return new WrapResultSetKeysIterator(_wrapMap);
         }
 
+        @Override
         public boolean remove(Object o)
         {
-            throw new UnsupportedOperationException(
-                    "It is not allowed to remove from this set");
+            throw new UnsupportedOperationException("It is not allowed to remove from this set");
         }
 
-        public boolean removeAll(Collection c)
+        @Override
+        public boolean removeAll(Collection<?> c)
         {
-            throw new UnsupportedOperationException(
-                    "It is not allowed to remove from this set");
+            throw new UnsupportedOperationException("It is not allowed to remove from this set");
         }
 
-        public boolean retainAll(Collection c)
+        @Override
+        public boolean retainAll(Collection<?> c)
         {
-            throw new UnsupportedOperationException(
-                    "It is not allowed to remove from this set");
+            throw new UnsupportedOperationException("It is not allowed to remove from this set");
         }
 
+        @Override
         public int size()
         {
             return _wrapMap.size();
         }
     }
 
-    private static class WrapResultSetKeysIterator implements Iterator
+    private static class WrapResultSetKeysIterator implements Iterator<String>
     {
-        private Iterator _keyIterator = null;
+        private Iterator<String> _keyIterator = null;
 
         public WrapResultSetKeysIterator(WrapResultSetMap map)
         {
@@ -629,20 +641,19 @@ public class ResultSetDataModel extends DataModel
             return _keyIterator.hasNext();
         }
 
-        public Object next()
+        public String next()
         {
             return _keyIterator.next();
         }
 
         public void remove()
         {
-            throw new UnsupportedOperationException(
-                    "it is not allowed to remove from this iterator");
+            throw new UnsupportedOperationException("it is not allowed to remove from this iterator");
         }
 
     }
 
-    private static class WrapResultSetValues extends AbstractCollection
+    private static class WrapResultSetValues extends AbstractCollection<Object>
     {
         private WrapResultSetMap _wrapMap;
 
@@ -651,54 +662,55 @@ public class ResultSetDataModel extends DataModel
             _wrapMap = wrapMap;
         }
 
+        @Override
         public boolean add(Object o)
         {
-            throw new UnsupportedOperationException(
-                    "it is not allowed to add to this collection"
-            );
+            throw new UnsupportedOperationException("it is not allowed to add to this collection");
         }
 
-        public boolean addAll(Collection c)
+        @Override
+        public boolean addAll(Collection<? extends Object> c)
         {
-            throw new UnsupportedOperationException(
-                "it is not allowed to add to this collection"
-            );
+            throw new UnsupportedOperationException("it is not allowed to add to this collection");
         }
 
+        @Override
         public void clear()
         {
-            throw new UnsupportedOperationException(
-                "it is not allowed to remove from this collection"
-            );
+            throw new UnsupportedOperationException("it is not allowed to remove from this collection");
         }
 
+        @Override
         public boolean contains(Object value)
         {
             return _wrapMap.containsValue(value);
         }
 
-        public Iterator iterator()
+        @Override
+        public Iterator<Object> iterator()
         {
             return new WrapResultSetValuesIterator(_wrapMap);
         }
 
+        @Override
         public boolean remove(Object o)
         {
             throw new UnsupportedOperationException();
         }
 
-        public boolean removeAll(Collection c)
+        @Override
+        public boolean removeAll(Collection<?> c)
         {
-            throw new UnsupportedOperationException(
-                    "it is not allowed to remove from this collection");
+            throw new UnsupportedOperationException("it is not allowed to remove from this collection");
         }
 
-        public boolean retainAll(Collection c)
+        @Override
+        public boolean retainAll(Collection<?> c)
         {
-            throw new UnsupportedOperationException(
-                    "it is not allowed to remove from this collection");
+            throw new UnsupportedOperationException("it is not allowed to remove from this collection");
         }
 
+        @Override
         public int size()
         {
             return _wrapMap.size();
@@ -706,12 +718,11 @@ public class ResultSetDataModel extends DataModel
 
     }
 
-
-    private static class WrapResultSetValuesIterator implements Iterator
+    private static class WrapResultSetValuesIterator implements Iterator<Object>
     {
 
         private WrapResultSetMap _wrapMap;
-        private Iterator<Object> _keyIterator;
+        private Iterator<String> _keyIterator;
 
         public WrapResultSetValuesIterator(WrapResultSetMap wrapMap)
         {
@@ -731,9 +742,7 @@ public class ResultSetDataModel extends DataModel
 
         public void remove()
         {
-            throw new UnsupportedOperationException(
-                    "it is not allowed to remove from this map"
-            );
+            throw new UnsupportedOperationException("it is not allowed to remove from this map");
         }
 
     }

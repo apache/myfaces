@@ -34,22 +34,17 @@ import org.apache.myfaces.shared_impl.renderkit.html.HTML;
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlRenderer;
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlRendererUtils;
 
-
 /**
- *   
+ * 
  * @author Thomas Spiegl (latest modification by $Author$)
  * @author Anton Koinov
  * @version $Revision$ $Date$
  */
-@JSFRenderer(
-    renderKitId="HTML_BASIC",
-    family="javax.faces.Input",
-    type="javax.faces.Hidden")
-public class HtmlHiddenRenderer
-extends HtmlRenderer
+@JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Input", type = "javax.faces.Hidden")
+public class HtmlHiddenRenderer extends HtmlRenderer
 {
-    public void encodeEnd(FacesContext facesContext, UIComponent uiComponent)
-        throws IOException
+    @Override
+    public void encodeEnd(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, UIInput.class);
 
@@ -71,27 +66,27 @@ extends HtmlRenderer
         writer.endElement(HTML.INPUT_ELEM);
     }
 
-    public Object getConvertedValue(FacesContext facesContext, UIComponent uiComponent, Object submittedValue) throws ConverterException
+    @Override
+    public Object getConvertedValue(FacesContext facesContext, UIComponent uiComponent, Object submittedValue)
+        throws ConverterException
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, UIOutput.class);
-        return RendererUtils.getConvertedUIOutputValue(facesContext,
-                                                       (UIOutput)uiComponent,
-                                                       submittedValue);
+        return RendererUtils.getConvertedUIOutputValue(facesContext, (UIOutput)uiComponent, submittedValue);
     }
 
-
+    @Override
     public void decode(FacesContext facesContext, UIComponent component)
-     {
-         RendererUtils.checkParamValidity(facesContext,component,null);
+    {
+        RendererUtils.checkParamValidity(facesContext, component, null);
 
-         if (component instanceof UIInput)
-         {
-             HtmlRendererUtils.decodeUIInput(facesContext, component);
-         }
-         else
-         {
-             throw new IllegalArgumentException("Unsupported component class " + component.getClass().getName());
-         }
-     }
+        if (component instanceof UIInput)
+        {
+            HtmlRendererUtils.decodeUIInput(facesContext, component);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Unsupported component class " + component.getClass().getName());
+        }
+    }
 
 }

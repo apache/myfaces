@@ -42,16 +42,17 @@ import java.util.Locale;
  * @author Bruno Aranda (JSR-252)
  * @version $Revision$ $Date$
  */
-public class ViewTag
-        extends UIComponentELTag
+public class ViewTag extends UIComponentELTag
 {
     private static final Log log = LogFactory.getLog(ViewTag.class);
 
+    @Override
     public String getComponentType()
     {
         return UIViewRoot.COMPONENT_TYPE;
     }
 
+    @Override
     public String getRendererType()
     {
         return null;
@@ -83,9 +84,11 @@ public class ViewTag
         _afterPhase = afterPhase;
     }
 
+    @Override
     public int doStartTag() throws JspException
     {
-        if (log.isTraceEnabled()) log.trace("entering ViewTag.doStartTag");
+        if (log.isTraceEnabled())
+            log.trace("entering ViewTag.doStartTag");
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Object response = facesContext.getExternalContext().getResponse();
@@ -94,50 +97,54 @@ public class ViewTag
             try
             {
                 pageContext.getOut().flush();
-                ((ViewResponseWrapper) response).flushToWrappedResponse();
+                ((ViewResponseWrapper)response).flushToWrappedResponse();
             }
             catch (IOException e)
             {
-                throw new JspException("Can't write content above <f:view> tag"
-                        + " " + e.getMessage());
+                throw new JspException("Can't write content above <f:view> tag" + " " + e.getMessage());
             }
         }
 
         int retVal = super.doStartTag();
 
-        Config.set(pageContext.getRequest(),
-                       Config.FMT_LOCALE,
-                       facesContext.getViewRoot().getLocale());
+        Config.set(pageContext.getRequest(), Config.FMT_LOCALE, facesContext.getViewRoot().getLocale());
 
-        if (log.isTraceEnabled()) log.trace("leaving ViewTag.doStartTag");
+        if (log.isTraceEnabled())
+            log.trace("leaving ViewTag.doStartTag");
         return retVal;
     }
 
+    @Override
     public int doEndTag() throws JspException
     {
-        if (log.isTraceEnabled()) log.trace("entering ViewTag.doEndTag");
+        if (log.isTraceEnabled())
+            log.trace("entering ViewTag.doEndTag");
         int retVal = super.doEndTag();
 
-        if (log.isTraceEnabled()) log.trace("leaving ViewTag.doEndTag");
+        if (log.isTraceEnabled())
+            log.trace("leaving ViewTag.doEndTag");
         return retVal;
     }
 
+    @Override
     public int doAfterBody() throws JspException
     {
-        if (log.isTraceEnabled()) log.trace("entering ViewTag.doAfterBody");
+        if (log.isTraceEnabled())
+            log.trace("entering ViewTag.doAfterBody");
 
         UIComponent verbatimComp = createVerbatimComponentFromBodyContent();
-        
+
         if (verbatimComp != null)
         {
-            FacesContext.getCurrentInstance().getViewRoot().getChildren()
-                .add(verbatimComp);
+            FacesContext.getCurrentInstance().getViewRoot().getChildren().add(verbatimComp);
         }
 
-        if (log.isTraceEnabled()) log.trace("leaving ViewTag.doAfterBody");
+        if (log.isTraceEnabled())
+            log.trace("leaving ViewTag.doAfterBody");
         return EVAL_PAGE;
     }
 
+    @Override
     protected void setProperties(UIComponent component)
     {
         super.setProperties(component);
@@ -145,7 +152,7 @@ public class ViewTag
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ELContext elContext = facesContext.getELContext();
 
-        UIViewRoot viewRoot = (UIViewRoot) component;
+        UIViewRoot viewRoot = (UIViewRoot)component;
 
         // locale
         if (_locale != null)
@@ -160,33 +167,29 @@ public class ViewTag
                 component.setValueExpression("locale", _locale);
 
                 Object localeValue = _locale.getValue(elContext);
-                
+
                 if (localeValue instanceof Locale)
                 {
-                    locale = (Locale) localeValue;
+                    locale = (Locale)localeValue;
                 }
                 else if (localeValue instanceof String)
                 {
-                    locale = LocaleUtils.toLocale((String) localeValue);
+                    locale = LocaleUtils.toLocale((String)localeValue);
                 }
                 else
                 {
-                     if (localeValue != null)
-                     {
-                         throw new IllegalArgumentException(
-                                 "Locale or String class expected. Expression: " + _locale
-                                 + ". Return class: " + localeValue.getClass().getName());
-                     }
+                    if (localeValue != null)
+                    {
+                        throw new IllegalArgumentException("Locale or String class expected. Expression: " + _locale
+                                + ". Return class: " + localeValue.getClass().getName());
+                    }
 
-                     throw new IllegalArgumentException(
-                                 "Locale or String class expected. Expression: " + _locale
-                                 + ". Return value null");
+                    throw new IllegalArgumentException("Locale or String class expected. Expression: " + _locale
+                            + ". Return value null");
                 }
             }
             viewRoot.setLocale(locale);
-            Config.set(pageContext.getRequest(),
-                       Config.FMT_LOCALE,
-                       locale);
+            Config.set(pageContext.getRequest(), Config.FMT_LOCALE, locale);
         }
 
         // renderkitId
@@ -216,18 +219,17 @@ public class ViewTag
             }
         }
 
-
         // beforePhase
         if (_beforePhase != null)
         {
             if (_beforePhase.isLiteralText())
             {
                 throw new FacesException("Invalid method expression for attribute 'beforePhase' in the view tag: "
-                        +_beforePhase.getExpressionString());
+                        + _beforePhase.getExpressionString());
             }
-            
+
             viewRoot.setBeforePhaseListener(_beforePhase);
-            
+
         }
 
         // afterPhase
@@ -236,11 +238,11 @@ public class ViewTag
             if (_afterPhase.isLiteralText())
             {
                 throw new FacesException("Invalid method expression for attribute 'beforePhase' in the view tag: "
-                        +_afterPhase.getExpressionString());
+                        + _afterPhase.getExpressionString());
             }
-            
+
             viewRoot.setAfterPhaseListener(_afterPhase);
-            
+
         }
     }
 }

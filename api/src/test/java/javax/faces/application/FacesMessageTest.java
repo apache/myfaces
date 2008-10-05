@@ -21,28 +21,36 @@ package javax.faces.application;
 
 import junit.framework.TestCase;
 
-public class FacesMessageTest extends TestCase {
+public class FacesMessageTest extends TestCase
+{
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         junit.textui.TestRunner.run(FacesMessageTest.class);
     }
 
-    public FacesMessageTest(String name) {
+    public FacesMessageTest(String name)
+    {
         super(name);
     }
 
-    protected void setUp() throws Exception {
+    @Override
+    protected void setUp() throws Exception
+    {
         super.setUp();
     }
 
-    protected void tearDown() throws Exception {
+    @Override
+    protected void tearDown() throws Exception
+    {
         super.tearDown();
     }
 
     /*
      * Test method for 'javax.faces.application.FacesMessage.FacesMessage()'
      */
-    public void testFacesMessage() {
+    public void testFacesMessage()
+    {
         FacesMessage msg = new FacesMessage();
         assertEquals(msg.getSeverity(), FacesMessage.SEVERITY_INFO);
         assertNull(msg.getSummary());
@@ -52,7 +60,8 @@ public class FacesMessageTest extends TestCase {
     /*
      * Test method for 'javax.faces.application.FacesMessage.FacesMessage(String)'
      */
-    public void testFacesMessageString() {
+    public void testFacesMessageString()
+    {
         String summary = "summary";
         FacesMessage msg = new FacesMessage(summary);
         assertEquals(msg.getSeverity(), FacesMessage.SEVERITY_INFO);
@@ -63,7 +72,8 @@ public class FacesMessageTest extends TestCase {
     /*
      * Test method for 'javax.faces.application.FacesMessage.FacesMessage(String, String)'
      */
-    public void testFacesMessageStringString() {
+    public void testFacesMessageStringString()
+    {
         String summary = "summary";
         String detail = "detail";
         FacesMessage msg = new FacesMessage(summary, detail);
@@ -75,7 +85,8 @@ public class FacesMessageTest extends TestCase {
     /*
      * Test method for 'javax.faces.application.FacesMessage.FacesMessage(Severity, String, String)'
      */
-    public void testFacesMessageSeverityStringString() {
+    public void testFacesMessageSeverityStringString()
+    {
         String summary = "summary";
         String detail = "detail";
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, summary, detail);
@@ -87,20 +98,25 @@ public class FacesMessageTest extends TestCase {
     /*
      * Test method for 'javax.faces.application.FacesMessage.FacesMessage(Severity, String, String)'
      */
-    public void testFacesMessageNullSeverityStringString() {
+    public void testFacesMessageNullSeverityStringString()
+    {
         String summary = "summary";
         String detail = "detail";
-        try {
+        try
+        {
             new FacesMessage(null, summary, detail);
             fail("Should have thrown an exception");
-        } catch (NullPointerException e) {
+        }
+        catch (NullPointerException e)
+        {
         }
     }
 
     /*
      * Test method for 'javax.faces.application.FacesMessage.setSeverity(Severity)'
      */
-    public void testSetSeverity() {
+    public void testSetSeverity()
+    {
         FacesMessage msg = new FacesMessage();
         assertEquals(msg.getSeverity(), FacesMessage.SEVERITY_INFO);
         msg.setSeverity(FacesMessage.SEVERITY_FATAL);
@@ -110,19 +126,24 @@ public class FacesMessageTest extends TestCase {
     /*
      * Test method for 'javax.faces.application.FacesMessage.setSeverity(Severity)'
      */
-    public void testSetNullSeverity() {
+    public void testSetNullSeverity()
+    {
         FacesMessage msg = new FacesMessage();
-        try {
+        try
+        {
             msg.setSeverity(null);
             fail("Should have thrown an exception");
-        } catch (NullPointerException e) {
+        }
+        catch (NullPointerException e)
+        {
         }
     }
 
     /*
      * Test method for 'javax.faces.application.FacesMessage.setSummary(String)'
      */
-    public void testSetSummary() {
+    public void testSetSummary()
+    {
         FacesMessage msg = new FacesMessage();
         String summary = "summary";
         msg.setSummary(summary);
@@ -133,7 +154,8 @@ public class FacesMessageTest extends TestCase {
     /*
      * Test method for 'javax.faces.application.FacesMessage.setDetail(String)'
      */
-    public void testSetDetail() {
+    public void testSetDetail()
+    {
         FacesMessage msg = new FacesMessage();
         String detail = "detail";
         msg.setDetail(detail);
@@ -141,7 +163,8 @@ public class FacesMessageTest extends TestCase {
         assertEquals(msg.getDetail(), detail);
     }
 
-    public void testSeverityOrdering() {
+    public void testSeverityOrdering()
+    {
         // make sure they are ordered correctly from least to worst
         assertTrue(0 > FacesMessage.SEVERITY_INFO.compareTo(FacesMessage.SEVERITY_WARN));
         assertTrue(0 > FacesMessage.SEVERITY_WARN.compareTo(FacesMessage.SEVERITY_ERROR));
@@ -152,7 +175,8 @@ public class FacesMessageTest extends TestCase {
         assertTrue(0 < FacesMessage.SEVERITY_WARN.compareTo(FacesMessage.SEVERITY_INFO));
     }
 
-    public void testSeverityEquality() {
+    public void testSeverityEquality()
+    {
         // make sure they all respond as equals when they should
         assertEquals(0, FacesMessage.SEVERITY_INFO.compareTo(FacesMessage.SEVERITY_INFO));
         assertEquals(0, FacesMessage.SEVERITY_WARN.compareTo(FacesMessage.SEVERITY_WARN));

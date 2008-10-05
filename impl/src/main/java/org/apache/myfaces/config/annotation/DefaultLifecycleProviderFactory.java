@@ -46,6 +46,7 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
     {
     }
 
+    @Override
     public LifecycleProvider getLifecycleProvider(ExternalContext externalContext)
     {
         if (LIFECYCLE_PROVIDER_INSTANCE == null)
@@ -70,6 +71,7 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
         return LIFECYCLE_PROVIDER_INSTANCE;
     }
 
+    @Override
     public void release() {
         LIFECYCLE_PROVIDER_INSTANCE = null;
     }

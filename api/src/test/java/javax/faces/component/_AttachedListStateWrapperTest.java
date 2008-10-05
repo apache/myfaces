@@ -28,50 +28,59 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-public class _AttachedListStateWrapperTest extends TestCase {
+public class _AttachedListStateWrapperTest extends TestCase
+{
 
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(_AttachedListStateWrapperTest.class);
-  }
+    public static void main(String[] args)
+    {
+        junit.textui.TestRunner.run(_AttachedListStateWrapperTest.class);
+    }
 
-  public _AttachedListStateWrapperTest(String name) {
-    super(name);
-  }
+    public _AttachedListStateWrapperTest(String name)
+    {
+        super(name);
+    }
 
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
+    @Override
+    protected void setUp() throws Exception
+    {
+        super.setUp();
+    }
 
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
+    @Override
+    protected void tearDown() throws Exception
+    {
+        super.tearDown();
+    }
 
-  /*
-   * Test method for 'javax.faces.component._AttachedListStateWrapper._AttachedListStateWrapper(List)'
-   */
-  public void test_AttachedListStateWrapper() {
-    List<Object> foo = new ArrayList<Object>();
-    _AttachedListStateWrapper subject = new _AttachedListStateWrapper(foo);
-    assertNotNull(subject.getWrappedStateList());
-    assertTrue(subject.getWrappedStateList() == foo);
-  }
+    /*
+     * Test method for 'javax.faces.component._AttachedListStateWrapper._AttachedListStateWrapper(List)'
+     */
+    public void test_AttachedListStateWrapper()
+    {
+        List<Object> foo = new ArrayList<Object>();
+        _AttachedListStateWrapper subject = new _AttachedListStateWrapper(foo);
+        assertNotNull(subject.getWrappedStateList());
+        assertTrue(subject.getWrappedStateList() == foo);
+    }
 
-  public void testSerialize() throws Exception {
-    String foo = "foo";
-    List<Object> list = new ArrayList<Object>();
-    list.add(foo);
-    _AttachedListStateWrapper subject = new _AttachedListStateWrapper(list);
-    ByteArrayOutputStream baos = new ByteArrayOutputStream(128);
-    ObjectOutputStream oos = new ObjectOutputStream(baos);
-    oos.writeObject(subject);
-    oos.flush();
-    baos.flush();
-    ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-    ObjectInputStream ois = new ObjectInputStream(bais);
-    _AttachedListStateWrapper blorg = (_AttachedListStateWrapper)ois.readObject();
-    assertEquals(blorg.getWrappedStateList(), subject.getWrappedStateList());
-    oos.close();
-    ois.close();
-  }
-  
+    public void testSerialize() throws Exception
+    {
+        String foo = "foo";
+        List<Object> list = new ArrayList<Object>();
+        list.add(foo);
+        _AttachedListStateWrapper subject = new _AttachedListStateWrapper(list);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(128);
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(subject);
+        oos.flush();
+        baos.flush();
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        ObjectInputStream ois = new ObjectInputStream(bais);
+        _AttachedListStateWrapper blorg = (_AttachedListStateWrapper) ois.readObject();
+        assertEquals(blorg.getWrappedStateList(), subject.getWrappedStateList());
+        oos.close();
+        ois.close();
+    }
+
 }

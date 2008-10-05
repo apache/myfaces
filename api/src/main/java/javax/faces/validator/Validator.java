@@ -24,21 +24,18 @@ import java.util.EventListener;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @author Thomas Spiegl
  * @version $Revision$ $Date$
  */
-public interface Validator
-        extends EventListener
+public interface Validator extends EventListener
 {
     /**
      * @deprecated
      */
+    @Deprecated
     public static final String NOT_IN_RANGE_MESSAGE_ID = "javax.faces.validator.NOT_IN_RANGE";
 
-    public void validate(FacesContext context,
-                         UIComponent component,
-                         Object value)
-            throws ValidatorException;
+    public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException;
 }

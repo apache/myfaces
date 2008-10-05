@@ -20,44 +20,50 @@ package javax.faces.el;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
  * @deprecated
  */
+@Deprecated
 public class MethodNotFoundException extends EvaluationException
 {
-  private static final long serialVersionUID = 7107789255726890536L;
+    private static final long serialVersionUID = 7107789255726890536L;
+
     // FIELDS
 
-  // CONSTRUCTORS
-        /**
-         * @deprecated
-         */
+    // CONSTRUCTORS
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public MethodNotFoundException()
     {
         super();
     }
 
-        /**
-         * @deprecated
-         */
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public MethodNotFoundException(String message)
     {
         super(message);
     }
 
-        /**
-         * @deprecated
-         */
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public MethodNotFoundException(String message, Throwable cause)
     {
         super(message, cause);
     }
 
-        /**
-         * @deprecated
-         */
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public MethodNotFoundException(Throwable cause)
     {
         super(cause);

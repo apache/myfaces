@@ -41,6 +41,7 @@ public class FactoryFinderTest extends TestCase
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception
     {
         super.setUp();
@@ -50,6 +51,7 @@ public class FactoryFinderTest extends TestCase
         FactoryFinder.releaseFactories();
     }
 
+    @Override
     protected void tearDown() throws Exception
     {
         super.tearDown();
@@ -62,14 +64,14 @@ public class FactoryFinderTest extends TestCase
     private void releaseRegisteredFactoryNames() throws Exception
     {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        Map<ClassLoader, Map<String, List<String>>>  _registeredFactoryNames = getRegisteredFactoryNames();
+        Map<ClassLoader, Map<String, List<String>>> _registeredFactoryNames = getRegisteredFactoryNames();
         _registeredFactoryNames.remove(classLoader);
     }
 
     private List<String> registeredFactoryNames(String factoryName) throws Exception
     {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        Map<ClassLoader, Map<String, List<String>>>  _registeredFactoryNames = getRegisteredFactoryNames();
+        Map<ClassLoader, Map<String, List<String>>> _registeredFactoryNames = getRegisteredFactoryNames();
         Map<String, List<String>> map = _registeredFactoryNames.get(classLoader);
         return map.get(factoryName);
     }
@@ -79,11 +81,11 @@ public class FactoryFinderTest extends TestCase
      * the running of this test.
      * 
      * @return Returns the _registeredFactoryNames Map from the FactoryFinder class. @throws NoSuchFieldException
+     * 
      * @throws IllegalAccessException
      */
     @SuppressWarnings("unchecked")
-    private Map<ClassLoader, Map<String, List<String>>> getRegisteredFactoryNames() 
-        throws NoSuchFieldException, IllegalAccessException
+    private Map<ClassLoader, Map<String, List<String>>> getRegisteredFactoryNames() throws IllegalAccessException
     {
         Class<FactoryFinder> factoryFinderClass = FactoryFinder.class;
         Field fields[] = factoryFinderClass.getDeclaredFields();
@@ -97,10 +99,10 @@ public class FactoryFinderTest extends TestCase
                 break;
             }
         }
-        
-        Map<ClassLoader, Map<String, List<String>>> _registeredFactoryNames = 
-            (Map<ClassLoader, Map<String, List<String>>>) field.get(null);
-        
+
+        Map<ClassLoader, Map<String, List<String>>> _registeredFactoryNames = (Map<ClassLoader, Map<String, List<String>>>) field
+                                                                                                                                 .get(null);
+
         return _registeredFactoryNames;
     }
 
@@ -209,7 +211,8 @@ public class FactoryFinderTest extends TestCase
         try
         {
             FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, MockApplicationFactory.class.getName());
-            assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(MockApplicationFactory.class.getName()));
+            assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+                MockApplicationFactory.class.getName()));
         }
         catch (IllegalArgumentException e)
         {
@@ -226,21 +229,19 @@ public class FactoryFinderTest extends TestCase
         try
         {
             FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, MockApplicationFactory.class.getName());
-            assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(MockApplicationFactory.class.getName()));
-            assertFalse(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY)
-                                                                                 .contains(
-                                                                                           Mock2ApplicationFactory.class
-                                                                                                                        .getName()));
+            assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+                MockApplicationFactory.class.getName()));
+            assertFalse(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+                Mock2ApplicationFactory.class.getName()));
             // getFactory should cause setFactory to stop changing the
             // registered classes
             FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
             // this should essentially be a no-op
             FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, Mock2ApplicationFactory.class.getName());
-            assertFalse(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY)
-                                                                                 .contains(
-                                                                                           Mock2ApplicationFactory.class
-                                                                                                                        .getName()));
-            assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(MockApplicationFactory.class.getName()));
+            assertFalse(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+                Mock2ApplicationFactory.class.getName()));
+            assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+                MockApplicationFactory.class.getName()));
         }
         catch (IllegalArgumentException e)
         {
@@ -257,15 +258,15 @@ public class FactoryFinderTest extends TestCase
         try
         {
             FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, MockApplicationFactory.class.getName());
-            assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(MockApplicationFactory.class.getName()));
-            assertFalse(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY)
-                                                                                 .contains(
-                                                                                           Mock2ApplicationFactory.class
-                                                                                                                        .getName()));
+            assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+                MockApplicationFactory.class.getName()));
+            assertFalse(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+                Mock2ApplicationFactory.class.getName()));
             FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, Mock2ApplicationFactory.class.getName());
-            assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY)
-                                                                                .contains(Mock2ApplicationFactory.class.getName()));
-            assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(MockApplicationFactory.class.getName()));
+            assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+                Mock2ApplicationFactory.class.getName()));
+            assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+                MockApplicationFactory.class.getName()));
         }
         catch (IllegalArgumentException e)
         {

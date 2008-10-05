@@ -28,30 +28,25 @@ import java.util.regex.Pattern;
 import javax.faces.context.FacesContext;
 
 /**
- * A resource loader implementation which loads resources
- * from the webapp root. It uses the methods on ExternalContext for
- * handle resources.
- *
+ * A resource loader implementation which loads resources from the webapp root. It uses the methods on ExternalContext
+ * for handle resources.
+ * 
  */
 public class ExternalContextResourceLoader extends ResourceLoader
 {
     /**
-     * It checks version like this:
-     * /1/, /1_0/, /1_0_0/, /100_100/
+     * It checks version like this: /1/, /1_0/, /1_0_0/, /100_100/
      * 
      * Used on getLibraryVersion to filter resource directories
      **/
-    protected static Pattern VERSION_CHECKER = Pattern
-            .compile("/\\p{Digit}+(_\\p{Digit}*)*/");
+    protected static Pattern VERSION_CHECKER = Pattern.compile("/\\p{Digit}+(_\\p{Digit}*)*/");
 
     /**
-     * It checks version like this:
-     * /1.js, /1_0.js, /1_0_0.js, /100_100.js
+     * It checks version like this: /1.js, /1_0.js, /1_0_0.js, /100_100.js
      * 
      * Used on getResourceVersion to filter resources
      **/
-    protected static Pattern RESOURCE_VERSION_CHECKER = Pattern
-            .compile("/\\p{Digit}+(_\\p{Digit}*)*\\..*");
+    protected static Pattern RESOURCE_VERSION_CHECKER = Pattern.compile("/\\p{Digit}+(_\\p{Digit}*)*\\..*");
 
     public ExternalContextResourceLoader(String prefix)
     {
@@ -60,14 +55,14 @@ public class ExternalContextResourceLoader extends ResourceLoader
 
     protected Set<String> getResourcePaths(String path)
     {
-        return FacesContext.getCurrentInstance().getExternalContext()
-                .getResourcePaths(getPrefix() + '/' + path);
+        return FacesContext.getCurrentInstance().getExternalContext().getResourcePaths(getPrefix() + '/' + path);
     }
 
+    @Override
     public String getResourceVersion(String path)
     {
         String resourceVersion = null;
-        Set resourcePaths = this.getResourcePaths(path);
+        Set<String> resourcePaths = this.getResourcePaths(path);
         if (getPrefix() != null)
             path = getPrefix() + '/' + path;
 
@@ -79,9 +74,8 @@ public class ExternalContextResourceLoader extends ResourceLoader
             // the one with the “highest” version number as the value
             // of resourceVersion. If no versioned libraries
             // are found, let resourceVersion remain null.
-            for (Iterator<String> it = resourcePaths.iterator(); it.hasNext();)
+            for (String resourcePath : resourcePaths)
             {
-                String resourcePath = it.next();
                 String version = resourcePath.substring(path.length());
 
                 if (RESOURCE_VERSION_CHECKER.matcher(version).matches())
@@ -91,8 +85,7 @@ public class ExternalContextResourceLoader extends ResourceLoader
                     {
                         resourceVersion = version;
                     }
-                    else if (getVersionComparator().compare(resourceVersion,
-                            version) < 0)
+                    else if (getVersionComparator().compare(resourceVersion, version) < 0)
                     {
                         resourceVersion = version;
                     }
@@ -102,6 +95,7 @@ public class ExternalContextResourceLoader extends ResourceLoader
         return resourceVersion;
     }
 
+    @Override
     public String getLibraryVersion(String path)
     {
         String libraryVersion = null;
@@ -127,8 +121,7 @@ public class ExternalContextResourceLoader extends ResourceLoader
                     {
                         libraryVersion = version;
                     }
-                    else if (getVersionComparator().compare(libraryVersion,
-                            version) < 0)
+                    else if (getVersionComparator().compare(libraryVersion, version) < 0)
                     {
                         libraryVersion = version;
                     }
@@ -138,12 +131,13 @@ public class ExternalContextResourceLoader extends ResourceLoader
         return libraryVersion;
     }
 
+    @Override
     public URL getResourceURL(ResourceMeta resourceMeta)
     {
         try
         {
-            return FacesContext.getCurrentInstance().getExternalContext()
-                    .getResource(getPrefix() + '/' + resourceMeta.toString());
+            return FacesContext.getCurrentInstance().getExternalContext().getResource(
+                getPrefix() + '/' + resourceMeta.toString());
         }
         catch (MalformedURLException e)
         {
@@ -151,18 +145,18 @@ public class ExternalContextResourceLoader extends ResourceLoader
         }
     }
 
+    @Override
     public InputStream getResourceInputStream(ResourceMeta resourceMeta)
     {
-        return FacesContext.getCurrentInstance().getExternalContext()
-                .getResourceAsStream(
-                        getPrefix() + '/' + resourceMeta.toString());
+        return FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream(
+            getPrefix() + '/' + resourceMeta.toString());
     }
 
-    public ResourceMeta createResourceMeta(String prefix, String libraryName,
-            String libraryVersion, String resourceName, String resourceVersion)
+    @Override
+    public ResourceMeta createResourceMeta(String prefix, String libraryName, String libraryVersion,
+                                           String resourceName, String resourceVersion)
     {
-        return new ResourceMeta(prefix, libraryName, libraryVersion,
-                resourceName, resourceVersion);
+        return new ResourceMeta(prefix, libraryName, libraryVersion, resourceName, resourceVersion);
     }
 
     @Override
@@ -172,8 +166,7 @@ public class ExternalContextResourceLoader extends ResourceLoader
         {
             try
             {
-                URL url = FacesContext.getCurrentInstance()
-                        .getExternalContext().getResource(libraryName);
+                URL url = FacesContext.getCurrentInstance().getExternalContext().getResource(libraryName);
                 if (url != null)
                 {
                     return true;
@@ -188,9 +181,9 @@ public class ExternalContextResourceLoader extends ResourceLoader
         {
             try
             {
-                URL url = FacesContext.getCurrentInstance()
-                        .getExternalContext().getResource(
-                                getPrefix() + '/' + libraryName);
+                URL url =
+                        FacesContext.getCurrentInstance().getExternalContext().getResource(
+                            getPrefix() + '/' + libraryName);
                 if (url != null)
                 {
                     return true;

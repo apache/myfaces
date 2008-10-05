@@ -92,6 +92,7 @@ public class FacesContextImpl extends FacesContext
 
     // ~ Methods ------------------------------------------------------------------------------------
 
+    @Override
     public final ExternalContext getExternalContext()
     {
         if (_released)
@@ -101,6 +102,7 @@ public class FacesContextImpl extends FacesContext
         return (ExternalContext) _externalContext;
     }
 
+    @Override
     public final FacesMessage.Severity getMaximumSeverity()
     {
         if (_released)
@@ -111,6 +113,7 @@ public class FacesContextImpl extends FacesContext
         return _maximumSeverity;
     }
 
+    @Override
     public final Iterator<FacesMessage> getMessages()
     {
         if (_released)
@@ -126,6 +129,7 @@ public class FacesContextImpl extends FacesContext
         return _messages.iterator();
     }
 
+    @Override
     public final Application getApplication()
     {
         if (_released)
@@ -136,6 +140,7 @@ public class FacesContextImpl extends FacesContext
         return _application;
     }
     
+    @Override
     public final Iterator<String> getClientIdsWithMessages()
     {
         if (_released)
@@ -153,11 +158,13 @@ public class FacesContextImpl extends FacesContext
         return uniqueClientIds.iterator();
     }
     
+    @Override
     public PhaseId getCurrentPhaseId()
     {
         return _currentPhaseId;
     }
 
+    @Override
     public final Iterator<FacesMessage> getMessages(final String clientId)
     {
         if (_released)
@@ -193,6 +200,7 @@ public class FacesContextImpl extends FacesContext
         return lst.iterator();
     }
 
+    @Override
     public final RenderKit getRenderKit()
     {
         if (getViewRoot() == null)
@@ -210,6 +218,7 @@ public class FacesContextImpl extends FacesContext
         return _renderKitFactory.getRenderKit(this, renderKitId);
     }
 
+    @Override
     public final boolean getRenderResponse()
     {
         if (_released)
@@ -219,6 +228,7 @@ public class FacesContextImpl extends FacesContext
         return _renderResponse;
     }
 
+    @Override
     public final boolean getResponseComplete()
     {
         if (_released)
@@ -228,6 +238,7 @@ public class FacesContextImpl extends FacesContext
         return _responseComplete;
     }
 
+    @Override
     public final void setResponseStream(final ResponseStream responseStream)
     {
         if (_released)
@@ -241,6 +252,7 @@ public class FacesContextImpl extends FacesContext
         _responseStream = responseStream;
     }
 
+    @Override
     public final ResponseStream getResponseStream()
     {
         if (_released)
@@ -250,6 +262,7 @@ public class FacesContextImpl extends FacesContext
         return _responseStream;
     }
 
+    @Override
     public final void setResponseWriter(final ResponseWriter responseWriter)
     {
         if (_released)
@@ -263,6 +276,7 @@ public class FacesContextImpl extends FacesContext
         _responseWriter = responseWriter;
     }
 
+    @Override
     public final ResponseWriter getResponseWriter()
     {
         if (_released)
@@ -272,6 +286,7 @@ public class FacesContextImpl extends FacesContext
         return _responseWriter;
     }
 
+    @Override
     public final void setViewRoot(final UIViewRoot viewRoot)
     {
         if (_released)
@@ -285,6 +300,7 @@ public class FacesContextImpl extends FacesContext
         _viewRoot = viewRoot;
     }
 
+    @Override
     public final UIViewRoot getViewRoot()
     {
         if (_released)
@@ -294,6 +310,7 @@ public class FacesContextImpl extends FacesContext
         return _viewRoot;
     }
 
+    @Override
     public final void addMessage(final String clientId, final FacesMessage message)
     {
         if (_released)
@@ -326,6 +343,7 @@ public class FacesContextImpl extends FacesContext
         }
     }
 
+    @Override
     public final void release()
     {
         if (_released)
@@ -349,6 +367,7 @@ public class FacesContextImpl extends FacesContext
         FacesContext.setCurrentInstance(null);
     }
 
+    @Override
     public final void renderResponse()
     {
         if (_released)
@@ -358,6 +377,7 @@ public class FacesContextImpl extends FacesContext
         _renderResponse = true;
     }
 
+    @Override
     public final void responseComplete()
     {
         if (_released)
@@ -367,6 +387,7 @@ public class FacesContextImpl extends FacesContext
         _responseComplete = true;
     }
     
+    @Override
     public void setCurrentPhaseId(PhaseId currentPhaseId)
     {
         _currentPhaseId = currentPhaseId;
@@ -380,6 +401,7 @@ public class FacesContextImpl extends FacesContext
         FacesContext.setCurrentInstance(this); // TODO: figure out if I really need to do this
     }
 
+    @Override
     public final ELContext getELContext()
     {
         if (_elContext != null)

@@ -28,10 +28,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The util methods in this class are shared between the javax.faces.component package and
- * the org.apache.myfaces.renderkit package.
- * Please note: Any changes here must also apply to the class in the other package!
- *
+ * The util methods in this class are shared between the javax.faces.component package and the
+ * org.apache.myfaces.renderkit package. Please note: Any changes here must also apply to the class in the other
+ * package!
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -44,16 +44,20 @@ class _SharedRendererUtils
         // If you change something here please do the same in the other class!
 
         Converter converter = component.getConverter();
-        if (converter != null) return converter;
+        if (converter != null)
+            return converter;
 
-        //Try to find out by value expression
+        // Try to find out by value expression
         ValueExpression expression = component.getValueExpression("value");
-        if (expression == null) return null;
+        if (expression == null)
+            return null;
 
-        Class valueType = expression.getType(facesContext.getELContext());
-        if (valueType == null) return null;
+        Class<?> valueType = expression.getType(facesContext.getELContext());
+        if (valueType == null)
+            return null;
 
-        if (Object.class.equals(valueType)) return null;    //There is no converter for Object class
+        if (Object.class.equals(valueType))
+            return null; // There is no converter for Object class
 
         try
         {
@@ -66,29 +70,27 @@ class _SharedRendererUtils
         }
     }
 
-    static Object getConvertedUISelectManyValue(FacesContext facesContext,
-                                                UISelectMany component,
-                                                String[] submittedValue)
-            throws ConverterException
+    static Object getConvertedUISelectManyValue(FacesContext facesContext, UISelectMany component,
+                                                String[] submittedValue) throws ConverterException
     {
         // Attention!
         // This code is duplicated in jsfapi component package.
         // If you change something here please do the same in the other class!
 
-        if (submittedValue == null) throw new NullPointerException("submittedValue");
+        if (submittedValue == null)
+            throw new NullPointerException("submittedValue");
 
         ValueExpression expression = component.getValueExpression("value");
-        Class valueType = null;
-        Class arrayComponentType = null;
+        Class<?> valueType = null;
+        Class<?> arrayComponentType = null;
         if (expression != null)
         {
-            //By some strange reason vb.getType(facesContext.getELContext());
-            //does not return the same as vb.getValue(facesContext.getELContext()).getClass(),
-            //so we need to use this instead.
-            Object value = expression.getValue(facesContext.getELContext()); 
-            valueType = (value != null) ? value.getClass() :
-                expression.getType(facesContext.getELContext()) ;
-            
+            // By some strange reason vb.getType(facesContext.getELContext());
+            // does not return the same as vb.getValue(facesContext.getELContext()).getClass(),
+            // so we need to use this instead.
+            Object value = expression.getValue(facesContext.getELContext());
+            valueType = (value != null) ? value.getClass() : expression.getType(facesContext.getELContext());
+
             if (valueType != null && valueType.isArray())
             {
                 arrayComponentType = valueType.getComponentType();
@@ -109,12 +111,11 @@ class _SharedRendererUtils
             {
                 // expected type is a List
                 // --> according to javadoc of UISelectMany we assume that the element type
-                //     is java.lang.String, and copy the String array to a new List
-                int len = submittedValue.length;
-                List lst = new ArrayList(len);
-                for (int i = 0; i < len; i++)
+                // is java.lang.String, and copy the String array to a new List
+                List<String> lst = new ArrayList<String>(submittedValue.length);
+                for (String value : submittedValue)
                 {
-                    lst.add(submittedValue[i]);
+                    lst.add(value);
                 }
                 return lst;
             }
@@ -124,7 +125,8 @@ class _SharedRendererUtils
                 throw new IllegalArgumentException("ValueBinding for UISelectMany must be of type List or Array");
             }
 
-            if (Object.class.equals(arrayComponentType)) return submittedValue; //No conversion for Object class
+            if (Object.class.equals(arrayComponentType))
+                return submittedValue; // No conversion for Object class
 
             converter = facesContext.getApplication().createConverter(arrayComponentType);
 
@@ -153,12 +155,11 @@ class _SharedRendererUtils
             // ...but have no idea of expected type
             // --> so let's convert it to an Object array
             int len = submittedValue.length;
-            Object [] convertedValues = (Object []) Array.newInstance(
-                    arrayComponentType==null?Object.class:arrayComponentType,len);
+            Object[] convertedValues = (Object[])Array.newInstance(arrayComponentType == null ? Object.class
+                    : arrayComponentType, len);
             for (int i = 0; i < len; i++)
             {
-                convertedValues[i]
-                    = converter.getAsObject(facesContext, component, submittedValue[i]);
+                convertedValues[i] = converter.getAsObject(facesContext, component, submittedValue[i]);
             }
             return convertedValues;
         }
@@ -168,11 +169,10 @@ class _SharedRendererUtils
             // Curious case: According to specs we should assume, that the element type
             // of this List is java.lang.String. But there is a Converter set for this
             // component. Because the user must know what he is doing, we will convert the values.
-            int len = submittedValue.length;
-            List lst = new ArrayList(len);
-            for (int i = 0; i < len; i++)
+            List<Object> lst = new ArrayList<Object>(submittedValue.length);
+            for (String value : submittedValue)
             {
-                lst.add(converter.getAsObject(facesContext, component, submittedValue[i]));
+                lst.add(converter.getAsObject(facesContext, component, value));
             }
             return lst;
         }
@@ -184,25 +184,25 @@ class _SharedRendererUtils
 
         if (arrayComponentType.isPrimitive())
         {
-            //primitive array
+            // primitive array
             int len = submittedValue.length;
             Object convertedValues = Array.newInstance(arrayComponentType, len);
             for (int i = 0; i < len; i++)
             {
-                Array.set(convertedValues, i,
-                          converter.getAsObject(facesContext, component, submittedValue[i]));
+                Array.set(convertedValues, i, converter.getAsObject(facesContext, component, submittedValue[i]));
             }
             return convertedValues;
         }
 
-        //Object array
+        // Object array
         int len = submittedValue.length;
-        ArrayList convertedValues = new ArrayList(len);
+        ArrayList<Object> convertedValues = new ArrayList<Object>(len);
         for (int i = 0; i < len; i++)
         {
             convertedValues.add(i, converter.getAsObject(facesContext, component, submittedValue[i]));
         }
-        return convertedValues.toArray((Object[]) Array.newInstance(arrayComponentType, len));
+        
+        return convertedValues.toArray((Object[])Array.newInstance(arrayComponentType, len));
     }
 
     /**

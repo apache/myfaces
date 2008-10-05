@@ -59,6 +59,7 @@ public final class MethodExpressionToMethodBinding extends MethodBinding impleme
         return methodExpression.getExpressionString();
     }
 
+    @Override
     public Class getType(FacesContext facesContext) throws MethodNotFoundException
     {
 
@@ -72,6 +73,7 @@ public final class MethodExpressionToMethodBinding extends MethodBinding impleme
         }
     }
 
+    @Override
     public Object invoke(final FacesContext facesContext, final Object[] params) throws EvaluationException,
                                                                                 MethodNotFoundException
     {

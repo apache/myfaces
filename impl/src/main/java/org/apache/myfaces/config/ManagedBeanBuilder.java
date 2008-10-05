@@ -235,7 +235,6 @@ public class ManagedBeanBuilder
                     initializeMap(facesContext, property.getMapEntries(), (Map<Object, Object>) value);
                     break;
                 case ManagedProperty.TYPE_NULL:
-                    value = null;
                     break;
                 case ManagedProperty.TYPE_VALUE:
                     // check for correct scope of a referenced bean

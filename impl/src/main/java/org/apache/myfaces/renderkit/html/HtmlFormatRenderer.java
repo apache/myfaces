@@ -50,14 +50,17 @@ public class HtmlFormatRenderer extends HtmlRenderer
 
     private static final Object[] EMPTY_ARGS = new Object[0];
 
+    @Override
     public void encodeBegin(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
     }
 
+    @Override
     public void encodeChildren(FacesContext facescontext, UIComponent uicomponent) throws IOException
     {
     }
 
+    @Override
     public void encodeEnd(FacesContext facesContext, UIComponent component) throws IOException
     {
         RendererUtils.checkParamValidity(facesContext, component, UIOutput.class);

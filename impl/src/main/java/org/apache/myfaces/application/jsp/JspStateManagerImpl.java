@@ -151,6 +151,7 @@ public class JspStateManagerImpl extends MyfacesStateManager
         if (log.isTraceEnabled()) log.trace("New JspStateManagerImpl instance created");
     }
 
+    @Override
     protected Object getComponentStateToSave(FacesContext facesContext)
     {
         if (log.isTraceEnabled()) log.trace("Entering getComponentStateToSave");
@@ -173,6 +174,7 @@ public class JspStateManagerImpl extends MyfacesStateManager
      * tree to be recreated later, though all the components will have
      * just default values for their members.
      */
+    @Override
     protected Object getTreeStructureToSave(FacesContext facesContext)
     {
         if (log.isTraceEnabled()) log.trace("Entering getTreeStructureToSave");
@@ -193,6 +195,7 @@ public class JspStateManagerImpl extends MyfacesStateManager
      * the server) and walk the tree restoring the members of each node
      * from the saved state information.
      */
+    @Override
     protected void restoreComponentState(FacesContext facesContext,
                                          UIViewRoot uiViewRoot,
                                          String renderKitId)
@@ -274,6 +277,7 @@ public class JspStateManagerImpl extends MyfacesStateManager
     /**
      * See getTreeStructureToSave.
      */
+    @Override
     protected UIViewRoot restoreTreeStructure(FacesContext facesContext,
                                               String viewId,
                                               String renderKitId)
@@ -327,6 +331,7 @@ public class JspStateManagerImpl extends MyfacesStateManager
         return uiViewRoot;
     }
 
+    @Override
     public UIViewRoot restoreView(FacesContext facesContext, String viewId, String renderKitId)
     {
         if (log.isTraceEnabled()) log.trace("Entering restoreView - viewId: "+viewId+" ; renderKitId: "+renderKitId);
@@ -367,6 +372,7 @@ public class JspStateManagerImpl extends MyfacesStateManager
         return uiViewRoot;
     }
 
+    @Override
     public SerializedView saveSerializedView(FacesContext facesContext) throws IllegalStateException
     {
         if (log.isTraceEnabled()) log.trace("Entering saveSerializedView");
@@ -479,12 +485,10 @@ public class JspStateManagerImpl extends MyfacesStateManager
 
         buf.insert(0,intBuf.toString());
 
-        if(component!=null)
-        {
-            getPathToComponent(component.getParent(),buf);
-        }
+        getPathToComponent(component.getParent(),buf);
     }
 
+    @Override
     public void writeState(FacesContext facesContext,
                            SerializedView serializedView) throws IOException
     {
@@ -523,6 +527,7 @@ public class JspStateManagerImpl extends MyfacesStateManager
      * @param serializedView
      * @throws IOException
      */
+    @Override
     public void writeStateAsUrlParams(FacesContext facesContext,
                                       SerializedView serializedView) throws IOException
     {

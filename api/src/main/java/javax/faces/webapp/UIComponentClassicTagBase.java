@@ -41,15 +41,14 @@ import java.util.logging.Level;
  * @author Manfred Geiler
  * @author Dennis Byrne
  * @version $Revision$ $Date$
- *
+ * 
  * @since 1.2
  */
 
-public abstract class UIComponentClassicTagBase extends UIComponentTagBase
-        implements BodyTag, JspIdConsumer
+public abstract class UIComponentClassicTagBase extends UIComponentTagBase implements BodyTag, JspIdConsumer
 {
-    
-    //  do not change this w/out doing likewise in UIComponentTag
+
+    // do not change this w/out doing likewise in UIComponentTag
     private static final String COMPONENT_STACK_ATTR = "org.apache.myfaces.COMPONENT_STACK";
 
     private static final String REQUEST_FACES_CONTEXT = "org.apache.myfaces.REQUEST_FACES_CONTEXT";
@@ -91,15 +90,14 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
 
     protected abstract void setProperties(UIComponent component);
 
-    protected abstract UIComponent createComponent(FacesContext context,
-                                                   String newId) throws JspException;
+    protected abstract UIComponent createComponent(FacesContext context, String newId) throws JspException;
 
     public void release()
     {
         internalRelease();
 
-        //members, that must/need only be reset when there is no more risk, that the container
-        //wants to reuse this tag
+        // members, that must/need only be reset when there is no more risk, that the container
+        // wants to reuse this tag
         pageContext = null;
         _parent = null;
         _jspId = null;
@@ -108,12 +106,10 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         bodyContent = null;
     }
 
-
     /**
-     * Reset any members that apply to the according component instance and
-     * must not be reused if the container wants to reuse this tag instance.
-     * This method is called when rendering for this tag is finished
-     * ( doEndTag() ) or when released by the container.
+     * Reset any members that apply to the according component instance and must not be reused if the container wants to
+     * reuse this tag instance. This method is called when rendering for this tag is finished ( doEndTag() ) or when
+     * released by the container.
      */
     private void internalRelease()
     {
@@ -121,29 +117,31 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         _componentInstance = null;
         _created = false;
 
-         _childrenAdded = null;
+        _childrenAdded = null;
         _facetsAdded = null;
     }
 
     /**
      * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentClassicTagBase.html#getCreated()
      */
+    @Override
     public boolean getCreated()
     {
         return _created;
     }
 
-     protected List<String> getCreatedComponents() {
-         return _childrenAdded;
+    protected List<String> getCreatedComponents()
+    {
+        return _childrenAdded;
     }
 
     /**
-     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentClassicTagBase.html#getParentUIComponentClassicTagBase(javax.servlet.jsp.PageContext)
+     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentClassicTagBase.html#
+     *      getParentUIComponentClassicTagBase(javax.servlet.jsp.PageContext)
      * @param pageContext
      * @return
      */
-    public static UIComponentClassicTagBase getParentUIComponentClassicTagBase(
-            PageContext pageContext)
+    public static UIComponentClassicTagBase getParentUIComponentClassicTagBase(PageContext pageContext)
     {
         Stack<UIComponentClassicTagBase> stack = getStack(pageContext);
 
@@ -168,12 +166,13 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         checkIfItIsInAnIterator(jspId);
     }
 
-
     /**
      * @param child
-     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#addChild(javax.faces._componentInstance.UIComponent)
+     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#addChild(javax.faces.
+     *      _componentInstance.UIComponent)
      */
 
+    @Override
     protected void addChild(UIComponent child)
     {
         if (_childrenAdded == null)
@@ -188,6 +187,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
      * @param name
      * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#addFacet(java.lang.String)
      */
+    @Override
     protected void addFacet(String name)
     {
         if (_facetsAdded == null)
@@ -200,8 +200,10 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
 
     /**
      * Return the UIComponent instance associated with this tag.
+     * 
      * @return a UIComponent, never null.
      */
+    @Override
     public UIComponent getComponentInstance()
     {
         return _componentInstance;
@@ -212,6 +214,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
      * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#getFacesContext()
      */
 
+    @Override
     protected FacesContext getFacesContext()
     {
         if (_facesContext != null)
@@ -219,7 +222,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
             return _facesContext;
         }
 
-        _facesContext = pageContext == null ? null : (FacesContext) pageContext.getAttribute(REQUEST_FACES_CONTEXT);
+        _facesContext = pageContext == null ? null : (FacesContext)pageContext.getAttribute(REQUEST_FACES_CONTEXT);
 
         if (_facesContext != null)
         {
@@ -230,7 +233,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
 
         if (_facesContext != null)
         {
-            if(pageContext != null)
+            if (pageContext != null)
             {
                 pageContext.setAttribute(REQUEST_FACES_CONTEXT, _facesContext);
             }
@@ -246,6 +249,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
      * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#getIndexOfNextChildTag()
      */
 
+    @Override
     protected int getIndexOfNextChildTag()
     {
         if (_childrenAdded == null)
@@ -260,11 +264,12 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
      * @param id
      * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#setId(java.lang.String)
      */
+    @Override
     public void setId(String id)
     {
         if (id != null && id.startsWith(UIViewRoot.UNIQUE_ID_PREFIX))
         {
-            throw new IllegalArgumentException("Id is non-null and starts with UIViewRoot.UNIQUE_ID_PREFIX: "+id);
+            throw new IllegalArgumentException("Id is non-null and starts with UIViewRoot.UNIQUE_ID_PREFIX: " + id);
         }
 
         _id = id;
@@ -278,14 +283,16 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         return _id;
     }
 
-    protected String getFacesJspId() {
+    protected String getFacesJspId()
+    {
         if (_facesJspId == null)
         {
             if (_jspId != null)
             {
                 _facesJspId = UNIQUE_ID_PREFIX + _jspId;
 
-                if (isIdDuplicated(_facesJspId)) {
+                if (isIdDuplicated(_facesJspId))
+                {
                     _facesJspId = createNextId(_facesJspId);
                 }
             }
@@ -308,6 +315,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         // nothing by default
     }
 
+    @SuppressWarnings("unchecked")
     public int doAfterBody() throws JspException
     {
         UIComponentClassicTagBase parentTag = getParentUIComponentClassicTagBase(pageContext);
@@ -318,8 +326,8 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
 
             if (verbatimComp != null)
             {
-                List<String> childrenAddedIds = (List<String>)
-                  _componentInstance.getAttributes().get(FORMER_CHILD_IDS_SET_ATTR);
+                List<String> childrenAddedIds =
+                        (List<String>)_componentInstance.getAttributes().get(FORMER_CHILD_IDS_SET_ATTR);
 
                 if (childrenAddedIds == null)
                 {
@@ -331,7 +339,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
                     if (childrenAddedIds.size() == index)
                     {
                         // verbatim already present, replace it
-                        _componentInstance.getChildren().add(index-1, verbatimComp);
+                        _componentInstance.getChildren().add(index - 1, verbatimComp);
                     }
                     else
                     {
@@ -340,7 +348,8 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
                 }
 
                 // also tell the parent-tag about the new component instance
-                if(parentTag!=null) {
+                if (parentTag != null)
+                {
                     parentTag.addChild(verbatimComp);
                 }
             }
@@ -350,9 +359,8 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     }
 
     /**
-     * Standard method invoked by the JSP framework to inform this tag
-     * of the PageContext associated with the jsp page currently being
-     * processed.
+     * Standard method invoked by the JSP framework to inform this tag of the PageContext associated with the jsp page
+     * currently being processed.
      */
     public void setPageContext(PageContext pageContext)
     {
@@ -360,8 +368,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     }
 
     /**
-     * Returns the enclosing JSP tag object. Note that this is not
-     * necessarily a JSF tag.
+     * Returns the enclosing JSP tag object. Note that this is not necessarily a JSF tag.
      */
     public Tag getParent()
     {
@@ -369,8 +376,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     }
 
     /**
-     * Standard method invoked by the JSP framework to inform this tag
-     * of the enclosing JSP tag object.
+     * Standard method invoked by the JSP framework to inform this tag of the enclosing JSP tag object.
      */
     public void setParent(Tag tag)
     {
@@ -439,13 +445,14 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
             addVerbatimBeforeComponent(_parentClassicTag, verbatimComp, _componentInstance);
         }
 
-        Map<String,Object> viewComponentIds = getViewComponentIds();
+        Map<String, Object> viewComponentIds = getViewComponentIds();
 
         // check that the instance returned by the client ID for the viewComponentIds
         // is the same like this one, so we do not perform again the check for duplicated ids
         Object tagInstance = null;
         String clientId = null;
-        if (_id != null) {
+        if (_id != null)
+        {
             clientId = _componentInstance.getClientId(_facesContext);
             tagInstance = (viewComponentIds.get(clientId) == this) ? this : null;
         }
@@ -459,8 +466,8 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
                 {
                     if (viewComponentIds.containsKey(clientId))
                     {
-                        throw new JspException("Duplicated component Id: '"+clientId+"' " +
-                                "for component: '"+getPathToComponent(_componentInstance)+"'.");
+                        throw new JspException("Duplicated component Id: '" + clientId + "' " + "for component: '"
+                                + getPathToComponent(_componentInstance) + "'.");
                     }
 
                     viewComponentIds.put(clientId, this);
@@ -476,7 +483,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
                 }
                 else
                 {
-                     _parentClassicTag.addChild(_componentInstance);
+                    _parentClassicTag.addChild(_componentInstance);
                 }
             }
         }
@@ -497,12 +504,11 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
 
         try
         {
-            UIComponentClassicTagBase parentTag =
-                    getParentUIComponentClassicTagBase(pageContext);
+            UIComponentClassicTagBase parentTag = getParentUIComponentClassicTagBase(pageContext);
 
             UIComponent verbatimComp = createVerbatimComponentFromBodyContent();
 
-             if (verbatimComp != null)
+            if (verbatimComp != null)
             {
                 component.getChildren().add(verbatimComp);
 
@@ -528,37 +534,36 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         return retValue;
     }
 
-    protected int getDoAfterBodyValue() throws javax.servlet.jsp.JspException
+    /**
+     * @throws JspException  
+     */
+    protected int getDoAfterBodyValue() throws JspException
     {
         return SKIP_BODY;
     }
 
     /**
-     * Get the value to be returned by the doStartTag method to the
-     * JSP framework. Subclasses which wish to use the inherited
-     * doStartTag but control whether the tag is permitted to contain
-     * nested tags or not can just override this method to return
-     * Tag.SOME_CONSTANT.
-     *
+     * Get the value to be returned by the doStartTag method to the JSP framework. Subclasses which wish to use the
+     * inherited doStartTag but control whether the tag is permitted to contain nested tags or not can just override
+     * this method to return Tag.SOME_CONSTANT.
+     * 
      * @return BodyTag.EVAL_BODY_BUFFERED
+     * @throws JspException 
      */
-    protected int getDoStartValue()
-            throws JspException
+    protected int getDoStartValue() throws JspException
     {
         return BodyTag.EVAL_BODY_BUFFERED;
     }
 
     /**
-     * Get the value to be returned by the doEndTag method to the
-     * JSP framework. Subclasses which wish to use the inherited
-     * doEndTag but control whether the tag is permitted to contain
-     * nested tags or not can just override this method to return
-     * Tag.SOME_CONSTANT.
-     *
+     * Get the value to be returned by the doEndTag method to the JSP framework. Subclasses which wish to use the
+     * inherited doEndTag but control whether the tag is permitted to contain nested tags or not can just override this
+     * method to return Tag.SOME_CONSTANT.
+     * 
      * @return Tag.EVAL_PAGE
+     * @throws JspException 
      */
-    protected int getDoEndValue()
-            throws JspException
+    protected int getDoEndValue() throws JspException
     {
         return Tag.EVAL_PAGE;
     }
@@ -567,7 +572,6 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     {
         return isFacet() ? ((FacetTag)_parent).getName() : null;
     }
-
 
     /**
      * Creates a UIComponent from the BodyContent
@@ -602,22 +606,30 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     }
 
     /**
-     * <p>Creates a transient UIOutput using the Application, with the following characteristics:</p>
+     * <p>
+     * Creates a transient UIOutput using the Application, with the following characteristics:
+     * </p>
      * <p/>
-     * <p><code>componentType</code> is
-     * <code>javax.faces.HtmlOutputText</code>.</p>
+     * <p>
+     * <code>componentType</code> is <code>javax.faces.HtmlOutputText</code>.
+     * </p>
      * <p/>
-     * <p><code>transient</code> is <code>true</code>.</p>
+     * <p>
+     * <code>transient</code> is <code>true</code>.
+     * </p>
      * <p/>
-     * <p><code>escape</code> is <code>false</code>.</p>
+     * <p>
+     * <code>escape</code> is <code>false</code>.
+     * </p>
      * <p/>
-     * <p><code>id</code> is
-     * <code>FacesContext.getViewRoot().createUniqueId()</code></p>
+     * <p>
+     * <code>id</code> is <code>FacesContext.getViewRoot().createUniqueId()</code>
+     * </p>
      */
     protected UIOutput createVerbatimComponent()
     {
-        UIOutput verbatimComp = (UIOutput) getFacesContext().getApplication()
-                .createComponent("javax.faces.HtmlOutputText");
+        UIOutput verbatimComp =
+                (UIOutput)getFacesContext().getApplication().createComponent("javax.faces.HtmlOutputText");
         verbatimComp.setTransient(true);
         verbatimComp.getAttributes().put("escape", Boolean.FALSE);
         verbatimComp.setId(getFacesContext().getViewRoot().createUniqueId());
@@ -625,10 +637,9 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         return verbatimComp;
     }
 
-    protected void addVerbatimBeforeComponent(
-            UIComponentClassicTagBase parentTag,
-            UIComponent verbatimComp,
-            UIComponent component)
+    @SuppressWarnings("unchecked")
+    protected void addVerbatimBeforeComponent(UIComponentClassicTagBase parentTag, UIComponent verbatimComp,
+                                              UIComponent component)
     {
         UIComponent parent = component.getParent();
 
@@ -642,29 +653,27 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         // Consider CASE 1 or 2 where the _componentInstance is provided via a
         // _componentInstance binding in session or application scope.
         // The automatically created UIOuput instances for the template text
-        // will already be present.  Check the JSP_CREATED_COMPONENT_IDS attribute,
+        // will already be present. Check the JSP_CREATED_COMPONENT_IDS attribute,
         // if present and the number of created components is the same
         // as the number of children replace at a -1 offset from the current
         // value of indexOfComponentInParent, otherwise, call add()
 
-        List<String> childrenAddedIds = (List<String>)
-                parent.getAttributes().get(FORMER_CHILD_IDS_SET_ATTR);
-
+        List<String> childrenAddedIds = (List<String>)parent.getAttributes().get(FORMER_CHILD_IDS_SET_ATTR);
 
         int parentIndex = children.indexOf(component);
 
-         if (childrenAddedIds != null)
-         {
-             if (parentIndex > 0 && childrenAddedIds.size() == parentIndex)
-             {
-                 UIComponent formerVerbatim = children.get(parentIndex - 1);
+        if (childrenAddedIds != null)
+        {
+            if (parentIndex > 0 && childrenAddedIds.size() == parentIndex)
+            {
+                UIComponent formerVerbatim = children.get(parentIndex - 1);
 
-                 if (formerVerbatim instanceof UIOutput && formerVerbatim.isTransient())
-                 {
-                     children.set(parentIndex - 1, verbatimComp);
-                 }
-             }
-         }
+                if (formerVerbatim instanceof UIOutput && formerVerbatim.isTransient())
+                {
+                    children.set(parentIndex - 1, verbatimComp);
+                }
+            }
+        }
 
         children.add(parentIndex, verbatimComp);
 
@@ -672,23 +681,22 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     }
 
     /**
-     * <p>Add <i>verbatim</i> as a sibling of <i>_componentInstance</i> in
-     * <i>_componentInstance</i> in the parent's child list.  <i>verbatim</i> is
-     * added to the list at the position immediatly following
-     * <i>_componentInstance</i>.</p>
+     * <p>
+     * Add <i>verbatim</i> as a sibling of <i>_componentInstance</i> in <i>_componentInstance</i> in the parent's child
+     * list. <i>verbatim</i> is added to the list at the position immediatly following <i>_componentInstance</i>.
+     * </p>
      */
 
-    protected void addVerbatimAfterComponent(UIComponentClassicTagBase parentTag,
-                                             UIComponent verbatim,
+    protected void addVerbatimAfterComponent(UIComponentClassicTagBase parentTag, UIComponent verbatim,
                                              UIComponent component)
     {
         int indexOfComponentInParent = 0;
         UIComponent parent = component.getParent();
 
-        // invert the order of this if and the assignment below.  Since this line is
+        // invert the order of this if and the assignment below. Since this line is
         // here, it appears an early return is acceptable/desired if parent is null,
         // and, if it is null, we should probably check for that before we try to
-        // access it.  2006-03-15 jdl
+        // access it. 2006-03-15 jdl
         if (null == parent)
         {
             return;
@@ -707,19 +715,18 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     }
 
     /**
-     * @deprecated the ResponseWriter is now set by {@link
-     * javax.faces.application.ViewHandler#renderView}
+     * @deprecated the ResponseWriter is now set by {@link javax.faces.application.ViewHandler#renderView}
      */
-    protected void setupResponseWriter() {
+    @Deprecated
+    protected void setupResponseWriter()
+    {
     }
 
     /**
-     * Invoke encodeBegin on the associated UIComponent. Subclasses can
-     * override this method to perform custom processing before or after
-     * the UIComponent method invocation.
+     * Invoke encodeBegin on the associated UIComponent. Subclasses can override this method to perform custom
+     * processing before or after the UIComponent method invocation.
      */
-    protected void encodeBegin()
-            throws IOException
+    protected void encodeBegin() throws IOException
     {
         if (log.isLoggable(Level.FINE))
             log.fine("Entered encodeBegin for client-Id: " + _componentInstance.getClientId(getFacesContext()));
@@ -729,13 +736,11 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     }
 
     /**
-     * Invoke encodeChildren on the associated UIComponent. Subclasses can
-     * override this method to perform custom processing before or after
-     * the UIComponent method invocation. This is only invoked for components
-     * whose getRendersChildren method returns true.
+     * Invoke encodeChildren on the associated UIComponent. Subclasses can override this method to perform custom
+     * processing before or after the UIComponent method invocation. This is only invoked for components whose
+     * getRendersChildren method returns true.
      */
-    protected void encodeChildren()
-            throws IOException
+    protected void encodeChildren() throws IOException
     {
         if (log.isLoggable(Level.FINE))
             log.fine("Entered encodeChildren for client-Id: " + _componentInstance.getClientId(getFacesContext()));
@@ -745,12 +750,10 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     }
 
     /**
-     * Invoke encodeEnd on the associated UIComponent. Subclasses can override this
-     * method to perform custom processing before or after the UIComponent method
-     * invocation.
+     * Invoke encodeEnd on the associated UIComponent. Subclasses can override this method to perform custom processing
+     * before or after the UIComponent method invocation.
      */
-    protected void encodeEnd()
-            throws IOException
+    protected void encodeEnd() throws IOException
     {
         if (log.isLoggable(Level.FINE))
             log.fine("Entered encodeEnd for client-Id: " + _componentInstance.getClientId(getFacesContext()));
@@ -760,14 +763,12 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
 
     }
 
-
-
     private boolean isRootTag(UIComponentClassicTagBase parentTag)
     {
         return (parentTag == this);
     }
 
-    private boolean isInRenderedChildrenComponent (UIComponentClassicTagBase tag)
+    private boolean isInRenderedChildrenComponent(UIComponentClassicTagBase tag)
     {
         return (_parentClassicTag != null && tag.getComponentInstance().getRendersChildren());
     }
@@ -778,7 +779,8 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     }
 
     /** Map of <ID,Tag> in the view */
-    private Map<String,Object> getViewComponentIds()
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> getViewComponentIds()
     {
         Map<String, Object> requestMap = _facesContext.getExternalContext().getRequestMap();
         Map<String, Object> viewComponentIds;
@@ -786,49 +788,46 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         if (_parent == null)
         {
             // top level _componentInstance
-            viewComponentIds = new HashMap<String,Object>();
+            viewComponentIds = new HashMap<String, Object>();
             requestMap.put(VIEW_IDS, viewComponentIds);
         }
         else
         {
-            viewComponentIds = (Map<String, Object>) requestMap.get(VIEW_IDS);
+            viewComponentIds = (Map<String, Object>)requestMap.get(VIEW_IDS);
         }
 
         return viewComponentIds;
     }
 
-
+    @SuppressWarnings("unchecked")
     private static final Stack<UIComponentClassicTagBase> getStack(PageContext pageContext)
     {
-        Stack<UIComponentClassicTagBase> stack = (Stack<UIComponentClassicTagBase>) pageContext.getAttribute(COMPONENT_STACK_ATTR,
-                PageContext.REQUEST_SCOPE);
+        Stack<UIComponentClassicTagBase> stack =
+                (Stack<UIComponentClassicTagBase>)pageContext.getAttribute(COMPONENT_STACK_ATTR,
+                    PageContext.REQUEST_SCOPE);
 
         if (stack == null)
         {
             stack = new Stack<UIComponentClassicTagBase>();
-            pageContext.setAttribute(COMPONENT_STACK_ATTR,
-                    stack, PageContext.REQUEST_SCOPE);
+            pageContext.setAttribute(COMPONENT_STACK_ATTR, stack, PageContext.REQUEST_SCOPE);
         }
 
         return stack;
     }
 
     /**
-     * The pageContext's request scope map is used to hold a stack of
-     * JSP tag objects seen so far, so that a new tag can find the
-     * parent tag that encloses it. Access to the parent tag is used
-     * to find the parent UIComponent for the component associated
-     * with this tag plus some other uses.
+     * The pageContext's request scope map is used to hold a stack of JSP tag objects seen so far, so that a new tag can
+     * find the parent tag that encloses it. Access to the parent tag is used to find the parent UIComponent for the
+     * component associated with this tag plus some other uses.
      */
     private void popTag()
     {
         Stack<UIComponentClassicTagBase> stack = getStack(pageContext);
 
         int size = stack.size();
-        stack.remove(size -1);
+        stack.remove(size - 1);
         if (size <= 1)
-            pageContext.removeAttribute(COMPONENT_STACK_ATTR,
-                                         PageContext.REQUEST_SCOPE);
+            pageContext.removeAttribute(COMPONENT_STACK_ATTR, PageContext.REQUEST_SCOPE);
 
     }
 
@@ -837,26 +836,26 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         getStack(pageContext).add(this);
     }
 
-    private boolean isIncludedOrForwarded() {
-        return getFacesContext().getExternalContext().getRequestMap().
-                containsKey("javax.servlet.include.request_uri");
+    private boolean isIncludedOrForwarded()
+    {
+        return getFacesContext().getExternalContext().getRequestMap().containsKey("javax.servlet.include.request_uri");
     }
 
-     /** Generate diagnostic output. */
+    /** Generate diagnostic output. */
     private String getPathToComponent(UIComponent component)
     {
         StringBuffer buf = new StringBuffer();
 
-        if(component == null)
+        if (component == null)
         {
             buf.append("{Component-Path : ");
             buf.append("[null]}");
             return buf.toString();
         }
 
-        getPathToComponent(component,buf);
+        getPathToComponent(component, buf);
 
-        buf.insert(0,"{Component-Path : ");
+        buf.insert(0, "{Component-Path : ");
         buf.append("}");
 
         return buf.toString();
@@ -865,17 +864,17 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     /** Generate diagnostic output. */
     private static void getPathToComponent(UIComponent component, StringBuffer buf)
     {
-        if(component == null)
+        if (component == null)
             return;
 
         StringBuffer intBuf = new StringBuffer();
 
         intBuf.append("[Class: ");
         intBuf.append(component.getClass().getName());
-        if(component instanceof UIViewRoot)
+        if (component instanceof UIViewRoot)
         {
             intBuf.append(",ViewId: ");
-            intBuf.append(((UIViewRoot) component).getViewId());
+            intBuf.append(((UIViewRoot)component).getViewId());
         }
         else
         {
@@ -884,22 +883,19 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         }
         intBuf.append("]");
 
-        buf.insert(0,intBuf);
+        buf.insert(0, intBuf);
 
-        getPathToComponent(component.getParent(),buf);
+        getPathToComponent(component.getParent(), buf);
     }
 
     /**
-     * Remove any child components of the associated components which do not
-     * have corresponding tags as children of this tag. This only happens
-     * when a view is being re-rendered and there are components in the view
-     * tree which don't have corresponding JSP tags. Wrapping JSF tags in
-     * JSTL "c:if" statements is one way this can happen.
-     * <br />
-     * Attention: programmatically added components are are not affected by this:
-     * they will not be on the old list of created components nor on the new list
-     * of created components, so nothing will happen to them.
+     * Remove any child components of the associated components which do not have corresponding tags as children of this
+     * tag. This only happens when a view is being re-rendered and there are components in the view tree which don't
+     * have corresponding JSP tags. Wrapping JSF tags in JSTL "c:if" statements is one way this can happen. <br />
+     * Attention: programmatically added components are are not affected by this: they will not be on the old list of
+     * created components nor on the new list of created components, so nothing will happen to them.
      */
+    @SuppressWarnings("unchecked")
     private void removeFormerChildren(UIComponent component)
     {
         List<String> formerChildIds = (List<String>)component.getAttributes().get(FORMER_CHILD_IDS_SET_ATTR);
@@ -935,6 +931,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     }
 
     /** See removeFormerChildren. */
+    @SuppressWarnings("unchecked")
     private void removeFormerFacets(UIComponent component)
     {
         List<String> formerFacetNames = (List<String>)component.getAttributes().get(FORMER_FACET_NAMES_SET_ATTR);
@@ -942,7 +939,8 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         {
             for (String facetName : formerFacetNames)
             {
-                if (_facetsAdded == null || !_facetsAdded.contains(facetName)) {
+                if (_facetsAdded == null || !_facetsAdded.contains(facetName))
+                {
                     component.getFacets().remove(facetName);
                 }
             }
@@ -965,33 +963,25 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     }
 
     /**
-     * Return the corresponding UIComponent for this tag, creating it
-     * if necessary.
+     * Return the corresponding UIComponent for this tag, creating it if necessary.
      * <p>
-     * If this is not the first time this method has been called, then
-     * return the cached _componentInstance instance found last time.
+     * If this is not the first time this method has been called, then return the cached _componentInstance instance
+     * found last time.
      * <p>
-     * If this is not the first time this view has been seen, then
-     * locate the existing _componentInstance using the id attribute assigned
-     * to this tag and return it. Note that this is simple for
-     * components with user-assigned ids. For components with
-     * generated ids, the "reattachment" relies on the fact that
-     * UIViewRoot will generate the same id values for tags in
-     * this page as it did when first generating the view. For this
-     * reason all JSF tags within a JSTL "c:if" are required to have
-     * explicitly-assigned ids.
+     * If this is not the first time this view has been seen, then locate the existing _componentInstance using the id
+     * attribute assigned to this tag and return it. Note that this is simple for components with user-assigned ids. For
+     * components with generated ids, the "reattachment" relies on the fact that UIViewRoot will generate the same id
+     * values for tags in this page as it did when first generating the view. For this reason all JSF tags within a JSTL
+     * "c:if" are required to have explicitly-assigned ids.
      * <p>
-     * Otherwise create the _componentInstance, populate its properties from
-     * the xml attributes on this JSP tag and attach it to its parent.
+     * Otherwise create the _componentInstance, populate its properties from the xml attributes on this JSP tag and
+     * attach it to its parent.
      * <p>
-     * When a _componentInstance is found or created the parent JSP tag is also
-     * told that the _componentInstance has been "seen". When the parent tag
-     * ends it will delete any components which were in the view
-     * previously but have not been seen this time; see doEndTag for
-     * more details.
+     * When a _componentInstance is found or created the parent JSP tag is also told that the _componentInstance has
+     * been "seen". When the parent tag ends it will delete any components which were in the view previously but have
+     * not been seen this time; see doEndTag for more details.
      */
-    protected UIComponent findComponent(FacesContext context)
-            throws JspException
+    protected UIComponent findComponent(FacesContext context) throws JspException
     {
         // 1. If we have previously located this component, return it.
         if (_componentInstance != null)
@@ -1053,7 +1043,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         String facetName = getFacetName();
         if (facetName != null)
         {
-            //Facet
+            // Facet
             String id = createUniqueId(context, parent);
             _componentInstance = parent.getFacet(facetName);
             if (_componentInstance == null)
@@ -1066,8 +1056,10 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
             {
                 if (checkFacetNameOnParentExists(parentTag, facetName))
                 {
-                    throw new IllegalStateException("facet '" + facetName + "' already has a child associated. current associated _componentInstance id: "
-                            + _componentInstance.getClientId(context) + " class: " + _componentInstance.getClass().getName());
+                    throw new IllegalStateException("facet '" + facetName
+                            + "' already has a child associated. current associated _componentInstance id: "
+                            + _componentInstance.getClientId(context) + " class: "
+                            + _componentInstance.getClass().getName());
                 }
             }
 
@@ -1075,7 +1067,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
             return _componentInstance;
         }
 
-        //Child
+        // Child
         //
         // Note that setProperties is called only when we create the
         // _componentInstance; on later passes, the attributes defined on the
@@ -1092,13 +1084,13 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         // It would also be reasonable to throw an exception here rather than
         // just issue a warning as this is a pretty serious problem. However the
         // Sun RI just issues a warning...
-        if(parentTag._childrenAdded != null && parentTag._childrenAdded.contains(id))
+        if (parentTag._childrenAdded != null && parentTag._childrenAdded.contains(id))
         {
-            if(log.isLoggable(Level.WARNING))
+            if (log.isLoggable(Level.WARNING))
                 log.warning("There is more than one JSF tag with an id : " + id);
         }
 
-        _componentInstance = findComponent(parent,id);
+        _componentInstance = findComponent(parent, id);
         if (_componentInstance == null)
         {
             _componentInstance = createComponent(context, id);
@@ -1119,23 +1111,18 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
 
     private UIComponent findComponent(UIComponent parent, String id)
     {
-        List li = parent.getChildren();
-
-        for (int i = 0; i < li.size(); i++)
+        for (UIComponent child : parent.getChildren())
         {
-            UIComponent uiComponent = (UIComponent) li.get(i);
-            if(uiComponent.getId()!=null && uiComponent.getId().equals(id))
+            if (child.getId() != null && child.getId().equals(id))
             {
-                return uiComponent;
+                return child;
             }
         }
 
         return null;
     }
 
-
-    private String createUniqueId(FacesContext context, UIComponent parent)
-            throws JspException
+    private String createUniqueId(FacesContext context, UIComponent parent) throws JspException
     {
         String id = getId();
         if (id == null)
@@ -1146,7 +1133,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         {
             if (isInAnIterator)
             {
-                setId(createNextId(id));              
+                setId(createNextId(id));
                 id = getId();
             }
             else
@@ -1185,7 +1172,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
 
     private String createNextId(String componentId)
     {
-        Integer currentCounter = (Integer) getFacesContext().getExternalContext().getRequestMap().get(componentId);
+        Integer currentCounter = (Integer)getFacesContext().getExternalContext().getRequestMap().get(componentId);
 
         int iCurrentCounter = 1;
 
@@ -1203,12 +1190,12 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         }
         else
         {
-            componentId = componentId + UNIQUE_ID_PREFIX + iCurrentCounter;            
+            componentId = componentId + UNIQUE_ID_PREFIX + iCurrentCounter;
         }
 
         return componentId;
     }
-        
+
     private void checkIfItIsInAnIterator(String jspId)
     {
         Set<String> previousJspIdsSet = getPreviousJspIdsSet();
@@ -1224,18 +1211,18 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         }
     }
 
+    @SuppressWarnings("unchecked")
     private Set<String> getPreviousJspIdsSet()
     {
-        Set<String> previousJspIdsSet = (Set<String>) getFacesContext().getExternalContext()
-                .getRequestMap().get(PREVIOUS_JSP_IDS_SET);
+        Set<String> previousJspIdsSet =
+                (Set<String>)getFacesContext().getExternalContext().getRequestMap().get(PREVIOUS_JSP_IDS_SET);
 
         if (previousJspIdsSet == null)
         {
             previousJspIdsSet = new HashSet<String>();
-            //Add it to the context! The next time is called
-            //this method it takes the ref from the RequestContext
-            getFacesContext().getExternalContext().getRequestMap()
-                .put(PREVIOUS_JSP_IDS_SET, previousJspIdsSet);
+            // Add it to the context! The next time is called
+            // this method it takes the ref from the RequestContext
+            getFacesContext().getExternalContext().getRequestMap().put(PREVIOUS_JSP_IDS_SET, previousJspIdsSet);
         }
 
         return previousJspIdsSet;
@@ -1250,7 +1237,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
             {
                 return true;
             }
-            List childComponents = _parentClassicTag.getCreatedComponents();
+            List<String> childComponents = _parentClassicTag.getCreatedComponents();
 
             if (childComponents != null)
             {
@@ -1267,10 +1254,9 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
 
     private boolean isPostBack(FacesContext facesContext)
     {
-        return facesContext.getExternalContext().getRequestParameterMap().
-              containsKey(ResponseStateManager.VIEW_STATE_PARAM);
+        return facesContext.getExternalContext().getRequestParameterMap().containsKey(
+            ResponseStateManager.VIEW_STATE_PARAM);
     }
-
 
     /**
      * check if the facet is already added to the parent
@@ -1281,9 +1267,8 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     }
 
     /**
-     * Notify the enclosing JSP tag of the id of this facet's id. The parent
-     * tag will later delete any existing view facets that were not seen
-     * during this rendering phase; see doEndTag for details.
+     * Notify the enclosing JSP tag of the id of this facet's id. The parent tag will later delete any existing view
+     * facets that were not seen during this rendering phase; see doEndTag for details.
      */
     private void addFacetNameToParentTag(UIComponentClassicTagBase parentTag, String facetName)
     {
@@ -1296,7 +1281,8 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
 
     protected abstract boolean hasBinding();
 
-    public JspWriter getPreviousOut() {
+    public JspWriter getPreviousOut()
+    {
         return bodyContent.getEnclosingWriter();
     }
 }

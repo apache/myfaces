@@ -33,17 +33,18 @@ import javax.servlet.jsp.tagext.BodyContent;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-@JSFJspTag(name="f:verbatim",bodyContent="JSP")
-public class VerbatimTag
-        extends UIComponentELTagBase
+@JSFJspTag(name = "f:verbatim", bodyContent = "JSP")
+public class VerbatimTag extends UIComponentELTagBase
 {
-    //private static final Log log = LogFactory.getLog(VerbatimTag.class);
+    // private static final Log log = LogFactory.getLog(VerbatimTag.class);
 
+    @Override
     public String getComponentType()
     {
         return "javax.faces.Output";
     }
 
+    @Override
     public String getRendererType()
     {
         return "javax.faces.Text";
@@ -53,6 +54,7 @@ public class VerbatimTag
     private ValueExpression _escape;
     private ValueExpression _rendered;
 
+    @Override
     protected void setProperties(UIComponent component)
     {
         super.setProperties(component);
@@ -60,34 +62,31 @@ public class VerbatimTag
         setBooleanProperty(component, JSFAttr.ESCAPE_ATTR, _escape, Boolean.FALSE);
         setBooleanProperty(component, JSFAttr.RENDERED, _rendered, Boolean.TRUE);
 
-        //No need to save component state
+        // No need to save component state
         component.setTransient(true);
     }
 
     /**
-     * If true, generated markup is escaped.  Default:  false.
+     * If true, generated markup is escaped. Default: false.
      */
-    @JSFJspAttribute(
-            rtexprvalue=true,
-            className="java.lang.Boolean")
+    @JSFJspAttribute(rtexprvalue = true, className = "java.lang.Boolean")
     public void setEscape(ValueExpression escape)
     {
         _escape = escape;
     }
 
     /**
-     * Flag indicating whether or not this component should be rendered
-     * (during Render Response Phase), or processed on any subsequent
-     * form submit.  The default value for this property is true.
+     * Flag indicating whether or not this component should be rendered (during Render Response Phase), or processed on
+     * any subsequent form submit. The default value for this property is true.
      */
-    @JSFJspAttribute(
-            rtexprvalue=true,
-            className="java.lang.Boolean")
+    @Override
+    @JSFJspAttribute(rtexprvalue = true, className = "java.lang.Boolean")
     public void setRendered(ValueExpression rendered)
     {
         _rendered = rendered;
     }
-    
+
+    @Override
     public int doAfterBody() throws JspException
     {
         BodyContent bodyContent = getBodyContent();

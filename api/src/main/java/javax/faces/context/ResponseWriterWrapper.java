@@ -25,79 +25,111 @@ import java.io.Writer;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Stan Silvert
  */
-public abstract class ResponseWriterWrapper extends ResponseWriter {
-    
+public abstract class ResponseWriterWrapper extends ResponseWriter
+{
+
     protected abstract ResponseWriter getWrapped();
 
-    public void endElement(String name) throws IOException {
+    @Override
+    public void endElement(String name) throws IOException
+    {
         getWrapped().endElement(name);
     }
 
-    public void writeComment(Object comment) throws IOException {
+    @Override
+    public void writeComment(Object comment) throws IOException
+    {
         getWrapped().writeComment(comment);
     }
 
-    public void startElement(String name, UIComponent component) throws IOException {
+    @Override
+    public void startElement(String name, UIComponent component) throws IOException
+    {
         getWrapped().startElement(name, component);
     }
 
-    public void writeText(Object text, String property) throws IOException {
+    @Override
+    public void writeText(Object text, String property) throws IOException
+    {
         getWrapped().writeText(text, property);
     }
 
-    public void writeText(char[] text, int off, int len) throws IOException {
+    @Override
+    public void writeText(char[] text, int off, int len) throws IOException
+    {
         getWrapped().writeText(text, off, len);
     }
 
-    public void write(char[] cbuf, int off, int len) throws IOException {
+    @Override
+    public void write(char[] cbuf, int off, int len) throws IOException
+    {
         getWrapped().write(cbuf, off, len);
     }
 
-    public ResponseWriter cloneWithWriter(Writer writer) {
+    @Override
+    public ResponseWriter cloneWithWriter(Writer writer)
+    {
         return getWrapped().cloneWithWriter(writer);
     }
 
-    public void writeURIAttribute(String name, Object value, String property) throws IOException {
-        getWrapped().writeURIAttribute(name, value,property);
+    @Override
+    public void writeURIAttribute(String name, Object value, String property) throws IOException
+    {
+        getWrapped().writeURIAttribute(name, value, property);
     }
 
-    public void close() throws IOException {
+    @Override
+    public void close() throws IOException
+    {
         getWrapped().close();
     }
 
-    public void endDocument() throws IOException {
+    @Override
+    public void endDocument() throws IOException
+    {
         getWrapped().endDocument();
     }
 
-    public void flush() throws IOException {
+    @Override
+    public void flush() throws IOException
+    {
         getWrapped().flush();
     }
 
-    public String getCharacterEncoding() {
+    @Override
+    public String getCharacterEncoding()
+    {
         return getWrapped().getCharacterEncoding();
     }
 
-    public String getContentType() {
+    @Override
+    public String getContentType()
+    {
         return getWrapped().getContentType();
     }
 
-    public void startDocument() throws IOException {
+    @Override
+    public void startDocument() throws IOException
+    {
         getWrapped().startDocument();
     }
 
-    public void writeAttribute(String name, Object value, String property) throws IOException {
+    @Override
+    public void writeAttribute(String name, Object value, String property) throws IOException
+    {
         getWrapped().writeAttribute(name, value, property);
     }
-    
+
     /**
      * @since 1.2
      */
+    @Override
     public void writeText(Object object, UIComponent component, String string) throws IOException
     {
         getWrapped().writeText(object, component, string);
     }
-    
+
 }

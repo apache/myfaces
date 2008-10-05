@@ -51,11 +51,13 @@ public class ValueChangeListenerTag extends GenericListenerTag<EditableValueHold
         super(EditableValueHolder.class);
     }
 
+    @Override
     protected void addListener(EditableValueHolder editableValueHolder, ValueChangeListener valueChangeListener)
     {
         editableValueHolder.addValueChangeListener(valueChangeListener);
     }
 
+    @Override
     protected ValueChangeListener createDelegateListener(ValueExpression type, ValueExpression binding)
     {
         return new DelegateValueChangeListener(type, binding);
@@ -64,6 +66,7 @@ public class ValueChangeListenerTag extends GenericListenerTag<EditableValueHold
     /**
      * The name of a Java class that implements ValueChangeListener.
      */
+    @Override
     @JSFJspAttribute(className = "java.lang.String", rtexprvalue = true)
     public void setType(ValueExpression type)
     {
@@ -74,6 +77,7 @@ public class ValueChangeListenerTag extends GenericListenerTag<EditableValueHold
      * Value binding expression that evaluates to an implementation of the javax.faces.event.ValueChangeListener
      * interface.
      */
+    @Override
     @JSFJspAttribute(className = "javax.faces.event.ValueChangeListener", rtexprvalue = true)
     public void setBinding(ValueExpression binding)
     {

@@ -29,33 +29,35 @@ import javax.servlet.jsp.JspException;
  * @author Manfred Geiler
  * @version $Revision$ $Date$
  */
-public class ValidateLengthTag
-    extends GenericMinMaxValidatorTag<Integer>
+public class ValidateLengthTag extends GenericMinMaxValidatorTag<Integer>
 {
     private static final long serialVersionUID = 4858632671998693059L;
 
     private static final String VALIDATOR_ID = "javax.faces.Length";
 
-    protected Validator createValidator()
-        throws JspException
+    @Override
+    protected Validator createValidator() throws JspException
     {
         setValidatorIdString(VALIDATOR_ID);
         LengthValidator validator = (LengthValidator)super.createValidator();
-        if (null != _min){
+        if (null != _min)
+        {
             validator.setMinimum(_min);
         }
-        if (null != _max){
+        if (null != _max)
+        {
             validator.setMaximum(_max);
         }
         return validator;
     }
 
-
+    @Override
     protected boolean isMinLTMax()
     {
         return _min <= _max;
     }
 
+    @Override
     protected Integer getValue(Object value)
     {
         return ConverterUtils.convertToInt(value);

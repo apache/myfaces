@@ -41,7 +41,6 @@ import org.apache.commons.logging.LogFactory;
  * @author Stan Silvert
  * @see javax.faces.component._ValueBindingToValueExpression
  */
-@SuppressWarnings("deprecation")
 class _ValueBindingToValueExpression extends ValueExpression implements StateHolder
 {
     private static final long serialVersionUID = 8071429285360496554L;
@@ -85,7 +84,7 @@ class _ValueBindingToValueExpression extends ValueExpression implements StateHol
 
     @Override
     public boolean isReadOnly(final ELContext context) throws NullPointerException, PropertyNotFoundException,
-            ELException
+        ELException
     {
         return invoke(new Invoker<Boolean>()
         {
@@ -110,7 +109,7 @@ class _ValueBindingToValueExpression extends ValueExpression implements StateHol
 
     @Override
     public Class<?> getType(final ELContext context) throws NullPointerException, PropertyNotFoundException,
-            ELException
+        ELException
     {
         return invoke(new Invoker<Class<?>>()
         {
@@ -123,7 +122,7 @@ class _ValueBindingToValueExpression extends ValueExpression implements StateHol
 
     @Override
     public void setValue(final ELContext context, final Object value) throws NullPointerException,
-            PropertyNotFoundException, PropertyNotWritableException, ELException
+        PropertyNotFoundException, PropertyNotWritableException, ELException
     {
         invoke(new Invoker<Object>()
         {
@@ -154,7 +153,7 @@ class _ValueBindingToValueExpression extends ValueExpression implements StateHol
             return false;
         if (getClass() != obj.getClass())
             return false;
-        final _ValueBindingToValueExpression other = (_ValueBindingToValueExpression) obj;
+        final _ValueBindingToValueExpression other = (_ValueBindingToValueExpression)obj;
         if (_transient != other._transient)
             return false;
         if (_valueBinding == null)
@@ -205,13 +204,13 @@ class _ValueBindingToValueExpression extends ValueExpression implements StateHol
     {
         if (state instanceof ValueBinding)
         {
-            _valueBinding = (ValueBinding) state;
+            _valueBinding = (ValueBinding)state;
         }
         else if (state != null)
         {
-            Object[] stateArray = (Object[]) state;
-            _valueBinding = (ValueBinding) _ClassUtils.newInstance((String) stateArray[0], ValueBinding.class);
-            ((StateHolder) _valueBinding).restoreState(context, stateArray[1]);
+            Object[] stateArray = (Object[])state;
+            _valueBinding = (ValueBinding)_ClassUtils.newInstance((String)stateArray[0], ValueBinding.class);
+            ((StateHolder)_valueBinding).restoreState(context, stateArray[1]);
         }
     }
 
@@ -223,7 +222,7 @@ class _ValueBindingToValueExpression extends ValueExpression implements StateHol
             {
                 Object[] state = new Object[2];
                 state[0] = _valueBinding.getClass().getName();
-                state[1] = ((StateHolder) _valueBinding).saveState(context);
+                state[1] = ((StateHolder)_valueBinding).saveState(context);
                 return state;
             }
             return _valueBinding;
@@ -247,11 +246,13 @@ class _ValueBindingToValueExpression extends ValueExpression implements StateHol
         {
             throw new IllegalArgumentException("el context must not be null.");
         }
-        FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
-        if (context == null)
+        
+        FacesContext facesContext = (FacesContext)context.getContext(FacesContext.class);
+        if (facesContext == null)
         {
             throw new IllegalStateException("faces context not available in el context.");
         }
+        
         return facesContext;
     }
 

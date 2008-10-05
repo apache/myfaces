@@ -48,8 +48,7 @@ import java.util.*;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-class _ComponentAttributesMap
-        implements Map, Serializable
+class _ComponentAttributesMap implements Map<String, Object>, Serializable
 {
     private static final long serialVersionUID = -9106832179394257866L;
 
@@ -60,7 +59,7 @@ class _ComponentAttributesMap
 
     // We delegate instead of derive from HashMap, so that we can later
     // optimize Serialization
-    private Map<Object, Object> _attributes = null;
+    private Map<String, Object> _attributes = null;
 
     // A cached hashmap of propertyName => PropertyDescriptor object for all
     // the javabean properties of the associated component. This is built by
@@ -69,7 +68,8 @@ class _ComponentAttributesMap
     private transient Map<String, PropertyDescriptor> _propertyDescriptorMap = null;
 
     // Cache for component property descriptors
-    private static Map<Class, Map<String, PropertyDescriptor>> _propertyDescriptorCache = new WeakHashMap<Class, Map<String, PropertyDescriptor>>();
+    private static Map<Class<?>, Map<String, PropertyDescriptor>> _propertyDescriptorCache = 
+        new WeakHashMap<Class<?>, Map<String, PropertyDescriptor>>();
 
     /**
      * Create a map backed by the specified component.
@@ -79,7 +79,7 @@ class _ComponentAttributesMap
     _ComponentAttributesMap(UIComponent component)
     {
         _component = component;
-        _attributes = new HashMap<Object, Object>();
+        _attributes = new HashMap<String, Object>();
     }
 
     /**
@@ -90,10 +90,10 @@ class _ComponentAttributesMap
      * <p/>
      * This method is expected to be called during the "restore view" phase.
      */
-    _ComponentAttributesMap(UIComponent component, Map<Object, Object> attributes)
+    _ComponentAttributesMap(UIComponent component, Map<String, Object> attributes)
     {
         _component = component;
-        _attributes = new HashMap(attributes);
+        _attributes = new HashMap<String, Object>(attributes);
     }
 
     /**
@@ -181,11 +181,10 @@ class _ComponentAttributesMap
     /**
      * Call put(key, value) for each entry in the provided map.
      */
-    public void putAll(Map t)
+    public void putAll(Map<? extends String, ? extends Object> t)
     {
-        for (Iterator it = t.entrySet().iterator(); it.hasNext();)
+        for (Map.Entry<? extends String, ? extends Object> entry : t.entrySet())
         {
-            Map.Entry entry = (Entry) it.next();
             put(entry.getKey(), entry.getValue());
         }
     }
@@ -194,7 +193,7 @@ class _ComponentAttributesMap
      * Return a set of all <i>attributes</i>. Properties of the underlying
      * UIComponent are not included, nor value-bindings.
      */
-    public Set entrySet()
+    public Set<Map.Entry<String, Object>> entrySet()
     {
         return _attributes.entrySet();
     }
@@ -203,7 +202,7 @@ class _ComponentAttributesMap
      * Return a set of the keys for all <i>attributes</i>. Properties of the
      * underlying UIComponent are not included, nor value-bindings.
      */
-    public Set<Object> keySet()
+    public Set<String> keySet()
     {
         return _attributes.keySet();
     }
@@ -291,11 +290,11 @@ class _ComponentAttributesMap
      * @param key   String, null is not allowed
      * @param value null is allowed
      */
-    public Object put(Object key, Object value)
+    public Object put(String key, Object value)
     {
         checkKey(key);
 
-        PropertyDescriptor propertyDescriptor = getPropertyDescriptor((String) key);
+        PropertyDescriptor propertyDescriptor = getPropertyDescriptor(key);
         if (propertyDescriptor == null)
         {
             if (value == null)
@@ -442,7 +441,7 @@ class _ComponentAttributesMap
      * This method is package-scope so that the UIComponentBase class can access it
      * directly when serializing the component.
      */
-    Map<Object, Object> getUnderlyingMap()
+    Map<String, Object> getUnderlyingMap()
     {
         return _attributes;
     }
@@ -451,11 +450,13 @@ class _ComponentAttributesMap
      * TODO: Document why this method is necessary, and why it doesn't try to
      * compare the _component field.
      */
+    @Override
     public boolean equals(Object obj)
     {
         return _attributes.equals(obj);
     }
 
+    @Override
     public int hashCode()
     {
         return _attributes.hashCode();

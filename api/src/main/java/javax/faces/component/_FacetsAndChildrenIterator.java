@@ -27,31 +27,31 @@ import java.util.NoSuchElementException;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-class _FacetsAndChildrenIterator<E>
-        implements Iterator
+class _FacetsAndChildrenIterator implements Iterator<UIComponent>
 {
     private Iterator<UIComponent> _facetsIterator;
     private Iterator<UIComponent> _childrenIterator;
 
-    _FacetsAndChildrenIterator(Map facetMap, List childrenList)
+    _FacetsAndChildrenIterator(Map<String, UIComponent> facetMap, List<UIComponent> childrenList)
     {
-        _facetsIterator   = facetMap != null ? facetMap.values().iterator() : null;
+        _facetsIterator = facetMap != null ? facetMap.values().iterator() : null;
         _childrenIterator = childrenList != null ? childrenList.iterator() : null;
     }
 
     public boolean hasNext()
     {
-        boolean hasNext = (_facetsIterator != null && _facetsIterator.hasNext()) ||
-               (_childrenIterator != null && _childrenIterator.hasNext());
+        boolean hasNext = (_facetsIterator != null && _facetsIterator.hasNext())
+                || (_childrenIterator != null && _childrenIterator.hasNext());
         if (!hasNext)
         {
             _facetsIterator = null;
             _childrenIterator = null;
         }
+        
         return hasNext;
     }
 
-    public Object next()
+    public UIComponent next()
     {
         if (_facetsIterator != null && _facetsIterator.hasNext())
         {
@@ -71,5 +71,4 @@ class _FacetsAndChildrenIterator<E>
     {
         throw new UnsupportedOperationException(this.getClass().getName() + " UnsupportedOperationException");
     }
-
 }

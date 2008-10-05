@@ -55,6 +55,7 @@ public class _MethodBindingToMethodExpressionTest extends TestCase
     private Application _application;
     //private ExpressionFactory _expressionFactory;
 
+    @Override
     protected void setUp() throws Exception
     {
         _mocksControl = EasyMock.createControl();

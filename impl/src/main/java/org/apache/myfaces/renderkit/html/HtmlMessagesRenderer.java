@@ -28,39 +28,33 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRendere
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlMessagesRendererBase;
 
 /**
- *
- *
+ * 
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @author Thomas Spiegl
  * @version $Revision$ $Date$
  */
-@JSFRenderer(
-    renderKitId="HTML_BASIC",
-    family="javax.faces.Messages",
-    type="javax.faces.Messages")
-public class HtmlMessagesRenderer
-        extends HtmlMessagesRendererBase
+@JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Messages", type = "javax.faces.Messages")
+public class HtmlMessagesRenderer extends HtmlMessagesRendererBase
 {
-    //private static final Log log = LogFactory.getLog(HtmlMessagesRenderer.class);
+    // private static final Log log = LogFactory.getLog(HtmlMessagesRenderer.class);
 
-    public void encodeEnd(FacesContext facesContext, UIComponent component)
-            throws IOException
+    @Override
+    public void encodeEnd(FacesContext facesContext, UIComponent component) throws IOException
     {
-        super.encodeEnd(facesContext, component);   //check for NP
+        super.encodeEnd(facesContext, component); // check for NP
         renderMessages(facesContext, component);
     }
 
-    protected String getSummary(FacesContext facesContext,
-                                UIComponent message,
-                                FacesMessage facesMessage,
+    @Override
+    protected String getSummary(FacesContext facesContext, UIComponent message, FacesMessage facesMessage,
                                 String msgClientId)
     {
         return facesMessage.getSummary();
     }
 
-    protected String getDetail(FacesContext facesContext,
-                               UIComponent message,
-                               FacesMessage facesMessage,
+    @Override
+    protected String getDetail(FacesContext facesContext, UIComponent message, FacesMessage facesMessage,
                                String msgClientId)
     {
         return facesMessage.getDetail();

@@ -40,6 +40,7 @@ public class UIDataTest extends AbstractJsfTestCase
     private IMocksControl _mocksControl;
     private UIData _testImpl;
 
+    @Override
     protected void setUp() throws Exception
     {
         super.setUp();
@@ -75,7 +76,7 @@ public class UIDataTest extends AbstractJsfTestCase
     {
         _testImpl.setId("xxx");
         Renderer renderer = _mocksControl.createMock(Renderer.class);
-        renderKit.addRenderer(UIData.COMPONENT_FAMILY, UIData.COMPONENT_TYPE, renderer );
+        renderKit.addRenderer(UIData.COMPONENT_FAMILY, UIData.COMPONENT_TYPE, renderer);
         assertEquals("xxx", _testImpl.getClientId(facesContext));
         _testImpl.setRowIndex(99);
         assertEquals("xxx:99", _testImpl.getClientId(facesContext));
@@ -83,7 +84,8 @@ public class UIDataTest extends AbstractJsfTestCase
 
     /**
      * Test method for
-     * {@link javax.faces.component.UIData#invokeOnComponent(javax.faces.context.FacesContext, java.lang.String, javax.faces.component.ContextCallback)}.
+     * {@link javax.faces.component.UIData#invokeOnComponent(javax.faces.context.FacesContext, java.lang.String, javax.faces.component.ContextCallback)}
+     * .
      */
     public void testInvokeOnComponentFacesContextStringContextCallback()
     {

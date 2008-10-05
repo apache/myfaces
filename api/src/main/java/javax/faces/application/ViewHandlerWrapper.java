@@ -27,53 +27,72 @@ import javax.faces.context.FacesContext;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Stan Silvert
  */
-public abstract class ViewHandlerWrapper extends ViewHandler {
-    
+public abstract class ViewHandlerWrapper extends ViewHandler
+{
+
     @Override
-    public String calculateCharacterEncoding(FacesContext context) {
+    public String calculateCharacterEncoding(FacesContext context)
+    {
         return getWrapped().calculateCharacterEncoding(context);
     }
 
     @Override
-    public void initView(FacesContext context) throws FacesException {
+    public void initView(FacesContext context) throws FacesException
+    {
         getWrapped().initView(context);
     }
 
     protected abstract ViewHandler getWrapped();
-    
-    public void renderView(FacesContext context, UIViewRoot viewToRender) throws IOException, FacesException {
+
+    @Override
+    public void renderView(FacesContext context, UIViewRoot viewToRender) throws IOException, FacesException
+    {
         getWrapped().renderView(context, viewToRender);
     }
 
-    public void writeState(FacesContext context) throws IOException {
+    @Override
+    public void writeState(FacesContext context) throws IOException
+    {
         getWrapped().writeState(context);
     }
 
-    public String calculateRenderKitId(FacesContext context) {
+    @Override
+    public String calculateRenderKitId(FacesContext context)
+    {
         return getWrapped().calculateRenderKitId(context);
     }
 
-    public Locale calculateLocale(FacesContext context) {
+    @Override
+    public Locale calculateLocale(FacesContext context)
+    {
         return getWrapped().calculateLocale(context);
     }
 
-    public UIViewRoot restoreView(FacesContext context, String viewId) {
+    @Override
+    public UIViewRoot restoreView(FacesContext context, String viewId)
+    {
         return getWrapped().restoreView(context, viewId);
     }
 
-    public String getResourceURL(FacesContext context, String path) {
+    @Override
+    public String getResourceURL(FacesContext context, String path)
+    {
         return getWrapped().getResourceURL(context, path);
     }
 
-    public String getActionURL(FacesContext context, String viewId) {
+    @Override
+    public String getActionURL(FacesContext context, String viewId)
+    {
         return getWrapped().getActionURL(context, viewId);
     }
 
-    public UIViewRoot createView(FacesContext context, String viewId) {
+    @Override
+    public UIViewRoot createView(FacesContext context, String viewId)
+    {
         return getWrapped().createView(context, viewId);
     }
-    
+
 }

@@ -41,6 +41,7 @@ public class ResourceAnnotationLifecycleProvider extends NoInjectionAnnotationLi
     /**
      * Inject resources in specified instance.
      */
+    @Override
     protected void processAnnotations(Object instance)
             throws IllegalAccessException, InvocationTargetException, NamingException
     {

@@ -20,6 +20,7 @@ package javax.faces.event;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -30,14 +31,14 @@ import java.util.Collections;
 public class PhaseId implements Comparable
 {
     // FIELDS
-    public static final javax.faces.event.PhaseId ANY_PHASE;
-    public static final javax.faces.event.PhaseId APPLY_REQUEST_VALUES;
-    public static final javax.faces.event.PhaseId INVOKE_APPLICATION;
-    public static final javax.faces.event.PhaseId PROCESS_VALIDATIONS;
-    public static final javax.faces.event.PhaseId RENDER_RESPONSE;
-    public static final javax.faces.event.PhaseId RESTORE_VIEW;
-    public static final javax.faces.event.PhaseId UPDATE_MODEL_VALUES;
-    public static final java.util.List VALUES;
+    public static final PhaseId ANY_PHASE;
+    public static final PhaseId APPLY_REQUEST_VALUES;
+    public static final PhaseId INVOKE_APPLICATION;
+    public static final PhaseId PROCESS_VALIDATIONS;
+    public static final PhaseId RENDER_RESPONSE;
+    public static final PhaseId RESTORE_VIEW;
+    public static final PhaseId UPDATE_MODEL_VALUES;
+    public static final List<PhaseId> VALUES;
 
     static
     {
@@ -82,6 +83,7 @@ public class PhaseId implements Comparable
         return _ordinal;
     }
 
+    @Override
     public String toString()
     {
         return _name + "(" + _ordinal + ")";

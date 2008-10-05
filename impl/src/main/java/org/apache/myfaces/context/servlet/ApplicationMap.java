@@ -41,21 +41,25 @@ public final class ApplicationMap extends AbstractAttributeMap<Object>
         _servletContext = servletContext;
     }
 
+    @Override
     protected Object getAttribute(final String key)
     {
         return _servletContext.getAttribute(key);
     }
 
+    @Override
     protected void setAttribute(final String key, final Object value)
     {
         _servletContext.setAttribute(key, value);
     }
 
+    @Override
     protected void removeAttribute(final String key)
     {
         _servletContext.removeAttribute(key);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     protected Enumeration<String> getAttributeNames()
     {
@@ -63,12 +67,14 @@ public final class ApplicationMap extends AbstractAttributeMap<Object>
     }
 
 
+    @Override
     public void putAll(final Map<? extends String, ? extends Object> t)
     {
         throw new UnsupportedOperationException();
     }
 
 
+    @Override
     public void clear()
     {
         throw new UnsupportedOperationException();

@@ -76,18 +76,10 @@ class _MessageUtils
             {
                 //Try to find detail alone
                 detail = getBundleString(appBundle, messageId + DETAIL_SUFFIX);
-                if (detail != null)
-                {
-                    summary = null;
-                }
-                else
+                if (detail == null)
                 {
                     detail = getBundleString(defBundle, messageId + DETAIL_SUFFIX);
-                    if (detail != null)
-                    {
-                        summary = null;
-                    }
-                    else
+                    if (detail == null)
                     {
                         //Neither detail nor summary found
                         return null;

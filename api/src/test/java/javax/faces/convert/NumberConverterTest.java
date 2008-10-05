@@ -39,6 +39,7 @@ public class NumberConverterTest extends AbstractJsfTestCase
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception
     {
         super.setUp();
@@ -49,29 +50,22 @@ public class NumberConverterTest extends AbstractJsfTestCase
 
     }
 
+    @Override
     protected void tearDown() throws Exception
     {
         super.tearDown();
 
         mock = null;
     }
-/*
- * temporarily comment out tests that fail, until Matthias Wessendorf has time to investigate
-    public void testFranceLocaleWithNonBreakingSpace()
-    {
-
-        UIInput input = new UIInput();
-        mock.setType("currency");
-        Number number = (Number) mock.getAsObject(FacesContext.getCurrentInstance(), input, "12\u00a0345,68 €");
-        assertNotNull(number);
-    }
-    public void testFranceLocaleWithoutNonBreakingSpace()
-    {
-
-        UIInput input = new UIInput();
-        mock.setType("currency");
-        Number number = (Number) mock.getAsObject(FacesContext.getCurrentInstance(), input, "12 345,68 €");
-        assertNotNull(number);
-    }
-*/
+    /*
+     * temporarily comment out tests that fail, until Matthias Wessendorf has time to investigate public void
+     * testFranceLocaleWithNonBreakingSpace() {
+     * 
+     * UIInput input = new UIInput(); mock.setType("currency"); Number number = (Number)
+     * mock.getAsObject(FacesContext.getCurrentInstance(), input, "12\u00a0345,68 €"); assertNotNull(number); } public
+     * void testFranceLocaleWithoutNonBreakingSpace() {
+     * 
+     * UIInput input = new UIInput(); mock.setType("currency"); Number number = (Number)
+     * mock.getAsObject(FacesContext.getCurrentInstance(), input, "12 345,68 €"); assertNotNull(number); }
+     */
 }

@@ -27,59 +27,64 @@ import java.util.List;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-class _ComponentChildrenList
-        extends AbstractList
-        implements Serializable
+class _ComponentChildrenList extends AbstractList<UIComponent> implements Serializable
 {
     private static final long serialVersionUID = -6775078929331154224L;
     private UIComponent _component;
-    private List<Object> _list = new ArrayList<Object>();
+    private List<UIComponent> _list = new ArrayList<UIComponent>(4);
 
     _ComponentChildrenList(UIComponent component)
     {
         _component = component;
     }
 
-    public Object get(int index)
+    @Override
+    public UIComponent get(int index)
     {
         return _list.get(index);
     }
 
+    @Override
     public int size()
     {
         return _list.size();
     }
 
-    public Object set(int index, Object value)
+    @Override
+    public UIComponent set(int index, UIComponent value)
     {
         checkValue(value);
-        setNewParent((UIComponent)value);
-        UIComponent child = (UIComponent) _list.set(index, value);
-        if (child != null) child.setParent(null);
+        setNewParent(value);
+        UIComponent child = _list.set(index, value);
+        if (child != null)
+            child.setParent(null);
         return child;
     }
 
-    public boolean add(Object value)
+    @Override
+    public boolean add(UIComponent value)
     {
         checkValue(value);
-        setNewParent((UIComponent)value);
+        setNewParent(value);
         return _list.add(value);
     }
 
-    public void add(int index, Object value)
+    @Override
+    public void add(int index, UIComponent value)
     {
         checkValue(value);
-        setNewParent((UIComponent)value);
+        setNewParent(value);
         _list.add(index, value);
     }
 
-    public Object remove(int index)
+    @Override
+    public UIComponent remove(int index)
     {
-        UIComponent child = (UIComponent) _list.remove(index);
-        if (child != null) child.setParent(null);
+        UIComponent child = _list.remove(index);
+        if (child != null)
+            child.setParent(null);
         return child;
     }
-
 
     private void setNewParent(UIComponent child)
     {
@@ -93,8 +98,10 @@ class _ComponentChildrenList
 
     private void checkValue(Object value)
     {
-        if (value == null) throw new NullPointerException("value");
-        if (!(value instanceof UIComponent)) throw new ClassCastException("value is not a UIComponent");
+        if (value == null)
+            throw new NullPointerException("value");
+        if (!(value instanceof UIComponent))
+            throw new ClassCastException("value is not a UIComponent");
     }
 
 }

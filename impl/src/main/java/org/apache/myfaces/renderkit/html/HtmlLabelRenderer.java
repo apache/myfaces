@@ -35,27 +35,22 @@ import org.apache.myfaces.shared_impl.renderkit.html.HTML;
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlRenderer;
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlRendererUtils;
 
-
 /**
- *   
+ * 
  * @author Thomas Spiegl (latest modification by $Author$)
  * @author Anton Koinov
  * @author Martin Marinschek
  * @version $Revision$ $Date$
  */
-@JSFRenderer(
-    renderKitId="HTML_BASIC",
-    family="javax.faces.Output",
-    type="javax.faces.Label")
-public class HtmlLabelRenderer
-extends HtmlRenderer
+@JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Output", type = "javax.faces.Label")
+public class HtmlLabelRenderer extends HtmlRenderer
 {
     private static final Log log = LogFactory.getLog(HtmlLabelRenderer.class);
 
-    public void encodeBegin(FacesContext facesContext, UIComponent uiComponent)
-            throws IOException
+    @Override
+    public void encodeBegin(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
-        super.encodeBegin(facesContext, uiComponent);   //check for NP
+        super.encodeBegin(facesContext, uiComponent); // check for NP
 
         ResponseWriter writer = facesContext.getResponseWriter();
 
@@ -69,23 +64,23 @@ extends HtmlRenderer
 
         if (forAttr != null)
         {
-          writer.writeAttribute(HTML.FOR_ATTR,
-                                getClientId(facesContext, uiComponent, forAttr), JSFAttr.FOR_ATTR);
+            writer.writeAttribute(HTML.FOR_ATTR, getClientId(facesContext, uiComponent, forAttr), JSFAttr.FOR_ATTR);
         }
         else
         {
-            if (log.isWarnEnabled()) {
-                log.warn("Attribute 'for' of label component with id " + uiComponent.getClientId(facesContext)+" is not defined");
+            if (log.isWarnEnabled())
+            {
+                log.warn("Attribute 'for' of label component with id " + uiComponent.getClientId(facesContext)
+                        + " is not defined");
             }
         }
 
-
-        //MyFaces extension: Render a label text given by value
-        //TODO: Move to extended component
+        // MyFaces extension: Render a label text given by value
+        // TODO: Move to extended component
         if (uiComponent instanceof ValueHolder)
         {
             String text = RendererUtils.getStringValue(facesContext, uiComponent);
-            if(text != null)
+            if (text != null)
             {
                 writer.writeText(text, "value");
             }
@@ -93,19 +88,24 @@ extends HtmlRenderer
 
         writer.flush(); // close start tag
 
-        encodeAfterStart(facesContext,writer,uiComponent);
+        encodeAfterStart(facesContext, writer, uiComponent);
     }
 
+    /**
+     * @throws IOException  
+     */
     protected void encodeAfterStart(FacesContext facesContext, ResponseWriter writer, UIComponent uiComponent)
         throws IOException
     {
     }
 
+    /**
+     * @throws IOException  
+     */
     protected void encodeBefore(FacesContext facesContext, ResponseWriter writer, UIComponent uiComponent)
         throws IOException
     {
     }
-
 
     protected String getFor(UIComponent component)
     {
@@ -113,22 +113,20 @@ extends HtmlRenderer
         {
             return ((HtmlOutputLabel)component).getFor();
         }
-        
-        return (String) component.getAttributes().get(JSFAttr.FOR_ATTR);
-        
+
+        return (String)component.getAttributes().get(JSFAttr.FOR_ATTR);
+
     }
 
-    protected String getClientId(FacesContext facesContext,
-                                 UIComponent uiComponent, String forAttr)
+    protected String getClientId(FacesContext facesContext, UIComponent uiComponent, String forAttr)
     {
         return RendererUtils.getClientId(facesContext, uiComponent, forAttr);
     }
 
-
-    public void encodeEnd(FacesContext facesContext, UIComponent uiComponent)
-            throws IOException
+    @Override
+    public void encodeEnd(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
-        super.encodeEnd(facesContext, uiComponent); //check for NP
+        super.encodeEnd(facesContext, uiComponent); // check for NP
 
         ResponseWriter writer = facesContext.getResponseWriter();
 
@@ -139,11 +137,17 @@ extends HtmlRenderer
         encodeAfter(facesContext, writer, uiComponent);
     }
 
+    /**
+     * @throws IOException  
+     */
     protected void encodeBeforeEnd(FacesContext facesContext, ResponseWriter writer, UIComponent uiComponent)
         throws IOException
     {
     }
 
+    /**
+     * @throws IOException  
+     */
     protected void encodeAfter(FacesContext facesContext, ResponseWriter writer, UIComponent uiComponent)
         throws IOException
     {

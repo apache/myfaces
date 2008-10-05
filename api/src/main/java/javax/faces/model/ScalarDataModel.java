@@ -20,7 +20,7 @@ package javax.faces.model;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -42,11 +42,13 @@ public class ScalarDataModel extends DataModel
     }
 
     // METHODS
+    @Override
     public int getRowCount()
     {
         return _data != null ? 1 : -1;
     }
 
+    @Override
     public Object getRowData()
     {
         if (_data == null)
@@ -60,16 +62,19 @@ public class ScalarDataModel extends DataModel
         return _data;
     }
 
+    @Override
     public int getRowIndex()
     {
         return _rowIndex;
     }
 
+    @Override
     public Object getWrappedData()
     {
         return _data;
     }
 
+    @Override
     public boolean isRowAvailable()
     {
         if (_data == null)
@@ -79,6 +84,7 @@ public class ScalarDataModel extends DataModel
         return _rowIndex == 0;
     }
 
+    @Override
     public void setRowIndex(int rowIndex)
     {
         if (rowIndex < -1)
@@ -98,7 +104,8 @@ public class ScalarDataModel extends DataModel
             }
         }
     }
-    
+
+    @Override
     public void setWrappedData(Object data)
     {
         _data = data;

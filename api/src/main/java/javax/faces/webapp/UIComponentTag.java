@@ -29,25 +29,25 @@ import javax.servlet.jsp.tagext.Tag;
 /**
  * Base class for all JSP tags that represent a JSF UIComponent.
  * <p>
- * <i>Disclaimer</i>: The official definition for the behaviour of
- * this class is the JSF specification but for legal reasons the
- * specification cannot be replicated here. Any javadoc present on this
- * class therefore describes the current implementation rather than the
- * officially required behaviour, though it is believed that this class
- * does comply with the specification.
+ * <i>Disclaimer</i>: The official definition for the behaviour of this class is the JSF specification but for legal
+ * reasons the specification cannot be replicated here. Any javadoc present on this class therefore describes the
+ * current implementation rather than the officially required behaviour, though it is believed that this class does
+ * comply with the specification.
  * 
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a> for more.
+ * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a> for
+ * more.
  * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @author Bruno Aranda
  * @version $Revision$ $Date$
- *
+ * 
  * @deprecated replaced by {@link UIComponentELTag}
  */
+@Deprecated
 public abstract class UIComponentTag extends UIComponentClassicTagBase
 {
 
-    //tag attributes
+    // tag attributes
     private String _binding = null;
     private String _rendered = null;
 
@@ -58,6 +58,7 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
 
     }
 
+    @Override
     public void release()
     {
         super.release();
@@ -66,9 +67,10 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
         _rendered = null;
     }
 
-    /** Setter for common JSF xml attribute "binding". */
-    public void setBinding(String binding)
-            throws JspException
+    /** Setter for common JSF xml attribute "binding". 
+     * @throws JspException 
+     */
+    public void setBinding(String binding) throws JspException
     {
         if (!isValueReference(binding))
         {
@@ -77,52 +79,54 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
         _binding = binding;
     }
 
-
     /** Setter for common JSF xml attribute "rendered". */
     public void setRendered(String rendered)
     {
         _rendered = rendered;
     }
 
-
     /**
      * Return the nearest JSF tag that encloses this tag.
+     * 
      * @deprecated
      */
+    @Deprecated
     public static UIComponentTag getParentUIComponentTag(PageContext pageContext)
     {
         UIComponentClassicTagBase parentTag = getParentUIComponentClassicTagBase(pageContext);
 
-        return parentTag instanceof UIComponentTag ? (UIComponentTag) parentTag : new UIComponentTagWrapper(parentTag);
-        
+        return parentTag instanceof UIComponentTag ? (UIComponentTag)parentTag : new UIComponentTagWrapper(parentTag);
+
     }
 
     /**
      * Return true if the specified string contains an EL expression.
      * <p>
-     * UIComponent properties are often required to be value-binding
-     * expressions; this method allows code to check whether that is
-     * the case or not.
+     * UIComponent properties are often required to be value-binding expressions; this method allows code to check
+     * whether that is the case or not.
      */
     public static boolean isValueReference(String value)
     {
-        if (value == null) throw new NullPointerException("value");
+        if (value == null)
+            throw new NullPointerException("value");
 
         int start = value.indexOf("#{");
-        if (start < 0) return false;
+        if (start < 0)
+            return false;
 
         int end = value.lastIndexOf('}');
-        return (end >=0 && start < end);
+        return (end >= 0 && start < end);
     }
 
     /**
-     * Create a UIComponent. Abstract method getComponentType is invoked to
-     * determine the actual type name for the component to be created.
-     *
-     * If this tag has a "binding" attribute, then that is immediately
-     * evaluated to store the created component in the specified property.
+     * Create a UIComponent. Abstract method getComponentType is invoked to determine the actual type name for the
+     * component to be created.
+     * 
+     * If this tag has a "binding" attribute, then that is immediately evaluated to store the created component in the
+     * specified property.
      */
-    protected UIComponent createComponent(FacesContext context, String id) 
+    @Override
+    protected UIComponent createComponent(FacesContext context, String id)
     {
         String componentType = getComponentType();
         if (componentType == null)
@@ -134,14 +138,12 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
         {
             Application application = context.getApplication();
             ValueBinding componentBinding = application.createValueBinding(_binding);
-            UIComponent component = application.createComponent(componentBinding,
-                                                                context,
-                                                                componentType);
-            
+            UIComponent component = application.createComponent(componentBinding, context, componentType);
+
             component.setId(id);
             component.setValueBinding("binding", componentBinding);
             setProperties(component);
-            
+
             return component;
         }
 
@@ -150,9 +152,8 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
         setProperties(component);
 
         return component;
-        
-    }
 
+    }
 
     private boolean isFacet()
     {
@@ -160,9 +161,8 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
     }
 
     /**
-     * Determine whether this component renders itself. A component
-     * is "suppressed" when it is either not rendered, or when it is
-     * rendered by its parent component at a time of the parent's choosing.
+     * Determine whether this component renders itself. A component is "suppressed" when it is either not rendered, or
+     * when it is rendered by its parent component at a time of the parent's choosing.
      */
     protected boolean isSuppressed()
     {
@@ -182,14 +182,14 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
 
             // Does any parent render its children?
             // (We must determine this first, before calling any isRendered method
-            //  because rendered properties might reference a data var of a nesting UIData,
-            //  which is not set at this time, and would cause a VariableResolver error!)
+            // because rendered properties might reference a data var of a nesting UIData,
+            // which is not set at this time, and would cause a VariableResolver error!)
             UIComponent parent = component.getParent();
             while (parent != null)
             {
                 if (parent.getRendersChildren())
                 {
-                    //Yes, parent found, that renders children --> suppressed
+                    // Yes, parent found, that renders children --> suppressed
                     _suppressed = Boolean.TRUE;
                     return true;
                 }
@@ -201,7 +201,7 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
             {
                 if (!component.isRendered())
                 {
-                    //Yes, component or any parent must not be rendered --> suppressed
+                    // Yes, component or any parent must not be rendered --> suppressed
                     _suppressed = Boolean.TRUE;
                     return true;
                 }
@@ -214,6 +214,7 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
         return _suppressed.booleanValue();
     }
 
+    @Override
     protected void setProperties(UIComponent component)
     {
         if (getRendererType() != null)
@@ -227,7 +228,8 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
             {
                 ValueBinding vb = getFacesContext().getApplication().createValueBinding(_rendered);
                 component.setValueBinding("rendered", vb);
-            } else
+            }
+            else
             {
                 boolean b = Boolean.valueOf(_rendered).booleanValue();
                 component.setRendered(b);
@@ -238,9 +240,8 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
     /**
      * Class used to create an UIComponentTag from a UIComponentClassicTagBase.
      * <p>
-     * This is a standard use of the decorator pattern, to make the logic of the JSF12
-     * UIComponentClassicTagBase class available via the old JSF11 UIComponentTag
-     * api.
+     * This is a standard use of the decorator pattern, to make the logic of the JSF12 UIComponentClassicTagBase class
+     * available via the old JSF11 UIComponentTag api.
      */
     private static class UIComponentTagWrapper extends UIComponentTag
     {
@@ -350,9 +351,9 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
         }
 
         // Methods that no sane user of this class would call, so we do not need to override here:
-        //   doStartTag, doEndTag, getDoStartValue, getDoEndValue, isSupressed
-        //   encodeBegin, encodeChildren, encodeEnd, getFacetName
-        //   setProperties, setupResponseWriter
+        // doStartTag, doEndTag, getDoStartValue, getDoEndValue, isSupressed
+        // encodeBegin, encodeChildren, encodeEnd, getFacetName
+        // setProperties, setupResponseWriter
     }
 
     @Override

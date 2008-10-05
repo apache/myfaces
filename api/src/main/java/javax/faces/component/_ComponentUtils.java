@@ -37,10 +37,11 @@ import javax.faces.validator.ValidatorException;
  */
 class _ComponentUtils
 {
-    private _ComponentUtils() {}
+    private _ComponentUtils()
+    {
+    }
 
-    static UIComponent findParentNamingContainer(UIComponent component,
-                                                 boolean returnRootIfNotFound)
+    static UIComponent findParentNamingContainer(UIComponent component, boolean returnRootIfNotFound)
     {
         UIComponent parent = component.getParent();
         if (returnRootIfNotFound && parent == null)
@@ -49,13 +50,14 @@ class _ComponentUtils
         }
         while (parent != null)
         {
-            if (parent instanceof NamingContainer) return parent;
+            if (parent instanceof NamingContainer)
+                return parent;
             if (returnRootIfNotFound)
             {
                 UIComponent nextParent = parent.getParent();
                 if (nextParent == null)
                 {
-                    return parent;  //Root
+                    return parent; // Root
                 }
                 parent = nextParent;
             }
@@ -70,44 +72,44 @@ class _ComponentUtils
     static UIComponent getRootComponent(UIComponent component)
     {
         UIComponent parent;
-        for(;;)
+        for (;;)
         {
             parent = component.getParent();
-            if (parent == null) return component;
+            if (parent == null)
+                return component;
             component = parent;
         }
     }
 
     /**
-     * Find the component with the specified id starting from the specified
-     * component.
+     * Find the component with the specified id starting from the specified component.
      * <p>
-     * Param id must not contain any NamingContainer.SEPARATOR_CHAR characters
-     * (ie ":"). This method explicitly does <i>not</i> search into any
-     * child naming container components; this is expected to be handled
-     * by the caller of this method.
+     * Param id must not contain any NamingContainer.SEPARATOR_CHAR characters (ie ":"). This method explicitly does
+     * <i>not</i> search into any child naming container components; this is expected to be handled by the caller of
+     * this method.
      * <p>
-     * For an implementation of findComponent which does descend into
-     * child naming components, see org.apache.myfaces.custom.util.ComponentUtils.
+     * For an implementation of findComponent which does descend into child naming components, see
+     * org.apache.myfaces.custom.util.ComponentUtils.
      * 
      * @return findBase, a descendant of findBase, or null.
      */
     static UIComponent findComponent(UIComponent findBase, String id)
     {
-        if (idsAreEqual(id,findBase))
+        if (idsAreEqual(id, findBase))
         {
             return findBase;
         }
 
-        for (Iterator it = findBase.getFacetsAndChildren(); it.hasNext(); )
+        for (Iterator<UIComponent> it = findBase.getFacetsAndChildren(); it.hasNext();)
         {
-            UIComponent childOrFacet = (UIComponent)it.next();
+            UIComponent childOrFacet = it.next();
             if (!(childOrFacet instanceof NamingContainer))
             {
                 UIComponent find = findComponent(childOrFacet, id);
-                if (find != null) return find;
+                if (find != null)
+                    return find;
             }
-            else if (idsAreEqual(id,childOrFacet))
+            else if (idsAreEqual(id, childOrFacet))
             {
                 return childOrFacet;
             }
@@ -117,25 +119,23 @@ class _ComponentUtils
     }
 
     /*
-     * Return true if the specified component matches the provided id.
-     * This needs some quirks to handle components whose id value gets
-     * dynamically "tweaked", eg a UIData component whose id gets
-     * the current row index appended to it.
+     * Return true if the specified component matches the provided id. This needs some quirks to handle components whose
+     * id value gets dynamically "tweaked", eg a UIData component whose id gets the current row index appended to it.
      */
     private static boolean idsAreEqual(String id, UIComponent cmp)
     {
-        if(id.equals(cmp.getId()))
+        if (id.equals(cmp.getId()))
             return true;
 
-        if(cmp instanceof UIData)
+        if (cmp instanceof UIData)
         {
-            UIData uiData = ((UIData) cmp);
+            UIData uiData = ((UIData)cmp);
 
-            if(uiData.getRowIndex()==-1)
+            if (uiData.getRowIndex() == -1)
             {
-                return dynamicIdIsEqual(id,cmp.getId());
+                return dynamicIdIsEqual(id, cmp.getId());
             }
-            return id.equals(cmp.getId()+NamingContainer.SEPARATOR_CHAR+uiData.getRowIndex());
+            return id.equals(cmp.getId() + NamingContainer.SEPARATOR_CHAR + uiData.getRowIndex());
         }
 
         return false;
@@ -143,9 +143,8 @@ class _ComponentUtils
 
     private static boolean dynamicIdIsEqual(String dynamicId, String id)
     {
-        return dynamicId.matches(id+":[0-9]*");
+        return dynamicId.matches(id + ":[0-9]*");
     }
-
 
     static void callValidators(FacesContext context, UIInput input, Object convertedValue)
     {
@@ -161,11 +160,15 @@ class _ComponentUtils
             catch (ValidatorException e)
             {
                 input.setValid(false);
-                
+
                 String validatorMessage = input.getValidatorMessage();
-                if(validatorMessage != null) {
-                    context.addMessage(input.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR,validatorMessage,validatorMessage));
-                } else {
+                if (validatorMessage != null)
+                {
+                    context.addMessage(input.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        validatorMessage, validatorMessage));
+                }
+                else
+                {
                     FacesMessage facesMessage = e.getFacesMessage();
                     if (facesMessage != null)
                     {
@@ -183,8 +186,7 @@ class _ComponentUtils
         {
             try
             {
-                validatorBinding.invoke(context,
-                                        new Object[] {context, input, convertedValue});
+                validatorBinding.invoke(context, new Object[] { context, input, convertedValue });
             }
             catch (EvaluationException e)
             {
@@ -193,10 +195,13 @@ class _ComponentUtils
                 if (cause instanceof ValidatorException)
                 {
                     String validatorMessage = input.getValidatorMessage();
-                    if(validatorMessage != null) {
-                        context.addMessage(input.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR,validatorMessage,validatorMessage));
-                    } 
-                    else {
+                    if (validatorMessage != null)
+                    {
+                        context.addMessage(input.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            validatorMessage, validatorMessage));
+                    }
+                    else
+                    {
                         FacesMessage facesMessage = ((ValidatorException)cause).getFacesMessage();
                         if (facesMessage != null)
                         {
@@ -212,18 +217,18 @@ class _ComponentUtils
             }
         }
     }
-    
+
     static String getStringValue(FacesContext context, ValueBinding vb)
     {
         Object value = vb.getValue(context);
-        if(value == null)
+        if (value == null)
         {
             return null;
         }
         return value.toString();
     }
 
-
+    @SuppressWarnings("unchecked")
     static <T> T getExpressionValue(UIComponent component, String attribute, T overrideValue, T defaultValue)
     {
         if (overrideValue != null)
@@ -233,24 +238,25 @@ class _ComponentUtils
         ValueExpression ve = component.getValueExpression(attribute);
         if (ve != null)
         {
-            return (T) ve.getValue(component.getFacesContext().getELContext());
+            return (T)ve.getValue(component.getFacesContext().getELContext());
         }
         return defaultValue;
     }
 
-    static String getPathToComponent(UIComponent component) {
+    static String getPathToComponent(UIComponent component)
+    {
         StringBuffer buf = new StringBuffer();
 
-        if(component == null)
+        if (component == null)
         {
             buf.append("{Component-Path : ");
             buf.append("[null]}");
             return buf.toString();
         }
 
-        getPathToComponent(component,buf);
+        getPathToComponent(component, buf);
 
-        buf.insert(0,"{Component-Path : ");
+        buf.insert(0, "{Component-Path : ");
         buf.append("}");
 
         return buf.toString();
@@ -258,17 +264,17 @@ class _ComponentUtils
 
     private static void getPathToComponent(UIComponent component, StringBuffer buf)
     {
-        if(component == null)
+        if (component == null)
             return;
 
         StringBuffer intBuf = new StringBuffer();
 
         intBuf.append("[Class: ");
         intBuf.append(component.getClass().getName());
-        if(component instanceof UIViewRoot)
+        if (component instanceof UIViewRoot)
         {
             intBuf.append(",ViewId: ");
-            intBuf.append(((UIViewRoot) component).getViewId());
+            intBuf.append(((UIViewRoot)component).getViewId());
         }
         else
         {
@@ -277,7 +283,7 @@ class _ComponentUtils
         }
         intBuf.append("]");
 
-        buf.insert(0,intBuf.toString());
+        buf.insert(0, intBuf.toString());
 
         getPathToComponent(component.getParent(), buf);
     }

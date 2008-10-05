@@ -20,19 +20,19 @@ package javax.faces.component;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacet;
+
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
 @JSFComponent
-public class UIColumn
-        extends UIComponentBase
+public class UIColumn extends UIComponentBase
 {
     private static final String FOOTER_FACET_NAME = "footer";
     private static final String HEADER_FACET_NAME = "header";
-    
+
     public void setFooter(UIComponent footer)
     {
         getFacets().put(FOOTER_FACET_NAME, footer);
@@ -55,22 +55,20 @@ public class UIColumn
         return getFacet(HEADER_FACET_NAME);
     }
 
-
-    //------------------ GENERATED CODE BEGIN (do not modify!) --------------------
+    // ------------------ GENERATED CODE BEGIN (do not modify!) --------------------
 
     public static final String COMPONENT_TYPE = "javax.faces.Column";
     public static final String COMPONENT_FAMILY = "javax.faces.Column";
-
 
     public UIColumn()
     {
     }
 
+    @Override
     public String getFamily()
     {
         return COMPONENT_FAMILY;
     }
 
-
-    //------------------ GENERATED CODE END ---------------------------------------
+    // ------------------ GENERATED CODE END ---------------------------------------
 }

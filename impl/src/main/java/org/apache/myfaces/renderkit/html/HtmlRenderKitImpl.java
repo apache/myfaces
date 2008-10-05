@@ -36,23 +36,21 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderK
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlRendererUtils;
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlResponseWriterImpl;
 
-
 /**
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
 @JSFRenderKit(renderKitId = "HTML_BASIC")
-public class HtmlRenderKitImpl
-    extends RenderKit
+public class HtmlRenderKitImpl extends RenderKit
 {
     private static final Log log = LogFactory.getLog(HtmlRenderKitImpl.class);
 
-    //~ Instance fields ----------------------------------------------------------------------------
+    // ~ Instance fields ----------------------------------------------------------------------------
 
     private Map<String, Renderer> _renderers;
     private ResponseStateManager _responseStateManager;
 
-    //~ Constructors -------------------------------------------------------------------------------
+    // ~ Constructors -------------------------------------------------------------------------------
 
     public HtmlRenderKitImpl()
     {
@@ -60,20 +58,21 @@ public class HtmlRenderKitImpl
         _responseStateManager = new HtmlResponseStateManager();
     }
 
-    //~ Methods ------------------------------------------------------------------------------------
+    // ~ Methods ------------------------------------------------------------------------------------
 
     private String key(String componentFamily, String rendererType)
     {
         return componentFamily + "." + rendererType;
     }
 
+    @Override
     public Renderer getRenderer(String componentFamily, String rendererType)
     {
-        if(componentFamily == null)
+        if (componentFamily == null)
         {
             throw new NullPointerException("component family must not be null.");
         }
-        if(rendererType == null)
+        if (rendererType == null)
         {
             throw new NullPointerException("renderer type must not be null.");
         }
@@ -85,54 +84,54 @@ public class HtmlRenderKitImpl
         return renderer;
     }
 
+    @Override
     public void addRenderer(String componentFamily, String rendererType, Renderer renderer)
     {
-        if(componentFamily == null)
+        if (componentFamily == null)
         {
             log.error("addRenderer: componentFamily = null is not allowed");
             throw new NullPointerException("component family must not be null.");
         }
-        if(rendererType == null)
+        if (rendererType == null)
         {
             log.error("addRenderer: rendererType = null is not allowed");
             throw new NullPointerException("renderer type must not be null.");
         }
-        if(renderer == null)
+        if (renderer == null)
         {
             log.error("addRenderer: renderer = null is not allowed");
             throw new NullPointerException("renderer must not be null.");
         }
 
         String rendererKey = key(componentFamily, rendererType);
-        if (_renderers.get(rendererKey) != null) {
+        if (_renderers.get(rendererKey) != null)
+        {
             // this is not necessarily an error, but users do need to be
             // very careful about jar processing order when overriding
             // some component's renderer with an alternate renderer.
-            log.debug("Overwriting renderer with family = " + componentFamily +
-               " rendererType = " + rendererType +
-               " renderer class = " + renderer.getClass().getName());
+            log.debug("Overwriting renderer with family = " + componentFamily + " rendererType = " + rendererType
+                    + " renderer class = " + renderer.getClass().getName());
         }
 
         _renderers.put(rendererKey, renderer);
 
-        if (log.isTraceEnabled()) 
-            log.trace("add Renderer family = " + componentFamily +
-                " rendererType = " + rendererType +
-                " renderer class = " + renderer.getClass().getName());
+        if (log.isTraceEnabled())
+            log.trace("add Renderer family = " + componentFamily + " rendererType = " + rendererType
+                    + " renderer class = " + renderer.getClass().getName());
     }
 
+    @Override
     public ResponseStateManager getResponseStateManager()
     {
         return _responseStateManager;
     }
 
-    public ResponseWriter createResponseWriter(Writer writer,
-                                               String contentTypeListString,
-                                               String characterEncoding)
+    @Override
+    public ResponseWriter createResponseWriter(Writer writer, String contentTypeListString, String characterEncoding)
     {
         String selectedContentType = HtmlRendererUtils.selectContentType(contentTypeListString);
 
-        if(characterEncoding==null)
+        if (characterEncoding == null)
         {
             characterEncoding = HtmlRendererUtils.DEFAULT_CHAR_ENCODING;
         }
@@ -140,38 +139,46 @@ public class HtmlRenderKitImpl
         return new HtmlResponseWriterImpl(writer, selectedContentType, characterEncoding);
     }
 
+    @Override
     public ResponseStream createResponseStream(OutputStream outputStream)
     {
-        return new MyFacesResponseStream(outputStream);       
+        return new MyFacesResponseStream(outputStream);
     }
 
-    private static class MyFacesResponseStream extends ResponseStream {
+    private static class MyFacesResponseStream extends ResponseStream
+    {
         private OutputStream output;
 
-        public MyFacesResponseStream(OutputStream output) {
+        public MyFacesResponseStream(OutputStream output)
+        {
             this.output = output;
         }
 
+        @Override
         public void write(int b) throws IOException
         {
             output.write(b);
         }
 
+        @Override
         public void write(byte b[]) throws IOException
         {
             output.write(b);
         }
 
+        @Override
         public void write(byte b[], int off, int len) throws IOException
         {
             output.write(b, off, len);
         }
 
+        @Override
         public void flush() throws IOException
         {
             output.flush();
         }
 
+        @Override
         public void close() throws IOException
         {
             output.close();

@@ -27,18 +27,19 @@ import java.util.Map;
 
 /**
  * See JSF 1.2 spec sections 5.6.1.1 and 5.6.2.1
- *
+ * 
  * @author Stan Silvert
  */
-public class ImplicitObjectResolver extends ELResolver {
-    
+public class ImplicitObjectResolver extends ELResolver
+{
+
     private Map<String, ImplicitObject> implicitObjects;
-    
+
     /**
-     * Static factory for an ELResolver for resolving implicit objects in JSPs. 
-     * See JSF 1.2 spec section 5.6.1.1
+     * Static factory for an ELResolver for resolving implicit objects in JSPs. See JSF 1.2 spec section 5.6.1.1
      */
-    public static ELResolver makeResolverForJSP() {
+    public static ELResolver makeResolverForJSP()
+    {
         Map<String, ImplicitObject> forJSPList = new HashMap<String, ImplicitObject>(2);
         ImplicitObject io1 = new FacesContextImplicitObject();
         forJSPList.put(io1.getName(), io1);
@@ -46,12 +47,12 @@ public class ImplicitObjectResolver extends ELResolver {
         forJSPList.put(io2.getName(), io2);
         return new ImplicitObjectResolver(forJSPList);
     }
-    
+
     /**
-     * Static factory for an ELResolver for resolving implicit objects in all of Faces. 
-     * See JSF 1.2 spec section 5.6.1.2
+     * Static factory for an ELResolver for resolving implicit objects in all of Faces. See JSF 1.2 spec section 5.6.1.2
      */
-    public static ELResolver makeResolverForFaces() {
+    public static ELResolver makeResolverForFaces()
+    {
         Map<String, ImplicitObject> forFacesList = new HashMap<String, ImplicitObject>(14);
         ImplicitObject io1 = new ApplicationImplicitObject();
         forFacesList.put(io1.getName(), io1);
@@ -81,107 +82,140 @@ public class ImplicitObjectResolver extends ELResolver {
         forFacesList.put(io13.getName(), io13);
         ImplicitObject io14 = new ViewImplicitObject();
         forFacesList.put(io14.getName(), io14);
-        return new ImplicitObjectResolver(forFacesList);        
+        return new ImplicitObjectResolver(forFacesList);
     }
-    
-    
-    private ImplicitObjectResolver() {
+
+    private ImplicitObjectResolver()
+    {
         super();
         this.implicitObjects = new HashMap<String, ImplicitObject>();
     }
-    
+
     /** Creates a new instance of ImplicitObjectResolverForJSP */
-    private ImplicitObjectResolver(Map<String, ImplicitObject> implicitObjects) {
+    private ImplicitObjectResolver(Map<String, ImplicitObject> implicitObjects)
+    {
         this();
         this.implicitObjects = implicitObjects;
     }
 
-    public void setValue(ELContext context, Object base, Object property, Object value) 
-        throws NullPointerException, PropertyNotFoundException, PropertyNotWritableException, ELException {
-        
-        if (base != null) return;
-        if (property == null) throw new PropertyNotFoundException();
-        if (!(property instanceof String)) return;
-        
+    @Override
+    public void setValue(ELContext context, Object base, Object property, Object value) throws NullPointerException,
+        PropertyNotFoundException, PropertyNotWritableException, ELException
+    {
+
+        if (base != null)
+            return;
+        if (property == null)
+            throw new PropertyNotFoundException();
+        if (!(property instanceof String))
+            return;
+
         String strProperty = castAndIntern(property);
-        
-        if (implicitObjects.containsKey(strProperty)) {
+
+        if (implicitObjects.containsKey(strProperty))
+        {
             throw new PropertyNotWritableException();
         }
     }
-    
-    public boolean isReadOnly(ELContext context, Object base, Object property) 
-        throws NullPointerException, PropertyNotFoundException, ELException {
-        
-        if (base != null) return false;
-        if (property == null) throw new PropertyNotFoundException();
-        if (!(property instanceof String)) return false;
-        
+
+    @Override
+    public boolean isReadOnly(ELContext context, Object base, Object property) throws NullPointerException,
+        PropertyNotFoundException, ELException
+    {
+
+        if (base != null)
+            return false;
+        if (property == null)
+            throw new PropertyNotFoundException();
+        if (!(property instanceof String))
+            return false;
+
         String strProperty = castAndIntern(property);
-        
-        if (implicitObjects.containsKey(strProperty)) {
+
+        if (implicitObjects.containsKey(strProperty))
+        {
             context.setPropertyResolved(true);
             return true;
         }
-        
+
         return false;
     }
 
-    public Object getValue(ELContext context, Object base, Object property) 
-        throws NullPointerException, PropertyNotFoundException, ELException {
+    @Override
+    public Object getValue(ELContext context, Object base, Object property) throws NullPointerException,
+        PropertyNotFoundException, ELException
+    {
 
-        if (base != null) return null;
-        if (property == null) throw new PropertyNotFoundException();      
-        if (!(property instanceof String)) return null;
-            
+        if (base != null)
+            return null;
+        if (property == null)
+            throw new PropertyNotFoundException();
+        if (!(property instanceof String))
+            return null;
+
         String strProperty = castAndIntern(property);
 
         ImplicitObject obj = implicitObjects.get(strProperty);
-        if (obj != null) {
+        if (obj != null)
+        {
             context.setPropertyResolved(true);
             return obj.getValue(context);
         }
-        
+
         return null;
     }
 
-    public Class<?> getType(ELContext context, Object base, Object property) 
-        throws NullPointerException, PropertyNotFoundException, ELException {
-        
-        if (base != null) return null;
-        if (property == null) throw new PropertyNotFoundException();
-        if (!(property instanceof String)) return null;
-        
+    @Override
+    public Class<?> getType(ELContext context, Object base, Object property) throws NullPointerException,
+        PropertyNotFoundException, ELException
+    {
+
+        if (base != null)
+            return null;
+        if (property == null)
+            throw new PropertyNotFoundException();
+        if (!(property instanceof String))
+            return null;
+
         String strProperty = castAndIntern(property);
-        
-        if (implicitObjects.containsKey(strProperty)) {
+
+        if (implicitObjects.containsKey(strProperty))
+        {
             context.setPropertyResolved(true);
         }
-        
+
         return null;
     }
 
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
-        if (base != null) return null;
+    @Override
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base)
+    {
+        if (base != null)
+            return null;
 
         ArrayList<FeatureDescriptor> descriptors = new ArrayList<FeatureDescriptor>(implicitObjects.size());
-        
-        for (ImplicitObject obj: implicitObjects.values()) {
+
+        for (ImplicitObject obj : implicitObjects.values())
+        {
             descriptors.add(obj.getDescriptor());
-         }
-        
+        }
+
         return descriptors.iterator();
     }
 
-    public Class<?> getCommonPropertyType(ELContext context, Object base) {
-        if (base != null) return null;
-        
+    @Override
+    public Class<?> getCommonPropertyType(ELContext context, Object base)
+    {
+        if (base != null)
+            return null;
+
         return String.class;
     }
-    
-    protected String castAndIntern(Object o) {
+
+    protected String castAndIntern(Object o)
+    {
         String s = (String)o;
         return s.intern();
     }
-    
+
 }

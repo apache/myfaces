@@ -268,7 +268,7 @@ public abstract class UIComponent implements StateHolder
         FacesContext context = getFacesContext();
         Locale locale = context.getViewRoot().getLocale();
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        
+
         try
         {
             // looks for a ResourceBundle with a base name equal to the fully qualified class
@@ -277,21 +277,19 @@ public abstract class UIComponent implements StateHolder
         }
         catch (MissingResourceException e)
         {
-            /* 
-             * If no such bundle is found, and the component is a composite component, let resourceName be the 
-             * resourceName of the Resource for this composite component, replacing the file extension with 
-             * ".properties". Let libraryName be the libraryName of the the Resource for this composite component. 
-             * Call ResourceHandler.createResource(java.lang.String,java.lang.String), passing the derived resourceName 
-             * and libraryName. Note that this will automatically allow for the localization of the ResourceBundle due 
-             * to the localization facility implemented in createResource, which is specified in section 2.6.1.3 of 
-             * the spec prose document. If the resultant Resource exists and can be found, the InputStream for the 
-             * resource is used to create a ResourceBundle. If either of the two previous steps for obtaining the 
-             * ResourceBundle for this component is successful, the ResourceBundle is wrapped in a Map<String, String> 
-             * and returned.
+            /*
+             * If no such bundle is found, and the component is a composite component, let resourceName be the
+             * resourceName of the Resource for this composite component, replacing the file extension with
+             * ".properties". Let libraryName be the libraryName of the the Resource for this composite component. Call
+             * ResourceHandler.createResource(java.lang.String,java.lang.String), passing the derived resourceName and
+             * libraryName. Note that this will automatically allow for the localization of the ResourceBundle due to
+             * the localization facility implemented in createResource, which is specified in section 2.6.1.3 of the
+             * spec prose document. If the resultant Resource exists and can be found, the InputStream for the resource
+             * is used to create a ResourceBundle. If either of the two previous steps for obtaining the ResourceBundle
+             * for this component is successful, the ResourceBundle is wrapped in a Map<String, String> and returned.
              */
-            
+
             // TODO: JSF 2.0 #44
-            
             // Otherwise Collections.EMPTY_MAP is returned.
             resourceMap = Collections.emptyMap();
         }
@@ -510,7 +508,7 @@ public abstract class UIComponent implements StateHolder
                     }
                 });
             }
-            
+
             return set;
         }
 

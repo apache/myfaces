@@ -45,6 +45,7 @@ public class LifecycleFactoryImpl extends LifecycleFactory
         addLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE, new LifecycleImpl());
     }
 
+    @Override
     public void addLifecycle(String id, Lifecycle lifecycle)
     {
         synchronized (_lifecycles)
@@ -57,6 +58,7 @@ public class LifecycleFactoryImpl extends LifecycleFactory
         }
     }
 
+    @Override
     public Lifecycle getLifecycle(String id) throws FacesException
     {
         synchronized (_lifecycles)
@@ -70,6 +72,7 @@ public class LifecycleFactoryImpl extends LifecycleFactory
         }
     }
 
+    @Override
     public Iterator<String> getLifecycleIds()
     {
         return _lifecycles.keySet().iterator();

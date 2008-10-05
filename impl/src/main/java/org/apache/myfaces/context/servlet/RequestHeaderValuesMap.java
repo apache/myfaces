@@ -44,6 +44,7 @@ public final class RequestHeaderValuesMap extends AbstractAttributeMap<String[]>
         _httpServletRequest = httpServletRequest;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     protected String[] getAttribute(final String key)
     {
@@ -56,16 +57,19 @@ public final class RequestHeaderValuesMap extends AbstractAttributeMap<String[]>
         return ret;
     }
 
+    @Override
     protected void setAttribute(final String key, final String[] value)
     {
         throw new UnsupportedOperationException("Cannot set HttpServletRequest HeaderValues");
     }
 
+    @Override
     protected void removeAttribute(final String key)
     {
         throw new UnsupportedOperationException("Cannot remove HttpServletRequest HeaderValues");
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     protected Enumeration<String> getAttributeNames()
     {

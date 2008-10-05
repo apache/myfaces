@@ -62,6 +62,7 @@ public class LifecycleImpl extends Lifecycle
         renderExecutor = new RenderResponseExecutor();
     }
 
+    @Override
     public void execute(FacesContext facesContext) throws FacesException
     {
         // refresh all configuration information if according web-xml parameter is set.
@@ -141,6 +142,7 @@ public class LifecycleImpl extends Lifecycle
         return skipFurtherProcessing;
     }
 
+    @Override
     public void render(FacesContext facesContext) throws FacesException
     {
         // if the response is complete we should not be invoking the phase listeners
@@ -213,6 +215,7 @@ public class LifecycleImpl extends Lifecycle
         return flag;
     }
 
+    @Override
     public void addPhaseListener(PhaseListener phaseListener)
     {
         if (phaseListener == null)
@@ -226,6 +229,7 @@ public class LifecycleImpl extends Lifecycle
         }
     }
 
+    @Override
     public void removePhaseListener(PhaseListener phaseListener)
     {
         if (phaseListener == null)
@@ -239,6 +243,7 @@ public class LifecycleImpl extends Lifecycle
         }
     }
 
+    @Override
     public PhaseListener[] getPhaseListeners()
     {
         synchronized (_phaseListenerList)

@@ -75,6 +75,7 @@ public class PhaseListenerTag extends TagSupport
         this.binding = binding;
     }
 
+    @Override
     public int doStartTag() throws JspException
     {
 
@@ -89,13 +90,14 @@ public class PhaseListenerTag extends TagSupport
         {
             if (parent instanceof UIComponentELTag)
             {
-                parentTag = (UIComponentELTag) parent;
+                parentTag = (UIComponentELTag)parent;
             }
         }
 
         if (parentTag == null)
         {
-            throw new JspException("Not nested in a UIViewRoot Error for tag with handler class: " + this.getClass().getName());
+            throw new JspException("Not nested in a UIViewRoot Error for tag with handler class: "
+                    + this.getClass().getName());
         }
 
         if (!parentTag.getCreated())
@@ -103,7 +105,7 @@ public class PhaseListenerTag extends TagSupport
             return SKIP_BODY;
         }
 
-        UIViewRoot root = (UIViewRoot) parentTag.getComponentInstance();
+        UIViewRoot root = (UIViewRoot)parentTag.getComponentInstance();
 
         // JSF-Spec 1.2 9.4.9
         // If binding is set, call binding.getValue() to obtain a reference to the
@@ -212,14 +214,14 @@ public class PhaseListenerTag extends TagSupport
             {
                 try
                 {
-                    phasesInstance = ClassUtils.newInstance((String) type.getValue(currentFacesContext.getELContext()));
+                    phasesInstance = ClassUtils.newInstance((String)type.getValue(currentFacesContext.getELContext()));
                 }
                 catch (FacesException ex)
                 {
                     throw new AbortProcessingException(ex.getMessage(), ex);
                 }
             }
-            return (PhaseListener) phasesInstance;
+            return (PhaseListener)phasesInstance;
 
         }
 

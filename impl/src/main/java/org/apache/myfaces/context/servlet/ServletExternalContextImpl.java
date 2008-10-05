@@ -421,6 +421,7 @@ public final class ServletExternalContextImpl extends ExternalContext implements
         }
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public Iterator<Locale> getRequestLocales()
     {

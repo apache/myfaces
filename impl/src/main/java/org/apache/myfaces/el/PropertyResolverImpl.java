@@ -40,10 +40,12 @@ public final class PropertyResolverImpl extends PropertyResolver
     // ----------------------------------------
 
     @Override
-    public Object getValue(final Object base, final Object property) throws EvaluationException, PropertyNotFoundException
+    public Object getValue(final Object base, final Object property) throws EvaluationException,
+        PropertyNotFoundException
     {
         return invokeResolver(new ResolverInvoker<Object>(base, property)
         {
+            @Override
             public Object invoke(ELResolver resolver, ELContext context)
             {
                 return getELResolver().getValue(getELContext(), base, property);
@@ -59,7 +61,7 @@ public final class PropertyResolverImpl extends PropertyResolver
 
     @Override
     public void setValue(final Object base, final Object property, final Object newValue) throws EvaluationException,
-                                                                                         PropertyNotFoundException
+        PropertyNotFoundException
     {
         if (base == null || property == null)
             throw new PropertyNotFoundException();
@@ -89,14 +91,14 @@ public final class PropertyResolverImpl extends PropertyResolver
 
         if (base instanceof Object[])
         {
-            if (index < 0 || index >= ((Object[]) base).length)
+            if (index < 0 || index >= ((Object[])base).length)
             {
                 throw new PropertyNotFoundException();
             }
         }
         else if (base instanceof List)
         {
-            if (index < 0 || index >= ((List<?>) base).size())
+            if (index < 0 || index >= ((List<?>)base).size())
             {
                 throw new PropertyNotFoundException();
             }
@@ -110,6 +112,7 @@ public final class PropertyResolverImpl extends PropertyResolver
     {
         return invokeResolver(new ResolverInvoker<Boolean>(base, property)
         {
+            @Override
             public Boolean invoke(ELResolver resolver, ELContext context)
             {
                 return Boolean.valueOf(getELResolver().isReadOnly(getELContext(), base, property));
@@ -131,6 +134,7 @@ public final class PropertyResolverImpl extends PropertyResolver
 
         return invokeResolver(new ResolverInvoker<Class<?>>(base, property)
         {
+            @Override
             public Class<?> invoke(final ELResolver resolver, final ELContext context)
             {
                 return resolver.getType(context, base, property);
@@ -146,14 +150,14 @@ public final class PropertyResolverImpl extends PropertyResolver
 
         if (base instanceof Object[])
         {
-            if (index < 0 || index >= ((Object[]) base).length)
+            if (index < 0 || index >= ((Object[])base).length)
             {
                 throw new PropertyNotFoundException();
             }
         }
         else if (base instanceof List)
         {
-            if (index < 0 || index >= ((List<?>) base).size())
+            if (index < 0 || index >= ((List<?>)base).size())
             {
                 throw new PropertyNotFoundException();
             }
@@ -188,7 +192,8 @@ public final class PropertyResolverImpl extends PropertyResolver
         }
         catch (javax.el.PropertyNotFoundException e)
         {
-            throw new PropertyNotFoundException("property not found: " + invoker.getMessage() + ": " + e.getMessage(), e);
+            throw new PropertyNotFoundException("property not found: " + invoker.getMessage() + ": " + e.getMessage(),
+                e);
         }
         catch (ELException e)
         {

@@ -28,16 +28,15 @@ import javax.servlet.jsp.tagext.TagSupport;
 /**
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
- *
+ * 
  * @since 1.2
  */
-public abstract class ConverterELTag
-        extends TagSupport
+public abstract class ConverterELTag extends TagSupport
 {
     private static final long serialVersionUID = -616834506829108081L;
 
-    public int doStartTag()
-            throws JspException
+    @Override
+    public int doStartTag() throws JspException
     {
         UIComponentClassicTagBase componentTag = UIComponentELTag.getParentUIComponentClassicTagBase(pageContext);
         if (componentTag == null)
@@ -66,6 +65,5 @@ public abstract class ConverterELTag
         return Tag.SKIP_BODY;
     }
 
-    protected abstract Converter createConverter()
-            throws JspException;
+    protected abstract Converter createConverter() throws JspException;
 }

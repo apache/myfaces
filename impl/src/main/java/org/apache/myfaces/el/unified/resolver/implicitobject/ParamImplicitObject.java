@@ -37,21 +37,25 @@ public class ParamImplicitObject extends ImplicitObject
     {
     }
 
+    @Override
     public Object getValue(ELContext context)
     {
         return externalContext(context).getRequestParameterMap();
     }
 
+    @Override
     public String getName()
     {
         return NAME;
     }
 
+    @Override
     public Class<?> getType()
     {
         return null;
     }
 
+    @Override
     public FeatureDescriptor getDescriptor()
     {
         return makeDescriptor(NAME,

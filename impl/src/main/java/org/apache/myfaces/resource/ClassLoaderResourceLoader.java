@@ -31,36 +31,30 @@ import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 
 /**
- * A resource loader implementation which loads resources
- * from the thread ClassLoader.
- *
+ * A resource loader implementation which loads resources from the thread ClassLoader.
+ * 
  */
 public class ClassLoaderResourceLoader extends ResourceLoader
 {
     /**
-     * It checks version like this:
-     * 1, 1_0, 1_0_0, 100_100
+     * It checks version like this: 1, 1_0, 1_0_0, 100_100
      * 
      * Used on getLibraryVersion to filter resource directories
      **/
-    protected static Pattern VERSION_CHECKER = Pattern
-            .compile("\\p{Digit}+(_\\p{Digit}*)*");
+    protected static Pattern VERSION_CHECKER = Pattern.compile("\\p{Digit}+(_\\p{Digit}*)*");
 
     /**
-     * It checks version like this:
-     * /1.js, /1_0.js, /1_0_0.js, /100_100.js
+     * It checks version like this: /1.js, /1_0.js, /1_0_0.js, /100_100.js
      * 
      * Used on getResourceVersion to filter resources
      **/
-    protected static Pattern RESOURCE_VERSION_CHECKER = Pattern
-            .compile("/\\p{Digit}+(_\\p{Digit}*)*\\..*");
+    protected static Pattern RESOURCE_VERSION_CHECKER = Pattern.compile("/\\p{Digit}+(_\\p{Digit}*)*\\..*");
 
     private FileFilter _libraryFileFilter = new FileFilter()
     {
         public boolean accept(File pathname)
         {
-            if (pathname.isDirectory()
-                    && VERSION_CHECKER.matcher(pathname.getName()).matches())
+            if (pathname.isDirectory() && VERSION_CHECKER.matcher(pathname.getName()).matches())
             {
                 return true;
             }
@@ -72,9 +66,7 @@ public class ClassLoaderResourceLoader extends ResourceLoader
     {
         public boolean accept(File pathname)
         {
-            if (pathname.isDirectory()
-                    && RESOURCE_VERSION_CHECKER.matcher(pathname.getName())
-                            .matches())
+            if (pathname.isDirectory() && RESOURCE_VERSION_CHECKER.matcher(pathname.getName()).matches())
             {
                 return true;
             }
@@ -98,21 +90,21 @@ public class ClassLoaderResourceLoader extends ResourceLoader
 
         if (url == null)
         {
-            //This library does not exists for this
-            //ResourceLoader
+            // This library does not exists for this
+            // ResourceLoader
             return null;
         }
 
-        //The problem here is how to scan the directory. When a ClassLoader
-        //is used two cases could occur
+        // The problem here is how to scan the directory. When a ClassLoader
+        // is used two cases could occur
         // 1. The files are unpacked so we can use Url.toURI and crawl
-        //    the directory using the api for files.
+        // the directory using the api for files.
         // 2. The files are packed in a jar. This case is more tricky,
-        //    because we only have a URL. Checking the jar api we can use
-        //    JarURLConnection (Sounds strange, but the api of 
-        //    URL.openConnection says that for a jar connection a 
-        //    JarURLConnection is returned). From this point we can access
-        //    to the jar api and solve the algoritm.
+        // because we only have a URL. Checking the jar api we can use
+        // JarURLConnection (Sounds strange, but the api of
+        // URL.openConnection says that for a jar connection a
+        // JarURLConnection is returned). From this point we can access
+        // to the jar api and solve the algoritm.
         if (url.getProtocol().equals("file"))
         {
             try
@@ -128,8 +120,7 @@ public class ClassLoaderResourceLoader extends ResourceLoader
                         {
                             libraryVersion = version;
                         }
-                        else if (getVersionComparator().compare(libraryVersion,
-                                version) < 0)
+                        else if (getVersionComparator().compare(libraryVersion, version) < 0)
                         {
                             libraryVersion = version;
                         }
@@ -139,7 +130,7 @@ public class ClassLoaderResourceLoader extends ResourceLoader
             catch (URISyntaxException e)
             {
                 // Just return null, because library version cannot be
-                //resolved.
+                // resolved.
             }
         }
         else if (url.getProtocol().equals("jar"))
@@ -150,8 +141,7 @@ public class ClassLoaderResourceLoader extends ResourceLoader
 
                 if (url != null)
                 {
-                    JarURLConnection conn = (JarURLConnection) url
-                            .openConnection();
+                    JarURLConnection conn = (JarURLConnection)url.openConnection();
 
                     if (conn.getJarEntry().isDirectory())
                     {
@@ -159,8 +149,7 @@ public class ClassLoaderResourceLoader extends ResourceLoader
                         // because there is no proper api to scan it as a
                         // directory tree.
                         JarFile file = conn.getJarFile();
-                        for (Enumeration<JarEntry> en = file.entries(); en
-                                .hasMoreElements();)
+                        for (Enumeration<JarEntry> en = file.entries(); en.hasMoreElements();)
                         {
                             JarEntry entry = en.nextElement();
                             String entryName = entry.getName();
@@ -169,23 +158,21 @@ public class ClassLoaderResourceLoader extends ResourceLoader
                             {
                                 if (entryName.length() == path.length() + 1)
                                 {
-                                    //the same string, just skip it
+                                    // the same string, just skip it
                                     continue;
                                 }
 
                                 if (entryName.charAt(entryName.length() - 1) != '/')
                                 {
-                                    //Skip files
+                                    // Skip files
                                     continue;
                                 }
 
-                                entryName = entryName.substring(
-                                        path.length() + 1,
-                                        entryName.length() - 1);
+                                entryName = entryName.substring(path.length() + 1, entryName.length() - 1);
 
                                 if (entryName.indexOf('/') >= 0)
                                 {
-                                    //Inner Directory
+                                    // Inner Directory
                                     continue;
                                 }
 
@@ -194,8 +181,7 @@ public class ClassLoaderResourceLoader extends ResourceLoader
                                 {
                                     libraryVersion = version;
                                 }
-                                else if (getVersionComparator().compare(
-                                        libraryVersion, version) < 0)
+                                else if (getVersionComparator().compare(libraryVersion, version) < 0)
                                 {
                                     libraryVersion = version;
                                 }
@@ -207,7 +193,7 @@ public class ClassLoaderResourceLoader extends ResourceLoader
             catch (IOException e)
             {
                 // Just return null, because library version cannot be
-                //resolved.
+                // resolved.
             }
         }
         return libraryVersion;
@@ -218,13 +204,11 @@ public class ClassLoaderResourceLoader extends ResourceLoader
     {
         if (getPrefix() != null && !"".equals(getPrefix()))
         {
-            return getClassLoader().getResourceAsStream(
-                    getPrefix() + '/' + resourceMeta.toString());
+            return getClassLoader().getResourceAsStream(getPrefix() + '/' + resourceMeta.toString());
         }
         else
         {
-            return getClassLoader()
-                    .getResourceAsStream(resourceMeta.toString());
+            return getClassLoader().getResourceAsStream(resourceMeta.toString());
         }
     }
 
@@ -233,8 +217,7 @@ public class ClassLoaderResourceLoader extends ResourceLoader
     {
         if (getPrefix() != null && !"".equals(getPrefix()))
         {
-            return getClassLoader().getResource(
-                    getPrefix() + '/' + resourceMeta.toString());
+            return getClassLoader().getResource(getPrefix() + '/' + resourceMeta.toString());
         }
         else
         {
@@ -254,8 +237,8 @@ public class ClassLoaderResourceLoader extends ResourceLoader
 
         if (url == null)
         {
-            //This library does not exists for this
-            //ResourceLoader
+            // This library does not exists for this
+            // ResourceLoader
             return null;
         }
 
@@ -274,8 +257,7 @@ public class ClassLoaderResourceLoader extends ResourceLoader
                         {
                             resourceVersion = version;
                         }
-                        else if (getVersionComparator().compare(
-                                resourceVersion, version) < 0)
+                        else if (getVersionComparator().compare(resourceVersion, version) < 0)
                         {
                             resourceVersion = version;
                         }
@@ -295,15 +277,13 @@ public class ClassLoaderResourceLoader extends ResourceLoader
 
                 if (url != null)
                 {
-                    JarURLConnection conn = (JarURLConnection) url
-                            .openConnection();
+                    JarURLConnection conn = (JarURLConnection)url.openConnection();
 
                     if (conn.getJarEntry().isDirectory())
                     {
                         // Unfortunately, we have to scan all entry files
                         JarFile file = conn.getJarFile();
-                        for (Enumeration<JarEntry> en = file.entries(); en
-                                .hasMoreElements();)
+                        for (Enumeration<JarEntry> en = file.entries(); en.hasMoreElements();)
                         {
                             JarEntry entry = en.nextElement();
                             String entryName = entry.getName();
@@ -312,23 +292,21 @@ public class ClassLoaderResourceLoader extends ResourceLoader
                             {
                                 if (entryName.length() == path.length() + 1)
                                 {
-                                    //the same string, just skip it
+                                    // the same string, just skip it
                                     continue;
                                 }
 
                                 if (entryName.charAt(entryName.length() - 1) != '/')
                                 {
-                                    //Skip files
+                                    // Skip files
                                     continue;
                                 }
 
-                                entryName = entryName.substring(
-                                        path.length() + 1,
-                                        entryName.length() - 1);
+                                entryName = entryName.substring(path.length() + 1, entryName.length() - 1);
 
                                 if (entryName.indexOf('/') >= 0)
                                 {
-                                    //Inner Directory
+                                    // Inner Directory
                                     continue;
                                 }
 
@@ -337,8 +315,7 @@ public class ClassLoaderResourceLoader extends ResourceLoader
                                 {
                                     resourceVersion = version;
                                 }
-                                else if (getVersionComparator().compare(
-                                        resourceVersion, version) < 0)
+                                else if (getVersionComparator().compare(resourceVersion, version) < 0)
                                 {
                                     resourceVersion = version;
                                 }
@@ -350,23 +327,23 @@ public class ClassLoaderResourceLoader extends ResourceLoader
             catch (IOException e)
             {
                 // Just return null, because library version cannot be
-                //resolved.
+                // resolved.
             }
         }
         return resourceVersion;
     }
 
-    public ResourceMeta createResourceMeta(String prefix, String libraryName,
-            String libraryVersion, String resourceName, String resourceVersion)
+    @Override
+    public ResourceMeta createResourceMeta(String prefix, String libraryName, String libraryVersion,
+                                           String resourceName, String resourceVersion)
     {
-        return new ResourceMeta(prefix, libraryName, libraryVersion,
-                resourceName, resourceVersion);
+        return new ResourceMeta(prefix, libraryName, libraryVersion, resourceName, resourceVersion);
     }
 
     /**
-     * Returns the ClassLoader to use when looking up resources under the top
-     * level package.  By default, this is the context class loader.
-     *
+     * Returns the ClassLoader to use when looking up resources under the top level package. By default, this is the
+     * context class loader.
+     * 
      * @return the ClassLoader used to lookup resources
      */
     protected ClassLoader getClassLoader()
@@ -387,8 +364,7 @@ public class ClassLoaderResourceLoader extends ResourceLoader
         }
         else
         {
-            URL url = getClassLoader().getResource(
-                    getPrefix() + '/' + libraryName);
+            URL url = getClassLoader().getResource(getPrefix() + '/' + libraryName);
             if (url != null)
             {
                 return true;

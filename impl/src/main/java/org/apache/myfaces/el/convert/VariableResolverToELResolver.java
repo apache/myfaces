@@ -70,6 +70,7 @@ public final class VariableResolverToELResolver extends ELResolver
         return variableResolver;
     }
 
+    @Override
     public Object getValue(ELContext context, Object base, Object property) throws NullPointerException,
             PropertyNotFoundException, ELException
     {
@@ -126,6 +127,7 @@ public final class VariableResolverToELResolver extends ELResolver
         return (FacesContext) context.getContext(FacesContext.class);
     }
 
+    @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base)
     {
         if (base != null)
@@ -134,6 +136,7 @@ public final class VariableResolverToELResolver extends ELResolver
         return String.class;
     }
 
+    @Override
     public void setValue(ELContext context, Object base, Object property, Object value) throws NullPointerException,
             PropertyNotFoundException, PropertyNotWritableException, ELException
     {
@@ -142,6 +145,7 @@ public final class VariableResolverToELResolver extends ELResolver
             throw new PropertyNotFoundException();
     }
 
+    @Override
     public boolean isReadOnly(ELContext context, Object base, Object property) throws NullPointerException,
             PropertyNotFoundException, ELException
     {
@@ -152,6 +156,7 @@ public final class VariableResolverToELResolver extends ELResolver
         return false;
     }
 
+    @Override
     public Class<?> getType(ELContext context, Object base, Object property) throws NullPointerException,
             PropertyNotFoundException, ELException
     {
@@ -162,6 +167,7 @@ public final class VariableResolverToELResolver extends ELResolver
         return null;
     }
 
+    @Override
     public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base)
     {
         return null;

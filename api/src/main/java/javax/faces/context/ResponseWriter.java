@@ -24,57 +24,39 @@ import java.io.Writer;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public abstract class ResponseWriter
-        extends Writer
+public abstract class ResponseWriter extends Writer
 {
     public abstract String getContentType();
 
     public abstract String getCharacterEncoding();
 
-    public abstract void flush()
-            throws IOException;
+    @Override
+    public abstract void flush() throws IOException;
 
-    public abstract void startDocument()
-            throws IOException;
+    public abstract void startDocument() throws IOException;
 
-    public abstract void endDocument()
-            throws IOException;
+    public abstract void endDocument() throws IOException;
 
-    public abstract void startElement(String name,
-                                      UIComponent component)
-            throws IOException;
+    public abstract void startElement(String name, UIComponent component) throws IOException;
 
-    public abstract void endElement(String name)
-            throws IOException;
+    public abstract void endElement(String name) throws IOException;
 
-    public abstract void writeAttribute(String name,
-                                        Object value,
-                                        String property)
-            throws IOException;
+    public abstract void writeAttribute(String name, Object value, String property) throws IOException;
 
-    public abstract void writeURIAttribute(String name,
-                                           Object value,
-                                           String property)
-            throws IOException;
+    public abstract void writeURIAttribute(String name, Object value, String property) throws IOException;
 
-    public abstract void writeComment(Object comment)
-            throws IOException;
+    public abstract void writeComment(Object comment) throws IOException;
 
-    public abstract void writeText(Object text,
-                                   String property)
-            throws IOException;
+    public abstract void writeText(Object text, String property) throws IOException;
 
-    public abstract void writeText(char[] text,
-                                   int off,
-                                   int len)
-            throws IOException;
+    public abstract void writeText(char[] text, int off, int len) throws IOException;
 
     public abstract ResponseWriter cloneWithWriter(Writer writer);
-    
+
     /**
      * @since 1.2
      */

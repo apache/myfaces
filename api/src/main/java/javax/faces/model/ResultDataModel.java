@@ -25,7 +25,7 @@ import javax.servlet.jsp.jstl.sql.Result;
 //import javax.servlet.jsp.
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -43,11 +43,13 @@ public class ResultDataModel extends DataModel
 
     public ResultDataModel(Result result)
     {
-        if (result == null) throw new NullPointerException("result");
+        if (result == null)
+            throw new NullPointerException("result");
         setWrappedData(result);
     }
 
     // METHODS
+    @Override
     public int getRowCount()
     {
         if (getRows() == null)
@@ -57,6 +59,7 @@ public class ResultDataModel extends DataModel
         return getRows().length;
     }
 
+    @Override
     public Object getRowData()
     {
         if (getRows() == null)
@@ -70,16 +73,19 @@ public class ResultDataModel extends DataModel
         return getRows()[_rowIndex];
     }
 
+    @Override
     public int getRowIndex()
     {
         return _rowIndex;
     }
 
+    @Override
     public Object getWrappedData()
     {
         return _data;
     }
 
+    @Override
     public boolean isRowAvailable()
     {
         if (getRows() == null)
@@ -89,6 +95,7 @@ public class ResultDataModel extends DataModel
         return _rowIndex >= 0 && _rowIndex < getRows().length;
     }
 
+    @Override
     public void setRowIndex(int rowIndex)
     {
         if (rowIndex < -1)
@@ -109,14 +116,15 @@ public class ResultDataModel extends DataModel
         }
     }
 
-    private SortedMap[] getRows()
+    private SortedMap<?, ?>[] getRows()
     {
-        if(_data==null)
+        if (_data == null)
             return null;
 
         return _data.getRows();
     }
 
+    @Override
     public void setWrappedData(Object data)
     {
         if (data == null)

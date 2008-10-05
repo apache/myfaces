@@ -30,14 +30,14 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
- *
+ * 
  * @deprecated replaced by {@link ValidatorELTag}
  */
-public class ValidatorTag
-        extends TagSupport
+@Deprecated
+public class ValidatorTag extends TagSupport
 {
     private static final long serialVersionUID = 8794036166323016663L;
     private String _validatorId;
@@ -48,8 +48,8 @@ public class ValidatorTag
         _validatorId = validatorId;
     }
 
-    public int doStartTag()
-            throws javax.servlet.jsp.JspException
+    @Override
+    public int doStartTag() throws JspException
     {
         UIComponentTag componentTag = UIComponentTag.getParentUIComponentTag(pageContext);
         if (componentTag == null)
@@ -77,6 +77,7 @@ public class ValidatorTag
         return Tag.SKIP_BODY;
     }
 
+    @Override
     public void release()
     {
         super.release();
@@ -84,22 +85,27 @@ public class ValidatorTag
         _binding = null;
     }
 
-    protected Validator createValidator()
-            throws JspException
+    /**
+     * @throws JspException  
+     */
+    protected Validator createValidator() throws JspException
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Application application = facesContext.getApplication();
-        
-        if(_binding != null) {
+
+        if (_binding != null)
+        {
             ValueBinding vb = application.createValueBinding(_binding);
-            if(vb != null) {
-                Validator validator = (Validator) vb.getValue(facesContext);
-                if(validator != null) {
+            if (vb != null)
+            {
+                Validator validator = (Validator)vb.getValue(facesContext);
+                if (validator != null)
+                {
                     return validator;
                 }
             }
         }
-        
+
         if (UIComponentTag.isValueReference(_validatorId))
         {
             ValueBinding vb = facesContext.getApplication().createValueBinding(_validatorId);
@@ -107,9 +113,9 @@ public class ValidatorTag
         }
 
         return application.createValidator(_validatorId);
-        
+
     }
-    
+
     /**
      * 
      * @param binding
@@ -117,8 +123,8 @@ public class ValidatorTag
      * 
      * @deprecated
      */
-    public void setBinding(java.lang.String binding)
-            throws javax.servlet.jsp.JspException
+    @Deprecated
+    public void setBinding(java.lang.String binding) throws javax.servlet.jsp.JspException
     {
         if (binding != null && !UIComponentTag.isValueReference(binding))
         {

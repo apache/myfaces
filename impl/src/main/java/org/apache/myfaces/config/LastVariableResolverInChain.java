@@ -40,6 +40,7 @@ public class LastVariableResolverInChain extends VariableResolver
     }
 
     // METHODS
+    @Override
     public Object resolveVariable(FacesContext facesContext, String name) throws EvaluationException
     {
         return delegate.resolveVariable(facesContext, name);

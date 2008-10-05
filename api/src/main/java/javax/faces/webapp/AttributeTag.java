@@ -27,12 +27,13 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
+ * 
  * @deprecated the implementation of this clazz is now an implementation detail.
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class AttributeTag
-        extends TagSupport
+@Deprecated
+public class AttributeTag extends TagSupport
 {
     private static final long serialVersionUID = 3147657100171678632L;
     private String _name;
@@ -42,6 +43,7 @@ public class AttributeTag
      * @deprecated
      * @param name
      */
+    @Deprecated
     public void setName(String name)
     {
         _name = name;
@@ -51,6 +53,7 @@ public class AttributeTag
      * @deprecated
      * @param value
      */
+    @Deprecated
     public void setValue(String value)
     {
         _value = value;
@@ -59,6 +62,8 @@ public class AttributeTag
     /**
      * @deprecated
      */
+    @Override
+    @Deprecated
     public int doStartTag() throws JspException
     {
         UIComponentTag componentTag = UIComponentTag.getParentUIComponentTag(pageContext);
@@ -76,7 +81,7 @@ public class AttributeTag
         {
             Object value = getValue();
 
-            if(value != null)
+            if (value != null)
                 component.getAttributes().put(name, value);
         }
         return Tag.SKIP_BODY;
@@ -85,13 +90,14 @@ public class AttributeTag
     /**
      * @deprecated
      */
+    @Override
+    @Deprecated
     public void release()
     {
         super.release();
         _name = null;
         _value = null;
     }
-
 
     private String getName()
     {
@@ -101,7 +107,7 @@ public class AttributeTag
             ValueBinding vb = facesContext.getApplication().createValueBinding(_name);
             return (String)vb.getValue(facesContext);
         }
-        
+
         return _name;
     }
 
@@ -113,7 +119,7 @@ public class AttributeTag
             ValueBinding vb = facesContext.getApplication().createValueBinding(_value);
             return vb.getValue(facesContext);
         }
-        
+
         return _value;
     }
 

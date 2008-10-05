@@ -43,6 +43,7 @@ public class DateTimeConverterTest extends AbstractJsfTestCase
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception
     {
         super.setUp();
@@ -53,6 +54,7 @@ public class DateTimeConverterTest extends AbstractJsfTestCase
 
     }
 
+    @Override
     protected void tearDown() throws Exception
     {
         super.tearDown();
@@ -61,8 +63,8 @@ public class DateTimeConverterTest extends AbstractJsfTestCase
     }
 
     /*
-    * Test method for 'javax.faces.component.UIComponentBase.getAsObject()'
-    */
+     * Test method for 'javax.faces.component.UIComponentBase.getAsObject()'
+     */
     public void testGetAsObject()
     {
 
@@ -70,40 +72,40 @@ public class DateTimeConverterTest extends AbstractJsfTestCase
 
         mock.setPattern("MM/dd/yyyy");
 
-        //should trow a ConverterException
+        // should trow a ConverterException
         try
         {
-            mock.getAsObject(FacesContext.getCurrentInstance(),input,"15/15/15");
+            mock.getAsObject(FacesContext.getCurrentInstance(), input, "15/15/15");
 
-            assertTrue("this date should not be parsable - and it is, so this is wrong.",false);
+            assertTrue("this date should not be parsable - and it is, so this is wrong.", false);
         }
         catch (ConverterException e)
         {
 
         }
 
-        //should not trow a ConverterException
+        // should not trow a ConverterException
         try
         {
-            Date date = (Date) mock.getAsObject(FacesContext.getCurrentInstance(),input,"12/01/01");
+            Date date = (Date) mock.getAsObject(FacesContext.getCurrentInstance(), input, "12/01/01");
 
             SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy");
             format.setTimeZone(TimeZone.getDefault());
 
             String str = format.format(date);
 
-            assertEquals("12/01/01",str);
+            assertEquals("12/01/01", str);
 
             format = new SimpleDateFormat("MM/dd/yyyy");
             format.setTimeZone(TimeZone.getDefault());
 
             str = format.format(date);
 
-            assertEquals("12/01/0001",str);            
+            assertEquals("12/01/0001", str);
         }
         catch (ConverterException e)
         {
-            assertTrue("this date should not be parsable - and it is, so this is wrong.",false);
+            assertTrue("this date should not be parsable - and it is, so this is wrong.", false);
         }
     }
 }

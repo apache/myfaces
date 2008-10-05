@@ -38,6 +38,7 @@ public class ApplicationTest extends TestCase
 {
     private Application app;
 
+    @Override
     protected void setUp() throws Exception
     {
         app = (Application) Enhancer.create(Application.class, NoOp.INSTANCE);

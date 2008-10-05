@@ -28,6 +28,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -526,10 +527,9 @@ public class FacesConfigurator
             while (facesConfigIt.hasNext())
             {
                 Map.Entry<String, URL> entry = facesConfigIt.next();
-                InputStream stream = null;
+                InputStream stream = openStreamWithoutCache(entry.getValue());
                 try
                 {
-                    openStreamWithoutCache(entry.getValue());
                     if (log.isInfoEnabled())
                     {
                         log.info("Reading config : " + entry.getKey());
@@ -539,10 +539,7 @@ public class FacesConfigurator
                 }
                 finally
                 {
-                    if (stream != null)
-                    {
-                        stream.close();
-                    }
+                    stream.close();
                 }
             }
         }
@@ -629,12 +626,11 @@ public class FacesConfigurator
                      DEFAULT_RENDER_KIT_FACTORY);
     }
 
-    private void setFactories(String factoryName, Iterator<String> factories, String defaultFactory)
+    private void setFactories(String factoryName, Collection<String> factories, String defaultFactory)
     {
         FactoryFinder.setFactory(factoryName, defaultFactory);
-        while (factories.hasNext())
+        for (String factory : factories)
         {
-            String factory = factories.next();
             if (!factory.equals(defaultFactory))
             {
                 FactoryFinder.setFactory(factoryName, factory);
@@ -662,8 +658,8 @@ public class FacesConfigurator
         Application application = ((ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY)).getApplication();
 
         FacesConfigDispenser<FacesConfig> dispenser = getDispenser();
-        application.setActionListener((ActionListener)getApplicationObject(ActionListener.class,
-                                                                           dispenser.getActionListenerIterator(), null));
+        application.setActionListener(getApplicationObject(ActionListener.class,
+                                                           dispenser.getActionListenerIterator(), null));
 
         if (dispenser.getDefaultLocale() != null)
         {
@@ -680,45 +676,43 @@ public class FacesConfigurator
             application.setMessageBundle(dispenser.getMessageBundle());
         }
 
-        application.setNavigationHandler((NavigationHandler)getApplicationObject(NavigationHandler.class,
-                                                                                 dispenser.getNavigationHandlerIterator(),
-                                                                                 application.getNavigationHandler()));
+        application.setNavigationHandler(getApplicationObject(NavigationHandler.class,
+                                                              dispenser.getNavigationHandlerIterator(),
+                                                              application.getNavigationHandler()));
 
-        application.setStateManager((StateManager)getApplicationObject(StateManager.class,
-                                                                       dispenser.getStateManagerIterator(),
-                                                                       application.getStateManager()));
+        application.setStateManager(getApplicationObject(StateManager.class,
+                                                         dispenser.getStateManagerIterator(),
+                                                         application.getStateManager()));
 
-        application.setResourceHandler((ResourceHandler)getApplicationObject(ResourceHandler.class,
-                                                                             dispenser.getResourceHandlerIterator(),
-                                                                             application.getResourceHandler()));
+        application.setResourceHandler(getApplicationObject(ResourceHandler.class,
+                                                            dispenser.getResourceHandlerIterator(),
+                                                            application.getResourceHandler()));
 
         List<Locale> locales = new ArrayList<Locale>();
-        for (Iterator<String> it = dispenser.getSupportedLocalesIterator(); it.hasNext();)
+        for (String locale : dispenser.getSupportedLocalesIterator())
         {
-            locales.add(LocaleUtils.toLocale((String) it.next()));
+            locales.add(LocaleUtils.toLocale(locale));
         }
 
         application.setSupportedLocales(locales);
 
-        application.setViewHandler((ViewHandler) getApplicationObject(ViewHandler.class,
-                                                                      dispenser.getViewHandlerIterator(),
-                                                                      application.getViewHandler()));
+        application.setViewHandler(getApplicationObject(ViewHandler.class,
+                                                        dispenser.getViewHandlerIterator(),
+                                                        application.getViewHandler()));
 
-        for (Iterator<String> it = dispenser.getComponentTypes(); it.hasNext();)
+        
+        for (String componentType : dispenser.getComponentTypes())
         {
-            String componentType = it.next();
             application.addComponent(componentType, dispenser.getComponentClass(componentType));
         }
 
-        for (Iterator<String> it = dispenser.getConverterIds(); it.hasNext();)
+        for (String converterId : dispenser.getConverterIds())
         {
-            String converterId = it.next();
             application.addConverter(converterId, dispenser.getConverterClassById(converterId));
         }
 
-        for (Iterator<String> it = dispenser.getConverterClasses(); it.hasNext();)
+        for (String converterClass : dispenser.getConverterClasses())
         {
-            String converterClass = it.next();
             try
             {
                 application.addConverter(ClassUtils.simpleClassForName(converterClass),
@@ -732,12 +726,10 @@ public class FacesConfigurator
 
         if (application instanceof ApplicationImpl)
         {
-            for (Iterator<String> it = dispenser.getConverterConfigurationByClassName(); it.hasNext();)
+            for (String converterClassName : dispenser.getConverterConfigurationByClassName())
             {
-                String converterClassName = it.next();
-
-                ((ApplicationImpl)application).addConverterConfiguration(converterClassName,
-                                                                         dispenser.getConverterConfiguration(converterClassName));
+                ApplicationImpl app = (ApplicationImpl)application;
+                app.addConverterConfiguration(converterClassName, dispenser.getConverterConfiguration(converterClassName));
             }
         }
 
@@ -748,13 +740,13 @@ public class FacesConfigurator
 
         RuntimeConfig runtimeConfig = getRuntimeConfig();
 
-        runtimeConfig.setPropertyResolverChainHead((PropertyResolver) getApplicationObject(PropertyResolver.class,
-                                                                                           dispenser.getPropertyResolverIterator(),
-                                                                                           new DefaultPropertyResolver()));
+        runtimeConfig.setPropertyResolverChainHead(getApplicationObject(PropertyResolver.class,
+                                                                        dispenser.getPropertyResolverIterator(),
+                                                                        new DefaultPropertyResolver()));
 
-        runtimeConfig.setVariableResolverChainHead((VariableResolver) getApplicationObject(VariableResolver.class,
-                                                                                           dispenser.getVariableResolverIterator(),
-                                                                                           new VariableResolverImpl()));
+        runtimeConfig.setVariableResolverChainHead(getApplicationObject(VariableResolver.class,
+                                                                        dispenser.getVariableResolverIterator(),
+                                                                        new VariableResolverImpl()));
     }
 
     /**
@@ -774,13 +766,12 @@ public class FacesConfigurator
         _runtimeConfig = runtimeConfig;
     }
 
-    private <T> T getApplicationObject(Class<T> interfaceClass, Iterator<String> classNamesIterator, T defaultObject)
+    private <T> T getApplicationObject(Class<T> interfaceClass, Collection<String> classNamesIterator, T defaultObject)
     {
         T current = defaultObject;
 
-        while (classNamesIterator.hasNext())
+        for (String implClassName : classNamesIterator)
         {
-            String implClassName = (String) classNamesIterator.next();
             Class<? extends T> implClass = ClassUtils.simpleClassForName(implClassName);
 
             // check, if class is of expected interface type
@@ -877,7 +868,7 @@ public class FacesConfigurator
         {
             for (Map.Entry<String, ManagedBean> entry : oldManagedBeans.entrySet())
             {
-                ManagedBean bean = (ManagedBean)entry.getValue();
+                ManagedBean bean = entry.getValue();
 
                 String scope = bean.getManagedBeanScope();
 

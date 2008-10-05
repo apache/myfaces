@@ -18,16 +18,14 @@
  */
 package org.apache.myfaces.mock;
 
-import org.apache.myfaces.TestRunner;
 import org.easymock.classextension.IMocksControl;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public abstract class ExceptionMockRunner extends MockRunner implements TestRunner
+public abstract class ExceptionMockRunner extends MockRunner
 {
-
     private final Throwable _exception;
 
     public ExceptionMockRunner(IMocksControl mockControl, Throwable exception)

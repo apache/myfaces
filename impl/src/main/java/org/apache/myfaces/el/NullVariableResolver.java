@@ -23,22 +23,24 @@ import javax.faces.el.EvaluationException;
 import javax.faces.el.VariableResolver;
 
 /**
- * This is the default VariableResolver.  See JSF 1.2 spec section 5.8.1
- *
+ * This is the default VariableResolver. See JSF 1.2 spec section 5.8.1
+ * 
  * @author Stan Silvert
  */
-public class NullVariableResolver extends VariableResolver {
-    
+public class NullVariableResolver extends VariableResolver
+{
+
     /** Creates a new instance of NullVariableResolver */
-    public NullVariableResolver() {
+    public NullVariableResolver()
+    {
     }
 
-    public Object resolveVariable(FacesContext facesContext, String name) 
-        throws EvaluationException {
-        
+    @Override
+    public Object resolveVariable(FacesContext facesContext, String name) throws EvaluationException
+    {
         facesContext.getELContext().setPropertyResolved(false);
-        
+
         return null;
     }
-    
+
 }

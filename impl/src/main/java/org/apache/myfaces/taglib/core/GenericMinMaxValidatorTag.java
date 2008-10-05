@@ -31,11 +31,10 @@ import javax.servlet.jsp.JspException;
  * @version $Revision$ $Date$
  * @since 1.2
  */
-public abstract class GenericMinMaxValidatorTag<T>
-    extends ValidatorTag
+public abstract class GenericMinMaxValidatorTag<T> extends ValidatorTag
 {
-    protected  ValueExpression _minimum;
-    protected  ValueExpression _maximum;
+    protected ValueExpression _minimum;
+    protected ValueExpression _maximum;
     protected T _min = null;
     protected T _max = null;
 
@@ -49,6 +48,7 @@ public abstract class GenericMinMaxValidatorTag<T>
         _maximum = maximum;
     }
 
+    @Override
     public void release()
     {
         _minimum = null;
@@ -58,26 +58,31 @@ public abstract class GenericMinMaxValidatorTag<T>
     }
 
     /**
-     * This method returns the Validator, you have to cast it to the correct type
-     * and apply the min and max values.
-     *  
+     * This method returns the Validator, you have to cast it to the correct type and apply the min and max values.
+     * 
      * @return
      * @throws JspException
      */
+    @Override
     protected Validator createValidator() throws JspException
     {
-        if (null == _minimum && null == _maximum){
+        if (null == _minimum && null == _maximum)
+        {
             throw new JspException("a minimum and / or a maximum have to be specified");
         }
         ELContext elContext = FacesContext.getCurrentInstance().getELContext();
-        if (null != _minimum){
+        if (null != _minimum)
+        {
             _min = getValue(_minimum.getValue(elContext));
         }
-        if (null != _maximum){
+        if (null != _maximum)
+        {
             _max = getValue(_maximum.getValue(elContext));
         }
-        if (null != _minimum && null != _maximum){
-            if (!isMinLTMax()){
+        if (null != _minimum && null != _maximum)
+        {
+            if (!isMinLTMax())
+            {
                 throw new JspException("maximum limit must be greater than the minimum limit");
             }
         }
@@ -91,6 +96,7 @@ public abstract class GenericMinMaxValidatorTag<T>
 
     /**
      * Wrapper method.
+     * 
      * @param value
      * @return
      */
