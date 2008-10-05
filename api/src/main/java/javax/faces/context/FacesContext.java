@@ -27,6 +27,7 @@ import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIViewRoot;
 import javax.faces.event.PhaseId;
+import javax.faces.render.RenderKit;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -136,10 +137,22 @@ public abstract class FacesContext
     public abstract Iterator<FacesMessage> getMessages();
 
     public abstract Iterator<FacesMessage> getMessages(String clientId);
+    
+    public ResponseWriter getPartialResponseWriter()
+    {
+        // TODO: JSF 2.0 #58
+        return null;
+    }
 
-    public abstract javax.faces.render.RenderKit getRenderKit();
+    public abstract RenderKit getRenderKit();
 
     public abstract boolean getRenderResponse();
+    
+    public List<String> getRenderPhaseClientIds()
+    {
+        // TODO: JSF 2.0 #59
+        return null;
+    }
 
     public abstract boolean getResponseComplete();
 
