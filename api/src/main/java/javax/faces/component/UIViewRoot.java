@@ -34,6 +34,7 @@ import javax.faces.FactoryFinder;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
+import javax.faces.event.AfterAddToParentEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.FacesEvent;
 import javax.faces.event.PhaseEvent;
@@ -106,7 +107,10 @@ public class UIViewRoot extends UIComponentBase
 
     public void processEvent(ComponentSystemEvent event)
     {
-        // TODO: JSF 2.0 #22
+        if (event != null && event.getClass().equals(AfterAddToParentEvent.class))
+        {
+            notifyListeners(getFacesContext(), PhaseId.RESTORE_VIEW, _afterPhaseListener, false);
+        }
     }
 
     @Override
