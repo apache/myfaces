@@ -366,6 +366,12 @@ public class FacesContextImpl extends FacesContext
         _released = true;
         FacesContext.setCurrentInstance(null);
     }
+    
+    @Override
+    public boolean isPostback()
+    {
+        return getRenderKit().getResponseStateManager().isPostback(this);
+    }
 
     @Override
     public final void renderResponse()

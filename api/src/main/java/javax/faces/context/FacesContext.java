@@ -182,8 +182,7 @@ public abstract class FacesContext
     
     public boolean isPostback()
     {
-        // TODO: JSF 2.0 #34
-        return false;
+        throw new UnsupportedOperationException();
     }
     
     public boolean isRenderAll()

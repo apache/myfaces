@@ -27,8 +27,11 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseStream;
 import javax.faces.context.ResponseWriter;
+import javax.faces.event.PhaseId;
 import javax.faces.render.RenderKit;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Convenient class to wrap the current FacesContext.
@@ -51,6 +54,12 @@ public class FacesContextWrapper extends FacesContext
     }
 
     // ~ Methods ------------------------------------------------------------------------------------
+    
+    @Override
+    public void enableResponseWriting(boolean enable)
+    {
+        _facesContext.enableResponseWriting(enable);
+    }
 
     @Override
     public Application getApplication()
@@ -59,9 +68,27 @@ public class FacesContextWrapper extends FacesContext
     }
 
     @Override
+    public Map<Object,Object> getAttributes()
+    {
+        return _facesContext.getAttributes();
+    }
+
+    @Override
     public Iterator<String> getClientIdsWithMessages()
     {
         return _facesContext.getClientIdsWithMessages();
+    }
+
+    @Override
+    public PhaseId getCurrentPhaseId()
+    {
+        return _facesContext.getCurrentPhaseId();
+    }
+    
+    @Override
+    public List<String> getExecutePhaseClientIds()
+    {
+        return _facesContext.getExecutePhaseClientIds();
     }
 
     @Override
@@ -141,6 +168,36 @@ public class FacesContextWrapper extends FacesContext
     {
         return _facesContext.getViewRoot();
     }
+    
+    @Override
+    public boolean isAjaxRequest()
+    {
+        return _facesContext.isAjaxRequest();
+    }
+    
+    @Override
+    public boolean isExecuteNone()
+    {
+        return _facesContext.isExecuteNone();
+    }
+    
+    @Override
+    public boolean isPostback()
+    {
+        return _facesContext.isPostback();
+    }
+    
+    @Override
+    public boolean isRenderAll()
+    {
+        return _facesContext.isRenderAll();
+    }
+    
+    @Override
+    public boolean isRenderNone()
+    {
+        return _facesContext.isRenderNone();
+    }
 
     @Override
     public void addMessage(String clientId, FacesMessage message)
@@ -165,10 +222,34 @@ public class FacesContextWrapper extends FacesContext
     {
         _facesContext.responseComplete();
     }
-
+    
     @Override
     public ELContext getELContext()
     {
         return _facesContext.getELContext();
+    }
+    
+    @Override
+    public void setCurrentPhaseId(PhaseId currentPhaseId)
+    {
+        _facesContext.setCurrentPhaseId(currentPhaseId);
+    }
+    
+    @Override
+    public void setExecutePhaseClientIds(List<String> executePhaseClientIds)
+    {
+        _facesContext.setExecutePhaseClientIds(executePhaseClientIds);
+    }
+    
+    @Override
+    public void setRenderAll(boolean renderAll)
+    {
+        _facesContext.setRenderAll(renderAll);
+    }
+    
+    @Override
+    public void setRenderPhaseClientIds(List<String> renderPhaseClientIds)
+    {
+        _facesContext.setRenderPhaseClientIds(renderPhaseClientIds);
     }
 }
