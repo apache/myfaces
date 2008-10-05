@@ -333,6 +333,6 @@ public abstract class Application
 
     public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener)
     {
-        throw new UnsupportedOperationException();
+        unsubscribeFromEvent(systemEventClass, null, listener);
     }
 }

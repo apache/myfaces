@@ -24,6 +24,7 @@ import javax.faces.application.ViewExpiredException;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AfterAddToParentEvent;
 import javax.faces.event.PhaseId;
 
 import org.apache.commons.logging.Log;
@@ -73,28 +74,49 @@ class RestoreViewExecutor implements PhaseExecutor
 
         // Determine if this request is a postback or initial request
         if (restoreViewSupport.isPostback(facesContext))
-        {
+        { // If the request is a postback
             if (log.isTraceEnabled())
                 log.trace("Request is a postback");
 
+            // call ViewHandler.restoreView(), passing the FacesContext instance for the current request and the 
+            // view identifier, and returning a UIViewRoot for the restored view.
             viewRoot = viewHandler.restoreView(facesContext, viewId);
             if (viewRoot == null)
             {
+                // If the return from ViewHandler.restoreView() is null, throw a ViewExpiredException with an 
+                // appropriate error message.
                 throw new ViewExpiredException("No saved view state could be found for the view identifier: " + viewId,
                     viewId);
             }
+            
+            // Restore binding
             restoreViewSupport.processComponentBinding(facesContext, viewRoot);
+            
+            // Store the restored UIViewRoot in the FacesContext.
+            facesContext.setViewRoot(viewRoot);
         }
         else
-        {
+        { // If the request is a non-postback
             if (log.isTraceEnabled())
                 log.trace("Request is not a postback. New UIViewRoot will be created");
 
+            // call ViewHandler.createView(), passing the FacesContext instance for the current request and 
+            // the view identifier
             viewRoot = viewHandler.createView(facesContext, viewId);
+            
+            // Subscribe the newly created UIViewRoot instance to the AfterAddToParent event, passing the 
+            // UIViewRoot instance itself as the listener.
+            viewRoot.subscribeToEvent(AfterAddToParentEvent.class, viewRoot);
+            
+            // Store the new UIViewRoot instance in the FacesContext.
+            facesContext.setViewRoot(viewRoot);
+            
+            // Call renderResponse() on the FacesContext.
             facesContext.renderResponse();
+            
+            // Publish an AfterAddToParent event with the created UIViewRoot as the event source.
+            application.publishEvent(AfterAddToParentEvent.class, viewRoot);
         }
-
-        facesContext.setViewRoot(viewRoot);
 
         return false;
     }

@@ -36,6 +36,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.AfterAddToParentEvent;
 import javax.faces.event.ComponentSystemEvent;
+import javax.faces.event.ComponentSystemEventListener;
 import javax.faces.event.FacesEvent;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
@@ -61,7 +62,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  */
 @JSFComponent(name = "f:view", bodyContent = "JSP", tagClass = "org.apache.myfaces.taglib.core.ViewTag")
 @JSFJspProperty(name = "binding", returnType = "java.lang.String", tagExcluded = true)
-public class UIViewRoot extends UIComponentBase
+public class UIViewRoot extends UIComponentBase implements ComponentSystemEventListener
 {
     public static final String COMPONENT_TYPE = "javax.faces.ViewRoot";
     public static final String COMPONENT_FAMILY = "javax.faces.ViewRoot";

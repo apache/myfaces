@@ -18,11 +18,14 @@
  */
 package javax.faces.application;
 
-import javax.faces.FacesException;
-import javax.faces.context.ExternalContext;
-
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
+
+import javax.faces.FacesException;
+import javax.faces.component.UIViewRoot;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 
 /**
  * A ViewHandler manages the component-tree-creation and component-tree-rendering parts of a request lifecycle (ie
@@ -68,7 +71,7 @@ public abstract class ViewHandler
     /**
      * @since JSF 1.2
      */
-    public String calculateCharacterEncoding(javax.faces.context.FacesContext context)
+    public String calculateCharacterEncoding(FacesContext context)
     {
         String _encoding = null;
         ExternalContext externalContext = context.getExternalContext();
@@ -107,7 +110,7 @@ public abstract class ViewHandler
      * This method should match such sources of data up and return the Locale object that is the best choice for
      * rendering the current application to the current user.
      */
-    public abstract Locale calculateLocale(javax.faces.context.FacesContext context);
+    public abstract Locale calculateLocale(FacesContext context);
 
     /**
      * Return the id of an available render-kit that should be used to map the JSF components into user presentation.
@@ -115,7 +118,7 @@ public abstract class ViewHandler
      * The render-kit selected (eg html, xhtml, pdf, xul, ...) may depend upon the user, properties associated with the
      * request, etc.
      */
-    public abstract String calculateRenderKitId(javax.faces.context.FacesContext context);
+    public abstract String calculateRenderKitId(FacesContext context);
 
     /**
      * Build a root node for a component tree.
@@ -132,7 +135,7 @@ public abstract class ViewHandler
      * is called. That means of course that they do NOT get set for GET requests, including navigation that has the
      * redirect flag set.
      */
-    public abstract javax.faces.component.UIViewRoot createView(javax.faces.context.FacesContext context, String viewId);
+    public abstract UIViewRoot createView(FacesContext context, String viewId);
 
     /**
      * Return a URL that a remote system can invoke in order to access the specified view.
@@ -140,7 +143,7 @@ public abstract class ViewHandler
      * Note that the URL a user enters and the viewId which is invoked can be different. The simplest difference is a
      * change in suffix (eg url "foo.jsf" references view "foo.jsp").
      */
-    public abstract String getActionURL(javax.faces.context.FacesContext context, String viewId);
+    public abstract String getActionURL(FacesContext context, String viewId);
 
     /**
      * Return a URL that a remote system can invoke in order to access the specified resource.
@@ -148,14 +151,14 @@ public abstract class ViewHandler
      * When path starts with a slash, it is relative to the webapp root. Otherwise it is relative to the value returned
      * by getActionURL.
      */
-    public abstract String getResourceURL(javax.faces.context.FacesContext context, String path);
+    public abstract String getResourceURL(FacesContext context, String path);
 
     /**
      * Method must be called by the JSF impl at the beginning of Phase <i>Restore View</i> of the JSF lifecycle.
      * 
      * @since JSF 1.2
      */
-    public void initView(javax.faces.context.FacesContext context) throws FacesException
+    public void initView(FacesContext context) throws FacesException
     {
         String _encoding = this.calculateCharacterEncoding(context);
         if (_encoding != null)
@@ -189,9 +192,7 @@ public abstract class ViewHandler
      * viewToRender will just contain an empty UIViewRoot object that must be populated with components from the
      * "view template".
      */
-    public abstract void renderView(javax.faces.context.FacesContext context,
-                                    javax.faces.component.UIViewRoot viewToRender) throws java.io.IOException,
-        FacesException;
+    public abstract void renderView(FacesContext context, UIViewRoot viewToRender) throws IOException, FacesException;
 
     /**
      * Handle a "postback" request by recreating the component tree that was most recently presented to the user for the
@@ -221,7 +222,7 @@ public abstract class ViewHandler
      * <p>
      * See writeState for more details.
      */
-    public abstract javax.faces.component.UIViewRoot restoreView(javax.faces.context.FacesContext context, String viewId);
+    public abstract UIViewRoot restoreView(FacesContext context, String viewId);
 
     /**
      * Write sufficient information to context.externalContext.response in order to be able to restore this view if the
@@ -235,5 +236,5 @@ public abstract class ViewHandler
      * "state identifier" to identify which of multiple saved user states for a particular view should be selected (or
      * just verify that the saved state does indeed correspond to the expected one).
      */
-    public abstract void writeState(javax.faces.context.FacesContext context) throws java.io.IOException;
+    public abstract void writeState(FacesContext context) throws IOException;
 }

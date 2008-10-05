@@ -1361,8 +1361,11 @@ public class ApplicationImpl extends Application
         {
             if (_lstSystemEventListener == null)
             {
-                // TODO: Check if modification occurs often or not, might have to use a synchronized
-                // list instead
+                /* TODO: Check if modification occurs often or not, might have to use a synchronized
+                 * list instead.
+                 * 
+                 * Registrations found:
+                 */ 
                 _lstSystemEventListener = new CopyOnWriteArrayList<SystemEventListener>();
             }
 
@@ -1379,8 +1382,12 @@ public class ApplicationImpl extends Application
             List<SystemEventListener> list = _sourceClassMap.get(sourceClass);
             if (list == null)
             {
-                // TODO: Check if modification occurs often or not, might have to use a synchronized
-                // list instead
+                /* TODO: Check if modification occurs often or not, might have to use a synchronized
+                 * list instead.
+                 * 
+                 * Registrations found:
+                 * - UIViewRoot register to AfterAddToParentEvent when the request is not a postback (very often)
+                 */ 
                 list = new CopyOnWriteArrayList<SystemEventListener>();
                 _sourceClassMap.put(sourceClass, list);
             }

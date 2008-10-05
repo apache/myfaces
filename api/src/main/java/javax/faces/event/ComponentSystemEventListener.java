@@ -22,7 +22,7 @@ package javax.faces.event;
  * 
  * @since 2.0
  */
-public interface ComponentSystemEventListener
+public interface ComponentSystemEventListener extends FacesListener
 {
     public void processEvent(ComponentSystemEvent event);
 }
