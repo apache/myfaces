@@ -371,6 +371,13 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     }
 
     @Override
+    public String getRealPath(String path)
+    {
+        checkNull(path, "path");
+        return _servletContext.getRealPath(path);
+    }
+
+    @Override
     public String getRemoteUser()
     {
         checkHttpServletRequest();

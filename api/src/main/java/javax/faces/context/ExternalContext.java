@@ -105,9 +105,7 @@ public abstract class ExternalContext
      */
     public String getRealPath(String path)
     {
-        // TODO: JSF 2.0 #25
-        // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     public abstract String getRemoteUser();
