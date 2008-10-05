@@ -41,6 +41,7 @@ import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
+import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ComponentSystemEventListener;
 import javax.faces.event.FacesEvent;
 import javax.faces.event.FacesListener;
@@ -370,13 +371,34 @@ public abstract class UIComponent implements StateHolder
 
     public void subscribeToEvent(Class<? extends SystemEvent> eventClass, ComponentSystemEventListener componentListener)
     {
-        // TODO: JSF 2.0 #15
+        /*
+         * The default implementation creates an inner SystemEventListener instance that wraps argument 
+         * componentListener as the listener  argument. 
+         * 
+         * This inner class must call through to the argument componentListener in its implementation of 
+         * SystemEventListener.processEvent(javax.faces.event.SystemEvent) and its implementation of 
+         * SystemEventListener.isListenerForSource(java.lang.Object) must return true if the instance class of 
+         * this UIComponent is assignable from the argument to isListenerForSource.
+         */
+        SystemEventListener listener = new EventListenerWrapper(this, componentListener);
+        
+        getFacesContext().getApplication().subscribeToEvent(eventClass, listener);
     }
 
     public void unsubscribeFromEvent(Class<? extends SystemEvent> eventClass,
                                      ComponentSystemEventListener componentListener)
     {
-        // TODO: JSF 2.0 #16
+        /*
+         * When doing the comparison to determine if an existing listener is equal to the argument 
+         * componentListener (and thus must be removed), the equals() method on the existing listener must be 
+         * invoked, passing the argument componentListener, rather than the other way around.
+         * 
+         * What is that supposed to mean? Are we supposed to keep an internal map of created listener wrappers?
+         * TODO: Check with the EG what's the meaning of this, equals should be commutative -= Simon Lessard =-
+         */
+        SystemEventListener listener = new EventListenerWrapper(this, componentListener);
+        
+        getFacesContext().getApplication().unsubscribeFromEvent(eventClass, listener);
     }
 
     protected abstract FacesContext getFacesContext();
@@ -544,5 +566,56 @@ public abstract class UIComponent implements StateHolder
             throw new UnsupportedOperationException();
         }
 
+    }
+    
+    private class EventListenerWrapper implements SystemEventListener
+    {
+        private UIComponent component;
+        private ComponentSystemEventListener listener;
+        
+        public EventListenerWrapper(UIComponent component, ComponentSystemEventListener listener)
+        {
+            assert component != null;
+            assert listener != null;
+            
+            this.component = component;
+            this.listener = listener;
+        }
+        
+        @Override
+        public boolean equals(Object o)
+        {
+            if (o == this)
+            {
+                return true;
+            }
+            else if (o instanceof EventListenerWrapper)
+            {
+                EventListenerWrapper other = (EventListenerWrapper)o;
+                return component.equals(other.component) && listener.equals(other.listener);
+            }
+            else
+            {
+                return false;
+            }
+        }
+        
+        @Override
+        public int hashCode()
+        {
+            return component.hashCode() + listener.hashCode();
+        }
+        
+        public boolean isListenerForSource(Object source)
+        {
+            return source.getClass().isAssignableFrom(component.getClass());
+        }
+
+        public void processEvent(SystemEvent event)
+        {
+            assert event instanceof ComponentSystemEvent;
+            
+            listener.processEvent((ComponentSystemEvent)event);
+        }
     }
 }
