@@ -95,9 +95,7 @@ public abstract class ExternalContext
      */
     public String getMimeType(String file)
     {
-        // TODO: JSF 2.0 #24
-        // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     /**

@@ -289,6 +289,13 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     }
 
     @Override
+    public String getMimeType(String file)
+    {
+        checkNull(file, "file");
+        return _servletContext.getMimeType(file);
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public Set<String> getResourcePaths(final String path)
     {
