@@ -142,6 +142,8 @@ public class ClassLoaderResourceLoader extends ResourceLoader
                 if (url != null)
                 {
                     JarURLConnection conn = (JarURLConnection)url.openConnection();
+                    // See DIGESTER-29 for related problem
+                    conn.setUseCaches(false);
 
                     if (conn.getJarEntry().isDirectory())
                     {
