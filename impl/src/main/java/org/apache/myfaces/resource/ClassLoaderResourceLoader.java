@@ -145,49 +145,67 @@ public class ClassLoaderResourceLoader extends ResourceLoader
                     // See DIGESTER-29 for related problem
                     conn.setUseCaches(false);
 
-                    if (conn.getJarEntry().isDirectory())
+                    try
                     {
-                        // Unfortunately, we have to scan all entry files
-                        // because there is no proper api to scan it as a
-                        // directory tree.
-                        JarFile file = conn.getJarFile();
-                        for (Enumeration<JarEntry> en = file.entries(); en.hasMoreElements();)
+                        if (conn.getJarEntry().isDirectory())
                         {
-                            JarEntry entry = en.nextElement();
-                            String entryName = entry.getName();
-
-                            if (entryName.startsWith(path + '/'))
+                            // Unfortunately, we have to scan all entry files
+                            // because there is no proper api to scan it as a
+                            // directory tree.
+                            JarFile file = conn.getJarFile();
+                            for (Enumeration<JarEntry> en = file.entries(); en.hasMoreElements();)
                             {
-                                if (entryName.length() == path.length() + 1)
+                                JarEntry entry = en.nextElement();
+                                String entryName = entry.getName();
+    
+                                if (entryName.startsWith(path + '/'))
                                 {
-                                    // the same string, just skip it
-                                    continue;
-                                }
-
-                                if (entryName.charAt(entryName.length() - 1) != '/')
-                                {
-                                    // Skip files
-                                    continue;
-                                }
-
-                                entryName = entryName.substring(path.length() + 1, entryName.length() - 1);
-
-                                if (entryName.indexOf('/') >= 0)
-                                {
-                                    // Inner Directory
-                                    continue;
-                                }
-
-                                String version = entryName;
-                                if (libraryVersion == null)
-                                {
-                                    libraryVersion = version;
-                                }
-                                else if (getVersionComparator().compare(libraryVersion, version) < 0)
-                                {
-                                    libraryVersion = version;
+                                    if (entryName.length() == path.length() + 1)
+                                    {
+                                        // the same string, just skip it
+                                        continue;
+                                    }
+    
+                                    if (entryName.charAt(entryName.length() - 1) != '/')
+                                    {
+                                        // Skip files
+                                        continue;
+                                    }
+    
+                                    entryName = entryName.substring(path.length() + 1, entryName.length() - 1);
+    
+                                    if (entryName.indexOf('/') >= 0)
+                                    {
+                                        // Inner Directory
+                                        continue;
+                                    }
+    
+                                    String version = entryName;
+                                    if (libraryVersion == null)
+                                    {
+                                        libraryVersion = version;
+                                    }
+                                    else if (getVersionComparator().compare(libraryVersion, version) < 0)
+                                    {
+                                        libraryVersion = version;
+                                    }
                                 }
                             }
+                        }
+                    }
+                    finally
+                    {
+                        //See TRINIDAD-73
+                        //just close the input stream again if
+                        //by inspecting the entries the stream
+                        //was let open.
+                        try
+                        {
+                            conn.getInputStream().close();
+                        }
+                        catch (Exception exception)
+                        {
+                            // Ignored
                         }
                     }
                 }
