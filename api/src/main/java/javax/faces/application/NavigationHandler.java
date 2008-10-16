@@ -21,7 +21,16 @@ package javax.faces.application;
 import javax.faces.context.FacesContext;
 
 /**
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * The interface for an object which determines what the "next" view to show is,
+ * and then causes the ViewHandler to set that view as the current one.
+ * <p>
+ * The JSF specification defines the behaviour of a default implementation of
+ * this interface. An alternate implementation can be used by configuring the
+ * appropriate element in the application's faces-config.xml file.
+ * <p>
+ * See the javadoc for this class in the
+ * <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * for more details.
  *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$

@@ -18,9 +18,6 @@
  */
 package javax.faces.application;
 
-
-
-
 /**
  * Responsible for storing sufficient information about a component tree so that an identical tree
  * can later be recreated.
@@ -49,7 +46,9 @@ package javax.faces.application;
  * tightly coupled, the StateManager and ViewHandler implementations are also usually fairly tightly coupled
  * (ie the ViewHandler/StateManager implementations come as pairs).
  * <p>
- * See Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * See the javadoc for this class in the
+ * <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * for more details.
  *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$

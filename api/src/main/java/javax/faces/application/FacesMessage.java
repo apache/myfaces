@@ -22,7 +22,15 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * Represents a message to be displayed to the JSF application user.
+ * <p>
+ * Instances of this type are registered via FacesContext.addMessage, and are kept only until
+ * the end of the render phase. The standard h:message or h:messages components can render
+ * these message objects.
+ * <p>
+ * See the javadoc for this class in the
+ * <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
+ * for more details.
  *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
