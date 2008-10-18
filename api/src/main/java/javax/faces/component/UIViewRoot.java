@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
+import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -236,9 +237,17 @@ public class UIViewRoot extends UIComponentBase implements ComponentSystemEventL
                         invokeOnComponent(context, clientId, AJAX_ENCODE_ALL_CALLBACK);
                     }
                 }
-                catch (CallbackIOException e)
+                catch (FacesException e)
                 {
-                    throw e.getIOException();
+                    Throwable cause = e.getCause();
+                    if (cause instanceof CallbackIOException)
+                    {
+                        throw ((CallbackIOException)cause).getIOException();
+                    }
+                    else
+                    {
+                        throw e;
+                    }
                 }
             }
         }
