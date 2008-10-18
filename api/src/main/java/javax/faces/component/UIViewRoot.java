@@ -217,7 +217,7 @@ public class UIViewRoot extends UIComponentBase implements ComponentSystemEventL
             // Call FacesContext.getRenderPhaseClientIds(). This returns a list of client ids that must be processed during 
             // the render portion of the request processing lifecycle.
             List<String> clientIds = context.getRenderPhaseClientIds();
-            if (clientIds == null || clientIds.isEmpty())
+            if (clientIds.isEmpty())
             {
                 /* 
                  * If partial rendering was not performed, delegate to the parent 
