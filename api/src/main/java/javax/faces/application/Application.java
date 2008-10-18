@@ -141,7 +141,6 @@ public abstract class Application
     public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType,
                                        String rendererType)
     {
-        // TODO: JSF 2.0 #2
         throw new UnsupportedOperationException();
     }
 

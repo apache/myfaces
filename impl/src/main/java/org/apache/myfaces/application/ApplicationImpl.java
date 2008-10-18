@@ -42,10 +42,13 @@ import javax.faces.FacesException;
 import javax.faces.application.Application;
 import javax.faces.application.NavigationHandler;
 import javax.faces.application.ProjectStage;
+import javax.faces.application.ResourceDependencies;
+import javax.faces.application.ResourceDependency;
 import javax.faces.application.ResourceHandler;
 import javax.faces.application.StateManager;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIOutput;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -55,9 +58,13 @@ import javax.faces.el.ReferenceSyntaxException;
 import javax.faces.el.ValueBinding;
 import javax.faces.el.VariableResolver;
 import javax.faces.event.ActionListener;
+import javax.faces.event.ComponentSystemEventListener;
+import javax.faces.event.ListenerFor;
+import javax.faces.event.ListenersFor;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 import javax.faces.event.SystemEventListenerHolder;
+import javax.faces.render.Renderer;
 import javax.faces.validator.Validator;
 import javax.faces.webapp.pdl.PageDeclarationLanguage;
 import javax.naming.Context;
@@ -335,15 +342,22 @@ public class ApplicationImpl extends Application
         throws FacesException, NullPointerException
     {
 
+        /* Before the component instance is returned, it must be inspected for the presence of a ListenerFor (or ListenersFor) 
+         * or ResourceDependency  (or ResourceDependencies) annotation. If any of these annotations are present, the 
+         * action listed in ListenerFor or ResourceDependency must be taken on the component, before it is returned from 
+         * this method. This variant of createComponent must not inspect the Renderer for the component to be returned for 
+         * any of the afore mentioned annotations. Such inspection is the province of 
+         */
+        
         checkNull(componentExpression, "componentExpression");
         checkNull(facesContext, "facesContext");
         checkNull(componentType, "componentType");
 
-        final ELContext elContext = facesContext.getELContext();
+        ELContext elContext = facesContext.getELContext();
 
         try
         {
-            final Object retVal = componentExpression.getValue(elContext);
+            Object retVal = componentExpression.getValue(elContext);
 
             UIComponent createdComponent;
 
@@ -356,7 +370,9 @@ public class ApplicationImpl extends Application
                 createdComponent = createComponent(componentType);
                 componentExpression.setValue(elContext, createdComponent);
             }
-
+            
+            _processAnnotations(facesContext, createdComponent, createdComponent);
+            
             return createdComponent;
         }
         catch (FacesException e)
@@ -369,6 +385,18 @@ public class ApplicationImpl extends Application
         }
     }
 
+    @Override
+    public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType,
+                                       String rendererType)
+    {
+        // Like createComponent(ValueExpression, FacesContext, String)
+        UIComponent component = createComponent(componentExpression, context, componentType);
+        
+        _inspectRenderer(context, component, componentType, rendererType);
+        
+        return component;
+    }
+    
     @Override
     public final ExpressionFactory getExpressionFactory()
     {
@@ -1235,6 +1263,168 @@ public class ApplicationImpl extends Application
         }
 
         return event;
+    }
+    
+    private void _inspectRenderer(FacesContext context, UIComponent component, String componentType, String rendererType)
+    {
+        /* 
+         * The Renderer instance to inspect must be obtained by calling FacesContext.getRenderKit() and calling 
+         * RenderKit.getRenderer(java.lang.String, java.lang.String) on the result, passing the argument componentType
+         * as the first argument and the argument rendererType as the second argument.
+         * 
+         * FIXME: Shouldn't it be component.getFamily() instead of componentType?
+         */
+        Renderer renderer = context.getRenderKit().getRenderer(componentType, rendererType);
+        if (renderer == null)
+        {
+            // If no such Renderer can be found, a message must be logged with a helpful error message.
+            log.error("renderer cannot be found for component type " + componentType + " and renderer type " + 
+                      rendererType);
+        }
+        else
+        {
+            // Otherwise, UIComponent.setRendererType(java.lang.String) must be called on the newly created 
+            // UIComponent instance, passing the argument rendererType as the argument.
+            component.setRendererType(rendererType);
+            
+            /* except the Renderer for the component to be returned must be inspected for the annotations mentioned 
+             * in createComponent(ValueExpression, FacesContext, String) as specified in the documentation for that
+             * method.   
+             */
+            _processAnnotations(context, renderer, component);
+        } 
+    }
+    
+    private void _processAnnotations(FacesContext context, Object inspected, UIComponent component)
+    {
+        _processListenerFor(context, inspected, component, inspected.getClass().getAnnotation(ListenerFor.class));
+        
+        ListenersFor listeners = component.getClass().getAnnotation(ListenersFor.class);
+        if (listeners != null)
+        {
+            for (ListenerFor listenerFor : listeners.value())
+            {
+                _processListenerFor(context, inspected, component, listenerFor);
+            }
+        }
+        
+        _processResourceDependency(context, inspected.getClass().getAnnotation(ResourceDependency.class));
+        ResourceDependencies dependencies = inspected.getClass().getAnnotation(ResourceDependencies.class);
+        if (dependencies != null)
+        {
+            for (ResourceDependency dependency : dependencies.value())
+            {
+                _processResourceDependency(context, dependency);
+            }
+        }
+    }
+    
+    private void _processListenerFor(FacesContext context, Object inspected, UIComponent component, ListenerFor annotation)
+    {
+        // If this annotation is not present on the class in question, no action must be taken.
+        if (annotation != null)
+        {
+            // Determine the "target" on which to call subscribeToEvent.
+            // If the class to which this annotation is attached implements ComponentSystemEventListener
+            if (inspected instanceof ComponentSystemEventListener)
+            {
+                // If the class to which this annotation is attached is a UIComponent instance, "target" is the 
+                // UIComponent instance.
+                
+                // If the class to which this annotation is attached is a Renderer instance, "target" is the 
+                // UIComponent instance.
+                
+                /* 
+                 * If "target" is a UIComponent call UIComponent.subscribeToEvent(Class, ComponentSystemEventListener) 
+                 * passing the systemEventClass() of the annotation as the first argument and the instance of the class 
+                 * to which this annotation is attached (which must implement ComponentSystemEventListener) as the second 
+                 * argument.
+                 */
+                component.subscribeToEvent(annotation.systemEventClass(), (ComponentSystemEventListener)inspected);
+            }
+            // If the class to which this annotation is attached implements SystemEventListener and does not implement 
+            // ComponentSystemEventListener, "target" is the Application instance.
+            else if (component instanceof SystemEventListener)
+            {
+                // If "target" is the Application instance, inspect the value of the sourceClass() annotation attribute 
+                // value.
+                if (Void.class.equals(annotation.sourceClass()))
+                {
+                    /* 
+                     * If the value is Void.class, call Application.subscribeToEvent(Class, SystemEventListener), passing 
+                     * the value of systemEventClass() as the first argument and the instance of the class to which this 
+                     * annotation is attached (which must implement SystemEventListener) as the second argument.
+                     */
+                    subscribeToEvent(annotation.systemEventClass(), (SystemEventListener)inspected);
+                }
+                else
+                {
+                    /* 
+                     * Otherwise, call Application.subscribeToEvent(Class, Class, SystemEventListener), passing the value of 
+                     * systemEventClass() as the first argument, the value of sourceClass() as the second argument, and the 
+                     * instance of the class to which this annotation is attached (which must implement SystemEventListener) as 
+                     * the third argument.
+                     */
+                    subscribeToEvent(annotation.systemEventClass(), annotation.sourceClass(), (SystemEventListener)inspected);
+                }
+            }
+            
+            /* 
+             * If the class to which this annotation is attached implements ComponentSystemEventListener and is 
+             * neither an instance of Renderer nor UIComponent, the action taken is unspecified. This case must not 
+             * trigger any kind of error.
+             */
+        }
+    }
+    
+    private void _processResourceDependency(FacesContext context, ResourceDependency annotation)
+    {
+        // If this annotation is not present on the class in question, no action must be taken. 
+        if (annotation != null)
+        {
+            // Create a UIOutput instance by passing javax.faces.Output. to 
+            // Application.createComponent(java.lang.String).
+            UIOutput output = (UIOutput) createComponent(UIOutput.COMPONENT_TYPE);
+            
+            // Get the annotation instance from the class and obtain the values of the name, library, and 
+            // target attributes.
+            String name = annotation.name();
+            
+            // Obtain the renderer-type for the resource name by passing name to 
+            // ResourceHandler.getRendererTypeForResourceName(java.lang.String).
+            String rendererType = getResourceHandler().getRendererTypeForResourceName(name);
+            
+            // Call setRendererType on the UIOutput instance, passing the renderer-type.
+            output.setRendererType(rendererType);
+            
+            // Obtain the Map of attributes from the UIOutput component by calling UIComponent.getAttributes().
+            Map<String, Object> attributes = output.getAttributes();
+            
+            // Store the name into the attributes Map under the key "name".
+            attributes.put("name", name);
+            
+            // If library is the empty string, let library be null.
+            String library = annotation.library();
+            if (library != null && library.length() > 0)
+            {
+                // If library is non-null, store it under the key "library".
+                attributes.put("library", library);
+            }
+            
+            // If target is the empty string, let target be null.
+            String target = annotation.target();
+            if (target != null && target.length() > 0)
+            {
+                // If target is non-null, store it under the key "target".
+                attributes.put("target", target);
+            }
+            else
+            {
+                // Otherwise, if target is null, call UIViewRoot.addComponentResource(javax.faces.context.FacesContext, 
+                // javax.faces.component.UIComponent), passing the UIOutput instance as the second argument.
+                context.getViewRoot().addComponentResource(context, output);
+            }
+        }
     }
 
     private static SystemEvent _traverseListenerList(List<? extends SystemEventListener> listeners,
