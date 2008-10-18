@@ -1127,7 +1127,7 @@ public class UIViewRoot extends UIComponentBase implements ComponentSystemEventL
                 writer.startElement(AJAX_RESPONSE_RENDER, target);
                 writer.writeAttribute("id", target.getClientId(context), "clientId");
                 
-                //  <markup>
+                // <markup>
                 writer.startElement(AJAX_RESPONSE_MARKUP, target);
                 
                 // <![CDATA[
