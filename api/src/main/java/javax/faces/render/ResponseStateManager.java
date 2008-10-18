@@ -76,6 +76,24 @@ public abstract class ResponseStateManager
     {
         // does nothing as per JSF 1.2 javadoc
     }
+    
+    /**
+     * Return the specified state as a String without any markup related to the rendering technology supported by 
+     * this ResponseStateManager.
+     * 
+     * @param context the {@link FacesContext} for the current request
+     * @param state the state from which the String version will be generated from
+     * 
+     * @return the view state for this request without any markup specifics
+     * 
+     * @since 2.0
+     */
+    public String getViewState(FacesContext context, Object state)
+    {
+        // TODO: JSF 2.0
+        
+        return null;
+    }
 
     /**
      * @since 1.2

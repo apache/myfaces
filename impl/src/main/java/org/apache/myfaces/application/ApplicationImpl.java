@@ -371,7 +371,7 @@ public class ApplicationImpl extends Application
                 componentExpression.setValue(elContext, createdComponent);
             }
             
-            _processAnnotations(facesContext, createdComponent, createdComponent);
+            _handleAnnotations(facesContext, createdComponent, createdComponent);
             
             return createdComponent;
         }
@@ -1265,61 +1265,31 @@ public class ApplicationImpl extends Application
         return event;
     }
     
-    private void _inspectRenderer(FacesContext context, UIComponent component, String componentType, String rendererType)
+    private void _handleAnnotations(FacesContext context, Object inspected, UIComponent component)
     {
-        /* 
-         * The Renderer instance to inspect must be obtained by calling FacesContext.getRenderKit() and calling 
-         * RenderKit.getRenderer(java.lang.String, java.lang.String) on the result, passing the argument componentType
-         * as the first argument and the argument rendererType as the second argument.
-         * 
-         * FIXME: Shouldn't it be component.getFamily() instead of componentType?
-         */
-        Renderer renderer = context.getRenderKit().getRenderer(componentType, rendererType);
-        if (renderer == null)
-        {
-            // If no such Renderer can be found, a message must be logged with a helpful error message.
-            log.error("renderer cannot be found for component type " + componentType + " and renderer type " + 
-                      rendererType);
-        }
-        else
-        {
-            // Otherwise, UIComponent.setRendererType(java.lang.String) must be called on the newly created 
-            // UIComponent instance, passing the argument rendererType as the argument.
-            component.setRendererType(rendererType);
-            
-            /* except the Renderer for the component to be returned must be inspected for the annotations mentioned 
-             * in createComponent(ValueExpression, FacesContext, String) as specified in the documentation for that
-             * method.   
-             */
-            _processAnnotations(context, renderer, component);
-        } 
-    }
-    
-    private void _processAnnotations(FacesContext context, Object inspected, UIComponent component)
-    {
-        _processListenerFor(context, inspected, component, inspected.getClass().getAnnotation(ListenerFor.class));
+        _handleListenerFor(context, inspected, component, inspected.getClass().getAnnotation(ListenerFor.class));
         
         ListenersFor listeners = component.getClass().getAnnotation(ListenersFor.class);
         if (listeners != null)
         {
             for (ListenerFor listenerFor : listeners.value())
             {
-                _processListenerFor(context, inspected, component, listenerFor);
+                _handleListenerFor(context, inspected, component, listenerFor);
             }
         }
         
-        _processResourceDependency(context, inspected.getClass().getAnnotation(ResourceDependency.class));
+        _handleResourceDependency(context, inspected.getClass().getAnnotation(ResourceDependency.class));
         ResourceDependencies dependencies = inspected.getClass().getAnnotation(ResourceDependencies.class);
         if (dependencies != null)
         {
             for (ResourceDependency dependency : dependencies.value())
             {
-                _processResourceDependency(context, dependency);
+                _handleResourceDependency(context, dependency);
             }
         }
     }
     
-    private void _processListenerFor(FacesContext context, Object inspected, UIComponent component, ListenerFor annotation)
+    private void _handleListenerFor(FacesContext context, Object inspected, UIComponent component, ListenerFor annotation)
     {
         // If this annotation is not present on the class in question, no action must be taken.
         if (annotation != null)
@@ -1377,7 +1347,7 @@ public class ApplicationImpl extends Application
         }
     }
     
-    private void _processResourceDependency(FacesContext context, ResourceDependency annotation)
+    private void _handleResourceDependency(FacesContext context, ResourceDependency annotation)
     {
         // If this annotation is not present on the class in question, no action must be taken. 
         if (annotation != null)
@@ -1425,6 +1395,36 @@ public class ApplicationImpl extends Application
                 context.getViewRoot().addComponentResource(context, output);
             }
         }
+    }
+    
+    private void _inspectRenderer(FacesContext context, UIComponent component, String componentType, String rendererType)
+    {
+        /* 
+         * The Renderer instance to inspect must be obtained by calling FacesContext.getRenderKit() and calling 
+         * RenderKit.getRenderer(java.lang.String, java.lang.String) on the result, passing the argument componentType
+         * as the first argument and the argument rendererType as the second argument.
+         * 
+         * FIXME: Shouldn't it be component.getFamily() instead of componentType?
+         */
+        Renderer renderer = context.getRenderKit().getRenderer(componentType, rendererType);
+        if (renderer == null)
+        {
+            // If no such Renderer can be found, a message must be logged with a helpful error message.
+            log.error("renderer cannot be found for component type " + componentType + " and renderer type " + 
+                      rendererType);
+        }
+        else
+        {
+            // Otherwise, UIComponent.setRendererType(java.lang.String) must be called on the newly created 
+            // UIComponent instance, passing the argument rendererType as the argument.
+            component.setRendererType(rendererType);
+            
+            /* except the Renderer for the component to be returned must be inspected for the annotations mentioned 
+             * in createComponent(ValueExpression, FacesContext, String) as specified in the documentation for that
+             * method.   
+             */
+            _handleAnnotations(context, renderer, component);
+        } 
     }
 
     private static SystemEvent _traverseListenerList(List<? extends SystemEventListener> listeners,

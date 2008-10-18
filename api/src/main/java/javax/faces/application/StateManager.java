@@ -20,6 +20,7 @@ package javax.faces.application;
 
 import java.io.IOException;
 
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
 /**
@@ -71,7 +72,7 @@ public abstract class StateManager
      * @deprecated
      */
     @Deprecated
-    public StateManager.SerializedView saveSerializedView(javax.faces.context.FacesContext context)
+    public StateManager.SerializedView saveSerializedView(FacesContext context)
     {
         return null;
     }
@@ -110,7 +111,7 @@ public abstract class StateManager
      * @deprecated
      */
     @Deprecated
-    protected Object getTreeStructureToSave(javax.faces.context.FacesContext context)
+    protected Object getTreeStructureToSave(FacesContext context)
     {
         return null;
     }
@@ -123,7 +124,7 @@ public abstract class StateManager
      * @deprecated
      */
     @Deprecated
-    protected Object getComponentStateToSave(javax.faces.context.FacesContext context)
+    protected Object getComponentStateToSave(FacesContext context)
     {
         return null;
     }
@@ -146,7 +147,7 @@ public abstract class StateManager
      * @deprecated
      */
     @Deprecated
-    public void writeState(javax.faces.context.FacesContext context, StateManager.SerializedView state)
+    public void writeState(FacesContext context, StateManager.SerializedView state)
         throws IOException
     {
         // default impl does nothing as per JSF 1.2 javadoc
@@ -177,16 +178,31 @@ public abstract class StateManager
 
         writeState(context, new StateManager.SerializedView(structureAndState[0], structureAndState[1]));
     }
+    
+    /**
+     * Convenience method to return the view state as a String with no RenderKit specific markup. This default 
+     * implementation of this method will call {@link #saveView(javax.faces.context.FacesContext)} and passing the 
+     * result to and returning the resulting value from 
+     * ResponseStateManager.getViewState(javax.faces.context.FacesContext, Object). 
+     * 
+     * @param context {@link FacesContext} for the current request
+     * 
+     * @return the view state as a String with no RenderKit specific markup.
+     * 
+     * @since 2.0
+     */
+    public String getViewState(FacesContext context)
+    {
+        return context.getRenderKit().getResponseStateManager().getViewState(context, saveView(context));
+    }
 
-    public abstract javax.faces.component.UIViewRoot restoreView(javax.faces.context.FacesContext context,
-                                                                 String viewId, String renderKitId);
+    public abstract UIViewRoot restoreView(FacesContext context, String viewId, String renderKitId);
 
     /**
      * @deprecated
      */
     @Deprecated
-    protected javax.faces.component.UIViewRoot restoreTreeStructure(javax.faces.context.FacesContext context,
-                                                                    String viewId, String renderKitId)
+    protected UIViewRoot restoreTreeStructure(FacesContext context, String viewId, String renderKitId)
     {
         return null;
     }
@@ -195,13 +211,12 @@ public abstract class StateManager
      * @deprecated
      */
     @Deprecated
-    protected void restoreComponentState(javax.faces.context.FacesContext context,
-                                         javax.faces.component.UIViewRoot viewRoot, String renderKitId)
+    protected void restoreComponentState(FacesContext context, UIViewRoot viewRoot, String renderKitId)
     {
         // default impl does nothing as per JSF 1.2 javadoc
     }
 
-    public boolean isSavingStateInClient(javax.faces.context.FacesContext context)
+    public boolean isSavingStateInClient(FacesContext context)
     {
         if (context == null)
             throw new NullPointerException("context");
