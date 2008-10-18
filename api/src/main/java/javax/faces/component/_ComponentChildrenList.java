@@ -23,6 +23,10 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.faces.context.FacesContext;
+import javax.faces.event.AfterAddToParentEvent;
+import javax.faces.event.PhaseId;
+
 /**
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
@@ -54,10 +58,17 @@ class _ComponentChildrenList extends AbstractList<UIComponent> implements Serial
     public UIComponent set(int index, UIComponent value)
     {
         checkValue(value);
-        setNewParent(value);
+        
         UIComponent child = _list.set(index, value);
-        if (child != null)
-            child.setParent(null);
+        if (child != value)
+        {
+            childAdded(value);
+            if (child != null)
+            {
+                child.setParent(null);
+            }
+        }
+        
         return child;
     }
 
@@ -65,15 +76,19 @@ class _ComponentChildrenList extends AbstractList<UIComponent> implements Serial
     public boolean add(UIComponent value)
     {
         checkValue(value);
-        setNewParent(value);
-        return _list.add(value);
+        
+        boolean res = _list.add(value);
+        
+        childAdded(value);
+        
+        return res;
     }
 
     @Override
     public void add(int index, UIComponent value)
     {
         checkValue(value);
-        setNewParent(value);
+        childAdded(value);
         _list.add(index, value);
     }
 
@@ -82,26 +97,56 @@ class _ComponentChildrenList extends AbstractList<UIComponent> implements Serial
     {
         UIComponent child = _list.remove(index);
         if (child != null)
-            child.setParent(null);
+        {
+            childRemoved(child);
+        }
+        
         return child;
     }
 
-    private void setNewParent(UIComponent child)
+    private void checkValue(Object value)
+    {
+        if (value == null)
+        {
+            throw new NullPointerException("value");
+        }
+        
+        if (!(value instanceof UIComponent))
+        {
+            throw new ClassCastException("value is not a UIComponent");
+        }
+    }
+
+    private void childAdded(UIComponent child)
+    {
+        updateParent(child);
+        
+        FacesContext context = FacesContext.getCurrentInstance();
+        
+        // After the child component has been added to the view, if the following condition is not met
+        // FacesContext.isPostback() returns true and FacesContext.getCurrentPhaseId() returns PhaseId.RESTORE_VIEW
+        if (context.isPostback() || !PhaseId.RESTORE_VIEW.equals(context.getCurrentPhaseId()))
+        {
+            // Application.publishEvent(java.lang.Class, java.lang.Object)  must be called, passing 
+            // AfterAddToParentEvent.class as the first argument and 
+            // the newly added component as the second argument.
+            context.getApplication().publishEvent(AfterAddToParentEvent.class, child);
+        }
+    }
+
+    private void childRemoved(UIComponent child)
+    {
+        child.setParent(null);
+    }
+
+    private void updateParent(UIComponent child)
     {
         UIComponent oldParent = child.getParent();
         if (oldParent != null)
         {
             oldParent.getChildren().remove(child);
         }
+        
         child.setParent(_component);
     }
-
-    private void checkValue(Object value)
-    {
-        if (value == null)
-            throw new NullPointerException("value");
-        if (!(value instanceof UIComponent))
-            throw new ClassCastException("value is not a UIComponent");
-    }
-
 }
