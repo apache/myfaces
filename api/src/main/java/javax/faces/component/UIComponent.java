@@ -38,6 +38,7 @@ import javax.el.ELException;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.application.Application;
+import javax.faces.application.Resource;
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
@@ -89,11 +90,16 @@ public abstract class UIComponent implements StateHolder
 
     public static UIComponent getCurrentCompositeComponent(FacesContext context)
     {
-        // TODO: JSF 2.0 #46
-        // UIComponent currentComponent = getCurrentComponent(context);
-        // Loop through parents to find a composite component
-
-        throw new UnsupportedOperationException();
+        // Return the closest ancestor component, relative to the component returned from 
+        // getCurrentComponent(javax.faces.context.FacesContext), that is a composite component, 
+        // or null if no such component exists.
+        UIComponent currentComponent = getCurrentComponent(context);
+        while (currentComponent != null && !currentComponent._isCompositeComponent())
+        {
+            currentComponent = currentComponent.getParent();
+        }
+        
+        return currentComponent;
     }
 
     public abstract Map<String, Object> getAttributes();
@@ -437,6 +443,11 @@ public abstract class UIComponent implements StateHolder
             throw new NullPointerException("FacesContext ctx");
 
         return getClientId(ctx);
+    }
+    
+    private boolean _isCompositeComponent()
+    {
+        return getAttributes().get(Resource.COMPONENT_RESOURCE_KEY) != null;
     }
 
     private static class BundleMap implements Map<String, String>
