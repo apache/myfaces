@@ -18,9 +18,15 @@
  */
 package javax.faces.component;
 
+import java.util.Map;
+
 import javax.el.ValueExpression;
+import javax.faces.application.Application;
+import javax.faces.application.ResourceDependencies;
+import javax.faces.application.ResourceDependency;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
+
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
@@ -110,6 +116,9 @@ public class UIOutput extends UIComponentBase implements ValueHolder
     public void setConverter(Converter converter)
     {
         this._converter = converter;
+        
+        // The argument converter must be inspected for the presence of the ResourceDependency annotation.
+        _handleAnnotations(FacesContext.getCurrentInstance(), converter);
     }
 
     @Override
@@ -130,5 +139,84 @@ public class UIOutput extends UIComponentBase implements ValueHolder
         super.restoreState(facesContext, values[0]);
         _value = values[1];
         _converter = (Converter) restoreAttachedState(facesContext, values[2]);
+    }
+    
+    void _handleAnnotations(FacesContext context, Object inspected)
+    {
+        ResourceDependency annotation = inspected.getClass().getAnnotation(ResourceDependency.class);
+        
+        if (annotation == null)
+        {
+            // If the ResourceDependency annotation is not present, the argument must be inspected for the presence 
+            // of the ResourceDependencies annotation. 
+            ResourceDependencies dependencies = inspected.getClass().getAnnotation(ResourceDependencies.class);
+            if (dependencies != null)
+            {
+                // If the ResourceDependencies annotation is present, the action described in ResourceDependencies 
+                // must be taken.
+                for (ResourceDependency dependency : dependencies.value())
+                {
+                    _handleResourceDependency(context, dependency);
+                }
+            }
+        }
+        else
+        {
+            // If the ResourceDependency annotation is present, the action described in ResourceDependency must be 
+            // taken. 
+            _handleResourceDependency(context, annotation);
+        }
+    }
+    
+    private void _handleResourceDependency(FacesContext context, ResourceDependency annotation)
+    {
+        // If this annotation is not present on the class in question, no action must be taken. 
+        if (annotation != null)
+        {
+            Application application = context.getApplication();
+            
+            // Create a UIOutput instance by passing javax.faces.Output. to 
+            // Application.createComponent(java.lang.String).
+            UIOutput output = (UIOutput) application.createComponent(COMPONENT_TYPE);
+            
+            // Get the annotation instance from the class and obtain the values of the name, library, and 
+            // target attributes.
+            String name = annotation.name();
+            
+            // Obtain the renderer-type for the resource name by passing name to 
+            // ResourceHandler.getRendererTypeForResourceName(java.lang.String).
+            String rendererType = application.getResourceHandler().getRendererTypeForResourceName(name);
+            
+            // Call setRendererType on the UIOutput instance, passing the renderer-type.
+            output.setRendererType(rendererType);
+            
+            // Obtain the Map of attributes from the UIOutput component by calling UIComponent.getAttributes().
+            Map<String, Object> attributes = output.getAttributes();
+            
+            // Store the name into the attributes Map under the key "name".
+            attributes.put("name", name);
+            
+            // If library is the empty string, let library be null.
+            String library = annotation.library();
+            if (library != null && library.length() > 0)
+            {
+                // If library is non-null, store it under the key "library".
+                attributes.put("library", library);
+            }
+            
+            // If target is the empty string, let target be null.
+            String target = annotation.target();
+            if (target != null && target.length() > 0)
+            {
+                // If target is non-null, store it under the key "target".
+                attributes.put("target", target);
+            }
+            else
+            {
+                // Otherwise, if target is null, call UIViewRoot.addComponentResource(javax.faces.context.FacesContext, 
+                // javax.faces.component.UIComponent), passing the UIOutput instance as the second argument.
+                context.getViewRoot().addComponentResource(context, output);
+            }
+        }
     }
 }

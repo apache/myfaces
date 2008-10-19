@@ -633,11 +633,19 @@ public class UIInput extends UIOutput implements EditableValueHolder
     public void addValidator(Validator validator)
     {
         if (validator == null)
+        {
             throw new NullPointerException("validator");
+        }
+        
         if (_validatorList == null)
+        {
             _validatorList = new ArrayList<Validator>();
+        }
 
         _validatorList.add(validator);
+        
+        // The argument validator must be inspected for the presence of the ResourceDependency annotation.
+        _handleAnnotations(FacesContext.getCurrentInstance(), validator);
     }
 
     /** See getValidator. */
