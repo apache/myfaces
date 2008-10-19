@@ -19,7 +19,9 @@
 package javax.faces.model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
   * Represents the data presented by a UIData component, together with
@@ -47,7 +49,7 @@ import java.util.List;
   * @author Thomas Spiegl (latest modification by $Author$)
   * @version $Revision$ $Date$
 */
-public abstract class DataModel
+public abstract class DataModel implements Iterable<Object>
 {
     // FIELDS
     private List<DataModelListener> _listeners;
@@ -111,6 +113,16 @@ public abstract class DataModel
      * Returns true if a call to getRowData will return a valid object.
      */
     abstract public boolean isRowAvailable();
+    
+    /**
+     * {@inheritDoc}
+     * 
+     * @since 2.0
+     */
+    public Iterator<Object> iterator()
+    {
+        return new DataModelIterator();
+    }
 
     public void removeDataModelListener(DataModelListener listener)
     {
@@ -136,4 +148,41 @@ public abstract class DataModel
      * of the concrete subclass of DataModel. See getWrappedData.
      */
     abstract public void setWrappedData(Object data);
+    
+    private class DataModelIterator implements Iterator<Object>
+    {
+        private int nextRowIndex = 0;
+        
+        public boolean hasNext()
+        {
+            return nextRowIndex < getRowCount();
+        }
+
+        public Object next()
+        {
+            // TODO: Go to the EG with this, we need a getRowData(int) for thread safety.
+            //       Or the spec needs to specify that the iterator alters the selected row explicitely
+            if (hasNext())
+            {
+                setRowIndex(nextRowIndex);
+                nextRowIndex++;
+                
+                if (isRowAvailable())
+                {
+                    return getRowData();
+                }
+                else
+                {
+                    nextRowIndex--;
+                }
+            }
+            
+            throw new NoSuchElementException("Couldn't find any element in DataModel at index " + nextRowIndex);
+        }
+
+        public void remove()
+        {
+            throw new UnsupportedOperationException();
+        }
+    }
 }
