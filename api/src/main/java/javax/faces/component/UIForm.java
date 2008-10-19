@@ -107,7 +107,12 @@ public class UIForm extends UIComponentBase implements NamingContainer
     @Override
     public Object saveState(FacesContext context)
     {
+        // The saveState() method of UIForm must call setSubmitted(false) before calling super.saveState() as an 
+        // extra precaution to ensure the submitted state is not persisted across requests.
+        setSubmitted(false);
+
         Object[] state = new Object[2];
+        
         state[0] = super.saveState(context);
         state[1] = _prependId;
         return state;
