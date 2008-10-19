@@ -150,6 +150,11 @@ $innersource
                 value = ${type}.valueOf(value.toString());
             }            
             return $utils.castIfNecessary($type) value;
+#elseif ($type == "String")
+## MYFACES-2006 use toString(), so Numeric ValueBinding could be converted as
+## Strings and do not cause ClassCastException 
+## (only applies for JSF 1.1 due to backward compatibility) 
+            return $utils.castIfNecessary($type) vb.getValue(getFacesContext()).toString();
 #else
             return $utils.castIfNecessary($type) vb.getValue(getFacesContext());
 #end
