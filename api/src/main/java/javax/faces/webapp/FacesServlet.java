@@ -117,11 +117,24 @@ public final class FacesServlet implements Servlet
 
     public void service(ServletRequest request, ServletResponse response) throws IOException, ServletException
     {
-
-        HttpServletRequest httpRequest = ((HttpServletRequest)request);
+        // If the request and response arguments to this method are not instances of HttpServletRequest and 
+        // HttpServletResponse, respectively, the results of invoking this method are undefined.
+        // In this case ClassCastException
+        HttpServletRequest httpRequest = (HttpServletRequest)request;
         String pathInfo = httpRequest.getPathInfo();
 
         // if it is a prefix mapping ...
+        
+        /*
+         * This method must respond to requests that start with the following strings by invoking the sendError 
+         * method on the response argument (cast to HttpServletResponse), passing the code 
+         * HttpServletResponse.SC_NOT_FOUND as the argument.
+         * 
+         *       /WEB-INF/
+         *       /WEB-INF
+         *       /META-INF/
+         *       /META-INF
+         */
         if (pathInfo != null && (pathInfo.startsWith("/WEB-INF") || pathInfo.startsWith("/META-INF")))
         {
             StringBuffer buffer = new StringBuffer();
@@ -139,10 +152,13 @@ public final class FacesServlet implements Servlet
             ((HttpServletResponse)response).sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
-
+        
+        // If none of the cases described above in the specification for this method apply to the servicing of this 
+        // request, the following action must be taken to service the request.
         if (log.isTraceEnabled())
             log.trace("service begin");
 
+        // Acquire a FacesContext instance for this request.
         FacesContext facesContext = prepareFacesContext(request, response);
 
         try
@@ -151,20 +167,19 @@ public final class FacesServlet implements Servlet
             // check if it is a resource request, if true
             // delegate to ResourceHandler, if continue with
             // the lifecycle.
+            // Acquire the ResourceHandler for this request by calling Application.getResourceHandler(). 
             ResourceHandler resourceHandler = facesContext.getApplication().getResourceHandler();
 
+            // Call ResourceHandler.isResourceRequest(javax.faces.context.FacesContext).
             if (resourceHandler.isResourceRequest(facesContext))
             {
+                // If this returns true call ResourceHandler.handleResourceRequest(javax.faces.context.FacesContext).
                 resourceHandler.handleResourceRequest(facesContext);
             }
             else
             {
-                _lifecycle.execute(facesContext);
-
-                if (!handleQueuedExceptions(facesContext))
-                {
-                    _lifecycle.render(facesContext);
-                }
+                // If this returns false, handle as follow
+                _handleStandardRequest(facesContext);
             }
         }
         catch (Exception e)
@@ -177,6 +192,7 @@ public final class FacesServlet implements Servlet
         }
         finally
         {
+            // In a finally block, FacesContext.release() must be called. 
             facesContext.release();
         }
         if (log.isTraceEnabled())
@@ -396,6 +412,51 @@ public final class FacesServlet implements Servlet
         else
         {
             _ErrorPageWriter.throwException(e);
+        }
+    }
+    
+    private void _handleStandardRequest(FacesContext context) throws IOException, ServletException
+    {
+        try
+        {
+            // call Lifecycle.execute(javax.faces.context.FacesContext)
+            _lifecycle.execute(context);
+
+            if (!handleQueuedExceptions(context))
+            {
+                // followed by Lifecycle.render(javax.faces.context.FacesContext).
+                _lifecycle.render(context);
+            }
+        }
+        catch (FacesException e)
+        {
+            // If a FacesException is thrown in either case
+            
+            // extract the cause from the FacesException
+            Throwable cause = e.getCause();
+            if (cause == null)
+            {
+                // If the cause is null extract the message from the FacesException put it inside of a new 
+                // ServletException instance, and pass the FacesException instance as the root cause, then 
+                // rethrow the ServletException instance.
+                throw new ServletException(e.getLocalizedMessage(), e);
+            }
+            else if (cause instanceof ServletException)
+            {
+                // If the cause is an instance of ServletException, rethrow the cause.
+                throw (ServletException)cause;
+            }
+            else if (cause instanceof IOException)
+            {
+                // If the cause is an instance of IOException, rethrow the cause.
+                throw (IOException)cause;
+            }
+            else
+            {
+                // Otherwise, create a new ServletException instance, passing the message from the cause, 
+                // as the first argument, and the cause itself as the second argument. 
+                throw new ServletException(cause.getLocalizedMessage(), cause);
+            }
         }
     }
 
