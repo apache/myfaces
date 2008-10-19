@@ -18,23 +18,6 @@
  */
 package javax.faces.component;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
-
-import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.FacesEvent;
-import javax.faces.event.FacesListener;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.render.Renderer;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Array;
@@ -44,6 +27,25 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.el.ValueExpression;
+import javax.faces.FacesException;
+import javax.faces.FactoryFinder;
+import javax.faces.context.FacesContext;
+import javax.faces.el.ValueBinding;
+import javax.faces.event.AbortProcessingException;
+import javax.faces.event.BeforeRenderEvent;
+import javax.faces.event.FacesEvent;
+import javax.faces.event.FacesListener;
+import javax.faces.render.RenderKit;
+import javax.faces.render.RenderKitFactory;
+import javax.faces.render.Renderer;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
  * Standard implementation of the UIComponent base class; all standard JSF components extend this class.
@@ -126,6 +128,7 @@ public abstract class UIComponentBase extends UIComponent
         {
             _attributesMap = new _ComponentAttributesMap(this);
         }
+        
         return _attributesMap;
     }
 
@@ -457,19 +460,19 @@ public abstract class UIComponentBase extends UIComponent
             if (_childrenList == null)
                 return _EMPTY_UICOMPONENT_ITERATOR;
 
-            if (_childrenList.size() == 0)
+            if (_childrenList.isEmpty())
                 return _EMPTY_UICOMPONENT_ITERATOR;
 
             return _childrenList.iterator();
         }
         else
         {
-            if (_facetMap.size() == 0)
+            if (_facetMap.isEmpty())
             {
                 if (_childrenList == null)
                     return _EMPTY_UICOMPONENT_ITERATOR;
 
-                if (_childrenList.size() == 0)
+                if (_childrenList.isEmpty())
                     return _EMPTY_UICOMPONENT_ITERATOR;
 
                 return _childrenList.iterator();
@@ -479,7 +482,7 @@ public abstract class UIComponentBase extends UIComponent
                 if (_childrenList == null)
                     return _facetMap.values().iterator();
 
-                if (_childrenList.size() == 0)
+                if (_childrenList.isEmpty())
                     return _facetMap.values().iterator();
 
                 return new _FacetsAndChildrenIterator(_facetMap, _childrenList);
@@ -561,21 +564,29 @@ public abstract class UIComponentBase extends UIComponent
     public void encodeBegin(FacesContext context) throws IOException
     {
         if (context == null)
-            throw new NullPointerException("context");
-        try
         {
-            if (!isRendered())
-                return;
+            throw new NullPointerException("context");
+        }
+        
+        // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
+        pushComponentToEL(context, this);
+        
+        if (isRendered())
+        {
+            // If our rendered property is true, render the beginning of the current state of this UIComponent to the 
+            // response contained in the specified FacesContext.
+            
+            // Call Application.publishEvent(java.lang.Class, java.lang.Object), passing BeforeRenderEvent.class as 
+            // the first argument and the component instance to be rendered as the second argument.
+            context.getApplication().publishEvent(BeforeRenderEvent.class, this);
+            
             Renderer renderer = getRenderer(context);
             if (renderer != null)
             {
+                // If a Renderer is associated with this UIComponent, the actual encoding will be delegated to 
+                // Renderer.encodeBegin(FacesContext, UIComponent).
                 renderer.encodeBegin(context, this);
             }
-        }
-        catch (Exception ex)
-        {
-            throw new FacesException("Exception while calling encodeBegin on component : " + getPathToComponent(this),
-                ex);
         }
     }
 
@@ -583,13 +594,33 @@ public abstract class UIComponentBase extends UIComponent
     public void encodeChildren(FacesContext context) throws IOException
     {
         if (context == null)
-            throw new NullPointerException("context");
-        if (!isRendered())
-            return;
-        Renderer renderer = getRenderer(context);
-        if (renderer != null)
         {
-            renderer.encodeChildren(context, this);
+            throw new NullPointerException("context");
+        }
+        
+        if (isRendered())
+        {
+            // If our rendered property is true, render the child UIComponents of this UIComponent.
+            
+            Renderer renderer = getRenderer(context);
+            if (renderer == null)
+            {
+                // If no Renderer is associated with this UIComponent, iterate over each of the children of this 
+                // component and call UIComponent.encodeAll(javax.faces.context.FacesContext).
+                if (getChildCount() > 0)
+                {
+                    for (UIComponent child : getChildren())
+                    {
+                        child.encodeAll(context);
+                    }
+                }
+            }
+            else
+            {
+                // If a Renderer is associated with this UIComponent, the actual encoding will be delegated to 
+                // Renderer.encodeChildren(FacesContext, UIComponent).
+                renderer.encodeChildren(context, this);
+            }
         }
     }
 
@@ -597,21 +628,25 @@ public abstract class UIComponentBase extends UIComponent
     public void encodeEnd(FacesContext context) throws IOException
     {
         if (context == null)
-            throw new NullPointerException("context");
-        try
         {
-            if (!isRendered())
-                return;
+            throw new NullPointerException("context");
+        }
+        
+        if (isRendered())
+        {
+            // If our rendered property is true, render the ending of the current state of this UIComponent.
             Renderer renderer = getRenderer(context);
             if (renderer != null)
             {
+                // If a Renderer is associated with this UIComponent, the actual encoding will be delegated to 
+                // Renderer.encodeEnd(FacesContext, UIComponent).
                 renderer.encodeEnd(context, this);
             }
         }
-        catch (Exception ex)
-        {
-            throw new FacesException("Exception while calling encodeEnd on component : " + getPathToComponent(this), ex);
-        }
+        
+        // Call UIComponent.popComponentFromEL(javax.faces.context.FacesContext). before returning regardless 
+        // of the value of the rendered property.
+        popComponentFromEL(context);
     }
 
     @Override
@@ -691,36 +726,57 @@ public abstract class UIComponentBase extends UIComponent
     @Override
     public void processDecodes(FacesContext context)
     {
-        if (context == null)
-            throw new NullPointerException("context");
-        if (!isRendered())
-            return;
-        for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
+        if (_isPhaseExecutable(context))
         {
-            it.next().processDecodes(context);
-        }
-        try
-        {
-            decode(context);
-        }
-        catch (RuntimeException e)
-        {
-            context.renderResponse();
-            throw e;
+            // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
+            pushComponentToEL(context, this);
+            
+            try
+            {
+                // Call the processDecodes() method of all facets and children of this UIComponent, in the order 
+                // determined by a call to getFacetsAndChildren().
+                for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
+                {
+                    it.next().processDecodes(context);
+                }
+                
+                try
+                {
+                    // Call the decode() method of this component.
+                    decode(context);
+                }
+                catch (RuntimeException e)
+                {
+                    // If a RuntimeException is thrown during decode processing, call FacesContext.renderResponse() 
+                    // and re-throw the exception.
+                    context.renderResponse();
+                    throw e;
+                }
+            }
+            finally
+            {
+                // Call UIComponent.popComponentFromEL(javax.faces.context.FacesContext) from inside of a finally 
+                // block, just before returning.
+                
+                popComponentFromEL(context);
+            }
         }
     }
 
     @Override
     public void processValidators(FacesContext context)
     {
-        if (context == null)
-            throw new NullPointerException("context");
-        if (!isRendered())
-            return;
-
-        for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
+        if (_isPhaseExecutable(context))
         {
-            it.next().processValidators(context);
+            // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
+            pushComponentToEL(context, this);
+            
+            // Call the processValidators() method of all facets and children of this UIComponent, in the order 
+            // determined by a call to getFacetsAndChildren().
+            for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
+            {
+                it.next().processValidators(context);
+            }
         }
     }
 
@@ -735,14 +791,21 @@ public abstract class UIComponentBase extends UIComponent
     @Override
     public void processUpdates(FacesContext context)
     {
-        if (context == null)
-            throw new NullPointerException("context");
-        if (!isRendered())
-            return;
-
-        for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
+        if (_isPhaseExecutable(context))
         {
-            it.next().processUpdates(context);
+            // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
+            pushComponentToEL(context, this);
+
+            // Call the processUpdates() method of all facets and children of this UIComponent, in the order 
+            // determined by a call to getFacetsAndChildren().
+            for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
+            {
+                it.next().processUpdates(context);
+                // After returning from the processUpdates() method on a child or facet, call 
+                // UIComponent.popComponentFromEL(javax.faces.context.FacesContext)
+                
+                popComponentFromEL(context);
+            }
         }
     }
 
@@ -750,29 +813,57 @@ public abstract class UIComponentBase extends UIComponent
     public Object processSaveState(FacesContext context)
     {
         if (context == null)
+        {
             throw new NullPointerException("context");
+        }
+            
         if (isTransient())
+        {
+            // consult the transient property of this component. If true, just return null.
             return null;
+        }
+        
+        // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
+        pushComponentToEL(context, this);
+        
         Map<String, Object> facetMap = null;
+        
         int facetCount = getFacetCount();
         if (facetCount > 0)
         {
-            for (Iterator<Entry<String, UIComponent>> it = getFacets().entrySet().iterator(); it.hasNext();)
+            // Call the processSaveState() method of all facets and children of this UIComponent in the order 
+            // determined by a call to getFacetsAndChildren(), skipping children and facets that are transient. 
+            
+            // To improve speed and robustness, the facets and children processing is splited to maintain the
+            // facet --> state coherence based on the facet's name
+            for (Map.Entry<String, UIComponent> entry : getFacets().entrySet())
             {
-                Entry<String, UIComponent> entry = it.next();
                 UIComponent component = entry.getValue();
                 if (!component.isTransient())
                 {
                     if (facetMap == null)
+                    {
                         facetMap = new HashMap<String, Object>(facetCount, 1);
+                    }
+                    
                     facetMap.put(entry.getKey(), component.processSaveState(context));
+                    
+                    // Ensure that UIComponent.popComponentFromEL(javax.faces.context.FacesContext) is called 
+                    // correctly after each child or facet.
+                    popComponentFromEL(context);
                 }
             }
         }
+        
         List<Object> childrenList = null;
         int childCount = getChildCount();
         if (childCount > 0)
         {
+            // Call the processSaveState() method of all facets and children of this UIComponent in the order 
+            // determined by a call to getFacetsAndChildren(), skipping children and facets that are transient. 
+            
+            // To improve speed and robustness, the facets and children processing is splited to maintain the
+            // facet --> state coherence based on the facet's name
             for (UIComponent child : getChildren())
             {
                 if (!child.isTransient())
@@ -781,25 +872,23 @@ public abstract class UIComponentBase extends UIComponent
                     {
                         childrenList = new ArrayList<Object>(childCount);
                     }
+                    
                     Object childState = child.processSaveState(context);
                     if (childState != null)
-                    {
+                    { // FIXME: Isn't that check dangerous for restoration since the child isn't marked transient?
                         childrenList.add(childState);
                     }
+                    
+                    // Ensure that UIComponent.popComponentFromEL(javax.faces.context.FacesContext) is called 
+                    // correctly after each child or facet.
                 }
             }
         }
 
-        Object savedState;
-        try
-        {
-            savedState = saveState(context);
-        }
-        catch (Exception ex)
-        {
-            throw new FacesException("Exception while saving state of component : " + getPathToComponent(this), ex);
-        }
+        // Call the saveState() method of this component.
+        Object savedState = saveState(context);
 
+        // Encapsulate the child state and your state into a Serializable Object and return it.
         return new Object[] { savedState, facetMap, childrenList };
     }
 
@@ -808,19 +897,36 @@ public abstract class UIComponentBase extends UIComponent
     public void processRestoreState(FacesContext context, Object state)
     {
         if (context == null)
+        {
             throw new NullPointerException("context");
+        }
+        
         Object[] stateValues = (Object[])state;
-        Object myState = stateValues[0];
-
+        
+        // Call the restoreState() method of this component.
+        restoreState(context, stateValues[0]);
+        
+        // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
+        pushComponentToEL(context, this);
+        
         Map<String, Object> facetMap = (Map<String, Object>)stateValues[1];
         if (facetMap != null && getFacetCount() > 0)
         {
+            // Call the processRestoreState() method of all facets and children of this UIComponent in the order 
+            // determined by a call to getFacetsAndChildren().
+            
+            // To improve speed and robustness, the facets and children processing is splited to maintain the
+            // facet --> state coherence based on the facet's name
             for (Map.Entry<String, UIComponent> entry : getFacets().entrySet())
             {
                 Object facetState = facetMap.get(entry.getKey());
                 if (facetState != null)
                 {
                     entry.getValue().processRestoreState(context, facetState);
+                    
+                    // After returning from the processRestoreState() method on a child or facet, call 
+                    // UIComponent.popComponentFromEL(javax.faces.context.FacesContext)
+                    popComponentFromEL(context);
                 }
                 else
                 {
@@ -832,6 +938,11 @@ public abstract class UIComponentBase extends UIComponent
         List<Object> childrenList = (List<Object>)stateValues[2];
         if (childrenList != null && getChildCount() > 0)
         {
+            // Call the processRestoreState() method of all facets and children of this UIComponent in the order 
+            // determined by a call to getFacetsAndChildren().
+            
+            // To improve speed and robustness, the facets and children processing is splited to maintain the
+            // facet --> state coherence based on the facet's name
             int idx = 0;
             for (UIComponent child : getChildren())
             {
@@ -841,6 +952,10 @@ public abstract class UIComponentBase extends UIComponent
                     if (childState != null)
                     {
                         child.processRestoreState(context, childState);
+                        
+                        // After returning from the processRestoreState() method on a child or facet, call 
+                        // UIComponent.popComponentFromEL(javax.faces.context.FacesContext)
+                        popComponentFromEL(context);
                     }
                     else
                     {
@@ -848,15 +963,6 @@ public abstract class UIComponentBase extends UIComponent
                     }
                 }
             }
-        }
-
-        try
-        {
-            restoreState(context, myState);
-        }
-        catch (Exception ex)
-        {
-            throw new FacesException("Exception while restoring state of component : " + getPathToComponent(this), ex);
         }
     }
 
@@ -1180,6 +1286,17 @@ public abstract class UIComponentBase extends UIComponent
                             + c + "\"");
             }
         }
+    }
+    
+    private boolean _isPhaseExecutable(FacesContext context)
+    {
+        if (context == null)
+        {
+            throw new NullPointerException("context");
+        }
+        
+        // If the rendered property of this UIComponent is false, skip further processing.
+        return isRendered();
     }
 
     <T> T getExpressionValue(String attribute, T explizitValue, T defaultValueIfExpressionNull)

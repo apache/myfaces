@@ -18,16 +18,22 @@
  */
 package javax.faces.component;
 
-import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
+
+import javax.el.ValueExpression;
+import javax.faces.FacesException;
+import javax.faces.application.Resource;
+import javax.faces.context.FacesContext;
 
 /**
  * A custom implementation of the Map interface, where get and put calls
@@ -217,31 +223,46 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     public Object get(Object key)
     {
         checkKey(key);
+        
+        Object value;
 
         // is there a javabean property to read?
-        PropertyDescriptor propertyDescriptor
-                = getPropertyDescriptor((String) key);
+        PropertyDescriptor propertyDescriptor = getPropertyDescriptor((String) key);
         if (propertyDescriptor != null)
         {
-            return getComponentProperty(propertyDescriptor);
+            value = getComponentProperty(propertyDescriptor);
         }
-
-        // is there a literal value to read?
-        Object mapValue = _attributes.get(key);
-        if (mapValue != null)
+        else
         {
-            return mapValue;
+            // is there a literal value to read?
+            value = _attributes.get(key);
+            if (value == null)
+            {
+                // is there a value-binding to read?
+                ValueExpression ve = _component.getValueExpression((String) key);
+                if (ve != null)
+                {
+                    value = ve.getValue(FacesContext.getCurrentInstance().getELContext());
+                }
+                else
+                {
+                    // no value found
+                    return null;
+                }
+            }
         }
-
-        // is there a value-binding to read?
-        ValueExpression ve = _component.getValueExpression((String) key);
-        if (ve != null)
+        
+        // The get() method of the Map must take the following additional action if this component instance is a 
+        // composite component instance (indicated by the presence of a component attribute under the key given 
+        // by the value of Resource.COMPONENT_RESOURCE_KEY)
+        if (value instanceof ValueExpression && _attributes.containsKey(Resource.COMPONENT_RESOURCE_KEY))
         {
-            return ve.getValue(FacesContext.getCurrentInstance().getELContext());
+            // call the ValueExpression.getValue(javax.el.ELContext) method and return the result from get().
+            value = ((ValueExpression)value).getValue(FacesContext.getCurrentInstance().getELContext());
         }
-
-        // no value found
-        return null;
+        
+        // Otherwise, return the actual value from the get() method. 
+        return value;
     }
 
     /**

@@ -410,7 +410,7 @@ public abstract class UIComponent implements StateHolder
         // TODO: JSF 2.0 #13
     }
 
-    protected void pushComponentToEL(FacesContext context)
+    protected void pushComponentToEL(FacesContext context, UIComponent component)
     {
         // TODO: JSF 2.0 #14
     }
