@@ -879,6 +879,20 @@ public class ApplicationImpl extends Application
             log.error("Validator class " + validatorClass + " not found", e);
         }
     }
+    
+    @Override
+    public UIComponent createComponent(FacesContext context, String componentType, String rendererType)
+    {
+        checkNull(context, "context");
+        checkNull(componentType, "componentType");
+        
+        // Like createComponent(String)
+        UIComponent component = createComponent(componentType);
+        
+        _inspectRenderer(context, component, componentType, rendererType);
+        
+        return component;
+    }
 
     @Override
     public final UIComponent createComponent(final String componentType) throws FacesException
