@@ -57,6 +57,7 @@ import javax.faces.el.PropertyResolver;
 import javax.faces.el.ReferenceSyntaxException;
 import javax.faces.el.ValueBinding;
 import javax.faces.el.VariableResolver;
+import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionListener;
 import javax.faces.event.ComponentSystemEventListener;
 import javax.faces.event.ListenerFor;
@@ -130,22 +131,17 @@ public class ApplicationImpl extends Application
 
     // components, converters, and validators can be added at runtime--must
     // synchronize, uses ConcurrentHashMap to allow concurrent read of map
-    private final Map<String, Class<? extends Converter>> _converterIdToClassMap =
-            new ConcurrentHashMap<String, Class<? extends Converter>>();
+    private final Map<String, Class<? extends Converter>> _converterIdToClassMap = new ConcurrentHashMap<String, Class<? extends Converter>>();
 
     private final Map<Class, String> _converterClassNameToClassMap = new ConcurrentHashMap<Class, String>();
 
-    private final Map<String, org.apache.myfaces.config.impl.digester.elements.Converter> _converterClassNameToConfigurationMap =
-            new ConcurrentHashMap<String, org.apache.myfaces.config.impl.digester.elements.Converter>();
+    private final Map<String, org.apache.myfaces.config.impl.digester.elements.Converter> _converterClassNameToConfigurationMap = new ConcurrentHashMap<String, org.apache.myfaces.config.impl.digester.elements.Converter>();
 
-    private final Map<String, Class<? extends UIComponent>> _componentClassMap =
-            new ConcurrentHashMap<String, Class<? extends UIComponent>>();
+    private final Map<String, Class<? extends UIComponent>> _componentClassMap = new ConcurrentHashMap<String, Class<? extends UIComponent>>();
 
-    private final Map<String, Class<? extends Validator>> _validatorClassMap =
-            new ConcurrentHashMap<String, Class<? extends Validator>>();
+    private final Map<String, Class<? extends Validator>> _validatorClassMap = new ConcurrentHashMap<String, Class<? extends Validator>>();
 
-    private final Map<Class<? extends SystemEvent>, SystemListenerEntry> _systemEventListenerClassMap =
-            new ConcurrentHashMap<Class<? extends SystemEvent>, SystemListenerEntry>();
+    private final Map<Class<? extends SystemEvent>, SystemListenerEntry> _systemEventListenerClassMap = new ConcurrentHashMap<Class<? extends SystemEvent>, SystemListenerEntry>();
 
     private final RuntimeConfig _runtimeConfig;
 
@@ -185,11 +181,8 @@ public class ApplicationImpl extends Application
             // log.info(
             // "initializingRuntimeConfig.get() == null, so loading from ExternalContext"
             // );
-            ApplicationImpl
-                           .setInitializingRuntimeConfig(RuntimeConfig
-                                                                      .getCurrentInstance(FacesContext
-                                                                                                      .getCurrentInstance()
-                                                                                                      .getExternalContext()));
+            ApplicationImpl.setInitializingRuntimeConfig(RuntimeConfig.getCurrentInstance(FacesContext
+                    .getCurrentInstance().getExternalContext()));
 
             // throw new IllegalStateException(
             // "The runtime config instance which is created while initialize myfaces "
@@ -278,7 +271,7 @@ public class ApplicationImpl extends Application
 
     @Override
     public final java.util.ResourceBundle getResourceBundle(final FacesContext facesContext, final String name)
-        throws FacesException, NullPointerException
+            throws FacesException, NullPointerException
     {
 
         checkNull(facesContext, "facesContext");
@@ -321,7 +314,7 @@ public class ApplicationImpl extends Application
     }
 
     java.util.ResourceBundle getResourceBundle(final String name, final Locale locale, final ClassLoader loader)
-        throws MissingResourceException
+            throws MissingResourceException
     {
         return java.util.ResourceBundle.getBundle(name, locale, loader);
     }
@@ -339,16 +332,17 @@ public class ApplicationImpl extends Application
     @Override
     public final UIComponent createComponent(final ValueExpression componentExpression,
                                              final FacesContext facesContext, final String componentType)
-        throws FacesException, NullPointerException
+            throws FacesException, NullPointerException
     {
 
-        /* Before the component instance is returned, it must be inspected for the presence of a ListenerFor (or ListenersFor) 
-         * or ResourceDependency  (or ResourceDependencies) annotation. If any of these annotations are present, the 
-         * action listed in ListenerFor or ResourceDependency must be taken on the component, before it is returned from 
-         * this method. This variant of createComponent must not inspect the Renderer for the component to be returned for 
-         * any of the afore mentioned annotations. Such inspection is the province of 
+        /*
+         * Before the component instance is returned, it must be inspected for the presence of a ListenerFor (or
+         * ListenersFor) or ResourceDependency (or ResourceDependencies) annotation. If any of these annotations are
+         * present, the action listed in ListenerFor or ResourceDependency must be taken on the component, before it is
+         * returned from this method. This variant of createComponent must not inspect the Renderer for the component to
+         * be returned for any of the afore mentioned annotations. Such inspection is the province of
          */
-        
+
         checkNull(componentExpression, "componentExpression");
         checkNull(facesContext, "facesContext");
         checkNull(componentType, "componentType");
@@ -363,16 +357,16 @@ public class ApplicationImpl extends Application
 
             if (retVal instanceof UIComponent)
             {
-                createdComponent = (UIComponent)retVal;
+                createdComponent = (UIComponent) retVal;
             }
             else
             {
                 createdComponent = createComponent(componentType);
                 componentExpression.setValue(elContext, createdComponent);
             }
-            
+
             _handleAnnotations(facesContext, createdComponent, createdComponent);
-            
+
             return createdComponent;
         }
         catch (FacesException e)
@@ -391,12 +385,12 @@ public class ApplicationImpl extends Application
     {
         // Like createComponent(ValueExpression, FacesContext, String)
         UIComponent component = createComponent(componentExpression, context, componentType);
-        
+
         _inspectRenderer(context, component, componentType, rendererType);
-        
+
         return component;
     }
-    
+
     @Override
     public final ExpressionFactory getExpressionFactory()
     {
@@ -426,19 +420,32 @@ public class ApplicationImpl extends Application
         checkNull(systemEventClass, "systemEventClass");
         checkNull(source, "source");
 
-        SystemEvent event = null;
-        if (source instanceof SystemEventListenerHolder)
+        try
         {
-            SystemEventListenerHolder holder = (SystemEventListenerHolder)source;
-            event =
-                    _traverseListenerList(holder.getListenersForEventClass(systemEventClass), systemEventClass, source,
-                        event);
+            SystemEvent event = null;
+            if (source instanceof SystemEventListenerHolder)
+            {
+                SystemEventListenerHolder holder = (SystemEventListenerHolder) source;
+    
+                // If the source argument implements SystemEventListenerHolder, call 
+                // SystemEventListenerHolder.getListenersForEventClass(java.lang.Class) on it, passing the systemEventClass 
+                // argument. If the list is not empty, perform algorithm traverseListenerList on the list.
+                event = _traverseListenerList(holder.getListenersForEventClass(systemEventClass), systemEventClass, source,
+                                              event);
+            }
+    
+            SystemListenerEntry systemListenerEntry = _systemEventListenerClassMap.get(systemEventClass);
+            if (systemListenerEntry != null)
+            {
+                systemListenerEntry.publish(systemEventClass, sourceBaseType, source, event);
+            }
         }
-
-        SystemListenerEntry systemListenerEntry = _systemEventListenerClassMap.get(systemEventClass);
-        if (systemListenerEntry != null)
+        catch (AbortProcessingException e)
         {
-            systemListenerEntry.publish(systemEventClass, sourceBaseType, source, event);
+            // If the act of invoking the processListener method causes an AbortProcessingException to be thrown, 
+            // processing of the listeners must be aborted, no further processing of the listeners for this event must 
+            // take place, and the exception must be logged with Level.SEVERE.
+            log.error("Event processing was aborted", e);
         }
     }
 
@@ -601,7 +608,7 @@ public class ApplicationImpl extends Application
                 {
                     if (temp instanceof String)
                     {
-                        stageName = (String)temp;
+                        stageName = (String) temp;
                     }
                     else
                     {
@@ -849,7 +856,8 @@ public class ApplicationImpl extends Application
         }
     }
 
-    public final void addConverterConfiguration(final String converterClassName,
+    public final void addConverterConfiguration(
+                                                final String converterClassName,
                                                 final org.apache.myfaces.config.impl.digester.elements.Converter configuration)
     {
         checkNull(converterClassName, "converterClassName");
@@ -879,18 +887,18 @@ public class ApplicationImpl extends Application
             log.error("Validator class " + validatorClass + " not found", e);
         }
     }
-    
+
     @Override
     public UIComponent createComponent(FacesContext context, String componentType, String rendererType)
     {
         checkNull(context, "context");
         checkNull(componentType, "componentType");
-        
+
         // Like createComponent(String)
         UIComponent component = createComponent(componentType);
-        
+
         _inspectRenderer(context, component, componentType, rendererType);
-        
+
         return component;
     }
 
@@ -1039,8 +1047,8 @@ public class ApplicationImpl extends Application
                 {
                     // look for a constructor that takes a single Class object
                     // See JSF 1.2 javadoc for Converter
-                    Constructor<? extends Converter> constructor = 
-                        converterClass.getConstructor(new Class[] { Class.class });
+                    Constructor<? extends Converter> constructor = converterClass
+                            .getConstructor(new Class[] { Class.class });
 
                     converter = constructor.newInstance(new Object[] { targetClass });
                 }
@@ -1107,8 +1115,8 @@ public class ApplicationImpl extends Application
 
     private void setConverterProperties(final Class<?> converterClass, final Converter converter)
     {
-        final org.apache.myfaces.config.impl.digester.elements.Converter converterConfig =
-                _converterClassNameToConfigurationMap.get(converterClass.getName());
+        final org.apache.myfaces.config.impl.digester.elements.Converter converterConfig = _converterClassNameToConfigurationMap
+                .get(converterClass.getName());
 
         if (converterConfig != null)
         {
@@ -1134,7 +1142,7 @@ public class ApplicationImpl extends Application
     @Deprecated
     @Override
     public final MethodBinding createMethodBinding(final String reference, Class[] params)
-        throws ReferenceSyntaxException
+            throws ReferenceSyntaxException
     {
         checkNull(reference, "reference");
         checkEmpty(reference, "reference");
@@ -1153,8 +1161,8 @@ public class ApplicationImpl extends Application
 
         try
         {
-            methodExpression =
-                    getExpressionFactory().createMethodExpression(threadELContext(), reference, Object.class, params);
+            methodExpression = getExpressionFactory().createMethodExpression(threadELContext(), reference,
+                                                                             Object.class, params);
         }
         catch (ELException e)
         {
@@ -1180,7 +1188,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            return (Validator)validatorClass.newInstance();
+            return (Validator) validatorClass.newInstance();
         }
         catch (Exception e)
         {
@@ -1278,11 +1286,11 @@ public class ApplicationImpl extends Application
 
         return event;
     }
-    
+
     private void _handleAnnotations(FacesContext context, Object inspected, UIComponent component)
     {
         _handleListenerFor(context, inspected, component, inspected.getClass().getAnnotation(ListenerFor.class));
-        
+
         ListenersFor listeners = component.getClass().getAnnotation(ListenersFor.class);
         if (listeners != null)
         {
@@ -1291,7 +1299,7 @@ public class ApplicationImpl extends Application
                 _handleListenerFor(context, inspected, component, listenerFor);
             }
         }
-        
+
         _handleResourceDependency(context, inspected.getClass().getAnnotation(ResourceDependency.class));
         ResourceDependencies dependencies = inspected.getClass().getAnnotation(ResourceDependencies.class);
         if (dependencies != null)
@@ -1302,8 +1310,9 @@ public class ApplicationImpl extends Application
             }
         }
     }
-    
-    private void _handleListenerFor(FacesContext context, Object inspected, UIComponent component, ListenerFor annotation)
+
+    private void _handleListenerFor(FacesContext context, Object inspected, UIComponent component,
+                                    ListenerFor annotation)
     {
         // If this annotation is not present on the class in question, no action must be taken.
         if (annotation != null)
@@ -1312,81 +1321,83 @@ public class ApplicationImpl extends Application
             // If the class to which this annotation is attached implements ComponentSystemEventListener
             if (inspected instanceof ComponentSystemEventListener)
             {
-                // If the class to which this annotation is attached is a UIComponent instance, "target" is the 
+                // If the class to which this annotation is attached is a UIComponent instance, "target" is the
                 // UIComponent instance.
-                
-                // If the class to which this annotation is attached is a Renderer instance, "target" is the 
+
+                // If the class to which this annotation is attached is a Renderer instance, "target" is the
                 // UIComponent instance.
-                
-                /* 
-                 * If "target" is a UIComponent call UIComponent.subscribeToEvent(Class, ComponentSystemEventListener) 
-                 * passing the systemEventClass() of the annotation as the first argument and the instance of the class 
-                 * to which this annotation is attached (which must implement ComponentSystemEventListener) as the second 
-                 * argument.
+
+                /*
+                 * If "target" is a UIComponent call UIComponent.subscribeToEvent(Class, ComponentSystemEventListener)
+                 * passing the systemEventClass() of the annotation as the first argument and the instance of the class
+                 * to which this annotation is attached (which must implement ComponentSystemEventListener) as the
+                 * second argument.
                  */
-                component.subscribeToEvent(annotation.systemEventClass(), (ComponentSystemEventListener)inspected);
+                component.subscribeToEvent(annotation.systemEventClass(), (ComponentSystemEventListener) inspected);
             }
-            // If the class to which this annotation is attached implements SystemEventListener and does not implement 
+            // If the class to which this annotation is attached implements SystemEventListener and does not implement
             // ComponentSystemEventListener, "target" is the Application instance.
             else if (component instanceof SystemEventListener)
             {
-                // If "target" is the Application instance, inspect the value of the sourceClass() annotation attribute 
+                // If "target" is the Application instance, inspect the value of the sourceClass() annotation attribute
                 // value.
                 if (Void.class.equals(annotation.sourceClass()))
                 {
-                    /* 
-                     * If the value is Void.class, call Application.subscribeToEvent(Class, SystemEventListener), passing 
-                     * the value of systemEventClass() as the first argument and the instance of the class to which this 
-                     * annotation is attached (which must implement SystemEventListener) as the second argument.
+                    /*
+                     * If the value is Void.class, call Application.subscribeToEvent(Class, SystemEventListener),
+                     * passing the value of systemEventClass() as the first argument and the instance of the class to
+                     * which this annotation is attached (which must implement SystemEventListener) as the second
+                     * argument.
                      */
-                    subscribeToEvent(annotation.systemEventClass(), (SystemEventListener)inspected);
+                    subscribeToEvent(annotation.systemEventClass(), (SystemEventListener) inspected);
                 }
                 else
                 {
-                    /* 
-                     * Otherwise, call Application.subscribeToEvent(Class, Class, SystemEventListener), passing the value of 
-                     * systemEventClass() as the first argument, the value of sourceClass() as the second argument, and the 
-                     * instance of the class to which this annotation is attached (which must implement SystemEventListener) as 
-                     * the third argument.
+                    /*
+                     * Otherwise, call Application.subscribeToEvent(Class, Class, SystemEventListener), passing the
+                     * value of systemEventClass() as the first argument, the value of sourceClass() as the second
+                     * argument, and the instance of the class to which this annotation is attached (which must
+                     * implement SystemEventListener) as the third argument.
                      */
-                    subscribeToEvent(annotation.systemEventClass(), annotation.sourceClass(), (SystemEventListener)inspected);
+                    subscribeToEvent(annotation.systemEventClass(), annotation.sourceClass(),
+                                     (SystemEventListener) inspected);
                 }
             }
-            
-            /* 
-             * If the class to which this annotation is attached implements ComponentSystemEventListener and is 
-             * neither an instance of Renderer nor UIComponent, the action taken is unspecified. This case must not 
-             * trigger any kind of error.
+
+            /*
+             * If the class to which this annotation is attached implements ComponentSystemEventListener and is neither
+             * an instance of Renderer nor UIComponent, the action taken is unspecified. This case must not trigger any
+             * kind of error.
              */
         }
     }
-    
+
     private void _handleResourceDependency(FacesContext context, ResourceDependency annotation)
     {
-        // If this annotation is not present on the class in question, no action must be taken. 
+        // If this annotation is not present on the class in question, no action must be taken.
         if (annotation != null)
         {
-            // Create a UIOutput instance by passing javax.faces.Output. to 
+            // Create a UIOutput instance by passing javax.faces.Output. to
             // Application.createComponent(java.lang.String).
             UIOutput output = (UIOutput) createComponent(UIOutput.COMPONENT_TYPE);
-            
-            // Get the annotation instance from the class and obtain the values of the name, library, and 
+
+            // Get the annotation instance from the class and obtain the values of the name, library, and
             // target attributes.
             String name = annotation.name();
-            
-            // Obtain the renderer-type for the resource name by passing name to 
+
+            // Obtain the renderer-type for the resource name by passing name to
             // ResourceHandler.getRendererTypeForResourceName(java.lang.String).
             String rendererType = getResourceHandler().getRendererTypeForResourceName(name);
-            
+
             // Call setRendererType on the UIOutput instance, passing the renderer-type.
             output.setRendererType(rendererType);
-            
+
             // Obtain the Map of attributes from the UIOutput component by calling UIComponent.getAttributes().
             Map<String, Object> attributes = output.getAttributes();
-            
+
             // Store the name into the attributes Map under the key "name".
             attributes.put("name", name);
-            
+
             // If library is the empty string, let library be null.
             String library = annotation.library();
             if (library != null && library.length() > 0)
@@ -1394,7 +1405,7 @@ public class ApplicationImpl extends Application
                 // If library is non-null, store it under the key "library".
                 attributes.put("library", library);
             }
-            
+
             // If target is the empty string, let target be null.
             String target = annotation.target();
             if (target != null && target.length() > 0)
@@ -1404,17 +1415,17 @@ public class ApplicationImpl extends Application
             }
             else
             {
-                // Otherwise, if target is null, call UIViewRoot.addComponentResource(javax.faces.context.FacesContext, 
+                // Otherwise, if target is null, call UIViewRoot.addComponentResource(javax.faces.context.FacesContext,
                 // javax.faces.component.UIComponent), passing the UIOutput instance as the second argument.
                 context.getViewRoot().addComponentResource(context, output);
             }
         }
     }
-    
+
     private void _inspectRenderer(FacesContext context, UIComponent component, String componentType, String rendererType)
     {
-        /* 
-         * The Renderer instance to inspect must be obtained by calling FacesContext.getRenderKit() and calling 
+        /*
+         * The Renderer instance to inspect must be obtained by calling FacesContext.getRenderKit() and calling
          * RenderKit.getRenderer(java.lang.String, java.lang.String) on the result, passing the argument componentType
          * as the first argument and the argument rendererType as the second argument.
          * 
@@ -1424,21 +1435,21 @@ public class ApplicationImpl extends Application
         if (renderer == null)
         {
             // If no such Renderer can be found, a message must be logged with a helpful error message.
-            log.error("renderer cannot be found for component type " + componentType + " and renderer type " + 
-                      rendererType);
+            log.error("renderer cannot be found for component type " + componentType + " and renderer type "
+                    + rendererType);
         }
         else
         {
-            // Otherwise, UIComponent.setRendererType(java.lang.String) must be called on the newly created 
+            // Otherwise, UIComponent.setRendererType(java.lang.String) must be called on the newly created
             // UIComponent instance, passing the argument rendererType as the argument.
             component.setRendererType(rendererType);
-            
-            /* except the Renderer for the component to be returned must be inspected for the annotations mentioned 
-             * in createComponent(ValueExpression, FacesContext, String) as specified in the documentation for that
-             * method.   
+
+            /*
+             * except the Renderer for the component to be returned must be inspected for the annotations mentioned in
+             * createComponent(ValueExpression, FacesContext, String) as specified in the documentation for that method.
              */
             _handleAnnotations(context, renderer, component);
-        } 
+        }
     }
 
     private static SystemEvent _traverseListenerList(List<? extends SystemEventListener> listeners,
@@ -1449,28 +1460,20 @@ public class ApplicationImpl extends Application
         {
             for (SystemEventListener listener : listeners)
             {
-                // Call
-                // SystemEventListener.isListenerForSource(java.lang.Object),
-                // passing the source argument.
+                // Call SystemEventListener.isListenerForSource(java.lang.Object), passing the source argument.
                 // If this returns false, take no action on the listener.
                 if (listener.isListenerForSource(source))
                 {
-                    // Otherwise, if the event to be passed to the listener
-                    // instances has not yet been constructed,
-                    // construct the event, passing source as the argument to
-                    // the one-argument constructor that takes
-                    // an Object. This same event instance must be passed to all
-                    // listener instances.
+                    // Otherwise, if the event to be passed to the listener instances has not yet been constructed,
+                    // construct the event, passing source as the argument to the one-argument constructor that takes
+                    // an Object. This same event instance must be passed to all listener instances.
                     event = _createEvent(systemEventClass, source, event);
 
-                    // Call SystemEvent.isAppropriateListener(javax.faces.event.
-                    // FacesListener), passing the listener
-                    // instance as the argument. If this returns false, take no
-                    // action on the listener.
+                    // Call SystemEvent.isAppropriateListener(javax.faces.event.FacesListener), passing the listener
+                    // instance as the argument. If this returns false, take no action on the listener.
                     if (event.isAppropriateListener(listener))
                     {
-                        // Call SystemEvent.processListener(javax.faces.event.
-                        // FacesListener), passing the listener
+                        // Call SystemEvent.processListener(javax.faces.event.FacesListener), passing the listener
                         // instance.
                         event.processListener(listener);
                     }
@@ -1565,11 +1568,11 @@ public class ApplicationImpl extends Application
         {
             if (_lstSystemEventListener == null)
             {
-                /* TODO: Check if modification occurs often or not, might have to use a synchronized
-                 * list instead.
+                /*
+                 * TODO: Check if modification occurs often or not, might have to use a synchronized list instead.
                  * 
                  * Registrations found:
-                 */ 
+                 */
                 _lstSystemEventListener = new CopyOnWriteArrayList<SystemEventListener>();
             }
 
@@ -1586,12 +1589,11 @@ public class ApplicationImpl extends Application
             List<SystemEventListener> list = _sourceClassMap.get(sourceClass);
             if (list == null)
             {
-                /* TODO: Check if modification occurs often or not, might have to use a synchronized
-                 * list instead.
+                /*
+                 * TODO: Check if modification occurs often or not, might have to use a synchronized list instead.
                  * 
                  * Registrations found:
-                 * - UIViewRoot register to AfterAddToParentEvent when the request is not a postback (very often)
-                 */ 
+                 */
                 list = new CopyOnWriteArrayList<SystemEventListener>();
                 _sourceClassMap.put(sourceClass, list);
             }

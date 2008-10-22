@@ -68,6 +68,8 @@ public abstract class UIComponent implements StateHolder
     public static final String CURRENT_COMPOSITE_COMPONENT = "javax.faces.component.CURRENT_COMPOSITE_COMPONENT";
     public static final String FACETS_KEY = "javax.faces.component.FACETS_KEY";
 
+    private Map<Class<? extends SystemEvent>, List<SystemEventListener>> _systemEventListenerClassMap;
+    
     protected Map<String, ValueExpression> bindings;
 
     public UIComponent()
@@ -239,9 +241,25 @@ public abstract class UIComponent implements StateHolder
 
     public List<SystemEventListener> getListenersForEventClass(Class<? extends SystemEvent> eventClass)
     {
-        // TODO: JSF 2.0 #12
-
-        return null;
+        List<SystemEventListener> listeners;
+        if (_systemEventListenerClassMap == null)
+        {
+            listeners = Collections.emptyList();
+        }
+        else
+        {
+            listeners = _systemEventListenerClassMap.get(eventClass);
+            if (listeners == null)
+            {
+                listeners = Collections.emptyList();
+            }
+            else
+            {
+                listeners = Collections.unmodifiableList(listeners);
+            }
+        }
+        
+        return listeners;
     }
 
     public abstract void setId(String id);
@@ -377,18 +395,26 @@ public abstract class UIComponent implements StateHolder
 
     public void subscribeToEvent(Class<? extends SystemEvent> eventClass, ComponentSystemEventListener componentListener)
     {
-        /*
-         * The default implementation creates an inner SystemEventListener instance that wraps argument 
-         * componentListener as the listener  argument. 
-         * 
-         * This inner class must call through to the argument componentListener in its implementation of 
-         * SystemEventListener.processEvent(javax.faces.event.SystemEvent) and its implementation of 
-         * SystemEventListener.isListenerForSource(java.lang.Object) must return true if the instance class of 
-         * this UIComponent is assignable from the argument to isListenerForSource.
-         */
+        // The default implementation creates an inner SystemEventListener instance that wraps argument 
+        // componentListener as the listener argument.
         SystemEventListener listener = new EventListenerWrapper(this, componentListener);
         
-        getFacesContext().getApplication().subscribeToEvent(eventClass, listener);
+        // Make sure the map exists
+        if (_systemEventListenerClassMap == null)
+        {
+            _systemEventListenerClassMap = new HashMap<Class<? extends SystemEvent>, List<SystemEventListener>>();
+        }
+        
+        List<SystemEventListener> listeners = _systemEventListenerClassMap.get(eventClass);
+        // Make sure the list for class exists
+        if (listeners == null)
+        {
+            listeners = new ArrayList<SystemEventListener>(2);
+            _systemEventListenerClassMap.put(eventClass, listeners);
+        }
+        
+        // Deal with contains? Spec is silent
+        listeners.add(listener);
     }
 
     public void unsubscribeFromEvent(Class<? extends SystemEvent> eventClass,
@@ -619,11 +645,17 @@ public abstract class UIComponent implements StateHolder
         
         public boolean isListenerForSource(Object source)
         {
+            // and its implementation of SystemEventListener.isListenerForSource(java.lang.Object) must return true 
+            // if the instance class of this UIComponent is assignable from the argument to isListenerForSource.
+            
             return source.getClass().isAssignableFrom(component.getClass());
         }
 
         public void processEvent(SystemEvent event)
         {
+            // This inner class must call through to the argument componentListener in its implementation of 
+            // SystemEventListener.processEvent(javax.faces.event.SystemEvent)
+            
             assert event instanceof ComponentSystemEvent;
             
             listener.processEvent((ComponentSystemEvent)event);
