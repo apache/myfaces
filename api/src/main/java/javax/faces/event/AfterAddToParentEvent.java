@@ -36,7 +36,6 @@ public class AfterAddToParentEvent extends ComponentSystemEvent
     @Override
     public boolean isAppropriateListener(FacesListener listener)
     {
-        // FIXME
-        throw new NullPointerException("FIXME");
+        return listener instanceof SystemEventListener;
     }
 }
