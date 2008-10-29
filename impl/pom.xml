@@ -40,9 +40,10 @@
             <id>makemyfacesmetadata</id>
             <configuration>
                 <!-- Qdox 1.6.3 does not parse inner enums on classes
-                so we have to exclude some files temporally. -->
-                <includes>**/*.java</includes>
-                <excludes>**/FacesCompositeELResolver.java</excludes>
+                so we have to exclude some files temporally. 
+                Added linux case (paths start with /) to filter temporally too-->
+                <includes>/**/*.java,**/*.java</includes>
+                <excludes>/**/FacesCompositeELResolver.java,**/FacesCompositeELResolver.java</excludes>
             </configuration>
             <goals>
               <goal>build-metadata</goal>
