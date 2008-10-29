@@ -1,8 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
     <groupId>org.apache.myfaces</groupId>
@@ -20,16 +16,16 @@
     This project is the home of the MyFaces implementation of the JavaServer Faces 1.2 specification, and
     consists of an API module (javax.faces.* classes) and an implementation module (org.apache.myfaces.* classes).
   </description>
-  <version>1.2.5-SNAPSHOT</version>
+  <version>1.2.5</version>
   <url>http://myfaces.apache.org/core12</url>
   <issueManagement>
     <system>jira</system>
     <url>http://issues.apache.org/jira/secure/BrowseProject.jspa?id=10600</url>
   </issueManagement>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk_1.2.x</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk_1.2.x</developerConnection>
-    <url>http://svn.apache.org/repos/asf/myfaces/core/trunk_1.2.x</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/1_2_5</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/1_2_5</developerConnection>
+    <url>http://svn.apache.org/repos/asf/myfaces/core/branches/1_2_5</url>
   </scm>
   <modules>
     <!-- module>build</module -->
@@ -125,7 +121,7 @@
         <artifactId>maven-pmd-plugin</artifactId>
         <version>2.2</version>
         <reportSets>
-          <reportSet/>
+          <reportSet />
         </reportSets>
       </plugin>
     </plugins>
