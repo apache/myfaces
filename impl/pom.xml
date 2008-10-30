@@ -34,15 +34,15 @@
       <plugin>
         <groupId>org.apache.myfaces.buildtools</groupId>
         <artifactId>myfaces-builder-plugin</artifactId>
-        <version>1.0.2-SNAPSHOT</version>
+        <version>1.0.2</version>
         <executions>          
           <execution>
             <id>makemyfacesmetadata</id>
             <configuration>
                 <!-- Qdox 1.6.3 does not parse inner enums on classes
                 so we have to exclude some files temporally. -->
-                <includes>**/*.java</includes>
-                <excludes>**/FacesCompositeELResolver.java</excludes>
+                <includes>**/*.java,/**/*.java</includes>
+                <excludes>**/FacesCompositeELResolver.java,/**/FacesCompositeELResolver.java</excludes>
             </configuration>
             <goals>
               <goal>build-metadata</goal>
@@ -422,7 +422,7 @@
     <dependency>
       <groupId>org.apache.myfaces.buildtools</groupId>
       <artifactId>myfaces-builder-annotations</artifactId> 
-      <version>1.0.2-SNAPSHOT</version>
+      <version>1.0.2</version>
       <scope>provided</scope>
     </dependency>
     
