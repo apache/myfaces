@@ -23,6 +23,7 @@ import org.apache.myfaces.el.unified.resolver.ManagedBeanResolver;
 import org.apache.myfaces.el.unified.resolver.ResourceBundleResolver;
 import org.apache.myfaces.el.unified.resolver.ScopedAttributeResolver;
 import org.apache.myfaces.el.unified.resolver.implicitobject.ImplicitObjectResolver;
+import org.apache.myfaces.el.unified.resolver.ResourceResolver;
 
 import javax.el.ArrayELResolver;
 import javax.el.BeanELResolver;
@@ -59,6 +60,7 @@ public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELRe
         elResolver.add(new ArrayELResolver());
         elResolver.add(new BeanELResolver());
         elResolver.add(new ScopedAttributeResolver());
+        elResolver.add(new ResourceResolver());
     }
 
 }

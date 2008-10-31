@@ -83,7 +83,9 @@ public class ImplicitObjectResolver extends ELResolver
         ImplicitObject io14 = new ViewImplicitObject();
         forFacesList.put(io14.getName(), io14);
         ImplicitObject io15 = new ComponentImplicitObject();
-        forFacesList.put(io15.getName(), io15);        
+        forFacesList.put(io15.getName(), io15);
+        ImplicitObject io16 = new ResourceImplicitObject();
+        forFacesList.put(io16.getName(), io16);        
         return new ImplicitObjectResolver(forFacesList);
     }
 

@@ -18,12 +18,13 @@
  */
 package org.apache.myfaces.el.unified;
 
+import javax.el.CompositeELResolver;
+
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.el.unified.resolver.ManagedBeanResolver;
 import org.apache.myfaces.el.unified.resolver.ResourceBundleResolver;
+import org.apache.myfaces.el.unified.resolver.ResourceResolver;
 import org.apache.myfaces.el.unified.resolver.implicitobject.ImplicitObjectResolver;
-
-import javax.el.CompositeELResolver;
 
 /**
  * build the el resolver for jsp. see 1.2 spec section 5.6.1
@@ -44,6 +45,7 @@ public class ResolverBuilderForJSP extends ResolverBuilderBase implements ELReso
         elResolver.add(ImplicitObjectResolver.makeResolverForJSP());
         elResolver.add(new ManagedBeanResolver());
         elResolver.add(new ResourceBundleResolver());
+        elResolver.add(new ResourceResolver());
 
         addFromRuntimeConfig(elResolver);
     }
