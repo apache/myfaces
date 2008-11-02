@@ -22,7 +22,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import javax.faces.context.ResponseStream;
 import javax.faces.context.ResponseWriter;
@@ -49,6 +52,7 @@ public class HtmlRenderKitImpl extends RenderKit
 
     private Map<String, Renderer> _renderers;
     private ResponseStateManager _responseStateManager;
+    private Map<String,Set<String>> _families;
 
     // ~ Constructors -------------------------------------------------------------------------------
 
@@ -56,6 +60,7 @@ public class HtmlRenderKitImpl extends RenderKit
     {
         _renderers = new HashMap<String, Renderer>();
         _responseStateManager = new HtmlResponseStateManager();
+        _families = new HashMap<String, Set<String> >();
     }
 
     // ~ Methods ------------------------------------------------------------------------------------
@@ -113,6 +118,17 @@ public class HtmlRenderKitImpl extends RenderKit
                     + " renderer class = " + renderer.getClass().getName());
         }
 
+        if (_families.get(componentFamily) == null)
+        {
+            Set<String> rendererTypes = new HashSet<String>();
+            rendererTypes.add(rendererType);
+            _families.put(componentFamily, rendererTypes);
+        }
+        else
+        {
+            _families.get(componentFamily).add(rendererType);
+        }
+        
         _renderers.put(rendererKey, renderer);
 
         if (log.isTraceEnabled())
@@ -124,6 +140,24 @@ public class HtmlRenderKitImpl extends RenderKit
     public ResponseStateManager getResponseStateManager()
     {
         return _responseStateManager;
+    }
+    
+    /**
+     * @since JSF 2.0
+     */
+    @Override
+    public Iterator<String> getComponentFamilies()
+    {
+        return _families.keySet().iterator();
+    }
+    
+    /**
+     * @since JSF 2.0
+     */
+    @Override
+    public Iterator<String> getRendererTypes(String componentFamily)
+    {
+        return _families.get(componentFamily).iterator();
     }
 
     @Override
