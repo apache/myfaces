@@ -36,6 +36,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -66,6 +67,7 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     private Map<String, Object> _requestCookieMap;
     private Map<String, String> _initParameterMap;
     private HttpServletRequest _httpServletRequest;
+    private HttpServletResponse _httpServletResponse;
     private String _requestServletPath;
     private String _requestPathInfo;
 
@@ -85,6 +87,7 @@ public final class ServletExternalContextImpl extends ExternalContext implements
         _requestCookieMap = null;
         _initParameterMap = null;
         _httpServletRequest = isHttpServletRequest(servletRequest) ? (HttpServletRequest) servletRequest : null;
+        _httpServletResponse = isHttpServletResponse(servletResponse) ? (HttpServletResponse) servletResponse : null;
 
         if (_httpServletRequest != null)
         {
@@ -111,6 +114,7 @@ public final class ServletExternalContextImpl extends ExternalContext implements
         _requestCookieMap = null;
         _initParameterMap = null;
         _httpServletRequest = null;
+        _httpServletResponse = null;
     }
 
     @Override
@@ -533,5 +537,61 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     {
         return servletRequest instanceof HttpServletRequest;
     }
+    
+    private void checkHttpServletResponse()
+    {
+        if (_httpServletRequest == null)
+        {
+            throw new UnsupportedOperationException("Only HttpServletResponse supported");
+        }
+    }    
+    private boolean isHttpServletResponse(final ServletResponse servletResponse)
+    {
+        return servletResponse instanceof HttpServletResponse;
+    }
 
+    /**
+     * @since JSF 2.0
+     */
+    public void addResponseCookie(final String name,
+            final String value, final Map<String, Object> properties)
+    {
+        checkHttpServletResponse();
+        Cookie cookie = new Cookie(name,value);
+        if (properties != null)
+        {
+            for (Map.Entry<String, Object> entry : properties.entrySet())
+            {
+                String propertyKey = entry.getKey();
+                Object propertyValue = entry.getValue();
+                if ("comment".equals(propertyKey))
+                {
+                    cookie.setComment((String) propertyValue);
+                    continue;
+                }
+                else if ("domain".equals(propertyKey))
+                {
+                    cookie.setDomain((String)propertyValue);
+                    continue;
+                }
+                else if ("maxAge".equals(propertyKey))
+                {
+                    cookie.setMaxAge((Integer) propertyValue);
+                    continue;
+                }
+                else if ("secure".equals(propertyKey))
+                {
+                    cookie.setSecure((Boolean) propertyValue);
+                    continue;
+                }
+                else if ("path".equals(propertyKey))
+                {
+                    cookie.setPath((String) propertyValue);
+                    continue;
+                }
+                throw new IllegalArgumentException("Unused key when creating Cookie");
+            }
+        }
+        _httpServletResponse.addCookie(cookie);
+    }
 }
