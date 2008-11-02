@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
+import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -71,6 +72,16 @@ public abstract class UIComponent implements StateHolder
     private Map<Class<? extends SystemEvent>, List<SystemEventListener>> _systemEventListenerClassMap;
     
     protected Map<String, ValueExpression> bindings;
+    
+    /**
+     * Used to cache the map created using getResourceBundleMap() method,
+     * since this method could be called several times when rendering the
+     * composite component. This attribute may not be serialized,
+     * so transient is used (There are some very few special cases when 
+     * UIComponent instances are serializable like t:schedule, so it 
+     * is better if transient is used).
+     */
+    private transient Map<String,String> _resourceBundleMap = null;
 
     public UIComponent()
     {
@@ -288,38 +299,62 @@ public abstract class UIComponent implements StateHolder
 
     public Map<String, String> getResourceBundleMap()
     {
-        Map<String, String> resourceMap;
-
-        FacesContext context = getFacesContext();
-        Locale locale = context.getViewRoot().getLocale();
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-
-        try
+        if (_resourceBundleMap == null)
         {
-            // looks for a ResourceBundle with a base name equal to the fully qualified class
-            // name of the current UIComponent this and Locale equal to the Locale of the current UIViewRoot.
-            resourceMap = new BundleMap(ResourceBundle.getBundle(getClass().getName(), locale, loader));
+            FacesContext context = getFacesContext();
+            Locale locale = context.getViewRoot().getLocale();
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+    
+            try
+            {
+                // looks for a ResourceBundle with a base name equal to the fully qualified class
+                // name of the current UIComponent this and Locale equal to the Locale of the current UIViewRoot.
+                _resourceBundleMap = new BundleMap(ResourceBundle.getBundle(getClass().getName(), locale, loader));
+            }
+            catch (MissingResourceException e)
+            {
+                //If no such bundle is found, and the component is a composite component
+                if (this._isCompositeComponent())
+                {
+                    //No need to check componentResource (the resource used to build the composite
+                    //component instance) to null since it is already done on this._isCompositeComponent()
+                    Resource componentResource = (Resource) getAttributes().get(Resource.COMPONENT_RESOURCE_KEY);
+                    // Let resourceName be the resourceName of the Resource for this composite component,
+                    // replacing the file extension with ".properties"
+                    int extensionIndex = componentResource.getResourceName().lastIndexOf('.');                
+                    String resourceName =  (extensionIndex < 0 ? componentResource.getResourceName()
+                            : componentResource.getResourceName().substring(0,extensionIndex) )+ ".properties" ;
+                    
+                    // Let libraryName be the libraryName of the the Resource for this composite component.                
+                    // Call ResourceHandler.createResource(java.lang.String,java.lang.String), passing the derived resourceName and
+                    // libraryName.
+                    Resource bundleResource = context.getApplication().getResourceHandler().createResource(resourceName, 
+                            componentResource.getLibraryName());
+    
+                    if (bundleResource != null)
+                    {
+                        // If the resultant Resource exists and can be found, the InputStream for the resource
+                        // is used to create a ResourceBundle. If either of the two previous steps for obtaining the ResourceBundle
+                        // for this component is successful, the ResourceBundle is wrapped in a Map<String, String> and returned.
+                        try
+                        {
+                            _resourceBundleMap = new BundleMap(new PropertyResourceBundle(bundleResource.getInputStream())); 
+                        }
+                        catch (IOException e1)
+                        {
+                            //Nothing happens, then resourceBundleMap is set as empty map
+                        }
+                    }
+                }
+                // Otherwise Collections.EMPTY_MAP is returned.
+                if (_resourceBundleMap == null)
+                {
+                    _resourceBundleMap = Collections.emptyMap();
+                }
+            }
         }
-        catch (MissingResourceException e)
-        {
-            /*
-             * If no such bundle is found, and the component is a composite component, let resourceName be the
-             * resourceName of the Resource for this composite component, replacing the file extension with
-             * ".properties". Let libraryName be the libraryName of the the Resource for this composite component. Call
-             * ResourceHandler.createResource(java.lang.String,java.lang.String), passing the derived resourceName and
-             * libraryName. Note that this will automatically allow for the localization of the ResourceBundle due to
-             * the localization facility implemented in createResource, which is specified in section 2.6.1.3 of the
-             * spec prose document. If the resultant Resource exists and can be found, the InputStream for the resource
-             * is used to create a ResourceBundle. If either of the two previous steps for obtaining the ResourceBundle
-             * for this component is successful, the ResourceBundle is wrapped in a Map<String, String> and returned.
-             */
 
-            // TODO: JSF 2.0 #44
-            // Otherwise Collections.EMPTY_MAP is returned.
-            resourceMap = Collections.emptyMap();
-        }
-
-        return resourceMap;
+        return _resourceBundleMap;
     }
 
     public abstract List<UIComponent> getChildren();
