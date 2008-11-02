@@ -553,6 +553,7 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     /**
      * @since JSF 2.0
      */
+    @Override
     public void addResponseCookie(final String name,
             final String value, final Map<String, Object> properties)
     {
