@@ -19,9 +19,11 @@
 package org.apache.myfaces.context.servlet;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.el.ELContext;
@@ -73,6 +75,7 @@ public class FacesContextImpl extends FacesContext
     private RenderKitFactory _renderKitFactory;
     private boolean _released = false;
     private ELContext _elContext;
+    private Map<Object,Object> _attributes = null;
 
     // ~ Constructors -------------------------------------------------------------------------------
 
@@ -362,6 +365,7 @@ public class FacesContextImpl extends FacesContext
         _responseStream = null;
         _responseWriter = null;
         _viewRoot = null;
+        _attributes = null;
 
         _released = true;
         FacesContext.setCurrentInstance(null);
@@ -423,5 +427,21 @@ public class FacesContextImpl extends FacesContext
 
         return _elContext;
     }
-
+    
+    /**
+     * @since JSF 2.0 
+     */
+    @Override
+    public Map<Object,Object> getAttributes()
+    {
+        if (_released)
+        {
+            throw new IllegalStateException("FacesContext already released");
+        }        
+        if (_attributes == null)
+        {
+            _attributes = new HashMap<Object, Object>();
+        }
+        return _attributes;
+    }
 }
