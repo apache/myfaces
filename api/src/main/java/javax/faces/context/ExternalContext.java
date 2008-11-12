@@ -18,6 +18,7 @@
  */
 package javax.faces.context;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.Locale;
@@ -191,11 +192,9 @@ public abstract class ExternalContext
     /**
      * @since JSF 2.0
      */
-    public OutputStream getResponseOutputStream()
+    public OutputStream getResponseOutputStream() throws IOException
     {
-        // TODO: JSF 2.0 #29
-        // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     public abstract Object getSession(boolean create);

@@ -20,6 +20,7 @@ package org.apache.myfaces.context.servlet;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.Principal;
@@ -146,6 +147,12 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     public String getResponseContentType()
     {
         return _servletResponse.getContentType();
+    }
+
+    @Override
+    public OutputStream getResponseOutputStream() throws IOException
+    {
+        return _servletResponse.getOutputStream();
     }
 
     @Override
