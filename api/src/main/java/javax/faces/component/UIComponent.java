@@ -19,6 +19,7 @@
 package javax.faces.component;
 
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -487,9 +488,29 @@ public abstract class UIComponent implements StateHolder
         contextAttributes.put(UIComponent.CURRENT_COMPONENT, componentStack.pop());
     }
 
+    @SuppressWarnings("unchecked")
     protected void pushComponentToEL(FacesContext context, UIComponent component)
     {
-        // TODO: JSF 2.0 #14
+        Map<Object, Object> contextAttributes = context.getAttributes();        
+        UIComponent currentComponent = (UIComponent) contextAttributes.get(UIComponent.CURRENT_COMPONENT);
+        
+        if(currentComponent != null)
+        {
+            Deque<UIComponent> componentStack = (Deque<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
+            if(componentStack == null)
+            {
+                componentStack = new ArrayDeque<UIComponent>();
+                contextAttributes.put(UIComponent._COMPONENT_STACK, componentStack);
+            }
+            
+            componentStack.push(currentComponent);
+        }
+        
+        // Push the current UIComponent this to the FacesContext  attribute map using the key CURRENT_COMPONENT 
+        // saving the previous UIComponent associated with CURRENT_COMPONENT for a subsequent call to 
+        // popComponentFromEL(javax.faces.context.FacesContext).
+        contextAttributes.put(UIComponent.CURRENT_COMPONENT, component);
+ 
     }
 
     /**
