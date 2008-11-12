@@ -43,8 +43,7 @@ public abstract class ExternalContext
      */
     public void addResponseCookie(String name, String value, Map<String, Object> properties)
     {
-        // TODO: JSF 2.0 #24
-        // VALIDATE: Should this be asbtract? Check with the EG
+        throw new UnsupportedOperationException();
     }
 
     public abstract void dispatch(String path) throws java.io.IOException;
