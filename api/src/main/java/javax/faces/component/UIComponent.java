@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -31,8 +32,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.PropertyResourceBundle;
+import java.util.Queue;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.el.ELContext;
 import javax.el.ELException;
@@ -68,6 +71,7 @@ public abstract class UIComponent implements StateHolder
     public static final String CURRENT_COMPONENT = "javax.faces.component.CURRENT_COMPONENT";
     public static final String CURRENT_COMPOSITE_COMPONENT = "javax.faces.component.CURRENT_COMPOSITE_COMPONENT";
     public static final String FACETS_KEY = "javax.faces.component.FACETS_KEY";
+    private static final String _COMPONENT_STACK = "componentStack:" + UIComponent.class.getName();
 
     private Map<Class<? extends SystemEvent>, List<SystemEventListener>> _systemEventListenerClassMap;
     
@@ -472,9 +476,15 @@ public abstract class UIComponent implements StateHolder
 
     protected abstract Renderer getRenderer(FacesContext context);
 
+    @SuppressWarnings("unchecked")
     protected void popComponentFromEL(FacesContext context)
-    {
-        // TODO: JSF 2.0 #13
+    {        
+        Map<Object, Object> contextAttributes = context.getAttributes();        
+        
+        // Pop the current UIComponent from the FacesContext attributes map so that the previous 
+        // UIComponent, if any, becomes the current component.
+        Deque<UIComponent> componentStack = (Deque<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);            
+        contextAttributes.put(UIComponent.CURRENT_COMPONENT, componentStack.pop());
     }
 
     protected void pushComponentToEL(FacesContext context, UIComponent component)
