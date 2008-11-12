@@ -40,6 +40,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.util.EnumerationIterator;
@@ -427,6 +428,17 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     {
         checkHttpServletRequest();
         return _httpServletRequest.getUserPrincipal();
+    }
+
+    @Override
+    public void invalidateSession()
+    {
+        HttpSession session = (HttpSession) getSession(false);
+        
+        if (session != null)
+        {
+            session.invalidate();
+        }
     }
 
     @Override

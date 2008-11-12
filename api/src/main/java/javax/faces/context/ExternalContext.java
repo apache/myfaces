@@ -268,8 +268,7 @@ public abstract class ExternalContext
      */
     public void invalidateSession()
     {
-        // TODO: JSF 2.0 #30
-        // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
+        throw new UnsupportedOperationException();
     }
 
     /**
