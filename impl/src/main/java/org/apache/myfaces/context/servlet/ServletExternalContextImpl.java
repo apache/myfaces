@@ -386,6 +386,12 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     }
 
     @Override
+    public String getRequestServerName()
+    {
+        return _servletRequest.getServerName();
+    }
+
+    @Override
     public String getRequestServletPath()
     {
         checkHttpServletRequest();

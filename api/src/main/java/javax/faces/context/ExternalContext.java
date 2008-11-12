@@ -156,9 +156,7 @@ public abstract class ExternalContext
      */
     public String getRequestServerName()
     {
-        // TODO: JSF 2.0 #27
-        // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     /**
