@@ -147,9 +147,7 @@ public abstract class ExternalContext
      */
     public String getRequestScheme()
     {
-        // TODO: JSF 2.0 #26
-        // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     /**

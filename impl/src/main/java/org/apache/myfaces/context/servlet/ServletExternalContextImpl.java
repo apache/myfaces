@@ -300,6 +300,12 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     }
 
     @Override
+    public String getRequestScheme()
+    {
+        return _servletRequest.getScheme();
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public Set<String> getResourcePaths(final String path)
     {
