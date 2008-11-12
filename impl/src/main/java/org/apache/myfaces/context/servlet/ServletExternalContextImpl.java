@@ -200,6 +200,12 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     }
 
     @Override
+    public int getRequestServerPort()
+    {
+        return _servletRequest.getServerPort();
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public Iterator<String> getRequestParameterNames()
     {

@@ -165,9 +165,7 @@ public abstract class ExternalContext
      */
     public int getRequestServerPort()
     {
-        // TODO: JSF 2.0 #28
-        // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
-        return 0;
+        throw new UnsupportedOperationException();
     }
 
     public abstract String getRequestServletPath();
