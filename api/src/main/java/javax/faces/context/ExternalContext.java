@@ -254,8 +254,7 @@ public abstract class ExternalContext
      */
     public void setResponseContentType(String contentType)
     {
-        // TODO: JSF 2.0 #31
-        // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
+        throw new UnsupportedOperationException();
     }
 
     public String getResponseCharacterEncoding()

@@ -548,6 +548,17 @@ public final class ServletExternalContextImpl extends ExternalContext implements
         this._servletResponse.setCharacterEncoding(encoding);
     }
 
+    @Override
+    public void setResponseContentType(String contentType)
+    {
+        // If the response has not been committed yet.
+        if (!_servletResponse.isCommitted())
+        {
+            // Sets the content type of the response being sent to the client
+            _servletResponse.setContentType(contentType);
+        }
+    }
+
     private void checkNull(final Object o, final String param)
     {
         if (o == null)
