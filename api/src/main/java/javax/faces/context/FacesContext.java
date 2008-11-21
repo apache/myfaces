@@ -105,7 +105,7 @@ public abstract class FacesContext
     
     public void enableResponseWriting(boolean enable)
     {
-        // TODO: JSF 2.0 #48
+        //do nothing per default we switch in the derived classes!
     }
     
     public abstract Application getApplication();

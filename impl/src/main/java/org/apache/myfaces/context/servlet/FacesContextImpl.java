@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.context.servlet;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.el.ELContext;
 import javax.el.ELContextEvent;
 import javax.el.ELContextListener;
@@ -45,6 +48,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.el.unified.FacesELContext;
 import org.apache.myfaces.shared_impl.util.NullIterator;
@@ -76,22 +81,29 @@ public class FacesContextImpl extends FacesContext
     private boolean _released = false;
     private ELContext _elContext;
     private Map<Object,Object> _attributes = null;
+    private ResponseSwitch _responseWrapper = null;
 
     // ~ Constructors -------------------------------------------------------------------------------
 
     public FacesContextImpl(final ServletContext servletContext, final ServletRequest servletRequest,
-                            final ServletResponse servletResponse)
-    {
-        this(new ServletExternalContextImpl(servletContext, servletRequest, servletResponse));
+                            final ServletResponse servletResponse) {
+        try {
+                //we wrap the servlet response to get our switching behavior!
+            _responseWrapper = new ResponseSwitch(servletResponse);
+            init(new ServletExternalContextImpl(servletContext, servletRequest, _responseWrapper));
+        } catch (IOException ex) {
+           Log log = LogFactory.getLog(this.getClass());
+           log.fatal("Could not obtain the response writers! Detail:"+ex.toString());
+        }
     }
 
-    private FacesContextImpl(final ReleaseableExternalContext externalContext)
-    {
+    private void init(final ReleaseableExternalContext externalContext) {
         _application = ((ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY)).getApplication();
         _renderKitFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
         _externalContext = externalContext;
         FacesContext.setCurrentInstance(this); // protected method, therefore must be called from here
     }
+
 
     // ~ Methods ------------------------------------------------------------------------------------
 
@@ -444,4 +456,20 @@ public class FacesContextImpl extends FacesContext
         }
         return _attributes;
     }
+
+    /**
+     * if set to false the response writing is suppressed
+     * this construct has been added to deal with
+     * subview lifecycles in the ajax cycle
+     *
+     * @param enable if set to true the response is routed through if set to false
+     * the response is suppressed!
+     */
+    @Override
+    public void enableResponseWriting(boolean enable) {
+        _responseWrapper.setEnabled(enable);
+        super.enableResponseWriting(enable);
+    }
+
+
 }
