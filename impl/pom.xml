@@ -185,10 +185,18 @@
   </build>
   <profiles>
     <profile>
+        <!-- This profile use a shared dependency rather than unpack the
+        code directly. The ideal is that this profile is active when the
+        version of this library is snapshot, but unfortunately there is
+        no way to activate it (see http://jira.codehaus.org/browse/MNG-3826).
+        Existing problems on maven 2.0.x architecture makes impossible do it.
+        For now the solution is trigger it manually using the property
+        -Ddev=true -->
         <id>add-shared-dependency</id>
         <activation>
             <property>
-                <name>!performRelease</name>
+                <name>dev</name>
+                <value>true</value>
             </property>
         </activation>
         <dependencies>
