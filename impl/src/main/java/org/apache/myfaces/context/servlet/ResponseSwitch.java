@@ -31,7 +31,7 @@ import java.io.Writer;
  * The Response has to be switchable between on and off according
  * to the JSF spec 2.0!
  * <p/>
- * we use an internal delegate to enable the switchting
+ * we use an internal delegate to enable the switching
  * between on and off states!
  *
  * @author Werner Punz(latest modification by $Author$)
@@ -47,6 +47,14 @@ class ResponseSwitch extends ServletResponseWrapper {
     Writer _switchableWriter;
     OutputStream _switchableOutputStream;
 
+    /**
+     * Constructor, implemented as servlet response
+     * wrapper so that the switching can be covered
+     * at the lowest possible level
+     * 
+     * @param response
+     * @throws java.io.IOException
+     */
     public ResponseSwitch(ServletResponse response) throws IOException {
         super(response);
     }
