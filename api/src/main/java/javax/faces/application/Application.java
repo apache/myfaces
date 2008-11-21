@@ -68,10 +68,8 @@ import javax.faces.webapp.pdl.PageDeclarationLanguage;
  * @author Stan Silvert
  * @version $Revision$ $Date$
  */
-
 @SuppressWarnings("deprecation")
-public abstract class Application
-{
+public abstract class Application {
     // The concrete methods throwing UnsupportedOperationExceptiom were added for JSF 1.2.
     // They supply default to allows old Application implementations to still work.
 
@@ -85,31 +83,30 @@ public abstract class Application
      * It is permitted to override a previously defined mapping, ie to call this method multiple times with the same
      * componentType string. The createComponent method will simply use the last defined mapping.
      */
-	
-	/**
-	 * Register a new mapping of component type to the name of the corresponding {@link UIComponent} class.
-	 * This allows subsequent calls to <code>createComponent()</code> to serve as a factory for 
-	 * {@link UIComponent} instances.
-	 * 
-	 * @param componentType - The component type to be registered
-	 * @param componentClass - The fully qualified class name of the corresponding {@link UIComponent} 
-	 *                       implementation 
-	 * 
-	 * @throws NullPointerException if <code>componentType</code> or <code>componentClass</code> is 
-	 *                              <code>null</code>
-	 */
-	public abstract void addComponent(String componentType, String componentClass);
-	
-	/**
-	 *  Register a new converter class that is capable of performing conversions for the specified target class.
-	 *  
-	 *  @param targetClass - The class for which this converter is registered
-	 *  @param converterClass - The fully qualified class name of the corresponding {@link Converter} implementation 
-	 *  
-	 *  @throws NullPointerException - if <code>targetClass</code>  or <code>converterClass</code> is <code>null</code>
-	 */
+    /**
+     * Register a new mapping of component type to the name of the corresponding {@link UIComponent} class.
+     * This allows subsequent calls to <code>createComponent()</code> to serve as a factory for
+     * {@link UIComponent} instances.
+     *
+     * @param componentType - The component type to be registered
+     * @param componentClass - The fully qualified class name of the corresponding {@link UIComponent}
+     *                       implementation
+     *
+     * @throws NullPointerException if <code>componentType</code> or <code>componentClass</code> is
+     *                              <code>null</code>
+     */
+    public abstract void addComponent(String componentType, String componentClass);
+
+    /**
+     *  Register a new converter class that is capable of performing conversions for the specified target class.
+     *
+     *  @param targetClass - The class for which this converter is registered
+     *  @param converterClass - The fully qualified class name of the corresponding {@link Converter} implementation
+     *
+     *  @throws NullPointerException - if <code>targetClass</code>  or <code>converterClass</code> is <code>null</code>
+     */
     public abstract void addConverter(Class targetClass, String converterClass);
-    
+
     /**
      * Register a new mapping of converter id to the name of the corresponding {@link Converter}  class. This allows 
      * subsequent calls to createConverter() to serve as a factory for {@link Converter} instances.
@@ -131,11 +128,10 @@ public abstract class Application
      * 
      * @since 1.2
      */
-    public void addELContextListener(ELContextListener listener)
-    {
+    public void addELContextListener(ELContextListener listener) {
         throw new UnsupportedOperationException();
     }
-    
+
     /**
      * <p>Cause an the argument <code>resolver</code> to be added to the resolver chain as specified in section 5.5.1
      * of the JavaServer Faces Specification.</p>
@@ -155,11 +151,10 @@ public abstract class Application
      * 
      * @since 1.2
      */
-    public void addELResolver(ELResolver resolver)
-    {
+    public void addELResolver(ELResolver resolver) {
         throw new UnsupportedOperationException();
     }
-   
+
     /**
      *Register a new mapping of validator id to the name of the corresponding <code>Validator</code> class. This allows 
      *subsequent calls to <code>createValidator()</code> to serve as a factory for <code>Validator</code> instances.
@@ -178,12 +173,11 @@ public abstract class Application
      * @param componentResource
      * @return
      */
-    public UIComponent createComponent(FacesContext context, Resource componentResource)
-    {
+    public UIComponent createComponent(FacesContext context, Resource componentResource) {
         // TODO: JSF 2.0 #43
         throw new UnsupportedOperationException();
     }
-    
+
     /**
      * 
      * @param context
@@ -191,8 +185,7 @@ public abstract class Application
      * @param rendererType
      * @return
      */
-    public UIComponent createComponent(FacesContext context, String componentType, String rendererType)
-    {
+    public UIComponent createComponent(FacesContext context, String componentType, String rendererType) {
         // TODO: JSF 2.0 #1
         throw new UnsupportedOperationException();
     }
@@ -220,7 +213,7 @@ public abstract class Application
      */
     @Deprecated
     public abstract UIComponent createComponent(ValueBinding componentBinding, FacesContext context,
-                                                String componentType) throws FacesException;
+            String componentType) throws FacesException;
 
     /**
      * <p>Call the <code>getValue()</code> method on the specified <code>ValueExpression</code>. If it returns 
@@ -241,11 +234,10 @@ public abstract class Application
      * @since 1.2
      */
     public UIComponent createComponent(ValueExpression componentExpression, FacesContext contexte,
-                                       String componentType) throws FacesException, NullPointerException
-    {
+            String componentType) throws FacesException, NullPointerException {
         throw new UnsupportedOperationException();
     }
-    
+
     /**
      * 
      * @param componentExpression
@@ -255,11 +247,10 @@ public abstract class Application
      * @return
      */
     public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType,
-                                       String rendererType)
-    {
+            String rendererType) {
         throw new UnsupportedOperationException();
     }
-    
+
     /**
      * <p>Instantiate and return a new <code>{@link Converter}</code> instance of the class that has registered itself 
      * as capable of performing conversions for objects of the specified type. If no such <code>{@link Converter}</code>
@@ -284,7 +275,7 @@ public abstract class Application
      *
      */
     public abstract Converter createConverter(Class targetClass);
-	
+
     /**
      * Instantiate and return a new <code>{@link Converter}</code> instance of the class specified by a 
      * previous call to <code>addConverter()</code> for the specified converter id. If there is no such 
@@ -331,7 +322,7 @@ public abstract class Application
      */
     @Deprecated
     public abstract ValueBinding createValueBinding(String ref) throws ReferenceSyntaxException;
-	
+
     /**
      * <p>Get a value by evaluating an expression.</p>
      * 
@@ -346,8 +337,7 @@ public abstract class Application
      * 
      * @throws javax.el.ELException
      */
-    public Object evaluateExpressionGet(FacesContext context, String expression, Class expectedType) throws ELException
-    {
+    public Object evaluateExpressionGet(FacesContext context, String expression, Class expectedType) throws ELException {
         throw new UnsupportedOperationException();
     }
 
@@ -381,40 +371,40 @@ public abstract class Application
      * {@link ActionSource2}, and only implement {@link ActionSource}.
      */
     public abstract ActionListener getActionListener();
-    
+
     /**
      * Return an <code>Iterator</code> over the set of currently defined component types for 
      * this <code>Application</code>.
      */
     public abstract Iterator<String> getComponentTypes();
-    
+
     /**
      * Return an <code>Iterator</code> over the set of currently registered converter ids for 
      * this <code>Application</code>
      * @return
      */
     public abstract Iterator<String> getConverterIds();
-    
+
     /**
      *Return an <code>Iterator</code> over the set of <code>Class</code>  instances for which <code>{@link Converter}</code> 
      *<code>classes</code>have been explicitly registered.
      * @return
      */
     public abstract Iterator<Class> getConverterTypes();
-    
+
     /**
      *Return the default <code>Locale</code> for this application. If not explicitly set, <code>null</code> is returned.
      * @return
      */
     public abstract Locale getDefaultLocale();
-    
+
     /**
      * Return the <code>renderKitId</code> to be used for rendering this application. If not explicitly set, 
      * <code>null</code> is returned.
      * @return
      */
     public abstract String getDefaultRenderKitId();
-    
+
     /**
      * <p>If no calls have been made to <code>addELContextListener(javax.el.ELContextListener)</code>, this method 
      * must return an empty array<p>. 
@@ -427,11 +417,10 @@ public abstract class Application
      * 
      * @since 1.2
      */
-    public ELContextListener[] getELContextListeners()
-    {
+    public ELContextListener[] getELContextListeners() {
         throw new UnsupportedOperationException();
     }
-	
+
     /**
      * <ul>Return the singleton <code>ELResolver</code> instance to be used for all EL resolution. This is actually 
      * an instance of <code>CompositeELResolver</code> that must contain the following ELResolver instances in 
@@ -454,8 +443,7 @@ public abstract class Application
      *   
      * @since 1.2
      */
-    public ELResolver getELResolver()
-    {
+    public ELResolver getELResolver() {
         throw new UnsupportedOperationException();
     }
 
@@ -471,11 +459,10 @@ public abstract class Application
      *  
      * @since 1.2
      */
-    public ExpressionFactory getExpressionFactory()
-    {
+    public ExpressionFactory getExpressionFactory() {
         throw new UnsupportedOperationException();
     }
-	
+
     /**
      * Return the fully qualified class name of the <code>ResourceBundle</code> to be used for JavaServer Faces 
      * messages for this application. If not explicitly set, <code>null</code>  is returned.
@@ -489,8 +476,7 @@ public abstract class Application
      */
     public abstract NavigationHandler getNavigationHandler();
 
-    public PageDeclarationLanguage getPageDeclarationLanguage()
-    {
+    public PageDeclarationLanguage getPageDeclarationLanguage() {
         throw new UnsupportedOperationException();
     }
 
@@ -518,8 +504,7 @@ public abstract class Application
      * 
      * @since 2.0
      */
-    public ProjectStage getProjectStage()
-    {
+    public ProjectStage getProjectStage() {
         throw new UnsupportedOperationException();
     }
 
@@ -546,8 +531,7 @@ public abstract class Application
      * @throws <code>{@link FacesException}</code> - if a bundle was defined, but not resolvable 
      * @throws <code>{@link NullPointerException}</code> - if ctx == null || name == null
      */
-    public ResourceBundle getResourceBundle(FacesContext ctx, String name) throws FacesException, NullPointerException
-    {
+    public ResourceBundle getResourceBundle(FacesContext ctx, String name) throws FacesException, NullPointerException {
         throw new UnsupportedOperationException();
     }
 
@@ -567,8 +551,7 @@ public abstract class Application
      * 
      * @since 2.0
      */
-    public ResourceHandler getResourceHandler()
-    {
+    public ResourceHandler getResourceHandler() {
         throw new UnsupportedOperationException();
     }
 
@@ -604,17 +587,16 @@ public abstract class Application
      */
     public abstract ViewHandler getViewHandler();
 
-   /**
-    * 
-    * @param systemEventClass
-    * @param sourceBaseType
-    * @param source
-    */
-    public void publishEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source)
-    {
+    /**
+     *
+     * @param systemEventClass
+     * @param sourceBaseType
+     * @param source
+     */
+    public void publishEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source) {
         throw new UnsupportedOperationException();
     }
-    
+
     /**
      * <p>If there are one or more listeners for events of the type represented by <code>systemEventClass</code>, call those 
      * listeners,passing source as the <code>source</code> of the event. The implementation should be as fast as possible in 
@@ -662,8 +644,7 @@ public abstract class Application
      * @param <code>{@link source}</code> - The <code>source</code> for the event of type systemEventClass. Must be non-<code>null</code>, 
      *                                      and must implement <code>{@link SystemEventListenerHolder}</code>.
      */
-    public void publishEvent(Class<? extends SystemEvent> systemEventClass, Object source)
-    {
+    public void publishEvent(Class<? extends SystemEvent> systemEventClass, Object source) {
         throw new UnsupportedOperationException();
     }
 
@@ -676,8 +657,7 @@ public abstract class Application
      * <code>Application</code> continue to work. 
      * @param listener
      */
-    public void removeELContextListener(ELContextListener listener)
-    {
+    public void removeELContextListener(ELContextListener listener) {
         throw new UnsupportedOperationException();
     }
 
@@ -726,12 +706,11 @@ public abstract class Application
      * @param handler - The new NavigationHandler instance 
      */
     public abstract void setNavigationHandler(NavigationHandler handler);
-    
+
     /*
      * 
      */
-    public void setPageDeclarationLanguage(PageDeclarationLanguage pdl)
-    {
+    public void setPageDeclarationLanguage(PageDeclarationLanguage pdl) {
         throw new UnsupportedOperationException();
     }
 
@@ -751,8 +730,7 @@ public abstract class Application
      * 
      * @since 2.0
      */
-    public void setResourceHandler(ResourceHandler resourceHandler)
-    {
+    public void setResourceHandler(ResourceHandler resourceHandler) {
         throw new UnsupportedOperationException();
     }
 
@@ -808,8 +786,7 @@ public abstract class Application
      * @since 2.0
      */
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class sourceClass,
-                                 SystemEventListener listener)
-    {
+            SystemEventListener listener) {
         throw new UnsupportedOperationException();
     }
 
@@ -820,8 +797,7 @@ public abstract class Application
      * 
      * @since 2.0
      */
-    public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener)
-    {
+    public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener) {
         subscribeToEvent(systemEventClass, null, listener);
     }
 
@@ -834,8 +810,7 @@ public abstract class Application
      * @since 2.0
      */
     public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, Class sourceClass,
-                                     SystemEventListener listener)
-    {
+            SystemEventListener listener) {
         throw new UnsupportedOperationException();
     }
 
@@ -846,8 +821,7 @@ public abstract class Application
      * 
      * @since 2.0
      */
-    public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener)
-    {
+    public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener) {
         unsubscribeFromEvent(systemEventClass, null, listener);
     }
 }
