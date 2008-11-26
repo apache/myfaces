@@ -1426,12 +1426,11 @@ public class ApplicationImpl extends Application
     {
         /*
          * The Renderer instance to inspect must be obtained by calling FacesContext.getRenderKit() and calling
-         * RenderKit.getRenderer(java.lang.String, java.lang.String) on the result, passing the argument componentType
-         * as the first argument and the argument rendererType as the second argument.
-         * 
-         * FIXME: Shouldn't it be component.getFamily() instead of componentType?
+         * RenderKit.getRenderer(java.lang.String, java.lang.String) on the result, passing the argument 
+         * componentFamily of the newly created component as the first argument and the argument rendererType as 
+         * the second argument.
          */
-        Renderer renderer = context.getRenderKit().getRenderer(componentType, rendererType);
+        Renderer renderer = context.getRenderKit().getRenderer(component.getFamily(), rendererType);
         if (renderer == null)
         {
             // If no such Renderer can be found, a message must be logged with a helpful error message.
