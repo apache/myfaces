@@ -82,6 +82,8 @@ public class FacesContextImpl extends FacesContext {
     private List<String> _renderPhaseClientIds = null;
     private List<String> _executePhaseClientIds = null;
 
+    private Boolean _renderAll = null;
+
     // ~ Constructors -------------------------------------------------------------------------------
     public FacesContextImpl(final ServletContext servletContext, final ServletRequest servletRequest,
             final ServletResponse servletResponse) {
@@ -403,7 +405,7 @@ public class FacesContextImpl extends FacesContext {
     }
 
     /**
-     * @returns the list of client ids to be processed in the execute phase
+     * @return the list of client ids to be processed in the execute phase
      * null if all have to be processed
      */
     @Override
@@ -412,7 +414,7 @@ public class FacesContextImpl extends FacesContext {
     }
 
     /**
-     * @returns the list of client ids to be processed in the
+     * @return the list of client ids to be processed in the
      * render phase null if all have to be processed
      */
     @Override
@@ -457,9 +459,9 @@ public void setExecutePhaseClientIds(List<String> executePhaseClientIds) {
 
    
     /**
-     * @returns is render none return true if PARTIAL_EXECUTE_PARAM_NAME is set in the current request
+     * @return is render none return true if {@link #PARTIAL_EXECUTE_PARAM_NAME} is set in the current request
      * map!
-     * and the value is set to NO_PARTIAL_PHASE_CLIENT_IDS. Otherwise return false!
+     * and the value is set to {@link #NO_PARTIAL_PHASE_CLIENT_IDS}. Otherwise return false!
      */
     @Override
     public boolean isExecuteNone() {
@@ -470,7 +472,7 @@ public void setExecutePhaseClientIds(List<String> executePhaseClientIds) {
 
 
     /**
-     * @returns true in case of PARTIAL_RENDER_PARAM_NAME being set and its value is
+     * @return true in case of PARTIAL_RENDER_PARAM_NAME being set and its value is
      * NO_PARTIAL_PHASE_CLIENT_IDS. Otherwise return false
      */
     @Override
@@ -479,6 +481,42 @@ public void setExecutePhaseClientIds(List<String> executePhaseClientIds) {
         String param = (String) requestMap.get(PARTIAL_RENDER_PARAM_NAME);
         return NO_PARTIAL_PHASE_CLIENT_IDS.equals(param);
     }
+
+    /**
+     * @return true in case of {@link javax.faces.context.FacesContext.isAjaxRequest()} returns true,
+     *  {@link javax.faces.context.FacesContext.isRenderNone()} returns false and
+     *  {@link javax.faces.context.FacesContext.getRenderPhaseClientIds()} returns also
+     * an empty list
+     */
+    @Override
+    public boolean isRenderAll() {
+        if(_renderAll != null) {
+            return _renderAll;
+        }
+        //I assume doing the check once per request is correct
+        //there is no way to determine if there was an override
+        //of the renderAll according to the spec!
+        List renderClientIds = getRenderPhaseClientIds();
+        _renderAll = renderClientIds.isEmpty() && isAjaxRequest() && !isRenderNone();
+        return _renderAll;
+    }
+
+    /**
+     * override for the isRenderall determination mechanism
+     * if set to true the isRenderAll() must! return
+     * true!
+     * If nothing is set the isRenderall() does a fallback into
+     * its renderall determination algorithm!
+     * 
+     * @param renderAll if set to true isRenderAll() will return
+     * true on the subsequent calls in the request!
+     */
+    @Override
+    public void setRenderAll(boolean renderAll) {
+        _renderAll = renderAll;//autoboxing does the conversation here, no need to do casting
+    }
+
+
 
 
 }

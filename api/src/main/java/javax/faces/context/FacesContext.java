@@ -18,6 +18,7 @@
  */
 package javax.faces.context;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ public abstract class FacesContext
     public static final String NO_PARTIAL_PHASE_CLIENT_IDS = "none";
     public static final String PARTIAL_EXECUTE_PARAM_NAME = "javax.faces.partial.execute";
     public static final String PARTIAL_RENDER_PARAM_NAME = "javax.faces.partial.render";
-    
+
     /**
      * Return the context within which all EL-expressions are evaluated.
      * <p>
@@ -150,8 +151,15 @@ public abstract class FacesContext
     
     public List<String> getRenderPhaseClientIds()
     {
+        //according to the spec the getRenderPhaseClientIds
+        //always at least must return an empty list
+        //according to the specs isRenderAll must
+        //check for an empty list as result of
+        //the call on this method
+        //the null value is not stated!
+        
         // TODO: JSF 2.0 #59
-        return null;
+        return (List<String>) Collections.EMPTY_LIST;
     }
 
     public abstract boolean getResponseComplete();

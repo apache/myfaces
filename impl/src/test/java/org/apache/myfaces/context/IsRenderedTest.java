@@ -96,4 +96,21 @@ public class IsRenderedTest extends AbstractJsfTestCase {
         assertFalse("Render none wrong value", context.isRenderNone());
 
     }
+
+    /**
+     * tests the basic render all mechanism,
+     * no render all due to defaults
+     * or a renderAll which
+     */
+    public void testRenderAll1() {
+        FacesContext context = new FacesContextImpl(servletContext, request, response);
+        context.setRenderAll(true);
+        assertTrue("override should trigger no matter which condition we have", context.isRenderAll());
+
+        context = new FacesContextImpl(servletContext, request, response);
+        context.setRenderAll(false);
+        assertFalse("override should trigger no matter which condition we have", context.isRenderAll());
+    }
+
+   
 }
