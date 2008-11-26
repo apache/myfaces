@@ -19,7 +19,10 @@
 package org.apache.myfaces.context.servlet;
 
 import java.io.IOException;
+import java.lang.String;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -27,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.el.ELContext;
 import javax.el.ELContextEvent;
 import javax.el.ELContextListener;
@@ -51,8 +56,10 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.el.unified.FacesELContext;
 import org.apache.myfaces.shared_impl.util.NullIterator;
+import sun.misc.Regexp;
 
-/**
+
+    /**
  * @author Manfred Geiler (latest modification by $Author$)
  * @author Anton Koinov
  * @version $Revision$ $Date$
@@ -60,6 +67,8 @@ import org.apache.myfaces.shared_impl.util.NullIterator;
 public class FacesContextImpl extends FacesContext {
 
     public static final String AJAX_REQ_KEY = "javax.faces.partial.ajax";
+    static final String RE_SPLITTER = "[\\s\\t\\r\\n]*\\,[\\s\\t\\r\\n]*";
+
     // ~ Instance fields ----------------------------------------------------------------------------
 
     // TODO: I think a Map<String, List<FacesMessage>> would more efficient than those two -= Simon Lessard =-
@@ -84,6 +93,11 @@ public class FacesContextImpl extends FacesContext {
 
     private Boolean _renderAll = null;
 
+
+
+  
+
+
     // ~ Constructors -------------------------------------------------------------------------------
     public FacesContextImpl(final ServletContext servletContext, final ServletRequest servletRequest,
             final ServletResponse servletResponse) {
@@ -96,6 +110,8 @@ public class FacesContextImpl extends FacesContext {
             log.fatal("Could not obtain the response writers! Detail:" + ex.toString());
         }
     }
+
+
 
     private void init(final ReleaseableExternalContext externalContext) {
         _application = ((ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY)).getApplication();
@@ -400,6 +416,8 @@ public class FacesContextImpl extends FacesContext {
      */
     @Override
     public void enableResponseWriting(boolean enable) {
+        assertContextState("enableResponseWriting");
+
         _responseWrapper.setEnabled(enable);
         super.enableResponseWriting(enable);
     }
@@ -410,34 +428,90 @@ public class FacesContextImpl extends FacesContext {
      */
     @Override
     public List<String> getExecutePhaseClientIds() {
+        assertContextState("getExecutePhaseClientIds");
+
         return super.getExecutePhaseClientIds();
     }
 
+
     /**
-     * @return the list of client ids to be processed in the
-     * render phase null if all have to be processed
+     *
+     * @return a list of client ids which are fetched
+     * from the request <b>parameter</b> map.
+     * The key for the map entries is {@link javax.faces.context.FacesContext.PARTIAL_RENDER_PARAM_NAME}.
+     * The list is a comma separated list of client ids in the request map!
+     * if the value {@link javax.faces.context.FacesContext.NO_PARTIAL_PHASE_CLIENT_IDS}
+     * is set or null or empty then an empty list is returned!
+     *
+     * The client ids are the ones which have to be processed during the render phase
+     *
+     * @since 2.0
+     * @throws IllegalStateException if the current context already is released!
      */
     @Override
     public List<String> getRenderPhaseClientIds() {
-        return super.getRenderPhaseClientIds();
+        assertContextState("getRenderPhaseClientIds");
+
+        /*already processed or set from the outside*/
+        if(null != _renderPhaseClientIds) {
+            return _renderPhaseClientIds;
+        }
+
+        Map paramMap = ((ServletRequest) getExternalContext().getRequest()).getParameterMap();
+        String clientIds = (String) paramMap.get(PARTIAL_RENDER_PARAM_NAME);
+        if(clientIds == null ) {//no value given
+            _renderPhaseClientIds = Collections.EMPTY_LIST;
+            return _renderPhaseClientIds;
+        }
+        clientIds = clientIds.trim();
+        if(clientIds.equals("") || clientIds.equals(NO_PARTIAL_PHASE_CLIENT_IDS)) {//empty String!
+            _renderPhaseClientIds = Collections.EMPTY_LIST;
+            return _renderPhaseClientIds;
+        }
+
+        /**
+         * we have to process the params list
+         * we now split the params as fast as possible
+         */
+        String[] splitted = clientIds.split(RE_SPLITTER);
+        /*we have to retrim the first and last entry we could
+         have pending blanks!*/
+        splitted[0] = splitted[0].trim();
+        int trimLast = splitted.length-1;
+        if(trimLast > 0) {//all others trimmed by the re
+            splitted[trimLast] =  splitted[trimLast].trim();
+        }
+        _renderPhaseClientIds = Arrays.asList(splitted);
+
+      
+        return _renderPhaseClientIds;
     }
 
     /**
      * @param executePhaseClientIds the list of client ids
      * to be processed by the execute phase
+     * 
+     * @since 2.0
+     * @throws IllegalStateException if the current context already is released!
      */
     @Override
-public void setExecutePhaseClientIds(List<String> executePhaseClientIds) {
+    public void setExecutePhaseClientIds(List<String> executePhaseClientIds) {
+        assertContextState("setExecutePhaseClientIds");
+
         super.setExecutePhaseClientIds(executePhaseClientIds);
     }
 
     /**
      * @param the list of client ids to be processed by the render
      * phase!
+     * @since 2.0
+     * @throws IllegalStateException if the current context already is released!
      */
     @Override
     public void setRenderPhaseClientIds(List<String> renderPhaseClientIds) {
-        super.setRenderPhaseClientIds(renderPhaseClientIds);
+        assertContextState("setExecutePhaseClientIds");
+
+        _renderPhaseClientIds = renderPhaseClientIds;
     }
 
     /**
@@ -465,6 +539,8 @@ public void setExecutePhaseClientIds(List<String> executePhaseClientIds) {
      */
     @Override
     public boolean isExecuteNone() {
+        assertContextState("isExecuteNone");
+
         Map requestMap = getExternalContext().getRequestParameterMap();
         String param = (String) requestMap.get(PARTIAL_EXECUTE_PARAM_NAME);
         return NO_PARTIAL_PHASE_CLIENT_IDS.equals(param);
@@ -477,6 +553,8 @@ public void setExecutePhaseClientIds(List<String> executePhaseClientIds) {
      */
     @Override
     public boolean isRenderNone() {
+        assertContextState("isRenderNone");
+
         Map requestMap = getExternalContext().getRequestParameterMap();
         String param = (String) requestMap.get(PARTIAL_RENDER_PARAM_NAME);
         return NO_PARTIAL_PHASE_CLIENT_IDS.equals(param);
@@ -490,6 +568,8 @@ public void setExecutePhaseClientIds(List<String> executePhaseClientIds) {
      */
     @Override
     public boolean isRenderAll() {
+        assertContextState("isRenderAll");
+
         if(_renderAll != null) {
             return _renderAll;
         }
@@ -513,10 +593,25 @@ public void setExecutePhaseClientIds(List<String> executePhaseClientIds) {
      */
     @Override
     public void setRenderAll(boolean renderAll) {
+        assertContextState("setRenderAll");
+        
         _renderAll = renderAll;//autoboxing does the conversation here, no need to do casting
     }
 
+   
 
-
-
+    /**
+     * has to be thrown in many of the methods
+     * if the method is called after the instance has been released!
+     */
+    private void assertContextState(String string) {
+        if(_released) {
+            StringBuilder errorMessage = new StringBuilder(128);
+            errorMessage.append("Error in method call on javax.faces.context.FacesContext.");
+            errorMessage.append(string);
+            errorMessage.append(", the facesContext is already released!");
+            throw new IllegalStateException(errorMessage.toString());
+        }
+    }
+ 
 }

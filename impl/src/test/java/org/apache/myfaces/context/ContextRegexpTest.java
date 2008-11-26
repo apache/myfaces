@@ -16,6 +16,10 @@
  */
 package org.apache.myfaces.context;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import junit.framework.TestCase;
 
 /**
@@ -26,16 +30,26 @@ import junit.framework.TestCase;
  */
 public class ContextRegexpTest extends TestCase {
 
-    static final String SPLITTER = "\\,";
+    static final String RE_SPLITTER = "[\\s\\t\\r\\n]*\\,[\\s\\t\\r\\n]*";
 
+
+ 
+
+   
     /**
      * condition valid string
      */
     public void testCondition1() {
-        String[] splitted = " hello ,world ".split(SPLITTER);
-        assertTrue("length assertion", splitted.length == 2);
+        String[] splitted = " hello ,world          \n ,bla ".split(RE_SPLITTER);
+        splitted[0] = splitted[0].trim();
+        int len = splitted.length-1;
+        if(len > 0) {//all others trimmed by the re
+            splitted[len] =  splitted[len].trim();
+        }
+        assertTrue("length assertion", splitted.length == 3);
         assertTrue(splitted[0].trim().equals("hello"));
         assertTrue(splitted[1].trim().equals("world"));
+        assertTrue(splitted[2].trim().equals("bla"));
     }
 
     /**
@@ -43,7 +57,7 @@ public class ContextRegexpTest extends TestCase {
      * empty string
      */
     public void testCondition2() {
-        String[] splitted = " ".split(SPLITTER);
+        String[] splitted = " ".split(RE_SPLITTER);
         assertTrue(splitted.length == 1);
         assertTrue(splitted[0] != null);
     }
@@ -53,7 +67,7 @@ public class ContextRegexpTest extends TestCase {
      * empty string no blanks
      */
     public void testCondition3() {
-        String[] splitted = "".split(SPLITTER);
+        String[] splitted = "".split(RE_SPLITTER);
         assertTrue(splitted.length == 1);
         assertTrue(splitted[0] != null);
     }
