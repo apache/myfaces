@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.el.ELContext;
 import javax.el.ELContextEvent;
 import javax.el.ELContextListener;
@@ -59,15 +57,14 @@ import org.apache.myfaces.shared_impl.util.NullIterator;
  * @author Anton Koinov
  * @version $Revision$ $Date$
  */
-public class FacesContextImpl extends FacesContext
-{
+public class FacesContextImpl extends FacesContext {
+
+    public static final String AJAX_REQ_KEY = "javax.faces.partial.ajax";
     // ~ Instance fields ----------------------------------------------------------------------------
 
-    
     // TODO: I think a Map<String, List<FacesMessage>> would more efficient than those two -= Simon Lessard =-
     private List<FacesMessage> _messages = null;
     private List<String> _messageClientIds = null;
-    
     private Application _application;
     private PhaseId _currentPhaseId;
     private ReleaseableExternalContext _externalContext;
@@ -80,20 +77,21 @@ public class FacesContextImpl extends FacesContext
     private RenderKitFactory _renderKitFactory;
     private boolean _released = false;
     private ELContext _elContext;
-    private Map<Object,Object> _attributes = null;
+    private Map<Object, Object> _attributes = null;
     private ResponseSwitch _responseWrapper = null;
+    private List<String> _renderPhaseClientIds = null;
+    private List<String> _executePhaseClientIds = null;
 
     // ~ Constructors -------------------------------------------------------------------------------
-
     public FacesContextImpl(final ServletContext servletContext, final ServletRequest servletRequest,
-                            final ServletResponse servletResponse) {
+            final ServletResponse servletResponse) {
         try {
-                //we wrap the servlet response to get our switching behavior!
+            //we wrap the servlet response to get our switching behavior!
             _responseWrapper = new ResponseSwitch(servletResponse);
             init(new ServletExternalContextImpl(servletContext, servletRequest, _responseWrapper));
         } catch (IOException ex) {
-           Log log = LogFactory.getLog(this.getClass());
-           log.fatal("Could not obtain the response writers! Detail:"+ex.toString());
+            Log log = LogFactory.getLog(this.getClass());
+            log.fatal("Could not obtain the response writers! Detail:" + ex.toString());
         }
     }
 
@@ -106,127 +104,101 @@ public class FacesContextImpl extends FacesContext
 
 
     // ~ Methods ------------------------------------------------------------------------------------
-
     @Override
-    public final ExternalContext getExternalContext()
-    {
-        if (_released)
-        {
+    public final ExternalContext getExternalContext() {
+        if (_released) {
             throw new IllegalStateException("FacesContext already released");
         }
         return (ExternalContext) _externalContext;
     }
 
     @Override
-    public final FacesMessage.Severity getMaximumSeverity()
-    {
-        if (_released)
-        {
+    public final FacesMessage.Severity getMaximumSeverity() {
+        if (_released) {
             throw new IllegalStateException("FacesContext already released");
         }
-        
+
         return _maximumSeverity;
     }
 
     @Override
-    public final Iterator<FacesMessage> getMessages()
-    {
-        if (_released)
-        {
+    public final Iterator<FacesMessage> getMessages() {
+        if (_released) {
             throw new IllegalStateException("FacesContext already released");
         }
-        
-        if (_messages == null)
-        {
+
+        if (_messages == null) {
             return NullIterator.instance();
         }
-        
+
         return _messages.iterator();
     }
 
     @Override
-    public final Application getApplication()
-    {
-        if (_released)
-        {
+    public final Application getApplication() {
+        if (_released) {
             throw new IllegalStateException("FacesContext already released");
         }
 
         return _application;
     }
-    
+
     @Override
-    public final Iterator<String> getClientIdsWithMessages()
-    {
-        if (_released)
-        {
+    public final Iterator<String> getClientIdsWithMessages() {
+        if (_released) {
             throw new IllegalStateException("FacesContext already released");
         }
-        
-        if (_messages == null || _messages.isEmpty())
-        {
+
+        if (_messages == null || _messages.isEmpty()) {
             return NullIterator.instance();
         }
 
         final Set<String> uniqueClientIds = new LinkedHashSet<String>(_messageClientIds);
-        
+
         return uniqueClientIds.iterator();
     }
-    
+
     @Override
-    public PhaseId getCurrentPhaseId()
-    {
+    public PhaseId getCurrentPhaseId() {
         return _currentPhaseId;
     }
 
     @Override
-    public final Iterator<FacesMessage> getMessages(final String clientId)
-    {
-        if (_released)
-        {
+    public final Iterator<FacesMessage> getMessages(final String clientId) {
+        if (_released) {
             throw new IllegalStateException("FacesContext already released");
         }
-        
-        if (_messages == null)
-        {
+
+        if (_messages == null) {
             return NullIterator.instance();
         }
 
         List<FacesMessage> lst = new ArrayList<FacesMessage>();
-        for (int i = 0; i < _messages.size(); i++)
-        {
+        for (int i = 0; i < _messages.size(); i++) {
             Object savedClientId = _messageClientIds.get(i);
-            if (clientId == null)
-            {
-                if (savedClientId == null)
-                {
+            if (clientId == null) {
+                if (savedClientId == null) {
                     lst.add(_messages.get(i));
                 }
-            }
-            else
-            {
-                if (clientId.equals(savedClientId))
-                {
+            } else {
+                if (clientId.equals(savedClientId)) {
                     lst.add(_messages.get(i));
                 }
             }
         }
-        
+
         return lst.iterator();
     }
 
     @Override
-    public final RenderKit getRenderKit()
-    {
-        if (getViewRoot() == null)
-        {
+    public final RenderKit getRenderKit() {
+        if (getViewRoot() == null) {
             return null;
         }
 
         String renderKitId = getViewRoot().getRenderKitId();
 
-        if (renderKitId == null)
-        {
+        if (renderKitId == null) {
             return null;
         }
 
@@ -234,139 +206,109 @@ public class FacesContextImpl extends FacesContext
     }
 
     @Override
-    public final boolean getRenderResponse()
-    {
-        if (_released)
-        {
+    public final boolean getRenderResponse() {
+        if (_released) {
             throw new IllegalStateException("FacesContext already released");
         }
         return _renderResponse;
     }
 
     @Override
-    public final boolean getResponseComplete()
-    {
-        if (_released)
-        {
+    public final boolean getResponseComplete() {
+        if (_released) {
             throw new IllegalStateException("FacesContext already released");
         }
         return _responseComplete;
     }
 
     @Override
-    public final void setResponseStream(final ResponseStream responseStream)
-    {
-        if (_released)
-        {
+    public final void setResponseStream(final ResponseStream responseStream) {
+        if (_released) {
             throw new IllegalStateException("FacesContext already released");
         }
-        if (responseStream == null)
-        {
+        if (responseStream == null) {
             throw new NullPointerException("responseStream");
         }
         _responseStream = responseStream;
     }
 
     @Override
-    public final ResponseStream getResponseStream()
-    {
-        if (_released)
-        {
+    public final ResponseStream getResponseStream() {
+        if (_released) {
             throw new IllegalStateException("FacesContext already released");
         }
         return _responseStream;
     }
 
     @Override
-    public final void setResponseWriter(final ResponseWriter responseWriter)
-    {
-        if (_released)
-        {
+    public final void setResponseWriter(final ResponseWriter responseWriter) {
+        if (_released) {
             throw new IllegalStateException("FacesContext already released");
         }
-        if (responseWriter == null)
-        {
+        if (responseWriter == null) {
             throw new NullPointerException("responseWriter");
         }
         _responseWriter = responseWriter;
     }
 
     @Override
-    public final ResponseWriter getResponseWriter()
-    {
-        if (_released)
-        {
+    public final ResponseWriter getResponseWriter() {
+        if (_released) {
             throw new IllegalStateException("FacesContext already released");
         }
         return _responseWriter;
     }
 
     @Override
-    public final void setViewRoot(final UIViewRoot viewRoot)
-    {
-        if (_released)
-        {
+    public final void setViewRoot(final UIViewRoot viewRoot) {
+        if (_released) {
             throw new IllegalStateException("FacesContext already released");
         }
-        if (viewRoot == null)
-        {
+        if (viewRoot == null) {
             throw new NullPointerException("viewRoot");
         }
         _viewRoot = viewRoot;
     }
 
     @Override
-    public final UIViewRoot getViewRoot()
-    {
-        if (_released)
-        {
+    public final UIViewRoot getViewRoot() {
+        if (_released) {
             throw new IllegalStateException("FacesContext already released");
         }
         return _viewRoot;
     }
 
     @Override
-    public final void addMessage(final String clientId, final FacesMessage message)
-    {
-        if (_released)
-        {
+    public final void addMessage(final String clientId, final FacesMessage message) {
+        if (_released) {
             throw new IllegalStateException("FacesContext already released");
         }
-        if (message == null)
-        {
+        if (message == null) {
             throw new NullPointerException("message");
         }
 
-        if (_messages == null)
-        {
+        if (_messages == null) {
             _messages = new ArrayList<FacesMessage>();
             _messageClientIds = new ArrayList<String>();
         }
         _messages.add(message);
         _messageClientIds.add((clientId != null) ? clientId : null);
         FacesMessage.Severity serSeverity = message.getSeverity();
-        if (serSeverity != null)
-        {
-            if (_maximumSeverity == null)
-            {
+        if (serSeverity != null) {
+            if (_maximumSeverity == null) {
                 _maximumSeverity = serSeverity;
-            }
-            else if (serSeverity.compareTo(_maximumSeverity) > 0)
-            {
+            } else if (serSeverity.compareTo(_maximumSeverity) > 0) {
                 _maximumSeverity = serSeverity;
             }
         }
     }
 
     @Override
-    public final void release()
-    {
-        if (_released)
-        {
+    public final void release() {
+        if (_released) {
             throw new IllegalStateException("FacesContext already released");
         }
-        if (_externalContext != null)
-        {
+        if (_externalContext != null) {
             _externalContext.release();
             _externalContext = null;
         }
@@ -382,76 +324,65 @@ public class FacesContextImpl extends FacesContext
         _released = true;
         FacesContext.setCurrentInstance(null);
     }
-    
+
     @Override
-    public boolean isPostback()
-    {
+    public boolean isPostback() {
         return getRenderKit().getResponseStateManager().isPostback(this);
     }
 
     @Override
-    public final void renderResponse()
-    {
-        if (_released)
-        {
+    public final void renderResponse() {
+        if (_released) {
             throw new IllegalStateException("FacesContext already released");
         }
         _renderResponse = true;
     }
 
     @Override
-    public final void responseComplete()
-    {
-        if (_released)
-        {
+    public final void responseComplete() {
+        if (_released) {
             throw new IllegalStateException("FacesContext already released");
         }
         _responseComplete = true;
     }
-    
+
     @Override
-    public void setCurrentPhaseId(PhaseId currentPhaseId)
-    {
+    public void setCurrentPhaseId(PhaseId currentPhaseId) {
         _currentPhaseId = currentPhaseId;
     }
 
     // Portlet need to do this to change from ActionRequest/Response to
     // RenderRequest/Response
-    public final void setExternalContext(ReleaseableExternalContext extContext)
-    {
+    public final void setExternalContext(ReleaseableExternalContext extContext) {
         _externalContext = extContext;
         FacesContext.setCurrentInstance(this); // TODO: figure out if I really need to do this
     }
 
     @Override
-    public final ELContext getELContext()
-    {
-        if (_elContext != null)
+    public final ELContext getELContext() {
+        if (_elContext != null) {
             return _elContext;
+        }
 
         _elContext = new FacesELContext(getApplication().getELResolver(), this);
 
         ELContextEvent event = new ELContextEvent(_elContext);
-        for (ELContextListener listener : getApplication().getELContextListeners())
-        {
+        for (ELContextListener listener : getApplication().getELContextListeners()) {
             listener.contextCreated(event);
         }
 
         return _elContext;
     }
-    
+
     /**
      * @since JSF 2.0 
      */
     @Override
-    public Map<Object,Object> getAttributes()
-    {
-        if (_released)
-        {
+    public Map<Object, Object> getAttributes() {
+        if (_released) {
             throw new IllegalStateException("FacesContext already released");
-        }        
-        if (_attributes == null)
-        {
+        }
+        if (_attributes == null) {
             _attributes = new HashMap<Object, Object>();
         }
         return _attributes;
@@ -469,6 +400,84 @@ public class FacesContextImpl extends FacesContext
     public void enableResponseWriting(boolean enable) {
         _responseWrapper.setEnabled(enable);
         super.enableResponseWriting(enable);
+    }
+
+    /**
+     * @returns the list of client ids to be processed in the execute phase
+     * null if all have to be processed
+     */
+    @Override
+    public List<String> getExecutePhaseClientIds() {
+        return super.getExecutePhaseClientIds();
+    }
+
+    /**
+     * @returns the list of client ids to be processed in the
+     * render phase null if all have to be processed
+     */
+    @Override
+    public List<String> getRenderPhaseClientIds() {
+        return super.getRenderPhaseClientIds();
+    }
+
+    /**
+     * @param executePhaseClientIds the list of client ids
+     * to be processed by the execute phase
+     */
+    @Override
+public void setExecutePhaseClientIds(List<String> executePhaseClientIds) {
+        super.setExecutePhaseClientIds(executePhaseClientIds);
+    }
+
+    /**
+     * @param the list of client ids to be processed by the render
+     * phase!
+     */
+    @Override
+    public void setRenderPhaseClientIds(List<String> renderPhaseClientIds) {
+        super.setRenderPhaseClientIds(renderPhaseClientIds);
+    }
+
+    /**
+     * TODO #51 in progress
+     * is ajax request implementation
+     * according to the spec, javax.faces.partial must be present
+     * and then it will return true
+     * if none is present it will return false
+     * since we only have to check it once
+     * a lazy init cannot be done because theoretically someone
+     * can push in a request wrapper!
+     *
+     */
+  /*  @Override
+    public boolean isAjaxRequest() {
+        Map requestMap = getExternalContext().getRequestMap();
+        return requestMap.containsKey(AJAX_REQ_KEY);
+    }*/
+
+   
+    /**
+     * @returns is render none return true if PARTIAL_EXECUTE_PARAM_NAME is set in the current request
+     * map!
+     * and the value is set to NO_PARTIAL_PHASE_CLIENT_IDS. Otherwise return false!
+     */
+    @Override
+    public boolean isExecuteNone() {
+        Map requestMap = getExternalContext().getRequestParameterMap();
+        String param = (String) requestMap.get(PARTIAL_EXECUTE_PARAM_NAME);
+        return NO_PARTIAL_PHASE_CLIENT_IDS.equals(param);
+    }
+
+
+    /**
+     * @returns true in case of PARTIAL_RENDER_PARAM_NAME being set and its value is
+     * NO_PARTIAL_PHASE_CLIENT_IDS. Otherwise return false
+     */
+    @Override
+    public boolean isRenderNone() {
+        Map requestMap = getExternalContext().getRequestParameterMap();
+        String param = (String) requestMap.get(PARTIAL_RENDER_PARAM_NAME);
+        return NO_PARTIAL_PHASE_CLIENT_IDS.equals(param);
     }
 
 
