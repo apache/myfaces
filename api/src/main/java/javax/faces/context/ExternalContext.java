@@ -270,12 +270,17 @@ public abstract class ExternalContext
     /**
      * @since JSF 2.0
      */
+    /*
+       not in the jsf-spec-2.0-20080911
+       maybe we can add it later but for now we have to leave it out
+     
     public boolean isNewSession()
     {
         // TODO: JSF 2.0 MYFACES-1950
         // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
         return false;
     }
+    */
 
     public abstract boolean isUserInRole(String role);
 
