@@ -58,8 +58,7 @@ import org.apache.myfaces.el.unified.FacesELContext;
 import org.apache.myfaces.shared_impl.util.NullIterator;
 import sun.misc.Regexp;
 
-
-    /**
+/**
  * @author Manfred Geiler (latest modification by $Author$)
  * @author Anton Koinov
  * @version $Revision$ $Date$
@@ -97,11 +96,8 @@ public class FacesContextImpl extends FacesContext {
     private static final String METHOD_GETVIEWROOT = "getViewRoot";
     private static final String METHOD_ISRENDERALL = "isRenderAll";
     private static final String METHOD_SETRENDERALL = "setRenderAll";
-
     static final String RE_SPLITTER = "[\\s\\t\\r\\n]*\\,[\\s\\t\\r\\n]*";
     public static final String AJAX_REQ_KEY = "javax.faces.partial.ajax";
-
-
     // ~ Instance fields ----------------------------------------------------------------------------
 
     // TODO: I think a Map<String, List<FacesMessage>> would more efficient than those two -= Simon Lessard =-
@@ -123,13 +119,7 @@ public class FacesContextImpl extends FacesContext {
     private ResponseSwitch _responseWrapper = null;
     private List<String> _renderPhaseClientIds = null;
     private List<String> _executePhaseClientIds = null;
-
     private Boolean _renderAll = null;
-
-
-
-  
-
 
     // ~ Constructors -------------------------------------------------------------------------------
     public FacesContextImpl(final ServletContext servletContext, final ServletRequest servletRequest,
@@ -143,8 +133,6 @@ public class FacesContextImpl extends FacesContext {
             log.fatal("Could not obtain the response writers! Detail:" + ex.toString());
         }
     }
-
-
 
     private void init(final ReleaseableExternalContext externalContext) {
         _application = ((ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY)).getApplication();
@@ -259,7 +247,7 @@ public class FacesContextImpl extends FacesContext {
 
     @Override
     public final boolean getResponseComplete() {
-       assertNotReleased(METHOD_GETRESPONSECOMPLETE);
+        assertNotReleased(METHOD_GETRESPONSECOMPLETE);
 
         return _responseComplete;
     }
@@ -318,7 +306,7 @@ public class FacesContextImpl extends FacesContext {
     @Override
     public final void addMessage(final String clientId, final FacesMessage message) {
         assertNotReleased(METHOD_ADDMESSAGE);
-        
+
         if (message == null) {
             throw new NullPointerException("message");
         }
@@ -348,13 +336,26 @@ public class FacesContextImpl extends FacesContext {
             _externalContext = null;
         }
 
+        /*
+         * Spec JSF 2 section getAttributes
+         * when release is called the attributes map
+         * must!!! be cleared!
+         *
+         * (probably to trigger some clearance methods
+         * on possible added entries before nullifying everything)
+         */
+        if(_attributes != null) {
+            _attributes.clear();
+            _attributes = null;
+        }
+
         _messageClientIds = null;
         _messages = null;
         _application = null;
         _responseStream = null;
         _responseWriter = null;
         _viewRoot = null;
-        _attributes = null;
+       
 
         _released = true;
         FacesContext.setCurrentInstance(null);
@@ -370,14 +371,14 @@ public class FacesContextImpl extends FacesContext {
     @Override
     public final void renderResponse() {
         assertNotReleased(METHOD_RENDERRESPONSE);
-        
+
         _renderResponse = true;
     }
 
     @Override
     public final void responseComplete() {
         assertNotReleased(METHOD_RESPONSECOMPLETE);
-      
+
         _responseComplete = true;
     }
 
@@ -416,7 +417,25 @@ public class FacesContextImpl extends FacesContext {
     }
 
     /**
-     * @since JSF 2.0 
+     * Returns a mutable map of attributes associated
+     * with this faces context
+     * when {@link javax.faces.context.FacesContext.release} is called
+     * the map must be cleared!
+     *
+     * Note this map is not associated with the request map
+     * the request map still is accessible via the
+     * {@link javax.faces.context.FacesContext.getExternalContext.getRequestMap}
+     * method!
+     *
+     * Also the scope is different to the request map, this map has the scope
+     * of the context, and is cleared once the release method
+     * on the context is called!
+     *
+     * Also the map does not cause any events according to the spec!
+     *
+     * @since JSF 2.0
+     *
+     * @throws IllegalStateException if the current context already is released!
      */
     @Override
     public Map<Object, Object> getAttributes() {
@@ -435,6 +454,8 @@ public class FacesContextImpl extends FacesContext {
      *
      * @param enable if set to true the response is routed through if set to false
      * the response is suppressed!
+     *
+     * @throws IllegalStateException if the current context already is released!
      */
     @Override
     public void enableResponseWriting(boolean enable) {
@@ -447,14 +468,26 @@ public class FacesContextImpl extends FacesContext {
     /**
      * @return the list of client ids to be processed in the execute phase
      * null if all have to be processed
+     * The client ids either must be set via the setter
+     * or being present by having a PARTIAL_EXECUTE_PARAM_NAME with a value set
+     * non existent or NO_PARTIAL_PHASE_CLIENT_IDS values in the request map
+     * and a non set local list result in an empty list as return value!
+     *
+     * @since 2.0
+     * @throws IllegalStateException if the current context already is released!
      */
     @Override
     public List<String> getExecutePhaseClientIds() {
         assertNotReleased(METHOD_GETEXECUTEPHASECLIENTIDS);
 
-        return super.getExecutePhaseClientIds();
-    }
+        if(_executePhaseClientIds != null) {
+            return _executePhaseClientIds;
+        }
 
+        _executePhaseClientIds = getRequestParameterList(PARTIAL_EXECUTE_PARAM_NAME, NO_PARTIAL_PHASE_CLIENT_IDS);
+
+        return _executePhaseClientIds;
+    }
 
     /**
      *
@@ -475,20 +508,36 @@ public class FacesContextImpl extends FacesContext {
         assertNotReleased(METHOD_GETRENDERPHASECLIENTIDS);
 
         /*already processed or set from the outside*/
-        if(null != _renderPhaseClientIds) {
+        if (null != _renderPhaseClientIds) {
             return _renderPhaseClientIds;
         }
 
+        _renderPhaseClientIds = getRequestParameterList(PARTIAL_RENDER_PARAM_NAME, NO_PARTIAL_PHASE_CLIENT_IDS);
+
+        return _renderPhaseClientIds;
+    }
+
+    /**
+     * private helper method to split incoming
+     * request parameter lists according to the JSF2 specs
+     * the JSF2 spec usually sees empty lists as either not being
+     * set (null), or empty == "" or with an optional special value
+     * being set marking it as empty!
+     * 
+     * @param key the request parameter key holding the list
+     * @param emptyValue the special empty value
+     * @return a list of strings or an empty list if nothing was found
+     */
+    private final List<String> getRequestParameterList(String key, String emptyValue) {
+
         Map paramMap = ((ServletRequest) getExternalContext().getRequest()).getParameterMap();
-        String clientIds = (String) paramMap.get(PARTIAL_RENDER_PARAM_NAME);
-        if(clientIds == null ) {//no value given
-            _renderPhaseClientIds = Collections.EMPTY_LIST;
-            return _renderPhaseClientIds;
+        String clientIds = (String) paramMap.get(key);
+        if (clientIds == null) {//no value given
+            return Collections.EMPTY_LIST;
         }
         clientIds = clientIds.trim();
-        if(clientIds.equals("") || clientIds.equals(NO_PARTIAL_PHASE_CLIENT_IDS)) {//empty String!
-            _renderPhaseClientIds = Collections.EMPTY_LIST;
-            return _renderPhaseClientIds;
+        if (clientIds.equals("") || (emptyValue != null && clientIds.equals(emptyValue))) {//empty String!
+            return Collections.EMPTY_LIST;
         }
 
         /**
@@ -497,16 +546,13 @@ public class FacesContextImpl extends FacesContext {
          */
         String[] splitted = clientIds.split(RE_SPLITTER);
         /*we have to retrim the first and last entry we could
-         have pending blanks!*/
+        have pending blanks!*/
         splitted[0] = splitted[0].trim();
-        int trimLast = splitted.length-1;
-        if(trimLast > 0) {//all others trimmed by the re
-            splitted[trimLast] =  splitted[trimLast].trim();
+        int trimLast = splitted.length - 1;
+        if (trimLast > 0) {//all others trimmed by the re
+            splitted[trimLast] = splitted[trimLast].trim();
         }
-        _renderPhaseClientIds = Arrays.asList(splitted);
-
-      
-        return _renderPhaseClientIds;
+        return Arrays.asList(splitted);
     }
 
     /**
@@ -520,7 +566,7 @@ public class FacesContextImpl extends FacesContext {
     public void setExecutePhaseClientIds(List<String> executePhaseClientIds) {
         assertNotReleased(METHOD_SETEXECUTEPHASECLIENTIDS);
 
-        super.setExecutePhaseClientIds(executePhaseClientIds);
+        _executePhaseClientIds = executePhaseClientIds;
     }
 
     /**
@@ -547,13 +593,11 @@ public class FacesContextImpl extends FacesContext {
      * can push in a request wrapper!
      *
      */
-  /*  @Override
+    /*  @Override
     public boolean isAjaxRequest() {
-        Map requestMap = getExternalContext().getRequestMap();
-        return requestMap.containsKey(AJAX_REQ_KEY);
+    Map requestMap = getExternalContext().getRequestMap();
+    return requestMap.containsKey(AJAX_REQ_KEY);
     }*/
-
-   
     /**
      * @return is render none return true if {@link #PARTIAL_EXECUTE_PARAM_NAME} is set in the current request
      * map!
@@ -567,7 +611,6 @@ public class FacesContextImpl extends FacesContext {
         String param = (String) requestMap.get(PARTIAL_EXECUTE_PARAM_NAME);
         return NO_PARTIAL_PHASE_CLIENT_IDS.equals(param);
     }
-
 
     /**
      * @return true in case of PARTIAL_RENDER_PARAM_NAME being set and its value is
@@ -592,7 +635,7 @@ public class FacesContextImpl extends FacesContext {
     public boolean isRenderAll() {
         assertNotReleased(METHOD_ISRENDERALL);
 
-        if(_renderAll != null) {
+        if (_renderAll != null) {
             return _renderAll;
         }
         //I assume doing the check once per request is correct
@@ -616,18 +659,16 @@ public class FacesContextImpl extends FacesContext {
     @Override
     public void setRenderAll(boolean renderAll) {
         assertNotReleased(METHOD_SETRENDERALL);
-        
+
         _renderAll = renderAll;//autoboxing does the conversation here, no need to do casting
     }
-
-   
 
     /**
      * has to be thrown in many of the methods
      * if the method is called after the instance has been released!
      */
-    private void assertNotReleased(String string) {
-        if(_released) {
+    private final void assertNotReleased(String string) {
+        if (_released) {
             StringBuilder errorMessage = new StringBuilder(128);
             errorMessage.append("Error in method call on javax.faces.context.FacesContext.");
             errorMessage.append(string);
@@ -635,5 +676,4 @@ public class FacesContextImpl extends FacesContext {
             throw new IllegalStateException(errorMessage.toString());
         }
     }
- 
 }
