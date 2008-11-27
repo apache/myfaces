@@ -65,6 +65,7 @@ import sun.misc.Regexp;
  */
 public class FacesContextImpl extends FacesContext {
 
+    public static final String METHOD_ISAJAXREQUEST = "isAjaxRequest";
     private static final String METHOD_ADDMESSAGE = "addMessage";
     private static final String METHOD_ENABLERESPONSEWRITING = "enableResponseWriting";
     private static final String METHOD_GETAPPLICATION = "getApplication";
@@ -120,6 +121,9 @@ public class FacesContextImpl extends FacesContext {
     private List<String> _renderPhaseClientIds = null;
     private List<String> _executePhaseClientIds = null;
     private Boolean _renderAll = null;
+
+    /*helper to speed things up on the isAjaxRequest method*/
+    private Boolean _ajaxRequest = null;
 
     // ~ Constructors -------------------------------------------------------------------------------
     public FacesContextImpl(final ServletContext servletContext, final ServletRequest servletRequest,
@@ -344,7 +348,7 @@ public class FacesContextImpl extends FacesContext {
          * (probably to trigger some clearance methods
          * on possible added entries before nullifying everything)
          */
-        if(_attributes != null) {
+        if (_attributes != null) {
             _attributes.clear();
             _attributes = null;
         }
@@ -355,7 +359,7 @@ public class FacesContextImpl extends FacesContext {
         _responseStream = null;
         _responseWriter = null;
         _viewRoot = null;
-       
+
 
         _released = true;
         FacesContext.setCurrentInstance(null);
@@ -480,7 +484,7 @@ public class FacesContextImpl extends FacesContext {
     public List<String> getExecutePhaseClientIds() {
         assertNotReleased(METHOD_GETEXECUTEPHASECLIENTIDS);
 
-        if(_executePhaseClientIds != null) {
+        if (_executePhaseClientIds != null) {
             return _executePhaseClientIds;
         }
 
@@ -593,11 +597,37 @@ public class FacesContextImpl extends FacesContext {
      * can push in a request wrapper!
      *
      */
-    /*  @Override
+    @Override
     public boolean isAjaxRequest() {
-    Map requestMap = getExternalContext().getRequestMap();
-    return requestMap.containsKey(AJAX_REQ_KEY);
-    }*/
+
+        assertNotReleased(METHOD_ISAJAXREQUEST);
+
+        /*
+         * A speed shortcut here is feasable
+         * but it has to be discussed we have those
+         * in several parts of the facesContext and even most of them implicetly
+         * enforced by the spec itself. Hence i set it here.
+         *
+         *
+         * The problem is that request parameter maps can be
+         * delivered by RequestWrappers hence, you cannot rely
+         * on the map being entirely immutable.
+         * But leaving it out probably is also a no option since
+         * this method probably will be called by every component
+         * renderer and a O(log(n)) lookup is not a serious performance impact
+         * but serious enough!
+         *
+         * This has to be cleared up with the spec people!
+         * This should not cause a problem under normal circumstances
+         * however!
+         */
+        if (_ajaxRequest == null) {
+            Map requestParamMap = getExternalContext().getRequestParameterMap();
+            _ajaxRequest = requestParamMap.containsKey(AJAX_REQ_KEY);
+        }
+        return _ajaxRequest;
+    }
+
     /**
      * @return is render none return true if {@link #PARTIAL_EXECUTE_PARAM_NAME} is set in the current request
      * map!
