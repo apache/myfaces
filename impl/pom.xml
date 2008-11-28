@@ -212,8 +212,7 @@
         <id>unpack-shared</id>
         <activation>
             <property>
-                <name>performRelease</name>
-                <value>true</value>
+                <name>!dev</name>
             </property>
         </activation>
         <build>
