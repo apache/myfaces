@@ -279,7 +279,7 @@ public abstract class UIComponentBase
      * component. The id is not necessarily unique across all components in the current view.
      */
     @JSFProperty
-      (literalOnly = true)
+      (rtexprvalue = true)
     public String getId()
     {
         return _id;
