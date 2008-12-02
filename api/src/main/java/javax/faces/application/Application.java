@@ -44,13 +44,17 @@ import javax.faces.validator.Validator;
 import javax.faces.webapp.pdl.PageDeclarationLanguage;
 
 /**
- * <p>Application  represents a per-web-application singleton object where applications based on JavaServer Faces 
- * (or implementations wishing to provide extended functionality) can register application-wide singletons that 
- * provide functionality required by JavaServer Faces. Default implementations of each object are provided for 
- * cases where the application does not choose to customize the behavior.</p>
+ * <p>
+ * Application represents a per-web-application singleton object where applications based on JavaServer Faces (or
+ * implementations wishing to provide extended functionality) can register application-wide singletons that provide
+ * functionality required by JavaServer Faces. Default implementations of each object are provided for cases where the
+ * application does not choose to customize the behavior.
+ * </p>
  * 
- * <p>The instance of {@link Application} is created by calling the <code>getApplication()</code> method of 
- * {@link ApplicationFactory}. Because this instance is shared, it must be implemented in a thread-safe manner.</p>
+ * <p>
+ * The instance of {@link Application} is created by calling the <code>getApplication()</code> method of
+ * {@link ApplicationFactory}. Because this instance is shared, it must be implemented in a thread-safe manner.
+ * </p>
  * 
  * Holds webapp-wide resources for a JSF application. There is a single one of these for a web application, accessable
  * via
@@ -69,7 +73,8 @@ import javax.faces.webapp.pdl.PageDeclarationLanguage;
  * @version $Revision$ $Date$
  */
 @SuppressWarnings("deprecation")
-public abstract class Application {
+public abstract class Application
+{
     // The concrete methods throwing UnsupportedOperationExceptiom were added for JSF 1.2.
     // They supply default to allows old Application implementations to still work.
 
@@ -84,96 +89,115 @@ public abstract class Application {
      * componentType string. The createComponent method will simply use the last defined mapping.
      */
     /**
-     * Register a new mapping of component type to the name of the corresponding {@link UIComponent} class.
-     * This allows subsequent calls to <code>createComponent()</code> to serve as a factory for
-     * {@link UIComponent} instances.
-     *
-     * @param componentType - The component type to be registered
-     * @param componentClass - The fully qualified class name of the corresponding {@link UIComponent}
-     *                       implementation
-     *
-     * @throws NullPointerException if <code>componentType</code> or <code>componentClass</code> is
-     *                              <code>null</code>
+     * Register a new mapping of component type to the name of the corresponding {@link UIComponent} class. This allows
+     * subsequent calls to <code>createComponent()</code> to serve as a factory for {@link UIComponent} instances.
+     * 
+     * @param componentType
+     *            - The component type to be registered
+     * @param componentClass
+     *            - The fully qualified class name of the corresponding {@link UIComponent} implementation
+     * 
+     * @throws NullPointerException
+     *             if <code>componentType</code> or <code>componentClass</code> is <code>null</code>
      */
     public abstract void addComponent(String componentType, String componentClass);
 
     /**
-     *  Register a new converter class that is capable of performing conversions for the specified target class.
-     *
-     *  @param targetClass - The class for which this converter is registered
-     *  @param converterClass - The fully qualified class name of the corresponding {@link Converter} implementation
-     *
-     *  @throws NullPointerException - if <code>targetClass</code>  or <code>converterClass</code> is <code>null</code>
+     * Register a new converter class that is capable of performing conversions for the specified target class.
+     * 
+     * @param targetClass
+     *            - The class for which this converter is registered
+     * @param converterClass
+     *            - The fully qualified class name of the corresponding {@link Converter} implementation
+     * 
+     * @throws NullPointerException
+     *             - if <code>targetClass</code> or <code>converterClass</code> is <code>null</code>
      */
-    public abstract void addConverter(Class targetClass, String converterClass);
+    public abstract void addConverter(Class<?> targetClass, String converterClass);
 
     /**
-     * Register a new mapping of converter id to the name of the corresponding {@link Converter}  class. This allows 
+     * Register a new mapping of converter id to the name of the corresponding {@link Converter} class. This allows
      * subsequent calls to createConverter() to serve as a factory for {@link Converter} instances.
      * 
-     * @param componentType - The component type to be registered
-     * @param componentClass - The fully qualified class name of the corresponding {@link UIComponent}
-     *                         implementation 
-     *                         
-     * @throws NullPointerException - if <code>componentType</code> or <code>componentClass</code> is <code>null</code>
+     * @param componentType
+     *            - The component type to be registered
+     * @param componentClass
+     *            - The fully qualified class name of the corresponding {@link UIComponent} implementation
+     * 
+     * @throws NullPointerException
+     *             - if <code>componentType</code> or <code>componentClass</code> is <code>null</code>
      */
     public abstract void addConverter(String converterId, String converterClass);
 
     /**
-     * <p>Provide a way for Faces applications to register an <code>ELContextListener</code> that will be notified 
-     * on creation of <code>ELContext</code> instances.<p>
+     * <p>
+     * Provide a way for Faces applications to register an <code>ELContextListener</code> that will be notified on
+     * creation of <code>ELContext</code> instances.
+     * <p>
      * 
-     * <p>An implementation is provided that throws <code>UnsupportedOperationException</code> so that users that
-     * decorate the <code>Application</code> continue to work.</p>
+     * <p>
+     * An implementation is provided that throws <code>UnsupportedOperationException</code> so that users that decorate
+     * the <code>Application</code> continue to work.
+     * </p>
      * 
      * @since 1.2
      */
-    public void addELContextListener(ELContextListener listener) {
+    public void addELContextListener(ELContextListener listener)
+    {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * <p>Cause an the argument <code>resolver</code> to be added to the resolver chain as specified in section 5.5.1
-     * of the JavaServer Faces Specification.</p>
+     * <p>
+     * Cause an the argument <code>resolver</code> to be added to the resolver chain as specified in section 5.5.1 of
+     * the JavaServer Faces Specification.
+     * </p>
      * 
-     * <p>It is not possible to remove an <code>ELResolver</code> registered with this method, 
-     * once it has been registered.</p>
+     * <p>
+     * It is not possible to remove an <code>ELResolver</code> registered with this method, once it has been registered.
+     * </p>
      * 
-     * <p>It is illegal to register an ELResolver after the application has received any requests from the client. 
-     * If an attempt is made to register a listener after that time, an IllegalStateException must be thrown. 
-     * This restriction is in place to allow the JSP container to optimize for the common case where no additional 
-     * <code>ELResolvers</code> are in the chain, aside from the standard ones. It is permissible to add 
+     * <p>
+     * It is illegal to register an ELResolver after the application has received any requests from the client. If an
+     * attempt is made to register a listener after that time, an IllegalStateException must be thrown. This restriction
+     * is in place to allow the JSP container to optimize for the common case where no additional
+     * <code>ELResolvers</code> are in the chain, aside from the standard ones. It is permissible to add
      * <code>ELResolvers</code> before or after initialization to a CompositeELResolver that is already in the chain.
      * <p>
      * 
-     * <p>The default implementation throws <code>UnsupportedOperationException</code> and is provided for the sole 
-     * purpose of not breaking existing applications that extend {@link Application}.</p>
+     * <p>
+     * The default implementation throws <code>UnsupportedOperationException</code> and is provided for the sole purpose
+     * of not breaking existing applications that extend {@link Application}.
+     * </p>
      * 
      * @since 1.2
      */
-    public void addELResolver(ELResolver resolver) {
+    public void addELResolver(ELResolver resolver)
+    {
         throw new UnsupportedOperationException();
     }
 
     /**
-     *Register a new mapping of validator id to the name of the corresponding <code>Validator</code> class. This allows 
-     *subsequent calls to <code>createValidator()</code> to serve as a factory for <code>Validator</code> instances.
-     *
+     *Register a new mapping of validator id to the name of the corresponding <code>Validator</code> class. This allows
+     * subsequent calls to <code>createValidator()</code> to serve as a factory for <code>Validator</code> instances.
+     * 
      *@param <code>validatorId</code> - The validator id to be registered
-     *@param <code>validatorClass</code> - The fully qualified class name of the corresponding Validator implementation 
-     *
-     *@throws <code>NullPointerException</code> - if <code>validatorId</code>  or <code>validatorClass</code> 
-     *                                              is <code>null</code>
+     *@param <code>validatorClass</code> - The fully qualified class name of the corresponding Validator implementation
+     * 
+     *@throws <code>NullPointerException</code> - if <code>validatorId</code> or <code>validatorClass</code> is
+     *         <code>null</code>
      */
     public abstract void addValidator(String validatorId, String validatorClass);
 
-    /**???
-     *     
+    /**
+     * ???
+     * 
      * @param context
      * @param componentResource
      * @return
      */
-    public UIComponent createComponent(FacesContext context, Resource componentResource) {
+    public UIComponent createComponent(FacesContext context, Resource componentResource)
+    {
         // TODO: JSF 2.0 #43
         throw new UnsupportedOperationException();
     }
@@ -185,56 +209,73 @@ public abstract class Application {
      * @param rendererType
      * @return
      */
-    public UIComponent createComponent(FacesContext context, String componentType, String rendererType) {
+    public UIComponent createComponent(FacesContext context, String componentType, String rendererType)
+    {
         // TODO: JSF 2.0 #1
         throw new UnsupportedOperationException();
     }
 
     /**
-     * <p>Create a new UIComponent subclass, using the mappings defined by previous calls to the addComponent method of
+     * <p>
+     * Create a new UIComponent subclass, using the mappings defined by previous calls to the addComponent method of
      * this class.
      * </p>
      * 
-     * @throws FacesException if there is no mapping defined for the specified componentType, or if an instance of the specified
-     *                        type could not be created for any reason.
+     * @throws FacesException
+     *             if there is no mapping defined for the specified componentType, or if an instance of the specified
+     *             type could not be created for any reason.
      */
     public abstract UIComponent createComponent(String componentType) throws FacesException;
 
     /**
-     * <p>Create an object which has an associating "binding" expression tying the component to a user property.</p>
+     * <p>
+     * Create an object which has an associating "binding" expression tying the component to a user property.
+     * </p>
      * 
-     * <p>First the specified value-binding is evaluated; if it returns a non-null value then the component
-     * "already exists" and so the resulting value is simply returned.</p>
+     * <p>
+     * First the specified value-binding is evaluated; if it returns a non-null value then the component
+     * "already exists" and so the resulting value is simply returned.
+     * </p>
      * 
-     * <p>Otherwise a new UIComponent instance is created using the specified componentType, and the new object stored via
-     * the provided value-binding before being returned.</p>
+     * <p>
+     * Otherwise a new UIComponent instance is created using the specified componentType, and the new object stored via
+     * the provided value-binding before being returned.
+     * </p>
      * 
      * @deprecated
      */
     @Deprecated
     public abstract UIComponent createComponent(ValueBinding componentBinding, FacesContext context,
-            String componentType) throws FacesException;
+                                                String componentType) throws FacesException;
 
     /**
-     * <p>Call the <code>getValue()</code> method on the specified <code>ValueExpression</code>. If it returns 
-     * a <code>{@link UIComponent}</code> instance, return it as the value of this method. If it does not, 
-     * instantiate a new <code>{@linkUIComponent}</code> instance of the specified component type, pass the new
-     * component to the <code>setValue()</code> method of the specified <code>ValueExpression</code>, and return it.</p>
+     * <p>
+     * Call the <code>getValue()</code> method on the specified <code>ValueExpression</code>. If it returns a
+     * <code>{@link UIComponent}</code> instance, return it as the value of this method. If it does not, instantiate a
+     * new <code>{@linkUIComponent}</code> instance of the specified component type, pass the new component to the
+     * <code>setValue()</code> method of the specified <code>ValueExpression</code>, and return it.
+     * </p>
      * 
-     * @param componentExpression - <code>ValueExpression</code> representing a component value expression 
-     *                              (typically specified by the <code>component</code> attribute of a custom tag)
-     * @param contexte - {@link FacesContext} for the current request
-     * @param componentType - Component type to create if the ValueExpression does not return a component instance 
+     * @param componentExpression
+     *            - <code>ValueExpression</code> representing a component value expression (typically specified by the
+     *            <code>component</code> attribute of a custom tag)
+     * @param contexte
+     *            - {@link FacesContext} for the current request
+     * @param componentType
+     *            - Component type to create if the ValueExpression does not return a component instance
      * 
-     * @throws <code>{@link FacesException}</code> - if a <code>{@link UIComponent}</code> cannot be created 
+     * @throws <code>{@link FacesException}</code> - if a <code>{@link UIComponent}</code> cannot be created
      * @throws <code>{@link NullPointerException}</code>- if any parameter is null
-     *         <p>A default implementation is provided that throws <code>UnsupportedOperationException</code> so that users 
-     *         that decorate <code>Application</code> can continue to function</p>
-     *                  
+     *         <p>
+     *         A default implementation is provided that throws <code>UnsupportedOperationException</code> so that users
+     *         that decorate <code>Application</code> can continue to function
+     *         </p>
+     * 
      * @since 1.2
      */
-    public UIComponent createComponent(ValueExpression componentExpression, FacesContext contexte,
-            String componentType) throws FacesException, NullPointerException {
+    public UIComponent createComponent(ValueExpression componentExpression, FacesContext contexte, String componentType)
+            throws FacesException, NullPointerException
+    {
         throw new UnsupportedOperationException();
     }
 
@@ -247,44 +288,54 @@ public abstract class Application {
      * @return
      */
     public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType,
-            String rendererType) {
+                                       String rendererType)
+    {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * <p>Instantiate and return a new <code>{@link Converter}</code> instance of the class that has registered itself 
-     * as capable of performing conversions for objects of the specified type. If no such <code>{@link Converter}</code>
-     * class can be identified, return null.</p>
+     * <p>
+     * Instantiate and return a new <code>{@link Converter}</code> instance of the class that has registered itself as
+     * capable of performing conversions for objects of the specified type. If no such <code>{@link Converter}</code>
+     * class can be identified, return null.
+     * </p>
      * 
-     * <p>To locate an appropriate <code>{@link Converter}</code> class, the following algorithm is performed, 
-     * stopping as soon as an appropriate <code>{@link Converter}</code> class is found:
-     * Locate a <code>{@link Converter}</code> registered for the target class itself.
-     * <Locate a <code>{@link Converter}</code> registered for interfaces that are implemented by the target class 
-     * (directly or indirectly).
-     * Locate a <code>{@link Converter}</code> registered for the superclass (if any) of the target class, 
-     * recursively working up the inheritance hierarchy.</p>
+     * <p>
+     * To locate an appropriate <code>{@link Converter}</code> class, the following algorithm is performed, stopping as
+     * soon as an appropriate <code>{@link Converter}</code> class is found: Locate a <code>{@link Converter}</code>
+     * registered for the target class itself. <Locate a <code>{@link Converter}</code> registered for interfaces that
+     * are implemented by the target class (directly or indirectly). Locate a <code>{@link Converter}</code> registered
+     * for the superclass (if any) of the target class, recursively working up the inheritance hierarchy.
+     * </p>
      * 
-     * <p>If the <code>{@link Converter}</code> has a single argument constructor that accepts a Class, 
-     * instantiate the <code>{@link Converter}</code>  using that constructor, passing the argument 
-     * <code>{@link targetClass}</code> as the sole argument. Otherwise, simply use the zero-argument constructor. 
-
-     * @param targetClass - Target class for which to return a <code>{@link Converter}</code>
+     * <p>
+     * If the <code>{@link Converter}</code> has a single argument constructor that accepts a Class, instantiate the
+     * <code>{@link Converter}</code> using that constructor, passing the argument <code>{@link targetClass}</code> as
+     * the sole argument. Otherwise, simply use the zero-argument constructor.
      * 
-     * @throws FacesException if the <code>{@link Converter}</code> cannot be created 
-     * @throws NullPointerException if <code>targetClass</code> is <code>null</code>
-     *
+     * @param targetClass
+     *            - Target class for which to return a <code>{@link Converter}</code>
+     * 
+     * @throws FacesException
+     *             if the <code>{@link Converter}</code> cannot be created
+     * @throws NullPointerException
+     *             if <code>targetClass</code> is <code>null</code>
+     * 
      */
-    public abstract Converter createConverter(Class targetClass);
+    public abstract Converter createConverter(Class<?> targetClass);
 
     /**
-     * Instantiate and return a new <code>{@link Converter}</code> instance of the class specified by a 
-     * previous call to <code>addConverter()</code> for the specified converter id. If there is no such 
-     * registration for this converter id, return <code>null</code>.
+     * Instantiate and return a new <code>{@link Converter}</code> instance of the class specified by a previous call to
+     * <code>addConverter()</code> for the specified converter id. If there is no such registration for this converter
+     * id, return <code>null</code>.
      * 
-     * @param converterId- The converter id for which to create and return a new <code>{@link Converter}</code> instance 
+     * @param converterId
+     *            - The converter id for which to create and return a new <code>{@link Converter}</code> instance
      * 
-     * @throws FacesException if the <code>{@link Converter}</code> cannot be created 
-     * @throws NullPointerException if converterId is <code>null</code>
+     * @throws FacesException
+     *             if the <code>{@link Converter}</code> cannot be created
+     * @throws NullPointerException
+     *             if converterId is <code>null</code>
      */
     public abstract Converter createConverter(String converterId);
 
@@ -298,21 +349,25 @@ public abstract class Application {
      * @deprecated
      */
     @Deprecated
-    public abstract MethodBinding createMethodBinding(String ref, Class[] params) throws ReferenceSyntaxException;
+    public abstract MethodBinding createMethodBinding(String ref, Class<?>[] params) throws ReferenceSyntaxException;
 
     /**
-     * Instantiate and return a new <code>{@link Validator}</code>  instance of the class specified by a previous 
-     * call to <code>addValidator()</code>  for the specified validator id.
+     * Instantiate and return a new <code>{@link Validator}</code> instance of the class specified by a previous call to
+     * <code>addValidator()</code> for the specified validator id.
      * 
-     * @param <code>validatorId</code>- The <code>{@link Validator}</code>  id for which to create and return a new Validator instance 
+     * @param <code>validatorId</code>- The <code>{@link Validator}</code> id for which to create and return a new
+     *        Validator instance
      * 
-     * @throws FacesException if a <code>{@link Validator}/<code> of the specified id cannot be created 
-     * @throws NullPointerException if validatorId  is <code>null</code>
+     * @throws FacesException
+     *             if a <code>{@link Validator}/<code> of the specified id cannot be created
+     * @throws NullPointerException
+     *             if validatorId is <code>null</code>
      */
     public abstract Validator createValidator(String validatorId) throws FacesException;
 
     /**
-     * <p>Create an object which can be used to invoke an arbitrary method via an EL expression at a later time. This is
+     * <p>
+     * Create an object which can be used to invoke an arbitrary method via an EL expression at a later time. This is
      * similar to createValueBinding except that it can invoke an arbitrary method (with parameters) rather than just
      * get/set a javabean property.
      * </p>
@@ -324,187 +379,229 @@ public abstract class Application {
     public abstract ValueBinding createValueBinding(String ref) throws ReferenceSyntaxException;
 
     /**
-     * <p>Get a value by evaluating an expression.</p>
+     * <p>
+     * Get a value by evaluating an expression.
+     * </p>
      * 
-     * <p>Call <code>{@link getExpressionFactory()}</code> then call
+     * <p>
+     * Call <code>{@link getExpressionFactory()}</code> then call
      * <code>ExpressionFactory.createValueExpression(javax.el.ELContext, java.lang.String, java.lang.Class)</code>
-     * passing the argument <code>expression</code> and <code>expectedType</code>. Call 
-     * <code>{@link FacesContext#getELContext()}</code> and pass it to 
-     * <code>ValueExpression.getValue(javax.el.ELContext)</code>, returning the result.</p>
+     * passing the argument <code>expression</code> and <code>expectedType</code>. Call
+     * <code>{@link FacesContext#getELContext()}</code> and pass it to
+     * <code>ValueExpression.getValue(javax.el.ELContext)</code>, returning the result.
+     * </p>
      * 
-     * <p>An implementation is provided that throws <code>UnsupportedOperationException</code> so that users that 
-     * decorate the <code>Application</code> continue to work.<p>
+     * <p>
+     * An implementation is provided that throws <code>UnsupportedOperationException</code> so that users that decorate
+     * the <code>Application</code> continue to work.
+     * <p>
      * 
      * @throws javax.el.ELException
      */
-    public Object evaluateExpressionGet(FacesContext context, String expression, Class expectedType) throws ELException {
+    public <T> T evaluateExpressionGet(FacesContext context, String expression, Class<? extends T> expectedType)
+            throws ELException
+    {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * <p>Return the default <code>ActionListener</code> to be registered for all <code>ActionSource<3code> components 
+     * <p>
+     * Return the default <code>ActionListener</code> to be registered for all <code>ActionSource<3code> components 
      * in this appication. If not explicitly set, a default implementation must be provided that performs the 
-     * following functions:</p>
-     * <ul><li>The <code>processAction()</code> method must first call <code>FacesContext.renderResponse()</code>in order 
-     * to bypass any intervening lifecycle phases, once the method returns.</li>
-     *      
-     *     <li>The <code>processAction()</code> method must next determine the logical outcome of this event, as follows:</li>
+     * following functions:
+     * </p>
+     * <ul>
+     * <li>The <code>processAction()</code> method must first call <code>FacesContext.renderResponse()</code>in order to
+     * bypass any intervening lifecycle phases, once the method returns.</li>
      * 
-     *     <ul><li>If the originating component has a non-<code>null action</code> property, retrieve the <code>
-     *             MethodBinding<code> from the property, and call <code>invoke()</code> on it. Convert the returned 
-     *              value (if any) to a String, and use it as the logical outcome.</li>
-     *         <li>Otherwise, the logical outcome is null.</li>
-     *     </ul>
+     * <li>The <code>processAction()</code> method must next determine the logical outcome of this event, as follows:</li>
+     * 
+     * <ul>
+     * <li>If the originating component has a non-<code>null action</code> property, retrieve the <code>
+     *             MethodBinding<code> from the property, and call <code>invoke()</code>
+     * on it. Convert the returned value (if any) to a String, and use it as the logical outcome.</li>
+     * <li>Otherwise, the logical outcome is null.</li>
      * </ul>
-     * <ul><li>The <code>processAction()</code> method must finally retrieve the <code>NavigationHandler<3code> instance 
+     * </ul>
+     * <ul>
+     * <li>The <code>processAction()</code> method must finally retrieve the <code>NavigationHandler<3code> instance 
      *         for this application and call <code>NavigationHandler.handleNavigation(javax.faces.context.FacesContext, 
      *                                     java.lang.String, java.lang.String)</code> passing:</li>
-     *     <ul><li>the {@link FacesContext} for the current request</li>
-     *         <li>If there is a <code>MethodBinding</code> instance for the <code>action</code> property of this component, 
-     *             the result of calling {@link MethodBinding.getExpressionString()} on it, null otherwise</li>
-     *         <li>the logical outcome as determined above</li>
-     *      <ul>
+     * <ul>
+     * <li>the {@link FacesContext} for the current request</li>
+     * <li>If there is a <code>MethodBinding</code> instance for the <code>action</code> property of this component, the
+     * result of calling {@link MethodBinding.getExpressionString()} on it, null otherwise</li>
+     * <li>the logical outcome as determined above</li>
+     * <ul>
      * </ul>
-     * <p>Note that the specification for the default <code>ActionListener</code> contiues to call for the use of a 
-     * deprecated property (<code>action</code>) and class (<code>MethodBinding</code>). Unfortunately, this is 
-     * necessary because the default ActionListener must continue to work with components that do not implement 
+     * <p>
+     * Note that the specification for the default <code>ActionListener</code> contiues to call for the use of a
+     * deprecated property (<code>action</code>) and class (<code>MethodBinding</code>). Unfortunately, this is
+     * necessary because the default ActionListener must continue to work with components that do not implement
      * {@link ActionSource2}, and only implement {@link ActionSource}.
      */
     public abstract ActionListener getActionListener();
 
     /**
-     * Return an <code>Iterator</code> over the set of currently defined component types for 
-     * this <code>Application</code>.
+     * Return an <code>Iterator</code> over the set of currently defined component types for this
+     * <code>Application</code>.
      */
     public abstract Iterator<String> getComponentTypes();
 
     /**
-     * Return an <code>Iterator</code> over the set of currently registered converter ids for 
-     * this <code>Application</code>
+     * Return an <code>Iterator</code> over the set of currently registered converter ids for this
+     * <code>Application</code>
+     * 
      * @return
      */
     public abstract Iterator<String> getConverterIds();
 
     /**
-     *Return an <code>Iterator</code> over the set of <code>Class</code>  instances for which <code>{@link Converter}</code> 
-     *<code>classes</code>have been explicitly registered.
+     *Return an <code>Iterator</code> over the set of <code>Class</code> instances for which <code>{@link Converter}
+     * </code> <code>classes</code>have been explicitly registered.
+     * 
      * @return
      */
-    public abstract Iterator<Class> getConverterTypes();
+    public abstract Iterator<Class<?>> getConverterTypes();
 
     /**
-     *Return the default <code>Locale</code> for this application. If not explicitly set, <code>null</code> is returned.
+     *Return the default <code>Locale</code> for this application. If not explicitly set, <code>null</code> is
+     * returned.
+     * 
      * @return
      */
     public abstract Locale getDefaultLocale();
 
     /**
-     * Return the <code>renderKitId</code> to be used for rendering this application. If not explicitly set, 
+     * Return the <code>renderKitId</code> to be used for rendering this application. If not explicitly set,
      * <code>null</code> is returned.
+     * 
      * @return
      */
     public abstract String getDefaultRenderKitId();
 
     /**
-     * <p>If no calls have been made to <code>addELContextListener(javax.el.ELContextListener)</code>, this method 
-     * must return an empty array<p>. 
+     * <p>
+     * If no calls have been made to <code>addELContextListener(javax.el.ELContextListener)</code>, this method must
+     * return an empty array
+     * <p>
+     * .
      * 
-     * <p>Otherwise, return an array representing the list of listeners added by calls to 
-     * <code>addELContextListener(javax.el.ELContextListener)</code>.<p>
+     * <p>
+     * Otherwise, return an array representing the list of listeners added by calls to
+     * <code>addELContextListener(javax.el.ELContextListener)</code>.
+     * <p>
      * 
-     * <p>An <code>implementation</code> is provided that throws UnsupportedOperationException so that users that 
-     * decorate the <code>Application</code> continue to work.</p>
+     * <p>
+     * An <code>implementation</code> is provided that throws UnsupportedOperationException so that users that decorate
+     * the <code>Application</code> continue to work.
+     * </p>
      * 
      * @since 1.2
      */
-    public ELContextListener[] getELContextListeners() {
+    public ELContextListener[] getELContextListeners()
+    {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * <ul>Return the singleton <code>ELResolver</code> instance to be used for all EL resolution. This is actually 
-     * an instance of <code>CompositeELResolver</code> that must contain the following ELResolver instances in 
-     * the following order:
-     *   <li><code>ELResolver</code> instances declared using the <el-resolver> element in the application 
-     *   configuration resources.</li>
-     *   
-     *   <li>An <code> implementation</code>  that wraps the head of the legacy VariableResolver chain, 
-     *   as per section <code> VariableResolver ChainWrapper</code> in Chapter 5 in the spec document.</li>
-     *   
-     *   <li>An <code>implementation</code> that wraps the head of the legacy PropertyResolver chain, 
-     *   as per section <code>PropertyResolver ChainWrapper</code> in Chapter 5 in the spec document.</li>
-     *   
-     *   <li>Any <code>ELResolver</code> instances added by calls to 
-     *   <code>{@link #addELResolver(javax.el.ELResolver)}</code>.</li>
-     *   
-     *   <li> The default implementation throws <code>UnsupportedOperationException</code>  and is provided 
-     *   for the sole purpose of not breaking existing applications that extend <code>{@link Application}</code>.</li>
      * <ul>
-     *   
+     * Return the singleton <code>ELResolver</code> instance to be used for all EL resolution. This is actually an
+     * instance of <code>CompositeELResolver</code> that must contain the following ELResolver instances in the
+     * following order:
+     * <li><code>ELResolver</code> instances declared using the <el-resolver> element in the application configuration
+     * resources.</li>
+     * 
+     * <li>An <code> implementation</code> that wraps the head of the legacy VariableResolver chain, as per section
+     * <code> VariableResolver ChainWrapper</code> in Chapter 5 in the spec document.</li>
+     * 
+     * <li>An <code>implementation</code> that wraps the head of the legacy PropertyResolver chain, as per section
+     * <code>PropertyResolver ChainWrapper</code> in Chapter 5 in the spec document.</li>
+     * 
+     * <li>Any <code>ELResolver</code> instances added by calls to
+     * <code>{@link #addELResolver(javax.el.ELResolver)}</code>.</li>
+     * 
+     * <li>The default implementation throws <code>UnsupportedOperationException</code> and is provided for the sole
+     * purpose of not breaking existing applications that extend <code>{@link Application}</code>.</li>
+     * <ul>
+     * 
      * @since 1.2
      */
-    public ELResolver getELResolver() {
+    public ELResolver getELResolver()
+    {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * <p>Return the <code>ExpressionFactory</code> instance for this application. This instance is used by the 
-     * convenience method <code>{@link #evaluateExpressionGet(javax.faces.context.FacesContext, java.lang.String, java.lang.Class)}.</p>
+     * <p>
+     * Return the <code>ExpressionFactory</code> instance for this application. This instance is used by the convenience
+     * method <code>{@link #evaluateExpressionGet(javax.faces.context.FacesContext, java.lang.String, java.lang.Class)}.
+     * </p>
      * 
-     * <p>The implementation must return the <code>ExpressionFactory</code> from the JSP container by calling 
-     * <code>JspFactory.getDefaultFactory().getJspApplicationContext(servletContext).getExpressionFactory()</code>.</p>
+     * <p>
+     * The implementation must return the <code>ExpressionFactory</code> from the JSP container by calling <code>
+     * JspFactory.getDefaultFactory().getJspApplicationContext(servletContext).getExpressionFactory()</code>.
+     * </p>
      * 
-     * <p>An implementation is provided that throws <code>UnsupportedOperationException</code> so that users that
-     *  decorate the <code>Application</code> continue to work.</p> 
-     *  
+     * <p>
+     * An implementation is provided that throws <code>UnsupportedOperationException</code> so that users that decorate
+     * the <code>Application</code> continue to work.
+     * </p>
+     * 
      * @since 1.2
      */
-    public ExpressionFactory getExpressionFactory() {
+    public ExpressionFactory getExpressionFactory()
+    {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * Return the fully qualified class name of the <code>ResourceBundle</code> to be used for JavaServer Faces 
-     * messages for this application. If not explicitly set, <code>null</code>  is returned.
+     * Return the fully qualified class name of the <code>ResourceBundle</code> to be used for JavaServer Faces messages
+     * for this application. If not explicitly set, <code>null</code> is returned.
      */
     public abstract String getMessageBundle();
 
     /**
-     *Return the <code>{@link NavigationHandler}</code> instance that will be passed the outcome returned by any 
-     *invoked application action for this web application. If not explicitly set, a default implementation must be 
-     *provided that performs the functions described in the <code>{@link NavigationHandler}</code> class description.
+     *Return the <code>{@link NavigationHandler}</code> instance that will be passed the outcome returned by any
+     * invoked application action for this web application. If not explicitly set, a default implementation must be
+     * provided that performs the functions described in the <code>{@link NavigationHandler}</code> class description.
      */
     public abstract NavigationHandler getNavigationHandler();
 
-    public PageDeclarationLanguage getPageDeclarationLanguage() {
+    public PageDeclarationLanguage getPageDeclarationLanguage()
+    {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * <p>Return the project stage for the currently running application instance. The default value is
-     * <code>{@link ProjectStage#Production}</code></p>
+     * <p>
+     * Return the project stage for the currently running application instance. The default value is <code>
+     * {@link ProjectStage#Production}</code>
+     * </p>
      * 
-     * <p>The implementation of this method must perform the following algorithm or an equivalent with the same 
-     * end result to determine the value to return.</p>
+     * <p>
+     * The implementation of this method must perform the following algorithm or an equivalent with the same end result
+     * to determine the value to return.
+     * </p>
      * 
      * <ul>
-     *   <li>If the value has already been determined by a previous call to this method, simply return that value.</li>
-     *   <li>Look for a <code>JNDI</code> environment entry under the key given by the value of 
-     *       <code>{@link ProjectStage#PROJECT_STAGE_JNDI_NAME}</code> (return type of java.lang.String). If found, 
-     *       continue with the algorithm below, otherwise, look for an entry in the <code>initParamMap</code> of the 
-     *       <code>ExternalContext</code> from the current <code>FacesContext</code> with the key 
-     *       <code>{@link ProjectStage#PROJECT_STAGE_PARAM_NAME}</code>
-     *  </li>
-     *  <li>If a value is found found, see if an enum constant can be obtained by calling <code>ProjectStage.valueOf()</code>,
-     *      passing the value from the <code>initParamMap</code>. If this succeeds without exception, save the value and return it.
-     *  </li>
-     *  <li>If not found, or any of the previous attempts to discover the enum constant value have failed, log a 
-     *      descriptive error message, assign the value as <code>ProjectStage.Production</code> and return it.</li>
+     * <li>If the value has already been determined by a previous call to this method, simply return that value.</li>
+     * <li>Look for a <code>JNDI</code> environment entry under the key given by the value of
+     * <code>{@link ProjectStage#PROJECT_STAGE_JNDI_NAME}</code> (return type of java.lang.String). If found, continue
+     * with the algorithm below, otherwise, look for an entry in the <code>initParamMap</code> of the
+     * <code>ExternalContext</code> from the current <code>FacesContext</code> with the key
+     * <code>{@link ProjectStage#PROJECT_STAGE_PARAM_NAME}</code></li>
+     * <li>If a value is found found, see if an enum constant can be obtained by calling
+     * <code>ProjectStage.valueOf()</code>, passing the value from the <code>initParamMap</code>. If this succeeds
+     * without exception, save the value and return it.</li>
+     * <li>If not found, or any of the previous attempts to discover the enum constant value have failed, log a
+     * descriptive error message, assign the value as <code>ProjectStage.Production</code> and return it.</li>
      * <ul>
      * 
      * @since 2.0
      */
-    public ProjectStage getProjectStage() {
+    public ProjectStage getProjectStage()
+    {
         throw new UnsupportedOperationException();
     }
 
@@ -519,46 +616,58 @@ public abstract class Application {
     public abstract PropertyResolver getPropertyResolver();
 
     /**
-     * <p>Find a <code>ResourceBundle</code> as defined in the application configuration resources under the specified
+     * <p>
+     * Find a <code>ResourceBundle</code> as defined in the application configuration resources under the specified
      * name. If a <code>ResourceBundle</code> was defined for the name, return an instance that uses the locale of the
-     * current <code>{@link UIViewRoot}</code>.</p>
+     * current <code>{@link UIViewRoot}</code>.
+     * </p>
      * 
-     * <p>The default implementation throws <code>UnsupportedOperationException</code> and is provided for the sole 
-     * purpose of not breaking existing applications that extend this class.</p>
+     * <p>
+     * The default implementation throws <code>UnsupportedOperationException</code> and is provided for the sole purpose
+     * of not breaking existing applications that extend this class.
+     * </p>
      * 
-     * @return <code>ResourceBundle</code> for the current UIViewRoot, otherwise null 
+     * @return <code>ResourceBundle</code> for the current UIViewRoot, otherwise null
      * 
-     * @throws <code>{@link FacesException}</code> - if a bundle was defined, but not resolvable 
+     * @throws <code>{@link FacesException}</code> - if a bundle was defined, but not resolvable
      * @throws <code>{@link NullPointerException}</code> - if ctx == null || name == null
      */
-    public ResourceBundle getResourceBundle(FacesContext ctx, String name) throws FacesException, NullPointerException {
+    public ResourceBundle getResourceBundle(FacesContext ctx, String name) throws FacesException, NullPointerException
+    {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * <p>Return the singleton, stateless, thread-safe <code>{@link ResourceHandler}</code> for this application. 
-     * The JSF implementation must support the following techniques for declaring an alternate implementation of 
-     * <code>ResourceHandler</code>.</p>
+     * <p>
+     * Return the singleton, stateless, thread-safe <code>{@link ResourceHandler}</code> for this application. The JSF
+     * implementation must support the following techniques for declaring an alternate implementation of <code>
+     * ResourceHandler</code>.
+     * </p>
      * 
-     * <ul><li>The <code>ResourceHandler</code> implementation is declared in the application configuration resources 
-     *         by giving the fully qualified class name as the value of the <code><resource-handler></code> element 
-     *         within the <code>application</code> element.
-     *     </li>
-     *     <li>RELEASE_PENDING(edburns) It can also be declared via an annotation as specified in [287-ConfigAnnotations].</li>
+     * <ul>
+     * <li>The <code>ResourceHandler</code> implementation is declared in the application configuration resources by
+     * giving the fully qualified class name as the value of the <code><resource-handler></code> element within the
+     * <code>application</code> element.</li>
+     * <li>RELEASE_PENDING(edburns) It can also be declared via an annotation as specified in [287-ConfigAnnotations].</li>
      * </ul>
      * 
-     * <p>In all of the above cases, the runtime must employ the decorator pattern as for every other pluggable artifact in JSF.</p>
+     * <p>
+     * In all of the above cases, the runtime must employ the decorator pattern as for every other pluggable artifact in
+     * JSF.
+     * </p>
      * 
      * @since 2.0
      */
-    public ResourceHandler getResourceHandler() {
+    public ResourceHandler getResourceHandler()
+    {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * Return the <code>StateManager</code> instance that will be utilized during the Restore View and Render Response  
-     * phases of the request processing lifecycle. If not explicitly set, a default implementation must be provided 
-     * that performs the functions described in the <code>StateManager</code> description in the JavaServer Faces Specification.
+     * Return the <code>StateManager</code> instance that will be utilized during the Restore View and Render Response
+     * phases of the request processing lifecycle. If not explicitly set, a default implementation must be provided that
+     * performs the functions described in the <code>StateManager</code> description in the JavaServer Faces
+     * Specification.
      */
     public abstract StateManager getStateManager();
 
@@ -568,7 +677,8 @@ public abstract class Application {
     public abstract Iterator<Locale> getSupportedLocales();
 
     /**
-     *Return an <code>Iterator</code> over the set of currently registered validator ids for this <code>Application</code>.
+     *Return an <code>Iterator</code> over the set of currently registered validator ids for this
+     * <code>Application</code>.
      */
     public abstract Iterator<String> getValidatorIds();
 
@@ -581,83 +691,103 @@ public abstract class Application {
     public abstract VariableResolver getVariableResolver();
 
     /**
-     * Set the <code>{@link ViewHandler}</code> instance that will be utilized during the <code> Restore View and Render Response</code> 
-     * phases of the request processing lifecycle.
+     * Set the <code>{@link ViewHandler}</code> instance that will be utilized during the
+     * <code> Restore View and Render Response</code> phases of the request processing lifecycle.
+     * 
      * @return
      */
     public abstract ViewHandler getViewHandler();
 
     /**
-     *
+     * 
      * @param systemEventClass
      * @param sourceBaseType
      * @param source
      */
-    public void publishEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source) {
+    public void publishEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source)
+    {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * <p>If there are one or more listeners for events of the type represented by <code>systemEventClass</code>, call those 
-     * listeners,passing source as the <code>source</code> of the event. The implementation should be as fast as possible in 
-     * determining whether or not a listener for the given <code>systemEventClass</code> and <code>source</code> has been installed,
-     * and should return immediately once such a determination has been made. The implementation of <code>publishEvent</code> must 
-     * honor the requirements stated in <code>{@link subscribeToEvent(java.lang.Class, java.lang.Class,
+     * <p>
+     * If there are one or more listeners for events of the type represented by <code>systemEventClass</code>, call
+     * those listeners,passing source as the <code>source</code> of the event. The implementation should be as fast as
+     * possible in determining whether or not a listener for the given <code>systemEventClass</code> and
+     * <code>source</code> has been installed, and should return immediately once such a determination has been made.
+     * The implementation of <code>publishEvent</code> must honor the requirements stated in
+     * <code>{@link subscribeToEvent(java.lang.Class, java.lang.Class,
      *                                               javax.faces.event.SystemEventListener)}</code>
      * <p>
-     * <p>The default implementation must implement an algorithm semantically equivalent to the following to locate listener 
-     * instances and to invoke them.<p>
-     * <ul><li>If the <code>source</code> argument implements <code>{@link SystemEventListenerHolder}</code>, call 
-     *         <code>{@link SystemEventListenerHolder.getListenersForEventClass(java.lang.Class)}</code> on it, 
-     *         passing the <code>systemEventClass</code> argument. If the list is not empty, perform algorithm 
-     *         <code>traverseListenerList</code> on the list.</li>
-     *         
-     *     <li>If any <code>Application</code> level listeners have been installed by previous calls to 
-     *         </code>{@link subscribeToEvent(java.lang.Class, java.lang.Class, SystemEventListener)}</code>,
-     *         perform algorithm <code>traverseListenerList</code> on the list.</li>
-     *     
-     *     <li>If any <code>Application</code> level listeners have been installed by previous calls to 
-     *         <code>{@link subscribeToEvent(java.lang.Class, SystemEventListener)}</code>, perform algorithm
-     *         <code>traverseListenerList</code> on the list.</li>
+     * <p>
+     * The default implementation must implement an algorithm semantically equivalent to the following to locate
+     * listener instances and to invoke them.
+     * <p>
+     * <ul>
+     * <li>If the <code>source</code> argument implements <code>{@link SystemEventListenerHolder}</code>, call
+     * <code>{@link SystemEventListenerHolder.getListenersForEventClass(java.lang.Class)}</code> on it, passing the
+     * <code>systemEventClass</code> argument. If the list is not empty, perform algorithm
+     * <code>traverseListenerList</code> on the list.</li>
+     * 
+     * <li>If any <code>Application</code> level listeners have been installed by previous calls to </code>{@link
+     * subscribeToEvent(java.lang.Class, java.lang.Class, SystemEventListener)}</code>, perform algorithm
+     * <code>traverseListenerList</code> on the list.</li>
+     * 
+     * <li>If any <code>Application</code> level listeners have been installed by previous calls to
+     * <code>{@link subscribeToEvent(java.lang.Class, SystemEventListener)}</code>, perform algorithm
+     * <code>traverseListenerList</code> on the list.</li>
      * </ul>
-     *         
-     * <p>If the act of invoking the <code>processListener</code> method causes an </code>{@link AbortProcessingException}</code>
-     * to be thrown, processing of the listeners must be aborted.</p>
      * 
-     * <p>Algorithm <code>traverseListenerList</code>: For each listener in the list,<p>
+     * <p>
+     * If the act of invoking the <code>processListener</code> method causes an </code>{@link AbortProcessingException}
+     * </code> to be thrown, processing of the listeners must be aborted.
+     * </p>
      * 
-     * <ul><li>Call <code>{@link SystemEventListener.isListenerForSource(java.lang.Object)}<code>, passing the <code>source</code> 
-     *         argument. If this returns <code>false</code>, take no action on the listener.</li>
-     *        
-     *     <li>Otherwise, if the event to be passed to the listener instances has not yet been constructed, construct the event, 
-     *         passing <code>source</code> as the argument to the one-argument constructor that takes an <code>Object</code>. 
-     *         This same event instance must be passed to all listener instances.</li>
-     *         
-     *     <li>Call <code>{@link SystemEvent.isAppropriateListener(javax.faces.event.FacesListener)}<code>, passing the listener 
+     * <p>
+     * Algorithm <code>traverseListenerList</code>: For each listener in the list,
+     * <p>
+     * 
+     * <ul>
+     * <li>Call
+     * <code>{@link SystemEventListener.isListenerForSource(java.lang.Object)}<code>, passing the <code>source</code>
+     * argument. If this returns <code>false</code>, take no action on the listener.</li>
+     * 
+     * <li>Otherwise, if the event to be passed to the listener instances has not yet been constructed, construct the
+     * event, passing <code>source</code> as the argument to the one-argument constructor that takes an
+     * <code>Object</code>. This same event instance must be passed to all listener instances.</li>
+     * 
+     * <li>Call
+     * <code>{@link SystemEvent.isAppropriateListener(javax.faces.event.FacesListener)}<code>, passing the listener 
      *         instance as the argument. If this returns <code>false</code>, take no action on the listener.</li>
-     *     
-     *     <li>Call <code>{@link SystemEvent.processListener(javax.faces.event.FacesListener)}</code>, passing the listener 
-     *         instance.</li>
+     * 
+     * <li>Call <code>{@link SystemEvent.processListener(javax.faces.event.FacesListener)}</code>, passing the listener
+     * instance.</li>
      * 
      * @param <code>{@link systemEventClass}</code> - The Class of event that is being published. Must be non-null.
      * 
-     * @param <code>{@link source}</code> - The <code>source</code> for the event of type systemEventClass. Must be non-<code>null</code>, 
-     *                                      and must implement <code>{@link SystemEventListenerHolder}</code>.
+     * @param <code>{@link source}</code> - The <code>source</code> for the event of type systemEventClass. Must be non-
+     *        <code>null</code>, and must implement <code>{@link SystemEventListenerHolder}</code>.
      */
-    public void publishEvent(Class<? extends SystemEvent> systemEventClass, Object source) {
+    public void publishEvent(Class<? extends SystemEvent> systemEventClass, Object source)
+    {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * <p>Remove the argument <code>listener</code> from the list of <code>ELContextListeners</code>. If <code>listener</code> is null, no 
-     * exception is thrown and no action is performed. If <code>listener</code> is not in the list, no exception is thrown and no 
-     * action is performed.<p>
+     * <p>
+     * Remove the argument <code>listener</code> from the list of <code>ELContextListeners</code>. If <code>listener
+     * </code> is null, no exception is thrown and no action is performed. If <code>listener</code> is not in the list,
+     * no exception is thrown and no action is performed.
+     * <p>
      * 
-     * <p>An implementation is provided that throws <code>UnsupportedOperationException</code> so that users that decorate the 
-     * <code>Application</code> continue to work. 
+     * <p>
+     * An implementation is provided that throws <code>UnsupportedOperationException</code> so that users that decorate
+     * the <code>Application</code> continue to work.
+     * 
      * @param listener
      */
-    public void removeELContextListener(ELContextListener listener) {
+    public void removeELContextListener(ELContextListener listener)
+    {
         throw new UnsupportedOperationException();
     }
 
@@ -665,59 +795,68 @@ public abstract class Application {
      * Set the default <code>{@link ActionListener}</code> to be registered for all <code>{@link ActionSource}</code>
      * components.
      * 
-     * @param listener - The new default <code>{@link ActionListener}</code>
+     * @param listener
+     *            - The new default <code>{@link ActionListener}</code>
      * 
-     * @throws NullPointerException if listener  is null
+     * @throws NullPointerException
+     *             if listener is null
      */
     public abstract void setActionListener(ActionListener listener);
 
     /**
      * Set the default <code>Locale</code> for this application.
      * 
-     * @param locale - The new default <code>Locale</code> 
+     * @param locale
+     *            - The new default <code>Locale</code>
      * 
-     * @throws NullPointerException if listener  is null
+     * @throws NullPointerException
+     *             if listener is null
      */
     public abstract void setDefaultLocale(Locale locale);
 
     /**
-     * Return the <code>renderKitId</code> to be used for rendering this application. 
-     * If not explicitly set, <code>null</code> is returned.
+     * Return the <code>renderKitId</code> to be used for rendering this application. If not explicitly set, <code>null
+     * </code> is returned.
      * 
      * @param renderKitId
      */
     public abstract void setDefaultRenderKitId(String renderKitId);
 
     /**
-     * Set the fully qualified class name of the <code>ResourceBundle </code>  to be used for JavaServer Faces 
-     * messages for this application. See the JavaDocs for the  <code>java.util.ResourceBundle </code> class 
-     * for more information about the syntax for resource bundle names.
+     * Set the fully qualified class name of the <code>ResourceBundle </code> to be used for JavaServer Faces messages
+     * for this application. See the JavaDocs for the <code>java.util.ResourceBundle </code> class for more information
+     * about the syntax for resource bundle names.
      * 
-     * @param bundle - Base name of the resource bundle to be used 
+     * @param bundle
+     *            - Base name of the resource bundle to be used
      * 
-     * @throws NullPointerException if bundle  is null
+     * @throws NullPointerException
+     *             if bundle is null
      */
     public abstract void setMessageBundle(String bundle);
 
     /**
-     * Set the {@link NavigationHandler} instance that will be passed the outcome returned by any invoked 
-     * application action for this web application.
+     * Set the {@link NavigationHandler} instance that will be passed the outcome returned by any invoked application
+     * action for this web application.
      * 
-     * @param handler - The new NavigationHandler instance 
+     * @param handler
+     *            - The new NavigationHandler instance
      */
     public abstract void setNavigationHandler(NavigationHandler handler);
 
     /*
      * 
      */
-    public void setPageDeclarationLanguage(PageDeclarationLanguage pdl) {
+    public void setPageDeclarationLanguage(PageDeclarationLanguage pdl)
+    {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * The recommended way to affect the execution of the EL is to provide an <el-resolver> element at the right place in the application configuration resources which will be considered 
-     * in the normal course of expression evaluation. This method now will cause the argument resolver to be wrapped inside an implementation of ELResolver and exposed to the EL resolution 
-     * system as if the user had called addELResolver(javax.el.ELResolver).
+     * The recommended way to affect the execution of the EL is to provide an <el-resolver> element at the right place
+     * in the application configuration resources which will be considered in the normal course of expression
+     * evaluation. This method now will cause the argument resolver to be wrapped inside an implementation of ELResolver
+     * and exposed to the EL resolution system as if the user had called addELResolver(javax.el.ELResolver).
      * 
      * @deprecated
      */
@@ -730,50 +869,58 @@ public abstract class Application {
      * 
      * @since 2.0
      */
-    public void setResourceHandler(ResourceHandler resourceHandler) {
+    public void setResourceHandler(ResourceHandler resourceHandler)
+    {
         throw new UnsupportedOperationException();
     }
 
     /**
-     *Set the {@link StateManager} instance that will be utilized during the <code>Restore View and Render 
-     *Response</code> phases of the request processing lifecycle.
-     *
-     * @param <code>manager</code> - The new {@link StateManager}instance 
+     *Set the {@link StateManager} instance that will be utilized during the <code>Restore View and Render Response
+     * </code> phases of the request processing lifecycle.
      * 
-     * @throws IllegalStateException if this method is called after at least one request has 
-     *                               been processed by the <code>Lifecycle</code> instance for this application.
-     * @throws NullPointerException if manager  is <code>null</code>
+     * @param <code>manager</code> - The new {@link StateManager}instance
+     * 
+     * @throws IllegalStateException
+     *             if this method is called after at least one request has been processed by the <code>Lifecycle</code>
+     *             instance for this application.
+     * @throws NullPointerException
+     *             if manager is <code>null</code>
      */
     public abstract void setStateManager(StateManager manager);
 
     /**
      * Set the <code>Locale</code> instances representing the supported <code>Locales</code> for this application.
      * 
-     * @param <code>Locale</code>- The set of supported <code>Locales</code> for this application 
+     * @param <code>Locale</code>- The set of supported <code>Locales</code> for this application
      * 
-     * @throws NullPointerException if the argument newLocales is <code>null</code>.
+     * @throws NullPointerException
+     *             if the argument newLocales is <code>null</code>.
      * 
      */
     public abstract void setSupportedLocales(Collection<Locale> locales);
 
     /**
-     * The recommended way to affect the execution of the EL is to provide an <el-resolver> element at the right place in the application configuration resources 
-     * which will be considered in the normal course of expression evaluation. This method now will cause the argument resolver to be wrapped inside an implementation 
-     * of ELResolver and exposed to the EL resolution system as if the user had called addELResolver(javax.el.ELResolver).
+     * The recommended way to affect the execution of the EL is to provide an <el-resolver> element at the right place
+     * in the application configuration resources which will be considered in the normal course of expression
+     * evaluation. This method now will cause the argument resolver to be wrapped inside an implementation of ELResolver
+     * and exposed to the EL resolution system as if the user had called addELResolver(javax.el.ELResolver).
+     * 
      * @deprecated
      */
     @Deprecated
     public abstract void setVariableResolver(VariableResolver resolver);
 
     /**
-     * Set the {@link ViewHandler} instance that will be utilized during the <code>Restore View and Render Response</code>
-     * phases of the request processing lifecycle.
+     * Set the {@link ViewHandler} instance that will be utilized during the <code>Restore View and Render Response
+     * </code> phases of the request processing lifecycle.
      * 
-     * @param <code>handler</code> - The new {@link ViewHandler} instance 
+     * @param <code>handler</code> - The new {@link ViewHandler} instance
      * 
-     * @throws IllegalStateException if this method is called after at least one request has been processed
-     *                               by the <code>Lifecycle</code> instance for this application. 
-     * @throws NullPointerException if <code>handler</code> is <code>null</code>
+     * @throws IllegalStateException
+     *             if this method is called after at least one request has been processed by the <code>Lifecycle</code>
+     *             instance for this application.
+     * @throws NullPointerException
+     *             if <code>handler</code> is <code>null</code>
      */
     public abstract void setViewHandler(ViewHandler handler);
 
@@ -785,8 +932,9 @@ public abstract class Application {
      * 
      * @since 2.0
      */
-    public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class sourceClass,
-            SystemEventListener listener) {
+    public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass,
+                                 SystemEventListener listener)
+    {
         throw new UnsupportedOperationException();
     }
 
@@ -797,7 +945,8 @@ public abstract class Application {
      * 
      * @since 2.0
      */
-    public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener) {
+    public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener)
+    {
         subscribeToEvent(systemEventClass, null, listener);
     }
 
@@ -809,8 +958,9 @@ public abstract class Application {
      * 
      * @since 2.0
      */
-    public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, Class sourceClass,
-            SystemEventListener listener) {
+    public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass,
+                                     SystemEventListener listener)
+    {
         throw new UnsupportedOperationException();
     }
 
@@ -821,7 +971,8 @@ public abstract class Application {
      * 
      * @since 2.0
      */
-    public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener) {
+    public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener)
+    {
         unsubscribeFromEvent(systemEventClass, null, listener);
     }
 }

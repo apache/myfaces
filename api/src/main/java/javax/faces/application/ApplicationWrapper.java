@@ -21,7 +21,13 @@ package javax.faces.application;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
+import javax.el.ELContextListener;
+import javax.el.ELException;
+import javax.el.ELResolver;
+import javax.el.ExpressionFactory;
+import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.FacesWrapper;
 import javax.faces.component.UIComponent;
@@ -33,7 +39,10 @@ import javax.faces.el.ReferenceSyntaxException;
 import javax.faces.el.ValueBinding;
 import javax.faces.el.VariableResolver;
 import javax.faces.event.ActionListener;
+import javax.faces.event.SystemEvent;
+import javax.faces.event.SystemEventListener;
 import javax.faces.validator.Validator;
+import javax.faces.webapp.pdl.PageDeclarationLanguage;
 
 /**
  * @author Simon Lessard (latest modification by $Author: slessard $)
@@ -41,8 +50,16 @@ import javax.faces.validator.Validator;
  *
  * @since 2.0
  */
+@SuppressWarnings("deprecation")
 public abstract class ApplicationWrapper extends Application implements FacesWrapper<Application>
 {
+    /**
+     * Gets the <code>Application</code> instance decorated by this wrapper.
+     * 
+     * @return the <code>Application</code> instance decorated by this wrapper
+     */
+    public abstract Application getWrapped();
+    
     /**
      * {@inheritDoc}
      */
@@ -56,7 +73,7 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
      * {@inheritDoc}
      */
     @Override
-    public void addConverter(Class targetClass, String converterClass)
+    public void addConverter(Class<?> targetClass, String converterClass)
     {
         getWrapped().addConverter(targetClass, converterClass);
     }
@@ -102,7 +119,7 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
      * {@inheritDoc}
      */
     @Override
-    public Converter createConverter(Class targetClass)
+    public Converter createConverter(Class<?> targetClass)
     {
         return getWrapped().createConverter(targetClass);
     }
@@ -120,7 +137,7 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
      * {@inheritDoc}
      */
     @Override
-    public MethodBinding createMethodBinding(String ref, Class[] params) throws ReferenceSyntaxException
+    public MethodBinding createMethodBinding(String ref, Class<?>[] params) throws ReferenceSyntaxException
     {
         return getWrapped().createMethodBinding(ref, params);
     }
@@ -174,7 +191,7 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
      * {@inheritDoc}
      */
     @Override
-    public Iterator<Class> getConverterTypes()
+    public Iterator<Class<?>> getConverterTypes()
     {
         return getWrapped().getConverterTypes();
     }
@@ -359,5 +376,215 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
         getWrapped().setViewHandler(handler);
     }
 
-    public abstract Application getWrapped();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addELContextListener(ELContextListener listener)
+    {
+        getWrapped().addELContextListener(listener);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addELResolver(ELResolver resolver)
+    {
+        getWrapped().addELResolver(resolver);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UIComponent createComponent(FacesContext context, Resource componentResource)
+    {
+        return getWrapped().createComponent(context, componentResource);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UIComponent createComponent(FacesContext context, String componentType, String rendererType)
+    {
+        return getWrapped().createComponent(context, componentType, rendererType);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType,
+                                       String rendererType)
+    {
+        return getWrapped().createComponent(componentExpression, context, componentType, rendererType);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UIComponent createComponent(ValueExpression componentExpression, FacesContext contexte, String componentType)
+            throws FacesException, NullPointerException
+    {
+        return getWrapped().createComponent(componentExpression, contexte, componentType);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T> T evaluateExpressionGet(FacesContext context, String expression, Class<? extends T> expectedType)
+            throws ELException
+    {
+        return getWrapped().evaluateExpressionGet(context, expression, expectedType);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ELContextListener[] getELContextListeners()
+    {
+        return getWrapped().getELContextListeners();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ELResolver getELResolver()
+    {
+        return getWrapped().getELResolver();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ExpressionFactory getExpressionFactory()
+    {
+        return getWrapped().getExpressionFactory();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PageDeclarationLanguage getPageDeclarationLanguage()
+    {
+        return getWrapped().getPageDeclarationLanguage();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ProjectStage getProjectStage()
+    {
+        return getWrapped().getProjectStage();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResourceBundle getResourceBundle(FacesContext ctx, String name) throws FacesException, NullPointerException
+    {
+        return getWrapped().getResourceBundle(ctx, name);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResourceHandler getResourceHandler()
+    {
+        return getWrapped().getResourceHandler();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void publishEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source)
+    {
+        getWrapped().publishEvent(systemEventClass, sourceBaseType, source);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void publishEvent(Class<? extends SystemEvent> systemEventClass, Object source)
+    {
+        getWrapped().publishEvent(systemEventClass, source);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void removeELContextListener(ELContextListener listener)
+    {
+        getWrapped().removeELContextListener(listener);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setPageDeclarationLanguage(PageDeclarationLanguage pdl)
+    {
+        getWrapped().setPageDeclarationLanguage(pdl);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setResourceHandler(ResourceHandler resourceHandler)
+    {
+        getWrapped().setResourceHandler(resourceHandler);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass,
+                                 SystemEventListener listener)
+    {
+        getWrapped().subscribeToEvent(systemEventClass, sourceClass, listener);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener)
+    {
+        getWrapped().subscribeToEvent(systemEventClass, listener);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass,
+                                     SystemEventListener listener)
+    {
+        getWrapped().unsubscribeFromEvent(systemEventClass, sourceClass, listener);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener)
+    {
+        getWrapped().unsubscribeFromEvent(systemEventClass, listener);
+    }
 }
