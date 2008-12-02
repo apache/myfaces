@@ -198,7 +198,7 @@ public abstract class Application
      */
     public UIComponent createComponent(FacesContext context, Resource componentResource)
     {
-        // TODO: JSF 2.0 #43
+        // TODO: JSF 2.0 #60
         throw new UnsupportedOperationException();
     }
 
@@ -211,7 +211,6 @@ public abstract class Application
      */
     public UIComponent createComponent(FacesContext context, String componentType, String rendererType)
     {
-        // TODO: JSF 2.0 #1
         throw new UnsupportedOperationException();
     }
 

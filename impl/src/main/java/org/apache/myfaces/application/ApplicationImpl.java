@@ -133,7 +133,7 @@ public class ApplicationImpl extends Application
     // synchronize, uses ConcurrentHashMap to allow concurrent read of map
     private final Map<String, Class<? extends Converter>> _converterIdToClassMap = new ConcurrentHashMap<String, Class<? extends Converter>>();
 
-    private final Map<Class, String> _converterClassNameToClassMap = new ConcurrentHashMap<Class, String>();
+    private final Map<Class<?>, String> _converterClassNameToClassMap = new ConcurrentHashMap<Class<?>, String>();
 
     private final Map<String, org.apache.myfaces.config.impl.digester.elements.Converter> _converterClassNameToConfigurationMap = new ConcurrentHashMap<String, org.apache.myfaces.config.impl.digester.elements.Converter>();
 
@@ -397,12 +397,16 @@ public class ApplicationImpl extends Application
         return _runtimeConfig.getExpressionFactory();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public final Object evaluateExpressionGet(final FacesContext context, final String expression,
-                                              final Class expectedType) throws ELException
+    public final <T> T evaluateExpressionGet(final FacesContext context, final String expression,
+                                             final Class<? extends T> expectedType) throws ELException
     {
         ELContext elContext = context.getELContext();
-        return getExpressionFactory().createValueExpression(elContext, expression, expectedType).getValue(elContext);
+        
+        ExpressionFactory factory = getExpressionFactory();
+        
+        return (T)factory.createValueExpression(elContext, expression, expectedType).getValue(elContext);
     }
 
     @Override
@@ -502,7 +506,7 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public final Iterator<Class> getConverterTypes()
+    public final Iterator<Class<?>> getConverterTypes()
     {
         return _converterClassNameToClassMap.keySet().iterator();
     }
@@ -755,7 +759,7 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class sourceClass,
+    public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass,
                                  SystemEventListener listener)
     {
         checkNull(systemEventClass, "systemEventClass");
@@ -776,7 +780,7 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, Class sourceClass,
+    public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass,
                                      SystemEventListener listener)
     {
         checkNull(systemEventClass, "systemEventClass");
@@ -838,7 +842,7 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public final void addConverter(final Class targetClass, final String converterClass)
+    public final void addConverter(final Class<?> targetClass, final String converterClass)
     {
         checkNull(targetClass, "targetClass");
         checkNull(converterClass, "converterClass");
@@ -997,14 +1001,14 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public final Converter createConverter(final Class targetClass)
+    public final Converter createConverter(final Class<?> targetClass)
     {
         checkNull(targetClass, "targetClass");
 
         return internalCreateConverter(targetClass);
     }
 
-    private Converter internalCreateConverter(final Class targetClass)
+    private Converter internalCreateConverter(final Class<?> targetClass)
     {
         // Locate a Converter registered for the target class itself.
         String converterClassName = _converterClassNameToClassMap.get(targetClass);
@@ -1141,7 +1145,7 @@ public class ApplicationImpl extends Application
      */
     @Deprecated
     @Override
-    public final MethodBinding createMethodBinding(final String reference, Class[] params)
+    public final MethodBinding createMethodBinding(final String reference, Class<?>[] params)
             throws ReferenceSyntaxException
     {
         checkNull(reference, "reference");
