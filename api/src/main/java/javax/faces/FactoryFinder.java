@@ -86,6 +86,33 @@ public final class FactoryFinder
   FactoryFinder() {
   }
 
+  /**
+   * <p>Create (if necessary) and return a per-web-application instance of the appropriate 
+   * implementation class for the specified JavaServer Faces factory class, based on the 
+   * discovery algorithm described in the class description.</p>
+   * 
+   * <p>The standard factories and wrappers in JSF all implement the interface {@link FacesWrapper}. 
+   * If the returned <code>Object</code> is an implementation of one of the standard factories, 
+   * it must be legal to cast it to an instance of <code>FacesWrapper</code> and call 
+   * {@link FacesWrapper#getWrapped()} on the instance.</p>
+   * 
+   * @param factoryName Fully qualified name of the JavaServer Faces factory for which an 
+   *                    implementation instance is requested
+   *                    
+   * @return A per-web-application instance of the appropriate implementation class for the 
+   *         specified JavaServer Faces factory class
+   *         
+   * @throws FacesException if the web application class loader cannot be identified 
+   * @throws FacesException if an instance of the configured factory implementation class 
+   *         cannot be loaded 
+   * @throws FacesException if an instance of the configured factory implementation class 
+   *         cannot be instantiated 
+   * @throws IllegalArgumentException if <code>factoryname</code> does not identify a standard 
+   *         JavaServer Faces factory name 
+   * @throws IllegalStateException if there is no configured factory implementation class 
+   *         for the specified factory name 
+   * @throws NullPointerException if <code>factoryname</code> is null
+   */
   public static Object getFactory(String factoryName) throws FacesException
   {
         if(factoryName == null)
