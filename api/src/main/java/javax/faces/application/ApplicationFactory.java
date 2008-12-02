@@ -18,15 +18,32 @@
  */
 package javax.faces.application;
 
+import javax.faces.FacesWrapper;
+
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public abstract class ApplicationFactory
+public abstract class ApplicationFactory implements FacesWrapper<ApplicationFactory>
 {
     public abstract Application getApplication();
-
+    
+    /**
+     * If this factory has been decorated, the implementation doing the decorating may override this method to 
+     * provide access to the implementation being wrapped. A default implementation is provided that returns 
+     * <code>null</code>.
+     * 
+     * @return the decorated <code>ApplicationFactory</code> if this factory decorates another, 
+     *         or <code>null</code> otherwise
+     * 
+     * @since 2.0
+     */
+    public ApplicationFactory getWrapped()
+    {
+        return null;
+    }
+    
     public abstract void setApplication(Application application);
 }
