@@ -111,7 +111,7 @@ public abstract class Application
      *            - The fully qualified class name of the corresponding {@link Converter} implementation
      * 
      * @throws NullPointerException
-     *             - if <code>targetClass</code> or <code>converterClass</code> is <code>null</code>
+     *             if <code>targetClass</code> or <code>converterClass</code> is <code>null</code>
      */
     public abstract void addConverter(Class<?> targetClass, String converterClass);
 
@@ -125,7 +125,7 @@ public abstract class Application
      *            - The fully qualified class name of the corresponding {@link UIComponent} implementation
      * 
      * @throws NullPointerException
-     *             - if <code>componentType</code> or <code>componentClass</code> is <code>null</code>
+     *             if <code>componentType</code> or <code>componentClass</code> is <code>null</code>
      */
     public abstract void addConverter(String converterId, String converterClass);
 
@@ -184,7 +184,7 @@ public abstract class Application
      *@param <code>validatorId</code> - The validator id to be registered
      *@param <code>validatorClass</code> - The fully qualified class name of the corresponding Validator implementation
      * 
-     *@throws <code>NullPointerException</code> - if <code>validatorId</code> or <code>validatorClass</code> is
+     *@throws NullPointerException if <code>validatorId</code> or <code>validatorClass</code> is
      *         <code>null</code>
      */
     public abstract void addValidator(String validatorId, String validatorClass);
@@ -258,13 +258,13 @@ public abstract class Application
      * @param componentExpression
      *            - <code>ValueExpression</code> representing a component value expression (typically specified by the
      *            <code>component</code> attribute of a custom tag)
-     * @param contexte
+     * @param context
      *            - {@link FacesContext} for the current request
      * @param componentType
      *            - Component type to create if the ValueExpression does not return a component instance
      * 
-     * @throws <code>{@link FacesException}</code> - if a <code>{@link UIComponent}</code> cannot be created
-     * @throws <code>{@link NullPointerException}</code>- if any parameter is null
+     * @throws FacesException if a <code>{@link UIComponent}</code> cannot be created
+     * @throws NullPointerException if any parameter is null
      *         <p>
      *         A default implementation is provided that throws <code>UnsupportedOperationException</code> so that users
      *         that decorate <code>Application</code> can continue to function
@@ -273,7 +273,7 @@ public abstract class Application
      * @since 1.2
      */
     public UIComponent createComponent(ValueExpression componentExpression, FacesContext contexte, String componentType)
-            throws FacesException, NullPointerException
+            throws FacesException
     {
         throw new UnsupportedOperationException();
     }
@@ -628,8 +628,8 @@ public abstract class Application
      * 
      * @return <code>ResourceBundle</code> for the current UIViewRoot, otherwise null
      * 
-     * @throws <code>{@link FacesException}</code> - if a bundle was defined, but not resolvable
-     * @throws <code>{@link NullPointerException}</code> - if ctx == null || name == null
+     * @throws FacesException if a bundle was defined, but not resolvable
+     * @throws NullPointerException if ctx == null || name == null
      */
     public ResourceBundle getResourceBundle(FacesContext ctx, String name) throws FacesException, NullPointerException
     {
@@ -762,9 +762,9 @@ public abstract class Application
      * <li>Call <code>{@link SystemEvent.processListener(javax.faces.event.FacesListener)}</code>, passing the listener
      * instance.</li>
      * 
-     * @param <code>{@link systemEventClass}</code> - The Class of event that is being published. Must be non-null.
+     * @param systemEventClass - The Class of event that is being published. Must be non-null.
      * 
-     * @param <code>{@link source}</code> - The <code>source</code> for the event of type systemEventClass. Must be non-
+     * @param source - The <code>source</code> for the event of type systemEventClass. Must be non-
      *        <code>null</code>, and must implement <code>{@link SystemEventListenerHolder}</code>.
      */
     public void publishEvent(Class<? extends SystemEvent> systemEventClass, Object source)
@@ -913,7 +913,7 @@ public abstract class Application
      * Set the {@link ViewHandler} instance that will be utilized during the <code>Restore View and Render Response
      * </code> phases of the request processing lifecycle.
      * 
-     * @param <code>handler</code> - The new {@link ViewHandler} instance
+     * @param handler - The new {@link ViewHandler} instance
      * 
      * @throws IllegalStateException
      *             if this method is called after at least one request has been processed by the <code>Lifecycle</code>
