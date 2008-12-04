@@ -71,16 +71,26 @@
                 <configuration>
                     <sourceDirectory>src/main/javascript/META-INF/resources</sourceDirectory>
                     <sources>
+                        <source>../../../../test/javascript/org/apache/myfaces/mockups/BrowserMockups.js</source>
+                        <!--
+                        <source>javax/faces/_util/OpenAjax.js</source>
+                        -->
+                        <source>javax/faces/_util/_JSF2Utils.js</source>
+                        <source>javax/faces/ajax/Ajax.js</source>
                         <source>../../../../test/javascript/org/apache/myfaces/test/_TestScenario.js</source>
                     </sources>
-                    <testSourceDirectory>src/test/javascript/org/apache/myfaces/test</testSourceDirectory>
+                    <testSourceDirectory>src/test/javascript/org/apache/myfaces</testSourceDirectory>
                     <reportsDirectory>target/surefire-reports</reportsDirectory>
                     <testSuites>
                         <testSuite>
-                            <name>MyfacesTest</name>
+                            <name>javax.faces.Ajax</name>
                             <type>TESTSUITES</type>
                             <includes>
-                                <include>ScenarioTest.js</include>
+                                <include>test/ScenarioTest.js</include>
+                                <include>utils/_JSF2UtilsTests.js</include>
+                                
+                                <include>ajax/AjaxTests.js</include>
+                               
                             </includes>
                         </testSuite>
                     </testSuites>
