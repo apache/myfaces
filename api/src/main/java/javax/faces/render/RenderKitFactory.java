@@ -18,6 +18,7 @@
  */
 package javax.faces.render;
 
+import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
 import java.util.Iterator;
 
@@ -27,7 +28,8 @@ import java.util.Iterator;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public abstract class RenderKitFactory
+public abstract class RenderKitFactory implements
+        FacesWrapper<RenderKitFactory>
 {
     public static final String HTML_BASIC_RENDER_KIT = "HTML_BASIC";
 
@@ -38,4 +40,19 @@ public abstract class RenderKitFactory
                                            String renderKitId);
 
     public abstract Iterator<String> getRenderKitIds();
+    
+    /**
+     * If this factory has been decorated, the implementation doing the decorating may override this method to 
+     * provide access to the implementation being wrapped. A default implementation is provided that returns 
+     * <code>null</code>.
+     * 
+     * @return the decorated <code>RenderKitFactory</code> if this factory decorates another, 
+     *         or <code>null</code> otherwise
+     * 
+     * @since 2.0
+     */
+    public RenderKitFactory getWrapped()
+    {
+        return null;
+    }
 }
