@@ -17,6 +17,8 @@
  * please do not use this file in production
  */
 
+
+
 if('undefined' == typeof ( window) || null == window) {
     var window = new Object();
 }
@@ -27,7 +29,44 @@ if('undefined' == typeof (window.document)  || null == window.document) {
 
 if('undefined' == typeof document  || null == document) {
     var document = window.document;
+    document._idCnt = 0;
+    document.elements = [];
+    /*for internal handling*/
+    document._elementIndex = new Object();
+
+    /**
+     *Simulation of the create element
+     *functionality
+     */
+    document.createElement = function(nodeType) {
+        var element = new Object();
+        element.nodeName = nodeType;
+        element.children = [];
+        element.id = document._idCnt++;
+        return element;
+    }
+    /**
+     *Simulation of the create textnode
+     *functionality
+     */
+    document.createTextNode = function(text) {
+        var element = new Object();
+        element.innerHTML = text;
+        element.nodeName = "text";
+        element.children = [];
+        element.id = document._idCnt++;
+        return element;
+    }
+    document.getElementById = function(id) {
+        //TODO implement this
+    }
+
+    document._getElementById = function(id,node) {
+        //TODO implement this
+    }
 }
+
+
 
 if('undefined' == typeof org  || null == org) {
     var org = new Object();
@@ -38,6 +77,9 @@ if('undefined' == typeof javax  || null == javax) {
     var javax = new Object();
     document.javax = javax;
 }
+
+
+
 
 /**
  * we have to emulate openajax as well since
