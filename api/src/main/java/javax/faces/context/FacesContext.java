@@ -218,6 +218,16 @@ public abstract class FacesContext
         return false;
     }
     
+    public ExceptionHandler getExceptionHandler()
+    {
+        throw new UnsupportedOperationException();
+    }
+    
+    public void setExceptionHandler(ExceptionHandler exceptionHandler)
+    {
+        throw new UnsupportedOperationException();
+    }
+    
     public void setCurrentPhaseId(PhaseId currentPhaseId)
     {
         throw new UnsupportedOperationException();
