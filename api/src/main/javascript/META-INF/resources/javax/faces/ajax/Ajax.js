@@ -33,6 +33,21 @@ if('undefined' == typeof javax.faces.Ajax || null == javax.faces.Ajax ) {
     javax.faces.Ajax = new function() {};
 }
 
+/**
+ * collect and encode data for a given form element (must be of type form)
+ * find the javax.faces.ViewState element and encode its value as well!
+ * return a concatenated string of the encoded values!
+ */
+javax.faces.Ajax.viewState = function(formElement) {
+    //Do typechecking here!
+    if(formElement.nodeValue != "form") {
+        throw Exception("javax.faces.Ajax.viewState: param value not of type form!!!");
+    }
+    /*
+     * TODO #60
+     * https://issues.apache.org/jira/browse/MYFACES-2110
+     */
+}
 
 
 
