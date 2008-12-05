@@ -21,15 +21,15 @@
  *
  * reserve the root namespace
  */
-if('undefined' != typeof OpenAjax && 'undefined' == typeof javax) {
+if('undefined' != typeof OpenAjax && ('undefined' == typeof javax || null == typeof javax)) {
     OpenAjax.hub.registerLibrary("javax", "www.sun.com", "1.0", null);
 }
 
-if('undefined' == typeof javax.faces) {
+if('undefined' == typeof javax.faces || null == javax.faces ) {
     javax.faces = new Object();
 }
 
-if('undefined' == typeof javax.faces.Ajax) {
+if('undefined' == typeof javax.faces.Ajax || null == javax.faces.Ajax ) {
     javax.faces.Ajax = new function() {};
 }
 

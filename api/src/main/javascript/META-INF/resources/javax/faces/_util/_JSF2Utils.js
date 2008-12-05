@@ -17,11 +17,12 @@
  *
  * reserve the root namespace for myfaces
  */
-if('undefined' != typeof OpenAjax && ('undefined' == typeof org || 'undefined' == typeof org.apache || 'undefined' == typeof org.apache.myfaces) ) {
+if('undefined' != typeof OpenAjax && ('undefined' == typeof org || 'undefined' == typeof org.apache || 'undefined' == typeof org.apache.myfaces ||
+                                        null == org || null == org.apache || null == org.apache.myfaces) ) {
     OpenAjax.hub.registerLibrary("org.apache.myfaces", "myfaces.apache.org", "2.0", null);
 }
 
-if('undefined' == typeof(org.apache.myfaces._JSF2Utils)) {
+if('undefined' == typeof(org.apache.myfaces._JSF2Utils) || null == org.apache.myfaces._JSF2Utils) {
     org.apache.myfaces._JSF2Utils = function() {
         var _underTest = false;
 

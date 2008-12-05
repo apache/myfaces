@@ -86,7 +86,7 @@
                             <name>javax.faces.Ajax</name>
                             <type>TESTSUITES</type>
                             <includes>
-                                <include>test/ScenarioTest.js</include>
+                                <include>test/MockupTest.js</include>
                                 <include>utils/_JSF2UtilsTests.js</include>
                                 
                                 <include>ajax/AjaxTests.js</include>
