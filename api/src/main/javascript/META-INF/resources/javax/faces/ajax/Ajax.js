@@ -109,5 +109,18 @@ javax.faces.Ajax.ajaxResponse = function(request) {
      */
 };
 
+/**
+ * @return the current project state emitted by the server side method:
+ * javax.faces.application.Application.getProjectStage()
+ */
+javax.faces.Ajax.getProjectStage = function() {
+
+    /**
+     * TODO #62
+     * https://issues.apache.org/jira/browse/MYFACES-2115
+     */
+    return null;
+};
+
 
 
