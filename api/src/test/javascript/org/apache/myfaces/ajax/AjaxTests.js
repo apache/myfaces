@@ -24,11 +24,22 @@ function AjaxTest(name)
 }
 
 
+/**
+ * test the basic namespacing being active!
+ */
 function AjaxTest_testNameSpacing() {
-    this.assertTrue(true);
-    this.assertTrue( "namespacing javax exists" , 'undefined' != typeof javax );
-    this.assertTrue( "namespacing javax.faces.Ajax exists" , 'undefined' != typeof javax.faces );
-    this.assertTrue( "namespacing javax.faces.Ajax exists" , 'undefined' != typeof javax.faces.Ajax );
+    this.assertTrue( "namespacing javax exists" , 'undefined' != typeof javax && null != typeof(javax) );
+    this.assertTrue( "namespacing javax.faces.Ajax exists" , 'undefined' != typeof javax.faces && null != typeof(javax.faces) );
+    this.assertTrue( "namespacing javax.faces.Ajax exists" , 'undefined' != typeof javax.faces.Ajax && null != typeof(javax.faces.Ajax) );
+}
+
+/**
+ * test for all public functions to be present!
+ */
+function AjaxTest_testPublicFunctionAvailability() {
+    this.assertTrue("javax.faces.Ajax.ajaxRequest present", 'undefined' != typeof(javax.faces.Ajax.ajaxRequest) && null != javax.faces.Ajax.ajaxRequest);
+    this.assertTrue("javax.faces.Ajax.ajaxResponse present", 'undefined' != typeof(javax.faces.Ajax.ajaxResponse) && null != javax.faces.Ajax.ajaxResponse);
+    this.assertTrue("javax.faces.Ajax.getProjectStage present", 'undefined' != typeof(javax.faces.Ajax.getProjectStage) && null != javax.faces.Ajax.getProjectStage);
 }
 
 
