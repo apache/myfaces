@@ -40,6 +40,7 @@ function AjaxTest_testPublicFunctionAvailability() {
     this.assertTrue("javax.faces.Ajax.ajaxRequest present", 'undefined' != typeof(javax.faces.Ajax.ajaxRequest) && null != javax.faces.Ajax.ajaxRequest);
     this.assertTrue("javax.faces.Ajax.ajaxResponse present", 'undefined' != typeof(javax.faces.Ajax.ajaxResponse) && null != javax.faces.Ajax.ajaxResponse);
     this.assertTrue("javax.faces.Ajax.getProjectStage present", 'undefined' != typeof(javax.faces.Ajax.getProjectStage) && null != javax.faces.Ajax.getProjectStage);
+    this.assertTrue("javax.faces.Ajax.viewState ", 'undefined' != typeof(javax.faces.Ajax.viewState ) && null != javax.faces.Ajax.viewState );
 }
 
 
