@@ -377,6 +377,19 @@ public abstract class UIComponent implements StateHolder
     public abstract void broadcast(FacesEvent event) throws AbortProcessingException;
 
     public abstract void decode(FacesContext context);
+    
+    public void doTreeTraversal(FacesContext context, ContextCallback nodeCallback)
+    {
+        try
+        {
+            _doTreeTraversalInternal(context, nodeCallback);
+        }
+        catch (AbortProcessingException e)
+        {
+            // The traversal may be aborted by throwing an AbortProcessingException from this method.
+            // This isn't an abnormal situation so do nothing about it
+        }
+    }
 
     public abstract void encodeBegin(FacesContext context) throws IOException;
 
@@ -535,6 +548,19 @@ public abstract class UIComponent implements StateHolder
             throw new NullPointerException("FacesContext ctx");
 
         return getClientId(ctx);
+    }
+    
+    private void _doTreeTraversalInternal(FacesContext context, ContextCallback nodeCallback)
+    {
+        // The default implementation must call the callback on this instance before traversing the children
+        nodeCallback.invokeContextCallback(context, this);
+        if (getChildCount() > 0)
+        {
+            for (UIComponent child : getChildren())
+            {
+                child._doTreeTraversalInternal(context, nodeCallback);
+            }
+        }
     }
     
     private boolean _isCompositeComponent()
