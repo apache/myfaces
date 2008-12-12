@@ -26,10 +26,16 @@ import javax.faces.application.Application;
  * 
  * @since 2.0
  */
-public class ApplicationPreDestroyEvent extends SystemEvent
-{
-    public ApplicationPreDestroyEvent(Application application)
-    {
+public class ApplicationPreDestroyEvent extends SystemEvent {
+
+    public ApplicationPreDestroyEvent(Application application) {
         super(application);
+    }
+
+    /**
+     * @return the application object tied to this event
+     */
+    public Application getApplication() {
+        return (Application) getSource();
     }
 }

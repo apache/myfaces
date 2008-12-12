@@ -37,6 +37,5 @@ public class ApplicationPostConstructEvent extends SystemEvent {
      */
     public Application getApplication() {
         return (Application) getSource();
-
     }
 }
