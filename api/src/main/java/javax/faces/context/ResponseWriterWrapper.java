@@ -20,6 +20,7 @@
 package javax.faces.context;
 
 import javax.faces.component.UIComponent;
+import javax.faces.FacesWrapper;
 import java.io.IOException;
 import java.io.Writer;
 
@@ -28,10 +29,10 @@ import java.io.Writer;
  * 
  * @author Stan Silvert
  */
-public abstract class ResponseWriterWrapper extends ResponseWriter
+public abstract class ResponseWriterWrapper extends ResponseWriter implements FacesWrapper<ResponseWriter>
 {
 
-    protected abstract ResponseWriter getWrapped();
+    public abstract ResponseWriter getWrapped();
 
     @Override
     public void endElement(String name) throws IOException
