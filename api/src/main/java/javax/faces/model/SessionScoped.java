@@ -28,8 +28,9 @@ import java.lang.annotation.Target;
  * This annotation on a class is the equivalent to <managed-bean-scope>session<managed-bean-scope>
  * The runtime must adjust the scope of the bean implementing this class accordingly!
  *
- * @author Jan-Kees van Andel
+ * @author Jan-Kees van Andel (latest modification by $Author$)
  * @since 2.0
+ * @version $Revision$ $Date$
  */
 @Target(value=ElementType.TYPE)
 @Retention(value=RetentionPolicy.RUNTIME)
