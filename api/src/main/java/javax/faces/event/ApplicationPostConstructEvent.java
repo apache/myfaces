@@ -26,10 +26,17 @@ import javax.faces.application.Application;
  * 
  * @since 2.0
  */
-public class ApplicationPostConstructEvent extends SystemEvent
-{
-    public ApplicationPostConstructEvent(Application application)
-    {
+public class ApplicationPostConstructEvent extends SystemEvent {
+
+    public ApplicationPostConstructEvent(Application application) {
         super(application);
+    }
+
+    /**
+     * @return the application object tied to this event
+     */
+    public Application getApplication() {
+        return (Application) getSource();
+
     }
 }
