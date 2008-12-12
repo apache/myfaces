@@ -22,16 +22,17 @@ package javax.faces.application;
 import java.io.IOException;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
+import javax.faces.FacesWrapper;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  * 
  * @author Stan Silvert
  */
-public abstract class StateManagerWrapper extends StateManager
+public abstract class StateManagerWrapper extends StateManager implements FacesWrapper<StateManager>
 {
 
-    protected abstract StateManager getWrapped();
+    public abstract StateManager getWrapped();
 
     @Override
     public StateManager.SerializedView saveSerializedView(FacesContext context)
