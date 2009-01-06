@@ -56,7 +56,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.el.unified.FacesELContext;
 import org.apache.myfaces.shared_impl.util.NullIterator;
-import sun.misc.Regexp;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
