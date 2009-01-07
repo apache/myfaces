@@ -24,11 +24,11 @@ package javax.faces.model;
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ArrayDataModel extends DataModel
+public class ArrayDataModel<E> extends DataModel<E>
 {
     // FIELDS
     private int _rowIndex = -1;
-    private Object[] _data;
+    private E[] _data;
 
     // CONSTRUCTORS
     public ArrayDataModel()
@@ -36,7 +36,7 @@ public class ArrayDataModel extends DataModel
         super();
     }
 
-    public ArrayDataModel(Object[] array)
+    public ArrayDataModel(E[] array)
     {
         if (array == null)
             throw new NullPointerException("array");
@@ -55,7 +55,7 @@ public class ArrayDataModel extends DataModel
     }
 
     @Override
-    public Object getRowData()
+    public E getRowData()
     {
         if (_data == null)
         {
@@ -83,11 +83,7 @@ public class ArrayDataModel extends DataModel
     @Override
     public boolean isRowAvailable()
     {
-        if (_data == null)
-        {
-            return false;
-        }
-        return _rowIndex >= 0 && _rowIndex < _data.length;
+        return _data != null && _rowIndex >= 0 && _rowIndex < _data.length;
     }
 
     @Override
@@ -114,7 +110,8 @@ public class ArrayDataModel extends DataModel
     @Override
     public void setWrappedData(Object data)
     {
-        _data = (Object[])data;
+        // TODO: Check with EG why data argument is not of type E
+        _data = (E[])data;
         int rowIndex = _data != null ? 0 : -1;
         setRowIndex(rowIndex);
     }

@@ -26,12 +26,12 @@ import java.util.List;
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ListDataModel extends DataModel
+public class ListDataModel<E> extends DataModel<E>
 {
 
     // FIELDS
     private int _rowIndex = -1;
-    private List<?> _data;
+    private List<E> _data;
 
     // CONSTRUCTORS
     public ListDataModel()
@@ -39,7 +39,7 @@ public class ListDataModel extends DataModel
         super();
     }
 
-    public ListDataModel(List list)
+    public ListDataModel(List<E> list)
     {
         if (list == null)
             throw new NullPointerException("list");
@@ -58,7 +58,7 @@ public class ListDataModel extends DataModel
     }
 
     @Override
-    public Object getRowData()
+    public E getRowData()
     {
         if (_data == null)
         {
@@ -86,11 +86,7 @@ public class ListDataModel extends DataModel
     @Override
     public boolean isRowAvailable()
     {
-        if (_data == null)
-        {
-            return false;
-        }
-        return _rowIndex >= 0 && _rowIndex < _data.size();
+        return _data != null && _rowIndex >= 0 && _rowIndex < _data.size();
     }
 
     @Override
@@ -104,7 +100,7 @@ public class ListDataModel extends DataModel
         _rowIndex = rowIndex;
         if (_data != null && oldRowIndex != _rowIndex)
         {
-            Object data = isRowAvailable() ? getRowData() : null;
+            E data = isRowAvailable() ? getRowData() : null;
             DataModelEvent event = new DataModelEvent(this, _rowIndex, data);
             DataModelListener[] listeners = getDataModelListeners();
             for (int i = 0; i < listeners.length; i++)
@@ -117,7 +113,8 @@ public class ListDataModel extends DataModel
     @Override
     public void setWrappedData(Object data)
     {
-        _data = (List<?>)data;
+        // TODO: Check with EG why data is not of type E
+        _data = (List<E>)data;
         int rowIndex = _data != null ? 0 : -1;
         setRowIndex(rowIndex);
     }

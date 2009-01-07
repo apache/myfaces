@@ -31,7 +31,7 @@ import java.util.*;
  * @author Martin Marinschek
  * @version $Revision$ $Date$
  */
-public class ResultSetDataModel extends DataModel
+public class ResultSetDataModel extends DataModel<Map<String,Object>>
 {
     // FIELDS
 
@@ -80,7 +80,7 @@ public class ResultSetDataModel extends DataModel
      * returned from here, so check the spec before modifying anything here.
      */
     @Override
-    public Object getRowData()
+    public Map<String,Object> getRowData()
     {
         if (_resultSet == null)
         {
@@ -353,9 +353,9 @@ public class ResultSetDataModel extends DataModel
         }
 
         @Override
-        public void putAll(Map<? extends String, ? extends Object> map)
+        public void putAll(Map<? extends String, ?> map)
         {
-            for (Map.Entry<? extends String, ? extends Object> entry : map.entrySet())
+            for (Map.Entry<? extends String, ?> entry : map.entrySet())
             {
                 put(entry.getKey(), entry.getValue());
             }
@@ -669,7 +669,7 @@ public class ResultSetDataModel extends DataModel
         }
 
         @Override
-        public boolean addAll(Collection<? extends Object> c)
+        public boolean addAll(Collection<?> c)
         {
             throw new UnsupportedOperationException("it is not allowed to add to this collection");
         }

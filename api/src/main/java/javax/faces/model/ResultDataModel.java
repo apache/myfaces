@@ -29,7 +29,7 @@ import javax.servlet.jsp.jstl.sql.Result;
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ResultDataModel extends DataModel
+public class ResultDataModel extends DataModel<SortedMap<String, Object>>
 {
     // FIELDS
     private int _rowIndex = -1;
@@ -60,7 +60,7 @@ public class ResultDataModel extends DataModel
     }
 
     @Override
-    public Object getRowData()
+    public SortedMap<String, Object> getRowData()
     {
         if (getRows() == null)
         {
@@ -80,6 +80,7 @@ public class ResultDataModel extends DataModel
     }
 
     @Override
+    // TODO: Check with EG why data argument is not of type Result
     public Object getWrappedData()
     {
         return _data;
@@ -88,11 +89,7 @@ public class ResultDataModel extends DataModel
     @Override
     public boolean isRowAvailable()
     {
-        if (getRows() == null)
-        {
-            return false;
-        }
-        return _rowIndex >= 0 && _rowIndex < getRows().length;
+        return getRows() != null && _rowIndex >= 0 && _rowIndex < getRows().length;
     }
 
     @Override
@@ -106,7 +103,7 @@ public class ResultDataModel extends DataModel
         _rowIndex = rowIndex;
         if (getRows() != null && oldRowIndex != _rowIndex)
         {
-            Object data = isRowAvailable() ? getRowData() : null;
+            SortedMap<String, Object> data = isRowAvailable() ? getRowData() : null;
             DataModelEvent event = new DataModelEvent(this, _rowIndex, data);
             DataModelListener[] listeners = getDataModelListeners();
             for (int i = 0; i < listeners.length; i++)
@@ -116,7 +113,7 @@ public class ResultDataModel extends DataModel
         }
     }
 
-    private SortedMap<?, ?>[] getRows()
+    private SortedMap<String, Object>[] getRows()
     {
         if (_data == null)
             return null;
@@ -124,6 +121,7 @@ public class ResultDataModel extends DataModel
         return _data.getRows();
     }
 
+    // TODO: Check with EG why data argument is not of type Result
     @Override
     public void setWrappedData(Object data)
     {

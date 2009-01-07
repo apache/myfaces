@@ -24,11 +24,11 @@ package javax.faces.model;
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ScalarDataModel extends DataModel
+public class ScalarDataModel<E> extends DataModel<E>
 {
     // FIELDS
     private int _rowIndex = -1;
-    private Object _data;
+    private E _data;
 
     // CONSTRUCTORS
     public ScalarDataModel()
@@ -36,7 +36,7 @@ public class ScalarDataModel extends DataModel
         super();
     }
 
-    public ScalarDataModel(Object scalar)
+    public ScalarDataModel(E scalar)
     {
         setWrappedData(scalar);
     }
@@ -49,7 +49,7 @@ public class ScalarDataModel extends DataModel
     }
 
     @Override
-    public Object getRowData()
+    public E getRowData()
     {
         if (_data == null)
         {
@@ -77,11 +77,7 @@ public class ScalarDataModel extends DataModel
     @Override
     public boolean isRowAvailable()
     {
-        if (_data == null)
-        {
-            return false;
-        }
-        return _rowIndex == 0;
+        return _data != null && _rowIndex == 0;
     }
 
     @Override
@@ -108,7 +104,8 @@ public class ScalarDataModel extends DataModel
     @Override
     public void setWrappedData(Object data)
     {
-        _data = data;
+        // TODO: Check with EG why data argument is not of type E
+        _data = (E) data;
         int rowIndex = _data != null ? 0 : -1;
         setRowIndex(rowIndex);
     }
