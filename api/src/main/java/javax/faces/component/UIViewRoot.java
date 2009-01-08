@@ -20,6 +20,7 @@ package javax.faces.component;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.List;
@@ -35,11 +36,10 @@ import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.context.PartialViewContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.event.AbortProcessingException;
-import javax.faces.event.AfterAddToParentEvent;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.ComponentSystemEventListener;
+import javax.faces.event.AfterRestoreStateEvent;
 import javax.faces.event.FacesEvent;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
@@ -65,7 +65,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  */
 @JSFComponent(name = "f:view", bodyContent = "JSP", tagClass = "org.apache.myfaces.taglib.core.ViewTag")
 @JSFJspProperty(name = "binding", returnType = "java.lang.String", tagExcluded = true)
-public class UIViewRoot extends UIComponentBase implements ComponentSystemEventListener
+public class UIViewRoot extends UIComponentBase
 {
     public static final String COMPONENT_TYPE = "javax.faces.ViewRoot";
     public static final String COMPONENT_FAMILY = "javax.faces.ViewRoot";
@@ -128,50 +128,135 @@ public class UIViewRoot extends UIComponentBase implements ComponentSystemEventL
         setRendererType(null);
     }
 
-    public void processEvent(ComponentSystemEvent event)
+    /**
+     * @since 2.0
+     */
+    public void addComponentResource(FacesContext context, UIComponent componentResource)
     {
-        if (event != null && event.getClass().equals(AfterAddToParentEvent.class))
-        {
-            notifyListeners(getFacesContext(), PhaseId.RESTORE_VIEW, _afterPhaseListener, false);
-        }
+        addComponentResource(context, componentResource, null);
     }
 
-    @Override
-    public void queueEvent(FacesEvent event)
+    /**
+     * @since 2.0
+     */
+    public void addComponentResource(FacesContext context, UIComponent componentResource, String target)
     {
-        checkNull(event, "event");
+        // If the target argument is null
+        if (target == null)
+        {
+            // Look for a target attribute on the component
+            target = (String)componentResource.getAttributes().get("target");
+
+            // If there is no target attribute, set target to be the default value head
+            if (target == null)
+            {
+                target = "head";
+            }
+        }
+
+        // Call getComponentResources to obtain the child list for the given target
+        List<UIComponent> componentResources = getComponentResources(context, target);
+
+        // Add the component resource to the list
+        // TODO: Validate if we should check for duplicates, spec don't say anything about it
+        componentResources.add(componentResource);
+    }
+
+    /**
+     * Adds a The phaseListeners attached to ViewRoot.
+     */
+    public void addPhaseListener(PhaseListener phaseListener)
+    {
+        if (phaseListener == null)
+            throw new NullPointerException("phaseListener");
+        if (_phaseListeners == null)
+            _phaseListeners = new ArrayList<PhaseListener>();
+
+        _phaseListeners.add(phaseListener);
+    }
+    
+    /**
+     * @since 2.0
+     */
+    public void broadcastEvents(FacesContext context, PhaseId phaseId)
+    {
+        /* 
+         * Broadcast any events that have been queued. First broadcast events that have been queued for 
+         * PhaseId.ANY_PHASE. Then broadcast ane events that have been queued for the current phase. 
+         * In both cases, 
+         * UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent) must 
+         * be called before the event is broadcast, and 
+         * UIComponent.popComponentFromEL(javax.faces.context.FacesContext) must be called after the return from 
+         * the broadcast, even in the case of an exception.
+         */
+        // TODO
+        
         if (_events == null)
         {
-            _events = new ArrayList<FacesEvent>();
+            return;
         }
-        _events.add(event);
+        // TODO
+        // TODO
+        // TODO
+        for (ListIterator<FacesEvent> listIterator = _events.listIterator(); listIterator.hasNext();)
+        {
+            
+        }
+
+        boolean abort = false;
+
+        int phaseIdOrdinal = phaseId.getOrdinal();
+        for (ListIterator<FacesEvent> listiterator = _events.listIterator(); listiterator.hasNext();)
+        {
+            FacesEvent event = listiterator.next();
+            int ordinal = event.getPhaseId().getOrdinal();
+            if (ordinal == ANY_PHASE_ORDINAL || ordinal == phaseIdOrdinal)
+            {
+                UIComponent source = event.getComponent();
+                try
+                {
+                    source.broadcast(event);
+                }
+                catch (AbortProcessingException e)
+                {
+                    // abort event processing Page 3-30 of JSF 1.1 spec: "Throw an AbortProcessingException, 
+                    // to tell the JSF implementation that no further broadcast of this event, or any further
+                    // events, should take place."
+                    abort = true;
+                    break;
+                }
+                finally
+                {
+                    try
+                    {
+                        listiterator.remove();
+                    }
+                    catch (ConcurrentModificationException cme)
+                    {
+                        int eventIndex = listiterator.previousIndex();
+                        _events.remove(eventIndex);
+                        listiterator = _events.listIterator();
+                    }
+                }
+            }
+        }
+
+        if (abort)
+        {
+            // TODO: abort processing of any event of any phase or just of any
+            // event of the current phase???
+            clearEvents();
+        }
     }
 
-    @Override
-    public void processDecodes(FacesContext context)
+    /**
+     * Provides a unique id for this component instance.
+     */
+    public String createUniqueId()
     {
-        checkNull(context, "context");
-        process(context, PhaseId.APPLY_REQUEST_VALUES, APPLY_REQUEST_VALUES_PROCESSOR, true);
-    }
-
-    @Override
-    public void processValidators(FacesContext context)
-    {
-        checkNull(context, "context");
-        process(context, PhaseId.PROCESS_VALIDATIONS, PROCESS_VALIDATORS_PROCESSOR, true);
-    }
-
-    @Override
-    public void processUpdates(FacesContext context)
-    {
-        checkNull(context, "context");
-        process(context, PhaseId.UPDATE_MODEL_VALUES, UPDATE_MODEL_PROCESSOR, true);
-    }
-
-    public void processApplication(final FacesContext context)
-    {
-        checkNull(context, "context");
-        process(context, PhaseId.INVOKE_APPLICATION, null, true);
+        ExternalContext extCtx = FacesContext.getCurrentInstance().getExternalContext();
+        StringBuilder bld = __getSharedStringBuilder();
+        return extCtx.encodeNamespace(bld.append(UNIQUE_ID_PREFIX).append(_uniqueIdCounter++).toString());
     }
 
     @Override
@@ -193,7 +278,7 @@ public class UIViewRoot extends UIComponentBase implements ComponentSystemEventL
 
         if (!skipPhase)
         {
-            if (context.isAjaxRequest())
+            if (context.getPartialViewContext().isAjaxRequest())
             {
                 // If FacesContext.isAjaxRequest() returns true.
                 _encodeBeginAjax(context);
@@ -212,12 +297,14 @@ public class UIViewRoot extends UIComponentBase implements ComponentSystemEventL
     @Override
     public void encodeChildren(FacesContext context) throws IOException
     {
+        PartialViewContext pContext = context.getPartialViewContext();
+        
         // If FacesContext.isAjaxRequest() returns true and FacesContext.isRenderAll() returns false. 
-        if (context.isAjaxRequest() && !context.isRenderAll())
+        if (pContext.isAjaxRequest() && !pContext.isRenderAll())
         {
             // Call FacesContext.getRenderPhaseClientIds(). This returns a list of client ids that must be processed during 
             // the render portion of the request processing lifecycle.
-            List<String> clientIds = context.getRenderPhaseClientIds();
+            List<String> clientIds = pContext.getRenderPhaseClientIds();
             if (clientIds.isEmpty())
             {
                 /* 
@@ -266,7 +353,7 @@ public class UIViewRoot extends UIComponentBase implements ComponentSystemEventL
     {
         checkNull(context, "context");
 
-        if (context.isAjaxRequest())
+        if (context.getPartialViewContext().isAjaxRequest())
         {
             // If FacesContext.isAjaxRequest() returns true, write the ending elements for the partial response.
             _encodeEndAjax(context);
@@ -290,13 +377,104 @@ public class UIViewRoot extends UIComponentBase implements ComponentSystemEventL
     }
 
     /**
-     * Provides a unique id for this component instance.
+     * MethodBinding pointing to a method that takes a javax.faces.event.PhaseEvent and returns void, called after every
+     * phase except for restore view.
+     * 
+     * @return the new afterPhaseListener value
      */
-    public String createUniqueId()
+    @JSFProperty(stateHolder = true, returnSignature = "void", methodSignature = "javax.faces.event.PhaseEvent", jspName = "afterPhase")
+    public MethodExpression getAfterPhaseListener()
     {
-        ExternalContext extCtx = FacesContext.getCurrentInstance().getExternalContext();
-        StringBuilder bld = __getSharedStringBuilder();
-        return extCtx.encodeNamespace(bld.append(UNIQUE_ID_PREFIX).append(_uniqueIdCounter++).toString());
+        if (_afterPhaseListener != null)
+        {
+            return _afterPhaseListener;
+        }
+        ValueExpression expression = getValueExpression("afterPhaseListener");
+        if (expression != null)
+        {
+            return (MethodExpression)expression.getValue(getFacesContext().getELContext());
+        }
+        return null;
+    }
+
+    /**
+     * MethodBinding pointing to a method that takes a javax.faces.event.PhaseEvent and returns void, called before
+     * every phase except for restore view.
+     * 
+     * @return the new beforePhaseListener value
+     */
+    @JSFProperty(stateHolder = true, returnSignature = "void", methodSignature = "javax.faces.event.PhaseEvent", jspName = "beforePhase")
+    public MethodExpression getBeforePhaseListener()
+    {
+        if (_beforePhaseListener != null)
+        {
+            return _beforePhaseListener;
+        }
+        ValueExpression expression = getValueExpression("beforePhaseListener");
+        if (expression != null)
+        {
+            return (MethodExpression)expression.getValue(getFacesContext().getELContext());
+        }
+        return null;
+    }
+
+    /**
+     * DO NOT USE.
+     * <p>
+     * As this component has no "id" property, it has no clientId property either.
+     */
+    @Override
+    public String getClientId(FacesContext context)
+    {
+        return super.getClientId(context);
+        // Call parent method due to TCK problems
+        // return null;
+    }
+
+    /**
+     * @since 2.0
+     */
+    public List<UIComponent> getComponentResources(FacesContext context, String target)
+    {
+        // Assuming behavior here
+        return getComponentResources(context, target, true);
+    }
+
+    /**
+     * @since 2.0
+     */
+    public List<UIComponent> getComponentResources(FacesContext context, String target, boolean create)
+    {
+        // No doc so assuming the algorithm from the previous 2 argument method
+        
+        // Locate the facet for the component by calling getFacet() using target as the argument
+        UIComponent facet = getFacet(target);
+
+        // If the facet is not found
+        if (facet == null)
+        {
+            if (!create)
+            {
+                // Should it retun null or an empty list? who knows? null seems better for now since an empty 
+                // list could be used in an attempt to add en element, null is more explicit of the meaning.
+                return null;
+            }
+            
+            facet = context.getApplication().createComponent("javax.faces.Panel");
+            facet.setId(target);
+
+            // Add the facet to the facets Map using target as the key
+            getFacets().put(target, facet);
+        }
+
+        // Return the children of the facet
+        return facet.getChildren();
+    }
+
+    @Override
+    public String getFamily()
+    {
+        return COMPONENT_FAMILY;
     }
 
     /**
@@ -332,6 +510,158 @@ public class UIViewRoot extends UIComponentBase implements ComponentSystemEventL
         }
 
         return getFacesContext().getApplication().getViewHandler().calculateLocale(getFacesContext());
+    }
+
+    /**
+     * @since 2.0
+     */
+    public List<PhaseListener> getPhaseListeners()
+    {
+        List<PhaseListener> listeners = _phaseListeners;
+        if (listeners == null)
+        {
+            listeners = Collections.emptyList();
+        }
+        else
+        {
+            listeners = Collections.unmodifiableList(listeners);
+        }
+
+        return listeners;
+    }
+    
+    /**
+     * Defines what renderkit should be used to render this view.
+     */
+    @JSFProperty
+    public String getRenderKitId()
+    {
+        if (_renderKitId != null)
+        {
+            return _renderKitId;
+        }
+        
+        ValueExpression expression = getValueExpression("renderKitId");
+        if (expression != null)
+        {
+            return (String)expression.getValue(getFacesContext().getELContext());
+        }
+        
+        return null;
+    }
+
+    /**
+     * @since 2.0
+     */
+    @Override
+    public boolean getRendersChildren()
+    {
+        // If FacesContext.isAjaxRequest() returns true and it is a partial render request 
+        // (FacesContext.isRenderAll() returns false), return true.
+        PartialViewContext context = FacesContext.getCurrentInstance().getPartialViewContext();
+
+        return (context.isAjaxRequest() && context.isRenderAll()) ? true : super.getRendersChildren();
+    }
+
+    /**
+     * A unique identifier for the "template" from which this view was generated.
+     * <p>
+     * Typically this is the filesystem path to the template file, but the exact details are the responsibility of the
+     * current ViewHandler implementation.
+     */
+    @JSFProperty(tagExcluded = true)
+    public String getViewId()
+    {
+        return _viewId;
+    }
+
+    /**
+     * @since 2.0
+     */
+    public Map<String, Object> getViewMap()
+    {
+        return this.getViewMap(true);
+    }
+
+    /**
+     * @since 2.0
+     */
+    public Map<String, Object> getViewMap(boolean create)
+    {
+        if (_viewScope == null && create)
+        {
+            _viewScope = new ViewScope();
+        }
+
+        return _viewScope;
+    }
+
+    public void processApplication(final FacesContext context)
+    {
+        checkNull(context, "context");
+        process(context, PhaseId.INVOKE_APPLICATION, null, true);
+    }
+    
+    @Override
+    public void processDecodes(FacesContext context)
+    {
+        checkNull(context, "context");
+        process(context, PhaseId.APPLY_REQUEST_VALUES, APPLY_REQUEST_VALUES_PROCESSOR, true);
+    }
+    
+    /**
+     * @since 2.0
+     */
+    @Override
+    public void processRestoreState(FacesContext context, Object state)
+    {
+        // The default implementation must call UIComponentBase.processRestoreState(javax.faces.context.FacesContext, 
+        // java.lang.Object) from within a try block.
+        try
+        {
+            super.processRestoreState(context, state);
+        }
+        finally
+        {
+            // The try block must have a finally block that ensures that no FacesEvents remain in the event queue
+            _broadcastForPhase(PhaseId.RESTORE_VIEW);
+            
+            // that any PhaseListeners in getPhaseListeners() are invoked as appropriate
+            PhaseEvent event = createEvent(context, PhaseId.RESTORE_VIEW);
+            for (PhaseListener listener: getPhaseListeners())
+            {
+                listener.afterPhase(event);
+            }
+            
+            // and that the this.UIComponent.doTreeTraversal is called
+            doTreeTraversal(context, new RestoreStateCallback());
+        }
+    }
+
+    @Override
+    public void queueEvent(FacesEvent event)
+    {
+        checkNull(event, "event");
+        if (_events == null)
+        {
+            _events = new ArrayList<FacesEvent>();
+        }
+        
+        _events.add(event);
+    }
+
+    @Override
+    public void processValidators(FacesContext context)
+    {
+        checkNull(context, "context");
+        process(context, PhaseId.PROCESS_VALIDATIONS, PROCESS_VALIDATORS_PROCESSOR, true);
+    }
+
+    @Override
+    public void processUpdates(FacesContext context)
+    {
+        checkNull(context, "context");
+        process(context, PhaseId.UPDATE_MODEL_VALUES, UPDATE_MODEL_PROCESSOR, true);
     }
 
     public void setLocale(Locale locale)
@@ -547,44 +877,6 @@ public class UIViewRoot extends UIComponentBase implements ComponentSystemEventL
         return Locale.getDefault();
     }
 
-    public List<PhaseListener> getPhaseListeners()
-    {
-        // TODO: JSF 2.0 #57
-
-        return null;
-    }
-
-    /**
-     * @since 2.0
-     */
-    @Override
-    public boolean getRendersChildren()
-    {
-        // If FacesContext.isAjaxRequest() returns true and it is a partial render request 
-        // (FacesContext.isRenderAll() returns false), return true.
-        FacesContext context = FacesContext.getCurrentInstance();
-
-        return (context.isAjaxRequest() && context.isRenderAll()) ? true : super.getRendersChildren();
-    }
-    
-    /**
-     * Defines what renderkit should be used to render this view.
-     */
-    @JSFProperty
-    public String getRenderKitId()
-    {
-        if (_renderKitId != null)
-        {
-            return _renderKitId;
-        }
-        ValueExpression expression = getValueExpression("renderKitId");
-        if (expression != null)
-        {
-            return (String)expression.getValue(getFacesContext().getELContext());
-        }
-        return null;
-    }
-
     public void setRenderKitId(String renderKitId)
     {
         this._renderKitId = renderKitId;
@@ -604,13 +896,6 @@ public class UIViewRoot extends UIComponentBase implements ComponentSystemEventL
         // Call parent method due to TCK problems
         super.setRendered(state);
         // throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean isRendered()
-    {
-        // Call parent method due to TCK problems
-        return super.isRendered();
     }
 
     /**
@@ -634,88 +919,6 @@ public class UIViewRoot extends UIComponentBase implements ComponentSystemEventL
         // Leave enabled for now. Things like the TreeStructureManager call this,
         // even though they probably should not.
         super.setId(id);
-    }
-
-    @Override
-    public String getId()
-    {
-        // Should just return null. But as setId passes the method on, do same here.
-        return super.getId();
-    }
-
-    /**
-     * DO NOT USE.
-     * <p>
-     * As this component has no "id" property, it has no clientId property either.
-     */
-    @Override
-    public String getClientId(FacesContext context)
-    {
-        return super.getClientId(context);
-        // Call parent method due to TCK problems
-        // return null;
-    }
-
-    public void addComponentResource(FacesContext context, UIComponent componentResource)
-    {
-        addComponentResource(context, componentResource, null);
-    }
-
-    public void addComponentResource(FacesContext context, UIComponent componentResource, String target)
-    {
-        // If the target argument is null
-        if (target == null)
-        {
-            // Look for a target attribute on the component
-            target = (String)componentResource.getAttributes().get("target");
-
-            // If there is no target attribute, set target to be the default value head
-            if (target == null)
-            {
-                target = "head";
-            }
-        }
-
-        // Call getComponentResources to obtain the child list for the given target
-        List<UIComponent> componentResources = getComponentResources(context, target);
-
-        // Add the component resource to the list
-        // TODO: Validate if we should check for duplicates, spec don't say anything about it
-        componentResources.add(componentResource);
-    }
-
-    public List<UIComponent> getComponentResources(FacesContext context, String target)
-    {
-        // Locate the facet for the component by calling getFacet() using target as the argument
-        UIComponent facet = getFacet(target);
-
-        // If the facet is not found
-        if (facet == null)
-        {
-            facet = context.getApplication().createComponent("javax.faces.Panel");
-            facet.setId(target);
-
-            // Add the facet to the facets Map using target as the key
-            getFacets().put(target, facet);
-        }
-
-        // Return the children of the facet
-        return facet.getChildren();
-    }
-
-    public Map<String, Object> getViewMap()
-    {
-        return this.getViewMap(true);
-    }
-
-    public Map<String, Object> getViewMap(boolean create)
-    {
-        if (_viewScope == null && create)
-        {
-            _viewScope = new ViewScope();
-        }
-
-        return _viewScope;
     }
 
     public void removeComponentResource(FacesContext context, UIComponent componentResource)
@@ -746,37 +949,12 @@ public class UIViewRoot extends UIComponentBase implements ComponentSystemEventL
         componentResources.remove(componentResource);
     }
 
-    /**
-     * A unique identifier for the "template" from which this view was generated.
-     * <p>
-     * Typically this is the filesystem path to the template file, but the exact details are the responsibility of the
-     * current ViewHandler implementation.
-     */
-    @JSFProperty(tagExcluded = true)
-    public String getViewId()
-    {
-        return _viewId;
-    }
-
     public void setViewId(String viewId)
     {
         // It really doesn't make much sense to allow null here.
         // However the TCK does not check for it, and sun's implementation
         // allows it so here we allow it too.
         this._viewId = viewId;
-    }
-
-    /**
-     * Adds a The phaseListeners attached to ViewRoot.
-     */
-    public void addPhaseListener(PhaseListener phaseListener)
-    {
-        if (phaseListener == null)
-            throw new NullPointerException("phaseListener");
-        if (_phaseListeners == null)
-            _phaseListeners = new ArrayList<PhaseListener>();
-
-        _phaseListeners.add(phaseListener);
     }
 
     /**
@@ -791,27 +969,6 @@ public class UIViewRoot extends UIComponentBase implements ComponentSystemEventL
     }
 
     /**
-     * MethodBinding pointing to a method that takes a javax.faces.event.PhaseEvent and returns void, called before
-     * every phase except for restore view.
-     * 
-     * @return the new beforePhaseListener value
-     */
-    @JSFProperty(stateHolder = true, returnSignature = "void", methodSignature = "javax.faces.event.PhaseEvent", jspName = "beforePhase")
-    public MethodExpression getBeforePhaseListener()
-    {
-        if (_beforePhaseListener != null)
-        {
-            return _beforePhaseListener;
-        }
-        ValueExpression expression = getValueExpression("beforePhaseListener");
-        if (expression != null)
-        {
-            return (MethodExpression)expression.getValue(getFacesContext().getELContext());
-        }
-        return null;
-    }
-
-    /**
      * Sets
      * 
      * @param beforePhaseListener
@@ -820,27 +977,6 @@ public class UIViewRoot extends UIComponentBase implements ComponentSystemEventL
     public void setBeforePhaseListener(MethodExpression beforePhaseListener)
     {
         this._beforePhaseListener = beforePhaseListener;
-    }
-
-    /**
-     * MethodBinding pointing to a method that takes a javax.faces.event.PhaseEvent and returns void, called after every
-     * phase except for restore view.
-     * 
-     * @return the new afterPhaseListener value
-     */
-    @JSFProperty(stateHolder = true, returnSignature = "void", methodSignature = "javax.faces.event.PhaseEvent", jspName = "afterPhase")
-    public MethodExpression getAfterPhaseListener()
-    {
-        if (_afterPhaseListener != null)
-        {
-            return _afterPhaseListener;
-        }
-        ValueExpression expression = getValueExpression("afterPhaseListener");
-        if (expression != null)
-        {
-            return (MethodExpression)expression.getValue(getFacesContext().getELContext());
-        }
-        return null;
     }
 
     /**
@@ -884,21 +1020,17 @@ public class UIViewRoot extends UIComponentBase implements ComponentSystemEventL
         _beforePhaseListener = (MethodExpression)restoreAttachedState(facesContext, values[6]);
         _afterPhaseListener = (MethodExpression)restoreAttachedState(facesContext, values[7]);
     }
-
-    @Override
-    public String getFamily()
-    {
-        return COMPONENT_FAMILY;
-    }
     
     private void _encodeBeginAjax(FacesContext context) throws IOException
     {
+        PartialViewContext pContext = context.getPartialViewContext();
+        
         // replace the ResponseWriter in the FacesContext with the writer used to render partial responses.
-        ResponseWriter writer = context.getPartialResponseWriter();
+        ResponseWriter writer = pContext.getPartialResponseWriter();
         
         context.setResponseWriter(writer);
         
-        if (!context.isRenderNone())
+        if (!pContext.isRenderNone())
         {
             // If FacesContext.isRenderNone() returns false, set the response content-type and headers 
             // appropriately for XML.
@@ -913,7 +1045,7 @@ public class UIViewRoot extends UIComponentBase implements ComponentSystemEventL
             writer.startElement(AJAX_RESPONSE_COMPONENTS, null);
             
             // If FacesContext.isRenderAll() returns true write:
-            if (context.isRenderAll())
+            if (pContext.isRenderAll())
             {
                 // <render id="javax.faces.ViewRoot"/>
                 //   <markup><![CDATA[
@@ -930,7 +1062,9 @@ public class UIViewRoot extends UIComponentBase implements ComponentSystemEventL
     {
         ResponseWriter writer = context.getResponseWriter();
         
-        if (context.isRenderAll())
+        PartialViewContext pContext = context.getPartialViewContext();
+        
+        if (pContext.isRenderAll())
         {
             // If FacesContext.isRenderAll() returns true write:
             
@@ -943,7 +1077,7 @@ public class UIViewRoot extends UIComponentBase implements ComponentSystemEventL
             // </render>
             writer.endElement(AJAX_RESPONSE_RENDER);
             
-            if (!context.isRenderNone())
+            if (!pContext.isRenderNone())
             {
                 // component markup was rendered (FacesContext.isRenderNone() returns false), write:
                 // </components>
@@ -973,13 +1107,15 @@ public class UIViewRoot extends UIComponentBase implements ComponentSystemEventL
     
     private List<String> _getAjaxClientIds(FacesContext context)
     {
+        PartialViewContext pContext = context.getPartialViewContext();
+        
         // Call FacesContext.getExecutePhaseClientIds()
-        List<String> clientIds = context.getExecutePhaseClientIds();
+        List<String> clientIds = pContext.getExecutePhaseClientIds();
         if (clientIds == null || clientIds.isEmpty())
         {
             // If there were no client ids specified, refer to the List of client ids by calling 
             // FacesContext.getRenderPhaseClientIds()
-            clientIds = context.getRenderPhaseClientIds();
+            clientIds = pContext.getRenderPhaseClientIds();
         }
         
         return clientIds;
@@ -1008,7 +1144,7 @@ public class UIViewRoot extends UIComponentBase implements ComponentSystemEventL
              * FacesContext.getPartialResponseWriter(). Install the writer by calling 
              * FacesContext.setResponseWriter(javax.faces.context.ResponseWriter). 
              */
-            context.setResponseWriter(context.getPartialResponseWriter());
+            context.setResponseWriter(context.getPartialViewContext().getPartialResponseWriter());
         }
     }
     
@@ -1082,7 +1218,7 @@ public class UIViewRoot extends UIComponentBase implements ComponentSystemEventL
     {
         public void process(FacesContext context, UIViewRoot root)
         {
-            if (context.isAjaxRequest())
+            if (context.getPartialViewContext().isAjaxRequest())
             {
                 root._processDecodesAjax(context);
             }
@@ -1097,7 +1233,7 @@ public class UIViewRoot extends UIComponentBase implements ComponentSystemEventL
     {
         public void process(FacesContext context, UIViewRoot root)
         {
-            if (context.isAjaxRequest())
+            if (context.getPartialViewContext().isAjaxRequest())
             {
                 root._processValidatorsAjax(context);
             }
@@ -1112,7 +1248,7 @@ public class UIViewRoot extends UIComponentBase implements ComponentSystemEventL
     {
         public void process(FacesContext context, UIViewRoot root)
         {
-            if (context.isAjaxRequest())
+            if (context.getPartialViewContext().isAjaxRequest())
             {
                 root._processUpdatesAjax(context);
             }
@@ -1174,6 +1310,28 @@ public class UIViewRoot extends UIComponentBase implements ComponentSystemEventL
         public void invokeContextCallback(FacesContext context, UIComponent target)
         {
             target.processValidators(context);
+        }
+    }
+    
+    private class RestoreStateCallback implements ContextCallback
+    {
+        private AfterRestoreStateEvent event;
+        
+        public void invokeContextCallback(FacesContext context, UIComponent target)
+        {
+            if (event == null)
+            {
+                event = new AfterRestoreStateEvent(target);
+            }
+            else
+            {
+                event.setComponent(target);
+            }
+            
+            // call the processEvent method of the current component. 
+            // The argument event must be an instance of AfterRestoreStateEvent whose component 
+            // property is the current component in the traversal.
+            processEvent(event);
         }
     }
     

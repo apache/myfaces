@@ -33,10 +33,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.PropertyResourceBundle;
-import java.util.Queue;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.el.ELContext;
 import javax.el.ELException;
@@ -47,12 +45,14 @@ import javax.faces.application.Resource;
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
+import javax.faces.event.AfterRestoreStateEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ComponentSystemEventListener;
 import javax.faces.event.FacesEvent;
 import javax.faces.event.FacesListener;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
+import javax.faces.event.SystemEventListenerHolder;
 import javax.faces.render.Renderer;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
@@ -64,7 +64,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
  * @version $Revision$ $Date$
  */
 @JSFComponent(type = "javax.faces.Component", family = "javax.faces.Component", desc = "abstract base component", configExcluded = true)
-public abstract class UIComponent implements StateHolder
+public abstract class UIComponent implements StateHolder, SystemEventListenerHolder, ComponentSystemEventListener
 {
     public static final String BEANINFO_KEY = "javax.faces.component.BEANINFO_KEY";
     public static final String COMPOSITE_COMPONENT_TYPE_KEY = "javax.faces.component.COMPOSITE_COMPONENT_TYPE";
@@ -247,6 +247,11 @@ public abstract class UIComponent implements StateHolder
         }
 
         return found;
+    }
+
+    public String getClientId()
+    {
+        return getClientId(getFacesContext());
     }
 
     public abstract String getClientId(FacesContext context);
@@ -434,11 +439,28 @@ public abstract class UIComponent implements StateHolder
 
     protected abstract void removeFacesListener(FacesListener listener);
 
-    public abstract void queueEvent(javax.faces.event.FacesEvent event);
+    public abstract void queueEvent(FacesEvent event);
 
     public abstract void processRestoreState(FacesContext context, Object state);
 
     public abstract void processDecodes(FacesContext context);
+    
+    public void processEvent(ComponentSystemEvent event) throws AbortProcessingException
+    {
+        // The default implementation performs the following action. If the argument event is an instance of 
+        // AfterRestoreStateEvent, 
+        if (event instanceof AfterRestoreStateEvent)
+        {
+            // call this.getValueExpression(java.lang.String) passing the literal string “binding”
+            ValueExpression expression = getValueExpression("binding");
+            
+            // If the result is non-null, set the value of the ValueExpression to be this.
+            if (expression != null)
+            {
+                expression.setValue(getFacesContext().getELContext(), this);
+            }
+        }
+    }
 
     public abstract void processValidators(FacesContext context);
 
