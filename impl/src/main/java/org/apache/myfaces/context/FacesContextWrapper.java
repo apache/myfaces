@@ -23,8 +23,10 @@ import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
 import javax.faces.component.UIViewRoot;
+import javax.faces.context.ExceptionHandler;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.context.PartialViewContext;
 import javax.faces.context.ResponseStream;
 import javax.faces.context.ResponseWriter;
 import javax.faces.event.PhaseId;
@@ -54,12 +56,6 @@ public class FacesContextWrapper extends FacesContext
     }
 
     // ~ Methods ------------------------------------------------------------------------------------
-    
-    @Override
-    public void enableResponseWriting(boolean enable)
-    {
-        _facesContext.enableResponseWriting(enable);
-    }
 
     @Override
     public Application getApplication()
@@ -86,9 +82,9 @@ public class FacesContextWrapper extends FacesContext
     }
     
     @Override
-    public List<String> getExecutePhaseClientIds()
+    public ExceptionHandler getExceptionHandler()
     {
-        return _facesContext.getExecutePhaseClientIds();
+        return _facesContext.getExceptionHandler();
     }
 
     @Override
@@ -104,6 +100,18 @@ public class FacesContextWrapper extends FacesContext
     }
 
     @Override
+    public List<FacesMessage> getMessageList()
+    {
+        return _facesContext.getMessageList();
+    }
+
+    @Override
+    public List<FacesMessage> getMessageList(String clientId)
+    {
+        return _facesContext.getMessageList(clientId);
+    }
+
+    @Override
     public Iterator<FacesMessage> getMessages()
     {
         return _facesContext.getMessages();
@@ -113,6 +121,12 @@ public class FacesContextWrapper extends FacesContext
     public Iterator<FacesMessage> getMessages(String clientId)
     {
         return _facesContext.getMessages(clientId);
+    }
+
+    @Override
+    public PartialViewContext getPartialViewContext()
+    {
+        return _facesContext.getPartialViewContext();
     }
 
     @Override
@@ -131,6 +145,12 @@ public class FacesContextWrapper extends FacesContext
     public boolean getResponseComplete()
     {
         return _facesContext.getResponseComplete();
+    }
+
+    @Override
+    public void setExceptionHandler(ExceptionHandler exceptionHandler)
+    {
+        _facesContext.setExceptionHandler(exceptionHandler);
     }
 
     @Override
@@ -170,33 +190,9 @@ public class FacesContextWrapper extends FacesContext
     }
     
     @Override
-    public boolean isAjaxRequest()
-    {
-        return _facesContext.isAjaxRequest();
-    }
-    
-    @Override
-    public boolean isExecuteNone()
-    {
-        return _facesContext.isExecuteNone();
-    }
-    
-    @Override
     public boolean isPostback()
     {
         return _facesContext.isPostback();
-    }
-    
-    @Override
-    public boolean isRenderAll()
-    {
-        return _facesContext.isRenderAll();
-    }
-    
-    @Override
-    public boolean isRenderNone()
-    {
-        return _facesContext.isRenderNone();
     }
 
     @Override
@@ -233,23 +229,5 @@ public class FacesContextWrapper extends FacesContext
     public void setCurrentPhaseId(PhaseId currentPhaseId)
     {
         _facesContext.setCurrentPhaseId(currentPhaseId);
-    }
-    
-    @Override
-    public void setExecutePhaseClientIds(List<String> executePhaseClientIds)
-    {
-        _facesContext.setExecutePhaseClientIds(executePhaseClientIds);
-    }
-    
-    @Override
-    public void setRenderAll(boolean renderAll)
-    {
-        _facesContext.setRenderAll(renderAll);
-    }
-    
-    @Override
-    public void setRenderPhaseClientIds(List<String> renderPhaseClientIds)
-    {
-        _facesContext.setRenderPhaseClientIds(renderPhaseClientIds);
     }
 }
