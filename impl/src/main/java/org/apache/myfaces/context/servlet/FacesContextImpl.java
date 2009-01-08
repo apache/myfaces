@@ -30,8 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.el.ELContext;
 import javax.el.ELContextEvent;
 import javax.el.ELContextListener;
@@ -40,6 +38,7 @@ import javax.faces.application.Application;
 import javax.faces.application.ApplicationFactory;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIViewRoot;
+import javax.faces.context.ExceptionHandler;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
@@ -153,6 +152,14 @@ public class FacesContextImpl extends FacesContext
     }
 
     // ~ Methods ------------------------------------------------------------------------------------
+    
+    @Override
+    public ExceptionHandler getExceptionHandler()
+    {
+        // TODO: JSF 2.0, add impl
+        return super.getExceptionHandler();
+    }
+    
     @Override
     public final ExternalContext getExternalContext()
     {
@@ -167,6 +174,20 @@ public class FacesContextImpl extends FacesContext
         assertNotReleased(METHOD_GETMAXIMUMSEVERITY);
 
         return _maximumSeverity;
+    }
+
+    @Override
+    public List<FacesMessage> getMessageList()
+    {
+        // TODO: JSF 2.0, add impl
+        return super.getMessageList();
+    }
+
+    @Override
+    public List<FacesMessage> getMessageList(String clientId)
+    {
+        // TODO: JSF 2.0, add impl
+        return super.getMessageList(clientId);
     }
 
     @Override
@@ -446,6 +467,13 @@ public class FacesContextImpl extends FacesContext
         _currentPhaseId = currentPhaseId;
     }
 
+    @Override
+    public void setExceptionHandler(ExceptionHandler exceptionHandler)
+    {
+        // TODO: JSF 2.0, add impl
+        super.setExceptionHandler(exceptionHandler);
+    }
+
     // Portlet need to do this to change from ActionRequest/Response to
     // RenderRequest/Response
     public final void setExternalContext(ReleaseableExternalContext extContext)
@@ -562,7 +590,7 @@ public class FacesContextImpl extends FacesContext
             throw new IllegalStateException(errorMessage.toString());
         }
     }
-    
+
     private class PartialViewContextImpl extends PartialViewContext
     {
 
