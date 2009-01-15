@@ -18,6 +18,8 @@ package org.apache.myfaces.context;
 import java.util.HashMap;
 import java.util.Map;
 import javax.faces.context.FacesContext;
+import javax.faces.context.PartialViewContext;
+
 import org.apache.myfaces.context.servlet.FacesContextImpl;
 import org.apache.shale.test.base.AbstractJsfTestCase;
 
@@ -49,22 +51,25 @@ public class IsRenderedTest extends AbstractJsfTestCase {
         //otherwise it is false!
 
         Map<String, String> requestParamMap = new HashMap<String, String>();
-        requestParamMap.put(FacesContext.PARTIAL_EXECUTE_PARAM_NAME, FacesContext.NO_PARTIAL_PHASE_CLIENT_IDS);
+        requestParamMap.put(PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME, 
+                            PartialViewContext.NO_PARTIAL_PHASE_CLIENT_IDS);
         ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);
         FacesContext context = new FacesContextImpl(servletContext, wrapper, response);
 
-        assertTrue("Execute none set", context.isExecuteNone());
+        PartialViewContext pprContext = context.getPartialViewContext();
+
+        assertTrue("Execute none set", pprContext.isExecuteNone());
 
         requestParamMap = new HashMap<String,String>();
         wrapper = new ContextTestRequestWrapper(request, requestParamMap);
         context = new FacesContextImpl(servletContext, wrapper, response);
-        assertFalse("Execute none not set", context.isExecuteNone());
+        assertFalse("Execute none not set", pprContext.isExecuteNone());
 
         requestParamMap = new HashMap<String,String>();
-        requestParamMap.put(FacesContext.PARTIAL_EXECUTE_PARAM_NAME,"pebkac");
+        requestParamMap.put(PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME,"pebkac");
         wrapper = new ContextTestRequestWrapper(request, requestParamMap);
         context = new FacesContextImpl(servletContext, wrapper, response);
-        assertFalse("Execute none wrong value", context.isExecuteNone());
+        assertFalse("Execute none wrong value", pprContext.isExecuteNone());
     }
 
     /**
@@ -78,22 +83,25 @@ public class IsRenderedTest extends AbstractJsfTestCase {
         //otherwise it is false!
 
         Map<String, String> requestParamMap = new HashMap<String, String>();
-        requestParamMap.put(FacesContext.PARTIAL_RENDER_PARAM_NAME, FacesContext.NO_PARTIAL_PHASE_CLIENT_IDS);
+        requestParamMap.put(PartialViewContext.PARTIAL_RENDER_PARAM_NAME, 
+                            PartialViewContext.NO_PARTIAL_PHASE_CLIENT_IDS);
         ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);
         FacesContext context = new FacesContextImpl(servletContext, wrapper, response);
+        
+        PartialViewContext pprContext = context.getPartialViewContext();
 
-        assertTrue("Render none set", context.isRenderNone());
+        assertTrue("Render none set", pprContext.isRenderNone());
 
         requestParamMap = new HashMap<String,String>();
         wrapper = new ContextTestRequestWrapper(request, requestParamMap);
         context = new FacesContextImpl(servletContext, wrapper, response);
-        assertFalse("Render none not set", context.isRenderNone());
+        assertFalse("Render none not set", pprContext.isRenderNone());
 
         requestParamMap = new HashMap<String,String>();
-        requestParamMap.put(FacesContext.PARTIAL_RENDER_PARAM_NAME,"pebkac");
+        requestParamMap.put(PartialViewContext.PARTIAL_RENDER_PARAM_NAME,"pebkac");
         wrapper = new ContextTestRequestWrapper(request, requestParamMap);
         context = new FacesContextImpl(servletContext, wrapper, response);
-        assertFalse("Render none wrong value", context.isRenderNone());
+        assertFalse("Render none wrong value", pprContext.isRenderNone());
 
     }
 
@@ -104,12 +112,15 @@ public class IsRenderedTest extends AbstractJsfTestCase {
      */
     public void testRenderAll1() {
         FacesContext context = new FacesContextImpl(servletContext, request, response);
-        context.setRenderAll(true);
-        assertTrue("override should trigger no matter which condition we have", context.isRenderAll());
+        
+        PartialViewContext pprContext = context.getPartialViewContext();
+
+        pprContext.setRenderAll(true);
+        assertTrue("override should trigger no matter which condition we have", pprContext.isRenderAll());
 
         context = new FacesContextImpl(servletContext, request, response);
-        context.setRenderAll(false);
-        assertFalse("override should trigger no matter which condition we have", context.isRenderAll());
+        pprContext.setRenderAll(false);
+        assertFalse("override should trigger no matter which condition we have", pprContext.isRenderAll());
     }
 
    

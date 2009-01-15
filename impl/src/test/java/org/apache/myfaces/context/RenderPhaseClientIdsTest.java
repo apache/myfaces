@@ -20,6 +20,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.faces.context.FacesContext;
+import javax.faces.context.PartialViewContext;
+
 import org.apache.myfaces.context.servlet.FacesContextImpl;
 import org.apache.shale.test.base.AbstractJsfTestCase;
 
@@ -44,11 +46,14 @@ public class RenderPhaseClientIdsTest extends AbstractJsfTestCase {
     public void testRequestParams1() {
         String empty = "    \n \t  ";
         Map<String, String> requestParamMap = new HashMap<String, String>();
-        requestParamMap.put(FacesContext.PARTIAL_RENDER_PARAM_NAME, empty);
+        requestParamMap.put(PartialViewContext.PARTIAL_RENDER_PARAM_NAME, empty);
         ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);
 
         FacesContext context = new FacesContextImpl(servletContext, wrapper, response);
-        assertTrue(context.getRenderPhaseClientIds().isEmpty());
+        
+        PartialViewContext pprContext = context.getPartialViewContext();
+
+        assertTrue(pprContext.getRenderPhaseClientIds().isEmpty());
     }
 
     /**
@@ -60,7 +65,10 @@ public class RenderPhaseClientIdsTest extends AbstractJsfTestCase {
         ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);
 
         FacesContext context = new FacesContextImpl(servletContext, wrapper, response);
-        assertTrue(context.getRenderPhaseClientIds().isEmpty());
+        
+        PartialViewContext pprContext = context.getPartialViewContext();
+
+        assertTrue(pprContext.getRenderPhaseClientIds().isEmpty());
     }
 
     /**
@@ -68,11 +76,15 @@ public class RenderPhaseClientIdsTest extends AbstractJsfTestCase {
      */
     public void testRequestParams4() {
         Map<String, String> requestParamMap = new HashMap<String, String>();
-        requestParamMap.put(FacesContext.PARTIAL_RENDER_PARAM_NAME, FacesContext.NO_PARTIAL_PHASE_CLIENT_IDS);
+        requestParamMap.put(PartialViewContext.PARTIAL_RENDER_PARAM_NAME, 
+                            PartialViewContext.NO_PARTIAL_PHASE_CLIENT_IDS);
         ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);
 
         FacesContext context = new FacesContextImpl(servletContext, wrapper, response);
-        assertTrue(context.getRenderPhaseClientIds().isEmpty());
+        
+        PartialViewContext pprContext = context.getPartialViewContext();
+
+        assertTrue(pprContext.getRenderPhaseClientIds().isEmpty());
     }
 
     /**
@@ -81,12 +93,15 @@ public class RenderPhaseClientIdsTest extends AbstractJsfTestCase {
     public void testRequestParams5() {
         String params = " view1:panel1:_component1  ";
         Map<String, String> requestParamMap = new HashMap<String, String>();
-        requestParamMap.put(FacesContext.PARTIAL_RENDER_PARAM_NAME, params);
+        requestParamMap.put(PartialViewContext.PARTIAL_RENDER_PARAM_NAME, params);
         ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);
 
         FacesContext context = new FacesContextImpl(servletContext, wrapper, response);
-        assertTrue("Length must be one",context.getRenderPhaseClientIds().size() == 1);
-        assertTrue("Value match",context.getRenderPhaseClientIds().get(0).equals("view1:panel1:_component1"));
+        
+        PartialViewContext pprContext = context.getPartialViewContext();
+
+        assertTrue("Length must be one",pprContext.getRenderPhaseClientIds().size() == 1);
+        assertTrue("Value match",pprContext.getRenderPhaseClientIds().get(0).equals("view1:panel1:_component1"));
     }
 
     /**
@@ -96,17 +111,20 @@ public class RenderPhaseClientIdsTest extends AbstractJsfTestCase {
     public void testRequestParams6() {
         String params = " view1:panel1:_component1,view1:panel1:_component2 \n , component3, component4  ";
         Map<String, String> requestParamMap = new HashMap<String, String>();
-        requestParamMap.put(FacesContext.PARTIAL_RENDER_PARAM_NAME, params);
+        requestParamMap.put(PartialViewContext.PARTIAL_RENDER_PARAM_NAME, params);
         ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);
 
         FacesContext context = new FacesContextImpl(servletContext, wrapper, response);
-        assertTrue("Length must be four",context.getRenderPhaseClientIds().size() == 4);
+        
+        PartialViewContext pprContext = context.getPartialViewContext();
 
-        assertTrue("Value match",context.getRenderPhaseClientIds().get(0).equals("view1:panel1:_component1"));
-        assertTrue("Value match",context.getRenderPhaseClientIds().get(2).equals("component3"));
+        assertTrue("Length must be four",pprContext.getRenderPhaseClientIds().size() == 4);
+
+        assertTrue("Value match",pprContext.getRenderPhaseClientIds().get(0).equals("view1:panel1:_component1"));
+        assertTrue("Value match",pprContext.getRenderPhaseClientIds().get(2).equals("component3"));
 
 
-        assertTrue("Value match",context.getRenderPhaseClientIds().get(3).equals("component4"));
+        assertTrue("Value match",pprContext.getRenderPhaseClientIds().get(3).equals("component4"));
     }
 
     /**
@@ -119,12 +137,15 @@ public class RenderPhaseClientIdsTest extends AbstractJsfTestCase {
         renderPhaseClientIds.add("component2");
         String params = " view1:panel1:_component1,view1:panel1:_component2 \n , component3, component4  ";
         Map<String, String> requestParamMap = new HashMap<String, String>();
-        requestParamMap.put(FacesContext.PARTIAL_RENDER_PARAM_NAME, params);
+        requestParamMap.put(PartialViewContext.PARTIAL_RENDER_PARAM_NAME, params);
         ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);
 
         FacesContext context = new FacesContextImpl(servletContext, wrapper, response);
-        context.setRenderPhaseClientIds(renderPhaseClientIds);
-        assertTrue(context.getRenderPhaseClientIds().size() == 2);
+        
+        PartialViewContext pprContext = context.getPartialViewContext();
+
+        pprContext.setRenderPhaseClientIds(renderPhaseClientIds);
+        assertTrue(pprContext.getRenderPhaseClientIds().size() == 2);
 
     }
 

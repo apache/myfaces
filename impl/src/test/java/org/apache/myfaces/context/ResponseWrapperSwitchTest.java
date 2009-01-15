@@ -200,7 +200,7 @@ public class ResponseWrapperSwitchTest extends AbstractJsfTestCase {
 
 
         assertTrue("responsewriter not null", responseWriter != null);
-        context.enableResponseWriting(false);
+        context.getPartialViewContext().enableResponseWriting(false);
 
         try {
             responseWriter.append("hello world");
@@ -231,7 +231,7 @@ public class ResponseWrapperSwitchTest extends AbstractJsfTestCase {
         NewStreamingMockResponse resp = new NewStreamingMockResponse(response, sOstr, writer);
 
         FacesContext context = new FacesContextImpl(servletContext, request, resp);
-        context.enableResponseWriting(false);
+        context.getPartialViewContext().enableResponseWriting(false);
         try {
             OutputStream finalOstr = (OutputStream) ((ServletResponse) context.getExternalContext().getResponse()).getOutputStream();
             PrintWriter finalWriter = new PrintWriter(finalOstr);

@@ -29,7 +29,7 @@ import org.apache.shale.test.base.AbstractJsfTestCase;
  * @version $Revision$ $Date$
  */
 public class TestIsAjaxRequest extends AbstractJsfTestCase {
-    Map requestParameterMap = null;
+    Map<String, String> requestParameterMap = null;
     FacesContext context = null;
 
     public TestIsAjaxRequest() {
@@ -51,13 +51,13 @@ public class TestIsAjaxRequest extends AbstractJsfTestCase {
 
     public void testNoEntry() {
 
-        assertFalse("no ajax request found", context.isAjaxRequest());
+        assertFalse("no ajax request found", context.getPartialViewContext().isAjaxRequest());
     }
 
     public void testEntry() {
         requestParameterMap.put("javax.faces.partial.ajax", "yess");
 
-        assertTrue("no ajax request found", context.isAjaxRequest());
+        assertTrue("no ajax request found", context.getPartialViewContext().isAjaxRequest());
     }
 
 
