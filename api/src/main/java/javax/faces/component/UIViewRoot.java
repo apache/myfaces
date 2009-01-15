@@ -20,9 +20,11 @@ package javax.faces.component;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
@@ -180,72 +182,33 @@ public class UIViewRoot extends UIComponentBase
      */
     public void broadcastEvents(FacesContext context, PhaseId phaseId)
     {
-        /* 
-         * Broadcast any events that have been queued. First broadcast events that have been queued for 
-         * PhaseId.ANY_PHASE. Then broadcast ane events that have been queued for the current phase. 
-         * In both cases, 
-         * UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent) must 
-         * be called before the event is broadcast, and 
-         * UIComponent.popComponentFromEL(javax.faces.context.FacesContext) must be called after the return from 
-         * the broadcast, even in the case of an exception.
-         */
-        // TODO
-        
         if (_events == null)
         {
             return;
         }
-        // TODO
-        // TODO
-        // TODO
-        for (ListIterator<FacesEvent> listIterator = _events.listIterator(); listIterator.hasNext();)
+        
+        // Gather the events and purge the event list to prevent concurrent modification during broadcasting
+        List<FacesEvent> anyPhase = new ArrayList<FacesEvent>(_events.size());
+        List<FacesEvent> onPhase = new ArrayList<FacesEvent>(_events.size());
+        for (Iterator<FacesEvent> iterator = _events.iterator(); iterator.hasNext();)
         {
-            
-        }
-
-        boolean abort = false;
-
-        int phaseIdOrdinal = phaseId.getOrdinal();
-        for (ListIterator<FacesEvent> listiterator = _events.listIterator(); listiterator.hasNext();)
-        {
-            FacesEvent event = listiterator.next();
-            int ordinal = event.getPhaseId().getOrdinal();
-            if (ordinal == ANY_PHASE_ORDINAL || ordinal == phaseIdOrdinal)
+            FacesEvent event = iterator.next();
+            if (event.getPhaseId().equals(PhaseId.ANY_PHASE))
             {
-                UIComponent source = event.getComponent();
-                try
-                {
-                    source.broadcast(event);
-                }
-                catch (AbortProcessingException e)
-                {
-                    // abort event processing Page 3-30 of JSF 1.1 spec: "Throw an AbortProcessingException, 
-                    // to tell the JSF implementation that no further broadcast of this event, or any further
-                    // events, should take place."
-                    abort = true;
-                    break;
-                }
-                finally
-                {
-                    try
-                    {
-                        listiterator.remove();
-                    }
-                    catch (ConcurrentModificationException cme)
-                    {
-                        int eventIndex = listiterator.previousIndex();
-                        _events.remove(eventIndex);
-                        listiterator = _events.listIterator();
-                    }
-                }
+                anyPhase.add(event);
+                iterator.remove();
+            }
+            else if (event.getPhaseId().equals(phaseId))
+            {
+                onPhase.add(event);
+                iterator.remove();
             }
         }
-
-        if (abort)
+        
+        // First broadcast events that have been queued for PhaseId.ANY_PHASE.
+        if (_broadcastAll(context, anyPhase))
         {
-            // TODO: abort processing of any event of any phase or just of any
-            // event of the current phase???
-            clearEvents();
+            _broadcastAll(context, onPhase);
         }
     }
 
@@ -599,14 +562,14 @@ public class UIViewRoot extends UIComponentBase
     public void processApplication(final FacesContext context)
     {
         checkNull(context, "context");
-        process(context, PhaseId.INVOKE_APPLICATION, null, true);
+        _process(context, PhaseId.INVOKE_APPLICATION, null);
     }
     
     @Override
     public void processDecodes(FacesContext context)
     {
         checkNull(context, "context");
-        process(context, PhaseId.APPLY_REQUEST_VALUES, APPLY_REQUEST_VALUES_PROCESSOR, true);
+        _process(context, PhaseId.APPLY_REQUEST_VALUES, APPLY_REQUEST_VALUES_PROCESSOR);
     }
     
     /**
@@ -624,7 +587,7 @@ public class UIViewRoot extends UIComponentBase
         finally
         {
             // The try block must have a finally block that ensures that no FacesEvents remain in the event queue
-            _broadcastForPhase(PhaseId.RESTORE_VIEW);
+            broadcastEvents(context, PhaseId.RESTORE_VIEW);
             
             // that any PhaseListeners in getPhaseListeners() are invoked as appropriate
             PhaseEvent event = createEvent(context, PhaseId.RESTORE_VIEW);
@@ -654,42 +617,19 @@ public class UIViewRoot extends UIComponentBase
     public void processValidators(FacesContext context)
     {
         checkNull(context, "context");
-        process(context, PhaseId.PROCESS_VALIDATIONS, PROCESS_VALIDATORS_PROCESSOR, true);
+        _process(context, PhaseId.PROCESS_VALIDATIONS, PROCESS_VALIDATORS_PROCESSOR);
     }
 
     @Override
     public void processUpdates(FacesContext context)
     {
         checkNull(context, "context");
-        process(context, PhaseId.UPDATE_MODEL_VALUES, UPDATE_MODEL_PROCESSOR, true);
+        _process(context, PhaseId.UPDATE_MODEL_VALUES, UPDATE_MODEL_PROCESSOR);
     }
 
     public void setLocale(Locale locale)
     {
         this._locale = locale;
-    }
-
-    private boolean process(FacesContext context, PhaseId phaseId, PhaseProcessor processor, boolean broadcast)
-    {
-        if (!notifyListeners(context, phaseId, getBeforePhaseListener(), true))
-        {
-            if (processor != null)
-            {
-                processor.process(context, this);
-            }
-
-            if (broadcast)
-            {
-                _broadcastForPhase(phaseId);
-            }
-        }
-        
-        if (context.getRenderResponse() || context.getResponseComplete())
-        {
-            clearEvents();
-        }
-        
-        return notifyListeners(context, phaseId, getAfterPhaseListener(), false);
     }
 
     /**
@@ -733,8 +673,6 @@ public class UIViewRoot extends UIComponentBase
          * passing in the same PhaseId as in the previous step.
          */
 
-        boolean skipPhase = false;
-
         if (listener != null || (_phaseListeners != null && !_phaseListeners.isEmpty()))
         {
             PhaseEvent event = createEvent(context, phaseId);
@@ -742,7 +680,6 @@ public class UIViewRoot extends UIComponentBase
             if (listener != null)
             {
                 listener.invoke(context.getELContext(), new Object[] { event });
-                skipPhase = context.getResponseComplete() || context.getRenderResponse();
             }
 
             if (_phaseListeners != null && !_phaseListeners.isEmpty())
@@ -760,13 +697,12 @@ public class UIViewRoot extends UIComponentBase
                         {
                             phaseListener.afterPhase(event);
                         }
-                        skipPhase = context.getResponseComplete() || context.getRenderResponse();
                     }
                 }
             }
         }
 
-        return skipPhase;
+        return context.getResponseComplete() || context.getRenderResponse();
     }
 
     private PhaseEvent createEvent(FacesContext context, PhaseId phaseId)
@@ -782,6 +718,46 @@ public class UIViewRoot extends UIComponentBase
             _lifecycle = factory.getLifecycle(id);
         }
         return new PhaseEvent(context, phaseId, _lifecycle);
+    }
+    
+    /**
+     * Broadcast all events in the specified collection, stopping the at any time an AbortProcessingException 
+     * is thrown.
+     * 
+     * @param context the current JSF context
+     * @param events the events to broadcast
+     * 
+     * @return <code>true</code> if the broadcast was completed without abortion, <code>false</code> otherwise
+     */
+    private boolean _broadcastAll(FacesContext context, Collection<? extends FacesEvent> events)
+    {
+        assert events != null;
+        
+        for (FacesEvent event : events)
+        {
+            UIComponent source = event.getComponent();
+            
+            // Push the source as the current component
+            pushComponentToEL(context, source);
+            
+            try
+            {
+                // Actual event broadcasting
+                source.broadcast(event);
+            }
+            catch (AbortProcessingException e)
+            {
+                // Abortion
+                return false;
+            }
+            finally
+            {
+                // Restore the current component
+                popComponentFromEL(context);
+            }
+        }
+        
+        return true;
     }
 
     private void _broadcastForPhase(PhaseId phaseId)
@@ -1119,6 +1095,38 @@ public class UIViewRoot extends UIComponentBase
         }
         
         return clientIds;
+    }
+
+    /**
+     * Process the specified phase by calling PhaseListener.beforePhase for every phase listeners defined on this 
+     * view root, then calling the process method of the processor, broadcasting relevant events and finally 
+     * notifying the afterPhase method of every phase listeners registered on this view root.
+     * 
+     * @param context
+     * @param phaseId
+     * @param processor
+     * @param broadcast
+     * 
+     * @return
+     */
+    private boolean _process(FacesContext context, PhaseId phaseId, PhaseProcessor processor)
+    {
+        if (!notifyListeners(context, phaseId, getBeforePhaseListener(), true))
+        {
+            if (processor != null)
+            {
+                processor.process(context, this);
+            }
+
+            broadcastEvents(context, phaseId);
+        }
+        
+        if (context.getRenderResponse() || context.getResponseComplete())
+        {
+            clearEvents();
+        }
+        
+        return notifyListeners(context, phaseId, getAfterPhaseListener(), false);
     }
     
     private void _processDecodesAjax(FacesContext context)

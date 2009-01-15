@@ -563,7 +563,6 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
     /**
      * @since 1.2
      */
-
     public String getContainerClientId(FacesContext ctx)
     {
         if (ctx == null)
