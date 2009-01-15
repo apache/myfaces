@@ -19,7 +19,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import javax.faces.context.FacesContext;
+import javax.faces.context.PartialViewContext;
+
 import org.apache.myfaces.context.servlet.FacesContextImpl;
 import org.apache.shale.test.base.AbstractJsfTestCase;
 
@@ -41,23 +44,28 @@ public class ExecutePhaseClientIdsTest extends AbstractJsfTestCase {
     public void testRequestParams1() {
         String empty = "    \n \t  ";
         Map<String, String> requestParamMap = new HashMap<String, String>();
-        requestParamMap.put(FacesContext.PARTIAL_EXECUTE_PARAM_NAME, empty);
+        requestParamMap.put(PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME, empty);
         ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);
 
         FacesContext context = new FacesContextImpl(servletContext, wrapper, response);
-        assertTrue(context.getExecutePhaseClientIds().isEmpty());
+        
+        PartialViewContext pprContext = context.getPartialViewContext();
+
+        assertTrue(pprContext.getExecutePhaseClientIds().isEmpty());
     }
 
     /**
      * no request param, has to result in an empty list
      */
     public void testRequestParams2() {
-        String empty = "";
         Map<String, String> requestParamMap = new HashMap<String, String>();
         ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);
 
         FacesContext context = new FacesContextImpl(servletContext, wrapper, response);
-        assertTrue(context.getExecutePhaseClientIds().isEmpty());
+        
+        PartialViewContext pprContext = context.getPartialViewContext();
+
+        assertTrue(pprContext.getExecutePhaseClientIds().isEmpty());
     }
 
     /**
@@ -65,11 +73,15 @@ public class ExecutePhaseClientIdsTest extends AbstractJsfTestCase {
      */
     public void testRequestParams4() {
         Map<String, String> requestParamMap = new HashMap<String, String>();
-        requestParamMap.put(FacesContext.PARTIAL_EXECUTE_PARAM_NAME, FacesContext.NO_PARTIAL_PHASE_CLIENT_IDS);
+        requestParamMap.put(PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME, 
+                            PartialViewContext.NO_PARTIAL_PHASE_CLIENT_IDS);
         ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);
 
         FacesContext context = new FacesContextImpl(servletContext, wrapper, response);
-        assertTrue(context.getExecutePhaseClientIds().isEmpty());
+        
+        PartialViewContext pprContext = context.getPartialViewContext();
+
+        assertTrue(pprContext.getExecutePhaseClientIds().isEmpty());
     }
 
     /**
@@ -78,12 +90,15 @@ public class ExecutePhaseClientIdsTest extends AbstractJsfTestCase {
     public void testRequestParams5() {
         String params = " view1:panel1:_component1  ";
         Map<String, String> requestParamMap = new HashMap<String, String>();
-        requestParamMap.put(FacesContext.PARTIAL_EXECUTE_PARAM_NAME, params);
+        requestParamMap.put(PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME, params);
         ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);
 
         FacesContext context = new FacesContextImpl(servletContext, wrapper, response);
-        assertTrue("Length must be one",context.getExecutePhaseClientIds().size() == 1);
-        assertTrue("Value match",context.getExecutePhaseClientIds().get(0).equals("view1:panel1:_component1"));
+        
+        PartialViewContext pprContext = context.getPartialViewContext();
+
+        assertTrue("Length must be one",pprContext.getExecutePhaseClientIds().size() == 1);
+        assertTrue("Value match", pprContext.getExecutePhaseClientIds().get(0).equals("view1:panel1:_component1"));
     }
 
     /**
@@ -93,17 +108,20 @@ public class ExecutePhaseClientIdsTest extends AbstractJsfTestCase {
     public void testRequestParams6() {
         String params = " view1:panel1:_component1,view1:panel1:_component2 \n , component3, component4  ";
         Map<String, String> requestParamMap = new HashMap<String, String>();
-        requestParamMap.put(FacesContext.PARTIAL_EXECUTE_PARAM_NAME, params);
+        requestParamMap.put(PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME, params);
         ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);
 
         FacesContext context = new FacesContextImpl(servletContext, wrapper, response);
-        assertTrue("Length must be four",context.getExecutePhaseClientIds().size() == 4);
+        
+        PartialViewContext pprContext = context.getPartialViewContext();
+        
+        assertTrue("Length must be four", pprContext.getExecutePhaseClientIds().size() == 4);
 
-        assertTrue("Value match",context.getExecutePhaseClientIds().get(0).equals("view1:panel1:_component1"));
-        assertTrue("Value match",context.getExecutePhaseClientIds().get(2).equals("component3"));
+        assertTrue("Value match", pprContext.getExecutePhaseClientIds().get(0).equals("view1:panel1:_component1"));
+        assertTrue("Value match", pprContext.getExecutePhaseClientIds().get(2).equals("component3"));
 
 
-        assertTrue("Value match",context.getExecutePhaseClientIds().get(3).equals("component4"));
+        assertTrue("Value match", pprContext.getExecutePhaseClientIds().get(3).equals("component4"));
     }
 
     /**
@@ -116,12 +134,15 @@ public class ExecutePhaseClientIdsTest extends AbstractJsfTestCase {
         executePhaseClientIds.add("component2");
         String params = " view1:panel1:_component1,view1:panel1:_component2 \n , component3, component4  ";
         Map<String, String> requestParamMap = new HashMap<String, String>();
-        requestParamMap.put(FacesContext.PARTIAL_EXECUTE_PARAM_NAME, params);
+        requestParamMap.put(PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME, params);
         ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);
 
         FacesContext context = new FacesContextImpl(servletContext, wrapper, response);
-        context.setExecutePhaseClientIds(executePhaseClientIds);
-        assertTrue(context.getExecutePhaseClientIds().size() == 2);
+        
+        PartialViewContext pprContext = context.getPartialViewContext();
+        
+        pprContext.setExecutePhaseClientIds(executePhaseClientIds);
+        assertTrue(pprContext.getExecutePhaseClientIds().size() == 2);
 
     }
 }
