@@ -108,16 +108,7 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
 
     public static UIComponent getCurrentCompositeComponent(FacesContext context)
     {
-        // Return the closest ancestor component, relative to the component returned from 
-        // getCurrentComponent(javax.faces.context.FacesContext), that is a composite component, 
-        // or null if no such component exists.
-        UIComponent currentComponent = getCurrentComponent(context);
-        while (currentComponent != null && !currentComponent._isCompositeComponent())
-        {
-            currentComponent = currentComponent.getParent();
-        }
-        
-        return currentComponent;
+        return (UIComponent)context.getAttributes().get(UIComponent.CURRENT_COMPOSITE_COMPONENT);
     }
 
     public abstract Map<String, Object> getAttributes();
@@ -519,8 +510,33 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
         
         // Pop the current UIComponent from the FacesContext attributes map so that the previous 
         // UIComponent, if any, becomes the current component.
-        Deque<UIComponent> componentStack = (Deque<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);            
-        contextAttributes.put(UIComponent.CURRENT_COMPONENT, componentStack.pop());
+        Deque<UIComponent> componentStack = (Deque<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
+        
+        UIComponent newCurrent = componentStack.pop();
+        UIComponent oldCurrent = (UIComponent)contextAttributes.put(UIComponent.CURRENT_COMPONENT, newCurrent);
+        
+        if (oldCurrent != null && oldCurrent._isCompositeComponent())
+        {
+            // Recalculate the current composite component
+            if (newCurrent != null)
+            {
+                if (newCurrent._isCompositeComponent())
+                {
+                    contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, newCurrent);
+                }
+                else
+                {
+                    for (UIComponent component : componentStack)
+                    {
+                        if (component._isCompositeComponent())
+                        {
+                            contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, component);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -546,6 +562,10 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
         // popComponentFromEL(javax.faces.context.FacesContext).
         contextAttributes.put(UIComponent.CURRENT_COMPONENT, component);
  
+        if (component._isCompositeComponent())
+        {
+            contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, component);
+        }
     }
 
     /**
