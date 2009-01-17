@@ -656,8 +656,10 @@ public class UIInput extends UIOutput implements EditableValueHolder
         return null;
     }
 
-    /** See getValidator. */
-    @Deprecated
+    /** See getValidator.
+     *  
+     * @deprecated 
+     */
     public void setValidator(MethodBinding validator)
     {
         this._validator = validator;
@@ -725,7 +727,6 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * 
      * @deprecated
      */
-    @Deprecated
     @JSFProperty(stateHolder = true, returnSignature = "void", methodSignature = "javax.faces.event.ValueChangeEvent")
     public MethodBinding getValueChangeListener()
     {
@@ -747,7 +748,6 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * 
      * @deprecated
      */
-    @Deprecated
     public void setValueChangeListener(MethodBinding valueChangeListener)
     {
         this._valueChangeListener = valueChangeListener;

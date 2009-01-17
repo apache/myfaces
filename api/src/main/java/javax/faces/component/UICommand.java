@@ -88,7 +88,6 @@ public class UICommand extends UIComponentBase implements ActionSource2
      * 
      * @deprecated Use getActionExpression() instead.
      */
-    @Deprecated
     public MethodBinding getAction()
     {
         MethodExpression actionExpression = getActionExpression();
@@ -107,7 +106,6 @@ public class UICommand extends UIComponentBase implements ActionSource2
     /**
      * @deprecated Use setActionExpression instead.
      */
-    @Deprecated
     public void setAction(MethodBinding action)
     {
         if (action != null)
@@ -259,7 +257,6 @@ public class UICommand extends UIComponentBase implements ActionSource2
      * 
      * @deprecated
      */
-    @Deprecated
     @JSFProperty(stateHolder = true, returnSignature = "void", methodSignature = "javax.faces.event.ActionEvent")
     public MethodBinding getActionListener()
     {
@@ -276,7 +273,9 @@ public class UICommand extends UIComponentBase implements ActionSource2
         return null;
     }
 
-    @Deprecated
+    /**
+     * @deprecated
+     */
     @JSFProperty(returnSignature="void",methodSignature="javax.faces.event.ActionEvent")
     public void setActionListener(MethodBinding actionListener)
     {
