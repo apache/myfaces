@@ -48,12 +48,14 @@ javax.faces.Ajax._requestQueue = new org.apache.myfaces._TrRequestQueue();
  * return a concatenated string of the encoded values!
  *
  * @throws an exception in case of the given element not being of type form!
+ * https://issues.apache.org/jira/browse/MYFACES-2110
  */
 javax.faces.Ajax.viewState = function(formElement) {
     /**
      *  typecheck assert!, we opt for strong typing here
      *  because it makes it easier to detect bugs
      */
+
     if ('undefined' == typeof(formElement)
             || null == formElement
             || 'undefined' == typeof(formElement.nodeName)
