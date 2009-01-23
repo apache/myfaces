@@ -73,6 +73,12 @@ public class ResourceHandlerImpl extends ResourceHandler
             String contentType)
     {
         Resource resource = null;
+        
+        if (contentType == null)
+        {
+            //Resolve contentType using ExternalContext.getMimeType
+            contentType = FacesContext.getCurrentInstance().getExternalContext().getMimeType(resourceName);
+        }
 
         for (ResourceLoader loader : getResourceHandlerSupport()
                 .getResourceLoaders())
