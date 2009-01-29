@@ -242,10 +242,10 @@ if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
     }
     org.apache.myfaces._TrRequestQueue.prototype._doXmlHttpRequest = function(requestItem)
     {
-        var xmlHttp = new TrXMLRequest();
+        var xmlHttp = new org.apache.myfaces._TrXMLRequest();
         xmlHttp.__dtsRequestContext = requestItem._context;
         xmlHttp.__dtsRequestMethod = requestItem._method;
-        var callback = TrUIUtils.createCallback(this, this._handleRequestCallback);
+        var callback = org.apache.myfaces._JSF2Utils.hitch(this, this._handleRequestCallback);//TrUIUtils.createCallback(this, this._handleRequestCallback);
         xmlHttp.setCallback(callback);
         // xmlhttp request uses the same charset as its parent document's charset.
         // There is no need to set the charset.
@@ -330,7 +330,7 @@ if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
             }
         }
         if (this._iframeLoadCallback == null)
-            this._iframeLoadCallback = TrUIUtils.createCallback(this, this._handleIFrameLoad);
+            this._iframeLoadCallback = org.apache.myfaces._JSF2Utils.hitch(this,this._handleIFrameLoad);//TrUIUtils.createCallback(this, this._handleIFrameLoad);
         // IE BUG, see TRINIDAD-704
         if (_agent.isIE && window.external)
             window.external.AutoCompleteSaveForm(htmlForm);
@@ -432,7 +432,7 @@ if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
             )
     {
         var httpState = xmlHttp.getCompletionState();
-        if (httpState != TrXMLRequest.COMPLETED)
+        if (httpState != org.apache.myfaces._TrXMLRequest.COMPLETED)
             return;
         var statusCode = 0;
         var failedConnectionText = org.apache.myfaces._TrRequestQueue._getFailedConnectionText();

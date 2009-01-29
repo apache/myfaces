@@ -54,9 +54,9 @@ _provide_Org_Apache_Myfaces();
 /**
  * Central internal JSF2 Utils with code used
  * by various aspects of the JSF2 Ajax subsystem
- * 
+ *
  * Note parts of the code were crossported from the dojo
- * javascript library (see license.txt for more details 
+ * javascript library (see license.txt for more details
  * on the dojo bsd license)
  */
 if ('undefined' == typeof(org.apache.myfaces._JSF2Utils) || null == org.apache.myfaces._JSF2Utils) {
@@ -66,8 +66,15 @@ if ('undefined' == typeof(org.apache.myfaces._JSF2Utils) || null == org.apache.m
     org.apache.myfaces._JSF2Utils.isUnderTest = function() {
         return this._underTest;
     }
-    
-   
+
+
+    org.apache.myfaces._JSF2Utils.byId = function(/*object*/ reference) {
+        if(org.apache.myfaces._JSF2Utils.isString(reference)) {
+            return document.getElementById(reference);
+        }
+        return reference;
+    },
+
     /**
      * backported from dojo
      * Converts an array-like object (i.e. arguments, DOMCollection) to an
@@ -102,6 +109,39 @@ if ('undefined' == typeof(org.apache.myfaces._JSF2Utils) || null == org.apache.m
         }
         return arr; // Array
     };
+
+    org.apache.myfaces._JSF2Utils.trimStringInternal = function(/*string*/ it,/*regexp*/ splitter) {
+        return org.apache.myfaces._JSF2Utils.strToArray(it, splitter).join(splitter);
+    };
+
+
+    org.apache.myfaces._JSF2Utils.strToArray = function(/*string*/ it,/*regexp*/ splitter) {
+        //	summary:
+        //		Return true if it is a String
+
+        if(!org.apache.myfaces._JSF2Utils.isString(it)) {
+            throw new Exception("org.apache.myfaces._JSF2Utils.strToArray param not of type string")
+        }
+        var resultArr = it.split(splitter);
+        for(var cnt = 0; cnt < resultArr.length; cnt++) {
+          resultArr[cnt] = org.apache.myfaces._JSF2Utils.trim(resultArr[cnt]);
+        }
+        return resultArr;
+    };
+
+    /**
+     * hyperfast trim
+     * http://blog.stevenlevithan.com/archives/faster-trim-javascript
+     */
+    org.apache.myfaces._JSF2Utils.trim = function(/*string*/) {
+
+      	var	str = str.replace(/^\s\s*/, ''),
+		ws = /\s/,
+		i = str.length;
+        while (ws.test(str.charAt(--i)));
+        return str.slice(0, i + 1);
+    };
+
     /**
      * Backported from dojo
      */
@@ -187,6 +227,52 @@ if ('undefined' == typeof(org.apache.myfaces._JSF2Utils) || null == org.apache.m
             return f && f.apply(scope || this, pre.concat(args)); // mixed
         } // Function
     };
+
+
+    /**
+     * Helper function to merge two maps
+     * into one
+     * @param dest the destination map
+     * @param source the source map
+     * @param overwriteDest if set to true the destination is overwritten if the keys exist in both maps
+     **/
+    org.apache.myfaces._JSF2Utils.mixMaps = function(/*map*/ destination, /*map*/source, /*boolean*/ overwriteDest) {
+        /**
+         * mixin code depending on the state of dest and the overwrite param
+         */
+        var result = {};
+        for(var key in source) {
+            if(overwriteDest || 'undefined' == typeof (source[key]) || null == (source[key])) {
+                result[key] = source[key];
+            } else if (!overWrite ) {
+                result[key] = dest[key];;
+            }
+        }
+        return result;
+    };
+
+    /**
+     * finds the parent form of a given node
+     * @param node is the node which the parent form has to be determined
+     **/
+    org.apache.myfaces._JSF2Utils.getParentForm = function(/*node*/ node) {
+        if('undefined' == typeof node || null == node) return node;
+
+        var tempNode = org.apache.myfaces._JSF2Utils.byId(node);
+
+        if(tempNode.tagName.toLowerCase() == "form") return tempNode;
+        var tagName = (undefined != typeof tempNode.tagName && tempNode.tagName != null) ? tempNode.tagName.toLowerCase(): null;
+        while(null != tagName &&tagName != "body" && tagName != "form") {
+            tempNode = tempNode.parentNode;
+            tagName = (undefined != typeof tempNode.tagName && tempNode.tagName != null) ? tempNode.tagName.toLowerCase(): null;
+
+        }
+        if("form" == tagName) {
+            return tempNode;
+        }
+        return null;
+    }
+
     /**
      * fetches the values of a form and returns
      * the name/value pairs as javascript map!
@@ -259,20 +345,15 @@ if ('undefined' == typeof(org.apache.myfaces._JSF2Utils) || null == org.apache.m
             var value = params[key];
             formParams[key] = params[key];
         }
+        return formParams;
     };
-    /**
-     * fetches the encoding content of a single form element
-     * and attaches the params to the resulting map
-     */
-    /*static*/
-    org.apache.myfaces._JSF2Utils.getPostbackContent = function(/*Node*/actionForm, /*params*/ params)
-    {
-        formParams = org.apache.myfaces._JSF2Utils.getFormMap(actionForm, params);
-        // 3. create form submit payload
+
+
+    org.apache.myfaces._JSF2Utils.getPostbackContentFromMap = function(/*map*/ sourceMap) {
         var content = "";
-        for (var key in formParams)
+        for (var key in sourceMap)
         {
-            var paramValue = formParams[key];
+            var paramValue = sourceMap[key];
             if (paramValue != null)
             {
                 // If it's an array...
@@ -291,6 +372,19 @@ if ('undefined' == typeof(org.apache.myfaces._JSF2Utils) || null == org.apache.m
             }
         }
         return content;
+
+    };
+
+    /**
+     * fetches the encoding content of a single form element
+     * and attaches the params to the resulting map
+     */
+    /*static*/
+    org.apache.myfaces._JSF2Utils.getPostbackContent = function(/*Node*/actionForm, /*params*/ params)
+    {
+        var formParams = org.apache.myfaces._JSF2Utils.getFormMap(actionForm, params);
+        // 3. create form submit payload
+        return org.apache.myfaces._JSF2Utils.getPostbackContentFromMap(formParams);
     }
     /*helper to append the encoded url params*/
     /*static*/
