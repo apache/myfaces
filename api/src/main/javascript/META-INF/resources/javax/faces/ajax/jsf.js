@@ -66,164 +66,10 @@ jsf.viewState = function(formElement) {
     formValues = myfaces._JSF2Utils.getPostbackContent(formElement, formValues);
     return formValues;
 };
-/**
- * this function has to send the ajax requests
- *
- * following request conditions must be met:
- * <ul>
- *  <li> the request must be sent asynchronously! </li>
- *  <li> the request must be a POST!!! request </li>
- *  <li> the request url must be the form action attribute </li>
- *  <li> all requests must be queued with a client side request queue to ensure the request ordering!</li>
- * </ul>
- *
- * @param element: any dom element no matter being it html or jsf, from which the event is emitted
- * @param event: any javascript event supported by that object
- * @param options : map of options being pushed into the ajax cycle
- */
 
 
-/* <p>Send an asynchronous Ajax request to the server.
-             * <p><b>Usage:</b></p>
-             * <pre><code>
-             * Example showing all optional arguments:
-             *
-             * &lt;commandButton id="button1" value="submit"
-             *     onclick="jsf.ajax.request(this,event,
-             *       {execute:'button1',render:'status',onevent: handleEvent,onerror: handleError});return false;"/&gt;
-             * &lt;/commandButton/&gt;
-             * </pre></code>
-             * <p><b>Implementation Requirements:</b></p>
-             * This function must:
-             * <ul>
-             * <li>Capture the element that triggered this Ajax request
-             * (from the <code>source</code> argument, also known as the
-             * <code>source</code> element.</li>
-             * <li>If the <code>source</code> element is <code>null</code> or
-             * <code>undefined</code> throw an error.</li>
-             * <li>If the <code>source</code> argument is not a <code>string</code> or
-             * DOM element object, throw an error.</li>
-             * <li>If the <code>source</code> argument is a <code>string</code>, find the
-             * DOM element for that <code>string</code> identifier.
-             * <li>If the DOM element could not be determined, throw an error.</li>
-             * <li>If the <code>onerror</code> and <code>onevent</code> arguments are set,
-             * they must be functions, or throw an error.
-             * <li>Determine the <code>source</code> element's <code>form</code>
-             * element.</li>
-             * <li>Get the <code>form</code> view state by calling
-             * {@link jsf.viewState} passing the
-             * <code>form</code> element as the argument.</li>
-             * <li>Collect post data arguments for the Ajax request.
-             * <ul>
-             * <li>The following name/value pairs are required post data arguments:
-             * <ul>
-             * <li><code>javax.faces.partial.source</code> with the value as the
-             * source element identifier.</li>
-             * <li>The name and value of the <code>source</code> element that
-             * triggered this request;</li>
-             * <li><code>javax.faces.partial.ajax</code> with the value
-             * <code>true</code></li>
-             * </ul>
-             * </li>
-             * </ul>
-             * </li>
-             * <li>Collect optional post data arguments for the Ajax request.
-             * <ul>
-             * <li>Determine additional arguments (if any) from the <code>options</code>
-             * argument. If <code>options.execute</code> exists, create the post data argument
-             * with the name <code>javax.faces.partial.execute</code> and the value as a
-             * space delimited <code>string</code> of client identifiers.  If
-             * <code>options.render</code> exists, create the post data argument with the name
-             * <code>javax.faces.partial.render</code> and the value as a space delimited
-             * <code>string</code> of client identifiers.</li>
-             * <li>Determine additional arguments (if any) from the <code>event</code>
-             * argument.  The following name/value pairs may be used from the
-             * <code>event</code> object:
-             * <ul>
-             * <li><code>target</code> - the ID of the element that triggered the event.</li>
-             * <li><code>captured</code> - the ID of the element that captured the event.</li>
-             * <li><code>type</code> - the type of event (ex: onkeypress)</li>
-             * <li><code>alt</code> - <code>true</code> if ALT key was pressed.</li>
-             * <li><code>ctrl</code> - <code>true</code> if CTRL key was pressed.</li>
-             * <li><code>shift</code> - <code>true</code> if SHIFT key was pressed. </li>
-             * <li><code>meta</code> - <code>true</code> if META key was pressed. </li>
-             * <li><code>right</code> - <code>true</code> if right mouse button
-             * was pressed. </li>
-             * <li><code>left</code> - <code>true</code> if left mouse button
-             * was pressed. </li>
-             * <li><code>keycode</code> - the key code.
-             * </ul>
-             * </li>
-             * </ul>
-             * </li>
-             * <li>Encode the set of post data arguments.</li>
-             * <li>Join the encoded view state with the encoded set of post data arguments
-             * to form the <code>query string</code> that will be sent to the server.</li>
-             * <li>Create a request <code>context</code> object and set the properties:
-             * <ul><li><code>source</code> (the source DOM element for this request)</li>
-             * <li><code>onerror</code> (the error handler for this request)</li>
-             * <li><code>onevent</code> (the event handler for this request)</li></ul>
-             * The request context will be used during error/event handling.</li>
-             * <li>Send a <code>begin</code> event following the procedure as outlined
-             * in the Chapter 13 "Sending Events" section of the spec prose document <a
-             *  href="../../javadocs/overview-summary.html#prose_document">linked in the
-             *  overview summary</a></li>
-             * <li>Send the request as an <code>asynchronous POST</code> using the
-             * <code>action</code> property of the <code>form</code> element as the
-             * <code>url</code>.</li>
-             * </ul>
-             * Before the request is sent it must be put into a queue to ensure requests
-             * are sent in the same order as when they were initiated.  The request callback function
-             * must examine the queue and determine the next request to be sent.  The behavior of the
-             * request callback function must be as follows:
-             * <ul>
-             * <li>If the request completed successfully invoke {@link jsf.ajax.response}
-             * passing the <code>request</code> object.</li>
-             * <li>If the request did not complete successfully, notify the client.</li>
-             * <li>Regardless of the outcome of the request (success or error) every request in the
-             * queue must be handled.  Examine the status of each request in the queue starting from
-             * the request that has been in the queue the longest.  If the status of the request is
-             * <code>complete</code> (readyState 4), dequeue the request (remove it from the queue).
-             * If the request has not been sent (readyState 0), send the request.  Requests that are
-             * taken off the queue and sent should not be put back on the queue.</li>
-             * </ul>
-             *
-             * </p>
-             *
-             * @param source The DOM element that triggered this Ajax request, or an id string of the
-             * element to use as the triggering element.
-             * @param event The DOM event that triggered this Ajax request.  The
-             * <code>event</code> argument is optional.
-             * @param options The set of available options that can be sent as
-             * request parameters to control client and/or server side
-             * request processing. Acceptable name/value pair options are:
-             * <table border="1">
-             * <tr>
-             * <th>name</th>
-             * <th>value</th>
-             * </tr>
-             * <tr>
-             * <td><code>execute</code></td>
-             * <td><code>space seperated list of client identifiers</code></td>
-             * </tr>
-             * <tr>
-             * <td><code>render</code></td>
-             * <td><code>space seperated list of client identifiers</code></td>
-             * </tr>
-             * <tr>
-             * <td><code>onevent</code></td>
-             * <td><code>function to callback for event</code></td>
-             * </tr>
-             * <tr>
-             * <td><code>onerror</code></td>
-             * <td><code>function to callback for error</code></td>
-             * </tr>
-             * </table>
-             * The <code>options</code> argument is optional.
-             * @member jsf.ajax
-             * @function jsf.ajax.request
-             * @throws ArgNotSet Error if first required argument <code>element</code> is not specified
-             */
+
+
 
 /**
  * internal assertion check for the element parameter
@@ -268,22 +114,6 @@ jsf.ajax._assertFunction = function(/*Objec*/ obj, /*String*/ functionName) {
     }
 }
 
-/**
- * Captures the event arguments according to the list in the specification
- *
- * <li><code>target</code> - the ID of the element that triggered the event.</li>
- * <li><code>captured</code> - the ID of the element that captured the event.</li>
- * <li><code>type</code> - the type of event (ex: onkeypress)</li>
- * <li><code>alt</code> - <code>true</code> if ALT key was pressed.</li>
- * <li><code>ctrl</code> - <code>true</code> if CTRL key was pressed.</li>
- * <li><code>shift</code> - <code>true</code> if SHIFT key was pressed. </li>
- * <li><code>meta</code> - <code>true</code> if META key was pressed. </li>
- * <li><code>right</code> - <code>true</code> if right mouse button
- * was pressed. </li>
- * <li><code>left</code> - <code>true</code> if left mouse button
- * was pressed. </li>
- * <li><code>keycode</code> - the key code.
- */
 jsf.ajax._caputureEventArgs = function(/*Dom node*/node, /*event*/ obj) {
     /*
      * TODO encode the rest of the arguments
@@ -294,7 +124,21 @@ jsf.ajax._caputureEventArgs = function(/*Dom node*/node, /*event*/ obj) {
 };
 
 
-
+/**
+ * this function has to send the ajax requests
+ *
+ * following request conditions must be met:
+ * <ul>
+ *  <li> the request must be sent asynchronously! </li>
+ *  <li> the request must be a POST!!! request </li>
+ *  <li> the request url must be the form action attribute </li>
+ *  <li> all requests must be queued with a client side request queue to ensure the request ordering!</li>
+ * </ul>
+ *
+ * @param element: any dom element no matter being it html or jsf, from which the event is emitted
+ * @param event: any javascript event supported by that object
+ * @param options : map of options being pushed into the ajax cycle
+ */
 jsf.ajax.request = function(/*String|Dom Node*/ element, /*|EVENT|*/ event, /*{|OPTIONS|}*/ options) {
 
     /*namespace remap for our local function context we mix the entire function namespace into
