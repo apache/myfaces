@@ -22,34 +22,28 @@ if('undefined' == typeof org || null == org) {
  * A simple provide function
  * fixing the namespaces
  */
-function _provide_Org_Apache_Myfaces() {
+function _reserveMyfaces() {
 
     /**
      *
      * reserve the root namespace for myfaces
      */
-    if ('undefined' != typeof OpenAjax && ('undefined' == typeof org || null == org || 'undefined' == typeof org.apache || 'undefined' == typeof org.apache.myfaces ||
-        null == org.apache || null == org.apache.myfaces)) {
+    if ('undefined' != typeof OpenAjax && ('undefined' == typeof org || null == org || 'undefined' == typeof org.apache || 'undefined' == typeof myfaces ||
+        null == org.apache || null == myfaces)) {
         if(undefined == typeof(org) || null == org) {
-            OpenAjax.hub.registerLibrary("org.apache.myfaces", "myfaces.apache.org", "1.0", null);
+            OpenAjax.hub.registerLibrary("myfaces", "myfaces.apache.org", "1.0", null);
         }
 
     }
-    /*hub registration failed for whatever reason*/
-    //TODO figure out how to reserve the namespace in a different form
-    if('undefined' == typeof org || null == org) {
-        org = new Object();
-    }
-    if('undefined' == typeof org.apache || null == org.apache) {
-        org.apache = new Object();
-    }
-    if('undefined' == typeof org.apache.myfaces || null == org.apache.myfaces) {
-        org.apache.myfaces = new Object();
+
+    /*originally we had it at org.apache.myfaces, but we are now down to myfaces since the openajax seems to have problems registering more than a root domain and org is not only apache specific*/
+    if('undefined' == typeof myfaces || null == myfaces) {
+        myfaces = new Object();
     }
 
 }
 
-_provide_Org_Apache_Myfaces();
+_reserveMyfaces();
 
 /**
  * Central internal JSF2 Utils with code used
@@ -59,17 +53,17 @@ _provide_Org_Apache_Myfaces();
  * javascript library (see license.txt for more details
  * on the dojo bsd license)
  */
-if ('undefined' == typeof(org.apache.myfaces._JSF2Utils) || null == org.apache.myfaces._JSF2Utils) {
-    org.apache.myfaces._JSF2Utils = function() {
+if ('undefined' == typeof(myfaces._JSF2Utils) || null == myfaces._JSF2Utils) {
+    myfaces._JSF2Utils = function() {
         }
-    org.apache.myfaces._JSF2Utils._underTest = false;
-    org.apache.myfaces._JSF2Utils.isUnderTest = function() {
+    myfaces._JSF2Utils._underTest = false;
+    myfaces._JSF2Utils.isUnderTest = function() {
         return this._underTest;
     }
 
 
-    org.apache.myfaces._JSF2Utils.byId = function(/*object*/ reference) {
-        if(org.apache.myfaces._JSF2Utils.isString(reference)) {
+    myfaces._JSF2Utils.byId = function(/*object*/ reference) {
+        if(myfaces._JSF2Utils.isString(reference)) {
             return document.getElementById(reference);
         }
         return reference;
@@ -88,7 +82,7 @@ if ('undefined' == typeof(org.apache.myfaces._JSF2Utils) || null == org.apache.m
      properties in obj are appended at the end of startWith and
      startWith is the returned array.
      */
-    org.apache.myfaces._JSF2Utils._toArray = function(/*Object*/obj, /*Number?*/offset, /*Array?*/ startWith) {
+    myfaces._JSF2Utils._toArray = function(/*Object*/obj, /*Number?*/offset, /*Array?*/ startWith) {
         //	summary:
         //		Converts an array-like object (i.e. arguments, DOMCollection) to an
         //		array. Returns a new Array with the elements of obj.
@@ -110,21 +104,21 @@ if ('undefined' == typeof(org.apache.myfaces._JSF2Utils) || null == org.apache.m
         return arr; // Array
     };
 
-    org.apache.myfaces._JSF2Utils.trimStringInternal = function(/*string*/ it,/*regexp*/ splitter) {
-        return org.apache.myfaces._JSF2Utils.strToArray(it, splitter).join(splitter);
+    myfaces._JSF2Utils.trimStringInternal = function(/*string*/ it,/*regexp*/ splitter) {
+        return myfaces._JSF2Utils.strToArray(it, splitter).join(splitter);
     };
 
 
-    org.apache.myfaces._JSF2Utils.strToArray = function(/*string*/ it,/*regexp*/ splitter) {
+    myfaces._JSF2Utils.strToArray = function(/*string*/ it,/*regexp*/ splitter) {
         //	summary:
         //		Return true if it is a String
 
-        if(!org.apache.myfaces._JSF2Utils.isString(it)) {
-            throw new Exception("org.apache.myfaces._JSF2Utils.strToArray param not of type string")
+        if(!myfaces._JSF2Utils.isString(it)) {
+            throw new Exception("myfaces._JSF2Utils.strToArray param not of type string")
         }
         var resultArr = it.split(splitter);
         for(var cnt = 0; cnt < resultArr.length; cnt++) {
-          resultArr[cnt] = org.apache.myfaces._JSF2Utils.trim(resultArr[cnt]);
+          resultArr[cnt] = myfaces._JSF2Utils.trim(resultArr[cnt]);
         }
         return resultArr;
     };
@@ -133,7 +127,7 @@ if ('undefined' == typeof(org.apache.myfaces._JSF2Utils) || null == org.apache.m
      * hyperfast trim
      * http://blog.stevenlevithan.com/archives/faster-trim-javascript
      */
-    org.apache.myfaces._JSF2Utils.trim = function(/*string*/) {
+    myfaces._JSF2Utils.trim = function(/*string*/) {
 
       	var	str = str.replace(/^\s\s*/, ''),
 		ws = /\s/,
@@ -145,7 +139,7 @@ if ('undefined' == typeof(org.apache.myfaces._JSF2Utils) || null == org.apache.m
     /**
      * Backported from dojo
      */
-    org.apache.myfaces._JSF2Utils.isString = function(/*anything*/ it) {
+    myfaces._JSF2Utils.isString = function(/*anything*/ it) {
         //	summary:
         //		Return true if it is a String
         return !!arguments.length && it != null && (typeof it == "string" || it instanceof String); // Boolean
@@ -157,7 +151,7 @@ if ('undefined' == typeof(org.apache.myfaces._JSF2Utils) || null == org.apache.m
      * can happen
      * (notably happens often in lazy xhr code)
      */
-    org.apache.myfaces._JSF2Utils.hitch = function(/*Object*/scope, /*Function|String*/method /*,...*/) {
+    myfaces._JSF2Utils.hitch = function(/*Object*/scope, /*Function|String*/method /*,...*/) {
         //	summary:
         //		Returns a function that will only ever execute in the a given scope.
         //		This allows for easy use of object member functions
@@ -174,13 +168,13 @@ if ('undefined' == typeof(org.apache.myfaces._JSF2Utils) || null == org.apache.m
         //		A function to be hitched to scope, or the name of the method in
         //		scope to be hitched.
         //	example:
-        //	|	org.apache.myfaces._JSF2Utils.hitch(foo, "bar")();
+        //	|	myfaces._JSF2Utils.hitch(foo, "bar")();
         //		runs foo.bar() in the scope of foo
         //	example:
-        //	|	org.apache.myfaces._JSF2Utils.hitch(foo, myFunction);
+        //	|	myfaces._JSF2Utils.hitch(foo, myFunction);
         //		returns a function that runs myFunction in the scope of foo
         if (arguments.length > 2) {
-            return org.apache.myfaces._JSF2Utils._hitchArgs._hitchArgs.apply(org.apache.myfaces._JSF2Utils._hitchArgs, arguments); // Function
+            return myfaces._JSF2Utils._hitchArgs._hitchArgs.apply(myfaces._JSF2Utils._hitchArgs, arguments); // Function
         }
         if (!method) {
             method = scope;
@@ -189,7 +183,7 @@ if ('undefined' == typeof(org.apache.myfaces._JSF2Utils) || null == org.apache.m
         if (this.isString(method)) {
             scope = scope || window || function() {};/*since we do not have dojo global*/
             if (!scope[method]) {
-                throw(['org.apache.myfaces._JSF2Utils: scope["', method, '"] is null (scope="', scope, '")'].join(''));
+                throw(['myfaces._JSF2Utils: scope["', method, '"] is null (scope="', scope, '")'].join(''));
             }
             return function() {
                 return scope[method].apply(scope, arguments || []);
@@ -201,7 +195,7 @@ if ('undefined' == typeof(org.apache.myfaces._JSF2Utils) || null == org.apache.m
     };
     // Logging helper for use in Firebug
     /*static*/
-    org.apache.myfaces._JSF2Utils.logWarning = function(varArgs)
+    myfaces._JSF2Utils.logWarning = function(varArgs)
     {
         if (window.console && console.warn)
             console.warn(arguments);
@@ -209,13 +203,13 @@ if ('undefined' == typeof(org.apache.myfaces._JSF2Utils) || null == org.apache.m
     }
     // Logging helper for use in Firebug
     /*static*/
-    org.apache.myfaces._JSF2Utils.logError = function(varArgs)
+    myfaces._JSF2Utils.logError = function(varArgs)
     {
         if (window.console && console.error)
             console.error(arguments);
     // else???
     }
-    org.apache.myfaces._JSF2Utils._hitchArgs = function(scope, method /*,...*/) {
+    myfaces._JSF2Utils._hitchArgs = function(scope, method /*,...*/) {
         var pre = this._toArray(arguments, 2);
         var named = this.isString(method);
         return function() {
@@ -236,7 +230,7 @@ if ('undefined' == typeof(org.apache.myfaces._JSF2Utils) || null == org.apache.m
      * @param source the source map
      * @param overwriteDest if set to true the destination is overwritten if the keys exist in both maps
      **/
-    org.apache.myfaces._JSF2Utils.mixMaps = function(/*map*/ destination, /*map*/source, /*boolean*/ overwriteDest) {
+    myfaces._JSF2Utils.mixMaps = function(/*map*/ destination, /*map*/source, /*boolean*/ overwriteDest) {
         /**
          * mixin code depending on the state of dest and the overwrite param
          */
@@ -252,13 +246,27 @@ if ('undefined' == typeof(org.apache.myfaces._JSF2Utils) || null == org.apache.m
     };
 
     /**
+     * check if an element exists in the root
+     */
+    myfaces._JSF2Utils.exists = function(root, element) {
+        return ('undefined' != typeof root[element] && null != root[element]);
+    }
+
+    myfaces._JSF2Utils.arrayToString = function(/*String or array*/ arr, /*string*/ delimiter) {
+      if(myfaces._JSF2Utils.isString(arr)) {
+          return arr;
+      }
+      return arr.join(delimiter);
+    };
+
+    /**
      * finds the parent form of a given node
      * @param node is the node which the parent form has to be determined
      **/
-    org.apache.myfaces._JSF2Utils.getParentForm = function(/*node*/ node) {
+    myfaces._JSF2Utils.getParentForm = function(/*node*/ node) {
         if('undefined' == typeof node || null == node) return node;
 
-        var tempNode = org.apache.myfaces._JSF2Utils.byId(node);
+        var tempNode = myfaces._JSF2Utils.byId(node);
 
         if(tempNode.tagName.toLowerCase() == "form") return tempNode;
         var tagName = (undefined != typeof tempNode.tagName && tempNode.tagName != null) ? tempNode.tagName.toLowerCase(): null;
@@ -277,7 +285,7 @@ if ('undefined' == typeof(org.apache.myfaces._JSF2Utils) || null == org.apache.m
      * fetches the values of a form and returns
      * the name/value pairs as javascript map!
      */
-    org.apache.myfaces._JSF2Utils.getFormMap = function(/*Node*/actionForm, /*map*/ params) {
+    myfaces._JSF2Utils.getFormMap = function(/*Node*/actionForm, /*map*/ params) {
         var formElements = actionForm.elements;
         // 1. build up formParams
         var formParams = {};
@@ -349,7 +357,7 @@ if ('undefined' == typeof(org.apache.myfaces._JSF2Utils) || null == org.apache.m
     };
 
 
-    org.apache.myfaces._JSF2Utils.getPostbackContentFromMap = function(/*map*/ sourceMap) {
+    myfaces._JSF2Utils.getPostbackContentFromMap = function(/*map*/ sourceMap) {
         var content = "";
         for (var key in sourceMap)
         {
@@ -362,12 +370,12 @@ if ('undefined' == typeof(org.apache.myfaces._JSF2Utils) || null == org.apache.m
                     var array = paramValue;
                     for (var i = 0; i < array.length; i++)
                     {
-                        content = org.apache.myfaces._JSF2Utils._appendUrlFormEncoded(content, key, array[i]);
+                        content = myfaces._JSF2Utils._appendUrlFormEncoded(content, key, array[i]);
                     }
                 }
                 else
                 {
-                    content = org.apache.myfaces._JSF2Utils._appendUrlFormEncoded(content, key, paramValue);
+                    content = myfaces._JSF2Utils._appendUrlFormEncoded(content, key, paramValue);
                 }
             }
         }
@@ -380,15 +388,15 @@ if ('undefined' == typeof(org.apache.myfaces._JSF2Utils) || null == org.apache.m
      * and attaches the params to the resulting map
      */
     /*static*/
-    org.apache.myfaces._JSF2Utils.getPostbackContent = function(/*Node*/actionForm, /*params*/ params)
+    myfaces._JSF2Utils.getPostbackContent = function(/*Node*/actionForm, /*params*/ params)
     {
-        var formParams = org.apache.myfaces._JSF2Utils.getFormMap(actionForm, params);
+        var formParams = myfaces._JSF2Utils.getFormMap(actionForm, params);
         // 3. create form submit payload
-        return org.apache.myfaces._JSF2Utils.getPostbackContentFromMap(formParams);
+        return myfaces._JSF2Utils.getPostbackContentFromMap(formParams);
     }
     /*helper to append the encoded url params*/
     /*static*/
-    org.apache.myfaces._JSF2Utils._appendUrlFormEncoded = function(
+    myfaces._JSF2Utils._appendUrlFormEncoded = function(
         buffer,
         key,
         value)

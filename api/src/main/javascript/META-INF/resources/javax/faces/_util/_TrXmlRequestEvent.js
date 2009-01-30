@@ -19,13 +19,13 @@
 
 /**
  * AJAX Request Event class. This object is passed back to the listeners
- * of a AJAX Service Request. It support Iorg.apache.myfaces._TrXMLRequestEvent pseudo-interface
+ * of a AJAX Service Request. It support Imyfaces._TrXMLRequestEvent pseudo-interface
  * with the following methods: getStatus, getResponseXML, getResponseText,
  * isPprResponse, getResponseContentType
  */
-_provide_Org_Apache_Myfaces();
-if ('undefined' == typeof(org.apache.myfaces._TrXMLRequestEvent)) {
-    org.apache.myfaces._TrXMLRequestEvent = function(
+_reserveMyfaces();
+if ('undefined' == typeof(myfaces._TrXMLRequestEvent)) {
+    myfaces._TrXMLRequestEvent = function(
         status,
         request
         )
@@ -33,11 +33,11 @@ if ('undefined' == typeof(org.apache.myfaces._TrXMLRequestEvent)) {
         this._status = status;
         this._request = request;
     };
-    org.apache.myfaces._TrXMLRequestEvent.STATUS_QUEUED = 1;
-    org.apache.myfaces._TrXMLRequestEvent.STATUS_SEND_BEFORE = 2;
-    org.apache.myfaces._TrXMLRequestEvent.STATUS_SEND_AFTER = 3;
-    org.apache.myfaces._TrXMLRequestEvent.STATUS_COMPLETE = 4;
-    org.apache.myfaces._TrXMLRequestEvent.prototype.getStatus = function()
+    myfaces._TrXMLRequestEvent.STATUS_QUEUED = 1;
+    myfaces._TrXMLRequestEvent.STATUS_SEND_BEFORE = 2;
+    myfaces._TrXMLRequestEvent.STATUS_SEND_AFTER = 3;
+    myfaces._TrXMLRequestEvent.STATUS_COMPLETE = 4;
+    myfaces._TrXMLRequestEvent.prototype.getStatus = function()
     {
         return this._status;
     };
@@ -47,23 +47,23 @@ if ('undefined' == typeof(org.apache.myfaces._TrXMLRequestEvent)) {
     /**
      * getter for the request, because jsf 2.0 wants to work directly on the object not the facade
      */
-    org.apache.myfaces._TrXMLRequestEvent.prototype.getRequest = function()
+    myfaces._TrXMLRequestEvent.prototype.getRequest = function()
     {
         return this._request;
     };
     /**
      * Returns the response of the AJAX Request as an XML document
-     * NOTE: this method is valid only for org.apache.myfaces._TrXMLRequestEvent.STATUS_COMPLETE
+     * NOTE: this method is valid only for myfaces._TrXMLRequestEvent.STATUS_COMPLETE
      **/
-    org.apache.myfaces._TrXMLRequestEvent.prototype.getResponseXML = function()
+    myfaces._TrXMLRequestEvent.prototype.getResponseXML = function()
     {
         return this._request.getResponseXML();
     };
     /**
      * Returns true if the response XML of the AJAX Request is valid.
-     * NOTE: this method is valid only for org.apache.myfaces._TrXMLRequestEvent.STATUS_COMPLETE
+     * NOTE: this method is valid only for myfaces._TrXMLRequestEvent.STATUS_COMPLETE
      **/
-    org.apache.myfaces._TrXMLRequestEvent.prototype._isResponseValidXML = function()
+    myfaces._TrXMLRequestEvent.prototype._isResponseValidXML = function()
     {
         // Note: Mozilla applies default XSLT to XML parse error
         var responseDocument = this._request.getResponseXML();
@@ -81,33 +81,33 @@ if ('undefined' == typeof(org.apache.myfaces._TrXMLRequestEvent)) {
     };
     /**
      * Returns the response of the AJAX Request as text.
-     * NOTE: this method is valid only for org.apache.myfaces._TrXMLRequestEvent.STATUS_COMPLETE
+     * NOTE: this method is valid only for myfaces._TrXMLRequestEvent.STATUS_COMPLETE
      **/
-    org.apache.myfaces._TrXMLRequestEvent.prototype.getResponseText = function()
+    myfaces._TrXMLRequestEvent.prototype.getResponseText = function()
     {
         return this._request.getResponseText();
     };
     /**
      * Returns the status code of the xml http AJAX Request.
-     * NOTE: this method is valid only for org.apache.myfaces._TrXMLRequestEvent.STATUS_COMPLETE
+     * NOTE: this method is valid only for myfaces._TrXMLRequestEvent.STATUS_COMPLETE
      **/
-    org.apache.myfaces._TrXMLRequestEvent.prototype.getResponseStatusCode = function()
+    myfaces._TrXMLRequestEvent.prototype.getResponseStatusCode = function()
     {
         return this._request.getStatus();
     };
     /**
      * Returns all the response headers for xml http AJAX Request.
-     * NOTE: this method is valid only for org.apache.myfaces._TrXMLRequestEvent.STATUS_COMPLETE
+     * NOTE: this method is valid only for myfaces._TrXMLRequestEvent.STATUS_COMPLETE
      **/
-    org.apache.myfaces._TrXMLRequestEvent.prototype._getAllResponseHeaders = function()
+    myfaces._TrXMLRequestEvent.prototype._getAllResponseHeaders = function()
     {
         return this._request.getAllResponseHeaders();
     };
     /**
      * Returns a particular response header for xml http Request.
-     * NOTE: this method is valid only for org.apache.myfaces._TrXMLRequestEvent.STATUS_COMPLETE
+     * NOTE: this method is valid only for myfaces._TrXMLRequestEvent.STATUS_COMPLETE
      **/
-    org.apache.myfaces._TrXMLRequestEvent.prototype.getResponseHeader = function(
+    myfaces._TrXMLRequestEvent.prototype.getResponseHeader = function(
         name
         )
         {
@@ -119,18 +119,18 @@ if ('undefined' == typeof(org.apache.myfaces._TrXMLRequestEvent)) {
     };
     /**
      * Returns if whether if is a rich response
-     * NOTE: this method is valid only for org.apache.myfaces._TrXMLRequestEvent.STATUS_COMPLETE
+     * NOTE: this method is valid only for myfaces._TrXMLRequestEvent.STATUS_COMPLETE
      **/
     // TODO: this should likely be deleted or renamed, as it is
     // not PPR-specific here
-    org.apache.myfaces._TrXMLRequestEvent.prototype.isPprResponse = function()
+    myfaces._TrXMLRequestEvent.prototype.isPprResponse = function()
     {
         // todo: do we need to mark rich responses?
         // var responseType = this.getResponseHeader("Tr-XHR-Response-Type");
         var isrich = true;
         if (isrich && (!this._isResponseValidXML()))
         {
-            org.apache.myfaces._TrRequestQueue._logError("Invalid PPR response." +
+            myfaces._TrRequestQueue._logError("Invalid PPR response." +
                 " The response-headers were:\n" +
                 this._getAllResponseHeaders() +
                 "\n The invalid response was:\n" +
@@ -140,9 +140,9 @@ if ('undefined' == typeof(org.apache.myfaces._TrXMLRequestEvent)) {
     };
     /**
      * Returns if whether if is a rich response
-     * NOTE: this method is valid only for org.apache.myfaces._TrXMLRequestEvent.STATUS_COMPLETE
+     * NOTE: this method is valid only for myfaces._TrXMLRequestEvent.STATUS_COMPLETE
      **/
-    org.apache.myfaces._TrXMLRequestEvent.prototype.getResponseContentType = function()
+    myfaces._TrXMLRequestEvent.prototype.getResponseContentType = function()
     {
         this.getResponseHeader("Content-Type");
     };

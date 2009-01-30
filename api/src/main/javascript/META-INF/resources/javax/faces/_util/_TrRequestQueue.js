@@ -16,15 +16,15 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-_provide_Org_Apache_Myfaces();
-if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
+_reserveMyfaces();
+if ('undefined' == typeof myfaces._TrRequestQueue) {
     /**
      * The RequestQueue class is a service to serialize the XML HTTP
      * request communication from the client to the server.
      */
-    org.apache.myfaces._TrRequestQueue = function(domWindow)
+    myfaces._TrRequestQueue = function(domWindow)
     {
-        this._state = org.apache.myfaces._TrRequestQueue.STATE_READY;
+        this._state = myfaces._TrRequestQueue.STATE_READY;
         this._requestQueue = new Array();
         // listeners that are interested in the state change of this service object
         this._stateChangeListeners = null;
@@ -34,13 +34,13 @@ if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
         this._window = domWindow;
     }
     // Class constants
-    org.apache.myfaces._TrRequestQueue.STATE_READY = 0;
-    org.apache.myfaces._TrRequestQueue.STATE_BUSY = 1;
+    myfaces._TrRequestQueue.STATE_READY = 0;
+    myfaces._TrRequestQueue.STATE_BUSY = 1;
     // frame used for multi-part form post
-    org.apache.myfaces._TrRequestQueue._MULTIPART_FRAME = "_trDTSFrame";
-    org.apache.myfaces._TrRequestQueue._XMLHTTP_TYPE = 0;
-    org.apache.myfaces._TrRequestQueue._MULTIPART_TYPE = 1;
-    org.apache.myfaces._TrRequestQueue.prototype.dispose = function()
+    myfaces._TrRequestQueue._MULTIPART_FRAME = "_trDTSFrame";
+    myfaces._TrRequestQueue._XMLHTTP_TYPE = 0;
+    myfaces._TrRequestQueue._MULTIPART_TYPE = 1;
+    myfaces._TrRequestQueue.prototype.dispose = function()
     {
         // TODO aschwart
         // Check for outstanding requests?
@@ -48,7 +48,7 @@ if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
         this._stateChangeListeners = null;
         this._window = null;
     }
-    org.apache.myfaces._TrRequestQueue._RequestItem = function(
+    myfaces._TrRequestQueue._RequestItem = function(
             type,
             context,
             actionURL,
@@ -64,7 +64,7 @@ if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
         this._content = content;
         this._method = method;
     }
-    org.apache.myfaces._TrRequestQueue.prototype._broadcastRequestStatusChanged = function(
+    myfaces._TrRequestQueue.prototype._broadcastRequestStatusChanged = function(
             context, currMethod, event)
     {
         if (currMethod)
@@ -75,13 +75,13 @@ if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
             }
             catch (e)
             {
-                org.apache.myfaces._TrRequestQueue._logError(
+                myfaces._TrRequestQueue._logError(
                         "Error ", e, " delivering XML request status changed to ",
                         currMethod);
             }
         }
     }
-    org.apache.myfaces._TrRequestQueue.prototype._addRequestToQueue = function(
+    myfaces._TrRequestQueue.prototype._addRequestToQueue = function(
             type,
             context,
             listener,
@@ -90,24 +90,24 @@ if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
             headerParams
             )
     {
-        var newRequest = new org.apache.myfaces._TrRequestQueue._RequestItem(
+        var newRequest = new myfaces._TrRequestQueue._RequestItem(
                 type, context, actionURL, headerParams, content, listener);
         this._requestQueue.push(newRequest);
         try
         {
-            var dtsRequestEvent = new org.apache.myfaces._TrXMLRequestEvent(
-                    org.apache.myfaces._TrXMLRequestEvent.STATUS_QUEUED,
+            var dtsRequestEvent = new myfaces._TrXMLRequestEvent(
+                    myfaces._TrXMLRequestEvent.STATUS_QUEUED,
                     null); // no xmlhttp object at this time
             this._broadcastRequestStatusChanged(context, listener, dtsRequestEvent);
         }
         catch(e)
         {
-            org.apache.myfaces._TrRequestQueue._logError("Error on listener callback invocation - STATUS_QUEUED", e);
+            myfaces._TrRequestQueue._logError("Error on listener callback invocation - STATUS_QUEUED", e);
         }
-        if (this._state == org.apache.myfaces._TrRequestQueue.STATE_READY)
+        if (this._state == myfaces._TrRequestQueue.STATE_READY)
         {
-            this._state = org.apache.myfaces._TrRequestQueue.STATE_BUSY;
-            this._broadcastStateChangeEvent(org.apache.myfaces._TrRequestQueue.STATE_BUSY);
+            this._state = myfaces._TrRequestQueue.STATE_BUSY;
+            this._broadcastStateChangeEvent(myfaces._TrRequestQueue.STATE_BUSY);
             this._doRequest();
         }
     }
@@ -117,7 +117,7 @@ if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
     /**
      * Send a form post
      */
-    org.apache.myfaces._TrRequestQueue.prototype.sendFormPost = function(
+    myfaces._TrRequestQueue.prototype.sendFormPost = function(
             context,
             method,
             actionForm,
@@ -144,7 +144,7 @@ if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
      * Returns true if the form has a "file" input that contains
      * anything to upload.
      */
-    org.apache.myfaces._TrRequestQueue.prototype._isMultipartForm = function(actionForm)
+    myfaces._TrRequestQueue.prototype._isMultipartForm = function(actionForm)
     {
         // If there not enough DOM support, namely getElementsByTagName() being
         // not supported, this function does not work. Return false for such case.
@@ -174,9 +174,9 @@ if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
      * @param params {Object} Name/value pairs to ensure that the form contains
      * @return Content encoded correctly in String form
      */
-    org.apache.myfaces._TrRequestQueue.prototype._getPostbackContent = function(actionForm, params)
+    myfaces._TrRequestQueue.prototype._getPostbackContent = function(actionForm, params)
     {
-       return org.apache.myfaces._JSF2Utils.getPostbackContent(actionForm, params)
+       return myfaces._JSF2Utils.getPostbackContent(actionForm, params)
     }
    
     //
@@ -192,7 +192,7 @@ if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
      * @param headerParams  Option HTTP header parameters to attach to the request
      * @param content     the content of the Asynchronous XML HTTP Post
      */
-    org.apache.myfaces._TrRequestQueue.prototype.sendRequest = function(
+    myfaces._TrRequestQueue.prototype.sendRequest = function(
             context,
             method,
             actionURL,
@@ -200,7 +200,7 @@ if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
             headerParams
             )
     {
-        this._addRequestToQueue(org.apache.myfaces._TrRequestQueue._XMLHTTP_TYPE, context, method, actionURL, content, headerParams);
+        this._addRequestToQueue(myfaces._TrRequestQueue._XMLHTTP_TYPE, context, method, actionURL, content, headerParams);
     }
     /**
      * Performs Asynchronous HTTP Request with the Server for multipart data
@@ -212,7 +212,7 @@ if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
      * @param params     additional parameters that need to be sent to the server
      * @param method   Javascript method
      */
-    org.apache.myfaces._TrRequestQueue.prototype.sendMultipartRequest = function(
+    myfaces._TrRequestQueue.prototype.sendMultipartRequest = function(
             context,
             method,
             actionURL,
@@ -222,30 +222,30 @@ if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
     {
         var privateContext =
         {"htmlForm":htmlForm, "params": params, "context": context, "method": method};
-        this._addRequestToQueue(org.apache.myfaces._TrRequestQueue._MULTIPART_TYPE, privateContext, null, actionURL);
+        this._addRequestToQueue(myfaces._TrRequestQueue._MULTIPART_TYPE, privateContext, null, actionURL);
     }
-    org.apache.myfaces._TrRequestQueue.prototype._doRequest = function()
+    myfaces._TrRequestQueue.prototype._doRequest = function()
     {
         // currently we are posting only one request at a time. In future we may batch
         // mutiple requests in one post
         var requestItem = this._requestQueue.shift();
         switch (requestItem._type)
                 {
-            case org.apache.myfaces._TrRequestQueue._XMLHTTP_TYPE:
+            case myfaces._TrRequestQueue._XMLHTTP_TYPE:
                 this._doXmlHttpRequest(requestItem);
                 break;
 
-            case org.apache.myfaces._TrRequestQueue._MULTIPART_TYPE:
+            case myfaces._TrRequestQueue._MULTIPART_TYPE:
                 this._doRequestThroughIframe(requestItem);
                 break;
         }
     }
-    org.apache.myfaces._TrRequestQueue.prototype._doXmlHttpRequest = function(requestItem)
+    myfaces._TrRequestQueue.prototype._doXmlHttpRequest = function(requestItem)
     {
-        var xmlHttp = new org.apache.myfaces._TrXMLRequest();
+        var xmlHttp = new myfaces._TrXMLRequest();
         xmlHttp.__dtsRequestContext = requestItem._context;
         xmlHttp.__dtsRequestMethod = requestItem._method;
-        var callback = org.apache.myfaces._JSF2Utils.hitch(this, this._handleRequestCallback);//TrUIUtils.createCallback(this, this._handleRequestCallback);
+        var callback = myfaces._JSF2Utils.hitch(this, this._handleRequestCallback);//TrUIUtils.createCallback(this, this._handleRequestCallback);
         xmlHttp.setCallback(callback);
         // xmlhttp request uses the same charset as its parent document's charset.
         // There is no need to set the charset.
@@ -265,13 +265,13 @@ if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
         }
         xmlHttp.send(requestItem._actionURL, requestItem._content);
     }
-    org.apache.myfaces._TrRequestQueue.prototype._doRequestThroughIframe = function(requestItem)
+    myfaces._TrRequestQueue.prototype._doRequestThroughIframe = function(requestItem)
     {
         var htmlForm = requestItem._context.htmlForm;
         var actionURL = requestItem._actionURL;
         var params = requestItem._context.params;
         // assert(htmlForm.action, "form action cannot be null for multiform post");
-        var frameName = org.apache.myfaces._TrRequestQueue._MULTIPART_FRAME;
+        var frameName = myfaces._TrRequestQueue._MULTIPART_FRAME;
         var domDocument = this._getDomDocument();
         var hiddenFrame = domDocument.getElementById(frameName), iframeDoc;
         var agentIsIE = _agent.isIE;
@@ -330,14 +330,14 @@ if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
             }
         }
         if (this._iframeLoadCallback == null)
-            this._iframeLoadCallback = org.apache.myfaces._JSF2Utils.hitch(this,this._handleIFrameLoad);//TrUIUtils.createCallback(this, this._handleIFrameLoad);
+            this._iframeLoadCallback = myfaces._JSF2Utils.hitch(this,this._handleIFrameLoad);//TrUIUtils.createCallback(this, this._handleIFrameLoad);
         // IE BUG, see TRINIDAD-704
         if (_agent.isIE && window.external)
             window.external.AutoCompleteSaveForm(htmlForm);
         htmlForm.submit();
         this._window.setTimeout(this._iframeLoadCallback, 50);
     }
-    org.apache.myfaces._TrRequestQueue.prototype._appendParamNode = function(domDocument, form, name, value)
+    myfaces._TrRequestQueue.prototype._appendParamNode = function(domDocument, form, name, value)
     {
         // assert(form!=null);
         var nodes = this._paramNodes;
@@ -353,7 +353,7 @@ if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
         nodes.push(node);
         form.appendChild(node);
     }
-    org.apache.myfaces._TrRequestQueue.prototype._clearParamNodes = function()
+    myfaces._TrRequestQueue.prototype._clearParamNodes = function()
     {
         var nodes = this._paramNodes;
         if (nodes)
@@ -367,11 +367,11 @@ if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
             delete this._paramNodes;
         }
     }
-    org.apache.myfaces._TrRequestQueue.prototype._handleIFrameLoad = function()
+    myfaces._TrRequestQueue.prototype._handleIFrameLoad = function()
     {
         var domDocument = this._getDomDocument();
         var agentIsIE = _agent.isIE;
-        var frameName = org.apache.myfaces._TrRequestQueue._MULTIPART_FRAME;
+        var frameName = myfaces._TrRequestQueue._MULTIPART_FRAME;
         var hiddenFrame, iframeDoc;
         if (agentIsIE)
         {
@@ -398,13 +398,13 @@ if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
         }
         catch(e)
         {
-            org.apache.myfaces._TrRequestQueue._alertError();
-            org.apache.myfaces._TrRequestQueue._logError("Error while performing request", e);
+            myfaces._TrRequestQueue._alertError();
+            myfaces._TrRequestQueue._logError("Error while performing request", e);
             this._htmlForm.action = this._savedActionUrl;
             this._htmlForm.target = this._savedTarget;
         }
     }
-    org.apache.myfaces._TrRequestQueue.prototype._onIFrameLoadComplete = function(
+    myfaces._TrRequestQueue.prototype._onIFrameLoadComplete = function(
             iframeDoc,
             context,
             requestMethod)
@@ -427,15 +427,15 @@ if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
             this._requestDone();
         }
     }
-    org.apache.myfaces._TrRequestQueue.prototype._handleRequestCallback = function(
+    myfaces._TrRequestQueue.prototype._handleRequestCallback = function(
             xmlHttp
             )
     {
         var httpState = xmlHttp.getCompletionState();
-        if (httpState != org.apache.myfaces._TrXMLRequest.COMPLETED)
+        if (httpState != myfaces._TrXMLRequest.COMPLETED)
             return;
         var statusCode = 0;
-        var failedConnectionText = org.apache.myfaces._TrRequestQueue._getFailedConnectionText();
+        var failedConnectionText = myfaces._TrRequestQueue._getFailedConnectionText();
         try
         {
             statusCode = xmlHttp.getStatus();
@@ -449,18 +449,21 @@ if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
         }
         if ((statusCode != 200) && (statusCode != 0))
         {
-            org.apache.myfaces._TrRequestQueue._alertError();
-            org.apache.myfaces._TrRequestQueue._logError("Error StatusCode(",
+            myfaces._TrRequestQueue._alertError();
+            myfaces._TrRequestQueue._logError("Error StatusCode(",
                     statusCode,
                     ") while performing request\n",
                     xmlHttp.getResponseText());
+            //TODO check the request callback context if the onerror has to
+            //be applied here
+
         }
         try
         {
             if (statusCode != 0)
             {
-                var dtsRequestEvent = new org.apache.myfaces._TrXMLRequestEvent(
-                        org.apache.myfaces._TrXMLRequestEvent.STATUS_COMPLETE,
+                var dtsRequestEvent = new myfaces._TrXMLRequestEvent(
+                        myfaces._TrXMLRequestEvent.STATUS_COMPLETE,
                         xmlHttp);
                 this._broadcastRequestStatusChanged(
                         xmlHttp.__dtsRequestContext,
@@ -476,7 +479,7 @@ if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
             this._requestDone();
         }
     }
-    org.apache.myfaces._TrRequestQueue.prototype._requestDone = function()
+    myfaces._TrRequestQueue.prototype._requestDone = function()
     {
         if (this._requestQueue.length > 0)
         {
@@ -486,8 +489,8 @@ if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
         else
         {
             // Reset our state to recieve more requests
-            this._state = org.apache.myfaces._TrRequestQueue.STATE_READY;
-            this._broadcastStateChangeEvent(org.apache.myfaces._TrRequestQueue.STATE_READY);
+            this._state = myfaces._TrRequestQueue.STATE_READY;
+            this._broadcastStateChangeEvent(myfaces._TrRequestQueue.STATE_READY);
         }
     }
     /**
@@ -498,7 +501,7 @@ if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
      * @param {function} listener  listener function to remove
      * @param {object} instance to pass as this when calling function
      */
-    org.apache.myfaces._TrRequestQueue.prototype.addStateChangeListener = function(listener, instance)
+    myfaces._TrRequestQueue.prototype.addStateChangeListener = function(listener, instance)
     {
         // assertFunction(listener);
         // assertObjectOrNull(instance);
@@ -516,7 +519,7 @@ if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
      * @param {function} listener  listener function to remove
      * @param {object} instance to pass as this when calling function
      */
-    org.apache.myfaces._TrRequestQueue.prototype.removeStateChangeListener = function(listener, instance)
+    myfaces._TrRequestQueue.prototype.removeStateChangeListener = function(listener, instance)
     {
         // assertFunction(listener);
         // assertObjectOrNull(instance);
@@ -548,14 +551,14 @@ if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
      * Return the current DTS state.
      * return (int) _state
      */
-    org.apache.myfaces._TrRequestQueue.prototype.getDTSState = function()
+    myfaces._TrRequestQueue.prototype.getDTSState = function()
     {
         return this._state;
     }
     /**
      * broadcast the state change of the request queue to its listeners
      */
-    org.apache.myfaces._TrRequestQueue.prototype._broadcastStateChangeEvent = function(state)
+    myfaces._TrRequestQueue.prototype._broadcastStateChangeEvent = function(state)
     {
         var stateChangeListeners = this._stateChangeListeners;
         // deliver the state change event to the listeners
@@ -576,35 +579,35 @@ if ('undefined' == typeof org.apache.myfaces._TrRequestQueue) {
                 }
                 catch (e)
                 {
-                    org.apache.myfaces._TrRequestQueue._logError("Error on DTS State Change Listener", e);
+                    myfaces._TrRequestQueue._logError("Error on DTS State Change Listener", e);
                 }
             }
         }
     }
-    org.apache.myfaces._TrRequestQueue.prototype._getDomDocument = function()
+    myfaces._TrRequestQueue.prototype._getDomDocument = function()
     {
         return this._window.document;
     }
-    org.apache.myfaces._TrRequestQueue._getFailedConnectionText = function()
+    myfaces._TrRequestQueue._getFailedConnectionText = function()
     {
         // TODO: get translated connection information
         return "Connection failed";
     }
-    org.apache.myfaces._TrRequestQueue._alertError = function()
+    myfaces._TrRequestQueue._alertError = function()
     {
         // TODO: get translated connection information
-        var failedConnectionText = org.apache.myfaces._TrRequestQueue._getFailedConnectionText();
+        var failedConnectionText = myfaces._TrRequestQueue._getFailedConnectionText();
         if (failedConnectionText != null)
             alert(failedConnectionText);
     }
     // Logging helper for use in Firebug
-    org.apache.myfaces._TrRequestQueue._logWarning = function(varArgs)
+    myfaces._TrRequestQueue._logWarning = function(varArgs)
     {
-       org.apache.myfaces._JSF2Utils.logWarning(varArgs);
+       myfaces._JSF2Utils.logWarning(varArgs);
     }
     // Logging helper for use in Firebug
-    org.apache.myfaces._TrRequestQueue._logError = function(varArgs)
+    myfaces._TrRequestQueue._logError = function(varArgs)
     {
-         org.apache.myfaces._JSF2Utils.logError(varArgs);
+         myfaces._JSF2Utils.logError(varArgs);
     }
 }

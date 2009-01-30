@@ -16,38 +16,38 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-_provide_Org_Apache_Myfaces();
-if ('undefined' == typeof org.apache.myfaces._TrXMLRequest) {
+_reserveMyfaces();
+if ('undefined' == typeof myfaces._TrXMLRequest) {
 
     /**
-     * org.apache.myfaces._TrXMLRequest class is a low-level XML HTTP Request
+     * myfaces._TrXMLRequest class is a low-level XML HTTP Request
      * wrapper
      **/
     /**
      * Default constructor. Creates an asynchronous XML HTTP request
      **/
-    org.apache.myfaces._TrXMLRequest = function()
+    myfaces._TrXMLRequest = function()
     {
         this.isSynchronous = false;
         this.callback = null;
-        this._state = org.apache.myfaces._TrXMLRequest.UNINITIALIZED;
+        this._state = myfaces._TrXMLRequest.UNINITIALIZED;
         this.headers = new Object();
-        this.xmlhttp = org.apache.myfaces._TrXMLRequest._createXmlHttpRequest();
+        this.xmlhttp = myfaces._TrXMLRequest._createXmlHttpRequest();
     };
     /**
      * Request state constants. See getCompletionState()
      **/
-    org.apache.myfaces._TrXMLRequest.UNINITIALIZED = 0;
-    org.apache.myfaces._TrXMLRequest.LOADING = 1;
-    org.apache.myfaces._TrXMLRequest.LOADED = 2;
-    org.apache.myfaces._TrXMLRequest.INTERACTIVE = 3;
-    org.apache.myfaces._TrXMLRequest.COMPLETED = 4;
+    myfaces._TrXMLRequest.UNINITIALIZED = 0;
+    myfaces._TrXMLRequest.LOADING = 1;
+    myfaces._TrXMLRequest.LOADED = 2;
+    myfaces._TrXMLRequest.INTERACTIVE = 3;
+    myfaces._TrXMLRequest.COMPLETED = 4;
     /**
      * Specifies whether the request should be synchronous
      * Parameters: isSynch - true if request should be synchronous,
      * false otherwise
      **/
-    org.apache.myfaces._TrXMLRequest.prototype.setSynchronous =
+    myfaces._TrXMLRequest.prototype.setSynchronous =
     function (isSynch)
     {
         this.isSynchronous = isSynch;
@@ -57,9 +57,9 @@ if ('undefined' == typeof org.apache.myfaces._TrXMLRequest) {
      * The callback will be called each time the state of the
      * request changes (see getCompletionState())
      * The callback should have the following siganture:
-     * <void> function (<org.apache.myfaces._TrXMLRequest>request)
+     * <void> function (<myfaces._TrXMLRequest>request)
      **/
-    org.apache.myfaces._TrXMLRequest.prototype.setCallback =
+    myfaces._TrXMLRequest.prototype.setCallback =
     function (_callback)
     {
         this.callback = _callback;
@@ -68,7 +68,7 @@ if ('undefined' == typeof org.apache.myfaces._TrXMLRequest) {
      * Returns request's completion state (see Request state
      * constants)
      **/
-    org.apache.myfaces._TrXMLRequest.prototype.getCompletionState =
+    myfaces._TrXMLRequest.prototype.getCompletionState =
     function()
     {
         return this._state;
@@ -76,7 +76,7 @@ if ('undefined' == typeof org.apache.myfaces._TrXMLRequest) {
     /**
      * Returns the HTTP response status.  For example, 200 is OK.
      */
-    org.apache.myfaces._TrXMLRequest.prototype.getStatus =
+    myfaces._TrXMLRequest.prototype.getStatus =
     function()
     {
         return this.xmlhttp.status;
@@ -86,7 +86,7 @@ if ('undefined' == typeof org.apache.myfaces._TrXMLRequest) {
      * Note: this method will block if the the request is asynchronous and
      * has not yet been completed
      **/
-    org.apache.myfaces._TrXMLRequest.prototype.getResponseXML =
+    myfaces._TrXMLRequest.prototype.getResponseXML =
     function()
     {
         return this.xmlhttp.responseXML;
@@ -96,7 +96,7 @@ if ('undefined' == typeof org.apache.myfaces._TrXMLRequest) {
      * Note: this method will block if the the request is asynchronous and
      * has not yet been completed
      **/
-    org.apache.myfaces._TrXMLRequest.prototype.getResponseText =
+    myfaces._TrXMLRequest.prototype.getResponseText =
     function()
     {
         return this.xmlhttp.responseText;
@@ -107,7 +107,7 @@ if ('undefined' == typeof org.apache.myfaces._TrXMLRequest) {
      * url - destination URL
      * content - XML document or string that should be included in the request's body
      **/
-    org.apache.myfaces._TrXMLRequest.prototype.send =
+    myfaces._TrXMLRequest.prototype.send =
     function(url, content)
     {
         var xmlhttp = this.xmlhttp;
@@ -131,22 +131,22 @@ if ('undefined' == typeof org.apache.myfaces._TrXMLRequest) {
             this._state = xmlhttp.readyState;
         }
     }
-    org.apache.myfaces._TrXMLRequest.prototype.getResponseHeader =
+    myfaces._TrXMLRequest.prototype.getResponseHeader =
     function(name)
     {
         return this.xmlhttp.getResponseHeader(name);
     }
-    org.apache.myfaces._TrXMLRequest.prototype.getAllResponseHeaders =
+    myfaces._TrXMLRequest.prototype.getAllResponseHeaders =
     function()
     {
         return this.xmlhttp.getAllResponseHeaders();
     }
-    org.apache.myfaces._TrXMLRequest.prototype.setRequestHeader =
+    myfaces._TrXMLRequest.prototype.setRequestHeader =
     function(name, value)
     {
         this.headers[name] = value;
     }
-    org.apache.myfaces._TrXMLRequest._createXmlHttpRequest = function()
+    myfaces._TrXMLRequest._createXmlHttpRequest = function()
     {
         var xmlhttp;
         if (window.XMLHttpRequest)
@@ -172,14 +172,14 @@ if ('undefined' == typeof org.apache.myfaces._TrXMLRequest) {
         }
         return xmlhttp;
     }
-    org.apache.myfaces._TrXMLRequest.prototype.__onReadyStateChange =
+    myfaces._TrXMLRequest.prototype.__onReadyStateChange =
     function()
     {
         this._state = this.xmlhttp.readyState;
         if (this.callback)
             this.callback(this);
     }
-    org.apache.myfaces._TrXMLRequest.prototype.cleanup = function()
+    myfaces._TrXMLRequest.prototype.cleanup = function()
     {
         this.callback = null
         delete this.xmlhttp;
