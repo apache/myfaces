@@ -47,7 +47,7 @@ jsf.ajax._requestQueue = new myfaces._TrRequestQueue();
  * @throws an exception in case of the given element not being of type form!
  * https://issues.apache.org/jira/browse/MYFACES-2110
  */
-jsf.viewState = function(formElement) {
+jsf.getViewState = function(formElement) {
     /**
      *  typecheck assert!, we opt for strong typing here
      *  because it makes it easier to detect bugs
@@ -66,9 +66,6 @@ jsf.viewState = function(formElement) {
     formValues = myfaces._JSF2Utils.getPostbackContent(formElement, formValues);
     return formValues;
 };
-
-
-
 
 
 /**
@@ -99,7 +96,7 @@ jsf.ajax._assertElement = function(/*String|Dom Node*/ element) {
     if('undefined' == typeof element || null == element) {
         throw new Exception("Element either must be a string to a or must be a valid dom node");
     }
-    
+
 };
 
 
@@ -114,6 +111,9 @@ jsf.ajax._assertFunction = function(/*Objec*/ obj, /*String*/ functionName) {
     }
 }
 
+/**
+ * Captures the event arguments according to the list in the specification
+ */
 jsf.ajax._caputureEventArgs = function(/*Dom node*/node, /*event*/ obj) {
     /*
      * TODO encode the rest of the arguments
@@ -175,12 +175,10 @@ jsf.ajax.request = function(/*String|Dom Node*/ element, /*|EVENT|*/ event, /*{|
      */
     var passThroughArguments = JSF2Utils.mixMaps({}, options, true);
 
-
-    passThroughArguments["jsf.partial"] = true;
     //finalOptions["javax.faces.viewState"]       = JSFAjax.viewState(parentForm);
     //finalOptions = JSF2Utils.mixMaps(finalOptions, options, true);
 
-    var viewState = jsf.viewState(sourceForm);
+    var viewState = jsf.getViewState(sourceForm);
 
     /*
      * either we have a valid form element or an element then we have to pass the form
@@ -198,8 +196,11 @@ jsf.ajax.request = function(/*String|Dom Node*/ element, /*|EVENT|*/ event, /*{|
 
     /*
      * we pass down the name and value of the source element
+     * seems to be removed on the ri side
+     * the have it in our viewstate values anyway
+     * and also in the exectute if no other values are set!
      */
-    passThroughArguments[sourceElement.name || sourceElement.id] = sourceElement.value || 'x';
+    //passThroughArguments[sourceElement.name || sourceElement.id] = sourceElement.value || 'x';
 
     /*
      * javax.faces.partial.ajax must be set to true
@@ -217,6 +218,8 @@ jsf.ajax.request = function(/*String|Dom Node*/ element, /*|EVENT|*/ event, /*{|
         passThroughArguments["javax.faces.partial.execute"] = JSF2Utils.arrayToString(passThroughArguments.execute,' ');
         passThroughArguments.execute = null;/*remap just in case we have a valid pointer to an existing object*/
         delete passThroughArguments.execute;
+    } else {
+         passThroughArguments["javax.faces.partial.execute"] = sourceElement.id;
     }
     if(JSF2Utils.exists(passThroughArguments,"render")) {
         //TODO add the source id to the list
@@ -224,10 +227,12 @@ jsf.ajax.request = function(/*String|Dom Node*/ element, /*|EVENT|*/ event, /*{|
         passThroughArguments.execute = null;
         delete passThroughArguments.execute;
     }
-    
+
     /*additional passthrough cleanup*/
+    /*ie6 supportive code to prevent browser leaks*/
     passThroughArguments.onevent = null;
     delete passThroughArguments.onevent;
+    /*ie6 supportive code to prevent browser leaks*/
     passThroughArguments.onerror = null;
     delete passThroughArguments.onevent;
 
@@ -277,7 +282,7 @@ jsf.ajax._mapTrinidadToRIEvents = function(/*object*/ xhrContext,/*_TrXMLRequest
 
     //TODO do the mapping code here
     var riEvent = {};
-    
+
     //TODO add the event mapping code here
     return null;
 };

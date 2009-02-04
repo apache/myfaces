@@ -118,7 +118,7 @@ if ('undefined' == typeof(myfaces._JSF2Utils) || null == myfaces._JSF2Utils) {
         }
         var resultArr = it.split(splitter);
         for(var cnt = 0; cnt < resultArr.length; cnt++) {
-          resultArr[cnt] = myfaces._JSF2Utils.trim(resultArr[cnt]);
+            resultArr[cnt] = myfaces._JSF2Utils.trim(resultArr[cnt]);
         }
         return resultArr;
     };
@@ -129,9 +129,9 @@ if ('undefined' == typeof(myfaces._JSF2Utils) || null == myfaces._JSF2Utils) {
      */
     myfaces._JSF2Utils.trim = function(/*string*/) {
 
-      	var	str = str.replace(/^\s\s*/, ''),
-		ws = /\s/,
-		i = str.length;
+        var	str = str.replace(/^\s\s*/, ''),
+        ws = /\s/,
+        i = str.length;
         while (ws.test(str.charAt(--i)));
         return str.slice(0, i + 1);
     };
@@ -234,13 +234,30 @@ if ('undefined' == typeof(myfaces._JSF2Utils) || null == myfaces._JSF2Utils) {
         /**
          * mixin code depending on the state of dest and the overwrite param
          */
+        var _JSF2Utils = myfaces._JSF2Utils;
         var result = {};
+        var keyIdx = {};
         for(var key in source) {
-            if(overwriteDest || 'undefined' == typeof (source[key]) || null == (source[key])) {
-                result[key] = source[key];
-            } else if (!overWrite ) {
-                result[key] = dest[key];;
+            /**
+           *we always overwrite dest with source
+           *unless overWrite is not set or source does not exist
+           *but also only if dest exists otherwise source still is taken
+           */
+            if(!overwriteDest) {
+                /**
+                 *we use exists instead of booleans because we cannot reloy
+                 *on all values being non boolean, we would need an elvis
+                 *operator in javascript to shorten this :-(
+                 */
+                result[key] = _JSF2Utils.exists(dest,key) ? dest[key] : source[key];
+            } else {
+                result[key] = _JSF2Utils.exists(source,key) ? source[key] : dest[key];
             }
+            keyIdx[key] = true;
+        }
+        for(var key in destination) {
+            /*if result.key does not exist we push in dest.key*/
+            result[key] = _JSF2Utils.exists(result,key) ? result[key] : destination[key];
         }
         return result;
     };
@@ -253,10 +270,10 @@ if ('undefined' == typeof(myfaces._JSF2Utils) || null == myfaces._JSF2Utils) {
     }
 
     myfaces._JSF2Utils.arrayToString = function(/*String or array*/ arr, /*string*/ delimiter) {
-      if(myfaces._JSF2Utils.isString(arr)) {
-          return arr;
-      }
-      return arr.join(delimiter);
+        if(myfaces._JSF2Utils.isString(arr)) {
+            return arr;
+        }
+        return arr.join(delimiter);
     };
 
     /**
