@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package javax.faces.webapp.pdl.facelets;
+package com.sun.facelets;
 
 import java.io.IOException;
 
@@ -24,26 +24,31 @@ import javax.el.ELException;
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.webapp.pdl.facelets.FaceletException;
 
 /**
- * A participant in UIComponent tree building
+ * The parent or root object in a FaceletHandler composition. The Facelet will take care of populating the passed
+ * UIComponent parent in relation to the create/restore lifecycle of JSF.
  * 
- * @author Jacob Hookom (latest modification by $Author: slessard $)
- * @version $Revision: 696523 $ $Date: 2008-12-10 18:36:19 -0400 (mer., 17 sept. 2008) $
- *
- * @since 2.0
+ * @author Jacob Hookom
+ * @version $Id: Facelet.java,v 1.3 2008/07/13 19:01:40 rlubke Exp $
  */
-public interface FaceletHandler
+public abstract class Facelet
 {
+
     /**
-     * Process changes on a particular UIComponent
+     * The passed UIComponent parent will be populated/restored in accordance with the JSF 1.2 specification.
      * 
-     * @param ctx the current FaceletContext instance for this execution
-     * @param parent the parent UIComponent to operate upon
+     * @param facesContext
+     *            The current FacesContext (Should be the same as FacesContext.getInstance())
+     * @param parent
+     *            The UIComponent to populate in a compositional fashion. In most cases a Facelet will be base a
+     *            UIViewRoot.
      * @throws IOException
      * @throws FacesException
      * @throws FaceletException
      * @throws ELException
      */
-    public void apply(FacesContext ctx, UIComponent parent);
+    public abstract void apply(FacesContext facesContext, UIComponent parent) throws IOException, FacesException,
+            FaceletException, ELException;
 }

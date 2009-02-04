@@ -6,5 +6,5 @@ See the file LICENSE.txt
 See licenses for accompanying products in the "/licenses" subdirectory.
 ------------------------------------------------------------------------
 
-This sowftware includes code from Facelets (https://facelets.dev.java.net/)
+This software also includes code from Facelets (https://facelets.dev.java.net/)
 for the purpose of implementing Facelets PDL for JSF 2.0 support.

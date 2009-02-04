@@ -16,34 +16,35 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package javax.faces.webapp.pdl.facelets;
+package com.sun.facelets.compiler;
 
-import java.io.IOException;
-
-import javax.el.ELException;
-import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
 
-/**
- * A participant in UIComponent tree building
- * 
- * @author Jacob Hookom (latest modification by $Author: slessard $)
- * @version $Revision: 696523 $ $Date: 2008-12-10 18:36:19 -0400 (mer., 17 sept. 2008) $
- *
- * @since 2.0
- */
-public interface FaceletHandler
+import javax.faces.webapp.pdl.facelets.FaceletContext;
+import javax.faces.webapp.pdl.facelets.FaceletHandler;
+import com.sun.facelets.tag.TextHandler;
+import com.sun.facelets.tag.jsf.core.FacetHandler;
+
+public abstract class AbstractUIHandler implements FaceletHandler, TextHandler
 {
-    /**
-     * Process changes on a particular UIComponent
-     * 
-     * @param ctx the current FaceletContext instance for this execution
-     * @param parent the parent UIComponent to operate upon
-     * @throws IOException
-     * @throws FacesException
-     * @throws FaceletException
-     * @throws ELException
-     */
-    public void apply(FacesContext ctx, UIComponent parent);
+
+    public void addComponent(FaceletContext ctx, UIComponent parent, UIComponent c)
+    {
+        // possible facet scoped
+        String facetName = this.getFacetName(ctx, parent);
+        if (facetName == null)
+        {
+            parent.getChildren().add(c);
+        }
+        else
+        {
+            parent.getFacets().put(facetName, c);
+        }
+    }
+
+    protected final String getFacetName(FaceletContext ctx, UIComponent parent)
+    {
+        return (String) parent.getAttributes().get(FacetHandler.KEY);
+    }
+
 }

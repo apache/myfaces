@@ -16,34 +16,53 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package javax.faces.webapp.pdl.facelets;
+package com.sun.facelets;
 
 import java.io.IOException;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
 
 /**
- * A participant in UIComponent tree building
+ * FaceletFactory for producing Facelets relative to the context of the underlying implementation.
  * 
- * @author Jacob Hookom (latest modification by $Author: slessard $)
- * @version $Revision: 696523 $ $Date: 2008-12-10 18:36:19 -0400 (mer., 17 sept. 2008) $
- *
- * @since 2.0
+ * @author Jacob Hookom
+ * @version $Id: FaceletFactory.java,v 1.4 2008/07/13 19:01:39 rlubke Exp $
  */
-public interface FaceletHandler
+public abstract class FaceletFactory
 {
+
+    private static ThreadLocal Instance = new ThreadLocal();
+
     /**
-     * Process changes on a particular UIComponent
+     * Return a Facelet instance as specified by the file at the passed URI.
      * 
-     * @param ctx the current FaceletContext instance for this execution
-     * @param parent the parent UIComponent to operate upon
+     * @param uri
+     * @return
      * @throws IOException
-     * @throws FacesException
      * @throws FaceletException
+     * @throws FacesException
      * @throws ELException
      */
-    public void apply(FacesContext ctx, UIComponent parent);
+    public abstract Facelet getFacelet(String uri) throws IOException, FaceletException, FacesException, ELException;
+
+    /**
+     * Set the static instance
+     * 
+     * @param factory
+     */
+    public static final void setInstance(FaceletFactory factory)
+    {
+        Instance.set(factory);
+    }
+
+    /**
+     * Get the static instance
+     * 
+     * @return
+     */
+    public static final FaceletFactory getInstance()
+    {
+        return (FaceletFactory) Instance.get();
+    }
 }
