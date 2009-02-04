@@ -61,12 +61,12 @@
                 <groupId>de.berlios.jsunit</groupId>
                 <artifactId>jsunit-maven2-plugin</artifactId>
                 <executions>
-                    <execution>
+                    <!--execution>
                         <id>test</id>
                         <goals>
                             <goal>jsunit-test</goal>
                         </goals>
-                    </execution>
+                    </execution-->
                 </executions>
                 <configuration>
                     <sourceDirectory>src/main/javascript/META-INF/resources</sourceDirectory>
