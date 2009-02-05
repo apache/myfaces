@@ -126,14 +126,14 @@ public final class CompositionHandler extends TagHandler implements TemplateClie
                 }
             }
 
-            ctx.extendClient(this);
+            //ctx.extendClient(this);
             try
             {
                 ctx.includeFacelet(parent, this.template.getValue(ctx));
             }
             finally
             {
-                ctx.popClient(this);
+                //ctx.popClient(this);
                 ctx.setVariableMapper(orig);
             }
         }

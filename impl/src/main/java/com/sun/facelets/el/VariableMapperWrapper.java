@@ -41,8 +41,8 @@ public final class VariableMapperWrapper extends VariableMapper
     private Map vars;
 
     /**
-	 * 
-	 */
+     * 
+     */
     public VariableMapperWrapper(VariableMapper orig)
     {
         super();

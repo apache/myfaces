@@ -71,21 +71,7 @@ public final class InsertHandler extends TagHandler implements TemplateClient
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {
-
-        ctx.extendClient(this);
-        boolean found = false;
-        try
-        {
-            found = ctx.includeDefinition(parent, this.name);
-        }
-        finally
-        {
-            ctx.popClient(this);
-        }
-        if (!found)
-        {
-            this.nextHandler.apply(ctx, parent);
-        }
+        this.nextHandler.apply(ctx, parent);
     }
 
     public boolean apply(FaceletContext ctx, UIComponent parent, String name) throws IOException, FacesException,

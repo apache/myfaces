@@ -22,6 +22,7 @@ import java.io.IOException;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
+import javax.faces.webapp.pdl.facelets.FaceletException;
 
 /**
  * FaceletFactory for producing Facelets relative to the context of the underlying implementation.
@@ -44,7 +45,7 @@ public abstract class FaceletFactory
      * @throws FacesException
      * @throws ELException
      */
-    public abstract Facelet getFacelet(String uri) throws IOException, FaceletException, FacesException, ELException;
+    public abstract Facelet getFacelet(String uri) throws IOException;
 
     /**
      * Set the static instance

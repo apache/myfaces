@@ -65,7 +65,6 @@ final class DefaultFaceletContext extends FaceletContext
     public DefaultFaceletContext(DefaultFaceletContext ctx, DefaultFacelet facelet)
     {
         this.ctx = ctx.ctx;
-        this.clients = ctx.clients;
         this.faces = ctx.faces;
         this.fnMapper = ctx.fnMapper;
         this.ids = ctx.ids;
@@ -82,7 +81,6 @@ final class DefaultFaceletContext extends FaceletContext
         this.ctx = ELAdaptor.getELContext(faces);
         this.ids = new HashMap();
         this.prefixes = new HashMap();
-        this.clients = new ArrayList(5);
         this.faces = faces;
         this.faceletHierarchy = new ArrayList(1);
         this.faceletHierarchy.add(facelet);
@@ -100,6 +98,7 @@ final class DefaultFaceletContext extends FaceletContext
      * 
      * @see javax.faces.webapp.pdl.facelets.FaceletContext#getFacesContext()
      */
+    @Override
     public FacesContext getFacesContext()
     {
         return this.faces;
@@ -110,6 +109,7 @@ final class DefaultFaceletContext extends FaceletContext
      * 
      * @see javax.faces.webapp.pdl.facelets.FaceletContext#getExpressionFactory()
      */
+    @Override
     public ExpressionFactory getExpressionFactory()
     {
         return this.facelet.getExpressionFactory();
@@ -120,6 +120,7 @@ final class DefaultFaceletContext extends FaceletContext
      * 
      * @see javax.faces.webapp.pdl.facelets.FaceletContext#setVariableMapper(javax.el.VariableMapper)
      */
+    @Override
     public void setVariableMapper(VariableMapper varMapper)
     {
         // Assert.param("varMapper", varMapper);
@@ -131,6 +132,7 @@ final class DefaultFaceletContext extends FaceletContext
      * 
      * @see javax.faces.webapp.pdl.facelets.FaceletContext#setFunctionMapper(javax.el.FunctionMapper)
      */
+    @Override
     public void setFunctionMapper(FunctionMapper fnMapper)
     {
         // Assert.param("fnMapper", fnMapper);
@@ -142,7 +144,8 @@ final class DefaultFaceletContext extends FaceletContext
      * 
      * @see javax.faces.webapp.pdl.facelets.FaceletContext#includeFacelet(javax.faces.component.UIComponent, java.lang.String)
      */
-    public void includeFacelet(UIComponent parent, String relativePath) throws IOException, FacesException, ELException
+    @Override
+    public void includeFacelet(UIComponent parent, String relativePath) throws IOException
     {
         this.facelet.include(this, parent, relativePath);
     }
@@ -152,6 +155,7 @@ final class DefaultFaceletContext extends FaceletContext
      * 
      * @see javax.el.ELContext#getFunctionMapper()
      */
+    @Override
     public FunctionMapper getFunctionMapper()
     {
         return this.fnMapper;
@@ -162,6 +166,7 @@ final class DefaultFaceletContext extends FaceletContext
      * 
      * @see javax.el.ELContext#getVariableMapper()
      */
+    @Override
     public VariableMapper getVariableMapper()
     {
         return this.varMapper;
@@ -192,6 +197,7 @@ final class DefaultFaceletContext extends FaceletContext
      * 
      * @see javax.faces.webapp.pdl.facelets.FaceletContext#generateUniqueId(java.lang.String)
      */
+    @Override
     public String generateUniqueId(String base)
     {
 
@@ -249,6 +255,7 @@ final class DefaultFaceletContext extends FaceletContext
      * 
      * @see javax.faces.webapp.pdl.facelets.FaceletContext#getAttribute(java.lang.String)
      */
+    @Override
     public Object getAttribute(String name)
     {
         if (this.varMapper != null)
@@ -267,6 +274,7 @@ final class DefaultFaceletContext extends FaceletContext
      * 
      * @see javax.faces.webapp.pdl.facelets.FaceletContext#setAttribute(java.lang.String, java.lang.Object)
      */
+    @Override
     public void setAttribute(String name, Object value)
     {
         if (this.varMapper != null)
@@ -288,60 +296,16 @@ final class DefaultFaceletContext extends FaceletContext
      * 
      * @see javax.faces.webapp.pdl.facelets.FaceletContext#includeFacelet(javax.faces.component.UIComponent, java.net.URL)
      */
+    @Override
     public void includeFacelet(UIComponent parent, URL absolutePath) throws IOException, FacesException, ELException
     {
         this.facelet.include(this, parent, absolutePath);
     }
 
+    @Override
     public ELResolver getELResolver()
     {
         return this.ctx.getELResolver();
-    }
-
-    private final List clients;
-
-    public void popClient(TemplateClient client)
-    {
-        if (!this.clients.isEmpty())
-        {
-            Iterator itr = this.clients.iterator();
-            while (itr.hasNext())
-            {
-                if (itr.next().equals(client))
-                {
-                    itr.remove();
-                    return;
-                }
-            }
-        }
-        throw new IllegalStateException(client + " not found");
-    }
-
-    public void pushClient(final TemplateClient client)
-    {
-        this.clients.add(0, new TemplateManager(this.facelet, client, true));
-    }
-
-    public void extendClient(final TemplateClient client)
-    {
-        this.clients.add(new TemplateManager(this.facelet, client, false));
-    }
-
-    public boolean includeDefinition(UIComponent parent, String name) throws IOException, FaceletException,
-            FacesException, ELException
-    {
-        boolean found = false;
-        TemplateManager client;
-
-        for (int i = 0, size = this.clients.size(); i < size && !found; i++)
-        {
-            client = ((TemplateManager) this.clients.get(i));
-            if (client.equals(this.facelet))
-                continue;
-            found = client.apply(this, parent, name);
-        }
-
-        return found;
     }
 
     private final static class TemplateManager implements TemplateClient

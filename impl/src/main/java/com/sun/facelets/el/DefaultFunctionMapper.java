@@ -125,8 +125,8 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
         protected String localName;
 
         /**
-		 * 
-		 */
+         * 
+         */
         public Function(String prefix, String localName, Method m)
         {
             if (localName == null)
