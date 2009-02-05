@@ -45,5 +45,5 @@ public interface FaceletHandler
      * @throws FaceletException
      * @throws ELException
      */
-    public void apply(FacesContext ctx, UIComponent parent);
+    public void apply(FaceletContext ctx, UIComponent parent)throws IOException;
 }
