@@ -1,14 +1,37 @@
+/*
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *  under the License.
+ */
+
+
 /**
  * Generical simplified browser independend logger
  * on browsers which offer a console object
  * it logs into the
  *
  * It follows a factory pattern so that it can be reroutet
- * to other debugging divs!
+ * to other debugging divs! Loggers are cached internally
+ * so using the factory should cause a limited performance
+ * overhead
  *
  * The output is either to the console if present
  * or to a debugging div
  * or to the outer document if nothing is present
+ *
+ * var logger = myfaces._Logger.getInstance([loggingDivId]);
+ * log.error("myError");
+ * log.debug("from me", "this is my error");
+ * etc...
  */
 
 _reserveMyfaces();
@@ -19,7 +42,7 @@ if(!myfaces._JSF2Utils.exists(myfaces, "_Logger")) {
         this._targetDiv = targetDiv;/*null or a valid element*/
         this._logLevel  = this.LOG_LEVEL_ALL;
         this._hasConsole = ('undefined' != typeof console && null != typeof console);
-        
+
     };
     myfaces._Logger._loggerIdx = {};
 
@@ -36,15 +59,20 @@ if(!myfaces._JSF2Utils.exists(myfaces, "_Logger")) {
         if('undefined' != typeof(targetDiv) && null != targetDiv) {
             targetDivId = myfaces._JSF2Utils.isString(targetDiv) ? targetDiv : targetDiv.id;
             retVal = myfaces._Logger._loggerIdx[targetDivId];
-            if('undefined' != typeof retVal || null != retVal) {
-                return retVal;
-            }
+        } else {
+            retVal = myfaces._Logger._loggerIdx["myfaces._Logger.standardLogger"];
         }
+        if('undefined' != typeof retVal || null != retVal) {
+            return retVal;
+        }
+
         retVal = new myfaces._Logger();
 
         if('undefined' != typeof(targetDiv) && null != targetDiv) {
             retVal.setTargetDiv(targetDiv);
             myfaces._Logger._loggerIdx[targetDivId] = retVal;
+        } else {
+            myfaces._Logger._loggerIdx["myfaces._Logger.standardLogger"] = retVal;
         }
         return retVal;
     };
