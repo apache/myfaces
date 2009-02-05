@@ -15,9 +15,7 @@
  *  under the License.
  */
 
-if('undefined' == typeof org || null == org) {
-    var org = null;
-}
+var myfaces = null;
 /**
  * A simple provide function
  * fixing the namespaces
@@ -28,12 +26,8 @@ function _reserveMyfaces() {
      *
      * reserve the root namespace for myfaces
      */
-    if ('undefined' != typeof OpenAjax && ('undefined' == typeof org || null == org || 'undefined' == typeof org.apache || 'undefined' == typeof myfaces ||
-        null == org.apache || null == myfaces)) {
-        if(undefined == typeof(org) || null == org) {
-            OpenAjax.hub.registerLibrary("myfaces", "myfaces.apache.org", "1.0", null);
-        }
-
+    if ('undefined' != typeof OpenAjax && ( 'undefined' == typeof myfaces || null == myfaces)) {
+        OpenAjax.hub.registerLibrary("myfaces", "myfaces.apache.org", "1.0", null);
     }
 
     /*originally we had it at org.apache.myfaces, but we are now down to myfaces since the openajax seems to have problems registering more than a root domain and org is not only apache specific*/
@@ -57,6 +51,8 @@ if ('undefined' == typeof(myfaces._JSF2Utils) || null == myfaces._JSF2Utils) {
     myfaces._JSF2Utils = function() {
         }
     myfaces._JSF2Utils._underTest = false;
+    myfaces._JSF2Utils._logger = null;
+
     myfaces._JSF2Utils.isUnderTest = function() {
         return this._underTest;
     }
@@ -193,22 +189,45 @@ if ('undefined' == typeof(myfaces._JSF2Utils) || null == myfaces._JSF2Utils) {
             return method.apply(scope, arguments || []);
         }; // Function
     };
+    /*used internally to lazy init the logger*/
+    myfaces._JSF2Utils._getLogger = function() {
+        if(null ==  myfaces._JSF2Utils._logger) {
+            myfaces._JSF2Utils._logger = myfaces._Logger.getInstance();
+        }
+    };
+
     // Logging helper for use in Firebug
     /*static*/
-    myfaces._JSF2Utils.logWarning = function(varArgs)
+    myfaces._JSF2Utils.logWarning = function(varArgs/*,...*/)
     {
-        if (window.console && console.warn)
-            console.warn(arguments);
+        var logger = myfaces._JSF2Utils._getLogger();
+        logger.warn(varArgs);
     // else???
-    }
+    };
+
+    myfaces._JSF2Utils.logDebug = function(varArgs/*,...*/)
+    {
+        var logger = myfaces._JSF2Utils._getLogger();
+        logger.debug(varArgs);
+    // else???
+    };
+
+
+    myfaces._JSF2Utils.logInfo = function(varArgs/*,...*/)
+    {
+        var logger = myfaces._JSF2Utils._getLogger();
+        logger.info(varArgs);
+    // else???
+    };
+
     // Logging helper for use in Firebug
     /*static*/
-    myfaces._JSF2Utils.logError = function(varArgs)
+    myfaces._JSF2Utils.logError = function(varArgs/*,...*/)
     {
-        if (window.console && console.error)
-            console.error(arguments);
-    // else???
-    }
+        var logger = myfaces._JSF2Utils._getLogger();
+        logger.error(varArgs);
+    };
+
     myfaces._JSF2Utils._hitchArgs = function(scope, method /*,...*/) {
         var pre = this._toArray(arguments, 2);
         var named = this.isString(method);
@@ -266,14 +285,24 @@ if ('undefined' == typeof(myfaces._JSF2Utils) || null == myfaces._JSF2Utils) {
      * check if an element exists in the root
      */
     myfaces._JSF2Utils.exists = function(root, element) {
-        return ('undefined' != typeof root[element] && null != root[element]);
+        return ('undefined' != typeof root && null != root &&  'undefined' != typeof root[element] && null != root[element]);
     }
 
+
+
     myfaces._JSF2Utils.arrayToString = function(/*String or array*/ arr, /*string*/ delimiter) {
-        if(myfaces._JSF2Utils.isString(arr)) {
-            return arr;
-        }
-        return arr.join(delimiter);
+      if( myfaces._JSF2Utils.isString(arr) ) {
+        return arr;
+      }
+      var resultArr = [];
+      for(var cnt = 0; cnt < arr.length; cnt ++) {
+          if(myfaces._JSF2Utils.isString(arr[cnt])) {
+              resultArr.push(arr[cnt]);
+          } else {
+              resultArr.push(arr[cnt].toString());
+          }
+      }
+      return resultArr.join(delimiter);
     };
 
     /**

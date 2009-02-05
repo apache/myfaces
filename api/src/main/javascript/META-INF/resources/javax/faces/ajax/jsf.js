@@ -19,6 +19,14 @@
  *  Those are the central public functions in the JSF2
  *  Ajax API! They handle the entire form submit and ajax send
  *  and resolve cycle!
+ *
+ *
+ *  TODO isolate the entire Trinidad part in a neutral
+ *  framework adapter class so that we can switch
+ *  transport implementations on the fly without
+ *  touching the core code (so that we might be able
+ *  to check for an existing transport and hook into that one
+ *  to keep the javascript size down)
  */
 
 /**
@@ -38,7 +46,34 @@ if ('undefined' == typeof jsf.ajax || null == jsf.ajax) {
     jsf.ajax = new Object();
 }
 
+/*CONSTANTS*/
+
+jsf.ajax._PROP_PARTIAL_SOURCE = "javax.faces.partial.source";
+jsf.ajax._PROP_VIEWSTATE = "javax.faces.viewState";
+jsf.ajax._PROP_AJAX = "javax.faces.partial.ajax";
+jsf.ajax._PROP_EXECUTE = "javax.faces.partial.execute";
+jsf.ajax._PROP_RENDER = "javax.faces.partial.render";
+
+
+jsf.ajax._MSG_TYPE_ERROR = "error";
+jsf.ajax._MSG_TYPE_EVENT = "event";
+jsf.ajax._AJAX_STAGE_BEGIN = "begin";
+jsf.ajax._AJAX_STAGE_COMPLETE = "complete";
+jsf.ajax._AJAX_STAGE_HTTPERROR = "httpError";
+
+/*Event queues*/
 jsf.ajax._requestQueue = new myfaces._TrRequestQueue();
+
+/**
+ * external event listener queue!
+ */
+jsf.ajax._eventListenerQueue = new myfaces._ListenerQueue();
+
+/**
+ * external error listener queue!
+ */
+jsf.ajax._errorListenerQueue = new myfaces._ListenerQueue();
+
 /**
  * collect and encode data for a given form element (must be of type form)
  * find the javax.faces.ViewState element and encode its value as well!
@@ -62,7 +97,7 @@ jsf.getViewState = function(formElement) {
     }
     var formValues = {};
 
-    formValues["javax.faces.viewState"] = document.getElementById("javax.faces.viewState").value;
+    formValues[jsf.ajax._PROP_VIEWSTATE] = document.getElementById(jsf.ajax._PROP_VIEWSTATE).value;
     formValues = myfaces._JSF2Utils.getPostbackContent(formElement, formValues);
     return formValues;
 };
@@ -174,10 +209,6 @@ jsf.ajax.request = function(/*String|Dom Node*/ element, /*|EVENT|*/ event, /*{|
      * we should not touch the incoming params!
      */
     var passThroughArguments = JSF2Utils.mixMaps({}, options, true);
-
-    //finalOptions["javax.faces.viewState"]       = JSFAjax.viewState(parentForm);
-    //finalOptions = JSF2Utils.mixMaps(finalOptions, options, true);
-
     var viewState = jsf.getViewState(sourceForm);
 
     /*
@@ -192,7 +223,7 @@ jsf.ajax.request = function(/*String|Dom Node*/ element, /*|EVENT|*/ event, /*{|
      * binding contract the javax.faces.partial.source must be
      * set according to the december 2008 preview
      */
-    passThroughArguments["javax.faces.partial.source"] = sourceElement.id;
+    passThroughArguments[jsf.ajax._PROP_PARTIAL_SOURCE] = sourceElement.id;
 
     /*
      * we pass down the name and value of the source element
@@ -205,7 +236,7 @@ jsf.ajax.request = function(/*String|Dom Node*/ element, /*|EVENT|*/ event, /*{|
     /*
      * javax.faces.partial.ajax must be set to true
      */
-    passThroughArguments["javax.faces.partial.ajax"] = true;
+    passThroughArguments[jsf.ajax._PROP_AJAX] = true;
 
     /**
      * if execute or render exist
@@ -215,15 +246,15 @@ jsf.ajax.request = function(/*String|Dom Node*/ element, /*|EVENT|*/ event, /*{|
     if(JSF2Utils.exists(passThroughArguments,"execute")) {
         /*the options must be a blank delimited list of strings*/
         //TODO add the source id to the list
-        passThroughArguments["javax.faces.partial.execute"] = JSF2Utils.arrayToString(passThroughArguments.execute,' ');
+        passThroughArguments[jsf.ajax._PROP_EXECUTE] = JSF2Utils.arrayToString(passThroughArguments.execute,' ');
         passThroughArguments.execute = null;/*remap just in case we have a valid pointer to an existing object*/
         delete passThroughArguments.execute;
     } else {
-         passThroughArguments["javax.faces.partial.execute"] = sourceElement.id;
+        passThroughArguments[jsf.ajax._PROP_EXECUTE] = sourceElement.id;
     }
     if(JSF2Utils.exists(passThroughArguments,"render")) {
         //TODO add the source id to the list
-        passThroughArguments["javax.faces.partial.render"] = JSF2Utils.arrayToString(passThroughArguments.render, ' ');
+        passThroughArguments[jsf.ajax._PROP_RENDER] = JSF2Utils.arrayToString(passThroughArguments.render, ' ');
         passThroughArguments.execute = null;
         delete passThroughArguments.execute;
     }
@@ -271,20 +302,109 @@ jsf.ajax.request = function(/*String|Dom Node*/ element, /*|EVENT|*/ event, /*{|
      */
 };
 
+jsf.ajax.addOnError = function(/*function*/errorListener) {
+    /*error handling already done in the assert of the queue*/
+    jsf.ajax._errorListenerQueue.add(errorListener);
+}
+
+jsf.ajax.addOnEvent = function(/*function*/eventListener) {
+    /*error handling already done in the assert of the queue*/
+    jsf.ajax._eventListenerQueue.add(eventListener);
+}
+
+
+/**
+ * RI compatibility method
+ * TODO make sure this method also occurrs in the specs
+ * otherwise simply pull it
+ */
+jsf.ajax.sendError = function sendError(/*Object*/request,/*Object*/ context,/*String*/ name,/*String*/ serverErrorName,/*String*/ serverErrorMessage) {
+    var eventData = {};
+    eventData.type = jsf.ajax._MSG_TYPE_ERROR;
+
+    eventData.name = name;
+    eventData.source = context.source;
+    eventData.responseXML = request.responseXML;
+    eventData.responseText = request.responseText;
+    eventData.responseCode = request.status;
+
+    /**/
+    if(myfaces._JSF2Utils.exists(context, "onerror")) {
+        context.onerror(eventData);
+    }
+    /*now we serve the queue as well*/
+    jsf.ajax._errorListenerQueue.broadcastEvent(eventData);
+};
+
+/**
+ * RI compatibility method
+ * TODO make sure this method also occurrs in the specs
+ * otherwise simply pull it
+ */
+jsf.ajax.sendEvent = function sendEvent(/*Object*/request,/*Object*/ context,/*even name*/ name) {
+    var eventData = {};
+    eventData.type = jsf.ajax._MSG_TYPE_EVENT;
+
+    eventData.name = name;
+    eventData.source = context.source;
+    if (name !== jsf.ajax._AJAX_STAGE_BEGIN) {
+        eventData.responseXML =  request.responseXML;
+        eventData.responseText = request.responseText;
+        eventData.responseCode = request.status;
+    }
+
+    /**/
+    if(myfaces._JSF2Utils.exists(context, "onevent")) {
+        /*calling null to preserve the original scope*/
+        context.onevent.call(null, eventData);
+    }
+    /*now we serve the queue as well*/
+    jsf.ajax._eventListenerQueue.broadcastEvent(eventData);
+}
+
+
+
 /**
  * Maps an internal Trinidad xmlhttprequest event
  * into one compatible with the events of the ri
  * this is done for compatibility purposes
  * since trinidad follows similar rules regarding
  * the events we just have to map the eventing accordingly
+ *
+ * note I am implementing this after reading the ri code
+ *
  */
 jsf.ajax._mapTrinidadToRIEvents = function(/*object*/ xhrContext,/*_TrXMLRequestEvent*/ event) {
+    var complete = false;
 
-    //TODO do the mapping code here
-    var riEvent = {};
-
-    //TODO add the event mapping code here
-    return null;
+    switch(event.getStatus()) {
+        //TODO add mapping code here
+        case myfaces._TrXMLRequestEvent.STATUS_QUEUED:
+            break; /*we have to wait*/
+        case myfaces._TrXMLRequestEvent.STATUS_SEND_BEFORE:
+            jsf.ajax.sendEvent(null, xhrContext, jsf.ajax._AJAX_STAGE_BEGIN)
+            break;;
+        case myfaces._TrXMLRequestEvent.STATUS_SEND_AFTER:
+            /*still waiting, we can add listeners later if it is allowed*/
+            break;
+        case myfaces._TrXMLRequestEvent.STATUS_COMPLETE:
+            /**
+            *here we can do our needed callbacks so
+            *that the specification is satisfied
+            **/
+            complete = true;
+            var responseStatusCode = event.getResponseStatusCode();
+            if(200 <= responseStatusCode && 300 > responseStatusCode ) {
+                jsf.ajax.sendEvent(event.getRequest(), xhrContext, jsf.ajax._AJAX_STAGE_COMPLETE);
+            } else {
+                jsf.ajax.sendEvent(event.getRequest(), xhrContext, jsf.ajax._AJAX_STAGE_COMPLETE);
+                jsf.ajax.sendError(event.getRequest(), xhrContext, jsf.ajax._AJAX_STAGE_HTTPERROR);
+            }
+            break;
+        default:
+            break;
+    }
+    return complete;
 };
 
 /**
@@ -307,16 +427,15 @@ jsf.ajax._trXhrCallback = function(/*_TrXMLRequestEvent*/ event) {
 
     /**
      *generally every callback into this method must issue an event
-
-
-    /*
-     * we now can handle the onerror and onevent decently
-     * maybe we also have to remap the response function as well
-     * lets see!
-     * (Check the specs and RI for that)
      */
+    var complete = jsf.ajax._mapTrinidadToRIEvents(context, event);
 
-    jsf.ajax.ajaxResponse(event.getRequest());
+    /**
+     * the standard incoming events are handled appropriately we now can deal with the response
+     */
+    if(complete) {
+        jsf.ajax.ajaxResponse(event.getRequest());
+    }
 }
 /**
  * processes the ajax response if the ajax request completes successfully
