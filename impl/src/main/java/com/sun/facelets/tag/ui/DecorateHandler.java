@@ -115,7 +115,7 @@ public final class DecorateHandler extends TagHandler implements TemplateClient
             }
         }
 
-        ctx.pushClient(this);
+        //ctx.pushClient(this);
         try
         {
             ctx.includeFacelet(parent, this.template.getValue(ctx));
@@ -123,7 +123,7 @@ public final class DecorateHandler extends TagHandler implements TemplateClient
         finally
         {
             ctx.setVariableMapper(orig);
-            ctx.popClient(this);
+            //ctx.popClient(this);
         }
     }
 

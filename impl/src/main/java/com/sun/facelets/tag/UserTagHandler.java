@@ -105,7 +105,7 @@ final class UserTagHandler extends TagHandler implements TemplateClient
         // eval include
         try
         {
-            ctx.pushClient(this);
+            //ctx.pushClient(this);
             ctx.includeFacelet(parent, this.location);
         }
         catch (FileNotFoundException e)
@@ -116,7 +116,7 @@ final class UserTagHandler extends TagHandler implements TemplateClient
         {
 
             // make sure we undo our changes
-            ctx.popClient(this);
+            //ctx.popClient(this);
             ctx.setVariableMapper(orig);
         }
     }
