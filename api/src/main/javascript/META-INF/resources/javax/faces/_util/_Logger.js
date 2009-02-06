@@ -89,18 +89,18 @@ if(!myfaces._JSF2Utils.exists(myfaces, "_Logger")) {
         if(this._hasConsole) {
             if(myfaces._Logger.LOG_CONSOLE) {
                 //TODO find out how to reference the proper line number etc...
-                console[logType.toLowerCase()](myfaces._JSF2Utils.arrayToString( varArgs ));
+                console[logType.toLowerCase()](myfaces._JSF2Utils.arrayToString( arguments[1] ));
             }
         } else if(null != this._targetDiv) {
             if(myfaces._Logger.LOG_DIV) {
-                this._targetDiv.innerHTML = this._targetDiv.innerHTML + "<br /> ["+logType+"] : "+ myfaces._JSF2Utils.arrayToString(varArgs, " ");
+                this._targetDiv.innerHTML = this._targetDiv.innerHTML + "<br /> ["+logType+"] : "+ myfaces._JSF2Utils.arrayToString(arguments[1], " ");
             }
         } else { /*in case a target fails we use document.write*/
             if(myfaces._Logger.LOG_DOCUMENT) {
-                document.write("<br /> ["+logType+"] : " + myfaces._JSF2Utils.arrayToString(varArgs, " "));
+                document.write("<br /> ["+logType+"] : " + myfaces._JSF2Utils.arrayToString(arguments[1], " "));
             }
             if(myfaces._Logger.LOG_ALERT) {
-                alert("<br /> ["+logType+"] : " + myfaces._JSF2Utils.arrayToString(varArgs, " "));
+                alert("<br /> ["+logType+"] : " + myfaces._JSF2Utils.arrayToString(arguments[1], " "));
             }
 
         }
@@ -108,7 +108,6 @@ if(!myfaces._JSF2Utils.exists(myfaces, "_Logger")) {
 
     myfaces._Logger.prototype.debug = function(/*Object*/varArgs/*,...*/) {
         if(this._logLevel > this.LOG_LEVEL_DEBUG) return;
-
         this._logIt("DEBUG", arguments);
     };
     myfaces._Logger.prototype.error = function(varArgs/*,...*/) {

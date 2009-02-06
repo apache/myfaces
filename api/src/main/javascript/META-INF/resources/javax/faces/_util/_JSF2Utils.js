@@ -194,6 +194,7 @@ if ('undefined' == typeof(myfaces._JSF2Utils) || null == myfaces._JSF2Utils) {
         if(null ==  myfaces._JSF2Utils._logger) {
             myfaces._JSF2Utils._logger = myfaces._Logger.getInstance();
         }
+        return myfaces._JSF2Utils._logger;
     };
 
     // Logging helper for use in Firebug
@@ -201,14 +202,14 @@ if ('undefined' == typeof(myfaces._JSF2Utils) || null == myfaces._JSF2Utils) {
     myfaces._JSF2Utils.logWarning = function(varArgs/*,...*/)
     {
         var logger = myfaces._JSF2Utils._getLogger();
-        logger.warn(varArgs);
+        logger["warn"].apply(logger, arguments);
     // else???
     };
 
     myfaces._JSF2Utils.logDebug = function(varArgs/*,...*/)
     {
         var logger = myfaces._JSF2Utils._getLogger();
-        logger.debug(varArgs);
+        logger["debug"].apply(logger, arguments);
     // else???
     };
 
@@ -216,7 +217,7 @@ if ('undefined' == typeof(myfaces._JSF2Utils) || null == myfaces._JSF2Utils) {
     myfaces._JSF2Utils.logInfo = function(varArgs/*,...*/)
     {
         var logger = myfaces._JSF2Utils._getLogger();
-        logger.info(varArgs);
+        logger["info"].apply(logger, arguments);
     // else???
     };
 
@@ -225,7 +226,7 @@ if ('undefined' == typeof(myfaces._JSF2Utils) || null == myfaces._JSF2Utils) {
     myfaces._JSF2Utils.logError = function(varArgs/*,...*/)
     {
         var logger = myfaces._JSF2Utils._getLogger();
-        logger.error(varArgs);
+        logger["error"].apply(logger, arguments);
     };
 
     myfaces._JSF2Utils._hitchArgs = function(scope, method /*,...*/) {

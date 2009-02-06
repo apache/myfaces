@@ -374,6 +374,8 @@ jsf.ajax.response = function(/*xhr request object*/request, context) {
 
     if(!myfaces._JSF2Utils.exists(request, "responseXML")) {
         jsf.ajax.sendError(request, context, "emptyResponse");
+        myfaces._JSF2Utils.logError("jsf.ajax.response", "responseXML", "empty response");
+
         return;
     }
 //TODO handle the ppr part here
@@ -404,3 +406,6 @@ jsf.getProjectStage = function() {
      */
     return this._projectStage;
 };
+
+
+
