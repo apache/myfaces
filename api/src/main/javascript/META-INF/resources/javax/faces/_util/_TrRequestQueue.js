@@ -178,7 +178,7 @@ if ('undefined' == typeof myfaces._TrRequestQueue) {
     {
        return myfaces._JSF2Utils.getPostbackContent(actionForm, params)
     }
-   
+
     //
     // Generic API
     //
@@ -399,7 +399,7 @@ if ('undefined' == typeof myfaces._TrRequestQueue) {
         catch(e)
         {
             myfaces._TrRequestQueue._alertError();
-            myfaces._TrRequestQueue._logError("Error while performing request", e);
+            myfaces._TrRequestQueue._logError("myfaces._TrRequestQueue.prototype._handleIFrameLoad ", "Error while performing request", e);
             this._htmlForm.action = this._savedActionUrl;
             this._htmlForm.target = this._savedTarget;
         }
@@ -449,8 +449,9 @@ if ('undefined' == typeof myfaces._TrRequestQueue) {
         }
         if ((statusCode != 200) && (statusCode != 0))
         {
+            //TODO check if the alert here is still needed?
             myfaces._TrRequestQueue._alertError();
-            myfaces._TrRequestQueue._logError("Error StatusCode(",
+            myfaces._TrRequestQueue._logError("myfaces._TrRequestQueue.prototype._handleRequestCallback","Error StatusCode(",
                     statusCode,
                     ") while performing request\n",
                     xmlHttp.getResponseText());
@@ -579,7 +580,7 @@ if ('undefined' == typeof myfaces._TrRequestQueue) {
                 }
                 catch (e)
                 {
-                    myfaces._TrRequestQueue._logError("Error on DTS State Change Listener", e);
+                    myfaces._TrRequestQueue._logError("myfaces._TrRequestQueue.prototype._broadcastStateChangeEvent","Error on DTS State Change Listener", e);
                 }
             }
         }
@@ -603,11 +604,11 @@ if ('undefined' == typeof myfaces._TrRequestQueue) {
     // Logging helper for use in Firebug
     myfaces._TrRequestQueue._logWarning = function(varArgs)
     {
-       myfaces._JSF2Utils.logWarning(varArgs);
+       myfaces._JSF2Utils.logWarning(arguments);
     }
     // Logging helper for use in Firebug
     myfaces._TrRequestQueue._logError = function(varArgs)
     {
-         myfaces._JSF2Utils.logError(varArgs);
+         myfaces._JSF2Utils.logError(arguments);
     }
 }

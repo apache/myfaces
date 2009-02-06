@@ -62,7 +62,7 @@ jsf.ajax._AJAX_STAGE_COMPLETE = "complete";
 jsf.ajax._AJAX_STAGE_HTTPERROR = "httpError";
 
 /*Event queues*/
-jsf.ajax._requestQueue = new myfaces._TrRequestQueue();
+jsf.ajax._xhrAdapter = new myfaces._TrinidadFrameworkAdapter();
 
 /**
  * external event listener queue!
@@ -114,8 +114,6 @@ jsf.ajax._assertElement = function(/*String|Dom Node*/ element) {
      *all the time
      **/
     var JSF2Utils   = myfaces._JSF2Utils;
-
-
 
     /**
      * assert element
@@ -293,7 +291,7 @@ jsf.ajax.request = function(/*String|Dom Node*/ element, /*|EVENT|*/ event, /*{|
     /**
      * we now use the trinidad request queue to send down the ajax request
      */
-    JSFAjax._requestQueue.sendRequest(ajaxContext, JSFAjax._trXhrCallback, sourceForm.action, viewState+"&"+JSF2Utils.getPostbackContentFromMap(passThroughArguments) );
+    JSFAjax._xhrAdapter.sendRequest(ajaxContext, sourceForm.action, viewState, passThroughArguments);
 
 /*
      * TODO #61
@@ -364,86 +362,19 @@ jsf.ajax.sendEvent = function sendEvent(/*Object*/request,/*Object*/ context,/*e
 
 
 
-/**
- * Maps an internal Trinidad xmlhttprequest event
- * into one compatible with the events of the ri
- * this is done for compatibility purposes
- * since trinidad follows similar rules regarding
- * the events we just have to map the eventing accordingly
- *
- * note I am implementing this after reading the ri code
- *
- */
-jsf.ajax._mapTrinidadToRIEvents = function(/*object*/ xhrContext,/*_TrXMLRequestEvent*/ event) {
-    var complete = false;
 
-    switch(event.getStatus()) {
-        //TODO add mapping code here
-        case myfaces._TrXMLRequestEvent.STATUS_QUEUED:
-            break; /*we have to wait*/
-        case myfaces._TrXMLRequestEvent.STATUS_SEND_BEFORE:
-            jsf.ajax.sendEvent(null, xhrContext, jsf.ajax._AJAX_STAGE_BEGIN)
-            break;;
-        case myfaces._TrXMLRequestEvent.STATUS_SEND_AFTER:
-            /*still waiting, we can add listeners later if it is allowed*/
-            break;
-        case myfaces._TrXMLRequestEvent.STATUS_COMPLETE:
-            /**
-            *here we can do our needed callbacks so
-            *that the specification is satisfied
-            **/
-            complete = true;
-            var responseStatusCode = event.getResponseStatusCode();
-            if(200 <= responseStatusCode && 300 > responseStatusCode ) {
-                jsf.ajax.sendEvent(event.getRequest(), xhrContext, jsf.ajax._AJAX_STAGE_COMPLETE);
-            } else {
-                jsf.ajax.sendEvent(event.getRequest(), xhrContext, jsf.ajax._AJAX_STAGE_COMPLETE);
-                jsf.ajax.sendError(event.getRequest(), xhrContext, jsf.ajax._AJAX_STAGE_HTTPERROR);
-            }
-            break;
-        default:
-            break;
-    }
-    return complete;
-};
-
-/**
- * Internal Trinidad
- * JSF 2.0 callback compatibility handler
- * since we use trinidad as our transport we have to do it that way
- *
- * this function switches the context via the
- * xhr bindings
- * it is now under the context of
- * given by the calling function
- */
-jsf.ajax._trXhrCallback = function(/*_TrXMLRequestEvent*/ event) {
-    var context = {};
-    /*to ease readability we switch the transferred context
-     *params back into a real context map*/
-    context.onerror = this.onerror;
-    context.onevent = this.onevent;
-    context.source = this.source;
-
-    /**
-     *generally every callback into this method must issue an event
-     */
-    var complete = jsf.ajax._mapTrinidadToRIEvents(context, event);
-
-    /**
-     * the standard incoming events are handled appropriately we now can deal with the response
-     */
-    if(complete) {
-        jsf.ajax.ajaxResponse(event.getRequest());
-    }
-}
 /**
  * processes the ajax response if the ajax request completes successfully
  * @param request the ajax request!
  */
-jsf.ajax.ajaxResponse = function(/*xhr request object*/request) {
+jsf.ajax.response = function(/*xhr request object*/request, context) {
     if ('undefined' == typeof(request) || null == request) {
         throw Exception("jsf.ajaxResponse: The response cannot be null or empty!");
+    }
+
+    if(!myfaces._JSF2Utils.exists(request, "responseXML")) {
+        jsf.ajax.sendError(request, context, "emptyResponse");
+        return;
     }
 //TODO handle the ppr part here
 //check the specs on the format of the return xml to do the ppr as expected!
@@ -473,6 +404,3 @@ jsf.getProjectStage = function() {
      */
     return this._projectStage;
 };
-
-
-
