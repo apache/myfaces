@@ -47,6 +47,7 @@ if (!myfaces._JSF2Utils.exists(myfaces, "_TrinidadFrameworkAdapter")) {
                 break;;
             case myfaces._TrXMLRequestEvent.STATUS_SEND_AFTER:
                 /*still waiting, we can add listeners later if it is allowed*/
+
                 break;
             case myfaces._TrXMLRequestEvent.STATUS_COMPLETE:
                 /**

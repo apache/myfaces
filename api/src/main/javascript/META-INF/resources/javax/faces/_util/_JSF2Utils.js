@@ -292,18 +292,18 @@ if ('undefined' == typeof(myfaces._JSF2Utils) || null == myfaces._JSF2Utils) {
 
 
     myfaces._JSF2Utils.arrayToString = function(/*String or array*/ arr, /*string*/ delimiter) {
-      if( myfaces._JSF2Utils.isString(arr) ) {
-        return arr;
-      }
-      var resultArr = [];
-      for(var cnt = 0; cnt < arr.length; cnt ++) {
-          if(myfaces._JSF2Utils.isString(arr[cnt])) {
-              resultArr.push(arr[cnt]);
-          } else {
-              resultArr.push(arr[cnt].toString());
-          }
-      }
-      return resultArr.join(delimiter);
+        if( myfaces._JSF2Utils.isString(arr) ) {
+            return arr;
+        }
+        var resultArr = [];
+        for(var cnt = 0; cnt < arr.length; cnt ++) {
+            if(myfaces._JSF2Utils.isString(arr[cnt])) {
+                resultArr.push(arr[cnt]);
+            } else {
+                resultArr.push(arr[cnt].toString());
+            }
+        }
+        return resultArr.join(delimiter);
     };
 
     /**
@@ -459,4 +459,34 @@ if ('undefined' == typeof(myfaces._JSF2Utils) || null == myfaces._JSF2Utils) {
         .replace(/\"/g, '%22')
         .replace(/\'/g, '%27');
     }
+
+    /**
+     * fetches the XHR object in a browser neutral way
+     * so that it can be processed further on
+     */
+    myfaces._JSF2Utils.getXHR = function() {
+        /*if('undefined' != typeof(myfaces._JSF2Utils._xhr)) {
+            myfaces._JSF2Utils._xhr.abort();
+            return myfaces._JSF2Utils._xhr;
+        }*/
+        //all newer browsers!
+        if ('undefined' != typeof XMLHttpRequest  ) {
+            myfaces._JSF2Utils._xhr = new XMLHttpRequest();
+        }
+        if (!myfaces._JSF2Utils._xhr) {
+            // Interne
+            // t Explorer 6 or older
+            try {
+                myfaces._JSF2Utils._xhr = new ActiveXObject("Msxml2.XMLHTTP");
+            } catch(e) {
+                try {
+                    myfaces._JSF2Utils._xhr = new ActiveXObject("Microsoft.XMLHTTP");
+                } catch(e) {
+                    myfaces._JSF2Utils._xhr = null;
+                }
+            }
+        }
+        return myfaces._JSF2Utils._xhr;
+    }
+
 }
