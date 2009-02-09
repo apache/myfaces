@@ -61,8 +61,8 @@ jsf.ajax._AJAX_STAGE_BEGIN = "begin";
 jsf.ajax._AJAX_STAGE_COMPLETE = "complete";
 jsf.ajax._AJAX_STAGE_HTTPERROR = "httpError";
 
-/*Event queues*/
-jsf.ajax._xhrAdapter = new myfaces._TrinidadFrameworkAdapter();
+/*Transports including queues and adapters!*/
+jsf.ajax._xhrAdapter = ('undefined' != typeof (myfaces._SimpleXHRFrameworkAdapter)) ? new myfaces._SimpleXHRFrameworkAdapter() :  new myfaces._TrinidadFrameworkAdapter();
 
 /**
  * external event listener queue!
@@ -121,7 +121,7 @@ jsf.ajax._assertElement = function(/*String|Dom Node*/ element) {
     if('undefined' == typeof( element ) || null == element) {
         throw new Exception("jsf.ajax, element must be set!");
     }
-    if(!JSF2Utils.isString(element) && Node != typeof element) {
+    if(!JSF2Utils.isString(element) && !(element instanceof Node)) {
         throw new Exception("jsf.ajax, element either must be a string or a dom node");
     }
 
