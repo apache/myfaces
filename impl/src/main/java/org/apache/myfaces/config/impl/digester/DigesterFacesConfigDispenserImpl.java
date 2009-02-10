@@ -47,7 +47,6 @@ public class DigesterFacesConfigDispenserImpl implements
         FacesConfigDispenser<FacesConfig>
 {
 
-    private List<FacesConfig> configs = new ArrayList<FacesConfig>();
     private List<String> applicationFactories = new ArrayList<String>();
     private List<String> facesContextFactories = new ArrayList<String>();
     private List<String> lifecycleFactories = new ArrayList<String>();
@@ -76,16 +75,13 @@ public class DigesterFacesConfigDispenserImpl implements
     /**
      * Add another unmarshalled faces config object.
      * 
-     * @param facesConfig
+     * @param config
      *            unmarshalled faces config object
      */
     public void feed(FacesConfig config)
     {
-        configs.add(config);
-        for (Iterator iterator = config.getFactories().iterator(); iterator
-                .hasNext();)
+        for (Factory factory : config.getFactories())
         {
-            Factory factory = (Factory) iterator.next();
             applicationFactories.addAll(factory.getApplicationFactory());
             facesContextFactories.addAll(factory.getFacesContextFactory());
             lifecycleFactories.addAll(factory.getLifecycleFactory());
@@ -94,10 +90,8 @@ public class DigesterFacesConfigDispenserImpl implements
         components.putAll(config.getComponents());
         validators.putAll(config.getValidators());
 
-        for (Iterator iterator = config.getApplications().iterator(); iterator
-                .hasNext();)
+        for (Application application : config.getApplications())
         {
-            Application application = (Application) iterator.next();
             if (!application.getDefaultRenderkitId().isEmpty())
             {
                 defaultRenderKitId = application
@@ -123,19 +117,16 @@ public class DigesterFacesConfigDispenserImpl implements
             resourceBundles.addAll(application.getResourceBundle());
             elResolvers.addAll(application.getElResolver());
         }
-        for (Iterator iterator = config.getConverters().iterator(); iterator
-                .hasNext();)
-        {
-            Converter converter = (Converter) iterator.next();
+        for (Converter converter : config.getConverters()) {
 
             if (converter.getConverterId() != null)
             {
-                converterById.put(converter.getConverterId(), converter
+                converterById.put(converter.getConverterId(),converter
                         .getConverterClass());
             }
             else
             {
-                converterByClass.put(converter.getForClass(), converter
+                converterByClass.put(converter.getForClass(),converter
                         .getConverterClass());
             }
 

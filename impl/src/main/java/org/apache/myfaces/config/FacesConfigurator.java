@@ -207,14 +207,15 @@ public class FacesConfigurator
             lastModified = resModified;
 
 
-        List configFilesList = getConfigFilesList();
+        List<String> configFilesList = getConfigFilesList();
 
-        for (int i = 0; i < configFilesList.size(); i++) {
-            String systemId = (String) configFilesList.get(i);
-
+        for (String systemId : configFilesList)
+        {
             resModified = getResourceLastModified(systemId);
-                if (resModified > lastModified)
-                    lastModified = resModified;
+            if (resModified > lastModified)
+            {
+                lastModified = resModified;
+            }
 
         }
 
@@ -347,18 +348,17 @@ public class FacesConfigurator
             {
                 URL url = (URL) it.next();
 
-                for (int i = 0; i < li.size(); i++)
+                for (VersionInfo versionInfo : li)
                 {
-                    VersionInfo versionInfo = li.get(i);
                     if (checkJar(versionInfo, url))
+                    {
                         break;
+                    }
                 }
             }
 
-            for (int i = 0; i < li.size(); i++)
+            for (VersionInfo versionInfo : li)
             {
-                VersionInfo versionInfo = li.get(i);
-
                 if (versionInfo.getUsedVersion() != null)
                 {
                     if (log.isInfoEnabled())
@@ -457,9 +457,8 @@ public class FacesConfigurator
     {
         try
         {
-            for (Iterator<String> iterator = FACTORY_NAMES.iterator(); iterator.hasNext();)
+            for (String factoryName : FACTORY_NAMES)
             {
-                String factoryName = iterator.next();
                 Iterator it = ClassUtils.getResources(META_INF_SERVICES_RESOURCE_PREFIX + factoryName, this);
                 while (it.hasNext())
                 {
@@ -475,13 +474,24 @@ public class FacesConfigurator
                     catch (IOException e)
                     {
                         throw new FacesException("Unable to read class name from file " + url.toExternalForm(), e);
+                    } finally {
+                        if (br != null)
+                        {
+                            br.close();
+                        }
+                        if (isr != null) {
+                            isr.close();
+                        }
+                        if (stream != null) {
+                            stream.close();
+                        }
                     }
-                    br.close();
-                    isr.close();
-                    stream.close();
+
 
                     if (log.isInfoEnabled())
+                    {
                         log.info("Found " + factoryName + " factory implementation: " + className);
+                    }
 
                     if (factoryName.equals(FactoryFinder.APPLICATION_FACTORY))
                     {
@@ -565,9 +575,9 @@ public class FacesConfigurator
 
     private void feedContextSpecifiedConfig() throws IOException, SAXException
     {
-        List configFilesList = getConfigFilesList();
-        for (int i = 0; i < configFilesList.size(); i++) {
-            String systemId = (String) configFilesList.get(i);
+        List<String> configFilesList = getConfigFilesList();
+        for (String systemId : configFilesList)
+        {
             InputStream stream = _externalContext.getResourceAsStream(systemId);
             if (stream == null)
             {
@@ -575,15 +585,18 @@ public class FacesConfigurator
                 continue;
             }
 
-            if (log.isInfoEnabled()) log.info("Reading config " + systemId);
+            if (log.isInfoEnabled())
+            {
+                log.info("Reading config " + systemId);
+            }
             getDispenser().feed(getUnmarshaller().getFacesConfig(stream, systemId));
             stream.close();
         }
     }
 
-    private List getConfigFilesList() {
+    private List<String> getConfigFilesList() {
         String configFiles = _externalContext.getInitParameter(FacesServlet.CONFIG_FILES_ATTR);
-        List configFilesList = new ArrayList();
+        List<String> configFilesList = new ArrayList<String>();
         if (configFiles != null)
         {
             StringTokenizer st = new StringTokenizer(configFiles, ",", false);
@@ -733,9 +746,6 @@ public class FacesConfigurator
                 .getVariableResolverIterator(), new VariableResolverImpl()));
     }
 
-    /**
-     * @return
-     */
     protected RuntimeConfig getRuntimeConfig()
     {
         if(_runtimeConfig == null) 
