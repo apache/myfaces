@@ -46,7 +46,6 @@ import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
 public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<FacesConfig>
 {
 
-    private List<FacesConfig> configs = new ArrayList<FacesConfig>();
     private List<String> applicationFactories = new ArrayList<String>();
     private List<String> facesContextFactories = new ArrayList<String>();
     private List<String> lifecycleFactories = new ArrayList<String>();
@@ -76,12 +75,11 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
     /**
      * Add another unmarshalled faces config object.
      * 
-     * @param facesConfig
+     * @param config
      *            unmarshalled faces config object
      */
     public void feed(FacesConfig config)
     {
-        configs.add(config);
         for (Factory factory : config.getFactories())
         {
             applicationFactories.addAll(factory.getApplicationFactory());
@@ -149,7 +147,7 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
 
             if (existing == null)
             {
-                renderKits.put(renderKit.getId(), renderKit);
+                renderKits.put(renderKitId, renderKit);
             }
             else
             {
@@ -243,8 +241,7 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
      */
     public Collection<String> getActionListenerIterator()
     {
-        List<String> listeners = new ArrayList<String>(actionListeners);
-        return listeners;
+        return new ArrayList<String>(actionListeners);
     }
 
     /**
@@ -268,8 +265,7 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
      */
     public Collection<String> getNavigationHandlerIterator()
     {
-        List<String> handlers = new ArrayList<String>(navigationHandlers);
-        return handlers;
+        return new ArrayList<String>(navigationHandlers);
     }
 
     /**
@@ -277,8 +273,7 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
      */
     public Collection<String> getResourceHandlerIterator()
     {
-        List<String> handlers = new ArrayList<String>(resourceHandlers);
-        return handlers;
+        return new ArrayList<String>(resourceHandlers);
     }
 
     /**
@@ -294,8 +289,7 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
      */
     public Collection<String> getStateManagerIterator()
     {
-        List<String> managers = new ArrayList<String>(stateManagers);
-        return managers;
+        return new ArrayList<String>(stateManagers);
     }
 
     /**
@@ -303,8 +297,7 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
      */
     public Collection<String> getPropertyResolverIterator()
     {
-        List<String> resolver = new ArrayList<String>(propertyResolver);
-        return resolver;
+        return new ArrayList<String>(propertyResolver);
     }
 
     /**
@@ -312,9 +305,8 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
      */
     public Collection<String> getVariableResolverIterator()
     {
-        List<String> resolver = new ArrayList<String>(variableResolver);
 
-        return resolver;
+        return new ArrayList<String>(variableResolver);
     }
 
     /**
