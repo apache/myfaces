@@ -143,10 +143,8 @@ public class DigesterFacesConfigDispenserImpl implements
                     converter.getConverterClass(), converter);
         }
 
-        for (Iterator iterator = config.getRenderKits().iterator(); iterator
-                .hasNext();)
+        for (RenderKit renderKit : config.getRenderKits())
         {
-            RenderKit renderKit = (RenderKit) iterator.next();
             String renderKitId = renderKit.getId();
 
             if (renderKitId == null)
@@ -158,7 +156,7 @@ public class DigesterFacesConfigDispenserImpl implements
 
             if (existing == null)
             {
-                renderKits.put(renderKit.getId(), renderKit);
+                renderKits.put(renderKitId, renderKit);
             }
             else
             {
