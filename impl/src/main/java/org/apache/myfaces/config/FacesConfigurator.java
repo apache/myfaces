@@ -502,20 +502,24 @@ public class FacesConfigurator
                 facesConfigs.put(systemId,url);
             }
 
-            Iterator<Map.Entry<String,URL>> facesConfigIt=facesConfigs.entrySet().iterator();
-
-            while(facesConfigIt.hasNext()) {
-                Map.Entry<String,URL> entry = facesConfigIt.next();
+            for (Map.Entry<String, URL> entry : facesConfigs.entrySet())
+            {
                 InputStream stream = null;
-                try {
-                    openStreamWithoutCache(entry.getValue());
+                try
+                {
+                    stream = openStreamWithoutCache(entry.getValue());
                     if (log.isInfoEnabled())
+                    {
                         log.info("Reading config : " + entry.getKey());
+                    }
                     getDispenser().feed(getUnmarshaller().getFacesConfig(stream, entry.getKey()));
                 }
-                finally {
-                    if(stream!=null)
+                finally
+                {
+                    if (stream != null)
+                    {
                         stream.close();
+                    }
                 }
             }
         }
