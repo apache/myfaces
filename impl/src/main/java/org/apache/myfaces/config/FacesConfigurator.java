@@ -444,9 +444,8 @@ public class FacesConfigurator
     {
         try
         {
-            for (Iterator<String> iterator = FACTORY_NAMES.iterator(); iterator.hasNext();)
+            for (String factoryName : FACTORY_NAMES)
             {
-                String factoryName = iterator.next();
                 Iterator<URL> it = ClassUtils.getResources(META_INF_SERVICES_RESOURCE_PREFIX + factoryName, this);
                 while (it.hasNext())
                 {
@@ -463,30 +462,41 @@ public class FacesConfigurator
                     {
                         throw new FacesException("Unable to read class name from file " + url.toExternalForm(), e);
                     }
-                    br.close();
-                    isr.close();
-                    stream.close();
+                    finally
+                    {
+                        if (br != null)
+                        {
+                            br.close();
+                        }
+                        if (isr != null)
+                        {
+                            isr.close();
+                        }
+                        if (stream != null)
+                        {
+                            stream.close();
+                        }
+                    }
+
 
                     if (log.isInfoEnabled())
+                    {
                         log.info("Found " + factoryName + " factory implementation: " + className);
+                    }
 
                     if (factoryName.equals(FactoryFinder.APPLICATION_FACTORY))
                     {
                         getDispenser().feedApplicationFactory(className);
-                    }
-                    else if (factoryName.equals(FactoryFinder.FACES_CONTEXT_FACTORY))
+                    } else if (factoryName.equals(FactoryFinder.FACES_CONTEXT_FACTORY))
                     {
                         getDispenser().feedFacesContextFactory(className);
-                    }
-                    else if (factoryName.equals(FactoryFinder.LIFECYCLE_FACTORY))
+                    } else if (factoryName.equals(FactoryFinder.LIFECYCLE_FACTORY))
                     {
                         getDispenser().feedLifecycleFactory(className);
-                    }
-                    else if (factoryName.equals(FactoryFinder.RENDER_KIT_FACTORY))
+                    } else if (factoryName.equals(FactoryFinder.RENDER_KIT_FACTORY))
                     {
                         getDispenser().feedRenderKitFactory(className);
-                    }
-                    else
+                    } else
                     {
                         throw new IllegalStateException("Unexpected factory name " + factoryName);
                     }
@@ -522,11 +532,8 @@ public class FacesConfigurator
                 facesConfigs.put(systemId, url);
             }
 
-            Iterator<Map.Entry<String, URL>> facesConfigIt = facesConfigs.entrySet().iterator();
-
-            while (facesConfigIt.hasNext())
+            for (Map.Entry<String, URL> entry : facesConfigs.entrySet())
             {
-                Map.Entry<String, URL> entry = facesConfigIt.next();
                 InputStream stream = openStreamWithoutCache(entry.getValue());
                 try
                 {
@@ -749,9 +756,6 @@ public class FacesConfigurator
                                                                         new VariableResolverImpl()));
     }
 
-    /**
-     * @return
-     */
     protected RuntimeConfig getRuntimeConfig()
     {
         if (_runtimeConfig == null)
@@ -1157,11 +1161,11 @@ public class FacesConfigurator
         public int hashCode()
         {
             int hash = 0;
-            for (int i = 0; i < parts.length; i++)
+            for (Integer part : parts)
             {
-                if (parts[i] != null)
+                if (part != null)
                 {
-                    hash ^= parts[i].hashCode();
+                    hash ^= part.hashCode();
                 }
             }
 
