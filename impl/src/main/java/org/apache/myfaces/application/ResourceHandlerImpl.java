@@ -29,6 +29,8 @@ import java.util.ResourceBundle;
 import javax.faces.application.Resource;
 import javax.faces.application.ResourceHandler;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletResponse;
+import javax.servlet.ServletResponseWrapper;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
@@ -196,12 +198,38 @@ public class ResourceHandlerImpl extends ResourceHandler
             return;
         }
 
-        HttpServletResponse servletResponse = (HttpServletResponse) facesContext
-                .getExternalContext().getResponse();
+        //We neet to get an instance of HttpServletResponse, but sometimes
+        //the response object is wrapped by several instances of 
+        //ServletResponseWrapper (like ResponseSwitch).
+        //Since we are handling a resource, we can expect to get an 
+        //HttpServletResponse.
+        
+        Object response = facesContext.getExternalContext().getResponse();
+        
+        //It is safe to cast it to ServletResponse
+        ServletResponse servletResponse = (ServletResponse) response;
+        
+        HttpServletResponse httpServletResponse = null;
+        if (response instanceof HttpServletResponse)
+        {
+            httpServletResponse = (HttpServletResponse) response;
+        }
+        else if (response instanceof ServletResponseWrapper)
+        {
+            //iterate until we find a instance that we can cast 
+            while (!(response instanceof HttpServletResponse))
+            {
+                //assume ServletResponseWrapper as wrapper
+                response = ((ServletResponseWrapper)response).getResponse();
+            }
+            //Case where it is an instance of ResponseSwitch
+            //in this case just return the inner response
+            httpServletResponse = (HttpServletResponse) response;
+        }
 
         if (isResourceIdentifierExcluded(facesContext, resourceBasePath))
         {
-            servletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 
@@ -214,7 +242,7 @@ public class ResourceHandlerImpl extends ResourceHandler
         else
         {
             //Does not have the conditions for be a resource call
-            servletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 
@@ -234,13 +262,13 @@ public class ResourceHandlerImpl extends ResourceHandler
 
         if (resource == null)
         {
-            servletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 
         if (!resource.userAgentNeedsUpdate(facesContext))
         {
-            servletResponse.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+            httpServletResponse.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
             return;
         }
 
@@ -250,7 +278,7 @@ public class ResourceHandlerImpl extends ResourceHandler
 
         for (Map.Entry<String, String> entry : headers.entrySet())
         {
-            servletResponse.setHeader(entry.getKey(), entry.getValue());
+            httpServletResponse.setHeader(entry.getKey(), entry.getValue());
         }
 
         //serve up the bytes (taken from trinidad ResourceServlet)
@@ -285,7 +313,7 @@ public class ResourceHandlerImpl extends ResourceHandler
                 log.error("Error trying to load resource " + resourceName
                         + " with library " + libraryName + " :"
                         + e.getMessage());
-            servletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
         }
     }
 
