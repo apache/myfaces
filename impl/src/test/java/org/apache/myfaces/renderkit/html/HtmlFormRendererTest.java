@@ -18,80 +18,103 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import javax.faces.component.html.HtmlDataTable;
+import javax.faces.component.html.HtmlForm;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.apache.myfaces.shared_impl.renderkit.html.HTML;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
+import org.apache.myfaces.test.utils.MockTestViewHandler;
 import org.apache.shale.test.base.AbstractJsfTestCase;
 import org.apache.shale.test.mock.MockRenderKitFactory;
 import org.apache.shale.test.mock.MockResponseWriter;
 
-/**
- * @author Bruno Aranda (latest modification by $Author: baranda $)
- * @version $Revision: 451814 $ $Date: 2006-10-01 22:28:42 +0100 (dom, 01 oct 2006) $
- */
-public class HtmlTableRendererTest extends AbstractJsfTestCase
+public class HtmlFormRendererTest extends AbstractJsfTestCase
 {
     private MockResponseWriter writer ;
-    private HtmlDataTable dataTable;
+    private HtmlForm form;
 
-    public HtmlTableRendererTest(String name)
+    public HtmlFormRendererTest(String name)
     {
         super(name);
     }
     
     public static Test suite() {
-        return new TestSuite(HtmlTableRendererTest.class);
+        return new TestSuite(HtmlFormRendererTest.class);
     }
 
     public void setUp() throws Exception
     {
         super.setUp();
 
-        dataTable = new HtmlDataTable();
+        application.setViewHandler(new MockTestViewHandler());
+        form = new HtmlForm();
 
         writer = new MockResponseWriter(new StringWriter(), null, null);
         facesContext.setResponseWriter(writer);
 
         facesContext.getViewRoot().setRenderKitId(MockRenderKitFactory.HTML_BASIC_RENDER_KIT);
         facesContext.getRenderKit().addRenderer(
-                dataTable.getFamily(),
-                dataTable.getRendererType(),
-                new HtmlTableRenderer());
+                form.getFamily(),
+                form.getRendererType(),
+                new HtmlFormRenderer());
 
     }
 
     public void tearDown() throws Exception
     {
         super.tearDown();
-        dataTable = null;
+        form = null;
         writer = null;
     }
 
-    public void testHtmlPropertyPassTru() throws Exception
-    {
+    public void testHtmlPropertyPassTru() throws Exception 
+    { 
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicReadOnlyAttrs();
-        
-        HtmlCheckAttributesUtil.checkRenderedAttributes(
-                dataTable, facesContext, writer, attrs);
+
+        try {
+            HtmlCheckAttributesUtil.checkRenderedAttributes(
+                    form, facesContext, writer, attrs);
+        } catch(Exception e) {
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            fail(sw.toString() + "\nHTML.FORM_PASSTHROUGH_ATTRIBUTES: " + printHTMLAttrs(HTML.FORM_PASSTHROUGH_ATTRIBUTES));
+        }
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
             fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
-    public void testHtmlPropertyPassTruNotRendered() throws Exception
-    {
+    public void testHtmlPropertyPassTruNotRendered() throws Exception 
+    { 
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnly();
-        
-        HtmlCheckAttributesUtil.checkRenderedAttributes(
-                dataTable, facesContext, writer, attrs);
+
+        try {
+            HtmlCheckAttributesUtil.checkRenderedAttributes(
+                    form, facesContext, writer, attrs);
+        } catch(Exception e) {
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            fail(sw.toString() + "\nHTML.FORM_PASSTHROUGH_ATTRIBUTES: " + printHTMLAttrs(HTML.FORM_PASSTHROUGH_ATTRIBUTES));
+        }
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
             fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
+    }
+    
+    private String printHTMLAttrs(String[] attrs) {
+        StringBuffer buffer = new StringBuffer();
+        for(int i = 0; i < attrs.length; i++) {
+            buffer.append(attrs[i]);
+            if(i+1 < attrs.length) {
+                buffer.append(", ");
+            }
+        }
+        return buffer.toString();
     }
 }

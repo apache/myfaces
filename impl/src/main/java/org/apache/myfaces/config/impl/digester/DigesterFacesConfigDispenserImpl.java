@@ -124,11 +124,13 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
         {
             if (converter.getConverterId() != null)
             {
-                converterById.put(converter.getConverterId(), converter.getConverterClass());
+                converterById.put(converter.getConverterId(),converter
+                        .getConverterClass());
             }
             else
             {
-                converterByClass.put(converter.getForClass(), converter.getConverterClass());
+                converterByClass.put(converter.getForClass(),converter
+                        .getConverterClass());
             }
 
             converterConfigurationByClassName.put(converter.getConverterClass(), converter);

@@ -39,13 +39,13 @@
                 <artifactItem>
                   <groupId>org.apache.myfaces.core</groupId>
                   <artifactId>myfaces-api</artifactId>
-                  <version>${version}</version>
+                  <version>${project.version}</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.myfaces.core</groupId>
                   <artifactId>myfaces-impl</artifactId>
-                  <version>${version}</version>
+                  <version>${project.version}</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>
                 <!--
@@ -73,7 +73,7 @@
                 <artifactItem>
                   <groupId>org.apache.myfaces.core</groupId>
                   <artifactId>myfaces-impl</artifactId>
-                  <version>${version}</version>
+                  <version>${project.version}</version>
                   <classifier>tlddoc</classifier>
                 </artifactItem>
 
@@ -92,13 +92,13 @@
                 <artifactItem>
                   <groupId>org.apache.myfaces.core</groupId>
                   <artifactId>myfaces-api</artifactId>
-                  <version>${version}</version>
+                  <version>${project.version}</version>
                   <classifier>sources</classifier>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.myfaces.core</groupId>
                   <artifactId>myfaces-impl</artifactId>
-                  <version>${version}</version>
+                  <version>${project.version}</version>
                   <classifier>sources</classifier>
                 </artifactItem>
                </artifactItems>
@@ -118,7 +118,7 @@
         	      <descriptors>
 			    	 <descriptor>src/main/assembly/coresrc.xml</descriptor>
 	    		  </descriptors>
-        	      <finalName>myfaces-core-${version}-src</finalName>	    		  
+        	      <finalName>myfaces-core-${project.version}-src</finalName>	    		  
         	      <appendAssemblyId>false</appendAssemblyId>
 		          <outputDirectory>target/assembly/out</outputDirectory>
         		  <workDirectory>target/assembly/work</workDirectory>
@@ -134,7 +134,7 @@
 		          <descriptors>
 	    			<descriptor>${basedir}/src/main/assembly/corebin.xml</descriptor>
         	      </descriptors>
-        	      <finalName>myfaces-core-${version}-bin</finalName>
+        	      <finalName>myfaces-core-${project.version}-bin</finalName>
         	      <appendAssemblyId>false</appendAssemblyId>
 		          <outputDirectory>target/assembly/out</outputDirectory>
         		  <workDirectory>target/assembly/work</workDirectory>        	      
@@ -167,13 +167,13 @@
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-impl</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-api</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
 
   </dependencies>

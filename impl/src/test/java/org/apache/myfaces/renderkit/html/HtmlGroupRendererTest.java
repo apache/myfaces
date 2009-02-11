@@ -1,27 +1,36 @@
 /*
- * Copyright 2006 The Apache Software Foundation.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 package org.apache.myfaces.renderkit.html;
 
-import org.apache.shale.test.base.AbstractJsfTestCase;
-import org.apache.shale.test.mock.MockRenderKitFactory;
-import org.apache.shale.test.mock.MockResponseWriter;
+import java.io.StringWriter;
 
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.component.html.HtmlPanelGroup;
-import java.io.StringWriter;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
+import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
+import org.apache.myfaces.test.utils.HtmlRenderedAttr;
+import org.apache.shale.test.base.AbstractJsfTestCase;
+import org.apache.shale.test.mock.MockRenderKitFactory;
+import org.apache.shale.test.mock.MockResponseWriter;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)
@@ -30,7 +39,6 @@ import java.io.StringWriter;
 public class HtmlGroupRendererTest extends AbstractJsfTestCase
 {
     private static String PANEL_CHILD_TEXT = "PANEL";
-    private static String STYLE_CLASS = "myStyleClass";
 
     private MockResponseWriter writer ;
     private HtmlPanelGroup panelGroup;
@@ -39,8 +47,12 @@ public class HtmlGroupRendererTest extends AbstractJsfTestCase
     {
         super(name);
     }
+    
+    public static Test suite() {
+        return new TestSuite(HtmlGroupRendererTest.class);
+    }
 
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
 
@@ -65,37 +77,31 @@ public class HtmlGroupRendererTest extends AbstractJsfTestCase
 
     }
 
-    protected void tearDown() throws Exception
+    public void tearDown()throws Exception
     {
         super.tearDown();
         writer = null;
     }
+    
+    public void testHtmlPropertyPassTru() throws Exception
+    { 
+        HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicReadOnlyAttrs();        
 
-    public void testLayout_Default() throws Exception
-    {
-        assertNull(panelGroup.getLayout());
-
-        panelGroup.setStyleClass(STYLE_CLASS);
-
-        panelGroup.encodeEnd(facesContext);
-        facesContext.renderResponse();
-
-        String output = writer.getWriter().toString();
-
-        assertEquals("<span class=\""+STYLE_CLASS+"\">PANEL</span>", output);
+        HtmlCheckAttributesUtil.checkRenderedAttributes(
+                panelGroup, facesContext, writer, attrs);
+        if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+        }
     }
+    
+    public void testHtmlPropertyPassTruNotRendered() throws Exception
+    { 
+        HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnly();        
 
-    public void testLayout_Block() throws Exception
-    {
-        panelGroup.setLayout("block");
-
-        panelGroup.setStyleClass(STYLE_CLASS);
-
-        panelGroup.encodeEnd(facesContext);
-        facesContext.renderResponse();
-
-        String output = writer.getWriter().toString();
-
-        assertEquals("<div class=\""+STYLE_CLASS+"\">PANEL</div>", output);
+        HtmlCheckAttributesUtil.checkRenderedAttributes(
+                panelGroup, facesContext, writer, attrs);
+        if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+        }
     }
 }

@@ -260,8 +260,8 @@ public abstract class UIComponentBase extends UIComponent
      * Get a string which uniquely identifies this UIComponent within the scope of the nearest ancestor NamingContainer
      * component. The id is not necessarily unique across all components in the current view.
      */
-    @Override
-    @JSFProperty(literalOnly = true)
+    @JSFProperty
+      (rtexprvalue = true)
     public String getId()
     {
         return _id;

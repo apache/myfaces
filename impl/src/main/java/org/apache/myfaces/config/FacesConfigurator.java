@@ -260,6 +260,12 @@ public class FacesConfigurator
                 catch (NoSuchMethodException e)
                 {
                     log.error("Configuration objects do not support clean-up. Update aborted");
+
+                    // We still want to update the timestamp to avoid running purge on every subsequent
+                    // request after this one.
+                    //
+                    lastUpdate = System.currentTimeMillis();
+
                     return;
                 }
                 catch (IllegalAccessException e)
@@ -277,21 +283,30 @@ public class FacesConfigurator
 
     private void purgeConfiguration() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException
     {
-        Method purgeMethod;
-        
+        final Class<?>[] NO_PARAMETER_TYPES = new Class[]{};
+        final Object[] NO_PARAMETERS = new Object[]{};
+
+        Method appFactoryPurgeMethod;
+        Method renderKitPurgeMethod;
+        Method lifecyclePurgeMethod;
+
+        // Check that we have access to all of the necessary purge methods before purging anything
+        //
         ApplicationFactory applicationFactory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-        purgeMethod = applicationFactory.getClass().getMethod("purgeApplication", (Class<?>[])null);
-        purgeMethod.invoke(applicationFactory, (Object[])null);
+        appFactoryPurgeMethod = applicationFactory.getClass().getMethod("purgeApplication", NO_PARAMETER_TYPES);
 
         RenderKitFactory renderKitFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
-        purgeMethod = renderKitFactory.getClass().getMethod("purgeRenderKit", (Class<?>[])null);
-        purgeMethod.invoke(renderKitFactory, (Object[])null);
-
-        RuntimeConfig.getCurrentInstance(_externalContext).purge();
-
+        renderKitPurgeMethod = renderKitFactory.getClass().getMethod("purgeRenderKit", NO_PARAMETER_TYPES);
+        
         LifecycleFactory lifecycleFactory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-        purgeMethod = lifecycleFactory.getClass().getMethod("purgeLifecycle", (Class<?>[])null);
-        purgeMethod.invoke(lifecycleFactory, (Object[])null);
+        lifecyclePurgeMethod = lifecycleFactory.getClass().getMethod("purgeLifecycle", NO_PARAMETER_TYPES);
+
+        // If there was no exception so far, now we can purge
+        //
+        appFactoryPurgeMethod.invoke(applicationFactory, NO_PARAMETERS);
+        renderKitPurgeMethod.invoke(renderKitFactory, NO_PARAMETERS);
+        RuntimeConfig.getCurrentInstance(_externalContext).purge();
+        lifecyclePurgeMethod.invoke(lifecycleFactory, NO_PARAMETERS);
 
         // factories and serial factory need not be purged...
     }
@@ -534,19 +549,22 @@ public class FacesConfigurator
 
             for (Map.Entry<String, URL> entry : facesConfigs.entrySet())
             {
-                InputStream stream = openStreamWithoutCache(entry.getValue());
+                InputStream stream = null;
                 try
                 {
+                    stream = openStreamWithoutCache(entry.getValue());
                     if (log.isInfoEnabled())
                     {
                         log.info("Reading config : " + entry.getKey());
                     }
-
                     getDispenser().feed(getUnmarshaller().getFacesConfig(stream, entry.getKey()));
                 }
                 finally
                 {
-                    stream.close();
+                    if (stream != null)
+                    {
+                        stream.close();
+                    }
                 }
             }
         }
@@ -571,14 +589,12 @@ public class FacesConfigurator
             {
                 log.info("Reading config " + systemId);
             }
-
             getDispenser().feed(getUnmarshaller().getFacesConfig(stream, systemId));
             stream.close();
         }
     }
 
-    private List<String> getConfigFilesList()
-    {
+    private List<String> getConfigFilesList() {
         String configFiles = _externalContext.getInitParameter(FacesServlet.CONFIG_FILES_ATTR);
         List<String> configFilesList = new ArrayList<String>();
         if (configFiles != null)

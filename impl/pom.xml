@@ -40,9 +40,10 @@
             <id>makemyfacesmetadata</id>
             <configuration>
                 <!-- Qdox 1.6.3 does not parse inner enums on classes
-                so we have to exclude some files temporally. -->
-                <includes>**/*.java,/**/*.java</includes>
-                <excludes>**/FacesCompositeELResolver.java,/**/FacesCompositeELResolver.java</excludes>
+                so we have to exclude some files temporally. 
+                Added linux case (paths start with /) to filter temporally too-->
+                <includes>/**/*.java,**/*.java</includes>
+                <excludes>/**/FacesCompositeELResolver.java,**/FacesCompositeELResolver.java</excludes>
             </configuration>
             <goals>
               <goal>build-metadata</goal>
@@ -180,80 +181,116 @@
         </executions>
       </plugin>
                -->
-      <plugin>
-        <!--
-          - The shared-impl project generates a modified version of the "shared" module
-          - source and classes. The result is a jar full of files in the "shared_impl"
-          - package that we can merge into the jar for this project.
-          -->
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>dependency-maven-plugin</artifactId>
-        <version>1.0</version>
-        <executions>
-          <execution>
-            <id>unpack-shared-impl</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.apache.myfaces.shared</groupId>
-                  <artifactId>myfaces-shared-impl</artifactId>
-                  <version>${myfaces-shared.version}</version>
-                </artifactItem>
-              </artifactItems>
-              <outputDirectory>${project.build.directory}/classes</outputDirectory>
-            </configuration>
-          </execution>
-          <execution>
-            <id>unpack-shared-impl-sources</id>
-            <phase>process-sources</phase>
-            <goals>
-                <goal>unpack</goal>
-            </goals>
-            <configuration>
-                <artifactItems>
-                    <artifactItem>
-                        <groupId>org.apache.myfaces.shared</groupId>
-                        <artifactId>myfaces-shared-impl</artifactId>
-                        <version>${myfaces-shared.version}</version>
-                        <classifier>sources</classifier>
-                    </artifactItem>
-                </artifactItems>
-                <outputDirectory>${project.build.directory}/shared_sources</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <!-- 
-          - Add the unpacked shared sources directory as source directory into the pom datastructure,
-          - so that the -source jar includes them too; every .class file in the jar should have its
-          - source in the -source jar.
-          -->  
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.0</version>
-        <executions>
-          <execution>
-            <id>add-source</id>
-            <phase>process-sources</phase>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>${project.build.directory}/shared_sources</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
   <profiles>
+    <profile>
+        <!-- This profile use a shared dependency rather than unpack the
+        code directly. The ideal is that this profile is active when the
+        version of this library is snapshot, but unfortunately there is
+        no way to activate it (see http://jira.codehaus.org/browse/MNG-3826).
+        Existing problems on maven 2.0.x architecture makes impossible do it.
+        For now the solution is trigger it manually using the property
+        -Ddev=true -->
+        <id>add-shared-dependency</id>
+        <activation>
+            <property>
+                <name>dev</name>
+                <value>true</value>
+            </property>
+        </activation>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.myfaces.shared</groupId>
+                <artifactId>myfaces-shared-impl</artifactId>
+                <version>${myfaces-shared.version}</version>
+                <scope>compile</scope>
+            </dependency>
+        </dependencies>
+    </profile>
+    <profile>
+        <id>unpack-shared</id>
+        <activation>
+            <property>
+                <name>!dev</name>
+            </property>
+        </activation>
+        <build>
+            <plugins>
+              <plugin>
+                <!--
+                  - The shared-impl project generates a modified version of the "shared" module
+                  - source and classes. The result is a jar full of files in the "shared_impl"
+                  - package that we can merge into the jar for this project.
+                  -->
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>dependency-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                  <execution>
+                    <id>unpack-shared-impl</id>
+                    <phase>process-classes</phase>
+                    <goals>
+                      <goal>unpack</goal>
+                    </goals>
+                    <configuration>
+                      <artifactItems>
+                        <artifactItem>
+                          <groupId>org.apache.myfaces.shared</groupId>
+                          <artifactId>myfaces-shared-impl</artifactId>
+                          <version>${myfaces-shared.version}</version>
+                        </artifactItem>
+                      </artifactItems>
+                      <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                    </configuration>
+                  </execution>
+                  <execution>
+                    <id>unpack-shared-impl-sources</id>
+                    <phase>process-sources</phase>
+                    <goals>
+                        <goal>unpack</goal>
+                    </goals>
+                    <configuration>
+                        <artifactItems>
+                            <artifactItem>
+                                <groupId>org.apache.myfaces.shared</groupId>
+                                <artifactId>myfaces-shared-impl</artifactId>
+                                <version>${myfaces-shared.version}</version>
+                                <classifier>sources</classifier>
+                            </artifactItem>
+                        </artifactItems>
+                        <outputDirectory>${project.build.directory}/shared_sources</outputDirectory>
+                    </configuration>
+                  </execution>
+                </executions>
+              </plugin>
+              <plugin>
+                <!-- 
+                  - Add the unpacked shared sources directory as source directory into the pom datastructure,
+                  - so that the -source jar includes them too; every .class file in the jar should have its
+                  - source in the -source jar.
+                  -->  
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                  <execution>
+                    <id>add-source</id>
+                    <phase>process-sources</phase>
+                    <goals>
+                      <goal>add-source</goal>
+                    </goals>
+                    <configuration>
+                      <sources>
+                        <source>${project.build.directory}/shared_sources</source>
+                      </sources>
+                    </configuration>
+                  </execution>
+                </executions>
+              </plugin>
+            </plugins>
+        </build>
+    </profile>
     <profile>
       <!--
         - Whenever the full website is generated, the command
@@ -554,6 +591,6 @@
   </repositories>
 
   <properties>
-    <myfaces-shared.version>3.0.5-SNAPSHOT</myfaces-shared.version>
+    <myfaces-shared.version>3.0.5</myfaces-shared.version>
   </properties>
 </project>
