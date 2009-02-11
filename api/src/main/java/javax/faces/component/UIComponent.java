@@ -512,7 +512,11 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
         // UIComponent, if any, becomes the current component.
         Deque<UIComponent> componentStack = (Deque<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
         
-        UIComponent newCurrent = componentStack.pop();
+        UIComponent newCurrent = null;
+        if (componentStack != null && !componentStack.isEmpty())
+        {
+            newCurrent = componentStack.pop();
+        }
         UIComponent oldCurrent = (UIComponent)contextAttributes.put(UIComponent.CURRENT_COMPONENT, newCurrent);
         
         if (oldCurrent != null && oldCurrent._isCompositeComponent())
