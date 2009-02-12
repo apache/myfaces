@@ -24,14 +24,12 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.MethodExpressionValueChangeListener;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.validator.MethodExpressionValidator;
-
 import javax.faces.webapp.pdl.facelets.FaceletContext;
-import com.sun.facelets.el.LegacyMethodBinding;
-import com.sun.facelets.tag.TagAttribute;
-import com.sun.facelets.tag.Metadata;
+
 import com.sun.facelets.tag.MetaRule;
+import com.sun.facelets.tag.Metadata;
 import com.sun.facelets.tag.MetadataTarget;
-import com.sun.facelets.util.FacesAPI;
+import com.sun.facelets.tag.TagAttribute;
 
 /**
  * 
@@ -74,22 +72,6 @@ public final class EditableValueHolderRule extends MetaRule
         }
     }
 
-    final static class ValueChangedBindingMetadata extends Metadata
-    {
-        private final TagAttribute attr;
-
-        public ValueChangedBindingMetadata(TagAttribute attr)
-        {
-            this.attr = attr;
-        }
-
-        public void applyMetadata(FaceletContext ctx, Object instance)
-        {
-            ((EditableValueHolder) instance).setValueChangeListener(new LegacyMethodBinding(this.attr
-                    .getMethodExpression(ctx, null, VALUECHANGE_SIG)));
-        }
-    }
-
     final static class ValidatorExpressionMetadata extends Metadata
     {
         private final TagAttribute attr;
@@ -106,25 +88,9 @@ public final class EditableValueHolderRule extends MetaRule
         }
     }
 
-    final static class ValidatorBindingMetadata extends Metadata
-    {
-        private final TagAttribute attr;
+    private final static Class<?>[] VALIDATOR_SIG = new Class[] { FacesContext.class, UIComponent.class, Object.class };
 
-        public ValidatorBindingMetadata(TagAttribute attr)
-        {
-            this.attr = attr;
-        }
-
-        public void applyMetadata(FaceletContext ctx, Object instance)
-        {
-            ((EditableValueHolder) instance).setValidator(new LegacyMethodBinding(this.attr
-                    .getMethodExpression(ctx, null, VALIDATOR_SIG)));
-        }
-    }
-
-    private final static Class[] VALIDATOR_SIG = new Class[] { FacesContext.class, UIComponent.class, Object.class };
-
-    private final static Class[] VALUECHANGE_SIG = new Class[] { ValueChangeEvent.class };
+    private final static Class<?>[] VALUECHANGE_SIG = new Class[] { ValueChangeEvent.class };
 
     public final static EditableValueHolderRule Instance = new EditableValueHolderRule();
 
@@ -134,34 +100,21 @@ public final class EditableValueHolderRule extends MetaRule
         if (meta.isTargetInstanceOf(EditableValueHolder.class))
         {
 
-            boolean elSupport = FacesAPI.getComponentVersion(meta.getTargetClass()) >= 12;
-
             if ("validator".equals(name))
             {
                 if (attribute.isLiteral())
                 {
                     return new LiteralValidatorMetadata(attribute.getValue());
                 }
-                else if (elSupport)
-                {
-                    return new ValidatorExpressionMetadata(attribute);
-                }
                 else
                 {
-                    return new ValidatorBindingMetadata(attribute);
+                    return new ValidatorExpressionMetadata(attribute);
                 }
             }
 
             if ("valueChangeListener".equals(name))
             {
-                if (elSupport)
-                {
-                    return new ValueChangedExpressionMetadata(attribute);
-                }
-                else
-                {
-                    return new ValueChangedBindingMetadata(attribute);
-                }
+                return new ValueChangedExpressionMetadata(attribute);
             }
 
         }

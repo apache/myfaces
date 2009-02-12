@@ -21,14 +21,12 @@ package com.sun.facelets.tag.jsf;
 import javax.faces.component.UIComponent;
 import javax.faces.component.ValueHolder;
 import javax.faces.convert.Converter;
-
 import javax.faces.webapp.pdl.facelets.FaceletContext;
-import com.sun.facelets.el.LegacyValueBinding;
-import com.sun.facelets.tag.TagAttribute;
-import com.sun.facelets.tag.Metadata;
+
 import com.sun.facelets.tag.MetaRule;
+import com.sun.facelets.tag.Metadata;
 import com.sun.facelets.tag.MetadataTarget;
-import com.sun.facelets.util.FacesAPI;
+import com.sun.facelets.tag.TagAttribute;
 
 /**
  * 
@@ -52,23 +50,6 @@ final class ValueHolderRule extends MetaRule
         {
             ((ValueHolder) instance).setConverter(ctx.getFacesContext().getApplication()
                     .createConverter(this.converterId));
-        }
-    }
-
-    final static class DynamicConverterMetadata extends Metadata
-    {
-
-        private final TagAttribute attr;
-
-        public DynamicConverterMetadata(TagAttribute attr)
-        {
-            this.attr = attr;
-        }
-
-        public void applyMetadata(FaceletContext ctx, Object instance)
-        {
-            ((UIComponent) instance).setValueBinding("converter", new LegacyValueBinding(attr
-                    .getValueExpression(ctx, Converter.class)));
         }
     }
 
@@ -120,23 +101,6 @@ final class ValueHolderRule extends MetaRule
         }
     }
 
-    final static class DynamicValueBindingMetadata extends Metadata
-    {
-
-        private final TagAttribute attr;
-
-        public DynamicValueBindingMetadata(TagAttribute attr)
-        {
-            this.attr = attr;
-        }
-
-        public void applyMetadata(FaceletContext ctx, Object instance)
-        {
-            ((UIComponent) instance).setValueBinding("value", new LegacyValueBinding(attr
-                    .getValueExpression(ctx, Object.class)));
-        }
-    }
-
     public final static ValueHolderRule Instance = new ValueHolderRule();
 
     public Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta)
@@ -152,14 +116,7 @@ final class ValueHolderRule extends MetaRule
                 }
                 else
                 {
-                    if (FacesAPI.getComponentVersion(meta.getTargetClass()) >= 12)
-                    {
-                        return new DynamicConverterMetadata2(attribute);
-                    }
-                    else
-                    {
-                        return new DynamicConverterMetadata(attribute);
-                    }
+                    return new DynamicConverterMetadata2(attribute);
                 }
             }
 
@@ -171,14 +128,7 @@ final class ValueHolderRule extends MetaRule
                 }
                 else
                 {
-                    if (FacesAPI.getComponentVersion(meta.getTargetClass()) >= 12)
-                    {
-                        return new DynamicValueExpressionMetadata(attribute);
-                    }
-                    else
-                    {
-                        return new DynamicValueBindingMetadata(attribute);
-                    }
+                    return new DynamicValueExpressionMetadata(attribute);
                 }
             }
         }

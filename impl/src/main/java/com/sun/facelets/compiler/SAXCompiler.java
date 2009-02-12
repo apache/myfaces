@@ -27,6 +27,8 @@ import java.util.regex.Pattern;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
+import javax.faces.webapp.pdl.facelets.FaceletException;
+import javax.faces.webapp.pdl.facelets.FaceletHandler;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -40,8 +42,6 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.DefaultHandler;
 
-import javax.faces.webapp.pdl.facelets.FaceletException;
-import javax.faces.webapp.pdl.facelets.FaceletHandler;
 import com.sun.facelets.tag.Location;
 import com.sun.facelets.tag.Tag;
 import com.sun.facelets.tag.TagAttribute;

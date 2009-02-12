@@ -25,10 +25,10 @@ import java.util.List;
 import javax.el.ELException;
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
-
 import javax.faces.webapp.pdl.facelets.FaceletContext;
 import javax.faces.webapp.pdl.facelets.FaceletException;
 import javax.faces.webapp.pdl.facelets.FaceletHandler;
+
 import com.sun.facelets.tag.CompositeFaceletHandler;
 
 /**
@@ -52,7 +52,7 @@ class CompilationUnit
         }
     };
 
-    private List children;
+    private List<CompilationUnit> children;
 
     public CompilationUnit()
     {
@@ -62,7 +62,7 @@ class CompilationUnit
     {
         if (this.children == null)
         {
-            this.children = new ArrayList();
+            this.children = new ArrayList<CompilationUnit>();
         }
         this.children.add(unit);
     }

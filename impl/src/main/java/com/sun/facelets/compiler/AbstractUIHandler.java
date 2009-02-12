@@ -19,9 +19,9 @@
 package com.sun.facelets.compiler;
 
 import javax.faces.component.UIComponent;
-
 import javax.faces.webapp.pdl.facelets.FaceletContext;
 import javax.faces.webapp.pdl.facelets.FaceletHandler;
+
 import com.sun.facelets.tag.TextHandler;
 import com.sun.facelets.tag.jsf.core.FacetHandler;
 

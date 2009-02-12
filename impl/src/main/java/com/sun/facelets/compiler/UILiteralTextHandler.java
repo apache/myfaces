@@ -18,17 +18,14 @@
  */
 package com.sun.facelets.compiler;
 
-import javax.faces.component.UIComponent;
-
 import java.io.IOException;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
-
+import javax.faces.component.UIComponent;
 import javax.faces.webapp.pdl.facelets.FaceletContext;
 import javax.faces.webapp.pdl.facelets.FaceletException;
-import javax.faces.webapp.pdl.facelets.FaceletHandler;
-import com.sun.facelets.tag.TextHandler;
+
 import com.sun.facelets.tag.jsf.ComponentSupport;
 
 final class UILiteralTextHandler extends AbstractUIHandler

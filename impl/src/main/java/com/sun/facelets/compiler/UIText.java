@@ -21,11 +21,9 @@ package com.sun.facelets.compiler;
 import java.io.IOException;
 
 import javax.el.ELException;
-import javax.faces.component.UIComponentBase;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
-import com.sun.facelets.el.ELAdaptor;
 import com.sun.facelets.el.ELText;
 
 /**
@@ -34,51 +32,55 @@ import com.sun.facelets.el.ELText;
  */
 final class UIText extends UILeaf
 {
+    private final String _alias;
 
-    private final ELText txt;
-
-    private final String alias;
+    private final ELText _txt;
 
     public UIText(String alias, ELText txt)
     {
-        this.txt = txt;
-        this.alias = alias;
+        _txt = txt;
+        _alias = alias;
     }
 
+    @Override
     public String getFamily()
     {
         return null;
     }
 
+    @Override
     public void encodeBegin(FacesContext context) throws IOException
     {
         ResponseWriter out = context.getResponseWriter();
         try
         {
-            txt.write(out, ELAdaptor.getELContext(context));
+            _txt.write(out, context.getELContext());
         }
         catch (ELException e)
         {
-            throw new ELException(this.alias + ": " + e.getMessage(), e.getCause());
+            throw new ELException(_alias + ": " + e.getMessage(), e.getCause());
         }
         catch (Exception e)
         {
-            throw new ELException(this.alias + ": " + e.getMessage(), e);
+            throw new ELException(_alias + ": " + e.getMessage(), e);
         }
     }
 
+    @Override
     public String getRendererType()
     {
         return null;
     }
 
+    @Override
     public boolean getRendersChildren()
     {
         return true;
     }
 
+    @Override
     public String toString()
     {
-        return this.txt.toString();
+        return _txt.toString();
     }
 }

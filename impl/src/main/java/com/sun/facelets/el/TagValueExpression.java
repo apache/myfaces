@@ -57,12 +57,12 @@ public final class TagValueExpression extends ValueExpression implements Externa
         this.orig = orig;
     }
 
-    public Class getExpectedType()
+    public Class<?> getExpectedType()
     {
         return this.orig.getExpectedType();
     }
 
-    public Class getType(ELContext context)
+    public Class<?> getType(ELContext context)
     {
         try
         {

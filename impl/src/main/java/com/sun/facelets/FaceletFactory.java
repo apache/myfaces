@@ -33,7 +33,7 @@ import javax.faces.webapp.pdl.facelets.FaceletException;
 public abstract class FaceletFactory
 {
 
-    private static ThreadLocal Instance = new ThreadLocal();
+    private static ThreadLocal<FaceletFactory> instance = new ThreadLocal<FaceletFactory>();
 
     /**
      * Return a Facelet instance as specified by the file at the passed URI.
@@ -54,7 +54,7 @@ public abstract class FaceletFactory
      */
     public static final void setInstance(FaceletFactory factory)
     {
-        Instance.set(factory);
+        instance.set(factory);
     }
 
     /**
@@ -64,6 +64,6 @@ public abstract class FaceletFactory
      */
     public static final FaceletFactory getInstance()
     {
-        return (FaceletFactory) Instance.get();
+        return instance.get();
     }
 }

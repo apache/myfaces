@@ -41,7 +41,7 @@ public class ReflectionUtil
         super();
     }
 
-    public static Class forName(String name) throws ClassNotFoundException
+    public static Class<?> forName(String name) throws ClassNotFoundException
     {
         if (null == name || "".equals(name))
         {

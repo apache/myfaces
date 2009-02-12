@@ -25,12 +25,10 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.faces.component.UIComponent;
-
 import javax.faces.webapp.pdl.facelets.FaceletContext;
-import com.sun.facelets.tag.MetaRule;
+
 import com.sun.facelets.tag.MetaRuleset;
 import com.sun.facelets.tag.Metadata;
-import com.sun.facelets.tag.MetadataTarget;
 import com.sun.facelets.tag.TagAttribute;
 import com.sun.facelets.tag.jsf.ComponentConfig;
 import com.sun.facelets.tag.jsf.ComponentHandler;

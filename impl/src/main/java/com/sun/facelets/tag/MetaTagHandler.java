@@ -19,6 +19,7 @@
 package com.sun.facelets.tag;
 
 import javax.faces.webapp.pdl.facelets.FaceletContext;
+
 import com.sun.facelets.util.ParameterCheck;
 
 /**
@@ -29,10 +30,9 @@ import com.sun.facelets.util.ParameterCheck;
  */
 public abstract class MetaTagHandler extends TagHandler
 {
+    private Class<?> _lastType = Object.class;
 
-    private Class lastType = Object.class;
-
-    private Metadata mapper;
+    private Metadata _mapper;
 
     public MetaTagHandler(TagConfig config)
     {
@@ -45,7 +45,7 @@ public abstract class MetaTagHandler extends TagHandler
      * @param type
      * @return
      */
-    protected MetaRuleset createMetaRuleset(Class type)
+    protected MetaRuleset createMetaRuleset(Class<?> type)
     {
         ParameterCheck.notNull("type", type);
         return new MetaRulesetImpl(this.tag, type);
@@ -62,13 +62,14 @@ public abstract class MetaTagHandler extends TagHandler
     {
         if (instance != null)
         {
-            Class type = instance.getClass();
-            if (mapper == null || !this.lastType.equals(type))
+            Class<?> type = instance.getClass();
+            if (_mapper == null || !_lastType.equals(type))
             {
-                this.lastType = type;
-                this.mapper = this.createMetaRuleset(type).finish();
+                _lastType = type;
+                _mapper = this.createMetaRuleset(type).finish();
             }
-            this.mapper.applyMetadata(ctx, instance);
+            
+            _mapper.applyMetadata(ctx, instance);
         }
     }
 }

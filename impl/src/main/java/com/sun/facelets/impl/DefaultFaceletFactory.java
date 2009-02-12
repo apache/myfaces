@@ -30,15 +30,13 @@ import java.util.logging.Logger;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
+import javax.faces.webapp.pdl.facelets.FaceletException;
+import javax.faces.webapp.pdl.facelets.FaceletHandler;
 
 import com.sun.facelets.Facelet;
-import javax.faces.webapp.pdl.facelets.FaceletException;
 import com.sun.facelets.FaceletFactory;
-import javax.faces.webapp.pdl.facelets.FaceletHandler;
 import com.sun.facelets.compiler.Compiler;
 import com.sun.facelets.util.ParameterCheck;
-import com.sun.facelets.util.Resource;
 
 /**
  * Default FaceletFactory implementation.
@@ -48,20 +46,19 @@ import com.sun.facelets.util.Resource;
  */
 public final class DefaultFaceletFactory extends FaceletFactory
 {
-
     protected final static Logger log = Logger.getLogger("facelets.factory");
 
-    private final Compiler compiler;
+    private final Compiler _compiler;
 
-    private Map facelets;
+    private Map<String, DefaultFacelet> _facelets;
 
-    private Map relativeLocations;
+    private Map<String, URL> _relativeLocations;
 
-    private final ResourceResolver resolver;
+    private final ResourceResolver _resolver;
 
-    private final URL baseUrl;
+    private final URL _baseUrl;
 
-    private final long refreshPeriod;
+    private final long _refreshPeriod;
 
     public DefaultFaceletFactory(Compiler compiler, ResourceResolver resolver) throws IOException
     {
@@ -72,15 +69,15 @@ public final class DefaultFaceletFactory extends FaceletFactory
     {
         ParameterCheck.notNull("compiler", compiler);
         ParameterCheck.notNull("resolver", resolver);
-        this.compiler = compiler;
-        this.facelets = new HashMap();
-        this.relativeLocations = new HashMap();
-        this.resolver = resolver;
-        this.baseUrl = resolver.resolveUrl("/");
+        _compiler = compiler;
+        _facelets = new HashMap<String, DefaultFacelet>();
+        _relativeLocations = new HashMap<String, URL>();
+        _resolver = resolver;
+        _baseUrl = resolver.resolveUrl("/");
         // this.location = url;
         log.fine("Using ResourceResolver: " + resolver);
-        this.refreshPeriod = (refreshPeriod >= 0) ? refreshPeriod * 1000 : -1;
-        log.fine("Using Refresh Period: " + this.refreshPeriod);
+        _refreshPeriod = (refreshPeriod >= 0) ? refreshPeriod * 1000 : -1;
+        log.fine("Using Refresh Period: " + _refreshPeriod);
     }
 
     /*
@@ -90,15 +87,15 @@ public final class DefaultFaceletFactory extends FaceletFactory
      */
     public Facelet getFacelet(String uri) throws IOException, FaceletException, FacesException, ELException
     {
-        URL url = (URL) this.relativeLocations.get(uri);
+        URL url = (URL) _relativeLocations.get(uri);
         if (url == null)
         {
-            url = this.resolveURL(this.baseUrl, uri);
+            url = this.resolveURL(_baseUrl, uri);
             if (url != null)
             {
-                Map newLoc = new HashMap(this.relativeLocations);
+                Map<String, URL> newLoc = new HashMap<String, URL>(_relativeLocations);
                 newLoc.put(uri, url);
-                this.relativeLocations = newLoc;
+                _relativeLocations = newLoc;
             }
             else
             {
@@ -125,7 +122,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
     {
         if (path.startsWith("/"))
         {
-            URL url = this.resolver.resolveUrl(path);
+            URL url = _resolver.resolveUrl(path);
             if (url == null)
             {
                 throw new FileNotFoundException(path + " Not Found in ExternalContext as a Resource");
@@ -154,15 +151,15 @@ public final class DefaultFaceletFactory extends FaceletFactory
     {
         ParameterCheck.notNull("url", url);
         String key = url.toString();
-        DefaultFacelet f = (DefaultFacelet) this.facelets.get(key);
+        DefaultFacelet f = _facelets.get(key);
         if (f == null || this.needsToBeRefreshed(f))
         {
             f = this.createFacelet(url);
-            if (this.refreshPeriod != 0)
+            if (_refreshPeriod != 0)
             {
-                Map newLoc = new HashMap(this.facelets);
+                Map<String, DefaultFacelet> newLoc = new HashMap<String, DefaultFacelet>(_facelets);
                 newLoc.put(key, f);
-                this.facelets = newLoc;
+                _facelets = newLoc;
             }
         }
         return f;
@@ -178,12 +175,12 @@ public final class DefaultFaceletFactory extends FaceletFactory
     protected boolean needsToBeRefreshed(DefaultFacelet facelet)
     {
         // if set to 0, constantly reload-- nocache
-        if (this.refreshPeriod == 0)
+        if (_refreshPeriod == 0)
             return true;
         // if set to -1, never reload
-        if (this.refreshPeriod == -1)
+        if (_refreshPeriod == -1)
             return false;
-        long ttl = facelet.getCreateTime() + this.refreshPeriod;
+        long ttl = facelet.getCreateTime() + _refreshPeriod;
         URL url = facelet.getSource();
         InputStream is = null;
         if (System.currentTimeMillis() > ttl)
@@ -234,11 +231,11 @@ public final class DefaultFaceletFactory extends FaceletFactory
         {
             log.fine("Creating Facelet for: " + url);
         }
-        String alias = "/" + url.getFile().replaceFirst(this.baseUrl.getFile(), "");
+        String alias = "/" + url.getFile().replaceFirst(_baseUrl.getFile(), "");
         try
         {
-            FaceletHandler h = this.compiler.compile(url, alias);
-            DefaultFacelet f = new DefaultFacelet(this, this.compiler.createExpressionFactory(), url, alias, h);
+            FaceletHandler h = _compiler.compile(url, alias);
+            DefaultFacelet f = new DefaultFacelet(this, _compiler.createExpressionFactory(), url, alias, h);
             return f;
         }
         catch (FileNotFoundException fnfe)
@@ -254,11 +251,11 @@ public final class DefaultFaceletFactory extends FaceletFactory
      */
     public Compiler getCompiler()
     {
-        return this.compiler;
+        return _compiler;
     }
 
     public long getRefreshPeriod()
     {
-        return refreshPeriod;
+        return _refreshPeriod;
     }
 }

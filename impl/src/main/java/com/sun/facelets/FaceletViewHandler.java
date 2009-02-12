@@ -51,10 +51,8 @@ import com.sun.facelets.impl.DefaultResourceResolver;
 import com.sun.facelets.impl.ResourceResolver;
 import com.sun.facelets.tag.TagDecorator;
 import com.sun.facelets.tag.TagLibrary;
-import com.sun.facelets.tag.jsf.ComponentSupport;
 import com.sun.facelets.tag.ui.UIDebug;
 import com.sun.facelets.util.DevTools;
-import com.sun.facelets.util.FacesAPI;
 import com.sun.facelets.util.ReflectionUtil;
 
 /**
@@ -123,8 +121,6 @@ public class FaceletViewHandler extends ViewHandler
     private final static String STATE_KEY = "~facelets.VIEW_STATE~";
 
     private final static int STATE_KEY_LEN = STATE_KEY.length();
-
-    private final static Object STATE_NULL = new Object();
 
     private final ViewHandler parent;
 
@@ -203,8 +199,8 @@ public class FaceletViewHandler extends ViewHandler
         {
             String[] mappingsArray = viewMappings.split(";");
 
-            List extensionsList = new ArrayList(mappingsArray.length);
-            List prefixesList = new ArrayList(mappingsArray.length);
+            List<String> extensionsList = new ArrayList<String>(mappingsArray.length);
+            List<String> prefixesList = new ArrayList<String>(mappingsArray.length);
 
             for (int i = 0; i < mappingsArray.length; i++)
             {
@@ -353,13 +349,6 @@ public class FaceletViewHandler extends ViewHandler
         // But in JSF 1.1, it will be called for an initial request too,
         // in which case we must return null in order to fall through
         // to createView()
-        if (FacesAPI.getVersion() < 12)
-        {
-            if (!isPostback11(context))
-            {
-                return null;
-            }
-        }
 
         ViewHandler outerViewHandler = context.getApplication().getViewHandler();
         String renderKitId = outerViewHandler.calculateRenderKitId(context);
@@ -464,8 +453,8 @@ public class FaceletViewHandler extends ViewHandler
         String encoding = orig;
 
         // see if we need to override the encoding
-        Map m = context.getExternalContext().getRequestMap();
-        Map sm = context.getExternalContext().getSessionMap();
+        Map<String, Object> m = context.getExternalContext().getRequestMap();
+        Map<String, Object> sm = context.getExternalContext().getSessionMap();
 
         // 1. check the request attribute
         if (m.containsKey("facelets.Encoding"))
@@ -520,7 +509,7 @@ public class FaceletViewHandler extends ViewHandler
         String contentType = orig;
 
         // see if we need to override the contentType
-        Map m = context.getExternalContext().getRequestMap();
+        Map<String, Object> m = context.getExternalContext().getRequestMap();
         if (m.containsKey("facelets.ContentType"))
         {
             contentType = (String) m.get("facelets.ContentType");
@@ -640,24 +629,11 @@ public class FaceletViewHandler extends ViewHandler
 
             // render the view to the response
             writer.startDocument();
-            if (FacesAPI.getVersion() >= 12)
-            {
-                viewToRender.encodeAll(context);
-            }
-            else
-            {
-                ComponentSupport.encodeRecursive(context, viewToRender);
-            }
+            viewToRender.encodeAll(context);
             writer.endDocument();
 
             // finish writing
             writer.close();
-
-            // remove transients for older versions
-            if (FacesAPI.getVersion() < 12)
-            {
-                ComponentSupport.removeTransient(viewToRender);
-            }
 
             boolean writtenState = stateWriter.isStateWritten();
             // flush to origWriter
@@ -701,14 +677,6 @@ public class FaceletViewHandler extends ViewHandler
                 else
                 {
                     origWriter.write(content);
-                    // But for JSF 1.1 (actually, just 1.1_01 RI), if we didn't
-                    // detect any saved state, force a call to
-                    // saveSerializedView() in case we're using the old
-                    // pure-server-side state saving
-                    if ((FacesAPI.getVersion() < 12) && !stateMgr.isSavingStateInClient(context))
-                    {
-                        stateMgr.saveSerializedView(context);
-                    }
                 }
             }
 
@@ -932,7 +900,7 @@ public class FaceletViewHandler extends ViewHandler
         }
         else
         {
-            Map paramMap = context.getExternalContext().getRequestParameterMap();
+            Map<String, String> paramMap = context.getExternalContext().getRequestParameterMap();
             return !paramMap.isEmpty();
         }
     }

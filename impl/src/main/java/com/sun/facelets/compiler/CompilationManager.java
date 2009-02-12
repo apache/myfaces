@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.webapp.pdl.facelets.FaceletHandler;
+
 import com.sun.facelets.tag.Tag;
 import com.sun.facelets.tag.TagAttribute;
 import com.sun.facelets.tag.TagAttributeException;
@@ -57,7 +58,7 @@ final class CompilationManager
 
     private final NamespaceManager namespaceManager;
 
-    private final Stack units;
+    private final Stack<CompilationUnit> units;
 
     private int tagId;
 
@@ -86,7 +87,7 @@ final class CompilationManager
         this.finished = false;
 
         // our compilationunit stack
-        this.units = new Stack();
+        this.units = new Stack<CompilationUnit>();
         this.units.push(new CompilationUnit());
     }
 
@@ -202,8 +203,6 @@ final class CompilationManager
         Tag t = this.tagDecorator.decorate(orig);
         String[] qname = this.determineQName(t);
         t = this.trimAttributes(t);
-
-        boolean handled = false;
 
         if (isTrimmed(qname[0], qname[1]))
         {
@@ -336,20 +335,6 @@ final class CompilationManager
         }
     }
 
-    private CompilationUnit searchUnits(Class type)
-    {
-        CompilationUnit unit = null;
-        int i = this.units.size();
-        while (unit == null && --i >= 0)
-        {
-            if (type.isAssignableFrom(this.units.get(i).getClass()))
-            {
-                unit = (CompilationUnit) this.units.get(i);
-            }
-        }
-        return unit;
-    }
-
     private void startUnit(CompilationUnit unit)
     {
 
@@ -456,7 +441,7 @@ final class CompilationManager
         }
         else
         {
-            List attrList = new ArrayList(attr.length);
+            List<TagAttribute> attrList = new ArrayList<TagAttribute>(attr.length);
             int p = 0;
             for (int i = 0; i < attr.length; i++)
             {
@@ -467,7 +452,7 @@ final class CompilationManager
                 }
                 attrList.add(attr[i]);
             }
-            attr = (TagAttribute[]) attrList.toArray(new TagAttribute[attrList.size()]);
+            attr = attrList.toArray(new TagAttribute[attrList.size()]);
             return new Tag(tag.getLocation(), tag.getNamespace(), tag.getLocalName(), tag.getQName(),
                            new TagAttributes(attr));
         }

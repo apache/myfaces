@@ -24,7 +24,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.el.FunctionMapper;
@@ -42,10 +41,9 @@ import com.sun.facelets.util.ReflectionUtil;
  */
 public final class DefaultFunctionMapper extends FunctionMapper implements Externalizable
 {
-
     private static final long serialVersionUID = 1L;
 
-    private Map functions = null;
+    private Map<String, Function> _functions = null;
 
     /*
      * (non-Javadoc)
@@ -54,24 +52,26 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
      */
     public Method resolveFunction(String prefix, String localName)
     {
-        if (this.functions != null)
+        if (_functions != null)
         {
-            Function f = (Function) this.functions.get(prefix + ":" + localName);
+            Function f = (Function) _functions.get(prefix + ":" + localName);
             return f.getMethod();
         }
+        
         return null;
     }
 
     public void addFunction(String prefix, String localName, Method m)
     {
-        if (this.functions == null)
+        if (_functions == null)
         {
-            this.functions = new HashMap();
+            _functions = new HashMap<String, Function>();
         }
+        
         Function f = new Function(prefix, localName, m);
         synchronized (this)
         {
-            this.functions.put(prefix + ":" + localName, f);
+            _functions.put(prefix + ":" + localName, f);
         }
     }
 
@@ -82,7 +82,7 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
      */
     public void writeExternal(ObjectOutput out) throws IOException
     {
-        out.writeObject(this.functions);
+        out.writeObject(_functions);
     }
 
     /*
@@ -90,39 +90,41 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
      * 
      * @see java.io.Externalizable#readExternal(java.io.ObjectInput)
      */
+    @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
     {
-        this.functions = (Map) in.readObject();
+        _functions = (Map<String, Function>) in.readObject();
     }
 
+    @Override
     public String toString()
     {
         StringBuffer sb = new StringBuffer(128);
         sb.append("FunctionMapper[\n");
-        for (Iterator itr = this.functions.values().iterator(); itr.hasNext();)
+        for (Function function : _functions.values())
         {
-            sb.append(itr.next()).append('\n');
+            sb.append(function).append('\n');
         }
         sb.append(']');
+        
         return sb.toString();
     }
 
     private static class Function implements Externalizable
     {
-
         private static final long serialVersionUID = 1L;
 
-        protected transient Method m;
+        protected transient Method _m;
 
-        protected String owner;
+        protected String _owner;
 
-        protected String name;
+        protected String _name;
 
-        protected String[] types;
+        protected String[] _types;
 
-        protected String prefix;
+        protected String _prefix;
 
-        protected String localName;
+        protected String _localName;
 
         /**
          * 
@@ -137,9 +139,10 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
             {
                 throw new NullPointerException("Method cannot be null");
             }
-            this.prefix = prefix;
-            this.localName = localName;
-            this.m = m;
+            
+            _prefix = prefix;
+            _localName = localName;
+            _m = m;
         }
 
         public Function()
@@ -154,11 +157,11 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
          */
         public void writeExternal(ObjectOutput out) throws IOException
         {
-            out.writeUTF((this.prefix != null) ? this.prefix : "");
-            out.writeUTF(this.localName);
-            out.writeUTF(this.m.getDeclaringClass().getName());
-            out.writeUTF(this.m.getName());
-            out.writeObject(ReflectionUtil.toTypeNameArray(this.m.getParameterTypes()));
+            out.writeUTF(_prefix != null ? _prefix : "");
+            out.writeUTF(_localName);
+            out.writeUTF(_m.getDeclaringClass().getName());
+            out.writeUTF(_m.getName());
+            out.writeObject(ReflectionUtil.toTypeNameArray(this._m.getParameterTypes()));
         }
 
         /*
@@ -168,44 +171,46 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
          */
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
         {
-
-            this.prefix = in.readUTF();
-            if ("".equals(this.prefix))
-                this.prefix = null;
-            this.localName = in.readUTF();
-            this.owner = in.readUTF();
-            this.name = in.readUTF();
-            this.types = (String[]) in.readObject();
+            _prefix = in.readUTF();
+            if ("".equals(_prefix))
+                _prefix = null;
+            
+            _localName = in.readUTF();
+            _owner = in.readUTF();
+            _name = in.readUTF();
+            _types = (String[]) in.readObject();
         }
 
         public Method getMethod()
         {
-            if (this.m == null)
+            if (_m == null)
             {
                 try
                 {
-                    Class t = ReflectionUtil.forName(this.owner);
-                    Class[] p = ReflectionUtil.toTypeArray(this.types);
-                    this.m = t.getMethod(this.name, p);
+                    Class<?> t = ReflectionUtil.forName(_owner);
+                    Class<?>[] p = ReflectionUtil.toTypeArray(_types);
+                    _m = t.getMethod(_name, p);
                 }
                 catch (Exception e)
                 {
                     e.printStackTrace();
                 }
             }
-            return this.m;
+            
+            return _m;
         }
 
         public boolean matches(String prefix, String localName)
         {
-            if (this.prefix != null)
+            if (_prefix != null)
             {
                 if (prefix == null)
                     return false;
-                if (!this.prefix.equals(prefix))
+                if (!_prefix.equals(prefix))
                     return false;
             }
-            return this.localName.equals(localName);
+            
+            return _localName.equals(localName);
         }
 
         /*
@@ -213,12 +218,14 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
          * 
          * @see java.lang.Object#equals(java.lang.Object)
          */
+        @Override
         public boolean equals(Object obj)
         {
             if (obj instanceof Function)
             {
-                return this.hashCode() == obj.hashCode();
+                return hashCode() == obj.hashCode();
             }
+            
             return false;
         }
 
@@ -227,21 +234,24 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
          * 
          * @see java.lang.Object#hashCode()
          */
+        @Override
         public int hashCode()
         {
-            return (this.prefix + this.localName).hashCode();
+            return (_prefix + _localName).hashCode();
         }
 
+        @Override
         public String toString()
         {
             StringBuffer sb = new StringBuffer(32);
             sb.append("Function[");
-            if (this.prefix != null)
+            if (_prefix != null)
             {
-                sb.append(this.prefix).append(':');
+                sb.append(_prefix).append(':');
             }
-            sb.append(this.name).append("] ");
-            sb.append(this.m);
+            sb.append(_name).append("] ");
+            sb.append(_m);
+            
             return sb.toString();
         }
     }

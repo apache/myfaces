@@ -29,27 +29,26 @@ import javax.el.ValueExpression;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIComponentBase;
 import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
 import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.FacesEvent;
 import javax.faces.event.FacesListener;
 import javax.faces.render.Renderer;
 
-import com.sun.facelets.el.ELText;
-
 class UILeaf extends UIComponentBase
 {
 
-    private final static Map facets = new HashMap()
+    private final static Map<String, UIComponent> facets = new HashMap<String, UIComponent>()
     {
 
-        public void putAll(Map map)
+        @Override
+        public void putAll(Map<? extends String, ? extends UIComponent> map)
         {
             // do nothing
         }
 
-        public Object put(Object name, Object value)
+        @Override
+        public UIComponent put(String name, UIComponent value)
         {
             return null;
         }
@@ -57,21 +56,27 @@ class UILeaf extends UIComponentBase
 
     private UIComponent parent;
 
+    @Override
+    @SuppressWarnings("deprecation")
     public ValueBinding getValueBinding(String binding)
     {
         return null;
     }
 
+    @Override
+    @SuppressWarnings("deprecation")
     public void setValueBinding(String name, ValueBinding binding)
     {
         // do nothing
     }
 
+    @Override
     public ValueExpression getValueExpression(String name)
     {
         return null;
     }
 
+    @Override
     public void setValueExpression(String name, ValueExpression arg1)
     {
         // do nothing
@@ -82,176 +87,214 @@ class UILeaf extends UIComponentBase
         return "facelets.LiteralText";
     }
 
+    @Override
     public UIComponent getParent()
     {
         return this.parent;
     }
 
+    @Override
     public void setParent(UIComponent parent)
     {
         this.parent = parent;
     }
 
+    @Override
     public boolean isRendered()
     {
         return true;
     }
 
+    @Override
     public void setRendered(boolean rendered)
     {
         // do nothing
     }
 
+    @Override
     public String getRendererType()
     {
         return null;
     }
 
+    @Override
     public void setRendererType(String rendererType)
     {
         // do nothing
     }
 
+    @Override
     public boolean getRendersChildren()
     {
         return true;
     }
 
-    public List getChildren()
+    @Override
+    public List<UIComponent> getChildren()
     {
-        return Collections.EMPTY_LIST;
+        List<UIComponent> children = Collections.emptyList();
+        return children;
     }
 
+    @Override
     public int getChildCount()
     {
         return 0;
     }
 
+    @Override
     public UIComponent findComponent(String id)
     {
         return null;
     }
 
-    public Map getFacets()
+    @Override
+    public Map<String, UIComponent> getFacets()
     {
         return facets;
     }
 
+    @Override
     public int getFacetCount()
     {
         return 0;
     }
 
+    @Override
     public UIComponent getFacet(String name)
     {
         return null;
     }
 
-    public Iterator getFacetsAndChildren()
+    @Override
+    public Iterator<UIComponent> getFacetsAndChildren()
     {
-        return Collections.EMPTY_LIST.iterator();
+        List<UIComponent> childrenAndFacets = Collections.emptyList();
+        
+        return childrenAndFacets.iterator();
     }
 
+    @Override
     public void broadcast(FacesEvent event) throws AbortProcessingException
     {
         // do nothing
     }
 
+    @Override
     public void decode(FacesContext faces)
     {
         // do nothing
     }
 
+    @Override
     public void encodeBegin(FacesContext faces) throws IOException
     {
         // do nothing
     }
 
+    @Override
     public void encodeChildren(FacesContext faces) throws IOException
     {
         // do nothing
     }
 
+    @Override
     public void encodeEnd(FacesContext faces) throws IOException
     {
         // do nothing
     }
 
+    @Override
     public void encodeAll(FacesContext faces) throws IOException
     {
         this.encodeBegin(faces);
     }
 
+    @Override
     protected void addFacesListener(FacesListener faces)
     {
         // do nothing
     }
 
+    @Override
     protected FacesListener[] getFacesListeners(Class faces)
     {
         return null;
     }
 
+    @Override
     protected void removeFacesListener(FacesListener faces)
     {
         // do nothing
     }
 
+    @Override
     public void queueEvent(FacesEvent event)
     {
         // do nothing
     }
 
+    @Override
     public void processRestoreState(FacesContext faces, Object state)
     {
         // do nothing
     }
 
+    @Override
     public void processDecodes(FacesContext faces)
     {
         // do nothing
     }
 
+    @Override
     public void processValidators(FacesContext faces)
     {
         // do nothing
     }
 
+    @Override
     public void processUpdates(FacesContext faces)
     {
         // do nothing
     }
 
+    @Override
     public Object processSaveState(FacesContext faces)
     {
         return null;
     }
 
+    @Override
     protected FacesContext getFacesContext()
     {
         return FacesContext.getCurrentInstance();
     }
 
+    @Override
     protected Renderer getRenderer(FacesContext faces)
     {
         return null;
     }
 
+    @Override
     public Object saveState(FacesContext faces)
     {
         return null;
     }
 
+    @Override
     public void restoreState(FacesContext faces, Object state)
     {
         // do nothing
     }
 
+    @Override
     public boolean isTransient()
     {
         return true;
     }
 
+    @Override
     public void setTransient(boolean tranzient)
     {
         // do nothing

@@ -36,9 +36,9 @@ import javax.el.VariableMapper;
 public final class VariableMapperWrapper extends VariableMapper
 {
 
-    private final VariableMapper target;
+    private final VariableMapper _target;
 
-    private Map vars;
+    private Map<String, ValueExpression> _vars;
 
     /**
      * 
@@ -46,7 +46,7 @@ public final class VariableMapperWrapper extends VariableMapper
     public VariableMapperWrapper(VariableMapper orig)
     {
         super();
-        this.target = orig;
+        _target = orig;
     }
 
     /**
@@ -59,14 +59,16 @@ public final class VariableMapperWrapper extends VariableMapper
         ValueExpression ve = null;
         try
         {
-            if (this.vars != null)
+            if (_vars != null)
             {
-                ve = (ValueExpression) this.vars.get(variable);
+                ve = (ValueExpression) _vars.get(variable);
             }
+            
             if (ve == null)
             {
-                return this.target.resolveVariable(variable);
+                return _target.resolveVariable(variable);
             }
+            
             return ve;
         }
         catch (StackOverflowError e)
@@ -82,10 +84,11 @@ public final class VariableMapperWrapper extends VariableMapper
      */
     public ValueExpression setVariable(String variable, ValueExpression expression)
     {
-        if (this.vars == null)
+        if (_vars == null)
         {
-            this.vars = new HashMap();
+            _vars = new HashMap<String, ValueExpression>();
         }
-        return (ValueExpression) this.vars.put(variable, expression);
+        
+        return _vars.put(variable, expression);
     }
 }

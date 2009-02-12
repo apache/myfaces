@@ -39,11 +39,11 @@ import javax.el.ExpressionFactory;
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-
-import com.sun.facelets.Facelet;
 import javax.faces.webapp.pdl.facelets.FaceletContext;
 import javax.faces.webapp.pdl.facelets.FaceletException;
 import javax.faces.webapp.pdl.facelets.FaceletHandler;
+
+import com.sun.facelets.Facelet;
 import com.sun.facelets.tag.jsf.ComponentSupport;
 
 /**
@@ -59,33 +59,33 @@ final class DefaultFacelet extends Facelet
 
     private final static String APPLIED_KEY = "com.sun.facelets.APPLIED";
 
-    private final String alias;
+    private final String _alias;
 
-    private final ExpressionFactory elFactory;
+    private final ExpressionFactory _elFactory;
 
-    private final DefaultFaceletFactory factory;
+    private final DefaultFaceletFactory _factory;
 
-    private final long createTime;
+    private final long _createTime;
 
-    private final long refreshPeriod;
+    private final long _refreshPeriod;
 
-    private final Map relativePaths;
+    private final Map<String, URL> _relativePaths;
 
-    private final FaceletHandler root;
+    private final FaceletHandler _root;
 
-    private final URL src;
+    private final URL _src;
 
     public DefaultFacelet(DefaultFaceletFactory factory, ExpressionFactory el, URL src, String alias,
                           FaceletHandler root)
     {
-        this.factory = factory;
-        this.elFactory = el;
-        this.src = src;
-        this.root = root;
-        this.alias = alias;
-        this.createTime = System.currentTimeMillis();
-        this.refreshPeriod = this.factory.getRefreshPeriod();
-        this.relativePaths = new WeakHashMap();
+        _factory = factory;
+        _elFactory = el;
+        _src = src;
+        _root = root;
+        _alias = alias;
+        _createTime = System.currentTimeMillis();
+        _refreshPeriod = _factory.getRefreshPeriod();
+        _relativePaths = new WeakHashMap<String, URL>();
     }
 
     /**
@@ -97,14 +97,14 @@ final class DefaultFacelet extends Facelet
         DefaultFaceletContext ctx = new DefaultFaceletContext(facesContext, this);
         this.refresh(parent);
         ComponentSupport.markForDeletion(parent);
-        this.root.apply(ctx, parent);
+        _root.apply(ctx, parent);
         ComponentSupport.finalizeForDeletion(parent);
         this.markApplied(parent);
     }
 
     private final void refresh(UIComponent c)
     {
-        if (this.refreshPeriod > 0)
+        if (_refreshPeriod > 0)
         {
 
             // finally remove any children marked as deleted
@@ -112,22 +112,22 @@ final class DefaultFacelet extends Facelet
             if (sz > 0)
             {
                 UIComponent cc = null;
-                List cl = c.getChildren();
+                List<UIComponent> cl = c.getChildren();
                 ApplyToken token;
                 while (--sz >= 0)
                 {
-                    cc = (UIComponent) cl.get(sz);
+                    cc = cl.get(sz);
                     if (!cc.isTransient())
                     {
                         token = (ApplyToken) cc.getAttributes().get(APPLIED_KEY);
-                        if (token != null && token.time < this.createTime && token.alias.equals(this.alias))
+                        if (token != null && token._time < _createTime && token._alias.equals(_alias))
                         {
                             if (log.isLoggable(Level.INFO))
                             {
                                 DateFormat df = SimpleDateFormat.getTimeInstance();
-                                log.info("Facelet[" + this.alias + "] was modified @ "
-                                        + df.format(new Date(this.createTime)) + ", flushing component applied @ "
-                                        + df.format(new Date(token.time)));
+                                log.info("Facelet[" + _alias + "] was modified @ "
+                                        + df.format(new Date(_createTime)) + ", flushing component applied @ "
+                                        + df.format(new Date(token._time)));
                             }
                             cl.remove(sz);
                         }
@@ -138,23 +138,23 @@ final class DefaultFacelet extends Facelet
             // remove any facets marked as deleted
             if (c.getFacets().size() > 0)
             {
-                Collection col = c.getFacets().values();
+                Collection<UIComponent> col = c.getFacets().values();
                 UIComponent fc;
                 ApplyToken token;
-                for (Iterator itr = col.iterator(); itr.hasNext();)
+                for (Iterator<UIComponent> itr = col.iterator(); itr.hasNext();)
                 {
-                    fc = (UIComponent) itr.next();
+                    fc = itr.next();
                     if (!fc.isTransient())
                     {
                         token = (ApplyToken) fc.getAttributes().get(APPLIED_KEY);
-                        if (token != null && token.time < this.createTime && token.alias.equals(this.alias))
+                        if (token != null && token._time < _createTime && token._alias.equals(_alias))
                         {
                             if (log.isLoggable(Level.INFO))
                             {
                                 DateFormat df = SimpleDateFormat.getTimeInstance();
-                                log.info("Facelet[" + this.alias + "] was modified @ "
-                                        + df.format(new Date(this.createTime)) + ", flushing component applied @ "
-                                        + df.format(new Date(token.time)));
+                                log.info("Facelet[" + _alias + "] was modified @ "
+                                        + df.format(new Date(_createTime)) + ", flushing component applied @ "
+                                        + df.format(new Date(token._time)));
                             }
                             itr.remove();
                         }
@@ -166,18 +166,16 @@ final class DefaultFacelet extends Facelet
 
     private final void markApplied(UIComponent parent)
     {
-        if (this.refreshPeriod > 0)
+        if (this._refreshPeriod > 0)
         {
-            Iterator itr = parent.getFacetsAndChildren();
-            UIComponent c;
-            Map attr;
-            ApplyToken token = new ApplyToken(this.alias, System.currentTimeMillis() + this.refreshPeriod);
+            Iterator<UIComponent> itr = parent.getFacetsAndChildren();
+            ApplyToken token = new ApplyToken(_alias, System.currentTimeMillis() + _refreshPeriod);
             while (itr.hasNext())
             {
-                c = (UIComponent) itr.next();
+                UIComponent c = itr.next();
                 if (!c.isTransient())
                 {
-                    attr = c.getAttributes();
+                    Map<String, Object> attr = c.getAttributes();
                     if (!attr.containsKey(APPLIED_KEY))
                     {
                         attr.put(APPLIED_KEY, token);
@@ -194,7 +192,7 @@ final class DefaultFacelet extends Facelet
      */
     public String getAlias()
     {
-        return this.alias;
+        return _alias;
     }
 
     /**
@@ -204,7 +202,7 @@ final class DefaultFacelet extends Facelet
      */
     public ExpressionFactory getExpressionFactory()
     {
-        return this.elFactory;
+        return _elFactory;
     }
 
     /**
@@ -214,7 +212,7 @@ final class DefaultFacelet extends Facelet
      */
     public long getCreateTime()
     {
-        return this.createTime;
+        return _createTime;
     }
 
     /**
@@ -228,11 +226,11 @@ final class DefaultFacelet extends Facelet
      */
     private URL getRelativePath(String path) throws IOException
     {
-        URL url = (URL) this.relativePaths.get(path);
+        URL url = (URL) _relativePaths.get(path);
         if (url == null)
         {
-            url = this.factory.resolveURL(this.src, path);
-            this.relativePaths.put(path, url);
+            url = _factory.resolveURL(_src, path);
+            _relativePaths.put(path, url);
         }
         return url;
     }
@@ -244,7 +242,7 @@ final class DefaultFacelet extends Facelet
      */
     public URL getSource()
     {
-        return this.src;
+        return _src;
     }
 
     /**
@@ -264,7 +262,7 @@ final class DefaultFacelet extends Facelet
             FaceletException, ELException
     {
         this.refresh(parent);
-        this.root.apply(new DefaultFaceletContext(ctx, this), parent);
+        _root.apply(new DefaultFaceletContext(ctx, this), parent);
         this.markApplied(parent);
     }
 
@@ -310,15 +308,15 @@ final class DefaultFacelet extends Facelet
     public void include(DefaultFaceletContext ctx, UIComponent parent, URL url) throws IOException, FacesException,
             FaceletException, ELException
     {
-        DefaultFacelet f = (DefaultFacelet) this.factory.getFacelet(url);
+        DefaultFacelet f = (DefaultFacelet) _factory.getFacelet(url);
         f.include(ctx, parent);
     }
 
     private static class ApplyToken implements Externalizable
     {
-        public String alias;
+        public String _alias;
 
-        public long time;
+        public long _time;
 
         public ApplyToken()
         {
@@ -326,25 +324,25 @@ final class DefaultFacelet extends Facelet
 
         public ApplyToken(String alias, long time)
         {
-            this.alias = alias;
-            this.time = time;
+            _alias = alias;
+            _time = time;
         }
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
         {
-            this.alias = in.readUTF();
-            this.time = in.readLong();
+            _alias = in.readUTF();
+            _time = in.readLong();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException
         {
-            out.writeUTF(this.alias);
-            out.writeLong(this.time);
+            out.writeUTF(_alias);
+            out.writeLong(_time);
         }
     }
 
     public String toString()
     {
-        return this.alias;
+        return _alias;
     }
 }

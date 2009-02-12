@@ -19,7 +19,6 @@
 package com.sun.facelets.tag.jsf.core;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import javax.el.ELException;
 import javax.el.MethodExpression;
@@ -27,9 +26,9 @@ import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.event.PhaseEvent;
-
 import javax.faces.webapp.pdl.facelets.FaceletContext;
 import javax.faces.webapp.pdl.facelets.FaceletException;
+
 import com.sun.facelets.tag.TagAttribute;
 import com.sun.facelets.tag.TagConfig;
 import com.sun.facelets.tag.TagHandler;

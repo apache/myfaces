@@ -18,13 +18,11 @@
  */
 package com.sun.facelets.tag.jsf.core;
 
-import java.io.IOException;
 import java.util.Iterator;
 
-import javax.el.ELException;
 import javax.faces.component.UIComponent;
-
 import javax.faces.webapp.pdl.facelets.FaceletContext;
+
 import com.sun.facelets.tag.TextHandler;
 import com.sun.facelets.tag.jsf.ComponentConfig;
 import com.sun.facelets.tag.jsf.ComponentHandler;

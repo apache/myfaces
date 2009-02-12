@@ -40,8 +40,8 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.sun.facelets.tag.AbstractTagLibrary;
 import com.sun.facelets.tag.TagHandler;
 import com.sun.facelets.tag.TagLibrary;
-import com.sun.facelets.util.ParameterCheck;
 import com.sun.facelets.util.Classpath;
+import com.sun.facelets.util.ParameterCheck;
 import com.sun.facelets.util.ReflectionUtil;
 
 /**
@@ -71,7 +71,7 @@ public final class TagLibraryConfig
             this.addConverter(name, id);
         }
 
-        public void putConverter(String name, String id, Class handlerClass)
+        public void putConverter(String name, String id, Class<?> handlerClass)
         {
             ParameterCheck.notNull("name", name);
             ParameterCheck.notNull("id", id);
@@ -86,7 +86,7 @@ public final class TagLibraryConfig
             this.addValidator(name, id);
         }
 
-        public void putValidator(String name, String id, Class handlerClass)
+        public void putValidator(String name, String id, Class<?> handlerClass)
         {
             ParameterCheck.notNull("name", name);
             ParameterCheck.notNull("id", id);
@@ -94,7 +94,7 @@ public final class TagLibraryConfig
             this.addValidator(name, id, handlerClass);
         }
 
-        public void putTagHandler(String name, Class type)
+        public void putTagHandler(String name, Class<?> type)
         {
             ParameterCheck.notNull("name", name);
             ParameterCheck.notNull("type", type);
@@ -108,7 +108,8 @@ public final class TagLibraryConfig
             this.addComponent(name, componentType, rendererType);
         }
 
-        public void putComponent(String name, String componentType, String rendererType, Class handlerClass)
+        public void putComponent(String name, String componentType, String rendererType, 
+                                 Class<? extends TagHandler> handlerClass)
         {
             ParameterCheck.notNull("name", name);
             ParameterCheck.notNull("componentType", componentType);
@@ -133,8 +134,6 @@ public final class TagLibraryConfig
 
     private static class LibraryHandler extends DefaultHandler
     {
-        private final String file;
-
         private final URL source;
 
         private TagLibrary library;
@@ -149,23 +148,20 @@ public final class TagLibraryConfig
 
         private String validatorId;
 
-        private String componentClassName;
-
         private String componentType;
 
         private String rendererType;
 
         private String functionName;
 
-        private Class handlerClass;
+        private Class<? extends TagHandler> handlerClass;
 
-        private Class functionClass;
+        private Class<?> functionClass;
 
         private String functionSignature;
 
         public LibraryHandler(URL source)
         {
-            this.file = source.getFile();
             this.source = source;
             this.buffer = new StringBuffer(64);
         }
@@ -210,7 +206,7 @@ public final class TagLibraryConfig
                 else if ("function-class".equals(qName))
                 {
                     String className = this.captureBuffer();
-                    this.functionClass = this.createClass(Object.class, className);
+                    this.functionClass = createClass(Object.class, className);
                 }
                 else
                 {
@@ -234,7 +230,7 @@ public final class TagLibraryConfig
                     else if ("handler-class".equals(qName))
                     {
                         String cName = this.captureBuffer();
-                        this.handlerClass = this.createClass(TagHandler.class, cName);
+                        this.handlerClass = createClass(TagHandler.class, cName);
                     }
                     else if ("component".equals(qName))
                     {
@@ -291,7 +287,7 @@ public final class TagLibraryConfig
                     else if ("function-signature".equals(qName))
                     {
                         this.functionSignature = this.captureBuffer();
-                        Method m = this.createMethod(this.functionClass, this.functionSignature);
+                        Method m = createMethod(this.functionClass, this.functionSignature);
                         impl.putFunction(this.functionName, m);
                     }
                 }
@@ -316,9 +312,10 @@ public final class TagLibraryConfig
             return s;
         }
 
-        private static Class createClass(Class type, String name) throws Exception
+        @SuppressWarnings("unchecked")
+        private static <T> Class<? extends T> createClass(Class<T> type, String name) throws Exception
         {
-            Class factory = ReflectionUtil.forName(name);
+            Class<? extends T> factory = (Class<? extends T>)ReflectionUtil.forName(name);
             if (!type.isAssignableFrom(factory))
             {
                 throw new Exception(name + " must be an instance of " + type.getName());
@@ -326,9 +323,8 @@ public final class TagLibraryConfig
             return factory;
         }
 
-        private static Method createMethod(Class type, String s) throws Exception
+        private static Method createMethod(Class<?> type, String s) throws Exception
         {
-            Method m = null;
             int pos = s.indexOf(' ');
             if (pos == -1)
             {
@@ -336,7 +332,6 @@ public final class TagLibraryConfig
             }
             else
             {
-                String rt = s.substring(0, pos).trim();
                 int pos2 = s.indexOf('(', pos + 1);
                 if (pos2 == -1)
                 {
@@ -353,7 +348,7 @@ public final class TagLibraryConfig
                     else
                     {
                         String[] ps = s.substring(pos2 + 1, pos).trim().split(",");
-                        Class[] pc;
+                        Class<?>[] pc;
                         if (ps.length == 1 && "".equals(ps[0]))
                         {
                             pc = new Class[0];
@@ -385,7 +380,7 @@ public final class TagLibraryConfig
         private void processLibraryClass() throws Exception
         {
             String name = this.captureBuffer();
-            Class type = this.createClass(TagLibrary.class, name);
+            Class<?> type = createClass(TagLibrary.class, name);
             this.library = (TagLibrary) type.newInstance();
         }
 
@@ -409,7 +404,6 @@ public final class TagLibraryConfig
             this.buffer.setLength(0);
             if ("tag".equals(qName))
             {
-                this.componentClassName = null;
                 this.handlerClass = null;
                 this.componentType = null;
                 this.rendererType = null;

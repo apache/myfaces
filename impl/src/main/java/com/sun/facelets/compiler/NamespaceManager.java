@@ -43,14 +43,14 @@ final class NamespaceManager
         }
     }
 
-    private final List namespaces;
+    private final List<NS> namespaces;
 
     /**
      * 
      */
     public NamespaceManager()
     {
-        this.namespaces = new ArrayList();
+        this.namespaces = new ArrayList<NS>();
     }
 
     public void reset()
@@ -100,7 +100,7 @@ final class NamespaceManager
             NS ns = null;
             for (int i = this.namespaces.size() - 1; i >= 0; i--)
             {
-                ns = (NS) this.namespaces.get(i);
+                ns = this.namespaces.get(i);
                 unit.setNamespace(ns.prefix, ns.namespace);
             }
         }

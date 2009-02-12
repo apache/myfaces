@@ -19,36 +19,30 @@
 package com.sun.facelets.compiler;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
-
 import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
 
-import com.sun.facelets.el.ELAdaptor;
 import com.sun.facelets.el.ELText;
 
 final class CommentInstruction implements Instruction
 {
-    private final ELText text;
+    private final ELText _text;
 
     public CommentInstruction(ELText text)
     {
-        this.text = text;
+        _text = text;
     }
 
     public void write(FacesContext context) throws IOException
     {
-        ELContext elContext = ELAdaptor.getELContext(context);
-        context.getResponseWriter().writeComment(this.text.toString(elContext));
+        context.getResponseWriter().writeComment(_text.toString(context.getELContext()));
     }
 
     public Instruction apply(ExpressionFactory factory, ELContext ctx)
     {
-        ELText t = this.text.apply(factory, ctx);
-        return new CommentInstruction(t);
+        return new CommentInstruction(_text.apply(factory, ctx));
     }
 
     public boolean isLiteral()

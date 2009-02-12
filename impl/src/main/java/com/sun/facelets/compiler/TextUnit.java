@@ -23,9 +23,8 @@ import java.util.List;
 import java.util.Stack;
 
 import javax.el.ELException;
-
-import javax.faces.webapp.pdl.facelets.FaceletException;
 import javax.faces.webapp.pdl.facelets.FaceletHandler;
+
 import com.sun.facelets.el.ELText;
 import com.sun.facelets.tag.CompositeFaceletHandler;
 import com.sun.facelets.tag.Tag;
@@ -44,11 +43,11 @@ final class TextUnit extends CompilationUnit
 
     private final StringBuffer textBuffer;
 
-    private final List instructionBuffer;
+    private final List<Instruction> instructionBuffer;
 
-    private final Stack tags;
+    private final Stack<Tag> tags;
 
-    private final List children;
+    private final List<Object> children;
 
     private boolean startTagOpen;
 
@@ -62,9 +61,9 @@ final class TextUnit extends CompilationUnit
         this.id = id;
         this.buffer = new StringBuffer();
         this.textBuffer = new StringBuffer();
-        this.instructionBuffer = new ArrayList();
-        this.tags = new Stack();
-        this.children = new ArrayList();
+        this.instructionBuffer = new ArrayList<Instruction>();
+        this.tags = new Stack<Tag>();
+        this.children = new ArrayList<Object>();
         this.startTagOpen = false;
     }
 

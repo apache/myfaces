@@ -85,12 +85,13 @@ public abstract class TagHandler implements FaceletHandler
      *            Class type to search for
      * @return iterator over instances of FaceletHandlers of the matching type
      */
-    protected final Iterator findNextByType(Class type)
+    @SuppressWarnings("unchecked")
+    protected final <T> Iterator<T> findNextByType(Class<T> type)
     {
-        List found = new ArrayList();
+        List<T> found = new ArrayList<T>();
         if (type.isAssignableFrom(this.nextHandler.getClass()))
         {
-            found.add(this.nextHandler);
+            found.add((T)this.nextHandler);
         }
         else if (this.nextHandler instanceof CompositeFaceletHandler)
         {
@@ -99,7 +100,7 @@ public abstract class TagHandler implements FaceletHandler
             {
                 if (type.isAssignableFrom(h[i].getClass()))
                 {
-                    found.add(h[i]);
+                    found.add((T)h[i]);
                 }
             }
         }

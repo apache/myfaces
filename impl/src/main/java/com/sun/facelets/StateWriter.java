@@ -138,8 +138,8 @@ final class StateWriter extends Writer
 
     public void release()
     {
-        CURRENT_WRITER.set(null);
+        CURRENT_WRITER.remove();
     }
 
-    static private final ThreadLocal CURRENT_WRITER = new ThreadLocal();
+    static private final ThreadLocal<StateWriter> CURRENT_WRITER = new ThreadLocal<StateWriter>();
 }

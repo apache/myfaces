@@ -18,9 +18,6 @@
  */
 package com.sun.facelets.tag.jstl.core;
 
-import com.sun.facelets.tag.TagConfig;
-import com.sun.facelets.tag.TagException;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -28,11 +25,12 @@ import java.util.List;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
-
 import javax.faces.component.UIComponent;
-
 import javax.faces.webapp.pdl.facelets.FaceletContext;
 import javax.faces.webapp.pdl.facelets.FaceletException;
+
+import com.sun.facelets.tag.TagConfig;
+import com.sun.facelets.tag.TagException;
 import com.sun.facelets.tag.TagHandler;
 
 /**
@@ -49,22 +47,23 @@ public final class ChooseHandler extends TagHandler
     {
         super(config);
 
-        List whenList = new ArrayList();
-        Iterator itr = this.findNextByType(ChooseWhenHandler.class);
-        while (itr.hasNext())
+        List<ChooseWhenHandler> whenList = new ArrayList<ChooseWhenHandler>();
+        Iterator<ChooseWhenHandler> itrWhen = this.findNextByType(ChooseWhenHandler.class);
+        while (itrWhen.hasNext())
         {
-            whenList.add(itr.next());
+            whenList.add(itrWhen.next());
         }
         if (whenList.isEmpty())
         {
             throw new TagException(this.tag, "Choose Tag must have one or more When Tags");
         }
+        
         this.when = (ChooseWhenHandler[]) whenList.toArray(new ChooseWhenHandler[whenList.size()]);
 
-        itr = this.findNextByType(ChooseOtherwiseHandler.class);
-        if (itr.hasNext())
+        Iterator<ChooseOtherwiseHandler> itrOtherwise = this.findNextByType(ChooseOtherwiseHandler.class);
+        if (itrOtherwise.hasNext())
         {
-            this.otherwise = (ChooseOtherwiseHandler) itr.next();
+            this.otherwise = itrOtherwise.next();
         }
         else
         {

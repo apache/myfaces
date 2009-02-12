@@ -26,36 +26,30 @@ import javax.el.ELException;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.component.ActionSource;
-import javax.faces.component.ActionSource2;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
-
 import javax.faces.webapp.pdl.facelets.FaceletContext;
 import javax.faces.webapp.pdl.facelets.FaceletException;
-import com.sun.facelets.el.LegacyValueBinding;
+
 import com.sun.facelets.tag.TagAttribute;
 import com.sun.facelets.tag.TagConfig;
 import com.sun.facelets.tag.TagException;
 import com.sun.facelets.tag.TagHandler;
 import com.sun.facelets.tag.jsf.ComponentSupport;
-import com.sun.facelets.util.FacesAPI;
 
 public class SetPropertyActionListenerHandler extends TagHandler
 {
-
-    private final TagAttribute value;
-
-    private final TagAttribute target;
+    private final TagAttribute _target;
+    private final TagAttribute _value;
 
     public SetPropertyActionListenerHandler(TagConfig config)
     {
         super(config);
-        this.value = this.getRequiredAttribute("value");
-        this.target = this.getRequiredAttribute("target");
+        this._value = this.getRequiredAttribute("value");
+        this._target = this.getRequiredAttribute("target");
     }
 
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
@@ -66,22 +60,10 @@ public class SetPropertyActionListenerHandler extends TagHandler
             ActionSource src = (ActionSource) parent;
             if (ComponentSupport.isNew(parent))
             {
-                ValueExpression valueExpr = this.value.getValueExpression(ctx, Object.class);
-                ValueExpression targetExpr = this.target.getValueExpression(ctx, Object.class);
+                ValueExpression valueExpr = _value.getValueExpression(ctx, Object.class);
+                ValueExpression targetExpr = _target.getValueExpression(ctx, Object.class);
 
-                ActionListener listener;
-
-                if (FacesAPI.getVersion() >= 12 && src instanceof ActionSource2)
-                {
-                    listener = new SetPropertyListener(valueExpr, targetExpr);
-                }
-                else
-                {
-                    listener = new LegacySetPropertyListener(new LegacyValueBinding(valueExpr),
-                                                             new LegacyValueBinding(targetExpr));
-                }
-
-                src.addActionListener(listener);
+                src.addActionListener(new SetPropertyListener(valueExpr, targetExpr));
             }
         }
         else
@@ -90,38 +72,10 @@ public class SetPropertyActionListenerHandler extends TagHandler
         }
     }
 
-    private static class LegacySetPropertyListener implements ActionListener, Serializable
-    {
-
-        private ValueBinding value;
-
-        private ValueBinding target;
-
-        public LegacySetPropertyListener()
-        {
-        };
-
-        public LegacySetPropertyListener(ValueBinding value, ValueBinding target)
-        {
-            this.value = value;
-            this.target = target;
-        }
-
-        public void processAction(ActionEvent evt) throws AbortProcessingException
-        {
-            FacesContext faces = FacesContext.getCurrentInstance();
-            Object valueObj = this.value.getValue(faces);
-            this.target.setValue(faces, valueObj);
-        }
-
-    }
-
     private static class SetPropertyListener implements ActionListener, Serializable
     {
-
-        private ValueExpression value;
-
-        private ValueExpression target;
+        private ValueExpression _target;
+        private ValueExpression _value;
 
         public SetPropertyListener()
         {
@@ -129,18 +83,19 @@ public class SetPropertyActionListenerHandler extends TagHandler
 
         public SetPropertyListener(ValueExpression value, ValueExpression target)
         {
-            this.value = value;
-            this.target = target;
+            _value = value;
+            _target = target;
         }
 
         public void processAction(ActionEvent evt) throws AbortProcessingException
         {
             FacesContext faces = FacesContext.getCurrentInstance();
+            
             ELContext el = faces.getELContext();
-            Object valueObj = this.value.getValue(el);
-            this.target.setValue(el, valueObj);
+            
+            Object valueObj = _value.getValue(el);
+            
+            _target.setValue(el, valueObj);
         }
-
     }
-
 }

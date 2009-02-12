@@ -19,31 +19,28 @@
 package com.sun.facelets.compiler;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ExpressionFactory;
-
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
-import com.sun.facelets.el.ELAdaptor;
 import com.sun.facelets.el.ELText;
 
 final class AttributeInstruction implements Instruction
 {
-    private final String alias;
+    private final String _alias;
 
-    private final String attr;
+    private final String _attr;
 
-    private final ELText txt;
+    private final ELText _txt;
 
     public AttributeInstruction(String alias, String attr, ELText txt)
     {
-        this.alias = alias;
-        this.attr = attr;
-        this.txt = txt;
+        _alias = alias;
+        _attr = attr;
+        _txt = txt;
     }
 
     public void write(FacesContext context) throws IOException
@@ -51,34 +48,31 @@ final class AttributeInstruction implements Instruction
         ResponseWriter out = context.getResponseWriter();
         try
         {
-            ELContext elContext = ELAdaptor.getELContext(context);
-            String val = txt.toString(elContext);
-
-            out.writeAttribute(attr, val, null);
+            out.writeAttribute(_attr, _txt.toString(context.getELContext()), null);
         }
         catch (ELException e)
         {
-            throw new ELException(this.alias + ": " + e.getMessage(), e.getCause());
+            throw new ELException(_alias + ": " + e.getMessage(), e.getCause());
         }
         catch (Exception e)
         {
-            throw new ELException(this.alias + ": " + e.getMessage(), e);
+            throw new ELException(_alias + ": " + e.getMessage(), e);
         }
     }
 
     public Instruction apply(ExpressionFactory factory, ELContext ctx)
     {
-        ELText nt = this.txt.apply(factory, ctx);
-        if (nt == this.txt)
+        ELText nt = _txt.apply(factory, ctx);
+        if (nt == _txt)
         {
             return this;
         }
 
-        return new AttributeInstruction(alias, attr, nt);
+        return new AttributeInstruction(_alias, _attr, nt);
     }
 
     public boolean isLiteral()
     {
-        return txt.isLiteral();
+        return _txt.isLiteral();
     }
 }

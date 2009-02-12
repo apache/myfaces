@@ -19,16 +19,12 @@
 package com.sun.facelets.component;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.render.Renderer;
-
-import com.sun.facelets.tag.jsf.ComponentSupport;
-import com.sun.facelets.util.FacesAPI;
 
 public class RepeatRenderer extends Renderer
 {
@@ -38,16 +34,18 @@ public class RepeatRenderer extends Renderer
         super();
     }
 
+    @Override
     public void encodeBegin(FacesContext context, UIComponent component) throws IOException
     {
 
     }
 
+    @Override
     public void encodeChildren(FacesContext context, UIComponent component) throws IOException
     {
         if (component.getChildCount() > 0)
         {
-            Map a = component.getAttributes();
+            Map<String, Object> a = component.getAttributes();
             String tag = (String) a.get("alias.element");
             if (tag != null)
             {
@@ -68,20 +66,10 @@ public class RepeatRenderer extends Renderer
                     }
                 }
             }
-
-            Iterator itr = component.getChildren().iterator();
-            UIComponent c;
-            while (itr.hasNext())
+            
+            for (UIComponent child : component.getChildren())
             {
-                c = (UIComponent) itr.next();
-                if (FacesAPI.getVersion() >= 12)
-                {
-                    c.encodeAll(context);
-                }
-                else
-                {
-                    ComponentSupport.encodeRecursive(context, c);
-                }
+                child.encodeAll(context);
             }
 
             if (tag != null)
@@ -91,11 +79,13 @@ public class RepeatRenderer extends Renderer
         }
     }
 
+    @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException
     {
 
     }
 
+    @Override
     public boolean getRendersChildren()
     {
         return true;

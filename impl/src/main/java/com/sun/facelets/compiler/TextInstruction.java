@@ -19,16 +19,13 @@
 package com.sun.facelets.compiler;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ExpressionFactory;
-
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
-import com.sun.facelets.el.ELAdaptor;
 import com.sun.facelets.el.ELText;
 
 final class TextInstruction implements Instruction
@@ -48,8 +45,7 @@ final class TextInstruction implements Instruction
         ResponseWriter out = context.getResponseWriter();
         try
         {
-            ELContext elContext = ELAdaptor.getELContext(context);
-            txt.writeText(out, elContext);
+            txt.writeText(out, context.getELContext());
             // out.writeText(txt.toString(elContext), null);
         }
         catch (ELException e)

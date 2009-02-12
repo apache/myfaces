@@ -22,15 +22,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIComponentBase;
-
 import javax.faces.webapp.pdl.facelets.FaceletContext;
-import com.sun.facelets.el.LegacyValueBinding;
-import com.sun.facelets.tag.TagAttribute;
-import com.sun.facelets.tag.Metadata;
+
 import com.sun.facelets.tag.MetaRule;
+import com.sun.facelets.tag.Metadata;
 import com.sun.facelets.tag.MetadataTarget;
-import com.sun.facelets.util.FacesAPI;
+import com.sun.facelets.tag.TagAttribute;
 
 /**
  * 
@@ -42,67 +39,40 @@ final class ComponentRule extends MetaRule
 
     final class LiteralAttributeMetadata extends Metadata
     {
-
-        private final String name;
-        private final String value;
+        private final String _name;
+        private final String _value;
 
         public LiteralAttributeMetadata(String name, String value)
         {
-            this.value = value;
-            this.name = name;
+            _name = name;
+            _value = value;
         }
 
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
-            ((UIComponent) instance).getAttributes().put(this.name, this.value);
+            ((UIComponent) instance).getAttributes().put(_name, _value);
         }
     }
 
     final static class ValueExpressionMetadata extends Metadata
     {
+        private final String _name;
 
-        private final String name;
+        private final TagAttribute _attr;
 
-        private final TagAttribute attr;
+        private final Class<?> _type;
 
-        private final Class type;
-
-        public ValueExpressionMetadata(String name, Class type, TagAttribute attr)
+        public ValueExpressionMetadata(String name, Class<?> type, TagAttribute attr)
         {
-            this.name = name;
-            this.attr = attr;
-            this.type = type;
+            _name = name;
+            _attr = attr;
+            _type = type;
         }
 
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
-            ((UIComponent) instance).setValueExpression(this.name, this.attr.getValueExpression(ctx, this.type));
+            ((UIComponent) instance).setValueExpression(_name, _attr.getValueExpression(ctx, _type));
         }
-
-    }
-
-    final static class ValueBindingMetadata extends Metadata
-    {
-
-        private final String name;
-
-        private final TagAttribute attr;
-
-        private final Class type;
-
-        public ValueBindingMetadata(String name, Class type, TagAttribute attr)
-        {
-            this.name = name;
-            this.attr = attr;
-            this.type = type;
-        }
-
-        public void applyMetadata(FaceletContext ctx, Object instance)
-        {
-            ((UIComponent) instance).setValueBinding(this.name, new LegacyValueBinding(this.attr
-                    .getValueExpression(ctx, this.type)));
-        }
-
     }
 
     private final static Logger log = Logger.getLogger("facelets.tag.component");
@@ -118,23 +88,16 @@ final class ComponentRule extends MetaRule
     {
         if (meta.isTargetInstanceOf(UIComponent.class))
         {
-
             // if component and dynamic, then must set expression
             if (!attribute.isLiteral())
             {
-                Class type = meta.getPropertyType(name);
+                Class<?> type = meta.getPropertyType(name);
                 if (type == null)
                 {
                     type = Object.class;
                 }
-                if (FacesAPI.getComponentVersion(meta.getTargetClass()) >= 12)
-                {
-                    return new ValueExpressionMetadata(name, type, attribute);
-                }
-                else
-                {
-                    return new ValueBindingMetadata(name, type, attribute);
-                }
+                
+                return new ValueExpressionMetadata(name, type, attribute);
             }
             else if (meta.getWriteMethod(name) == null)
             {
@@ -148,7 +111,7 @@ final class ComponentRule extends MetaRule
         return null;
     }
 
-    private static void warnAttr(TagAttribute attr, Class type, String n)
+    private static void warnAttr(TagAttribute attr, Class<?> type, String n)
     {
         if (log.isLoggable(Level.FINER))
         {

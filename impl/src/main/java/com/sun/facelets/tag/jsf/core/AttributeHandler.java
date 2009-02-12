@@ -23,10 +23,9 @@ import java.io.IOException;
 import javax.el.ELException;
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
-
 import javax.faces.webapp.pdl.facelets.FaceletContext;
 import javax.faces.webapp.pdl.facelets.FaceletException;
-import com.sun.facelets.el.ELAdaptor;
+
 import com.sun.facelets.tag.TagAttribute;
 import com.sun.facelets.tag.TagConfig;
 import com.sun.facelets.tag.TagException;
@@ -44,10 +43,9 @@ import com.sun.facelets.tag.TagHandler;
  */
 public final class AttributeHandler extends TagHandler
 {
+    private final TagAttribute _name;
 
-    private final TagAttribute name;
-
-    private final TagAttribute value;
+    private final TagAttribute _value;
 
     /**
      * @param config
@@ -55,8 +53,8 @@ public final class AttributeHandler extends TagHandler
     public AttributeHandler(TagConfig config)
     {
         super(config);
-        this.name = this.getRequiredAttribute("name");
-        this.value = this.getRequiredAttribute("value");
+        _name = getRequiredAttribute("name");
+        _value = getRequiredAttribute("value");
     }
 
     /*
@@ -75,16 +73,16 @@ public final class AttributeHandler extends TagHandler
         // only process if the parent is new to the tree
         if (parent.getParent() == null)
         {
-            String n = this.name.getValue(ctx);
+            String n = _name.getValue(ctx);
             if (!parent.getAttributes().containsKey(n))
             {
-                if (this.value.isLiteral())
+                if (_value.isLiteral())
                 {
-                    parent.getAttributes().put(n, this.value.getValue());
+                    parent.getAttributes().put(n, _value.getValue());
                 }
                 else
                 {
-                    ELAdaptor.setExpression(parent, n, this.value.getValueExpression(ctx, Object.class));
+                    parent.setValueExpression(n, _value.getValueExpression(ctx, Object.class));
                 }
             }
         }

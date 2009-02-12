@@ -20,7 +20,6 @@ package com.sun.facelets.compiler;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 
 import javax.faces.context.FacesContext;
 

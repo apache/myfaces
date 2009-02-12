@@ -31,16 +31,15 @@ import javax.el.ELException;
 import javax.el.ExpressionFactory;
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
-
 import javax.faces.webapp.pdl.facelets.FaceletException;
 import javax.faces.webapp.pdl.facelets.FaceletHandler;
+
 import com.sun.facelets.tag.CompositeTagDecorator;
 import com.sun.facelets.tag.CompositeTagLibrary;
 import com.sun.facelets.tag.TagDecorator;
 import com.sun.facelets.tag.TagLibrary;
 import com.sun.facelets.tag.ui.UILibrary;
 import com.sun.facelets.util.ParameterCheck;
-import com.sun.facelets.util.FacesAPI;
 import com.sun.facelets.util.ReflectionUtil;
 
 /**
@@ -66,11 +65,11 @@ public abstract class Compiler
 
     private boolean trimmingComments = false;
 
-    private final List libraries = new ArrayList();
+    private final List<TagLibrary> libraries = new ArrayList<TagLibrary>();
 
-    private final List decorators = new ArrayList();
+    private final List<TagDecorator> decorators = new ArrayList<TagDecorator>();
 
-    private final Map features = new HashMap();
+    private final Map<String, String> features = new HashMap<String, String>();
 
     private boolean initialized = false;
 
@@ -125,8 +124,7 @@ public abstract class Compiler
     {
         if (this.decorators.size() > 0)
         {
-            return new CompositeTagDecorator((TagDecorator[]) this.decorators.toArray(new TagDecorator[this.decorators
-                    .size()]));
+            return new CompositeTagDecorator(this.decorators.toArray(new TagDecorator[this.decorators.size()]));
         }
         return EMPTY_DECORATOR;
     }
@@ -144,16 +142,15 @@ public abstract class Compiler
     {
         ExpressionFactory el = null;
         el = (ExpressionFactory) this.featureInstance(EXPRESSION_FACTORY);
-        if (el == null && FacesAPI.getVersion() >= 12)
+        if (el == null)
         {
             try
             {
                 el = FacesContext.getCurrentInstance().getApplication().getExpressionFactory();
                 if (el == null)
                 {
-                    log
-                            .warning("No default ExpressionFactory from Faces Implementation, attempting to load from Feature["
-                                    + EXPRESSION_FACTORY + "]");
+                    log.warning("No default ExpressionFactory from Faces Implementation, attempting to load from Feature["
+                                + EXPRESSION_FACTORY + "]");
                 }
             }
             catch (Exception e)
@@ -161,11 +158,7 @@ public abstract class Compiler
                 // do nothing
             }
         }
-        if (el == null)
-        {
-            this.features.put(EXPRESSION_FACTORY, "com.sun.el.ExpressionFactoryImpl");
-            el = (ExpressionFactory) this.featureInstance(EXPRESSION_FACTORY);
-        }
+        
         return el;
     }
 
@@ -190,7 +183,7 @@ public abstract class Compiler
     {
         if (this.libraries.size() > 0)
         {
-            return new CompositeTagLibrary((TagLibrary[]) this.libraries.toArray(new TagLibrary[this.libraries.size()]));
+            return new CompositeTagLibrary(this.libraries.toArray(new TagLibrary[this.libraries.size()]));
         }
         return EMPTY_LIBRARY;
     }

@@ -23,37 +23,23 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ELException;
-import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.application.Application;
 import javax.faces.component.ActionSource;
-import javax.faces.component.ActionSource2;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.ValueHolder;
 import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.el.ValueBinding;
-import javax.faces.event.ActionEvent;
-import javax.faces.event.MethodExpressionActionListener;
-import javax.faces.event.MethodExpressionValueChangeListener;
-import javax.faces.event.ValueChangeEvent;
-import javax.faces.validator.MethodExpressionValidator;
-
 import javax.faces.webapp.pdl.facelets.FaceletContext;
-import com.sun.facelets.el.ELAdaptor;
-import com.sun.facelets.el.LegacyMethodBinding;
-import com.sun.facelets.el.LegacyValueBinding;
+
+import com.sun.beans.ObjectHandler;
+import com.sun.facelets.tag.MetaRuleset;
 import com.sun.facelets.tag.MetaTagHandler;
 import com.sun.facelets.tag.TagAttribute;
-import com.sun.facelets.tag.Metadata;
 import com.sun.facelets.tag.TagException;
-import com.sun.facelets.tag.TagHandler;
-import com.sun.facelets.tag.MetaRuleset;
 import com.sun.facelets.tag.jsf.core.FacetHandler;
-import com.sun.facelets.util.FacesAPI;
 
 /**
  * Implementation of the tag logic used in the JSF specification. This is your golden hammer for wiring UIComponents to
@@ -230,32 +216,11 @@ public class ComponentHandler extends MetaTagHandler
         if (this.binding != null)
         {
             ValueExpression ve = this.binding.getValueExpression(ctx, Object.class);
-            if (FacesAPI.getVersion() >= 12)
+            
+            c = app.createComponent(ve, faces, this.componentType);
+            if (c != null)
             {
-                c = app.createComponent(ve, faces, this.componentType);
-                if (c != null)
-                {
-                    // Make sure the component supports 1.2
-                    if (FacesAPI.getComponentVersion(c) >= 12)
-                    {
-                        c.setValueExpression("binding", ve);
-                    }
-                    else
-                    {
-                        ValueBinding vb = new LegacyValueBinding(ve);
-                        c.setValueBinding("binding", vb);
-                    }
-
-                }
-            }
-            else
-            {
-                ValueBinding vb = new LegacyValueBinding(ve);
-                c = app.createComponent(vb, faces, this.componentType);
-                if (c != null)
-                {
-                    c.setValueBinding("binding", vb);
-                }
+                c.setValueExpression("binding", ve);
             }
         }
         else
@@ -282,7 +247,8 @@ public class ComponentHandler extends MetaTagHandler
         return ctx.generateUniqueId(this.tagId);
     }
 
-    protected MetaRuleset createMetaRuleset(Class type)
+    @Override
+    protected MetaRuleset createMetaRuleset(Class<?> type)
     {
         MetaRuleset m = super.createMetaRuleset(type);
 

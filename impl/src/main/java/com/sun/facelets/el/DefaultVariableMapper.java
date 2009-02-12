@@ -36,8 +36,7 @@ import javax.el.VariableMapper;
  */
 public final class DefaultVariableMapper extends VariableMapper
 {
-
-    private Map vars;
+    private Map<String, ValueExpression> _vars;
 
     public DefaultVariableMapper()
     {
@@ -49,10 +48,11 @@ public final class DefaultVariableMapper extends VariableMapper
      */
     public ValueExpression resolveVariable(String name)
     {
-        if (this.vars != null)
+        if (_vars != null)
         {
-            return (ValueExpression) this.vars.get(name);
+            return _vars.get(name);
         }
+        
         return null;
     }
 
@@ -61,11 +61,11 @@ public final class DefaultVariableMapper extends VariableMapper
      */
     public ValueExpression setVariable(String name, ValueExpression expression)
     {
-        if (this.vars == null)
+        if (_vars == null)
         {
-            this.vars = new HashMap();
+            _vars = new HashMap<String, ValueExpression>();
         }
-        return (ValueExpression) this.vars.put(name, expression);
+        
+        return _vars.put(name, expression);
     }
-
 }

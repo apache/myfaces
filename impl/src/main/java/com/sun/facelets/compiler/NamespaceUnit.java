@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.faces.webapp.pdl.facelets.FaceletHandler;
+
 import com.sun.facelets.tag.TagLibrary;
 
 /**
@@ -32,7 +33,7 @@ import com.sun.facelets.tag.TagLibrary;
 final class NamespaceUnit extends CompilationUnit
 {
 
-    private final Map ns = new HashMap();
+    private final Map<String, String> ns = new HashMap<String, String>();
     private final TagLibrary library;
 
     public NamespaceUnit(TagLibrary library)

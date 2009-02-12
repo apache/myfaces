@@ -19,7 +19,6 @@
 package com.sun.facelets.el;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +28,6 @@ import javax.el.ELException;
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
 import javax.faces.context.ResponseWriter;
-
-import com.sun.facelets.util.FastWriter;
 
 /**
  * Handles parsing EL Strings in accordance with the EL-API Specification. The parser accepts either <code>${..}</code>
@@ -91,12 +88,12 @@ public class ELText
             return null;
         }
 
-        public Class getType(ELContext context)
+        public Class<?> getType(ELContext context)
         {
             return null;
         }
 
-        public Class getExpectedType()
+        public Class<?> getExpectedType()
         {
             return null;
         }
@@ -342,7 +339,7 @@ public class ELText
         int vlen = 0;
 
         StringBuffer buff = new StringBuffer(128);
-        List text = new ArrayList();
+        List<ELText> text = new ArrayList<ELText>();
         ELText t = null;
         ValueExpression ve = null;
 

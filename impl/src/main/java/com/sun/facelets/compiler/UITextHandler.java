@@ -19,18 +19,15 @@
 package com.sun.facelets.compiler;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
-
 import javax.faces.webapp.pdl.facelets.FaceletContext;
 import javax.faces.webapp.pdl.facelets.FaceletException;
-import javax.faces.webapp.pdl.facelets.FaceletHandler;
+
 import com.sun.facelets.el.ELText;
-import com.sun.facelets.tag.TextHandler;
 import com.sun.facelets.tag.jsf.ComponentSupport;
 import com.sun.facelets.util.FastWriter;
 

@@ -26,10 +26,10 @@ import javax.el.ELException;
 import javax.el.FunctionMapper;
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
-
 import javax.faces.webapp.pdl.facelets.FaceletContext;
 import javax.faces.webapp.pdl.facelets.FaceletException;
 import javax.faces.webapp.pdl.facelets.FaceletHandler;
+
 import com.sun.facelets.el.CompositeFunctionMapper;
 import com.sun.facelets.tag.TagLibrary;
 
@@ -37,10 +37,10 @@ final class NamespaceHandler extends FunctionMapper implements FaceletHandler
 {
 
     private final TagLibrary library;
-    private final Map ns;
+    private final Map<String, String> ns;
     private FaceletHandler next;
 
-    public NamespaceHandler(FaceletHandler next, TagLibrary library, Map ns)
+    public NamespaceHandler(FaceletHandler next, TagLibrary library, Map<String, String> ns)
     {
         this.library = library;
         this.ns = ns;
