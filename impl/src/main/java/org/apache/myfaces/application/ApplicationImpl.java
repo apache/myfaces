@@ -93,7 +93,7 @@ import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 /**
  * DOCUMENT ME!
- * 
+ *
  * @author Manfred Geiler (latest modification by $Author$)
  * @author Anton Koinov
  * @author Thomas Spiegl
@@ -403,9 +403,9 @@ public class ApplicationImpl extends Application
                                              final Class<? extends T> expectedType) throws ELException
     {
         ELContext elContext = context.getELContext();
-        
+
         ExpressionFactory factory = getExpressionFactory();
-        
+
         return (T)factory.createValueExpression(elContext, expression, expectedType).getValue(elContext);
     }
 
@@ -430,14 +430,14 @@ public class ApplicationImpl extends Application
             if (source instanceof SystemEventListenerHolder)
             {
                 SystemEventListenerHolder holder = (SystemEventListenerHolder) source;
-    
-                // If the source argument implements SystemEventListenerHolder, call 
-                // SystemEventListenerHolder.getListenersForEventClass(java.lang.Class) on it, passing the systemEventClass 
+
+                // If the source argument implements SystemEventListenerHolder, call
+                // SystemEventListenerHolder.getListenersForEventClass(java.lang.Class) on it, passing the systemEventClass
                 // argument. If the list is not empty, perform algorithm traverseListenerList on the list.
                 event = _traverseListenerList(holder.getListenersForEventClass(systemEventClass), systemEventClass, source,
                                               event);
             }
-    
+
             SystemListenerEntry systemListenerEntry = _systemEventListenerClassMap.get(systemEventClass);
             if (systemListenerEntry != null)
             {
@@ -446,8 +446,8 @@ public class ApplicationImpl extends Application
         }
         catch (AbortProcessingException e)
         {
-            // If the act of invoking the processListener method causes an AbortProcessingException to be thrown, 
-            // processing of the listeners must be aborted, no further processing of the listeners for this event must 
+            // If the act of invoking the processListener method causes an AbortProcessingException to be thrown,
+            // processing of the listeners must be aborted, no further processing of the listeners for this event must
             // take place, and the exception must be logged with Level.SEVERE.
             log.error("Event processing was aborted", e);
         }
@@ -1279,8 +1279,20 @@ public class ApplicationImpl extends Application
         {
             try
             {
-                Constructor<? extends SystemEvent> constructor = systemEventClass.getConstructor(Object.class);
-                event = constructor.newInstance(source);
+                Constructor<?>[] constructors = systemEventClass.getConstructors();
+                Constructor<? extends SystemEvent> constructor = null;
+                for (Constructor<?> c : constructors) {
+                    if (c.getParameterTypes().length == 1) {
+                        // Safe cast, since the constructor belongs
+                        // to a class of type SystemEvent
+                        constructor = (Constructor<? extends SystemEvent>) c;
+                        break;
+                    }
+                }
+                if (constructor != null) {
+                    event = constructor.newInstance(source);
+                }
+
             }
             catch (Exception e)
             {
@@ -1430,8 +1442,8 @@ public class ApplicationImpl extends Application
     {
         /*
          * The Renderer instance to inspect must be obtained by calling FacesContext.getRenderKit() and calling
-         * RenderKit.getRenderer(java.lang.String, java.lang.String) on the result, passing the argument 
-         * componentFamily of the newly created component as the first argument and the argument rendererType as 
+         * RenderKit.getRenderer(java.lang.String, java.lang.String) on the result, passing the argument
+         * componentFamily of the newly created component as the first argument and the argument rendererType as
          * the second argument.
          */
         Renderer renderer = context.getRenderKit().getRenderer(component.getFamily(), rendererType);
@@ -1573,7 +1585,7 @@ public class ApplicationImpl extends Application
             {
                 /*
                  * TODO: Check if modification occurs often or not, might have to use a synchronized list instead.
-                 * 
+                 *
                  * Registrations found:
                  */
                 _lstSystemEventListener = new CopyOnWriteArrayList<SystemEventListener>();
@@ -1594,7 +1606,7 @@ public class ApplicationImpl extends Application
             {
                 /*
                  * TODO: Check if modification occurs often or not, might have to use a synchronized list instead.
-                 * 
+                 *
                  * Registrations found:
                  */
                 list = new CopyOnWriteArrayList<SystemEventListener>();
