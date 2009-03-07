@@ -26,13 +26,14 @@ import javax.faces.convert.NumberConverter;
 import javax.faces.validator.DoubleRangeValidator;
 import javax.faces.validator.LengthValidator;
 import javax.faces.validator.LongRangeValidator;
+import javax.faces.validator.RegexValidator;
 
 import com.sun.facelets.tag.AbstractTagLibrary;
 
 /**
  * For Tag details, see JSF Core <a target="_new"
  * href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/tld-summary.html">taglib documentation</a>.
- * 
+ *
  * @author Jacob Hookom
  * @version $Id: CoreLibrary.java,v 1.13 2008/07/13 19:01:44 rlubke Exp $
  */
@@ -78,6 +79,8 @@ public final class CoreLibrary extends AbstractTagLibrary
         this.addValidator("validateLongRange", LongRangeValidator.VALIDATOR_ID);
 
         this.addValidator("validateDoubleRange", DoubleRangeValidator.VALIDATOR_ID);
+
+        this.addValidator("validateRegex", RegexValidator.VALIDATOR_ID);
 
         this.addValidator("validator", null, ValidateDelegateHandler.class);
 
