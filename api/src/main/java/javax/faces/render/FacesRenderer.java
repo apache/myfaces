@@ -27,14 +27,14 @@ public @interface FacesRenderer
     /**
      * The value of this annotation attribute is taken to be the <i>component-family</i> which, in combination with
      * {@link #rendererType()} can be used to obtain a reference to an instance of this {@link Renderer} by calling
-     * {@link RenderKit.getRenderer(java.lang.String, java.lang.String)}.
+     * {@link RenderKit#getRenderer(java.lang.String, java.lang.String)}.
      */
     public String componentFamily();
 
     /**
      * The value of this annotation attribute is taken to be the <i>renderer-type</i> which, in combination with
      * {@link #componentFamily()} can be used to obtain a reference to an instance of this {@link Renderer} by calling
-     * {@link RenderKit.getRenderer(java.lang.String, java.lang.String)}.
+     * {@link RenderKit#getRenderer(java.lang.String, java.lang.String)}.
      */
     public String rendererType();
 
@@ -42,5 +42,5 @@ public @interface FacesRenderer
      * The value of this annotation attribute is taken to be the <i>render-kit-id</i> in which an instance of this class
      * of {@link Renderer} must be installed.
      */
-    public String renderKitId() default "";
+    public String renderKitId() default "HTML_BASIC";
 }
