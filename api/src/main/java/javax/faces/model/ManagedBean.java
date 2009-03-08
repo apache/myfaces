@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 /**
  * @author Simon Lessard (latest modification by $Author: slessard $)
  * @version $Revision: 696523 $ $Date: 2008-09-24 18:45:00 -0400 (mer., 17 sept. 2008) $
- * 
+ *
  * @since 2.0
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -37,14 +37,10 @@ public @interface ManagedBean
      * Taken to be the value of the eager attribute of the managed-bean.
      */
     public boolean eager() default false;
-    
+
     /**
      * Taken to be the managed-bean-name. See class documentation for details.
      */
     public String name() default "";
-    
-    /**
-     * Taken to be the managed-bean-scope. See class documentation for details.
-     */
-    public String scope() default "none";
+
 }
