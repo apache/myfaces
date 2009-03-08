@@ -25,7 +25,7 @@
         <excludes>
            <exclude>**/*.vm</exclude>
         </excludes>
-      </resource>    
+      </resource>
       <resource>
         <directory>src/main/resources-facesconfig</directory>
       </resource>
@@ -35,12 +35,12 @@
         <groupId>org.apache.myfaces.buildtools</groupId>
         <artifactId>myfaces-builder-plugin</artifactId>
         <version>1.0.2</version>
-        <executions>          
+        <executions>
           <execution>
             <id>makemyfacesmetadata</id>
             <configuration>
                 <!-- Qdox 1.6.3 does not parse inner enums on classes
-                so we have to exclude some files temporally. 
+                so we have to exclude some files temporally.
                 Added linux case (paths start with /) to filter temporally too-->
                 <includes>/**/*.java,**/*.java</includes>
                 <excludes>/**/FacesCompositeELResolver.java,**/FacesCompositeELResolver.java</excludes>
@@ -74,7 +74,7 @@
                <modelIds>
                    <modelId>myfaces-api</modelId>
                </modelIds>
-            </configuration>            
+            </configuration>
             <goals>
                 <goal>make-tags</goal>
             </goals>
@@ -144,7 +144,7 @@
         </configuration>
       </plugin>
 
-      <!-- 
+      <!--
       <plugin> -->
         <!--
           - Using the metadata from the "build" module, generate the JSP "h" taglib.
@@ -154,7 +154,7 @@
           - Or because people just haven't got around to defining the metadata and
           - templates for it in the build module?
           -->
-          <!-- 
+          <!--
         <groupId>org.apache.myfaces.buildtools</groupId>
         <artifactId>myfaces-faces-plugin</artifactId>
         <configuration>
@@ -265,11 +265,11 @@
                 </executions>
               </plugin>
               <plugin>
-                <!-- 
+                <!--
                   - Add the unpacked shared sources directory as source directory into the pom datastructure,
                   - so that the -source jar includes them too; every .class file in the jar should have its
                   - source in the -source jar.
-                  -->  
+                  -->
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <version>1.0</version>
@@ -458,11 +458,11 @@
     </dependency>
     <dependency>
       <groupId>org.apache.myfaces.buildtools</groupId>
-      <artifactId>myfaces-builder-annotations</artifactId> 
+      <artifactId>myfaces-builder-annotations</artifactId>
       <version>1.0.2</version>
       <scope>provided</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
@@ -506,7 +506,25 @@
       <artifactId>guice</artifactId>
       <version>1.0</version>
       <scope>provided</scope>
-    </dependency>    
+    </dependency>
+    <dependency>
+        <artifactId>xbean-finder</artifactId>
+        <groupId>org.apache.xbean</groupId>
+        <version>3.4</version>
+        <scope>provided</scope>
+    </dependency>
+    <dependency>
+        <groupId>asm</groupId>
+        <artifactId>asm</artifactId>
+        <version>2.2.3</version>
+        <scope>provided</scope>
+    </dependency>
+    <dependency>
+        <groupId>asm</groupId>
+        <artifactId>asm-commons</artifactId>
+        <version>2.2.3</version>
+        <scope>provided</scope>
+    </dependency>
   </dependencies>
   <reporting>
     <plugins>

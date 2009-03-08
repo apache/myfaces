@@ -26,12 +26,23 @@ import java.lang.annotation.Target;
 /**
  * @author Simon Lessard (latest modification by $Author: slessard $)
  * @version $Revision: 696523 $ $Date: 2008-09-24 18:31:37 -0400 (mer., 17 sept. 2008) $
- * 
+ *
  * @since 2.0
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface FacesConverter
 {
-    public String value();
+    /**
+     * This attribute is an alternative for providing the &lt;converter-for-class&gt; element in XML.
+     *
+     * @return The class this converter must be registered for.
+     */
+    public Class<?> forClass() default Object.class;
+
+    /**
+     * The converter id. Alternative for providing the &lt;converter-id&gt; element in XML.
+     * @return
+     */
+    public String value() default "";
 }
