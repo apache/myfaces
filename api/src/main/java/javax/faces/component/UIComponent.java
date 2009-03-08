@@ -59,31 +59,32 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- * 
+ *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
 @JSFComponent(type = "javax.faces.Component", family = "javax.faces.Component", desc = "abstract base component", configExcluded = true)
 public abstract class UIComponent implements StateHolder, SystemEventListenerHolder, ComponentSystemEventListener
 {
-    public static final String BEANINFO_KEY = "javax.faces.component.BEANINFO_KEY";
-    public static final String COMPOSITE_COMPONENT_TYPE_KEY = "javax.faces.component.COMPOSITE_COMPONENT_TYPE";
-    public static final String COMPOSITE_FACET_NAME = "javax.faces.component.COMPOSITE_FACET_NAME";
     public static final String CURRENT_COMPONENT = "javax.faces.component.CURRENT_COMPONENT";
     public static final String CURRENT_COMPOSITE_COMPONENT = "javax.faces.component.CURRENT_COMPOSITE_COMPONENT";
+    public static final String BEANINFO_KEY = "javax.faces.component.BEANINFO_KEY";
     public static final String FACETS_KEY = "javax.faces.component.FACETS_KEY";
+    public static final String COMPOSITE_COMPONENT_TYPE_KEY = "javax.faces.component.COMPOSITE_COMPONENT_TYPE";
+    public static final String COMPOSITE_FACET_NAME = "javax.faces.component.COMPOSITE_FACET_NAME";
+
     private static final String _COMPONENT_STACK = "componentStack:" + UIComponent.class.getName();
 
     private Map<Class<? extends SystemEvent>, List<SystemEventListener>> _systemEventListenerClassMap;
-    
+
     protected Map<String, ValueExpression> bindings;
-    
+
     /**
      * Used to cache the map created using getResourceBundleMap() method,
      * since this method could be called several times when rendering the
      * composite component. This attribute may not be serialized,
-     * so transient is used (There are some very few special cases when 
-     * UIComponent instances are serializable like t:schedule, so it 
+     * so transient is used (There are some very few special cases when
+     * UIComponent instances are serializable like t:schedule, so it
      * is better if transient is used).
      */
     private transient Map<String,String> _resourceBundleMap = null;
@@ -198,7 +199,7 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
 
     /**
      * Invokes the <code>invokeContextCallback</code> method with the component, specified by <code>clientId</code>.
-     * 
+     *
      * @param context
      *            <code>FacesContext</code> for the current request
      * @param clientId
@@ -270,7 +271,7 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
                 listeners = Collections.unmodifiableList(listeners);
             }
         }
-        
+
         return listeners;
     }
 
@@ -305,7 +306,7 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
             FacesContext context = getFacesContext();
             Locale locale = context.getViewRoot().getLocale();
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
-    
+
             try
             {
                 // looks for a ResourceBundle with a base name equal to the fully qualified class
@@ -322,16 +323,16 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
                     Resource componentResource = (Resource) getAttributes().get(Resource.COMPONENT_RESOURCE_KEY);
                     // Let resourceName be the resourceName of the Resource for this composite component,
                     // replacing the file extension with ".properties"
-                    int extensionIndex = componentResource.getResourceName().lastIndexOf('.');                
+                    int extensionIndex = componentResource.getResourceName().lastIndexOf('.');
                     String resourceName =  (extensionIndex < 0 ? componentResource.getResourceName()
                             : componentResource.getResourceName().substring(0,extensionIndex) )+ ".properties" ;
-                    
-                    // Let libraryName be the libraryName of the the Resource for this composite component.                
+
+                    // Let libraryName be the libraryName of the the Resource for this composite component.
                     // Call ResourceHandler.createResource(java.lang.String,java.lang.String), passing the derived resourceName and
                     // libraryName.
-                    Resource bundleResource = context.getApplication().getResourceHandler().createResource(resourceName, 
+                    Resource bundleResource = context.getApplication().getResourceHandler().createResource(resourceName,
                             componentResource.getLibraryName());
-    
+
                     if (bundleResource != null)
                     {
                         // If the resultant Resource exists and can be found, the InputStream for the resource
@@ -339,7 +340,7 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
                         // for this component is successful, the ResourceBundle is wrapped in a Map<String, String> and returned.
                         try
                         {
-                            _resourceBundleMap = new BundleMap(new PropertyResourceBundle(bundleResource.getInputStream())); 
+                            _resourceBundleMap = new BundleMap(new PropertyResourceBundle(bundleResource.getInputStream()));
                         }
                         catch (IOException e1)
                         {
@@ -373,7 +374,7 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
     public abstract void broadcast(FacesEvent event) throws AbortProcessingException;
 
     public abstract void decode(FacesContext context);
-    
+
     public void doTreeTraversal(FacesContext context, ContextCallback nodeCallback)
     {
         try
@@ -435,16 +436,16 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
     public abstract void processRestoreState(FacesContext context, Object state);
 
     public abstract void processDecodes(FacesContext context);
-    
+
     public void processEvent(ComponentSystemEvent event) throws AbortProcessingException
     {
-        // The default implementation performs the following action. If the argument event is an instance of 
-        // AfterRestoreStateEvent, 
+        // The default implementation performs the following action. If the argument event is an instance of
+        // AfterRestoreStateEvent,
         if (event instanceof AfterRestoreStateEvent)
         {
             // call this.getValueExpression(java.lang.String) passing the literal string “binding”
             ValueExpression expression = getValueExpression("binding");
-            
+
             // If the result is non-null, set the value of the ValueExpression to be this.
             if (expression != null)
             {
@@ -461,16 +462,16 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
 
     public void subscribeToEvent(Class<? extends SystemEvent> eventClass, ComponentSystemEventListener componentListener)
     {
-        // The default implementation creates an inner SystemEventListener instance that wraps argument 
+        // The default implementation creates an inner SystemEventListener instance that wraps argument
         // componentListener as the listener argument.
         SystemEventListener listener = new EventListenerWrapper(this, componentListener);
-        
+
         // Make sure the map exists
         if (_systemEventListenerClassMap == null)
         {
             _systemEventListenerClassMap = new HashMap<Class<? extends SystemEvent>, List<SystemEventListener>>();
         }
-        
+
         List<SystemEventListener> listeners = _systemEventListenerClassMap.get(eventClass);
         // Make sure the list for class exists
         if (listeners == null)
@@ -478,7 +479,7 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
             listeners = new ArrayList<SystemEventListener>(2);
             _systemEventListenerClassMap.put(eventClass, listeners);
         }
-        
+
         // Deal with contains? Spec is silent
         listeners.add(listener);
     }
@@ -487,15 +488,15 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
                                      ComponentSystemEventListener componentListener)
     {
         /*
-         * When doing the comparison to determine if an existing listener is equal to the argument 
-         * componentListener (and thus must be removed), the equals() method on the existing listener must be 
+         * When doing the comparison to determine if an existing listener is equal to the argument
+         * componentListener (and thus must be removed), the equals() method on the existing listener must be
          * invoked, passing the argument componentListener, rather than the other way around.
-         * 
+         *
          * What is that supposed to mean? Are we supposed to keep an internal map of created listener wrappers?
          * TODO: Check with the EG what's the meaning of this, equals should be commutative -= Simon Lessard =-
          */
         SystemEventListener listener = new EventListenerWrapper(this, componentListener);
-        
+
         getFacesContext().getApplication().unsubscribeFromEvent(eventClass, listener);
     }
 
@@ -505,40 +506,27 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
 
     @SuppressWarnings("unchecked")
     protected void popComponentFromEL(FacesContext context)
-    {        
-        Map<Object, Object> contextAttributes = context.getAttributes();        
-        
-        // Pop the current UIComponent from the FacesContext attributes map so that the previous 
+    {
+        Map<Object, Object> contextAttributes = context.getAttributes();
+
+        // Pop the current UIComponent from the FacesContext attributes map so that the previous
         // UIComponent, if any, becomes the current component.
         Deque<UIComponent> componentStack = (Deque<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
-        
-        UIComponent newCurrent = null;
-        if (componentStack != null && !componentStack.isEmpty())
-        {
-            newCurrent = componentStack.pop();
-        }
+
+        UIComponent newCurrent = componentStack.pop();
         UIComponent oldCurrent = (UIComponent)contextAttributes.put(UIComponent.CURRENT_COMPONENT, newCurrent);
-        
+
         if (oldCurrent != null && oldCurrent._isCompositeComponent())
         {
-            // Recalculate the current composite component
-            if (newCurrent != null)
-            {
-                if (newCurrent._isCompositeComponent())
-                {
-                    contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, newCurrent);
-                }
-                else
-                {
-                    for (UIComponent component : componentStack)
-                    {
-                        if (component._isCompositeComponent())
-                        {
-                            contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, component);
-                            break;
-                        }
-                    }
-                }
+            newCurrent = componentStack.peek();
+        }
+        contextAttributes.put(UIComponent.CURRENT_COMPONENT, newCurrent);
+
+        // Find and put (if exists) the current composite component into the EL.
+        for (UIComponent component : componentStack) {
+            if (component._isCompositeComponent()) {
+                contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, component);
+                break;
             }
         }
     }
@@ -546,26 +534,16 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
     @SuppressWarnings("unchecked")
     protected void pushComponentToEL(FacesContext context, UIComponent component)
     {
-        Map<Object, Object> contextAttributes = context.getAttributes();        
-        UIComponent currentComponent = (UIComponent) contextAttributes.get(UIComponent.CURRENT_COMPONENT);
-        
-        if(currentComponent != null)
+        Map<Object, Object> contextAttributes = context.getAttributes();
+        Deque<UIComponent> componentStack = (Deque<UIComponent>) contextAttributes.get(_COMPONENT_STACK);
+        if (componentStack == null)
         {
-            Deque<UIComponent> componentStack = (Deque<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
-            if(componentStack == null)
-            {
-                componentStack = new ArrayDeque<UIComponent>();
-                contextAttributes.put(UIComponent._COMPONENT_STACK, componentStack);
-            }
-            
-            componentStack.push(currentComponent);
+            componentStack = new ArrayDeque<UIComponent>();
+            contextAttributes.put(_COMPONENT_STACK, componentStack);
         }
-        
-        // Push the current UIComponent this to the FacesContext  attribute map using the key CURRENT_COMPONENT 
-        // saving the previous UIComponent associated with CURRENT_COMPONENT for a subsequent call to 
-        // popComponentFromEL(javax.faces.context.FacesContext).
+
+        componentStack.push(component);
         contextAttributes.put(UIComponent.CURRENT_COMPONENT, component);
- 
         if (component._isCompositeComponent())
         {
             contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, component);
@@ -594,7 +572,7 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
 
         return getClientId(ctx);
     }
-    
+
     private void _doTreeTraversalInternal(FacesContext context, ContextCallback nodeCallback)
     {
         // The default implementation must call the callback on this instance before traversing the children
@@ -607,7 +585,7 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
             }
         }
     }
-    
+
     private boolean _isCompositeComponent()
     {
         return getAttributes().get(Resource.COMPONENT_RESOURCE_KEY) != null;
@@ -741,21 +719,21 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
         }
 
     }
-    
+
     private class EventListenerWrapper implements SystemEventListener
     {
         private UIComponent component;
         private ComponentSystemEventListener listener;
-        
+
         public EventListenerWrapper(UIComponent component, ComponentSystemEventListener listener)
         {
             assert component != null;
             assert listener != null;
-            
+
             this.component = component;
             this.listener = listener;
         }
-        
+
         @Override
         public boolean equals(Object o)
         {
@@ -773,28 +751,28 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
                 return false;
             }
         }
-        
+
         @Override
         public int hashCode()
         {
             return component.hashCode() + listener.hashCode();
         }
-        
+
         public boolean isListenerForSource(Object source)
         {
-            // and its implementation of SystemEventListener.isListenerForSource(java.lang.Object) must return true 
+            // and its implementation of SystemEventListener.isListenerForSource(java.lang.Object) must return true
             // if the instance class of this UIComponent is assignable from the argument to isListenerForSource.
-            
+
             return source.getClass().isAssignableFrom(component.getClass());
         }
 
         public void processEvent(SystemEvent event)
         {
-            // This inner class must call through to the argument componentListener in its implementation of 
+            // This inner class must call through to the argument componentListener in its implementation of
             // SystemEventListener.processEvent(javax.faces.event.SystemEvent)
-            
+
             assert event instanceof ComponentSystemEvent;
-            
+
             listener.processEvent((ComponentSystemEvent)event);
         }
     }

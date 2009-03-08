@@ -76,31 +76,31 @@ public class UIViewRoot extends UIComponentBase
     private static final int ANY_PHASE_ORDINAL = PhaseId.ANY_PHASE.getOrdinal();
 
     private final Logger logger = Logger.getLogger(UIViewRoot.class.getName());
-    
+
     private static final PhaseProcessor APPLY_REQUEST_VALUES_PROCESSOR = new ApplyRequestValuesPhaseProcessor();
     private static final PhaseProcessor PROCESS_VALIDATORS_PROCESSOR = new ProcessValidatorPhaseProcessor();
     private static final PhaseProcessor UPDATE_MODEL_PROCESSOR = new UpdateModelPhaseProcessor();
-    
+
     private static final ContextCallback AJAX_ENCODE_ALL_CALLBACK = new AjaxEncodeAllCallback();
     private static final ContextCallback APPLY_REQUEST_VALUES_CALLBACK = new ApplyRequestValuesPhaseCallback();
     private static final ContextCallback PROCESS_VALIDATORS_CALLBACK = new ProcessValidatorPhaseCallback();
     private static final ContextCallback UPDATE_MODEL_CALLBACK = new UpdateModelPhaseCallback();
-    
-    
+
+
     private static final String AJAX_RESPONSE_COMPONENTS = "components";
     private static final String AJAX_RESPONSE_ROOT = "partial-response";
-    
+
     private static final String AJAX_RESPONSE_MARKUP = "markup";
     private static final String AJAX_RESPONSE_RENDER = "render";
     private static final String AJAX_RESPONSE_STATE = "state";
     private static final String AJAX_RESPONSE_CHARACTER_DATA_END = "]]>";
     private static final String AJAX_RESPONSE_CHARACTER_DATA_START = "<![CDATA[";
-    
+
     private static final String XML_CONTENT_TYPE = "text/xml";
-    
+
     // TODO: Add the encoding as well? If so a constant might not be perfect
     private static final String XML_DOCUMENT_HEADER = "<?xml version=\"1.0\" ?>";
-    
+
     /**
      * The counter which will ensure a unique component id for every component instance in the tree that doesn't have an
      * id attribute set.
@@ -176,7 +176,7 @@ public class UIViewRoot extends UIComponentBase
 
         _phaseListeners.add(phaseListener);
     }
-    
+
     /**
      * @since 2.0
      */
@@ -186,7 +186,7 @@ public class UIViewRoot extends UIComponentBase
         {
             return;
         }
-        
+
         // Gather the events and purge the event list to prevent concurrent modification during broadcasting
         List<FacesEvent> anyPhase = new ArrayList<FacesEvent>(_events.size());
         List<FacesEvent> onPhase = new ArrayList<FacesEvent>(_events.size());
@@ -204,7 +204,7 @@ public class UIViewRoot extends UIComponentBase
                 iterator.remove();
             }
         }
-        
+
         // First broadcast events that have been queued for PhaseId.ANY_PHASE.
         if (_broadcastAll(context, anyPhase))
         {
@@ -252,8 +252,12 @@ public class UIViewRoot extends UIComponentBase
                 super.encodeBegin(context);
             }
         }
+        else
+        {
+            pushComponentToEL(context, this);
+        }
     }
-    
+
     /**
      * @since 2.0
      */
@@ -261,17 +265,17 @@ public class UIViewRoot extends UIComponentBase
     public void encodeChildren(FacesContext context) throws IOException
     {
         PartialViewContext pContext = context.getPartialViewContext();
-        
-        // If FacesContext.isAjaxRequest() returns true and FacesContext.isRenderAll() returns false. 
+
+        // If FacesContext.isAjaxRequest() returns true and FacesContext.isRenderAll() returns false.
         if (pContext.isAjaxRequest() && !pContext.isRenderAll())
         {
-            // Call FacesContext.getRenderPhaseClientIds(). This returns a list of client ids that must be processed during 
+            // Call FacesContext.getRenderPhaseClientIds(). This returns a list of client ids that must be processed during
             // the render portion of the request processing lifecycle.
             List<String> clientIds = pContext.getRenderPhaseClientIds();
             if (clientIds.isEmpty())
             {
-                /* 
-                 * If partial rendering was not performed, delegate to the parent 
+                /*
+                 * If partial rendering was not performed, delegate to the parent
                  * UIComponentBase.encodeChildren(javax.faces.context.FacesContext) method.
                  */
                 super.encodeChildren(context);
@@ -280,10 +284,10 @@ public class UIViewRoot extends UIComponentBase
             {
                 try
                 {
-                    // For each client id in the list, 
+                    // For each client id in the list,
                     for (String clientId : clientIds)
                     {
-                        // using invokeOnComponent, all the encodeAll method on the component with that client id. 
+                        // using invokeOnComponent, all the encodeAll method on the component with that client id.
                         invokeOnComponent(context, clientId, AJAX_ENCODE_ALL_CALLBACK);
                     }
                 }
@@ -303,8 +307,8 @@ public class UIViewRoot extends UIComponentBase
         }
         else
         {
-            /* 
-             * If FacesContext.isAjaxRequest() returns false, or FacesContext.isRenderAll(), delegate to the parent 
+            /*
+             * If FacesContext.isAjaxRequest() returns false, or FacesContext.isRenderAll(), delegate to the parent
              * UIComponentBase.encodeChildren(javax.faces.context.FacesContext) method.
              */
             super.encodeChildren(context);
@@ -323,11 +327,11 @@ public class UIViewRoot extends UIComponentBase
         }
         else
         {
-            // If FacesContext.isAjaxRequest() returns flase, invoke the default 
+            // If FacesContext.isAjaxRequest() returns flase, invoke the default
             // UIComponentBase.encodeEnd(javax.faces.context.FacesContext) behavior.
             super.encodeEnd(context);
         }
-        
+
         try
         {
             notifyListeners(context, PhaseId.RENDER_RESPONSE, getAfterPhaseListener(), false);
@@ -342,7 +346,7 @@ public class UIViewRoot extends UIComponentBase
     /**
      * MethodBinding pointing to a method that takes a javax.faces.event.PhaseEvent and returns void, called after every
      * phase except for restore view.
-     * 
+     *
      * @return the new afterPhaseListener value
      */
     @JSFProperty(stateHolder = true, returnSignature = "void", methodSignature = "javax.faces.event.PhaseEvent", jspName = "afterPhase")
@@ -363,7 +367,7 @@ public class UIViewRoot extends UIComponentBase
     /**
      * MethodBinding pointing to a method that takes a javax.faces.event.PhaseEvent and returns void, called before
      * every phase except for restore view.
-     * 
+     *
      * @return the new beforePhaseListener value
      */
     @JSFProperty(stateHolder = true, returnSignature = "void", methodSignature = "javax.faces.event.PhaseEvent", jspName = "beforePhase")
@@ -409,7 +413,7 @@ public class UIViewRoot extends UIComponentBase
     public List<UIComponent> getComponentResources(FacesContext context, String target, boolean create)
     {
         // No doc so assuming the algorithm from the previous 2 argument method
-        
+
         // Locate the facet for the component by calling getFacet() using target as the argument
         UIComponent facet = getFacet(target);
 
@@ -418,11 +422,11 @@ public class UIViewRoot extends UIComponentBase
         {
             if (!create)
             {
-                // Should it retun null or an empty list? who knows? null seems better for now since an empty 
+                // Should it retun null or an empty list? who knows? null seems better for now since an empty
                 // list could be used in an attempt to add en element, null is more explicit of the meaning.
                 return null;
             }
-            
+
             facet = context.getApplication().createComponent("javax.faces.Panel");
             facet.setId(target);
 
@@ -492,7 +496,7 @@ public class UIViewRoot extends UIComponentBase
 
         return listeners;
     }
-    
+
     /**
      * Defines what renderkit should be used to render this view.
      */
@@ -503,13 +507,13 @@ public class UIViewRoot extends UIComponentBase
         {
             return _renderKitId;
         }
-        
+
         ValueExpression expression = getValueExpression("renderKitId");
         if (expression != null)
         {
             return (String)expression.getValue(getFacesContext().getELContext());
         }
-        
+
         return null;
     }
 
@@ -519,7 +523,7 @@ public class UIViewRoot extends UIComponentBase
     @Override
     public boolean getRendersChildren()
     {
-        // If FacesContext.isAjaxRequest() returns true and it is a partial render request 
+        // If FacesContext.isAjaxRequest() returns true and it is a partial render request
         // (FacesContext.isRenderAll() returns false), return true.
         PartialViewContext context = FacesContext.getCurrentInstance().getPartialViewContext();
 
@@ -564,21 +568,21 @@ public class UIViewRoot extends UIComponentBase
         checkNull(context, "context");
         _process(context, PhaseId.INVOKE_APPLICATION, null);
     }
-    
+
     @Override
     public void processDecodes(FacesContext context)
     {
         checkNull(context, "context");
         _process(context, PhaseId.APPLY_REQUEST_VALUES, APPLY_REQUEST_VALUES_PROCESSOR);
     }
-    
+
     /**
      * @since 2.0
      */
     @Override
     public void processRestoreState(FacesContext context, Object state)
     {
-        // The default implementation must call UIComponentBase.processRestoreState(javax.faces.context.FacesContext, 
+        // The default implementation must call UIComponentBase.processRestoreState(javax.faces.context.FacesContext,
         // java.lang.Object) from within a try block.
         try
         {
@@ -588,14 +592,14 @@ public class UIViewRoot extends UIComponentBase
         {
             // The try block must have a finally block that ensures that no FacesEvents remain in the event queue
             broadcastEvents(context, PhaseId.RESTORE_VIEW);
-            
+
             // that any PhaseListeners in getPhaseListeners() are invoked as appropriate
             PhaseEvent event = createEvent(context, PhaseId.RESTORE_VIEW);
             for (PhaseListener listener: getPhaseListeners())
             {
                 listener.afterPhase(event);
             }
-            
+
             // and that the this.UIComponent.doTreeTraversal is called
             doTreeTraversal(context, new RestoreStateCallback());
         }
@@ -609,7 +613,7 @@ public class UIViewRoot extends UIComponentBase
         {
             _events = new ArrayList<FacesEvent>();
         }
-        
+
         _events.add(event);
     }
 
@@ -649,27 +653,27 @@ public class UIViewRoot extends UIComponentBase
     {
         /*
          * Initialize a state flag to false.
-         * 
-         * If getBeforePhaseListener() returns non-null, invoke the listener, passing in the correct corresponding 
+         *
+         * If getBeforePhaseListener() returns non-null, invoke the listener, passing in the correct corresponding
          * PhaseId for this phase.
-         * 
-         * Upon return from the listener, call FacesContext.getResponseComplete() and FacesContext.getRenderResponse(). 
+         *
+         * Upon return from the listener, call FacesContext.getResponseComplete() and FacesContext.getRenderResponse().
          * If either return true set the internal state flag to true.
-         * 
-         * If or one or more listeners have been added by a call to addPhaseListener(javax.faces.event.PhaseListener), 
-         * invoke the beforePhase method on each one whose PhaseListener.getPhaseId() matches the current phaseId, 
+         *
+         * If or one or more listeners have been added by a call to addPhaseListener(javax.faces.event.PhaseListener),
+         * invoke the beforePhase method on each one whose PhaseListener.getPhaseId() matches the current phaseId,
          * passing in the same PhaseId as in the previous step.
-         * 
+         *
          * Upon return from each listener, call FacesContext.getResponseComplete() and FacesContext.getRenderResponse().
          * If either return true set the internal state flag to true.
-         * 
+         *
          * Execute any processing for this phase if the internal state flag was not set.
-         * 
-         * If getAfterPhaseListener() returns non-null, invoke the listener, passing in the correct corresponding 
+         *
+         * If getAfterPhaseListener() returns non-null, invoke the listener, passing in the correct corresponding
          * PhaseId for this phase.
-         * 
-         * If or one or more listeners have been added by a call to addPhaseListener(javax.faces.event.PhaseListener), 
-         * invoke the afterPhase method on each one whose PhaseListener.getPhaseId() matches the current phaseId, 
+         *
+         * If or one or more listeners have been added by a call to addPhaseListener(javax.faces.event.PhaseListener),
+         * invoke the afterPhase method on each one whose PhaseListener.getPhaseId() matches the current phaseId,
          * passing in the same PhaseId as in the previous step.
          */
 
@@ -719,27 +723,27 @@ public class UIViewRoot extends UIComponentBase
         }
         return new PhaseEvent(context, phaseId, _lifecycle);
     }
-    
+
     /**
-     * Broadcast all events in the specified collection, stopping the at any time an AbortProcessingException 
+     * Broadcast all events in the specified collection, stopping the at any time an AbortProcessingException
      * is thrown.
-     * 
+     *
      * @param context the current JSF context
      * @param events the events to broadcast
-     * 
+     *
      * @return <code>true</code> if the broadcast was completed without abortion, <code>false</code> otherwise
      */
     private boolean _broadcastAll(FacesContext context, Collection<? extends FacesEvent> events)
     {
         assert events != null;
-        
+
         for (FacesEvent event : events)
         {
             UIComponent source = event.getComponent();
-            
+
             // Push the source as the current component
             pushComponentToEL(context, source);
-            
+
             try
             {
                 // Actual event broadcasting
@@ -756,7 +760,7 @@ public class UIViewRoot extends UIComponentBase
                 popComponentFromEL(context);
             }
         }
-        
+
         return true;
     }
 
@@ -884,7 +888,7 @@ public class UIViewRoot extends UIComponentBase
      * This property should be disabled (ie throw an exception if invoked). However there are currently several places
      * that call this method (eg during restoreState) so it just does the normal thing for the moment. TODO: fix callers
      * then make this throw an exception.
-     * 
+     *
      * @JSFProperty tagExcluded="true"
      */
     @Override
@@ -946,7 +950,7 @@ public class UIViewRoot extends UIComponentBase
 
     /**
      * Sets
-     * 
+     *
      * @param beforePhaseListener
      *            the new beforePhaseListener value
      */
@@ -957,7 +961,7 @@ public class UIViewRoot extends UIComponentBase
 
     /**
      * Sets
-     * 
+     *
      * @param afterPhaseListener
      *            the new afterPhaseListener value
      */
@@ -996,36 +1000,36 @@ public class UIViewRoot extends UIComponentBase
         _beforePhaseListener = (MethodExpression)restoreAttachedState(facesContext, values[6]);
         _afterPhaseListener = (MethodExpression)restoreAttachedState(facesContext, values[7]);
     }
-    
+
     private void _encodeBeginAjax(FacesContext context) throws IOException
     {
         PartialViewContext pContext = context.getPartialViewContext();
-        
+
         // replace the ResponseWriter in the FacesContext with the writer used to render partial responses.
         ResponseWriter writer = pContext.getPartialResponseWriter();
-        
+
         context.setResponseWriter(writer);
-        
+
         if (!pContext.isRenderNone())
         {
-            // If FacesContext.isRenderNone() returns false, set the response content-type and headers 
+            // If FacesContext.isRenderNone() returns false, set the response content-type and headers
             // appropriately for XML.
             context.getExternalContext().setResponseContentType(XML_CONTENT_TYPE);
-            
+
             writer.write(XML_DOCUMENT_HEADER);
-            
+
             // The  method must write the beginning elements for the partial response:
             // <partial-response>
             //   <components>
             writer.startElement(AJAX_RESPONSE_ROOT, null);
             writer.startElement(AJAX_RESPONSE_COMPONENTS, null);
-            
+
             // If FacesContext.isRenderAll() returns true write:
             if (pContext.isRenderAll())
             {
                 // <render id="javax.faces.ViewRoot"/>
                 //   <markup><![CDATA[
-                // to indicate the client JavaScript must use the entire response.  
+                // to indicate the client JavaScript must use the entire response.
                 writer.startElement(AJAX_RESPONSE_RENDER, this);
                 writer.writeAttribute("id", getFamily(), "clientId");
                 writer.startElement(AJAX_RESPONSE_MARKUP, this);
@@ -1033,26 +1037,26 @@ public class UIViewRoot extends UIComponentBase
             }
         }
     }
-    
+
     private void _encodeEndAjax(FacesContext context) throws IOException
     {
         ResponseWriter writer = context.getResponseWriter();
-        
+
         PartialViewContext pContext = context.getPartialViewContext();
-        
+
         if (pContext.isRenderAll())
         {
             // If FacesContext.isRenderAll() returns true write:
-            
+
             // ]]>
             writer.write(AJAX_RESPONSE_CHARACTER_DATA_END);
-            
+
             // </markup>
             writer.endElement(AJAX_RESPONSE_MARKUP);
-            
+
             // </render>
             writer.endElement(AJAX_RESPONSE_RENDER);
-            
+
             if (!pContext.isRenderNone())
             {
                 // component markup was rendered (FacesContext.isRenderNone() returns false), write:
@@ -1060,53 +1064,53 @@ public class UIViewRoot extends UIComponentBase
                 writer.endElement(AJAX_RESPONSE_COMPONENTS);
             }
         }
-        
+
         // <state>
         writer.startElement(AJAX_RESPONSE_STATE, null);
-        
+
         // <![CDATA[
         writer.write(AJAX_RESPONSE_CHARACTER_DATA_START);
-        
+
         // state information for this view
         writer.write(context.getApplication().getStateManager().getViewState(context));
-        
+
         // ]]>
         writer.write(AJAX_RESPONSE_CHARACTER_DATA_END);
-        
+
         // </state>
         writer.endElement(AJAX_RESPONSE_STATE);
-        
+
         // Write the ending partial-response element:
         // </partial-response>
         writer.endElement(AJAX_RESPONSE_ROOT);
     }
-    
+
     private List<String> _getAjaxClientIds(FacesContext context)
     {
         PartialViewContext pContext = context.getPartialViewContext();
-        
+
         // Call FacesContext.getExecutePhaseClientIds()
         List<String> clientIds = pContext.getExecutePhaseClientIds();
         if (clientIds == null || clientIds.isEmpty())
         {
-            // If there were no client ids specified, refer to the List of client ids by calling 
+            // If there were no client ids specified, refer to the List of client ids by calling
             // FacesContext.getRenderPhaseClientIds()
             clientIds = pContext.getRenderPhaseClientIds();
         }
-        
+
         return clientIds;
     }
 
     /**
-     * Process the specified phase by calling PhaseListener.beforePhase for every phase listeners defined on this 
-     * view root, then calling the process method of the processor, broadcasting relevant events and finally 
+     * Process the specified phase by calling PhaseListener.beforePhase for every phase listeners defined on this
+     * view root, then calling the process method of the processor, broadcasting relevant events and finally
      * notifying the afterPhase method of every phase listeners registered on this view root.
-     * 
+     *
      * @param context
      * @param phaseId
      * @param processor
      * @param broadcast
-     * 
+     *
      * @return
      */
     private boolean _process(FacesContext context, PhaseId phaseId, PhaseProcessor processor)
@@ -1120,21 +1124,21 @@ public class UIViewRoot extends UIComponentBase
 
             broadcastEvents(context, phaseId);
         }
-        
+
         if (context.getRenderResponse() || context.getResponseComplete())
         {
             clearEvents();
         }
-        
+
         return notifyListeners(context, phaseId, getAfterPhaseListener(), false);
     }
-    
+
     private void _processDecodesAjax(FacesContext context)
     {
         List<String> clientIds = _getAjaxClientIds(context);
         if (clientIds == null || clientIds.isEmpty())
         {
-            // If partial processing was not perfomed on any components, perform processDecodes on all components 
+            // If partial processing was not perfomed on any components, perform processDecodes on all components
             // in the view.
             _processDecodesDefault(context);
         }
@@ -1142,33 +1146,33 @@ public class UIViewRoot extends UIComponentBase
         {
             for (String clientId : clientIds)
             {
-                // For each client id in the list, using invokeOnComponent, call the respective processDecodes method 
+                // For each client id in the list, using invokeOnComponent, call the respective processDecodes method
                 // on the component with that client id.
                 invokeOnComponent(context, clientId, APPLY_REQUEST_VALUES_CALLBACK);
             }
-            
+
             /*
-             * Obtain an instance of a response writer that uses content type text/xml by calling 
-             * FacesContext.getPartialResponseWriter(). Install the writer by calling 
-             * FacesContext.setResponseWriter(javax.faces.context.ResponseWriter). 
+             * Obtain an instance of a response writer that uses content type text/xml by calling
+             * FacesContext.getPartialResponseWriter(). Install the writer by calling
+             * FacesContext.setResponseWriter(javax.faces.context.ResponseWriter).
              */
             context.setResponseWriter(context.getPartialViewContext().getPartialResponseWriter());
         }
     }
-    
+
     private void _processDecodesDefault(FacesContext context)
     {
-        // If FacesContext.isAjaxRequest() returned false, or partial processing was not perfomed on any components, 
+        // If FacesContext.isAjaxRequest() returned false, or partial processing was not perfomed on any components,
         // perform processDecodes on all components in the view.
         super.processDecodes(context);
     }
-    
+
     private void _processUpdatesAjax(FacesContext context)
     {
         List<String> clientIds = _getAjaxClientIds(context);
         if (clientIds == null || clientIds.isEmpty())
         {
-            // If partial processing was not perfomed on any components, perform processDecodes on all components 
+            // If partial processing was not perfomed on any components, perform processDecodes on all components
             // in the view.
             _processUpdatesDefault(context);
         }
@@ -1176,26 +1180,26 @@ public class UIViewRoot extends UIComponentBase
         {
             for (String clientId : clientIds)
             {
-                // For each client id in the list, using invokeOnComponent, call the respective processUpdates method 
+                // For each client id in the list, using invokeOnComponent, call the respective processUpdates method
                 // on the component with that client id.
                 invokeOnComponent(context, clientId, UPDATE_MODEL_CALLBACK);
             }
         }
     }
-    
+
     private void _processUpdatesDefault(FacesContext context)
     {
-        // If FacesContext.isAjaxRequest() returned false, or partial processing was not perfomed on any components, 
+        // If FacesContext.isAjaxRequest() returned false, or partial processing was not perfomed on any components,
         // perform processUpdates on all components in the view.
         super.processUpdates(context);
     }
-    
+
     private void _processValidatorsAjax(FacesContext context)
     {
         List<String> clientIds = _getAjaxClientIds(context);
         if (clientIds == null || clientIds.isEmpty())
         {
-            // If partial processing was not perfomed on any components, perform processDecodes on all components 
+            // If partial processing was not perfomed on any components, perform processDecodes on all components
             // in the view.
             _processValidatorsDefault(context);
         }
@@ -1203,16 +1207,16 @@ public class UIViewRoot extends UIComponentBase
         {
             for (String clientId : clientIds)
             {
-                // For each client id in the list, using invokeOnComponent, call the respective processValidators 
+                // For each client id in the list, using invokeOnComponent, call the respective processValidators
                 // method on the component with that client id.
                 invokeOnComponent(context, clientId, PROCESS_VALIDATORS_CALLBACK);
             }
         }
     }
-    
+
     private void _processValidatorsDefault(FacesContext context)
     {
-        // If FacesContext.isAjaxRequest()  returned false, or partial processing was not perfomed on any components, 
+        // If FacesContext.isAjaxRequest()  returned false, or partial processing was not perfomed on any components,
         // perform processValidators on all components in the view.
         super.processValidators(context);
     }
@@ -1236,7 +1240,7 @@ public class UIViewRoot extends UIComponentBase
             }
         }
     }
-    
+
     private static class ProcessValidatorPhaseProcessor implements PhaseProcessor
     {
         public void process(FacesContext context, UIViewRoot root)
@@ -1251,7 +1255,7 @@ public class UIViewRoot extends UIComponentBase
             }
         }
     }
-    
+
     private static class UpdateModelPhaseProcessor implements PhaseProcessor
     {
         public void process(FacesContext context, UIViewRoot root)
@@ -1266,35 +1270,35 @@ public class UIViewRoot extends UIComponentBase
             }
         }
     }
-    
+
     private static class AjaxEncodeAllCallback implements ContextCallback
     {
         public void invokeContextCallback(FacesContext context, UIComponent target)
         {
             // Each component's rendered markup must be wrapped as follows:
             ResponseWriter writer = context.getResponseWriter();
-            
+
             try
             {
                 // <render id="form:table"/>
                 writer.startElement(AJAX_RESPONSE_RENDER, target);
                 writer.writeAttribute("id", target.getClientId(context), "clientId");
-                
+
                 // <markup>
                 writer.startElement(AJAX_RESPONSE_MARKUP, target);
-                
+
                 // <![CDATA[
                 writer.write(AJAX_RESPONSE_CHARACTER_DATA_START);
 
                 // component rendered markup **
                 target.encodeAll(context);
-                
+
                 // ]]>
                 writer.write(AJAX_RESPONSE_CHARACTER_DATA_END);
-                
+
                 // </markup>
                 writer.endElement(AJAX_RESPONSE_MARKUP);
-                
+
                 // </render>
                 writer.endElement(AJAX_RESPONSE_RENDER);
             }
@@ -1312,7 +1316,7 @@ public class UIViewRoot extends UIComponentBase
             target.processDecodes(context);
         }
     }
-    
+
     private static class ProcessValidatorPhaseCallback implements ContextCallback
     {
         public void invokeContextCallback(FacesContext context, UIComponent target)
@@ -1320,11 +1324,11 @@ public class UIViewRoot extends UIComponentBase
             target.processValidators(context);
         }
     }
-    
+
     private class RestoreStateCallback implements ContextCallback
     {
         private AfterRestoreStateEvent event;
-        
+
         public void invokeContextCallback(FacesContext context, UIComponent target)
         {
             if (event == null)
@@ -1335,14 +1339,14 @@ public class UIViewRoot extends UIComponentBase
             {
                 event.setComponent(target);
             }
-            
-            // call the processEvent method of the current component. 
-            // The argument event must be an instance of AfterRestoreStateEvent whose component 
+
+            // call the processEvent method of the current component.
+            // The argument event must be an instance of AfterRestoreStateEvent whose component
             // property is the current component in the traversal.
             processEvent(event);
         }
     }
-    
+
     private static class UpdateModelPhaseCallback implements ContextCallback
     {
         public void invokeContextCallback(FacesContext context, UIComponent target)
@@ -1350,16 +1354,16 @@ public class UIViewRoot extends UIComponentBase
             target.processUpdates(context);
         }
     }
-    
+
     private static class CallbackIOException extends RuntimeException
     {
         private IOException exception;
-        
+
         public CallbackIOException(IOException exception)
         {
             super(exception);
         }
-        
+
         public IOException getIOException()
         {
             return exception;
