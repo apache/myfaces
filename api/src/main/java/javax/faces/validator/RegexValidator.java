@@ -85,7 +85,6 @@ import java.util.regex.PatternSyntaxException;
     name="binding",
     returnType = "javax.faces.validator.RegexValidator",
     longDesc = "A ValueExpression that evaluates to a RegexValidator.")
-@FacesValidator("validateRegex")
 public class RegexValidator implements Validator, StateHolder
 {
 
