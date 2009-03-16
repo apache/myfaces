@@ -378,7 +378,7 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>jstl</groupId>
+      <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
       <!-- version defined in parent -->
       <scope>provided</scope>
