@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.faces.application.ApplicationFactory;
-import javax.faces.application.DiscoveryHandlerFactory;
 import javax.faces.context.ExceptionHandlerFactory;
 import javax.faces.context.FacesContextFactory;
 import javax.faces.lifecycle.LifecycleFactory;
@@ -49,11 +48,6 @@ public final class FactoryFinder
     public static final String LIFECYCLE_FACTORY = "javax.faces.lifecycle.LifecycleFactory";
     public static final String RENDER_KIT_FACTORY = "javax.faces.render.RenderKitFactory";
     
-    /**
-     * @since 2.0
-     */
-    public static final String DISCOVERY_HANDLER_FACTORY = "javax.faces.application.DiscoveryHandlerFactory";
-
     /**
      * @since 2.0
      */
@@ -86,14 +80,12 @@ public final class FactoryFinder
         VALID_FACTORY_NAMES.add(FACES_CONTEXT_FACTORY);
         VALID_FACTORY_NAMES.add(LIFECYCLE_FACTORY);
         VALID_FACTORY_NAMES.add(RENDER_KIT_FACTORY);
-        VALID_FACTORY_NAMES.add(DISCOVERY_HANDLER_FACTORY);
         VALID_FACTORY_NAMES.add(EXCEPTION_HANDLER_FACTORY);
 
         ABSTRACT_FACTORY_CLASSES.put(APPLICATION_FACTORY, ApplicationFactory.class);
         ABSTRACT_FACTORY_CLASSES.put(FACES_CONTEXT_FACTORY, FacesContextFactory.class);
         ABSTRACT_FACTORY_CLASSES.put(LIFECYCLE_FACTORY, LifecycleFactory.class);
         ABSTRACT_FACTORY_CLASSES.put(RENDER_KIT_FACTORY, RenderKitFactory.class);
-        ABSTRACT_FACTORY_CLASSES.put(DISCOVERY_HANDLER_FACTORY, DiscoveryHandlerFactory.class);
         ABSTRACT_FACTORY_CLASSES.put(EXCEPTION_HANDLER_FACTORY, ExceptionHandlerFactory.class);
     }
 
