@@ -507,24 +507,31 @@
       <version>1.0</version>
       <scope>provided</scope>
     </dependency>
+    <!-- START TEMPORAL ANNOTATION DEPENDENCES
+    
+    This dependencies should be removed, replacing it with
+    a different solution, but for now we need a fast test
+    implementation of annotation scanning feature, making
+    it possible refactor current myfaces code -->
     <dependency>
         <artifactId>xbean-finder</artifactId>
         <groupId>org.apache.xbean</groupId>
         <version>3.4</version>
-        <scope>provided</scope>
+        <scope>compile</scope>
     </dependency>
     <dependency>
         <groupId>asm</groupId>
         <artifactId>asm</artifactId>
         <version>2.2.3</version>
-        <scope>provided</scope>
+        <scope>compile</scope>
     </dependency>
     <dependency>
         <groupId>asm</groupId>
         <artifactId>asm-commons</artifactId>
         <version>2.2.3</version>
-        <scope>provided</scope>
+        <scope>compile</scope>
     </dependency>
+    <!-- END TEMPORAL ANNOTATION DEPENDENCIES -->
   </dependencies>
   <reporting>
     <plugins>
