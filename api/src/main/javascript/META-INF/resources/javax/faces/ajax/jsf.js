@@ -54,7 +54,29 @@ jsf.ajax._PROP_AJAX = "javax.faces.partial.ajax";
 jsf.ajax._PROP_EXECUTE = "javax.faces.partial.execute";
 jsf.ajax._PROP_RENDER = "javax.faces.partial.render";
 
+jsf.ajax._PROP_ALL = "@all";
+jsf.ajax._PROP_NONE = "@none";
 
+/*partial response types*/
+jsf.ajax._RESPONSE_PARTIAL = "partial-response";
+jsf.ajax._RESPONSETYPE_ERROR = "error";
+jsf.ajax._RESPONSETYPE_REDIRECT = "redirect";
+jsf.ajax._RESPONSETYPE_REDIRECT = "changes";
+
+/*partial commands*/
+jsf.ajax._PCMD_UPDATE = "update";
+jsf.ajax._PCMD_DELETE = "delete";
+jsf.ajax._PCMD_INSERT = "insert";
+jsf.ajax._PCMD_EVAL = "eval";
+jsf.ajax._PCMD_ATTRIBUTES = "attributes";
+jsf.ajax._PCMD_EXTENSION = "extension";
+
+/*various errors within the rendering stage*/
+jsf.ajax._ERROR_EMPTY_RESPONSE = "emptyResponse";
+jsf.ajax._ERROR_MALFORMEDXML = "malformedXML";
+jsf.ajax._MSG_SUCCESS = "success";
+
+/*various ajax message types*/
 jsf.ajax._MSG_TYPE_ERROR = "error";
 jsf.ajax._MSG_TYPE_EVENT = "event";
 jsf.ajax._AJAX_STAGE_BEGIN = "begin";
@@ -62,7 +84,7 @@ jsf.ajax._AJAX_STAGE_COMPLETE = "complete";
 jsf.ajax._AJAX_STAGE_HTTPERROR = "httpError";
 
 /*Transports including queues and adapters!*/
-jsf.ajax._xhrAdapter = ('undefined' != typeof (myfaces._SimpleXHRFrameworkAdapter)) ? new myfaces._SimpleXHRFrameworkAdapter() :  new myfaces._TrinidadFrameworkAdapter();
+jsf.ajax._xhrAdapter = ('undefined' != typeof (myfaces._SimpleXHRFrameworkAdapter)) ? new myfaces._SimpleXHRFrameworkAdapter() : new myfaces._TrinidadFrameworkAdapter();
 
 /**
  * external event listener queue!
@@ -89,10 +111,10 @@ jsf.getViewState = function(formElement) {
      */
 
     if ('undefined' == typeof(formElement)
-        || null == formElement
-        || 'undefined' == typeof(formElement.nodeName)
-        || null == formElement.nodeName
-        || formElement.nodeName != "FORM") {
+            || null == formElement
+            || 'undefined' == typeof(formElement.nodeName)
+            || null == formElement.nodeName
+            || formElement.nodeName != "FORM") {
         throw Exception("jsf.viewState: param value not of type form!");
     }
     var formValues = {};
@@ -101,7 +123,6 @@ jsf.getViewState = function(formElement) {
     formValues = myfaces._JSF2Utils.getPostbackContent(formElement, formValues);
     return formValues;
 };
-
 
 /**
  * internal assertion check for the element parameter
@@ -113,34 +134,33 @@ jsf.ajax._assertElement = function(/*String|Dom Node*/ element) {
      *a local function variable so that we do not have to write the entire namespace
      *all the time
      **/
-    var JSF2Utils   = myfaces._JSF2Utils;
+    var JSF2Utils = myfaces._JSF2Utils;
 
     /**
      * assert element
      */
-    if('undefined' == typeof( element ) || null == element) {
+    if ('undefined' == typeof( element ) || null == element) {
         throw new Exception("jsf.ajax, element must be set!");
     }
-    if(!JSF2Utils.isString(element) && !(element instanceof Node)) {
+    if (!JSF2Utils.isString(element) && !(element instanceof Node)) {
         throw new Exception("jsf.ajax, element either must be a string or a dom node");
     }
 
     element = JSF2Utils.byId(element);
-    if('undefined' == typeof element || null == element) {
+    if ('undefined' == typeof element || null == element) {
         throw new Exception("Element either must be a string to a or must be a valid dom node");
     }
 
 };
 
-
 jsf.ajax._assertFunction = function(/*Objec*/ obj, /*String*/ functionName) {
-    if('undefined' == typeof(obj) || null == obj) return;
+    if ('undefined' == typeof(obj) || null == obj) return;
     var func = obj[functionName];
-    if('undefined' == typeof func || null == func) {
+    if ('undefined' == typeof func || null == func) {
         return;
     }
-    if(!(func instanceof Function)) {
-        throw new Exception("Functioncall "+func+" is not a function! ");
+    if (!(func instanceof Function)) {
+        throw new Exception("Functioncall " + func + " is not a function! ");
     }
 }
 
@@ -155,7 +175,6 @@ jsf.ajax._caputureEventArgs = function(/*Dom node*/node, /*event*/ obj) {
     var retVal = {};
     return retVal;
 };
-
 
 /**
  * this function has to send the ajax requests
@@ -178,27 +197,27 @@ jsf.ajax.request = function(/*String|Dom Node*/ element, /*|EVENT|*/ event, /*{|
      *a local function variable so that we do not have to write the entire namespace
      *all the time
      **/
-    var JSF2Utils   = myfaces._JSF2Utils;
+    var JSF2Utils = myfaces._JSF2Utils;
 
     /**
      * we cross reference statically hence the mapping here
      * the entire mapping between the functions is stateless
      */
-    var JSFAjax     = jsf.ajax;
+    var JSFAjax = jsf.ajax;
 
     /*assert a valid structure of a given element*/
     JSFAjax._assertElement(element);
     /*assert if the onerror is set and once if it is set it must be of type function*/
-    JSFAjax._assertFunction(options,"onerror");
+    JSFAjax._assertFunction(options, "onerror");
     /*assert if the onevent is set and once if it is set it must be of type function*/
-    JSFAjax._assertFunction(options,"onevent");
+    JSFAjax._assertFunction(options, "onevent");
 
     /**
      * fetch the parent form first
      */
-    var sourceForm  = JSF2Utils.getParentForm(element);
+    var sourceForm = JSF2Utils.getParentForm(element);
 
-    if('undefined' == typeof sourceForm || null == sourceForm) {
+    if ('undefined' == typeof sourceForm || null == sourceForm) {
         sourceForm = document.forms[0];
     }
 
@@ -241,16 +260,17 @@ jsf.ajax.request = function(/*String|Dom Node*/ element, /*|EVENT|*/ event, /*{|
      * we have to pass them down as a blank delimited string representation
      * of an array of ids!
      */
-    if(JSF2Utils.exists(passThroughArguments,"execute")) {
+    if (JSF2Utils.exists(passThroughArguments, "execute")) {
         /*the options must be a blank delimited list of strings*/
         //TODO add the source id to the list
-        passThroughArguments[jsf.ajax._PROP_EXECUTE] = JSF2Utils.arrayToString(passThroughArguments.execute,' ');
-        passThroughArguments.execute = null;/*remap just in case we have a valid pointer to an existing object*/
+        passThroughArguments[jsf.ajax._PROP_EXECUTE] = JSF2Utils.arrayToString(passThroughArguments.execute, ' ');
+        passThroughArguments.execute = null;
+        /*remap just in case we have a valid pointer to an existing object*/
         delete passThroughArguments.execute;
     } else {
         passThroughArguments[jsf.ajax._PROP_EXECUTE] = sourceElement.id;
     }
-    if(JSF2Utils.exists(passThroughArguments,"render")) {
+    if (JSF2Utils.exists(passThroughArguments, "render")) {
         //TODO add the source id to the list
         passThroughArguments[jsf.ajax._PROP_RENDER] = JSF2Utils.arrayToString(passThroughArguments.render, ' ');
         passThroughArguments.execute = null;
@@ -264,8 +284,6 @@ jsf.ajax.request = function(/*String|Dom Node*/ element, /*|EVENT|*/ event, /*{|
     /*ie6 supportive code to prevent browser leaks*/
     passThroughArguments.onerror = null;
     delete passThroughArguments.onevent;
-
-
 
     var extractedEventArguments = JSFAjax._caputureEventArgs(element, event);
 
@@ -293,7 +311,7 @@ jsf.ajax.request = function(/*String|Dom Node*/ element, /*|EVENT|*/ event, /*{|
      */
     JSFAjax._xhrAdapter.sendRequest(ajaxContext, sourceForm.action, viewState, passThroughArguments);
 
-/*
+    /*
      * TODO #61
      * https://issues.apache.org/jira/browse/MYFACES-2112
      * done
@@ -310,13 +328,12 @@ jsf.ajax.addOnEvent = function(/*function*/eventListener) {
     jsf.ajax._eventListenerQueue.add(eventListener);
 }
 
-
 /**
  * RI compatibility method
  * TODO make sure this method also occurrs in the specs
  * otherwise simply pull it
  */
-jsf.ajax.sendError = function sendError(/*Object*/request,/*Object*/ context,/*String*/ name,/*String*/ serverErrorName,/*String*/ serverErrorMessage) {
+jsf.ajax.sendError = function sendError(/*Object*/request, /*Object*/ context, /*String*/ name, /*String*/ serverErrorName, /*String*/ serverErrorMessage) {
     var eventData = {};
     eventData.type = jsf.ajax._MSG_TYPE_ERROR;
 
@@ -327,7 +344,7 @@ jsf.ajax.sendError = function sendError(/*Object*/request,/*Object*/ context,/*S
     eventData.responseCode = request.status;
 
     /**/
-    if(myfaces._JSF2Utils.exists(context, "onerror")) {
+    if (myfaces._JSF2Utils.exists(context, "onerror")) {
         context.onerror(eventData);
     }
     /*now we serve the queue as well*/
@@ -339,29 +356,26 @@ jsf.ajax.sendError = function sendError(/*Object*/request,/*Object*/ context,/*S
  * TODO make sure this method also occurrs in the specs
  * otherwise simply pull it
  */
-jsf.ajax.sendEvent = function sendEvent(/*Object*/request,/*Object*/ context,/*even name*/ name) {
+jsf.ajax.sendEvent = function sendEvent(/*Object*/request, /*Object*/ context, /*even name*/ name) {
     var eventData = {};
     eventData.type = jsf.ajax._MSG_TYPE_EVENT;
 
     eventData.name = name;
     eventData.source = context.source;
     if (name !== jsf.ajax._AJAX_STAGE_BEGIN) {
-        eventData.responseXML =  request.responseXML;
+        eventData.responseXML = request.responseXML;
         eventData.responseText = request.responseText;
         eventData.responseCode = request.status;
     }
 
     /**/
-    if(myfaces._JSF2Utils.exists(context, "onevent")) {
+    if (myfaces._JSF2Utils.exists(context, "onevent")) {
         /*calling null to preserve the original scope*/
         context.onevent.call(null, eventData);
     }
     /*now we serve the queue as well*/
     jsf.ajax._eventListenerQueue.broadcastEvent(eventData);
 }
-
-
-
 
 /**
  * processes the ajax response if the ajax request completes successfully
@@ -372,17 +386,51 @@ jsf.ajax.response = function(/*xhr request object*/request, context) {
         throw Exception("jsf.ajaxResponse: The response cannot be null or empty!");
     }
 
-    if(!myfaces._JSF2Utils.exists(request, "responseXML")) {
-        jsf.ajax.sendError(request, context, "emptyResponse");
-        myfaces._JSF2Utils.logError("jsf.ajax.response", "responseXML", "empty response");
+    if (!myfaces._JSF2Utils.exists(request, "responseXML")) {
+        jsf.ajax.sendError(request, context, jsf.ajax._ERROR_EMPTY_RESPONSE);
 
         return;
     }
-//TODO handle the ppr part here
-//check the specs on the format of the return xml to do the ppr as expected!
 
+    var xmlContent = request.responseXML;
+    if (xmlContent.firstChild.tagName == "parsererror") {
+        jsf.ajax.sendError(request, context, jsf.ajax._ERROR_MALFORMEDXML);
+        return;
+    }
 
-/**
+    var partials = xmlContent.getElementsByTagName(jsf.ajax._RESPONSE_PARTIAL);
+    if ('undefined' == typeof partials || partials == null || partials.length != 1) {
+        jsf.ajax.sendError(request, context, jsf.ajax._ERROR_MALFORMEDXML);
+        return;
+    }
+
+    var partialXmlData = partials[0];
+    var childNodesLength = partialXmlData.childNodes.length;
+
+    for (var loop = 0; loop < childNodesLength; loop++) {
+        var childNode = partialXmlData.childNodes[loop];
+        var nodeName = childNode.nodeName.toLowerCase();
+
+        if (nodeName == jsf.ajax._PCMD_EVAL) {
+            // jsf.ajax._handleEval(childNode);
+        } else if (nodeName == jsf.ajax._PCMD_UPDATE) {
+            //  jsf.ajax._handleUpdate(childNode);
+        } else if (nodeName == jsf.ajax._PCMD_INSERT) {
+            //  jsf.ajax._handleInsert(childNode);
+        } else if (nodeName == jsf.ajax._PCMD_DELETE) {
+            // jsf.ajax._handleDelete(childNode);
+        } else if (nodeName == jsf.ajax._PCMD_ATTRIBUTES) {
+            // jsf.ajax._handleAtttributes(childNode);
+        } else if (nodeName == jsf.ajax._PCMD_EXTENSION) {
+            //  jsf.ajax._handleExtension(childNode);
+        } else {
+            jsf.ajax.sendError(request, context, jsf.ajax._ERROR_MALFORMEDXML);
+            return;
+        }
+    }
+    jsf.ajax.sendEvent(request, context, jsf.ajax._MSG_SUCCESS);
+
+    /**
      * TODO #62
      * https://issues.apache.org/jira/browse/MYFACES-2114
      */
@@ -395,9 +443,9 @@ jsf.getProjectStage = function() {
 
     if ('undefined' == typeof(this._projectStage) ||
         null == this._projectStage) {
-    //TODO add small templating capabilities to our resource loader
-    //so that the project stage is loaded on the fly!
-    //or solve it with a separate xmlhttprequest
+        //TODO add small templating capabilities to our resource loader
+        //so that the project stage is loaded on the fly!
+        //or solve it with a separate xmlhttprequest
     }
 
     /**
