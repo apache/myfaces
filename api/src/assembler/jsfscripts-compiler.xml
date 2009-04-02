@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<assembler>
+    <scripts>
+        <script>
+            <fileName>jsf.js</fileName>
+            <includes>
+                <include>**/_util/OpenAjax.js</include>
+                <include>**/_util/_JSF2Utils.js</include>
+                <include>**/_util/_Logger.js</include>
+                <include>**/_util/_ListenerQueue.js</include>
+
+                <include>**/_trinidad/_TrXmlRequestEvent.js</include>
+                <include>**/_trinidad/_TrXmlRequest.js</include>
+                <include>**/_trinidad/_TrRequestQueue.js</include>
+                <include>**/_trinidad/_TrinidadFrameworkAdapter.js</include>
+
+                <include>**/_xhr/_XHRConst.js</include>
+                <include>**/_xhr/_SimpleXHRFrameworkAdapter.js</include>
+                <include>**/_xhr/_SimpleXHRTransport.js</include>
+                <include>**/_trinidad/_TrinidadFrameworkAdapter.js</include>
+
+                <include>**/ajax/jsf.js</include>
+               
+            </includes>
+           
+        </script>
+    </scripts>
+</assembler>

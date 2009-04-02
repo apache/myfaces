@@ -39,6 +39,20 @@
        <url>http://download.java.net/maven/1</url>
        <layout>legacy</layout>
     </repository>
+        <!-- maven sandbox repository for the javascript plugin
+        please do not delete this we just disable it for now-->
+        <!--
+        <repository>
+            <id>Codehaus Snapshots</id>
+            <url>http://snapshots.repository.codehaus.org/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+        -->
   </repositories>
   <build>
     <plugins>
@@ -169,6 +183,19 @@
             <name>Apache Snapshot Repository</name>
             <url>http://people.apache.org/repo/m2-snapshot-repository</url>
         </pluginRepository>
+        <!--
+        disabled for now must be enabled to enable javascript compression
+        <pluginRepository>
+            <id>Codehaus Snapshots</id>
+            <url>http://snapshots.repository.codehaus.org/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </pluginRepository>
+        -->
     </pluginRepositories>
 
     <distributionManagement>
