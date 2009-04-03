@@ -41,9 +41,9 @@ if ('undefined' == typeof jsf.ajax || null == jsf.ajax) {
      myfaces.
      */
     if('undefined' != typeof myfaces.config && null != myfaces.config &&
-       'undefined' != typeof myfaces.config.impl && null != myfaces.config.impl ) {
+       'undefined' != typeof myfaces.config.jsfAjaxImpl && null != myfaces.config.jsfAjaxImpl ) {
 
-       jsf.ajax._impl = new myfaces.config.impl(); 
+       jsf.ajax._impl = new myfaces.config.jsfAjaxImpl(); 
 
     } else {
 
