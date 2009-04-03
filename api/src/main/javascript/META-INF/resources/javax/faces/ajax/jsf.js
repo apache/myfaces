@@ -40,7 +40,15 @@ if ('undefined' == typeof jsf.ajax || null == jsf.ajax) {
     /*
      myfaces.
      */
-    jsf.ajax._impl = new myfaces._jsfImpl();
+    if('undefined' != typeof myfaces.config && null != myfaces.config &&
+       'undefined' != typeof myfaces.config.impl && null != myfaces.config.impl ) {
+
+       jsf.ajax._impl = new myfaces.config.impl(); 
+
+    } else {
+
+        jsf.ajax._impl = new myfaces._jsfImpl();
+    }
 
     /**
      * collect and encode data for a given form element (must be of type form)
