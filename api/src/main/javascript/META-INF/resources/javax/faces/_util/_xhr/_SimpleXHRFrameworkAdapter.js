@@ -50,9 +50,10 @@ if (!myfaces._JSF2Utils.exists(myfaces, "_SimpleXHRFrameworkAdapter")) {
         var complete = false;
         /*here we have to do the event mapping back into the ri events*/
 
-        //TODO check whether the scope changes on the sendEvent so that we have to bind it to our context!
+        //onEvent and onError are served on the JSF side as well!
+
+
         switch(request.readyState) {
-            //TODO add mapping code here
             case xhrConst.READY_STATE_OPENED:
                 jsf.ajax.sendEvent(null, xhrContext, jsf.ajax._AJAX_STAGE_BEGIN)
                 break;
@@ -62,12 +63,12 @@ if (!myfaces._JSF2Utils.exists(myfaces, "_SimpleXHRFrameworkAdapter")) {
                   *that the specification is satisfied
                   **/
                 complete = true;
-                var responseStatusCode = event.status;
+
+                var responseStatusCode = request.status;
 
                 if(200 <= responseStatusCode && 300 > responseStatusCode ) {
                     jsf.ajax.sendEvent(request, xhrContext, jsf.ajax._AJAX_STAGE_COMPLETE);
 
-                    //TODO do the dom manipulation callback here
                     jsf.ajax.response(request, xhrContext);
                 } else {
                     jsf.ajax.sendEvent(request, xhrContext, jsf.ajax._AJAX_STAGE_COMPLETE);
@@ -84,12 +85,13 @@ if (!myfaces._JSF2Utils.exists(myfaces, "_SimpleXHRFrameworkAdapter")) {
      * central request callback
      */
     myfaces._SimpleXHRFrameworkAdapter.prototype.sendRequest = function(ajaxContext,  action, viewState, passThroughArguments ) {
-        var data = {};
-        data.context = ajaxContext;
-        data.action = action;
-        data.viewstate = viewState;
-        data.passthroughArguments = passThroughArguments;
-        this._delegate.send(data);
+        var requestData = {};
+        requestData.context = ajaxContext;
+        requestData.action = action;
+        requestData.viewstate = viewState;
+        requestData.passthroughArguments = passThroughArguments;
+
+        this._delegate.send(requestData);
     };
 
 }

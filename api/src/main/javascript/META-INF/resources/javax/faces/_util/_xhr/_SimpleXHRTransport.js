@@ -32,7 +32,6 @@
  */
 _reserveMyfaces();
 
-
 if (!myfaces._JSF2Utils.exists(myfaces, "_SimpleXHRTransport")) {
     myfaces._SimpleXHRTransport = function() {
         /*we need an instance of our utils for the hitch function*/
@@ -48,14 +47,13 @@ if (!myfaces._JSF2Utils.exists(myfaces, "_SimpleXHRTransport")) {
         this._cached = false;
 
         this._eventListeners = new myfaces._ListenerQueue();
-  
+
         /*
          * caching data queue forw cached
          * ajax post requests!
          */
         this._transportDataQueue = [];
     };
-
 
     myfaces._SimpleXHRTransport.prototype.addEventListener = function(/*function*/ eventListener) {
         this._eventListeners.add(eventListener);
@@ -66,17 +64,17 @@ if (!myfaces._JSF2Utils.exists(myfaces, "_SimpleXHRTransport")) {
 
     myfaces._SimpleXHRTransport.prototype._handleXHREvent = function() {
         /*handle the event callbach*/
-       
+
         var data = this._transportDataQueue[0];
         this._eventListeners.broadcastEvent(data);
-  
-        if(data.transport.readyState === this.xhrConst.READY_STATE_DONE) {
+
+        if (data.transport.readyState === this.xhrConst.READY_STATE_DONE) {
             this._transportDataQueue.shift();
             this._process(true);
             /*ie cleanup*/
             delete data.transport;
         }
-        
+
         return true;
     };
 
@@ -86,57 +84,57 @@ if (!myfaces._JSF2Utils.exists(myfaces, "_SimpleXHRTransport")) {
      * or after terminating an xhr request from the inside
      * we have to cover this that way because of a callback error in mozilla
      */
-    myfaces._SimpleXHRTransport.prototype._process = function( /*boolean*/ inProcess) {
+    myfaces._SimpleXHRTransport.prototype._process = function(/*boolean*/ inProcess) {
         try {
-            
-            var size = this._transportDataQueue.length;
-            if(size > 1 && !inProcess) return; /*still in queue no send can be issued*/
-            if(size === 0) {
-               
-                return; /*empty queue process has to terminate*/
-            }
 
+            var size = this._transportDataQueue.length;
+            if (size > 1 && !inProcess) return;
+            /*still in queue no send can be issued*/
+            if (size === 0) {
+
+                return;
+                /*empty queue process has to terminate*/
+            }
 
             /*note this only works this way because javascript multitasks only premptively
              *if a real multithreading is added please put the outer send into a critical region
              *to prevent concurrency issues*/
-            var data = this._transportDataQueue[0];
+            var queueData = this._transportDataQueue[0];
 
-            data.transport = this._utils.getXHR();
+            queueData.transport = this._utils.getXHR();
 
-            var transport = data.transport;
-            var passThrough = data.passthroughArguments;
+            var transport = queueData.transport;
+            var passThrough = queueData.passthroughArguments;
 
-            if(!this._utils.isString(passThrough)) {
+            if (!this._utils.isString(passThrough)) {
                 passThrough = this._utils.getPostbackContentFromMap(passThrough);
             }
-            if(!this._cached) { //we bypass any caching if needed!
+            if (!this._cached) { //we bypass any caching if needed!
                 //set the pragmas here as well
-                data.action = data.action + ((data.action.indexOf('?') == -1) ? "?" :"&" )+ "AjaxRequestUniqueId = "+(new Date().getTime());
+                queueData.action = queueData.action + ((queueData.action.indexOf('?') == -1) ? "?" : "&" ) + "AjaxRequestUniqueId = " + (new Date().getTime());
             }
             /**
              * We set the on ready state change here
              */
-            
+
             transport.onreadystatechange = this._utils.hitch(this, this._handleXHREvent);
-            transport.open(this._sendMethod, data.action, this._async);
-            if(this._utils.exists(transport, "setRequestHeader")) {
+            transport.open(this._sendMethod, queueData.action, this._async);
+            if (this._utils.exists(transport, "setRequestHeader")) {
                 transport.setRequestHeader(this.xhrConst.FACES_REQUEST, this.xhrConst.PARTIAL_AJAX);
                 transport.setRequestHeader(this.xhrConst.CONTENT_TYPE, this.xhrConst.XFORM_ENCODED);
             }
-       
+
             //THE RI does a notification here
             //be we rely on the official W3C codes
             //which should be sufficient for the callback
             //on "begin"
-            transport.send(data.viewstate +"&"+ passThrough);
-           
+            transport.send(queueData.viewstate + "&" + passThrough);
 
         } catch (e) {
             //Browser error...
             /*internal error we log it and then we splice the affected event away*/
-            myfaces._Logger.getInstance().error("Error in  myfaces._SimpleXHRTransport.prototype._process",  e);
-            if(this._transportDataQueue.length > 0) {
+            myfaces._Logger.getInstance().error("Error in  myfaces._SimpleXHRTransport.prototype._process", e);
+            if (this._transportDataQueue.length > 0) {
                 this._transportDataQueue.shift();
             }
         }
@@ -156,6 +154,7 @@ if (!myfaces._JSF2Utils.exists(myfaces, "_SimpleXHRTransport")) {
     myfaces._SimpleXHRTransport.prototype.send = function(/*Object*/data) {
 
         var queueData = {};
+        
         queueData.context = data.context;
         queueData.action = data.action;
         queueData.viewstate = data.viewstate;
@@ -163,7 +162,7 @@ if (!myfaces._JSF2Utils.exists(myfaces, "_SimpleXHRTransport")) {
 
         this._transportDataQueue.push(queueData);
         /*we initiate a send if none is in progress currently*/
-        
+
         this._process(false);
     };
 }
