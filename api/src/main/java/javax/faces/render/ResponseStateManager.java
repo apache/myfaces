@@ -90,7 +90,7 @@ public abstract class ResponseStateManager
      */
     public String getViewState(FacesContext context, Object state)
     {
-        // TODO: JSF 2.0
+        // TODO: IMPLEMENT HERE
         
         return null;
     }

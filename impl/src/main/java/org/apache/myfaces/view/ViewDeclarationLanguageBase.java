@@ -77,7 +77,7 @@ public abstract class ViewDeclarationLanguageBase extends ViewDeclarationLanguag
                 newViewRoot.setRenderKitId(oldViewRoot.getRenderKitId());
             }
             
-            // TODO: The spec is silent on the following line, but I feel bad if I don't set it
+            // TODO: VALIDATE - The spec is silent on the following line, but I feel bad if I don't set it
             newViewRoot.setViewId(viewId);
 
             return newViewRoot;
@@ -88,7 +88,7 @@ public abstract class ViewDeclarationLanguageBase extends ViewDeclarationLanguag
             // send the response error code SC_NOT_FOUND with a suitable message to the client.
             sendSourceNotFound(context, e.getMessage());
             
-            // TODO: Spec is silent on the return value when an error was sent
+            // TODO: VALIDATE - Spec is silent on the return value when an error was sent
             return null;
         }
     }

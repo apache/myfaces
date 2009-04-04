@@ -140,7 +140,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         List<UIComponent> componentResources = getComponentResources(context, target);
 
         // Add the component resource to the list
-        // TODO: Validate if we should check for duplicates, spec don't say anything about it
+        // TODO: VALIDATE if we should check for duplicates, spec don't say anything about it
         componentResources.add(componentResource);
     }
 

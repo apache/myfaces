@@ -42,7 +42,7 @@ import javax.faces.context.FacesContext;
  */
 public abstract class FaceletContext extends ELContext
 {
-    // TODO: Report this aberration to the EG
+    // TODO: REPORT this aberration to the EG
     public static final String FACELET_CONTEXT_KEY = "com.sun.faces.facelets.FACELET_CONTEXT";
     
     /**

@@ -182,8 +182,8 @@ public class ExceptionHandlerImpl extends ExceptionHandler
     
     protected Throwable wrap(Throwable exception)
     {
-        // TODO: This method should be abstract and implemented by a Portlet or Servlet version instance
-        //       wrapping to either ServletException or PortletException
+        // TODO: REPORT This method should be abstract and implemented by a Portlet or Servlet version 
+        //       instance wrapping to either ServletException or PortletException
         return exception;
     }
     
