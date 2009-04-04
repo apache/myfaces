@@ -50,6 +50,7 @@ import javax.faces.application.ViewHandler;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIViewRoot;
+import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.el.MethodBinding;
@@ -67,7 +68,7 @@ import javax.faces.event.SystemEventListener;
 import javax.faces.event.SystemEventListenerHolder;
 import javax.faces.render.Renderer;
 import javax.faces.validator.Validator;
-import javax.faces.webapp.pdl.PageDeclarationLanguage;
+import javax.faces.view.ViewDeclarationLanguage;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -150,8 +151,6 @@ public class ApplicationImpl extends Application
     private ELResolverBuilder resolverBuilderForFaces;
 
     private ProjectStage _projectStage;
-
-    private PageDeclarationLanguage _pageDeclarationLanguage;
 
     // ~ Constructors
     // --------------------------------------------------------------------------
@@ -494,6 +493,13 @@ public class ApplicationImpl extends Application
     }
 
     @Override
+    public Iterator<String> getBehaviorIds()
+    {
+        // TODO: IMPLEMENT HERE
+        return null;
+    }
+
+    @Override
     public final Iterator<String> getComponentTypes()
     {
         return _componentClassMap.keySet().iterator();
@@ -557,19 +563,6 @@ public class ApplicationImpl extends Application
     public final NavigationHandler getNavigationHandler()
     {
         return _navigationHandler;
-    }
-
-    @Override
-    public PageDeclarationLanguage getPageDeclarationLanguage()
-    {
-        return _pageDeclarationLanguage;
-    }
-
-    @Override
-    public void setPageDeclarationLanguage(PageDeclarationLanguage pdl)
-    {
-        checkNull(pdl, "PageDeclarationLanguage");
-        _pageDeclarationLanguage = pdl;
     }
 
     /**
@@ -799,6 +792,12 @@ public class ApplicationImpl extends Application
         return _viewHandler;
     }
 
+    @Override
+    public void addBehavior(String behaviorId, String behaviorClass)
+    {
+        // TODO: IMPLEMENT HERE
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public final void addComponent(final String componentType, final String componentClassName)
@@ -890,6 +889,13 @@ public class ApplicationImpl extends Application
         {
             log.error("Validator class " + validatorClass + " not found", e);
         }
+    }
+
+    @Override
+    public ClientBehavior createBehavior(String behaviorId) throws FacesException
+    {
+        // TODO: IMPLEMENT HERE
+        return null;
     }
 
     @Override

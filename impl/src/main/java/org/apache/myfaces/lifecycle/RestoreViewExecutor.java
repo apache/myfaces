@@ -24,8 +24,8 @@ import javax.faces.application.ViewExpiredException;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
-import javax.faces.event.AfterAddToParentEvent;
 import javax.faces.event.PhaseId;
+import javax.faces.event.PostAddToViewEvent;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -54,17 +54,22 @@ class RestoreViewExecutor implements PhaseExecutor
         // init the View
         Application application = facesContext.getApplication();
         ViewHandler viewHandler = application.getViewHandler();
+        
+        // Call initView() on the ViewHandler. This will set the character encoding properly for this request.
         viewHandler.initView(facesContext);
 
         UIViewRoot viewRoot = facesContext.getViewRoot();
 
         RestoreViewSupport restoreViewSupport = getRestoreViewSupport();
 
+        // Examine the FacesContext instance for the current request. If it already contains a UIViewRoot
         if (viewRoot != null)
         {
             if (log.isTraceEnabled())
                 log.trace("View already exists in the FacesContext");
-
+            
+            // Set the locale on this UIViewRoot to the value returned by the getRequestLocale() method on the
+            // ExternalContext for this request
             viewRoot.setLocale(facesContext.getExternalContext().getRequestLocale());
             restoreViewSupport.processComponentBinding(facesContext, viewRoot);
             return false;
@@ -106,7 +111,7 @@ class RestoreViewExecutor implements PhaseExecutor
             
             // Subscribe the newly created UIViewRoot instance to the AfterAddToParent event, passing the 
             // UIViewRoot instance itself as the listener.
-            viewRoot.subscribeToEvent(AfterAddToParentEvent.class, viewRoot);
+            viewRoot.subscribeToEvent(PostAddToViewEvent.class, viewRoot);
             
             // Store the new UIViewRoot instance in the FacesContext.
             facesContext.setViewRoot(viewRoot);
@@ -115,7 +120,7 @@ class RestoreViewExecutor implements PhaseExecutor
             facesContext.renderResponse();
             
             // Publish an AfterAddToParent event with the created UIViewRoot as the event source.
-            application.publishEvent(AfterAddToParentEvent.class, viewRoot);
+            application.publishEvent(PostAddToViewEvent.class, viewRoot);
         }
 
         return false;

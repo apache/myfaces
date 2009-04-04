@@ -28,6 +28,8 @@ import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.Map;
 
+import javax.el.MethodExpression;
+import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.component.UICommand;
 import javax.faces.component.UIComponent;
@@ -35,8 +37,6 @@ import javax.faces.component.UIInput;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.ValueHolder;
 import javax.faces.context.FacesContext;
-import javax.faces.el.MethodBinding;
-import javax.faces.el.ValueBinding;
 import javax.faces.event.FacesListener;
 import javax.faces.validator.Validator;
 
@@ -206,10 +206,10 @@ public class DebugUtils
                 String name = propDescriptors[i].getName();
                 if (!"id".equals(name))
                 {
-                    ValueBinding vb = comp.getValueBinding(name);
-                    if (vb != null)
+                    ValueExpression ve = comp.getValueExpression(name);
+                    if (ve != null)
                     {
-                        printAttribute(stream, name, vb.getExpressionString());
+                        printAttribute(stream, name, ve.getExpressionString());
                     }
                     else
                     {
@@ -359,9 +359,9 @@ public class DebugUtils
                 stream.print(((UIComponent)value).getId());
                 stream.print(']');
             }
-            else if (value instanceof MethodBinding)
+            else if (value instanceof MethodExpression)
             {
-                stream.print(((MethodBinding)value).getExpressionString());
+                stream.print(((MethodExpression)value).getExpressionString());
             }
             else
             {

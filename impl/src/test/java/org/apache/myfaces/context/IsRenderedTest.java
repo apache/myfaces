@@ -15,8 +15,6 @@
  */
 package org.apache.myfaces.context;
 
-import java.util.HashMap;
-import java.util.Map;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
 
@@ -39,70 +37,6 @@ public class IsRenderedTest extends AbstractJsfTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-    }
-
-    /**
-     * testcase for isExecute non on the faces context
-     * 
-     */
-    public void testIsExecuteNone() {
-        //EXECUTE NONE according to spec only true if:
-        //PARTIAL_EXECUTE_PARAM_NAME is present and has the value of NO_PARTIAL_PHASE_CLIENT_IDS.
-        //otherwise it is false!
-
-        Map<String, String> requestParamMap = new HashMap<String, String>();
-        requestParamMap.put(PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME, 
-                            PartialViewContext.NO_PARTIAL_PHASE_CLIENT_IDS);
-        ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);
-        FacesContext context = new FacesContextImpl(servletContext, wrapper, response);
-
-        PartialViewContext pprContext = context.getPartialViewContext();
-
-        assertTrue("Execute none set", pprContext.isExecuteNone());
-
-        requestParamMap = new HashMap<String,String>();
-        wrapper = new ContextTestRequestWrapper(request, requestParamMap);
-        context = new FacesContextImpl(servletContext, wrapper, response);
-        assertFalse("Execute none not set", pprContext.isExecuteNone());
-
-        requestParamMap = new HashMap<String,String>();
-        requestParamMap.put(PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME,"pebkac");
-        wrapper = new ContextTestRequestWrapper(request, requestParamMap);
-        context = new FacesContextImpl(servletContext, wrapper, response);
-        assertFalse("Execute none wrong value", pprContext.isExecuteNone());
-    }
-
-    /**
-     * testcase for the isRenderedNone testcase
-     *
-     */
-    public void testIsRenderedNone() {
-
-        //RENDER NONE according to spec only true if:
-        //PARTIAL_RENDER_PARAM_NAME is present and has the value of NO_PARTIAL_PHASE_CLIENT_IDS.
-        //otherwise it is false!
-
-        Map<String, String> requestParamMap = new HashMap<String, String>();
-        requestParamMap.put(PartialViewContext.PARTIAL_RENDER_PARAM_NAME, 
-                            PartialViewContext.NO_PARTIAL_PHASE_CLIENT_IDS);
-        ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);
-        FacesContext context = new FacesContextImpl(servletContext, wrapper, response);
-        
-        PartialViewContext pprContext = context.getPartialViewContext();
-
-        assertTrue("Render none set", pprContext.isRenderNone());
-
-        requestParamMap = new HashMap<String,String>();
-        wrapper = new ContextTestRequestWrapper(request, requestParamMap);
-        context = new FacesContextImpl(servletContext, wrapper, response);
-        assertFalse("Render none not set", pprContext.isRenderNone());
-
-        requestParamMap = new HashMap<String,String>();
-        requestParamMap.put(PartialViewContext.PARTIAL_RENDER_PARAM_NAME,"pebkac");
-        wrapper = new ContextTestRequestWrapper(request, requestParamMap);
-        context = new FacesContextImpl(servletContext, wrapper, response);
-        assertFalse("Render none wrong value", pprContext.isRenderNone());
-
     }
 
     /**

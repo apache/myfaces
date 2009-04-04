@@ -50,6 +50,18 @@ public interface FacesConfigDispenser<C>
     public void feedApplicationFactory(String factoryClassName);
 
     /**
+     * Add another ExceptionHandlerFactory class name
+     * @param factoryClassName a class name
+     */
+    public void feedExceptionHandlerFactory(String factoryClassName);
+
+    /**
+     * Add another ExternalContextFactory class name
+     * @param factoryClassName a class name
+     */
+    public void feedExternalContextFactory(String factoryClassName);
+
+    /**
      * Add another FacesContextFactory class name
      * @param factoryClassName a class name
      */
@@ -60,17 +72,47 @@ public interface FacesConfigDispenser<C>
      * @param factoryClassName a class name
      */
     public void feedLifecycleFactory(String factoryClassName);
+    
+    /**
+     * Add another ViewDeclarationLanguageFactory class name
+     * @param factoryClassName a class name
+     */
+    public void feedViewDeclarationLanguageFactory(String factoryClassName);
+
+    /**
+     * Add another PartialViewContextFactory class name
+     * @param factoryClassName a class name
+     */
+    public void feedPartialViewContextFactory(String factoryClassName);
 
     /**
      * Add another RenderKitFactory class name
      * @param factoryClassName a class name
      */
     public void feedRenderKitFactory(String factoryClassName);
+    
+    /**
+     * Add another TagHandlerDelegateFactory class name
+     * @param factoryClassName a class name
+     */
+    public void feedTagHandlerDelegateFactory(String factoryClassName);
+
+    /**
+     * Add another VisitContextFactory class name
+     * @param factoryClassName a class name
+     */
+    public void feedVisitContextFactory(String factoryClassName);
 
 
 
     /** @return Iterator over ApplicationFactory class names */
     public Collection<String> getApplicationFactoryIterator();
+    
+    /** @return Iterator over ExceptionHandlerFactory class names */
+    public Collection<String> getExceptionHandlerFactoryIterator();
+
+    /** @return Iterator over ExternalContextFactory class names */
+    public Collection<String> getExternalContextFactoryIterator();
 
     /** @return Iterator over FacesContextFactory class names */
     public Collection<String> getFacesContextFactoryIterator();
@@ -78,8 +120,20 @@ public interface FacesConfigDispenser<C>
     /** @return Iterator over LifecycleFactory class names */
     public Collection<String> getLifecycleFactoryIterator();
 
+    /** @return Iterator over ViewDeclarationLanguageFactory class names */
+    public Collection<String> getViewDeclarationLanguageFactoryIterator();
+
+    /** @return Iterator over PartialViewContextFactory class names */
+    public Collection<String> getPartialViewContextFactoryIterator();
+
     /** @return Iterator over RenderKit factory class names */
     public Collection<String> getRenderKitFactoryIterator();
+    
+    /** @return Iterator over TagHandlerDelegateFactory factory class names */
+    public Collection<String> getTagHandlerDelegateFactoryIterator();
+
+    /** @return Iterator over VisitContextFactory factory class names */
+    public Collection<String> getVisitContextFactoryIterator();
 
 
     /** @return Iterator over ActionListener class names (in reverse order!) */

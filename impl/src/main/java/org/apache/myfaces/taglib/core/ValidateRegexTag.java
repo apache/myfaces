@@ -18,14 +18,13 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import javax.faces.validator.Validator;
-import javax.faces.validator.RegexValidator;
+import javax.el.ELContext;
+import javax.el.ValueExpression;
 import javax.faces.context.FacesContext;
+import javax.faces.validator.RegexValidator;
+import javax.faces.validator.Validator;
 import javax.faces.webapp.ValidatorELTag;
 import javax.servlet.jsp.JspException;
-import javax.el.ValueExpression;
-import javax.el.ExpressionFactory;
-import javax.el.ELContext;
 
 /**
  * JSP Tag class for {@link javax.faces.validator.RegexValidator}.

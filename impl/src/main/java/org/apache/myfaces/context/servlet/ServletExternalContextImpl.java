@@ -645,11 +645,6 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     }
 
     @Override
-    public int getContentLength() {
-        return _servletRequest.getContentLength();
-    }
-
-    @Override
     public String getContextName() {
         return _servletContext.getServletContextName();
     }

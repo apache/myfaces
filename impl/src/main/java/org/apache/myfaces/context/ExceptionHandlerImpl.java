@@ -19,17 +19,17 @@
 package org.apache.myfaces.context;
 
 import java.util.ArrayDeque;
-import java.util.Map;
+import java.util.Collections;
 import java.util.Queue;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
 import javax.faces.context.ExceptionHandler;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ExceptionEvent;
+import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ExceptionEventContext;
+import javax.faces.event.ExceptionQueuedEvent;
+import javax.faces.event.ExceptionQueuedEventContext;
 import javax.faces.event.SystemEvent;
-import javax.servlet.ServletException;
 
 /**
  * DOCUMENT ME!
@@ -41,119 +41,154 @@ import javax.servlet.ServletException;
  */
 public class ExceptionHandlerImpl extends ExceptionHandler
 {
-    private static final String UNHANDLED_QUEUE = "unhandled" + ExceptionHandlerImpl.class.getName();
-    private static final String HANDLED_QUEUE = "handled" + ExceptionHandlerImpl.class.getName();
+    private Queue<ExceptionQueuedEvent> handled;
+    private Queue<ExceptionQueuedEvent> unhandled;
 
-    private static final Queue<ExceptionEvent> EMPTY_QUEUE = new ArrayDeque<ExceptionEvent>(0);
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public ExceptionEvent getHandledExceptionEvent()
+    public ExceptionQueuedEvent getHandledExceptionQueuedEvent()
     {
-        return getUnhandledQueue(false).poll();
+        return handled == null ? null : handled.poll();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Iterable<ExceptionEvent> getHandledExceptionEvents()
+    public Iterable<ExceptionQueuedEvent> getHandledExceptionQueuedEvents()
     {
-        return getHandledQueue(false);
+        return handled == null ? Collections.<ExceptionQueuedEvent>emptyList() : handled;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Throwable getRootCause(Throwable t)
     {
-        if ((t instanceof FacesException) || (t instanceof ELException))
+        if (t == null)
         {
-            Throwable cause = t.getCause();
-            if (cause != null)
-            {
-                return getRootCause(cause);
-            }
+            throw new NullPointerException("t");
         }
-
-        return t;
+        
+        while (t != null)
+        {
+            Class<?> clazz = t.getClass();
+            if (!clazz.equals(FacesException.class) && !clazz.equals(ELException.class))
+            {
+                return t;
+            }
+            
+            t = t.getCause();
+        }
+        
+        return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Iterable<ExceptionEvent> getUnhandledExceptionEvents()
+    public Iterable<ExceptionQueuedEvent> getUnhandledExceptionQueuedEvents()
     {
-        return getUnhandledQueue(false);
+        return unhandled == null ? Collections.<ExceptionQueuedEvent>emptyList() : unhandled;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void handle() throws FacesException
     {
-        /*
-         * The default implementation must take the first ExceptionEvent queued from a call to
-         * processEvent(javax.faces.event.SystemEvent), unwrap it with a call to getRootCause(java.lang.Throwable),
-         * re-wrap it in a ServletException and re-throw it. The default implementation must take special action in the
-         * following cases.
-         * 
-         * If an unchecked Exception occurs as a result of calling a method annotated with PreDestroy on a managed bean,
-         * the Exception must be logged and swallowed.
-         * 
-         * If the Exception originates inside the ELContextListener.removeElContextListener, the Exception must be
-         * logged and swallowed.
-         */
-        ExceptionEvent event = getHandledExceptionEvent();
-        if (event != null)
+        if (unhandled != null && !unhandled.isEmpty())
         {
-            getHandledQueue(true).add(event);
-
-            ExceptionEventContext exceptionContext = (ExceptionEventContext) event.getSource();
-
-            // FIXME This method must throw ServletException
-            throw new FacesException(new ServletException(getRootCause(exceptionContext.getException())));
+            if (handled == null)
+            {
+                handled = new ArrayDeque<ExceptionQueuedEvent>(1);
+            }
+            
+            do
+            {
+                // For each ExceptionEvent in the list
+                
+                // The implementation must also ensure that subsequent calls to getUnhandledExceptionEvents() 
+                // do not include that ExceptionEvent instance
+                ExceptionQueuedEvent event = unhandled.remove();
+                
+                // call its getContext() method
+                ExceptionQueuedEventContext context = event.getContext();
+                
+                // and call getException() on the returned result
+                Throwable exception = context.getException();
+                
+                // Upon encountering the first such Exception that is not an instance of
+                // javax.faces.event.AbortProcessingException
+                if (!shouldSkip(exception))
+                {
+                    // the corresponding ExceptionEvent must be set so that a subsequent call to 
+                    // getHandledExceptionEvent() or getHandledExceptionEvents() returns that 
+                    // ExceptionEvent instance. 
+                    // Should be ok to clear since this if never executed more than once per handle() calls
+                    handled.clear();
+                    handled.add(event);
+                    
+                    // Re-wrap toThrow in a ServletException or (PortletException, if in a portlet environment) 
+                    // and throw it
+                    // FIXME: The spec says to NOT use a FacesException to propagate the exception, but I see
+                    //        no other way as ServletException is not a RuntimeException
+                    throw new FacesException(wrap(getRethrownException(exception)));
+                }
+            } while (!unhandled.isEmpty());
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isListenerForSource(Object source)
     {
-        return source instanceof ExceptionEvent;
+        return source instanceof ExceptionEventContext;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void processEvent(SystemEvent exceptionEvent)
+    public void processEvent(SystemEvent exceptionQueuedEvent) throws AbortProcessingException
     {
-        getUnhandledQueue(true).add((ExceptionEvent) exceptionEvent);
-    }
-
-    private Queue<ExceptionEvent> getHandledQueue(boolean create)
-    {
-        return getQueue(HANDLED_QUEUE, create);
-    }
-
-    private Queue<ExceptionEvent> getUnhandledQueue(boolean create)
-    {
-        return getQueue(UNHANDLED_QUEUE, create);
-    }
-
-    @SuppressWarnings("unchecked")
-    private Queue<ExceptionEvent> getQueue(String queueName, boolean create)
-    {
-        assert queueName != null;
-
-        FacesContext context = FacesContext.getCurrentInstance();
-
-        Map<Object, Object> attributes = context.getAttributes();
-
-        Queue<ExceptionEvent> queue = (Queue<ExceptionEvent>) attributes.get(queueName);
-
-        if (queue == null)
+        if (unhandled == null)
         {
-            if (create)
-            {
-                queue = new ArrayDeque<ExceptionEvent>(1);
-
-                attributes.put(queueName, queue);
-            }
-            else
-            {
-                queue = EMPTY_QUEUE;
-            }
+            unhandled = new ArrayDeque<ExceptionQueuedEvent>(1);
         }
-
-        return queue;
+        
+        unhandled.add((ExceptionQueuedEvent)exceptionQueuedEvent);
     }
-
+    
+    protected Throwable getRethrownException(Throwable exception)
+    {
+        // Let toRethrow be either the result of calling getRootCause() on the Exception, 
+        // or the Exception itself, whichever is non-null
+        Throwable toRethrow = getRootCause(exception);
+        if (toRethrow == null)
+        {
+            toRethrow = exception;
+        }
+        
+        return toRethrow;
+    }
+    
+    protected Throwable wrap(Throwable exception)
+    {
+        // TODO: This method should be abstract and implemented by a Portlet or Servlet version instance
+        //       wrapping to either ServletException or PortletException
+        return exception;
+    }
+    
+    protected boolean shouldSkip(Throwable exception)
+    {
+        return exception instanceof AbortProcessingException;
+    }
 }

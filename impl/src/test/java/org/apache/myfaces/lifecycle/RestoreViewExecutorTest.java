@@ -26,8 +26,8 @@ import java.util.Locale;
 import javax.faces.application.ViewExpiredException;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
-import javax.faces.event.AfterAddToParentEvent;
 import javax.faces.event.PhaseId;
+import javax.faces.event.PostAddToViewEvent;
 
 import org.apache.myfaces.FacesTestCase;
 import org.apache.myfaces.TestRunner;
@@ -83,13 +83,13 @@ public class RestoreViewExecutorTest extends FacesTestCase
         setupWOExistingViewRoot();
         expect(_restoreViewSupport.isPostback(same(_facesContext))).andReturn(false);
         _facesContext.renderResponse();
-        
+
         UIViewRoot viewRoot = _mocksControl.createMock(UIViewRoot.class);
-        viewRoot.subscribeToEvent(same(AfterAddToParentEvent.class), same(viewRoot));
-        
+        viewRoot.subscribeToEvent(same(PostAddToViewEvent.class), same(viewRoot));
+
         expect(_viewHandler.createView(same(_facesContext), eq("calculatedViewId"))).andReturn(viewRoot);
-        
-        _application.publishEvent(same(AfterAddToParentEvent.class), same(viewRoot));
+
+        _application.publishEvent(same(PostAddToViewEvent.class), same(viewRoot));
         _facesContext.setViewRoot(same(viewRoot));
 
         _mocksControl.replay();

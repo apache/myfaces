@@ -21,6 +21,8 @@ package org.apache.myfaces.application;
 import javax.faces.context.FacesContext;
 
 /**
+ * TODO: RENAME - This class is now used by ViewDeclarationLanguageBase
+ * 
  * A utility class to isolate a ViewHandler implementation from the underlying 
  * request/response framework.
  * <p>

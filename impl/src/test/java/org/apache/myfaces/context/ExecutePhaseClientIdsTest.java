@@ -16,8 +16,6 @@
 package org.apache.myfaces.context;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import javax.faces.context.FacesContext;
@@ -51,7 +49,7 @@ public class ExecutePhaseClientIdsTest extends AbstractJsfTestCase {
         
         PartialViewContext pprContext = context.getPartialViewContext();
 
-        assertTrue(pprContext.getExecutePhaseClientIds().isEmpty());
+        assertTrue(pprContext.getExecuteIds().isEmpty());
     }
 
     /**
@@ -65,7 +63,7 @@ public class ExecutePhaseClientIdsTest extends AbstractJsfTestCase {
         
         PartialViewContext pprContext = context.getPartialViewContext();
 
-        assertTrue(pprContext.getExecutePhaseClientIds().isEmpty());
+        assertTrue(pprContext.getExecuteIds().isEmpty());
     }
 
     /**
@@ -81,7 +79,7 @@ public class ExecutePhaseClientIdsTest extends AbstractJsfTestCase {
         
         PartialViewContext pprContext = context.getPartialViewContext();
 
-        assertTrue(pprContext.getExecutePhaseClientIds().isEmpty());
+        assertTrue(pprContext.getExecuteIds().isEmpty());
     }
 
     /**
@@ -97,8 +95,8 @@ public class ExecutePhaseClientIdsTest extends AbstractJsfTestCase {
         
         PartialViewContext pprContext = context.getPartialViewContext();
 
-        assertTrue("Length must be one",pprContext.getExecutePhaseClientIds().size() == 1);
-        assertTrue("Value match", pprContext.getExecutePhaseClientIds().get(0).equals("view1:panel1:_component1"));
+        assertTrue("Length must be one",pprContext.getExecuteIds().size() == 1);
+        assertTrue("Value match", pprContext.getExecuteIds().iterator().next().equals("view1:panel1:_component1"));
     }
 
     /**
@@ -115,34 +113,13 @@ public class ExecutePhaseClientIdsTest extends AbstractJsfTestCase {
         
         PartialViewContext pprContext = context.getPartialViewContext();
         
-        assertTrue("Length must be four", pprContext.getExecutePhaseClientIds().size() == 4);
+        assertTrue("Length must be four", pprContext.getExecuteIds().size() == 4);
 
-        assertTrue("Value match", pprContext.getExecutePhaseClientIds().get(0).equals("view1:panel1:_component1"));
-        assertTrue("Value match", pprContext.getExecutePhaseClientIds().get(2).equals("component3"));
-
-
-        assertTrue("Value match", pprContext.getExecutePhaseClientIds().get(3).equals("component4"));
-    }
-
-    /**
-     * priority the setter has higer priority
-     * than the request query
-     */
-    public void testSetter1() {
-        List<String> executePhaseClientIds = new LinkedList<String>();
-        executePhaseClientIds.add("component1");
-        executePhaseClientIds.add("component2");
-        String params = " view1:panel1:_component1,view1:panel1:_component2 \n , component3, component4  ";
-        Map<String, String> requestParamMap = new HashMap<String, String>();
-        requestParamMap.put(PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME, params);
-        ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);
-
-        FacesContext context = new FacesContextImpl(servletContext, wrapper, response);
-        
-        PartialViewContext pprContext = context.getPartialViewContext();
-        
-        pprContext.setExecutePhaseClientIds(executePhaseClientIds);
-        assertTrue(pprContext.getExecutePhaseClientIds().size() == 2);
-
+        // FIXME: Latest spec uses a Collection so order is not garanteed
+//        assertTrue("Value match", pprContext.getExecuteIds().get(0).equals("view1:panel1:_component1"));
+//        assertTrue("Value match", pprContext.getExecuteIds().get(2).equals("component3"));
+//
+//
+//        assertTrue("Value match", pprContext.getExecuteIds().get(3).equals("component4"));
     }
 }

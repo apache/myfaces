@@ -45,32 +45,46 @@ import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
  */
 public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<FacesConfig>
 {
-
+    // Factories
     private List<String> applicationFactories = new ArrayList<String>();
+    private List<String> exceptionHandlerFactories = new ArrayList<String>();
+    private List<String> externalContextFactories = new ArrayList<String>();
     private List<String> facesContextFactories = new ArrayList<String>();
     private List<String> lifecycleFactories = new ArrayList<String>();
+    private List<String> ViewDeclarationLanguageFactories = new ArrayList<String>();
+    private List<String> partialViewContextFactories = new ArrayList<String>();
     private List<String> renderKitFactories = new ArrayList<String>();
-    private Map<String, String> components = new HashMap<String, String>();
-    private Map<String, String> validators = new HashMap<String, String>();
+    private List<String> tagHandlerDelegateFactories = new ArrayList<String>();
+    private List<String> visitContextFactories = new ArrayList<String>();
+    
     private String defaultRenderKitId;
-    private LocaleConfig localeConfig;
-    private List<String> actionListeners = new ArrayList<String>();
-    private List<String> lifecyclePhaseListeners = new ArrayList<String>();
     private String messageBundle;
+
+    private LocaleConfig localeConfig;
+
+    private Map<String, String> components = new HashMap<String, String>();
+    private Map<String, String> converterByClass = new HashMap<String, String>();
+    private Map<String, String> converterById = new HashMap<String, String>();
+    private Map<String, String> validators = new HashMap<String, String>();
+    
+    private Map<String, Converter> converterConfigurationByClassName = new HashMap<String, Converter>();
+    
+    private Map<String, RenderKit> renderKits = new LinkedHashMap<String, RenderKit>();
+    
+    private List<String> actionListeners = new ArrayList<String>();
+    private List<String> elResolvers = new ArrayList<String>();
+    private List<String> lifecyclePhaseListeners = new ArrayList<String>();
     private List<String> navigationHandlers = new ArrayList<String>();
-    private List<String> viewHandlers = new ArrayList<String>();
+    private List<String> propertyResolver = new ArrayList<String>();
     private List<String> resourceHandlers = new ArrayList<String>();
     private List<String> stateManagers = new ArrayList<String>();
-    private List<String> propertyResolver = new ArrayList<String>();
     private List<String> variableResolver = new ArrayList<String>();
-    private Map<String, String> converterById = new HashMap<String, String>();
-    private Map<String, String> converterByClass = new HashMap<String, String>();
-    private Map<String, Converter> converterConfigurationByClassName = new HashMap<String, Converter>();
-    private Map<String, RenderKit> renderKits = new LinkedHashMap<String, RenderKit>();
+    private List<String> viewHandlers = new ArrayList<String>();
+    
     private List<ManagedBean> managedBeans = new ArrayList<ManagedBean>();
+    
     private List<NavigationRule> navigationRules = new ArrayList<NavigationRule>();
     private List<ResourceBundle> resourceBundles = new ArrayList<ResourceBundle>();
-    private List<String> elResolvers = new ArrayList<String>();
 
     /**
      * Add another unmarshalled faces config object.
@@ -83,9 +97,15 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
         for (Factory factory : config.getFactories())
         {
             applicationFactories.addAll(factory.getApplicationFactory());
+            exceptionHandlerFactories.addAll(factory.getExceptionHandlerFactory());
+            externalContextFactories.addAll(factory.getExternalContextFactory());
             facesContextFactories.addAll(factory.getFacesContextFactory());
             lifecycleFactories.addAll(factory.getLifecycleFactory());
+            ViewDeclarationLanguageFactories.addAll(factory.getViewDeclarationLanguageFactory());
+            partialViewContextFactories.addAll(factory.getPartialViewContextFactory());
             renderKitFactories.addAll(factory.getRenderkitFactory());
+            tagHandlerDelegateFactories.addAll(factory.getTagHandlerDelegateFactory());
+            visitContextFactories.addAll(factory.getVisitContextFactory());
         }
 
         components.putAll(config.getComponents());
@@ -173,6 +193,16 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
         applicationFactories.add(factoryClassName);
     }
 
+    public void feedExceptionHandlerFactory(String factoryClassName)
+    {
+        exceptionHandlerFactories.add(factoryClassName);
+    }
+
+    public void feedExternalContextFactory(String factoryClassName)
+    {
+        externalContextFactories.add(factoryClassName);
+    }
+
     /**
      * Add another FacesContextFactory class name
      * 
@@ -195,6 +225,16 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
         lifecycleFactories.add(factoryClassName);
     }
 
+    public void feedViewDeclarationLanguageFactory(String factoryClassName)
+    {
+        ViewDeclarationLanguageFactories.add(factoryClassName);
+    }
+
+    public void feedPartialViewContextFactory(String factoryClassName)
+    {
+        partialViewContextFactories.add(factoryClassName);
+    }
+
     /**
      * Add another RenderKitFactory class name
      * 
@@ -206,12 +246,32 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
         renderKitFactories.add(factoryClassName);
     }
 
+    public void feedTagHandlerDelegateFactory(String factoryClassName)
+    {
+        tagHandlerDelegateFactories.add(factoryClassName);
+    }
+
+    public void feedVisitContextFactory(String factoryClassName)
+    {
+        visitContextFactories.add(factoryClassName);
+    }
+
     /**
      * @return Collection over ApplicationFactory class names
      */
     public Collection<String> getApplicationFactoryIterator()
     {
         return applicationFactories;
+    }
+
+    public Collection<String> getExceptionHandlerFactoryIterator()
+    {
+        return exceptionHandlerFactories;
+    }
+
+    public Collection<String> getExternalContextFactoryIterator()
+    {
+        return externalContextFactories;
     }
 
     /**
@@ -230,12 +290,32 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
         return lifecycleFactories;
     }
 
+    public Collection<String> getViewDeclarationLanguageFactoryIterator()
+    {
+        return ViewDeclarationLanguageFactories;
+    }
+
+    public Collection<String> getPartialViewContextFactoryIterator()
+    {
+        return partialViewContextFactories;
+    }
+
     /**
      * @return Collection over RenderKit factory class names
      */
     public Collection<String> getRenderKitFactoryIterator()
     {
         return renderKitFactories;
+    }
+
+    public Collection<String> getTagHandlerDelegateFactoryIterator()
+    {
+        return tagHandlerDelegateFactories;
+    }
+
+    public Collection<String> getVisitContextFactoryIterator()
+    {
+        return visitContextFactories;
     }
 
     /**

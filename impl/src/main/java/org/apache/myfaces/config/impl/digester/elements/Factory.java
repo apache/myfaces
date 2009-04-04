@@ -26,49 +26,114 @@ import java.util.List;
  */
 public class Factory
 {
-
-    private List<String> applicationFactory = new ArrayList<String>();
-    private List<String> facesContextFactory = new ArrayList<String>();
-    private List<String> lifecycleFactory = new ArrayList<String>();
-    private List<String> renderkitFactory = new ArrayList<String>();
+    private List<String> applicationFactories = new ArrayList<String>();
+    private List<String> exceptionHandlerFactories = new ArrayList<String>();
+    private List<String> externalContextFactories = new ArrayList<String>();
+    private List<String> facesContextFactories = new ArrayList<String>();
+    private List<String> lifecycleFactories = new ArrayList<String>();
+    private List<String> ViewDeclarationLanguageFactories = new ArrayList<String>();
+    private List<String> partialViewContextFactories = new ArrayList<String>();
+    private List<String> renderKitFactories = new ArrayList<String>();
+    private List<String> tagHandlerDelegateFactories = new ArrayList<String>();
+    private List<String> visitContextFactories = new ArrayList<String>();
 
     public void addApplicationFactory(String factory)
     {
-        applicationFactory.add(factory);
+        applicationFactories.add(factory);
+    }
+
+    public void addExceptionHandlerFactory(String factory)
+    {
+        exceptionHandlerFactories.add(factory);
+    }
+
+    public void addExternalContextFactory(String factory)
+    {
+        externalContextFactories.add(factory);
     }
 
     public void addFacesContextFactory(String factory)
     {
-        facesContextFactory.add(factory);
+        facesContextFactories.add(factory);
     }
 
     public void addLifecycleFactory(String factory)
     {
-        lifecycleFactory.add(factory);
+        lifecycleFactories.add(factory);
+    }
+
+    public void addViewDeclarationLanguageFactory(String factory)
+    {
+        ViewDeclarationLanguageFactories.add(factory);
+    }
+
+    public void addPartialViewContextFactory(String factory)
+    {
+        partialViewContextFactories.add(factory);
     }
 
     public void addRenderkitFactory(String factory)
     {
-        renderkitFactory.add(factory);
+        renderKitFactories.add(factory);
+    }
+
+    public void addTagHandlerDelegateFactory(String factory)
+    {
+        tagHandlerDelegateFactories.add(factory);
+    }
+
+    public void addVisitContextFactory(String factory)
+    {
+        visitContextFactories.add(factory);
     }
 
     public List<String> getApplicationFactory()
     {
-        return applicationFactory;
+        return applicationFactories;
+    }
+
+    public List<String> getExceptionHandlerFactory()
+    {
+        return exceptionHandlerFactories;
+    }
+
+    public List<String> getExternalContextFactory()
+    {
+        return externalContextFactories;
     }
 
     public List<String> getFacesContextFactory()
     {
-        return facesContextFactory;
+        return facesContextFactories;
     }
 
     public List<String> getLifecycleFactory()
     {
-        return lifecycleFactory;
+        return lifecycleFactories;
+    }
+
+    public List<String> getViewDeclarationLanguageFactory()
+    {
+        return ViewDeclarationLanguageFactories;
+    }
+
+    public List<String> getPartialViewContextFactory()
+    {
+        return partialViewContextFactories;
     }
 
     public List<String> getRenderkitFactory()
     {
-        return renderkitFactory;
+        return renderKitFactories;
+    }
+
+    public List<String> getTagHandlerDelegateFactory()
+    {
+        return tagHandlerDelegateFactories;
+    }
+
+    public List<String> getVisitContextFactory()
+    {
+        return visitContextFactories;
     }
 }

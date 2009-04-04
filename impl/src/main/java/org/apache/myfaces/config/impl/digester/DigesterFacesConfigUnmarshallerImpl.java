@@ -29,15 +29,12 @@ import org.apache.commons.digester.Digester;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
 public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<FacesConfig>
 {
-
     private Digester digester;
-
 
     public DigesterFacesConfigUnmarshallerImpl(ExternalContext externalContext)
     {
@@ -64,7 +61,7 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addSetNext("faces-config/application/locale-config", "addLocaleConfig");
         digester.addCallMethod("faces-config/application/locale-config/default-locale", "setDefaultLocale", 0);
         digester.addCallMethod("faces-config/application/locale-config/supported-locale", "addSupportedLocale", 0);
-        
+
         // 1.2 specific start
         digester.addCallMethod("faces-config/application/el-resolver", "addElResolver", 0);
         digester.addObjectCreate("faces-config/application/resource-bundle", ResourceBundle.class);
@@ -73,11 +70,18 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addCallMethod("faces-config/application/resource-bundle/var", "setVar", 0);
         digester.addCallMethod("faces-config/application/resource-bundle/display-name", "setDisplayName", 0);
         // 1.2 specific end
-        
+
         // 2.0 specific start
         digester.addCallMethod("faces-config/application/resource-handler", "addResourceHandler", 0);
+        digester.addCallMethod("faces-config/factory/exception-handler-factory", "addExceptionHandlerFactory", 0);
+        digester.addCallMethod("faces-config/factory/external-context-factory", "addExternalContextFactory", 0);
+        digester.addCallMethod("faces-config/factory/page-declaration-language-factory",
+                               "addViewDeclarationLanguageFactory", 0);
+        digester.addCallMethod("faces-config/factory/partial-view-context-factory", "addPartialViewContextFactory", 0);
+        digester.addCallMethod("faces-config/factory/tag-handler-delegate-factory", "addTagHandlerDelegateFactory", 0);
+        digester.addCallMethod("faces-config/factory/visit-context-factory", "addVisitContextFactory", 0);
         // 2.0 specific end
-        
+
         digester.addObjectCreate("faces-config/factory", Factory.class);
         digester.addSetNext("faces-config/factory", "addFactory");
         digester.addCallMethod("faces-config/factory/application-factory", "addApplicationFactory", 0);
@@ -94,8 +98,8 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addCallMethod("faces-config/converter/converter-id", "setConverterId", 0);
         digester.addCallMethod("faces-config/converter/converter-for-class", "setForClass", 0);
         digester.addCallMethod("faces-config/converter/converter-class", "setConverterClass", 0);
-        digester.addObjectCreate("faces-config/converter/attribute",Attribute.class);
-        digester.addSetNext("faces-config/converter/attribute","addAttribute");
+        digester.addObjectCreate("faces-config/converter/attribute", Attribute.class);
+        digester.addSetNext("faces-config/converter/attribute", "addAttribute");
         digester.addCallMethod("faces-config/converter/attribute/description", "addDescription", 0);
         digester.addCallMethod("faces-config/converter/attribute/display-name", "addDisplayName", 0);
         digester.addCallMethod("faces-config/converter/attribute/icon", "addIcon", 0);
@@ -104,8 +108,8 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addCallMethod("faces-config/converter/attribute/default-value", "setDefaultValue", 0);
         digester.addCallMethod("faces-config/converter/attribute/suggested-value", "setSuggestedValue", 0);
         digester.addCallMethod("faces-config/converter/attribute/attribute-extension", "addAttributeExtension", 0);
-        digester.addObjectCreate("faces-config/converter/property",Property.class);
-        digester.addSetNext("faces-config/converter/property","addProperty");
+        digester.addObjectCreate("faces-config/converter/property", Property.class);
+        digester.addSetNext("faces-config/converter/property", "addProperty");
         digester.addCallMethod("faces-config/converter/property/description", "addDescription", 0);
         digester.addCallMethod("faces-config/converter/property/display-name", "addDisplayName", 0);
         digester.addCallMethod("faces-config/converter/property/icon", "addIcon", 0);
@@ -130,19 +134,25 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addObjectCreate("faces-config/managed-bean/managed-property/map-entries", MapEntries.class);
         digester.addSetNext("faces-config/managed-bean/managed-property/map-entries", "setMapEntries");
         digester.addCallMethod("faces-config/managed-bean/managed-property/map-entries/key-class", "setKeyClass", 0);
-        digester.addCallMethod("faces-config/managed-bean/managed-property/map-entries/value-class", "setValueClass", 0);
-        digester.addObjectCreate("faces-config/managed-bean/managed-property/map-entries/map-entry", MapEntries.Entry.class);
+        digester
+                .addCallMethod("faces-config/managed-bean/managed-property/map-entries/value-class", "setValueClass", 0);
+        digester.addObjectCreate("faces-config/managed-bean/managed-property/map-entries/map-entry",
+                                 MapEntries.Entry.class);
         digester.addSetNext("faces-config/managed-bean/managed-property/map-entries/map-entry", "addEntry");
         digester.addCallMethod("faces-config/managed-bean/managed-property/map-entries/map-entry/key", "setKey", 0);
-        digester.addCallMethod("faces-config/managed-bean/managed-property/map-entries/map-entry/null-value", "setNullValue");
+        digester.addCallMethod("faces-config/managed-bean/managed-property/map-entries/map-entry/null-value",
+                               "setNullValue");
         digester.addCallMethod("faces-config/managed-bean/managed-property/map-entries/map-entry/value", "setValue", 0);
         digester.addObjectCreate("faces-config/managed-bean/managed-property/list-entries", ListEntries.class);
         digester.addSetNext("faces-config/managed-bean/managed-property/list-entries", "setListEntries");
-        digester.addCallMethod("faces-config/managed-bean/managed-property/list-entries/value-class", "setValueClass", 0);
-        digester.addObjectCreate("faces-config/managed-bean/managed-property/list-entries/null-value", ListEntries.Entry.class);
+        digester.addCallMethod("faces-config/managed-bean/managed-property/list-entries/value-class", "setValueClass",
+                               0);
+        digester.addObjectCreate("faces-config/managed-bean/managed-property/list-entries/null-value",
+                                 ListEntries.Entry.class);
         digester.addSetNext("faces-config/managed-bean/managed-property/list-entries/null-value", "addEntry");
         digester.addCallMethod("faces-config/managed-bean/managed-property/list-entries/null-value", "setNullValue");
-        digester.addObjectCreate("faces-config/managed-bean/managed-property/list-entries/value", ListEntries.Entry.class);
+        digester.addObjectCreate("faces-config/managed-bean/managed-property/list-entries/value",
+                                 ListEntries.Entry.class);
         digester.addSetNext("faces-config/managed-bean/managed-property/list-entries/value", "addEntry");
         digester.addCallMethod("faces-config/managed-bean/managed-property/list-entries/value", "setValue", 0);
         digester.addObjectCreate("faces-config/managed-bean/map-entries", MapEntries.class);
@@ -191,20 +201,19 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addCallParam("faces-config/validator/validator-class", 1);
     }
 
-
     public FacesConfig getFacesConfig(InputStream in, String systemId) throws IOException, SAXException
     {
         InputSource is = new InputSource(in);
         is.setSystemId(systemId);
 
-        //Fix for http://issues.apache.org/jira/browse/MYFACES-236
+        // Fix for http://issues.apache.org/jira/browse/MYFACES-236
         FacesConfig config = (FacesConfig) digester.parse(is);
 
         for (Application application : config.getApplications())
         {
             for (LocaleConfig localeConfig : application.getLocaleConfig())
             {
-                if(!localeConfig.getSupportedLocales().contains(localeConfig.getDefaultLocale()))
+                if (!localeConfig.getSupportedLocales().contains(localeConfig.getDefaultLocale()))
                 {
                     localeConfig.getSupportedLocales().add(localeConfig.getDefaultLocale());
                 }
