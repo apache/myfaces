@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -31,12 +32,13 @@ import java.util.Map.Entry;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
+import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
-import javax.faces.event.BeforeRenderEvent;
 import javax.faces.event.FacesEvent;
 import javax.faces.event.FacesListener;
+import javax.faces.event.PreRenderComponentEvent;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.render.Renderer;
@@ -48,15 +50,17 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProp
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
+ * TODO: IMPLEMENT HERE - Delta state saving support
+ * 
  * Standard implementation of the UIComponent base class; all standard JSF components extend this class.
  * <p>
  * <i>Disclaimer</i>: The official definition for the behaviour of this class is the JSF 1.1 specification but for legal
  * reasons the specification cannot be replicated here. Any javadoc here therefore describes the current implementation
  * rather than the spec, though this class has been verified as correctly implementing the spec.
- *
+ * 
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a> for
  * more.
- *
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -84,82 +88,8 @@ public abstract class UIComponentBase extends UIComponent
     }
 
     /**
-     * Get a map through which all the UIComponent's properties, value-bindings and non-property attributes can be read
-     * and written.
-     * <p>
-     * When writing to the returned map:
-     * <ul>
-     * <li>If this component has an explicit property for the specified key then the setter method is called. An
-     * IllegalArgumentException is thrown if the property is read-only. If the property is readable then the old value
-     * is returned, otherwise null is returned.
-     * <li>Otherwise the key/value pair is stored in a map associated with the component.
-     * </ul>
-     * Note that value-bindings are <i>not</i> written by put calls to this map. Writing to the attributes map using a
-     * key for which a value-binding exists will just store the value in the attributes map rather than evaluating the
-     * binding, effectively "hiding" the value-binding from later attributes.get calls. Setter methods on components
-     * commonly do <i>not</i> evaluate a binding of the same name; they just store the provided value directly on the
-     * component.
-     * <p>
-     * When reading from the returned map:
-     * <ul>
-     * <li>If this component has an explicit property for the specified key then the getter method is called. If the
-     * property exists, but is read-only (ie only a setter method is defined) then an IllegalArgumentException is
-     * thrown.
-     * <li>If the attribute map associated with the component has an entry with the specified key, then that is
-     * returned.
-     * <li>If this component has a value-binding for the specified key, then the value-binding is evaluated to fetch the
-     * value.
-     * <li>Otherwise, null is returned.
-     * </ul>
-     * Note that components commonly define getter methods such that they evaluate a value-binding of the same name if
-     * there isn't yet a local property.
-     * <p>
-     * Assigning values to the map which are not explicit properties on the underlying component can be used to "tunnel"
-     * attributes from the JSP tag (or view-specific equivalent) to the associated renderer without modifying the
-     * component itself.
-     * <p>
-     * Any value-bindings and non-property attributes stored in this map are automatically serialized along with the
-     * component when the view is serialized.
-     */
-    @Override
-    public Map<String, Object> getAttributes()
-    {
-        if (_attributesMap == null)
-        {
-            _attributesMap = new _ComponentAttributesMap(this);
-        }
-
-        return _attributesMap;
-    }
-
-    /**
-     * Get the named value-binding associated with this component.
-     * <p>
-     * Value-bindings are stored in a map associated with the component, though there is commonly a property
-     * (setter/getter methods) of the same name defined on the component itself which evaluates the value-binding when
-     * called.
-     *
-     * @deprecated Replaced by getValueExpression
-     */
-    @Deprecated
-    @Override
-    public ValueBinding getValueBinding(String name)
-    {
-        ValueExpression expression = getValueExpression(name);
-        if (expression != null)
-        {
-            if (expression instanceof _ValueBindingToValueExpression)
-            {
-                return ((_ValueBindingToValueExpression)expression).getValueBinding();
-            }
-            return new _ValueExpressionToValueBinding(expression);
-        }
-        return null;
-    }
-
-    /**
      * Put the provided value-binding into a map of value-bindings associated with this component.
-     *
+     * 
      * @deprecated Replaced by setValueExpression
      */
     @Deprecated
@@ -167,114 +97,6 @@ public abstract class UIComponentBase extends UIComponent
     public void setValueBinding(String name, ValueBinding binding)
     {
         setValueExpression(name, binding == null ? null : new _ValueBindingToValueExpression(binding));
-    }
-
-    /**
-     * Get a string which can be output to the response which uniquely identifies this UIComponent within the current
-     * view.
-     * <p>
-     * The component should have an id attribute already assigned to it; however if the id property is currently null
-     * then a unique id is generated and set for this component. This only happens when components are programmatically
-     * created without ids, as components created by a ViewHandler should be assigned ids when they are created.
-     * <p>
-     * If this component is a descendant of a NamingContainer then the client id is of form
-     * "{namingContainerId}:{componentId}". Note that the naming container's id may itself be of compound form if it has
-     * an ancestor naming container. Note also that this only applies to naming containers; other UIComponent types in
-     * the component's ancestry do not affect the clientId.
-     * <p>
-     * Finally the renderer associated with this component is asked to convert the id into a suitable form. This allows
-     * escaping of any characters in the clientId which are significant for the markup language generated by that
-     * renderer.
-     */
-    @Override
-    public String getClientId(FacesContext context)
-    {
-        if (context == null)
-            throw new NullPointerException("context");
-
-        if (_clientId != null)
-            return _clientId;
-
-        boolean idWasNull = false;
-        String id = getId();
-        if (id == null)
-        {
-            // Although this is an error prone side effect, we automatically create a new id
-            // just to be compatible to the RI
-            UIViewRoot viewRoot = context.getViewRoot();
-            if (viewRoot != null)
-            {
-                id = viewRoot.createUniqueId();
-            }
-            else
-            {
-                // The RI throws a NPE
-                throw new FacesException(
-                    "Cannot create clientId. No id is assigned for component to create an id and UIViewRoot is not defined: "
-                            + getPathToComponent(this));
-            }
-            setId(id);
-            // We remember that the id was null and log a warning down below
-            idWasNull = true;
-        }
-
-        UIComponent namingContainer = _ComponentUtils.findParentNamingContainer(this, false);
-        if (namingContainer != null)
-        {
-            String containerClientId = namingContainer.getContainerClientId(context);
-            if (containerClientId != null)
-            {
-                StringBuilder bld = __getSharedStringBuilder();
-                _clientId = bld.append(containerClientId).append(NamingContainer.SEPARATOR_CHAR).append(id).toString();
-            }
-            else
-            {
-                _clientId = id;
-            }
-        }
-        else
-        {
-            _clientId = id;
-        }
-
-        Renderer renderer = getRenderer(context);
-        if (renderer != null)
-        {
-            _clientId = renderer.convertClientId(context, _clientId);
-        }
-
-        if (idWasNull && log.isWarnEnabled())
-        {
-            log.warn("WARNING: Component " + _clientId
-                    + " just got an automatic id, because there was no id assigned yet. "
-                    + "If this component was created dynamically (i.e. not by a JSP tag) you should assign it an "
-                    + "explicit static id or assign it the id you get from "
-                    + "the createUniqueId from the current UIViewRoot "
-                    + "component right after creation! Path to Component: " + getPathToComponent(this));
-        }
-
-        return _clientId;
-    }
-
-    /**
-     * Get a string which uniquely identifies this UIComponent within the scope of the nearest ancestor NamingContainer
-     * component. The id is not necessarily unique across all components in the current view.
-     */
-    @JSFProperty
-      (rtexprvalue = true)
-    public String getId()
-    {
-        return _id;
-    }
-
-    /**
-     * <code>invokeOnComponent</code> must be implemented in <code>UIComponentBase</code> too...
-     */
-    @Override
-    public boolean invokeOnComponent(FacesContext context, String clientId, ContextCallback callback)
-        throws FacesException
-    {
-        return super.invokeOnComponent(context, clientId, callback);
     }
 
     /**
@@ -290,7 +112,7 @@ public abstract class UIComponentBase extends UIComponent
      * Null is allowed as a parameter, and will reset the id to null.
      * <p>
      * The clientId of this component is reset by this method; see getClientId for more info.
-     *
+     * 
      * @throws IllegalArgumentException
      *             if the id is not valid.
      */
@@ -303,191 +125,21 @@ public abstract class UIComponentBase extends UIComponent
     }
 
     @Override
-    public UIComponent getParent()
-    {
-        return _parent;
-    }
-
-    @Override
     public void setParent(UIComponent parent)
     {
         _parent = parent;
     }
 
     /**
-     * Indicates whether this component or its renderer manages the invocation of the rendering methods of its child
-     * components. When this is true:
-     * <ul>
-     * <li>This component's encodeBegin method will only be called after all the child components have been created and
-     * added to this component. <li>This component's encodeChildren method will be called after its encodeBegin method.
-     * Components for which this method returns false do not get this method invoked at all. <li>No rendering methods
-     * will be called automatically on child components; this component is required to invoke the
-     * encodeBegin/encodeEnd/etc on them itself.
-     * </ul>
+     * 
+     * @param eventName
+     * @param behavior
+     * 
+     * @since 2.0
      */
-    @Override
-    public boolean getRendersChildren()
+    public void addClientBehavior(String eventName, ClientBehavior behavior)
     {
-        Renderer renderer = getRenderer(getFacesContext());
-        return renderer != null ? renderer.getRendersChildren() : false;
-    }
-
-    /**
-     * Return a list of the UIComponent objects which are direct children of this component.
-     * <p>
-     * The list object returned has some non-standard behaviour:
-     * <ul>
-     * <li>The list is type-checked; only UIComponent objects can be added.
-     * <li>If a component is added to the list with an id which is the same as some other component in the list then an
-     * exception is thrown. However multiple components with a null id may be added.
-     * <li>The component's parent property is set to this component. If the component already had a parent, then the
-     * component is first removed from its original parent's child list.
-     * </ul>
-     */
-    @Override
-    public List<UIComponent> getChildren()
-    {
-        if (_childrenList == null)
-        {
-            _childrenList = new _ComponentChildrenList(this);
-        }
-        return _childrenList;
-    }
-
-    /**
-     * Return the number of direct child components this component has.
-     * <p>
-     * Identical to getChildren().size() except that when this component has no children this method will not force an
-     * empty list to be created.
-     */
-    @Override
-    public int getChildCount()
-    {
-        return _childrenList == null ? 0 : _childrenList.size();
-    }
-
-    /**
-     * Standard method for finding other components by id, inherited by most UIComponent objects.
-     * <p>
-     * The lookup is performed in a manner similar to finding a file in a filesystem; there is a "base" at which to
-     * start, and the id can be for something in the "local directory", or can include a relative path. Here,
-     * NamingContainer components fill the role of directories, and ":" is the "path separator". Note, however, that
-     * although components have a strict parent/child hierarchy, component ids are only prefixed ("namespaced") with the
-     * id of their parent when the parent is a NamingContainer.
-     * <p>
-     * The base node at which the search starts is determined as follows:
-     * <ul>
-     * <li>When expr starts with ':', the search starts with the root component of the tree that this component is in
-     * (ie the ancestor whose parent is null).
-     * <li>Otherwise, if this component is a NamingContainer then the search starts with this component.
-     * <li>Otherwise, the search starts from the nearest ancestor NamingContainer (or the root component if there is no
-     * NamingContainer ancestor).
-     * </ul>
-     *
-     * @param expr
-     *            is of form "id1:id2:id3".
-     * @return UIComponent or null if no component with the specified id is found.
-     */
-
-    @Override
-    public UIComponent findComponent(String expr)
-    {
-        if (expr == null)
-            throw new NullPointerException("expr");
-        if (expr.length() == 0)
-            return null;
-
-        UIComponent findBase;
-        if (expr.charAt(0) == NamingContainer.SEPARATOR_CHAR)
-        {
-            findBase = _ComponentUtils.getRootComponent(this);
-            expr = expr.substring(1);
-        }
-        else
-        {
-            if (this instanceof NamingContainer)
-            {
-                findBase = this;
-            }
-            else
-            {
-                findBase = _ComponentUtils.findParentNamingContainer(this, true /* root if not found */);
-            }
-        }
-
-        int separator = expr.indexOf(NamingContainer.SEPARATOR_CHAR);
-        if (separator == -1)
-        {
-            return _ComponentUtils.findComponent(findBase, expr);
-        }
-
-        String id = expr.substring(0, separator);
-        findBase = _ComponentUtils.findComponent(findBase, id);
-        if (findBase == null)
-        {
-            return null;
-        }
-
-        if (!(findBase instanceof NamingContainer))
-            throw new IllegalArgumentException("Intermediate identifier " + id + " in search expression " + expr
-                    + " identifies a UIComponent that is not a NamingContainer");
-
-        return findBase.findComponent(expr.substring(separator + 1));
-
-    }
-
-    @Override
-    public Map<String, UIComponent> getFacets()
-    {
-        if (_facetMap == null)
-        {
-            _facetMap = new _ComponentFacetMap<UIComponent>(this);
-        }
-        return _facetMap;
-    }
-
-    @Override
-    public UIComponent getFacet(String name)
-    {
-        return _facetMap == null ? null : _facetMap.get(name);
-    }
-
-    @Override
-    public Iterator<UIComponent> getFacetsAndChildren()
-    {
-        if (_facetMap == null)
-        {
-            if (_childrenList == null)
-                return _EMPTY_UICOMPONENT_ITERATOR;
-
-            if (_childrenList.isEmpty())
-                return _EMPTY_UICOMPONENT_ITERATOR;
-
-            return _childrenList.iterator();
-        }
-        else
-        {
-            if (_facetMap.isEmpty())
-            {
-                if (_childrenList == null)
-                    return _EMPTY_UICOMPONENT_ITERATOR;
-
-                if (_childrenList.isEmpty())
-                    return _EMPTY_UICOMPONENT_ITERATOR;
-
-                return _childrenList.iterator();
-            }
-            else
-            {
-                if (_childrenList == null)
-                    return _facetMap.values().iterator();
-
-                if (_childrenList.isEmpty())
-                    return _facetMap.values().iterator();
-
-                return new _FacetsAndChildrenIterator(_facetMap, _childrenList);
-            }
-        }
+        // TODO: IMPLEMENT HERE
     }
 
     /**
@@ -504,7 +156,7 @@ public abstract class UIComponentBase extends UIComponent
      * ValueChangeEvent events by the component's validate method. In either case the event's source property references
      * a component. At some later time the UIViewRoot component iterates over its queued events and invokes the
      * broadcast method on each event's source object.
-     *
+     * 
      * @param event
      *            must not be null.
      */
@@ -531,10 +183,15 @@ public abstract class UIComponentBase extends UIComponent
         {
             if (ex instanceof AbortProcessingException)
             {
-                throw (AbortProcessingException)ex;
+                throw (AbortProcessingException) ex;
             }
             throw new FacesException("Exception while calling broadcast on component : " + getPathToComponent(this), ex);
         }
+    }
+    
+    public void clearInitialState()
+    {
+        // TODO: IMPLEMENT HERE
     }
 
     /**
@@ -578,7 +235,7 @@ public abstract class UIComponentBase extends UIComponent
 
             // Call Application.publishEvent(java.lang.Class, java.lang.Object), passing BeforeRenderEvent.class as
             // the first argument and the component instance to be rendered as the second argument.
-            context.getApplication().publishEvent(BeforeRenderEvent.class, this);
+            context.getApplication().publishEvent(PreRenderComponentEvent.class, this);
 
             Renderer renderer = getRenderer(context);
             if (renderer != null)
@@ -653,6 +310,448 @@ public abstract class UIComponentBase extends UIComponent
         }
     }
 
+    /**
+     * Standard method for finding other components by id, inherited by most UIComponent objects.
+     * <p>
+     * The lookup is performed in a manner similar to finding a file in a filesystem; there is a "base" at which to
+     * start, and the id can be for something in the "local directory", or can include a relative path. Here,
+     * NamingContainer components fill the role of directories, and ":" is the "path separator". Note, however, that
+     * although components have a strict parent/child hierarchy, component ids are only prefixed ("namespaced") with the
+     * id of their parent when the parent is a NamingContainer.
+     * <p>
+     * The base node at which the search starts is determined as follows:
+     * <ul>
+     * <li>When expr starts with ':', the search starts with the root component of the tree that this component is in
+     * (ie the ancestor whose parent is null).
+     * <li>Otherwise, if this component is a NamingContainer then the search starts with this component.
+     * <li>Otherwise, the search starts from the nearest ancestor NamingContainer (or the root component if there is no
+     * NamingContainer ancestor).
+     * </ul>
+     * 
+     * @param expr
+     *            is of form "id1:id2:id3".
+     * @return UIComponent or null if no component with the specified id is found.
+     */
+
+    @Override
+    public UIComponent findComponent(String expr)
+    {
+        if (expr == null)
+            throw new NullPointerException("expr");
+        if (expr.length() == 0)
+            return null;
+
+        UIComponent findBase;
+        if (expr.charAt(0) == NamingContainer.SEPARATOR_CHAR)
+        {
+            findBase = _ComponentUtils.getRootComponent(this);
+            expr = expr.substring(1);
+        }
+        else
+        {
+            if (this instanceof NamingContainer)
+            {
+                findBase = this;
+            }
+            else
+            {
+                findBase = _ComponentUtils.findParentNamingContainer(this, true /* root if not found */);
+            }
+        }
+
+        int separator = expr.indexOf(NamingContainer.SEPARATOR_CHAR);
+        if (separator == -1)
+        {
+            return _ComponentUtils.findComponent(findBase, expr);
+        }
+
+        String id = expr.substring(0, separator);
+        findBase = _ComponentUtils.findComponent(findBase, id);
+        if (findBase == null)
+        {
+            return null;
+        }
+
+        if (!(findBase instanceof NamingContainer))
+            throw new IllegalArgumentException("Intermediate identifier " + id + " in search expression " + expr
+                    + " identifies a UIComponent that is not a NamingContainer");
+
+        return findBase.findComponent(expr.substring(separator + 1));
+
+    }
+
+    /**
+     * Get a map through which all the UIComponent's properties, value-bindings and non-property attributes can be read
+     * and written.
+     * <p>
+     * When writing to the returned map:
+     * <ul>
+     * <li>If this component has an explicit property for the specified key then the setter method is called. An
+     * IllegalArgumentException is thrown if the property is read-only. If the property is readable then the old value
+     * is returned, otherwise null is returned.
+     * <li>Otherwise the key/value pair is stored in a map associated with the component.
+     * </ul>
+     * Note that value-bindings are <i>not</i> written by put calls to this map. Writing to the attributes map using a
+     * key for which a value-binding exists will just store the value in the attributes map rather than evaluating the
+     * binding, effectively "hiding" the value-binding from later attributes.get calls. Setter methods on components
+     * commonly do <i>not</i> evaluate a binding of the same name; they just store the provided value directly on the
+     * component.
+     * <p>
+     * When reading from the returned map:
+     * <ul>
+     * <li>If this component has an explicit property for the specified key then the getter method is called. If the
+     * property exists, but is read-only (ie only a setter method is defined) then an IllegalArgumentException is
+     * thrown.
+     * <li>If the attribute map associated with the component has an entry with the specified key, then that is
+     * returned.
+     * <li>If this component has a value-binding for the specified key, then the value-binding is evaluated to fetch the
+     * value.
+     * <li>Otherwise, null is returned.
+     * </ul>
+     * Note that components commonly define getter methods such that they evaluate a value-binding of the same name if
+     * there isn't yet a local property.
+     * <p>
+     * Assigning values to the map which are not explicit properties on the underlying component can be used to "tunnel"
+     * attributes from the JSP tag (or view-specific equivalent) to the associated renderer without modifying the
+     * component itself.
+     * <p>
+     * Any value-bindings and non-property attributes stored in this map are automatically serialized along with the
+     * component when the view is serialized.
+     */
+    @Override
+    public Map<String, Object> getAttributes()
+    {
+        if (_attributesMap == null)
+        {
+            _attributesMap = new _ComponentAttributesMap(this);
+        }
+
+        return _attributesMap;
+    }
+
+    /**
+     * Return the number of direct child components this component has.
+     * <p>
+     * Identical to getChildren().size() except that when this component has no children this method will not force an
+     * empty list to be created.
+     */
+    @Override
+    public int getChildCount()
+    {
+        return _childrenList == null ? 0 : _childrenList.size();
+    }
+
+    /**
+     * Return a list of the UIComponent objects which are direct children of this component.
+     * <p>
+     * The list object returned has some non-standard behaviour:
+     * <ul>
+     * <li>The list is type-checked; only UIComponent objects can be added.
+     * <li>If a component is added to the list with an id which is the same as some other component in the list then an
+     * exception is thrown. However multiple components with a null id may be added.
+     * <li>The component's parent property is set to this component. If the component already had a parent, then the
+     * component is first removed from its original parent's child list.
+     * </ul>
+     */
+    @Override
+    public List<UIComponent> getChildren()
+    {
+        if (_childrenList == null)
+        {
+            _childrenList = new _ComponentChildrenList(this);
+        }
+        return _childrenList;
+    }
+    
+    /**
+     * 
+     * @return
+     * 
+     * @since 2.0
+     */
+    public Map<String,List<ClientBehavior>> getClientBehaviors()
+    {
+        // TODO: IMPLEMENT HERE
+        return null;
+    }
+
+    /**
+     * Get a string which can be output to the response which uniquely identifies this UIComponent within the current
+     * view.
+     * <p>
+     * The component should have an id attribute already assigned to it; however if the id property is currently null
+     * then a unique id is generated and set for this component. This only happens when components are programmatically
+     * created without ids, as components created by a ViewHandler should be assigned ids when they are created.
+     * <p>
+     * If this component is a descendant of a NamingContainer then the client id is of form
+     * "{namingContainerId}:{componentId}". Note that the naming container's id may itself be of compound form if it has
+     * an ancestor naming container. Note also that this only applies to naming containers; other UIComponent types in
+     * the component's ancestry do not affect the clientId.
+     * <p>
+     * Finally the renderer associated with this component is asked to convert the id into a suitable form. This allows
+     * escaping of any characters in the clientId which are significant for the markup language generated by that
+     * renderer.
+     */
+    @Override
+    public String getClientId(FacesContext context)
+    {
+        if (context == null)
+            throw new NullPointerException("context");
+
+        if (_clientId != null)
+            return _clientId;
+
+        boolean idWasNull = false;
+        String id = getId();
+        if (id == null)
+        {
+            // Although this is an error prone side effect, we automatically create a new id
+            // just to be compatible to the RI
+            UIViewRoot viewRoot = context.getViewRoot();
+            if (viewRoot != null)
+            {
+                id = viewRoot.createUniqueId();
+            }
+            else
+            {
+                // The RI throws a NPE
+                throw new FacesException(
+                                         "Cannot create clientId. No id is assigned for component to create an id and UIViewRoot is not defined: "
+                                                 + getPathToComponent(this));
+            }
+            setId(id);
+            // We remember that the id was null and log a warning down below
+            idWasNull = true;
+        }
+
+        UIComponent namingContainer = _ComponentUtils.findParentNamingContainer(this, false);
+        if (namingContainer != null)
+        {
+            String containerClientId = namingContainer.getContainerClientId(context);
+            if (containerClientId != null)
+            {
+                StringBuilder bld = __getSharedStringBuilder();
+                _clientId = bld.append(containerClientId).append(NamingContainer.SEPARATOR_CHAR).append(id).toString();
+            }
+            else
+            {
+                _clientId = id;
+            }
+        }
+        else
+        {
+            _clientId = id;
+        }
+
+        Renderer renderer = getRenderer(context);
+        if (renderer != null)
+        {
+            _clientId = renderer.convertClientId(context, _clientId);
+        }
+
+        if (idWasNull && log.isWarnEnabled())
+        {
+            log.warn("WARNING: Component " + _clientId
+                    + " just got an automatic id, because there was no id assigned yet. "
+                    + "If this component was created dynamically (i.e. not by a JSP tag) you should assign it an "
+                    + "explicit static id or assign it the id you get from "
+                    + "the createUniqueId from the current UIViewRoot "
+                    + "component right after creation! Path to Component: " + getPathToComponent(this));
+        }
+
+        return _clientId;
+    }
+    
+    /**
+     * 
+     * @return
+     * 
+     * @since 2.0
+     */
+    public String getDefaultEventName()
+    {
+        // TODO: IMPLEMENT HERE
+        return null;
+    }
+    
+    /**
+     * 
+     * @return
+     * 
+     * @since 2.0
+     */
+    public Collection<String> getEventNames()
+    {
+        // TODO: IMPLEMENT HERE
+        return null;
+    }
+
+    @Override
+    public UIComponent getFacet(String name)
+    {
+        return _facetMap == null ? null : _facetMap.get(name);
+    }
+
+    /**
+     * @since 1.2
+     */
+    @Override
+    public int getFacetCount()
+    {
+        return _facetMap == null ? 0 : _facetMap.size();
+    }
+
+    @Override
+    public Map<String, UIComponent> getFacets()
+    {
+        if (_facetMap == null)
+        {
+            _facetMap = new _ComponentFacetMap<UIComponent>(this);
+        }
+        return _facetMap;
+    }
+
+    @Override
+    public Iterator<UIComponent> getFacetsAndChildren()
+    {
+        if (_facetMap == null)
+        {
+            if (_childrenList == null)
+                return _EMPTY_UICOMPONENT_ITERATOR;
+
+            if (_childrenList.isEmpty())
+                return _EMPTY_UICOMPONENT_ITERATOR;
+
+            return _childrenList.iterator();
+        }
+        else
+        {
+            if (_facetMap.isEmpty())
+            {
+                if (_childrenList == null)
+                    return _EMPTY_UICOMPONENT_ITERATOR;
+
+                if (_childrenList.isEmpty())
+                    return _EMPTY_UICOMPONENT_ITERATOR;
+
+                return _childrenList.iterator();
+            }
+            else
+            {
+                if (_childrenList == null)
+                    return _facetMap.values().iterator();
+
+                if (_childrenList.isEmpty())
+                    return _facetMap.values().iterator();
+
+                return new _FacetsAndChildrenIterator(_facetMap, _childrenList);
+            }
+        }
+    }
+
+    /**
+     * Get a string which uniquely identifies this UIComponent within the scope of the nearest ancestor NamingContainer
+     * component. The id is not necessarily unique across all components in the current view.
+     */
+    @JSFProperty(rtexprvalue = true)
+    public String getId()
+    {
+        return _id;
+    }
+
+    @Override
+    public UIComponent getParent()
+    {
+        return _parent;
+    }
+
+    @Override
+    public String getRendererType()
+    {
+        return getExpressionValue("rendererType", _rendererType, null);
+    }
+
+    /**
+     * Indicates whether this component or its renderer manages the invocation of the rendering methods of its child
+     * components. When this is true:
+     * <ul>
+     * <li>This component's encodeBegin method will only be called after all the child components have been created and
+     * added to this component. <li>This component's encodeChildren method will be called after its encodeBegin method.
+     * Components for which this method returns false do not get this method invoked at all. <li>No rendering methods
+     * will be called automatically on child components; this component is required to invoke the
+     * encodeBegin/encodeEnd/etc on them itself.
+     * </ul>
+     */
+    @Override
+    public boolean getRendersChildren()
+    {
+        Renderer renderer = getRenderer(getFacesContext());
+        return renderer != null ? renderer.getRendersChildren() : false;
+    }
+
+    /**
+     * Get the named value-binding associated with this component.
+     * <p>
+     * Value-bindings are stored in a map associated with the component, though there is commonly a property
+     * (setter/getter methods) of the same name defined on the component itself which evaluates the value-binding when
+     * called.
+     * 
+     * @deprecated Replaced by getValueExpression
+     */
+    @Deprecated
+    @Override
+    public ValueBinding getValueBinding(String name)
+    {
+        ValueExpression expression = getValueExpression(name);
+        if (expression != null)
+        {
+            if (expression instanceof _ValueBindingToValueExpression)
+            {
+                return ((_ValueBindingToValueExpression) expression).getValueBinding();
+            }
+            return new _ValueExpressionToValueBinding(expression);
+        }
+        return null;
+    }
+    
+    public boolean initialStateMarked()
+    {
+        // TODO: IMPLEMENT HERE
+        // FIXME: Nofity EG, this method should be in the specification
+        return false;
+    }
+
+    /**
+     * <code>invokeOnComponent</code> must be implemented in <code>UIComponentBase</code> too...
+     */
+    @Override
+    public boolean invokeOnComponent(FacesContext context, String clientId, ContextCallback callback)
+            throws FacesException
+    {
+        return super.invokeOnComponent(context, clientId, callback);
+    }
+
+    /**
+     * A boolean value that indicates whether this component should be rendered. Default value: true.
+     **/
+    @Override
+    @JSFProperty
+    public boolean isRendered()
+    {
+        return getExpressionValue("rendered", _rendered, DEFAULT_RENDERED);
+    }
+
+    @JSFProperty(literalOnly = true, istransient = true, tagExcluded = true)
+    public boolean isTransient()
+    {
+        return _transient;
+    }
+    
+    public void markInitialState()
+    {
+        // TODO: IMPLEMENT HERE
+    }
+
     @Override
     protected void addFacesListener(FacesListener listener)
     {
@@ -665,6 +764,13 @@ public abstract class UIComponentBase extends UIComponent
         _facesListeners.add(listener);
     }
 
+    @Override
+    protected FacesContext getFacesContext()
+    {
+        return FacesContext.getCurrentInstance();
+    }
+
+    // FIXME: Notify EG for generic usage
     @Override
     protected FacesListener[] getFacesListeners(Class clazz)
     {
@@ -679,7 +785,7 @@ public abstract class UIComponentBase extends UIComponent
 
         if (_facesListeners == null)
         {
-            return (FacesListener[])Array.newInstance(clazz, 0);
+            return (FacesListener[]) Array.newInstance(clazz, 0);
         }
         List<FacesListener> lst = null;
         for (Iterator<FacesListener> it = _facesListeners.iterator(); it.hasNext();)
@@ -694,10 +800,34 @@ public abstract class UIComponentBase extends UIComponent
         }
         if (lst == null)
         {
-            return (FacesListener[])Array.newInstance(clazz, 0);
+            return (FacesListener[]) Array.newInstance(clazz, 0);
         }
 
-        return lst.toArray((FacesListener[])Array.newInstance(clazz, lst.size()));
+        return lst.toArray((FacesListener[]) Array.newInstance(clazz, lst.size()));
+    }
+
+    @Override
+    protected Renderer getRenderer(FacesContext context)
+    {
+        if (context == null)
+            throw new NullPointerException("context");
+        String rendererType = getRendererType();
+        if (rendererType == null)
+            return null;
+        String renderKitId = context.getViewRoot().getRenderKitId();
+        RenderKitFactory rkf = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+        RenderKit renderKit = rkf.getRenderKit(context, renderKitId);
+        Renderer renderer = renderKit.getRenderer(getFamily(), rendererType);
+        if (renderer == null)
+        {
+            getFacesContext().getExternalContext().log(
+                                                       "No Renderer found for component " + getPathToComponent(this)
+                                                               + " (component-family=" + getFamily()
+                                                               + ", renderer-type=" + rendererType + ")");
+            log.warn("No Renderer found for component " + getPathToComponent(this) + " (component-family="
+                    + getFamily() + ", renderer-type=" + rendererType + ")");
+        }
+        return renderer;
     }
 
     @Override
@@ -863,7 +993,7 @@ public abstract class UIComponentBase extends UIComponent
 
                         // Ensure that UIComponent.popComponentFromEL(javax.faces.context.FacesContext) is called
                         // correctly after each child or facet.
-                        //popComponentFromEL(context);
+                        // popComponentFromEL(context);
                     }
                 }
             }
@@ -876,7 +1006,8 @@ public abstract class UIComponentBase extends UIComponent
 
                 // To improve speed and robustness, the facets and children processing is splited to maintain the
                 // facet --> state coherence based on the facet's name
-                for (UIComponent child : getChildren()) {
+                for (UIComponent child : getChildren())
+                {
                     if (!child.isTransient())
                     {
                         if (childrenList == null)
@@ -916,7 +1047,7 @@ public abstract class UIComponentBase extends UIComponent
             throw new NullPointerException("context");
         }
 
-        Object[] stateValues = (Object[])state;
+        Object[] stateValues = (Object[]) state;
 
         // Call the restoreState() method of this component.
         restoreState(context, stateValues[0]);
@@ -943,13 +1074,11 @@ public abstract class UIComponentBase extends UIComponent
 
                         // After returning from the processRestoreState() method on a child or facet, call
                         // UIComponent.popComponentFromEL(javax.faces.context.FacesContext)
-                        //popComponentFromEL(context);
+                        // popComponentFromEL(context);
                     }
                     else
                     {
-                        context.getExternalContext().log(
-                                "No state found to restore facet "
-                                        + entry.getKey());
+                        context.getExternalContext().log("No state found to restore facet " + entry.getKey());
                     }
                 }
             }
@@ -973,13 +1102,11 @@ public abstract class UIComponentBase extends UIComponent
 
                             // After returning from the processRestoreState() method on a child or facet, call
                             // UIComponent.popComponentFromEL(javax.faces.context.FacesContext)
-                            //popComponentFromEL(context);
+                            // popComponentFromEL(context);
                         }
                         else
                         {
-                            context.getExternalContext().log(
-                                    "No state found to restore child of component "
-                                            + getId());
+                            context.getExternalContext().log("No state found to restore child of component " + getId());
                         }
                     }
                 }
@@ -989,35 +1116,6 @@ public abstract class UIComponentBase extends UIComponent
         {
             popComponentFromEL(context);
         }
-    }
-
-    @Override
-    protected FacesContext getFacesContext()
-    {
-        return FacesContext.getCurrentInstance();
-    }
-
-    @Override
-    protected Renderer getRenderer(FacesContext context)
-    {
-        if (context == null)
-            throw new NullPointerException("context");
-        String rendererType = getRendererType();
-        if (rendererType == null)
-            return null;
-        String renderKitId = context.getViewRoot().getRenderKitId();
-        RenderKitFactory rkf = (RenderKitFactory)FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
-        RenderKit renderKit = rkf.getRenderKit(context, renderKitId);
-        Renderer renderer = renderKit.getRenderer(getFamily(), rendererType);
-        if (renderer == null)
-        {
-            getFacesContext().getExternalContext().log(
-                "No Renderer found for component " + getPathToComponent(this) + " (component-family=" + getFamily()
-                        + ", renderer-type=" + rendererType + ")");
-            log.warn("No Renderer found for component " + getPathToComponent(this) + " (component-family="
-                    + getFamily() + ", renderer-type=" + rendererType + ")");
-        }
-        return renderer;
     }
 
     private String getPathToComponent(UIComponent component)
@@ -1051,7 +1149,7 @@ public abstract class UIComponentBase extends UIComponent
         if (component instanceof UIViewRoot)
         {
             intBuf.append(",ViewId: ");
-            intBuf.append(((UIViewRoot)component).getViewId());
+            intBuf.append(((UIViewRoot) component).getViewId());
         }
         else
         {
@@ -1063,12 +1161,6 @@ public abstract class UIComponentBase extends UIComponent
         buf.insert(0, intBuf.toString());
 
         getPathToComponent(component.getParent(), buf);
-    }
-
-    @JSFProperty(literalOnly = true, istransient = true, tagExcluded = true)
-    public boolean isTransient()
-    {
-        return _transient;
     }
 
     public void setTransient(boolean transientFlag)
@@ -1100,8 +1192,8 @@ public abstract class UIComponentBase extends UIComponent
             return null;
         if (attachedObject instanceof List)
         {
-            List<Object> lst = new ArrayList<Object>(((List<?>)attachedObject).size());
-            for (Object item : (List<?>)attachedObject)
+            List<Object> lst = new ArrayList<Object>(((List<?>) attachedObject).size());
+            for (Object item : (List<?>) attachedObject)
             {
                 lst.add(saveAttachedState(context, item));
             }
@@ -1110,7 +1202,7 @@ public abstract class UIComponentBase extends UIComponent
         }
         else if (attachedObject instanceof StateHolder)
         {
-            StateHolder holder = (StateHolder)attachedObject;
+            StateHolder holder = (StateHolder) attachedObject;
             if (holder.isTransient())
             {
                 return null;
@@ -1136,7 +1228,7 @@ public abstract class UIComponentBase extends UIComponent
             return null;
         if (stateObj instanceof _AttachedListStateWrapper)
         {
-            List<Object> lst = ((_AttachedListStateWrapper)stateObj).getWrappedStateList();
+            List<Object> lst = ((_AttachedListStateWrapper) stateObj).getWrappedStateList();
             List<Object> restoredList = new ArrayList<Object>(lst.size());
             for (Object item : lst)
             {
@@ -1146,7 +1238,7 @@ public abstract class UIComponentBase extends UIComponent
         }
         else if (stateObj instanceof _AttachedStateWrapper)
         {
-            Class<?> clazz = ((_AttachedStateWrapper)stateObj).getClazz();
+            Class<?> clazz = ((_AttachedStateWrapper) stateObj).getClazz();
             Object restoredObject;
             try
             {
@@ -1163,10 +1255,10 @@ public abstract class UIComponentBase extends UIComponent
             }
             if (restoredObject instanceof StateHolder)
             {
-                _AttachedStateWrapper wrapper = (_AttachedStateWrapper)stateObj;
+                _AttachedStateWrapper wrapper = (_AttachedStateWrapper) stateObj;
                 Object wrappedState = wrapper.getWrappedStateObject();
 
-                StateHolder holder = (StateHolder)restoredObject;
+                StateHolder holder = (StateHolder) restoredObject;
                 holder.restoreState(context, wrappedState);
             }
             return restoredObject;
@@ -1199,20 +1291,20 @@ public abstract class UIComponentBase extends UIComponent
      * Invoked in the "restore view" phase, this initialises this object's members from the values saved previously into
      * the provided state object.
      * <p>
-     *
+     * 
      * @param state
      *            is an object previously returned by the saveState method of this class.
      */
     @SuppressWarnings("unchecked")
     public void restoreState(FacesContext context, Object state)
     {
-        Object values[] = (Object[])state;
-        _id = (String)values[0];
-        _rendered = (Boolean)values[1];
-        _rendererType = (String)values[2];
-        _clientId = (String)values[3];
+        Object values[] = (Object[]) state;
+        _id = (String) values[0];
+        _rendered = (Boolean) values[1];
+        _rendererType = (String) values[2];
+        _clientId = (String) values[3];
         restoreAttributesMap(values[4]);
-        _facesListeners = (List<FacesListener>)restoreAttachedState(context, values[5]);
+        _facesListeners = (List<FacesListener>) restoreAttachedState(context, values[5]);
         restoreValueExpressionMap(context, values[6]);
     }
 
@@ -1226,7 +1318,7 @@ public abstract class UIComponentBase extends UIComponent
     {
         if (stateObj != null)
         {
-            _attributesMap = new _ComponentAttributesMap(this, (Map<String, Object>)stateObj);
+            _attributesMap = new _ComponentAttributesMap(this, (Map<String, Object>) stateObj);
         }
         else
         {
@@ -1255,12 +1347,12 @@ public abstract class UIComponentBase extends UIComponent
     {
         if (stateObj != null)
         {
-            Map<String, Object> stateMap = (Map<String, Object>)stateObj;
+            Map<String, Object> stateMap = (Map<String, Object>) stateObj;
             int initCapacity = (stateMap.size() * 4 + 3) / 3;
             bindings = new HashMap<String, ValueExpression>(initCapacity);
             for (Map.Entry<String, Object> entry : stateMap.entrySet())
             {
-                bindings.put(entry.getKey(), (ValueExpression)restoreAttachedState(context, entry.getValue()));
+                bindings.put(entry.getKey(), (ValueExpression) restoreAttachedState(context, entry.getValue()));
             }
         }
         else
@@ -1297,8 +1389,8 @@ public abstract class UIComponentBase extends UIComponent
         if (!Character.isLetter(string.charAt(0)) && string.charAt(0) != '_')
         {
             throw new IllegalArgumentException(
-                "component identifier's first character must be a letter or an underscore ('_')! But it is \""
-                        + string.charAt(0) + "\"");
+                                               "component identifier's first character must be a letter or an underscore ('_')! But it is \""
+                                                       + string.charAt(0) + "\"");
         }
         for (int i = 1; i < string.length(); i++)
         {
@@ -1307,8 +1399,8 @@ public abstract class UIComponentBase extends UIComponent
             if (!Character.isLetterOrDigit(c) && c != '-' && c != '_')
             {
                 throw new IllegalArgumentException(
-                    "Subsequent characters of component identifier must be a letter, a digit, an underscore ('_'), or a dash ('-')! But component identifier contains \""
-                            + c + "\"");
+                                                   "Subsequent characters of component identifier must be a letter, a digit, an underscore ('_'), or a dash ('-')! But component identifier contains \""
+                                                           + c + "\"");
             }
         }
     }
@@ -1391,37 +1483,12 @@ public abstract class UIComponentBase extends UIComponent
         _rendered = Boolean.valueOf(rendered);
     }
 
-    /**
-     * A boolean value that indicates whether this component should be rendered. Default value: true.
-     **/
-    @Override
-    @JSFProperty
-    public boolean isRendered()
-    {
-        return getExpressionValue("rendered", _rendered, DEFAULT_RENDERED);
-    }
-
     @Override
     public void setRendererType(String rendererType)
     {
         _rendererType = rendererType;
     }
 
-    @Override
-    public String getRendererType()
-    {
-        return getExpressionValue("rendererType", _rendererType, null);
-    }
-
     // ------------------ GENERATED CODE END ---------------------------------------
 
-    /**
-     * @since 1.2
-     */
-
-    @Override
-    public int getFacetCount()
-    {
-        return _facetMap == null ? 0 : _facetMap.size();
-    }
 }

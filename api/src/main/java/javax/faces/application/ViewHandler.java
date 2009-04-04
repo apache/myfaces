@@ -20,12 +20,19 @@ package javax.faces.application;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.faces.FacesException;
+import javax.faces.FactoryFinder;
+import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.view.AttachedObjectHandler;
+import javax.faces.view.ViewDeclarationLanguage;
+import javax.faces.view.ViewDeclarationLanguageFactory;
 
 /**
  * A ViewHandler manages the component-tree-creation and component-tree-rendering parts of a request lifecycle (ie
@@ -65,8 +72,15 @@ import javax.faces.context.FacesContext;
 public abstract class ViewHandler
 {
     public static final String CHARACTER_ENCODING_KEY = "javax.faces.request.charset";
-    public static final String DEFAULT_SUFFIX_PARAM_NAME = "javax.faces.DEFAULT_SUFFIX";
+    public static final String DEFAULT_FACELETS_SUFFIX = ".xhtml";
     public static final String DEFAULT_SUFFIX = ".xhtml .jsp";
+    public static final String DEFAULT_SUFFIX_PARAM_NAME = "javax.faces.DEFAULT_SUFFIX";
+    public static final String FACELETS_SUFFIX_PARAM_NAME = "javax.faces.FACELETS_SUFFIX";
+    public static final String FACELETS_VIEW_MAPPINGS_PARAM_NAME = "javax.faces.FACELETS_VIEW_MAPPINGS";
+    // TODO: Notify EG on that last constant. Using the Facelets' param as well for backward compatiblity is 
+    //       silly. If an application uses Facelets then they'll be using facelets.jar. Once they chose to 
+    //       remove that JAR, they ought to be aware that some changes could be needed, like fixing their 
+    //       context-param. -= Simon Lessard =-
 
     /**
      * @since JSF 1.2
@@ -138,14 +152,73 @@ public abstract class ViewHandler
     public abstract UIViewRoot createView(FacesContext context, String viewId);
 
     /**
+     * @param context
+     * @param input
+     * @return
+     * 
+     * @since 2.0
+     */
+    public String deriveViewId(FacesContext context, String input)
+    {
+        // TODO: IMPLEMENT HERE? I would have said IMPL
+        return null;
+    }
+
+    /**
+     * TODO: IMPLEMENT IMPL - new algorithm see section 7.5.2 of the specification
+     * 
      * Return a URL that a remote system can invoke in order to access the specified view.
      * <p>
-     * Note that the URL a user enters and the viewId which is invoked can be different. The simplest difference is a
-     * change in suffix (eg url "foo.jsf" references view "foo.jsp").
+     * Note that the URL a user enters and the viewId which is invoked can be different. The simplest difference 
+     * is a change in suffix (eg url "foo.jsf" references view "foo.jsp").
      */
     public abstract String getActionURL(FacesContext context, String viewId);
 
     /**
+     * 
+     * @param context
+     * @param viewId
+     * @param parameters
+     * @param includeViewParams
+     * @return
+     * 
+     * @since 2.0
+     */
+    public String getBookmarkableURL(FacesContext context, String viewId, Map<String, List<String>> parameters,
+                                     boolean includeViewParams)
+    {
+        // TODO: IMPLEMENT IMPL
+        return getActionURL(context, viewId);
+    }
+
+    /**
+     * @param context
+     * @param viewId
+     * @return
+     */
+    public ViewDeclarationLanguage getViewDeclarationLanguage(FacesContext context, String viewId)
+    {
+        // FIXME: Notify EG - The JavaDoc mention 2 default implementation, how lovely, using the most useful one.
+        return _getViewDeclarationLanguageFactory().getViewDeclarationLanguage(viewId);
+    }
+
+    /**
+     * @param context
+     * @param viewId
+     * @param parameters
+     * @param includeViewParams
+     * @return
+     */
+    public String getRedirectURL(FacesContext context, String viewId, Map<String, List<String>> parameters,
+                                 boolean includeViewParams)
+    {
+        // TODO: IMPLEMENT IMPL
+        return getActionURL(context, viewId);
+    }
+
+    /**
+     * TODO: IMPLEMENT IMPL - new algorithm see section 7.5.2 of the specification
+     * 
      * Return a URL that a remote system can invoke in order to access the specified resource.
      * <p>
      * When path starts with a slash, it is relative to the webapp root. Otherwise it is relative to the value returned
@@ -154,6 +227,8 @@ public abstract class ViewHandler
     public abstract String getResourceURL(FacesContext context, String path);
 
     /**
+     * TODO: IMPLEMENT IMPL - algorithm change
+     * 
      * Method must be called by the JSF impl at the beginning of Phase <i>Restore View</i> of the JSF lifecycle.
      * 
      * @since JSF 1.2
@@ -175,6 +250,8 @@ public abstract class ViewHandler
     }
 
     /**
+     * TODO: IMPLEMENT IMPL - new algorithm see the specification
+     * 
      * Combine the output of all the components in the viewToRender with data from the original view template (if any)
      * and write the result to context.externalContext.response.
      * <p>
@@ -195,6 +272,8 @@ public abstract class ViewHandler
     public abstract void renderView(FacesContext context, UIViewRoot viewToRender) throws IOException, FacesException;
 
     /**
+     * TODO: IMPLEMENT IMPL - new algorithm see the specification
+     * 
      * Handle a "postback" request by recreating the component tree that was most recently presented to the user for the
      * specified view.
      * <p>
@@ -225,6 +304,30 @@ public abstract class ViewHandler
     public abstract UIViewRoot restoreView(FacesContext context, String viewId);
 
     /**
+     * @param context
+     * @param topLevelComponent
+     * @param handlers
+     */
+    public void retargetAttachedObjects(FacesContext context, UIComponent topLevelComponent,
+                                        List<AttachedObjectHandler> handlers)
+    {
+        // TODO: IMPLEMENT IMPL
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * @param context
+     * @param topLevelComponent
+     */
+    public void retargetMethodExpressions(FacesContext context, UIComponent topLevelComponent)
+    {
+        // TODO: IMPLEMENT IMPL
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * TODO: IMPLEMENT IMPL - algorithm change
+     * 
      * Write sufficient information to context.externalContext.response in order to be able to restore this view if the
      * user performs a "postback" using that rendered response.
      * <p>
@@ -237,4 +340,9 @@ public abstract class ViewHandler
      * just verify that the saved state does indeed correspond to the expected one).
      */
     public abstract void writeState(FacesContext context) throws IOException;
+
+    private ViewDeclarationLanguageFactory _getViewDeclarationLanguageFactory()
+    {
+        return (ViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);
+    }
 }

@@ -29,27 +29,47 @@ import javax.faces.context.ResponseWriter;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
 public abstract class RenderKit
 {
-    public abstract void addRenderer(String family,
-                                     String rendererType,
-                                     Renderer renderer);
+    public void addBehaviorRenderer(String type, ClientBehaviorRenderer renderer)
+    {
+        // TODO: IMPLEMENT IMPL
+        throw new UnsupportedOperationException();
+    }
+
+    public abstract void addRenderer(String family, String rendererType, Renderer renderer);
 
     public abstract ResponseStream createResponseStream(OutputStream out);
 
-    public abstract ResponseWriter createResponseWriter(Writer writer,
-                                                        String contentTypeList,
-                                                        String characterEncoding);
+    public abstract ResponseWriter createResponseWriter(Writer writer, String contentTypeList, String characterEncoding);
     
+    public ClientBehaviorRenderer getBehaviorRenderer(String type)
+    {
+        // TODO: IMPLEMENT IMPL
+        throw new UnsupportedOperationException();
+    }
+    
+    public Iterator<String> getBehaviorRendererTypes()
+    {
+        // TODO: IMPLEMENT IMPL
+        List<String> emptyList = Collections.emptyList();
+
+        return emptyList.iterator();
+    }
+
     /**
-     * <p>Return an <code>Iterator</code> over the component-family entries supported by this 
-     * <code>RenderKit</code> instance.</p>
+     * <p>
+     * Return an <code>Iterator</code> over the component-family entries supported by this <code>RenderKit</code>
+     * instance.
+     * </p>
      * 
-     * <p>The default implementation of this method returns an empty <code>Iterator</code></p>
+     * <p>
+     * The default implementation of this method returns an empty <code>Iterator</code>
+     * </p>
      * 
      * @return an iterator over the component families supported by this <code>RenderKit</code>.
      * 
@@ -57,24 +77,30 @@ public abstract class RenderKit
      */
     public Iterator<String> getComponentFamilies()
     {
+        // TODO: IMPLEMENT IMPL
         List<String> emptyList = Collections.emptyList();
-        
+
         return emptyList.iterator();
     }
 
-    public abstract Renderer getRenderer(String family,
-                                         String rendererType);
-    
+    public abstract Renderer getRenderer(String family, String rendererType);
+
     /**
-     * <p>Return an <code>Iterator</code> over the renderer-type entries for the given component-family.</p>
+     * <p>
+     * Return an <code>Iterator</code> over the renderer-type entries for the given component-family.
+     * </p>
      * 
-     * <p>If the specified <code>componentFamily</code> is not known to this <code>RenderKit</code> implementation, 
-     * return an empty <code>Iterator</code></p>
+     * <p>
+     * If the specified <code>componentFamily</code> is not known to this <code>RenderKit</code> implementation, return
+     * an empty <code>Iterator</code>
+     * </p>
      * 
-     * <p>The default implementation of this method returns an empty <code>Iterator</code> </p>
+     * <p>
+     * The default implementation of this method returns an empty <code>Iterator</code>
+     * </p>
      * 
-     * @param componentFamily one of the members of the <code>Iterator</code> returned by 
-     *                        {@link #getComponentFamilies()}
+     * @param componentFamily
+     *            one of the members of the <code>Iterator</code> returned by {@link #getComponentFamilies()}
      * 
      * @return an iterator over the renderer-type entries for the given component-family.
      * 
@@ -82,8 +108,9 @@ public abstract class RenderKit
      */
     public Iterator<String> getRendererTypes(String componentFamily)
     {
+        // TODO: IMPLEMENT IMPL
         List<String> emptyList = Collections.emptyList();
-        
+
         return emptyList.iterator();
     }
 

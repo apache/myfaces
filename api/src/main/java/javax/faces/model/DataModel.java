@@ -131,7 +131,7 @@ public abstract class DataModel<E> implements Iterable<E>
      */
     public Iterator<E> iterator()
     {
-        return new DataModelIterator<E>();
+        return new DataModelIterator();
     }
 
     public void removeDataModelListener(DataModelListener listener)
@@ -159,10 +159,9 @@ public abstract class DataModel<E> implements Iterable<E>
      *
      * @param data The object to be wrapped.
      */
-    // TODO: Check with EG why data argument is not of type E
     abstract public void setWrappedData(Object data);
     
-    private class DataModelIterator<E> implements Iterator<E>
+    private class DataModelIterator implements Iterator<E>
     {
         private int nextRowIndex = 0;
         

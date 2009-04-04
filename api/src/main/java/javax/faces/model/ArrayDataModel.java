@@ -110,7 +110,6 @@ public class ArrayDataModel<E> extends DataModel<E>
     @Override
     public void setWrappedData(Object data)
     {
-        // TODO: Check with EG why data argument is not of type E
         _data = (E[])data;
         int rowIndex = _data != null ? 0 : -1;
         setRowIndex(rowIndex);

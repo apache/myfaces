@@ -18,8 +18,9 @@
  */
 package javax.faces.context;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Collection;
+
+import javax.faces.event.PhaseId;
 
 /**
  * @author Simon Lessard (latest modification by $Author: slessard $)
@@ -29,33 +30,30 @@ import java.util.Map;
  */
 public abstract class PartialViewContext
 {
-    public static final String NO_PARTIAL_PHASE_CLIENT_IDS = "none";
+    public static final String ALL_PARTIAL_PHASE_CLIENT_IDS = "@all";
+    public static final String NO_PARTIAL_PHASE_CLIENT_IDS = "@none";
     public static final String PARTIAL_EXECUTE_PARAM_NAME = "javax.faces.partial.execute";
     public static final String PARTIAL_RENDER_PARAM_NAME = "javax.faces.partial.render";
     
-    public abstract void enableResponseWriting(boolean enable);
+    public abstract Collection<String> getExecuteIds();
     
-    public abstract Map<Object,Object> getAttributes();
+    public abstract PartialResponseWriter getPartialResponseWriter();
     
-    public abstract List<String> getExecutePhaseClientIds();
-    
-    public abstract ResponseWriter getPartialResponseWriter();
-    
-    public abstract List<String> getRenderPhaseClientIds();
+    public abstract Collection<String> getRenderIds();
     
     public abstract boolean isAjaxRequest();
     
-    public abstract boolean isExecuteNone();
+    public abstract boolean isExecuteAll();
+    
+    public abstract boolean isPartialRequest();
     
     public abstract boolean isRenderAll();
     
-    public abstract boolean isRenderNone();
+    public abstract void processPartial(PhaseId phaseId);
     
     public abstract void release();
     
-    public abstract void setExecutePhaseClientIds(List<String> executePhaseClientIds);
+    public abstract void setPartialRequest(boolean isPartialRequest);
     
     public abstract void setRenderAll(boolean renderAll);
-    
-    public abstract void setRenderPhaseClientIds(List<String> renderPhaseClientIds);
 }

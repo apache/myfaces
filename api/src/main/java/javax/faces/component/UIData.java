@@ -98,7 +98,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  * @version $Revision$ $Date$
  */
 @JSFComponent(defaultRendererType = "javax.faces.Table")
-public class UIData extends UIComponentBase implements NamingContainer
+public class UIData extends UIComponentBase implements NamingContainer, UniqueIdVendor
 {
     public static final String COMPONENT_FAMILY = "javax.faces.Data";
     public static final String COMPONENT_TYPE = "javax.faces.Data"; // for unit tests
@@ -674,6 +674,19 @@ public class UIData extends UIComponentBase implements NamingContainer
         {
             super.broadcast(event);
         }
+    }
+
+    /**
+     * 
+     * {@inheritDoc}
+     * 
+     * @since 2.0
+     */
+    @Override
+    public String createUniqueId(FacesContext context, String seed)
+    {
+        // TODO: IMPLEMENT HERE
+        return null;
     }
 
     /**

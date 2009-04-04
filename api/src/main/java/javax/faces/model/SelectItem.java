@@ -22,7 +22,7 @@ import java.io.Serializable;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Thomas Spiegl (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -35,76 +35,65 @@ public class SelectItem implements Serializable
     private String _description;
     private boolean _disabled;
     private boolean _escape;
+    private boolean _noSelectionOption;
 
     // CONSTRUCTORS
     public SelectItem()
     {
+        this(null);
     }
 
     public SelectItem(Object value)
     {
-        _value = value;
-        _label = value == null ? null : value.toString();
-        _description = null;
-        _disabled = false;
-        _escape=true;
+        this(value, value == null ? null : value.toString());
     }
 
     public SelectItem(Object value, String label)
     {
-        _value = value;
-        _label = label;
-        _description = null;
-        _disabled = false;
-        _escape = true;
+        this(value, label, null);
     }
 
     public SelectItem(Object value, String label, String description)
     {
-        _value = value;
-        _label = label;
-        _description = description;
-        _disabled = false;
-        _escape = true;
+        this(value, label, description, false);
     }
 
     public SelectItem(Object value, String label, String description, boolean disabled)
     {
-        _value = value;
-        _label = label;
-        _description = description;
-        _disabled = disabled;
-        _escape = true;
+        this(value, label, description, disabled, true);
     }
 
     public SelectItem(Object value, String label, String description, boolean disabled, boolean escape)
     {
+        this(value, label, description, disabled, escape, false);
+    }
+
+    /**
+     * 
+     * @param value
+     * @param label
+     * @param description
+     * @param disabled
+     * @param escape
+     * @param noSelectionOption
+     * 
+     * @since 2.0
+     */
+    public SelectItem(Object value, String label, String description, boolean disabled, boolean escape,
+                      boolean noSelectionOption)
+    {
         _value = value;
         _label = label;
         _description = description;
         _disabled = disabled;
-        this._escape = escape;
+        _escape = escape;
+        _noSelectionOption = noSelectionOption;
     }
-    
+
     // METHODS
     public String getDescription()
     {
         return _description;
-    }
-
-    public void setDescription(String description)
-    {
-        _description = description;
-    }
-
-    public boolean isDisabled()
-    {
-        return _disabled;
-    }
-
-    public void setDisabled(boolean disabled)
-    {
-        _disabled = disabled;
     }
 
     public String getLabel()
@@ -112,21 +101,14 @@ public class SelectItem implements Serializable
         return _label;
     }
 
-    public void setLabel(String label)
-    {
-        if (label == null)
-          throw new NullPointerException("label");
-        _label = label;
-    }
-
     public Object getValue()
     {
         return _value;
     }
 
-    public void setValue(Object value)
+    public boolean isDisabled()
     {
-        _value = value;
+        return _disabled;
     }
 
     public boolean isEscape()
@@ -134,9 +116,53 @@ public class SelectItem implements Serializable
         return _escape;
     }
 
+    /**
+     * 
+     * @return
+     * 
+     * @since 2.0
+     */
+    public boolean isNoSelectionOption()
+    {
+        return _noSelectionOption;
+    }
+
+    public void setDescription(String description)
+    {
+        _description = description;
+    }
+
+    public void setDisabled(boolean disabled)
+    {
+        _disabled = disabled;
+    }
+
     public void setEscape(boolean escape)
     {
-        this._escape = escape;
+        _escape = escape;
     }
-    
+
+    public void setLabel(String label)
+    {
+        if (label == null)
+            throw new NullPointerException("label");
+        _label = label;
+    }
+
+    /**
+     * 
+     * @param noSelectionOption
+     * 
+     * @since 2.0
+     */
+    public void setNoSelectionOption(boolean noSelectionOption)
+    {
+        _noSelectionOption = noSelectionOption;
+    }
+
+    public void setValue(Object value)
+    {
+        _value = value;
+    }
+
 }

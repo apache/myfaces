@@ -42,14 +42,16 @@ import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.application.Application;
 import javax.faces.application.Resource;
+import javax.faces.component.visit.VisitCallback;
+import javax.faces.component.visit.VisitContext;
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
-import javax.faces.event.AfterRestoreStateEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ComponentSystemEventListener;
 import javax.faces.event.FacesEvent;
 import javax.faces.event.FacesListener;
+import javax.faces.event.PostRestoreStateEvent;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 import javax.faces.event.SystemEventListenerHolder;
@@ -58,20 +60,26 @@ import javax.faces.render.Renderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 
 /**
+ * TODO: PLUGINIZE - All HTML components now have enums for the properties, we have to enhance the Maven 
+ *                   plugin to handle that
+ * 
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
 @JSFComponent(type = "javax.faces.Component", family = "javax.faces.Component", desc = "abstract base component", configExcluded = true)
-public abstract class UIComponent implements StateHolder, SystemEventListenerHolder, ComponentSystemEventListener
+public abstract class UIComponent implements PartialStateHolder, SystemEventListenerHolder, ComponentSystemEventListener
 {
-    public static final String CURRENT_COMPONENT = "javax.faces.component.CURRENT_COMPONENT";
-    public static final String CURRENT_COMPOSITE_COMPONENT = "javax.faces.component.CURRENT_COMPOSITE_COMPONENT";
+    // TODO: Reorder methods, this class is a mess
+    
+    public static final String ADDED_BY_PDL_KEY = "javax.faces.component.ADDED_BY_PDL_KEY";
     public static final String BEANINFO_KEY = "javax.faces.component.BEANINFO_KEY";
-    public static final String FACETS_KEY = "javax.faces.component.FACETS_KEY";
     public static final String COMPOSITE_COMPONENT_TYPE_KEY = "javax.faces.component.COMPOSITE_COMPONENT_TYPE";
     public static final String COMPOSITE_FACET_NAME = "javax.faces.component.COMPOSITE_FACET_NAME";
+    public static final String CURRENT_COMPONENT = "javax.faces.component.CURRENT_COMPONENT";
+    public static final String CURRENT_COMPOSITE_COMPONENT = "javax.faces.component.CURRENT_COMPOSITE_COMPONENT";
+    public static final String FACETS_KEY = "javax.faces.component.FACETS_KEY";
 
     private static final String _COMPONENT_STACK = "componentStack:" + UIComponent.class.getName();
 
@@ -80,72 +88,117 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
     protected Map<String, ValueExpression> bindings;
 
     /**
-     * Used to cache the map created using getResourceBundleMap() method,
-     * since this method could be called several times when rendering the
-     * composite component. This attribute may not be serialized,
-     * so transient is used (There are some very few special cases when
-     * UIComponent instances are serializable like t:schedule, so it
-     * is better if transient is used).
+     * Used to cache the map created using getResourceBundleMap() method, since this method could be called several
+     * times when rendering the composite component. This attribute may not be serialized, so transient is used (There
+     * are some very few special cases when UIComponent instances are serializable like t:schedule, so it is better if
+     * transient is used).
      */
-    private transient Map<String,String> _resourceBundleMap = null;
+    private transient Map<String, String> _resourceBundleMap = null;
 
     public UIComponent()
     {
     }
 
-    public static UIComponent getCurrentComponent(FacesContext context)
-    {
-        /*
-         * Return the UIComponent instance that is currently processing. This is equivalent to evaluating the EL
-         * expression "#{component}" and doing a getValue operation on the resultant ValueExpression.
-         */
-        Application application = context.getApplication();
-
-        ELContext elContext = context.getELContext();
-        Object result = application.getELResolver().getValue(context.getELContext(), null, "component");
-
-        return elContext.isPropertyResolved() ? (UIComponent) result : null;
-    }
-
-    public static UIComponent getCurrentCompositeComponent(FacesContext context)
-    {
-        return (UIComponent)context.getAttributes().get(UIComponent.CURRENT_COMPOSITE_COMPONENT);
-    }
-
     public abstract Map<String, Object> getAttributes();
+    
+    /**
+     * 
+     * {@inheritDoc}
+     * 
+     * @since 2.0
+     */
+    public boolean initialStateMarked()
+    {
+        throw new UnsupportedOperationException();
+    }
 
     /**
-     * @deprecated Replaced by getValueExpression
+     * Invokes the <code>invokeContextCallback</code> method with the component, specified by <code>clientId</code>.
+     * 
+     * @param context
+     *            <code>FacesContext</code> for the current request
+     * @param clientId
+     *            the id of the desired <code>UIComponent</code> clazz
+     * @param callback
+     *            Implementation of the <code>ContextCallback</code> to be called
+     * @return has component been found ?
+     * @throws javax.faces.FacesException
      */
-    @Deprecated
-    public abstract ValueBinding getValueBinding(String name);
-
-    public ValueExpression getValueExpression(String name)
+    public boolean invokeOnComponent(FacesContext context, String clientId, ContextCallback callback)
+            throws FacesException
     {
-        if (name == null)
-            throw new NullPointerException("name can not be null");
-
-        if (bindings == null)
+        // java.lang.NullPointerException - if any of the arguments are null
+        if (context == null || clientId == null || callback == null)
         {
-            if (!(this instanceof UIComponentBase))
+            throw new NullPointerException();
+        }
+
+        // searching for this component?
+        boolean found = clientId.equals(this.getClientId(context));
+        if (found)
+        {
+            try
             {
-                // if the component does not inherit from UIComponentBase and don't implements JSF 1.2 or later
-                ValueBinding vb = getValueBinding(name);
-                if (vb != null)
-                {
-                    bindings = new HashMap<String, ValueExpression>();
-                    ValueExpression ve = new _ValueBindingToValueExpression(vb);
-                    bindings.put(name, ve);
-                    return ve;
-                }
+                callback.invokeContextCallback(context, this);
             }
+            catch (Exception e)
+            {
+                throw new FacesException(e);
+            }
+            return found;
         }
-        else
+        // Searching for this component's children/facets
+        for (Iterator<UIComponent> it = this.getFacetsAndChildren(); !found && it.hasNext();)
         {
-            return bindings.get(name);
+            found = it.next().invokeOnComponent(context, clientId, callback);
         }
 
-        return null;
+        return found;
+    }
+
+    /**
+     * 
+     * @param component
+     * @return
+     * 
+     * @since 2.0
+     */
+    public static boolean isCompositeComponent(UIComponent component)
+    {
+        // TODO: IMPLEMENT HERE
+        return false;
+    }
+
+    /**
+     * 
+     * @return
+     * 
+     * @since 2.0
+     */
+    public boolean isInView()
+    {
+        // TODO: IMPLEMENT HERE
+        return true;
+    }
+
+    public abstract boolean isRendered();
+    
+    public void markInitialState()
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * 
+     * @param context
+     * @return
+     * 
+     * @since 2.0
+     */
+    protected boolean isVisitable(VisitContext context)
+    {
+        // TODO: IMPLEMENT HERE
+        return true;
     }
 
     /**
@@ -197,56 +250,69 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
         }
     }
 
-    /**
-     * Invokes the <code>invokeContextCallback</code> method with the component, specified by <code>clientId</code>.
-     *
-     * @param context
-     *            <code>FacesContext</code> for the current request
-     * @param clientId
-     *            the id of the desired <code>UIComponent</code> clazz
-     * @param callback
-     *            Implementation of the <code>ContextCallback</code> to be called
-     * @return has component been found ?
-     * @throws javax.faces.FacesException
-     */
-    public boolean invokeOnComponent(FacesContext context, String clientId, ContextCallback callback)
-        throws FacesException
-    {
-        // java.lang.NullPointerException - if any of the arguments are null
-        if (context == null || clientId == null || callback == null)
-        {
-            throw new NullPointerException();
-        }
-
-        // searching for this component?
-        boolean found = clientId.equals(this.getClientId(context));
-        if (found)
-        {
-            try
-            {
-                callback.invokeContextCallback(context, this);
-            }
-            catch (Exception e)
-            {
-                throw new FacesException(e);
-            }
-            return found;
-        }
-        // Searching for this component's children/facets
-        for (Iterator<UIComponent> it = this.getFacetsAndChildren(); !found && it.hasNext();)
-        {
-            found = it.next().invokeOnComponent(context, clientId, callback);
-        }
-
-        return found;
-    }
-
     public String getClientId()
     {
         return getClientId(getFacesContext());
     }
 
     public abstract String getClientId(FacesContext context);
+
+    /**
+     * 
+     * @param component
+     * @return
+     * 
+     * @since 2.0
+     */
+    public static UIComponent getCompositeComponentParent(UIComponent component)
+    {
+        // TODO: IMPLEMENT HERE
+        return null;
+    }
+
+    /**
+     * @since 1.2
+     */
+    public String getContainerClientId(FacesContext ctx)
+    {
+        if (ctx == null)
+            throw new NullPointerException("FacesContext ctx");
+
+        return getClientId(ctx);
+    }
+
+    /**
+     * 
+     * @param context
+     * @return
+     * 
+     * @since 2.0
+     */
+    public static UIComponent getCurrentComponent(FacesContext context)
+    {
+        /*
+         * Return the UIComponent instance that is currently processing. This is equivalent to evaluating the EL
+         * expression "#{component}" and doing a getValue operation on the resultant ValueExpression.
+         */
+        Application application = context.getApplication();
+
+        ELContext elContext = context.getELContext();
+        Object result = application.getELResolver().getValue(context.getELContext(), null, "component");
+
+        return elContext.isPropertyResolved() ? (UIComponent) result : null;
+    }
+
+    /**
+     * 
+     * @param context
+     * @return
+     * 
+     * @since 2.0
+     */
+    public static UIComponent getCurrentCompositeComponent(FacesContext context)
+    {
+        return (UIComponent) context.getAttributes().get(UIComponent.CURRENT_COMPOSITE_COMPONENT);
+    }
 
     public abstract String getFamily();
 
@@ -274,14 +340,43 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
 
         return listeners;
     }
+    
+    /**
+     * 
+     * @return
+     * 
+     * @since 2.0
+     */
+    public UIComponent getNamingContainer()
+    {
+        // Starting with "this", return the closest component in the ancestry that is a NamingContainer 
+        // or null if none can be found.
+        UIComponent component = this;
+        do
+        {
+            if (component instanceof NamingContainer)
+            {
+                return component;
+            }
+            
+            component = component.getParent();
+        } while (component != null);
+        
+        return null;
+    }
 
     public abstract void setId(String id);
 
     /**
-     * Returns the parent of the component. Children can be added to or removed from a component even if this method
-     * returns null for the child.
+     * 
+     * @param isInView
+     * 
+     * @since 2.0
      */
-    public abstract UIComponent getParent();
+    public void setInView(boolean isInView)
+    {
+        // TODO: IMPLEMENT HERE
+    }
 
     /**
      * For JSF-framework internal use only. Don't call this method to add components to the component tree. Use
@@ -289,7 +384,11 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
      */
     public abstract void setParent(UIComponent parent);
 
-    public abstract boolean isRendered();
+    /**
+     * Returns the parent of the component. Children can be added to or removed from a component even if this method
+     * returns null for the child.
+     */
+    public abstract UIComponent getParent();
 
     public abstract void setRendered(boolean rendered);
 
@@ -315,36 +414,41 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
             }
             catch (MissingResourceException e)
             {
-                //If no such bundle is found, and the component is a composite component
+                // If no such bundle is found, and the component is a composite component
                 if (this._isCompositeComponent())
                 {
-                    //No need to check componentResource (the resource used to build the composite
-                    //component instance) to null since it is already done on this._isCompositeComponent()
+                    // No need to check componentResource (the resource used to build the composite
+                    // component instance) to null since it is already done on this._isCompositeComponent()
                     Resource componentResource = (Resource) getAttributes().get(Resource.COMPONENT_RESOURCE_KEY);
                     // Let resourceName be the resourceName of the Resource for this composite component,
                     // replacing the file extension with ".properties"
                     int extensionIndex = componentResource.getResourceName().lastIndexOf('.');
-                    String resourceName =  (extensionIndex < 0 ? componentResource.getResourceName()
-                            : componentResource.getResourceName().substring(0,extensionIndex) )+ ".properties" ;
+                    String resourceName = (extensionIndex < 0 ? componentResource.getResourceName() : componentResource
+                            .getResourceName().substring(0, extensionIndex))
+                            + ".properties";
 
                     // Let libraryName be the libraryName of the the Resource for this composite component.
-                    // Call ResourceHandler.createResource(java.lang.String,java.lang.String), passing the derived resourceName and
+                    // Call ResourceHandler.createResource(java.lang.String,java.lang.String), passing the derived
+                    // resourceName and
                     // libraryName.
-                    Resource bundleResource = context.getApplication().getResourceHandler().createResource(resourceName,
-                            componentResource.getLibraryName());
+                    Resource bundleResource = context.getApplication().getResourceHandler()
+                            .createResource(resourceName, componentResource.getLibraryName());
 
                     if (bundleResource != null)
                     {
                         // If the resultant Resource exists and can be found, the InputStream for the resource
-                        // is used to create a ResourceBundle. If either of the two previous steps for obtaining the ResourceBundle
-                        // for this component is successful, the ResourceBundle is wrapped in a Map<String, String> and returned.
+                        // is used to create a ResourceBundle. If either of the two previous steps for obtaining the
+                        // ResourceBundle
+                        // for this component is successful, the ResourceBundle is wrapped in a Map<String, String> and
+                        // returned.
                         try
                         {
-                            _resourceBundleMap = new BundleMap(new PropertyResourceBundle(bundleResource.getInputStream()));
+                            _resourceBundleMap = new BundleMap(new PropertyResourceBundle(bundleResource
+                                    .getInputStream()));
                         }
                         catch (IOException e1)
                         {
-                            //Nothing happens, then resourceBundleMap is set as empty map
+                            // Nothing happens, then resourceBundleMap is set as empty map
                         }
                     }
                 }
@@ -357,6 +461,40 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
         }
 
         return _resourceBundleMap;
+    }
+
+    /**
+     * @deprecated Replaced by getValueExpression
+     */
+    @Deprecated
+    public abstract ValueBinding getValueBinding(String name);
+
+    public ValueExpression getValueExpression(String name)
+    {
+        if (name == null)
+            throw new NullPointerException("name can not be null");
+
+        if (bindings == null)
+        {
+            if (!(this instanceof UIComponentBase))
+            {
+                // if the component does not inherit from UIComponentBase and don't implements JSF 1.2 or later
+                ValueBinding vb = getValueBinding(name);
+                if (vb != null)
+                {
+                    bindings = new HashMap<String, ValueExpression>();
+                    ValueExpression ve = new _ValueBindingToValueExpression(vb);
+                    bindings.put(name, ve);
+                    return ve;
+                }
+            }
+        }
+        else
+        {
+            return bindings.get(name);
+        }
+
+        return null;
     }
 
     public abstract List<UIComponent> getChildren();
@@ -372,21 +510,18 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
     public abstract Iterator<UIComponent> getFacetsAndChildren();
 
     public abstract void broadcast(FacesEvent event) throws AbortProcessingException;
+    
+    /**
+     * {@inheritDoc}
+     * 
+     * @since 2.0
+     */
+    public void clearInitialState()
+    {
+        throw new UnsupportedOperationException();
+    }
 
     public abstract void decode(FacesContext context);
-
-    public void doTreeTraversal(FacesContext context, ContextCallback nodeCallback)
-    {
-        try
-        {
-            _doTreeTraversalInternal(context, nodeCallback);
-        }
-        catch (AbortProcessingException e)
-        {
-            // The traversal may be aborted by throwing an AbortProcessingException from this method.
-            // This isn't an abnormal situation so do nothing about it
-        }
-    }
 
     public abstract void encodeBegin(FacesContext context) throws IOException;
 
@@ -441,7 +576,7 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
     {
         // The default implementation performs the following action. If the argument event is an instance of
         // AfterRestoreStateEvent,
-        if (event instanceof AfterRestoreStateEvent)
+        if (event instanceof PostRestoreStateEvent)
         {
             // call this.getValueExpression(java.lang.String) passing the literal string “binding”
             ValueExpression expression = getValueExpression("binding");
@@ -488,21 +623,46 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
                                      ComponentSystemEventListener componentListener)
     {
         /*
-         * When doing the comparison to determine if an existing listener is equal to the argument
-         * componentListener (and thus must be removed), the equals() method on the existing listener must be
-         * invoked, passing the argument componentListener, rather than the other way around.
-         *
-         * What is that supposed to mean? Are we supposed to keep an internal map of created listener wrappers?
-         * TODO: Check with the EG what's the meaning of this, equals should be commutative -= Simon Lessard =-
+         * When doing the comparison to determine if an existing listener is equal to the argument componentListener
+         * (and thus must be removed), the equals() method on the existing listener must be invoked, passing the
+         * argument componentListener, rather than the other way around.
+         * 
+         * What is that supposed to mean? Are we supposed to keep an internal map of created listener wrappers? TODO:
+         * Check with the EG what's the meaning of this, equals should be commutative -= Simon Lessard =-
          */
         SystemEventListener listener = new EventListenerWrapper(this, componentListener);
 
         getFacesContext().getApplication().unsubscribeFromEvent(eventClass, listener);
     }
 
+    /**
+     * 
+     * @param context
+     * @param callback
+     * @return
+     * 
+     * @since 2.0
+     */
+    public boolean visitTree(VisitContext context, VisitCallback callback)
+    {
+        // TODO: IMPLEMENT HERE
+        return false;
+    }
+
     protected abstract FacesContext getFacesContext();
 
     protected abstract Renderer getRenderer(FacesContext context);
+    
+    protected StateHelper getStateHelper()
+    {
+        return getStateHelper(true);
+    }
+    
+    protected StateHelper getStateHelper(boolean create)
+    {
+        // TODO: IMPLEMENT HERE
+        return null;
+    }
 
     @SuppressWarnings("unchecked")
     protected void popComponentFromEL(FacesContext context)
@@ -567,30 +727,6 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
         // UIComponent and UIComponentBase
         Map<String, UIComponent> facets = getFacets();
         return facets == null ? 0 : facets.size();
-    }
-
-    /**
-     * @since 1.2
-     */
-    public String getContainerClientId(FacesContext ctx)
-    {
-        if (ctx == null)
-            throw new NullPointerException("FacesContext ctx");
-
-        return getClientId(ctx);
-    }
-
-    private void _doTreeTraversalInternal(FacesContext context, ContextCallback nodeCallback)
-    {
-        // The default implementation must call the callback on this instance before traversing the children
-        nodeCallback.invokeContextCallback(context, this);
-        if (getChildCount() > 0)
-        {
-            for (UIComponent child : getChildren())
-            {
-                child._doTreeTraversalInternal(context, nodeCallback);
-            }
-        }
     }
 
     private boolean _isCompositeComponent()
@@ -750,7 +886,7 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
             }
             else if (o instanceof EventListenerWrapper)
             {
-                EventListenerWrapper other = (EventListenerWrapper)o;
+                EventListenerWrapper other = (EventListenerWrapper) o;
                 return component.equals(other.component) && listener.equals(other.listener);
             }
             else
@@ -780,7 +916,7 @@ public abstract class UIComponent implements StateHolder, SystemEventListenerHol
 
             assert event instanceof ComponentSystemEvent;
 
-            listener.processEvent((ComponentSystemEvent)event);
+            listener.processEvent((ComponentSystemEvent) event);
         }
     }
 }

@@ -20,6 +20,7 @@ package javax.faces.context;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Writer;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
@@ -39,14 +40,33 @@ public abstract class ExternalContext
     public static final String FORM_AUTH = "FORM";
 
     /**
-     * @since JSF 2.0
+     * 
+     * @param name
+     * @param value
+     * @param properties
+     * 
+     * @since 2.0
      */
     public void addResponseCookie(String name, String value, Map<String, Object> properties)
     {
+        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
-    public abstract void dispatch(String path) throws java.io.IOException;
+    /**
+     * 
+     * @param name
+     * @param value
+     * 
+     * @since 2.0
+     */
+    public void addResponseHeader(String name, String value)
+    {
+        // TODO: IMPLEMENT IMPL
+        throw new UnsupportedOperationException();
+    }
+
+    public abstract void dispatch(String path) throws IOException;
 
     public abstract String encodeActionURL(String url);
 
@@ -58,36 +78,24 @@ public abstract class ExternalContext
 
     public abstract String getAuthType();
 
-    /**
-     * Returns the content length or -1 if the unknown.
-     * 
-     * @since JSF 2.0
-     * @return the length or -1
-     */
-    public int getContentLength()
-    {
-        // TODO: JSF 2.0 MYFACES-1950
-        // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
-        return -1;
-    }
-
     public abstract Object getContext();
 
     /**
      * Returns the name of the underlying context
      * 
-     * @since JSF 2.0
      * @return the name or null
+     * 
+     * @since 2.0
      */
     public String getContextName()
     {
-        // TODO: JSF 2.0 MYFACES-1950
-        // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
-        return null;
+        // TODO: IMPLEMENT IMPL JSF 2.0 MYFACES-1950
+        throw new UnsupportedOperationException();
     }
 
     public abstract String getInitParameter(String name);
 
+    // FIXME: Notify EG about generic usage
     public abstract Map getInitParameterMap();
 
     /**
@@ -95,6 +103,7 @@ public abstract class ExternalContext
      */
     public String getMimeType(String file)
     {
+        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -103,6 +112,7 @@ public abstract class ExternalContext
      */
     public String getRealPath(String path)
     {
+        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -112,6 +122,18 @@ public abstract class ExternalContext
 
     public String getRequestCharacterEncoding()
     {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * 
+     * @return
+     * 
+     * @since 2.0
+     */
+    public String getRequestContentLength()
+    {
+        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -147,6 +169,7 @@ public abstract class ExternalContext
      */
     public String getRequestScheme()
     {
+        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -155,6 +178,7 @@ public abstract class ExternalContext
      */
     public String getRequestServerName()
     {
+        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -163,6 +187,7 @@ public abstract class ExternalContext
      */
     public int getRequestServerPort()
     {
+        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -175,6 +200,23 @@ public abstract class ExternalContext
     public abstract Set<String> getResourcePaths(String path);
 
     public abstract Object getResponse();
+
+    /**
+     * 
+     * @return
+     * 
+     * @since 2.0
+     */
+    public int getResponseBufferSize()
+    {
+        // TODO: IMPLEMENT IMPL
+        throw new UnsupportedOperationException();
+    }
+
+    public String getResponseCharacterEncoding()
+    {
+        throw new UnsupportedOperationException("JSF 1.2 : figure out how to tell if this is a Portlet request");
+    }
 
     /**
      * throws <code>UnsupportedOperationException</code> by default.
@@ -191,6 +233,16 @@ public abstract class ExternalContext
      */
     public OutputStream getResponseOutputStream() throws IOException
     {
+        // TODO: IMPLEMENT IMPL
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * @since JSF 2.0
+     */
+    public Writer getResponseOutputWriter() throws IOException
+    {
+        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -199,6 +251,73 @@ public abstract class ExternalContext
     public abstract Map<String, Object> getSessionMap();
 
     public abstract java.security.Principal getUserPrincipal();
+
+    /**
+     * 
+     * 
+     * @since 2.0
+     */
+    public void invalidateSession()
+    {
+        // TODO: IMPLEMENT IMPL
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * 
+     * @return
+     * 
+     * @since 2.0
+     */
+    public boolean isResponseCommitted()
+    {
+        // TODO: IMPLEMENT IMPL
+        throw new UnsupportedOperationException();
+    }
+
+    public abstract boolean isUserInRole(String role);
+
+    public abstract void log(String message);
+
+    public abstract void log(String message, Throwable exception);
+
+    public abstract void redirect(String url) throws java.io.IOException;
+
+    /**
+     * 
+     * @throws IOException
+     * 
+     * @since 2.0
+     */
+    public void responseFlushBuffer() throws IOException
+    {
+        // TODO: IMPLEMENT IMPL
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * 
+     * @since 2.0
+     */
+    public void responseReset()
+    {
+        // TODO: IMPLEMENT IMPL
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * 
+     * @param statusCode
+     * @param message
+     * @throws IOException
+     * 
+     * @since 2.0
+     */
+    public void responseSendError(int statusCode, String message) throws IOException
+    {
+        // TODO: IMPLEMENT IMPL
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * throws <code>UnsupportedOperationException</code> by default.
@@ -220,7 +339,6 @@ public abstract class ExternalContext
      */
     public void setRequestCharacterEncoding(String encoding) throws java.io.UnsupportedEncodingException
     {
-
         throw new UnsupportedOperationException();
     }
 
@@ -236,6 +354,18 @@ public abstract class ExternalContext
     }
 
     /**
+     * 
+     * @param size
+     * 
+     * @since 2.0
+     */
+    public void setResponseBufferSize(int size)
+    {
+        // TODO: IMPLEMENT IMPL
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * throws <code>UnsupportedOperationException</code> by default.
      * 
      * @since JSF 1.2
@@ -247,46 +377,51 @@ public abstract class ExternalContext
     }
 
     /**
-     * @since JSF 2.0
+     * 
+     * @param length
+     * 
+     * @since 2.0
+     */
+    public void setResponseContentLength(int length)
+    {
+        // TODO: IMPLEMENT IMPL
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * 
+     * @param contentType
+     * 
+     * @since 2.0
      */
     public void setResponseContentType(String contentType)
     {
-        throw new UnsupportedOperationException();
-    }
-
-    public String getResponseCharacterEncoding()
-    {
-        throw new UnsupportedOperationException("JSF 1.2 : figure out how to tell if this is a Portlet request");
-    }
-
-    /**
-     * @since JSF 2.0
-     */
-    public void invalidateSession()
-    {
+        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
     /**
-     * @since JSF 2.0
+     * 
+     * @param name
+     * @param value
+     * 
+     * @since 2.0
      */
-    /*
-       not in the jsf-spec-2.0-20080911
-       maybe we can add it later but for now we have to leave it out
-     
-    public boolean isNewSession()
+    public void setResponseHeader(String name, String value)
     {
-        // TODO: JSF 2.0 MYFACES-1950
-        // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
-        return false;
+        // TODO: IMPLEMENT IMPL
+        throw new UnsupportedOperationException();
     }
-    */
-
-    public abstract boolean isUserInRole(String role);
-
-    public abstract void log(String message);
-
-    public abstract void log(String message, Throwable exception);
-
-    public abstract void redirect(String url) throws java.io.IOException;
+    
+    /**
+     * 
+     * @param statusCode
+     * 
+     * @since 2.0
+     */
+    public void setResponseStatus(int statusCode)
+    {
+        // TODO: IMPLEMENT IMPL
+        throw new UnsupportedOperationException();
+    }
 }

@@ -18,10 +18,19 @@
  */
 package javax.faces.render;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * @author Simon Lessard (latest modification by $Author: slessard $)
  * @version $Revision: 696523 $ $Date: 2008-09-24 18:52:14 -0400 (mer., 17 sept. 2008) $
  */
+@Target(value=ElementType.TYPE)
+@Retention(value=RetentionPolicy.RUNTIME)
+@Inherited
 public @interface FacesRenderer
 {
     /**
@@ -42,5 +51,5 @@ public @interface FacesRenderer
      * The value of this annotation attribute is taken to be the <i>render-kit-id</i> in which an instance of this class
      * of {@link Renderer} must be installed.
      */
-    public String renderKitId() default "HTML_BASIC";
+    public String renderKitId() default RenderKitFactory.HTML_BASIC_RENDER_KIT;
 }

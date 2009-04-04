@@ -794,6 +794,14 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         else
         {
             viewComponentIds = (Map<String, Object>)requestMap.get(VIEW_IDS);
+            
+            // Check if null, this can happen if someone programatically tries to do an include of a 
+            // JSP fragment. This code will prevent NullPointerException from happening in such cases.
+            if (viewComponentIds == null)
+            {
+                viewComponentIds = new HashMap<String, Object>();
+                requestMap.put(VIEW_IDS, viewComponentIds);
+            }
         }
 
         return viewComponentIds;

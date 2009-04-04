@@ -34,6 +34,7 @@ public abstract class StateManagerWrapper extends StateManager implements FacesW
 
     public abstract StateManager getWrapped();
 
+    @SuppressWarnings("deprecation")
     @Override
     public StateManager.SerializedView saveSerializedView(FacesContext context)
     {
@@ -52,18 +53,21 @@ public abstract class StateManagerWrapper extends StateManager implements FacesW
         return getWrapped().isSavingStateInClient(context);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     protected Object getTreeStructureToSave(FacesContext context)
     {
         return getWrapped().getTreeStructureToSave(context);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     protected Object getComponentStateToSave(FacesContext context)
     {
         return getWrapped().getComponentStateToSave(context);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void writeState(FacesContext context, StateManager.SerializedView state) throws IOException
     {
@@ -82,12 +86,14 @@ public abstract class StateManagerWrapper extends StateManager implements FacesW
         return getWrapped().restoreView(context, viewId, renderKitId);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     protected UIViewRoot restoreTreeStructure(FacesContext context, String viewId, String renderKitId)
     {
         return getWrapped().restoreTreeStructure(context, viewId, renderKitId);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     protected void restoreComponentState(FacesContext context, UIViewRoot viewRoot, String renderKitId)
     {

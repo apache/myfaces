@@ -32,13 +32,26 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  * @version $Revision$ $Date$
  */
 @JSFComponent(type = "javax.faces.Form", family = "javax.faces.Form")
-public class UIForm extends UIComponentBase implements NamingContainer
+public class UIForm extends UIComponentBase implements NamingContainer, UniqueIdVendor
 {
     // private static final Log log = LogFactory.getLog(UIForm.class);
 
     private boolean _submitted;
 
     private Boolean _prependId;
+
+    /**
+     * 
+     * {@inheritDoc}
+     * 
+     * @since 2.0
+     */
+    @Override
+    public String createUniqueId(FacesContext context, String seed)
+    {
+        // TODO: IMPLEMENT HERE
+        return null;
+    }
 
     public boolean isSubmitted()
     {

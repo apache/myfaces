@@ -80,7 +80,6 @@ public class ResultDataModel extends DataModel<SortedMap<String, Object>>
     }
 
     @Override
-    // TODO: Check with EG why data argument is not of type Result
     public Object getWrappedData()
     {
         return _data;
@@ -121,7 +120,6 @@ public class ResultDataModel extends DataModel<SortedMap<String, Object>>
         return _data.getRows();
     }
 
-    // TODO: Check with EG why data argument is not of type Result
     @Override
     public void setWrappedData(Object data)
     {

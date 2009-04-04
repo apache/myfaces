@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.context.FacesContext;
-import javax.faces.event.AfterAddToParentEvent;
 import javax.faces.event.PhaseId;
+import javax.faces.event.PostAddToViewEvent;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
@@ -125,12 +125,12 @@ class _ComponentChildrenList extends AbstractList<UIComponent> implements Serial
         
         // After the child component has been added to the view, if the following condition is not met
         // FacesContext.isPostback() returns true and FacesContext.getCurrentPhaseId() returns PhaseId.RESTORE_VIEW
-        if (context.isPostback() || !PhaseId.RESTORE_VIEW.equals(context.getCurrentPhaseId()))
+        if (!(context.isPostback() && PhaseId.RESTORE_VIEW.equals(context.getCurrentPhaseId())))
         {
             // Application.publishEvent(java.lang.Class, java.lang.Object)  must be called, passing 
-            // AfterAddToParentEvent.class as the first argument and 
-            // the newly added component as the second argument.
-            context.getApplication().publishEvent(AfterAddToParentEvent.class, child);
+            // PostAddToViewEvent.class as the first argument and the newly added component as the second 
+            // argument. TODO: Deal with isInView
+            context.getApplication().publishEvent(PostAddToViewEvent.class, child);
         }
     }
 

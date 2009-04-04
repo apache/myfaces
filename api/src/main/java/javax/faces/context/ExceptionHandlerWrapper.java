@@ -21,60 +21,58 @@ package javax.faces.context;
 import javax.faces.FacesException;
 import javax.faces.FacesWrapper;
 import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ExceptionEvent;
+import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.SystemEvent;
 
 /**
-*
-* @since 2.0
-* @author Leonardo Uribe (latest modification by $Author$)
-* @version $Revision$ $Date$
-*/
-public abstract class ExceptionHandlerWrapper extends ExceptionHandler
-        implements FacesWrapper<ExceptionHandler>
+ * 
+ * @since 2.0
+ * @author Leonardo Uribe (latest modification by $Author$)
+ * @version $Revision$ $Date$
+ */
+public abstract class ExceptionHandlerWrapper extends ExceptionHandler implements FacesWrapper<ExceptionHandler>
 {
-
-    public ExceptionEvent getHandledExceptionEvent()
+    @Override
+    public ExceptionQueuedEvent getHandledExceptionQueuedEvent()
     {
-        return getWrapped().getHandledExceptionEvent();
+        return getWrapped().getHandledExceptionQueuedEvent();
     }
 
-
-    public Iterable<ExceptionEvent> getHandledExceptionEvents()
+    @Override
+    public Iterable<ExceptionQueuedEvent> getHandledExceptionQueuedEvents()
     {
-        return getWrapped().getHandledExceptionEvents();
+        return getWrapped().getUnhandledExceptionQueuedEvents();
     }
 
-
+    @Override
     public Throwable getRootCause(Throwable t)
     {
         return getWrapped().getRootCause(t);
     }
 
-
-    public Iterable<ExceptionEvent> getUnhandledExceptionEvents()
+    @Override
+    public Iterable<ExceptionQueuedEvent> getUnhandledExceptionQueuedEvents()
     {
-        return getWrapped().getUnhandledExceptionEvents();
+        return getWrapped().getUnhandledExceptionQueuedEvents();
     }
 
+    public abstract ExceptionHandler getWrapped();
 
+    @Override
     public void handle() throws FacesException
     {
         getWrapped().handle();
     }
 
-
+    @Override
     public boolean isListenerForSource(Object source)
     {
         return getWrapped().isListenerForSource(source);
     }
 
-
-    public void processEvent(SystemEvent exceptionEvent)
-            throws AbortProcessingException
+    @Override
+    public void processEvent(SystemEvent exceptionQueuedEvent) throws AbortProcessingException
     {
-        getWrapped().processEvent(exceptionEvent);
+        getWrapped().processEvent(exceptionQueuedEvent);
     }
-
-    public abstract ExceptionHandler getWrapped();
 }

@@ -18,7 +18,6 @@
  */
 package javax.faces.context;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +37,45 @@ import javax.faces.render.RenderKit;
  */
 public abstract class FacesContext
 {
+    private static ThreadLocal<FacesContext> _currentInstance = new ThreadLocal<FacesContext>();
 
+    private static ThreadLocal<FacesContext> _firstInstance = new ThreadLocal<FacesContext>();
+
+    public abstract void addMessage(String clientId, FacesMessage message);
+
+    public abstract Application getApplication();
+
+    /**
+     * 
+     * @return
+     * 
+     * @since 2.0
+     */
+    public Map<Object, Object> getAttributes()
+    {
+        // TODO: IMPLEMENT IMPL JSF 2.0 #32
+        throw new UnsupportedOperationException();
+    }
+
+    public abstract Iterator<String> getClientIdsWithMessages();
+
+    public static FacesContext getCurrentInstance()
+    {
+        return _currentInstance.get();
+    }
+
+    /**
+     * 
+     * @return
+     * 
+     * @since 2.0
+     */
+    public PhaseId getCurrentPhaseId()
+    {
+        // TODO: IMPLEMENT IMPL
+        throw new UnsupportedOperationException();
+    }
+    
     /**
      * Return the context within which all EL-expressions are evaluated.
      * <p>
@@ -87,7 +124,6 @@ public abstract class FacesContext
         }
 
         ELContext elctx = ctx.getELContext();
-
         if (elctx == null)
         {
             throw new UnsupportedOperationException();
@@ -96,37 +132,80 @@ public abstract class FacesContext
         return elctx;
     }
 
-    public abstract Application getApplication();
-
-    public Map<Object, Object> getAttributes()
+    /**
+     * 
+     * @return
+     * 
+     * @since 2.0
+     */
+    public ExceptionHandler getExceptionHandler()
     {
-        // TODO: JSF 2.0 #32
-        // VALIDATE: Should this be asbtract or throws UnsupportedOperationException? Check with the EG
-        return null;
-    }
-
-    public abstract Iterator<String> getClientIdsWithMessages();
-
-    public PhaseId getCurrentPhaseId()
-    {
+        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
     public abstract ExternalContext getExternalContext();
+    
+    /**
+     * 
+     * @return
+     * 
+     * @since 2.0
+     */
+    public Flash getFlash()
+    {
+        // TODO: IMPLEMENT IMPL
+        throw new UnsupportedOperationException();
+    }
 
     public abstract FacesMessage.Severity getMaximumSeverity();
+
+    /**
+     * 
+     * @return
+     * 
+     * @since 2.0
+     */
+    public List<FacesMessage> getMessageList()
+    {
+        // TODO: IMPLEMENT IMPL
+        throw new UnsupportedOperationException();
+    }
+    
+    /**
+     * 
+     * @param clientId
+     * @return
+     * 
+     * @since 2.0
+     */
+    public List<FacesMessage> getMessageList(String clientId)
+    {
+        // TODO: IMPLEMENT IMPL
+        throw new UnsupportedOperationException();
+    }
 
     public abstract Iterator<FacesMessage> getMessages();
 
     public abstract Iterator<FacesMessage> getMessages(String clientId);
 
-    public List<FacesMessage> getMessageList()
+    /**
+     * <p>
+     * Return the PartialViewContext for this request. The PartialViewContext is used to control the processing of
+     * specified components during the execute portion of the request processing lifecycle (known as partial processing)
+     * and the rendering of specified components (known as partial rendering). This method must return a new
+     * PartialViewContext if one does not already exist.
+     * </p>
+     * 
+     * @return The PartialViewContext
+     * @throws IllegalStateException
+     *             if this method is called after this instance has been released
+     * 
+     * @since 2.0
+     */
+    public PartialViewContext getPartialViewContext()
     {
-        throw new UnsupportedOperationException();
-    }
-
-    public List<FacesMessage> getMessageList(String clientId)
-    {
+        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -138,52 +217,51 @@ public abstract class FacesContext
 
     public abstract ResponseStream getResponseStream();
 
-    public abstract void setResponseStream(ResponseStream responseStream);
-
     public abstract ResponseWriter getResponseWriter();
-
-    public abstract void setResponseWriter(ResponseWriter responseWriter);
+    
+    /**
+     * 
+     * @return
+     * 
+     * @since 2.0
+     */
+    public boolean getValidationFailed()
+    {
+        // TODO: IMPLEMENT IMPL
+        throw new UnsupportedOperationException();
+    }
 
     public abstract UIViewRoot getViewRoot();
 
+    /**
+     * 
+     * @return
+     * 
+     * @since 2.0
+     */
     public boolean isPostback()
     {
+        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
-
-    public ExceptionHandler getExceptionHandler()
+    
+    /**
+     * 
+     * @return
+     * 
+     * @since 2.0
+     */
+    public boolean isProcessingEvents()
     {
+        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
-
-    public void setExceptionHandler(ExceptionHandler exceptionHandler)
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    public void setCurrentPhaseId(PhaseId currentPhaseId)
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    public abstract void setViewRoot(UIViewRoot root);
-
-    public abstract void addMessage(String clientId, FacesMessage message);
 
     public abstract void release();
 
     public abstract void renderResponse();
 
     public abstract void responseComplete();
-
-    private static ThreadLocal<FacesContext> _currentInstance = new ThreadLocal<FacesContext>();
-
-    private static ThreadLocal<FacesContext> _firstInstance = new ThreadLocal<FacesContext>();
-
-    public static FacesContext getCurrentInstance()
-    {
-        return _currentInstance.get();
-    }
 
     protected static void setCurrentInstance(FacesContext context)
     {
@@ -204,19 +282,55 @@ public abstract class FacesContext
     }
 
     /**
-     * <p>
-     * Return the PartialViewContext for this request. The PartialViewContext is used to control the processing of
-     * specified components during the execute portion of the request processing lifecycle (known as partial processing)
-     * and the rendering of specified components (known as partial rendering). This method must return a new
-     * PartialViewContext if one does not already exist.
-     * </p>
      * 
-     * @return The PartialViewContext
-     * @throws IllegalStateException
-     *             if this method is called after this instance has been released
+     * @return
+     * 
+     * @since 2.0
      */
-    public PartialViewContext getPartialViewContext()
+    public void setCurrentPhaseId(PhaseId currentPhaseId)
     {
+        // TODO: IMPLEMENT IMPL
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * 
+     * @return
+     * 
+     * @since 2.0
+     */
+    public void setExceptionHandler(ExceptionHandler exceptionHandler)
+    {
+        // TODO: IMPLEMENT IMPL
+        throw new UnsupportedOperationException();
+    }
+    
+    /**
+     * 
+     * @param processingEvents
+     * 
+     * @since 2.0
+     */
+    public void setProcessingEvents(boolean processingEvents)
+    {
+        // TODO: IMPLEMENT IMPL
+        throw new UnsupportedOperationException();
+    }
+
+    public abstract void setResponseStream(ResponseStream responseStream);
+
+    public abstract void setResponseWriter(ResponseWriter responseWriter);
+
+    public abstract void setViewRoot(UIViewRoot root);
+    
+    /**
+     * 
+     * 
+     * @since 2.0
+     */
+    public void validationFailed()
+    {
+        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 }

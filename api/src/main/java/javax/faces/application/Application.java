@@ -21,6 +21,7 @@ package javax.faces.application;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.el.ELContextListener;
@@ -29,7 +30,11 @@ import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
+import javax.faces.component.ActionSource;
+import javax.faces.component.ActionSource2;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
+import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.el.MethodBinding;
@@ -37,11 +42,12 @@ import javax.faces.el.PropertyResolver;
 import javax.faces.el.ReferenceSyntaxException;
 import javax.faces.el.ValueBinding;
 import javax.faces.el.VariableResolver;
+import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionListener;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
+import javax.faces.event.SystemEventListenerHolder;
 import javax.faces.validator.Validator;
-import javax.faces.webapp.pdl.PageDeclarationLanguage;
 
 /**
  * <p>
@@ -77,6 +83,13 @@ public abstract class Application
 {
     // The concrete methods throwing UnsupportedOperationExceptiom were added for JSF 1.2.
     // They supply default to allows old Application implementations to still work.
+
+    /**
+     * @since 2.0
+     * 
+     * FIXME: Notify EG, this should not be abstract and throw UnsupportedOperationException
+     */
+    public abstract void addBehavior(String behaviorId, String behaviorClass);
 
     /**
      * Define a new mapping from a logical "component type" to an actual java class name. This controls what type is
@@ -128,6 +141,18 @@ public abstract class Application
      *             if <code>componentType</code> or <code>componentClass</code> is <code>null</code>
      */
     public abstract void addConverter(String converterId, String converterClass);
+
+    /**
+     * 
+     * @param validatorId
+     * 
+     * @since 2.0
+     */
+    public void addDefaultValidatorId(String validatorId)
+    {
+        // TODO: IMPLEMENT IMPL
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * <p>
@@ -184,10 +209,21 @@ public abstract class Application
      *@param <code>validatorId</code> - The validator id to be registered
      *@param <code>validatorClass</code> - The fully qualified class name of the corresponding Validator implementation
      * 
-     *@throws NullPointerException if <code>validatorId</code> or <code>validatorClass</code> is
-     *         <code>null</code>
+     *@throws NullPointerException
+     *             if <code>validatorId</code> or <code>validatorClass</code> is <code>null</code>
      */
     public abstract void addValidator(String validatorId, String validatorClass);
+
+    /**
+     * 
+     * @param behaviorId
+     * @return
+     * @throws FacesException
+     * @since 2.0
+     * 
+     * FIXME: Notify EG, this should not be abstract and throw UnsupportedOperationException
+     */
+    public abstract ClientBehavior createBehavior(String behaviorId) throws FacesException;
 
     /**
      * ???
@@ -195,10 +231,12 @@ public abstract class Application
      * @param context
      * @param componentResource
      * @return
+     * 
+     * @since 2.0
      */
     public UIComponent createComponent(FacesContext context, Resource componentResource)
     {
-        // TODO: JSF 2.0 #60
+        // TODO: IMPLEMENT IMPL JSF 2.0 #60
         throw new UnsupportedOperationException();
     }
 
@@ -208,9 +246,12 @@ public abstract class Application
      * @param componentType
      * @param rendererType
      * @return
+     * 
+     * @since 2.0
      */
     public UIComponent createComponent(FacesContext context, String componentType, String rendererType)
     {
+        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -263,12 +304,14 @@ public abstract class Application
      * @param componentType
      *            - Component type to create if the ValueExpression does not return a component instance
      * 
-     * @throws FacesException if a <code>{@link UIComponent}</code> cannot be created
-     * @throws NullPointerException if any parameter is null
-     *         <p>
-     *         A default implementation is provided that throws <code>UnsupportedOperationException</code> so that users
-     *         that decorate <code>Application</code> can continue to function
-     *         </p>
+     * @throws FacesException
+     *             if a <code>{@link UIComponent}</code> cannot be created
+     * @throws NullPointerException
+     *             if any parameter is null
+     *             <p>
+     *             A default implementation is provided that throws <code>UnsupportedOperationException</code> so that
+     *             users that decorate <code>Application</code> can continue to function
+     *             </p>
      * 
      * @since 1.2
      */
@@ -285,10 +328,13 @@ public abstract class Application
      * @param componentType
      * @param rendererType
      * @return
+     * 
+     * @since 2.0
      */
     public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType,
                                        String rendererType)
     {
+        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -440,6 +486,16 @@ public abstract class Application
      * {@link ActionSource2}, and only implement {@link ActionSource}.
      */
     public abstract ActionListener getActionListener();
+    
+    /**
+     * 
+     * @return
+     * 
+     * @since 2.0
+     * 
+     * FIXME: Notify EG, this should not be abstract and throw UnsupportedOperationException
+     */
+    public abstract Iterator<String> getBehaviorIds();
 
     /**
      * Return an <code>Iterator</code> over the set of currently defined component types for this
@@ -478,6 +534,18 @@ public abstract class Application
      * @return
      */
     public abstract String getDefaultRenderKitId();
+    
+    /**
+     * 
+     * @return
+     * 
+     * @since 2.0
+     */
+    public Map<String, String> getDefaultValidatorInfo()
+    {
+        // TODO: IMPLEMENT IMPL
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * <p>
@@ -567,11 +635,6 @@ public abstract class Application
      */
     public abstract NavigationHandler getNavigationHandler();
 
-    public PageDeclarationLanguage getPageDeclarationLanguage()
-    {
-        throw new UnsupportedOperationException();
-    }
-
     /**
      * <p>
      * Return the project stage for the currently running application instance. The default value is <code>
@@ -601,6 +664,7 @@ public abstract class Application
      */
     public ProjectStage getProjectStage()
     {
+        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -628,8 +692,10 @@ public abstract class Application
      * 
      * @return <code>ResourceBundle</code> for the current UIViewRoot, otherwise null
      * 
-     * @throws FacesException if a bundle was defined, but not resolvable
-     * @throws NullPointerException if ctx == null || name == null
+     * @throws FacesException
+     *             if a bundle was defined, but not resolvable
+     * @throws NullPointerException
+     *             if ctx == null || name == null
      */
     public ResourceBundle getResourceBundle(FacesContext ctx, String name) throws FacesException, NullPointerException
     {
@@ -659,6 +725,7 @@ public abstract class Application
      */
     public ResourceHandler getResourceHandler()
     {
+        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -702,9 +769,12 @@ public abstract class Application
      * @param systemEventClass
      * @param sourceBaseType
      * @param source
+     * 
+     * @since 2.0
      */
     public void publishEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source)
     {
+        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -762,13 +832,18 @@ public abstract class Application
      * <li>Call <code>{@link SystemEvent.processListener(javax.faces.event.FacesListener)}</code>, passing the listener
      * instance.</li>
      * 
-     * @param systemEventClass - The Class of event that is being published. Must be non-null.
+     * @param systemEventClass
+     *            - The Class of event that is being published. Must be non-null.
      * 
-     * @param source - The <code>source</code> for the event of type systemEventClass. Must be non-
-     *        <code>null</code>, and must implement <code>{@link SystemEventListenerHolder}</code>.
+     * @param source
+     *            - The <code>source</code> for the event of type systemEventClass. Must be non- <code>null</code>, and
+     *            must implement <code>{@link SystemEventListenerHolder}</code>.
+     * 
+     * @since 2.0
      */
     public void publishEvent(Class<? extends SystemEvent> systemEventClass, Object source)
     {
+        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -843,14 +918,6 @@ public abstract class Application
      */
     public abstract void setNavigationHandler(NavigationHandler handler);
 
-    /*
-     * 
-     */
-    public void setPageDeclarationLanguage(PageDeclarationLanguage pdl)
-    {
-        throw new UnsupportedOperationException();
-    }
-
     /**
      * The recommended way to affect the execution of the EL is to provide an <el-resolver> element at the right place
      * in the application configuration resources which will be considered in the normal course of expression
@@ -870,6 +937,7 @@ public abstract class Application
      */
     public void setResourceHandler(ResourceHandler resourceHandler)
     {
+        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -913,7 +981,8 @@ public abstract class Application
      * Set the {@link ViewHandler} instance that will be utilized during the <code>Restore View and Render Response
      * </code> phases of the request processing lifecycle.
      * 
-     * @param handler - The new {@link ViewHandler} instance
+     * @param handler
+     *            - The new {@link ViewHandler} instance
      * 
      * @throws IllegalStateException
      *             if this method is called after at least one request has been processed by the <code>Lifecycle</code>
@@ -934,6 +1003,7 @@ public abstract class Application
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass,
                                  SystemEventListener listener)
     {
+        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -960,6 +1030,7 @@ public abstract class Application
     public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass,
                                      SystemEventListener listener)
     {
+        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
