@@ -512,6 +512,36 @@ public final class ServletExternalContextImpl extends ExternalContext implements
             throw new IllegalArgumentException("Only HttpServletResponse supported");
         }
     }
+    
+    /**
+     * @since 2.0
+     */
+    @Override
+    public void responseFlushBuffer() throws IOException
+    {
+    	checkHttpServletResponse();
+    	_httpServletResponse.flushBuffer();
+    }
+
+    /**
+     * @since 2.0
+     */
+    @Override
+    public void responseReset()
+    {
+    	checkHttpServletResponse();
+    	_httpServletResponse.reset();
+    }
+
+    /**
+     * @since 2.0
+     */
+    @Override
+    public void responseSendError(int statusCode, String message) throws IOException
+    {
+       checkHttpServletResponse();
+       _httpServletResponse.sendError(statusCode, message);
+    }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -580,6 +610,16 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     {
         this._servletResponse = (ServletResponse) response;
     }
+    
+    /**
+     * @since 2.0
+     */
+    @Override
+    public void setResponseBufferSize(int size)
+    {
+        checkHttpServletResponse();
+        _httpServletResponse.setBufferSize(size);
+    }
 
     /**
      * @since JSF 1.2
@@ -590,6 +630,17 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     {
         this._servletResponse.setCharacterEncoding(encoding);
     }
+    
+    /**
+     * @since 2.0
+     */
+    @Override
+    public void setResponseContentLength(int length)
+    {
+        checkHttpServletResponse();
+        _httpServletResponse.setContentLength(length);
+    }
+
 
     @Override
     public void setResponseContentType(String contentType)
@@ -600,6 +651,16 @@ public final class ServletExternalContextImpl extends ExternalContext implements
             // Sets the content type of the response being sent to the client
             _servletResponse.setContentType(contentType);
         }
+    }  
+    
+    /**
+     * @since 2.0
+     */
+    @Override
+    public void setResponseHeader(String name, String value)
+    {
+        checkHttpServletResponse();
+        _httpServletResponse.setHeader(name, value);
     }
 
     private void checkNull(final Object o, final String param)
@@ -685,15 +746,14 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     public String getContextName() {
         return _servletContext.getServletContextName();
     }
-    
     /**
-     * @since JSF 2.0
+     * @since 2.0
      */
     @Override
-    public void addResponseHeader(String name, String value)
+    public void setResponseStatus(int statusCode)
     {
-    	checkHttpServletResponse();
-    	_httpServletResponse.addHeader(name, value);
+        checkHttpServletResponse();
+        _httpServletResponse.setStatus(statusCode);
     }
     
 }

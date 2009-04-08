@@ -278,7 +278,6 @@ public abstract class ExternalContext
      */
     public void responseFlushBuffer() throws IOException
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -288,7 +287,6 @@ public abstract class ExternalContext
      */
     public void responseReset()
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -302,7 +300,6 @@ public abstract class ExternalContext
      */
     public void responseSendError(int statusCode, String message) throws IOException
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -348,7 +345,6 @@ public abstract class ExternalContext
      */
     public void setResponseBufferSize(int size)
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -371,7 +367,6 @@ public abstract class ExternalContext
      */
     public void setResponseContentLength(int length)
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -383,7 +378,6 @@ public abstract class ExternalContext
      */
     public void setResponseContentType(String contentType)
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -396,7 +390,6 @@ public abstract class ExternalContext
      */
     public void setResponseHeader(String name, String value)
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
     
@@ -408,7 +401,6 @@ public abstract class ExternalContext
      */
     public void setResponseStatus(int statusCode)
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 }
