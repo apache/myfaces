@@ -474,6 +474,15 @@ public final class ServletExternalContextImpl extends ExternalContext implements
             session.invalidate();
         }
     }
+    
+    /**
+     * @since 2.0
+     */
+    @Override
+    public boolean isResponseCommitted()
+    {
+        return _httpServletResponse.isCommitted();
+    }
 
     @Override
     public void log(final String message)

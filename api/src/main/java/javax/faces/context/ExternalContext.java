@@ -248,7 +248,6 @@ public abstract class ExternalContext
      */
     public void invalidateSession()
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -260,7 +259,6 @@ public abstract class ExternalContext
      */
     public boolean isResponseCommitted()
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
