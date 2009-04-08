@@ -137,6 +137,15 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     {
         return _servletRequest;
     }
+    
+    /**
+     * @since 2.0
+     */
+    @Override
+    public int getRequestContentLength()
+    {	
+    	return _servletRequest.getContentLength();
+    }
 
     @Override
     public Object getResponse()

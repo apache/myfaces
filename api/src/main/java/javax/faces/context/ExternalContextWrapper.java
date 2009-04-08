@@ -152,7 +152,7 @@ public abstract class ExternalContextWrapper extends ExternalContext implements 
     }
 
     @Override
-    public String getRequestContentLength()
+    public int getRequestContentLength()
     {
         return getWrapped().getRequestContentLength();
     }

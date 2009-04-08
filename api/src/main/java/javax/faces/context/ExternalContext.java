@@ -101,7 +101,6 @@ public abstract class ExternalContext
      */
     public String getMimeType(String file)
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -110,7 +109,6 @@ public abstract class ExternalContext
      */
     public String getRealPath(String path)
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -129,9 +127,8 @@ public abstract class ExternalContext
      * 
      * @since 2.0
      */
-    public String getRequestContentLength()
+    public int getRequestContentLength()
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
