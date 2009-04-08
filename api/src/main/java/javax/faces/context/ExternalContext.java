@@ -164,7 +164,6 @@ public abstract class ExternalContext
      */
     public String getRequestScheme()
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -173,7 +172,6 @@ public abstract class ExternalContext
      */
     public String getRequestServerName()
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -182,7 +180,6 @@ public abstract class ExternalContext
      */
     public int getRequestServerPort()
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -204,7 +201,6 @@ public abstract class ExternalContext
      */
     public int getResponseBufferSize()
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 

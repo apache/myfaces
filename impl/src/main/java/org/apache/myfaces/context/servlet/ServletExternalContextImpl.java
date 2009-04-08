@@ -152,6 +152,15 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     {
         return _servletResponse;
     }
+    
+    /**
+     * @since 2.0
+     */
+    @Override
+    public int getResponseBufferSize()
+    {
+    	return _servletResponse.getBufferSize();
+    }
 
     @Override
     public String getResponseContentType()
