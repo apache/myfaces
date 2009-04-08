@@ -648,6 +648,15 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     public String getContextName() {
         return _servletContext.getServletContextName();
     }
-
-
+    
+    /**
+     * @since JSF 2.0
+     */
+    @Override
+    public void addResponseHeader(String name, String value)
+    {
+    	checkHttpServletResponse();
+    	_httpServletResponse.addHeader(name, value);
+    }
+    
 }

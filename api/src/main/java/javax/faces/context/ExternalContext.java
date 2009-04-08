@@ -49,7 +49,6 @@ public abstract class ExternalContext
      */
     public void addResponseCookie(String name, String value, Map<String, Object> properties)
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -62,7 +61,6 @@ public abstract class ExternalContext
      */
     public void addResponseHeader(String name, String value)
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
