@@ -56,7 +56,7 @@ public class RepeatHandler extends ComponentHandler
 
     private class TagMetaData extends Metadata
     {
-        private final String[] attrs;
+        private final String[] _attrs;
 
         public TagMetaData(Class<?> type)
         {
@@ -88,7 +88,7 @@ public class RepeatHandler extends ComponentHandler
                 // do nothing
             }
             
-            this.attrs = names.toArray(new String[names.size()]);
+            _attrs = names.toArray(new String[names.size()]);
         }
 
         public void applyMetadata(FaceletContext ctx, Object instance)
@@ -96,9 +96,9 @@ public class RepeatHandler extends ComponentHandler
             UIComponent component = (UIComponent) instance;
             Map<String, Object> attrs = component.getAttributes();
             attrs.put("alias.element", tag.getQName());
-            if (this.attrs.length > 0)
+            if (_attrs.length > 0)
             {
-                attrs.put("alias.attributes", this.attrs);
+                attrs.put("alias.attributes", _attrs);
             }
         }
     }
