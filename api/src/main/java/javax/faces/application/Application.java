@@ -150,8 +150,6 @@ public abstract class Application
      */
     public void addDefaultValidatorId(String validatorId)
     {
-        // TODO: IMPLEMENT IMPL
-        throw new UnsupportedOperationException();
     }
 
     /**
@@ -251,7 +249,6 @@ public abstract class Application
      */
     public UIComponent createComponent(FacesContext context, String componentType, String rendererType)
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -334,7 +331,6 @@ public abstract class Application
     public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType,
                                        String rendererType)
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -543,7 +539,6 @@ public abstract class Application
      */
     public Map<String, String> getDefaultValidatorInfo()
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -664,7 +659,6 @@ public abstract class Application
      */
     public ProjectStage getProjectStage()
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -725,7 +719,6 @@ public abstract class Application
      */
     public ResourceHandler getResourceHandler()
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -774,7 +767,6 @@ public abstract class Application
      */
     public void publishEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source)
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -843,7 +835,6 @@ public abstract class Application
      */
     public void publishEvent(Class<? extends SystemEvent> systemEventClass, Object source)
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -937,7 +928,6 @@ public abstract class Application
      */
     public void setResourceHandler(ResourceHandler resourceHandler)
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -1003,7 +993,6 @@ public abstract class Application
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass,
                                  SystemEventListener listener)
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -1030,7 +1019,6 @@ public abstract class Application
     public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass,
                                      SystemEventListener listener)
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 

@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.application;
 
+import java.beans.BeanDescriptor;
+import java.beans.BeanInfo;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,12 +44,14 @@ import javax.faces.FacesException;
 import javax.faces.application.Application;
 import javax.faces.application.NavigationHandler;
 import javax.faces.application.ProjectStage;
+import javax.faces.application.Resource;
 import javax.faces.application.ResourceDependencies;
 import javax.faces.application.ResourceDependency;
 import javax.faces.application.ResourceHandler;
 import javax.faces.application.StateManager;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.behavior.ClientBehavior;
@@ -94,7 +98,7 @@ import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @author Anton Koinov
  * @author Thomas Spiegl
@@ -143,6 +147,8 @@ public class ApplicationImpl extends Application
     private final Map<String, Class<? extends Validator>> _validatorClassMap = new ConcurrentHashMap<String, Class<? extends Validator>>();
 
     private final Map<Class<? extends SystemEvent>, SystemListenerEntry> _systemEventListenerClassMap = new ConcurrentHashMap<Class<? extends SystemEvent>, SystemListenerEntry>();
+
+    private Map<String, String> _defaultValidatorsIds = new ConcurrentHashMap<String, String>();
 
     private final RuntimeConfig _runtimeConfig;
 
@@ -233,6 +239,21 @@ public class ApplicationImpl extends Application
         {
             _runtimeConfig.addApplicationElResolver(resolver);
         }
+    }
+
+    @Override
+    public void addDefaultValidatorId(String validatorId)
+    {
+        if (_validatorClassMap.containsKey(validatorId))
+        {
+            _defaultValidatorsIds.put(validatorId, _validatorClassMap.get(validatorId).getName());
+        }
+    }
+
+    @Override
+    public Map<String, String> getDefaultValidatorInfo()
+    {
+        return Collections.unmodifiableMap(_defaultValidatorsIds);
     }
 
     @Override
@@ -405,7 +426,7 @@ public class ApplicationImpl extends Application
 
         ExpressionFactory factory = getExpressionFactory();
 
-        return (T)factory.createValueExpression(elContext, expression, expectedType).getValue(elContext);
+        return (T) factory.createValueExpression(elContext, expression, expectedType).getValue(elContext);
     }
 
     @Override
@@ -431,10 +452,11 @@ public class ApplicationImpl extends Application
                 SystemEventListenerHolder holder = (SystemEventListenerHolder) source;
 
                 // If the source argument implements SystemEventListenerHolder, call
-                // SystemEventListenerHolder.getListenersForEventClass(java.lang.Class) on it, passing the systemEventClass
+                // SystemEventListenerHolder.getListenersForEventClass(java.lang.Class) on it, passing the
+                // systemEventClass
                 // argument. If the list is not empty, perform algorithm traverseListenerList on the list.
-                event = _traverseListenerList(holder.getListenersForEventClass(systemEventClass), systemEventClass, source,
-                                              event);
+                event = _traverseListenerList(holder.getListenersForEventClass(systemEventClass), systemEventClass,
+                                              source, event);
             }
 
             SystemListenerEntry systemListenerEntry = _systemEventListenerClassMap.get(systemEventClass);
@@ -899,6 +921,145 @@ public class ApplicationImpl extends Application
     }
 
     @Override
+    public UIComponent createComponent(FacesContext context, Resource componentResource)
+    {
+        UIComponent component = null;
+        Resource resource;
+        String fqcn;
+        Class<? extends UIComponent> componentClass = null;
+
+        /*
+         * Obtain a reference to the ViewDeclarationLanguage for this Application instance by calling
+         * ViewHandler.getViewDeclarationLanguage(javax.faces.context.FacesContext, java.lang.String), passing the
+         * viewId found by calling UIViewRoot.getViewId() on the UIViewRoot in the argument FacesContext.
+         */
+        UIViewRoot view = context.getViewRoot();
+        ViewDeclarationLanguage vdl = getViewHandler().getViewDeclarationLanguage(context, view.getViewId());
+
+        /*
+         * Obtain a reference to the composite component metadata for this composite component by calling
+         * ViewDeclarationLanguage.getComponentMetadata(javax.faces.context.FacesContext,
+         * javax.faces.application.Resource), passing the facesContext and componentResource arguments to this method.
+         * This version of JSF specification uses JavaBeans as the API to the component metadata.
+         */
+        BeanInfo metadata = vdl.getComponentMetadata(context, componentResource);
+
+        /*
+         * Determine if the component author declared a component-type for this component instance by obtaining the
+         * BeanDescriptor from the component metadata and calling its getValue() method, passing
+         * UIComponent.COMPOSITE_COMPONENT_TYPE_KEY as the argument. If non-null, the result must be a ValueExpression
+         * whose value is the component-type of the UIComponent to be created for this Resource component. Call through
+         * to createComponent(java.lang.String) to create the component.
+         */
+        BeanDescriptor descriptor = metadata.getBeanDescriptor();
+        ValueExpression componentType = (ValueExpression) descriptor.getValue(UIComponent.COMPOSITE_COMPONENT_TYPE_KEY);
+
+        if (componentType != null)
+        {
+            component = createComponent((String) componentType.getValue(context.getELContext()));
+        }
+        else
+        {
+            /*
+             * Otherwise, determine if a script based component for this Resource can be found by calling
+             * ViewDeclarationLanguage.getScriptComponentResource(javax.faces.context.FacesContext,
+             * javax.faces.application.Resource). If the result is non-null, and is a script written in one of the
+             * languages listed in JSF 4.3 of the specification prose document, create a UIComponent instance from the
+             * script resource.
+             */
+            resource = vdl.getScriptComponentResource(context, componentResource);
+            if (resource != null)
+            {
+                String name = resource.getResourceName();
+                String className = name.substring(0, name.lastIndexOf('.'));
+
+                component = (UIComponent)ClassUtils.newInstance(className);
+                component.getAttributes().put(Resource.COMPONENT_RESOURCE_KEY, componentResource);
+            }
+            else
+            {
+                /*
+                 * Otherwise, let library-name be the return from calling Resource.getLibraryName() on the argument
+                 * componentResource and resource-name be the return from calling Resource.getResourceName() on the
+                 * argument componentResource. Create a fully qualified Java class name by removing any file extension
+                 * from resource-name and let fqcn be library-name + "." + resource-name. If a class with the name of
+                 * fqcn cannot be found, take no action and continue to the next step. If any of InstantiationException,
+                 * IllegalAccessException, or ClassCastException are thrown, wrap the exception in a FacesException and
+                 * re-throw it. If any other exception is thrown, log the exception and continue to the next step.
+                 */
+
+                fqcn = componentResource.getLibraryName() + "." + componentResource.getResourceName();
+
+                try
+                {
+                    componentClass = ClassUtils.classForName(fqcn);
+                }
+                catch (ClassNotFoundException e)
+                {
+                }
+
+                if (componentClass != null)
+                {
+                    try
+                    {
+                        component = componentClass.newInstance();
+                    }
+                    catch (InstantiationException e)
+                    {
+                        log.error("Could not instantiate component class name = " + fqcn, e);
+                        throw new FacesException("Could not instantiate component class name = " + fqcn, e);
+                    }
+                    catch (IllegalAccessException e)
+                    {
+                        log.error("Could not instantiate component class name = " + fqcn, e);
+                        throw new FacesException("Could not instantiate component class name = " + fqcn, e);
+                    }
+                    catch (Exception e)
+                    {
+                        log.error("Could not instantiate component class name = " + fqcn, e);
+                    }
+                }
+
+                /*
+                 * If none of the previous steps have yielded a UIComponent instance, call
+                 * createComponent(java.lang.String) passing "javax.faces.NamingContainer" as the argument.
+                 */
+                if (component == null)
+                {
+                    createComponent(UINamingContainer.COMPONENT_TYPE);
+                }
+            }
+        }
+
+        /*
+         * Call UIComponent.setRendererType(java.lang.String) on the UIComponent instance, passing
+         * "javax.faces.Composite" as the argument.
+         */
+        component.setRendererType("javax.faces.Composite");
+
+        /*
+         * Store the argument Resource in the attributes Map of the UIComponent under the key,
+         * Resource.COMPONENT_RESOURCE_KEY.
+         */
+        component.getAttributes().put(Resource.COMPONENT_RESOURCE_KEY, componentResource);
+
+        /*
+         * Store composite component metadata in the attributes Map of the UIComponent under the key,
+         * UIComponent.BEANINFO_KEY.
+         */
+        component.getAttributes().put(UIComponent.BEANINFO_KEY, metadata);
+
+        /*
+         * Before the component instance is returned, it must be inspected for the presence of a ListenerFor annotation.
+         * If this annotation is present, the action listed in ListenerFor must be taken on the component, before it is
+         * returned from this method.
+         */
+        _handleAnnotations(context, component, component);
+
+        return component;
+    }
+
+    @Override
     public UIComponent createComponent(FacesContext context, String componentType, String rendererType)
     {
         checkNull(context, "context");
@@ -1287,15 +1448,18 @@ public class ApplicationImpl extends Application
             {
                 Constructor<?>[] constructors = systemEventClass.getConstructors();
                 Constructor<? extends SystemEvent> constructor = null;
-                for (Constructor<?> c : constructors) {
-                    if (c.getParameterTypes().length == 1) {
+                for (Constructor<?> c : constructors)
+                {
+                    if (c.getParameterTypes().length == 1)
+                    {
                         // Safe cast, since the constructor belongs
                         // to a class of type SystemEvent
                         constructor = (Constructor<? extends SystemEvent>) c;
                         break;
                     }
                 }
-                if (constructor != null) {
+                if (constructor != null)
+                {
                     event = constructor.newInstance(source);
                 }
 
@@ -1322,13 +1486,13 @@ public class ApplicationImpl extends Application
             }
         }
 
-        _handleResourceDependency(context, inspected.getClass().getAnnotation(ResourceDependency.class));
+        _handleResourceDependency(context, component, inspected.getClass().getAnnotation(ResourceDependency.class));
         ResourceDependencies dependencies = inspected.getClass().getAnnotation(ResourceDependencies.class);
         if (dependencies != null)
         {
             for (ResourceDependency dependency : dependencies.value())
             {
-                _handleResourceDependency(context, dependency);
+                _handleResourceDependency(context, component, dependency);
             }
         }
     }
@@ -1394,7 +1558,7 @@ public class ApplicationImpl extends Application
         }
     }
 
-    private void _handleResourceDependency(FacesContext context, ResourceDependency annotation)
+    private void _handleResourceDependency(FacesContext context, UIComponent component, ResourceDependency annotation)
     {
         // If this annotation is not present on the class in question, no action must be taken.
         if (annotation != null)
@@ -1425,7 +1589,19 @@ public class ApplicationImpl extends Application
             if (library != null && library.length() > 0)
             {
                 // If library is non-null, store it under the key "library".
-                attributes.put("library", library);
+                if ("this".equals(library))
+                {
+                    // Special "this" behavior
+                    Resource resource = (Resource)component.getAttributes().get(Resource.COMPONENT_RESOURCE_KEY);
+                    if (resource != null)
+                    {
+                        attributes.put("library", resource.getLibraryName());
+                    }
+                }
+                else
+                {
+                    attributes.put("library", library);
+                }
             }
 
             // If target is the empty string, let target be null.
@@ -1448,9 +1624,8 @@ public class ApplicationImpl extends Application
     {
         /*
          * The Renderer instance to inspect must be obtained by calling FacesContext.getRenderKit() and calling
-         * RenderKit.getRenderer(java.lang.String, java.lang.String) on the result, passing the argument
-         * componentFamily of the newly created component as the first argument and the argument rendererType as
-         * the second argument.
+         * RenderKit.getRenderer(java.lang.String, java.lang.String) on the result, passing the argument componentFamily
+         * of the newly created component as the first argument and the argument rendererType as the second argument.
          */
         Renderer renderer = context.getRenderKit().getRenderer(component.getFamily(), rendererType);
         if (renderer == null)
@@ -1591,7 +1766,7 @@ public class ApplicationImpl extends Application
             {
                 /*
                  * TODO: Check if modification occurs often or not, might have to use a synchronized list instead.
-                 *
+                 * 
                  * Registrations found:
                  */
                 _lstSystemEventListener = new CopyOnWriteArrayList<SystemEventListener>();
@@ -1612,7 +1787,7 @@ public class ApplicationImpl extends Application
             {
                 /*
                  * TODO: Check if modification occurs often or not, might have to use a synchronized list instead.
-                 *
+                 * 
                  * Registrations found:
                  */
                 list = new CopyOnWriteArrayList<SystemEventListener>();
