@@ -224,7 +224,6 @@ public abstract class ExternalContext
      */
     public OutputStream getResponseOutputStream() throws IOException
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -233,7 +232,6 @@ public abstract class ExternalContext
      */
     public Writer getResponseOutputWriter() throws IOException
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 

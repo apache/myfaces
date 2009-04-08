@@ -21,6 +21,7 @@ package org.apache.myfaces.context.servlet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.Principal;
@@ -172,6 +173,15 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     public OutputStream getResponseOutputStream() throws IOException
     {
         return _servletResponse.getOutputStream();
+    }
+    
+    /**
+     * @since JSF 2.0
+     */
+    @Override
+    public Writer getResponseOutputWriter() throws IOException
+    {
+        return _servletResponse.getWriter();
     }
 
     @Override
