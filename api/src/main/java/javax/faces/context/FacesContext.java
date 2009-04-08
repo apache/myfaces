@@ -53,7 +53,6 @@ public abstract class FacesContext
      */
     public Map<Object, Object> getAttributes()
     {
-        // TODO: IMPLEMENT IMPL JSF 2.0 #32
         throw new UnsupportedOperationException();
     }
 

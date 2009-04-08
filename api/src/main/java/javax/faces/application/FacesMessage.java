@@ -23,26 +23,25 @@ import java.util.*;
 
 /**
  *see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *<p><code>FacesMessage</code> represents a single validation (or other) message, which is typically associated with a 
- *particular component in the view. A {@link FacesMessage} instance may be created based on a specific messageId. 
- *The specification defines the set of messageIds for which there must be {@link FacesMessage} instances.</p>
- *
- *<ui>The implementation must take the following steps when creating FacesMessage instances given a messageId:
- *    <li>Call {@link Application.getMessageBundle()}. If <code>non-null</code>, locate the named <code>ResourceBundle</code>, using the 
- *    <code>Locale</code> from the current {@linkUIViewRoot} and see if it has a value for the argument <code>messageId</code>. 
- *    If it does, treat the value as the <code>summary</code> of the {@link FacesMessage}. If it does not, or if 
- *    {@link Application.getMessageBundle()} returned null, look in the ResourceBundle named by the value of the constant 
- *    {@link FACES_MESSAGES} and see if it has a value for the argument messageId. If it does, treat the value as the 
- *    summary of the <code>FacesMessage</code>. If it does not, there is no initialization information for the <code>FacesMessage</code> 
- *    instance.
- *    </li>
- *    <li>In all cases, if a <code>ResourceBundle</code> hit is found for the <code>{messageId}</code>, look for further hits under 
- *    the key <code>{messageId}_detail</code>. Use this value, if present, as the <code>detail</code> for the returned <code>FacesMessage</code>.
- *    </li>
- *    <li>Make sure to perform any parameter substitution required for the <code>summary</code> and <code>detail</code> of the 
- *    <code>FacesMessage</code>.
- *    </li>
- *</ui>
+ *<p>
+ * <code>FacesMessage</code> represents a single validation (or other) message, which is typically associated with a
+ * particular component in the view. A {@link FacesMessage} instance may be created based on a specific messageId. The
+ * specification defines the set of messageIds for which there must be {@link FacesMessage} instances.
+ * </p>
+ * 
+ *<ui>The implementation must take the following steps when creating FacesMessage instances given a messageId: <li>Call
+ * {@link Application.getMessageBundle()}. If <code>non-null</code>, locate the named <code>ResourceBundle</code>, using
+ * the <code>Locale</code> from the current {@linkUIViewRoot} and see if it has a value for the argument
+ * <code>messageId</code>. If it does, treat the value as the <code>summary</code> of the {@link FacesMessage}. If it
+ * does not, or if {@link Application.getMessageBundle()} returned null, look in the ResourceBundle named by the value
+ * of the constant {@link FACES_MESSAGES} and see if it has a value for the argument messageId. If it does, treat the
+ * value as the summary of the <code>FacesMessage</code>. If it does not, there is no initialization information for the
+ * <code>FacesMessage</code> instance.</li> <li>In all cases, if a <code>ResourceBundle</code> hit is found for the
+ * <code>{messageId}</code>, look for further hits under the key <code>{messageId}_detail</code>. Use this value, if
+ * present, as the <code>detail</code> for the returned <code>FacesMessage</code>.</li> <li>Make sure to perform any
+ * parameter substitution required for the <code>summary</code> and <code>detail</code> of the <code>FacesMessage</code>
+ * .</li> </ui>
+ * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  * 
@@ -52,7 +51,8 @@ public class FacesMessage implements Serializable
     private static final long serialVersionUID = 4851488727794169661L;
 
     /**
-     * <code>ResourceBundle</code> identifier for messages whose message identifiers are defined in the JavaServer Faces specification.
+     * <code>ResourceBundle</code> identifier for messages whose message identifiers are defined in the JavaServer Faces
+     * specification.
      */
     public static final String FACES_MESSAGES = "javax.faces.Messages";
 
@@ -60,32 +60,33 @@ public class FacesMessage implements Serializable
      * Message severity level indicating an informational message rather than an error.
      */
     public static final FacesMessage.Severity SEVERITY_INFO = new Severity("Info", 1);
-    
+
     /**
      * Message severity level indicating that an error might have occurred.
      */
     public static final FacesMessage.Severity SEVERITY_WARN = new Severity("Warn", 2);
-    
+
     /**
      * Message severity level indicating that an error has occurred.
      */
     public static final FacesMessage.Severity SEVERITY_ERROR = new Severity("Error", 3);
-    
+
     /**
      * Message severity level indicating that a serious error has occurred.
      */
     public static final FacesMessage.Severity SEVERITY_FATAL = new Severity("Fatal", 4);
-    
+
     /**
-     * Immutable <code>Lis</code> of valid {@link FacesMessage.Severity}instances, in ascending order of their ordinal value.
+     * Immutable <code>Lis</code> of valid {@link FacesMessage.Severity}instances, in ascending order of their ordinal
+     * value.
      */
     public static final List<FacesMessage.Severity> VALUES;
-    
+
     /**
      * Immutable <code>Map</code> of valid {@link FacesMessage.Severity}instances, keyed by name.
      */
     public static final Map<String, FacesMessage.Severity> VALUES_MAP;
-    
+
     static
     {
         Map<String, FacesMessage.Severity> map = new HashMap<String, FacesMessage.Severity>(7);
@@ -110,7 +111,7 @@ public class FacesMessage implements Serializable
     }
 
     /**
-     * Construct a new {@link FacesMessage} with just a summary. The detail is null, the severity is set to 
+     * Construct a new {@link FacesMessage} with just a summary. The detail is null, the severity is set to
      * <code>Severity.INFO</code>.
      */
     public FacesMessage(String summary)
@@ -121,8 +122,11 @@ public class FacesMessage implements Serializable
 
     /**
      * Construct a new {@link FacesMessage} with the specified initial values. The severity is set to Severity.INFO.
-     * @param summary - Localized summary message text
-     * @param detail - Localized detail message text 
+     * 
+     * @param summary
+     *            - Localized summary message text
+     * @param detail
+     *            - Localized detail message text
      */
     public FacesMessage(String summary, String detail)
     {
@@ -133,15 +137,18 @@ public class FacesMessage implements Serializable
 
     /**
      * Construct a new {@link FacesMessage}with the specified initial values.
-     * @param severity- the severity
-     * @param summary- Localized summary message text
-     * @param detail- Localized detail message text 
+     * 
+     * @param severity
+     *            - the severity
+     * @param summary
+     *            - Localized summary message text
+     * @param detail
+     *            - Localized detail message text
      */
-    public FacesMessage(FacesMessage.Severity severity,
-                        String summary,
-                        String detail)
+    public FacesMessage(FacesMessage.Severity severity, String summary, String detail)
     {
-        if(severity == null) throw new NullPointerException("severity");
+        if (severity == null)
+            throw new NullPointerException("severity");
         _severity = severity;
         _summary = summary;
         _detail = detail;
@@ -161,7 +168,8 @@ public class FacesMessage implements Serializable
      */
     public void setSeverity(FacesMessage.Severity severity)
     {
-        if(severity == null) throw new NullPointerException("severity");
+        if (severity == null)
+            throw new NullPointerException("severity");
         _severity = severity;
     }
 
@@ -175,7 +183,9 @@ public class FacesMessage implements Serializable
 
     /**
      * Set the localized summary text.
-     * @param summary- The new localized summary text
+     * 
+     * @param summary
+     *            - The new localized summary text
      */
     public void setSummary(String summary)
     {
@@ -199,13 +209,14 @@ public class FacesMessage implements Serializable
 
     /**
      * Set the localized detail text.
-     * @param detail - The new localized detail text
+     * 
+     * @param detail
+     *            - The new localized detail text
      */
     public void setDetail(String detail)
     {
         _detail = detail;
     }
-
 
     public static class Severity implements Comparable<Severity>
     {
