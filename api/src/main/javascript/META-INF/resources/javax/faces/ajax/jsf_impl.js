@@ -455,4 +455,51 @@ if (!myfaces._JSF2Utils.exists(myfaces, "_jsfImpl")) {
         return this._projectStage;
     };
 
+      /**
+       * implementation of the external chain function
+       * moved into the impl
+       *
+       * according to the ri the source will bhe the scope
+       * for the functions the event will be the object passed
+       * @param {Object} source the source which also becomes
+       * the scope for the calling function (not sure if this is correct however
+       * the RI does it that way!
+       * @param {Event} event the event object being passed down into the
+       */
+    myfaces._jsfImpl.prototype.chain = function(source, event) {
+        var len = arguments.length;
+        if(len < 3) return;
+        //now we fetch from what is given from the parameter list
+        //we cannot work with splice here in any performant way so we do it the hard way
+        //arguments only are give if not set to undefined even null values!
+
+        var thisVal = ('object' == typeof source ) ? source: null;
+        var param   = ('undefined' != typeof event) ? event: null;
+
+        for(loop = 2; loop < len; loop++) {
+            //we do not change the scope of the incoming functions
+            //but we reuse the argument array capabilities of apply
+            var retVal = false;
+            //The spec states arbitrary codeblock
+            //the ri wraps everything into functions
+            //we do it differently here,
+            //
+            //We wrap only if the block itself
+            //is not a function! Should be compatible
+            //to the ri, but saner in its usage because
+            //it saves one intermediate step in most cases
+            //not my personal design decision, I probably would
+            //enforce functions only to keep the caller code clean,
+            //oh well
+            if('function' == typeof arguments[loop]) {
+                retVal = arguments[loop].call(thisVal, param);
+            } else {
+                retVal = (new Function("evt", arguments[loop])).call(thisVal, param);
+            }
+            //now if one function returns null in between we stop the execution of the cycle
+            //here
+            if('undefined' != typeof retVal && retVal === false) return;
+        }
+    };
+
 }

@@ -123,4 +123,21 @@ if ('undefined' == typeof jsf.ajax || null == jsf.ajax) {
     };
 }
 
+if ('undefined' == typeof jsf.util || null == jsf.util) {
+    jsf.util = new Object();
 
+    /**
+     * varargs function which executes a chain of code (functions or any other code)
+     *
+     * if any of the code returns false, the execution
+     * is terminated prematurely skipping the rest of the code!
+     *
+     * @param {DomNode} source, the callee object
+     * @param {Event} event, the event object of the callee event triggering this function
+     *
+     */
+    jsf.util.chain = function(source, event) {
+        jsf.ajax._impl.chain.apply(jsf.ajax._impl, arguments);
+    }
+
+}
