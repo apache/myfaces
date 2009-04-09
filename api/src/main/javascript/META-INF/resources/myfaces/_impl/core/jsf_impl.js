@@ -344,8 +344,9 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces, "_jsfImpl")) {
          */
     };
     /**
-     * @return the current project state emitted by the server side method:
-     * javax.faces.application.Application.getProjectStage()
+     * @return the project stage also emitted by the server:
+     * it cannot be cached and must be delivered over the server
+     *
      */
     myfaces._impl.core._jsfImpl.prototype.getProjectStage = function() {
 
@@ -405,6 +406,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces, "_jsfImpl")) {
    };
     
     //for debugging purposes only remove before going into production
-    var myfaces_JSFDebug = new myfaces._impl.core._jsfImpl();
+    //should be removed automatically by the build process!!!
+    ;;var myfaces_JSFDebug = new myfaces._impl.core._jsfImpl();
 
 }
