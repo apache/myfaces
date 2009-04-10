@@ -279,6 +279,11 @@ myfaces._impl._util._Utils.getChild = function(item, childName, itemName) {
 
 /**
  * helper regexp and funtion to strip the body content from full html
+ * by providing checks for " and ' we force the regexp
+ * to check only for the first body element which also must
+ * be outside of a string definition (hence
+ * body tags inside of javascript strings cannot interfere into
+ * well formed html)
  */
 myfaces._impl._util._Utils.getChild._bodyStripper = /[^\"\']*<\s*body[^>]*> (.*) <\/\s*body[^>]*> [^\"\']*/i;
 myfaces._impl._util._Utils.getChild.getBodyContent = function(content) {
