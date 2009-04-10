@@ -276,3 +276,22 @@ myfaces._impl._util._Utils.getChild = function(item, childName, itemName) {
     }
     return null;
 }
+
+/**
+ * helper regexp and funtion to strip the body content from full html
+ */
+myfaces._impl._util._Utils.getChild._bodyStripper = /[^\"\']*<\s*body[^>]*> (.*) <\/\s*body[^>]*> [^\"\']*/i;
+myfaces._impl._util._Utils.getChild.getBodyContent = function(content) {
+
+    if('undefined' == typeof content || null == typeof content) return null;
+    myfaces._impl._util._Utils.getChild._bodyStripper.exec(content);
+
+    var result = RegExp.$1;
+    if('undefined' == typeof result || result == "") {
+        return content;
+    }
+    return result;
+};
+
+ 
+
