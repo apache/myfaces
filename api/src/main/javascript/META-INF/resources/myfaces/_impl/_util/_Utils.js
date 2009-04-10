@@ -121,6 +121,76 @@ myfaces._impl._util._Utils.replaceHtmlItem = function(itemIdToReplace, newTag, f
     }
 };
 
+
+myfaces._impl._util._Utils.ieQuircksEvents = {
+    "onabort": true,
+    "onload":true,
+    "onunload":true,
+    "onchange": true,
+    "onsubmit": true,
+    "onreset": true,
+    "onselect": true,
+    "onblur": true,
+    "onfocus": true,
+    "onkeydown": true,
+    "onkeypress": true,
+    "onkeyup": true,
+    "onclick": true,
+    "ondblclick": true,
+    "onmousedown": true,
+    "onmousemove": true,
+    "onmouseout": true,
+    "onmouseover": true,
+    "onmouseup": true
+};
+
+/**
+ * bugfixing for ie6 which does not cope properly with setAttribute
+ */
+myfaces._impl._util._Utils.setAttribute = function(domNode, attribute, value) {
+
+    if(!myfaces._impl._util._Utils.isUserAgentInternetExplorer()) {
+       domNode.setAttribute(attribute,value);
+       return;
+    }
+    //Now to the broken browsers IE6+.... ie7 and ie8 quirks mode
+
+
+    //now ie has the behavior of not wanting events to be set directly and also
+    //class must be renamed to classname
+    //according to http://www.quirksmode.org/dom/w3c_core.html it does not set styles
+    //also class == className we have to rechange that
+    //additionally events are not triggered as well
+
+    //what we do is following for now:
+    //1. remap the class
+    attribute = attribute.toLowerCase();
+
+    if(attribute === "class") {
+        domNode["className"] = value;
+    } else if(attribute === style) {
+        //We have to split the styles here and assign them one by one
+        var styleEntries = value.split(";");
+        for(var loop = 0; loop < styleEntries.length; loop++) {
+            var keyVal = styleEntries[loop].split(":");
+            domNode["style"][keyVal[0]] = keyVal[1];
+        }
+    } else {
+        //check if the attribute is an event, since this applies only
+        //to quirks mode of ie anyway we can live with the standard html4/xhtml
+        //ie supported events
+        if(myfaces._impl._util._Utils.ieQuircksEvents[attribute]) {
+            if(myfaces._impl._util._LangUtils.isString(attribute)) {
+                domNode[attribute] = function(event) {
+                    eval(attribute);
+                };
+            }
+        }
+        domNode[attribute] = value;
+    }
+    //TODO this needs further testing I will leave it for now...
+};
+
 /**
  * [STATIC]
  * Determines whether the user agent is IE or not
