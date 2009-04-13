@@ -22,13 +22,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- * 
+ *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -40,11 +41,11 @@ public abstract class ExternalContext
     public static final String FORM_AUTH = "FORM";
 
     /**
-     * 
+     *
      * @param name
      * @param value
      * @param properties
-     * 
+     *
      * @since 2.0
      */
     public void addResponseCookie(String name, String value, Map<String, Object> properties)
@@ -53,10 +54,10 @@ public abstract class ExternalContext
     }
 
     /**
-     * 
+     *
      * @param name
      * @param value
-     * 
+     *
      * @since 2.0
      */
     public void addResponseHeader(String name, String value)
@@ -68,7 +69,37 @@ public abstract class ExternalContext
 
     public abstract String encodeActionURL(String url);
 
+    /**
+     *
+     * @param baseUrl
+     * @param parameters
+     *
+     * @since 2.0
+     */
+    public String encodeBookmarkableURL(String baseUrl, Map<String,List<String>> parameters)
+    {
+        throw new UnsupportedOperationException();
+    }
+
     public abstract String encodeNamespace(String name);
+
+
+    /**
+     * @since 2.0
+     */
+    public abstract String encodePartialActionURL(String url);     // TODO: IMPLEMENT IMPL
+
+    /**
+     *
+     * @param baseUrl
+     * @param parameters
+     *
+     * @since 2.0
+     */
+    public String encodeRedirectURL(String baseUrl, Map<String,List<String>> parameters)
+    {
+        throw new UnsupportedOperationException();
+    }
 
     public abstract String encodeResourceURL(String url);
 
@@ -80,14 +111,21 @@ public abstract class ExternalContext
 
     /**
      * Returns the name of the underlying context
-     * 
+     *
      * @return the name or null
-     * 
+     *
      * @since 2.0
      */
     public String getContextName()
     {
-        // TODO: IMPLEMENT IMPL JSF 2.0 MYFACES-1950
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * @since 2.0
+     */
+    public Flash getFlash()
+    {
         throw new UnsupportedOperationException();
     }
 
@@ -122,9 +160,9 @@ public abstract class ExternalContext
     }
 
     /**
-     * 
+     *
      * @return
-     * 
+     *
      * @since 2.0
      */
     public int getRequestContentLength()
@@ -194,9 +232,9 @@ public abstract class ExternalContext
     public abstract Object getResponse();
 
     /**
-     * 
+     *
      * @return
-     * 
+     *
      * @since 2.0
      */
     public int getResponseBufferSize()
@@ -211,7 +249,7 @@ public abstract class ExternalContext
 
     /**
      * throws <code>UnsupportedOperationException</code> by default.
-     * 
+     *
      * @since JSF 1.2
      */
     public String getResponseContentType()
@@ -242,8 +280,6 @@ public abstract class ExternalContext
     public abstract java.security.Principal getUserPrincipal();
 
     /**
-     * 
-     * 
      * @since 2.0
      */
     public void invalidateSession()
@@ -252,9 +288,6 @@ public abstract class ExternalContext
     }
 
     /**
-     * 
-     * @return
-     * 
      * @since 2.0
      */
     public boolean isResponseCommitted()
@@ -264,16 +297,22 @@ public abstract class ExternalContext
 
     public abstract boolean isUserInRole(String role);
 
+    /**
+     * @since 2.0
+     */
     public abstract void log(String message);
 
+    /**
+     * @since 2.0
+     */
     public abstract void log(String message, Throwable exception);
 
     public abstract void redirect(String url) throws java.io.IOException;
 
     /**
-     * 
+     *
      * @throws IOException
-     * 
+     *
      * @since 2.0
      */
     public void responseFlushBuffer() throws IOException
@@ -282,7 +321,7 @@ public abstract class ExternalContext
     }
 
     /**
-     * 
+     *
      * @since 2.0
      */
     public void responseReset()
@@ -291,11 +330,11 @@ public abstract class ExternalContext
     }
 
     /**
-     * 
+     *
      * @param statusCode
      * @param message
      * @throws IOException
-     * 
+     *
      * @since 2.0
      */
     public void responseSendError(int statusCode, String message) throws IOException
@@ -305,7 +344,7 @@ public abstract class ExternalContext
 
     /**
      * throws <code>UnsupportedOperationException</code> by default.
-     * 
+     *
      * @since JSF 1.2
      * @param request
      */
@@ -316,7 +355,7 @@ public abstract class ExternalContext
 
     /**
      * throws <code>UnsupportedOperationException</code> by default.
-     * 
+     *
      * @since JSF 1.2
      * @param encoding
      * @throws java.io.UnsupportedEncodingException
@@ -328,7 +367,7 @@ public abstract class ExternalContext
 
     /**
      * throws <code>UnsupportedOperationException</code> by default.
-     * 
+     *
      * @since JSF 1.2
      * @param response
      */
@@ -338,9 +377,9 @@ public abstract class ExternalContext
     }
 
     /**
-     * 
+     *
      * @param size
-     * 
+     *
      * @since 2.0
      */
     public void setResponseBufferSize(int size)
@@ -350,7 +389,7 @@ public abstract class ExternalContext
 
     /**
      * throws <code>UnsupportedOperationException</code> by default.
-     * 
+     *
      * @since JSF 1.2
      * @param encoding
      */
@@ -360,9 +399,9 @@ public abstract class ExternalContext
     }
 
     /**
-     * 
+     *
      * @param length
-     * 
+     *
      * @since 2.0
      */
     public void setResponseContentLength(int length)
@@ -371,9 +410,9 @@ public abstract class ExternalContext
     }
 
     /**
-     * 
+     *
      * @param contentType
-     * 
+     *
      * @since 2.0
      */
     public void setResponseContentType(String contentType)
@@ -382,21 +421,21 @@ public abstract class ExternalContext
     }
 
     /**
-     * 
+     *
      * @param name
      * @param value
-     * 
+     *
      * @since 2.0
      */
     public void setResponseHeader(String name, String value)
     {
         throw new UnsupportedOperationException();
     }
-    
+
     /**
-     * 
+     *
      * @param statusCode
-     * 
+     *
      * @since 2.0
      */
     public void setResponseStatus(int statusCode)

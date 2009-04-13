@@ -22,10 +22,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -45,17 +50,25 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.util.EnumerationIterator;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Implements the external context for servlet request. JSF 1.2, 6.1.3
- * 
+ *
  * @author Manfred Geiler (latest modification by $Author$)
  * @author Anton Koinov
  * @version $Revision$ $Date$
  */
 public final class ServletExternalContextImpl extends ExternalContext implements ReleaseableExternalContext
 {
+    private static final Log log = LogFactory.getLog(ServletExternalContextImpl.class);
+
     private static final String INIT_PARAMETER_MAP_ATTRIBUTE = InitParameterMap.class.getName();
+    private static final String URL_PARAM_SEPERATOR="&";
+    private static final String URL_QUERY_SEPERATOR="?";
+    private static final String URL_FRAGMENT_SEPERATOR="#";
+    private static final String URL_NAME_VALUE_PAIR_SEPERATOR="=";
 
     private ServletContext _servletContext;
     private ServletRequest _servletRequest;
@@ -138,14 +151,14 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     {
         return _servletRequest;
     }
-    
+
     /**
      * @since 2.0
      */
     @Override
     public int getRequestContentLength()
-    {	
-    	return _servletRequest.getContentLength();
+    {
+        return _servletRequest.getContentLength();
     }
 
     @Override
@@ -153,14 +166,14 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     {
         return _servletResponse;
     }
-    
+
     /**
      * @since 2.0
      */
     @Override
     public int getResponseBufferSize()
     {
-    	return _servletResponse.getBufferSize();
+        return _servletResponse.getBufferSize();
     }
 
     @Override
@@ -174,7 +187,7 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     {
         return _servletResponse.getOutputStream();
     }
-    
+
     /**
      * @since JSF 2.0
      */
@@ -280,7 +293,7 @@ public final class ServletExternalContextImpl extends ExternalContext implements
             checkHttpServletRequest();
             _requestCookieMap = new CookieMap(_httpServletRequest);
         }
-        
+
         return _requestCookieMap;
     }
 
@@ -371,6 +384,12 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     }
 
     @Override
+    public String encodeBookmarkableURL(String baseUrl, Map<String,List<String>> parameters)
+    {
+        return _httpServletResponse.encodeURL(encodeURL(baseUrl, parameters));
+    }
+
+    @Override
     public String encodeResourceURL(final String url)
     {
         checkNull(url, "url");
@@ -382,6 +401,19 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     public String encodeNamespace(final String s)
     {
         return s;
+    }
+
+    @Override
+    public String encodePartialActionURL(String url)
+    {
+        // TODO: IMPLEMENT HERE
+        return null;
+    }
+
+    @Override
+    public String encodeRedirectURL(String baseUrl, Map<String,List<String>> parameters)
+    {
+        return _httpServletResponse.encodeRedirectURL(encodeURL(baseUrl, parameters));
     }
 
     @Override
@@ -468,13 +500,13 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     public void invalidateSession()
     {
         HttpSession session = (HttpSession) getSession(false);
-        
+
         if (session != null)
         {
             session.invalidate();
         }
     }
-    
+
     /**
      * @since 2.0
      */
@@ -512,15 +544,15 @@ public final class ServletExternalContextImpl extends ExternalContext implements
             throw new IllegalArgumentException("Only HttpServletResponse supported");
         }
     }
-    
+
     /**
      * @since 2.0
      */
     @Override
     public void responseFlushBuffer() throws IOException
     {
-    	checkHttpServletResponse();
-    	_httpServletResponse.flushBuffer();
+        checkHttpServletResponse();
+        _httpServletResponse.flushBuffer();
     }
 
     /**
@@ -529,8 +561,8 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     @Override
     public void responseReset()
     {
-    	checkHttpServletResponse();
-    	_httpServletResponse.reset();
+        checkHttpServletResponse();
+        _httpServletResponse.reset();
     }
 
     /**
@@ -539,8 +571,15 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     @Override
     public void responseSendError(int statusCode, String message) throws IOException
     {
-       checkHttpServletResponse();
-       _httpServletResponse.sendError(statusCode, message);
+        checkHttpServletResponse();
+        if (message == null)
+        {
+            _httpServletResponse.sendError(statusCode);
+        }
+        else
+        {
+            _httpServletResponse.sendError(statusCode, message);
+        }
     }
 
     @Override
@@ -610,7 +649,7 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     {
         this._servletResponse = (ServletResponse) response;
     }
-    
+
     /**
      * @since 2.0
      */
@@ -630,7 +669,7 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     {
         this._servletResponse.setCharacterEncoding(encoding);
     }
-    
+
     /**
      * @since 2.0
      */
@@ -641,7 +680,6 @@ public final class ServletExternalContextImpl extends ExternalContext implements
         _httpServletResponse.setContentLength(length);
     }
 
-
     @Override
     public void setResponseContentType(String contentType)
     {
@@ -651,8 +689,13 @@ public final class ServletExternalContextImpl extends ExternalContext implements
             // Sets the content type of the response being sent to the client
             _servletResponse.setContentType(contentType);
         }
-    }  
-    
+        else
+        {
+            // I did not throw an exception just to be sure nothing breaks.
+            log.error("Cannot set content type. Response already committed");
+        }
+    }
+
     /**
      * @since 2.0
      */
@@ -661,6 +704,13 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     {
         checkHttpServletResponse();
         _httpServletResponse.setHeader(name, value);
+    }
+
+    @Override
+    public void setResponseStatus(int statusCode)
+    {
+        checkHttpServletResponse();
+        _httpServletResponse.setStatus(statusCode);
     }
 
     private void checkNull(final Object o, final String param)
@@ -683,14 +733,14 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     {
         return servletRequest instanceof HttpServletRequest;
     }
-    
+
     private void checkHttpServletResponse()
     {
         if (_httpServletRequest == null)
         {
             throw new UnsupportedOperationException("Only HttpServletResponse supported");
         }
-    }    
+    }
     private boolean isHttpServletResponse(final ServletResponse servletResponse)
     {
         return servletResponse instanceof HttpServletResponse;
@@ -704,7 +754,7 @@ public final class ServletExternalContextImpl extends ExternalContext implements
             final String value, final Map<String, Object> properties)
     {
         checkHttpServletResponse();
-        Cookie cookie = new Cookie(name,value);
+        Cookie cookie = new Cookie(name, value);
         if (properties != null)
         {
             for (Map.Entry<String, Object> entry : properties.entrySet())
@@ -743,17 +793,106 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     }
 
     @Override
+    public void addResponseHeader(String name, String value)
+    {
+        _httpServletResponse.addHeader(name, value);
+    }
+
+    @Override
     public String getContextName() {
         return _servletContext.getServletContextName();
     }
-    /**
-     * @since 2.0
-     */
-    @Override
-    public void setResponseStatus(int statusCode)
+
+    private String encodeURL(String baseUrl, Map<String, List<String>> parameters)
     {
-        checkHttpServletResponse();
-        _httpServletResponse.setStatus(statusCode);
+        checkNull(baseUrl, "url");
+        checkHttpServletRequest();
+
+        String fragment = null;
+        String queryString = null;
+        Map<String, List<String>> paramMap = new HashMap<String, List<String>>();
+
+        //extract any URL fragment
+        int index = baseUrl.indexOf(URL_FRAGMENT_SEPERATOR);
+        if (index != -1)
+        {
+            fragment = baseUrl.substring(index+1);
+            baseUrl = baseUrl.substring(0,index);
+        }
+
+        //extract the current query string and add the params to the paramMap
+        index = baseUrl.indexOf(URL_QUERY_SEPERATOR);
+        if (index != -1)
+        {
+            queryString = baseUrl.substring(index + 1);
+            baseUrl = baseUrl.substring(0, index);
+            String[] nameValuePairs = queryString.split(URL_PARAM_SEPERATOR);
+            for (int i = 0; i < nameValuePairs.length; i++)
+            {
+                String[] currentPair = nameValuePairs[i].split(URL_NAME_VALUE_PAIR_SEPERATOR);
+                if (currentPair[1] != null)
+                {
+                    ArrayList<String> value = new ArrayList<String>(1);
+                    value.add(currentPair[1]);
+                    paramMap.put(currentPair[0], value);
+                }
+            }
+        }
+
+        //add/update with new params on the paramMap
+        if (parameters != null && parameters.size() > 0)
+        {
+            for (Map.Entry<String, List<String>> pair : parameters.entrySet())
+            {
+                if (pair.getKey() != null && pair.getKey().trim().length() != 0)
+                {
+                    paramMap.put(pair.getKey(), pair.getValue());
+                }
+            }
+        }
+
+        // start building the new URL
+        StringBuilder newUrl = new StringBuilder();
+
+        //now add the updated param list onto the url
+        if (paramMap.size()>0)
+        {
+            boolean isFirstPair = true;
+            for (Map.Entry<String, List<String>> pair : paramMap.entrySet())
+            {
+                for (String value : pair.getValue())
+                {
+                    if (!isFirstPair)
+                    {
+                        newUrl.append(URL_PARAM_SEPERATOR);
+                    }
+                    else
+                    {
+                        newUrl.append(URL_QUERY_SEPERATOR);
+                        isFirstPair = false;
+                    }
+
+                    newUrl.append(pair.getKey());
+                    newUrl.append(URL_NAME_VALUE_PAIR_SEPERATOR);
+                    try
+                    {
+                        newUrl.append(URLEncoder.encode(value,getResponseCharacterEncoding()));
+                    }
+                    catch (UnsupportedEncodingException e)
+                    {
+                        //shouldn't ever get here
+                        throw new UnsupportedOperationException("Encoding type=" + getResponseCharacterEncoding() + " not supported", e);
+                    }
+                }
+            }
+        }
+
+        //add the fragment back on (if any)
+        if (fragment != null)
+        {
+            newUrl.append(URL_FRAGMENT_SEPERATOR + fragment);
+        }
+
+        return newUrl.toString();
     }
-    
 }

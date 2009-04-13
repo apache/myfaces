@@ -27,6 +27,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.Principal;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -43,7 +44,7 @@ public abstract class ExternalContextWrapper extends ExternalContext implements 
 {
 
     /**
-     * 
+     *
      */
     public ExternalContextWrapper()
     {
@@ -74,9 +75,27 @@ public abstract class ExternalContextWrapper extends ExternalContext implements 
     }
 
     @Override
+    public String encodeBookmarkableURL(String baseUrl, Map<String,List<String>> parameters)
+    {
+        return getWrapped().encodeBookmarkableURL(baseUrl,parameters);
+    }
+
+    @Override
     public String encodeNamespace(String name)
     {
         return getWrapped().encodeNamespace(name);
+    }
+
+    @Override
+    public String encodePartialActionURL(String url)
+    {
+        return getWrapped().encodePartialActionURL(url);
+    }
+
+    @Override
+    public String encodeRedirectURL(String baseUrl,Map<String,List<String>> parameters)
+    {
+        return getWrapped().encodeRedirectURL(baseUrl,parameters);
     }
 
     @Override
@@ -107,6 +126,12 @@ public abstract class ExternalContextWrapper extends ExternalContext implements 
     public String getContextName()
     {
         return getWrapped().getContextName();
+    }
+
+    @Override
+    public Flash getFlash()
+    {
+        return getWrapped().getFlash();
     }
 
     @Override
