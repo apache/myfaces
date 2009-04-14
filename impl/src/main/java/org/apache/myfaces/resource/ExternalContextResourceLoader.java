@@ -71,7 +71,7 @@ public class ExternalContextResourceLoader extends ResourceLoader
             // resourceVersion = // execute the comment
             // Look in the resourcePaths for versioned resources.
             // If one or more versioned resources are found, take
-            // the one with the “highest” version number as the value
+            // the one with the "highest" version number as the value
             // of resourceVersion. If no versioned libraries
             // are found, let resourceVersion remain null.
             for (String resourcePath : resourcePaths)
@@ -105,7 +105,7 @@ public class ExternalContextResourceLoader extends ResourceLoader
         {
             // Look in the libraryPaths for versioned libraries.
             // If one or more versioned libraries are found, take
-            // the one with the “highest” version number as the value
+            // the one with the "highest" version number as the value
             // of libraryVersion. If no versioned libraries
             // are found, let libraryVersion remain null.
 

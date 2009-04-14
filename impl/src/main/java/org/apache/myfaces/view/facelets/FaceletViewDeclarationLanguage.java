@@ -72,7 +72,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         // TODO: IMPLEMENT HERE
         /* The implementation must guarantee that the page is executed in such a way that the UIComponent 
          * tree described in the PDL page is completely built and populated, rooted at the new UIViewRoot 
-         * instance created previously. See Section 10.2.3 “Creating a View”.
+         * instance created previously. See Section 10.2.3 "Creating a View".
          */
         
         return viewRoot;

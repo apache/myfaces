@@ -25,7 +25,6 @@ import org.apache.myfaces.context.servlet.FacesContextImpl;
 import org.apache.shale.test.base.AbstractJsfTestCase;
 
 /**
- * °
  *
  * @author Werner Punz(latest modification by $Author$)
  * @version $Revision$ $Date$

@@ -578,7 +578,7 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
         // AfterRestoreStateEvent,
         if (event instanceof PostRestoreStateEvent)
         {
-            // call this.getValueExpression(java.lang.String) passing the literal string “binding”
+            // call this.getValueExpression(java.lang.String) passing the literal string "binding"
             ValueExpression expression = getValueExpression("binding");
 
             // If the result is non-null, set the value of the ValueExpression to be this.

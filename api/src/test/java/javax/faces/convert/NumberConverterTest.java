@@ -62,10 +62,10 @@ public class NumberConverterTest extends AbstractJsfTestCase
      * testFranceLocaleWithNonBreakingSpace() {
      * 
      * UIInput input = new UIInput(); mock.setType("currency"); Number number = (Number)
-     * mock.getAsObject(FacesContext.getCurrentInstance(), input, "12\u00a0345,68 €"); assertNotNull(number); } public
+     * mock.getAsObject(FacesContext.getCurrentInstance(), input, "12\u00a0345,68 \u20ac"); assertNotNull(number); } public
      * void testFranceLocaleWithoutNonBreakingSpace() {
      * 
      * UIInput input = new UIInput(); mock.setType("currency"); Number number = (Number)
-     * mock.getAsObject(FacesContext.getCurrentInstance(), input, "12 345,68 €"); assertNotNull(number); }
+     * mock.getAsObject(FacesContext.getCurrentInstance(), input, "12 345,68 \u20ac"); assertNotNull(number); }
      */
 }
