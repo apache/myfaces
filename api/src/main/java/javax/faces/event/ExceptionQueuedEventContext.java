@@ -34,11 +34,8 @@ import javax.faces.context.FacesContext;
  */
 public class ExceptionQueuedEventContext implements SystemEventListenerHolder
 {
-    // TODO: DEFINE - Spec doesn't define any value for this constant
-    public static final String IN_AFTER_PHASE_KEY = "";
-
-    // TODO: DEFINE - Spec doesn't define any value for this constant
-    public static final String IN_BEFORE_PHASE_KEY = "";
+    public static final String IN_AFTER_PHASE_KEY = "ExceptionQueuedEventContext.IN_AFTER_PHASE_KEY";
+    public static final String IN_BEFORE_PHASE_KEY = "ExceptionQueuedEventContext.IN_BEFORE_PHASE_KEY";
     
     private Map<Object, Object> _attributes;
     private UIComponent _component;
@@ -105,13 +102,11 @@ public class ExceptionQueuedEventContext implements SystemEventListenerHolder
     
     public boolean inAfterPhase()
     {
-        // TODO: IMPLEMENT HERE
-        return false;
+        return (_attributes != null && _attributes.containsKey(IN_AFTER_PHASE_KEY));
     }
     
     public boolean inBeforePhase()
     {
-        // TODO: IMPLEMENT HERE
-        return false;
+        return (_attributes != null && _attributes.containsKey(IN_BEFORE_PHASE_KEY));
     }
 }
