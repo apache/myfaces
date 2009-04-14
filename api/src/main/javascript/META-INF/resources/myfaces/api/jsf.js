@@ -125,7 +125,7 @@ if ('undefined' == typeof jsf.ajax || null == jsf.ajax) {
      * @return the current project state emitted by the server side method:
      * javax.faces.application.Application.getProjectStage()
      */
-    jsf.ajax.getProjectStage = function() {
+    jsf.getProjectStage = function() {
         return jsf.ajax._impl.getProjectStage();
     };
 }
