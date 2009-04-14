@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: Ganesh Jung (latest modification by $Author: werpu $)
- * Version: $Revision: 1.3 $ $Date: 2009/04/09 13:02:00 $
+ * Author: Ganesh Jung (latest modification by $Author: ganeshpuri $)
+ * Version: $Revision: 1.6 $ $Date: 2009/04/13 19:50:24 $
  *
  */
 
@@ -23,23 +23,15 @@ _reserveMyfacesNamespaces();
 /**
  * Constructor
  */
-myfaces._impl.xhrCore_Ajax = function() {}
+myfaces._impl.xhrCore._Ajax = function() {}
 
 /**
  * [STATIC PROPERTIES]
  */
-// request, type myfaces._impl.xhrCore_AjaxRequest
-myfaces._impl.xhrCore_Ajax.request = null;
-// Hidden field for ViewState
-myfaces._impl.xhrCore_Ajax.javaxFacesViewState = "javax.faces.ViewState";
-// Hidden field for project-stage. Must be the value from
-// javax.faces.application.Application.getProjectStage()
-myfaces._impl.xhrCore_Ajax.projectState = "myfaces._impl.xhrCore_Ajax.projectStage";
-
-myfaces._impl.xhrCore_Ajax._utils = new myfaces._impl.xhrCore_AjaxUtils();
+// request, type myfaces._impl.xhrCore._AjaxRequest
+myfaces._impl.xhrCore._Ajax.request = null;
 
 /**
- * [STATIC]
  * Spec. 13.3.1
  * Collect and encode input elements.
  * Additinoaly the hidden element javax.faces.ViewState
@@ -47,14 +39,14 @@ myfaces._impl.xhrCore_Ajax._utils = new myfaces._impl.xhrCore_AjaxUtils();
  * @return {String} - Concatenated String of the encoded input elements
  * 			and javax.faces.ViewState element
  */
-myfaces._impl.xhrCore_Ajax.prototype.getViewState = function(FORM_ELEMENT) {
-    return utils.processUserEntries(null, FORM_ELEMENT);
+myfaces._impl.xhrCore._Ajax.prototype.getViewState = function(FORM_ELEMENT) {
+    return myfaces._impl.xhrCore._Ajax.request.getViewState(FORM_ELEMENT);
 }
 
 
 /**
  * mapped options already have the exec and view properly in place
- * j4fry specifics can be found under mappedOptions.myFaces
+ * myfaces specifics can be found under mappedOptions.myFaces
  * @param ajaxContext the ajax context which also has to be pushed into the messages and into the response
 
         var ajaxContext = {};
@@ -66,26 +58,9 @@ myfaces._impl.xhrCore_Ajax.prototype.getViewState = function(FORM_ELEMENT) {
 
  **/
 
-myfaces._impl.xhrCore_Ajax.prototype._ajaxRequest = function(ELEMENT, ajaxContext, action, viewState, passThroughValues, implementationOptions ) {
-    //TODO ganesh, in theory we just would need a direct mapping of our pass through values
-    //into params we do not need an explict mapping they just have to be encoded before being processed
-    //I have a helper function there in my utils which does the needed processing from array into params
-    //no separate params are needed (check my mini xhir where I am exactly doing this!)
-    //the final params which are passed down are viewstate and the passThroughValues
-
-	if (implementationOptions != null && implementationOptions["errorlevel"] != null)
-        errorlevel = implementationOptions["errorlevel"];
-    else
-        errorlevel = "NONE";
-	if (implementationOptions != null)
-        submit = implementationOptions["submit"];
-    else
-        submit = null;
-
-    myfaces._impl.xhrCore_Ajax.request = new myfaces._impl.xhrCore_AjaxRequest(
-			ELEMENT, "javax.faces.partial.execute=" + passThroughValues["javax.faces.partial.execute"], "javax.faces.partial.render=" + passThroughValues["javax.faces.partial.render"],
-			errorlevel, "javax.faces.partial.source=" + passThroughValues["javax.faces.partial.source"], submit);
-	myfaces._impl.xhrCore_AjaxRequestQueue.queue.queueRequest(myfaces._impl.xhrCore_Ajax.request)
+myfaces._impl.xhrCore._Ajax.prototype._ajaxRequest = function(source, sourceForm, context, passThroughValues ) {
+    myfaces._impl.xhrCore._Ajax.request = new myfaces._impl.xhrCore._AjaxRequest(source, sourceForm, context, passThroughValues);
+   	myfaces._impl.xhrCore._AjaxRequestQueue.queue.queueRequest(myfaces._impl.xhrCore._Ajax.request.prepare());
 }
 
 /**
@@ -99,7 +74,7 @@ myfaces._impl.xhrCore_Ajax.prototype._ajaxRequest = function(ELEMENT, ajaxContex
  *when those events are dispatched in the lifecycle and when the response handling
  *is called is handled here!
  */
-myfaces._impl.xhrCore_Ajax._xhrEventDispatcher = function(context, request) {
+myfaces._impl.xhrCore._Ajax._xhrEventDispatcher = function(context, request) {
 
         var READY_STATE_UNSENT = 0;
         var READY_STATE_OPENED = 1;
@@ -149,26 +124,9 @@ myfaces._impl.xhrCore_Ajax._xhrEventDispatcher = function(context, request) {
  * @param {XmlHttpRequest} request - The Ajax Request
  * @param {XmlHttpRequest} context - The Ajax context
  */
-myfaces._impl.xhrCore_Ajax.prototype._ajaxResponse = function(request, context) {
-	if(myfaces._impl.xhrCore_Ajax.request == null)
+myfaces._impl.xhrCore._Ajax.prototype._ajaxResponse = function(request, context) {
+	if(myfaces._impl.xhrCore._Ajax.request == null)
 		alert("Cannot process ajax response because there's no ajax request.");
-	myfaces._impl.xhrCore_Ajax.request.requestCallback();
-	myfaces._impl.xhrCore_AjaxRequestQueue.queue.processQueue();
-}
-
-/**
- * [STATIC]
- * Spec. 13.3.4
- *
- * TODO delete this this is templated there is no need to implement it here
- *
- */
-myfaces._impl.xhrCore_Ajax.getProjectStage = function() {
-	// TODO: Access hidden field myfaces._impl.xhrCore_Ajax.projectState
-	projectStage = document.getElementById(myfaces._impl.xhrCore_Ajax.projectState);
-	if(projectStage != null) {
-		return projectStage.value();
-	} else {
-		return "Development";
-	}
+	myfaces._impl.xhrCore._Ajax.request.requestCallback();
+   	myfaces._impl.xhrCore._AjaxRequestQueue.queue.processQueue();
 }

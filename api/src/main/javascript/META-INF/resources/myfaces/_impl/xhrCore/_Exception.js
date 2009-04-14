@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: Ganesh Jung (latest modification by $Author: werpu $)
- * Version: $Revision: 1.2 $ $Date: 2009/04/09 13:02:00 $
+ * Author: Ganesh Jung (latest modification by $Author: ganeshpuri $)
+ * Version: $Revision: 1.3 $ $Date: 2009/04/12 05:41:47 $
  *
  */
 
 _reserveMyfacesNamespaces();
 
 
-myfaces._impl.xhrCore_Exception = function(sourceClass, threshold) {
+myfaces._impl.xhrCore._Exception = function(sourceClass, threshold) {
 	this.m_class = sourceClass
 	this.m_threshold = threshold
 };
@@ -30,8 +30,8 @@ myfaces._impl.xhrCore_Exception = function(sourceClass, threshold) {
  * [STATIC]
  * static method used by static methods that throw errors
  */
-myfaces._impl.xhrCore_Exception.throwNewError = function(sourceClass, func, exception) {
-	newException = new myfaces._impl.xhrCore_Exception(sourceClass, "ERROR");
+myfaces._impl.xhrCore._Exception.throwNewError = function(sourceClass, func, exception) {
+	newException = new myfaces._impl.xhrCore._Exception(sourceClass, "ERROR");
 	newException.throwError(func, exception);
 };
 
@@ -39,25 +39,24 @@ myfaces._impl.xhrCore_Exception.throwNewError = function(sourceClass, func, exce
  * [STATIC]
  * static method used by static methods that throw warnings
  */
-myfaces._impl.xhrCore_Exception.throwNewWarning = function(sourceClass, func, message){
-	newException = new myfaces._impl.xhrCore_Exception(sourceClass, "WARNING");
+myfaces._impl.xhrCore._Exception.throwNewWarning = function(sourceClass, func, message){
+	newException = new myfaces._impl.xhrCore._Exception(sourceClass, "WARNING");
 	newException.throwWarning(func, message);
 };
 
 /**
  * throws errors
  */
-myfaces._impl.xhrCore_Exception.prototype.throwError = function(func, exception) {
+myfaces._impl.xhrCore._Exception.prototype.throwError = function(func, exception) {
 	if (this.m_threshold == "ERROR") {
-		alert("[J4Fry ERROR]\n\n"
+		alert("[MyFaces ERROR]\n\n"
 				+ "Affected Class: " + this.m_class + "\n"
 				+ "Affected Method: " + func + "\n"
 				+ "Error name: " + exception.name + "\n"
 				+ "Error message: " + exception.message + "\n"
 				+ "Error description: " + exception.description	+ "\n"
 				+ "Error number: " + exception.number + "\n"
-				+ "Error line number: " + exception.lineNumber
-				+ "\n\nIf the error occurs many times, \nplease contact one of the J4Fry members on http://www.j4fry.org");
+				+ "Error line number: " + exception.lineNumber);
 	}
 	this.destroy();
 };
@@ -65,9 +64,9 @@ myfaces._impl.xhrCore_Exception.prototype.throwError = function(func, exception)
 /**
  * throws warnings
  */
-myfaces._impl.xhrCore_Exception.prototype.throwWarning = function(func, message) {
+myfaces._impl.xhrCore._Exception.prototype.throwWarning = function(func, message) {
 	if (this.m_threshold == "WARNING" || this.m_threshold == "ERROR") {
-		alert("[J4Fry WARNING]\n[" + this.m_class + "::" + func + "]\n\n"
+		alert("[MyFaces WARNING]\n[" + this.m_class + "::" + func + "]\n\n"
 				+ message);
 	}
 	this.destroy();
@@ -76,10 +75,10 @@ myfaces._impl.xhrCore_Exception.prototype.throwWarning = function(func, message)
 /**
  * cleanup activities if an error occurs
  */
-myfaces._impl.xhrCore_Exception.prototype.destroy = function() {
-	if (myfaces._impl.xhrCore_AjaxRequestQueue.queue &&
-			myfaces._impl.xhrCore_AjaxRequestQueue.queue != null) {
+myfaces._impl.xhrCore._Exception.prototype.destroy = function() {
+	if (myfaces._impl.xhrCore._AjaxRequestQueue.queue &&
+			myfaces._impl.xhrCore._AjaxRequestQueue.queue != null) {
 		// clear RequestQueue when an exception occurs
-		myfaces._impl.xhrCore_AjaxRequestQueue.queue.clearQueue();
+		myfaces._impl.xhrCore._AjaxRequestQueue.queue.clearQueue();
 	}
 };

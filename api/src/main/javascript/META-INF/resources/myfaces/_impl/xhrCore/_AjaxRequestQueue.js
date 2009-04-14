@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: Ganesh Jung (latest modification by $Author: werpu $)
- * Version: $Revision: 1.3 $ $Date: 2009/04/09 13:02:00 $
+ * Author: Ganesh Jung (latest modification by $Author: ganeshpuri $)
+ * Version: $Revision: 1.4 $ $Date: 2009/04/12 05:41:47 $
  *
  */
 
@@ -24,37 +24,37 @@ _reserveMyfacesNamespaces();
 /**
  * Constructor
  */
-myfaces._impl.xhrCore_AjaxRequestQueue = function() {
+myfaces._impl.xhrCore._AjaxRequestQueue = function() {
 	this.m_request = null;
 	this.m_queuedRequests = new Object();
 	this.m_requestPending = false;
-	this.m_exception = new myfaces._impl.xhrCore_Exception("myfaces._impl.xhrCore_AjaxRequestQueue", "NONE");
+	this.m_exception = new myfaces._impl.xhrCore._Exception("myfaces._impl.xhrCore._AjaxRequestQueue", "NONE");
 };
 
 /**
  * [STATIC PROPERTIES]
  */
-myfaces._impl.xhrCore_AjaxRequestQueue.queue = new myfaces._impl.xhrCore_AjaxRequestQueue();
+myfaces._impl.xhrCore._AjaxRequestQueue.queue = new myfaces._impl.xhrCore._AjaxRequestQueue();
 
 /**
  * [STATIC]
  * Triggers callback methode of class Request as callback referencing
  * of an object is not possible
  */
-myfaces._impl.xhrCore_AjaxRequestQueue.handleCallback = function() {
-	if (myfaces._impl.xhrCore_AjaxRequestQueue.queue.m_request != null) {
-        jsf.ajax.response(myfaces._impl.xhrCore_AjaxRequestQueue.queue.m_request.m_request, "dummy");
+myfaces._impl.xhrCore._AjaxRequestQueue.handleCallback = function() {
+	if (myfaces._impl.xhrCore._AjaxRequestQueue.queue.m_request != null) {
+        jsf.ajax.response(myfaces._impl.xhrCore._AjaxRequestQueue.queue.m_request.m_request, "dummy");
 	} else {
-		myfaces._impl.xhrCore_AjaxRequestQueue.queue.m_exception.throwWarning
+		myfaces._impl.xhrCore._AjaxRequestQueue.queue.m_exception.throwWarning
 			("doRequestCallback", "No request object available");
 	}
 };
 
 /**
  * send a reuest or keeps it in a queue
- * @param {myfaces._impl.xhrCore_AjaxRequest} request - request to send
+ * @param {myfaces._impl.xhrCore._AjaxRequest} request - request to send
  */
-myfaces._impl.xhrCore_AjaxRequestQueue.prototype.queueRequest = function(request) {
+myfaces._impl.xhrCore._AjaxRequestQueue.prototype.queueRequest = function(request) {
 	if (this.m_requestPending == false) {
 		this.m_requestPending = true;
 		this.m_request = request;
@@ -67,7 +67,7 @@ myfaces._impl.xhrCore_AjaxRequestQueue.prototype.queueRequest = function(request
 /**
  * process queue, send request, if exists
  */
-myfaces._impl.xhrCore_AjaxRequestQueue.prototype.processQueue = function() {
+myfaces._impl.xhrCore._AjaxRequestQueue.prototype.processQueue = function() {
 	if (this.m_queuedRequest != null) {
 		this.m_request = this.m_queuedRequest;
 		this.m_queuedRequest = null;
@@ -80,7 +80,7 @@ myfaces._impl.xhrCore_AjaxRequestQueue.prototype.processQueue = function() {
 /**
  * send ajax request
  */
-myfaces._impl.xhrCore_AjaxRequestQueue.prototype.doRequest = function() {
+myfaces._impl.xhrCore._AjaxRequestQueue.prototype.doRequest = function() {
 	if (this.m_request != null) {
 		this.m_request.send(this);
 	} else {
@@ -92,7 +92,7 @@ myfaces._impl.xhrCore_AjaxRequestQueue.prototype.doRequest = function() {
 /**
  * cleanup queue
  */
-myfaces._impl.xhrCore_AjaxRequestQueue.prototype.clearQueue = function() {
+myfaces._impl.xhrCore._AjaxRequestQueue.prototype.clearQueue = function() {
 	this.m_request = null;
 	this.m_queuedRequest = null;
 	this.m_requestPending = false;

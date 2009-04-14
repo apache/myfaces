@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: Ganesh Jung (latest modification by $Author: werpu $)
- * Version: $Revision: 1.5 $ $Date: 2009/04/09 13:58:56 $
+ * Author: Ganesh Jung (latest modification by $Author: ganeshpuri $)
+ * Version: $Revision: 1.7 $ $Date: 2009/04/13 09:32:49 $
  *
  */
 
@@ -25,49 +25,50 @@ _reserveMyfacesNamespaces();
  * Constructor
  * @param {String} alarmThreshold
  */
-myfaces._impl.xhrCore_AjaxResponse = function(alarmThreshold) {
+myfaces._impl.xhrCore._AjaxResponse = function(alarmThreshold) {
 	// Request object
 	this.m_request = null;
 	// Html-Form-Element from which the request comes from
 	this.m_htmlFormElement = null;	
 	this.alarmThreshold = alarmThreshold;
-	this.m_exception = new myfaces._impl.xhrCore_Exception("myfaces._impl.xhrCore_AjaxResponse", this.alarmThreshold);
+	this.m_exception = new myfaces._impl.xhrCore._Exception("myfaces._impl.xhrCore._AjaxResponse", this.alarmThreshold);
 };
 
 /*partial response types*/
-myfaces._impl.xhrCore_AjaxResponse.prototype._RESPONSE_PARTIAL = "partial-response";
-myfaces._impl.xhrCore_AjaxResponse.prototype._RESPONSETYPE_ERROR = "error";
-myfaces._impl.xhrCore_AjaxResponse.prototype._RESPONSETYPE_REDIRECT = "redirect";
-myfaces._impl.xhrCore_AjaxResponse.prototype._RESPONSETYPE_REDIRECT = "changes";
+myfaces._impl.xhrCore._AjaxResponse.prototype._RESPONSE_PARTIAL = "partial-response";
+myfaces._impl.xhrCore._AjaxResponse.prototype._RESPONSETYPE_ERROR = "error";
+myfaces._impl.xhrCore._AjaxResponse.prototype._RESPONSETYPE_REDIRECT = "redirect";
+myfaces._impl.xhrCore._AjaxResponse.prototype._RESPONSETYPE_REDIRECT = "changes";
 
 /*partial commands*/
-myfaces._impl.xhrCore_AjaxResponse.prototype._PCMD_CHANGES = "changes";
-myfaces._impl.xhrCore_AjaxResponse.prototype._PCMD_DELETE = "delete";
-myfaces._impl.xhrCore_AjaxResponse.prototype._PCMD_INSERT = "insert";
-myfaces._impl.xhrCore_AjaxResponse.prototype._PCMD_EVAL = "eval";
-myfaces._impl.xhrCore_AjaxResponse.prototype._PCMD_ATTRIBUTES = "attributes";
-myfaces._impl.xhrCore_AjaxResponse.prototype._PCMD_EXTENSION = "extension";
+myfaces._impl.xhrCore._AjaxResponse.prototype._PCMD_CHANGES = "changes";
+myfaces._impl.xhrCore._AjaxResponse.prototype._PCMD_DELETE = "delete";
+myfaces._impl.xhrCore._AjaxResponse.prototype._PCMD_INSERT = "insert";
+myfaces._impl.xhrCore._AjaxResponse.prototype._PCMD_EVAL = "eval";
+myfaces._impl.xhrCore._AjaxResponse.prototype._PCMD_ATTRIBUTES = "attributes";
+myfaces._impl.xhrCore._AjaxResponse.prototype._PCMD_EXTENSION = "extension";
 
 /*various errors within the rendering stage*/
-myfaces._impl.xhrCore_AjaxResponse.prototype._ERROR_EMPTY_RESPONSE = "emptyResponse";
-myfaces._impl.xhrCore_AjaxResponse.prototype._ERROR_MALFORMEDXML = "malformedXML";
-myfaces._impl.xhrCore_AjaxResponse.prototype._MSG_SUCCESS = "success";
+myfaces._impl.xhrCore._AjaxResponse.prototype._ERROR_EMPTY_RESPONSE = "emptyResponse";
+myfaces._impl.xhrCore._AjaxResponse.prototype._ERROR_MALFORMEDXML = "malformedXML";
+myfaces._impl.xhrCore._AjaxResponse.prototype._MSG_SUCCESS = "success";
 
 /*various ajax message types*/
-myfaces._impl.xhrCore_AjaxResponse.prototype._MSG_TYPE_ERROR = "error";
-myfaces._impl.xhrCore_AjaxResponse.prototype._MSG_TYPE_EVENT = "event";
-myfaces._impl.xhrCore_AjaxResponse.prototype._AJAX_STAGE_BEGIN = "begin";
-myfaces._impl.xhrCore_AjaxResponse.prototype._AJAX_STAGE_COMPLETE = "complete";
-myfaces._impl.xhrCore_AjaxResponse.prototype._AJAX_STAGE_HTTPERROR = "httpError";
+myfaces._impl.xhrCore._AjaxResponse.prototype._MSG_TYPE_ERROR = "error";
+myfaces._impl.xhrCore._AjaxResponse.prototype._MSG_TYPE_EVENT = "event";
+myfaces._impl.xhrCore._AjaxResponse.prototype._AJAX_STAGE_BEGIN = "begin";
+myfaces._impl.xhrCore._AjaxResponse.prototype._AJAX_STAGE_COMPLETE = "complete";
+myfaces._impl.xhrCore._AjaxResponse.prototype._AJAX_STAGE_HTTPERROR = "httpError";
 
 /**
  * uses response to start Html element replacement
  * @param {XmlHttpRequest} request - request object
- * @param {HtmlElement} htmlFormElement - HTML Form element which contains the element that triggered the request
+ * @param {HtmlElement} sourceForm - HTML Form element which contains the element that triggered the request
+ * @param {Map} context - AJAX context
  */
-myfaces._impl.xhrCore_AjaxResponse.prototype.processResponse = function(request, htmlFormElement) {
+myfaces._impl.xhrCore._AjaxResponse.prototype.processResponse = function(request, sourceForm, context) {
 	this.m_request = request;
-	this.m_htmlFormElement = htmlFormElement;
+	this.m_htmlFormElement = sourceForm;
 	try {
         // TODO:
         // Solution from

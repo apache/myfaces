@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: Ganesh Jung (latest modification by $Author: werpu $)
- * Version: $Revision: 1.2 $ $Date: 2009/04/09 13:02:00 $
+ * Author: Ganesh Jung (latest modification by $Author: ganeshpuri $)
+ * Version: $Revision: 1.4 $ $Date: 2009/04/12 06:18:13 $
  *
  */
 
@@ -25,11 +25,11 @@ _reserveMyfacesNamespaces();
  * Constructor
  * @param {String} alarmThreshold - Error Level
  */
-myfaces._impl.xhrCore_AjaxUtils = function(alarmThreshold) {
+myfaces._impl.xhrCore._AjaxUtils = function(alarmThreshold) {
 	// Exception Objekt
 	this.alarmThreshold = alarmThreshold;
 	this.PARTIAL_PREFIX = "_j4fry_partial_submit_";
-	this.m_exception = new myfaces._impl.xhrCore_Exception("myfaces._impl.xhrCore_AjaxUtils", this.alarmThreshold);
+	this.m_exception = new myfaces._impl.xhrCore._Exception("myfaces._impl.xhrCore._AjaxUtils", this.alarmThreshold);
 };
 
 /**
@@ -38,7 +38,7 @@ myfaces._impl.xhrCore_AjaxUtils = function(alarmThreshold) {
  * @param {HtmlElement} parentItem - form element item is nested in
  * @param {Array} partialIds - ids fo PPS
  */
-myfaces._impl.xhrCore_AjaxUtils.prototype.processUserEntries = function(item,
+myfaces._impl.xhrCore._AjaxUtils.prototype.processUserEntries = function(item,
 		parentItem,	partialIds) {
 	try {
 		var form = parentItem;
@@ -86,7 +86,7 @@ myfaces._impl.xhrCore_AjaxUtils.prototype.processUserEntries = function(item,
  * @param {} disableTypesArr -
  * @param {} stringBuffer -
  */
-myfaces._impl.xhrCore_AjaxUtils.prototype.addNodes = function(node, insideSubmittedPart,
+myfaces._impl.xhrCore._AjaxUtils.prototype.addNodes = function(node, insideSubmittedPart,
 		partialIds, stringBuffer) {
 	if (node != null && node.childNodes != null) {
 		var nLen = node.childNodes.length;
@@ -95,12 +95,13 @@ myfaces._impl.xhrCore_AjaxUtils.prototype.addNodes = function(node, insideSubmit
 			var id = child.id;
 			var elementName = child.name;
 			if (child.nodeType == 1) {
-				var isPartialSubmitContainer = ((id != null) && partialIds
-						.contains(id.splitAndGetLast(":")));
+				var isPartialSubmitContainer = ((id != null) 
+                    && myfaces._impl._util._LangUtils.arrayContains(partialIds, 
+                        myfaces._impl._util._LangUtils.splitAndGetLast(id, ":")));
 				if (insideSubmittedPart
 						|| isPartialSubmitContainer
-						|| (elementName != null && jsfKeywords
-								.contains(elementName))) {
+						|| (elementName != null 
+                        && myfaces._impl._util._LangUtils.arrayContains(jsfKeywords, elementName))) {
 					// send id for PPS if uppermost submitted container
 					if (isPartialSubmitContainer) {
 						stringBuffer[stringBuffer.length] = this.PARTIAL_PREFIX;
@@ -127,7 +128,7 @@ myfaces._impl.xhrCore_AjaxUtils.prototype.addNodes = function(node, insideSubmit
  * @param {HtmlElement} element - 
  * @param {} stringBuffer - 
  */
-myfaces._impl.xhrCore_AjaxUtils.prototype.addField = function(element, stringBuffer) {
+myfaces._impl.xhrCore._AjaxUtils.prototype.addField = function(element, stringBuffer) {
 	var elementName = element.name;
 	var elementTagName = element.tagName.toLowerCase();
 	var elementType = element.type;

@@ -1,5 +1,3 @@
-
-
 /*
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -53,16 +51,13 @@ function _reserveMyfacesNamespaces() {
 _reserveMyfacesNamespaces();
 
 /**
- * Central internal JSF2 Utils with code used
+ * Central internal JSF2 LangUtils with code used
  * by various aspects of the JSF2 Ajax subsystem
  *
  * Note parts of the code were crossported from the dojo
  * javascript library (see license.txt for more details
  * on the dojo bsd license)
  */
-
-
-
 if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._impl._util._LangUtils) {
     myfaces._impl._util._LangUtils = function() {
         }

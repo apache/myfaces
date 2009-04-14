@@ -20,7 +20,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces, "_jsfImpl")) {
     myfaces._impl.core._jsfImpl = function() {
 
         //third option myfaces._impl.xhrCoreAjax which will be the new core impl for now
-        this._requestHandler = new myfaces._impl.xhrCore_Ajax();
+        this._requestHandler = new myfaces._impl.xhrCore._Ajax();
 
         /**
          * external event listener queue!
@@ -70,7 +70,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces, "_jsfImpl")) {
                 || formElement.nodeName.toLowerCase() != "form") {
             throw Exception("jsf.viewState: param value not of type form!");
         }
-        this._requestHandler.getViewState(formElement);
+        return this._requestHandler.getViewState(formElement);
     };
 
     /**
@@ -231,7 +231,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces, "_jsfImpl")) {
         delete passThroughArguments.onevent;
         /*ie6 supportive code to prevent browser leaks*/
         passThroughArguments.onerror = null;
-        delete passThroughArguments.onevent;
+        delete passThroughArguments.onerror;
 
         var extractedEventArguments = this._caputureEventArgs(element, event);
 
@@ -252,17 +252,12 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces, "_jsfImpl")) {
         ajaxContext.onevent = options.onevent;
         ajaxContext.onerror = options.onerror;
 
-       //implementation specific options
-       //TODO check out if we can add them to the context instead it would make more sense there
-       var implementationOptions = null;
+       //implementation specific options are added to the context for further processing
         if('undefined' != typeof passThroughArguments.myfaces && null != passThroughArguments.myfaces) {
-            implementationOptions = passThroughArguments.myfaces;
+            ajaxContext.myfaces = passThroughArguments.myfaces;
             delete passThroughArguments.myfaces;
         }
-
-        var viewState = "dummy"; //jsf.getViewState(sourceForm);
-        //this._requestHandler.imhere();
-        this._requestHandler._ajaxRequest(element, ajaxContext, sourceForm.action, viewState,  passThroughArguments, implementationOptions);
+        this._requestHandler._ajaxRequest(element, sourceForm, ajaxContext, passThroughArguments);
 
         /*
          * TODO #61

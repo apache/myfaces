@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: Ganesh Jung (latest modification by $Author: werpu $)
- * Version: $Revision: 1.3 $ $Date: 2009/04/09 13:58:56 $
+ * Author: Ganesh Jung (latest modification by $Author: ganeshpuri $)
+ * Version: $Revision: 1.6 $ $Date: 2009/04/12 05:41:47 $
  *
  */
 
@@ -57,7 +57,7 @@ myfaces._impl._util._Utils.runScripts = function(item) {
                 }
                 window.execScript(test); // run the script
             } catch (e) {
-                myfaces._impl.xhrCore_Exception.throwNewError ("Utils", "runScripts", e);
+                myfaces._impl.xhrCore._Exception.throwNewError ("Utils", "runScripts", e);
             }
         } else {
             var child = item.firstChild;
@@ -75,7 +75,7 @@ myfaces._impl._util._Utils.runScripts = function(item) {
 myfaces._impl._util._Utils.deleteItem = function(itemIdToReplace) {
     var item = document.getElementById(itemIdToReplace);
     if (item == null) {
-        myfaces._impl.xhrCore_Exception.throwNewWarning
+        myfaces._impl.xhrCore._Exception.throwNewWarning
         ("Utils", "deleteItem", "Unknown Html-Component-ID: " + itemIdToReplace);
         return;
     }
@@ -94,7 +94,7 @@ myfaces._impl._util._Utils.replaceHtmlItem = function(itemIdToReplace, newTag, f
     try {
         var item = myfaces._impl._util._Utils.getElementFromForm(itemIdToReplace, form);
         if (item == null) {
-            myfaces._impl.xhrCore_Exception.throwNewWarning
+            myfaces._impl.xhrCore._Exception.throwNewWarning
             ("Utils", "replaceHTMLItem", "Unknown Html-Component-ID: " + itemIdToReplace);
             return;
         }
@@ -117,7 +117,7 @@ myfaces._impl._util._Utils.replaceHtmlItem = function(itemIdToReplace, newTag, f
         // and remove the old item
         item.parentNode.removeChild(item);
     } catch (e) {
-        myfaces._impl.xhrCore_Exception.throwNewError ("Utils", "replaceHTMLItem", e);
+        myfaces._impl.xhrCore._Exception.throwNewError ("Utils", "replaceHTMLItem", e);
     }
 };
 
@@ -227,7 +227,7 @@ myfaces._impl._util._Utils.getElementFromForm = function(itemId, form) {
         // (kann be null if element doesn't exist)
         return document.getElementById(itemId);
     } catch (e) {
-        myfaces._impl.xhrCore_Exception.throwNewError ("Utils", "getElementFromForm", e);
+        myfaces._impl.xhrCore._Exception.throwNewError ("Utils", "getElementFromForm", e);
     }
 };
 
@@ -248,12 +248,12 @@ myfaces._impl._util._Utils.getParent = function(item, parentName) {
         if (parentItem != null) {
             return parentItem;
         } else {
-            myfaces._impl.xhrCore_Exception.throwNewWarning
+            myfaces._impl.xhrCore._Exception.throwNewWarning
             ("Utils", "getParent", "The item has no parent with type <" + parentName + ">");
             return null;
         }
     } catch (e) {
-        myfaces._impl.xhrCore_Exception.throwNewError ("Utils", "getParent", e);
+        myfaces._impl.xhrCore._Exception.throwNewError ("Utils", "getParent", e);
     }
 };
 
