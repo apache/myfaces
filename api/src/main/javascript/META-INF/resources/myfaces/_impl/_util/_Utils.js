@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: Ganesh Jung (latest modification by $Author: ganeshpuri $)
- * Version: $Revision: 1.6 $ $Date: 2009/04/12 05:41:47 $
+ * Author: Ganesh Jung (latest modification by $Author: werpu $)
+ * Version: $Revision: 1.7 $ $Date: 2009/04/16 12:39:31 $
  *
  */
 
@@ -277,26 +277,78 @@ myfaces._impl._util._Utils.getChild = function(item, childName, itemName) {
     return null;
 }
 
+
 /**
- * helper regexp and funtion to strip the body content from full html
- * by providing checks for " and ' we force the regexp
- * to check only for the first body element which also must
- * be outside of a string definition (hence
- * body tags inside of javascript strings cannot interfere into
- * well formed html)
+ * Simplified encapsulation function to strip the html content from a given string
+ * @param {String} content, our content to be stripped from its outer html areas
+ * return the stripped content or null if no stripping was possible
  */
-myfaces._impl._util._Utils.getChild._bodyStripper = /[^\"\']*<\s*body[^>]*> (.*) <\/\s*body[^>]*> [^\"\']*/i;
-myfaces._impl._util._Utils.getChild.getBodyContent = function(content) {
+myfaces._impl._util._Utils.getChild.stripHtml = function(content) {
+    return myfaces._impl._util._Utils.getChild.getTagContent(myfaces._impl._util._Utils.getChild._htmlStripper, content);
+};
+
+/**
+ * Simplified encapsulation function to strip the head content from a given string
+ * @param {String} content, our content to be stripped from its outer head areas
+ * return the stripped content or null if no stripping was possible
+ */
+myfaces._impl._util._Utils.getChild.stripHead = function(content) {
+    return myfaces._impl._util._Utils.getChild.getTagContent(myfaces._impl._util._Utils.getChild._headStripper, content);
+};
+
+/**
+ * Simplified encapsulation function to strip the body content from a given string
+ * @param {String} content, our content to be stripped from its outer body areas
+ * return the stripped content or null if no stripping was possible
+ */
+myfaces._impl._util._Utils.getChild.stripBody = function(content) {
+    return myfaces._impl._util._Utils.getChild.getTagContent(myfaces._impl._util._Utils.getChild._bodyStripper, content);
+};
+
+/**
+ * Internal tag stripper which strips the content from a string
+ * utilizing a controller
+ * @param {RegExp} stripper the stripping controller
+ * @param {String} content, the enclosing content
+ * @return either the stripped string, or null if no stripping could be performed!
+ */
+myfaces._impl._util._Utils.getChild.getTagContent = function(stripper, content) {
 
     if('undefined' == typeof content || null == typeof content) return null;
-    myfaces._impl._util._Utils.getChild._bodyStripper.exec(content);
+    stripper.exec(content);
 
     var result = RegExp.$1;
     if('undefined' == typeof result || result == "") {
-        return content;
+        return null;
     }
     return result;
 };
 
+/**
+ * Helper Regexps
+ *
+ * See the RI JSDocs why we provide this regexps, the jsdocs of the RI basically say
+ * for the response update phase,
+ * if a CDATA block of a response contains a head element we have to replace
+ * the contents head with the head provided by the response
+ * the same applies to content
+ * Also the html must be trimmed if present!
+ *
+ * Wy apply precompiled regular expressions here to keep the code small
+ * a linear ll(n) parser probably has somewhat better performance
+ * that has to be measured, I am not sure about this, I assume for the average
+ * string size we deal here it is pretty equal, not sure how good the javascript
+ * engines optimize precompiled regexps, after all regexp engines also mostly
+ * work on ll parsers internally!
+ * One advantage however would be we probably could catch everything in one
+ * internal loop insead of three...
+ * 
+ *
+ * If the performance is subpar, we always can add a stripping ll(n) parser to our mix
+ * but this would produce a massiv code bloat!
+ */
+myfaces._impl._util._Utils.getChild._htmlStripper = /<\s*html[^>]*>(.*)<\/\s*html[^>]*>/i;
+myfaces._impl._util._Utils.getChild._headStripper = /<\s*head[^>]*>(.*)<\/\s*head[^>]*>/i;
+myfaces._impl._util._Utils.getChild._bodyStripper = /<\s*body[^>]*>(.*)<\/\s*body[^>]*>/i;
  
 
