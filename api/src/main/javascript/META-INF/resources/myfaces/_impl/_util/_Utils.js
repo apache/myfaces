@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  * Author: Ganesh Jung (latest modification by $Author: werpu $)
- * Version: $Revision: 1.7 $ $Date: 2009/04/16 12:39:31 $
+ * Version: $Revision: 1.8 $ $Date: 2009/04/17 13:25:44 $
  *
  */
 
@@ -86,13 +86,15 @@ myfaces._impl._util._Utils.deleteItem = function(itemIdToReplace) {
 /**
  * [STATIC]
  * Replaces HTML elements through others
- * @param {String} itemIdToReplace - ID of the element to replace
+ * @param {String|node} itemIdToReplace - ID of the element to replace
  * @param {String} newTag - the new tag
  * @param {HTML Element} form - form element that is parent of the element
  */
 myfaces._impl._util._Utils.replaceHtmlItem = function(itemIdToReplace, newTag, form) {
     try {
-        var item = myfaces._impl._util._Utils.getElementFromForm(itemIdToReplace, form);
+
+
+        var item = (itemIdToReplace instanceof Node) ? itemIdToReplace : myfaces._impl._util._Utils.getElementFromForm(itemIdToReplace, form);
         if (item == null) {
             myfaces._impl.xhrCore._Exception.throwNewWarning
             ("Utils", "replaceHTMLItem", "Unknown Html-Component-ID: " + itemIdToReplace);
@@ -212,6 +214,8 @@ myfaces._impl._util._Utils.isUserAgentInternetExplorer = function() {
  */
 myfaces._impl._util._Utils.getElementFromForm = function(itemId, form) {
     try {
+        
+
         if('undefined' == typeof form || form == null) {
             return document.getElementById(itemId);
         }

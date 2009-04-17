@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  * Author: Ganesh Jung (latest modification by $Author: werpu $)
- * Version: $Revision: 1.9 $ $Date: 2009/04/16 12:41:32 $
+ * Version: $Revision: 1.12 $ $Date: 2009/04/17 13:46:02 $
  *
  */
 
@@ -46,6 +46,7 @@ myfaces._impl.xhrCore._AjaxResponse.prototype._PCMD_UPDATE      = "update";
 myfaces._impl.xhrCore._AjaxResponse.prototype._PCMD_DELETE      = "delete";
 myfaces._impl.xhrCore._AjaxResponse.prototype._PCMD_INSERT      = "insert";
 myfaces._impl.xhrCore._AjaxResponse.prototype._PCMD_EVAL        = "eval";
+myfaces._impl.xhrCore._AjaxResponse.prototype._PCMD_ERROR       = "error";
 myfaces._impl.xhrCore._AjaxResponse.prototype._PCMD_ATTRIBUTES  = "attributes";
 myfaces._impl.xhrCore._AjaxResponse.prototype._PCMD_EXTENSION   = "extension";
 
@@ -116,9 +117,7 @@ myfaces._impl.xhrCore._AjaxResponse.prototype.processResponse = function(request
                  * </eval>
                  */
 
-            if (tagName == this._PCMD_EVAL) {
-                //eval is always in CDATA blocks
-                eval(childNode.firstChild.nodeValue);
+            
 
             //this ought to be enough for eval
             //however the run scripts still makes sense
@@ -126,25 +125,25 @@ myfaces._impl.xhrCore._AjaxResponse.prototype.processResponse = function(request
             //which do not use the response writer properly
             //we might add this one as custom option in update and
             //insert!
-            } else if (tagName == this._PCMD_ERROR) {
+            if (tagName == this._PCMD_ERROR) {
                 
                 /**
                  * <error>
                  *      <error-name>String</error-name>
-                 *      <error-messafe><![CDATA[message]]></error-message>
+                 *      <error-message><![CDATA[message]]></error-message>
                  * <error>
                  */
-                var errorName = childNode.firstChild.nodeValue;
-                var errorMessage = childNode.childNodes[1].firstChild.nodeValue;
+                var errorName = childNode.firstChild.textContent;
+                var errorMessage = childNode.childNodes[1].firstChild.data;
 
                 if('undefined' == typeof errorName || null == errorName) {
-                  errorName = "";
+                    errorName = "";
                 }
                 if('undefined' == typeof errorMessage || null == errorMessage) {
-                  errorMessage = "";
+                    errorMessage = "";
                 }
 
-                jsf.ajax.sendError(request, context,this._SERVER_ERROR, errorName, errorMessage);
+                jsf.ajax.sendError(request, context,this._ERROR_SERVER_ERROR , errorName, errorMessage);
 
                 return;
                 
@@ -173,9 +172,9 @@ myfaces._impl.xhrCore._AjaxResponse.prototype.processResponse = function(request
                         if (changes[i].getAttribute('id') == "javax.faces.ViewState") {
                             document.getElementById("javax.faces.ViewState").value = changes[i].firstChild.nodeValue;
 
-                            //TODO all forms for elements with the identifier (name?) javax.faces.ViewState
-                            //if present then set them if the form has no element of type javax.faces.viewState
-                            //append a hidden field and set it!
+                        //TODO all forms for elements with the identifier (name?) javax.faces.ViewState
+                        //if present then set them if the form has no element of type javax.faces.viewState
+                        //append a hidden field and set it!
 
 
 
@@ -207,8 +206,8 @@ myfaces._impl.xhrCore._AjaxResponse.prototype.processResponse = function(request
                                 //if the body content is provided only the body content is applied, according
                                 //to the jsDoc specs!
                                 if(bodyContent != null) {
-                                   
-                                    body.innerHTML = bodyContent;
+                                   //TODO replace the innerHTML with the j4fry logic
+                                    body.innerHTML = bodyContent
                                     //TODO fetch the scripts and do an eval on the scripts to bypass
                                     //browser inconsistencies in this area
                                     if (myfaces._impl._util._Utils.isUserAgentInternetExplorer()) {
@@ -226,8 +225,10 @@ myfaces._impl.xhrCore._AjaxResponse.prototype.processResponse = function(request
                                     changes[i].getAttribute('id'), cDataBlock, this.m_htmlFormElement);
                             }
                         }
-                    }
-                    else if (tagName == this._PCMD_INSERT) {
+                    } else if (changes[i].tagName == this._PCMD_EVAL) {
+                        //eval is always in CDATA blocks
+                        eval(changes[i].firstChild.data);
+                    } else if (changes[i].tagName == this._PCMD_INSERT) {
                         //  this._responseHandler.doInsert(childNode);
                         /*insert, three attributes can be present
                          * id = insert id
@@ -238,24 +239,24 @@ myfaces._impl.xhrCore._AjaxResponse.prototype.processResponse = function(request
                          * the before is the id if set which the component has to be inserted before
                          * the after is the id if set which the component has to be inserted after
                          **/
-                        var insertId = changes[i].getAttribute('id');
-                        var beforeId = changes[i].getAttribute('before');
-                        var afterId = changes[i].getAttribute('after');
+                        var insertId    = changes[i].getAttribute('id');
+                        var beforeId    = changes[i].getAttribute('before');
+                        var afterId     = changes[i].getAttribute('after');
 
-                        var insertSet = 'undefined' != typeof insertId && null != insertId && myfaces._impl._util._LangUtils.trim(insertId) != "";
-                        var beforeSet = 'undefined' != typeof beforeId && null != beforeId && myfaces._impl._util._LangUtils.trim(beforeId) != "";
-                        var afterSet = 'undefined' != typeof afterId && null != afterId && myfaces._impl._util._LangUtils.trim(afterId) != "";
+                        var insertSet   = 'undefined' != typeof insertId && null != insertId && myfaces._impl._util._LangUtils.trim(insertId) != "";
+                        var beforeSet   = 'undefined' != typeof beforeId && null != beforeId && myfaces._impl._util._LangUtils.trim(beforeId) != "";
+                        var afterSet    = 'undefined' != typeof afterId && null != afterId && myfaces._impl._util._LangUtils.trim(afterId) != "";
 
                         if(!insertSet) {
-                             jsf.ajax.sendError(request, context,this._ERROR_MALFORMEDXML,this._ERROR_MALFORMEDXML, "Error in PPR Insert, id must be present");
-                             return;
+                            jsf.ajax.sendError(request, context,this._ERROR_MALFORMEDXML,this._ERROR_MALFORMEDXML, "Error in PPR Insert, id must be present");
+                            return;
                         }
                         if(!(beforeSet || afterSet)) {
-                             jsf.ajax.sendError(request, context,this._ERROR_MALFORMEDXML, this._ERROR_MALFORMEDXML, "Error in PPR Insert, before id or after id must be present");
-                             return;
+                            jsf.ajax.sendError(request, context,this._ERROR_MALFORMEDXML, this._ERROR_MALFORMEDXML, "Error in PPR Insert, before id or after id must be present");
+                            return;
                         }
                         //either before or after but not two at the same time
-                        if(beforeSet) {
+                         if(beforeSet) {
                             beforeId = myfaces._impl._util._LangUtils.trim(beforeId);
                             var beforeNode = document.getElementById(beforeId);
                             if('undefined' == typeof beforeNode || null == beforeNode) {
@@ -269,19 +270,13 @@ myfaces._impl.xhrCore._AjaxResponse.prototype.processResponse = function(request
                              *before inserting it"
                              **/
                             var nodeHolder = document.createElement("div");
-                            nodeHolder.innerHTML = changes[i].firstChild.data;
+                            //nodeHolder.innerHTML = changes[i].firstChild.data;
                             var parentNode = beforeNode.parentNode;
-                            parentNode.insertBefore(nodeHolder.firstChild, beforeNode);
-                            /**
-                             * The ie needs a separate eval cycle to
-                             * deal with embedded scripts
-                             * (which should not happen if the responseWriter
-                             * works as expected but there are component sets
-                             * which bypass the response writer)
-                             */
-                            if (myfaces._impl._util._Utils.isUserAgentInternetExplorer()) {
-                                myfaces._impl._util._Utils.runScripts(nodeHolder.firstChild);
-                            }
+                            parentNode.insertBefore(nodeHolder, beforeNode);
+
+                            myfaces._impl._util._Utils.replaceHtmlItem(
+                                    nodeHolder, changes[i].firstChild.data, null);
+
                         } else {
                             afterId = myfaces._impl._util._LangUtils.trim(afterId);
                             var afterNode = document.getElementById(afterId);
@@ -290,12 +285,11 @@ myfaces._impl.xhrCore._AjaxResponse.prototype.processResponse = function(request
                                 return;
                             }
                             var nodeHolder = document.createElement("div");
-                            nodeHolder.innerHTML = changes[i].firstChild.data;
+                            //nodeHolder.innerHTML = changes[i].firstChild.data;
                             var parentNode = afterNode.parentNode;
-                            parentNode.insertBefore(nodeHolder.firstChild, beforeNode.nextSibling);
-                            if (myfaces._impl._util._Utils.isUserAgentInternetExplorer()) {
-                                myfaces._impl._util._Utils.runScripts(nodeHolder.firstChild);
-                            }
+                            parentNode.insertBefore(nodeHolder, afterNode.nextSibling);
+                            myfaces._impl._util._Utils.replaceHtmlItem(
+                                    nodeHolder, changes[i].firstChild.data, null);
                         }
 
                     } else if (changes[i].tagName == this._PCMD_DELETE) {

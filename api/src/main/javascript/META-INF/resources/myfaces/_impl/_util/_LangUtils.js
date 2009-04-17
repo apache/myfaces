@@ -137,7 +137,7 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
      * hyperfast trim
      * http://blog.stevenlevithan.com/archives/faster-trim-javascript
      */
-    myfaces._impl._util._LangUtils.trim = function(/*string*/) {
+    myfaces._impl._util._LangUtils.trim = function(/*string*/ str) {
 
         var	str = str.replace(/^\s\s*/, ''),
         ws = /\s/,

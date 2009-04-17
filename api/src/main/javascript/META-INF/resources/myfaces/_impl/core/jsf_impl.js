@@ -297,6 +297,9 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces, "_jsfImpl")) {
         }
         /*now we serve the queue as well*/
         this._errorListenerQueue.broadcastEvent(eventData);
+
+        //TODO add the development state alerts here!
+        
     };
 
     /**
