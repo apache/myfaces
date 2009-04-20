@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  * Author: Ganesh Jung (latest modification by $Author: ganeshpuri $)
- * Version: $Revision: 1.3 $ $Date: 2009/04/12 05:41:47 $
+ * Version: $Revision: 1.4 $ $Date: 2009/04/18 17:19:12 $
  *
  */
 
@@ -30,26 +30,27 @@ myfaces._impl.xhrCore._Exception = function(sourceClass, threshold) {
  * [STATIC]
  * static method used by static methods that throw errors
  */
-myfaces._impl.xhrCore._Exception.throwNewError = function(sourceClass, func, exception) {
-	newException = new myfaces._impl.xhrCore._Exception(sourceClass, "ERROR");
-	newException.throwError(func, exception);
+myfaces._impl.xhrCore._Exception.throwNewError = function(request, context, sourceClass, func, exception) {
+	newException = new myfaces._impl.xhrCore._Exception(request, context, sourceClass, "ERROR");
+	newException.throwError(request, context, func, exception);
 };
 
 /**
  * [STATIC]
  * static method used by static methods that throw warnings
  */
-myfaces._impl.xhrCore._Exception.throwNewWarning = function(sourceClass, func, message){
-	newException = new myfaces._impl.xhrCore._Exception(sourceClass, "WARNING");
-	newException.throwWarning(func, message);
+myfaces._impl.xhrCore._Exception.throwNewWarning = function(request, context, sourceClass, func, message){
+	newException = new myfaces._impl.xhrCore._Exception(request, context, sourceClass, "WARNING");
+	newException.throwWarning(request, context, func, message);
 };
 
 /**
  * throws errors
  */
-myfaces._impl.xhrCore._Exception.prototype.throwError = function(func, exception) {
+myfaces._impl.xhrCore._Exception.prototype.throwError = function(request, context, func, exception) {
 	if (this.m_threshold == "ERROR") {
-		alert("[MyFaces ERROR]\n\n"
+		jsf.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_CLIENT_ERROR, exception.name,
+                "MyFaces ERROR\n"
 				+ "Affected Class: " + this.m_class + "\n"
 				+ "Affected Method: " + func + "\n"
 				+ "Error name: " + exception.name + "\n"
@@ -64,9 +65,10 @@ myfaces._impl.xhrCore._Exception.prototype.throwError = function(func, exception
 /**
  * throws warnings
  */
-myfaces._impl.xhrCore._Exception.prototype.throwWarning = function(func, message) {
+myfaces._impl.xhrCore._Exception.prototype.throwWarning = function(request, context, func, message) {
 	if (this.m_threshold == "WARNING" || this.m_threshold == "ERROR") {
-		alert("[MyFaces WARNING]\n[" + this.m_class + "::" + func + "]\n\n"
+		jsf.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_CLIENT_ERROR, exception.name,
+            "MyFaces WARNING\n[" + this.m_class + "::" + func + "]\n\n"
 				+ message);
 	}
 	this.destroy();

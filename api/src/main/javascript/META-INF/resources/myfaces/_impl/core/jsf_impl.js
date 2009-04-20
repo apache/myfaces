@@ -36,18 +36,38 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces, "_jsfImpl")) {
 
     /*CONSTANTS*/
 
-    myfaces._impl.core._jsfImpl.prototype._PROP_PARTIAL_SOURCE = "javax.faces.partial.source";
-    myfaces._impl.core._jsfImpl.prototype._PROP_VIEWSTATE = "javax.faces.viewState";
-    myfaces._impl.core._jsfImpl.prototype._PROP_AJAX = "javax.faces.partial.ajax";
-    myfaces._impl.core._jsfImpl.prototype._PROP_EXECUTE = "javax.faces.partial.execute";
-    myfaces._impl.core._jsfImpl.prototype._PROP_RENDER = "javax.faces.partial.render";
-    myfaces._impl.core._jsfImpl.prototype._PROP_EVENT = "javax.faces.partial.event";
-
     /*internal identifiers for options*/
     myfaces._impl.core._jsfImpl.prototype._OPT_IDENT_ALL = "@all";
     myfaces._impl.core._jsfImpl.prototype._OPT_IDENT_NONE = "@none";
     myfaces._impl.core._jsfImpl.prototype._OPT_IDENT_THIS = "@this";
     myfaces._impl.core._jsfImpl.prototype._OPT_IDENT_FORM = "@form";
+
+    /*
+     * [STATIC] constants
+     */
+
+    myfaces._impl.core._jsfImpl._PROP_PARTIAL_SOURCE = "javax.faces.partial.source";
+    myfaces._impl.core._jsfImpl._PROP_VIEWSTATE = "javax.faces.ViewState";
+    myfaces._impl.core._jsfImpl._PROP_AJAX = "javax.faces.partial.ajax";
+    myfaces._impl.core._jsfImpl._PROP_EXECUTE = "javax.faces.partial.execute";
+    myfaces._impl.core._jsfImpl._PROP_RENDER = "javax.faces.partial.render";
+    myfaces._impl.core._jsfImpl._PROP_EVENT = "javax.faces.partial.event";
+
+    /* message types */
+    myfaces._impl.core._jsfImpl._MSG_TYPE_ERROR       = "error";
+    myfaces._impl.core._jsfImpl._MSG_TYPE_EVENT       = "event";
+
+    /* event emitting stages */
+    myfaces._impl.core._jsfImpl._AJAX_STAGE_BEGIN     = "begin";
+    myfaces._impl.core._jsfImpl._AJAX_STAGE_COMPLETE  = "complete";
+    myfaces._impl.core._jsfImpl._AJAX_STAGE_SUCCESS   = "success";
+
+    /*ajax errors spec 14.4.2*/
+    myfaces._impl.core._jsfImpl._ERROR_HTTPERROR      = "httpError";
+    myfaces._impl.core._jsfImpl._ERROR_EMPTY_RESPONSE = "emptyResponse";
+    myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML   = "malformedXML";
+    myfaces._impl.core._jsfImpl._ERROR_SERVER_ERROR   = "serverError";
+    myfaces._impl.core._jsfImpl._ERROR_CLIENT_ERROR   = "clientError";
 
     /**
      * collect and encode data for a given form element (must be of type form)
@@ -112,18 +132,6 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces, "_jsfImpl")) {
     }
 
     /**
-     * Captures the event arguments according to the list in the specification
-     */
-    myfaces._impl.core._jsfImpl.prototype._caputureEventArgs = function(/*Dom node*/node, /*event*/ obj) {
-        /*
-         * TODO encode the rest of the arguments
-         * once it is clear what has to be done here
-         */
-        var retVal = {};
-        return retVal;
-    };
-
-    /**
      * this function has to send the ajax requests
      *
      * following request conditions must be met:
@@ -158,31 +166,52 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces, "_jsfImpl")) {
         /*assert if the onevent is set and once if it is set it must be of type function*/
         this._assertFunction(options.onevent);
 
-        /**
-         * fetch the parent form first
-         */
-        var sourceForm = myfaces._impl._util._Utils.getParent(element, "form");
-
-        if ('undefined' == typeof sourceForm || null == sourceForm) {
-            sourceForm = document.forms[0];
-        }
-
         /*
          * We make a copy of our options because
          * we should not touch the incoming params!
          */
         var passThroughArguments = JSF2Utils.mixMaps({}, options, true);
 
-        /*
+        /*additional passthrough cleanup*/
+        /*ie6 supportive code to prevent browser leaks*/
+        passThroughArguments.onevent = null;
+        delete passThroughArguments.onevent;
+        /*ie6 supportive code to prevent browser leaks*/
+        passThroughArguments.onerror = null;
+        delete passThroughArguments.onerror;
+
+        if ('undefined' != typeof event && null != event) {
+            passThroughArguments[myfaces._impl.core._jsfImpl._PROP_EVENT] = event.type;
+        }
+
+        /**
+         * ajax pass through context with the source
+         * onevent and onerror
+         */
+        var ajaxContext = {};
+        ajaxContext.source = element;
+        ajaxContext.onevent = options.onevent;
+        ajaxContext.onerror = options.onerror;
+
+        /**
+         * fetch the parent form
+         */
+        var sourceForm = myfaces._impl._util._Utils.getParent(null, ajaxContext, element, "form");
+
+        if ('undefined' == typeof sourceForm || null == sourceForm) {
+            sourceForm = document.forms[0];
+        }
+
+/*
          * binding contract the javax.faces.partial.source must be
          * set according to the december 2008 preview
          */
-        passThroughArguments[this._PROP_PARTIAL_SOURCE] = element.id;
+        passThroughArguments[myfaces._impl.core._jsfImpl._PROP_PARTIAL_SOURCE] = element.id;
 
         /*
          * javax.faces.partial.ajax must be set to true
          */
-        passThroughArguments[this._PROP_AJAX] = true;
+        passThroughArguments[myfaces._impl.core._jsfImpl._PROP_AJAX] = true;
 
         /**
          * if execute or render exist
@@ -198,16 +227,16 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces, "_jsfImpl")) {
                 execString = execString.replace(this._OPT_IDENT_FORM, sourceForm.id);
                 execString = execString.replace(this._OPT_IDENT_THIS, element.id);
 
-                passThroughArguments[this._PROP_EXECUTE] = execString;
+                passThroughArguments[myfaces._impl.core._jsfImpl._PROP_EXECUTE] = execString;
             } else if (execAll) {
-                passThroughArguments[this._PROP_EXECUTE] = this._OPT_IDENT_ALL;
+                passThroughArguments[myfaces._impl.core._jsfImpl._PROP_EXECUTE] = this._OPT_IDENT_ALL;
             }
 
             passThroughArguments.execute = null;
             /*remap just in case we have a valid pointer to an existing object*/
             delete passThroughArguments.execute;
         } else {
-            passThroughArguments[this._PROP_EXECUTE] = element.id;
+            passThroughArguments[myfaces._impl.core._jsfImpl._PROP_EXECUTE] = element.id;
         }
         if (JSF2Utils.exists(passThroughArguments, "render")) {
             var renderString = JSF2Utils.arrayToString(passThroughArguments.render, ' ');
@@ -216,41 +245,14 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces, "_jsfImpl")) {
             if (!renderNone && !renderAll) {
                 renderString = renderString.replace(this._OPT_IDENT_FORM, sourceForm.id);
                 renderString = renderString.replace(this._OPT_IDENT_THIS, element.id);
-                passThroughArguments[this._PROP_RENDER] = JSF2Utils.arrayToString(passThroughArguments.render, ' ');
+                passThroughArguments[myfaces._impl.core._jsfImpl._PROP_RENDER] = JSF2Utils.arrayToString(passThroughArguments.render, ' ');
                 passThroughArguments.render = null;
             } else if (renderAll) {
-                passThroughArguments[this._PROP_RENDER] = this._OPT_IDENT_ALL;
+                passThroughArguments[myfaces._impl.core._jsfImpl._PROP_RENDER] = this._OPT_IDENT_ALL;
 
             }
             delete passThroughArguments.render;
         }
-
-        /*additional passthrough cleanup*/
-        /*ie6 supportive code to prevent browser leaks*/
-        passThroughArguments.onevent = null;
-        delete passThroughArguments.onevent;
-        /*ie6 supportive code to prevent browser leaks*/
-        passThroughArguments.onerror = null;
-        delete passThroughArguments.onerror;
-
-        var extractedEventArguments = this._caputureEventArgs(element, event);
-
-        if ('undefined' != typeof event && null != event) {
-            passThroughArguments[this._PROP_EVENT] = event.type;
-        }
-
-        /*we mixin the event params but do not override existing ones!*/
-
-        passThroughArguments = JSF2Utils.mixMaps(passThroughArguments, extractedEventArguments, false);
-
-        /**
-         * ajax pass through context with the source
-         * onevent and onerror
-         */
-        var ajaxContext = {};
-        ajaxContext.source = element;
-        ajaxContext.onevent = options.onevent;
-        ajaxContext.onerror = options.onerror;
 
        //implementation specific options are added to the context for further processing
         if('undefined' != typeof passThroughArguments.myfaces && null != passThroughArguments.myfaces) {
@@ -283,13 +285,17 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces, "_jsfImpl")) {
      */
     myfaces._impl.core._jsfImpl.prototype.sendError = function sendError(/*Object*/request, /*Object*/ context, /*String*/ name, /*String*/ serverErrorName, /*String*/ serverErrorMessage) {
         var eventData = {};
-        eventData.type = this._MSG_TYPE_ERROR;
+        eventData.type = myfaces._impl.core._jsfImpl._MSG_TYPE_ERROR;
 
         eventData.name = name;
-        eventData.source = context.source;
-        eventData.responseXML = request.responseXML;
-        eventData.responseText = request.responseText;
-        eventData.responseCode = request.status;
+        try {
+            eventData.source = context.source;
+            eventData.responseXML = request.responseXML;
+            eventData.responseText = request.responseText;
+            eventData.responseCode = request.status;
+        } catch (e) {
+            // silently ignore: user can find out by examining the event data
+        }
 
         /**/
         if (myfaces._impl._util._LangUtils.exists(context, "onerror")) {
@@ -307,16 +313,21 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces, "_jsfImpl")) {
      * TODO make sure this method also occurrs in the specs
      * otherwise simply pull it
      */
-    myfaces._impl.core._jsfImpl.prototype.sendEvent = function sendEvent(/*Object*/request, /*Object*/ context, /*even name*/ name) {
+    myfaces._impl.core._jsfImpl.prototype.sendEvent = function sendEvent(/*Object*/request, /*Object*/ context, /*event name*/ name) {
         var eventData = {};
-        eventData.type = this._MSG_TYPE_EVENT;
+        eventData.type = myfaces._impl.core._jsfImpl._MSG_TYPE_EVENT;
 
         eventData.name = name;
         eventData.source = context.source;
-        if (name !== this._AJAX_STAGE_BEGIN) {
-            eventData.responseXML = request.responseXML;
-            eventData.responseText = request.responseText;
-            eventData.responseCode = request.status;
+        if (name !== myfaces._impl.core._jsfImpl._AJAX_STAGE_BEGIN) {
+            try {
+                eventData.responseXML = request.responseXML;
+                eventData.responseText = request.responseText;
+                eventData.responseCode = request.status;
+            } catch (e) {
+                jsf.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_CLIENT_ERROR, "ErrorRetrievingResponse",
+                    "Parts of the response couldn't be retrieved when constructing the event data: " + e);
+            }
         }
 
         /**/
@@ -336,12 +347,9 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces, "_jsfImpl")) {
      */
     myfaces._impl.core._jsfImpl.prototype.response = function(request, context) {
         this._requestHandler._ajaxResponse(request, context);
-        /**
-         * TODO #62
-         * https://issues.apache.org/jira/browse/MYFACES-2114
-         */
     };
-    /**
+
+/**
      * @return the project stage also emitted by the server:
      * it cannot be cached and must be delivered over the server
      *

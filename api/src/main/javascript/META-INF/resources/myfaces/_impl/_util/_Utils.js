@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: Ganesh Jung (latest modification by $Author: werpu $)
- * Version: $Revision: 1.8 $ $Date: 2009/04/17 13:25:44 $
+ * Author: Ganesh Jung (latest modification by $Author: ganeshpuri $)
+ * Version: $Revision: 1.9 $ $Date: 2009/04/18 17:19:12 $
  *
  */
 
@@ -32,9 +32,11 @@ myfaces._impl._util._Utils = function() {
  * [STATIC]
  * Run through the given Html item and execute the inline scripts
  * (IE doesn't do this by itself)
+ * @param {XMLHTTPRequest} request
+ * @param {Map} context
  * @param {HtmlElement} item
  */
-myfaces._impl._util._Utils.runScripts = function(item) {
+myfaces._impl._util._Utils.runScripts = function(request, context, item) {
     if (item.nodeType == 1) { // only if it's an element node
         if (item.tagName.toLowerCase() == 'script') {
             try {
@@ -57,12 +59,12 @@ myfaces._impl._util._Utils.runScripts = function(item) {
                 }
                 window.execScript(test); // run the script
             } catch (e) {
-                myfaces._impl.xhrCore._Exception.throwNewError ("Utils", "runScripts", e);
+                myfaces._impl.xhrCore._Exception.throwNewError(request, context, "Utils", "runScripts", e);
             }
         } else {
             var child = item.firstChild;
             while (child) {
-                myfaces._impl._util._Utils.runScripts(child);
+                myfaces._impl._util._Utils.runScripts(request, context, child);
                 child = child.nextSibling;
             }
         }
@@ -72,11 +74,11 @@ myfaces._impl._util._Utils.runScripts = function(item) {
 /**
  * Simple delete on an existing item
  */
-myfaces._impl._util._Utils.deleteItem = function(itemIdToReplace) {
+myfaces._impl._util._Utils.deleteItem = function(request, context, itemIdToReplace) {
     var item = document.getElementById(itemIdToReplace);
     if (item == null) {
         myfaces._impl.xhrCore._Exception.throwNewWarning
-        ("Utils", "deleteItem", "Unknown Html-Component-ID: " + itemIdToReplace);
+        (request, context, "Utils", "deleteItem", "Unknown Html-Component-ID: " + itemIdToReplace);
         return;
     }
 
@@ -86,18 +88,21 @@ myfaces._impl._util._Utils.deleteItem = function(itemIdToReplace) {
 /**
  * [STATIC]
  * Replaces HTML elements through others
+ * @param {XMLHTTPRequest} request
+ * @param {Map} context
  * @param {String|node} itemIdToReplace - ID of the element to replace
  * @param {String} newTag - the new tag
  * @param {HTML Element} form - form element that is parent of the element
  */
-myfaces._impl._util._Utils.replaceHtmlItem = function(itemIdToReplace, newTag, form) {
+myfaces._impl._util._Utils.replaceHtmlItem = function(request, context, itemIdToReplace, newTag, form) {
     try {
 
 
-        var item = (itemIdToReplace instanceof Node) ? itemIdToReplace : myfaces._impl._util._Utils.getElementFromForm(itemIdToReplace, form);
+        var item = (itemIdToReplace instanceof Node) ? itemIdToReplace :
+            myfaces._impl._util._Utils.getElementFromForm(request, context, itemIdToReplace, form);
         if (item == null) {
             myfaces._impl.xhrCore._Exception.throwNewWarning
-            ("Utils", "replaceHTMLItem", "Unknown Html-Component-ID: " + itemIdToReplace);
+            (request, context, "Utils", "replaceHTMLItem", "Unknown Html-Component-ID: " + itemIdToReplace);
             return;
         }
 
@@ -112,14 +117,14 @@ myfaces._impl._util._Utils.replaceHtmlItem = function(itemIdToReplace, newTag, f
                 item.insertAdjacentHTML('beforeBegin', newTag);
             }
             if (myfaces._impl._util._Utils.isUserAgentInternetExplorer()) {
-                myfaces._impl._util._Utils.runScripts(item.previousSibling);
+                myfaces._impl._util._Utils.runScripts(request, context, item.previousSibling);
             }
         }
 
         // and remove the old item
         item.parentNode.removeChild(item);
     } catch (e) {
-        myfaces._impl.xhrCore._Exception.throwNewError ("Utils", "replaceHTMLItem", e);
+        myfaces._impl.xhrCore._Exception.throwNewError (request, context, "Utils", "replaceHTMLItem", e);
     }
 };
 
@@ -208,11 +213,13 @@ myfaces._impl._util._Utils.isUserAgentInternetExplorer = function() {
  * the same id but are located in different forms -> MyFaces 1.1.4 two forms ->
  * 2 inputHidden fields with ID jsf_tree_64 & jsf_state_64 ->
  * http://www.arcknowledge.com/gmane.comp.jakarta.myfaces.devel/2005-09/msg01269.html
+ * @param {XMLHTTPRequest} request
+ * @param {Map} context
  * @param {String} itemId - ID of the HTML element located inside the form
  * @param {Html-Element} form - form element containing the element
  * @return {Html-Element} - return the element if found else null
  */
-myfaces._impl._util._Utils.getElementFromForm = function(itemId, form) {
+myfaces._impl._util._Utils.getElementFromForm = function(request, context, itemId, form) {
     try {
         
 
@@ -231,17 +238,19 @@ myfaces._impl._util._Utils.getElementFromForm = function(itemId, form) {
         // (kann be null if element doesn't exist)
         return document.getElementById(itemId);
     } catch (e) {
-        myfaces._impl.xhrCore._Exception.throwNewError ("Utils", "getElementFromForm", e);
+        myfaces._impl.xhrCore._Exception.throwNewError(request, context, "Utils", "getElementFromForm", e);
     }
 };
 
 /**
  * [STATIC]
  * gets a parent of an item with a given tagname
+ * @param {XMLHTTPRequest} request
+ * @param {Map} context
  * @param {HtmlElement} item - child element
  * @param {String} parentName - TagName of parent element
  */
-myfaces._impl._util._Utils.getParent = function(item, parentName) {
+myfaces._impl._util._Utils.getParent = function(request, context, item, parentName) {
     try {
         // parent tag parentName suchen
         var parentItem = item.parentNode;
@@ -253,11 +262,11 @@ myfaces._impl._util._Utils.getParent = function(item, parentName) {
             return parentItem;
         } else {
             myfaces._impl.xhrCore._Exception.throwNewWarning
-            ("Utils", "getParent", "The item has no parent with type <" + parentName + ">");
+            (request, context, "Utils", "getParent", "The item has no parent with type <" + parentName + ">");
             return null;
         }
     } catch (e) {
-        myfaces._impl.xhrCore._Exception.throwNewError ("Utils", "getParent", e);
+        myfaces._impl.xhrCore._Exception.throwNewError (request, context, "Utils", "getParent", e);
     }
 };
 

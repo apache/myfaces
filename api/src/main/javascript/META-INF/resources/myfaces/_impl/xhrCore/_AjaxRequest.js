@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  * Author: Ganesh Jung (latest modification by $Author: ganeshpuri $)
- * Version: $Revision: 1.5 $ $Date: 2009/04/13 19:50:24 $
+ * Version: $Revision: 1.8 $ $Date: 2009/04/19 06:46:13 $
  *
  */
 
@@ -32,10 +32,11 @@ myfaces._impl.xhrCore._AjaxRequest = function(source, sourceForm, context, passT
 	try {
 		this.m_contentType = "application/x-www-form-urlencoded";
 		this.m_source = source;
-		this.m_request = null;
+		this.m_xhr = null;
         // myfaces parameters
         this.m_partialIdsArray = null;
         var errorlevel = 'NONE';
+        this.m_queuesize = -1;
         if (typeof context != 'undefined'
             && context != null
             && typeof context.myfaces != 'undefined'
@@ -43,65 +44,59 @@ myfaces._impl.xhrCore._AjaxRequest = function(source, sourceForm, context, passT
             if (typeof context.myfaces.errorlevel != 'undefined'
                 && context.myfaces.errorlevel != null)
                 errorlevel = context.myfaces.errorlevel;
+            if (typeof context.myfaces.queuesize != 'undefined'
+                && context.myfaces.queuesize != null)
+                this.m_queuesize = context.myfaces.queuesize;
             if (typeof context.myfaces.pps != 'undefined'
                 && context.myfaces.pps
-                && typeof passThrough.execute != 'undefined'
-                && passThrough.execute != null
-                && passThrough.execute.length > 0) {
-                this.m_partialIdsArray = passThrough.execute.split(" ");
+                && typeof passThrough[myfaces._impl.core._jsfImpl._PROP_EXECUTE] != 'undefined'
+                && passThrough[myfaces._impl.core._jsfImpl._PROP_EXECUTE] != null
+                && passThrough[myfaces._impl.core._jsfImpl._PROP_EXECUTE].length > 0) {
+                this.m_partialIdsArray = passThrough[myfaces._impl.core._jsfImpl._PROP_EXECUTE].split(" ");
             }
         }
         this.m_context = context;
 		this.m_response = new myfaces._impl.xhrCore._AjaxResponse(errorlevel);
 		this.m_ajaxUtil = new myfaces._impl.xhrCore._AjaxUtils(errorlevel);
-		this.m_requestQueue = null;
 		this.m_sourceForm = sourceForm;
         this.m_passThrough = passThrough;
+        this.m_requestParameters = this.getViewState();
+        for (var key in this.m_passThrough) {
+            this.m_requestParameters = this.m_requestParameters +
+                "&" + encodeURIComponent(key) +
+                "=" + encodeURIComponent(this.m_passThrough[key]);
+        }
 	} catch (e) {
-		this.m_exception.throwError("Ctor", e);
+		this.m_exception.throwError(null, context, "Ctor", e);
 	}
 };
 
-/**
- * Prepares an Ajax request with the request parameters
- */
-myfaces._impl.xhrCore._AjaxRequest.prototype.prepare = function() {
-    // read data from form
-    this.m_requestParameters = jsf.getViewState(this.m_sourceForm);
-    for (var key in this.m_passThrough) {
-        this.m_requestParameters = this.m_requestParameters +
-            "&" + encodeURIComponent(key) +
-            "=" + encodeURIComponent(this.m_passThrough[key]);
-    }
-    return this;
-}
 /**
  * Sends an Ajax request
  * @param {RequestQueue} requestQueue - Queue object to trigger next request
  */
 
-myfaces._impl.xhrCore._AjaxRequest.prototype.send = function(requestQueue) {
+myfaces._impl.xhrCore._AjaxRequest.prototype.send = function() {
 	try {
-		this.m_requestQueue = requestQueue;
-
 		if (myfaces._impl._util._Utils.isUserAgentInternetExplorer()) {
 			// request object for Internet Explorer
 			try {
-				this.m_request = new ActiveXObject("Msxml2.XMLHTTP");
+				this.m_xhr = new ActiveXObject("Msxml2.XMLHTTP");
 			} catch (e) {
-				this.m_request = new ActiveXObject('Microsoft.XMLHTTP');
+				this.m_xhr = new ActiveXObject('Microsoft.XMLHTTP');
 			}
 		} else {
 			// request object for standard browser
-			this.m_request = new XMLHttpRequest();
+			this.m_xhr = new XMLHttpRequest();
 		}
-		this.m_request.open("POST", this.m_sourceForm.action, true);
-		this.m_request.setRequestHeader("Content-Type", this.m_contentType);
-		this.m_request.setRequestHeader("Faces-Request", "partial/ajax");
-		this.m_request.onreadystatechange = myfaces._impl.xhrCore._AjaxRequestQueue.handleCallback;
-		this.m_request.send(this.m_requestParameters);
+		this.m_xhr.open("POST", this.m_sourceForm.action, true);
+		this.m_xhr.setRequestHeader("Content-Type", this.m_contentType);
+		this.m_xhr.setRequestHeader("Faces-Request", "partial/ajax");
+		this.m_xhr.onreadystatechange = myfaces._impl.xhrCore._AjaxRequestQueue.handleCallback;
+        jsf.ajax.sendEvent(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl._AJAX_STAGE_BEGIN);
+		this.m_xhr.send(this.m_requestParameters);
 	} catch (e) {
-		this.m_exception.throwError("send", e);
+		this.m_exception.throwError(this.m_xhr, this.m_context, "send", e);
 	}
 };
 
@@ -110,68 +105,35 @@ myfaces._impl.xhrCore._AjaxRequest.prototype.send = function(requestQueue) {
  * triggered by RequestQueue
  */
 myfaces._impl.xhrCore._AjaxRequest.prototype.requestCallback = function() {
-	try {
-		if (this.isComplete() == true) {
-			this.m_response.processResponse(this.m_request, this.m_sourceForm, this.m_context);
-			this.m_requestQueue.processQueue();
-		} else if (this.isPending() == false && this.isFailed() == true) {
-			this.m_exception.throwWarning("requestCallback",
-					"Request failed.\nReason " + this.getHtmlStatusText());
-		}
+    var READY_STATE_DONE = 4;
+    try {
+
+        if (this.m_xhr.readyState == READY_STATE_DONE) {
+            if (this.m_xhr.status >= 200 || this.m_xhr.status < 300) {
+                jsf.ajax.sendEvent(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl._AJAX_STAGE_COMPLETE);
+                jsf.ajax.response(this.m_xhr, this.m_context);
+                jsf.ajax.sendEvent(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl._AJAX_STAGE_SUCCESS);
+                myfaces._impl.xhrCore._AjaxRequestQueue.queue.processQueue();
+            } else {
+                jsf.ajax.sendEvent(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl._AJAX_STAGE_COMPLETE);
+                jsf.ajax.sendError(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl._ERROR_HTTPERROR,
+                    myfaces._impl.core._jsfImpl._ERROR_HTTPERROR, "Request failed with status " + this.m_xhr.status
+                    + " and reason " + this.getHtmlStatusText());
+            }
+        }
 	} catch (e) {
-		this.m_exception.throwError("requestCallback", e);
+		this.m_exception.throwError(this.m_xhr, this.m_context, "requestCallback", e);
 	}
-};
+}
+
 /**
  * Spec. 13.3.1
  * Collect and encode input elements.
  * Additionally the hidden element javax.faces.ViewState
- * @param {String} FORM_ELEMENT - Client-Id of Form-Element
  * @return {String} - Concatenated String of the encoded input elements
  * 			and javax.faces.ViewState element
  */
-myfaces._impl.xhrCore._AjaxRequest.prototype.getViewState = function(FORM_ELEMENT) {
-    return this.m_ajaxUtil.processUserEntries(this.m_source, FORM_ELEMENT, this.m_partialIdsArray);
+myfaces._impl.xhrCore._AjaxRequest.prototype.getViewState = function() {
+    return this.m_ajaxUtil.processUserEntries(this.m_xhr, this.m_context, this.m_source,
+        this.m_sourceForm, this.m_partialIdsArray);
 }
-
-/**
- * @return {String} status text of request
- */
-myfaces._impl.xhrCore._AjaxRequest.prototype.getHtmlStatusText = function() {
-	return this.m_request.statusText;
-};
-
-/**
- * @return {boolean} true if ajax request successfull
- */
-myfaces._impl.xhrCore._AjaxRequest.prototype.isComplete = function() {
-	return (this.m_request.readyState == 4 && this.m_request.status == 200);
-};
-
-/**
- * @return {boolean} true if ajax request failed
- */
-myfaces._impl.xhrCore._AjaxRequest.prototype.isFailed = function() {
-	return (this.m_request.readyState == 4 && this.m_request.status != 200);
-};
-
-/**
- * @return {boolean} true while ajax request is running
- */
-myfaces._impl.xhrCore._AjaxRequest.prototype.isPending = function() {
-	return (this.m_request.readyState == 1);
-};
-
-myfaces._impl.xhrCore._AjaxRequest.prototype.getSourceItem = function() {
-	return this.m_sourceItem;
-};
-myfaces._impl.xhrCore._AjaxRequest.prototype.setSourceItem = function(sourceItem) {
-	this.m_sourceItem = sourceItem;
-};
-
-myfaces._impl.xhrCore._AjaxRequest.prototype.getContentType = function() {
-	return this.m_contentType;
-};
-myfaces._impl.xhrCore._AjaxRequest.prototype.setContentType = function(contentType) {
-	this.m_contentType = contentType;
-};

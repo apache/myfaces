@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  * Author: Ganesh Jung (latest modification by $Author: ganeshpuri $)
- * Version: $Revision: 1.4 $ $Date: 2009/04/12 06:18:13 $
+ * Version: $Revision: 1.6 $ $Date: 2009/04/19 06:46:13 $
  *
  */
 
@@ -28,7 +28,6 @@ _reserveMyfacesNamespaces();
 myfaces._impl.xhrCore._AjaxUtils = function(alarmThreshold) {
 	// Exception Objekt
 	this.alarmThreshold = alarmThreshold;
-	this.PARTIAL_PREFIX = "_j4fry_partial_submit_";
 	this.m_exception = new myfaces._impl.xhrCore._Exception("myfaces._impl.xhrCore._AjaxUtils", this.alarmThreshold);
 };
 
@@ -38,13 +37,13 @@ myfaces._impl.xhrCore._AjaxUtils = function(alarmThreshold) {
  * @param {HtmlElement} parentItem - form element item is nested in
  * @param {Array} partialIds - ids fo PPS
  */
-myfaces._impl.xhrCore._AjaxUtils.prototype.processUserEntries = function(item,
+myfaces._impl.xhrCore._AjaxUtils.prototype.processUserEntries = function(request, context, item,
 		parentItem,	partialIds) {
 	try {
 		var form = parentItem;
 
 		if (form == null) {
-			this.m_exception.throwWarning("processUserEntries",
+			this.m_exception.throwWarning(request, context, "processUserEntries",
 					"Html-Component is not nested in a Form-Tag");
 			return null;
 		}
@@ -73,7 +72,7 @@ myfaces._impl.xhrCore._AjaxUtils.prototype.processUserEntries = function(item,
 		return stringBuffer.join("");
 	} catch (e) {
 		alert(e);
-		this.m_exception.throwError("processUserEntries", e);
+		this.m_exception.throwError(request, context, "processUserEntries", e);
 	}
 };
 
@@ -82,8 +81,6 @@ myfaces._impl.xhrCore._AjaxUtils.prototype.processUserEntries = function(item,
  * @param {} node - 
  * @param {} insideSubmittedPart -
  * @param {} partialIds -
- * @param {} disableFlag -
- * @param {} disableTypesArr -
  * @param {} stringBuffer -
  */
 myfaces._impl.xhrCore._AjaxUtils.prototype.addNodes = function(node, insideSubmittedPart,
@@ -96,19 +93,12 @@ myfaces._impl.xhrCore._AjaxUtils.prototype.addNodes = function(node, insideSubmi
 			var elementName = child.name;
 			if (child.nodeType == 1) {
 				var isPartialSubmitContainer = ((id != null) 
-                    && myfaces._impl._util._LangUtils.arrayContains(partialIds, 
-                        myfaces._impl._util._LangUtils.splitAndGetLast(id, ":")));
+                    && myfaces._impl._util._LangUtils.arrayContains(partialIds, id));
 				if (insideSubmittedPart
 						|| isPartialSubmitContainer
 						|| (elementName != null 
-                        && myfaces._impl._util._LangUtils.arrayContains(jsfKeywords, elementName))) {
-					// send id for PPS if uppermost submitted container
-					if (isPartialSubmitContainer) {
-						stringBuffer[stringBuffer.length] = this.PARTIAL_PREFIX;
-						stringBuffer[stringBuffer.length] = encodeURIComponent(id);
-						stringBuffer[stringBuffer.length] = "=&";
-					}
-					// node required fpr PPS
+                        && elementName == myfaces._impl.core._jsfImpl._PROP_VIEWSTATE)) {
+					// node required for PPS
 					this.addField(child, stringBuffer);
 					if (insideSubmittedPart || isPartialSubmitContainer) {
 						// check for further children

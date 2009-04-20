@@ -109,7 +109,7 @@ if ('undefined' == typeof jsf.ajax || null == jsf.ajax) {
      * TODO make sure this method also occurrs in the specs
      * otherwise simply pull it
      */
-    jsf.ajax.sendEvent = function sendEvent(/*Object*/request, /*Object*/ context, /*even name*/ name) {
+    jsf.ajax.sendEvent = function sendEvent(/*Object*/request, /*Object*/ context, /*event name*/ name) {
         jsf.ajax._impl.sendEvent(request, context, name);
     }
 
