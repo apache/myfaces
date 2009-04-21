@@ -69,16 +69,16 @@ public class ValidateRequiredTag extends ValidatorELTag
             {
                 throw new JspException("Error while creating the Validator", e);
             }
-            if (validator instanceof Validator)
+            if (validator instanceof RequiredValidator)
             {
                 return (Validator)validator;
             }
         }
         Application application = facesContext.getApplication();
-        Validator validator = null;
+        RequiredValidator validator = null;
         try
         {
-            validator = application.createValidator(RequiredValidator.VALIDATOR_ID);
+            validator = (RequiredValidator) application.createValidator(RequiredValidator.VALIDATOR_ID);
         }
         catch (Exception e)
         {
