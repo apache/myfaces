@@ -46,6 +46,31 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.setUseContextClassLoader(true);
 
         digester.addObjectCreate("faces-config", FacesConfig.class);
+        // 2.0 config ordering name start
+        digester.addCallMethod("faces-config/name", "setName", 0);
+        digester.addObjectCreate("faces-config/ordering", Ordering.class);
+        digester.addSetNext("faces-config/ordering", "setOrdering");
+        digester.addObjectCreate("faces-config/ordering/before/name", FacesConfigNameSlot.class);
+        digester.addSetNext("faces-config/ordering/before/name", "addBeforeSlot");
+        digester.addCallMethod("faces-config/ordering/before/name", "setName",0);        
+        digester.addObjectCreate("faces-config/ordering/before/others", ConfigOthersSlot.class);
+        digester.addSetNext("faces-config/ordering/before/others", "addBeforeSlot");
+        
+        digester.addObjectCreate("faces-config/ordering/after/name", FacesConfigNameSlot.class);
+        digester.addSetNext("faces-config/ordering/after/name", "addAfterSlot");
+        digester.addCallMethod("faces-config/ordering/after/name", "setName",0);        
+        digester.addObjectCreate("faces-config/ordering/after/others", ConfigOthersSlot.class);
+        digester.addSetNext("faces-config/ordering/after/others", "addAfterSlot");        
+        
+        digester.addObjectCreate("faces-config/absolute-ordering", AbsoluteOrdering.class);
+        digester.addSetNext("faces-config/absolute-ordering", "setAbsoluteOrdering");
+        digester.addObjectCreate("faces-config/absolute-ordering/name", FacesConfigNameSlot.class);
+        digester.addSetNext("faces-config/absolute-ordering/name", "addOrderSlot");
+        digester.addCallMethod("faces-config/absolute-ordering/name", "setName",0);        
+        digester.addObjectCreate("faces-config/absolute-ordering/others", ConfigOthersSlot.class);
+        digester.addSetNext("faces-config/absolute-ordering/others", "addOrderSlot");
+        // 2.0 config ordering name end
+        
         digester.addObjectCreate("faces-config/application", Application.class);
         digester.addSetNext("faces-config/application", "addApplication");
         digester.addCallMethod("faces-config/application/action-listener", "addActionListener", 0);

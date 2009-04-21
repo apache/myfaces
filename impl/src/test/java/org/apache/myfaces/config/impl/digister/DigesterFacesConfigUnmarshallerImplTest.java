@@ -15,14 +15,17 @@
  */
 package org.apache.myfaces.config.impl.digister;
 
-import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
-import org.apache.myfaces.config.impl.digester.elements.Application;
-import org.apache.myfaces.config.impl.digester.elements.FacesConfig;
-import org.apache.myfaces.config.impl.digester.elements.LocaleConfig;
-
 import java.util.List;
 
 import junit.framework.TestCase;
+
+import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
+import org.apache.myfaces.config.impl.digester.elements.Application;
+import org.apache.myfaces.config.impl.digester.elements.ConfigOthersSlot;
+import org.apache.myfaces.config.impl.digester.elements.FacesConfig;
+import org.apache.myfaces.config.impl.digester.elements.FacesConfigNameSlot;
+import org.apache.myfaces.config.impl.digester.elements.LocaleConfig;
+import org.apache.myfaces.config.impl.digester.elements.OrderSlot;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -103,4 +106,55 @@ public class DigesterFacesConfigUnmarshallerImplTest extends TestCase
         assertEquals("aa", cfg.getSupportedLocales().get(0));
         assertEquals("bb", cfg.getSupportedLocales().get(1));
     }
+    
+    public void testAbsoluteOrderingConfig() throws Exception
+    {
+        FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
+                "absolute-ordering-config.xml"), "absolute-ordering-config.xml");
+        assertNotNull(cfg);
+        assertEquals("a",cfg.getName());
+
+        List<OrderSlot> orderList = cfg.getAbsoluteOrdering().getOrderList();
+        
+        assertEquals("b", ((FacesConfigNameSlot) orderList.get(0)).getName());
+        assertEquals("c", ((FacesConfigNameSlot) orderList.get(1)).getName());
+        assertEquals(ConfigOthersSlot.class, orderList.get(2).getClass());
+        assertEquals("d", ((FacesConfigNameSlot) orderList.get(3)).getName());
+        
+        assertTrue(cfg.getApplications().isEmpty());
+        assertTrue(cfg.getComponents().isEmpty());
+        assertTrue(cfg.getConverters().isEmpty());
+        assertTrue(cfg.getFactories().isEmpty());
+        assertTrue(cfg.getLifecyclePhaseListener().isEmpty());
+        assertTrue(cfg.getManagedBeans().isEmpty());
+        assertTrue(cfg.getNavigationRules().isEmpty());
+        assertTrue(cfg.getRenderKits().isEmpty());
+        assertTrue(cfg.getValidators().isEmpty());
+    }
+    
+    public void testOrderingConfig() throws Exception
+    {
+        FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
+                "ordering-config.xml"), "ordering-config.xml");
+        assertNotNull(cfg);
+        assertEquals("a",cfg.getName());
+
+        List<OrderSlot> orderList = cfg.getOrdering().getBeforeList();        
+        assertEquals("b", ((FacesConfigNameSlot) orderList.get(0)).getName());
+        assertEquals("c", ((FacesConfigNameSlot) orderList.get(1)).getName());
+        assertEquals(ConfigOthersSlot.class, orderList.get(2).getClass());
+        
+        orderList = cfg.getOrdering().getAfterList();        
+        assertEquals("d", ((FacesConfigNameSlot) orderList.get(0)).getName());
+        
+        assertTrue(cfg.getApplications().isEmpty());
+        assertTrue(cfg.getComponents().isEmpty());
+        assertTrue(cfg.getConverters().isEmpty());
+        assertTrue(cfg.getFactories().isEmpty());
+        assertTrue(cfg.getLifecyclePhaseListener().isEmpty());
+        assertTrue(cfg.getManagedBeans().isEmpty());
+        assertTrue(cfg.getNavigationRules().isEmpty());
+        assertTrue(cfg.getRenderKits().isEmpty());
+        assertTrue(cfg.getValidators().isEmpty());
+    }    
 }

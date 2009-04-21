@@ -38,6 +38,13 @@ public class FacesConfig
     private List<RenderKit> renderKits = new ArrayList<RenderKit>();
     private List<String> lifecyclePhaseListener = new ArrayList<String>();
     private Map<String, String> validators = new HashMap<String, String>();
+    
+    //Ordering variables
+    //This information are not merged, and helps
+    //with preprocessing of faces-config files
+    private String name;
+    private AbsoluteOrdering absoluteOrdering;
+    private Ordering ordering;
 
     public void addApplication(Application application)
     {
@@ -127,5 +134,35 @@ public class FacesConfig
     public Map<String, String> getValidators()
     {
         return validators;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+    
+    public AbsoluteOrdering getAbsoluteOrdering()
+    {
+        return absoluteOrdering;
+    }
+
+    public void setAbsoluteOrdering(AbsoluteOrdering absoluteOrdering)
+    {
+        this.absoluteOrdering = absoluteOrdering;
+    }
+
+    public Ordering getOrdering()
+    {
+        return ordering;
+    }
+
+    public void setOrdering(Ordering ordering)
+    {
+        this.ordering = ordering;
     }
 }

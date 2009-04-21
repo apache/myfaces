@@ -29,9 +29,12 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -70,7 +73,10 @@ import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.Renderer;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigDispenserImpl;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
+import org.apache.myfaces.config.impl.digester.elements.ConfigOthersSlot;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfig;
+import org.apache.myfaces.config.impl.digester.elements.FacesConfigNameSlot;
+import org.apache.myfaces.config.impl.digester.elements.OrderSlot;
 import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
 import org.apache.myfaces.context.FacesContextFactoryImpl;
 import org.apache.myfaces.el.DefaultPropertyResolver;
@@ -315,11 +321,21 @@ public class FacesConfigurator
     {
         try
         {
+            //1. Feed standard-faces-config.xml first.
             feedStandardConfig();
+            //2. Feed META-INF/services factories
             feedMetaInfServicesFactories();
-            feedClassloaderConfigurations();
-            feedContextSpecifiedConfig();
-            feedWebAppConfig();
+            
+            //3. Retrieve all appConfigResources
+            List<FacesConfig> appConfigResources = new ArrayList<FacesConfig>();
+            addClassloaderConfigurations(appConfigResources);
+            addContextSpecifiedConfig(appConfigResources);
+            
+            //4. Retrieve webAppFacesConfig
+            FacesConfig webAppFacesConfig = getWebAppConfig();
+            
+            //5. Ordering of Artifacts (see section 11.4.7 of the spec)
+            orderAndFeedArtifacts(appConfigResources,webAppFacesConfig);
 
             if (log.isInfoEnabled())
             {
@@ -534,7 +550,7 @@ public class FacesConfigurator
     /**
      * This method fixes MYFACES-208
      */
-    private void feedClassloaderConfigurations()
+    private void addClassloaderConfigurations(List<FacesConfig> appConfigResources)
     {
         try
         {
@@ -557,7 +573,8 @@ public class FacesConfigurator
                     {
                         log.info("Reading config : " + entry.getKey());
                     }
-                    getDispenser().feed(getUnmarshaller().getFacesConfig(stream, entry.getKey()));
+                    appConfigResources.add(getUnmarshaller().getFacesConfig(stream, entry.getKey()));
+                    //getDispenser().feed(getUnmarshaller().getFacesConfig(stream, entry.getKey()));
                 }
                 finally
                 {
@@ -574,7 +591,7 @@ public class FacesConfigurator
         }
     }
 
-    private void feedContextSpecifiedConfig() throws IOException, SAXException
+    private void addContextSpecifiedConfig(List<FacesConfig> appConfigResources) throws IOException, SAXException
     {
         for (String systemId : getConfigFilesList())
         {
@@ -589,7 +606,8 @@ public class FacesConfigurator
             {
                 log.info("Reading config " + systemId);
             }
-            getDispenser().feed(getUnmarshaller().getFacesConfig(stream, systemId));
+            appConfigResources.add(getUnmarshaller().getFacesConfig(stream, systemId));
+            //getDispenser().feed(getUnmarshaller().getFacesConfig(stream, systemId));
             stream.close();
         }
     }
@@ -623,17 +641,734 @@ public class FacesConfigurator
         return configFilesList;
     }
 
-    private void feedWebAppConfig() throws IOException, SAXException
+    private FacesConfig getWebAppConfig() throws IOException, SAXException
     {
+        FacesConfig webAppConfig = null;
         // web application config
         InputStream stream = _externalContext.getResourceAsStream(DEFAULT_FACES_CONFIG);
         if (stream != null)
         {
             if (log.isInfoEnabled())
                 log.info("Reading config /WEB-INF/faces-config.xml");
-            getDispenser().feed(getUnmarshaller().getFacesConfig(stream, DEFAULT_FACES_CONFIG));
+            webAppConfig = getUnmarshaller().getFacesConfig(stream, DEFAULT_FACES_CONFIG);
+            //getDispenser().feed(getUnmarshaller().getFacesConfig(stream, DEFAULT_FACES_CONFIG));
             stream.close();
         }
+        return webAppConfig;
+    }
+    
+    protected void orderAndFeedArtifacts(List<FacesConfig> appConfigResources, FacesConfig webAppConfig)
+        throws FacesException
+    {
+        if (webAppConfig != null && webAppConfig.getAbsoluteOrdering() != null)
+        {
+            if (webAppConfig.getOrdering() != null)
+            {
+                if (log.isWarnEnabled())
+                {
+                    log.warn("<ordering> element found in application faces config. " +
+                    		"This description will be ignored and the actions described " +
+                    		"in <absolute-ordering> element will be taken into account instead.");
+                }                
+            }
+            //Absolute ordering
+            
+            //1. Scan all appConfigResources and create a list
+            //containing all resources not mentioned directly, preserving the
+            //order founded
+            List<FacesConfig> othersResources = new ArrayList<FacesConfig>();
+            List<OrderSlot> slots = webAppConfig.getAbsoluteOrdering().getOrderList();
+            for (FacesConfig resource : appConfigResources)
+            {
+                if (resource.getName() != null && containsResourceInSlot(slots, resource.getName()))
+                {
+                    othersResources.add(resource);
+                }
+            }
+            
+            //2. Scan slot by slot and merge information according
+            for (OrderSlot slot : webAppConfig.getAbsoluteOrdering().getOrderList())
+            {
+                if (slot instanceof ConfigOthersSlot)
+                {
+                    //Add all mentioned in othersResources
+                    for (FacesConfig resource : othersResources)
+                    {
+                        getDispenser().feed(resource);
+                    }
+                }
+                else
+                {
+                    //Add it to the sorted list
+                    FacesConfigNameSlot nameSlot = (FacesConfigNameSlot) slot;
+                    getDispenser().feed(getFacesConfig(appConfigResources, nameSlot.getName()));
+                }
+            }
+        }
+        else
+        {
+            //Relative ordering
+            for (FacesConfig resource : appConfigResources)
+            {
+                if (resource.getOrdering() != null)
+                {
+                    if (log.isWarnEnabled())
+                    {
+                        log.warn("<absolute-ordering> element found in application " +
+                        		"configuration resource "+resource.getName()+". " +
+                                "This description will be ignored and the actions described " +
+                                "in <ordering> elements will be taken into account instead.");
+                    }
+                }
+            }
+            
+            List<FacesConfig> postOrderedList = getPostOrderedList(appConfigResources);
+            
+            List<FacesConfig> sortedList = sortRelativeOrderingList(postOrderedList);
+            
+            for (FacesConfig resource : sortedList)
+            {
+                //Feed
+                getDispenser().feed(resource);
+            }            
+        }
+        getDispenser().feed(webAppConfig);
+    }
+
+    /**
+     * Sort a list of pre ordered elements. It scans one by one the elements
+     * and apply the conditions mentioned by Ordering object if it is available.
+     * 
+     * The preOrderedList ensures that application config resources referenced by
+     * other resources are processed first, making more easier the sort procedure. 
+     * 
+     * @param preOrderedList
+     * @return
+     */
+    protected List<FacesConfig> sortRelativeOrderingList(List<FacesConfig> preOrderedList) throws FacesException
+    {
+        List<FacesConfig> sortedList = new ArrayList<FacesConfig>();
+        
+        for (int i=0; i < preOrderedList.size(); i++)
+        {
+            FacesConfig resource = preOrderedList.get(i);
+            if (resource.getOrdering() != null)
+            {
+                if (resource.getOrdering().getBeforeList().isEmpty() &&
+                    resource.getOrdering().getAfterList().isEmpty())
+                {
+                    //No order rules, just put it as is
+                    sortedList.add(resource);
+                }
+                else if (resource.getOrdering().getBeforeList().isEmpty())
+                {
+                    //Only after rules
+                    applyAfterRule(sortedList, resource);
+                }
+                else if (resource.getOrdering().getAfterList().isEmpty())
+                {
+                    //Only before rules
+                    
+                    //Resolve if there is a later reference to this node before
+                    //apply it
+                    boolean referenceNode = false;
+
+                    for (int j = i+1; j < preOrderedList.size(); j++)
+                    {
+                        FacesConfig pointingResource = preOrderedList.get(j);
+                        for (OrderSlot slot : pointingResource.getOrdering().getBeforeList())
+                        {
+                            if (slot instanceof FacesConfigNameSlot &&
+                                    resource.getName().equals(((FacesConfigNameSlot)slot).getName()) )
+                            {
+                                referenceNode = true;
+                            }
+                            if (slot instanceof ConfigOthersSlot)
+                            {
+                                //No matter if there is a reference, because this rule
+                                //is not strict and before other ordering is unpredictable.
+                                //
+                                referenceNode = false;
+                                break;
+                            }
+                        }
+                        if (referenceNode)
+                        {
+                            break;
+                        }
+                        for (OrderSlot slot : pointingResource.getOrdering().getAfterList())
+                        {
+                            if (slot instanceof FacesConfigNameSlot &&
+                                resource.getName().equals(((FacesConfigNameSlot)slot).getName()) )
+                            {
+                                referenceNode = true;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    applyBeforeRule(sortedList, resource, referenceNode);
+                }
+                else
+                {
+                    //Both before and after rules
+                    //In this case we should compare before and after rules
+                    //and the one with names takes precedence over the other one.
+                    //It both have names references, before rules takes
+                    //precedence over after
+                    //after some action is applied a check of the condition is made.
+                    int beforeWeight = 0;
+                    int afterWeight = 0;
+                    for (OrderSlot slot : resource.getOrdering()
+                            .getBeforeList())
+                    {
+                        if (slot instanceof FacesConfigNameSlot)
+                        {
+                            beforeWeight++;
+                        }
+                    }
+                    for (OrderSlot slot : resource.getOrdering()
+                            .getAfterList())
+                    {
+                        if (slot instanceof FacesConfigNameSlot)
+                        {
+                            afterWeight++;
+                        }
+                    }
+                    
+                    if (beforeWeight >= afterWeight)
+                    {
+                        applyBeforeRule(sortedList, resource,false);
+                    }
+                    else
+                    {
+                        applyAfterRule(sortedList, resource);
+                    }
+                    
+                    
+                }
+            }
+            else
+            {
+                //No order rules, just put it as is
+                sortedList.add(resource);
+            }
+        }
+        
+        //Check
+        for (int i = 0; i < sortedList.size(); i++)
+        {
+            FacesConfig resource = sortedList.get(i);
+            
+            if (resource.getOrdering() != null)
+            {
+                for (OrderSlot slot : resource.getOrdering().getBeforeList())
+                {
+                    if (slot instanceof FacesConfigNameSlot)
+                    {
+                        String name = ((FacesConfigNameSlot) slot).getName();
+                        if (name != null && !"".equals(name))
+                        {
+                            boolean founded = false;                                
+                            for (int j = i-1; j >= 0; j--)
+                            {
+                                if (name.equals(sortedList.get(j).getName()))
+                                {
+                                    founded=true;
+                                    break;
+                                }
+                            }
+                            if (founded)
+                            {
+                                log.fatal("Circular references detected when sorting " +
+                                		"application config resources. Use absolute ordering instead.");
+                                throw new FacesException("Circular references detected when sorting " +
+                                        "application config resources. Use absolute ordering instead.");
+                            }
+                        }
+                    }
+                }
+                for (OrderSlot slot : resource.getOrdering().getAfterList())
+                {
+                    if (slot instanceof FacesConfigNameSlot)
+                    {
+                        String name = ((FacesConfigNameSlot) slot).getName();
+                        if (name != null && !"".equals(name))
+                        {
+                            boolean founded = false;                                
+                            for (int j = i+1; j < sortedList.size(); j++)
+                            {
+                                if (name.equals(sortedList.get(j).getName()))
+                                {
+                                    founded=true;
+                                    break;
+                                }
+                            }
+                            if (founded)
+                            {
+                                log.fatal("Circular references detected when sorting " +
+                                    "application config resources. Use absolute ordering instead.");
+                                throw new FacesException("Circular references detected when sorting " +
+                                    "application config resources. Use absolute ordering instead.");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        return sortedList;
+    }
+    
+    private void applyBeforeRule(List<FacesConfig> sortedList, FacesConfig resource, boolean referenced) throws FacesException
+    {
+        //Only before rules
+        boolean configOthers = false;
+        List<String> names = new ArrayList<String>();
+        
+        for (OrderSlot slot : resource.getOrdering().getBeforeList())
+        {
+            if (slot instanceof ConfigOthersSlot)
+            {
+                configOthers = true;
+                break;
+            }
+            else
+            {
+                FacesConfigNameSlot nameSlot = (FacesConfigNameSlot) slot;
+                names.add(nameSlot.getName());
+            }
+        }
+        
+        if (configOthers)
+        {
+            //<before>....<others/></before> case
+            //other reference where already considered when
+            //pre ordered list was calculated, so just add to the end.
+            
+            //There is one very special case, and it is when there
+            //is another resource with a reference on it. In this case,
+            //it is better do not apply this rule and add it to the end
+            //to give the chance to the other one to be applied.
+            if (resource.getOrdering().getBeforeList().size() > 1)
+            {
+                //If there is a reference apply it
+                sortedList.add(0,resource);
+            }
+            else if (!referenced)
+            {
+                //If it is not referenced apply it
+                sortedList.add(0,resource);
+            }
+            else
+            {
+                //if it is referenced bypass the rule and add it to the end
+                sortedList.add(resource);
+            }
+        }
+        else
+        {
+            //Scan the nearest reference and add it after
+            boolean founded = false;
+            for (int i = 0; i < sortedList.size() ; i++)
+            {
+                if (names.contains(sortedList.get(i).getName()))
+                {
+                    sortedList.add(i,resource);
+                    founded = true;
+                    break;
+                }
+            }
+            if (!founded)
+            {
+                //just add it to the end
+                sortedList.add(resource);
+            }
+        }        
+    }
+    
+    private void applyAfterRule(List<FacesConfig> sortedList, FacesConfig resource) throws FacesException
+    {
+        boolean configOthers = false;
+        List<String> names = new ArrayList<String>();
+        
+        for (OrderSlot slot : resource.getOrdering().getAfterList())
+        {
+            if (slot instanceof ConfigOthersSlot)
+            {
+                configOthers = true;
+                break;
+            }
+            else
+            {
+                FacesConfigNameSlot nameSlot = (FacesConfigNameSlot) slot;
+                names.add(nameSlot.getName());
+            }
+        }
+        
+        if (configOthers)
+        {
+            //<after>....<others/></after> case
+            //other reference where already considered when
+            //pre ordered list was calculated, so just add to the end.
+            sortedList.add(resource);
+        }
+        else
+        {
+            //Scan the nearest reference and add it after
+            boolean founded = false;
+            for (int i = sortedList.size()-1 ; i >=0 ; i--)
+            {
+                if (names.contains(sortedList.get(i).getName()))
+                {
+                    if (i+1 < sortedList.size())
+                    {
+                        sortedList.add(i+1,resource);
+                    }
+                    else
+                    {
+                        sortedList.add(resource);
+                    }
+                    founded = true;
+                    break;
+                }
+            }
+            if (!founded)
+            {
+                //just add it to the end
+                sortedList.add(resource);
+            }
+        }        
+    }
+    
+    
+    /**
+     * Pre Sort the appConfigResources, detecting cyclic references, so when sort process
+     * start, it is just necessary to traverse the preOrderedList once. To do that, we just
+     * scan "before" and "after" lists for references, and then those references are traversed
+     * again, so the first elements of the pre ordered list does not have references and
+     * the next elements has references to the already added ones.
+     * 
+     * The elements on the preOrderedList looks like this:
+     * 
+     * [ no ordering elements , referenced elements ... more referenced elements, 
+     *  before others / after others non referenced elements]
+     * 
+     * @param appConfigResources
+     * @return
+     */
+    protected List<FacesConfig> getPostOrderedList(final List<FacesConfig> appConfigResources) throws FacesException
+    {
+        
+        List<FacesConfig> appFilteredConfigResources = new ArrayList<FacesConfig>(); 
+        
+        //0. Clean up: remove all not found resource references from the ordering 
+        //descriptions.
+        List<String> availableReferences = new ArrayList<String>();
+        for (FacesConfig resource : appFilteredConfigResources)
+        {
+            String name = resource.getName();
+            if (name != null && "".equals(name))
+            {
+                availableReferences.add(name);
+            }
+        }
+        
+        for (FacesConfig resource : appFilteredConfigResources)
+        {
+            for (Iterator<OrderSlot> it =  resource.getOrdering().getBeforeList().iterator();it.hasNext();)
+            {
+                OrderSlot slot = it.next();
+                if (slot instanceof FacesConfigNameSlot)
+                {
+                    String name = ((FacesConfigNameSlot) slot).getName();
+                    if (!availableReferences.contains(name))
+                    {
+                        it.remove();
+                    }
+                }
+            }
+            for (Iterator<OrderSlot> it =  resource.getOrdering().getAfterList().iterator();it.hasNext();)
+            {
+                OrderSlot slot = it.next();
+                if (slot instanceof FacesConfigNameSlot)
+                {
+                    String name = ((FacesConfigNameSlot) slot).getName();
+                    if (!availableReferences.contains(name))
+                    {
+                        it.remove();
+                    }
+                }
+            }
+        }
+        
+        //1. Pre filtering: Sort nodes according to its weight. The weight is the number of named
+        //nodes containing in both before and after lists. The sort is done from the more complex
+        //to the most simple
+        if (appConfigResources instanceof ArrayList)
+        {
+            appFilteredConfigResources = (List<FacesConfig>)
+                ((ArrayList<FacesConfig>)appConfigResources).clone();
+        }
+        else
+        {
+            appFilteredConfigResources = new ArrayList<FacesConfig>();
+            appFilteredConfigResources.addAll(appConfigResources);
+        }
+        Collections.sort(appFilteredConfigResources,
+                new Comparator<FacesConfig>()
+                {
+                    public int compare(FacesConfig o1, FacesConfig o2)
+                    {
+                        int o1Weight = 0;
+                        int o2Weight = 0;
+                        if (o1.getOrdering() != null)
+                        {
+                            for (OrderSlot slot : o1.getOrdering()
+                                    .getBeforeList())
+                            {
+                                if (slot instanceof FacesConfigNameSlot)
+                                {
+                                    o1Weight++;
+                                }
+                            }
+                            for (OrderSlot slot : o1.getOrdering()
+                                    .getAfterList())
+                            {
+                                if (slot instanceof FacesConfigNameSlot)
+                                {
+                                    o1Weight++;
+                                }
+                            }
+                        }
+                        if (o2.getOrdering() != null)
+                        {
+                            for (OrderSlot slot : o2.getOrdering()
+                                    .getBeforeList())
+                            {
+                                if (slot instanceof FacesConfigNameSlot)
+                                {
+                                    o2Weight++;
+                                }
+                            }
+                            for (OrderSlot slot : o2.getOrdering()
+                                    .getAfterList())
+                            {
+                                if (slot instanceof FacesConfigNameSlot)
+                                {
+                                    o2Weight++;
+                                }
+                            }
+                        }
+                        return o2Weight - o1Weight;
+                    }
+                });
+        
+        List<FacesConfig> postOrderedList = new LinkedList<FacesConfig>();
+        List<FacesConfig> othersList = new ArrayList<FacesConfig>();
+        
+        List<String> nameBeforeStack = new ArrayList<String>();
+        List<String> nameAfterStack = new ArrayList<String>();
+        
+        boolean[] visitedSlots = new boolean[appFilteredConfigResources.size()];
+        
+        //2. Scan and resolve conflicts
+        for (int i = 0; i < appFilteredConfigResources.size(); i++)
+        {
+            if (!visitedSlots[i])
+            {
+                resolveConflicts(appFilteredConfigResources, i, visitedSlots, 
+                        nameBeforeStack, nameAfterStack, postOrderedList, othersList, false);
+            }
+        }
+        
+        //Add othersList to postOrderedList so <before><others/></before> and <after><others/></after>
+        //ordering conditions are handled at last if there are not referenced by anyone
+        postOrderedList.addAll(othersList);
+        
+        return postOrderedList;
+    }
+        
+    private void resolveConflicts(final List<FacesConfig> appConfigResources, int index, boolean[] visitedSlots,
+            List<String> nameBeforeStack, List<String> nameAfterStack, List<FacesConfig> postOrderedList,
+            List<FacesConfig> othersList, boolean indexReferenced) throws FacesException
+    {
+        FacesConfig facesConfig = appConfigResources.get(index);
+        
+        if (nameBeforeStack.contains(facesConfig.getName()))
+        {
+            //Already referenced, just return. Later if there exists a
+            //circular reference, it will be detected and solved.
+            return;
+        }
+        
+        if (nameAfterStack.contains(facesConfig.getName()))
+        {
+            //Already referenced, just return. Later if there exists a
+            //circular reference, it will be detected and solved.
+            return;
+        }
+        
+        if (facesConfig.getOrdering() != null)
+        {
+            boolean pointingResource = false;
+            
+            //Deal with before restrictions first
+            for (OrderSlot slot : facesConfig.getOrdering().getBeforeList())
+            {
+                if (slot instanceof FacesConfigNameSlot)
+                {
+                    FacesConfigNameSlot nameSlot = (FacesConfigNameSlot) slot;
+                    //The resource pointed is not added yet?
+                    boolean alreadyAdded = false;
+                    for (FacesConfig res : postOrderedList)
+                    {
+                        if (nameSlot.getName().equals(res.getName()))
+                        {
+                            alreadyAdded = true;
+                            break;
+                        }
+                    }
+                    if (!alreadyAdded)
+                    {
+                        int indexSlot = -1;
+                        //Find it
+                        for (int i = 0; i < appConfigResources.size(); i++)
+                        {
+                            FacesConfig resource = appConfigResources.get(i);
+                            if (resource.getName() != null && nameSlot.getName().equals(resource.getName()))
+                            {
+                                indexSlot = i;
+                                break;
+                            }
+                        }
+                        
+                        //Resource founded on appConfigResources
+                        if (indexSlot != -1)
+                        {
+                            pointingResource = true;
+                            //Add to nameStac
+                            nameBeforeStack.add(facesConfig.getName());
+                            
+                            resolveConflicts(appConfigResources, indexSlot, visitedSlots, 
+                                    nameBeforeStack, nameAfterStack, postOrderedList,
+                                    othersList,true);
+                            
+                            nameBeforeStack.remove(facesConfig.getName());
+                        }
+                    }
+                    else
+                    {
+                        pointingResource = true;
+                    }
+                }
+            }
+            
+            for (OrderSlot slot : facesConfig.getOrdering().getAfterList())
+            {
+                if (slot instanceof FacesConfigNameSlot)
+                {
+                    FacesConfigNameSlot nameSlot = (FacesConfigNameSlot) slot;
+                    //The resource pointed is not added yet?
+                    boolean alreadyAdded = false;
+                    for (FacesConfig res : postOrderedList)
+                    {
+                        if (nameSlot.getName().equals(res.getName()))
+                        {
+                            alreadyAdded = true;
+                            break;
+                        }
+                    }
+                    if (!alreadyAdded)
+                    {
+                        int indexSlot = -1;
+                        //Find it
+                        for (int i = 0; i < appConfigResources.size(); i++)
+                        {
+                            FacesConfig resource = appConfigResources.get(i);
+                            if (resource.getName() != null && nameSlot.getName().equals(resource.getName()))
+                            {
+                                indexSlot = i;
+                                break;
+                            }
+                        }
+                        
+                        //Resource founded on appConfigResources
+                        if (indexSlot != -1)
+                        {
+                            pointingResource = true;
+                            //Add to nameStac
+                            nameAfterStack.add(facesConfig.getName());
+                            
+                            resolveConflicts(appConfigResources, indexSlot, visitedSlots, 
+                                    nameBeforeStack, nameAfterStack, postOrderedList,
+                                    othersList,true);
+                            
+                            nameAfterStack.remove(facesConfig.getName());
+                        }
+                    }
+                    else
+                    {
+                        pointingResource = true;
+                    }
+                }
+            }
+            
+            if (facesConfig.getOrdering().getBeforeList().isEmpty() &&
+                facesConfig.getOrdering().getAfterList().isEmpty())
+            {
+                //Fits in the category "others", put at beginning
+                postOrderedList.add(0,appConfigResources.get(index));
+            }
+            else if (pointingResource || indexReferenced)
+            {
+                //If the node points to other or is referenced from other,
+                //add to the postOrderedList at the end
+                postOrderedList.add(appConfigResources.get(index));                    
+            }
+            else
+            {
+                //Add to othersList
+                othersList.add(appConfigResources.get(index));
+            }
+        }
+        else
+        {
+            //Add at start of the list, since does not have any ordering
+            //instructions and on the next step makes than "before others" and "after others"
+            //works correctly
+            postOrderedList.add(0,appConfigResources.get(index));
+        }
+        //Set the node as visited
+        visitedSlots[index] = true;
+    }    
+    
+    private FacesConfig getFacesConfig(List<FacesConfig> appConfigResources, String name)
+    {
+        for (FacesConfig cfg: appConfigResources)
+        {
+            if (cfg.getName() != null && name.equals(cfg.getName()));
+            {
+                return cfg;
+            }
+        }
+        return null;
+    }
+    
+    private boolean containsResourceInSlot(List<OrderSlot> slots, String name)
+    {
+        for (OrderSlot slot: slots)
+        {
+            if (slot instanceof FacesConfigNameSlot)
+            {
+                FacesConfigNameSlot nameSlot = (FacesConfigNameSlot) slot;
+                if (name.equals(nameSlot.getName()))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private void configureFactories()
