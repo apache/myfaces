@@ -20,17 +20,17 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces, "_jsfImpl")) {
     myfaces._impl.core._jsfImpl = function() {
 
         //third option myfaces._impl.xhrCoreAjax which will be the new core impl for now
-        this._requestHandler = new myfaces._impl.xhrCore._Ajax();
+        this._requestHandler = new (myfaces._impl._util._Utils.getGlobalConfig("transport", myfaces._impl.xhrCore._Ajax ))();
 
         /**
          * external event listener queue!
          */
-        this._eventListenerQueue = new myfaces._impl._util._ListenerQueue();
+        this._eventListenerQueue = new (myfaces._impl._util._Utils.getGlobalConfig("eventListenerQueue", myfaces._impl._util._ListenerQueue))();
 
         /**
          * external error listener queue!
          */
-        this._errorListenerQueue = new myfaces._impl._util._ListenerQueue();
+        this._errorListenerQueue = new (myfaces._impl._util._Utils.getGlobalConfig("errorListenerQueue", myfaces._impl._util._ListenerQueue))();
 
     };
 
@@ -202,7 +202,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces, "_jsfImpl")) {
             sourceForm = document.forms[0];
         }
 
-/*
+        /*
          * binding contract the javax.faces.partial.source must be
          * set according to the december 2008 preview
          */
@@ -261,11 +261,6 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces, "_jsfImpl")) {
         }
         this._requestHandler._ajaxRequest(element, sourceForm, ajaxContext, passThroughArguments);
 
-        /*
-         * TODO #61
-         * https://issues.apache.org/jira/browse/MYFACES-2112
-         * done
-         */
     };
 
     myfaces._impl.core._jsfImpl.prototype.addOnError = function(/*function*/errorListener) {
@@ -379,12 +374,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces, "_jsfImpl")) {
      *
      */
     myfaces._impl.core._jsfImpl.prototype.getProjectStage = function() {
-
         return "#{facesContext.application.projectStage}";
-        /**
-         * TODO #62
-         * https://issues.apache.org/jira/browse/MYFACES-2115
-         */
     };
 
 
