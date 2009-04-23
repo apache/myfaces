@@ -46,15 +46,8 @@ if ('undefined' == typeof jsf.ajax || null == jsf.ajax) {
     /*
      myfaces.
      */
-    if ('undefined' != typeof myfaces.config && null != myfaces.config &&
-        'undefined' != typeof myfaces.config.jsfAjaxImpl && null != myfaces.config.jsfAjaxImpl) {
 
-        jsf.ajax._impl = new myfaces.config.jsfAjaxImpl();
-
-    } else {
-
-        jsf.ajax._impl = new myfaces._impl.core._jsfImpl();
-    }
+     jsf.ajax._impl = new (myfaces._impl._util._Utils.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl))();
 
     /**
      * collect and encode data for a given form element (must be of type form)

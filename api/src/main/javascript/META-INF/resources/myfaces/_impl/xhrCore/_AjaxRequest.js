@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: Ganesh Jung (latest modification by $Author: ganeshpuri $)
- * Version: $Revision: 1.8 $ $Date: 2009/04/19 06:46:13 $
+ * Author: Ganesh Jung (latest modification by $Author: werpu $)
+ * Version: $Revision: 1.9 $ $Date: 2009/04/23 08:14:25 $
  *
  */
 
@@ -28,47 +28,46 @@ _reserveMyfacesNamespaces();
  * @param {Map} passThough - parameters to pass through to the server (execute/render)
  */
 myfaces._impl.xhrCore._AjaxRequest = function(source, sourceForm, context, passThrough) {
-	this.m_exception = new myfaces._impl.xhrCore._Exception("myfaces._impl.xhrCore._AjaxRequest", this.alarmThreshold);
-	try {
-		this.m_contentType = "application/x-www-form-urlencoded";
-		this.m_source = source;
-		this.m_xhr = null;
+    this.m_exception = new myfaces._impl.xhrCore._Exception("myfaces._impl.xhrCore._AjaxRequest", this.alarmThreshold);
+    try {
+        this.m_contentType = "application/x-www-form-urlencoded";
+        this.m_source = source;
+        this.m_xhr = null;
         // myfaces parameters
         this.m_partialIdsArray = null;
         var errorlevel = 'NONE';
         this.m_queuesize = -1;
-        if (typeof context != 'undefined'
-            && context != null
-            && typeof context.myfaces != 'undefined'
-            && context.myfaces != null) {
-            if (typeof context.myfaces.errorlevel != 'undefined'
-                && context.myfaces.errorlevel != null)
-                errorlevel = context.myfaces.errorlevel;
-            if (typeof context.myfaces.queuesize != 'undefined'
-                && context.myfaces.queuesize != null)
-                this.m_queuesize = context.myfaces.queuesize;
-            if (typeof context.myfaces.pps != 'undefined'
-                && context.myfaces.pps
-                && typeof passThrough[myfaces._impl.core._jsfImpl._PROP_EXECUTE] != 'undefined'
-                && passThrough[myfaces._impl.core._jsfImpl._PROP_EXECUTE] != null
-                && passThrough[myfaces._impl.core._jsfImpl._PROP_EXECUTE].length > 0) {
-                this.m_partialIdsArray = passThrough[myfaces._impl.core._jsfImpl._PROP_EXECUTE].split(" ");
-            }
+
+        /*namespace remapping for readability*/
+        var _Utils = myfaces._impl._util._Utils;
+        var _LangUtils = myfaces._impl._util._LangUtils;
+
+        if (_Utils.getLocalOrGlobalConfig(context,"errorlevel", null) != null) {
+            errorlevel = context.myfaces.errorlevel;
         }
+        if (_Utils.getLocalOrGlobalConfig(context,"queuesize", null) != null) {
+            this.m_queuesize = context.myfaces.queuesize;
+        }
+        if (_Utils.getLocalOrGlobalConfig(context,"pps", null) != null
+            &&  _LangUtils.exists(passThrough,myfaces._impl.core._jsfImpl._PROP_EXECUTE)
+            && passThrough[myfaces._impl.core._jsfImpl._PROP_EXECUTE].length > 0) {
+            this.m_partialIdsArray = passThrough[myfaces._impl.core._jsfImpl._PROP_EXECUTE].split(" ");
+        }
+        
         this.m_context = context;
-		this.m_response = new myfaces._impl.xhrCore._AjaxResponse(errorlevel);
-		this.m_ajaxUtil = new myfaces._impl.xhrCore._AjaxUtils(errorlevel);
-		this.m_sourceForm = sourceForm;
+        this.m_response = new myfaces._impl.xhrCore._AjaxResponse(errorlevel);
+        this.m_ajaxUtil = new myfaces._impl.xhrCore._AjaxUtils(errorlevel);
+        this.m_sourceForm = sourceForm;
         this.m_passThrough = passThrough;
         this.m_requestParameters = this.getViewState();
         for (var key in this.m_passThrough) {
             this.m_requestParameters = this.m_requestParameters +
-                "&" + encodeURIComponent(key) +
-                "=" + encodeURIComponent(this.m_passThrough[key]);
+            "&" + encodeURIComponent(key) +
+            "=" + encodeURIComponent(this.m_passThrough[key]);
         }
-	} catch (e) {
-		this.m_exception.throwError(null, context, "Ctor", e);
-	}
+    } catch (e) {
+        this.m_exception.throwError(null, context, "Ctor", e);
+    }
 };
 
 /**
@@ -77,27 +76,27 @@ myfaces._impl.xhrCore._AjaxRequest = function(source, sourceForm, context, passT
  */
 
 myfaces._impl.xhrCore._AjaxRequest.prototype.send = function() {
-	try {
-		if (myfaces._impl._util._Utils.isUserAgentInternetExplorer()) {
-			// request object for Internet Explorer
-			try {
-				this.m_xhr = new ActiveXObject("Msxml2.XMLHTTP");
-			} catch (e) {
-				this.m_xhr = new ActiveXObject('Microsoft.XMLHTTP');
-			}
-		} else {
-			// request object for standard browser
-			this.m_xhr = new XMLHttpRequest();
-		}
-		this.m_xhr.open("POST", this.m_sourceForm.action, true);
-		this.m_xhr.setRequestHeader("Content-Type", this.m_contentType);
-		this.m_xhr.setRequestHeader("Faces-Request", "partial/ajax");
-		this.m_xhr.onreadystatechange = myfaces._impl.xhrCore._AjaxRequestQueue.handleCallback;
+    try {
+        if (myfaces._impl._util._Utils.isUserAgentInternetExplorer()) {
+            // request object for Internet Explorer
+            try {
+                this.m_xhr = new ActiveXObject("Msxml2.XMLHTTP");
+            } catch (e) {
+                this.m_xhr = new ActiveXObject('Microsoft.XMLHTTP');
+            }
+        } else {
+            // request object for standard browser
+            this.m_xhr = new XMLHttpRequest();
+        }
+        this.m_xhr.open("POST", this.m_sourceForm.action, true);
+        this.m_xhr.setRequestHeader("Content-Type", this.m_contentType);
+        this.m_xhr.setRequestHeader("Faces-Request", "partial/ajax");
+        this.m_xhr.onreadystatechange = myfaces._impl.xhrCore._AjaxRequestQueue.handleCallback;
         jsf.ajax.sendEvent(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl._AJAX_STAGE_BEGIN);
-		this.m_xhr.send(this.m_requestParameters);
-	} catch (e) {
-		this.m_exception.throwError(this.m_xhr, this.m_context, "send", e);
-	}
+        this.m_xhr.send(this.m_requestParameters);
+    } catch (e) {
+        this.m_exception.throwError(this.m_xhr, this.m_context, "send", e);
+    }
 };
 
 /**
@@ -121,9 +120,9 @@ myfaces._impl.xhrCore._AjaxRequest.prototype.requestCallback = function() {
                     + " and reason " + this.getHtmlStatusText());
             }
         }
-	} catch (e) {
-		this.m_exception.throwError(this.m_xhr, this.m_context, "requestCallback", e);
-	}
+    } catch (e) {
+        this.m_exception.throwError(this.m_xhr, this.m_context, "requestCallback", e);
+    }
 }
 
 /**

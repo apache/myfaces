@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: Ganesh Jung (latest modification by $Author: ganeshpuri $)
- * Version: $Revision: 1.10 $ $Date: 2009/04/21 05:53:14 $
+ * Author: Ganesh Jung (latest modification by $Author: werpu $)
+ * Version: $Revision: 1.11 $ $Date: 2009/04/23 08:14:25 $
  *
  */
 
@@ -335,6 +335,47 @@ myfaces._impl._util._Utils.getChild.getTagContent = function(stripper, content) 
     }
     return result;
 };
+
+
+/**
+ * fetches a global config entry
+ * @param {String} configName the name of the configuration entry
+ * @param {Object} defaultValur
+ *
+ * @return either the config entry or if none is given the default value
+ */
+myfaces._impl._util._Utils.getGlobalConfig = function(configName, defaultValue) {
+    /*use(myfaces._impl._util)*/
+    var _LangUtils = myfaces._impl._util._LangUtils;
+
+    if (_LangUtils.exists(myfaces,"config") && _LangUtils.exists(myfaces.config,configName)) {
+        return myfaces.config[configName];
+    }
+    return defaultValue;
+};
+
+/**
+ * gets the local or global options with local ones having higher priority
+ * if no local or global one was found then the default value is given back
+ * 
+ * @param {String} configName the name of the configuration entry
+ * @param {String} localOptions the local options root for the configuration myfaces as default marker is added implicitely
+ * 
+ * @param {Object} defaultValue
+ *
+ * @return either the config entry or if none is given the default value
+ */
+myfaces._impl._util._Utils.getLocalOrGlobalConfig = function(configName, localOptions, defaultValue) {
+    /*use(myfaces._impl._util)*/
+    var _LangUtils = myfaces._impl._util._LangUtils;
+
+    var globalOption = myfaces._impl._util._Utils.getGlobalConfig(configName, defaultValue);
+    if(!_LangUtils.exists(localOptions, "myfaces") || !_LangUtils.exists(localOptions.myfaces,configName)) {
+        return globalOption;
+    }
+    return localOptions.myfaces[configName];
+};
+
 
 /**
  * Helper Regexps
