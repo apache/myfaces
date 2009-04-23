@@ -4,25 +4,20 @@
         <script>
             <fileName>jsf.js</fileName>
             <includes>
-                <include>**/_util/OpenAjax.js</include>
-                <include>**/_util/_JSF2Utils.js</include>
-                <include>**/_util/_Logger.js</include>
-                <include>**/_util/_ListenerQueue.js</include>
-
-                <include>**/_trinidad/_TrXmlRequestEvent.js</include>
-                <include>**/_trinidad/_TrXmlRequest.js</include>
-                <include>**/_trinidad/_TrRequestQueue.js</include>
-                <include>**/_trinidad/_TrinidadFrameworkAdapter.js</include>
-
-                <include>**/_xhr/_XHRConst.js</include>
-                <include>**/_xhr/_SimpleXHRFrameworkAdapter.js</include>
-                <include>**/_xhr/_SimpleXHRTransport.js</include>
-                <include>**/_trinidad/_TrinidadFrameworkAdapter.js</include>
-
-                <include>**/ajax/jsf.js</include>
-               
+                <include>**/api/OpenAjax.js</include>
+                <include>**/_impl/_util/_LangUtils.js</include>
+                <include>**/_impl/_util/_ListenerQueue.js</include>
+                <include>**/_impl/_util/_Logger.js</include>
+                <include>**/_impl/_util/_Utils.js</include>
+                <include>**/_impl/xhrCore/_Exception.js</include>
+                <include>**/_impl/xhrCore/_AjaxUtils.js</include>
+                <include>**/_impl/xhrCore/_AjaxRequestQueue.js</include>
+                <include>**/_impl/xhrCore/_AjaxRequest.js</include>
+                <include>**/_impl/xhrCore/_AjaxResponse.js</include>
+                <include>**/_impl/xhrCore/_xhrCoreAdapter.js</include>
+                <include>**/_impl/core/jsf_impl.js</include>
+                <include>**./api/jsf.js</include>
             </includes>
-           
         </script>
     </scripts>
 </assembler>
