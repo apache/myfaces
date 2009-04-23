@@ -200,7 +200,7 @@ public final class FacesServlet
 
                         Object errorHandler = clazz.newInstance();
 
-                        Method m = clazz.getMethod("handleExceptionList", new Class[]{FacesContext.class,Exception.class});
+                        Method m = clazz.getMethod("handleExceptionList", new Class[]{FacesContext.class,List.class});
                         m.invoke(errorHandler, new Object[]{facesContext, li});
                     }
                     catch(ClassNotFoundException ex) {
