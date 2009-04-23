@@ -86,16 +86,16 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
      * backported from dojo
      * Converts an array-like object (i.e. arguments, DOMCollection) to an
      array. Returns a new Array with the elements of obj.
-     * @param obj the object to "arrayify". We expect the object to have, at a
+     * @param {Object} obj the object to "arrayify". We expect the object to have, at a
      minimum, a length property which corresponds to integer-indexed
      properties.
-     * @param offset the location in obj to start iterating from. Defaults to 0.
+     * @param {Number} offset the location in obj to start iterating from. Defaults to 0.
      Optional.
-     * @param startWith An array to pack with the properties of obj. If provided,
+     * @param {Array} startWith An array to pack with the properties of obj. If provided,
      properties in obj are appended at the end of startWith and
      startWith is the returned array.
      */
-    myfaces._impl._util._LangUtils._toArray = function(/*Object*/obj, /*Number?*/offset, /*Array?*/ startWith) {
+    myfaces._impl._util._LangUtils._toArray = function(obj, offset,  startWith) {
         //	summary:
         //		Converts an array-like object (i.e. arguments, DOMCollection) to an
         //		array. Returns a new Array with the elements of obj.
@@ -117,11 +117,23 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
         return arr; // Array
     };
 
-    myfaces._impl._util._LangUtils.trimStringInternal = function(/*string*/ it,/*regexp*/ splitter) {
+    /**
+     * Helper function to provide a trim with a given splitter regular expression
+     * @param {string} it the string to be trimmed
+     * @param {regexp} splitter the splitter regular expressiion
+     *
+     * FIXME is this still used?
+     */
+    myfaces._impl._util._LangUtils.trimStringInternal = function(it, splitter) {
         return myfaces._impl._util._LangUtils.strToArray(it, splitter).join(splitter);
     };
 
-
+    /**
+     * String to array function performs a string to array transformation
+     * @param {String} it the string which has to be changed into an array
+     * @param {RegExp} splitter our splitter reglar expression
+     * @return an array of the splitted string
+     */
     myfaces._impl._util._LangUtils.strToArray = function(/*string*/ it,/*regexp*/ splitter) {
         //	summary:
         //		Return true if it is a String
@@ -139,6 +151,7 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
     /**
      * hyperfast trim
      * http://blog.stevenlevithan.com/archives/faster-trim-javascript
+     * crossported from dojo
      */
     myfaces._impl._util._LangUtils.trim = function(/*string*/ str) {
 
@@ -149,6 +162,12 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
         return str.slice(0, i + 1);
     };
 
+    /**
+     * Splits a string and fetches the last element of the String
+     * @param {String} theString the string to be splitted
+     * @param {String} delimiter a deliminating string regexp
+     *
+     */
     myfaces._impl._util._LangUtils.splitAndGetLast = function(theString, delimiter) {
         var arr = theString.split(delimiter);
         return arr[arr.length - 1];
@@ -158,6 +177,10 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
 
     /**
      * Backported from dojo
+     * a failsafe string determination method
+     * (since in javascript String != "" typeof alone fails!)
+     * @param it {anything} the object to be checked for being a string
+     * @return true in case of being a string false otherwise 
      */
     myfaces._impl._util._LangUtils.isString = function(/*anything*/ it) {
         //	summary:
@@ -170,6 +193,11 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
      * this is helpful in situations when function reassignments
      * can happen
      * (notably happens often in lazy xhr code)
+     *
+     * @param {Function} scope of the function to be executed in
+     * @param {Function} method to be executed
+     *
+     * @return whatevery the executed method returns
      */
     myfaces._impl._util._LangUtils.hitch = function(/*Object*/scope, /*Function|String*/method /*,...*/) {
         //	summary:
@@ -213,13 +241,18 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
             return method.apply(scope, arguments || []);
         }; // Function
     };
-    /*used internally to lazy init the logger*/
+    /**
+     * used internally to lazy init the logger
+     * Lazy init for the logging subsystem
+     * @deprecated will be removed soon
+     */
     myfaces._impl._util._LangUtils._getLogger = function() {
         if(null ==  myfaces._impl._util._LangUtils._logger) {
             myfaces._impl._util._LangUtils._logger = myfaces._impl._util._Logger.getInstance();
         }
         return myfaces._impl._util._LangUtils._logger;
     };
+
 
     myfaces._impl._util._LangUtils._hitchArgs = function(scope, method /*,...*/) {
         var pre = this._toArray(arguments, 2);
@@ -284,8 +317,8 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
 
     /**
      * checks if an array contains an element
-     * @param arr   array
-     * @param string_name string to check for
+     * @param {Array} arr   array
+     * @param {String} string_name string to check for
      */
     myfaces._impl._util._LangUtils.arrayContains = function(arr, string_name) {
         for ( var loop = 0; loop < arr.length; loop++) {
@@ -297,7 +330,14 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
     },
 
     /**
+     * Concatenates an array to a string
+     * @param {Array} arr the array to be concatenated
+     * @param {String} delimiter, the concateation delimiter if none is set \n is used
      *
+     * @return the concatenated array, one special behavior to enable j4fry compatibility has been added
+     * if no delimiter is used the [entryNumber]+entry is generated for a single entry
+     * TODO check if this is still needed it is somewhat outside of the scope of the function
+     * and functionalitywise dirty
      */
     myfaces._impl._util._LangUtils.arrayToString = function(/*String or array*/ arr, /*string*/ delimiter) {
         if( myfaces._impl._util._LangUtils.isString(arr) ) {

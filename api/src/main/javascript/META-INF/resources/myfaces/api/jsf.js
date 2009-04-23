@@ -72,11 +72,11 @@ if ('undefined' == typeof jsf.ajax || null == jsf.ajax) {
      *  <li> all requests must be queued with a client side request queue to ensure the request ordering!</li>
      * </ul>
      *
-     * @param element: any dom element no matter being it html or jsf, from which the event is emitted
-     * @param event: any javascript event supported by that object
-     * @param options : map of options being pushed into the ajax cycle
+     * @param {String|Node} element: any dom element no matter being it html or jsf, from which the event is emitted
+     * @param {|EVENT|}Êevent: any javascript event supported by that object
+     * @param {Map||} options : map of options being pushed into the ajax cycle
      */
-    jsf.ajax.request = function(/*String|Dom Node*/ element, /*|EVENT|*/ event, /*{|OPTIONS|}*/ options) {
+    jsf.ajax.request = function( element,  event,  options) {
         return jsf.ajax._impl.request(element, event, options);
     };
 

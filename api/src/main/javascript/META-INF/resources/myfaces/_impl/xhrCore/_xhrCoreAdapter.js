@@ -20,41 +20,46 @@
 
 _reserveMyfacesNamespaces();
 
-/**
- * Constructor
- */
-myfaces._impl.xhrCore._Ajax = function() {}
-
-/**
- * Spec. 13.3.1
- * Collect and encode input elements.
- * Additinoaly the hidden element javax.faces.ViewState
- * @param {String} FORM_ELEMENT - Client-Id of Form-Element
- * @return {String} - Concatenated String of the encoded input elements
- * 			and javax.faces.ViewState element
- */
-myfaces._impl.xhrCore._Ajax.prototype.getViewState = function(FORM_ELEMENT) {
-    return myfaces._impl.xhrCore._AjaxRequestQueue.queue.m_request.getViewState();
-}
+if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_Ajax")) {
 
 
-/**
- * mapped options already have the exec and view properly in place
- * myfaces specifics can be found under mappedOptions.myFaces
- * @param ajaxContext the ajax context which also has to be pushed into the messages and into the response
- **/
+    /**
+     * Constructor
+     */
+    myfaces._impl.xhrCore._Ajax = function() {}
 
-myfaces._impl.xhrCore._Ajax.prototype._ajaxRequest = function(source, sourceForm, context, passThroughValues ) {
-   	myfaces._impl.xhrCore._AjaxRequestQueue.queue.queueRequest(
-        new myfaces._impl.xhrCore._AjaxRequest(source, sourceForm, context, passThroughValues));
-}
+    /**
+     * Spec. 13.3.1
+     * Collect and encode input elements.
+     * Additinoaly the hidden element javax.faces.ViewState
+     * @param {String} FORM_ELEMENT - Client-Id of Form-Element
+     * @return {String} - Concatenated String of the encoded input elements
+     * 			and javax.faces.ViewState element
+     */
+    myfaces._impl.xhrCore._Ajax.prototype.getViewState = function(FORM_ELEMENT) {
+        return myfaces._impl.xhrCore._AjaxRequestQueue.queue.m_request.getViewState();
+    }
 
-/**
- * Spec. 13.3.3
- * Examining the response markup and updating the DOM tree
- * @param {XmlHttpRequest} request - the ajax request
- * @param {XmlHttpRequest} context - the ajax context
- */
-myfaces._impl.xhrCore._Ajax.prototype._ajaxResponse = function(request, context) {
-	myfaces._impl.xhrCore._AjaxRequestQueue.queue.m_request.m_response.processResponse(request, context);
+
+    /**
+     * mapped options already have the exec and view properly in place
+     * myfaces specifics can be found under mappedOptions.myFaces
+     * @param ajaxContext the ajax context which also has to be pushed into the messages and into the response
+     **/
+
+    myfaces._impl.xhrCore._Ajax.prototype._ajaxRequest = function(source, sourceForm, context, passThroughValues ) {
+        myfaces._impl.xhrCore._AjaxRequestQueue.queue.queueRequest(
+            new myfaces._impl.xhrCore._AjaxRequest(source, sourceForm, context, passThroughValues));
+    }
+
+    /**
+     * Spec. 13.3.3
+     * Examining the response markup and updating the DOM tree
+     * @param {XmlHttpRequest} request - the ajax request
+     * @param {XmlHttpRequest} context - the ajax context
+     */
+    myfaces._impl.xhrCore._Ajax.prototype._ajaxResponse = function(request, context) {
+        myfaces._impl.xhrCore._AjaxRequestQueue.queue.m_request.m_response.processResponse(request, context);
+    }
+
 }

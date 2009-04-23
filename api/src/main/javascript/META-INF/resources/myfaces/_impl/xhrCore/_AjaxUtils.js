@@ -20,161 +20,163 @@
 
 _reserveMyfacesNamespaces();
 
+if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxUtils")) {
 
-/**
- * Constructor
- * @param {String} alarmThreshold - Error Level
- */
-myfaces._impl.xhrCore._AjaxUtils = function(alarmThreshold) {
-	// Exception Objekt
-	this.alarmThreshold = alarmThreshold;
-	this.m_exception = new myfaces._impl.xhrCore._Exception("myfaces._impl.xhrCore._AjaxUtils", this.alarmThreshold);
-};
+    /**
+     * Constructor
+     * @param {String} alarmThreshold - Error Level
+     */
+    myfaces._impl.xhrCore._AjaxUtils = function(alarmThreshold) {
+        // Exception Objekt
+        this.alarmThreshold = alarmThreshold;
+        this.m_exception = new myfaces._impl.xhrCore._Exception("myfaces._impl.xhrCore._AjaxUtils", this.alarmThreshold);
+    };
 
-/**
- * determines fields to submit
- * @param {HtmlElement} item - item that triggered the event
- * @param {HtmlElement} parentItem - form element item is nested in
- * @param {Array} partialIds - ids fo PPS
- */
-myfaces._impl.xhrCore._AjaxUtils.prototype.processUserEntries = function(request, context, item,
-		parentItem,	partialIds) {
-	try {
-		var form = parentItem;
+    /**
+     * determines fields to submit
+     * @param {HtmlElement} item - item that triggered the event
+     * @param {HtmlElement} parentItem - form element item is nested in
+     * @param {Array} partialIds - ids fo PPS
+     */
+    myfaces._impl.xhrCore._AjaxUtils.prototype.processUserEntries = function(request, context, item,
+        parentItem,	partialIds) {
+        try {
+            var form = parentItem;
 
-		if (form == null) {
-			this.m_exception.throwWarning(request, context, "processUserEntries",
-					"Html-Component is not nested in a Form-Tag");
-			return null;
-		}
+            if (form == null) {
+                this.m_exception.throwWarning(request, context, "processUserEntries",
+                    "Html-Component is not nested in a Form-Tag");
+                return null;
+            }
 
-		var stringBuffer = new Array();
+            var stringBuffer = new Array();
 
-		if (partialIds != null && partialIds.length > 0) {
-			// recursivly check items
-			this.addNodes(form, false, partialIds, stringBuffer);
-		} else {
-			// add all nodes
-			var eLen = form.elements.length;
-			for ( var e = 0; e < eLen; e++) {
-				this.addField(form.elements[e], stringBuffer);
-			} // end of for (formElements)
-		}
+            if (partialIds != null && partialIds.length > 0) {
+                // recursivly check items
+                this.addNodes(form, false, partialIds, stringBuffer);
+            } else {
+                // add all nodes
+                var eLen = form.elements.length;
+                for ( var e = 0; e < eLen; e++) {
+                    this.addField(form.elements[e], stringBuffer);
+                } // end of for (formElements)
+            }
 
-		// if triggered by a Button send it along
-		if (item.type != null && item.type.toLowerCase() == "submit") {
-			stringBuffer[stringBuffer.length] = encodeURIComponent(item.name);
-			stringBuffer[stringBuffer.length] = "=";
-			stringBuffer[stringBuffer.length] = encodeURIComponent(item.value);
-			stringBuffer[stringBuffer.length] = "&";
-		}
+            // if triggered by a Button send it along
+            if (item.type != null && item.type.toLowerCase() == "submit") {
+                stringBuffer[stringBuffer.length] = encodeURIComponent(item.name);
+                stringBuffer[stringBuffer.length] = "=";
+                stringBuffer[stringBuffer.length] = encodeURIComponent(item.value);
+                stringBuffer[stringBuffer.length] = "&";
+            }
 
-		return stringBuffer.join("");
-	} catch (e) {
-		alert(e);
-		this.m_exception.throwError(request, context, "processUserEntries", e);
-	}
-};
+            return stringBuffer.join("");
+        } catch (e) {
+            alert(e);
+            this.m_exception.throwError(request, context, "processUserEntries", e);
+        }
+    };
 
-/**
- * checks recursively if contained in PPS
- * @param {} node - 
- * @param {} insideSubmittedPart -
- * @param {} partialIds -
- * @param {} stringBuffer -
- */
-myfaces._impl.xhrCore._AjaxUtils.prototype.addNodes = function(node, insideSubmittedPart,
-		partialIds, stringBuffer) {
-	if (node != null && node.childNodes != null) {
-		var nLen = node.childNodes.length;
-		for ( var i = 0; i < nLen; i++) {
-			var child = node.childNodes[i];
-			var id = child.id;
-			var elementName = child.name;
-			if (child.nodeType == 1) {
-				var isPartialSubmitContainer = ((id != null) 
-                    && myfaces._impl._util._LangUtils.arrayContains(partialIds, id));
-				if (insideSubmittedPart
-						|| isPartialSubmitContainer
-						|| (elementName != null 
-                        && elementName == myfaces._impl.core._jsfImpl._PROP_VIEWSTATE)) {
-					// node required for PPS
-					this.addField(child, stringBuffer);
-					if (insideSubmittedPart || isPartialSubmitContainer) {
-						// check for further children
-						this.addNodes(child, true, partialIds, stringBuffer);
-					}
-				} else {
-					// check for further children
-					this.addNodes(child, false, partialIds, stringBuffer);
-				}
-			}
-		}
-	}
-}
+    /**
+     * checks recursively if contained in PPS
+     * @param {} node -
+     * @param {} insideSubmittedPart -
+     * @param {} partialIds -
+     * @param {} stringBuffer -
+     */
+    myfaces._impl.xhrCore._AjaxUtils.prototype.addNodes = function(node, insideSubmittedPart,
+        partialIds, stringBuffer) {
+        if (node != null && node.childNodes != null) {
+            var nLen = node.childNodes.length;
+            for ( var i = 0; i < nLen; i++) {
+                var child = node.childNodes[i];
+                var id = child.id;
+                var elementName = child.name;
+                if (child.nodeType == 1) {
+                    var isPartialSubmitContainer = ((id != null)
+                        && myfaces._impl._util._LangUtils.arrayContains(partialIds, id));
+                    if (insideSubmittedPart
+                        || isPartialSubmitContainer
+                        || (elementName != null
+                            && elementName == myfaces._impl.core._jsfImpl._PROP_VIEWSTATE)) {
+                        // node required for PPS
+                        this.addField(child, stringBuffer);
+                        if (insideSubmittedPart || isPartialSubmitContainer) {
+                            // check for further children
+                            this.addNodes(child, true, partialIds, stringBuffer);
+                        }
+                    } else {
+                        // check for further children
+                        this.addNodes(child, false, partialIds, stringBuffer);
+                    }
+                }
+            }
+        }
+    }
 
-/**
- * add a single field to stringbuffer for param submission
- * @param {HtmlElement} element - 
- * @param {} stringBuffer - 
- */
-myfaces._impl.xhrCore._AjaxUtils.prototype.addField = function(element, stringBuffer) {
-	var elementName = element.name;
-	var elementTagName = element.tagName.toLowerCase();
-	var elementType = element.type;
-	if (elementType != null) {
-		elementType = elementType.toLowerCase();
-	}
+    /**
+     * add a single field to stringbuffer for param submission
+     * @param {HtmlElement} element -
+     * @param {} stringBuffer -
+     */
+    myfaces._impl.xhrCore._AjaxUtils.prototype.addField = function(element, stringBuffer) {
+        var elementName = element.name;
+        var elementTagName = element.tagName.toLowerCase();
+        var elementType = element.type;
+        if (elementType != null) {
+            elementType = elementType.toLowerCase();
+        }
 
-	// routine for all elements
-	// rules:
-	// - process only inputs, textareas and selects
-	// - elements muest have attribute "name"
-	// - elements must not be disabled
-	if (((elementTagName == "input" || elementTagName == "textarea" || elementTagName == "select") && 
-		 (elementName != null && elementName != "")) && element.disabled == false) {
+        // routine for all elements
+        // rules:
+        // - process only inputs, textareas and selects
+        // - elements muest have attribute "name"
+        // - elements must not be disabled
+        if (((elementTagName == "input" || elementTagName == "textarea" || elementTagName == "select") &&
+            (elementName != null && elementName != "")) && element.disabled == false) {
 
-		// routine for select elements
-		// rules:
-		// - if select-one and value-Attribute exist => "name=value"
-		// (also if value empty => "name=")
-		// - if select-one and value-Attribute don't exist =>
-		// "name=DisplayValue"
-		// - if select multi and multple selected => "name=value1&name=value2"
-		// - if select and selectedIndex=-1 don't submit
-		if (elementTagName == "select") {
-			// selectedIndex must be >= 0 sein to be submittet
-			if (element.selectedIndex >= 0) {
-				var uLen = element.options.length;
-				for ( var u = 0; u < uLen; u++) {
-					// find all selected options
-					if (element.options[u].selected == true) {
-						var elementOption = element.options[u];
-						stringBuffer[stringBuffer.length] = encodeURIComponent(elementName);
-						stringBuffer[stringBuffer.length] = "=";
-						if (elementOption.getAttribute("value") != null) {
-							stringBuffer[stringBuffer.length] = encodeURIComponent(elementOption.value);
-						} else {
-							stringBuffer[stringBuffer.length] = encodeURIComponent(elementOption.text);
-						}
-						stringBuffer[stringBuffer.length] = "&";
-					}
-				}
-			}
-		}
+            // routine for select elements
+            // rules:
+            // - if select-one and value-Attribute exist => "name=value"
+            // (also if value empty => "name=")
+            // - if select-one and value-Attribute don't exist =>
+            // "name=DisplayValue"
+            // - if select multi and multple selected => "name=value1&name=value2"
+            // - if select and selectedIndex=-1 don't submit
+            if (elementTagName == "select") {
+                // selectedIndex must be >= 0 sein to be submittet
+                if (element.selectedIndex >= 0) {
+                    var uLen = element.options.length;
+                    for ( var u = 0; u < uLen; u++) {
+                        // find all selected options
+                        if (element.options[u].selected == true) {
+                            var elementOption = element.options[u];
+                            stringBuffer[stringBuffer.length] = encodeURIComponent(elementName);
+                            stringBuffer[stringBuffer.length] = "=";
+                            if (elementOption.getAttribute("value") != null) {
+                                stringBuffer[stringBuffer.length] = encodeURIComponent(elementOption.value);
+                            } else {
+                                stringBuffer[stringBuffer.length] = encodeURIComponent(elementOption.text);
+                            }
+                            stringBuffer[stringBuffer.length] = "&";
+                        }
+                    }
+                }
+            }
 
-		// routine for remaining elements
-		// rules:
-		// - don't submit no selects (processed above), buttons, reset buttons, submit buttons,
-		// - submit checkboxes and radio inputs only if checked
-		if ((elementTagName != "select" && elementType != "button"
-				&& elementType != "reset" && elementType != "submit" && elementType != "image")
-				&& ((elementType != "checkbox" && elementType != "radio") || element.checked)) {
-			stringBuffer[stringBuffer.length] = encodeURIComponent(elementName);
-			stringBuffer[stringBuffer.length] = "=";
-			stringBuffer[stringBuffer.length] = encodeURIComponent(element.value);
-			stringBuffer[stringBuffer.length] = "&";
-		}
+            // routine for remaining elements
+            // rules:
+            // - don't submit no selects (processed above), buttons, reset buttons, submit buttons,
+            // - submit checkboxes and radio inputs only if checked
+            if ((elementTagName != "select" && elementType != "button"
+                && elementType != "reset" && elementType != "submit" && elementType != "image")
+            && ((elementType != "checkbox" && elementType != "radio") || element.checked)) {
+                stringBuffer[stringBuffer.length] = encodeURIComponent(elementName);
+                stringBuffer[stringBuffer.length] = "=";
+                stringBuffer[stringBuffer.length] = encodeURIComponent(element.value);
+                stringBuffer[stringBuffer.length] = "&";
+            }
 
-	}
+        }
+    }
 }

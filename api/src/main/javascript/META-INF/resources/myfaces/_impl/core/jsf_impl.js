@@ -15,7 +15,7 @@
 
 _reserveMyfacesNamespaces();
 
-if (!myfaces._impl._util._LangUtils.exists(myfaces, "_jsfImpl")) {
+if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
 
     myfaces._impl.core._jsfImpl = function() {
 

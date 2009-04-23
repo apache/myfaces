@@ -20,6 +20,13 @@
 
 _reserveMyfacesNamespaces();
 
+/**
+ *Logging subsystem
+ *@deprecated will probably dropped in the near future
+ *it is not used anymore due to jsf.js having
+ *some error handling facilities!
+ *
+ */
 if(!myfaces._impl._util._LangUtils.exists(myfaces, "_Logger")) {
     myfaces._impl._util._Logger = function() {
         var targetDiv = document.getElementById("log_console");
