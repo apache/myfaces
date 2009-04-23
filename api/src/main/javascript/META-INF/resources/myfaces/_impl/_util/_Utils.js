@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  * Author: Ganesh Jung (latest modification by $Author: ganeshpuri $)
- * Version: $Revision: 1.9 $ $Date: 2009/04/18 17:19:12 $
+ * Version: $Revision: 1.10 $ $Date: 2009/04/21 05:53:14 $
  *
  */
 
@@ -221,7 +221,6 @@ myfaces._impl._util._Utils.isUserAgentInternetExplorer = function() {
  */
 myfaces._impl._util._Utils.getElementFromForm = function(request, context, itemId, form) {
     try {
-        
 
         if('undefined' == typeof form || form == null) {
             return document.getElementById(itemId);

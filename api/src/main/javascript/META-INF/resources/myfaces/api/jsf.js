@@ -92,7 +92,7 @@ if ('undefined' == typeof jsf.ajax || null == jsf.ajax) {
     }
 
     jsf.ajax.addOnEvent = function(/*function*/eventListener) {
-        return jsf.ajax._impl.addOnError(eventListener);
+        return jsf.ajax._impl.addOnEvent(eventListener);
     }
 
     /**
