@@ -45,6 +45,9 @@ function _reserveMyfacesNamespaces() {
     if('undefined' == typeof(myfaces._impl.xhrCore) || null == myfaces._impl.xhrCore) {
         myfaces._impl.xhrCore = new Object();
     }
+    if('undefined' == typeof(myfaces.config) || null == myfaces.config) {
+        myfaces.config = new Object();
+    }
 
 }
 

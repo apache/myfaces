@@ -142,11 +142,11 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces, "_jsfImpl")) {
      *  <li> all requests must be queued with a client side request queue to ensure the request ordering!</li>
      * </ul>
      *
-     * @param element: any dom element no matter being it html or jsf, from which the event is emitted
-     * @param event: any javascript event supported by that object
-     * @param options : map of options being pushed into the ajax cycle
+     * @param {String|Node} element: any dom element no matter being it html or jsf, from which the event is emitted
+     * @param {|Event|} event: any javascript event supported by that object
+     * @param {|Map|} options : map of options being pushed into the ajax cycle
      */
-    myfaces._impl.core._jsfImpl.prototype.request = function(/*String|Dom Node*/ element, /*|EVENT|*/ event, /*{|OPTIONS|}*/ options) {
+    myfaces._impl.core._jsfImpl.prototype.request = function(element, event, options) {
 
         /*namespace remap for our local function context we mix the entire function namespace into
          *a local function variable so that we do not have to write the entire namespace
@@ -282,6 +282,20 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces, "_jsfImpl")) {
      * RI compatibility method
      * TODO make sure this method also occurrs in the specs
      * otherwise simply pull it
+     * @param {Object} request the request object which comes from the xhr cycle
+     * @param {Map} context the context object being pushed over the xhr cycle keeping additional metadata �
+     * @param {String} name, the error name
+     * @param {String} serverErrorName the server error name in case of a server error
+     * @param {String} serverErrorMessage the server error message in case of a server error
+     *
+     *  handles the errors, in case of an onError exists within the context the onError is called as local error handler
+     *  the registered error handlers in the queue receiv an error message to be dealt with
+     *  and if the projectStage is at development an alert box is displayed
+     *
+     *  note: we have additonal functionality here, via the global config myfaces.config.defaultErrorOutput a function can be provieded
+     *  which changes the default output behavior from alert to something else
+     *
+     *
      */
     myfaces._impl.core._jsfImpl.prototype.sendError = function sendError(/*Object*/request, /*Object*/ context, /*String*/ name, /*String*/ serverErrorName, /*String*/ serverErrorMessage) {
         var eventData = {};
@@ -303,9 +317,19 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces, "_jsfImpl")) {
         }
         /*now we serve the queue as well*/
         this._errorListenerQueue.broadcastEvent(eventData);
-
-        //TODO add the development state alerts here!
         
+        if(jsf.getProjectStage() === "Development") {
+            
+            var defaultErrorOutput = myfaces._impl._util._Utils.getGlobalConfig("defaultErrorOutput",alert);
+            var finalMessage = [];
+
+            finalMessage.push ( ('undefined' != typeof name && null != name)? name:"" );
+            finalMessage.push ( ('undefined' != typeof serverErrorName && null != serverErrorName)? serverErrorName:"");
+            finalMessage.push ( ('undefined' != typeof serverErrorMessage && null != serverErrorMessage)? serverErrorMessage:"");
+
+            defaultErrorOutput(finalMessage.join("-"));
+            
+        }
     };
 
     /**
@@ -414,5 +438,6 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces, "_jsfImpl")) {
     //for debugging purposes only remove before going into production
     //should be removed automatically by the build process!!!
     ;;var myfaces_JSFDebug = new myfaces._impl.core._jsfImpl();
+
 
 }
