@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  * Author: Ganesh Jung (latest modification by $Author: werpu $)
- * Version: $Revision: 1.17 $ $Date: 2009/04/24 12:04:02 $
+ * Version: $Revision: 1.18 $ $Date: 2009/04/24 13:14:02 $
  *
  */
 
@@ -200,48 +200,28 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
             }
             if( node.getAttribute('id') == "javax.faces.ViewRoot") {
 
-                var htmlStartEx = /<\s*html[^>]*>/gi;
-                var htmlEndEx = /<\/\s*html[^>]*>/gi;
-                var headStartEx = /<\s*head[^>]*>/gi;
-                var headEndEx = /<\/\s*head[^>]*>/gi;
-                var bodyStartEx = /<\s*body[^>]*>/gi;
-                var bodyEndEx = /<\/\s*body[^>]*>/gi;
-                var htmlStart = htmlStartEx.exec(cDataBlock);
-                if (htmlStart != null) {
-                    var htmlEnd = htmlEndEx.exec(cDataBlock);
-                    if (htmlEnd != null) {
-                        cDataBlock = cDataBlock.substring(htmlStart.index, htmlEndEx.lastIndex);
-                    } else {
-                        cDataBlock = cDataBlock.substring(htmlStart.index);
-                    }
-                }
-                var headStart = headStartEx.exec(cDataBlock);
                 var newHead = null;
-                if (headStart != null) {
-                    var headEnd = headEndEx.exec(cDataBlock);
-                    if (headEnd != null) {
-                        newHead = cDataBlock.substring(headStart.index, headEndEx.lastIndex);
-                    } else {
-                        newHead = cDataBlock.substring(headStart.index);
-                    }
-                }
-                var bodyStart = bodyStartEx.exec(cDataBlock);
                 var newBody = null;
-                if (bodyStart != null) {
-                    var bodyEnd = bodyEndEx.exec(cDataBlock);
-                    if (bodyEnd != null) {
-                        newBody = cDataBlock.substring(bodyStart.index, bodyEndEx.lastIndex);
-                    } else {
-                        newBody = cDataBlock.substring(bodyStart.index);
-                    }
+
+                var parsedHeadTag =  myfaces._impl._util._Utils.getChild.stripHead(cDataBlock);
+                if(parsedHeadTag != null) {
+                    headStart = parsedHeadTag.tagBegin;
+                    newHead = parsedHeadTag.tagContent;
+                    headEnd = parsedHeadTag.tagEnd;
                 }
-                //Werner, I couldn't get this to run. Can you recheck
-                //on your 'strippers'? They didn't work for me!
-                //lets strip the internal html if given
-                //            var htmlContent = myfaces._impl._util._Utils.getChild.stripHtml(cDataBlock);
-                //            htmlContent = (htmlContent == null) ? cDataBlock: htmlContent;
-                //            var newHead =  myfaces._impl._util._Utils.getChild.stripHead(htmlContent);
-                //            var newBody =  myfaces._impl._util._Utils.getChild.stripBody(htmlContent);
+
+                var parsedBodyTag =  myfaces._impl._util._Utils.getChild.stripBody(cDataBlock);
+                if(parsedBodyTag != null) {
+                    bodyStart = parsedBodyTag.tagBegin;
+                    newBody = parsedBodyTag.tagContent;
+                    bodyEnd = parsedBodyTag.tagEnd;
+                }
+
+                var parsedHtmlTag =  myfaces._impl._util._Utils.getChild.stripHtml(cDataBlock);
+                if(parsedHtmlTag != null) {
+                   cDataBlock =  parsedHtmlTag.tagContent;
+                }
+
                 var body = document.getElementsByTagName('body')[0];
                 var head = document.getElementsByTagName('head')[0];
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  * Author: Ganesh Jung (latest modification by $Author: werpu $)
- * Version: $Revision: 1.14 $ $Date: 2009/04/24 12:04:43 $
+ * Version: $Revision: 1.15 $ $Date: 2009/04/24 12:44:58 $
  *
  */
 
@@ -425,13 +425,21 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
      */
     myfaces._impl._util._Utils.getChild.getTagContent = function(stripper, content) {
 
-        if('undefined' == typeof content || null == typeof content) return null;
-        stripper.exec(content);
 
-        var result = RegExp.$1;
-        if('undefined' == typeof result || result == "") {
+        if('undefined' == typeof content || null == typeof content) return null;
+        var reResult = stripper.exec(content);
+
+        
+        if('undefined' == typeof reResult || reResult == null || reResult.length < 4) {
             return null;
         }
+        var result = {};
+        result.tagBegin   = reResult[1];
+        result.tagContent = reResult[2];
+        result.tagEnd     = reResult[3];
+
+
+
         return result;
     };
 
@@ -499,9 +507,9 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
      * If the performance is subpar, we always can add a stripping ll(n) parser to our mix
      * but this would produce a massiv code bloat!
      */
-    myfaces._impl._util._Utils.getChild._htmlStripper = /<\s*html[^>]*>(.*)<\/\s*html[^>]*>/i;
-    myfaces._impl._util._Utils.getChild._headStripper = /<\s*head[^>]*>(.*)<\/\s*head[^>]*>/i;
-    myfaces._impl._util._Utils.getChild._bodyStripper = /<\s*body[^>]*>(.*)<\/\s*body[^>]*>/i;
+    myfaces._impl._util._Utils.getChild._htmlStripper = /(<\s*html[^>]*>)(.*)(<\/\s*html[^>]*>)/i;
+    myfaces._impl._util._Utils.getChild._headStripper = /(<\s*head[^>]*>)(.*)(<\/\s*head[^>]*>)/i;
+    myfaces._impl._util._Utils.getChild._bodyStripper = /(<\s*body[^>]*>)(.*)(<\/\s*body[^>]*>)/i;
 
 
     myfaces._impl._util._Utils.browserDetection();
