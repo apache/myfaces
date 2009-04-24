@@ -282,7 +282,7 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
                ( myfaces._impl._util._Utils.browser.isIE > 5.5))||
                 (_LangUtils.exists(myfaces._impl._util._Utils.browser,"isKhtml") &&
                 _LangUtils.exists(myfaces._impl._util._Utils.browser.isKhtml > 0))   ||
-                (LangUtils.exists(myfaces._impl._util._Utils.browser,"isWebKit") && 
+                (_LangUtils.exists(myfaces._impl._util._Utils.browser,"isWebKit") &&
                 _LangUtils.exists(myfaces._impl._util._Utils.browser.isWebKit > 0));
       
             return retVal;
