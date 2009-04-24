@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  * Author: Ganesh Jung (latest modification by $Author: werpu $)
- * Version: $Revision: 1.11 $ $Date: 2009/04/23 08:14:25 $
+ * Version: $Revision: 1.14 $ $Date: 2009/04/24 12:04:43 $
  *
  */
 
@@ -25,8 +25,76 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
      * Constructor
      */
     myfaces._impl._util._Utils = function() {
-	
+
     }
+
+
+    myfaces._impl._util._Utils.browserDetection = function() {
+                /**
+        * browser detection code
+        * cross ported from dojo 1.2
+        *
+        * dojos browser detection code is very sophisticated
+        * hence we port it over it allows a very fine grained detection of
+        * browsers including the version number
+        * this however only can work out if the user
+        * does not alter the user agend, which they normally dont!
+        *
+        * the exception is the ie detection which relies on specific quirks in ie
+        */
+       	var n = navigator;
+        var dua = n.userAgent,
+        dav = n.appVersion,
+        tv = parseFloat(dav);
+
+        myfaces._impl._util._Utils.browser = {};
+        var d = myfaces._impl._util._Utils.browser;
+
+        if(dua.indexOf("Opera") >= 0){
+            myfaces._impl._util._Utils.isOpera = tv;
+        }
+        if(dua.indexOf("AdobeAIR") >= 0){
+            d.isAIR = 1;
+        }
+        d.isKhtml = (dav.indexOf("Konqueror") >= 0) ? tv : 0;
+        d.isWebKit = parseFloat(dua.split("WebKit/")[1]) || undefined;
+        d.isChrome = parseFloat(dua.split("Chrome/")[1]) || undefined;
+
+        // safari detection derived from:
+        //		http://developer.apple.com/internet/safari/faq.html#anchor2
+        //		http://developer.apple.com/internet/safari/uamatrix.html
+        var index = Math.max(dav.indexOf("WebKit"), dav.indexOf("Safari"), 0);
+        if(index && !d.isChrome){
+            // try to grab the explicit Safari version first. If we don't get
+            // one, look for less than 419.3 as the indication that we're on something
+            // "Safari 2-ish".
+            d.isSafari = parseFloat(dav.split("Version/")[1]);
+            if(!d.isSafari || parseFloat(dav.substr(index + 7)) <= 419.3){
+                d.isSafari = 2;
+            }
+        }
+
+        //>>excludeStart("webkitMobile", kwArgs.webkitMobile);
+        if(dua.indexOf("Gecko") >= 0 && !d.isKhtml && !d.isWebKit){
+            d.isMozilla = d.isMoz = tv;
+        }
+        if(d.isMoz){
+            //We really need to get away from this. Consider a sane isGecko approach for the future.
+            d.isFF = parseFloat(dua.split("Firefox/")[1] || dua.split("Minefield/")[1] || dua.split("Shiretoko/")[1]) || undefined;
+        }
+        if(document.all && !d.isOpera){
+            d.isIE = parseFloat(dav.split("MSIE ")[1]) || undefined;
+            //In cases where the page has an HTTP header or META tag with
+            //X-UA-Compatible, then it is in emulation mode, for a previous
+            //version. Make sure isIE reflects the desired version.
+            //document.documentMode of 5 means quirks mode.
+            if(d.isIE >= 8 && document.documentMode != 5){
+                d.isIE = document.documentMode;
+            }
+        }
+    };
+
+
 
     /**
      * [STATIC]
@@ -57,7 +125,7 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
                             go = true;
                         }
                     }
-                    window.execScript(test); // run the script
+                    eval(test); // run the script
                 } catch (e) {
                     myfaces._impl.xhrCore._Exception.throwNewError(request, context, "Utils", "runScripts", e);
                 }
@@ -116,7 +184,7 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
                 } else {
                     item.insertAdjacentHTML('beforeBegin', newTag);
                 }
-                if (myfaces._impl._util._Utils.isUserAgentInternetExplorer()) {
+                if (myfaces._impl._util._Utils.isManualScriptEval()) {
                     myfaces._impl._util._Utils.runScripts(request, context, item.previousSibling);
                 }
             }
@@ -199,12 +267,43 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
     };
 
     /**
+     * determines if the embedded scripts have to be evaled manually
+     * @return true if a browser combination is given which has to
+     * do a manual eval
+     * which is currently ie > 5.5, chrome, khtml, webkit safari
+     *
+     */
+    myfaces._impl._util._Utils.isManualScriptEval = function() {
+        var _LangUtils = myfaces._impl._util._LangUtils;
+        //TODO test this with various browsers so that we have auto eval wherever possible
+        //
+        //tested currently safari, ie, firefox, opera
+        var retVal = (_LangUtils.exists(myfaces._impl._util._Utils.browser,"isIE") &&
+               ( myfaces._impl._util._Utils.browser.isIE > 5.5))||
+                (_LangUtils.exists(myfaces._impl._util._Utils.browser,"isKhtml") &&
+                _LangUtils.exists(myfaces._impl._util._Utils.browser.isKhtml > 0))   ||
+                (LangUtils.exists(myfaces._impl._util._Utils.browser,"isWebKit") && 
+                _LangUtils.exists(myfaces._impl._util._Utils.browser.isWebKit > 0));
+      
+            return retVal;
+               
+       //another way to determine this without direct user agent parsing probably could
+       //be to add an embedded script tag programmatically and check for the script variable
+       //set by the script if existing, the add went through an eval if not then we
+       //have to deal with it outselves, this might be dangerous in case of the ie however
+       //so in case of ie we have to parse for all other browsers we can make a dynamic 
+       //check if the browser does auto eval
+       //TODO discuss those things
+       
+    };
+
+    /**
      * [STATIC]
      * Determines whether the user agent is IE or not
      * @return {boolean} - true if it is IE
      */
     myfaces._impl._util._Utils.isUserAgentInternetExplorer = function() {
-        return window.ActiveXObject;
+        return myfaces._impl._util._Utils.browser.isIE;
     };
 
     /**
@@ -403,5 +502,8 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
     myfaces._impl._util._Utils.getChild._htmlStripper = /<\s*html[^>]*>(.*)<\/\s*html[^>]*>/i;
     myfaces._impl._util._Utils.getChild._headStripper = /<\s*head[^>]*>(.*)<\/\s*head[^>]*>/i;
     myfaces._impl._util._Utils.getChild._bodyStripper = /<\s*body[^>]*>(.*)<\/\s*body[^>]*>/i;
- 
+
+
+    myfaces._impl._util._Utils.browserDetection();
+
 }

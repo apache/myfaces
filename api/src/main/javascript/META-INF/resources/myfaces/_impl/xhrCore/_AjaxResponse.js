@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: Ganesh Jung (latest modification by $Author: ganeshpuri $)
- * Version: $Revision: 1.15 $ $Date: 2009/04/21 05:53:14 $
+ * Author: Ganesh Jung (latest modification by $Author: werpu $)
+ * Version: $Revision: 1.17 $ $Date: 2009/04/24 12:04:02 $
  *
  */
 
@@ -252,7 +252,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
                     //browser inconsistencies in this area
                     //lets have the browser itself deal with this issue, j4fry
                     //is pretty well optimized in this area!
-                    if (myfaces._impl._util._Utils.isUserAgentInternetExplorer()) {
+                    if (myfaces._impl._util._Utils.isManualScriptEval()) {
                         myfaces._impl._util._Utils.runScripts(request, context, head);
                     }
                 }
@@ -264,7 +264,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
                         body, newBody, this.m_htmlFormElement);
                     //TODO fetch the scripts and do an eval on the scripts to bypass
                     //browser inconsistencies in this area
-                    if (myfaces._impl._util._Utils.isUserAgentInternetExplorer()) {
+                    if (myfaces._impl._util._Utils.isManualScriptEval()) {
                         myfaces._impl._util._Utils.runScripts(request, context, body);
                     }
                 //no body content is defined means we have to replace the body with the entire cdata content
