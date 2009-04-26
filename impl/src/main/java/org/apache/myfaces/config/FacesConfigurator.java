@@ -667,8 +667,8 @@ public class FacesConfigurator
                 if (log.isWarnEnabled())
                 {
                     log.warn("<ordering> element found in application faces config. " +
-                    		"This description will be ignored and the actions described " +
-                    		"in <absolute-ordering> element will be taken into account instead.");
+                            "This description will be ignored and the actions described " +
+                            "in <absolute-ordering> element will be taken into account instead.");
                 }                
             }
             //Absolute ordering
@@ -715,7 +715,7 @@ public class FacesConfigurator
                     if (log.isWarnEnabled())
                     {
                         log.warn("<absolute-ordering> element found in application " +
-                        		"configuration resource "+resource.getName()+". " +
+                                "configuration resource "+resource.getName()+". " +
                                 "This description will be ignored and the actions described " +
                                 "in <ordering> elements will be taken into account instead.");
                     }
@@ -881,7 +881,7 @@ public class FacesConfigurator
                             if (founded)
                             {
                                 log.fatal("Circular references detected when sorting " +
-                                		"application config resources. Use absolute ordering instead.");
+                                          "application config resources. Use absolute ordering instead.");
                                 throw new FacesException("Circular references detected when sorting " +
                                         "application config resources. Use absolute ordering instead.");
                             }
