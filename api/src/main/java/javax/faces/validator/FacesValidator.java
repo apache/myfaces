@@ -40,4 +40,10 @@ public @interface FacesValidator
      * of component can be instantiated by calling {@link Application#createValidator(java.lang.String)}.
      */
     public String value();
+    
+    /**
+     * If it is true, the validator is added to default list calling  
+     * {@link javax.faces.application.Application#addDefaultValidatorId(java.lang.String)}.</ 
+     */
+    boolean isDefault() default false;
 }

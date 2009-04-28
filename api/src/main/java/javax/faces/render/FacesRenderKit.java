@@ -19,6 +19,8 @@
 package javax.faces.render;
 
 /**
+ * TODO: REMOVE - No longer existing in latst spec 2009-03-27 -= Leonardo Uribe =-
+ * 
  * @author Simon Lessard (latest modification by $Author: slessard $)
  * @version $Revision: 696523 $ $Date: 2008-09-24 18:56:27 -0400 (mer., 17 sept. 2008) $
  */
