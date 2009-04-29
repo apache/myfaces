@@ -109,12 +109,14 @@ public class FacesContextImpl extends FacesContext
     private boolean _released = false;
     private ELContext _elContext;
     private Map<Object, Object> _attributes = null;
-    private ResponseSwitch _responseWrapper = null;
+    //private ResponseSwitch _responseWrapper = null;
 
     // ~ Constructors -------------------------------------------------------------------------------
     public FacesContextImpl(final ServletContext servletContext, final ServletRequest servletRequest,
                             final ServletResponse servletResponse)
     {
+        init(new ServletExternalContextImpl(servletContext, servletRequest, servletResponse));
+        /*
         try
         {
             // we wrap the servlet response to get our switching behavior!
@@ -125,7 +127,7 @@ public class FacesContextImpl extends FacesContext
         {
             Log log = LogFactory.getLog(this.getClass());
             log.fatal("Could not obtain the response writers! Detail:" + ex.toString());
-        }
+        }*/
     }
 
     private void init(final ReleaseableExternalContext externalContext)
