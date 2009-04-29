@@ -68,6 +68,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.ApplicationFactoryImpl;
 import org.apache.myfaces.application.ApplicationImpl;
+import org.apache.myfaces.config.annotation.AnnotationConfigurator;
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.Renderer;
@@ -127,6 +128,7 @@ public class FacesConfigurator
     private final ExternalContext _externalContext;
     private FacesConfigUnmarshaller<? extends FacesConfig> _unmarshaller;
     private FacesConfigDispenser<FacesConfig> _dispenser;
+    private AnnotationConfigurator _annotationConfigurator;
 
     private RuntimeConfig _runtimeConfig;
 
@@ -210,6 +212,20 @@ public class FacesConfigurator
         }
 
         return _dispenser;
+    }
+    
+    public void setAnnotationConfigurator(AnnotationConfigurator configurator)
+    {
+        _annotationConfigurator = configurator;
+    }
+    
+    protected AnnotationConfigurator getAnnotationConfigurator()
+    {
+        if (_annotationConfigurator == null)
+        {
+            _annotationConfigurator = new AnnotationConfigurator(_externalContext);
+        }
+        return _annotationConfigurator;
     }
 
     private long getResourceLastModified(String resource)
@@ -354,9 +370,17 @@ public class FacesConfigurator
         configureFactories();
         configureApplication();
         configureRenderKits();
+        
+        //Now we can configure annotations
+        getAnnotationConfigurator().configure(
+                ((ApplicationFactory) FactoryFinder.getFactory(
+                        FactoryFinder.APPLICATION_FACTORY)).getApplication(),
+                getDispenser());
+        
         configureRuntimeConfig();
         configureLifecycle();
         handleSerialFactory();
+        
 
         // record the time of update
         lastUpdate = System.currentTimeMillis();
