@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.application.ViewHandlerSupport;
 import org.apache.myfaces.view.ViewDeclarationLanguageBase;
+import org.apache.myfaces.view.ViewMetadataImpl;
 
 /**
  * This class represents the abstraction of Facelets as a ViewDeclarationLanguage.
@@ -104,8 +105,19 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     @Override
     public ViewMetadata getViewMetadata(FacesContext context, String viewId)
     {
-        // TODO: IMPLEMENT HERE
-        return null;
+        if (context == null)
+        {
+            throw new NullPointerException ("context must not be null");
+        }
+        
+        if (viewId == null)
+        {
+            throw new NullPointerException ("viewId must not be null");
+        }
+        
+        // TODO: cache?
+        
+        return new ViewMetadataImpl (viewId);
     }
 
     /**

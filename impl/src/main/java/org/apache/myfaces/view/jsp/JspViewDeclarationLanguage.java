@@ -84,7 +84,21 @@ public class JspViewDeclarationLanguage extends ViewDeclarationLanguageBase
     @Override
     public ViewMetadata getViewMetadata(FacesContext context, String viewId)
     {
-        // TODO: IMPLEMENT HERE
+        // Not necessary given that this method always returns null, but staying true to
+        // the spec.
+        
+        if (context == null)
+        {
+            throw new NullPointerException ("context must not be null");
+        }
+        
+        if (viewId == null)
+        {
+            throw new NullPointerException ("viewId must not be null");
+        }
+        
+        // JSP impl must return null.
+        
         return null;
     }
 

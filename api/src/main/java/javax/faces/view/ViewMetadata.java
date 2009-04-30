@@ -19,7 +19,11 @@
 package javax.faces.view;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
 
+import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
@@ -38,7 +42,31 @@ public abstract class ViewMetadata
     
     public static Collection<UIViewParameter> getViewParameters(UIViewRoot root)
     {
-        // TODO: IMPLEMENT HERE
-        return null;
+        LinkedList<UIViewParameter> result = new LinkedList<UIViewParameter>();
+        UIComponent metadataFacet = root.getFacet (UIViewRoot.METADATA_FACET_NAME);
+        Iterator<UIComponent> children;
+        
+        if (metadataFacet == null) {
+             // No metadata, so return an empty collection.
+             
+             return Collections.emptyList();
+        }
+        
+        // Iterate over all the children, keep only the view parameters.
+        
+        children = metadataFacet.getChildren().iterator();
+        
+        while (children.hasNext()) {
+             UIComponent component = children.next();
+             
+             if (component instanceof UIViewParameter) {
+                  result.add ((UIViewParameter) component);
+             }
+        }
+        
+        // TODO: does this need to be immutable?  Spec does not indicate either
+        // way.
+        
+        return Collections.unmodifiableCollection (result);
     }
 }
