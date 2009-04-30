@@ -18,6 +18,7 @@ package org.apache.myfaces.context;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.faces.FactoryFinder;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
 
@@ -38,6 +39,13 @@ public class RenderPhaseClientIdsTest extends AbstractJsfTestCase {
         super("RenderPhaseClientIdsTest");
     }
 
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        FactoryFinder.setFactory(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY,
+        "org.apache.myfaces.context.PartialViewContextFactoryImpl");        
+    }
+    
     /**
      * Empty String as request param
      * has to result in an empty list

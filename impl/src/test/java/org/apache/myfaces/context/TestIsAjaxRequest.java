@@ -17,6 +17,8 @@ package org.apache.myfaces.context;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.faces.FactoryFinder;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.context.servlet.FacesContextImpl;
 import org.apache.shale.test.base.AbstractJsfTestCase;
@@ -39,14 +41,16 @@ public class TestIsAjaxRequest extends AbstractJsfTestCase {
     public void setUp() throws Exception {
         super.setUp();
 
-        requestParameterMap = new HashMap<String, String>();
-        ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParameterMap);
-        context = new FacesContextImpl(servletContext, wrapper, response);
+        //requestParameterMap = new HashMap<String, String>();
+        //ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParameterMap);
+        FactoryFinder.setFactory(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY,
+            "org.apache.myfaces.context.PartialViewContextFactoryImpl");        
+        context = new FacesContextImpl(servletContext, request, response);
     }
 
     public void tearDown() throws Exception {
         super.tearDown();
-        requestParameterMap.clear();
+        //requestParameterMap.clear();
     }
 
     public void testNoEntry() {
@@ -55,11 +59,7 @@ public class TestIsAjaxRequest extends AbstractJsfTestCase {
     }
 
     public void testEntry() {
-        requestParameterMap.put("javax.faces.partial.ajax", "yess");
-
+        request.addHeader("Faces-Request", "partial/ajax");
         assertTrue("no ajax request found", context.getPartialViewContext().isAjaxRequest());
     }
-
-
-
 }

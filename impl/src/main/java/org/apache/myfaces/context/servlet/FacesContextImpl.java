@@ -42,6 +42,7 @@ import javax.faces.context.ExceptionHandler;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
+import javax.faces.context.PartialViewContextFactory;
 import javax.faces.context.ResponseStream;
 import javax.faces.context.ResponseWriter;
 import javax.faces.event.PhaseId;
@@ -75,6 +76,7 @@ public class FacesContextImpl extends FacesContext
     private static final String METHOD_GETEXTERNALCONTEXT = "getExternalContext";
     private static final String METHOD_GETMAXIMUMSEVERITY = "getMaximumSeverity";
     private static final String METHOD_GETMESSAGES = "getMessages";
+    private static final String METHOD_GETPARTIALVIEWCONTEXT = "getPartialViewContext";
     private static final String METHOD_GETRENDERKIT = "getRenderKit";
     private static final String METHOD_GETRESPONSECOMPLETE = "getResponseComplete";
     private static final String METHOD_GETRESPONSESTREAM = "getResponseStream";
@@ -110,6 +112,7 @@ public class FacesContextImpl extends FacesContext
     private ELContext _elContext;
     private Map<Object, Object> _attributes = null;
     //private ResponseSwitch _responseWrapper = null;
+    private PartialViewContext _partialViewContext = null;
 
     // ~ Constructors -------------------------------------------------------------------------------
     public FacesContextImpl(final ServletContext servletContext, final ServletRequest servletRequest,
@@ -259,8 +262,16 @@ public class FacesContextImpl extends FacesContext
     @Override
     public PartialViewContext getPartialViewContext()
     {
-        // TODO: JSF 2.0
-        return null;
+        assertNotReleased(METHOD_GETPARTIALVIEWCONTEXT);
+
+        if (_partialViewContext == null)
+        {
+            //Get through factory finder
+            PartialViewContextFactory factory = (PartialViewContextFactory)
+                FactoryFinder.getFactory(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY);
+            _partialViewContext = factory.getPartialViewContext(this);
+        }
+        return _partialViewContext;
     }
 
     @Override
@@ -418,6 +429,7 @@ public class FacesContextImpl extends FacesContext
         _responseStream = null;
         _responseWriter = null;
         _viewRoot = null;
+        _partialViewContext = null;
 
         _released = true;
         FacesContext.setCurrentInstance(null);
@@ -428,7 +440,31 @@ public class FacesContextImpl extends FacesContext
     {
         assertNotReleased(METHOD_RENDERRESPONSE);
 
-        return getRenderKit().getResponseStateManager().isPostback(this);
+        RenderKit renderKit = getRenderKit();
+        if (renderKit == null)
+        {
+            // NullPointerException with StateManager, because
+            // to restore state it first restore structure,
+            // then fill it and in the middle of the two previous
+            // process there is many calls from _ComponentChildrenList.childAdded
+            // to facesContext.isPostback, and getViewRoot is null.
+            // 
+            // Setting a "phantom" UIViewRoot calling facesContext.setViewRoot(viewRoot)
+            // to avoid it is bad, because this is work of RestoreViewExecutor,
+            // and theorically ViewHandler.restoreView must return an UIViewRoot
+            // instance.
+            //
+            // The problem with this is if the user changes the renderkit directly
+            // using f:view renderKitId param, the ResponseStateManager returned
+            // will be the one tied to faces-config selected RenderKit. But the usual 
+            // method to check if a request is a postback, is always detect the param
+            // javax.faces.ViewState, so there is no problem after all.
+            String renderKitId = this.getApplication().getViewHandler().calculateRenderKitId(this);
+            RenderKitFactory factory = (RenderKitFactory) 
+                FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+            renderKit = factory.getRenderKit(this, renderKitId);            
+        }
+        return renderKit.getResponseStateManager().isPostback(this);            
     }
 
     @Override

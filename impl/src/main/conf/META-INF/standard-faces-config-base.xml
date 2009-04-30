@@ -49,6 +49,7 @@
    <factory>
       <application-factory>org.apache.myfaces.application.ApplicationFactoryImpl</application-factory>
       <faces-context-factory>org.apache.myfaces.context.FacesContextFactoryImpl</faces-context-factory>
+      <partial-view-context-factory>org.apache.myfaces.context.PartialViewContextFactoryImpl</partial-view-context-factory>
       <lifecycle-factory>org.apache.myfaces.lifecycle.LifecycleFactoryImpl</lifecycle-factory>
       <render-kit-factory>org.apache.myfaces.renderkit.RenderKitFactoryImpl</render-kit-factory>
    </factory>

@@ -18,8 +18,9 @@ package org.apache.myfaces.context;
 
 import java.util.Enumeration;
 import java.util.Map;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletRequestWrapper;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 
 /**
  * Context request wrapper
@@ -29,7 +30,7 @@ import javax.servlet.ServletRequestWrapper;
  * @author Werner Punz(latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ContextTestRequestWrapper extends ServletRequestWrapper {
+public class ContextTestRequestWrapper extends HttpServletRequestWrapper {
     Map<String, String> _paramDelegate = null;
 
     /**
@@ -37,7 +38,7 @@ public class ContextTestRequestWrapper extends ServletRequestWrapper {
      * @param _delegate
      * @param newRequestParameters
      */
-    public ContextTestRequestWrapper(ServletRequest _delegate, Map<String, String> newRequestParameters) {
+    public ContextTestRequestWrapper(HttpServletRequest _delegate, Map<String, String> newRequestParameters) {
        super(_delegate);
        _paramDelegate = newRequestParameters;
     }

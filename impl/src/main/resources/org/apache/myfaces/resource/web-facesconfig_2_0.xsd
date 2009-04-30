@@ -145,6 +145,7 @@
         <xsd:choice maxOccurs="unbounded" minOccurs="0">
             <xsd:element name="application-factory" type="javaee:fully-qualified-classType"/>
             <xsd:element name="faces-context-factory" type="javaee:fully-qualified-classType"/>
+            <xsd:element name="partial-view-context-factory" type="javaee:fully-qualified-classType"/>
             <xsd:element name="lifecycle-factory" type="javaee:fully-qualified-classType"/>
             <xsd:element name="render-kit-factory" type="javaee:fully-qualified-classType"/>
             <xsd:element maxOccurs="unbounded" minOccurs="0" name="factory-extension"

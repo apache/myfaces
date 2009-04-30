@@ -15,6 +15,7 @@
  */
 package org.apache.myfaces.context;
 
+import javax.faces.FactoryFinder;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
 
@@ -37,6 +38,8 @@ public class IsRenderedTest extends AbstractJsfTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        FactoryFinder.setFactory(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY,
+        "org.apache.myfaces.context.PartialViewContextFactoryImpl");        
     }
 
     /**

@@ -80,6 +80,7 @@ import org.apache.myfaces.config.impl.digester.elements.FacesConfigNameSlot;
 import org.apache.myfaces.config.impl.digester.elements.OrderSlot;
 import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
 import org.apache.myfaces.context.FacesContextFactoryImpl;
+import org.apache.myfaces.context.PartialViewContextFactoryImpl;
 import org.apache.myfaces.el.DefaultPropertyResolver;
 import org.apache.myfaces.el.VariableResolverImpl;
 import org.apache.myfaces.lifecycle.LifecycleFactoryImpl;
@@ -115,6 +116,7 @@ public class FacesConfigurator
     private static final String DEFAULT_FACES_CONTEXT_FACTORY = FacesContextFactoryImpl.class.getName();
     private static final String DEFAULT_LIFECYCLE_FACTORY = LifecycleFactoryImpl.class.getName();
     private static final String DEFAULT_RENDER_KIT_FACTORY = RenderKitFactoryImpl.class.getName();
+    private static final String DEFAULT_PARTIAL_VIEW_CONTEXT_FACTORY = PartialViewContextFactoryImpl.class.getName();
     private static final String DEFAULT_FACES_CONFIG = "/WEB-INF/faces-config.xml";
 
     private static final Set<String> FACTORY_NAMES = new HashSet<String>();
@@ -123,6 +125,7 @@ public class FacesConfigurator
         FACTORY_NAMES.add(FactoryFinder.FACES_CONTEXT_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.LIFECYCLE_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.RENDER_KIT_FACTORY);
+        FACTORY_NAMES.add(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY);
     }
 
     private final ExternalContext _externalContext;
@@ -551,6 +554,9 @@ public class FacesConfigurator
                     } else if (factoryName.equals(FactoryFinder.RENDER_KIT_FACTORY))
                     {
                         getDispenser().feedRenderKitFactory(className);
+                    } else if (factoryName.equals(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY))
+                    {
+                        getDispenser().feedPartialViewContextFactory(className);
                     } else
                     {
                         throw new IllegalStateException("Unexpected factory name " + factoryName);
@@ -1406,6 +1412,8 @@ public class FacesConfigurator
                      DEFAULT_LIFECYCLE_FACTORY);
         setFactories(FactoryFinder.RENDER_KIT_FACTORY, dispenser.getRenderKitFactoryIterator(),
                      DEFAULT_RENDER_KIT_FACTORY);
+        setFactories(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY, dispenser.getPartialViewContextFactoryIterator(),
+                     DEFAULT_PARTIAL_VIEW_CONTEXT_FACTORY);
     }
 
     private void setFactories(String factoryName, Collection<String> factories, String defaultFactory)
