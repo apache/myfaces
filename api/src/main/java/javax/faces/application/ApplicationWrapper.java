@@ -32,7 +32,7 @@ import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.FacesWrapper;
 import javax.faces.component.UIComponent;
-import javax.faces.component.behavior.ClientBehavior;
+import javax.faces.component.behavior.Behavior;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.el.MethodBinding;
@@ -108,7 +108,7 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
     }
 
     @Override
-    public ClientBehavior createBehavior(String behaviorId) throws FacesException
+    public Behavior createBehavior(String behaviorId) throws FacesException
     {
         return getWrapped().createBehavior(behaviorId);
     }

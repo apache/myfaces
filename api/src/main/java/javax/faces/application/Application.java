@@ -34,7 +34,7 @@ import javax.faces.component.ActionSource;
 import javax.faces.component.ActionSource2;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
-import javax.faces.component.behavior.ClientBehavior;
+import javax.faces.component.behavior.Behavior;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.el.MethodBinding;
@@ -221,7 +221,7 @@ public abstract class Application
      * 
      * FIXME: Notify EG, this should not be abstract and throw UnsupportedOperationException
      */
-    public abstract ClientBehavior createBehavior(String behaviorId) throws FacesException;
+    public abstract Behavior createBehavior(String behaviorId) throws FacesException;
 
     /**
      * ???

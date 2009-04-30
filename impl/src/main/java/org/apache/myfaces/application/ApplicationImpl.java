@@ -54,7 +54,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIViewRoot;
-import javax.faces.component.behavior.ClientBehavior;
+import javax.faces.component.behavior.Behavior;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.el.MethodBinding;
@@ -149,6 +149,8 @@ public class ApplicationImpl extends Application
     private final Map<Class<? extends SystemEvent>, SystemListenerEntry> _systemEventListenerClassMap = new ConcurrentHashMap<Class<? extends SystemEvent>, SystemListenerEntry>();
 
     private Map<String, String> _defaultValidatorsIds = new ConcurrentHashMap<String, String>();
+    
+    private final Map<String, Class<? extends Behavior>> _behaviorClassMap = new ConcurrentHashMap<String, Class<? extends Behavior>>();
 
     private final RuntimeConfig _runtimeConfig;
 
@@ -517,8 +519,7 @@ public class ApplicationImpl extends Application
     @Override
     public Iterator<String> getBehaviorIds()
     {
-        // TODO: IMPLEMENT HERE
-        return null;
+        return _behaviorClassMap.keySet().iterator();
     }
 
     @Override
@@ -814,10 +815,26 @@ public class ApplicationImpl extends Application
         return _viewHandler;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void addBehavior(String behaviorId, String behaviorClass)
     {
-        // TODO: IMPLEMENT HERE
+        checkNull(behaviorId, "behaviorId");
+        checkEmpty(behaviorId, "behaviorId");
+        checkNull(behaviorClass, "behaviorClass");
+        checkEmpty(behaviorClass, "behaviorClass");
+
+        try
+        {
+            _behaviorClassMap.put(behaviorId, ClassUtils.simpleClassForName(behaviorClass));
+            if (log.isTraceEnabled())
+                log.trace("add Behavior class = " + behaviorClass + " for id = " + behaviorId);
+        }
+        catch (Exception e)
+        {
+            log.error("Behavior class " + behaviorClass + " not found", e);
+        }
+
     }
 
     @SuppressWarnings("unchecked")
@@ -914,10 +931,27 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public ClientBehavior createBehavior(String behaviorId) throws FacesException
+    public Behavior createBehavior(String behaviorId) throws FacesException
     {
-        // TODO: IMPLEMENT HERE
-        return null;
+        checkNull(behaviorId, "behaviorId");
+        checkEmpty(behaviorId, "behaviorId");
+
+        final Class<? extends Behavior> behaviorClass = this._behaviorClassMap.get(behaviorId);
+        if (behaviorClass == null)
+        {
+            throw new FacesException("Could not find any registered behavior-class for behaviorId : " + behaviorId);
+        }
+
+        try
+        {
+            final Behavior behavior = behaviorClass.newInstance();
+            return behavior;
+        }
+        catch (Exception e)
+        {
+            log.error("Could not instantiate behavior " + behaviorClass, e);
+            throw new FacesException("Could not instantiate behavior: " + behaviorClass, e);
+        }
     }
 
     @Override
