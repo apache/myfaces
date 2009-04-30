@@ -19,6 +19,7 @@
 package javax.faces.context;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -33,7 +34,9 @@ public class PartialResponseWriter extends ResponseWriterWrapper
     public static final String VIEW_STATE_MARKER = "javax.faces.ViewState";
 
     private ResponseWriter _wrapped;
-
+    private boolean hasChanges;
+    private String insertType;
+    
     /**
      * 
      */
@@ -44,7 +47,11 @@ public class PartialResponseWriter extends ResponseWriterWrapper
 
     public void delete(String targetId) throws IOException
     {
-        // TODO: IMPLEMENT HERE
+        startChanges();
+        
+        _wrapped.startElement ("delete", null);
+        _wrapped.writeAttribute ("id", targetId, null);
+        _wrapped.endElement ("delete");
     }
 
     /**
@@ -53,32 +60,62 @@ public class PartialResponseWriter extends ResponseWriterWrapper
     @Override
     public void endDocument() throws IOException
     {
-        // TODO: IMPLEMENT HERE
+        if (hasChanges) {
+            // Close the <insert> element, if any.
+            
+            endInsert();
+            
+            _wrapped.endElement ("changes");
+            
+            hasChanges = false;
+        }
+        
+        _wrapped.endElement ("partial-response");
     }
 
     public void endError() throws IOException
     {
-        // TODO: IMPLEMENT HERE
+        // Close open <error-message> element.
+        
+        endCDATA();
+        _wrapped.endElement ("error-message");
+        _wrapped.endElement ("error");
     }
 
     public void endEval() throws IOException
     {
-        // TODO: IMPLEMENT HERE
+        // Close open <eval> element.
+        
+        endCDATA();
+        _wrapped.endElement ("eval");
     }
 
     public void endExtension() throws IOException
     {
-        // TODO: IMPLEMENT HERE
+        _wrapped.endElement ("extension");
     }
 
     public void endInsert() throws IOException
     {
-        // TODO: IMPLEMENT HERE
+        if (insertType == null) {
+            // No insert started; ignore.
+            
+            return;
+        }
+        
+        // Close open <insert> element.
+        
+        endCDATA();
+        _wrapped.endElement (insertType);
+        _wrapped.endElement ("insert");
+        
+        insertType = null;
     }
 
     public void endUpdate() throws IOException
     {
-        // TODO: IMPLEMENT HERE
+        endCDATA();
+        _wrapped.endElement ("update");
     }
 
     /**
@@ -92,7 +129,9 @@ public class PartialResponseWriter extends ResponseWriterWrapper
 
     public void redirect(String url) throws IOException
     {
-        // TODO: IMPLEMENT HERE
+        _wrapped.startElement ("redirect", null);
+        _wrapped.writeAttribute ("url", url, null);
+        _wrapped.endElement ("redirect");
     }
 
     /**
@@ -101,41 +140,138 @@ public class PartialResponseWriter extends ResponseWriterWrapper
     @Override
     public void startDocument() throws IOException
     {
-        // TODO: IMPLEMENT HERE
+        _wrapped.write ("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+        
+        _wrapped.startElement ("partial-response", null);
     }
 
     public void startError(String errorName) throws IOException
     {
-        // TODO: IMPLEMENT HERE
+        _wrapped.startElement ("error", null);
+        
+        _wrapped.startElement ("error-name", null);
+        _wrapped.write (errorName);
+        _wrapped.endElement ("error-name");
+        
+        _wrapped.startElement ("error-message", null);
+        startCDATA();
+        
+        // Leave open; caller will write message.
     }
 
     public void startEval() throws IOException
     {
-        // TODO: IMPLEMENT HERE
+        startChanges();
+        
+        _wrapped.startElement ("eval", null);
+        startCDATA();
+        
+        // Leave open; caller will write statements.
     }
 
     public void startExtension(Map<String, String> attributes) throws IOException
     {
-        // TODO: IMPLEMENT HERE
+        Iterator<String> attrNames;
+        
+        startChanges();
+        
+        _wrapped.startElement ("extension", null);
+        
+        // Write out extension attributes.
+        // TODO: schema mentions "id" attribute; not used?
+        
+        attrNames = attributes.keySet().iterator();
+        
+        while (attrNames.hasNext()) {
+            String attrName = attrNames.next();
+            
+            _wrapped.writeAttribute (attrName, attributes.get (attrName), null);
+        }
+        
+        // Leave open; caller will write extension elements.
     }
 
     public void startInsertAfter(String targetId) throws IOException
     {
-        // TODO: IMPLEMENT HERE
+        startInsertCommon ("after", targetId);
     }
 
     public void startInsertBefore(String targetId) throws IOException
     {
-        // TODO: IMPLEMENT HERE
+        startInsertCommon ("before", targetId);
     }
 
     public void startUpdate(String targetId) throws IOException
     {
-        // TODO: IMPLEMENT HERE
+        startChanges();
+        
+        _wrapped.startElement ("update", null);
+        _wrapped.writeAttribute ("id", targetId, null);
+        startCDATA();
+        
+        // Leave open; caller will write content.
     }
 
     public void updateAttributes(String targetId, Map<String, String> attributes) throws IOException
     {
-        // TODO: IMPLEMENT HERE
+        Iterator<String> attrNames;
+        
+        startChanges();
+        
+        _wrapped.startElement ("attributes", null);
+        _wrapped.writeAttribute ("id", targetId, null);
+        
+        attrNames = attributes.keySet().iterator();
+        
+        while (attrNames.hasNext()) {
+            String attrName = attrNames.next();
+            
+            _wrapped.startElement ("attribute", null);
+            _wrapped.writeAttribute ("name", attrName, null);
+            _wrapped.writeAttribute ("value", attributes.get (attrName), null);
+            _wrapped.endElement ("attribute");
+        }
+        
+        _wrapped.endElement ("attributes");
+    }
+    
+    private void startChanges () throws IOException {
+        if (!hasChanges) {
+            _wrapped.startElement ("changes", null);
+            
+            hasChanges = true;
+        }
+    }
+    
+    private void startInsertCommon (String type, String targetId) throws IOException {
+        if (insertType != null) {
+            // An insert has already been started; ignore.
+            
+            return;
+        }
+        
+        insertType = type;
+        
+        startChanges();
+        
+        _wrapped.startElement ("insert", null);
+        _wrapped.startElement (insertType, null);
+        _wrapped.writeAttribute ("id", targetId, null);
+        startCDATA();
+        
+        // Leave open; caller will write content.
+    }
+    
+    /*
+     * These methods are needed since we can't be sure that the data written by the caller will not
+     * contain reserved characters.
+     */
+    
+    private void endCDATA () throws IOException {
+        _wrapped.write ("]]>");
+    }
+    
+    private void startCDATA () throws IOException {
+        _wrapped.write ("<![CDATA[");
     }
 }
