@@ -35,9 +35,8 @@ import javax.faces.context.ResponseWriter;
  */
 public abstract class RenderKit
 {
-    public void addBehaviorRenderer(String type, ClientBehaviorRenderer renderer)
+    public void addClientBehaviorRenderer(String type, ClientBehaviorRenderer renderer)
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -47,15 +46,13 @@ public abstract class RenderKit
 
     public abstract ResponseWriter createResponseWriter(Writer writer, String contentTypeList, String characterEncoding);
     
-    public ClientBehaviorRenderer getBehaviorRenderer(String type)
+    public ClientBehaviorRenderer getClientBehaviorRenderer(String type)
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
     
-    public Iterator<String> getBehaviorRendererTypes()
+    public Iterator<String> getClientBehaviorRendererTypes()
     {
-        // TODO: IMPLEMENT IMPL
         List<String> emptyList = Collections.emptyList();
 
         return emptyList.iterator();
@@ -77,7 +74,6 @@ public abstract class RenderKit
      */
     public Iterator<String> getComponentFamilies()
     {
-        // TODO: IMPLEMENT IMPL
         List<String> emptyList = Collections.emptyList();
 
         return emptyList.iterator();
@@ -108,7 +104,6 @@ public abstract class RenderKit
      */
     public Iterator<String> getRendererTypes(String componentFamily)
     {
-        // TODO: IMPLEMENT IMPL
         List<String> emptyList = Collections.emptyList();
 
         return emptyList.iterator();

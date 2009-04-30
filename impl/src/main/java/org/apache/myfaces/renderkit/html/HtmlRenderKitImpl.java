@@ -21,14 +21,17 @@ package org.apache.myfaces.renderkit.html;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.faces.context.ResponseStream;
 import javax.faces.context.ResponseWriter;
+import javax.faces.render.ClientBehaviorRenderer;
 import javax.faces.render.RenderKit;
 import javax.faces.render.Renderer;
 import javax.faces.render.ResponseStateManager;
@@ -53,6 +56,7 @@ public class HtmlRenderKitImpl extends RenderKit
     private Map<String, Renderer> _renderers;
     private ResponseStateManager _responseStateManager;
     private Map<String,Set<String>> _families;
+    private Map<String, ClientBehaviorRenderer> _clientBehaviorRenderers;
 
     // ~ Constructors -------------------------------------------------------------------------------
 
@@ -61,6 +65,7 @@ public class HtmlRenderKitImpl extends RenderKit
         _renderers = new HashMap<String, Renderer>();
         _responseStateManager = new HtmlResponseStateManager();
         _families = new HashMap<String, Set<String> >();
+        _clientBehaviorRenderers = new HashMap<String, ClientBehaviorRenderer>();
     }
 
     // ~ Methods ------------------------------------------------------------------------------------
@@ -70,6 +75,38 @@ public class HtmlRenderKitImpl extends RenderKit
         return componentFamily + "." + rendererType;
     }
 
+    @Override
+    public void addClientBehaviorRenderer(String type, ClientBehaviorRenderer renderer)
+    {
+        if (type == null)
+        {
+            throw new NullPointerException("client behavior renderer type must not be null");
+        }
+        if ( renderer == null)
+        {
+            throw new NullPointerException("client behavior renderer must not be null");
+        }
+        
+        _clientBehaviorRenderers.put(type, renderer);
+    }
+    
+    @Override
+    public ClientBehaviorRenderer getClientBehaviorRenderer(String type)
+    {
+        if (type == null)
+        {
+            throw new NullPointerException("client behavior renderer type must not be null");
+        }
+        
+        return _clientBehaviorRenderers.get(type);
+    }
+    
+    @Override
+    public Iterator<String> getClientBehaviorRendererTypes()
+    {
+        return _clientBehaviorRenderers.keySet().iterator();
+    }
+    
     @Override
     public Renderer getRenderer(String componentFamily, String rendererType)
     {
@@ -157,7 +194,17 @@ public class HtmlRenderKitImpl extends RenderKit
     @Override
     public Iterator<String> getRendererTypes(String componentFamily)
     {
-        return _families.get(componentFamily).iterator();
+        //Return an Iterator over the renderer-type entries for the given component-family.
+        Set<String> rendererTypes = _families.get(componentFamily);
+        if(rendererTypes != null)
+        {
+            return rendererTypes.iterator();
+        }
+        //If the specified componentFamily is not known to this RenderKit implementation, return an empty Iterator
+        return Collections.<String>emptySet().iterator();
+        
+
+
     }
 
     @Override
@@ -177,6 +224,14 @@ public class HtmlRenderKitImpl extends RenderKit
     public ResponseStream createResponseStream(OutputStream outputStream)
     {
         return new MyFacesResponseStream(outputStream);
+    }
+    
+    private void checkNull(Object value, String valueLabel)
+    {
+        if (value == null)
+        {
+            throw new NullPointerException(valueLabel + " is null");
+        }
     }
 
     private static class MyFacesResponseStream extends ResponseStream

@@ -116,7 +116,7 @@ public class ClientBehaviorBase extends BehaviorBase implements ClientBehavior
         String rendererType = getRendererType();
         if (rendererType != null)
         {
-            return context.getRenderKit().getBehaviorRenderer(rendererType);
+            return context.getRenderKit().getClientBehaviorRenderer(rendererType);
         }
         
         return null;
