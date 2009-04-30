@@ -20,8 +20,11 @@ package javax.faces.component;
 
 import java.io.IOException;
 
+import javax.el.ValueExpression;
 import javax.faces.FactoryFinder;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
@@ -42,7 +45,7 @@ public class UIViewParameter extends UIInput
 
     private static final String DELEGATE_FAMILY = UIInput.COMPONENT_FAMILY;
     private static final String DELEGATE_RENDERER_TYPE = "javax.faces.Text";
-
+    
     private static Renderer _delegateRenderer;
 
     private String _name;
@@ -74,16 +77,58 @@ public class UIViewParameter extends UIInput
 
     public String getStringValue(FacesContext context)
     {
-        // TODO: IMPLEMENT HERE
-
-        return null;
+        if (getValueExpression ("value") != null) {
+            // Value specified as an expression, so do the conversion.
+            
+            return getStringValueFromModel (context);
+        }
+        
+        // Otherwise, just return the local value.
+        
+        return ((String) this.getLocalValue());
     }
 
     public String getStringValueFromModel(FacesContext context) throws ConverterException
     {
-        // TODO: IMPLEMENT HERE
-
-        return null;
+        ValueExpression ve = getValueExpression ("value");
+        Converter converter;
+        Object value;
+        
+        if (ve == null) {
+            // No value expression, return null.
+            
+            return null;
+        }
+        
+        value = ve.getValue (context.getELContext());
+        
+        if (value instanceof String) {
+            // No need to convert.
+            
+            return ((String) value);
+        }
+        
+        converter = getConverter();
+        
+        if (converter == null) {
+            if (value == null) {
+                // No converter, no value, return null.
+                
+                return null;
+            }
+            
+            // See if we can create the converter from the value type.
+            
+            converter = context.getApplication().createConverter (value.getClass());
+            
+            if (converter == null) {
+                // Only option is to call toString().
+                
+                return value.toString();
+            }
+        }
+        
+        return converter.getAsString (context, this, value);
     }
 
     @Override
@@ -101,7 +146,37 @@ public class UIViewParameter extends UIInput
     @Override
     public void processValidators(FacesContext context)
     {
-        // TODO: IMPLEMENT HERE
+        if (context == null) {
+            throw new NullPointerException ("context");
+        }
+        
+        // If value is null and required is set, validation fails.
+        
+        if ((getSubmittedValue() == null) && isRequired()) {
+            FacesMessage message;
+            String required = getRequiredMessage();
+            
+            if (required != null) {
+                message = new FacesMessage (FacesMessage.SEVERITY_ERROR, required, required);
+            }
+            
+            else {
+                String label = _MessageUtils.getLabel (context, this);
+                
+                message = _MessageUtils.getMessage (context, context.getViewRoot().getLocale(),
+                     FacesMessage.SEVERITY_ERROR, REQUIRED_MESSAGE_ID, new Object[] { label });
+            }
+            
+            setValid (false);
+            
+            context.addMessage (getClientId (context), message);
+            context.validationFailed();
+            context.renderResponse();
+            
+            return;
+        }
+        
+        super.processValidators (context);
     }
 
     @Override
@@ -132,7 +207,12 @@ public class UIViewParameter extends UIInput
     {
         super.updateModel(context);
         
-        // TODO: IMPLEMENT HERE
+        // Put name in request map if value is not a value expression, is valid, and local
+        // value was set.
+        
+        if ((getValueExpression ("value") == null) && isValid() && isLocalValueSet()) {
+            context.getExternalContext().getRequestMap().put (getName(), getLocalValue());
+        }
     }
 
     @Override
