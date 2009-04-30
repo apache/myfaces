@@ -24,6 +24,8 @@ import org.apache.commons.logging.LogFactory;
 import javax.faces.application.ViewHandler;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+
+import java.net.MalformedURLException;
 import java.util.Map;
 
 /**
@@ -72,13 +74,19 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         {
             if (mapping.isExtensionMapping())
             {
-                String contextSuffix = getContextSuffix(context);
-                if (viewId.endsWith(contextSuffix))
+                String[] contextSuffixes = getContextSuffix(context); 
+                boolean founded = false;
+                for (String contextSuffix : contextSuffixes)
                 {
-                    builder.append(viewId.substring(0, viewId.indexOf(contextSuffix)));
-                    builder.append(mapping.getExtension());
+                    if (viewId.endsWith(contextSuffix))
+                    {
+                        builder.append(viewId.substring(0, viewId.indexOf(contextSuffix)));
+                        builder.append(mapping.getExtension());
+                        founded = true;
+                        break;
+                    }
                 }
-                else
+                if (!founded)
                 {
                     builder.append(viewId);
                 }
@@ -169,14 +177,14 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         }
     }
 
-    protected String getContextSuffix(FacesContext context)
+    protected String[] getContextSuffix(FacesContext context)
     {
         String defaultSuffix = context.getExternalContext().getInitParameter(ViewHandler.DEFAULT_SUFFIX_PARAM_NAME);
         if (defaultSuffix == null)
         {
             defaultSuffix = ViewHandler.DEFAULT_SUFFIX;
         }
-        return defaultSuffix;
+        return defaultSuffix.split(" ");
     }
 
     /**
@@ -187,27 +195,53 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
      */
     protected String applyDefaultSuffix(FacesContext context, String viewId)
     {
-        String defaultSuffix = getContextSuffix(context);
+        String[] defaultSuffixes = getContextSuffix(context);
 
         if (viewId == null)
         {
             return null;
         }
 
-        if (!viewId.endsWith(defaultSuffix))
+        boolean endWithAnyDefaultSuffix = false;
+        for (String defaultSuffix : defaultSuffixes)
         {
-            StringBuilder builder = new StringBuilder(viewId);
-            int slashPos = viewId.lastIndexOf('/');
-            int extensionPos = viewId.lastIndexOf('.');
-            if (extensionPos > -1 && extensionPos > slashPos)
+            if (viewId.endsWith(defaultSuffix))
             {
-                builder.replace(extensionPos, viewId.length(), defaultSuffix);
+                endWithAnyDefaultSuffix = true;
+                break;
             }
-            else
+        }
+
+        if (!endWithAnyDefaultSuffix)
+        {
+            //Try to locate any resource that match with the expected id
+            for (String defaultSuffix : defaultSuffixes)
             {
-                builder.append(defaultSuffix);
+                StringBuilder builder = new StringBuilder(viewId);
+                int slashPos = viewId.lastIndexOf('/');
+                int extensionPos = viewId.lastIndexOf('.');
+                if (extensionPos > -1 && extensionPos > slashPos)
+                {
+                    builder.replace(extensionPos, viewId.length(), defaultSuffix);
+                }
+                else
+                {
+                    builder.append(defaultSuffix);
+                }
+                String tempViewId = builder.toString();
+                try
+                {
+                    if (context.getExternalContext().getResource(tempViewId) != null)
+                    {
+                        viewId = builder.toString();
+                        break;
+                    }                    
+                }
+                catch(MalformedURLException e)
+                {
+                    //Keep looking for an id
+                }
             }
-            viewId = builder.toString();
             if (log.isTraceEnabled())
             {
                 log.trace("view id after applying the context suffix: " + viewId);
