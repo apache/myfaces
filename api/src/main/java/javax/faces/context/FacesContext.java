@@ -71,7 +71,6 @@ public abstract class FacesContext
      */
     public PhaseId getCurrentPhaseId()
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
     
@@ -143,18 +142,6 @@ public abstract class FacesContext
     }
 
     public abstract ExternalContext getExternalContext();
-    
-    /**
-     * 
-     * @return
-     * 
-     * @since 2.0
-     */
-    public Flash getFlash()
-    {
-        // TODO: IMPLEMENT IMPL
-        throw new UnsupportedOperationException();
-    }
 
     public abstract FacesMessage.Severity getMaximumSeverity();
 
@@ -222,7 +209,6 @@ public abstract class FacesContext
      */
     public boolean getValidationFailed()
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -236,7 +222,6 @@ public abstract class FacesContext
      */
     public boolean isPostback()
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
     
@@ -248,7 +233,6 @@ public abstract class FacesContext
      */
     public boolean isProcessingEvents()
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -284,7 +268,6 @@ public abstract class FacesContext
      */
     public void setCurrentPhaseId(PhaseId currentPhaseId)
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -307,7 +290,6 @@ public abstract class FacesContext
      */
     public void setProcessingEvents(boolean processingEvents)
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 
@@ -324,7 +306,6 @@ public abstract class FacesContext
      */
     public void validationFailed()
     {
-        // TODO: IMPLEMENT IMPL
         throw new UnsupportedOperationException();
     }
 }

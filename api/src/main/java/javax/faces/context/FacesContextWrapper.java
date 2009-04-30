@@ -88,12 +88,6 @@ public abstract class FacesContextWrapper extends FacesContext implements FacesW
     }
 
     @Override
-    public Flash getFlash()
-    {
-        return getWrapped().getFlash();
-    }
-
-    @Override
     public Severity getMaximumSeverity()
     {
         return getWrapped().getMaximumSeverity();
