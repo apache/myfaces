@@ -21,6 +21,7 @@ package org.apache.myfaces.application;
 import static org.easymock.EasyMock.*;
 
 import java.lang.reflect.Method;
+import java.net.URL;
 
 import javax.faces.application.ViewHandler;
 import javax.faces.context.FacesContext;
@@ -48,19 +49,19 @@ public class DefaultViewHandlerSupportTest extends FacesTestCase
     public void testCalculateViewId() throws Exception
     {
         // extension mapping
-        assertCalculateViewId("xx.jsp", "/xx.faces", null, ".jsp", "xx.faces");
-        assertCalculateViewId("xx.jspx", "/xx.faces", null, ".jspx", "xx.faces");
-        assertCalculateViewId("xx.jsp", "/xx.jsf", null, ".jsp", "xx.jsf");
-        assertCalculateViewId("xx.jspx", "/xx.jsf", null, ".jspx", "xx.jsf");
+        assertCalculateViewId("xx.jsp", "/xx.faces", null, new String[]{".jsp"}, "xx.faces");
+        assertCalculateViewId("xx.jspx", "/xx.faces", null, new String[]{".jspx"}, "xx.faces");
+        assertCalculateViewId("xx.jsp", "/xx.jsf", null, new String[]{".jsp"}, "xx.jsf");
+        assertCalculateViewId("xx.jspx", "/xx.jsf", null, new String[]{".jspx"}, "xx.jsf");
 
         // path mapping
-        assertCalculateViewId("xx.jsp", "/faces", "/xx.jsp", ".jsp", "xx.jsp");
-        assertCalculateViewId("xx.xyz", "/faces", "/xx.xyz", ".jsp", "xx.xyz");
+        assertCalculateViewId("xx.jsp", "/faces", "/xx.jsp", new String[]{".jsp"}, "xx.jsp");
+        assertCalculateViewId("xx.xyz", "/faces", "/xx.xyz", new String[]{".jsp"}, "xx.xyz");
     }
     
     private void assertCalculateViewId(
             String expectedViewId, String servletPath, String pathInfo, 
-                String contextSuffix, String viewId) throws Exception
+                String [] contextSuffix, String viewId) throws Exception
     {
         DefaultViewHandlerSupport support = createdMockedViewHandlerSupport();
         
@@ -68,7 +69,10 @@ public class DefaultViewHandlerSupportTest extends FacesTestCase
         expect(support.getFacesServletMapping(same(_facesContext))).andReturn(
                 DefaultViewHandlerSupport.calculateFacesServletMapping(servletPath, pathInfo));
         expect(_facesContext.getExternalContext()).andReturn(_externalContext).anyTimes();
-        
+        // Suppose the resource required exists, so return any valid URL.
+        // The test check if the resource with the extension exists, so if it returns
+        // null, the resource does not exists and it should try with other extension.
+        expect(_externalContext.getResource(expectedViewId)).andReturn(new URL("http://localhost:8080/"+expectedViewId));
         _mocksControl.replay();
         assertEquals(expectedViewId, support.calculateViewId(_facesContext, viewId));
         _mocksControl.reset();
@@ -115,7 +119,7 @@ public class DefaultViewHandlerSupportTest extends FacesTestCase
     {
         DefaultViewHandlerSupport support = createdMockedViewHandlerSupport();
         
-        expect(support.getContextSuffix(same(_facesContext))).andReturn(DEFAULT_SUFFIX);
+        expect(support.getContextSuffix(same(_facesContext))).andReturn(new String[]{DEFAULT_SUFFIX});
         expect(support.getFacesServletMapping(same(_facesContext))).andReturn(
                 DefaultViewHandlerSupport.calculateFacesServletMapping(servletPath, pathInfo));
         expect(_facesContext.getExternalContext()).andReturn(_externalContext).anyTimes();
@@ -210,11 +214,19 @@ public class DefaultViewHandlerSupportTest extends FacesTestCase
         expect(_facesContext.getExternalContext()).andReturn(_externalContext);
         expect(_externalContext.getInitParameter(ViewHandler.DEFAULT_SUFFIX_PARAM_NAME)).andReturn(null);
         _mocksControl.replay();
-        assertEquals(ViewHandler.DEFAULT_SUFFIX, testImpl.getContextSuffix(_facesContext));
+        //ViewHandler.DEFAULT_SUFFIX
+        String [] contextSuffix = testImpl.getContextSuffix(_facesContext);
+        String [] expectedContextSufix = new String[]{".xhtml",".jsp"};
+        assertEquals(expectedContextSufix.length, contextSuffix.length);
+        assertEquals(expectedContextSufix[0], contextSuffix[0] );
+        assertEquals(expectedContextSufix[1], contextSuffix[1] );
         _mocksControl.reset();
         expect(_facesContext.getExternalContext()).andReturn(_externalContext);
         expect(_externalContext.getInitParameter(ViewHandler.DEFAULT_SUFFIX_PARAM_NAME)).andReturn(".xxx");
         _mocksControl.replay();
-        assertEquals(".xxx", testImpl.getContextSuffix(_facesContext));
+        contextSuffix = testImpl.getContextSuffix(_facesContext);
+        expectedContextSufix = new String[]{".xxx"};
+        assertEquals(expectedContextSufix.length, contextSuffix.length);
+        assertEquals(expectedContextSufix[0], contextSuffix[0] );
     }
 }
