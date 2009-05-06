@@ -193,62 +193,86 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
         //if present then set them if the form has no element of type javax.faces.viewState
         //append a hidden field and set it!
         } else {
-            var cDataBlock = "";
+            var cDataBlock = [];
             // response may contain sevaral blocks
             for (var i = 0; i < node.childNodes.length; i++) {
-                cDataBlock += node.childNodes[i].data;
+                cDataBlock.push( node.childNodes[i].data);
             }
-            if( node.getAttribute('id') == "javax.faces.ViewRoot") {
+            //a join is more efficient that normal string ops!
+            cDataBlock = cDataBlock.join("");
 
-                var body = document.getElementsByTagName('body')[0];
-                var head = document.getElementsByTagName('head')[0];
+            var body = document.getElementsByTagName('body')[0];
+            var head = document.getElementsByTagName('head')[0];
+
+            switch(node.getAttribute('id')) {
+                case "javax.faces.ViewRoot":
+
+                    var parser =  jsf.ajax._impl = new (myfaces._impl._util._Utils.getGlobalConfig("updateParser",myfaces._impl._util._SimpleHtmlParser))();
+
+                    parser.parse(cDataBlock);
+
+                    var newHead = (parser.head.length > 0) ? parser.head.join(""):null;
+                    var newBody = (parser.body.length > 0) ? parser.body.join(""):null;
+                    var newHtml = (parser.html.length > 0) ? parser.html.join(""):cDataBlock;
 
 
-                var parser =  jsf.ajax._impl = new (myfaces._impl._util._Utils.getGlobalConfig("updateParser",myfaces._impl._util._SimpleHtmlParser))();
-
-                parser.parse(cDataBlock);
-
-                var newHead = (parser.head.length > 0) ? parser.head.join(""):null;
-                var newBody = (parser.body.length > 0) ? parser.body.join(""):null;
-                var newHtml = (parser.html.length > 0) ? parser.html.join(""):cDataBlock;
-             
-
-                if(newHead != null) {
-                    myfaces._impl._util._Utils.replaceHtmlItem(request, context,
-                        head, newHead, this.m_htmlFormElement);
-                    //fetch the scripts and do an eval on the scripts to bypass
-                    //browser inconsistencies in this area
-                    //lets have the browser itself deal with this issue, j4fry
-                    //is pretty well optimized in this area!
-                    if (myfaces._impl._util._Utils.isManualScriptEval()) {
-                        myfaces._impl._util._Utils.runScripts(request, context, head);
+                    if(newHead != null) {
+                        this._replaceElement(request, context, head, newHead );
                     }
-                }
 
-                //if the body content is provided only the body content is applied, according
-                //to the jsDoc specs!
-                if(newBody != null) {
-                    myfaces._impl._util._Utils.replaceHtmlItem(request, context,
-                        body, newBody, this.m_htmlFormElement);
-                    //TODO fetch the scripts and do an eval on the scripts to bypass
-                    //browser inconsistencies in this area
-                    if (myfaces._impl._util._Utils.isManualScriptEval()) {
+                    //if the body content is provided only the body content is applied, according
+                    //to the jsDoc specs!
+                    if(newBody != null) {
+                        this._replaceElement(request, context, body, newBody );
+
+                  
+                    //no body content is defined means we have to replace the body with the entire cdata content
+                    } else {
+
+                        body.innerHTML = newHtml;
+                        // innerHTML doesn't execute scripts, so no browser switch here
                         myfaces._impl._util._Utils.runScripts(request, context, body);
                     }
-                //no body content is defined means we have to replace the body with the entire cdata content
-                } else {
+                    break;
+                case "javax.faces.ViewHead":
+                    //we assume the cdata block is our head including the tag
+                    this._replaceElement(request, context, head, cDataBlock );
                     
-                    body.innerHTML = newHtml;
-                    // innerHTML doesn't execute scripts, so no browser switch here
-                    myfaces._impl._util._Utils.runScripts(request, context, body);
-                }
-            } else {
-                myfaces._impl._util._Utils.replaceHtmlItem(request, context,
-                    node.getAttribute('id'), cDataBlock, this.m_htmlFormElement);
+
+                    break;
+                case "javax.faces.ViewBody":
+                    //we assume the cdata block is our body including the tag
+                    this._replaceElement(request, context, body, cDataBlock );
+  
+                    break;
+
+                default:
+                    this._replaceElement(request, context,node.getAttribute('id'), cDataBlock );
+                   
+                    break;
             }
         }
         return true;
-    }
+    };
+
+    /**
+     * Helper method to avoid duplicate code
+     * @param request our request object
+     * @param contect the response context
+     * @param {DomNode} oldElement the element to be replaced
+     * @param {String} newData the markup which replaces the old dom node!
+     */
+    myfaces._impl.xhrCore._AjaxResponse.prototype._replaceElement = function(request, context, oldElement, newData) {
+        myfaces._impl._util._Utils.replaceHtmlItem(request, context,
+            oldElement, newData, this.m_htmlFormElement);
+        //fetch the scripts and do an eval on the scripts to bypass
+        //browser inconsistencies in this area
+        //lets have the browser itself deal with this issue, j4fry
+        //is pretty well optimized in this area!
+        if (myfaces._impl._util._Utils.isManualScriptEval()) {
+            myfaces._impl._util._Utils.runScripts(request, context, newData);
+        }
+    };
 
     /*insert, three attributes can be present
      * id = insert id
