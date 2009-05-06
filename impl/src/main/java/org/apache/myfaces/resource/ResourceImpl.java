@@ -199,10 +199,9 @@ public class ResourceImpl extends Resource
         if (getLibraryName() != null)
         {
             metadata = "?ln=" + getLibraryName();
+            path = path + metadata;
         }
-        
-        path = path + metadata;
-        
+                
         return FacesContext.getCurrentInstance().getApplication().
             getViewHandler().getResourceURL(
                     FacesContext.getCurrentInstance(), path);
