@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  * Author: Ganesh Jung (latest modification by $Author: werpu $)
- * Version: $Revision: 1.15 $ $Date: 2009/04/24 12:44:58 $
+ * Version: $Revision: 1.18 $ $Date: 2009/05/06 11:06:36 $
  *
  */
 
@@ -314,31 +314,53 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
      * http://www.arcknowledge.com/gmane.comp.jakarta.myfaces.devel/2005-09/msg01269.html
      * @param {XMLHTTPRequest} request
      * @param {Map} context
-     * @param {String} itemId - ID of the HTML element located inside the form
+     * @param {String} itemIdOrName - ID of the HTML element located inside the form
      * @param {Html-Element} form - form element containing the element
+     * @param {boolean} nameSearch if set to true a search for name is also done
+     * @param {boolean} localSearchOnly if set to true a local search is performed only (a full document search is omitted)
      * @return {Html-Element} - return the element if found else null
+     *
      */
-    myfaces._impl._util._Utils.getElementFromForm = function(request, context, itemId, form) {
+    myfaces._impl._util._Utils.getElementFromForm = function(request, context, itemIdOrName, form, nameSearch, localSearchOnly) {
         try {
 
             if('undefined' == typeof form || form == null) {
-                return document.getElementById(itemId);
+                return document.getElementById(itemIdOrName);
+            }
+            if('undefined' == typeof includeName || nameSearch == null) {
+                nameSearch = false;
+            }
+            if('undefined' == typeof localSearchOnly || localSearchOnly == null) {
+                localSearchOnly = false;
             }
 
+
             var fLen = form.elements.length;
+            
+            //we first check for a name entry!
+            if(nameSearch && 'undefined' != typeof form.elements[itemIdOrName] && null != form.elements[itemIdOrName]) {
+                    return element;
+            }
+            //if no name entry is found we check for an Id
             for ( var f = 0; f < fLen; f++) {
                 var element = form.elements[f];
-                if (element.id != null && element.id == itemId) {
+                if (element.id != null && element.id == itemIdOrName) {
                     return element;
                 }
+                
             }
             // element not found inside the form -> try document.getElementById
             // (kann be null if element doesn't exist)
-            return document.getElementById(itemId);
+            if(!localSearchOnly) {
+                return document.getElementById(itemIdOrName);
+            }
         } catch (e) {
             myfaces._impl.xhrCore._Exception.throwNewError(request, context, "Utils", "getElementFromForm", e);
         }
+        return null;
     };
+
+
 
     /**
      * [STATIC]
@@ -389,59 +411,7 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
     }
 
 
-    /**
-     * Simplified encapsulation function to strip the html content from a given string
-     * @param {String} content, our content to be stripped from its outer html areas
-     * return the stripped content or null if no stripping was possible
-     */
-    myfaces._impl._util._Utils.getChild.stripHtml = function(content) {
-        return myfaces._impl._util._Utils.getChild.getTagContent(myfaces._impl._util._Utils.getChild._htmlStripper, content);
-    };
-
-    /**
-     * Simplified encapsulation function to strip the head content from a given string
-     * @param {String} content, our content to be stripped from its outer head areas
-     * return the stripped content or null if no stripping was possible
-     */
-    myfaces._impl._util._Utils.getChild.stripHead = function(content) {
-        return myfaces._impl._util._Utils.getChild.getTagContent(myfaces._impl._util._Utils.getChild._headStripper, content);
-    };
-
-    /**
-     * Simplified encapsulation function to strip the body content from a given string
-     * @param {String} content, our content to be stripped from its outer body areas
-     * return the stripped content or null if no stripping was possible
-     */
-    myfaces._impl._util._Utils.getChild.stripBody = function(content) {
-        return myfaces._impl._util._Utils.getChild.getTagContent(myfaces._impl._util._Utils.getChild._bodyStripper, content);
-    };
-
-    /**
-     * Internal tag stripper which strips the content from a string
-     * utilizing a controller
-     * @param {RegExp} stripper the stripping controller
-     * @param {String} content, the enclosing content
-     * @return either the stripped string, or null if no stripping could be performed!
-     */
-    myfaces._impl._util._Utils.getChild.getTagContent = function(stripper, content) {
-
-
-        if('undefined' == typeof content || null == typeof content) return null;
-        var reResult = stripper.exec(content);
-
-        
-        if('undefined' == typeof reResult || reResult == null || reResult.length < 4) {
-            return null;
-        }
-        var result = {};
-        result.tagBegin   = reResult[1];
-        result.tagContent = reResult[2];
-        result.tagEnd     = reResult[3];
-
-
-
-        return result;
-    };
+  
 
 
     /**
@@ -483,35 +453,5 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
         return localOptions.myfaces[configName];
     };
 
-
-    /**
-     * Helper Regexps
-     *
-     * See the RI JSDocs why we provide this regexps, the jsdocs of the RI basically say
-     * for the response update phase,
-     * if a CDATA block of a response contains a head element we have to replace
-     * the contents head with the head provided by the response
-     * the same applies to content
-     * Also the html must be trimmed if present!
-     *
-     * Wy apply precompiled regular expressions here to keep the code small
-     * a linear ll(n) parser probably has somewhat better performance
-     * that has to be measured, I am not sure about this, I assume for the average
-     * string size we deal here it is pretty equal, not sure how good the javascript
-     * engines optimize precompiled regexps, after all regexp engines also mostly
-     * work on ll parsers internally!
-     * One advantage however would be we probably could catch everything in one
-     * internal loop insead of three...
-     *
-     *
-     * If the performance is subpar, we always can add a stripping ll(n) parser to our mix
-     * but this would produce a massiv code bloat!
-     */
-    myfaces._impl._util._Utils.getChild._htmlStripper = /(<\s*html[^>]*>)(.*)(<\/\s*html[^>]*>)/i;
-    myfaces._impl._util._Utils.getChild._headStripper = /(<\s*head[^>]*>)(.*)(<\/\s*head[^>]*>)/i;
-    myfaces._impl._util._Utils.getChild._bodyStripper = /(<\s*body[^>]*>)(.*)(<\/\s*body[^>]*>)/i;
-
-
     myfaces._impl._util._Utils.browserDetection();
-
 }
