@@ -200,30 +200,18 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
             }
             if( node.getAttribute('id') == "javax.faces.ViewRoot") {
 
-                var newHead = null;
-                var newBody = null;
-
-                var parsedHeadTag =  myfaces._impl._util._Utils.getChild.stripHead(cDataBlock);
-                if(parsedHeadTag != null) {
-                    headStart = parsedHeadTag.tagBegin;
-                    newHead = parsedHeadTag.tagContent;
-                    headEnd = parsedHeadTag.tagEnd;
-                }
-
-                var parsedBodyTag =  myfaces._impl._util._Utils.getChild.stripBody(cDataBlock);
-                if(parsedBodyTag != null) {
-                    bodyStart = parsedBodyTag.tagBegin;
-                    newBody = parsedBodyTag.tagContent;
-                    bodyEnd = parsedBodyTag.tagEnd;
-                }
-
-                var parsedHtmlTag =  myfaces._impl._util._Utils.getChild.stripHtml(cDataBlock);
-                if(parsedHtmlTag != null) {
-                   cDataBlock =  parsedHtmlTag.tagContent;
-                }
-
                 var body = document.getElementsByTagName('body')[0];
                 var head = document.getElementsByTagName('head')[0];
+
+
+                var parser =  jsf.ajax._impl = new (myfaces._impl._util._Utils.getGlobalConfig("updateParser",myfaces._impl._util._SimpleHtmlParser))();
+
+                parser.parse(cDataBlock);
+
+                var newHead = (parser.head.length > 0) ? parser.head.join(""):null;
+                var newBody = (parser.body.length > 0) ? parser.body.join(""):null;
+                var newHtml = (parser.html.length > 0) ? parser.html.join(""):cDataBlock;
+             
 
                 if(newHead != null) {
                     myfaces._impl._util._Utils.replaceHtmlItem(request, context,
@@ -249,7 +237,8 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
                     }
                 //no body content is defined means we have to replace the body with the entire cdata content
                 } else {
-                    body.innerHTML = cDataBlock;
+                    
+                    body.innerHTML = newHtml;
                     // innerHTML doesn't execute scripts, so no browser switch here
                     myfaces._impl._util._Utils.runScripts(request, context, body);
                 }
