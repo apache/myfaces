@@ -92,6 +92,7 @@ public class ResourceHandlerImpl extends ResourceHandler
             {
                 resource = new ResourceImpl(resourceMeta, loader,
                         getResourceHandlerSupport(), contentType);
+                break;
             }
         }
         return resource;
