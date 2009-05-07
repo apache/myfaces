@@ -46,6 +46,9 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.setUseContextClassLoader(true);
 
         digester.addObjectCreate("faces-config", FacesConfig.class);
+        // 2.0 specific start
+        digester.addSetProperties("faces-config", "metadata-complete", "metadataComplete");
+        // 2.0 specific end
         // 2.0 config ordering name start
         digester.addCallMethod("faces-config/name", "setName", 0);
         digester.addObjectCreate("faces-config/ordering", Ordering.class);

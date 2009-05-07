@@ -380,14 +380,13 @@ public class ApplicationImpl extends Application
             if (retVal instanceof UIComponent)
             {
                 createdComponent = (UIComponent) retVal;
+                _handleAnnotations(facesContext, createdComponent, createdComponent);
             }
             else
             {
                 createdComponent = createComponent(componentType);
                 componentExpression.setValue(elContext, createdComponent);
             }
-
-            _handleAnnotations(facesContext, createdComponent, createdComponent);
 
             return createdComponent;
         }
@@ -1122,7 +1121,9 @@ public class ApplicationImpl extends Application
 
         try
         {
-            return componentClass.newInstance();
+            UIComponent component = componentClass.newInstance();            
+            _handleAnnotations(FacesContext.getCurrentInstance(), component, component);
+            return component;
         }
         catch (Exception e)
         {
@@ -1653,7 +1654,7 @@ public class ApplicationImpl extends Application
             }
         }
     }
-
+    
     private void _inspectRenderer(FacesContext context, UIComponent component, String componentType, String rendererType)
     {
         /*

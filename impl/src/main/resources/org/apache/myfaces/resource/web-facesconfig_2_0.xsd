@@ -68,6 +68,7 @@
             <xsd:element maxOccurs="unbounded" minOccurs="0" name="faces-config-extension"
                 type="javaee:faces-config-extensionType"/>
         </xsd:choice>
+        <xsd:attribute name="metadata-complete" type="xsd:boolean" use="optional"></xsd:attribute>
         <xsd:attribute name="id" type="xsd:ID"/>
         <xsd:attribute name="version" type="javaee:faces-config-versionType" use="required"/>
     </xsd:complexType>

@@ -60,6 +60,7 @@ import org.apache.myfaces.config.FacesConfigDispenser;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfig;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.view.facelets.util.Classpath;
 
 /**
  * Configure all annotations that needs to be defined at startup.
@@ -87,6 +88,12 @@ public class AnnotationConfigurator
     private static final Log log = LogFactory
             .getLog(AnnotationConfigurator.class);
 
+    private static final String META_INF_PREFIX = "META-INF/";
+
+    private static final String FACES_CONFIG_SUFFIX = ".faces-config.xml";
+    
+    private static final String STANDARD_FACES_CONFIG_RESOURCE = "META-INF/standard-faces-config.xml";
+    
     /**
      * <p> Servlet context init parameter which defines which packages to scan
      * for beans, separated by commas.</p>
@@ -142,9 +149,35 @@ public class AnnotationConfigurator
     }
 
     public void configure(final Application application, 
-            final FacesConfigDispenser<FacesConfig> dispenser) throws FacesException
+            final FacesConfigDispenser<FacesConfig> dispenser,
+            boolean metadataComplete) throws FacesException
     {
         List<Class> classes;
+        
+        if (metadataComplete)
+        {
+            //Read only annotations available myfaces-impl
+            List<JarFile> archives = null;
+            try
+            {                
+                //Also scan jar including META-INF/standard-faces-config.xml
+                //(myfaces-impl jar file)
+                JarFile jarFile = getMyfacesImplJarFile();
+                if (jarFile != null)
+                {
+                    classes = archiveClasses(_externalContext, jarFile);
+                    for (Class clazz : classes)
+                    {
+                        configureClass(application, dispenser, clazz);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw new FacesException(e);
+            }
+            return;
+        }
 
         // Scan annotation available in org.apache.myfaces.annotation.SCAN_PACKAGES 
         // init param
@@ -211,8 +244,52 @@ public class AnnotationConfigurator
         {
             throw new FacesException(e);
         }
+        
+        // Scan annotations available myfaces-impl
+        try
+        {                
+            //Also scan jar including META-INF/standard-faces-config.xml
+            //(myfaces-impl jar file)
+            JarFile jarFile = getMyfacesImplJarFile();
+            if (jarFile != null)
+            {
+                classes = archiveClasses(_externalContext, jarFile);
+                for (Class clazz : classes)
+                {
+                    configureClass(application, dispenser, clazz);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            throw new FacesException(e);
+        }
     }
 
+    private JarFile getMyfacesImplJarFile() throws IOException
+    {
+        URL url = getClassLoader().getResource(STANDARD_FACES_CONFIG_RESOURCE);
+        return getJarFile(url);
+    }
+    
+    private JarFile getJarFile(URL url) throws IOException
+    {
+        URLConnection conn = url.openConnection();
+        conn.setUseCaches(false);
+        conn.setDefaultUseCaches(false);
+
+        JarFile jarFile;
+        if (conn instanceof JarURLConnection)
+        {
+            jarFile = ((JarURLConnection) conn).getJarFile();
+        }
+        else
+        {
+            jarFile = _getAlternativeJarFile(url);
+        }
+        return jarFile;
+    }
+    
     /**
      * <p>Return a list of the classes defined within the given packages
      * If there are no such classes, a zero-length list will be returned.</p>
@@ -278,20 +355,18 @@ public class AnnotationConfigurator
             while (it.hasNext())
             {
                 URL url = it.next();
-                URLConnection conn = url.openConnection();
-                conn.setUseCaches(false);
-                conn.setDefaultUseCaches(false);
-
-                JarFile jarFile;
-                if (conn instanceof JarURLConnection)
+                JarFile jarFile = getJarFile(url);
+                if (jarFile != null)
                 {
-                    jarFile = ((JarURLConnection) conn).getJarFile();
+                    list.add(jarFile);
                 }
-                else
-                {
-                    jarFile = _getAlternativeJarFile(url);
-                }
-
+            }
+            
+            //Scan files inside META-INF ending with .faces-config.xml
+            URL[] urls = Classpath.search(getClassLoader(), META_INF_PREFIX, FACES_CONFIG_SUFFIX);
+            for (int i = 0; i < urls.length; i++)
+            {
+                JarFile jarFile = getJarFile(urls[i]);
                 if (jarFile != null)
                 {
                     list.add(jarFile);
@@ -316,6 +391,21 @@ public class AnnotationConfigurator
                 // Skip this JAR file if it does not have a META-INF/faces-config.xml
                 // resource (even if that resource is empty)
                 JarEntry signal = jarFile.getJarEntry(FACES_CONFIG_IMPLICIT);
+                if (signal == null)
+                {
+                    //Look for files starting with META-INF/ and ending with .faces-config.xml
+                    for (Enumeration<JarEntry> e = jarFile.entries(); e.hasMoreElements();)
+                    {
+                        JarEntry entry = e.nextElement();
+                        String name = entry.getName(); 
+                        if (name.startsWith(META_INF_PREFIX) &&
+                                name.endsWith(FACES_CONFIG_SUFFIX))
+                        {
+                            signal = entry;
+                            break;
+                        }
+                    }
+                }
                 if (signal == null)
                 {
                     if (log.isTraceEnabled())
@@ -383,11 +473,14 @@ public class AnnotationConfigurator
             }
             catch (IOException e)
             {
-                // Skip this class - we cannot analyze classes we cannot load but
-                //log a warning
-                if (log.isWarnEnabled())
+                // Include this class - we can't scan this class using
+                // the filter, but it could be valid, so we need to
+                // load it using the classLoader. Anyway, log a debug
+                // message.
+                couldContainAnnotation = true;
+                if (log.isDebugEnabled())
                 {
-                    log.warn("IOException when filtering class " + name
+                    log.debug("IOException when filtering class " + name
                             + " for annotations");
                 }
             }
@@ -515,11 +608,14 @@ public class AnnotationConfigurator
                     }
                     catch (IOException e)
                     {
-                        // Skip this class - we cannot analyze classes we cannot load but
-                        //log a warning
-                        if (log.isWarnEnabled())
+                        // Include this class - we can't scan this class using
+                        // the filter, but it could be valid, so we need to
+                        // load it using the classLoader. Anyway, log a debug
+                        // message.
+                        couldContainAnnotation = true;
+                        if (log.isDebugEnabled())
                         {
-                            log.warn("IOException when filtering class " + path
+                            log.debug("IOException when filtering class " + path
                                     + " for annotations");
                         }
                     }

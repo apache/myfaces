@@ -341,6 +341,7 @@ public class FacesConfigurator
 
     public void configure() throws FacesException
     {
+        boolean metadataComplete = false;
         try
         {
             //1. Feed standard-faces-config.xml first.
@@ -355,6 +356,9 @@ public class FacesConfigurator
             
             //4. Retrieve webAppFacesConfig
             FacesConfig webAppFacesConfig = getWebAppConfig();
+            
+            //read metadata-complete attribute on WEB-INF/faces-config.xml
+            metadataComplete = Boolean.valueOf(webAppFacesConfig.getMetadataComplete());
             
             //5. Ordering of Artifacts (see section 11.4.7 of the spec)
             orderAndFeedArtifacts(appConfigResources,webAppFacesConfig);
@@ -377,11 +381,11 @@ public class FacesConfigurator
         configureApplication();
         configureRenderKits();
         
-        //Now we can configure annotations
+                //Now we can configure annotations
         getAnnotationConfigurator().configure(
                 ((ApplicationFactory) FactoryFinder.getFactory(
                         FactoryFinder.APPLICATION_FACTORY)).getApplication(),
-                getDispenser());
+                getDispenser(), metadataComplete);
         
         configureRuntimeConfig();
         configureLifecycle();

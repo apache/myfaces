@@ -39,6 +39,7 @@ public class FacesConfig
     private List<String> lifecyclePhaseListener = new ArrayList<String>();
     private Map<String, String> validators = new HashMap<String, String>();
     
+    private String metadataComplete;
     //Ordering variables
     //This information are not merged, and helps
     //with preprocessing of faces-config files
@@ -164,5 +165,15 @@ public class FacesConfig
     public void setOrdering(Ordering ordering)
     {
         this.ordering = ordering;
+    }
+
+    public String getMetadataComplete()
+    {
+        return metadataComplete;
+    }
+
+    public void setMetadataComplete(String metadataComplete)
+    {
+        this.metadataComplete = metadataComplete;
     }
 }

@@ -112,6 +112,7 @@ public class DigesterFacesConfigUnmarshallerImplTest extends TestCase
         FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
                 "absolute-ordering-config.xml"), "absolute-ordering-config.xml");
         assertNotNull(cfg);
+        assertEquals("true", cfg.getMetadataComplete());
         assertEquals("a",cfg.getName());
 
         List<OrderSlot> orderList = cfg.getAbsoluteOrdering().getOrderList();
