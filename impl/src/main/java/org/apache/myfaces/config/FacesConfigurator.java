@@ -92,6 +92,7 @@ import org.apache.myfaces.shared_impl.util.LocaleUtils;
 import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
 import org.apache.myfaces.shared_impl.util.serial.SerialFactory;
+import org.apache.myfaces.view.facelets.util.Classpath;
 import org.xml.sax.SAXException;
 
 /**
@@ -108,6 +109,8 @@ public class FacesConfigurator
 
     private static final String STANDARD_FACES_CONFIG_RESOURCE = "META-INF/standard-faces-config.xml";
     private static final String FACES_CONFIG_RESOURCE = "META-INF/faces-config.xml";
+    private static final String META_INF_PREFIX = "META-INF/";
+    private static final String FACES_CONFIG_SUFFIX = ".faces-config.xml";
 
     private static final String META_INF_SERVICES_RESOURCE_PREFIX = "META-INF/services/";
 
@@ -591,6 +594,15 @@ public class FacesConfigurator
                 URL url = it.next();
                 String systemId = url.toExternalForm();
                 facesConfigs.put(systemId, url);
+            }
+            
+            //Scan files inside META-INF ending with .faces-config.xml
+            //TODO: specify classpath for make easier configuration security java 2
+            URL[] urls = Classpath.search(META_INF_PREFIX, FACES_CONFIG_SUFFIX);
+            for (int i = 0; i < urls.length; i++)
+            {
+                String systemId = urls[i].toExternalForm();
+                facesConfigs.put(systemId, urls[i]);
             }
 
             for (Map.Entry<String, URL> entry : facesConfigs.entrySet())
