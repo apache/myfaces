@@ -95,6 +95,8 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
      */
     private transient Map<String, String> _resourceBundleMap = null;
 
+    private boolean _inView = false;
+
     public UIComponent()
     {
     }
@@ -170,6 +172,14 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
     }
 
     /**
+     * Indicate if this component is inside a view,
+     * or in other words is contained by an UIViewRoot
+     * instance (which represents the view). If this component
+     * is a UIViewRoot instance, the components "always"
+     * is on the view.
+     * 
+     * By default it is false but for UIViewRoot instances is
+     * true. 
      * 
      * @return
      * 
@@ -177,8 +187,7 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
      */
     public boolean isInView()
     {
-        // TODO: IMPLEMENT HERE
-        return true;
+        return _inView;
     }
 
     public abstract boolean isRendered();
@@ -368,14 +377,25 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
     public abstract void setId(String id);
 
     /**
-     * 
+     * Define if the component is on the view or not.
+     * <p>
+     * This value is set in the following conditions:
+     * </p>
+     * <ul>
+     * <li>Component / Facet added: if the parent isInView = true, 
+     *     set it to true and all their children or facets,
+     *     otherwise take no action</li>
+     * <li>Component / Facet removed: if the parent isInView = false,
+     *     set it to false and all their children or facets,
+     *     otherwise take no action</li>
+     * <ul>
      * @param isInView
      * 
      * @since 2.0
      */
     public void setInView(boolean isInView)
     {
-        // TODO: IMPLEMENT HERE
+        _inView = isInView;
     }
 
     /**

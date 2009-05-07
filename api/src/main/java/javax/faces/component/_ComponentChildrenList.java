@@ -88,8 +88,10 @@ class _ComponentChildrenList extends AbstractList<UIComponent> implements Serial
     public void add(int index, UIComponent value)
     {
         checkValue(value);
-        childAdded(value);
+        
         _list.add(index, value);
+        
+        childAdded(value);
     }
 
     @Override
@@ -121,6 +123,7 @@ class _ComponentChildrenList extends AbstractList<UIComponent> implements Serial
     {
         updateParent(child);
         
+        /*
         FacesContext context = FacesContext.getCurrentInstance();
         
         // After the child component has been added to the view, if the following condition is not met
@@ -132,6 +135,7 @@ class _ComponentChildrenList extends AbstractList<UIComponent> implements Serial
             // argument. TODO: Deal with isInView
             context.getApplication().publishEvent(PostAddToViewEvent.class, child);
         }
+        */
     }
 
     private void childRemoved(UIComponent child)
@@ -148,5 +152,11 @@ class _ComponentChildrenList extends AbstractList<UIComponent> implements Serial
         }
         
         child.setParent(_component);
+    }
+
+    @Override
+    public boolean remove(Object o)
+    {
+        return _list.remove(o);
     }
 }
