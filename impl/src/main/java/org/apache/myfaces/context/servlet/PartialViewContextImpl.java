@@ -18,14 +18,17 @@
  */
 package org.apache.myfaces.context.servlet;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialResponseWriter;
 import javax.faces.context.PartialViewContext;
 import javax.faces.event.PhaseId;
+import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitHint;
+import javax.faces.component.visit.VisitCallback;
+import javax.faces.component.visit.VisitResult;
+import javax.faces.component.UIComponent;
 
 import org.apache.myfaces.shared_impl.util.StringUtils;
 
@@ -236,8 +239,19 @@ public class PartialViewContextImpl extends PartialViewContext
     public void processPartial(PhaseId phaseId)
     {
         assertNotReleased(METHOD_PROCESSPARTIAL);
-        //TODO: JSF 2.0, add impl
-        
+
+        UIComponent viewRoot = _facesContext.getViewRoot();
+
+        if (phaseId == PhaseId.APPLY_REQUEST_VALUES
+                || phaseId == PhaseId.PROCESS_VALIDATIONS
+                || phaseId == PhaseId.UPDATE_MODEL_VALUES)
+        {
+            Set<VisitHint> hints = new HashSet<VisitHint>();
+            hints.add(VisitHint.EXECUTE_LIFECYCLE);
+            hints.add(VisitHint.SKIP_UNRENDERED);
+            VisitContext visitCtx = VisitContext.createVisitContext(_facesContext, getRenderIds(), hints);
+            viewRoot.visitTree(visitCtx, new PhaseAwareVisitCallback(_facesContext, phaseId));
+        }
     }
     
     /**
@@ -266,5 +280,34 @@ public class PartialViewContextImpl extends PartialViewContext
         _renderAll = null;        
         _facesContext = null;
         _released = true;        
+    }
+
+    private class PhaseAwareVisitCallback implements VisitCallback {
+        private PhaseId _phaseId;
+        private FacesContext _facesContext;
+
+        public PhaseAwareVisitCallback(FacesContext facesContext, PhaseId phaseId) {
+            this._phaseId = phaseId;
+            this._facesContext = facesContext;
+        }
+
+        @Override
+        public VisitResult visit(VisitContext context, UIComponent target) {
+            if (_phaseId == PhaseId.APPLY_REQUEST_VALUES)
+            {
+                target.processDecodes(_facesContext);
+            }
+            else if (_phaseId == PhaseId.PROCESS_VALIDATIONS)
+            {
+                target.processValidators(_facesContext);
+            }
+            else if (_phaseId == PhaseId.UPDATE_MODEL_VALUES)
+            {
+                target.processUpdates(_facesContext);
+            }
+
+            // Return VisitResult.REJECT as processDecodes/Validators/Updates already traverse sub tree
+            return VisitResult.REJECT;
+        }
     }
 }
