@@ -9,7 +9,7 @@
                 <include>**/_impl/_util/_ListenerQueue.js</include>
                 <include>**/_impl/_util/_Logger.js</include>
                 <include>**/_impl/_util/_Utils.js</include>
-                <include>**/_impl/_util/_SimpleHtmlParser.js</include>
+                <include>**/_impl/_util/_HtmlStripper.js</include>
                 <include>**/_impl/xhrCore/_Exception.js</include>
                 <include>**/_impl/xhrCore/_AjaxUtils.js</include>
                 <include>**/_impl/xhrCore/_AjaxRequestQueue.js</include>
