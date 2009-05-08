@@ -22,9 +22,11 @@
  * A simple html parser class
  * that handles the stripping of the body
  * and head area properly
+ *
+ * @deprecated due to the RC2 spec we only need a simple
+ * html stripper for our ajax reponse
+ * 
  */
-
-
 _reserveMyfacesNamespaces();
 
 if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_SimpleHtmlParser")) {

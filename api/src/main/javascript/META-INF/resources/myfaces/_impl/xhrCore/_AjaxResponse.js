@@ -187,11 +187,32 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
 
     myfaces._impl.xhrCore._AjaxResponse.prototype.processUpdate = function(request, context, node) {
         if (node.getAttribute('id') == "javax.faces.ViewState") {
-            document.getElementById("javax.faces.ViewState").value = node.firstChild.nodeValue;
+            /*if(null != document.getElementById("javax.faces.ViewState")) {
+                document.getElementById("javax.faces.ViewState").value = node.firstChild.nodeValue;
+            } else {
 
-        //TODO all forms for elements with the identifier (name?) javax.faces.ViewState
-        //if present then set them if the form has no element of type javax.faces.viewState
-        //append a hidden field and set it!
+            }*/
+            //update the submitting forms viewstate to the new value
+
+            var sourceForm = myfaces._impl._util._Utils.getParent(null, context, context.source, "form");
+
+            if ('undefined' == typeof sourceForm || null == sourceForm) {
+                sourceForm = document.forms.length > 0 ? document.forms[0]:null;
+            }
+            if(null != sourceForm) {
+                /*we check for an element and include a namesearch, but only within the bounds of the committing form*/
+                var element = myfaces._impl._util._Utils.getElementFromForm(request, context, "javax.faces.ViewState", sourceForm,  true, true);
+                if(null == element) {//no element found we have to append a hidden field
+                    element = document.createElement("input");
+                    myfaces._impl._util._Utils.setAttribute(element,"type", "hidden");
+                    myfaces._impl._util._Utils.setAttribute(element,"name","javax.faces.ViewState");
+                    sourceForm.appendChild(element);
+                }
+                myfaces._impl._util._Utils.setAttribute(element,"value", node.firstChild.nodeValue);
+
+            }
+            //else??? the latest spec has this omitted we have to wait for the RI which probably covers this
+
         } else {
             var cDataBlock = [];
             // response may contain sevaral blocks
@@ -207,32 +228,12 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
             switch(node.getAttribute('id')) {
                 case "javax.faces.ViewRoot":
 
-                    var parser =  jsf.ajax._impl = new (myfaces._impl._util._Utils.getGlobalConfig("updateParser",myfaces._impl._util._SimpleHtmlParser))();
-
-                    parser.parse(cDataBlock);
-
-                    var newHead = (parser.head.length > 0) ? parser.head.join(""):null;
-                    var newBody = (parser.body.length > 0) ? parser.body.join(""):null;
-                    var newHtml = (parser.html.length > 0) ? parser.html.join(""):cDataBlock;
-
-
-                    if(newHead != null) {
-                        this._replaceElement(request, context, head, newHead );
-                    }
-
-                    //if the body content is provided only the body content is applied, according
-                    //to the jsDoc specs!
-                    if(newBody != null) {
-                        this._replaceElement(request, context, body, newBody );
-
-                  
-                    //no body content is defined means we have to replace the body with the entire cdata content
-                    } else {
-
-                        body.innerHTML = newHtml;
+                    var parser =  jsf.ajax._impl = new (myfaces._impl._util._Utils.getGlobalConfig("updateParser",myfaces._impl._util._HtmlStripper))();
+                
+                    document.documentElement.innerHTML  =  parser.parse(cDataBlock);
                         // innerHTML doesn't execute scripts, so no browser switch here
-                        myfaces._impl._util._Utils.runScripts(request, context, body);
-                    }
+                    myfaces._impl._util._Utils.runScripts(request, context, body);
+                   
                     break;
                 case "javax.faces.ViewHead":
                     //we assume the cdata block is our head including the tag
@@ -309,11 +310,11 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
                 return false;
             }
             /**
-         *we generate a temp holder
-         *so that we can use innerHTML for
-         *generating the content upfront
-         *before inserting it"
-         **/
+             *we generate a temp holder
+             *so that we can use innerHTML for
+             *generating the content upfront
+             *before inserting it"
+             **/
             var nodeHolder = document.createElement("div");
             var parentNode = beforeNode.parentNode;
             parentNode.insertBefore(nodeHolder, beforeNode);
