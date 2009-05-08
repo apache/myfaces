@@ -236,6 +236,12 @@ public class PartialViewContextImpl extends PartialViewContext
     }
     
     @Override
+    /**
+     * process the partial response
+     * allowed phase ids according to the spec
+     *
+     *
+     */
     public void processPartial(PhaseId phaseId)
     {
         assertNotReleased(METHOD_PROCESSPARTIAL);
@@ -246,14 +252,32 @@ public class PartialViewContextImpl extends PartialViewContext
                 || phaseId == PhaseId.PROCESS_VALIDATIONS
                 || phaseId == PhaseId.UPDATE_MODEL_VALUES)
         {
-            Set<VisitHint> hints = new HashSet<VisitHint>();
-            hints.add(VisitHint.EXECUTE_LIFECYCLE);
-            hints.add(VisitHint.SKIP_UNRENDERED);
-            VisitContext visitCtx = VisitContext.createVisitContext(_facesContext, getRenderIds(), hints);
-            viewRoot.visitTree(visitCtx, new PhaseAwareVisitCallback(_facesContext, phaseId));
+            processPartialExecute(viewRoot,phaseId);
+        } else if(phaseId == PhaseId.RENDER_RESPONSE) {
+            processPartialRendering(viewRoot, phaseId);
         }
+
+
     }
-    
+
+    private void processPartialExecute(UIComponent viewRoot, PhaseId phaseId) {
+        Collection<String> executeIds = getExecuteIds();
+        if(executeIds == null || executeIds.isEmpty()) {
+            return;
+        }
+        Set<VisitHint> hints = new HashSet<VisitHint>();
+        hints.add(VisitHint.EXECUTE_LIFECYCLE);
+        hints.add(VisitHint.SKIP_UNRENDERED);
+        VisitContext visitCtx = VisitContext.createVisitContext(_facesContext, executeIds , hints);
+        viewRoot.visitTree(visitCtx, new PhaseAwareVisitCallback(_facesContext, phaseId));
+    }
+
+    private void processPartialRendering(UIComponent viewRoot, PhaseId phaseId) {
+        //TODO process partial rendering
+        //https://issues.apache.org/jira/browse/MYFACES-2118
+    }
+
+
     /**
      * has to be thrown in many of the methods if the method is called after the instance has been released!
      */
@@ -281,6 +305,7 @@ public class PartialViewContextImpl extends PartialViewContext
         _facesContext = null;
         _released = true;        
     }
+
 
     private class PhaseAwareVisitCallback implements VisitCallback {
         private PhaseId _phaseId;
