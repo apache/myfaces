@@ -34,18 +34,6 @@ import org.apache.myfaces.shared_impl.util.StringUtils;
 
 public class PartialViewContextImpl extends PartialViewContext
 {
-    private static final String METHOD_GETEXECUTEIDS = "";
-    private static final String METHOD_GETPARTIALRESPONSEWRITER = "";
-    private static final String METHOD_GETRENDERIDS = "";
-    private static final String METHOD_ISAJAXREQUEST = "";
-    private static final String METHOD_ISEXECUTEALL = "";
-    private static final String METHOD_ISPARTIALREQUEST = "";
-    private static final String METHOD_ISRENDERALL = "";
-    private static final String METHOD_PROCESSPARTIAL = "";
-    private static final String METHOD_RELEASE = "";
-    private static final String METHOD_SETPARTIALREQUEST = "";
-    private static final String METHOD_SETRENDERALL = "";
-    
     private static final String FACES_REQUEST = "Faces-Request";
     private static final String PARTIAL_AJAX = "partial/ajax";
     private static final String PARTIAL_PROCESS = "partial/process";
@@ -73,7 +61,7 @@ public class PartialViewContextImpl extends PartialViewContext
     @Override
     public boolean isAjaxRequest()
     {
-        assertNotReleased(METHOD_ISAJAXREQUEST);
+        assertNotReleased();
         
         if (_ajaxRequest == null)
         {
@@ -87,7 +75,7 @@ public class PartialViewContextImpl extends PartialViewContext
     @Override
     public boolean isExecuteAll()
     {
-        assertNotReleased(METHOD_ISEXECUTEALL);
+        assertNotReleased();
         
         if (isAjaxRequest())
         {
@@ -105,7 +93,7 @@ public class PartialViewContextImpl extends PartialViewContext
     @Override
     public boolean isPartialRequest()
     {
-        assertNotReleased(METHOD_ISPARTIALREQUEST);
+        assertNotReleased();
 
         if (_partialRequest == null)
         {
@@ -119,7 +107,7 @@ public class PartialViewContextImpl extends PartialViewContext
     @Override
     public boolean isRenderAll()
     {
-        assertNotReleased(METHOD_ISRENDERALL);
+        assertNotReleased();
         
         if (_renderAll == null)
         {
@@ -145,7 +133,7 @@ public class PartialViewContextImpl extends PartialViewContext
     @Override
     public void setPartialRequest(boolean isPartialRequest)
     {
-        assertNotReleased(METHOD_SETPARTIALREQUEST);
+        assertNotReleased();
 
         _partialRequest = isPartialRequest;
         
@@ -154,7 +142,7 @@ public class PartialViewContextImpl extends PartialViewContext
     @Override
     public void setRenderAll(boolean renderAll)
     {
-        assertNotReleased(METHOD_SETRENDERALL);
+        assertNotReleased();
 
         _renderAll = renderAll;
     }
@@ -162,7 +150,7 @@ public class PartialViewContextImpl extends PartialViewContext
     @Override
     public Collection<String> getExecuteIds()
     {
-        assertNotReleased(METHOD_GETEXECUTEIDS);
+        assertNotReleased();
         
         if (_executeClientIds == null)
         {
@@ -178,10 +166,7 @@ public class PartialViewContextImpl extends PartialViewContext
 
                 //The collection must be mutable
                 List<String> tempList = new ArrayList<String>();
-                for (int i = 0; i < clientIds.length ; i++)
-                {
-                    tempList.add(clientIds[i]);
-                }
+                Collections.addAll(tempList, clientIds);
                 _executeClientIds = tempList;
             }
             else
@@ -196,7 +181,7 @@ public class PartialViewContextImpl extends PartialViewContext
     @Override
     public Collection<String> getRenderIds()
     {
-        assertNotReleased(METHOD_GETRENDERIDS);
+        assertNotReleased();
         
         if (_renderClientIds == null)
         {
@@ -212,10 +197,7 @@ public class PartialViewContextImpl extends PartialViewContext
 
                 //The collection must be mutable
                 List<String> tempList = new ArrayList<String>();
-                for (int i = 0; i < clientIds.length ; i++)
-                {
-                    tempList.add(clientIds[i]);
-                }
+                Collections.addAll(tempList, clientIds);
                 _renderClientIds = tempList;
             }
             else
@@ -229,22 +211,22 @@ public class PartialViewContextImpl extends PartialViewContext
     @Override
     public PartialResponseWriter getPartialResponseWriter()
     {
-        assertNotReleased(METHOD_GETPARTIALRESPONSEWRITER);
+        assertNotReleased();
         //TODO: JSF 2.0, add impl
         
         return new PartialResponseWriter(_facesContext.getResponseWriter());
     }
-    
-    @Override
+
     /**
      * process the partial response
      * allowed phase ids according to the spec
      *
      *
      */
+    @Override
     public void processPartial(PhaseId phaseId)
     {
-        assertNotReleased(METHOD_PROCESSPARTIAL);
+        assertNotReleased();
 
         UIComponent viewRoot = _facesContext.getViewRoot();
 
@@ -281,22 +263,18 @@ public class PartialViewContextImpl extends PartialViewContext
     /**
      * has to be thrown in many of the methods if the method is called after the instance has been released!
      */
-    private final void assertNotReleased(String string)
+    private void assertNotReleased()
     {
         if (_released)
         {
-            StringBuilder errorMessage = new StringBuilder(128);
-            errorMessage.append("Error in method call on javax.faces.context.FacesContext.");
-            errorMessage.append(string);
-            errorMessage.append(", the facesContext is already released!");
-            throw new IllegalStateException(errorMessage.toString());
+            throw new IllegalStateException("Error the FacesContext is already released!");
         }
     }
 
     @Override
     public void release()
     {
-        assertNotReleased(METHOD_RELEASE);
+        assertNotReleased();
         _executeClientIds = null;
         _renderClientIds = null;
         _ajaxRequest = null;
@@ -316,7 +294,6 @@ public class PartialViewContextImpl extends PartialViewContext
             this._facesContext = facesContext;
         }
 
-        @Override
         public VisitResult visit(VisitContext context, UIComponent target) {
             if (_phaseId == PhaseId.APPLY_REQUEST_VALUES)
             {
