@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.context.servlet;
 
-import java.io.IOException;
 import java.lang.String;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,8 +48,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.el.unified.FacesELContext;
 import org.apache.myfaces.shared_impl.util.NullIterator;
@@ -63,35 +60,7 @@ import org.apache.myfaces.shared_impl.util.NullIterator;
 public class FacesContextImpl extends FacesContext
 {
 
-    private static final String METHOD_ADDMESSAGE = "addMessage";
-    private static final String METHOD_GETAPPLICATION = "getApplication";
-    private static final String METHOD_GETATTRIBUTES = "getAttributes";
-    private static final String METHOD_GETCLIENTIDSWITHMESSAGES = "getClientIdsWithMessages";
-    private static final String METHOD_GETCURRENTPHASEID = "getCurrentPhaseId";
-    private static final String METHOD_GETELCONTEXT = "getELContext";
-    private static final String METHOD_GETEXTERNALCONTEXT = "getExternalContext";
-    private static final String METHOD_GETMAXIMUMSEVERITY = "getMaximumSeverity";
-    private static final String METHOD_GETMESSAGES = "getMessages";
-    private static final String METHOD_GETPARTIALVIEWCONTEXT = "getPartialViewContext";
-    private static final String METHOD_GETRENDERKIT = "getRenderKit";
-    private static final String METHOD_GETRESPONSECOMPLETE = "getResponseComplete";
-    private static final String METHOD_GETRESPONSESTREAM = "getResponseStream";
-    private static final String METHOD_GETRESPONSEWRITER = "getResponseWriter";
-    private static final String METHOD_RELEASE = "release";
-    private static final String METHOD_RENDERRESPONSE = "renderResponse";
-    private static final String METHOD_RESPONSECOMPLETE = "responseComplete";
     private static final String METHOD_RESPONSEWRITER = "responseWriter";
-    private static final String METHOD_SETCURRENTPHASEID = "setCurrentPhaseId";
-    private static final String METHOD_SETEXTERNALCONTEXT = "setExternalContext";
-    private static final String METHOD_SETRESPONSESTREAM = "setResponseStream";
-    private static final String METHOD_SETRESPONSEWRITER = "setResponseWriter";
-    private static final String METHOD_SETVIEWROOT = "setViewRoot";
-    private static final String METHOD_GETVIEWROOT = "getViewRoot";
-    private static final String METHOD_GETVALIDATIONFAILED = "getValidationFailed";
-    private static final String METHOD_VALIDATIONFAILED = "validationFailed";
-    private static final String METHOD_SETPROCESSINGEVENTS = "setProcessingEvents";
-    private static final String METHOD_ISPROCESSINGEVENTS = "isProcessingEvents";
-    private static final String METHOD_GETMESSAGELIST = "getMessageList";
     static final String RE_SPLITTER = "[\\s\\t\\r\\n]*\\,[\\s\\t\\r\\n]*";
     // ~ Instance fields ----------------------------------------------------------------------------
 
@@ -154,7 +123,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public final ExternalContext getExternalContext()
     {
-        assertNotReleased(METHOD_GETEXTERNALCONTEXT);
+        assertNotReleased();
 
         return (ExternalContext) _externalContext;
     }
@@ -162,7 +131,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public final FacesMessage.Severity getMaximumSeverity()
     {
-        assertNotReleased(METHOD_GETMAXIMUMSEVERITY);
+        assertNotReleased();
 
         return _maximumSeverity;
     }
@@ -170,7 +139,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public List<FacesMessage> getMessageList()
     {
-        assertNotReleased(METHOD_GETMESSAGELIST);
+        assertNotReleased();
         
         if (_messages == null)
         {
@@ -189,7 +158,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public List<FacesMessage> getMessageList(String clientId)
     {
-        assertNotReleased(METHOD_GETMESSAGELIST);
+        assertNotReleased();
         
         if (_messages == null || !_messages.containsKey(clientId))
         {
@@ -202,7 +171,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public final Iterator<FacesMessage> getMessages()
     {
-        assertNotReleased(METHOD_GETMESSAGES);
+        assertNotReleased();
 
         if (_messages == null)
         {
@@ -220,7 +189,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public final Application getApplication()
     {
-        assertNotReleased(METHOD_GETAPPLICATION);
+        assertNotReleased();
 
         return _application;
     }
@@ -228,7 +197,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public final Iterator<String> getClientIdsWithMessages()
     {
-        assertNotReleased(METHOD_GETCLIENTIDSWITHMESSAGES);
+        assertNotReleased();
 
         if (_messages == null || _messages.isEmpty())
         {
@@ -241,7 +210,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public PhaseId getCurrentPhaseId()
     {
-        assertNotReleased(METHOD_GETCURRENTPHASEID);
+        assertNotReleased();
 
         return _currentPhaseId;
     }
@@ -250,7 +219,7 @@ public class FacesContextImpl extends FacesContext
     public final Iterator<FacesMessage> getMessages(final String clientId)
     {
 
-        assertNotReleased(METHOD_GETMESSAGES);
+        assertNotReleased();
 
         if (_messages == null || !_messages.containsKey(clientId))
         {
@@ -263,7 +232,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public PartialViewContext getPartialViewContext()
     {
-        assertNotReleased(METHOD_GETPARTIALVIEWCONTEXT);
+        assertNotReleased();
 
         if (_partialViewContext == null)
         {
@@ -278,7 +247,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public final RenderKit getRenderKit()
     {
-        assertNotReleased(METHOD_GETRENDERKIT);
+        assertNotReleased();
 
         if (getViewRoot() == null)
         {
@@ -298,7 +267,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public final boolean getRenderResponse()
     {
-        assertNotReleased(METHOD_GETRESPONSECOMPLETE);
+        assertNotReleased();
 
         return _renderResponse;
     }
@@ -306,7 +275,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public final boolean getResponseComplete()
     {
-        assertNotReleased(METHOD_GETRESPONSECOMPLETE);
+        assertNotReleased();
 
         return _responseComplete;
     }
@@ -314,7 +283,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public final void setResponseStream(final ResponseStream responseStream)
     {
-        assertNotReleased(METHOD_SETRESPONSESTREAM);
+        assertNotReleased();
 
         if (responseStream == null)
         {
@@ -326,7 +295,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public final ResponseStream getResponseStream()
     {
-        assertNotReleased(METHOD_GETRESPONSESTREAM);
+        assertNotReleased();
 
         return _responseStream;
     }
@@ -334,7 +303,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public final void setResponseWriter(final ResponseWriter responseWriter)
     {
-        assertNotReleased(METHOD_SETRESPONSEWRITER);
+        assertNotReleased();
 
         if (responseWriter == null)
         {
@@ -346,7 +315,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public final ResponseWriter getResponseWriter()
     {
-        assertNotReleased(METHOD_GETRESPONSEWRITER);
+        assertNotReleased();
 
         return _responseWriter;
     }
@@ -354,7 +323,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public final void setViewRoot(final UIViewRoot viewRoot)
     {
-        assertNotReleased(METHOD_SETVIEWROOT);
+        assertNotReleased();
 
         if (viewRoot == null)
         {
@@ -372,7 +341,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public final UIViewRoot getViewRoot()
     {
-        assertNotReleased(METHOD_GETVIEWROOT);
+        assertNotReleased();
 
         return _viewRoot;
     }
@@ -380,7 +349,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public final void addMessage(final String clientId, final FacesMessage message)
     {
-        assertNotReleased(METHOD_ADDMESSAGE);
+        assertNotReleased();
 
         if (message == null)
         {
@@ -418,7 +387,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public final void release()
     {
-        assertNotReleased(METHOD_RELEASE);
+        assertNotReleased();
 
         if (_externalContext != null)
         {
@@ -451,7 +420,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public boolean isPostback()
     {
-        assertNotReleased(METHOD_RENDERRESPONSE);
+        assertNotReleased();
 
         RenderKit renderKit = getRenderKit();
         if (renderKit == null)
@@ -483,7 +452,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public final void renderResponse()
     {
-        assertNotReleased(METHOD_RENDERRESPONSE);
+        assertNotReleased();
 
         _renderResponse = true;
     }
@@ -491,7 +460,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public final void responseComplete()
     {
-        assertNotReleased(METHOD_RESPONSECOMPLETE);
+        assertNotReleased();
 
         _responseComplete = true;
     }
@@ -499,7 +468,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public void setCurrentPhaseId(PhaseId currentPhaseId)
     {
-        assertNotReleased(METHOD_SETCURRENTPHASEID);
+        assertNotReleased();
 
         _currentPhaseId = currentPhaseId;
     }
@@ -514,7 +483,7 @@ public class FacesContextImpl extends FacesContext
     // RenderRequest/Response
     public final void setExternalContext(ReleaseableExternalContext extContext)
     {
-        assertNotReleased(METHOD_SETEXTERNALCONTEXT);
+        assertNotReleased();
 
         _externalContext = extContext;
         FacesContext.setCurrentInstance(this); // TODO: figure out if I really need to do this
@@ -523,7 +492,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public final ELContext getELContext()
     {
-        assertNotReleased(METHOD_GETELCONTEXT);
+        assertNotReleased();
 
         if (_elContext != null)
         {
@@ -561,7 +530,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public Map<Object, Object> getAttributes()
     {
-        assertNotReleased(METHOD_GETATTRIBUTES);
+        assertNotReleased();
 
         if (_attributes == null)
         {
@@ -573,7 +542,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public void validationFailed()
     {
-        assertNotReleased(METHOD_VALIDATIONFAILED);
+        assertNotReleased();
         
         _validationFailed=true;
     }
@@ -581,7 +550,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public boolean getValidationFailed()
     {
-        assertNotReleased(METHOD_GETVALIDATIONFAILED);
+        assertNotReleased();
         
         return _validationFailed;
     }
@@ -589,7 +558,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public boolean isProcessingEvents()
     {
-        assertNotReleased(METHOD_ISPROCESSINGEVENTS);
+        assertNotReleased();
         
         return _processingEvents;
     }
@@ -597,7 +566,7 @@ public class FacesContextImpl extends FacesContext
     @Override
     public void setProcessingEvents(boolean processingEvents)
     {
-        assertNotReleased(METHOD_SETPROCESSINGEVENTS);
+        assertNotReleased();
         
         _processingEvents = processingEvents;
     }
@@ -605,15 +574,11 @@ public class FacesContextImpl extends FacesContext
     /**
      * has to be thrown in many of the methods if the method is called after the instance has been released!
      */
-    private final void assertNotReleased(String string)
+    private final void assertNotReleased()
     {
         if (_released)
         {
-            StringBuilder errorMessage = new StringBuilder(128);
-            errorMessage.append("Error in method call on javax.faces.context.FacesContext.");
-            errorMessage.append(string);
-            errorMessage.append(", the facesContext is already released!");
-            throw new IllegalStateException(errorMessage.toString());
+            throw new IllegalStateException("Error the FacesContext is already released!");
         }
     }
 }
