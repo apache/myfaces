@@ -18,13 +18,40 @@
  */
 package org.apache.myfaces.view;
 
+import java.beans.BeanDescriptor;
+import java.beans.BeanInfo;
+import java.beans.PropertyDescriptor;
+import java.util.List;
+
+import javax.el.ExpressionFactory;
+import javax.el.MethodExpression;
+import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.application.ViewHandler;
+import javax.faces.component.ActionSource2;
+import javax.faces.component.EditableValueHolder;
+import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import javax.faces.event.MethodExpressionActionListener;
+import javax.faces.event.MethodExpressionValueChangeListener;
+import javax.faces.event.ValueChangeEvent;
+import javax.faces.validator.MethodExpressionValidator;
+import javax.faces.view.ActionSource2AttachedObjectHandler;
+import javax.faces.view.ActionSource2AttachedObjectTarget;
+import javax.faces.view.AttachedObjectHandler;
+import javax.faces.view.AttachedObjectTarget;
+import javax.faces.view.EditableValueHolderAttachedObjectHandler;
+import javax.faces.view.EditableValueHolderAttachedObjectTarget;
+import javax.faces.view.ValueHolderAttachedObjectHandler;
+import javax.faces.view.ValueHolderAttachedObjectTarget;
 import javax.faces.view.ViewDeclarationLanguage;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.InvalidViewIdException;
+import org.apache.myfaces.application.ViewHandlerImpl;
 
 /**
  * @author Simon Lessard (latest modification by $Author: slessard $)
@@ -34,6 +61,8 @@ import org.apache.myfaces.application.InvalidViewIdException;
  */
 public abstract class ViewDeclarationLanguageBase extends ViewDeclarationLanguage
 {
+    
+    private static final Log log = LogFactory.getLog(ViewDeclarationLanguageBase.class);
     /**
      * Process the specification required algorithm that is generic to all PDL.
      * 
@@ -96,4 +125,185 @@ public abstract class ViewDeclarationLanguageBase extends ViewDeclarationLanguag
     protected abstract String calculateViewId(FacesContext context, String viewId);
     
     protected abstract void sendSourceNotFound(FacesContext context, String message);
+    
+    @Override
+    public void retargetMethodExpressions(FacesContext context, UIComponent topLevelComponent)
+    {
+        checkNull(context, "context");
+        checkNull(topLevelComponent, "topLevelComponent");
+        
+        BeanInfo beanInfo = (BeanInfo)topLevelComponent.getAttributes().get(UIComponent.BEANINFO_KEY);
+        if(beanInfo == null)
+        {
+            return;  // should we log an error here?  spec doesn't say one way or the other so leaving it alone for now. 
+        }
+        
+        PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
+        for(PropertyDescriptor curDescriptor : descriptors)
+        {
+            ExpressionFactory expressionFactory = null;
+            ValueExpression valueExpression = null;
+            MethodExpression attributeMethodExpression = null;
+            Class expectedReturn = null;
+            Class expectedParams[] = null;
+            
+            if(curDescriptor.getValue("type") != null || curDescriptor.getValue("method-signature") == null)
+            {
+                continue;   
+            }
+            
+            String targets = null;
+            valueExpression = (ValueExpression)curDescriptor.getValue("targets");
+            if(valueExpression != null)
+            {
+                targets = (String)valueExpression.getValue(context.getELContext());
+            }
+
+            if(targets == null)
+            {
+                targets = curDescriptor.getName();
+            }
+            
+            if(targets == null)
+            {
+                continue;   //not explicitly part of the algorithm, but could lead to an NPE if we don't check this
+            }
+            
+            String[] targetArray = targets.split(" ");
+            for (String curTarget : targetArray)
+            {
+                UIComponent target = topLevelComponent.findComponent(curTarget);
+                if(target == null)
+                {
+                    log.error("target not found");
+                    continue;
+                }
+                
+                String name = curDescriptor.getName();
+                
+                ValueExpression attributeValueExpression = (ValueExpression)topLevelComponent.getAttributes().get(name);
+                
+                if(attributeValueExpression == null)
+                {
+                    log.error("attributeValueExpression not found");
+                    continue;
+                }
+
+                if(expressionFactory == null)
+                {   //initialize expression factory if hasn't been used yet
+                    expressionFactory = context.getApplication().getExpressionFactory();
+                }
+                
+                boolean isAction = name.equals("action"),
+                        isActionListener = name.equals("actionListener"),
+                        isValidator = name.equals("validator"),
+                        isValueChangeListener = name.equals("valueChangeListener");
+                
+                String expressionString = attributeValueExpression.getExpressionString();
+                    
+                if(isAction)
+                    expectedReturn = Object.class;
+                else
+                    expectedReturn = Void.class;
+                
+                if(isAction)
+                {
+                    expectedParams =  new Class[]{};
+                    attributeMethodExpression = expressionFactory.createMethodExpression(context.getELContext(), expressionString, expectedReturn, expectedParams);
+                    ((ActionSource2) target).setActionExpression(attributeMethodExpression);
+                }
+                else if(isActionListener)
+                {
+                    expectedParams = new Class[]{ActionEvent.class};
+                    attributeMethodExpression = expressionFactory.createMethodExpression(context.getELContext(), expressionString, expectedReturn, expectedParams);
+                    ((ActionSource2) target).addActionListener(new MethodExpressionActionListener(attributeMethodExpression));
+                }
+                else if(isValidator)
+                {
+                    expectedParams = new Class[]{FacesContext.class,UIComponent.class,Object.class};
+                    attributeMethodExpression = expressionFactory.createMethodExpression(context.getELContext(), expressionString, expectedReturn, expectedParams);
+                    ((EditableValueHolder) target).addValidator(new MethodExpressionValidator(attributeMethodExpression));
+                }
+                else if(isValueChangeListener)
+                {
+                    expectedParams = new Class[]{ValueChangeEvent.class};
+                    attributeMethodExpression = expressionFactory.createMethodExpression(context.getELContext(), expressionString, expectedReturn, expectedParams);
+                    ((EditableValueHolder) target).addValueChangeListener(new MethodExpressionValueChangeListener(attributeMethodExpression));
+                }
+                else
+                {
+                    //TODO: implement here - derive attribute name from method-signature
+                    //If name is not equal to any of the previously listed strings, call getExpressionString() on the attributeValueExpression and use that string to create a MethodExpression 
+                    //where the signature is created based on the value of the "method-signature" attribute of the <composite:attribute /> tag.
+                    
+                    //Otherwise, assume that the MethodExpression  should be placed in the components attribute set. The runtme must create the MethodExpression instance based on the value of the "method-signature" attribute.
+                }
+                
+                
+            }
+        }
+    }
+    
+    @Override
+    public void retargetAttachedObjects(FacesContext context,
+            UIComponent topLevelComponent, List<AttachedObjectHandler> handlers)
+    {
+        checkNull(context, "context");
+        checkNull(topLevelComponent, "topLevelComponent");
+        checkNull(handlers, "handlers");
+        
+        BeanInfo beanInfo = (BeanInfo)topLevelComponent.getAttributes().get(UIComponent.BEANINFO_KEY);
+        
+        if(beanInfo == null)
+        {
+            log.error("BeanInfo not found");
+            return;
+        }
+        
+        BeanDescriptor beanDescriptor = beanInfo.getBeanDescriptor();
+        List<AttachedObjectTarget> targetList = (List<AttachedObjectTarget>)beanDescriptor.getValue(AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY);
+
+        for (AttachedObjectHandler curHandler : handlers)
+        {
+            String forAttributeValue = curHandler.getFor();
+
+            for(AttachedObjectTarget curTarget : targetList)
+            {
+                List<UIComponent> targetUIComponents = curTarget.getTargets(topLevelComponent);
+                String curTargetName = curTarget.getName();
+
+                if( (curHandler instanceof ActionSource2AttachedObjectHandler) && curHandler instanceof ActionSource2AttachedObjectTarget)
+                {
+                    applyAttachedObjects(context,targetUIComponents, curHandler);
+                    break;
+                }
+                if( (curHandler instanceof EditableValueHolderAttachedObjectHandler) && curHandler instanceof EditableValueHolderAttachedObjectTarget)
+                {
+                    applyAttachedObjects(context,targetUIComponents, curHandler);
+                    break;
+                }
+                if( (curHandler instanceof ValueHolderAttachedObjectHandler) && curHandler instanceof ValueHolderAttachedObjectTarget)
+                {
+                    applyAttachedObjects(context,targetUIComponents, curHandler);
+                    break;
+                }
+            }
+        }
+    }
+    
+    private void applyAttachedObjects(FacesContext context, List<UIComponent> targetUIComponents, AttachedObjectHandler curHandler)
+    {
+        for (UIComponent target : targetUIComponents)
+        {
+            curHandler.applyAttachedObject(context, target);
+        }
+    }
+    
+    private void checkNull(final Object o, final String param)
+    {
+        if (o == null)
+        {
+            throw new NullPointerException(param + " can not be null.");
+        }
+    }
 }

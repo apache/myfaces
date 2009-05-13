@@ -87,8 +87,16 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
                     }
                 }
                 if (!founded)
-                {
-                    builder.append(viewId);
+                {   
+                    if(viewId.lastIndexOf(".") != -1 )
+                    {
+                        builder.append(viewId.substring(0,viewId.lastIndexOf(".")));
+                    }
+                    else
+                    {
+                        builder.append(viewId);
+                    }
+                    builder.append(contextSuffixes[0]);
                 }
             }
             else

@@ -38,5 +38,5 @@ public interface AttachedObjectTarget
 
     public String getName();
 
-    public List<UIComponent> getTargets();
+    public List<UIComponent> getTargets(UIComponent topLevelComponent);
 }

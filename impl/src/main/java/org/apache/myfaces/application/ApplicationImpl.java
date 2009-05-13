@@ -208,7 +208,7 @@ public class ApplicationImpl extends Application
         }
         // set default implementation in constructor
         // pragmatic approach, no syncronizing will be needed in get methods
-        _viewHandler = new JspViewHandlerImpl();
+        _viewHandler = new JspViewHandlerImpl(); //TODO: replace with new ViewHandlerImpl class when VDL methods are fully implemented
         _navigationHandler = new NavigationHandlerImpl();
         _actionListener = new ActionListenerImpl();
         _defaultRenderKitId = "HTML_BASIC";

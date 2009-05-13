@@ -25,6 +25,7 @@ import javax.faces.FacesException;
 import javax.faces.application.Resource;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
+import javax.faces.view.StateManagementStrategy;
 import javax.faces.view.ViewMetadata;
 import javax.servlet.http.HttpServletResponse;
 
@@ -146,5 +147,13 @@ public class JspViewDeclarationLanguage extends ViewDeclarationLanguageBase
         {
             throw new FacesException(ioe);
         }
+    }
+
+    @Override
+    public StateManagementStrategy getStateManagementStrategy(
+            FacesContext context, String viewId)
+    {
+        // TODO implement here
+        return null;
     }
 }

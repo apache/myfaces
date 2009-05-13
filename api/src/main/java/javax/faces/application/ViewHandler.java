@@ -160,21 +160,17 @@ public abstract class ViewHandler
      */
     public String deriveViewId(FacesContext context, String input)
     {
-        // TODO: IMPLEMENT HERE? I would have said IMPL
-        return null;
+        //The default implementation of this method simply returns rawViewId unchanged.
+        return input;
     }
 
     /**
-     * TODO: IMPLEMENT IMPL - new algorithm see section 7.5.2 of the specification
-     * 
-     * Return a URL that a remote system can invoke in order to access the specified view.
-     * <p>
-     * Note that the URL a user enters and the viewId which is invoked can be different. The simplest difference 
-     * is a change in suffix (eg url "foo.jsf" references view "foo.jsp").
+     * Returns a URL, suitable for encoding and rendering, that (if activated) will cause the JSF request processing lifecycle for the specified viewId to be executed
      */
     public abstract String getActionURL(FacesContext context, String viewId);
 
     /**
+     * Return a JSF action URL derived from the viewId argument that is suitable to be used as the target of a link in a JSF response. Compiliant implementations must implement this method as specified in section JSF.7.5.2. The default implementation simply calls through to getActionURL(javax.faces.context.FacesContext, java.lang.String), passing the arguments context and viewId.
      * 
      * @param context
      * @param viewId
@@ -187,11 +183,16 @@ public abstract class ViewHandler
     public String getBookmarkableURL(FacesContext context, String viewId, Map<String, List<String>> parameters,
                                      boolean includeViewParams)
     {
-        // TODO: IMPLEMENT IMPL
         return getActionURL(context, viewId);
     }
 
     /**
+     * Return the ViewDeclarationLanguage instance used for this ViewHandler  instance.
+     * <P>
+     * The default implementation must use ViewDeclarationLanguageFactory.getViewDeclarationLanguage(java.lang.String) to obtain the appropriate ViewDeclarationLanguage implementation for the argument viewId. Any exceptions thrown as a result of invoking that method must not be swallowed.
+     * <P>
+     * The default implementation of this method returns null.
+     * 
      * @param context
      * @param viewId
      * @return
@@ -203,6 +204,8 @@ public abstract class ViewHandler
     }
 
     /**
+     * Return a JSF action URL derived from the viewId argument that is suitable to be used by the NavigationHandler to issue a redirect request to the URL using a NonFaces request. Compiliant implementations must implement this method as specified in section JSF.7.5.2. The default implementation simply calls through to getActionURL(javax.faces.context.FacesContext, java.lang.String), passing the arguments context and viewId.
+     * 
      * @param context
      * @param viewId
      * @param parameters
@@ -212,24 +215,20 @@ public abstract class ViewHandler
     public String getRedirectURL(FacesContext context, String viewId, Map<String, List<String>> parameters,
                                  boolean includeViewParams)
     {
-        // TODO: IMPLEMENT IMPL
         return getActionURL(context, viewId);
     }
 
     /**
-     * TODO: IMPLEMENT IMPL - new algorithm see section 7.5.2 of the specification
-     * 
-     * Return a URL that a remote system can invoke in order to access the specified resource.
-     * <p>
-     * When path starts with a slash, it is relative to the webapp root. Otherwise it is relative to the value returned
-     * by getActionURL.
+     * Returns a URL, suitable for encoding and rendering, that (if activated) will retrieve the specified web application resource.
      */
     public abstract String getResourceURL(FacesContext context, String path);
 
     /**
-     * TODO: IMPLEMENT IMPL - algorithm change
-     * 
-     * Method must be called by the JSF impl at the beginning of Phase <i>Restore View</i> of the JSF lifecycle.
+     * Initialize the view for the request processing lifecycle.
+     * <P>
+     * This method must be called at the beginning of the Restore View Phase of the Request Processing Lifecycle. It is responsible for performing any per-request initialization necessary to the operation of the lifycecle.
+     * <P>
+     * The default implementation must perform the following actions. If ExternalContext.getRequestCharacterEncoding() returns null, call calculateCharacterEncoding(javax.faces.context.FacesContext) and pass the result, if non-null, into the ExternalContext.setRequestCharacterEncoding(java.lang.String) method. If ExternalContext.getRequestCharacterEncoding() returns non-null take no action.
      * 
      * @since JSF 1.2
      */
@@ -250,94 +249,23 @@ public abstract class ViewHandler
     }
 
     /**
-     * TODO: IMPLEMENT IMPL - new algorithm see the specification
-     * 
-     * Combine the output of all the components in the viewToRender with data from the original view template (if any)
-     * and write the result to context.externalContext.response.
-     * <p>
-     * Component output is generated by invoking the encodeBegin, encodeChildren (optional) and encodeEnd methods on
-     * relevant components in the specified view. How this is interleaved with the non-component content of the view
-     * template (if any) is left to the ViewHandler implementation.
-     * <p>
-     * The actual type of the Response object depends upon the concrete implementation of this class. It will almost
-     * certainly be an OutputStream of some sort, but may be specific to the particular request/response system in use.
-     * <p>
-     * If the view cannot be rendered (eg due to an error in a component) then a FacesException is thrown.
-     * <p>
-     * Note that if a "postback" has occurred but no navigation to a different view, then the viewToRender will be fully
-     * populated with components already. However on direct access to a new view, or when navigation has occurred, the
-     * viewToRender will just contain an empty UIViewRoot object that must be populated with components from the
-     * "view template".
+     *  Perform whatever actions are required to render the response view to the response object associated with the current FacesContext.
+     *  <P>
+     *  Otherwise, the default implementation must obtain a reference to the ViewDeclarationLanguage for the viewId of the argument viewToRender and call its ViewDeclarationLanguage.renderView(javax.faces.context.FacesContext, javax.faces.component.UIViewRoot) method, returning the result and not swallowing any exceptions thrown by that method.
      */
     public abstract void renderView(FacesContext context, UIViewRoot viewToRender) throws IOException, FacesException;
 
     /**
-     * TODO: IMPLEMENT IMPL - new algorithm see the specification
-     * 
-     * Handle a "postback" request by recreating the component tree that was most recently presented to the user for the
-     * specified view.
-     * <p>
-     * When the user performs a "postback" of a view that has previously been created, ie is updating the state of an
-     * existing view tree, then the view handler must recreate a view tree identical to the one used previously to
-     * render that view to the user, so that the data received from the user can be compared to the old state and the
-     * correct "changes" detected (well, actually only those components that respond to input are actually needed before
-     * the render phase).
-     * <p>
-     * The components in this tree will then be given the opportunity to examine new input data provided by the user,
-     * and react in the appropriate manner for that component, as specified for the JSF lifecycle.
-     * <p>
-     * Much of the work required by this method <i>must</i> be delegated to an instance of StateManager.
-     * <p>
-     * If there is no record of the current user having been sent the specified view (ie no saved state information
-     * available), then NULL should be returned.
-     * <p>
-     * Note that input data provided by the user may also be used to determine exactly how to restore this view. In the
-     * case of "client side state", information about the components to be restored will be available here. Even for
-     * "server side state", user input may include an indicator that is used to select among a number of different saved
-     * states available for this viewId and this user.
-     * <p>
-     * Note that data received from users is inherently untrustworthy; care should be taken to validate this information
-     * appropriately.
-     * <p>
-     * See writeState for more details.
+     * Perform whatever actions are required to restore the view associated with the specified FacesContext and viewId. It may delegate to the restoreView of the associated StateManager to do the actual work of restoring the view. If there is no available state for the specified viewId, return null.
+     * <P>
+     * Otherwise, the default implementation must obtain a reference to the ViewDeclarationLanguage for this viewId and call its ViewDeclarationLanguage.restoreView(javax.faces.context.FacesContext, java.lang.String) method, returning the result and not swallowing any exceptions thrown by that method.
      */
     public abstract UIViewRoot restoreView(FacesContext context, String viewId);
 
     /**
-     * @param context
-     * @param topLevelComponent
-     * @param handlers
-     */
-    public void retargetAttachedObjects(FacesContext context, UIComponent topLevelComponent,
-                                        List<AttachedObjectHandler> handlers)
-    {
-        // TODO: IMPLEMENT IMPL
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * @param context
-     * @param topLevelComponent
-     */
-    public void retargetMethodExpressions(FacesContext context, UIComponent topLevelComponent)
-    {
-        // TODO: IMPLEMENT IMPL
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * TODO: IMPLEMENT IMPL - algorithm change
-     * 
-     * Write sufficient information to context.externalContext.response in order to be able to restore this view if the
-     * user performs a "postback" using that rendered response.
-     * <p>
-     * For "client side state saving", sufficient information about the view state should be written to allow a
-     * "restore view" operation to succeed later. This does not necessarily mean storing <i>all</i> data about the
-     * current view; only data that cannot be recreated from the "template" for this view needs to be saved.
-     * <p>
-     * For "server side state saving", this method may write out nothing. Alternately it may write out a
-     * "state identifier" to identify which of multiple saved user states for a particular view should be selected (or
-     * just verify that the saved state does indeed correspond to the expected one).
+     * Take any appropriate action to either immediately write out the current state information (by calling StateManager.writeState(javax.faces.context.FacesContext, java.lang.Object), or noting where state information should later be written.
+     * <P>
+     * This method must do nothing if the current request is an Ajax request. When responding to Ajax requests, the state is obtained by calling StateManager.getViewState(javax.faces.context.FacesContext) and then written into the Ajax response during final encoding (UIViewRoot.encodeEnd(javax.faces.context.FacesContext). 
      */
     public abstract void writeState(FacesContext context) throws IOException;
 

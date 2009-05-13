@@ -20,8 +20,10 @@ package javax.faces.view;
 
 import java.beans.BeanInfo;
 import java.io.IOException;
+import java.util.List;
 
 import javax.faces.application.Resource;
+import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
@@ -40,10 +42,23 @@ public abstract class ViewDeclarationLanguage
     public abstract BeanInfo getComponentMetadata(FacesContext context, Resource componentResource);
 
     public abstract Resource getScriptComponentResource(FacesContext context, Resource componentResource);
+    
+    public abstract StateManagementStrategy getStateManagementStrategy(FacesContext context, String viewId); 
 
     public abstract ViewMetadata getViewMetadata(FacesContext context, String viewId);
 
     public abstract void renderView(FacesContext context, UIViewRoot view) throws IOException;
 
     public abstract UIViewRoot restoreView(FacesContext context, String viewId);
+    
+    public void retargetAttachedObjects(FacesContext context, UIComponent topLevelComponent, List<AttachedObjectHandler> handlers)
+    {
+        //TODO: implement impl
+    }
+
+    public void retargetMethodExpressions(FacesContext context, UIComponent topLevelComponent)
+    {
+        //TODO: implement impl
+    }
+              
 }
