@@ -79,6 +79,7 @@ public class FacesConfigEntityResolver
         {
             URL url = new URL(systemId);
             JarURLConnection conn = (JarURLConnection) url.openConnection();
+            conn.setUseCaches(false);
             JarEntry jarEntry = conn.getJarEntry();
             if (jarEntry == null)
             {
