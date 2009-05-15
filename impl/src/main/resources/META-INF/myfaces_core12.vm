@@ -140,6 +140,10 @@ $baseContent
          <deferred-value>
              <type>java.lang.Object</type>
          </deferred-value>
+#elseif ($property.className == "java.util.TimeZone" && $component.name == "f:convertDateTime") 
+         <deferred-value>
+             <type>java.lang.Object</type>
+         </deferred-value>
 #else
          <deferred-value>
              <type>$property.className</type>
