@@ -92,11 +92,11 @@ public class FacesContextImpl
 
     private FacesContextImpl(final ReleaseableExternalContext externalContext)
     {
+        _externalContext = externalContext;
+        FacesContext.setCurrentInstance(this);  //protected method, therefore must be called from here
         _application = ((ApplicationFactory)FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY))
                 .getApplication();
         _renderKitFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
-        _externalContext = externalContext;
-        FacesContext.setCurrentInstance(this);  //protected method, therefore must be called from here
     }
 
     //~ Methods ------------------------------------------------------------------------------------
