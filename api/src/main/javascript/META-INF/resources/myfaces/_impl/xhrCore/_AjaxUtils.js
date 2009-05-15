@@ -114,6 +114,41 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxUtils"))
         }
     }
 
+    myfaces._impl.xhrCore._AjaxUtils.prototype.getXHRObject = function() {
+        if('undefined' != typeof XMLHttpRequest && null != XMLHttpRequest) {
+            return new XMLHttpRequest();
+        }
+        //IE
+        try {
+            return new ActiveXObject("Msxml2.XMLHTTP");
+        } catch (e) {
+            return new ActiveXObject('Microsoft.XMLHTTP');
+        }
+       
+    }
+
+
+    myfaces._impl.xhrCore._AjaxUtils.prototype.loadScript = function(src, type) {
+        var xhr = this.getXHRObject();
+        xhr.open("GET", src, false);
+        xhr.send(null);
+
+
+
+        //since we are synchronous we do it after not with onReadyStateChange
+        if(xhr.readyState == 4) {
+            if (xhr.status == 200) {
+                 myfaces._impl._util._Utils.globalEval(xhr.responseText);
+            } else {
+                throw Error(xhr.responseText);
+            }
+        } else {
+            throw Error("Loading of script "+src+" failed ");
+        }
+    }
+
+
+
     /**
      * add a single field to stringbuffer for param submission
      * @param {HtmlElement} element -

@@ -30,18 +30,18 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
 
 
     myfaces._impl._util._Utils.browserDetection = function() {
-                /**
-        * browser detection code
-        * cross ported from dojo 1.2
-        *
-        * dojos browser detection code is very sophisticated
-        * hence we port it over it allows a very fine grained detection of
-        * browsers including the version number
-        * this however only can work out if the user
-        * does not alter the user agend, which they normally dont!
-        *
-        * the exception is the ie detection which relies on specific quirks in ie
-        */
+        /**
+         * browser detection code
+         * cross ported from dojo 1.2
+         *
+         * dojos browser detection code is very sophisticated
+         * hence we port it over it allows a very fine grained detection of
+         * browsers including the version number
+         * this however only can work out if the user
+         * does not alter the user agend, which they normally dont!
+         *
+         * the exception is the ie detection which relies on specific quirks in ie
+         */
        	var n = navigator;
         var dua = n.userAgent,
         dav = n.appVersion,
@@ -94,7 +94,7 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
         }
     };
 
-
+  
 
     /**
      * [STATIC]
@@ -125,7 +125,8 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
                             go = true;
                         }
                     }
-                    eval(test); // run the script
+                    /*we have to run the script under a global context*/
+                    myfaces._impl._util._Utils.globalEval(test); // run the script
                 } catch (e) {
                     myfaces._impl.xhrCore._Exception.throwNewError(request, context, "Utils", "runScripts", e);
                 }
@@ -167,7 +168,7 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
 
 
             var item = (itemIdToReplace instanceof Node) ? itemIdToReplace :
-            myfaces._impl._util._Utils.getElementFromForm(request, context, itemIdToReplace, form);
+                myfaces._impl._util._Utils.getElementFromForm(request, context, itemIdToReplace, form);
             if (item == null) {
                 myfaces._impl.xhrCore._Exception.throwNewWarning
                 (request, context, "Utils", "replaceHTMLItem", "Unknown Html-Component-ID: " + itemIdToReplace);
@@ -257,13 +258,14 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
             if(myfaces._impl._util._Utils.ieQuircksEvents[attribute]) {
                 if(myfaces._impl._util._LangUtils.isString(attribute)) {
                     domNode[attribute] = function(event) {
-                        eval(attribute);
+                        //TODO check the scope of this handler
+                        myfaces._impl._util._Utils.globalEval(attribute);
                     };
                 }
             }
             domNode[attribute] = value;
         }
-    //TODO this needs further testing I will leave it for now...
+        //TODO this needs further testing I will leave it for now...
     };
 
     /**
@@ -279,21 +281,21 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
         //
         //tested currently safari, ie, firefox, opera
         var retVal = (_LangUtils.exists(myfaces._impl._util._Utils.browser,"isIE") &&
-               ( myfaces._impl._util._Utils.browser.isIE > 5.5))||
-                (_LangUtils.exists(myfaces._impl._util._Utils.browser,"isKhtml") &&
-                _LangUtils.exists(myfaces._impl._util._Utils.browser.isKhtml > 0))   ||
-                (_LangUtils.exists(myfaces._impl._util._Utils.browser,"isWebKit") &&
-                _LangUtils.exists(myfaces._impl._util._Utils.browser.isWebKit > 0));
+            ( myfaces._impl._util._Utils.browser.isIE > 5.5))||
+            (_LangUtils.exists(myfaces._impl._util._Utils.browser,"isKhtml") &&
+            _LangUtils.exists(myfaces._impl._util._Utils.browser.isKhtml > 0))   ||
+            (_LangUtils.exists(myfaces._impl._util._Utils.browser,"isWebKit") &&
+            _LangUtils.exists(myfaces._impl._util._Utils.browser.isWebKit > 0));
       
-            return retVal;
+        return retVal;
                
-       //another way to determine this without direct user agent parsing probably could
-       //be to add an embedded script tag programmatically and check for the script variable
-       //set by the script if existing, the add went through an eval if not then we
-       //have to deal with it outselves, this might be dangerous in case of the ie however
-       //so in case of ie we have to parse for all other browsers we can make a dynamic 
-       //check if the browser does auto eval
-       //TODO discuss those things
+        //another way to determine this without direct user agent parsing probably could
+        //be to add an embedded script tag programmatically and check for the script variable
+        //set by the script if existing, the add went through an eval if not then we
+        //have to deal with it outselves, this might be dangerous in case of the ie however
+        //so in case of ie we have to parse for all other browsers we can make a dynamic
+        //check if the browser does auto eval
+        //TODO discuss those things
        
     };
 
@@ -330,7 +332,7 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
             if('undefined' == typeof includeName || nameSearch == null) {
                 nameSearch = false;
             }
-            if('undefined' == typeof localSearchOnly || localSearchOnly == null) {
+            if('undefined' == typeof localSearchOnly || localSearchOnly == null) {
                 localSearchOnly = false;
             }
 
@@ -339,7 +341,7 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
             
             //we first check for a name entry!
             if(nameSearch && 'undefined' != typeof form.elements[itemIdOrName] && null != form.elements[itemIdOrName]) {
-                    return element;
+                return element;
             }
             //if no name entry is found we check for an Id
             for ( var f = 0; f < fLen; f++) {
@@ -403,7 +405,7 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
             if (childItems[c].tagName != null
                 && childItems[c].tagName.toLowerCase() == childName
                 && (itemName == null || (itemName != null && itemName == childItems[c]
-                    .getAttribute("name")))) {
+            .getAttribute("name")))) {
                 return childItems[c];
             }
         }
@@ -430,6 +432,20 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
         }
         return defaultValue;
     };
+
+    /**
+     * global eval on scripts
+     * 
+     */
+    myfaces._impl._util._Utils.globalEval = function(code) {
+
+        if (window.execScript) {
+            window.execScript(code);
+            return;
+        }
+
+        eval.call(null, code);
+    }
 
     /**
      * gets the local or global options with local ones having higher priority

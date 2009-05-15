@@ -165,7 +165,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
                 if (!this.processUpdate(request, context, changes[i])) return false;
             } else if (changes[i].tagName == this._PCMD_EVAL) {
                 //eval is always in CDATA blocks
-                eval(changes[i].firstChild.data);
+                myfaces._impl._util._Utils.globalEval(changes[i].firstChild.data);
             } else if (changes[i].tagName == this._PCMD_INSERT) {
                 if (!this.processInsert(request, context, changes[i])) return false;
             } else if (changes[i].tagName == this._PCMD_DELETE) {

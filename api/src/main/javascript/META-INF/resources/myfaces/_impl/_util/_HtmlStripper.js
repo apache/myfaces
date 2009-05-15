@@ -27,6 +27,8 @@
  * the html elements
  * so we only have to strip those
  */
+
+
 _reserveMyfacesNamespaces();
 
 if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_HtmlStripper")) {

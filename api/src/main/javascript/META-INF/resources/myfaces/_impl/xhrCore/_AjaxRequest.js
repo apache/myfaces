@@ -79,21 +79,13 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxRequest"
 
     myfaces._impl.xhrCore._AjaxRequest.prototype.send = function() {
         try {
-            if (myfaces._impl._util._Utils.isUserAgentInternetExplorer()) {
-                // request object for Internet Explorer
-                try {
-                    this.m_xhr = new ActiveXObject("Msxml2.XMLHTTP");
-                } catch (e) {
-                    this.m_xhr = new ActiveXObject('Microsoft.XMLHTTP');
-                }
-            } else {
-                // request object for standard browser
-                this.m_xhr = new XMLHttpRequest();
-            }
+            this.m_xhr = this.m_ajaxUtil.getXHRObject();
+            
             this.m_xhr.open("POST", this.m_sourceForm.action, true);
             this.m_xhr.setRequestHeader("Content-Type", this.m_contentType);
             this.m_xhr.setRequestHeader("Faces-Request", "partial/ajax");
             this.m_xhr.onreadystatechange = myfaces._impl.xhrCore._AjaxRequestQueue.handleCallback;
+
             jsf.ajax.sendEvent(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl._AJAX_STAGE_BEGIN);
             this.m_xhr.send(this.m_requestParameters);
         } catch (e) {
