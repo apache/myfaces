@@ -117,6 +117,9 @@ public class ApplicationImpl extends Application
     // recives the runtime config instance during initializing
     private final static ThreadLocal<RuntimeConfig> initializingRuntimeConfig = new ThreadLocal<RuntimeConfig>();
 
+    // MyFaces specific System Property to set the ProjectStage, if not present via the standard way
+    public final static String MYFACES_PROJECT_STAGE_SYSTEM_PROPERTY_NAME = "org.apache.myfaces.PROJECT_STAGE";
+
     // ~ Instance fields
     // --------------------------------------------------------------------------
     // --
@@ -649,6 +652,14 @@ public class ApplicationImpl extends Application
             {
                 FacesContext context = FacesContext.getCurrentInstance();
                 stageName = context.getExternalContext().getInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME);
+            }
+
+            /*
+             * If not found so far, let's try the Apache MyFaces extension (see MYFACES-2235)
+             */
+            if (stageName == null)
+            {
+                stageName = System.getProperty(MYFACES_PROJECT_STAGE_SYSTEM_PROPERTY_NAME);
             }
 
             // If a value is found found
