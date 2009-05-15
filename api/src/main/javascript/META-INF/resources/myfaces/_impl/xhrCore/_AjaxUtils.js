@@ -114,6 +114,13 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxUtils"))
         }
     }
 
+    /**
+     * encapsulated xhr object which tracks down various implementations
+     * of the xhr object in a browser independend fashion
+     * (ie pre 7 used to have non standard implementations because
+     * the xhr object standard came after IE had implemented it first
+     * newer ie versions adhere to the standard and all other new browsers do anyway)
+     */
     myfaces._impl.xhrCore._AjaxUtils.prototype.getXHRObject = function() {
         if('undefined' != typeof XMLHttpRequest && null != XMLHttpRequest) {
             return new XMLHttpRequest();
@@ -128,12 +135,16 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxUtils"))
     }
 
 
+    /**
+     * loads a script and executes it under a global scope
+     * @param {String} src the source to be loaded
+     * @param {String} type the mime type of the script (currently ignored
+     * but in the long run it will be used)
+     */
     myfaces._impl.xhrCore._AjaxUtils.prototype.loadScript = function(src, type) {
         var xhr = this.getXHRObject();
         xhr.open("GET", src, false);
         xhr.send(null);
-
-
 
         //since we are synchronous we do it after not with onReadyStateChange
         if(xhr.readyState == 4) {
