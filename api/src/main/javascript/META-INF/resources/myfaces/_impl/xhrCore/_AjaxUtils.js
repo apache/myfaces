@@ -141,15 +141,30 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxUtils"))
      * @param {String} type the mime type of the script (currently ignored
      * but in the long run it will be used)
      */
-    myfaces._impl.xhrCore._AjaxUtils.prototype.loadScript = function(src, type) {
+    myfaces._impl.xhrCore._AjaxUtils.prototype.loadScript = function(src, type, defer, charSet) {
         var xhr = this.getXHRObject();
         xhr.open("GET", src, false);
+
+        if('undefined' != typeof charSet && null != charSet) {
+            xhr.setRequestHeader("Content-Type","application/x-javascript; charset:"+charSet);
+        }
+
         xhr.send(null);
 
         //since we are synchronous we do it after not with onReadyStateChange
         if(xhr.readyState == 4) {
             if (xhr.status == 200) {
-                 myfaces._impl._util._Utils.globalEval(xhr.responseText);
+                //defer also means we have to process after the ajax response
+                //has been processed
+                //we can achieve that with a small timeout, the timeout
+                //triggers after the processing is done!
+                if(!defer) {
+                    myfaces._impl._util._Utils.globalEval(xhr.responseText);
+                } else {
+                   setTimeout(function() {
+                     myfaces._impl._util._Utils.globalEval(xhr.responseText);
+                   },1);
+                }
             } else {
                 throw Error(xhr.responseText);
             }
