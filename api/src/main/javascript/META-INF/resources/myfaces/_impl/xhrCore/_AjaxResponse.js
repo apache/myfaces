@@ -232,7 +232,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
                 
                     document.documentElement.innerHTML  =  parser.parse(cDataBlock);
                         // innerHTML doesn't execute scripts, so no browser switch here
-                    myfaces._impl._util._Utils.runScripts(request, context, body);
+                    myfaces._impl._util._Utils.runScripts(request, context, cDataBlock);
                    
                     break;
                 case "javax.faces.ViewHead":
