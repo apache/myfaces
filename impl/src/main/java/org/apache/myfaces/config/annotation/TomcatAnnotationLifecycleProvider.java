@@ -27,7 +27,8 @@ import javax.faces.context.ExternalContext;
 import javax.servlet.ServletContext;
 import java.lang.reflect.InvocationTargetException;
 
-public class TomcatAnnotationLifecycleProvider implements DiscoverableLifecycleProvider
+public class TomcatAnnotationLifecycleProvider implements 
+    DiscoverableLifecycleProvider, LifecycleProvider2
 {
     private static Log log = LogFactory.getLog(TomcatAnnotationLifecycleProvider.class);
 
@@ -46,7 +47,7 @@ public class TomcatAnnotationLifecycleProvider implements DiscoverableLifecycleP
         log.info("Creating instance of " + className);
         Object object = clazz.newInstance();
         annotationProcessor.processAnnotations(object);
-        annotationProcessor.postConstruct(object);
+        //annotationProcessor.postConstruct(object);
         return object;
     }
 
@@ -68,6 +69,13 @@ public class TomcatAnnotationLifecycleProvider implements DiscoverableLifecycleP
             // ignore
         }
         return false;
+    }
+
+
+    public void postConstruct(Object o) throws IllegalAccessException,
+            InvocationTargetException
+    {
+        annotationProcessor.postConstruct(o);
     }
 
 }

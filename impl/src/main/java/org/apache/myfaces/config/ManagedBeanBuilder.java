@@ -40,8 +40,9 @@ import javax.naming.NamingException;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
 import org.apache.myfaces.config.annotation.LifecycleProvider;
+import org.apache.myfaces.config.annotation.LifecycleProvider2;
+import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
 import org.apache.myfaces.config.element.ListEntries;
 import org.apache.myfaces.config.element.ListEntry;
 import org.apache.myfaces.config.element.ManagedBean;
@@ -131,6 +132,14 @@ public class ManagedBeanBuilder
                     throw new IllegalStateException("Unknown managed bean type "
                             + bean.getClass().getName() + " for managed bean "
                             + beanConfiguration.getManagedBeanName() + '.');
+            }
+            
+            // MYFACES-1761 if implements LifecycleProvider,
+            //PostConstruct was already called, but if implements
+            //LifecycleProvider2, call it now.
+            if (lifecycleProvider instanceof LifecycleProvider2)
+            {
+                ((LifecycleProvider2)lifecycleProvider).postConstruct(bean);
             }
             return bean;
         }
