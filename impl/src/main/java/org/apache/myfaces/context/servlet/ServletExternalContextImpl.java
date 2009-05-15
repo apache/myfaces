@@ -125,10 +125,11 @@ public class ServletExternalContextImpl
                         if (session != null) {
                             characterEncoding = (String) session.getAttribute(ViewHandler.CHARACTER_ENCODING_KEY);
                         }
+                    }
 
-                        if (characterEncoding != null) {
-                            setCharacterEncodingMethod.invoke(servletRequest, new Object[]{characterEncoding});
-                        }
+                    if (characterEncoding != null)
+                    {
+                        setCharacterEncodingMethod.invoke(servletRequest, new Object[]{characterEncoding});
                     }
                 }
             } catch (Exception e)
