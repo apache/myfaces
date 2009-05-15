@@ -20,6 +20,7 @@ package org.apache.myfaces.webapp;
 
 import java.util.Iterator;
 
+import javax.el.ExpressionFactory;
 import javax.faces.FactoryFinder;
 import javax.faces.context.ExternalContext;
 import javax.faces.event.PhaseListener;
@@ -61,8 +62,15 @@ public class Jsp21FacesInitializer extends AbstractFacesInitializer
             getJspFactory().getJspApplicationContext(servletContext);
         appCtx.addELContextListener(new FacesELContextListener());
         
-        RuntimeConfig runtimeConfig = 
-            buildConfiguration(servletContext, externalContext, appCtx.getExpressionFactory());
+        // check for user-specified ExpressionFactory
+        ExpressionFactory expressionFactory = getUserDefinedExpressionFactory(externalContext);
+        if (expressionFactory == null)
+        {
+            expressionFactory = appCtx.getExpressionFactory();
+        }
+
+        RuntimeConfig runtimeConfig =
+            buildConfiguration(servletContext, externalContext, expressionFactory);
         
         // configure the el resolver for jsp
         configureResolverForJSP(appCtx, runtimeConfig);
