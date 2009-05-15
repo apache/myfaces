@@ -18,6 +18,11 @@
  */
 package javax.faces.application;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 import javax.el.ELContextListener;
 import javax.el.ELException;
 import javax.el.ELResolver;
@@ -25,13 +30,9 @@ import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.el.ReferenceSyntaxException;
-
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 /**
  * Holds webapp-wide resources for a JSF application. There is a single one of
@@ -52,19 +53,71 @@ import java.util.ResourceBundle;
 public abstract class Application
 {
     
+    /**
+     * Retrieve the current Myfaces Application Instance, lookup
+     * on the application map. All methods introduced on jsf 1.2
+     * for Application interface should thrown by default
+     * UnsupportedOperationException, but the ri scan and find the
+     * original Application impl, and redirect the call to that
+     * method instead throwing it, allowing application implementations
+     * created before jsf 1.2 continue working.   
+     */
+    private Application getMyfacesApplicationInstance()
+    {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext != null)
+        {
+            ExternalContext externalContext = facesContext.getExternalContext();
+            if (externalContext != null)
+            {
+                return (Application) externalContext.getApplicationMap().get("org.apache.myfaces.application.ApplicationImpl");
+            }
+        }
+        return null;
+    }
+    
+    private Application getMyfacesApplicationInstance(FacesContext facesContext)
+    {
+        if (facesContext != null)
+        {
+            ExternalContext externalContext = facesContext.getExternalContext();
+            if (externalContext != null)
+            {
+                return (Application) externalContext.getApplicationMap().get("org.apache.myfaces.application.ApplicationImpl");
+            }
+        }
+        return null;
+    }    
+    
     // The following concrete methods were added for JSF 1.2.  They supply default 
     // implementations that throw UnsupportedOperationException.  
     // This allows old Application implementations to still work.
     public void addELResolver(ELResolver resolver) {
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            application.addELResolver(resolver);
+            return;
+        }
         throw new UnsupportedOperationException();
     }
     
     public ELResolver getELResolver() {
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            return application.getELResolver();
+        }
         throw new UnsupportedOperationException();
     }
     
     public ResourceBundle getResourceBundle(FacesContext ctx, String name) 
             throws FacesException, NullPointerException {
+        Application application = getMyfacesApplicationInstance(ctx);
+        if (application != null)
+        {
+            return application.getResourceBundle(ctx, name);
+        }
         throw new UnsupportedOperationException();
     }
     
@@ -72,22 +125,49 @@ public abstract class Application
                                        FacesContext facesContext,
                                        String componentType) 
             throws FacesException, NullPointerException {
+        Application application = getMyfacesApplicationInstance(facesContext);
+        if (application != null)
+        {
+            return application.createComponent(componentExpression, facesContext, componentType);
+        }
         throw new UnsupportedOperationException();
     }
 
     public ExpressionFactory getExpressionFactory() {
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            return application.getExpressionFactory();
+        }
         throw new UnsupportedOperationException();
     }
     
     public void addELContextListener(ELContextListener listener) {
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            application.addELContextListener(listener);
+            return;
+        }
         throw new UnsupportedOperationException();
     }
     
     public void removeELContextListener(ELContextListener listener) {
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            application.removeELContextListener(listener);
+            return;
+        }
         throw new UnsupportedOperationException();
     }
     
     public ELContextListener[] getELContextListeners() {
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            return application.getELContextListeners();
+        }
         throw new UnsupportedOperationException();
     }
     
@@ -95,6 +175,11 @@ public abstract class Application
                                         String expression,
                                         Class expectedType)
              throws ELException {
+        Application application = getMyfacesApplicationInstance(context);
+        if (application != null)
+        {
+            return application.evaluateExpressionGet(context, expression, expectedType);
+        }
         throw new UnsupportedOperationException();
     }
     
