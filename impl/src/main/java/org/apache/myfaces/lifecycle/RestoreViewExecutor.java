@@ -19,6 +19,7 @@
 package org.apache.myfaces.lifecycle;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.faces.FacesException;
 import javax.faces.application.Application;
@@ -108,7 +109,9 @@ class RestoreViewExecutor implements PhaseExecutor {
    *         <code>false</code> otherwise
    */
   private boolean isPostback(FacesContext facesContext) {
-      return facesContext.getExternalContext().getRequestParameterMap().containsKey(HtmlResponseStateManager.STANDARD_STATE_SAVING_PARAM);
+      Map requestParameterMap = facesContext.getExternalContext().getRequestParameterMap(); 
+      return (requestParameterMap.containsKey(HtmlResponseStateManager.STANDARD_STATE_SAVING_PARAM) ||
+          requestParameterMap.containsKey("org.apache.myfaces.trinidad.faces.STATE"));
   } 
 
     public PhaseId getPhase() {
