@@ -180,7 +180,7 @@ public class HtmlResponseStateManager
         Object encodedState = 
             facesContext.getExternalContext().
                 getRequestParameterMap().get(STANDARD_STATE_SAVING_PARAM);
-        if(encodedState==null) { 
+        if(encodedState==null || (((String) encodedState).length() == 0)) { 
             return null;
         }
         
