@@ -163,7 +163,7 @@ public class HtmlResponseStateManager
 
         Object encodedState = reqParamMap.get(STANDARD_STATE_SAVING_PARAM);
 
-        if(encodedState==null)
+        if(encodedState==null  || (((String) encodedState).length() == 0))
             return null;        
 
         Object[] savedState = (Object[]) StateUtils.reconstruct((String) encodedState, facesContext.getExternalContext());
@@ -183,7 +183,7 @@ public class HtmlResponseStateManager
 
         Object encodedState = reqParamMap.get(STANDARD_STATE_SAVING_PARAM);
 
-        if(encodedState==null)
+        if(encodedState==null  || (((String) encodedState).length() == 0))
             return null;
 
         Object[] savedState = (Object[]) StateUtils.reconstruct((String) encodedState, facesContext.getExternalContext());
