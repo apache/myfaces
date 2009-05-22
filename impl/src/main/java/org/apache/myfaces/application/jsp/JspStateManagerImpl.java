@@ -28,6 +28,7 @@ import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
 import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
 import org.apache.myfaces.shared_impl.util.MyFacesObjectInputStream;
 
+import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
 import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
@@ -39,6 +40,9 @@ import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
 import java.io.*;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -756,9 +760,41 @@ public class JspStateManagerImpl
                 {
                     is = new GZIPInputStream(is);
                 }
-                ObjectInputStream in = new MyFacesObjectInputStream(
-                        is);
-                return new Object[] {in.readObject(), in.readObject()};
+                ObjectInputStream ois = null;
+                try
+                {
+                    final ObjectInputStream in = new MyFacesObjectInputStream(is);
+                    ois = in;
+                    Object object = null;
+                    if (System.getSecurityManager() != null) 
+                    {
+                        object = AccessController.doPrivileged(new PrivilegedExceptionAction<Object []>() 
+                        {
+                            public Object[] run() throws PrivilegedActionException, IOException, ClassNotFoundException
+                            {
+                                return new Object[] {in.readObject(), in.readObject()};                                    
+                            }
+                        });
+                    }
+                    else
+                    {
+                        object = new Object[] {in.readObject(), in.readObject()};
+                    }
+                    return object;
+                }
+                finally
+                {
+                    if (ois != null)
+                    {
+                        ois.close();
+                        ois = null;
+                    }
+                }
+            }
+            catch (PrivilegedActionException e) 
+            {
+                log.error("Exiting deserializeView - Could not deserialize state: " + e.getMessage(), e);
+                return null;
             }
             catch (IOException e)
             {

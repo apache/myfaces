@@ -266,7 +266,7 @@ public class ApplicationImpl extends Application
 
     private ClassLoader getClassLoader()
     {
-        return Thread.currentThread().getContextClassLoader();
+        return ClassUtils.getContextClassLoader();
     }
 
     String getBundleName(final FacesContext facesContext, final String name)
