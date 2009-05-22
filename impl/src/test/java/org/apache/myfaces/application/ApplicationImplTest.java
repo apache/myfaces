@@ -19,8 +19,12 @@
 package org.apache.myfaces.application;
 
 import static org.apache.myfaces.test.AssertThrowables.assertThrowable;
-import static org.easymock.EasyMock.*;
-import static org.easymock.classextension.EasyMock.*;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.isNull;
+import static org.easymock.classextension.EasyMock.createMock;
+import static org.easymock.classextension.EasyMock.replay;
 
 import java.util.ListResourceBundle;
 import java.util.Locale;
@@ -31,10 +35,12 @@ import javax.el.ELResolver;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.application.Application;
+import javax.faces.component.UIComponent;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
+import javax.faces.convert.ConverterException;
 import javax.faces.convert.EnumConverter;
 import javax.faces.el.ReferenceSyntaxException;
 import javax.faces.el.VariableResolver;
@@ -243,4 +249,50 @@ public class ApplicationImplTest extends TestCase
         assertNotNull(converter);
         assertEquals(converter.getClass(), EnumConverter.class);
     }    
+  
+
+    private interface EnumCoded { public int getCode(); }
+    private enum AnotherEnum implements EnumCoded { 
+    	VALUE1, VALUE2;
+		public int getCode() {return 0;}
+	};
+	
+	public static class EnumCodedTestConverter implements Converter
+	{
+
+        public EnumCodedTestConverter()
+        {
+        }
+
+        public Object getAsObject(FacesContext context, UIComponent component,
+                String value) throws ConverterException
+        {
+            return null;
+        }
+
+        public String getAsString(FacesContext context, UIComponent component,
+                Object value) throws ConverterException
+        {
+            return null;
+        }
+	}
+	
+    /**
+     * Test method for
+     * {@link javax.faces.application.Application#createConverter(java.lang.Class)}.
+     * <p>
+     * Tests the situation when a object is both, an enum and an implementor of an
+     * interface for which we have a specific converter registered. 
+     * The interface should take precedence over the fact that our object is also
+     * an enum.
+     */
+    public void testCreateConverterForInterface() throws Exception 
+    {
+        app.addConverter(Enum.class, EnumConverter.class.getName());
+    	app.addConverter(EnumCoded.class, EnumCodedTestConverter.class.getName());
+    	
+    	Converter converter = app.createConverter(AnotherEnum.class);
+    	assertNotNull(converter);
+        assertEquals(converter.getClass(), EnumCodedTestConverter.class);
+    }
 }
