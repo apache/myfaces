@@ -30,6 +30,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 
+import org.apache.myfaces.shared_impl.util.ClassUtils;
+
 /**
  * A resource loader implementation which loads resources from the thread ClassLoader.
  * 
@@ -389,7 +391,7 @@ public class ClassLoaderResourceLoader extends ResourceLoader
      */
     protected ClassLoader getClassLoader()
     {
-        return Thread.currentThread().getContextClassLoader();
+        return ClassUtils.getContextClassLoader();
     }
 
     @Override

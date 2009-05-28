@@ -20,6 +20,7 @@ package org.apache.myfaces.config.annotation;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -88,7 +89,7 @@ class _PackageInfo
             // convert the package name to a path
             path = pckgname.replace('.', '/');
 
-            cld = Thread.currentThread().getContextClassLoader();
+            cld = ClassUtils.getContextClassLoader();
             if (cld == null)
             {
                 throw new ClassNotFoundException("Can't get class loader.");

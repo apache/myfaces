@@ -30,6 +30,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
 import org.apache.myfaces.view.facelets.util.Classpath;
@@ -387,7 +388,7 @@ public final class TagLibraryConfig
         {
             if ("-//Sun Microsystems, Inc.//DTD Facelet Taglib 1.0//EN".equals(publicId))
             {
-                URL url = Thread.currentThread().getContextClassLoader().getResource("facelet-taglib_1_0.dtd");
+                URL url = ClassUtils.getContextClassLoader().getResource("facelet-taglib_1_0.dtd");
                 return new InputSource(url.toExternalForm());
             }
             return null;
@@ -479,7 +480,7 @@ public final class TagLibraryConfig
 
     public void loadImplicit(Compiler compiler) throws IOException
     {
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        ClassLoader cl = ClassUtils.getContextClassLoader();
         URL[] urls = Classpath.search(cl, "META-INF/", SUFFIX);
         for (int i = 0; i < urls.length; i++)
         {

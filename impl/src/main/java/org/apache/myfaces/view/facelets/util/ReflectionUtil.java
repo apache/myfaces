@@ -21,6 +21,8 @@ package org.apache.myfaces.view.facelets.util;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
+import org.apache.myfaces.shared_impl.util.ClassUtils;
+
 public class ReflectionUtil
 {
     protected static final String[] EMPTY_STRING = new String[0];
@@ -53,12 +55,12 @@ public class ReflectionUtil
             if (name.endsWith("[]"))
             {
                 String nc = name.substring(0, name.length() - 2);
-                c = Class.forName(nc, false, Thread.currentThread().getContextClassLoader());
+                c = Class.forName(nc, false, ClassUtils.getContextClassLoader());
                 c = Array.newInstance(c, 0).getClass();
             }
             else
             {
-                c = Class.forName(name, false, Thread.currentThread().getContextClassLoader());
+                c = Class.forName(name, false, ClassUtils.getContextClassLoader());
             }
         }
         

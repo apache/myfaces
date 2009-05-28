@@ -37,6 +37,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.view.facelets.tag.TagAttributeImpl;
 import org.apache.myfaces.view.facelets.tag.TagAttributesImpl;
 import org.xml.sax.Attributes;
@@ -171,7 +172,7 @@ public final class SAXCompiler extends Compiler
              * if ("-//W3C//DTD XHTML 1.0 Transitional//EN".equals(publicId)) { dtd = "xhtml1-transitional.dtd"; } else
              * if (systemId != null && systemId.startsWith("file:/")) { return new InputSource(systemId); }
              */
-            URL url = Thread.currentThread().getContextClassLoader().getResource(dtd);
+            URL url = ClassUtils.getContextClassLoader().getResource(dtd);
             return new InputSource(url.toString());
         }
 

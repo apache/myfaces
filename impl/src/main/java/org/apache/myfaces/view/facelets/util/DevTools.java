@@ -44,6 +44,8 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
+import org.apache.myfaces.shared_impl.util.ClassUtils;
+
 public final class DevTools
 {
     private final static String TS = "&lt;";
@@ -158,7 +160,7 @@ public final class DevTools
 
     private static String[] _splitTemplate(String rsc) throws IOException
     {
-        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(rsc);
+        InputStream is = ClassUtils.getContextClassLoader().getResourceAsStream(rsc);
         if (is == null)
         {
             throw new FileNotFoundException(rsc);

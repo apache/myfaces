@@ -439,7 +439,7 @@ public class AnnotationConfigurator
 
         // Accumulate and return a list of classes in this JAR file
         List<Class> list = new ArrayList<Class>();
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        ClassLoader loader = ClassUtils.getContextClassLoader();
         if (loader == null)
         {
             loader = this.getClass().getClassLoader();
@@ -898,7 +898,7 @@ public class AnnotationConfigurator
 
     private ClassLoader getClassLoader()
     {
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        ClassLoader loader = ClassUtils.getContextClassLoader();
         if (loader == null)
         {
             loader = this.getClass().getClassLoader();

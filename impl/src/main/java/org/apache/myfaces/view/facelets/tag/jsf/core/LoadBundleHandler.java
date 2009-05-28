@@ -40,6 +40,7 @@ import javax.faces.view.facelets.TagAttributeException;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
@@ -224,7 +225,7 @@ public final class LoadBundleHandler extends TagHandler
         try
         {
             String name = this.basename.getValue(ctx);
-            ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            ClassLoader cl = ClassUtils.getContextClassLoader();
             if (root != null && root.getLocale() != null)
             {
                 bundle = ResourceBundle.getBundle(name, root.getLocale(), cl);

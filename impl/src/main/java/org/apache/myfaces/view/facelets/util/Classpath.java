@@ -33,6 +33,8 @@ import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.myfaces.shared_impl.util.ClassUtils;
+
 /**
  * @author Jacob Hookom
  * @author Roland Huss
@@ -47,7 +49,7 @@ public final class Classpath
 
     public static URL[] search(String prefix, String suffix) throws IOException
     {
-        return search(Thread.currentThread().getContextClassLoader(), prefix, suffix);
+        return search(ClassUtils.getContextClassLoader(), prefix, suffix);
     }
 
     public static URL[] search(ClassLoader loader, String prefix, String suffix) throws IOException
