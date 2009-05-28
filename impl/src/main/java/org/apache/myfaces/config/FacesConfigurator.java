@@ -19,12 +19,14 @@
 package org.apache.myfaces.config;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -236,12 +238,12 @@ public class FacesConfigurator
 
     private long getResourceLastModified(String resource)
     {
-        try
+        try 
         {
-            URL url = _externalContext.getResource(resource);
+            URL url =  _externalContext.getResource(resource);
             if (url != null)
             {
-                return url.openConnection().getLastModified();
+                return getResourceLastModified(url);
             }
         }
         catch (IOException e)
@@ -251,6 +253,66 @@ public class FacesConfigurator
         return 0;
     }
 
+    //Taken from trinidad URLUtils
+    private long getResourceLastModified(URL url) throws IOException
+    {
+        if ("file".equals(url.getProtocol()))
+        {
+            String externalForm = url.toExternalForm();
+            // Remove the "file:"
+            File file = new File(externalForm.substring(5));
+
+            return file.lastModified();
+        }
+        else
+        {
+            return getResourceLastModified(url.openConnection());
+        }
+    }
+
+    //Taken from trinidad URLUtils
+    private long getResourceLastModified(URLConnection connection) throws IOException
+    {
+        long modified;
+        if (connection instanceof JarURLConnection)
+        {
+            // The following hack is required to work-around a JDK bug.
+            // getLastModified() on a JAR entry URL delegates to the actual JAR file
+            // rather than the JAR entry.
+            // This opens internally, and does not close, an input stream to the JAR
+            // file.
+            // In turn, you cannot close it by yourself, because it's internal.
+            // The work-around is to get the modification date of the JAR file
+            // manually,
+            // and then close that connection again.
+
+            URL jarFileUrl = ((JarURLConnection) connection).getJarFileURL();
+            URLConnection jarFileConnection = jarFileUrl.openConnection();
+
+            try
+            {
+                modified = jarFileConnection.getLastModified();
+            }
+            finally
+            {
+                try
+                {
+                    jarFileConnection.getInputStream().close();
+                }
+                catch (Exception exception)
+                {
+                    // Ignored
+                }
+            }
+        }
+        else
+        {
+            modified = connection.getLastModified();
+        }
+
+        return modified;
+    }    
+    
     private long getLastModifiedTime()
     {
         long lastModified = 0;

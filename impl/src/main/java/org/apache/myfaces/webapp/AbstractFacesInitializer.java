@@ -44,6 +44,11 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
      * The logger instance for this class.
      */
     private static final Log log = LogFactory.getLog(AbstractFacesInitializer.class);
+    
+    /**
+     * This parameter specifies the ExpressionFactory implementation to use.
+     */
+    protected static final String EXPRESSION_FACTORY = "org.apache.myfaces.EXPRESSION_FACTORY";
 
     /**
      * Performs all necessary initialization tasks like configuring this JSF
@@ -146,6 +151,56 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
                 log.warn(warning);
             }
         }
+    }
+    
+    /**
+     * Try to load user-definied ExpressionFactory. Returns <code>null</code>,
+     * if no custom ExpressionFactory was specified. 
+     * 
+     * @param externalContext the current ExternalContext
+     * 
+     * @return User-specified ExpressionFactory, or 
+     *          <code>null</code>, if no no custom implementation was specified
+     * 
+     */
+    protected static ExpressionFactory getUserDefinedExpressionFactory(ExternalContext externalContext)
+    {
+        String expressionFactoryClassName = externalContext.getInitParameter(EXPRESSION_FACTORY);
+        if (expressionFactoryClassName != null
+                && expressionFactoryClassName.trim().length() > 0) {
+            if (log.isDebugEnabled()) {
+                log.debug("Attempting to load the ExpressionFactory implementation " 
+                        + "you've specified: '" + expressionFactoryClassName + "'.");
+            }
+            
+            return loadExpressionFactory(expressionFactoryClassName);
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Loads and instantiates the given ExpressionFactory implementation.
+     * 
+     * @param expressionFactoryClassName
+     *            the class name of the ExpressionFactory implementation
+     * 
+     * @return the newly created ExpressionFactory implementation, or
+     *         <code>null</code>, if an error occurred
+     */
+    protected static ExpressionFactory loadExpressionFactory(String expressionFactoryClassName) 
+    {
+       try {
+           Class<?> expressionFactoryClass = Class.forName(expressionFactoryClassName);
+           return (ExpressionFactory) expressionFactoryClass.newInstance();
+       } catch (Exception ex) {
+           if (log.isDebugEnabled()) {
+               log.debug("An error occured while instantiating a new ExpressionFactory. " 
+                   + "Attempted to load class '" + expressionFactoryClassName + "'.", ex);
+           }
+       }
+       
+       return null;
     }
 
     /**

@@ -38,6 +38,7 @@ import javax.el.ValueExpression;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 /**
  * Loads a resource bundle and saves it as a variable in the request scope.
@@ -126,7 +127,9 @@ public class LoadBundleTag extends TagSupport
         final ResourceBundle bundle;
         try
         {
-            bundle = ResourceBundle.getBundle(basename, locale, Thread.currentThread().getContextClassLoader());
+            bundle = ResourceBundle.getBundle(basename,
+                                              locale,
+                                              ClassUtils.getContextClassLoader());
         }
         catch (MissingResourceException e)
         {

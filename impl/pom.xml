@@ -34,17 +34,10 @@
       <plugin>
         <groupId>org.apache.myfaces.buildtools</groupId>
         <artifactId>myfaces-builder-plugin</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.3</version>
         <executions>
           <execution>
             <id>makemyfacesmetadata</id>
-            <configuration>
-                <!-- Qdox 1.6.3 does not parse inner enums on classes
-                so we have to exclude some files temporally.
-                Added linux case (paths start with /) to filter temporally too-->
-                <includes>/**/*.java,**/*.java</includes>
-                <excludes>/**/FacesCompositeELResolver.java,**/FacesCompositeELResolver.java</excludes>
-            </configuration>
             <goals>
               <goal>build-metadata</goal>
             </goals>
@@ -378,7 +371,7 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>jstl</groupId>
+      <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
       <!-- version defined in parent -->
       <scope>provided</scope>
@@ -459,7 +452,7 @@
     <dependency>
       <groupId>org.apache.myfaces.buildtools</groupId>
       <artifactId>myfaces-builder-annotations</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.3</version>
       <scope>provided</scope>
     </dependency>
 
@@ -591,6 +584,6 @@
   </repositories>
 
   <properties>
-    <myfaces-shared.version>3.0.5</myfaces-shared.version>
+    <myfaces-shared.version>3.0.6-SNAPSHOT</myfaces-shared.version>
   </properties>
 </project>

@@ -33,6 +33,7 @@ import javax.faces.FacesException;
 import javax.faces.component.ActionSource;
 import javax.faces.component.ActionSource2;
 import javax.faces.component.UIComponent;
+import javax.faces.context.ExternalContext;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.behavior.Behavior;
 import javax.faces.context.FacesContext;
@@ -81,6 +82,43 @@ import javax.faces.validator.Validator;
 @SuppressWarnings("deprecation")
 public abstract class Application
 {
+    
+    /**
+     * Retrieve the current Myfaces Application Instance, lookup
+     * on the application map. All methods introduced on jsf 1.2
+     * for Application interface should thrown by default
+     * UnsupportedOperationException, but the ri scan and find the
+     * original Application impl, and redirect the call to that
+     * method instead throwing it, allowing application implementations
+     * created before jsf 1.2 continue working.   
+     */
+    private Application getMyfacesApplicationInstance()
+    {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext != null)
+        {
+            ExternalContext externalContext = facesContext.getExternalContext();
+            if (externalContext != null)
+            {
+                return (Application) externalContext.getApplicationMap().get("org.apache.myfaces.application.ApplicationImpl");
+            }
+        }
+        return null;
+    }
+    
+    private Application getMyfacesApplicationInstance(FacesContext facesContext)
+    {
+        if (facesContext != null)
+        {
+            ExternalContext externalContext = facesContext.getExternalContext();
+            if (externalContext != null)
+            {
+                return (Application) externalContext.getApplicationMap().get("org.apache.myfaces.application.ApplicationImpl");
+            }
+        }
+        return null;
+    }
+    
     // The concrete methods throwing UnsupportedOperationExceptiom were added for JSF 1.2.
     // They supply default to allows old Application implementations to still work.
 
@@ -167,6 +205,12 @@ public abstract class Application
      */
     public void addELContextListener(ELContextListener listener)
     {
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            application.addELContextListener(listener);
+            return;
+        }
         throw new UnsupportedOperationException();
     }
 
@@ -197,6 +241,15 @@ public abstract class Application
      */
     public void addELResolver(ELResolver resolver)
     {
+        // The following concrete methods were added for JSF 1.2.  They supply default 
+        // implementations that throw UnsupportedOperationException.  
+        // This allows old Application implementations to still work.
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            application.addELResolver(resolver);
+            return;
+        }
         throw new UnsupportedOperationException();
     }
 
@@ -235,6 +288,11 @@ public abstract class Application
     public UIComponent createComponent(FacesContext context, Resource componentResource)
     {
         // TODO: IMPLEMENT IMPL JSF 2.0 #60
+        Application application = getMyfacesApplicationInstance(context);
+        if (application != null)
+        {
+            return application.createComponent(context, componentResource);
+        }
         throw new UnsupportedOperationException();
     }
 
@@ -249,6 +307,11 @@ public abstract class Application
      */
     public UIComponent createComponent(FacesContext context, String componentType, String rendererType)
     {
+        Application application = getMyfacesApplicationInstance(context);
+        if (application != null)
+        {
+            return application.createComponent(context, componentType, rendererType);
+        }
         throw new UnsupportedOperationException();
     }
 
@@ -312,9 +375,14 @@ public abstract class Application
      * 
      * @since 1.2
      */
-    public UIComponent createComponent(ValueExpression componentExpression, FacesContext contexte, String componentType)
+    public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType)
             throws FacesException
     {
+        Application application = getMyfacesApplicationInstance(context);
+        if (application != null)
+        {
+            return application.createComponent(componentExpression, context, componentType);
+        }
         throw new UnsupportedOperationException();
     }
 
@@ -331,6 +399,12 @@ public abstract class Application
     public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType,
                                        String rendererType)
     {
+        Application application = getMyfacesApplicationInstance(context);
+        if (application != null)
+        {
+            return application.createComponent(componentExpression, context,
+                    componentType, rendererType);
+        }
         throw new UnsupportedOperationException();
     }
 
@@ -442,6 +516,11 @@ public abstract class Application
     public <T> T evaluateExpressionGet(FacesContext context, String expression, Class<? extends T> expectedType)
             throws ELException
     {
+        Application application = getMyfacesApplicationInstance(context);
+        if (application != null)
+        {
+            return application.evaluateExpressionGet(context, expression, expectedType);
+        }
         throw new UnsupportedOperationException();
     }
 

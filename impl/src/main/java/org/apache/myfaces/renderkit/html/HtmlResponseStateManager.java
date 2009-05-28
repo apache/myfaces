@@ -196,12 +196,11 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
      * 
      * @return the reconstructed state, or <code>null</code> if there was no saved state
      */
-    private Object[] getSavedState(FacesContext facesContext)
-    {
-        Object encodedState =
-                facesContext.getExternalContext().getRequestParameterMap().get(STANDARD_STATE_SAVING_PARAM);
-        if (encodedState == null)
-        {
+    private Object[] getSavedState(FacesContext facesContext) {
+        Object encodedState = 
+            facesContext.getExternalContext().
+                getRequestParameterMap().get(STANDARD_STATE_SAVING_PARAM);
+        if(encodedState==null || (((String) encodedState).length() == 0)) { 
             return null;
         }
 

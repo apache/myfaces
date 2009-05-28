@@ -18,14 +18,15 @@
  */
 package org.apache.myfaces.config.annotation;
 
-import org.apache.myfaces.shared_impl.util.ClassUtils;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.naming.NamingException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 /**
  * See SRV.14.5 Servlet Specification Version 2.5 JSR 154 and Common Annotations for the Java Platform JSR 250
@@ -40,14 +41,15 @@ public class NoInjectionAnnotationLifecycleProvider implements LifecycleProvider
         Class<?> clazz = ClassUtils.classForName(className);
         Object object = clazz.newInstance();
         processAnnotations(object);
-        postConstruct(object);
+        //postConstruct(object);
         return object;
     }
 
     /**
      * Call postConstruct method on the specified instance.
      */
-    private void postConstruct(Object instance) throws IllegalAccessException, InvocationTargetException
+    public void postConstruct(Object instance)
+            throws IllegalAccessException, InvocationTargetException
     {
 
         // TODO the servlet spec is not clear about searching in superclass??

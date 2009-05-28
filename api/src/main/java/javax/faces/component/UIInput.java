@@ -117,6 +117,20 @@ public class UIInput extends UIOutput implements EditableValueHolder
         setLocalValueSet(true);
         super.setValue(value);
     }
+    
+    /**
+     * Return the current value of this component.
+     * <p>
+     * If a submitted value has been converted but not yet pushed into the
+     * model, then return that locally-cached value (see isLocalValueSet).
+     * <p>
+     * Otherwise, evaluate an EL expression to fetch a value from the model. 
+     */
+    public Object getValue()
+    {
+        if (isLocalValueSet()) return super.getLocalValue();
+        return super.getValue();
+    }
 
     /**
      * Set the "submitted value" of this component from the relevant data in the current servlet request object.

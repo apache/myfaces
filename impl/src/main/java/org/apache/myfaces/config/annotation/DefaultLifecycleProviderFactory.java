@@ -115,7 +115,7 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
 
 
     private boolean resolveLifecycleProviderFromService(ExternalContext externalContext) {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader classLoader = ClassUtils.getContextClassLoader();
         ClassLoaders loaders = new ClassLoaders();
         loaders.put(classLoader);
         DiscoverServiceNames dsn = new DiscoverServiceNames(loaders);

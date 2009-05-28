@@ -41,11 +41,6 @@ public class Jsp20FacesInitializer extends AbstractFacesInitializer
     private static final Log log = LogFactory.getLog(Jsp20FacesInitializer.class);
 
     /**
-     * This parameter specifies the ExpressionFactory implementation to use.
-     */
-    private static final String EXPRESSION_FACTORY = "org.apache.myfaces.EXPRESSION_FACTORY";
-
-    /**
      * The ExpressionFactory implementation of the EL-RI.
      */
     private static final String EL_RI_EXPRESSION_FACTORY_IMPL = "com.sun.facelets.el.ExpressionFactoryImpl";
@@ -75,25 +70,11 @@ public class Jsp20FacesInitializer extends AbstractFacesInitializer
         // there is no known ExpressionFactory available (i.e. if neither
         // "com.sun.facelets.el.ExpressionFactoryImpl" nor "org.apache.el.ExpressionFactoryImpl"
         // are available).
-        ExpressionFactory expressionFactory = null;
+        ExpressionFactory expressionFactory = getUserDefinedExpressionFactory(externalContext);
 
-        String expressionFactoryClassName = externalContext.getInitParameter(EXPRESSION_FACTORY);
-        if (expressionFactoryClassName != null && expressionFactoryClassName.trim().length() > 0)
-        {
-            if (log.isDebugEnabled())
-            {
-                log.debug("Attempting to load the ExpressionFactory implementation " + "you've specified: '"
-                        + expressionFactoryClassName + "'.");
-            }
-
-            expressionFactory = loadExpressionFactory(expressionFactoryClassName);
-        }
-
-        if (expressionFactory == null)
-        {
-            if (log.isInfoEnabled())
-            {
-                log.info("Either you haven't specified the ExpressionFactory implementation, or an "
+        if (expressionFactory == null) {
+            if (log.isInfoEnabled()) {
+                log.info("Either you haven't specified the ExpressionFactory implementation, or an " 
                         + "error occured while instantiating the implementation you've specified. "
                         + "However, attempting to load a known implementation.");
             }
@@ -118,33 +99,6 @@ public class Jsp20FacesInitializer extends AbstractFacesInitializer
         }
 
         buildConfiguration(servletContext, externalContext, expressionFactory);
-    }
-
-    /**
-     * Loads and instantiates the given ExpressionFactory implementation.
-     * 
-     * @param expressionFactoryClassName
-     *            the class name of the ExpressionFactory implementation
-     * 
-     * @return the newly created ExpressionFactory implementation, or <code>null</code>, if an error occurred
-     */
-    private static ExpressionFactory loadExpressionFactory(String expressionFactoryClassName)
-    {
-        try
-        {
-            Class<?> expressionFactoryClass = Class.forName(expressionFactoryClassName);
-            return (ExpressionFactory)expressionFactoryClass.newInstance();
-        }
-        catch (Exception ex)
-        {
-            if (log.isDebugEnabled())
-            {
-                log.debug("An error occured while instantiating a new ExpressionFactory. "
-                        + "Attempted to load class '" + expressionFactoryClassName + "'.", ex);
-            }
-        }
-
-        return null;
     }
 
     /**

@@ -329,7 +329,7 @@ public class ApplicationImpl extends Application
 
     private ClassLoader getClassLoader()
     {
-        return Thread.currentThread().getContextClassLoader();
+        return ClassUtils.getContextClassLoader();
     }
 
     String getBundleName(final FacesContext facesContext, final String name)
@@ -1226,13 +1226,6 @@ public class ApplicationImpl extends Application
         // Locate a Converter registered for the target class itself.
         String converterClassName = _converterClassNameToClassMap.get(targetClass);
 
-        // Get EnumConverter for enum classes with no special converter, check
-        // here as recursive call with java.lang.Enum will not work
-        if (converterClassName == null && targetClass.isEnum())
-        {
-            converterClassName = _converterClassNameToClassMap.get(Enum.class);
-        }
-
         // Locate a Converter registered for interfaces that are
         // implemented by the target class (directly or indirectly).
         if (converterClassName == null)
@@ -1251,6 +1244,12 @@ public class ApplicationImpl extends Application
                     }
                 }
             }
+        }
+
+        // Get EnumConverter for enum classes with no special converter, check
+        // here as recursive call with java.lang.Enum will not work
+        if (converterClassName == null && targetClass.isEnum()) {
+            converterClassName = _converterClassNameToClassMap.get(Enum.class);
         }
 
         if (converterClassName != null)

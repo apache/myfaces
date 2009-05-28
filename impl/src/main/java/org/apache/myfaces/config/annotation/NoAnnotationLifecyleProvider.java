@@ -22,7 +22,7 @@ import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class NoAnnotationLifecyleProvider implements LifecycleProvider
+public class NoAnnotationLifecyleProvider implements LifecycleProvider2
 {
 
 
@@ -35,4 +35,10 @@ public class NoAnnotationLifecyleProvider implements LifecycleProvider
     {
         return ClassUtils.classForName(className).newInstance();
     }
+    public void postConstruct(Object o) throws IllegalAccessException,
+            InvocationTargetException
+    {
+        // No op
+    }
+
 }
