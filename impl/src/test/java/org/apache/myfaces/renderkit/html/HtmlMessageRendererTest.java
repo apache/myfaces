@@ -79,13 +79,13 @@ public class HtmlMessageRendererTest extends AbstractJsfTestCase
                 form.getRendererType(),
                 new HtmlFormRenderer());        
         
-        inputText.setParent(form);
+        //inputText.setParent(form);
         inputText.setId("myInputId");
         
         message.setErrorClass(ERROR_CLASS);
         message.setWarnClass(WARN_CLASS);
         message.setInfoClass(INFO_CLASS);
-        message.setParent(form);
+        //message.setParent(form);
         
         form.getChildren().add(inputText);
         form.getChildren().add(message);
