@@ -29,16 +29,19 @@ import javax.naming.NamingException;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 /**
- * See SRV.14.5 Servlet Specification Version 2.5 JSR 154 and Common Annotations for the Java Platform JSR 250
+ * See SRV.14.5 Servlet Specification Version 2.5 JSR 154
+ * and Common Annotations for the Java Platform JSR 250
+
  */
 
-public class NoInjectionAnnotationLifecycleProvider implements LifecycleProvider
+public class NoInjectionAnnotationLifecycleProvider implements LifecycleProvider2
 {
 
-    public Object newInstance(String className) throws InstantiationException, IllegalAccessException, NamingException,
-        InvocationTargetException, ClassNotFoundException
+
+    public Object newInstance(String className)
+           throws InstantiationException, IllegalAccessException, NamingException, InvocationTargetException, ClassNotFoundException
     {
-        Class<?> clazz = ClassUtils.classForName(className);
+        Class clazz = ClassUtils.classForName(className);
         Object object = clazz.newInstance();
         processAnnotations(object);
         //postConstruct(object);
@@ -66,8 +69,10 @@ public class NoInjectionAnnotationLifecycleProvider implements LifecycleProvider
                 // the return value must be void
                 // the method may be public, protected, package private or private
 
-                if ((postConstruct != null) || (method.getParameterTypes().length != 0)
-                        || (Modifier.isStatic(method.getModifiers())) || (method.getExceptionTypes().length > 0)
+                if ((postConstruct != null)
+                        || (method.getParameterTypes().length != 0)
+                        || (Modifier.isStatic(method.getModifiers()))
+                        || (method.getExceptionTypes().length > 0)
                         || (!method.getReturnType().getName().equals("void")))
                 {
                     throw new IllegalArgumentException("Invalid PostConstruct annotation");
@@ -80,7 +85,8 @@ public class NoInjectionAnnotationLifecycleProvider implements LifecycleProvider
 
     }
 
-    public void destroyInstance(Object instance) throws IllegalAccessException, InvocationTargetException
+    public void destroyInstance(Object instance)
+            throws IllegalAccessException, InvocationTargetException
     {
 
         // TODO the servlet spec is not clear about searching in superclass??
@@ -97,8 +103,10 @@ public class NoInjectionAnnotationLifecycleProvider implements LifecycleProvider
                 // the return value must be void
                 // the method may be public, protected, package private or private
 
-                if ((preDestroy != null) || (method.getParameterTypes().length != 0)
-                        || (Modifier.isStatic(method.getModifiers())) || (method.getExceptionTypes().length > 0)
+                if ((preDestroy != null)
+                        || (method.getParameterTypes().length != 0)
+                        || (Modifier.isStatic(method.getModifiers()))
+                        || (method.getExceptionTypes().length > 0)
                         || (!method.getReturnType().getName().equals("void")))
                 {
                     throw new IllegalArgumentException("Invalid PreDestroy annotation");
@@ -111,8 +119,8 @@ public class NoInjectionAnnotationLifecycleProvider implements LifecycleProvider
 
     }
 
-    private void invokeAnnotatedMethod(Method method, Object instance) throws IllegalAccessException,
-        InvocationTargetException
+    private void invokeAnnotatedMethod(Method method, Object instance)
+                throws IllegalAccessException, InvocationTargetException
     {
         // At the end the annotated
         // method is invoked
@@ -125,14 +133,11 @@ public class NoInjectionAnnotationLifecycleProvider implements LifecycleProvider
         }
     }
 
-    /**
+     /**
      * Inject resources in specified instance.
-     * @throws IllegalAccessException 
-     * @throws InvocationTargetException 
-     * @throws NamingException 
      */
-    protected void processAnnotations(Object instance) throws IllegalAccessException, InvocationTargetException,
-        NamingException
+    protected void processAnnotations(Object instance)
+            throws IllegalAccessException, InvocationTargetException, NamingException
     {
 
     }
