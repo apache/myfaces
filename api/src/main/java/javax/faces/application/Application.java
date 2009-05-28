@@ -618,6 +618,11 @@ public abstract class Application
      */
     public Map<String, String> getDefaultValidatorInfo()
     {
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            return application.getDefaultValidatorInfo();
+        }
         throw new UnsupportedOperationException();
     }
 
@@ -642,6 +647,11 @@ public abstract class Application
      */
     public ELContextListener[] getELContextListeners()
     {
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            return application.getELContextListeners();
+        }
         throw new UnsupportedOperationException();
     }
 
@@ -670,6 +680,11 @@ public abstract class Application
      */
     public ELResolver getELResolver()
     {
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            return application.getELResolver();
+        }
         throw new UnsupportedOperationException();
     }
 
@@ -693,6 +708,11 @@ public abstract class Application
      */
     public ExpressionFactory getExpressionFactory()
     {
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            return application.getExpressionFactory();
+        }
         throw new UnsupportedOperationException();
     }
 
@@ -738,6 +758,11 @@ public abstract class Application
      */
     public ProjectStage getProjectStage()
     {
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            return application.getProjectStage();
+        }
         throw new UnsupportedOperationException();
     }
 
@@ -772,6 +797,11 @@ public abstract class Application
      */
     public ResourceBundle getResourceBundle(FacesContext ctx, String name) throws FacesException, NullPointerException
     {
+        Application application = getMyfacesApplicationInstance(ctx);
+        if (application != null)
+        {
+            return application.getResourceBundle(ctx, name);
+        }
         throw new UnsupportedOperationException();
     }
 
@@ -798,6 +828,11 @@ public abstract class Application
      */
     public ResourceHandler getResourceHandler()
     {
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            return application.getResourceHandler();
+        }
         throw new UnsupportedOperationException();
     }
 
@@ -846,6 +881,12 @@ public abstract class Application
      */
     public void publishEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source)
     {
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            application.publishEvent(systemEventClass, sourceBaseType, source);
+            return;
+        }
         throw new UnsupportedOperationException();
     }
 
@@ -914,6 +955,12 @@ public abstract class Application
      */
     public void publishEvent(Class<? extends SystemEvent> systemEventClass, Object source)
     {
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            application.publishEvent(systemEventClass, source);
+            return;
+        }
         throw new UnsupportedOperationException();
     }
 
@@ -932,6 +979,12 @@ public abstract class Application
      */
     public void removeELContextListener(ELContextListener listener)
     {
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            application.removeELContextListener(listener);
+            return;
+        }
         throw new UnsupportedOperationException();
     }
 
@@ -1007,6 +1060,12 @@ public abstract class Application
      */
     public void setResourceHandler(ResourceHandler resourceHandler)
     {
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            application.setResourceHandler(resourceHandler);
+            return;
+        }
         throw new UnsupportedOperationException();
     }
 
@@ -1072,6 +1131,12 @@ public abstract class Application
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass,
                                  SystemEventListener listener)
     {
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            application.subscribeToEvent(systemEventClass, sourceClass, listener);
+            return;
+        }
         throw new UnsupportedOperationException();
     }
 
@@ -1084,6 +1149,12 @@ public abstract class Application
      */
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener)
     {
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            application.subscribeToEvent(systemEventClass, listener);
+            return;
+        }
         subscribeToEvent(systemEventClass, null, listener);
     }
 
@@ -1098,6 +1169,12 @@ public abstract class Application
     public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass,
                                      SystemEventListener listener)
     {
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            application.unsubscribeFromEvent(systemEventClass, sourceClass, listener);
+            return;
+        }
         throw new UnsupportedOperationException();
     }
 
@@ -1110,6 +1187,12 @@ public abstract class Application
      */
     public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener)
     {
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            application.unsubscribeFromEvent(systemEventClass, listener);
+            return;
+        }
         unsubscribeFromEvent(systemEventClass, null, listener);
     }
 }
