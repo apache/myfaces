@@ -21,8 +21,8 @@ package org.apache.myfaces.renderkit.html;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.faces.context.ResponseStream;
 import javax.faces.context.ResponseWriter;
@@ -30,6 +30,7 @@ import javax.faces.render.RenderKit;
 import javax.faces.render.Renderer;
 import javax.faces.render.ResponseStateManager;
 
+import org.apache.commons.collections.map.Flat3Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderKit;
@@ -49,23 +50,18 @@ public class HtmlRenderKitImpl
 
     //~ Instance fields ----------------------------------------------------------------------------
 
-    private Map<String, Renderer> _renderers;
+    private Map<String, Map<String, Renderer>> _renderers;
     private ResponseStateManager _responseStateManager;
 
     //~ Constructors -------------------------------------------------------------------------------
 
     public HtmlRenderKitImpl()
     {
-        _renderers = new HashMap<String, Renderer>();
+        _renderers = new ConcurrentHashMap<String, Map<String, Renderer>>(64, 0.75f, 1);
         _responseStateManager = new HtmlResponseStateManager();
     }
 
     //~ Methods ------------------------------------------------------------------------------------
-
-    private String key(String componentFamily, String rendererType)
-    {
-        return componentFamily + "." + rendererType;
-    }
 
     public Renderer getRenderer(String componentFamily, String rendererType)
     {
@@ -77,7 +73,12 @@ public class HtmlRenderKitImpl
         {
             throw new NullPointerException("renderer type must not be null.");
         }
-        Renderer renderer = _renderers.get(key(componentFamily, rendererType));
+        Map <String,Renderer> familyRendererMap = _renderers.get(componentFamily); 
+        Renderer renderer = null;
+        if (familyRendererMap != null)
+        {
+            renderer = familyRendererMap.get(rendererType);
+        }
         if (renderer == null)
         {
             log.warn("Unsupported component-family/renderer-type: " + componentFamily + "/" + rendererType);
@@ -102,23 +103,42 @@ public class HtmlRenderKitImpl
             log.error("addRenderer: renderer = null is not allowed");
             throw new NullPointerException("renderer must not be null.");
         }
-
-        String rendererKey = key(componentFamily, rendererType);
-        if (_renderers.get(rendererKey) != null) {
-            // this is not necessarily an error, but users do need to be
-            // very careful about jar processing order when overriding
-            // some component's renderer with an alternate renderer.
-            log.debug("Overwriting renderer with family = " + componentFamily +
-               " rendererType = " + rendererType +
-               " renderer class = " + renderer.getClass().getName());
-        }
-
-        _renderers.put(rendererKey, renderer);
+        
+        _put(componentFamily, rendererType, renderer);
 
         if (log.isTraceEnabled()) 
             log.trace("add Renderer family = " + componentFamily +
                 " rendererType = " + rendererType +
                 " renderer class = " + renderer.getClass().getName());
+    }
+    
+    /**
+     * Put the renderer on the double map
+     * 
+     * @param componentFamily
+     * @param rendererType
+     * @param renderer
+     */
+    synchronized private void _put(String componentFamily, String rendererType, Renderer renderer)
+    {
+        Map <String,Renderer> familyRendererMap = _renderers.get(componentFamily);
+        if (familyRendererMap == null)
+        {
+            familyRendererMap = (Map<String,Renderer>) new Flat3Map();
+            _renderers.put(componentFamily, familyRendererMap);
+        }
+        else
+        {
+            if (familyRendererMap.get(rendererType) != null) {
+                // this is not necessarily an error, but users do need to be
+                // very careful about jar processing order when overriding
+                // some component's renderer with an alternate renderer.
+                log.debug("Overwriting renderer with family = " + componentFamily +
+                   " rendererType = " + rendererType +
+                   " renderer class = " + renderer.getClass().getName());
+            }
+        }
+        familyRendererMap.put(rendererType, renderer);
     }
 
     public ResponseStateManager getResponseStateManager()
