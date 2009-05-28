@@ -30,7 +30,6 @@ import javax.faces.render.RenderKit;
 import javax.faces.render.Renderer;
 import javax.faces.render.ResponseStateManager;
 
-import org.apache.commons.collections.map.Flat3Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderKit;
@@ -124,7 +123,7 @@ public class HtmlRenderKitImpl
         Map <String,Renderer> familyRendererMap = _renderers.get(componentFamily);
         if (familyRendererMap == null)
         {
-            familyRendererMap = (Map<String,Renderer>) new Flat3Map();
+            familyRendererMap = new ConcurrentHashMap<String, Renderer>(8, 0.75f, 1);
             _renderers.put(componentFamily, familyRendererMap);
         }
         else
