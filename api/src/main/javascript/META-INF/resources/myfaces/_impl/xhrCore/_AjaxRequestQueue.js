@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: Ganesh Jung (latest modification by $Author: werpu $)
- * Version: $Revision: 1.7 $ $Date: 2009/04/23 11:03:09 $
+ * Author: Ganesh Jung (latest modification by $Author: ganeshpuri $)
+ * Version: $Revision: 1.3 $ $Date: 2009/05/31 09:16:44 $
  *
  */
 
@@ -50,10 +50,38 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxRequestQ
     };
 
     /**
-     * send a reuest or keeps it in a queue
+     * delay request, then call queueNow
      * @param {myfaces._impl.xhrCore._AjaxRequest} request - request to send
      */
     myfaces._impl.xhrCore._AjaxRequestQueue.prototype.queueRequest = function(request) {
+        if (typeof request.m_delay == "number") {
+        	this.clearDelayTimeout();
+            this.delayTimeoutId = window.setTimeout(
+            	function() {
+            		myfaces._impl.xhrCore._AjaxRequestQueue.queue.clearDelayTimeout();
+                	myfaces._impl.xhrCore._AjaxRequestQueue.queue.queueNow(request);
+            	}, request.m_delay);
+        } else {
+        	this.queueNow(request);
+        }
+    };
+
+    myfaces._impl.xhrCore._AjaxRequestQueue.prototype.clearDelayTimeout = function() {
+		try {
+			if (typeof this.delayTimeoutId == "number") {
+				window.clearTimeout(this.delayTimeoutId);
+				delete this.delayTimeoutId;
+			}
+		} catch (e) {
+			// already timed out
+		}
+    }
+    
+    /**
+     * send a request or keep it in a queue
+     * @param {myfaces._impl.xhrCore._AjaxRequest} request - request to send
+     */
+    myfaces._impl.xhrCore._AjaxRequestQueue.prototype.queueNow = function(request) {
         if (this.m_request == null) {
             this.m_request = request;
             this.m_request.send();

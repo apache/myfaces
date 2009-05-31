@@ -33,21 +33,16 @@ if ('undefined' == typeof jsf || null == jsf) {
     jsf = new Object();
 }
 
-/*
- *just to make sure no questions arise, I simply prefer here a weak
- *typeless comparison just in case some frameworks try to interfere
- *by overriding null or fiddeling around with undefined or typeof in some ways
- *it is safer in this case than the standard way of doing a strong comparison
+/**
+ * just to make sure no questions arise, I simply prefer here a weak
+ * typeless comparison just in case some frameworks try to interfere
+ * by overriding null or fiddeling around with undefined or typeof in some ways
+ * it is safer in this case than the standard way of doing a strong comparison
  **/
 if ('undefined' == typeof jsf.ajax || null == jsf.ajax) {
     jsf.ajax = new Object();
 
-    //todo make this overridable by a configuration option
-    /*
-     myfaces.
-     */
-
-     jsf.ajax._impl = new (myfaces._impl._util._Utils.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl))();
+     jsf.ajax._impl = myfaces._impl._util._Utils.getGlobalConfig("jsfAjaxImpl", myfaces.ajax);
 
     /**
      * collect and encode data for a given form element (must be of type form)
@@ -73,7 +68,7 @@ if ('undefined' == typeof jsf.ajax || null == jsf.ajax) {
      * </ul>
      *
      * @param {String|Node} element: any dom element no matter being it html or jsf, from which the event is emitted
-     * @param {|EVENT|}Êevent: any javascript event supported by that object
+     * @param {|EVENT|} event: any javascript event supported by that object
      * @param {Map||} options : map of options being pushed into the ajax cycle
      */
     jsf.ajax.request = function( element,  event,  options) {

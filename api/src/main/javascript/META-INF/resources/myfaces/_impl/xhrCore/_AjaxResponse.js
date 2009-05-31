@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: Ganesh Jung (latest modification by $Author: werpu $)
- * Version: $Revision: 1.18 $ $Date: 2009/04/24 13:14:02 $
+ * Author: Ganesh Jung (latest modification by $Author: ganeshpuri $)
+ * Version: $Revision: 1.2 $ $Date: 2009/05/30 17:54:57 $
  *
  */
 
@@ -71,19 +71,19 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
             }
 
             if (!myfaces._impl._util._LangUtils.exists(request, "responseXML")) {
-                jsf.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_EMPTY_RESPONSE);
+            	myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_EMPTY_RESPONSE);
                 return;
             }
 
             var xmlContent = request.responseXML;
             if (xmlContent.firstChild.tagName == "parsererror") {
-                jsf.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML);
+            	myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML);
                 return;
             }
             var partials = xmlContent.childNodes[0];
             if ('undefined' == typeof partials || partials == null
                 || partials.tagName != this._RESPONSE_PARTIAL) {
-                jsf.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML);
+            	myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML);
                 return;
             }
 
@@ -137,7 +137,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
         if('undefined' == typeof errorMessage || null == errorMessage) {
             errorMessage = "";
         }
-        jsf.ajax.sendError(request, context,myfaces._impl.core._jsfImpl._ERROR_SERVER_ERROR , errorName, errorMessage);
+        myfaces.ajax.sendError(request, context,myfaces._impl.core._jsfImpl._ERROR_SERVER_ERROR , errorName, errorMessage);
     }
 
     myfaces._impl.xhrCore._AjaxResponse.prototype.processRedirect = function(request, context, node) {
@@ -146,7 +146,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
      */
         var redirectUrl = node.getAttribute("url");
         if('undefined' == typeof redirectUrl || null == redirectUrl) {
-            jsf.ajax.sendError(request, context,myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML,myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML,"Redirect without url");
+        	myfaces.ajax.sendError(request, context,myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML,myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML,"Redirect without url");
             return false;
         }
         redirectUrl = myfaces._impl._util._LangUtils.trim(redirectUrl);
@@ -178,7 +178,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
             //  this._responseHandler.doExtension(childNode);
 
             } else {
-                jsf.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML);
+            	myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML);
                 return false;
             }
         }
@@ -228,7 +228,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
             switch(node.getAttribute('id')) {
                 case "javax.faces.ViewRoot":
 
-                    var parser =  jsf.ajax._impl = new (myfaces._impl._util._Utils.getGlobalConfig("updateParser",myfaces._impl._util._HtmlStripper))();
+                    var parser =  myfaces.ajax._impl = new (myfaces._impl._util._Utils.getGlobalConfig("updateParser",myfaces._impl._util._HtmlStripper))();
                 
                     document.documentElement.innerHTML  =  parser.parse(cDataBlock);
                         // innerHTML doesn't execute scripts, so no browser switch here
@@ -294,11 +294,11 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
         var afterSet    = 'undefined' != typeof afterId && null != afterId && myfaces._impl._util._LangUtils.trim(afterId) != "";
 
         if(!insertSet) {
-            jsf.ajax.sendError(request, context,myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML,myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML, "Error in PPR Insert, id must be present");
+        	myfaces.ajax.sendError(request, context,myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML,myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML, "Error in PPR Insert, id must be present");
             return false;
         }
         if(!(beforeSet || afterSet)) {
-            jsf.ajax.sendError(request, context,myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML, "Error in PPR Insert, before id or after id must be present");
+        	myfaces.ajax.sendError(request, context,myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML, "Error in PPR Insert, before id or after id must be present");
             return false;
         }
         //either before or after but not two at the same time
@@ -306,7 +306,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
             beforeId = myfaces._impl._util._LangUtils.trim(beforeId);
             var beforeNode = document.getElementById(beforeId);
             if('undefined' == typeof beforeNode || null == beforeNode) {
-                jsf.ajax.sendError(request, context,myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML, "Error in PPR Insert, before  node of id "+beforeId+" does not exist in document");
+            	myfaces.ajax.sendError(request, context,myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML, "Error in PPR Insert, before  node of id "+beforeId+" does not exist in document");
                 return false;
             }
             /**
@@ -326,7 +326,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
             afterId = myfaces._impl._util._LangUtils.trim(afterId);
             var afterNode = document.getElementById(afterId);
             if('undefined' == typeof afterNode || null == afterNode) {
-                jsf.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML,myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML, "Error in PPR Insert, after  node of id "+after+" does not exist in document");
+            	myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML,myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML, "Error in PPR Insert, after  node of id "+after+" does not exist in document");
                 return false;
             }
             var nodeHolder = document.createElement("div");
@@ -341,7 +341,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
     myfaces._impl.xhrCore._AjaxResponse.prototype.processDelete = function(request, context, node) {
         var deleteId = node.getAttribute('id');
         if('undefined' == typeof deleteId || null == deleteId) {
-            jsf.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML,
+        	myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML,
                 myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML,  "Error in delete, id not in xml markup");
             return false;
         }
@@ -361,7 +361,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
         var attributesRoot = node;
         var elementId = attributesRoot.getAttribute('id');
         if('undefined' == typeof elementId || null == elementId) {
-            jsf.ajax.sendError(request, context,myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML
+        	myfaces.ajax.sendError(request, context,myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML
                 ,myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML,  "Error in attributes, id not in xml markup");
             return false;
         }

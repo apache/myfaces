@@ -46,7 +46,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
      * [STATIC] constants
      */
 
-    myfaces._impl.core._jsfImpl._PROP_PARTIAL_SOURCE = "javax.faces.partial.source";
+    myfaces._impl.core._jsfImpl._PROP_PARTIAL_SOURCE = "javax.faces.source";
     myfaces._impl.core._jsfImpl._PROP_VIEWSTATE = "javax.faces.ViewState";
     myfaces._impl.core._jsfImpl._PROP_AJAX = "javax.faces.partial.ajax";
     myfaces._impl.core._jsfImpl._PROP_EXECUTE = "javax.faces.partial.execute";
@@ -111,9 +111,9 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
         if ('undefined' == typeof( element ) || null == element) {
             throw new Exception("jsf.ajax, element must be set!");
         }
-        if (!JSF2Utils.isString(element) && !(element instanceof Node)) {
-            throw new Exception("jsf.ajax, element either must be a string or a dom node");
-        }
+//        if (!JSF2Utils.isString(element) && !(element instanceof Node)) {
+//            throw new Exception("jsf.ajax, element either must be a string or a dom node");
+//        }
 
         element = JSF2Utils.byId(element);
         if ('undefined' == typeof element || null == element) {
@@ -196,22 +196,18 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
         /**
          * fetch the parent form
          */
-
-        //TODO check if we can add this to the context
-
         var sourceForm = myfaces._impl._util._Utils.getParent(null, ajaxContext, element, "form");
 
         if ('undefined' == typeof sourceForm || null == sourceForm) {
             sourceForm = document.forms[0];
         }
 
-        /*
-         * binding contract the javax.faces.partial.source must be
-         * set according to the december 2008 preview
+        /**
+         * binding contract the javax.faces.source must be set 
          */
         passThroughArguments[myfaces._impl.core._jsfImpl._PROP_PARTIAL_SOURCE] = element.id;
 
-        /*
+        /**
          * javax.faces.partial.ajax must be set to true
          */
         passThroughArguments[myfaces._impl.core._jsfImpl._PROP_AJAX] = true;
@@ -300,6 +296,8 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
         eventData.type = myfaces._impl.core._jsfImpl._MSG_TYPE_ERROR;
 
         eventData.name = name;
+        eventData.serverErrorName = serverErrorName;
+        eventData.serverErrorMessage = serverErrorMessage;
         try {
             eventData.source = context.source;
             eventData.responseXML = request.responseXML;
@@ -347,7 +345,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
                 eventData.responseText = request.responseText;
                 eventData.responseCode = request.status;
             } catch (e) {
-                jsf.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_CLIENT_ERROR, "ErrorRetrievingResponse",
+            	myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_CLIENT_ERROR, "ErrorRetrievingResponse",
                     "Parts of the response couldn't be retrieved when constructing the event data: " + e);
             }
         }
@@ -385,7 +383,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
    * implementation of the external chain function
    * moved into the impl
    *
-   * according to the ri the source will bhe the scope
+   * according to the ri the source will be the scope
    * for the functions the event will be the object passed
    * @param {Object} source the source which also becomes
    * the scope for the calling function (not sure if this is correct however
@@ -420,17 +418,14 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
             if('function' == typeof arguments[loop]) {    
                  retVal = arguments[loop].call(thisVal, param);
             } else {
-                 retVal = (new Function("evt", arguments[loop])).call(thisVal, param);
+	            retVal = new Function("event", arguments[loop]).call(thisVal, param);   
             }
             //now if one function returns null in between we stop the execution of the cycle
             //here
             if('undefined' != typeof retVal && retVal === false) return;
         }
-   };
+   }
     
-    //for debugging purposes only remove before going into production
-    //should be removed automatically by the build process!!!
-    ;;var myfaces_JSFDebug = new myfaces._impl.core._jsfImpl();
-
-
+    // singleton
+    myfaces.ajax = new myfaces._impl.core._jsfImpl();
 }

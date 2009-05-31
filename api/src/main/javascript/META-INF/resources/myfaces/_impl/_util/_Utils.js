@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: Ganesh Jung (latest modification by $Author: werpu $)
- * Version: $Revision: 1.18 $ $Date: 2009/05/06 11:06:36 $
+ * Author: Ganesh Jung (latest modification by $Author: ganeshpuri $)
+ * Version: $Revision: 1.2 $ $Date: 2009/05/31 09:16:43 $
  *
  */
 
@@ -166,7 +166,6 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
     myfaces._impl._util._Utils.replaceHtmlItem = function(request, context, itemIdToReplace, newTag, form) {
         try {
 
-
             var item = (itemIdToReplace instanceof Node) ? itemIdToReplace :
                 myfaces._impl._util._Utils.getElementFromForm(request, context, itemIdToReplace, form);
             if (item == null) {
@@ -184,8 +183,6 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
                     item.parentNode.insertBefore(fragment, item);
                 } else {
                     item.insertAdjacentHTML('beforeBegin', newTag);
-                }
-                if (myfaces._impl._util._Utils.isManualScriptEval()) {
                     myfaces._impl._util._Utils.runScripts(request, context, item.previousSibling);
                 }
             }
@@ -458,7 +455,7 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
      *
      * @return either the config entry or if none is given the default value
      */
-    myfaces._impl._util._Utils.getLocalOrGlobalConfig = function(configName, localOptions, defaultValue) {
+    myfaces._impl._util._Utils.getLocalOrGlobalConfig = function(localOptions, configName, defaultValue) {
         /*use(myfaces._impl._util)*/
         var _LangUtils = myfaces._impl._util._LangUtils;
 

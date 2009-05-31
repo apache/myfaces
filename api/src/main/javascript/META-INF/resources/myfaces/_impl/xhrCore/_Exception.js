@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: Ganesh Jung (latest modification by $Author: werpu $)
- * Version: $Revision: 1.5 $ $Date: 2009/04/23 11:03:09 $
+ * Author: Ganesh Jung (latest modification by $Author: ganeshpuri $)
+ * Version: $Revision: 1.2 $ $Date: 2009/05/30 17:54:57 $
  *
  */
 
@@ -52,7 +52,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_Exception"))
  */
     myfaces._impl.xhrCore._Exception.prototype.throwError = function(request, context, func, exception) {
         if (this.m_threshold == "ERROR") {
-            jsf.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_CLIENT_ERROR, exception.name,
+        	myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_CLIENT_ERROR, exception.name,
                 "MyFaces ERROR\n"
                 + "Affected Class: " + this.m_class + "\n"
                 + "Affected Method: " + func + "\n"
@@ -70,7 +70,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_Exception"))
  */
     myfaces._impl.xhrCore._Exception.prototype.throwWarning = function(request, context, func, message) {
         if (this.m_threshold == "WARNING" || this.m_threshold == "ERROR") {
-            jsf.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_CLIENT_ERROR, exception.name,
+        	myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_CLIENT_ERROR, exception.name,
                 "MyFaces WARNING\n[" + this.m_class + "::" + func + "]\n\n"
                 + message);
         }
