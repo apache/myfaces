@@ -2,7 +2,7 @@
   <parent>
     <groupId>org.apache.myfaces.core</groupId>
     <artifactId>myfaces-core-project</artifactId>
-    <version>1.2.7-SNAPSHOT</version>
+    <version>1.2.7</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.myfaces.core</groupId>
@@ -13,9 +13,9 @@
   </description>
   <url>http://myfaces.apache.org/core12/myfaces-api</url>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/1_2_1/api</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/1_2_1/api</developerConnection>
-    <url>http://svn.apache.org/repos/asf/myfaces/core/branches/1_2_1/api</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/tags/1_2_7</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/tags/1_2_7</developerConnection>
+    <url>http://svn.apache.org/repos/asf/myfaces/core/tags/1_2_7</url>
   </scm>
   <build>
     <plugins>

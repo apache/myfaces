@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.apache.myfaces.core</groupId>
     <artifactId>myfaces-core-project</artifactId>
-    <version>1.2.7-SNAPSHOT</version>
+    <version>1.2.7</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.myfaces.core</groupId>
@@ -14,9 +14,9 @@
   </description>
   <url>http://myfaces.apache.org/core12/myfaces-impl</url>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/1_2_1/impl</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/1_2_1/impl</developerConnection>
-    <url>http://svn.apache.org/repos/asf/myfaces/core/branches/1_2_1/impl</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/tags/1_2_7</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/tags/1_2_7</developerConnection>
+    <url>http://svn.apache.org/repos/asf/myfaces/core/tags/1_2_7</url>
   </scm>
   <build>
     <resources>
@@ -584,6 +584,6 @@
   </repositories>
 
   <properties>
-    <myfaces-shared.version>3.0.6-SNAPSHOT</myfaces-shared.version>
+    <myfaces-shared.version>3.0.6</myfaces-shared.version>
   </properties>
 </project>
