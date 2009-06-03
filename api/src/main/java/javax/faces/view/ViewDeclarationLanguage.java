@@ -53,12 +53,12 @@ public abstract class ViewDeclarationLanguage
     
     public void retargetAttachedObjects(FacesContext context, UIComponent topLevelComponent, List<AttachedObjectHandler> handlers)
     {
-        //TODO: implement impl
+        throw new UnsupportedOperationException(); 
     }
 
     public void retargetMethodExpressions(FacesContext context, UIComponent topLevelComponent)
     {
-        //TODO: implement impl
+        throw new UnsupportedOperationException(); 
     }
               
 }
