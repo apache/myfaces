@@ -27,7 +27,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxRequest"
      * @param {HtmlElement} source - Item that triggered the request
      * @param {Html Form} sourceForm - Form containing source
      * @param {Map} context - AJAX context
-     * @param {Map} passThough - parameters to pass through to the server (execute/render)
+     * @param {Map} passThrough - parameters to pass through to the server (execute/render)
      */
     myfaces._impl.xhrCore._AjaxRequest = function(source, sourceForm, context, passThrough) {
         this.m_exception = new myfaces._impl.xhrCore._Exception("myfaces._impl.xhrCore._AjaxRequest", this.alarmThreshold);
@@ -79,7 +79,6 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxRequest"
 
     /**
      * Sends an Ajax request
-     * @param {RequestQueue} requestQueue - Queue object to trigger next request
      */
     myfaces._impl.xhrCore._AjaxRequest.prototype.send = function() {
         try {

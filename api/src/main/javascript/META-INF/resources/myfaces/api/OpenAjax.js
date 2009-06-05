@@ -24,7 +24,7 @@ if(!window["OpenAjax"]){
         var t = true;
         var f = false;
         var g = window;
-        var libs;
+       
         var ooh = "org.openajax.hub.";
 
         var h = {};

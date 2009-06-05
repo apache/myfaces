@@ -212,7 +212,7 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_SimpleHtmlParser
         while(this.tokens[this._tokenPos] != ">") {
             this._skipBlank(1);
             var token = this._getCurrentToken();
-            if((token == "'" || token == '"') && this._isStringStart()) {
+            if((token == "'" || token == '"') && this._isStringStart()) {
                 this.handleString(token);
             }
         }
@@ -257,7 +257,7 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_SimpleHtmlParser
             this._tokenPos ++;
             //possible String handling
             //we precheck to avoid unneeded calls, performance optimization!!!!
-            if((token == "'" || token == '"') && this._isStringStart()) {
+            if((token == "'" || token == '"') && this._isStringStart()) {
                 token = this._getCurrentToken();
                 this._tokenPos ++;
                 this.handleString(token);
@@ -370,7 +370,7 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_SimpleHtmlParser
     myfaces._impl._util._SimpleHtmlParser.prototype._isStringStart = function() {
         var backTrack = (this._tokenPos > 0)? this.tokens[this._tokenPos-1]:null;
         var token = this.tokens[this._tokenPos];
-        return (token == "'" || token == '"') && backTrack != "\\";
+        return (token == "'" ||token == '"') && backTrack != "\\";
     };
 
     /**

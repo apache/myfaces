@@ -44,9 +44,11 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_Ajax")) {
     /**
      * mapped options already have the exec and view properly in place
      * myfaces specifics can be found under mappedOptions.myFaces
-     * @param ajaxContext the ajax context which also has to be pushed into the messages and into the response
+     * @param {DomNode} source the source of this call
+     * @param {HTMLForm} sourceForm the html form which is the source of this call
+     * @param {Map} context the internal pass through context
+     * @param {Map} passThroughValues values to be passed through
      **/
-
     myfaces._impl.xhrCore._Ajax.prototype._ajaxRequest = function(source, sourceForm, context, passThroughValues ) {
         myfaces._impl.xhrCore._AjaxRequestQueue.queue.queueRequest(
             new myfaces._impl.xhrCore._AjaxRequest(source, sourceForm, context, passThroughValues));

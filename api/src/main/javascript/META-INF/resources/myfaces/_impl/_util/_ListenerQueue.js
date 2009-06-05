@@ -79,4 +79,4 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces, "_ListenerQueue")) {
             this._queue[cnt].apply(null, arguments);
         }
     }
-};
+}

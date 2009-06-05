@@ -51,6 +51,8 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
 
     /**
      * uses response to start Html element replacement
+     *
+     * @param {Object} request - xhr request object
      * @param {Map} context - AJAX context
      *
      * A special handling has to be added to the update cycle
@@ -258,8 +260,8 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
 
     /**
      * Helper method to avoid duplicate code
-     * @param request our request object
-     * @param contect the response context
+     * @param {Object}Êrequest our request object
+     * @param {Map} context the response context
      * @param {DomNode}Â oldElement the element to be replaced
      * @param {String} newData the markup which replaces the old dom node!
      */
@@ -302,6 +304,8 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
             return false;
         }
         //either before or after but not two at the same time
+        var nodeHolder = null;
+        var parentNode = null;
         if(beforeSet) {
             beforeId = myfaces._impl._util._LangUtils.trim(beforeId);
             var beforeNode = document.getElementById(beforeId);
@@ -315,8 +319,8 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
              *generating the content upfront
              *before inserting it"
              **/
-            var nodeHolder = document.createElement("div");
-            var parentNode = beforeNode.parentNode;
+            nodeHolder = document.createElement("div");
+            parentNode = beforeNode.parentNode;
             parentNode.insertBefore(nodeHolder, beforeNode);
 
             myfaces._impl._util._Utils.replaceHtmlItem(request, context,
@@ -329,8 +333,8 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
             	myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML,myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML, "Error in PPR Insert, after  node of id "+after+" does not exist in document");
                 return false;
             }
-            var nodeHolder = document.createElement("div");
-            var parentNode = afterNode.parentNode;
+            nodeHolder = document.createElement("div");
+            parentNode = afterNode.parentNode;
             parentNode.insertBefore(nodeHolder, afterNode.nextSibling);
             myfaces._impl._util._Utils.replaceHtmlItem(request, context,
                 nodeHolder, node.firstChild.data, null);

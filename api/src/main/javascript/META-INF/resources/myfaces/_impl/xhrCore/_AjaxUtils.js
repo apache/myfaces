@@ -34,6 +34,8 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxUtils"))
 
     /**
      * determines fields to submit
+     * @param {Object} request the xhr request object
+     * @param {Map} context
      * @param {HtmlElement} item - item that triggered the event
      * @param {HtmlElement} parentItem - form element item is nested in
      * @param {Array} partialIds - ids fo PPS
@@ -129,9 +131,9 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxUtils"))
         try {
             return new ActiveXObject("Msxml2.XMLHTTP");
         } catch (e) {
-            return new ActiveXObject('Microsoft.XMLHTTP');
+            
         }
-       
+        return new ActiveXObject('Microsoft.XMLHTTP');
     }
 
 

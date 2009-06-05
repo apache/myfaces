@@ -51,7 +51,7 @@
 
                         <configuration>
                             <scripts>target/classes/META-INF/resources/javax/faces/ajax/</scripts>
-                            <compressor>yahooui</compressor>                                                
+                            <compressor>yahooUI</compressor>
                         </configuration>
                     </execution>
                 </executions>

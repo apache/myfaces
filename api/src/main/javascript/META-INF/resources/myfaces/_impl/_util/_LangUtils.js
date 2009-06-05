@@ -19,7 +19,7 @@ var myfaces = null;
  * fixing the namespaces
  */
 function _reserveMyfacesNamespaces() {
-   /**
+    /**
      *
      * reserve the namespaces used by the myfaces core
      */
@@ -72,7 +72,7 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
 
     myfaces._impl._util._LangUtils.isUnderTest = function() {
         return this._underTest;
-    }
+    };
 
 
     myfaces._impl._util._LangUtils.byId = function(/*object*/ reference) {
@@ -80,7 +80,7 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
             return document.getElementById(reference);
         }
         return reference;
-    },
+    };
 
     /**
      * backported from dojo
@@ -89,7 +89,7 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
      * @param {Object} obj the object to "arrayify". We expect the object to have, at a
      minimum, a length property which corresponds to integer-indexed
      properties.
-     * @param {Number}Êoffset the location in obj to start iterating from. Defaults to 0.
+     * @param {int} offset the location in obj to start iterating from. Defaults to 0.
      Optional.
      * @param {Array} startWith An array to pack with the properties of obj. If provided,
      properties in obj are appended at the end of startWith and
@@ -155,7 +155,7 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
      */
     myfaces._impl._util._LangUtils.trim = function(/*string*/ str) {
 
-        var	str = str.replace(/^\s\s*/, ''),
+        str = str.replace(/^\s\s*/, ''),
         ws = /\s/,
         i = str.length;
         while (ws.test(str.charAt(--i)));
@@ -271,18 +271,19 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
     /**
      * Helper function to merge two maps
      * into one
-     * @param dest the destination map
-     * @param source the source map
-     * @param overwriteDest if set to true the destination is overwritten if the keys exist in both maps
+     * @param {Map}Êdestination the destination map
+     * @param {Map}Êsource the source map
+     * @param {boolean} overwriteDest if set to true the destination is overwritten if the keys exist in both maps
      **/
-    myfaces._impl._util._LangUtils.mixMaps = function(/*map*/ destination, /*map*/source, /*boolean*/ overwriteDest) {
+    myfaces._impl._util._LangUtils.mixMaps = function(destination, source, overwriteDest) {
         /**
          * mixin code depending on the state of dest and the overwrite param
          */
         var _JSF2Utils = myfaces._impl._util._LangUtils;
         var result = {};
         var keyIdx = {};
-        for(var key in source) {
+        var key = null;
+        for(key in source) {
             /**
            *we always overwrite dest with source
            *unless overWrite is not set or source does not exist
@@ -300,7 +301,7 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
             }
             keyIdx[key] = true;
         }
-        for(var key in destination) {
+        for(key in destination) {
             /*if result.key does not exist we push in dest.key*/
             result[key] = _JSF2Utils.exists(result,key) ? result[key] : destination[key];
         }
@@ -327,7 +328,7 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
             }
         }
         return false;
-    },
+    };
 
     /**
      * Concatenates an array to a string

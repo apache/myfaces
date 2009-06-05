@@ -189,7 +189,7 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_HtmlStripper")) 
     myfaces._impl._util._HtmlStripper.prototype.handleDocDefinition = function() {
         this._skipBlank();
 
-        if(this._tokenPos >= this.tokens.length || this._tokenPos < 0 ) {
+        if(this._tokenPos >= this.tokens.length || this._tokenPos < 0 ) {
             throw new Error("Document end reached prematurely");
         }
         var len = this.tokens.length;
@@ -234,7 +234,7 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_HtmlStripper")) 
         while(this.tokens[this._tokenPos] != ">") {
             this._skipBlank(1);
             var token = this._getCurrentToken();
-            if((token == "'" || token == '"') && this._isStringStart()) {
+            if((token == "'" || token == '"') && this._isStringStart()) {
                 this.handleString(token);
             }
         }
@@ -253,7 +253,7 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_HtmlStripper")) 
     myfaces._impl._util._HtmlStripper.prototype._isStringStart = function() {
         var backTrack = (this._tokenPos > 0)? this.tokens[this._tokenPos-1]:null;
         var token = this.tokens[this._tokenPos];
-        return (token == "'" || token == '"') && backTrack != "\\";
+        return (token == "'" || token == '"') && backTrack != "\\";
     };
 
    
