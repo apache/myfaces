@@ -7,7 +7,6 @@
                 <include>**/api/OpenAjax.js</include>
                 <include>**/_impl/_util/_LangUtils.js</include>
                 <include>**/_impl/_util/_ListenerQueue.js</include>
-                <include>**/_impl/_util/_Logger.js</include>
                 <include>**/_impl/_util/_Utils.js</include>
                 <include>**/_impl/_util/_HtmlStripper.js</include>
                 <include>**/_impl/xhrCore/_Exception.js</include>
@@ -17,7 +16,7 @@
                 <include>**/_impl/xhrCore/_AjaxResponse.js</include>
                 <include>**/_impl/xhrCore/_xhrCoreAdapter.js</include>
                 <include>**/_impl/core/jsf_impl.js</include>
-                <include>**./api/jsf.js</include>
+                <include>**/api/jsf.js</include>
             </includes>
         </script>
     </scripts>

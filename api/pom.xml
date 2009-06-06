@@ -50,7 +50,7 @@
                         <phase>process-resources</phase>
 
                         <configuration>
-                            <scripts>target/classes/META-INF/resources/javax/faces/ajax/</scripts>
+                            <scripts>target/classes/META-INF/resources/javax.faces/</scripts>
                             <compressor>yahooUI</compressor>
                         </configuration>
                     </execution>
@@ -58,7 +58,7 @@
                 <configuration>
                     <sourceDirectory>src/main/javascript</sourceDirectory>
                     <webappDirectory>${basedir}</webappDirectory>
-                    <outputDirectory>${basedir}/target/classes/META-INF/resources/javax/faces/ajax/</outputDirectory>
+                    <outputDirectory>${basedir}/target/classes/META-INF/resources/javax.faces/</outputDirectory>
                 </configuration>
             </plugin>
             -->
