@@ -176,7 +176,10 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
                 if (!this.processAttributes(request, context, changes[i])) return false;
             // this._responseHandler.doAtttributes(childNode);
             //TODO check the spec if this part is obsolete!!!
-            //} else if (changes[i].tagName == this._PCMD_EXTENSION) {
+            } else if (changes[i].tagName == this._PCMD_EXTENSION) {
+                //DO nothing we do not have any implementation specifics for now!
+                //but if you need some implementation specific stuff
+                //you have to insert it here
             //  this._responseHandler.doExtension(childNode);
 
             } else {
