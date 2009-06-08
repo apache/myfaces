@@ -18,7 +18,9 @@
  */
 package org.apache.myfaces.context.servlet;
 
+import java.io.IOException;
 import java.util.*;
+
 
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialResponseWriter;
@@ -30,190 +32,162 @@ import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.component.UIComponent;
 
+import javax.faces.context.ExternalContext;
+import javax.faces.context.ResponseWriter;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.shared_impl.util.StringUtils;
 
-public class PartialViewContextImpl extends PartialViewContext
-{
+public class PartialViewContextImpl extends PartialViewContext {
+
     private static final String FACES_REQUEST = "Faces-Request";
     private static final String PARTIAL_AJAX = "partial/ajax";
     private static final String PARTIAL_PROCESS = "partial/process";
-    
     private FacesContext _facesContext = null;
     private boolean _released = false;
-    
     // Cached values, since their parent methods could be called
     // many times and the result does not change during the life time
     // of this object.
     private Boolean _ajaxRequest = null;
     private Collection<String> _executeClientIds = null;
     private Collection<String> _renderClientIds = null;
-    
     // Values that need to be saved because exists a setXX method 
     private Boolean _partialRequest = null;
     private Boolean _renderAll = null;
-    
 
-    public PartialViewContextImpl(FacesContext context)
-    {
+    public PartialViewContextImpl(FacesContext context) {
         _facesContext = context;
     }
 
     @Override
-    public boolean isAjaxRequest()
-    {
+    public boolean isAjaxRequest() {
         assertNotReleased();
-        
-        if (_ajaxRequest == null)
-        {
+
+        if (_ajaxRequest == null) {
             String requestType = _facesContext.getExternalContext().
-                getRequestHeaderMap().get(FACES_REQUEST);
+                    getRequestHeaderMap().get(FACES_REQUEST);
             _ajaxRequest = (requestType != null && PARTIAL_AJAX.equals(requestType));
         }
         return _ajaxRequest;
     }
 
     @Override
-    public boolean isExecuteAll()
-    {
+    public boolean isExecuteAll() {
         assertNotReleased();
-        
-        if (isAjaxRequest())
-        {
+
+        if (isAjaxRequest()) {
             String executeMode = _facesContext.getExternalContext().
-                getRequestParameterMap().get(
-                        PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME);
-            if (PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode))
-            {
+                    getRequestParameterMap().get(
+                    PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME);
+            if (PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode)) {
                 return true;
             }
-        }        
+        }
         return false;
     }
 
     @Override
-    public boolean isPartialRequest()
-    {
+    public boolean isPartialRequest() {
         assertNotReleased();
 
-        if (_partialRequest == null)
-        {
+        if (_partialRequest == null) {
             String requestType = _facesContext.getExternalContext().
-                getRequestHeaderMap().get(FACES_REQUEST);
+                    getRequestHeaderMap().get(FACES_REQUEST);
             _partialRequest = (requestType != null && PARTIAL_PROCESS.equals(requestType));
         }
         return isAjaxRequest() || _partialRequest;
     }
 
     @Override
-    public boolean isRenderAll()
-    {
+    public boolean isRenderAll() {
         assertNotReleased();
-        
-        if (_renderAll == null)
-        {
-            if (isAjaxRequest())
-            {
+
+        if (_renderAll == null) {
+            if (isAjaxRequest()) {
                 String executeMode = _facesContext.getExternalContext().
-                    getRequestParameterMap().get(
-                            PartialViewContext.PARTIAL_RENDER_PARAM_NAME);
-                if (PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode))
-                {
+                        getRequestParameterMap().get(
+                        PartialViewContext.PARTIAL_RENDER_PARAM_NAME);
+                if (PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode)) {
                     _renderAll = true;
                 }
             }
-            if (_renderAll == null)
-            {
+            if (_renderAll == null) {
                 _renderAll = false;
             }
         }
         return _renderAll;
     }
-    
 
     @Override
-    public void setPartialRequest(boolean isPartialRequest)
-    {
+    public void setPartialRequest(boolean isPartialRequest) {
         assertNotReleased();
 
         _partialRequest = isPartialRequest;
-        
+
     }
 
     @Override
-    public void setRenderAll(boolean renderAll)
-    {
+    public void setRenderAll(boolean renderAll) {
         assertNotReleased();
 
         _renderAll = renderAll;
     }
-    
+
     @Override
-    public Collection<String> getExecuteIds()
-    {
+    public Collection<String> getExecuteIds() {
         assertNotReleased();
-        
-        if (_executeClientIds == null)
-        {
+
+        if (_executeClientIds == null) {
             String executeMode = _facesContext.getExternalContext().
-            getRequestParameterMap().get(
+                    getRequestParameterMap().get(
                     PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME);
-            
+
             if (executeMode != null && !"".equals(executeMode) &&
-                !PartialViewContext.NO_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode) &&
-                !PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode))
-            {
-                String[] clientIds = StringUtils.splitShortString(executeMode.replaceAll("[ \\t\\n]*",""), ',');
+                    !PartialViewContext.NO_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode) &&
+                    !PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode)) {
+                String[] clientIds = StringUtils.splitShortString(executeMode.replaceAll("[ \\t\\n]*", ""), ',');
 
                 //The collection must be mutable
                 List<String> tempList = new ArrayList<String>();
                 Collections.addAll(tempList, clientIds);
                 _executeClientIds = tempList;
+            } else {
+                _executeClientIds = new ArrayList<String>();
             }
-            else
-            {
-                _executeClientIds = new ArrayList<String>();                
-            }
-        }        
+        }
         return _executeClientIds;
     }
-    
 
     @Override
-    public Collection<String> getRenderIds()
-    {
+    public Collection<String> getRenderIds() {
         assertNotReleased();
-        
-        if (_renderClientIds == null)
-        {
+
+        if (_renderClientIds == null) {
             String renderMode = _facesContext.getExternalContext().
-            getRequestParameterMap().get(
+                    getRequestParameterMap().get(
                     PartialViewContext.PARTIAL_RENDER_PARAM_NAME);
-            
-            if (renderMode != null && !"".equals(renderMode) && 
-                !PartialViewContext.NO_PARTIAL_PHASE_CLIENT_IDS.equals(renderMode) &&
-                !PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(renderMode))
-            {
-                String[] clientIds = StringUtils.splitShortString(renderMode.replaceAll("[ \\t\\n]*",""), ',');
+
+            if (renderMode != null && !"".equals(renderMode) &&
+                    !PartialViewContext.NO_PARTIAL_PHASE_CLIENT_IDS.equals(renderMode) &&
+                    !PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(renderMode)) {
+                String[] clientIds = StringUtils.splitShortString(renderMode.replaceAll("[ \\t\\n]*", ""), ',');
 
                 //The collection must be mutable
                 List<String> tempList = new ArrayList<String>();
                 Collections.addAll(tempList, clientIds);
                 _renderClientIds = tempList;
+            } else {
+                _renderClientIds = new ArrayList<String>();
             }
-            else
-            {
-                _renderClientIds = new ArrayList<String>();                
-            }
-        }        
+        }
         return _renderClientIds;
-    }    
+    }
 
     @Override
-    public PartialResponseWriter getPartialResponseWriter()
-    {
+    public PartialResponseWriter getPartialResponseWriter() {
         assertNotReleased();
         //TODO: JSF 2.0, add impl
-        
+
         return new PartialResponseWriter(_facesContext.getResponseWriter());
     }
 
@@ -224,18 +198,17 @@ public class PartialViewContextImpl extends PartialViewContext
      *
      */
     @Override
-    public void processPartial(PhaseId phaseId)
-    {
+    public void processPartial(PhaseId phaseId) {
         assertNotReleased();
 
         UIComponent viewRoot = _facesContext.getViewRoot();
 
-        if (phaseId == PhaseId.APPLY_REQUEST_VALUES
-                || phaseId == PhaseId.PROCESS_VALIDATIONS
-                || phaseId == PhaseId.UPDATE_MODEL_VALUES)
-        {
-            processPartialExecute(viewRoot,phaseId);
-        } else if(phaseId == PhaseId.RENDER_RESPONSE) {
+
+
+        if (phaseId == PhaseId.APPLY_REQUEST_VALUES || phaseId == PhaseId.PROCESS_VALIDATIONS || phaseId == PhaseId.UPDATE_MODEL_VALUES) {
+            processPartialExecute(viewRoot, phaseId);
+        } else if (phaseId == PhaseId.RENDER_RESPONSE) {
+
             processPartialRendering(viewRoot, phaseId);
         }
 
@@ -244,48 +217,101 @@ public class PartialViewContextImpl extends PartialViewContext
 
     private void processPartialExecute(UIComponent viewRoot, PhaseId phaseId) {
         Collection<String> executeIds = getExecuteIds();
-        if(executeIds == null || executeIds.isEmpty()) {
+        if (executeIds == null || executeIds.isEmpty()) {
             return;
         }
         Set<VisitHint> hints = new HashSet<VisitHint>();
         hints.add(VisitHint.EXECUTE_LIFECYCLE);
         hints.add(VisitHint.SKIP_UNRENDERED);
-        VisitContext visitCtx = VisitContext.createVisitContext(_facesContext, executeIds , hints);
+        VisitContext visitCtx = VisitContext.createVisitContext(_facesContext, executeIds, hints);
         viewRoot.visitTree(visitCtx, new PhaseAwareVisitCallback(_facesContext, phaseId));
     }
 
     private void processPartialRendering(UIComponent viewRoot, PhaseId phaseId) {
         //TODO process partial rendering
         //https://issues.apache.org/jira/browse/MYFACES-2118
-    }
+        Collection<String> renderIds = getRenderIds();
+        if (renderIds == null || renderIds.isEmpty()) {
+            return;
+        }
 
+
+
+        PartialResponseWriter writer = getPartialResponseWriter();
+        ResponseWriter oldWriter = _facesContext.getResponseWriter();
+        boolean inDocument = false;
+
+        //response type = text/xml
+        //no caching and no timeout if possible!
+        ExternalContext externalContext = _facesContext.getExternalContext();
+        externalContext.setResponseContentType("text/xml");
+        externalContext.addResponseHeader("Pragma", "no-cache");
+        externalContext.addResponseHeader("Cache-control", "no-cache");
+        //under normal circumstances pragma should be enough, IE needs
+        //a special treatment!
+        //http://support.microsoft.com/kb/234067
+        externalContext.addResponseHeader("Expires", "-1");
+
+        try {
+
+            writer.startDocument();
+            inDocument = true;
+            _facesContext.setResponseWriter(writer);
+
+            Set<VisitHint> hints = new HashSet<VisitHint>();
+            /*unrendered have to be skipped, transient definitely must be added to our list!*/
+            hints.add(VisitHint.SKIP_UNRENDERED);
+
+            VisitContext visitCtx = VisitContext.createVisitContext(_facesContext, renderIds, hints);
+            viewRoot.visitTree(visitCtx, new PhaseAwareVisitCallback(_facesContext, phaseId));
+
+        } catch (IOException ex) {
+            Log log = LogFactory.getLog(PartialViewContextImpl.class);
+            if (log.isErrorEnabled()) {
+                log.error(ex);
+            }
+
+        } finally {
+            try {
+                if (inDocument) {
+                    writer.endDocument();
+                }
+                writer.flush();
+            } catch (IOException ex) {
+                Log log = LogFactory.getLog(PartialViewContextImpl.class);
+                if (log.isErrorEnabled()) {
+                    log.error(ex);
+                }
+            }
+
+            _facesContext.setResponseWriter(oldWriter);
+        }
+
+    }
 
     /**
      * has to be thrown in many of the methods if the method is called after the instance has been released!
      */
-    private void assertNotReleased()
-    {
-        if (_released)
-        {
+    private void assertNotReleased() {
+        if (_released) {
             throw new IllegalStateException("Error the FacesContext is already released!");
         }
     }
 
     @Override
-    public void release()
-    {
+    public void release() {
         assertNotReleased();
         _executeClientIds = null;
         _renderClientIds = null;
         _ajaxRequest = null;
         _partialRequest = null;
-        _renderAll = null;        
+        _renderAll = null;
         _facesContext = null;
-        _released = true;        
+        _released = true;
     }
 
-
     private class PhaseAwareVisitCallback implements VisitCallback {
+
         private PhaseId _phaseId;
         private FacesContext _facesContext;
 
@@ -295,21 +321,53 @@ public class PartialViewContextImpl extends PartialViewContext
         }
 
         public VisitResult visit(VisitContext context, UIComponent target) {
-            if (_phaseId == PhaseId.APPLY_REQUEST_VALUES)
-            {
+            if (_phaseId == PhaseId.APPLY_REQUEST_VALUES) {
                 target.processDecodes(_facesContext);
-            }
-            else if (_phaseId == PhaseId.PROCESS_VALIDATIONS)
-            {
+            } else if (_phaseId == PhaseId.PROCESS_VALIDATIONS) {
                 target.processValidators(_facesContext);
-            }
-            else if (_phaseId == PhaseId.UPDATE_MODEL_VALUES)
-            {
+            } else if (_phaseId == PhaseId.UPDATE_MODEL_VALUES) {
                 target.processUpdates(_facesContext);
+            } else if (_phaseId == PhaseId.RENDER_RESPONSE) {
+                processRenderComponent(target);
+            } else {
+                throw new IllegalStateException("PPR Response, illegale phase called");
             }
 
             // Return VisitResult.REJECT as processDecodes/Validators/Updates already traverse sub tree
             return VisitResult.REJECT;
+        }
+
+        /**
+         * the rendering subpart of the tree walker
+         * every component id which is passed down via render must be handled
+         * here!
+         *
+         * @param target the target component to be handled!
+         */
+        private void processRenderComponent(UIComponent target) {
+            boolean inUpdate = false;
+            PartialResponseWriter writer = (PartialResponseWriter) _facesContext.getResponseWriter();
+            try {
+                writer.startUpdate(target.getClientId(_facesContext));
+                inUpdate = true;
+                target.encodeBegin(_facesContext);
+            } catch (IOException ex) {
+                Log log = LogFactory.getLog(PartialViewContextImpl.class);
+                if (log.isErrorEnabled()) {
+                    log.error("IOException for rendering component", ex);
+                }
+            } finally {
+                if (inUpdate) {
+                    try {
+                        writer.endUpdate();
+                    } catch (IOException ex) {
+                        Log log = LogFactory.getLog(PartialViewContextImpl.class);
+                        if (log.isErrorEnabled()) {
+                            log.error("IOException for rendering component, stopping update rendering", ex);
+                        }
+                    }
+                }
+            }
         }
     }
 }
