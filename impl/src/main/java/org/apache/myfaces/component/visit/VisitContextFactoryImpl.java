@@ -39,7 +39,6 @@ public class VisitContextFactoryImpl extends VisitContextFactory {
 
     @Override
     public VisitContext getVisitContext(FacesContext context, Collection<String> ids, Set<VisitHint> hints) {
-        //since we are at the base here, we dont have to wrap for now, getWrapped will return null!
         if (ids == null || ids.isEmpty()) {
             return new FullVisitContext(context, hints);
         } else {
