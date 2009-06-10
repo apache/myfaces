@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.faces.FactoryFinder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
@@ -38,14 +39,14 @@ public abstract class VisitContext
 
     public static VisitContext createVisitContext(FacesContext context)
     {
-        // TODO: IMPLEMENT HERE
-        return null;
+        VisitContextFactory factory = (VisitContextFactory) FactoryFinder.getFactory(FactoryFinder.VISIT_CONTEXT_FACTORY);
+        return factory.getVisitContext(context, null, null);
     }
 
     public static VisitContext createVisitContext(FacesContext context, Collection<String> ids, Set<VisitHint> hints)
     {
-        // TODO: IMPLEMENT HERE
-        return null;
+        VisitContextFactory factory = (VisitContextFactory) FactoryFinder.getFactory(FactoryFinder.VISIT_CONTEXT_FACTORY);
+        return factory.getVisitContext(context, ids, hints);
     }
 
     public abstract FacesContext getFacesContext();
