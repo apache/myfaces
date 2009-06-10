@@ -15,7 +15,6 @@
 package org.apache.myfaces.component.visit;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;

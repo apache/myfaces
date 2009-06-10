@@ -29,6 +29,13 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UINamingContainer;
 import javax.faces.context.FacesContext;
 
+/**
+ * Implementation of a PartialVisitContext!
+ * The partial visit context works on a subset of ids and has several
+ * differences to a Full visit context!
+ * First getIds returns a mutable set
+ * Secondly  getSubtreeIdsToVisit returns either a valid id subset or ALL_IDS
+ */
 public class PartialVisitContext extends VisitContext {
 
     FacesContext _facesContext;

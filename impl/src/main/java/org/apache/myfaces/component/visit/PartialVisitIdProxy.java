@@ -23,7 +23,14 @@ import java.util.Set;
 import javax.faces.context.FacesContext;
 
 /**
- * Proxying class to speedup partial ids
+ * A proxying class for our partial visit id handling
+ * we need this class because
+ * a) PartialVisitContext.getIds must return
+ *  a valid modifyable set of client ids
+ * 
+ * b) There are some speed improvements like an
+ *  inverse index, which need to change as well
+ *  if the ids are changed!
  */
 class PartialVisitIdProxy implements Set<String>{
 
@@ -74,13 +81,6 @@ class PartialVisitIdProxy implements Set<String>{
         }
         _forcedIds.remove(clientId);
     }
-
-
-
-
-
-   
-            
 
 
     private boolean addToIndex(String clientId) {
