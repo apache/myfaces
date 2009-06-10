@@ -23,6 +23,9 @@ import java.util.Set;
 import javax.faces.context.FacesContext;
 
 /**
+ * @author Werner Punz (latest modification by $Author$)
+ * @version $Rev$ $Date$
+ *
  * A proxying class for our partial visit id handling
  * we need this class because
  * a) PartialVisitContext.getIds must return

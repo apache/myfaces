@@ -28,6 +28,10 @@ import javax.faces.context.FacesContext;
 
 /**
  *
+ * @author Werner Punz (latest modification by $Author$)
+ * @version $Rev$ $Date$
+ * 
+ *
  * Another visit context for the full Tree Traversal!
  *
  * This visit context is rather simplistic because full tree

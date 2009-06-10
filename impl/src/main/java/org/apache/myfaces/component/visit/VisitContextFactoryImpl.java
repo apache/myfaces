@@ -22,6 +22,8 @@ import javax.faces.component.visit.VisitHint;
 import javax.faces.context.FacesContext;
 
 /**
+ * @author Werner Punz (latest modification by $Author$)
+ * @version $Rev$ $Date$ 
  * Implementation of the VisitContextFactory!
  */
 public class VisitContextFactoryImpl extends VisitContextFactory {

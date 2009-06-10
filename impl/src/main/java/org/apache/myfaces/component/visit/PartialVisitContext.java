@@ -30,6 +30,9 @@ import javax.faces.component.UINamingContainer;
 import javax.faces.context.FacesContext;
 
 /**
+ * @author Werner Punz (latest modification by $Author$)
+ * @version $Rev$ $Date$
+ *
  * Implementation of a PartialVisitContext!
  * The partial visit context works on a subset of ids and has several
  * differences to a Full visit context!
