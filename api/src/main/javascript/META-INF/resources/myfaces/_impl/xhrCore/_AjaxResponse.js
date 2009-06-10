@@ -263,7 +263,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
 
     /**
      * Helper method to avoid duplicate code
-     * @param {Object}Êrequest our request object
+     * @param {Object} request our request object
      * @param {Map} context the response context
      * @param {DomNode}Â oldElement the element to be replaced
      * @param {String} newData the markup which replaces the old dom node!

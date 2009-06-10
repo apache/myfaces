@@ -176,13 +176,15 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
 
             if (newTag != "") {
                 if (typeof window.Range != 'undefined'
-                    && typeof Range.prototype.createContextualFragment == 'function') {
+                    && typeof Range.prototype.createContextualFragment == 'function' ) {
                     var range = document.createRange();
                     range.setStartBefore(item);
                     var fragment = range.createContextualFragment(newTag);
                     item.parentNode.insertBefore(fragment, item);
                 } else {
                     item.insertAdjacentHTML('beforeBegin', newTag);
+                }
+                if(myfaces._impl._util._Utils.isManualScriptEval()) {
                     myfaces._impl._util._Utils.runScripts(request, context, item.previousSibling);
                 }
             }
@@ -280,9 +282,11 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
         var retVal = (_LangUtils.exists(myfaces._impl._util._Utils.browser,"isIE") &&
             ( myfaces._impl._util._Utils.browser.isIE > 5.5))||
         (_LangUtils.exists(myfaces._impl._util._Utils.browser,"isKhtml") &&
-            _LangUtils.exists(myfaces._impl._util._Utils.browser.isKhtml > 0))   ||
+            (myfaces._impl._util._Utils.browser.isKhtml > 0))   ||
         (_LangUtils.exists(myfaces._impl._util._Utils.browser,"isWebKit") &&
-            _LangUtils.exists(myfaces._impl._util._Utils.browser.isWebKit > 0));
+            (myfaces._impl._util._Utils.browser.isWebKit > 0)) ||
+         (_LangUtils.exists(myfaces._impl._util._Utils.browser,"isSafari") &&
+            (myfaces._impl._util._Utils.browser.isSafari > 0));
       
         return retVal;
                
