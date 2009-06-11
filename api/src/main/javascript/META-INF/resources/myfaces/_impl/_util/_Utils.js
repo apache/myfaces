@@ -165,8 +165,8 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
      */
     myfaces._impl._util._Utils.replaceHtmlItem = function(request, context, itemIdToReplace, newTag, form) {
         try {
-
-            var item = (itemIdToReplace instanceof Node) ? itemIdToReplace :
+        	// (itemIdToReplace instanceof Node) is NOT compatible with IE8
+            var item = (typeof itemIdToReplace == "object") ? itemIdToReplace :
             myfaces._impl._util._Utils.getElementFromForm(request, context, itemIdToReplace, form);
             if (item == null) {
                 myfaces._impl.xhrCore._Exception.throwNewWarning

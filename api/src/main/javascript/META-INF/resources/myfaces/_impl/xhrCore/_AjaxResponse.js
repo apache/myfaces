@@ -83,10 +83,18 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
                 return;
             }
             var partials = xmlContent.childNodes[0];
-            if ('undefined' == typeof partials || partials == null
-                || partials.tagName != this._RESPONSE_PARTIAL) {
+            if ('undefined' == typeof partials || partials == null) {
             	myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML);
                 return;
+            } else {
+            	if (partials.tagName != this._RESPONSE_PARTIAL) {
+            		// IE 8 sees XML Header as first sibling ...
+            		partials = partials.nextSibling;
+                    if ('undefined' == typeof partials || partials == null || partials.tagName != this._RESPONSE_PARTIAL) {
+                    	myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML);
+                        return;
+                    }
+            	}
             }
 
             var childNodesLength = partials.childNodes.length;
