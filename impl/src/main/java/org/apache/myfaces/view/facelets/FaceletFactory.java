@@ -19,6 +19,7 @@
 package org.apache.myfaces.view.facelets;
 
 import java.io.IOException;
+import java.net.URL;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
@@ -46,7 +47,21 @@ public abstract class FaceletFactory
      * @throws ELException
      */
     public abstract Facelet getFacelet(String uri) throws IOException;
-
+    
+    /**
+     * Create a Facelet from the passed URL. This method checks if the cached Facelet needs to be refreshed before
+     * returning. If so, uses the passed URL to build a new instance;
+     * 
+     * @param url
+     *            source url
+     * @return Facelet instance
+     * @throws IOException
+     * @throws FaceletException
+     * @throws FacesException
+     * @throws ELException
+     */
+    public abstract Facelet getFacelet(URL url) throws IOException, FaceletException, FacesException, ELException;
+    
     /**
      * Set the static instance
      * 

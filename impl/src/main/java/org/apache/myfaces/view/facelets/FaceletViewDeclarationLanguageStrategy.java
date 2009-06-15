@@ -48,7 +48,8 @@ public class FaceletViewDeclarationLanguageStrategy implements ViewDeclarationLa
         
         _extension = loadFaceletExtension(context);
         
-        _language = new FaceletViewDeclarationLanguage();
+        _language = new FaceletViewDeclarationLanguage
+            (FacesContext.getCurrentInstance().getApplication().getViewHandler());
     }
     
     /**

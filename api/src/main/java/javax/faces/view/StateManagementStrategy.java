@@ -29,8 +29,6 @@ import javax.faces.context.FacesContext;
  */
 public abstract class StateManagementStrategy
 {
-    public abstract boolean isPdlDeliversInitialStateEvent(FacesContext context);
-
     public abstract UIViewRoot restoreView(FacesContext context, String viewId, String renderKitId);
     
     public abstract Object saveView(FacesContext context);
