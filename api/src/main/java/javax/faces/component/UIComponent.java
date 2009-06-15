@@ -19,22 +19,7 @@
 package javax.faces.component;
 
 import java.io.IOException;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.PropertyResourceBundle;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 
 import javax.el.ELContext;
 import javax.el.ELException;
@@ -44,6 +29,8 @@ import javax.faces.application.Application;
 import javax.faces.application.Resource;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitResult;
+import javax.faces.component.visit.VisitHint;
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
@@ -63,16 +50,16 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
  * TODO: PLUGINIZE - All HTML components now have enums for the properties, we have to enhance the Maven 
  *                   plugin to handle that
  * 
- * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
+ * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">J
+ * SF Specification</a>
  * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
 @JSFComponent(type = "javax.faces.Component", family = "javax.faces.Component", desc = "abstract base component", configExcluded = true)
-public abstract class UIComponent implements PartialStateHolder, SystemEventListenerHolder, ComponentSystemEventListener
-{
+public abstract class UIComponent implements PartialStateHolder, SystemEventListenerHolder, ComponentSystemEventListener {
     // TODO: Reorder methods, this class is a mess
-    
+
     public static final String ADDED_BY_PDL_KEY = "javax.faces.component.ADDED_BY_PDL_KEY";
     public static final String BEANINFO_KEY = "javax.faces.component.BEANINFO_KEY";
     public static final String COMPOSITE_COMPONENT_TYPE_KEY = "javax.faces.component.COMPOSITE_COMPONENT_TYPE";
@@ -80,13 +67,9 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
     public static final String CURRENT_COMPONENT = "javax.faces.component.CURRENT_COMPONENT";
     public static final String CURRENT_COMPOSITE_COMPONENT = "javax.faces.component.CURRENT_COMPOSITE_COMPONENT";
     public static final String FACETS_KEY = "javax.faces.component.FACETS_KEY";
-
     private static final String _COMPONENT_STACK = "componentStack:" + UIComponent.class.getName();
-
     private Map<Class<? extends SystemEvent>, List<SystemEventListener>> _systemEventListenerClassMap;
-
     protected Map<String, ValueExpression> bindings;
-
     /**
      * Used to cache the map created using getResourceBundleMap() method, since this method could be called several
      * times when rendering the composite component. This attribute may not be serialized, so transient is used (There
@@ -94,23 +77,22 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
      * transient is used).
      */
     private transient Map<String, String> _resourceBundleMap = null;
-
     private boolean _inView = false;
+    private StateHelper _stateHelper = null;
 
-    public UIComponent()
-    {
+
+    public UIComponent() {
     }
 
     public abstract Map<String, Object> getAttributes();
-    
+
     /**
      * 
      * {@inheritDoc}
      * 
      * @since 2.0
      */
-    public boolean initialStateMarked()
-    {
+    public boolean initialStateMarked() {
         throw new UnsupportedOperationException();
     }
 
@@ -127,31 +109,24 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
      * @throws javax.faces.FacesException
      */
     public boolean invokeOnComponent(FacesContext context, String clientId, ContextCallback callback)
-            throws FacesException
-    {
+            throws FacesException {
         // java.lang.NullPointerException - if any of the arguments are null
-        if (context == null || clientId == null || callback == null)
-        {
+        if (context == null || clientId == null || callback == null) {
             throw new NullPointerException();
         }
 
         // searching for this component?
         boolean found = clientId.equals(this.getClientId(context));
-        if (found)
-        {
-            try
-            {
+        if (found) {
+            try {
                 callback.invokeContextCallback(context, this);
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 throw new FacesException(e);
             }
             return found;
         }
         // Searching for this component's children/facets
-        for (Iterator<UIComponent> it = this.getFacetsAndChildren(); !found && it.hasNext();)
-        {
+        for (Iterator<UIComponent> it = this.getFacetsAndChildren(); !found && it.hasNext();) {
             found = it.next().invokeOnComponent(context, clientId, callback);
         }
 
@@ -161,14 +136,20 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
     /**
      * 
      * @param component
-     * @return
+     * @return true if the component is a composite component otherwise false is returned
      * 
+     *
+     * @throws NullPointerException if the component is null
      * @since 2.0
      */
-    public static boolean isCompositeComponent(UIComponent component)
-    {
-        // TODO: IMPLEMENT HERE
-        return false;
+    public static boolean isCompositeComponent(UIComponent component) {
+
+        //since _isCompositeComponent does it the same way we do it here also although I
+        //would prefer following method
+
+        //return component.getRendererType().equals("javax.faces.Composite");
+
+        return component.getAttributes().get(Resource.COMPONENT_RESOURCE_KEY) != null;
     }
 
     /**
@@ -185,29 +166,41 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
      * 
      * @since 2.0
      */
-    public boolean isInView()
-    {
+    public boolean isInView() {
         return _inView;
     }
 
     public abstract boolean isRendered();
-    
-    public void markInitialState()
-    {
+
+    public void markInitialState() {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * 
+     *
+     * This method indicates if a component is visitable
+     * according to the hints passed by the VisitContext parameter!
+     *
+     * This method internally is used by visitTree and if it returns false
+     * it short circuits the visitTree execution.
+     *
+     *
+     *
      * @param context
      * @return
      * 
      * @since 2.0
      */
-    protected boolean isVisitable(VisitContext context)
-    {
-        // TODO: IMPLEMENT HERE
-        return true;
+    protected boolean isVisitable(VisitContext context) {
+
+        Set <VisitHint> visitHints = context.getHints();
+        boolean retVal = !((visitHints.contains(VisitHint.SKIP_UNRENDERED)  && !this.isRendered()) ||
+           (visitHints.contains(VisitHint.SKIP_TRANSIENT) && this.isTransient()));
+        //executable cannot be handled here because we do not have any method to determine
+        //whether a component is executable or not, this seems to be a hole in the spec!
+        //but we can resolve it on ppr context level, where it is needed!
+        //maybe in the long run we can move it down here, if it makes sense
+        return retVal;
     }
 
     /**
@@ -216,42 +209,36 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
     @Deprecated
     public abstract void setValueBinding(String name, ValueBinding binding);
 
-    public void setValueExpression(String name, ValueExpression expression)
-    {
-        if (name == null)
+    public void setValueExpression(String name, ValueExpression expression) {
+        if (name == null) {
             throw new NullPointerException("name");
-        if (name.equals("id"))
-            throw new IllegalArgumentException("Can't set a ValueExpression for the 'id' property.");
-        if (name.equals("parent"))
-            throw new IllegalArgumentException("Can't set a ValueExpression for the 'parent' property.");
-
-        if (expression == null)
-        {
-            if (bindings != null)
-            {
-                bindings.remove(name);
-                if (bindings.isEmpty())
-                    bindings = null;
-            }
         }
-        else
-        {
-            if (expression.isLiteralText())
-            {
-                try
-                {
+        if (name.equals("id")) {
+            throw new IllegalArgumentException("Can't set a ValueExpression for the 'id' property.");
+        }
+        if (name.equals("parent")) {
+            throw new IllegalArgumentException("Can't set a ValueExpression for the 'parent' property.");
+        }
+
+        if (expression == null) {
+            if (bindings != null) {
+                bindings.remove(name);
+                if (bindings.isEmpty()) {
+                    bindings = null;
+                }
+            }
+        } else {
+            if (expression.isLiteralText()) {
+                try {
                     Object value = expression.getValue(getFacesContext().getELContext());
                     getAttributes().put(name, value);
                     return;
-                }
-                catch (ELException e)
-                {
+                } catch (ELException e) {
                     throw new FacesException(e);
                 }
             }
 
-            if (bindings == null)
-            {
+            if (bindings == null) {
                 bindings = new HashMap<String, ValueExpression>();
             }
 
@@ -259,33 +246,46 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
         }
     }
 
-    public String getClientId()
-    {
+    public String getClientId() {
         return getClientId(getFacesContext());
     }
 
     public abstract String getClientId(FacesContext context);
 
     /**
-     * 
-     * @param component
-     * @return
+     * search for the nearest parent composite component, if no parent is found
+     * it has to return null!
+     *
+     * if the component itself is null we have to return null as well!
+     *
+     * @param component the component to start from
+     * @return the parent composite component if found otherwise null
      * 
      * @since 2.0
      */
-    public static UIComponent getCompositeComponentParent(UIComponent component)
-    {
-        // TODO: IMPLEMENT HERE
+    public static UIComponent getCompositeComponentParent(UIComponent component) {
+
+        if(component == null) {
+            return null;
+        }
+        UIComponent parent = null;
+
+        do {
+            parent = component.getParent();
+            if(parent != null && UIComponent.isCompositeComponent(parent)) {
+                return parent;
+            }
+        } while(parent != null);
         return null;
     }
 
     /**
      * @since 1.2
      */
-    public String getContainerClientId(FacesContext ctx)
-    {
-        if (ctx == null)
+    public String getContainerClientId(FacesContext ctx) {
+        if (ctx == null) {
             throw new NullPointerException("FacesContext ctx");
+        }
 
         return getClientId(ctx);
     }
@@ -297,8 +297,7 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
      * 
      * @since 2.0
      */
-    public static UIComponent getCurrentComponent(FacesContext context)
-    {
+    public static UIComponent getCurrentComponent(FacesContext context) {
         /*
          * Return the UIComponent instance that is currently processing. This is equivalent to evaluating the EL
          * expression "#{component}" and doing a getValue operation on the resultant ValueExpression.
@@ -318,8 +317,7 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
      * 
      * @since 2.0
      */
-    public static UIComponent getCurrentCompositeComponent(FacesContext context)
-    {
+    public static UIComponent getCurrentCompositeComponent(FacesContext context) {
         return (UIComponent) context.getAttributes().get(UIComponent.CURRENT_COMPOSITE_COMPONENT);
     }
 
@@ -327,50 +325,40 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
 
     public abstract String getId();
 
-    public List<SystemEventListener> getListenersForEventClass(Class<? extends SystemEvent> eventClass)
-    {
+    public List<SystemEventListener> getListenersForEventClass(Class<? extends SystemEvent> eventClass) {
         List<SystemEventListener> listeners;
-        if (_systemEventListenerClassMap == null)
-        {
+        if (_systemEventListenerClassMap == null) {
             listeners = Collections.emptyList();
-        }
-        else
-        {
+        } else {
             listeners = _systemEventListenerClassMap.get(eventClass);
-            if (listeners == null)
-            {
+            if (listeners == null) {
                 listeners = Collections.emptyList();
-            }
-            else
-            {
+            } else {
                 listeners = Collections.unmodifiableList(listeners);
             }
         }
 
         return listeners;
     }
-    
+
     /**
      * 
      * @return
      * 
      * @since 2.0
      */
-    public UIComponent getNamingContainer()
-    {
+    public UIComponent getNamingContainer() {
         // Starting with "this", return the closest component in the ancestry that is a NamingContainer 
         // or null if none can be found.
         UIComponent component = this;
-        do
-        {
-            if (component instanceof NamingContainer)
-            {
+        do {
+            if (component instanceof NamingContainer) {
                 return component;
             }
-            
+
             component = component.getParent();
         } while (component != null);
-        
+
         return null;
     }
 
@@ -393,8 +381,7 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
      * 
      * @since 2.0
      */
-    public void setInView(boolean isInView)
-    {
+    public void setInView(boolean isInView) {
         _inView = isInView;
     }
 
@@ -418,63 +405,48 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
 
     public abstract boolean getRendersChildren();
 
-    public Map<String, String> getResourceBundleMap()
-    {
-        if (_resourceBundleMap == null)
-        {
+    public Map<String, String> getResourceBundleMap() {
+        if (_resourceBundleMap == null) {
             FacesContext context = getFacesContext();
             Locale locale = context.getViewRoot().getLocale();
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
-            try
-            {
+            try {
                 // looks for a ResourceBundle with a base name equal to the fully qualified class
                 // name of the current UIComponent this and Locale equal to the Locale of the current UIViewRoot.
                 _resourceBundleMap = new BundleMap(ResourceBundle.getBundle(getClass().getName(), locale, loader));
-            }
-            catch (MissingResourceException e)
-            {
+            } catch (MissingResourceException e) {
                 // If no such bundle is found, and the component is a composite component
-                if (this._isCompositeComponent())
-                {
+                if (this._isCompositeComponent()) {
                     // No need to check componentResource (the resource used to build the composite
                     // component instance) to null since it is already done on this._isCompositeComponent()
                     Resource componentResource = (Resource) getAttributes().get(Resource.COMPONENT_RESOURCE_KEY);
                     // Let resourceName be the resourceName of the Resource for this composite component,
                     // replacing the file extension with ".properties"
                     int extensionIndex = componentResource.getResourceName().lastIndexOf('.');
-                    String resourceName = (extensionIndex < 0 ? componentResource.getResourceName() : componentResource
-                            .getResourceName().substring(0, extensionIndex))
-                            + ".properties";
+                    String resourceName = (extensionIndex < 0 ? componentResource.getResourceName() : componentResource.getResourceName().substring(0, extensionIndex)) + ".properties";
 
                     // Let libraryName be the libraryName of the the Resource for this composite component.
                     // Call ResourceHandler.createResource(java.lang.String,java.lang.String), passing the derived
                     // resourceName and
                     // libraryName.
-                    Resource bundleResource = context.getApplication().getResourceHandler()
-                            .createResource(resourceName, componentResource.getLibraryName());
+                    Resource bundleResource = context.getApplication().getResourceHandler().createResource(resourceName, componentResource.getLibraryName());
 
-                    if (bundleResource != null)
-                    {
+                    if (bundleResource != null) {
                         // If the resultant Resource exists and can be found, the InputStream for the resource
                         // is used to create a ResourceBundle. If either of the two previous steps for obtaining the
                         // ResourceBundle
                         // for this component is successful, the ResourceBundle is wrapped in a Map<String, String> and
                         // returned.
-                        try
-                        {
-                            _resourceBundleMap = new BundleMap(new PropertyResourceBundle(bundleResource
-                                    .getInputStream()));
-                        }
-                        catch (IOException e1)
-                        {
+                        try {
+                            _resourceBundleMap = new BundleMap(new PropertyResourceBundle(bundleResource.getInputStream()));
+                        } catch (IOException e1) {
                             // Nothing happens, then resourceBundleMap is set as empty map
                         }
                     }
                 }
                 // Otherwise Collections.EMPTY_MAP is returned.
-                if (_resourceBundleMap == null)
-                {
+                if (_resourceBundleMap == null) {
                     _resourceBundleMap = Collections.emptyMap();
                 }
             }
@@ -489,28 +461,23 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
     @Deprecated
     public abstract ValueBinding getValueBinding(String name);
 
-    public ValueExpression getValueExpression(String name)
-    {
-        if (name == null)
+    public ValueExpression getValueExpression(String name) {
+        if (name == null) {
             throw new NullPointerException("name can not be null");
+        }
 
-        if (bindings == null)
-        {
-            if (!(this instanceof UIComponentBase))
-            {
+        if (bindings == null) {
+            if (!(this instanceof UIComponentBase)) {
                 // if the component does not inherit from UIComponentBase and don't implements JSF 1.2 or later
                 ValueBinding vb = getValueBinding(name);
-                if (vb != null)
-                {
+                if (vb != null) {
                     bindings = new HashMap<String, ValueExpression>();
                     ValueExpression ve = new _ValueBindingToValueExpression(vb);
                     bindings.put(name, ve);
                     return ve;
                 }
             }
-        }
-        else
-        {
+        } else {
             return bindings.get(name);
         }
 
@@ -530,14 +497,13 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
     public abstract Iterator<UIComponent> getFacetsAndChildren();
 
     public abstract void broadcast(FacesEvent event) throws AbortProcessingException;
-    
+
     /**
      * {@inheritDoc}
      * 
      * @since 2.0
      */
-    public void clearInitialState()
-    {
+    public void clearInitialState() {
         throw new UnsupportedOperationException();
     }
 
@@ -549,29 +515,21 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
 
     public abstract void encodeEnd(FacesContext context) throws IOException;
 
-    public void encodeAll(FacesContext context) throws IOException
-    {
-        if (context == null)
-        {
+    public void encodeAll(FacesContext context) throws IOException {
+        if (context == null) {
             throw new NullPointerException();
         }
 
-        if (isRendered())
-        {
+        if (isRendered()) {
             this.encodeBegin(context);
 
             // rendering children
-            if (this.getRendersChildren())
-            {
+            if (this.getRendersChildren()) {
                 this.encodeChildren(context);
-            }
-            // let children render itself
-            else
-            {
-                if (this.getChildCount() > 0)
-                {
-                    for (UIComponent comp : this.getChildren())
-                    {
+            } // let children render itself
+            else {
+                if (this.getChildCount() > 0) {
+                    for (UIComponent comp : this.getChildren()) {
                         comp.encodeAll(context);
                     }
                 }
@@ -592,18 +550,15 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
 
     public abstract void processDecodes(FacesContext context);
 
-    public void processEvent(ComponentSystemEvent event) throws AbortProcessingException
-    {
+    public void processEvent(ComponentSystemEvent event) throws AbortProcessingException {
         // The default implementation performs the following action. If the argument event is an instance of
         // AfterRestoreStateEvent,
-        if (event instanceof PostRestoreStateEvent)
-        {
+        if (event instanceof PostRestoreStateEvent) {
             // call this.getValueExpression(java.lang.String) passing the literal string "binding"
             ValueExpression expression = getValueExpression("binding");
 
             // If the result is non-null, set the value of the ValueExpression to be this.
-            if (expression != null)
-            {
+            if (expression != null) {
                 expression.setValue(getFacesContext().getELContext(), this);
             }
         }
@@ -615,22 +570,19 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
 
     public abstract java.lang.Object processSaveState(FacesContext context);
 
-    public void subscribeToEvent(Class<? extends SystemEvent> eventClass, ComponentSystemEventListener componentListener)
-    {
+    public void subscribeToEvent(Class<? extends SystemEvent> eventClass, ComponentSystemEventListener componentListener) {
         // The default implementation creates an inner SystemEventListener instance that wraps argument
         // componentListener as the listener argument.
         SystemEventListener listener = new EventListenerWrapper(this, componentListener);
 
         // Make sure the map exists
-        if (_systemEventListenerClassMap == null)
-        {
+        if (_systemEventListenerClassMap == null) {
             _systemEventListenerClassMap = new HashMap<Class<? extends SystemEvent>, List<SystemEventListener>>();
         }
 
         List<SystemEventListener> listeners = _systemEventListenerClassMap.get(eventClass);
         // Make sure the list for class exists
-        if (listeners == null)
-        {
+        if (listeners == null) {
             listeners = new ArrayList<SystemEventListener>(2);
             _systemEventListenerClassMap.put(eventClass, listeners);
         }
@@ -640,8 +592,7 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
     }
 
     public void unsubscribeFromEvent(Class<? extends SystemEvent> eventClass,
-                                     ComponentSystemEventListener componentListener)
-    {
+            ComponentSystemEventListener componentListener) {
         /*
          * When doing the comparison to determine if an existing listener is equal to the argument componentListener
          * (and thus must be removed), the equals() method on the existing listener must be invoked, passing the
@@ -656,59 +607,102 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
     }
 
     /**
-     * 
-     * @param context
-     * @param callback
-     * @return
+     * The visit tree method, visit tree walks over a subtree and processes
+     * the callback object to perform some operation on the subtree
+     * <p>
+     * there are some details in the implementation which according to the spec have
+     * to be in place:
+     * a) before calling the callback and traversing into the subtree  pushComponentToEL
+     * has to be called
+     * b) after the processing popComponentFromEL has to be performed to remove the component
+     * from the el
+     * </p>
+     * <p>
+     * The tree traversal optimizations are located in the visit context and can be replaced
+     * via the VisitContextFactory in the faces-config factory section
+     * </p>
+     *
+     * @param context the visit context which handles the processing details
+     * @param callback the callback to be performed
+     * @return false if the processing is not done true if we can shortcut
+     * the visiting because we are done with everything
      * 
      * @since 2.0
      */
-    public boolean visitTree(VisitContext context, VisitCallback callback)
-    {
-        // TODO: IMPLEMENT HERE
-        return false;
+    public boolean visitTree(VisitContext context, VisitCallback callback) {
+        if (!isVisitable(context)) {
+            return false;
+        }
+
+        pushComponentToEL(context.getFacesContext(), this);
+        try {
+            VisitResult res = context.invokeVisitCallback(this, callback);
+            switch (res) {
+                //we are done nothing has to be processed anymore
+                case COMPLETE:
+                    return true;
+
+                case REJECT:
+                    return false;
+
+                //accept
+                default:
+                    boolean visitResult = false;
+                    List <UIComponent> children = getChildren();
+                    if(children == null || children.isEmpty()) {
+                        return visitResult;
+                    }
+                    for (UIComponent child : children) {
+                        visitResult = child.visitTree(context, callback);
+                        if (visitResult) {
+                            return visitResult;
+                        }
+                    }
+                    return visitResult;
+            }
+        } finally {
+            //all components must call popComponentFromEl after visiting is finished
+            popComponentFromEL(context.getFacesContext());
+        }
     }
 
     protected abstract FacesContext getFacesContext();
 
     protected abstract Renderer getRenderer(FacesContext context);
-    
-    protected StateHelper getStateHelper()
-    {
+
+    protected StateHelper getStateHelper() {
         return getStateHelper(true);
     }
-    
-    protected StateHelper getStateHelper(boolean create)
-    {
-        // TODO: IMPLEMENT HERE
+
+    protected StateHelper getStateHelper(boolean create) {
+        if(_stateHelper != null) {
+            return _stateHelper;
+        }
+        //TODO add a state helper implementation
         return null;
     }
 
     @SuppressWarnings("unchecked")
-    protected void popComponentFromEL(FacesContext context)
-    {
+    protected void popComponentFromEL(FacesContext context) {
         Map<Object, Object> contextAttributes = context.getAttributes();
 
         // Pop the current UIComponent from the FacesContext attributes map so that the previous
         // UIComponent, if any, becomes the current component.
-        Deque<UIComponent> componentStack = (Deque<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
+        Stack<UIComponent> componentStack = (Stack<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
 
         UIComponent newCurrent = null;
-        if (componentStack != null && !componentStack.isEmpty())
-        {
+        if (componentStack != null && !componentStack.isEmpty()) {
             newCurrent = componentStack.pop();
         }
-        UIComponent oldCurrent = (UIComponent)contextAttributes.put(UIComponent.CURRENT_COMPONENT, newCurrent);
+        UIComponent oldCurrent = (UIComponent) contextAttributes.put(UIComponent.CURRENT_COMPONENT, newCurrent);
 
-        if (oldCurrent != null && oldCurrent._isCompositeComponent())
-        {
+        if (oldCurrent != null && oldCurrent._isCompositeComponent()) {
             newCurrent = componentStack.peek();
         }
         contextAttributes.put(UIComponent.CURRENT_COMPONENT, newCurrent);
 
         // Find and put (if exists) the current composite component into the EL.
-        if (componentStack != null && !componentStack.isEmpty())
-        {        
+        if (componentStack != null && !componentStack.isEmpty()) {
             for (UIComponent component : componentStack) {
                 if (component._isCompositeComponent()) {
                     contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, component);
@@ -719,20 +713,17 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
     }
 
     @SuppressWarnings("unchecked")
-    protected void pushComponentToEL(FacesContext context, UIComponent component)
-    {
+    protected void pushComponentToEL(FacesContext context, UIComponent component) {
         Map<Object, Object> contextAttributes = context.getAttributes();
-        Deque<UIComponent> componentStack = (Deque<UIComponent>) contextAttributes.get(_COMPONENT_STACK);
-        if (componentStack == null)
-        {
-            componentStack = new ArrayDeque<UIComponent>();
+        Stack<UIComponent> componentStack = (Stack<UIComponent>) contextAttributes.get(_COMPONENT_STACK);
+        if (componentStack == null) {
+            componentStack = new Stack<UIComponent>();
             contextAttributes.put(_COMPONENT_STACK, componentStack);
         }
 
         componentStack.push(component);
         contextAttributes.put(UIComponent.CURRENT_COMPONENT, component);
-        if (component._isCompositeComponent())
-        {
+        if (component._isCompositeComponent()) {
             contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, component);
         }
     }
@@ -740,70 +731,53 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
     /**
      * @since 1.2
      */
-
-    public int getFacetCount()
-    {
+    public int getFacetCount() {
         // not sure why the RI has this method in both
         // UIComponent and UIComponentBase
         Map<String, UIComponent> facets = getFacets();
         return facets == null ? 0 : facets.size();
     }
 
-    private boolean _isCompositeComponent()
-    {
-        return getAttributes().get(Resource.COMPONENT_RESOURCE_KEY) != null;
+    private boolean _isCompositeComponent() {
+        //moved to the static method
+        return UIComponent.isCompositeComponent(this);
     }
 
-    private static class BundleMap implements Map<String, String>
-    {
+    private static class BundleMap implements Map<String, String> {
+
         private ResourceBundle _bundle;
         private List<String> _values;
 
-        public BundleMap(ResourceBundle bundle)
-        {
+        public BundleMap(ResourceBundle bundle) {
             _bundle = bundle;
         }
 
         // Optimized methods
-
-        public String get(Object key)
-        {
-            try
-            {
+        public String get(Object key) {
+            try {
                 return (String) _bundle.getObject(key.toString());
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 return "???" + key + "???";
             }
         }
 
-        public boolean isEmpty()
-        {
+        public boolean isEmpty() {
             return !_bundle.getKeys().hasMoreElements();
         }
 
-        public boolean containsKey(Object key)
-        {
-            try
-            {
+        public boolean containsKey(Object key) {
+            try {
                 return _bundle.getObject(key.toString()) != null;
-            }
-            catch (MissingResourceException e)
-            {
+            } catch (MissingResourceException e) {
                 return false;
             }
         }
 
         // Unoptimized methods
-
-        public Collection<String> values()
-        {
-            if (_values == null)
-            {
+        public Collection<String> values() {
+            if (_values == null) {
                 _values = new ArrayList<String>();
-                for (Enumeration<String> enumer = _bundle.getKeys(); enumer.hasMoreElements();)
-                {
+                for (Enumeration<String> enumer = _bundle.getKeys(); enumer.hasMoreElements();) {
                     String v = _bundle.getString(enumer.nextElement());
                     _values.add(v);
                 }
@@ -811,36 +785,29 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
             return _values;
         }
 
-        public int size()
-        {
+        public int size() {
             return values().size();
         }
 
-        public boolean containsValue(Object value)
-        {
+        public boolean containsValue(Object value) {
             return values().contains(value);
         }
 
-        public Set<Map.Entry<String, String>> entrySet()
-        {
+        public Set<Map.Entry<String, String>> entrySet() {
             Set<Entry<String, String>> set = new HashSet<Entry<String, String>>();
-            for (Enumeration<String> enumer = _bundle.getKeys(); enumer.hasMoreElements();)
-            {
+            for (Enumeration<String> enumer = _bundle.getKeys(); enumer.hasMoreElements();) {
                 final String k = enumer.nextElement();
-                set.add(new Map.Entry<String, String>()
-                {
-                    public String getKey()
-                    {
+                set.add(new Map.Entry<String, String>() {
+
+                    public String getKey() {
                         return k;
                     }
 
-                    public String getValue()
-                    {
+                    public String getValue() {
                         return (String) _bundle.getObject(k);
                     }
 
-                    public String setValue(String value)
-                    {
+                    public String setValue(String value) {
                         throw new UnsupportedOperationException();
                     }
                 });
@@ -849,47 +816,38 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
             return set;
         }
 
-        public Set<String> keySet()
-        {
+        public Set<String> keySet() {
             Set<String> set = new HashSet<String>();
-            for (Enumeration<String> enumer = _bundle.getKeys(); enumer.hasMoreElements();)
-            {
+            for (Enumeration<String> enumer = _bundle.getKeys(); enumer.hasMoreElements();) {
                 set.add(enumer.nextElement());
             }
             return set;
         }
 
         // Unsupported methods
-
-        public String remove(Object key)
-        {
+        public String remove(Object key) {
             throw new UnsupportedOperationException();
         }
 
-        public void putAll(Map<? extends String, ? extends String> t)
-        {
+        public void putAll(Map<? extends String, ? extends String> t) {
             throw new UnsupportedOperationException();
         }
 
-        public String put(String key, String value)
-        {
+        public String put(String key, String value) {
             throw new UnsupportedOperationException();
         }
 
-        public void clear()
-        {
+        public void clear() {
             throw new UnsupportedOperationException();
         }
-
     }
 
-    private class EventListenerWrapper implements SystemEventListener
-    {
+    private class EventListenerWrapper implements SystemEventListener {
+
         private UIComponent component;
         private ComponentSystemEventListener listener;
 
-        public EventListenerWrapper(UIComponent component, ComponentSystemEventListener listener)
-        {
+        public EventListenerWrapper(UIComponent component, ComponentSystemEventListener listener) {
             assert component != null;
             assert listener != null;
 
@@ -898,39 +856,30 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
         }
 
         @Override
-        public boolean equals(Object o)
-        {
-            if (o == this)
-            {
+        public boolean equals(Object o) {
+            if (o == this) {
                 return true;
-            }
-            else if (o instanceof EventListenerWrapper)
-            {
+            } else if (o instanceof EventListenerWrapper) {
                 EventListenerWrapper other = (EventListenerWrapper) o;
                 return component.equals(other.component) && listener.equals(other.listener);
-            }
-            else
-            {
+            } else {
                 return false;
             }
         }
 
         @Override
-        public int hashCode()
-        {
+        public int hashCode() {
             return component.hashCode() + listener.hashCode();
         }
 
-        public boolean isListenerForSource(Object source)
-        {
+        public boolean isListenerForSource(Object source) {
             // and its implementation of SystemEventListener.isListenerForSource(java.lang.Object) must return true
             // if the instance class of this UIComponent is assignable from the argument to isListenerForSource.
 
             return source.getClass().isAssignableFrom(component.getClass());
         }
 
-        public void processEvent(SystemEvent event)
-        {
+        public void processEvent(SystemEvent event) {
             // This inner class must call through to the argument componentListener in its implementation of
             // SystemEventListener.processEvent(javax.faces.event.SystemEvent)
 
