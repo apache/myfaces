@@ -39,7 +39,8 @@ public class Application
     private final List<LocaleConfig> localeConfig = new ArrayList<LocaleConfig>();
     private final List<String> elResolver = new ArrayList<String>();
     private final List<ResourceBundle> resourceBundle = new ArrayList<ResourceBundle>();
-
+    private final List<SystemEventListener> systemEventListener = new ArrayList<SystemEventListener>();
+    
     public void addActionListener(String listener)
     {
         actionListener.add(listener);
@@ -100,6 +101,11 @@ public class Application
         resourceBundle.add(bundle);
     }
 
+    public void addSystemEventListener(SystemEventListener listener)
+    {
+        systemEventListener.add(listener);
+    }
+    
     public List<String> getActionListener()
     {
         return actionListener;
@@ -158,5 +164,10 @@ public class Application
     public List<ResourceBundle> getResourceBundle()
     {
         return resourceBundle;
+    }
+
+    public List<SystemEventListener> getSystemEventListener()
+    {
+        return systemEventListener;
     }
 }

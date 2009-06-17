@@ -27,6 +27,7 @@ import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.Renderer;
 import org.apache.myfaces.config.impl.digester.elements.Converter;
 import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
+import org.apache.myfaces.config.impl.digester.elements.SystemEventListener;
 
 /**
  * Subsumes several unmarshalled faces config objects and presents a simple interface
@@ -241,4 +242,9 @@ public interface FacesConfigDispenser<C>
      * @return Iterator over {@link ELResolver} implementation class names
      */
     public Collection<String> getElResolvers();
+    
+    /**
+     * @return Iterator over (@link SystemEventListener) implementation class names 
+     */
+    public Collection<SystemEventListener> getSystemEventListeners();
 }

@@ -100,6 +100,11 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         // 1.2 specific end
 
         // 2.0 specific start
+        digester.addObjectCreate("faces-config/application/system-event-listener", SystemEventListener.class);
+        digester.addSetNext("faces-config/application/system-event-listener", "addSystemEventListener");
+        digester.addCallMethod("faces-config/application/system-event-listener/system-event-listener-class", "setSystemEventListenerClass",0);
+        digester.addCallMethod("faces-config/application/system-event-listener/system-event-class", "setSystemEventClass",0);
+        digester.addCallMethod("faces-config/application/system-event-listener/source-class", "setSourceClass",0);
         digester.addCallMethod("faces-config/application/resource-handler", "addResourceHandler", 0);
         digester.addCallMethod("faces-config/factory/exception-handler-factory", "addExceptionHandlerFactory", 0);
         digester.addCallMethod("faces-config/factory/external-context-factory", "addExternalContextFactory", 0);

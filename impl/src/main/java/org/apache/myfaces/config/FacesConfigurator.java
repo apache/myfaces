@@ -60,6 +60,7 @@ import javax.faces.el.PropertyResolver;
 import javax.faces.el.VariableResolver;
 import javax.faces.event.ActionListener;
 import javax.faces.event.PhaseListener;
+import javax.faces.event.SystemEvent;
 import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.render.RenderKit;
@@ -81,6 +82,7 @@ import org.apache.myfaces.config.impl.digester.elements.FacesConfig;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfigNameSlot;
 import org.apache.myfaces.config.impl.digester.elements.OrderSlot;
 import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
+import org.apache.myfaces.config.impl.digester.elements.SystemEventListener;
 import org.apache.myfaces.context.FacesContextFactoryImpl;
 import org.apache.myfaces.context.PartialViewContextFactoryImpl;
 import org.apache.myfaces.el.DefaultPropertyResolver;
@@ -1568,6 +1570,14 @@ public class FacesConfigurator
                                                         dispenser.getViewHandlerIterator(),
                                                         application.getViewHandler()));
 
+        for (SystemEventListener systemEventListener : dispenser.getSystemEventListeners())
+        {
+            
+            application.subscribeToEvent(
+                    (Class<? extends SystemEvent>)ClassUtils.newInstance(systemEventListener.getSystemEventClass(),SystemEvent.class), 
+                    (Class<?>)ClassUtils.newInstance(systemEventListener.getSourceClass()), 
+                    (javax.faces.event.SystemEventListener)ClassUtils.newInstance(systemEventListener.getSystemEventClass(),javax.faces.event.SystemEventListener.class));
+        }
         
         for (String componentType : dispenser.getComponentTypes())
         {

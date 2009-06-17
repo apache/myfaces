@@ -39,6 +39,7 @@ import org.apache.myfaces.config.impl.digester.elements.Factory;
 import org.apache.myfaces.config.impl.digester.elements.LocaleConfig;
 import org.apache.myfaces.config.impl.digester.elements.RenderKit;
 import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
+import org.apache.myfaces.config.impl.digester.elements.SystemEventListener;
 
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
@@ -86,6 +87,8 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
     private List<NavigationRule> navigationRules = new ArrayList<NavigationRule>();
     private List<ResourceBundle> resourceBundles = new ArrayList<ResourceBundle>();
 
+    private List<SystemEventListener> systemEventListeners = new ArrayList<SystemEventListener>();
+    
     /**
      * Add another unmarshalled faces config object.
      * 
@@ -138,6 +141,7 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
             variableResolver.addAll(application.getVariableResolver());
             resourceBundles.addAll(application.getResourceBundle());
             elResolvers.addAll(application.getElResolver());
+            systemEventListeners.addAll(application.getSystemEventListener());
         }
 
         for (Converter converter : config.getConverters())
@@ -551,6 +555,12 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
     public Collection<String> getElResolvers()
     {
         return elResolvers;
+    }
+
+    @Override
+    public Collection<SystemEventListener> getSystemEventListeners()
+    {        
+        return systemEventListeners;
     }
 
 }
