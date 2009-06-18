@@ -857,25 +857,25 @@ public class AnnotationConfigurator
         NamedEvent namedEvent = (NamedEvent) clazz.getAnnotation (NamedEvent.class);
         
         if (namedEvent != null) {
-        	// Can only apply @NamedEvent to ComponentSystemEvent subclasses.
-        	
-        	if (!ComponentSystemEvent.class.isAssignableFrom (clazz)) {
-        		// Just log this.  We'll catch it later in the runtime.
-        		
-        		if (log.isWarnEnabled()) {
-        			log.warn (clazz.getName() + " is annotated with @javax.faces.event.NamedEvent, but does " +
-        				"not extend javax.faces.event.ComponentSystemEvent");
-        		}
-        		
-        		return;
-        	}
-        	
-        	// Have to register @NamedEvent annotations with the NamedEventManager class since
-        	// we need to get access to this info later and can't from the dispenser (it's not a
-        	// singleton).
-        	
-        	NamedEventManager.getInstance().addNamedEvent (namedEvent.shortName(),
-        		(Class<? extends ComponentSystemEvent>) clazz);
+            // Can only apply @NamedEvent to ComponentSystemEvent subclasses.
+            
+            if (!ComponentSystemEvent.class.isAssignableFrom (clazz)) {
+                // Just log this.  We'll catch it later in the runtime.
+                
+                if (log.isWarnEnabled()) {
+                    log.warn (clazz.getName() + " is annotated with @javax.faces.event.NamedEvent, but does " +
+                        "not extend javax.faces.event.ComponentSystemEvent");
+                }
+                
+                return;
+            }
+            
+            // Have to register @NamedEvent annotations with the NamedEventManager class since
+            // we need to get access to this info later and can't from the dispenser (it's not a
+            // singleton).
+            
+            NamedEventManager.getInstance().addNamedEvent (namedEvent.shortName(),
+                (Class<? extends ComponentSystemEvent>) clazz);
         }
         
         // TODO: All annotations scanned at startup must be configured here!
