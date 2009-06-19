@@ -674,12 +674,20 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
         return getStateHelper(true);
     }
 
+    /**
+     * returns a delta state saving enabled state helper
+     * for the current component
+     * @param create if true a state helper is created if not already existing
+     * @return an implementation of the StateHelper interface or null if none exists and create is set to false
+     */
     protected StateHelper getStateHelper(boolean create) {
         if(_stateHelper != null) {
             return _stateHelper;
         }
-        //TODO add a state helper implementation
-        return null;
+        if(create) {
+            _stateHelper = new _DeltaStateHelper(this);
+        }
+        return _stateHelper;
     }
 
     @SuppressWarnings("unchecked")
