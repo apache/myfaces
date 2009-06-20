@@ -279,13 +279,6 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
     myfaces._impl.xhrCore._AjaxResponse.prototype._replaceElement = function(request, context, oldElement, newData) {
         myfaces._impl._util._Utils.replaceHtmlItem(request, context,
             oldElement, newData, this.m_htmlFormElement);
-        //fetch the scripts and do an eval on the scripts to bypass
-        //browser inconsistencies in this area
-        //lets have the browser itself deal with this issue, j4fry
-        //is pretty well optimized in this area!
-        if (myfaces._impl._util._Utils.isManualScriptEval()) {
-            myfaces._impl._util._Utils.runScripts(request, context, newData);
-        }
     };
 
     /*insert, three attributes can be present

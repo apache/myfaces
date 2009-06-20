@@ -117,67 +117,6 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxUtils"))
     }
 
     /**
-     * encapsulated xhr object which tracks down various implementations
-     * of the xhr object in a browser independend fashion
-     * (ie pre 7 used to have non standard implementations because
-     * the xhr object standard came after IE had implemented it first
-     * newer ie versions adhere to the standard and all other new browsers do anyway)
-     */
-    myfaces._impl.xhrCore._AjaxUtils.prototype.getXHRObject = function() {
-        if('undefined' != typeof XMLHttpRequest && null != XMLHttpRequest) {
-            return new XMLHttpRequest();
-        }
-        //IE
-        try {
-            return new ActiveXObject("Msxml2.XMLHTTP");
-        } catch (e) {
-            
-        }
-        return new ActiveXObject('Microsoft.XMLHTTP');
-    }
-
-
-    /**
-     * loads a script and executes it under a global scope
-     * @param {String} src the source to be loaded
-     * @param {String} type the mime type of the script (currently ignored
-     * but in the long run it will be used)
-     */
-    myfaces._impl.xhrCore._AjaxUtils.prototype.loadScript = function(src, type, defer, charSet) {
-        var xhr = this.getXHRObject();
-        xhr.open("GET", src, false);
-
-        if('undefined' != typeof charSet && null != charSet) {
-            xhr.setRequestHeader("Content-Type","application/x-javascript; charset:"+charSet);
-        }
-
-        xhr.send(null);
-
-        //since we are synchronous we do it after not with onReadyStateChange
-        if(xhr.readyState == 4) {
-            if (xhr.status == 200) {
-                //defer also means we have to process after the ajax response
-                //has been processed
-                //we can achieve that with a small timeout, the timeout
-                //triggers after the processing is done!
-                if(!defer) {
-                    myfaces._impl._util._Utils.globalEval(xhr.responseText);
-                } else {
-                   setTimeout(function() {
-                     myfaces._impl._util._Utils.globalEval(xhr.responseText);
-                   },1);
-                }
-            } else {
-                throw Error(xhr.responseText);
-            }
-        } else {
-            throw Error("Loading of script "+src+" failed ");
-        }
-    }
-
-
-
-    /**
      * add a single field to stringbuffer for param submission
      * @param {HtmlElement} element -
      * @param {} stringBuffer -

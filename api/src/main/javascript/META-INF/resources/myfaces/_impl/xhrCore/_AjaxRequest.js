@@ -82,7 +82,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxRequest"
      */
     myfaces._impl.xhrCore._AjaxRequest.prototype.send = function() {
         try {
-            this.m_xhr = this.m_ajaxUtil.getXHRObject();
+            this.m_xhr = myfaces._impl._util._Utils.getXHRObject();
             
             this.m_xhr.open("POST", this.m_sourceForm.action, true);
             this.m_xhr.setRequestHeader("Content-Type", this.m_contentType);

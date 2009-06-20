@@ -94,7 +94,65 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
         }
     };
 
-  
+
+    /**
+     * encapsulated xhr object which tracks down various implementations
+     * of the xhr object in a browser independend fashion
+     * (ie pre 7 used to have non standard implementations because
+     * the xhr object standard came after IE had implemented it first
+     * newer ie versions adhere to the standard and all other new browsers do anyway)
+     */
+    myfaces._impl._util._Utils.getXHRObject = function() {
+        if('undefined' != typeof XMLHttpRequest && null != XMLHttpRequest) {
+            return new XMLHttpRequest();
+        }
+        //IE
+        try {
+            return new ActiveXObject("Msxml2.XMLHTTP");
+        } catch (e) {
+            
+        }
+        return new ActiveXObject('Microsoft.XMLHTTP');
+    }
+
+    /**
+     * [STATIC]
+     * loads a script and executes it under a global scope
+     * @param {String} src the source to be loaded
+     * @param {String} type the mime type of the script (currently ignored
+     * but in the long run it will be used)
+     */
+    myfaces._impl._util._Utils.loadScript = function(src, type, defer, charSet) {
+        var xhr = myfaces._impl._util._Utils.getXHRObject();
+        xhr.open("GET", src, false);
+
+        if('undefined' != typeof charSet && null != charSet) {
+            xhr.setRequestHeader("Content-Type","application/x-javascript; charset:"+charSet);
+        }
+
+        xhr.send(null);
+
+        //since we are synchronous we do it after not with onReadyStateChange
+        if(xhr.readyState == 4) {
+            if (xhr.status == 200) {
+                //defer also means we have to process after the ajax response
+                //has been processed
+                //we can achieve that with a small timeout, the timeout
+                //triggers after the processing is done!
+                if(!defer) {
+                    myfaces._impl._util._Utils.globalEval(xhr.responseText);
+                } else {
+                   setTimeout(function() {
+                     myfaces._impl._util._Utils.globalEval(xhr.responseText);
+                   },1);
+                }
+            } else {
+                throw Error(xhr.responseText);
+            }
+        } else {
+            throw Error("Loading of script "+src+" failed ");
+        }
+    }
 
     /**
      * [STATIC]
@@ -108,25 +166,33 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
         if (item.nodeType == 1) { // only if it's an element node
             if (item.tagName.toLowerCase() == 'script') {
                 try {
-                    var test = item.text;
-                    var go = true;
-                    while (go) {
-                        go = false;
-                        if (test.substring(0, 1) == " ") {
-                            test = test.substring(1);
-                            go = true;
-                        }
-                        if (test.substring(0, 4) == "<!--") {
-                            test = test.substring(4);
-                            go = true;
-                        }
-                        if (test.substring(0, 11) == "//<![CDATA[") {
-                            test = test.substring(11);
-                            go = true;
-                        }
-                    }
-                    /*we have to run the script under a global context*/
-                    myfaces._impl._util._Utils.globalEval(test); // run the script
+	            	if (typeof item.getAttribute('src') != 'undefined' 
+	                	&& item.getAttribute('src') != null
+	                	&& item.getAttribute('src').length > 0 ) {
+	            		// external script auto eval
+	            		myfaces._impl._util._Utils.loadScript(item.getAttribute('src'), item.getAttribute('type'), false, "ISO-8859-1");
+	            	} else {
+	            		// embedded script auto eval
+	                    var test = item.text;
+	                    var go = true;
+	                    while (go) {
+	                        go = false;
+	                        if (test.substring(0, 1) == " ") {
+	                            test = test.substring(1);
+	                            go = true;
+	                        }
+	                        if (test.substring(0, 4) == "<!--") {
+	                            test = test.substring(4);
+	                            go = true;
+	                        }
+	                        if (test.substring(0, 11) == "//<![CDATA[") {
+	                            test = test.substring(11);
+	                            go = true;
+	                        }
+	                    }
+	                    // we have to run the script under a global context
+	                    myfaces._impl._util._Utils.globalEval(test); // run the script
+	            	}
                 } catch (e) {
                     myfaces._impl.xhrCore._Exception.throwNewError(request, context, "Utils", "runScripts", e);
                 }
@@ -195,7 +261,6 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
             myfaces._impl.xhrCore._Exception.throwNewError (request, context, "Utils", "replaceHTMLItem", e);
         }
     };
-
 
     myfaces._impl._util._Utils.ieQuircksEvents = {
         "onabort": true,
