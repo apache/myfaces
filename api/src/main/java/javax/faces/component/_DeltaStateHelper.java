@@ -22,136 +22,233 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+
 import javax.el.ValueExpression;
 import javax.faces.context.FacesContext;
 
 /**
- * A delta enabled state holder implementing the StateHolder Interface
- *
- * components implementing the PartalStateHolder interface have an initial state
+ * A delta enabled state holder implementing the StateHolder Interface. 
+ * <p>
+ * Components implementing the PartalStateHolder interface have an initial state
  * and delta states, the initial state is the one holding all root values
  * and deltas store differences to the initial states
- *
- * for components not implementing partial state saving only the initial states are
+ * </p>
+ * <p>
+ * For components not implementing partial state saving only the initial states are
  * of importance, everything is stored and restored continously there
- *
- * The state helper seems to have three internal storage mechanisms
- * one being a list which stores plain values
+ * </p> 
+ * <p>
+ * The state helper seems to have three internal storage mechanisms:
+ * one being a list which stores plain values,
  * one being a key value pair which stores key values in maps
  * add serves the plain list type while put serves the 
- * key value type
- *
+ * key value type, 
  * the third is the value which has to be stored plainly as is!
+ * </p>
+ * In other words, this map can be seen as a composite map. It has two maps: 
+ * initial state map and delta map.
+ * <p> 
+ * If delta map is used (method component.initialStateMarked() ), 
+ * base or initial state map cannot be changed, since all changes 
+ * should be tracked on delta map.
+ * </p>
+ * <p> 
+ * The intention of this class is just hold property values
+ * and do a clean separation between initial state and delta.
+ * </p>
+ * <p>
+ * The code from this class comes from a refactor of 
+ * org.apache.myfaces.trinidad.bean.util.PropertyHashMap
+ * </p>
+ * <p>
+ * The context from this class comes and that should be taken into account
+ * is this:
+ * </p>
+ * <p> 
+ * First request:
+ * </p>
+ * <ul>
+ *   <li> A new template is created (using 
+ *   javax.faces.view.ViewDeclarationLanguage.buildView method)
+ *   and component.markInitialState is called from its related TagHandler classes 
+ *  (see javax.faces.view.facelets.ComponentHandler ).
+ *   When this method is executed, the component tree was populated from the values
+ *   set in the facelet abstract syntax tree (or in other words composition of 
+ *   facelets templates). </li>
+ *   <li> From this point all updates on the variables are considered "delta". </li>
+ *   <li> SaveState, if initialStateMarked is true, only delta is saved. </li>
+ * </ul>
+ * <p>
+ * Second request (and next ones)
+ * </p>
+ * <ul>
+ *   <li> A new template is created and component.markInitialState is called from
+ *   its related TagHandler classes again. In this way, components like c:forEach 
+ *   or c:if, that add or remove components could notify about this and handle 
+ *   them properly (see javax.faces.view.StateManagementStrategy). Note that a 
+ *   component restored using this method is no different as the same component 
+ *   at the first request at the same time. </li>
+ *   <li> A call for restoreState is done, passing the delta as object value. If no 
+ *   delta, the state is complete and no call is triggered. </li>
+ *   <li> Lifecycle occur, changing the necessary stuff. </li>
+ *   <li> SaveState, if initialStateMarked is true, only delta is saved. </li>
+ * </ul>
+ * <p>
+ * From the previous analysis, the following conclusions arise:
+ * <ul>
+ *   <li>This class only needs to keep track of delta changes, so when 
+ *   restoreState/saveState is called, the right objects are passed.</li>
+ *   <li>UIComponent.clearInitialState is used to reset the partial
+ *   state holder to a non delta state, so the state to be saved by
+ *   saveState is no longer a delta instead is a full state. If a call
+ *   to clearInitialState occur it is not expected a call for 
+ *   UIComponent.markInitialState occur on the current request.</li>
+ *   <li>The state is handled in the same way on UIData, so components
+ *   inside UIData share its state on all rows. There is no way to save 
+ *   delta per row.</li>
+ * </ul>
+ * </p>
+ * <p>
+ * NOTE: The current implementation of StateHelper on RI does not handle
+ * stateHolder values internally. To prevent problems when developers create
+ * custom components we should do this too. But anyway, the code that 
+ * handle this case should be let here as comment, if some day this feature
+ * is provided. Note than stateHolder aware properties like converter,
+ * validator or listeners should deal with StateHolder or PartialStateHolder
+ * on component classes. 
+ * 
+ * </p>
  *
- *
- * The flow probably goes following
- * restore -> restore initial state done from the outside
- * switch component to -> initialState = true
- * store the deltas as well!
- *
- * the main save and restore works only on the deltas
- * as far as it seems!
- *
- * we are keeping two states the full state and the delta state
- * the full state must access all values, full + delta
- * and the delta state should keep the states only if initialState is set
- *
- * @author Werner Punz (latest modification by $Author$)
+ * @author Werner Punz
+ * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Rev$ $Date$
  */
 public class _DeltaStateHelper implements StateHelper
 {
 
-    UIComponent _component = null;
-    Map<Serializable, Object> _fullState = null;
-    Map<Serializable, Object> _deltas = null;
-    Set<Object> _deleted = null;
-    boolean _transient = false;
-    static final String INTERNAL_MAP_KEY = "_MYFACES._IMAP";
-    static final String INTERNAL_LIST_KEY = "_MYFACES._ILIST";
-    static final String INTERNAL_DELETED_KEY = "_MYFACES._DELETED";
+    /**
+     * We need to hold a component instance because:
+     * 
+     * - The component is the one who knows if we are on initial or delta mode
+     * - eval assume calls to component.ValueExpression
+     */
+    private UIComponent _component;
+
+    /**
+     * This map holds the full current state
+     */
+    private Map<Serializable, Object> _fullState;
+
+    /**
+     * This map only keep track of delta changes to be saved
+     */
+    private Map<Serializable, Object> _deltas;
+    
+    /**
+     * This map keep track of StateHolder keys, to be saved when
+     * saveState is called. 
+     */
+    //private Set<Serializable> _stateHolderKeys;  
+
+    private boolean _transient = false;
 
     public _DeltaStateHelper(UIComponent component)
     {
+        super();
         this._component = component;
         _fullState = new HashMap<Serializable, Object>();
-        //we only can store the deltas if the component is instance of partial state holder
-        //but as it seems the latest specs already have enforced PartialStateHolder on UIComponent
-        //initialStateMarked is responsible for determination if we have partial saving
-
-        _deltas = new HashMap<Serializable, Object>();
-        _transient = (component != null) ? component.isTransient() : true;
+        _deltas = null;
+        //_stateHolderKeys = new HashSet<Serializable>();
     }
 
+    /**
+     * Used to create delta map on demand
+     * 
+     * @return
+     */
+    private boolean _createDeltas()
+    {
+        if (isInitalStateMarked())
+        {
+            if (_deltas == null)
+            {
+                _deltas = new HashMap<Serializable, Object>(2);
+            }
+            return true;
+        }
+
+        return false;
+    }
+    
     protected boolean isInitalStateMarked()
     {
         return _component.initialStateMarked();
     }
 
-    /**
-     * stores the object in an internal list if not present in the detal map
-     */
     @Override
     public void add(Serializable key, Object value)
     {
-        if (_deleted != null)
+        if (_createDeltas())
         {
-            _deleted.remove(key);
-        }
-        if (isInitalStateMarked())
-        {
-
-            List<Object> deltaStorageList = (List) _deltas.get(key);
-            if (deltaStorageList == null)
+            //Track delta case
+            Map<Object, Boolean> deltaListMapValues = (Map<Object, Boolean>) _deltas
+                    .get(key);
+            if (deltaListMapValues == null)
             {
-                deltaStorageList = new InternalList(3);
+                deltaListMapValues = new InternalDeltaListMap<Object, Boolean>(
+                        3);
+                _deltas.put(key, deltaListMapValues);
             }
-            deltaStorageList.add(value);
-            _deltas.put(key, deltaStorageList);
+            deltaListMapValues.put(value, Boolean.TRUE);
+        }
 
-        }
-        List<Object> fullStorageList = (List) _fullState.get(key);
-        if (fullStorageList == null)
+        //Handle change on full map
+        List<Object> fullListValues = (List<Object>) _fullState.get(key);
+        if (fullListValues == null)
         {
-            fullStorageList = new InternalList(3);
+            fullListValues = new InternalList<Object>(3);
+            _fullState.put(key, fullListValues);
         }
-        fullStorageList.add(value);
-        _fullState.put(key, fullStorageList);
+        fullListValues.add(value);
     }
 
     @Override
     public Object eval(Serializable key)
     {
-        return eval(key, null);
+        Object returnValue = _fullState.get(key);
+        if (returnValue != null)
+        {
+            return returnValue;
+        }
+        ValueExpression expression = _component.getValueExpression(key
+                .toString());
+        if (expression != null)
+        {
+            return expression.getValue(_component.getFacesContext()
+                    .getELContext());
+        }
+        return null;
     }
 
     @Override
-    /**
-     * returns a given value or the result of a value expression
-     * @param key  the key or value expression to be evaluated
-     * @return the result of the eval or the default value if
-     *          the value is not present in our states
-     */
     public Object eval(Serializable key, Object defaultValue)
     {
-        Object retVal = get(key);
-        if (retVal != null)
+        Object returnValue = _fullState.get(key);
+        if (returnValue != null)
         {
-            return retVal;
+            return returnValue;
         }
-        //not found lets do the eval of a possible value expression
-        ValueExpression expr = _component.getValueExpression(key.toString());
-        if (expr == null)
+        ValueExpression expression = _component.getValueExpression(key
+                .toString());
+        if (expression != null)
         {
-            return defaultValue;
+            return expression.getValue(_component.getFacesContext()
+                    .getELContext());
         }
-        retVal = expr.getValue(_component.getFacesContext().getELContext());
-        return (retVal == null) ? defaultValue : retVal;
+        return defaultValue;
     }
 
     @Override
@@ -161,110 +258,224 @@ public class _DeltaStateHelper implements StateHelper
     }
 
     @Override
-    /**
-     * puts an object into the data structures with a given key
-     *
-     * @param key the key for the mapping
-     * @param value the value to be stored
-     * @returns the old value if present
-     */
     public Object put(Serializable key, Object value)
     {
-        if (_deleted != null)
+        Object returnValue = null;
+        if (_createDeltas())
         {
-            _deleted.remove(key);
-        }
-        if (isInitalStateMarked())
-        {
-            //delta tracking is on
-            Object oldValue = _deltas.put(key, value);
-            if (oldValue == null)
+            if (_deltas.containsKey(key))
             {
-                oldValue = _fullState.put(key, value);
+                returnValue = _deltas.put(key, value);
+                _fullState.put(key, value);
             }
-            return oldValue;
+            else
+            {
+                _deltas.put(key, value);
+                returnValue = _fullState.put(key, value);
+            }
         }
-
-        return _fullState.put(key, value);
+        else
+        {
+            /*
+            if (value instanceof StateHolder)
+            {
+                _stateHolderKeys.add(key);
+            }
+            */
+            returnValue = _fullState.put(key, value);
+        }
+        return returnValue;
     }
 
-    /**
-     * puts a value into the internal data structures and the value has to be map
-     * mapped via mapkey,
-     * @param key the key for the mapping
-     * @param mapKey the internal map key for the mapping
-     * @returns the old value of key->mapKey if present!
-     */
     @Override
     public Object put(Serializable key, String mapKey, Object value)
     {
-        Object oldValue = null;
-        if (_deleted != null)
+        boolean returnSet = false;
+        Object returnValue = null;
+        if (_createDeltas())
         {
-            _deleted.remove(key);
-        }
-        if (isInitalStateMarked())
-        {
-            oldValue = _putMap(_deltas, key, mapKey, value);
-            if (oldValue == null)
+            //Track delta case
+            Map<String, Object> mapValues = (Map<String, Object>) _deltas
+                    .get(key);
+            if (mapValues == null)
             {
-                oldValue = _putMap(_fullState, key, mapKey, value);
-
+                mapValues = new InternalMap<String, Object>();
+                _deltas.put(key, mapValues);
             }
-            return oldValue;
+            if (mapValues.containsKey(mapKey))
+            {
+                returnValue = mapValues.put(mapKey, value);
+                returnSet = true;
+            }
+            else
+            {
+                mapValues.put(mapKey, value);
+            }
         }
 
-        //either no initial state or no delta state saving
-        return _putMap(_fullState, key, mapKey, value);
+        //Handle change on full map
+        Map<String, Object> mapValues = (Map<String, Object>) _fullState
+                .get(key);
+        if (mapValues == null)
+        {
+            mapValues = new InternalMap<String, Object>();
+            _fullState.put(key, mapValues);
+        }
+        if (returnSet)
+        {
+            mapValues.put(mapKey, value);
+        }
+        else
+        {
+            returnValue = mapValues.put(mapKey, value);
+        }
+        return returnValue;
     }
 
     @Override
     public Object remove(Serializable key)
     {
-        Object deltaRetVal = _deltas.remove(key);
-        Object initRetVal = _fullState.remove(key);
-        //delta if given is always newer than init!
-        if (_deleted == null)
+        Object returnValue = null;
+        if (_createDeltas())
         {
-            _deleted = new HashSet<Object>();
+            if (_deltas.containsKey(key))
+            {
+                // Keep track of the removed values using key/null pair on the delta map
+                returnValue = _deltas.put(key, null);
+                _fullState.remove(key);
+            }
+            else
+            {
+                // Keep track of the removed values using key/null pair on the delta map
+                _deltas.put(key, null);
+                returnValue = _fullState.remove(key);
+            }
         }
-        _deleted.add(key);
-        return (deltaRetVal != null) ? deltaRetVal : initRetVal;
+        else
+        {
+            returnValue = _fullState.remove(key);
+        }
+        return returnValue;
     }
 
     @Override
     public Object remove(Serializable key, Object valueOrKey)
     {
-        Object deltaDS = _deltas.get(key);
-        Object initDS = _fullState.get(key);
-
-        Object deltaRetVal = null;
-        Object initRetVal = null;
-
-        if (deltaDS != null)
+        // Comment by lu4242 : The spec javadoc says if it is a Collection 
+        // or Map deal with it. But the intention of this method is work 
+        // with add(?,?) and put(?,?,?), this ones return instances of 
+        // InternalMap and InternalList to prevent mixing, so to be 
+        // consistent we'll cast to those classes here.
+        
+        Object collectionOrMap = _fullState.get(key);
+        Object returnValue = null;
+        if (collectionOrMap instanceof InternalMap)
         {
-            deltaRetVal = _removeFromCollection(_deltas, key, deltaDS,
-                    valueOrKey);
+            if (_createDeltas())
+            {
+                returnValue = _removeValueOrKeyFromMap(_deltas, key,
+                        valueOrKey, true);
+                _removeValueOrKeyFromMap(_fullState, key, valueOrKey, false);
+            }
+            else
+            {
+                returnValue = _removeValueOrKeyFromMap(_fullState, key,
+                        valueOrKey, false);
+            }
         }
-        if (initDS != null)
+        else if (collectionOrMap instanceof InternalList)
         {
-            initRetVal = _removeFromCollection(_fullState, key, initDS,
-                    valueOrKey);
+            if (_createDeltas())
+            {
+                returnValue = _removeValueOrKeyFromCollectionDelta(_deltas,
+                        key, valueOrKey);
+                _removeValueOrKeyFromCollection(_fullState, key, valueOrKey);
+            }
+            else
+            {
+                returnValue = _removeValueOrKeyFromCollection(_fullState, key,
+                        valueOrKey);
+            }
         }
-
-        if (_deleted == null)
-        {
-            _deleted = new HashSet<Object>();
-        }
-
-        if (!_deltas.containsKey(key))
-        {
-            _deleted.add(key);
-        }
-        return (deltaRetVal != null) ? deltaRetVal : initRetVal;
+        return returnValue;
     }
 
-    /*
+    private static Object _removeValueOrKeyFromCollectionDelta(
+            Map<Serializable, Object> stateMap, Serializable key,
+            Object valueOrKey)
+    {
+        Object returnValue = null;
+        Map<Object, Boolean> c = (Map<Object, Boolean>) stateMap.get(key);
+        if (c != null)
+        {
+            if (c.containsKey(valueOrKey))
+            {
+                returnValue = valueOrKey;
+            }
+            c.put(valueOrKey, Boolean.FALSE);
+        }
+        return returnValue;
+    }
+
+    private static Object _removeValueOrKeyFromCollection(
+            Map<Serializable, Object> stateMap, Serializable key,
+            Object valueOrKey)
+    {
+        Object returnValue = null;
+        Collection c = (Collection) stateMap.get(key);
+        if (c != null)
+        {
+            if (c.remove(valueOrKey))
+            {
+                returnValue = valueOrKey;
+            }
+            if (c.isEmpty())
+            {
+                stateMap.remove(key);
+            }
+        }
+        return returnValue;
+    }
+
+    private static Object _removeValueOrKeyFromMap(
+            Map<Serializable, Object> stateMap, Serializable key,
+            Object valueOrKey, boolean delta)
+    {
+        if (valueOrKey == null)
+        {
+            return null;
+        }
+
+        Object returnValue = null;
+        Map<String, Object> map = (Map<String, Object>) stateMap.get(key);
+        if (map != null)
+        {
+            if (delta)
+            {
+                // Keep track of the removed values using key/null pair on the delta map
+                returnValue = map.put((String) valueOrKey, null);
+            }
+            else
+            {
+                returnValue = map.remove(valueOrKey);
+            }
+
+            if (map.isEmpty())
+            {
+                //stateMap.remove(key);
+                stateMap.put(key, null);
+            }
+        }
+        return returnValue;
+    }
+
+    @Override
+    public boolean isTransient()
+    {
+        return _transient;
+    }
+
+    /**
      * Serializing cod
      * the serialized data structure consists of key value pairs unless the value itself is an internal array
      * or a map in case of an internal array or map the value itself is another array with its initial value
@@ -280,12 +491,30 @@ public class _DeltaStateHelper implements StateHelper
     public Object saveState(FacesContext context)
     {
         Map serializableMap = (isInitalStateMarked()) ? _deltas : _fullState;
-        Set<Object> deltaDeleted = (isInitalStateMarked()) ? _deleted : null;
 
+        if (serializableMap == null || serializableMap.size() == 0)
+        {
+            return null;
+        }
+        
+        /*
+        int stateHolderKeyCount = 0;
+        if (isInitalStateMarked())
+        {
+            for (Iterator<Serializable> it = _stateHolderKeys.iterator(); it.hasNext();)
+            {
+                Serializable key = it.next();
+                if (!_deltas.containsKey(key))
+                {
+                    stateHolderKeyCount++;
+                }
+            }
+        }*/
+        
         Map.Entry<Serializable, Object> entry;
         //entry == key, value, key, value
-        Object[] retArr = new Object[serializableMap.entrySet().size() * 2
-                + ((_deleted != null && _deleted.size() > 0) ? 2 : 0)];
+        Object[] retArr = new Object[serializableMap.entrySet().size() * 2];
+        //Object[] retArr = new Object[serializableMap.entrySet().size() * 2 + stateHolderKeyCount]; 
 
         Iterator<Map.Entry<Serializable, Object>> it = serializableMap
                 .entrySet().iterator();
@@ -294,216 +523,293 @@ public class _DeltaStateHelper implements StateHelper
         {
             entry = it.next();
             retArr[cnt] = entry.getKey();
-            if (entry instanceof InternalList)
+
+            Object value = entry.getValue();
+            
+            // The condition in which the call to saveAttachedState
+            // is to handle List, StateHolder or non Serializable instances.
+            // we check it here, to prevent unnecessary calls.
+            if (value instanceof StateHolder ||
+                value instanceof List ||
+                !(value instanceof Serializable))
             {
-                //TODO add list serialisation code
-                retArr[cnt + 1] = serializeOneDimDS((InternalList) entry);
-            }
-            else if (entry instanceof InternalMap)
-            {
-                //TODO add map serialisation code here
-                retArr[cnt + 1] = serializeInternalMap((InternalMap) entry);
+                Object savedValue = UIComponentBase.saveAttachedState(context,
+                    value);
+                retArr[cnt + 1] = savedValue;
             }
             else
             {
-
-                retArr[cnt + 1] = (Serializable) entry.getValue();
+                retArr[cnt + 1] = value;
             }
             cnt += 2;
-
         }
-
-        //we now store the deleted deltas as well, we cannot handle deleted in our map alone!
-        if (deltaDeleted != null && deltaDeleted.size() > 0)
+        
+        /*
+        if (isInitalStateMarked())
         {
-            Object[] serializedDeletes = serializeOneDimDS(_deleted);
-            retArr[cnt] = INTERNAL_DELETED_KEY;
-            retArr[cnt + 1] = serializedDeletes;
+            for (Iterator<Serializable> it2 = _stateHolderKeys.iterator(); it.hasNext();)
+            {
+                Serializable key = it2.next();
+                if (!_deltas.containsKey(key))
+                {
+                    retArr[cnt] = key;
+                    Object value = _fullState.get(key);
+                    if (value instanceof PartialStateHolder)
+                    {
+                        //Could contain delta, save it as _AttachedDeltaState
+                        PartialStateHolder holder = (PartialStateHolder) value;
+                        if (holder.isTransient())
+                        {
+                            retArr[cnt + 1] = null;
+                        }
+                        else
+                        {
+                            retArr[cnt + 1] = new _AttachedDeltaWrapper(value.getClass(), holder.saveState(context));
+                        }
+                    }
+                    else
+                    {
+                        //Save everything
+                        retArr[cnt + 1] = UIComponentBase.saveAttachedState(context, _fullState.get(key));
+                    }
+                    cnt += 2;
+                }
+            }
         }
+        */       
         return retArr;
-    }
-
-    /**
-     * serializes a one dimensional data structure (array, list, set)
-     *
-     * @param entry the one dimensional collection to be serialized
-     * @return an array representation of the collection with two entries
-     * the first entry an identifier key and the second entry an array
-     * of elements which represent our collection
-     */
-    private Object[] serializeOneDimDS(Collection<Object> entry)
-    {
-        Object[] retVal = new Object[2]; //array with two elements one the marker second the array
-        retVal[0] = _DeltaStateHelper.INTERNAL_LIST_KEY;
-        retVal[1] = entry.toArray(new Object[entry.size()]);
-
-        return retVal;
-    }
-
-    private void deserializeOneDimDS(Object param, Collection target)
-    {
-        Object[] saveState = (Object[]) param;
-        //first element list marker, already processed!
-        Object[] listAsArr = (Object[]) saveState[1];
-
-        //since all other options would mean dual iteration we have to do it the hard way
-        for (Object elem : listAsArr)
-        {
-            target.add(elem);
-        }
-
-    }
-
-    private InternalMap deserializeInternalMap(Object param)
-    {
-        Object[] saveState = (Object[]) param;
-        Object[] listAsMap = (Object[]) saveState[1];
-
-        InternalMap retVal = new InternalMap(listAsMap.length / 2);
-        for (int cnt = 0; cnt < listAsMap.length; cnt += 2)
-        {
-            retVal.put((String) listAsMap[cnt], listAsMap[cnt + 1]);
-        }
-        return retVal;
-    }
-
-    private Object[] serializeInternalMap(Map<String, Object> map)
-    {
-        Object[] retVal = new Object[2];
-        retVal[0] = _DeltaStateHelper.INTERNAL_MAP_KEY;
-
-        int cnt = 0;
-        Object[] mapArr = new Object[map.size()];
-        retVal[1] = mapArr;
-        for (Map.Entry<String, Object> entry : map.entrySet())
-        {
-            mapArr[cnt] = entry.getKey();
-            mapArr[cnt + 1] = entry.getValue();
-            cnt += 2;
-        }
-        return retVal;
     }
 
     @Override
     public void restoreState(FacesContext context, Object state)
     {
+        if (state == null)
+            return;
+
         Object[] serializedState = (Object[]) state;
 
         for (int cnt = 0; cnt < serializedState.length; cnt += 2)
         {
             Serializable key = (Serializable) serializedState[cnt];
-            Object value = serializedState[cnt + 1];
+            Object savedValue = UIComponentBase.restoreAttachedState(context,
+                    serializedState[cnt + 1]);
 
-            if (key instanceof String
-                    && ((String) key).equals(INTERNAL_DELETED_KEY))
+            if (isInitalStateMarked())
             {
-                _deleted = new HashSet<Object>();
-                deserializeOneDimDS(value, _deleted);
-            }
-            else if (value instanceof String
-                    && ((String) value).equals(INTERNAL_LIST_KEY))
-            {
-                Object[] valArr = (Object[]) ((Object[]) value)[1];
-                InternalList target = new InternalList(valArr.length * 2);
-                deserializeOneDimDS(value, target);
-                put(key, target);
-            }
-            else if (value instanceof String
-                    && ((String) value).equals(INTERNAL_MAP_KEY))
-            {
-                value = deserializeInternalMap(value);
-                put(key, value);
-            }
-        }
-    }
-
-    @Override
-    public boolean isTransient()
-    {
-        return _transient;
-    }
-
-    @Override
-    public void setTransient(boolean newTransientValue)
-    {
-        _transient = newTransientValue;
-    }
-
-    private Object _putMap(Map rootMap, Serializable key, String mapKey,
-            Object value)
-    {
-        Object oldValue = rootMap.get(key);
-        //if no delta is found we add it to both DS
-        if (oldValue == null)
-        {
-            Map storageMap = new InternalMap(3);
-            storageMap.put(mapKey, value);
-            return rootMap.put(key, storageMap);
-        }
-        else
-        {
-            return ((Map) oldValue).put(mapKey, value);
-        }
-    }
-
-    private Object _removeFromCollection(Map initialMap, Serializable key,
-            Object dataStructure, Object valueOrKey)
-    {
-        Object retVal = null;
-        if (dataStructure != null)
-        {
-            if (dataStructure instanceof InternalList)
-            {
-                retVal = ((InternalList) dataStructure).remove(valueOrKey);
-                if (((Collection) dataStructure).isEmpty())
+                if (savedValue instanceof InternalDeltaListMap)
                 {
-                    initialMap.remove(key);
-                    if (_deleted == null)
+                    for (Map.Entry<Object, Boolean> mapEntry : ((Map<Object, Boolean>) savedValue)
+                            .entrySet())
                     {
-                        _deleted = new HashSet<Object>();
+                        boolean addOrRemove = mapEntry.getValue();
+                        if (addOrRemove)
+                        {
+                            //add
+                            this.add(key, mapEntry.getKey());
+                        }
+                        else
+                        {
+                            //remove
+                            this.remove(key, mapEntry.getKey());
+                        }
                     }
-                    _deleted.add(key);
-
                 }
-            }
-            else if (dataStructure instanceof InternalMap)
-            {
-                retVal = ((InternalMap) dataStructure).remove(valueOrKey);
-                if (((InternalMap) dataStructure).isEmpty())
+                else if (savedValue instanceof InternalMap)
                 {
-                    initialMap.remove(key);
-                    if (_deleted == null)
+                    for (Map.Entry<String, Object> mapEntry : ((Map<String, Object>) savedValue)
+                            .entrySet())
                     {
-                        _deleted = new HashSet<Object>();
+                        this.put(key, mapEntry.getKey(), mapEntry.getValue());
                     }
-                    _deleted.add(key);
+                }
+                /*
+                else if (savedValue instanceof _AttachedDeltaWrapper)
+                {
+                    _AttachedStateWrapper wrapper = (_AttachedStateWrapper) savedValue;
+                    //Restore delta state
+                    ((PartialStateHolder)_fullState.get(key)).restoreState(context, wrapper.getWrappedStateObject());
+                    //Add this key as StateHolder key 
+                    _stateHolderKeys.add(key);
+                }
+                */
+                else
+                {
+                    put(key, savedValue);
                 }
             }
             else
             {
-                retVal = dataStructure;
+                put(key, savedValue);
             }
         }
-        return retVal;
+    }
+
+    @Override
+    public void setTransient(boolean transientValue)
+    {
+        _transient = transientValue;
     }
 
     //We use our own data structures just to make sure
     //nothing gets mixed up internally
-    class InternalMap extends HashMap
+    static class InternalMap<K, V> extends HashMap<K, V> implements StateHolder
     {
+        public InternalMap()
+        {
+            super();
+        }
+
+        public InternalMap(int initialCapacity, float loadFactor)
+        {
+            super(initialCapacity, loadFactor);
+        }
+
+        public InternalMap(Map<? extends K, ? extends V> m)
+        {
+            super(m);
+        }
 
         public InternalMap(int initialSize)
         {
             super(initialSize);
         }
+
+        @Override
+        public boolean isTransient()
+        {
+            return false;
+        }
+
+        @Override
+        public void setTransient(boolean newTransientValue)
+        {
+            // No op
+        }
+
+        @Override
+        public void restoreState(FacesContext context, Object state)
+        {
+            Object[] listAsMap = (Object[]) state;
+            for (int cnt = 0; cnt < listAsMap.length; cnt += 2)
+            {
+                this.put((K) listAsMap[cnt], (V) UIComponentBase
+                        .restoreAttachedState(context, listAsMap[cnt + 1]));
+            }
+        }
+
+        @Override
+        public Object saveState(FacesContext context)
+        {
+            int cnt = 0;
+            Object[] mapArr = new Object[this.size() * 2];
+            for (Map.Entry<K, V> entry : this.entrySet())
+            {
+                mapArr[cnt] = entry.getKey();
+                Object value = entry.getValue();
+                
+                if (value instanceof StateHolder ||
+                    value instanceof List ||
+                    !(value instanceof Serializable))
+                {
+                    mapArr[cnt + 1] = UIComponentBase.saveAttachedState(context, value);
+                }
+                else
+                {
+                    mapArr[cnt + 1] = value;
+                }
+                cnt += 2;
+            }
+            return mapArr;
+        }
     }
 
-    class InternalList extends ArrayList
+    /**
+     * Map used to keep track of list changes 
+     */
+    static class InternalDeltaListMap<K, V> extends InternalMap<K, V>
     {
+
+        public InternalDeltaListMap()
+        {
+            super();
+        }
+
+        public InternalDeltaListMap(int initialCapacity, float loadFactor)
+        {
+            super(initialCapacity, loadFactor);
+        }
+
+        public InternalDeltaListMap(int initialSize)
+        {
+            super(initialSize);
+        }
+
+        public InternalDeltaListMap(Map<? extends K, ? extends V> m)
+        {
+            super(m);
+        }
+    }
+
+    static class InternalList<T> extends ArrayList<T> implements StateHolder
+    {
+        public InternalList()
+        {
+            super();
+        }
+
+        public InternalList(Collection<? extends T> c)
+        {
+            super(c);
+        }
 
         public InternalList(int initialSize)
         {
             super(initialSize);
+        }
+
+        @Override
+        public boolean isTransient()
+        {
+            return false;
+        }
+
+        @Override
+        public void setTransient(boolean newTransientValue)
+        {
+        }
+
+        @Override
+        public void restoreState(FacesContext context, Object state)
+        {
+            Object[] listAsArr = (Object[]) state;
+            //since all other options would mean dual iteration 
+            //we have to do it the hard way
+            for (Object elem : listAsArr)
+            {
+                add((T) UIComponentBase.restoreAttachedState(context, elem));
+            }
+        }
+
+        @Override
+        public Object saveState(FacesContext context)
+        {
+            Object[] values = new Object[size()];
+            for (int i = 0; i < size(); i++)
+            {
+                Object value = get(i);
+                
+                if (value instanceof StateHolder ||
+                    value instanceof List ||
+                    !(value instanceof Serializable))
+                {
+                    values[i] = UIComponentBase.saveAttachedState(context, value);
+                }
+                else
+                {
+                    values[i] = value;
+                }                
+            }
+            return values;
         }
     }
 }

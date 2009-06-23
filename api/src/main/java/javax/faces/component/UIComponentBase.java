@@ -85,6 +85,7 @@ public abstract class UIComponentBase extends UIComponent
     private String _id = null;
     private UIComponent _parent = null;
     private boolean _transient = false;
+    private boolean _initialStateMarked = false;
 
     public UIComponentBase()
     {
@@ -349,7 +350,7 @@ public abstract class UIComponentBase extends UIComponent
     
     public void clearInitialState()
     {
-        // TODO: IMPLEMENT HERE
+        _initialStateMarked = false;
     }
 
     /**
@@ -876,7 +877,7 @@ public abstract class UIComponentBase extends UIComponent
     {
         // TODO: IMPLEMENT HERE
         // FIXME: Nofity EG, this method should be in the specification
-        return false;
+        return _initialStateMarked;
     }
 
     /**
@@ -907,7 +908,7 @@ public abstract class UIComponentBase extends UIComponent
     
     public void markInitialState()
     {
-        // TODO: IMPLEMENT HERE
+        _initialStateMarked = true;
     }
 
     @Override
@@ -1348,17 +1349,9 @@ public abstract class UIComponentBase extends UIComponent
     {
         if (attachedObject == null)
             return null;
-        if (attachedObject instanceof List)
-        {
-            List<Object> lst = new ArrayList<Object>(((List<?>) attachedObject).size());
-            for (Object item : (List<?>) attachedObject)
-            {
-                lst.add(saveAttachedState(context, item));
-            }
-
-            return new _AttachedListStateWrapper(lst);
-        }
-        else if (attachedObject instanceof StateHolder)
+        // StateHolder interface should take precedence over
+        // List children
+        if (attachedObject instanceof StateHolder)
         {
             StateHolder holder = (StateHolder) attachedObject;
             if (holder.isTransient())
@@ -1367,6 +1360,16 @@ public abstract class UIComponentBase extends UIComponent
             }
 
             return new _AttachedStateWrapper(attachedObject.getClass(), holder.saveState(context));
+        }        
+        else if (attachedObject instanceof List)
+        {
+            List<Object> lst = new ArrayList<Object>(((List<?>) attachedObject).size());
+            for (Object item : (List<?>) attachedObject)
+            {
+                lst.add(saveAttachedState(context, item));
+            }
+
+            return new _AttachedListStateWrapper(lst);
         }
         else if (attachedObject instanceof Serializable)
         {
@@ -1434,7 +1437,7 @@ public abstract class UIComponentBase extends UIComponent
      */
     public Object saveState(FacesContext context)
     {
-        Object values[] = new Object[7];
+        Object values[] = new Object[8];
         values[0] = _id;
         values[1] = _rendered;
         values[2] = _rendererType;
@@ -1442,6 +1445,11 @@ public abstract class UIComponentBase extends UIComponent
         values[4] = saveAttributesMap();
         values[5] = saveAttachedState(context, _facesListeners);
         values[6] = saveBindings(context);
+        StateHelper stateHelper = getStateHelper(false);
+        if (stateHelper != null)
+        {
+            values[7] = stateHelper.saveState(context);
+        }
         return values;
     }
 
@@ -1464,6 +1472,7 @@ public abstract class UIComponentBase extends UIComponent
         restoreAttributesMap(values[4]);
         _facesListeners = (List<FacesListener>) restoreAttachedState(context, values[5]);
         restoreValueExpressionMap(context, values[6]);
+        getStateHelper().restoreState(context, values[7]);
     }
 
     private Object saveAttributesMap()

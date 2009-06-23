@@ -21,15 +21,13 @@ package javax.faces.component;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 /**
  * A generic framework less testcase for our _DeltaStateHelper class!
  *
  * @author Werner Punz (latest modification by $Author$)
  * @version $Rev$ $Date$
  */
-public class _DeltaStateHelperTest extends TestCase
+public class _DeltaStateHelperTest extends AbstractComponentTest
 {
 
     private static final String KEY3 = "key3";
@@ -260,19 +258,19 @@ public class _DeltaStateHelperTest extends TestCase
         _setupGetTests();
         _instance.setInitialStateMarked(false);
         Object serializedState = _instance.saveState(null);
-        _instance.restoreState(null, serializedState);
+        _instance.restoreState(facesContext, serializedState);
         assertStructure();
 
         _setupGetTests();
         _instance.setInitialStateMarked(true);
         serializedState = _instance.saveState(null);
-        _instance.restoreState(null, serializedState);
+        _instance.restoreState(facesContext, serializedState);
         assertStructure();
 
         _instance.setInitialStateMarked(true);
         _setupGetTests();
         serializedState = _instance.saveState(null);
-        _instance.restoreState(null, serializedState);
+        _instance.restoreState(facesContext, serializedState);
         assertStructure();
     }
 
