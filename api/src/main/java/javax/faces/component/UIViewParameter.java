@@ -30,14 +30,21 @@ import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.render.Renderer;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+
 /**
- * TODO: PLUGINIZE?
+ * 
+ * TODO: documentation on jsp and pld are not the same. It appear two
+ * params: maxlength and for, but no property getter and setter founded here. 
+ * If maxlength is used, we can put something like this: 
+ * JSFJspProperty(name = "maxlength", returnType = "java.lang.String")
  * 
  * @author Simon Lessard (latest modification by $Author: slessard $)
  * @version $Revision: 696523 $ $Date: 2009-03-14 14:43:57 -0400 (mer., 17 sept. 2008) $
  * 
  * @since 2.0
  */
+@JSFComponent(name = "f:viewParam", bodyContent = "JSP", tagClass = "org.apache.myfaces.taglib.core.ViewParamTag")
 public class UIViewParameter extends UIInput
 {
     public static final String COMPONENT_FAMILY = "javax.faces.ViewParameter";
