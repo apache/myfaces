@@ -139,15 +139,19 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         }
 
         // Call getComponentResources to obtain the child list for the given target
-        List<UIComponent> componentResources = getComponentResources(context, target);
+        List<UIComponent> componentResources = _getComponentResources(context, target);
 
         // If the component ID of componentResource matches the the ID of a resource that has already been added, remove the old resource.
         String componentId = componentResource.getId();
-        for(UIComponent component : componentResources)
+        
+        if (componentId != null)
         {
-            if(componentId.equals(component.getId()))
+            for(UIComponent component : componentResources)
             {
-                componentResources.remove(component);
+                if(componentId.equals(component.getId()))
+                {
+                    componentResources.remove(component);
+                }
             }
         }
         
@@ -401,6 +405,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         // Locate the facet for the component by calling getFacet() using target as the argument
         UIComponent facet = getFacet(target);
 
+        /*
         // If the facet is not found,
         if (facet == null)
         {
@@ -419,6 +424,33 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         // and also that "If no children are found for the facet, return Collections.emptyList()."
         List<UIComponent> children = facet.getChildren();
         return ( children == null ? Collections.<UIComponent>emptyList() : Collections.unmodifiableList(children) );
+        */
+        if (facet != null)
+        {
+            List<UIComponent> children = facet.getChildren();
+            return ( children == null ? Collections.<UIComponent>emptyList() : Collections.unmodifiableList(children) );
+        }
+        return Collections.<UIComponent>emptyList();
+    }
+    
+    private List<UIComponent> _getComponentResources(FacesContext context, String target)
+    {
+        // Locate the facet for the component by calling getFacet() using target as the argument
+        UIComponent facet = getFacet(target);
+
+        // If the facet is not found,
+        if (facet == null)
+        {
+            // create the facet by calling context.getApplication().createComponent()  using javax.faces.Panel as the argument
+            facet = context.getApplication().createComponent("javax.faces.Panel");
+
+            // Set the id of the facet to be target
+            facet.setId(target);
+
+            // Add the facet to the facets Map using target as the key
+            getFacets().put(target, facet);
+        }
+        return facet.getChildren();
     }
 
     @Override
@@ -868,11 +900,19 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             }
         }
 
-        // Call getComponentResources to obtain the child list for the given target.
-        List<UIComponent> componentResources = getComponentResources(context, target);
 
-        // Remove the component resource from the child list
-        componentResources.remove(componentResource);
+        // Call getComponentResources to obtain the child list for the given target.
+        //List<UIComponent> componentResources = getComponentResources(context, target);
+        UIComponent facet = getFacet(target);
+        if (facet != null)
+        {
+            //Only if the facet is found it is possible to remove the resource,
+            //otherwise nothing should happen (call to getComponentResource trigger
+            //creation of facet)
+            List<UIComponent> componentResources = facet.getChildren();
+            // Remove the component resource from the child list
+            componentResources.remove(componentResource);
+        }
     }
 
     public void setViewId(String viewId)
