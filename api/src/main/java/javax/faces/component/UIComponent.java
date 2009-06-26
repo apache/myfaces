@@ -69,6 +69,8 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
     public static final String FACETS_KEY = "javax.faces.component.FACETS_KEY";
     private static final String _COMPONENT_STACK = "componentStack:" + UIComponent.class.getName();
     private Map<Class<? extends SystemEvent>, List<SystemEventListener>> _systemEventListenerClassMap;
+    
+    @Deprecated
     protected Map<String, ValueExpression> bindings;
     /**
      * Used to cache the map created using getResourceBundleMap() method, since this method could be called several
@@ -79,7 +81,13 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
     private transient Map<String, String> _resourceBundleMap = null;
     private boolean _inView = false;
     private StateHelper _stateHelper = null;
-
+    
+    /**
+     * In JSF 2.0 bindings map was deprecated, and replaced with a map
+     * inside stateHelper. We need this one here because stateHelper needs
+     * to be implemented from here and internally it depends from this property.
+     */
+    private boolean _initialStateMarked = false;
 
     public UIComponent() {
     }
@@ -92,8 +100,9 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
      * 
      * @since 2.0
      */
-    public boolean initialStateMarked() {
-        throw new UnsupportedOperationException();
+    public boolean initialStateMarked()
+    {
+        return _initialStateMarked;
     }
 
     /**
@@ -172,8 +181,9 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
 
     public abstract boolean isRendered();
 
-    public void markInitialState() {
-        throw new UnsupportedOperationException();
+    public void markInitialState()
+    {
+        _initialStateMarked = true;
     }
 
     /**
@@ -221,12 +231,13 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
         }
 
         if (expression == null) {
-            if (bindings != null) {
-                bindings.remove(name);
-                if (bindings.isEmpty()) {
-                    bindings = null;
-                }
-            }
+            //if (bindings != null) {
+            //    bindings.remove(name);
+            //    if (bindings.isEmpty()) {
+            //        bindings = null;
+            //    }
+            //}
+            getStateHelper().remove(PropertyKeys.bindings, name);
         } else {
             if (expression.isLiteralText()) {
                 try {
@@ -238,11 +249,12 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
                 }
             }
 
-            if (bindings == null) {
-                bindings = new HashMap<String, ValueExpression>();
-            }
-
-            bindings.put(name, expression);
+            //if (bindings == null) {
+            //    bindings = new HashMap<String, ValueExpression>();
+            //}
+            //
+            //bindings.put(name, expression);
+            getStateHelper().put(PropertyKeys.bindings, name, expression);
         }
     }
 
@@ -465,22 +477,25 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
         if (name == null) {
             throw new NullPointerException("name can not be null");
         }
+        
+        Map<String,Object> bindings = (Map<String,Object>) getStateHelper().
+            get(PropertyKeys.bindings); 
 
         if (bindings == null) {
             if (!(this instanceof UIComponentBase)) {
                 // if the component does not inherit from UIComponentBase and don't implements JSF 1.2 or later
                 ValueBinding vb = getValueBinding(name);
                 if (vb != null) {
-                    bindings = new HashMap<String, ValueExpression>();
+                    //bindings = new HashMap<String, ValueExpression>();
                     ValueExpression ve = new _ValueBindingToValueExpression(vb);
-                    bindings.put(name, ve);
+                    getStateHelper().put(PropertyKeys.bindings , name,  ve);
                     return ve;
                 }
             }
         } else {
-            return bindings.get(name);
+            //return bindings.get(name);
+            return (ValueExpression) bindings.get(name);
         }
-
         return null;
     }
 
@@ -503,8 +518,9 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
      * 
      * @since 2.0
      */
-    public void clearInitialState() {
-        throw new UnsupportedOperationException();
+    public void clearInitialState()
+    {
+        _initialStateMarked = false;
     }
 
     public abstract void decode(FacesContext context);
@@ -669,6 +685,35 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
     protected abstract FacesContext getFacesContext();
 
     protected abstract Renderer getRenderer(FacesContext context);
+
+    /**
+     * Note that id, clientId properties
+     * never change its value after the component is populated,
+     * so we don't need to store it on StateHelper or restore it when
+     * initialStateMarked == true
+     * (Note that rendererType is suspicious, in theory this field is
+     * initialized on constructor, but on 1.1 and 1.2 is saved and restored,
+     * so to keep backward behavior we put it on StateHelper )
+     *  
+     * Also, facesListeners can't be wrapped on StateHelper because it
+     * needs to handle PartialStateHolder instances when it is saved and
+     * restored and this interface does not implement PartialStateHolder,
+     * so we can't propagate calls to markInitialState and clearInitialState,
+     * in other words, the List wrapped by StateHelper does not handle
+     * PartialStateHolder items.
+     * 
+     * "bindings" map does not need to deal with PartialStateHolder instances,
+     *  so we can use StateHelper feature (handle delta for this map or in
+     *  other words track add/removal from bindings map as delta).
+     */
+    enum PropertyKeys
+    {
+        rendered,
+        rendererType,
+        attributesMap,
+        bindings,
+        facesListeners
+    }
 
     protected StateHelper getStateHelper() {
         return getStateHelper(true);

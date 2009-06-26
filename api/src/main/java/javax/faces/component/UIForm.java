@@ -38,8 +38,6 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
 
     private boolean _submitted;
 
-    private Boolean _prependId;
-
     /**
      * 
      * {@inheritDoc}
@@ -117,6 +115,11 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
         }
     }
 
+    enum PropertyKeys
+    {
+         prependId
+    }
+    
     @Override
     public Object saveState(FacesContext context)
     {
@@ -124,19 +127,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
         // extra precaution to ensure the submitted state is not persisted across requests.
         setSubmitted(false);
 
-        Object[] state = new Object[2];
-        
-        state[0] = super.saveState(context);
-        state[1] = _prependId;
-        return state;
-    }
-
-    @Override
-    public void restoreState(FacesContext context, Object state)
-    {
-        Object[] values = (Object[])state;
-        super.restoreState(context, values[0]);
-        _prependId = (Boolean)values[1];
+        return super.saveState(context);
     }
 
     // ------------------ GENERATED CODE BEGIN (do not modify!) --------------------
@@ -176,12 +167,12 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
     @JSFProperty(defaultValue = "true")
     public boolean isPrependId()
     {
-        return getExpressionValue("prependId", _prependId, true);
+        return (Boolean) getStateHelper().eval(PropertyKeys.prependId, true);
     }
 
     public void setPrependId(boolean prependId)
     {
-        _prependId = prependId;
+        getStateHelper().put(PropertyKeys.prependId, prependId ); 
     }
 
 }

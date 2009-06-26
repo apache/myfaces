@@ -33,6 +33,7 @@ import java.util.logging.Logger;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 import javax.faces.FactoryFinder;
+import javax.faces.component.UIOutputGenerated.PropertyKeys;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitResult;
@@ -87,15 +88,10 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      * The counter which will ensure a unique component id for every component instance in the tree that doesn't have an
      * id attribute set.
      */
-    private long _uniqueIdCounter = 0;
-
-    private Locale _locale;
-    private String _renderKitId;
-    private String _viewId;
+    //private long _uniqueIdCounter = 0;
 
     // todo: is it right to save the state of _events and _phaseListeners?
     private List<FacesEvent> _events;
-    private List<PhaseListener> _phaseListeners;
 
     private MethodExpression _beforePhaseListener;
     private MethodExpression _afterPhaseListener;
@@ -166,10 +162,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     {
         if (phaseListener == null)
             throw new NullPointerException("phaseListener");
-        if (_phaseListeners == null)
-            _phaseListeners = new ArrayList<PhaseListener>();
-
-        _phaseListeners.add(phaseListener);
+        
+        getStateHelper().add(PropertyKeys.phaseListeners, phaseListener);
     }
 
     /**
@@ -226,14 +220,18 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     {
         ExternalContext extCtx = context.getExternalContext();
         StringBuilder bld = __getSharedStringBuilder();
+
+        Long uniqueIdCounter = (Long) getStateHelper().get(PropertyKeys.uniqueIdCounter);
+        uniqueIdCounter = (uniqueIdCounter == null) ? 0 : uniqueIdCounter;
+        getStateHelper().put(PropertyKeys.uniqueIdCounter, (uniqueIdCounter+1L));
         // Generate an identifier for a component. The identifier will be prefixed with UNIQUE_ID_PREFIX, and will be unique within this UIViewRoot. 
-        if(seed==null){
-            return extCtx.encodeNamespace(bld.append(UNIQUE_ID_PREFIX).append(_uniqueIdCounter++).toString());    
+        if(seed==null)
+        {
+            return extCtx.encodeNamespace(bld.append(UNIQUE_ID_PREFIX).append(uniqueIdCounter).toString());    
         }
         // Optionally, a unique seed value can be supplied by component creators which should be included in the generated unique id.
         else
         {
-            _uniqueIdCounter++;
             return extCtx.encodeNamespace(bld.append(UNIQUE_ID_PREFIX).append(seed).toString());
         }
     }
@@ -342,6 +340,12 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         }
     }
 
+    private boolean _isSetAfterPhaseListener()
+    {
+        Boolean value = (Boolean) getStateHelper().get(PropertyKeys.afterPhaseListenerSet);
+        return value == null ? false : value;
+    }
+
     /**
      * MethodBinding pointing to a method that takes a javax.faces.event.PhaseEvent and returns void, called after every
      * phase except for restore view.
@@ -361,6 +365,12 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             return (MethodExpression)expression.getValue(getFacesContext().getELContext());
         }
         return null;
+    }
+
+    private boolean _isSetBeforePhaseListener()
+    {
+        Boolean value = (Boolean) getStateHelper().get(PropertyKeys.beforePhaseListenerSet);
+        return value == null ? false : value;
     }
 
     /**
@@ -468,18 +478,19 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     @JSFProperty
     public Locale getLocale()
     {
-        if (_locale != null)
+        Object locale = getStateHelper().get(PropertyKeys.locale);
+        if (locale != null)
         {
-            return _locale;
+            return (Locale)locale;
         }
-        ValueExpression expression = getValueExpression("locale");
+        ValueExpression expression = getValueExpression(PropertyKeys.locale.toString());
         if (expression != null)
         {
             return (Locale)expression.getValue(getFacesContext().getELContext());
         }
         else
         {
-            Object locale = getFacesContext().getApplication().getViewHandler().calculateLocale(getFacesContext());
+            locale = getFacesContext().getApplication().getViewHandler().calculateLocale(getFacesContext());
 
             if (locale instanceof Locale)
             {
@@ -499,7 +510,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      */
     public List<PhaseListener> getPhaseListeners()
     {
-        List<PhaseListener> listeners = _phaseListeners;
+        List<PhaseListener> listeners = (List<PhaseListener>) getStateHelper().get(PropertyKeys.phaseListeners);
         if (listeners == null)
         {
             listeners = Collections.emptyList();
@@ -518,18 +529,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     @JSFProperty
     public String getRenderKitId()
     {
-        if (_renderKitId != null)
-        {
-            return _renderKitId;
-        }
-
-        ValueExpression expression = getValueExpression("renderKitId");
-        if (expression != null)
-        {
-            return (String)expression.getValue(getFacesContext().getELContext());
-        }
-
-        return null;
+        return (String) getStateHelper().eval(PropertyKeys.renderKitId);
     }
 
     /**
@@ -554,7 +554,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     @JSFProperty(tagExcluded = true)
     public String getViewId()
     {
-        return _viewId;
+        return (String) getStateHelper().eval(PropertyKeys.viewId);
     }
 
     /**
@@ -657,7 +657,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
 
     public void setLocale(Locale locale)
     {
-        this._locale = locale;
+        getStateHelper().put(PropertyKeys.locale, locale );
     }
 
     /**
@@ -700,8 +700,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
          * invoke the afterPhase method on each one whose PhaseListener.getPhaseId() matches the current phaseId,
          * passing in the same PhaseId as in the previous step.
          */
-
-        if (listener != null || (_phaseListeners != null && !_phaseListeners.isEmpty()))
+        List<PhaseListener> phaseListeners = (List<PhaseListener>) getStateHelper().get(PropertyKeys.phaseListeners);
+        if (listener != null || (phaseListeners != null && !phaseListeners.isEmpty()))
         {
             PhaseEvent event = createEvent(context, phaseId);
 
@@ -710,9 +710,9 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                 listener.invoke(context.getELContext(), new Object[] { event });
             }
 
-            if (_phaseListeners != null && !_phaseListeners.isEmpty())
+            if (phaseListeners != null && !phaseListeners.isEmpty())
             {
-                for (PhaseListener phaseListener : _phaseListeners)
+                for (PhaseListener phaseListener : phaseListeners)
                 {
                     PhaseId listenerPhaseId = phaseListener.getPhaseId();
                     if (phaseId.equals(listenerPhaseId) || PhaseId.ANY_PHASE.equals(listenerPhaseId))
@@ -828,7 +828,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
 
     public void setRenderKitId(String renderKitId)
     {
-        this._renderKitId = renderKitId;
+        getStateHelper().put(PropertyKeys.renderKitId, renderKitId );
     }
 
     /**
@@ -920,7 +920,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         // It really doesn't make much sense to allow null here.
         // However the TCK does not check for it, and sun's implementation
         // allows it so here we allow it too.
-        this._viewId = viewId;
+        getStateHelper().put(PropertyKeys.viewId, viewId );
     }
 
     /**
@@ -928,10 +928,10 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      */
     public void removePhaseListener(PhaseListener phaseListener)
     {
-        if (phaseListener == null || _phaseListeners == null)
+        if (phaseListener == null)
             return;
 
-        _phaseListeners.remove(phaseListener);
+        getStateHelper().remove(PropertyKeys.phaseListeners, phaseListener);
     }
 
     /**
@@ -943,6 +943,10 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     public void setBeforePhaseListener(MethodExpression beforePhaseListener)
     {
         this._beforePhaseListener = beforePhaseListener;
+        if (initialStateMarked())
+        {
+            getStateHelper().put(PropertyKeys.beforePhaseListenerSet,Boolean.TRUE);
+        }
     }
 
     /**
@@ -954,37 +958,162 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     public void setAfterPhaseListener(MethodExpression afterPhaseListener)
     {
         this._afterPhaseListener = afterPhaseListener;
+        if (initialStateMarked())
+        {
+            getStateHelper().put(PropertyKeys.afterPhaseListenerSet,Boolean.TRUE);
+        }
+    }
+    
+    enum PropertyKeys
+    {
+         afterPhaseListenerSet
+        , beforePhaseListenerSet
+        , phaseListeners
+        , locale
+        , renderKitId
+        , viewId
+        , uniqueIdCounter
+    }
+    
+    public void markInitialState()
+    {
+        super.markInitialState();
+        if (_afterPhaseListener != null && 
+            _afterPhaseListener instanceof PartialStateHolder)
+        {
+            ((PartialStateHolder)_afterPhaseListener).markInitialState();
+        }
+        if (_beforePhaseListener != null && 
+            _beforePhaseListener instanceof PartialStateHolder)
+        {
+            ((PartialStateHolder)_beforePhaseListener).markInitialState();
+        }
+    }
+    
+    public void clearInitialState()
+    {
+        if (initialStateMarked())
+        {
+            super.clearInitialState();
+            if (_afterPhaseListener != null && 
+                _afterPhaseListener instanceof PartialStateHolder)
+            {
+                ((PartialStateHolder)_afterPhaseListener).clearInitialState();
+            }
+            if (_beforePhaseListener != null && 
+                _beforePhaseListener instanceof PartialStateHolder)
+            {
+                ((PartialStateHolder)_beforePhaseListener).clearInitialState();
+            }
+        }
     }
 
     @Override
     public Object saveState(FacesContext facesContext)
     {
-        Object[] values = new Object[8];
-        values[0] = super.saveState(facesContext);
-        values[1] = _locale;
-        values[2] = _renderKitId;
-        values[3] = _viewId;
-        values[4] = _uniqueIdCounter;
-        values[5] = saveAttachedState(facesContext, _phaseListeners);
-        values[6] = saveAttachedState(facesContext, _beforePhaseListener);
-        values[7] = saveAttachedState(facesContext, _afterPhaseListener);
-
-        return values;
+        if (initialStateMarked())
+        {
+            boolean nullDelta = true;
+            Object parentSaved = super.saveState(facesContext);
+            Object afterPhaseListenerSaved = null;
+            if (!_isSetAfterPhaseListener() &&
+                _afterPhaseListener != null && _afterPhaseListener instanceof PartialStateHolder)
+            {
+                //Delta
+                StateHolder holder = (StateHolder) _afterPhaseListener;
+                if (!holder.isTransient())
+                {
+                    Object attachedState = holder.saveState(facesContext);
+                    if (attachedState != null)
+                    {
+                        nullDelta = false;
+                    }
+                    afterPhaseListenerSaved = new _AttachedDeltaWrapper(_afterPhaseListener.getClass(),
+                        attachedState);
+                }
+            }
+            else
+            {
+                //Full
+                afterPhaseListenerSaved = saveAttachedState(facesContext,_afterPhaseListener);
+                nullDelta = false;
+            }        
+            Object beforePhaseListenerSaved = null;
+            if (!_isSetBeforePhaseListener() &&
+                _beforePhaseListener != null && _beforePhaseListener instanceof PartialStateHolder)
+            {
+                //Delta
+                StateHolder holder = (StateHolder) _beforePhaseListener;
+                if (!holder.isTransient())
+                {
+                    Object attachedState = holder.saveState(facesContext);
+                    if (attachedState != null)
+                    {
+                        nullDelta = false;
+                    }
+                    beforePhaseListenerSaved = new _AttachedDeltaWrapper(_beforePhaseListener.getClass(),
+                        attachedState);
+                }
+            }
+            else
+            {
+                //Full
+                beforePhaseListenerSaved = saveAttachedState(facesContext,_beforePhaseListener);
+                nullDelta = false;
+            }        
+            if (parentSaved == null && nullDelta)
+            {
+                //No values
+                return null;
+            }
+            
+            Object[] values = new Object[3];
+            values[0] = parentSaved;
+            values[1] = afterPhaseListenerSaved;
+            values[2] = beforePhaseListenerSaved;
+            return values;
+        }
+        else
+        {
+            Object[] values = new Object[3];
+            values[0] = super.saveState(facesContext);
+            values[1] = saveAttachedState(facesContext,_afterPhaseListener);
+            values[2] = saveAttachedState(facesContext,_beforePhaseListener);
+            return values;
+        }
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public void restoreState(FacesContext facesContext, Object state)
     {
+        if (state == null)
+        {
+            return;
+        }
+        
         Object[] values = (Object[])state;
-        super.restoreState(facesContext, values[0]);
-        _locale = (Locale)values[1];
-        _renderKitId = (String)values[2];
-        _viewId = (String)values[3];
-        _uniqueIdCounter = (Long)values[4];
-        _phaseListeners = (List<PhaseListener>)restoreAttachedState(facesContext, values[5]);
-        _beforePhaseListener = (MethodExpression)restoreAttachedState(facesContext, values[6]);
-        _afterPhaseListener = (MethodExpression)restoreAttachedState(facesContext, values[7]);
+        super.restoreState(facesContext,values[0]);
+        if (values[1] instanceof _AttachedDeltaWrapper)
+        {
+            //Delta
+            ((StateHolder)_afterPhaseListener).restoreState(facesContext, ((_AttachedDeltaWrapper) values[1]).getWrappedStateObject());
+        }
+        else
+        {
+            //Full
+            _afterPhaseListener = (javax.el.MethodExpression) restoreAttachedState(facesContext,values[1]);
+        }         
+        if (values[2] instanceof _AttachedDeltaWrapper)
+        {
+            //Delta
+            ((StateHolder)_beforePhaseListener).restoreState(facesContext, ((_AttachedDeltaWrapper) values[2]).getWrappedStateObject());
+        }
+        else
+        {
+            //Full
+            _beforePhaseListener = (javax.el.MethodExpression) restoreAttachedState(facesContext,values[2]);
+        }
     }
 
     /**

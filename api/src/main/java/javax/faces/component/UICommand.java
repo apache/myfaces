@@ -27,6 +27,7 @@ import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
 import javax.faces.event.FacesEvent;
 import javax.faces.event.PhaseId;
+
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
@@ -57,9 +58,6 @@ public class UICommand extends UIComponentBase implements ActionSource2
     public static final String COMPONENT_TYPE = "javax.faces.Command";
     public static final String COMPONENT_FAMILY = "javax.faces.Command";
 
-    private boolean _immediate;
-    private boolean _immediateSet;
-    private Object _value;
     private MethodExpression _actionExpression;
     private MethodBinding _actionListener;
 
@@ -172,23 +170,12 @@ public class UICommand extends UIComponentBase implements ActionSource2
     @JSFProperty
     public boolean isImmediate()
     {
-        if (_immediateSet)
-        {
-            return _immediate;
-        }
-        ValueExpression expression = getValueExpression("immediate");
-        if (expression != null)
-        {
-            return (Boolean) expression.getValue(getFacesContext()
-                    .getELContext());
-        }
-        return false;
+        return (Boolean) getStateHelper().eval(PropertyKeys.immediate, Boolean.FALSE);
     }
 
     public void setImmediate(boolean immediate)
     {
-        this._immediate = immediate;
-        this._immediateSet = true;
+        getStateHelper().put(PropertyKeys.immediate, immediate );
     }
 
     /**
@@ -197,21 +184,18 @@ public class UICommand extends UIComponentBase implements ActionSource2
     @JSFProperty
     public Object getValue()
     {
-        if (_value != null)
-        {
-            return _value;
-        }
-        ValueExpression expression = getValueExpression("value");
-        if (expression != null)
-        {
-            return expression.getValue(getFacesContext().getELContext());
-        }
-        return null;
+        return  getStateHelper().eval(PropertyKeys.value);
     }
 
     public void setValue(Object value)
     {
-        this._value = value;
+        getStateHelper().put(PropertyKeys.value, value );
+    }
+
+    private boolean _isSetActionExpression()
+    {
+        Boolean value = (Boolean) getStateHelper().get(PropertyKeys.actionExpressionSet);
+        return value == null ? false : value;
     }
 
     /**
@@ -246,6 +230,16 @@ public class UICommand extends UIComponentBase implements ActionSource2
     public void setActionExpression(MethodExpression actionExpression)
     {
         this._actionExpression = actionExpression;
+        if (initialStateMarked())
+        {
+            getStateHelper().put(PropertyKeys.actionExpressionSet,Boolean.TRUE);
+        }
+    }
+    
+    private boolean _isSetActionListener()
+    {
+        Boolean value = (Boolean) getStateHelper().get(PropertyKeys.actionListenerSet);
+        return value == null ? false : value;
     }
 
     /**
@@ -280,6 +274,10 @@ public class UICommand extends UIComponentBase implements ActionSource2
     public void setActionListener(MethodBinding actionListener)
     {
         this._actionListener = actionListener;
+        if (initialStateMarked())
+        {
+            getStateHelper().put(PropertyKeys.actionListenerSet,Boolean.TRUE);
+        }
     }
 
     public void addActionListener(ActionListener listener)
@@ -297,32 +295,152 @@ public class UICommand extends UIComponentBase implements ActionSource2
         return (ActionListener[]) getFacesListeners(ActionListener.class);
     }
 
+    enum PropertyKeys
+    {
+         immediate
+        , value
+        , actionExpressionSet
+        , actionListenerSet
+    }
+
+    public void markInitialState()
+    {
+        super.markInitialState();
+        if (_actionListener != null && 
+            _actionListener instanceof PartialStateHolder)
+        {
+            ((PartialStateHolder)_actionListener).markInitialState();
+        }
+        if (_actionExpression != null && 
+            _actionExpression instanceof PartialStateHolder)
+        {
+            ((PartialStateHolder)_actionExpression).markInitialState();
+        }
+    }
+    
+    public void clearInitialState()
+    {
+        if (initialStateMarked())
+        {
+            super.clearInitialState();
+            if (_actionListener != null && 
+                _actionListener instanceof PartialStateHolder)
+            {
+                ((PartialStateHolder)_actionListener).clearInitialState();
+            }
+            if (_actionExpression != null && 
+                _actionExpression instanceof PartialStateHolder)
+            {
+                ((PartialStateHolder)_actionExpression).clearInitialState();
+            }
+        }
+    }
+
     @Override
     public Object saveState(FacesContext facesContext)
     {
-        Object[] values = new Object[6];
-        values[0] = super.saveState(facesContext);
-        values[1] = _immediate;
-        values[2] = _immediateSet;
-        values[3] = _value;
-        values[4] = saveAttachedState(facesContext, _actionExpression);
-        values[5] = saveAttachedState(facesContext, _actionListener);
-
-        return values;
+        if (initialStateMarked())
+        {
+            boolean nullDelta = true;
+            Object parentSaved = super.saveState(facesContext);
+            Object actionListenerSaved = null;
+            if (!_isSetActionListener() &&
+                _actionListener != null && _actionListener instanceof PartialStateHolder)
+            {
+                //Delta
+                StateHolder holder = (StateHolder) _actionListener;
+                if (!holder.isTransient())
+                {
+                    Object attachedState = holder.saveState(facesContext);
+                    if (attachedState != null)
+                    {
+                        nullDelta = false;
+                    }
+                    actionListenerSaved = new _AttachedDeltaWrapper(_actionListener.getClass(),
+                        attachedState);
+                }
+            }
+            else
+            {
+                //Full
+                actionListenerSaved = saveAttachedState(facesContext,_actionListener);
+                nullDelta = false;
+            }        
+            Object actionExpressionSaved = null;
+            if (!_isSetActionExpression() &&
+                _actionExpression != null && _actionExpression instanceof PartialStateHolder)
+            {
+                //Delta
+                StateHolder holder = (StateHolder) _actionExpression;
+                if (!holder.isTransient())
+                {
+                    Object attachedState = holder.saveState(facesContext);
+                    if (attachedState != null)
+                    {
+                        nullDelta = false;
+                    }
+                    actionExpressionSaved = new _AttachedDeltaWrapper(_actionExpression.getClass(),
+                        attachedState);
+                }
+            }
+            else
+            {
+                //Full
+                actionExpressionSaved = saveAttachedState(facesContext,_actionExpression);
+                nullDelta = false;
+            }        
+            if (parentSaved == null && nullDelta)
+            {
+                //No values
+                return null;
+            }
+            
+            Object[] values = new Object[3];
+            values[0] = parentSaved;
+            values[1] = actionListenerSaved;
+            values[2] = actionExpressionSaved;
+            return values;
+        }
+        else
+        {
+            Object[] values = new Object[3];
+            values[0] = super.saveState(facesContext);
+            values[1] = saveAttachedState(facesContext,_actionListener);
+            values[2] = saveAttachedState(facesContext,_actionExpression);
+            return values;
+        }
     }
 
     @Override
     public void restoreState(FacesContext facesContext, Object state)
     {
-        Object[] values = (Object[]) state;
-        super.restoreState(facesContext, values[0]);
-        _immediate = (Boolean) values[1];
-        _immediateSet = (Boolean) values[2];
-        _value = values[3];
-        _actionExpression = (MethodExpression) restoreAttachedState(
-                facesContext, values[4]);
-        _actionListener = (MethodBinding) restoreAttachedState(facesContext,
-                values[5]);
+        if (state == null)
+        {
+            return;
+        }
+        
+        Object[] values = (Object[])state;
+        super.restoreState(facesContext,values[0]);
+        if (values[1] instanceof _AttachedDeltaWrapper)
+        {
+            //Delta
+            ((StateHolder)_actionListener).restoreState(facesContext, ((_AttachedDeltaWrapper) values[1]).getWrappedStateObject());
+        }
+        else
+        {
+            //Full
+            _actionListener = (javax.faces.el.MethodBinding) restoreAttachedState(facesContext,values[1]);
+        }         
+        if (values[2] instanceof _AttachedDeltaWrapper)
+        {
+            //Delta
+            ((StateHolder)_actionExpression).restoreState(facesContext, ((_AttachedDeltaWrapper) values[2]).getWrappedStateObject());
+        }
+        else
+        {
+            //Full
+            _actionExpression = (javax.el.MethodExpression) restoreAttachedState(facesContext,values[2]);
+        }         
     }
 
     @Override

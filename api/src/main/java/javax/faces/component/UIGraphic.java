@@ -19,7 +19,6 @@
 package javax.faces.component;
 
 import javax.el.ValueExpression;
-import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
@@ -39,8 +38,6 @@ public class UIGraphic extends UIComponentBase
 
     private static final String URL_PROPERTY = "url";
     private static final String VALUE_PROPERTY = "value";
-
-    private Object _value;
 
     /**
      * Construct an instance of the UIGraphic.
@@ -105,38 +102,16 @@ public class UIGraphic extends UIComponentBase
     @JSFProperty
     public Object getValue()
     {
-        if (_value != null)
-        {
-            return _value;
-        }
-        ValueExpression expression = getValueExpression("value");
-        if (expression != null)
-        {
-            return expression.getValue(getFacesContext().getELContext());
-        }
-        return null;
+        return  getStateHelper().eval(PropertyKeys.value);
     }
 
     public void setValue(Object value)
     {
-        this._value = value;
+        getStateHelper().put(PropertyKeys.value, value );
     }
-
-    @Override
-    public Object saveState(FacesContext facesContext)
+    
+    enum PropertyKeys
     {
-        Object[] values = new Object[2];
-        values[0] = super.saveState(facesContext);
-        values[1] = _value;
-
-        return values;
-    }
-
-    @Override
-    public void restoreState(FacesContext facesContext, Object state)
-    {
-        Object[] values = (Object[]) state;
-        super.restoreState(facesContext, values[0]);
-        _value = values[1];
+         value
     }
 }

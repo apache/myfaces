@@ -27,7 +27,7 @@ import java.io.Serializable;
 class _AttachedDeltaWrapper implements Serializable
 {
     private static final long serialVersionUID = 4732389964367986402L;
-    private Class<?> _class;
+
     private Object _wrappedStateObject;
 
     /**
@@ -42,13 +42,7 @@ class _AttachedDeltaWrapper implements Serializable
             throw new IllegalArgumentException("Attached state for Object of type " + clazz + " (Class "
                     + wrappedStateObject.getClass().getName() + ") is not serializable");
         }
-        _class = clazz;
         _wrappedStateObject = wrappedStateObject;
-    }
-
-    public Class<?> getClazz()
-    {
-        return _class;
     }
 
     public Object getWrappedStateObject()

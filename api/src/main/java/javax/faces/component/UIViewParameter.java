@@ -23,6 +23,7 @@ import java.io.IOException;
 import javax.el.ValueExpression;
 import javax.faces.FactoryFinder;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UIForm.PropertyKeys;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
@@ -55,8 +56,6 @@ public class UIViewParameter extends UIInput
     
     private static Renderer _delegateRenderer;
 
-    private String _name;
-
     @Override
     public String getFamily()
     {
@@ -79,7 +78,7 @@ public class UIViewParameter extends UIInput
 
     public String getName()
     {
-        return _name;
+        return (String) getStateHelper().get(PropertyKeys.name);
     }
 
     public String getStringValue(FacesContext context)
@@ -185,28 +184,15 @@ public class UIViewParameter extends UIInput
         
         super.processValidators (context);
     }
-
-    @Override
-    public void restoreState(FacesContext context, Object state)
+    
+    enum PropertyKeys
     {
-        Object[] stateValues = (Object[]) state;
-        super.restoreState(context, stateValues[0]);
-        _name = (String) stateValues[1];
+        name
     }
-
-    @Override
-    public Object saveState(FacesContext context)
-    {
-        Object[] state = new Object[2];
-        state[0] = super.saveState(context);
-        state[1] = _name;
-
-        return state;
-    }
-
+    
     public void setName(String name)
     {
-        _name = name;
+        getStateHelper().put(PropertyKeys.name, name );
     }
 
     @Override

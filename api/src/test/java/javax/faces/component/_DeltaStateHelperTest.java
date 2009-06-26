@@ -72,7 +72,7 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
         }
 
         @Override
-        protected boolean isInitalStateMarked()
+        protected boolean isInitialStateMarked()
         {
             return _initialStateMarked;
         }
@@ -112,10 +112,10 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
     public void testIsInitalStateMarked()
     {
         assertTrue("Initial state must be marked", _instance
-                .isInitalStateMarked());
+                .isInitialStateMarked());
         _instance.setInitialStateMarked(false);
         assertFalse("Initial state must be false", _instance
-                .isInitalStateMarked());
+                .isInitialStateMarked());
     }
 
     /**

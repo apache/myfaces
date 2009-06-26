@@ -20,7 +20,13 @@ package javax.faces.component;
 
 import java.io.IOException;
 import java.sql.ResultSet;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
@@ -29,8 +35,14 @@ import javax.faces.event.AbortProcessingException;
 import javax.faces.event.FacesEvent;
 import javax.faces.event.FacesListener;
 import javax.faces.event.PhaseId;
-import javax.faces.model.*;
+import javax.faces.model.ArrayDataModel;
+import javax.faces.model.DataModel;
+import javax.faces.model.ListDataModel;
+import javax.faces.model.ResultDataModel;
+import javax.faces.model.ResultSetDataModel;
+import javax.faces.model.ScalarDataModel;
 import javax.servlet.jsp.jstl.sql.Result;
+
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacet;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
@@ -111,7 +123,6 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     private static final int PROCESS_UPDATES = 3;
 
     private int _rowIndex = -1;
-    private String _var;
 
     // Holds for each row the states of the child components of this UIData.
     // Note that only "partial" component state is saved: the component fields
@@ -130,11 +141,11 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
 
     private Object _initialDescendantComponentState = null;
 
-    private int _first;
-    private boolean _firstSet;
-    private int _rows;
-    private boolean _rowsSet;
-    private Object _value;
+    //private int _first;
+    //private boolean _firstSet;
+    //private int _rows;
+    //private boolean _rowsSet;
+    //private Object _value;
 
     private static class FacesEventWrapper extends FacesEvent
     {
@@ -443,7 +454,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         DataModel dataModel = getDataModel();
         dataModel.setRowIndex(rowIndex);
 
-        String var = _var;
+        String var = (String) getStateHelper().get(PropertyKeys.var);
         if (rowIndex == -1)
         {
             if (var != null)
@@ -1013,21 +1024,12 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     @JSFProperty
     public Object getValue()
     {
-        if (_value != null)
-        {
-            return _value;
-        }
-        ValueExpression expression = getValueExpression("value");
-        if (expression != null)
-        {
-            return expression.getValue(getFacesContext().getELContext());
-        }
-        return null;
+        return  getStateHelper().eval(PropertyKeys.value);
     }
 
     public void setValue(Object value)
     {
-        _value = value;
+        getStateHelper().put(PropertyKeys.value, value );
         _dataModelMap.clear();
         _rowStates.clear();
         _isValidChilds = true;
@@ -1039,26 +1041,16 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     @JSFProperty
     public int getFirst()
     {
-        if (_firstSet)
-        {
-            return _first;
-        }
-        ValueExpression expression = getValueExpression("first");
-        if (expression != null)
-        {
-            return (Integer) expression.getValue(getFacesContext().getELContext());
-        }
-        return 0;
+        return (Integer) getStateHelper().eval(PropertyKeys.first,0);
     }
 
     public void setFirst(int first)
-    {
+    { 
         if (first < 0)
         {
             throw new IllegalArgumentException("Illegal value for first row: " + first);
         }
-        _first = first;
-        _firstSet = true;
+        getStateHelper().put(PropertyKeys.first, first );
     }
 
     /**
@@ -1070,16 +1062,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     @JSFProperty
     public int getRows()
     {
-        if (_rowsSet)
-        {
-            return _rows;
-        }
-        ValueExpression expression = getValueExpression("rows");
-        if (expression != null)
-        {
-            return (Integer) expression.getValue(getFacesContext().getELContext());
-        }
-        return 0;
+        return (Integer) getStateHelper().eval(PropertyKeys.rows,0);
     }
 
     /**
@@ -1091,8 +1074,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         {
             throw new IllegalArgumentException("rows: " + rows);
         }
-        _rows = rows;
-        _rowsSet = true;
+        getStateHelper().put(PropertyKeys.rows, rows ); 
     }
 
     /**
@@ -1108,40 +1090,20 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     @JSFProperty(literalOnly = true)
     public String getVar()
     {
-        return _var;
+        return (String) getStateHelper().get(PropertyKeys.var);
     }
 
     public void setVar(String var)
     {
-        this._var = var;
+        getStateHelper().put(PropertyKeys.var, var ); 
     }
 
-    @Override
-    public Object saveState(FacesContext facesContext)
+    enum PropertyKeys
     {
-        Object[] values = new Object[7];
-        values[0] = super.saveState(facesContext);
-        values[1] = _value;
-        values[2] = _var;
-        values[3] = _rows;
-        values[4] = _rowsSet;
-        values[5] = _first;
-        values[6] = _firstSet;
-
-        return values;
-    }
-
-    @Override
-    public void restoreState(FacesContext facesContext, Object state)
-    {
-        Object[] values = (Object[]) state;
-        super.restoreState(facesContext, values[0]);
-        _value = values[1];
-        _var = (String) values[2];
-        _rows = (Integer) values[3];
-        _rowsSet = (Boolean) values[4];
-        _first = (Integer) values[5];
-        _firstSet = (Boolean) values[6];
+         value
+        , first
+        , rows
+        , var
     }
 
     @Override

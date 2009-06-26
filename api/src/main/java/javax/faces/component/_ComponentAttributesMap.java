@@ -25,6 +25,7 @@ import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -65,7 +66,8 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
 
     // We delegate instead of derive from HashMap, so that we can later
     // optimize Serialization
-    private Map<String, Object> _attributes = null;
+    // JSF 2.0 Changed getUnderlyingMap to point to StateHelper attributesMap
+    //private Map<String, Object> _attributes = null;
 
     // A cached hashmap of propertyName => PropertyDescriptor object for all
     // the javabean properties of the associated component. This is built by
@@ -85,7 +87,6 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     _ComponentAttributesMap(UIComponent component)
     {
         _component = component;
-        _attributes = new HashMap<String, Object>();
     }
 
     /**
@@ -96,12 +97,13 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      * <p/>
      * This method is expected to be called during the "restore view" phase.
      */
-    _ComponentAttributesMap(UIComponent component, Map<String, Object> attributes)
-    {
-        _component = component;
-        _attributes = new HashMap<String, Object>(attributes);
-    }
-
+    //JSF 2.0 removed because _attributes has been replaced with StateHelper attributesMap
+    //_ComponentAttributesMap(UIComponent component, Map<String, Object> attributes)
+    //{
+    //    _component = component;
+        //_attributes = new HashMap<String, Object>(attributes);
+    //}
+    
     /**
      * Return the number of <i>attributes</i> in this map. Properties of the
      * underlying UIComponent are not counted.
@@ -113,7 +115,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      */
     public int size()
     {
-        return _attributes.size();
+        return getUnderlyingMap().size();
     }
 
     /**
@@ -127,7 +129,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      */
     public void clear()
     {
-        _attributes.clear();
+        getUnderlyingMap().clear();
     }
 
     /**
@@ -141,7 +143,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      */
     public boolean isEmpty()
     {
-        return _attributes.isEmpty();
+        return getUnderlyingMap().isEmpty();
     }
 
     /**
@@ -160,7 +162,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     {
         checkKey(key);
 
-        return getPropertyDescriptor((String) key) == null ? _attributes.containsKey(key) : false;
+        return getPropertyDescriptor((String) key) == null ? getUnderlyingMap().containsKey(key) : false;
     }
 
     /**
@@ -172,7 +174,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      */
     public boolean containsValue(Object value)
     {
-        return _attributes.containsValue(value);
+        return getUnderlyingMap().containsValue(value);
     }
 
     /**
@@ -181,7 +183,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      */
     public Collection<Object> values()
     {
-        return _attributes.values();
+        return getUnderlyingMap().values();
     }
 
     /**
@@ -201,7 +203,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      */
     public Set<Map.Entry<String, Object>> entrySet()
     {
-        return _attributes.entrySet();
+        return getUnderlyingMap().entrySet();
     }
 
     /**
@@ -210,7 +212,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      */
     public Set<String> keySet()
     {
-        return _attributes.keySet();
+        return getUnderlyingMap().keySet();
     }
 
     /**
@@ -235,7 +237,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         else
         {
             // is there a literal value to read?
-            value = _attributes.get(key);
+            value = getUnderlyingMap().get(key);
             if (value == null)
             {
                 // is there a value-binding to read?
@@ -255,7 +257,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         // The get() method of the Map must take the following additional action if this component instance is a 
         // composite component instance (indicated by the presence of a component attribute under the key given 
         // by the value of Resource.COMPONENT_RESOURCE_KEY)
-        if (value instanceof ValueExpression && _attributes.containsKey(Resource.COMPONENT_RESOURCE_KEY))
+        if (value instanceof ValueExpression && getUnderlyingMap().containsKey(Resource.COMPONENT_RESOURCE_KEY))
         {
             // call the ValueExpression.getValue(javax.el.ELContext) method and return the result from get().
             value = ((ValueExpression)value).getValue(FacesContext.getCurrentInstance().getELContext());
@@ -281,7 +283,8 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         {
             throw new IllegalArgumentException("Cannot remove component property attribute");
         }
-        return _attributes.remove(key);
+        return _component.getStateHelper().remove(
+                UIComponentBase.PropertyKeys.attributesMap, key);
     }
 
     /**
@@ -334,7 +337,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
             setComponentProperty(propertyDescriptor, value);
             return null;
         }
-        return _attributes.put(key, value);
+        return _component.getStateHelper().put(UIComponentBase.PropertyKeys.attributesMap, key, value);
     }
 
     /**
@@ -464,7 +467,8 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      */
     Map<String, Object> getUnderlyingMap()
     {
-        return _attributes;
+        Map _attributes = (Map<String, Object>) _component.getStateHelper().get(UIComponentBase.PropertyKeys.attributesMap);
+        return _attributes == null ? Collections.EMPTY_MAP : _attributes; 
     }
 
     /**
@@ -474,12 +478,12 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     @Override
     public boolean equals(Object obj)
     {
-        return _attributes.equals(obj);
+        return getUnderlyingMap().equals(obj);
     }
 
     @Override
     public int hashCode()
     {
-        return _attributes.hashCode();
+        return getUnderlyingMap().hashCode();
     }
 }

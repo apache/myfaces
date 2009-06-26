@@ -109,6 +109,21 @@ import javax.faces.context.FacesContext;
  *   <li>The state is handled in the same way on UIData, so components
  *   inside UIData share its state on all rows. There is no way to save 
  *   delta per row.</li>
+ *   <li>The map backed by method put(Serializable,String,Object) is
+ *   a replacement of UIComponentBase.attributesMap and UIComponent.bindings map.
+ *   Note that on jsf 1.2, instances saved on attributesMap should not be
+ *   StateHolder, but on jsf 2.0 it is possible to have it. PartialStateHolder
+ *   instances are not handled in this map, or in other words delta state is not
+ *   handled in this classes (markInitialState and clearInitialState is not propagated).</li>
+ *   <li>The list backed by method add(Serializable,Object) should be (is not) a 
+ *   replacement of UIComponentBase.facesListeners, but note that StateHelper
+ *   does not implement PartialStateHolder, and facesListener could have instances
+ *   of that class that needs to be notified when UIComponent.markInitialState or
+ *   UIComponent.clearInitialState is called, or in other words facesListeners
+ *   should deal with PartialStateHolder instances.</li>
+ *   <li>The list backed by method add(Serializable,Object) is 
+ *   a replacement of UIViewRoot.phaseListeners list. Note that instances of
+ *   PhaseListener are not expected to implement StateHolder or PartialStateHolder.</li>
  * </ul>
  * </p>
  * <p>
@@ -171,7 +186,7 @@ public class _DeltaStateHelper implements StateHelper
      */
     private boolean _createDeltas()
     {
-        if (isInitalStateMarked())
+        if (isInitialStateMarked())
         {
             if (_deltas == null)
             {
@@ -183,7 +198,7 @@ public class _DeltaStateHelper implements StateHelper
         return false;
     }
     
-    protected boolean isInitalStateMarked()
+    protected boolean isInitialStateMarked()
     {
         return _component.initialStateMarked();
     }
@@ -490,7 +505,7 @@ public class _DeltaStateHelper implements StateHelper
     @Override
     public Object saveState(FacesContext context)
     {
-        Map serializableMap = (isInitalStateMarked()) ? _deltas : _fullState;
+        Map serializableMap = (isInitialStateMarked()) ? _deltas : _fullState;
 
         if (serializableMap == null || serializableMap.size() == 0)
         {
@@ -594,7 +609,7 @@ public class _DeltaStateHelper implements StateHelper
             Object savedValue = UIComponentBase.restoreAttachedState(context,
                     serializedState[cnt + 1]);
 
-            if (isInitalStateMarked())
+            if (isInitialStateMarked())
             {
                 if (savedValue instanceof InternalDeltaListMap)
                 {

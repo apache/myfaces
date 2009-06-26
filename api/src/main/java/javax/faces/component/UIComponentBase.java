@@ -32,6 +32,7 @@ import java.util.Map.Entry;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
+import javax.faces.component.UIOutputGenerated.PropertyKeys;
 import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
@@ -80,12 +81,11 @@ public abstract class UIComponentBase extends UIComponent
     private _ComponentAttributesMap _attributesMap = null;
     private List<UIComponent> _childrenList = null;
     private Map<String, UIComponent> _facetMap = null;
-    private List<FacesListener> _facesListeners = null;
+    private _DeltaList<FacesListener> _facesListeners = null;
     private String _clientId = null;
     private String _id = null;
     private UIComponent _parent = null;
     private boolean _transient = false;
-    private boolean _initialStateMarked = false;
 
     public UIComponentBase()
     {
@@ -350,7 +350,11 @@ public abstract class UIComponentBase extends UIComponent
     
     public void clearInitialState()
     {
-        _initialStateMarked = false;
+        super.clearInitialState();
+        if (_facesListeners != null)
+        {
+            _facesListeners.clearInitialState();
+        }
     }
 
     /**
@@ -827,7 +831,7 @@ public abstract class UIComponentBase extends UIComponent
     @Override
     public String getRendererType()
     {
-        return getExpressionValue("rendererType", _rendererType, null);
+        return (String) getStateHelper().eval(PropertyKeys.rendererType);
     }
 
     /**
@@ -877,9 +881,9 @@ public abstract class UIComponentBase extends UIComponent
     {
         // TODO: IMPLEMENT HERE
         // FIXME: Nofity EG, this method should be in the specification
-        return _initialStateMarked;
+        return super.initialStateMarked();
     }
-
+    
     /**
      * <code>invokeOnComponent</code> must be implemented in <code>UIComponentBase</code> too...
      */
@@ -897,7 +901,7 @@ public abstract class UIComponentBase extends UIComponent
     @JSFProperty
     public boolean isRendered()
     {
-        return getExpressionValue("rendered", _rendered, DEFAULT_RENDERED);
+        return (Boolean) getStateHelper().eval(PropertyKeys.rendered, DEFAULT_RENDERED);
     }
 
     @JSFProperty(literalOnly = true, istransient = true, tagExcluded = true)
@@ -908,7 +912,11 @@ public abstract class UIComponentBase extends UIComponent
     
     public void markInitialState()
     {
-        _initialStateMarked = true;
+        super.markInitialState();
+        if (_facesListeners != null)
+        {
+            _facesListeners.markInitialState();
+        }
     }
 
     @Override
@@ -918,7 +926,7 @@ public abstract class UIComponentBase extends UIComponent
             throw new NullPointerException("listener");
         if (_facesListeners == null)
         {
-            _facesListeners = new ArrayList<FacesListener>();
+            _facesListeners = new _DeltaList<FacesListener>(new ArrayList<FacesListener>());
         }
         _facesListeners.add(listener);
     }
@@ -950,7 +958,7 @@ public abstract class UIComponentBase extends UIComponent
         for (Iterator<FacesListener> it = _facesListeners.iterator(); it.hasNext();)
         {
             FacesListener facesListener = it.next();
-            if (clazz.isAssignableFrom(facesListener.getClass()))
+            if (facesListener != null && clazz.isAssignableFrom(facesListener.getClass()))
             {
                 if (lst == null)
                     lst = new ArrayList<FacesListener>();
@@ -1437,20 +1445,41 @@ public abstract class UIComponentBase extends UIComponent
      */
     public Object saveState(FacesContext context)
     {
-        Object values[] = new Object[8];
-        values[0] = _id;
-        values[1] = _rendered;
-        values[2] = _rendererType;
-        values[3] = _clientId;
-        values[4] = saveAttributesMap();
-        values[5] = saveAttachedState(context, _facesListeners);
-        values[6] = saveBindings(context);
-        StateHelper stateHelper = getStateHelper(false);
-        if (stateHelper != null)
+        if (initialStateMarked())
         {
-            values[7] = stateHelper.saveState(context);
+            //Delta
+            //_id and _clientId was already restored from template
+            //and never changes during component life.
+            Object facesListenersSaved = saveFacesListenersList(context);
+            Object stateHelperSaved = null;
+            StateHelper stateHelper = getStateHelper(false);
+            if (stateHelper != null)
+            {
+                stateHelperSaved = stateHelper.saveState(context);
+            }
+            
+            if (facesListenersSaved == null && stateHelperSaved == null)
+            {
+                return null;
+            }
+            
+            return new Object[] {facesListenersSaved, stateHelperSaved};
         }
-        return values;
+        else
+        {
+            //Full
+            Object values[] = new Object[4];
+            values[0] = saveFacesListenersList(context);
+            StateHelper stateHelper = getStateHelper(false);
+            if (stateHelper != null)
+            {
+                values[1] = stateHelper.saveState(context);
+            }
+            values[2] = _id;
+            values[3] = _clientId;
+
+            return values;
+        }
     }
 
     /**
@@ -1464,35 +1493,72 @@ public abstract class UIComponentBase extends UIComponent
     @SuppressWarnings("unchecked")
     public void restoreState(FacesContext context, Object state)
     {
-        Object values[] = (Object[]) state;
-        _id = (String) values[0];
-        _rendered = (Boolean) values[1];
-        _rendererType = (String) values[2];
-        _clientId = (String) values[3];
-        restoreAttributesMap(values[4]);
-        _facesListeners = (List<FacesListener>) restoreAttachedState(context, values[5]);
-        restoreValueExpressionMap(context, values[6]);
-        getStateHelper().restoreState(context, values[7]);
-    }
-
-    private Object saveAttributesMap()
-    {
-        return _attributesMap != null ? _attributesMap.getUnderlyingMap() : null;
-    }
-
-    @SuppressWarnings("unchecked")
-    private void restoreAttributesMap(Object stateObj)
-    {
-        if (stateObj != null)
+        if (state == null)
         {
-            _attributesMap = new _ComponentAttributesMap(this, (Map<String, Object>) stateObj);
+            //Only happens if initialStateMarked return true
+            return;
+        }
+        
+        Object values[] = (Object[]) state;
+        
+        if ( values.length == 4 && initialStateMarked())
+        {
+            //Delta mode is active, but we are restoring a full state.
+            //we need to clear the initial state, to restore state without
+            //take into account delta.
+            clearInitialState();
+        }
+        
+        if (values[0] instanceof _AttachedDeltaWrapper)
+        {
+            //Delta
+            if (_facesListeners != null)
+            {
+                ((StateHolder)_facesListeners).restoreState(context,
+                        ((_AttachedDeltaWrapper) values[0]).getWrappedStateObject());
+            }
+        }
+        else if (values[0] != null || (values.length == 4))
+        {
+            //Full
+            _facesListeners = (_DeltaList<FacesListener>)
+                restoreAttachedState(context,values[0]);
+        }
+        // Note that if values[0] == null && initialStateMarked(),
+        // means delta is null, not that _facesListeners == null. 
+        // We can do this here because _facesListeners instance once
+        // is created is never replaced or set to null.
+        
+        getStateHelper().restoreState(context, values[1]);
+        
+        if (values.length == 4)
+        {
+            _id = (String) values[2];
+            _clientId = (String) values[3];
+        }
+    }
+    
+    private Object saveFacesListenersList(FacesContext facesContext)
+    {
+        PartialStateHolder holder = (PartialStateHolder) _facesListeners;
+        if (initialStateMarked() && _facesListeners != null && holder.initialStateMarked())
+        {                
+            Object attachedState = holder.saveState(facesContext);
+            if (attachedState != null)
+            {
+                return new _AttachedDeltaWrapper(_facesListeners.getClass(),
+                        attachedState);
+            }
+            //_facesListeners instances once is created never changes, we can return null
+            return null;
         }
         else
         {
-            _attributesMap = null;
-        }
-    }
+            return saveAttachedState(facesContext,_facesListeners);
+        }            
+    }    
 
+    /*
     private Object saveBindings(FacesContext context)
     {
         if (bindings != null)
@@ -1526,7 +1592,7 @@ public abstract class UIComponentBase extends UIComponent
         {
             bindings = null;
         }
-    }
+    }*/
 
     /**
      * @param string
@@ -1639,21 +1705,18 @@ public abstract class UIComponentBase extends UIComponent
 
     // ------------------ GENERATED CODE BEGIN (do not modify!) --------------------
 
-    private static final boolean DEFAULT_RENDERED = true;
-
-    private Boolean _rendered = null;
-    private String _rendererType = null;
+    private static final Boolean DEFAULT_RENDERED = Boolean.TRUE;
 
     @Override
     public void setRendered(boolean rendered)
     {
-        _rendered = Boolean.valueOf(rendered);
+        getStateHelper().put(PropertyKeys.rendered, rendered ); 
     }
 
     @Override
     public void setRendererType(String rendererType)
     {
-        _rendererType = rendererType;
+        getStateHelper().put(PropertyKeys.rendererType, rendererType ); 
     }
 
     // ------------------ GENERATED CODE END ---------------------------------------

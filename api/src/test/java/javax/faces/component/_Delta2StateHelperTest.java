@@ -22,6 +22,9 @@ import java.util.List;
 import java.util.Map;
 
 import javax.faces.context.FacesContext;
+import javax.faces.event.PhaseEvent;
+import javax.faces.event.PhaseId;
+import javax.faces.event.PhaseListener;
 
 
 public class _Delta2StateHelperTest extends AbstractComponentTest
@@ -480,5 +483,125 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
             assertNull(mapB.get("key2"));
             assertNull(mapB.get("key1"));
         }
+    }
+    
+    public static class TestPhaseListener1 implements PhaseListener
+    {
+        public TestPhaseListener1(){}
+        
+        @Override
+        public void afterPhase(PhaseEvent event){}
+
+        @Override
+        public void beforePhase(PhaseEvent event){}
+
+        @Override
+        public PhaseId getPhaseId()
+        {
+            return PhaseId.ANY_PHASE;
+        }
+        
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (obj instanceof TestPhaseListener1)
+                return true;
+            return false;
+        }
+    }
+    
+    public static class TestPhaseListener2 implements PhaseListener
+    {
+        public TestPhaseListener2(){}
+        
+        @Override
+        public void afterPhase(PhaseEvent event){}
+
+        @Override
+        public void beforePhase(PhaseEvent event){}
+
+        @Override
+        public PhaseId getPhaseId()
+        {
+            return PhaseId.ANY_PHASE;
+        }
+        
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (obj instanceof TestPhaseListener2)
+                return true;
+            return false;
+        }
+    }    
+        
+    public void testUIViewRootPhaseListener1() throws Exception
+    {
+        UIViewRoot a = new UIViewRoot();
+        UIViewRoot b = new UIViewRoot();
+        
+        PhaseListener phaseListener1 = new TestPhaseListener1();
+        
+        a.addPhaseListener(phaseListener1);
+        
+        b.restoreState(facesContext, a.saveState(facesContext));
+        
+        assertTrue(a.getPhaseListeners().contains(phaseListener1));
+        assertTrue(b.getPhaseListeners().contains(phaseListener1));
+    }
+    
+    public void testUIViewRootPhaseListener2() throws Exception
+    {
+        UIViewRoot a = new UIViewRoot();
+        UIViewRoot b = new UIViewRoot();
+        
+        a.markInitialState();
+        b.markInitialState();
+        
+        PhaseListener phaseListener1 = new TestPhaseListener1();
+        
+        a.addPhaseListener(phaseListener1);
+        
+        b.restoreState(facesContext, a.saveState(facesContext));
+        
+        assertTrue(a.getPhaseListeners().contains(phaseListener1));
+        assertTrue(b.getPhaseListeners().contains(phaseListener1));
+    }
+    
+    public void testUIViewRootPhaseListener3() throws Exception
+    {
+        UIViewRoot a = new UIViewRoot();
+        UIViewRoot b = new UIViewRoot();
+        UIViewRoot c = new UIViewRoot();
+
+        PhaseListener phaseListener2 = new TestPhaseListener1();
+        a.addPhaseListener(phaseListener2);
+        b.addPhaseListener(phaseListener2);
+        c.addPhaseListener(phaseListener2);
+        
+        a.markInitialState();
+        b.markInitialState();
+        c.markInitialState();
+        
+        PhaseListener phaseListener1 = new TestPhaseListener1();
+        
+        a.addPhaseListener(phaseListener1);
+        
+        b.restoreState(facesContext, a.saveState(facesContext));
+        
+        assertTrue(a.getPhaseListeners().contains(phaseListener1));
+        assertTrue(b.getPhaseListeners().contains(phaseListener1));
+        assertTrue(a.getPhaseListeners().contains(phaseListener2));
+        assertTrue(b.getPhaseListeners().contains(phaseListener2));
+        
+        a.removePhaseListener(phaseListener1);
+        a.removePhaseListener(phaseListener2);
+        
+        c.restoreState(facesContext, a.saveState(facesContext));
+        
+        assertFalse(a.getPhaseListeners().contains(phaseListener1));
+        assertFalse(c.getPhaseListeners().contains(phaseListener1));
+        assertFalse(a.getPhaseListeners().contains(phaseListener2));
+        assertFalse(c.getPhaseListeners().contains(phaseListener2));
     }    
 }

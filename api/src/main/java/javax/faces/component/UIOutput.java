@@ -24,6 +24,7 @@ import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.application.ResourceDependencies;
 import javax.faces.application.ResourceDependency;
+import javax.faces.component.UIOutputGenerated.PropertyKeys;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
@@ -39,7 +40,6 @@ public class UIOutput extends UIComponentBase implements ValueHolder
     public static final String COMPONENT_TYPE = "javax.faces.Output";
     public static final String COMPONENT_FAMILY = "javax.faces.Output";
 
-    private Object _value;
     private Converter _converter;
 
     /**
@@ -58,7 +58,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder
 
     public Object getLocalValue()
     {
-        return _value;
+        return  getStateHelper().get(PropertyKeys.value);
     }
 
     /**
@@ -69,16 +69,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder
     @JSFProperty
     public Object getValue()
     {
-        if (_value != null)
-        {
-            return _value;
-        }
-        ValueExpression expression = getValueExpression("value");
-        if (expression != null)
-        {
-            return expression.getValue(getFacesContext().getELContext());
-        }
-        return null;
+        return  getStateHelper().eval(PropertyKeys.value);
     }
 
     /**
@@ -86,7 +77,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder
      */
     public void setValue(Object value)
     {
-        this._value = value;
+        getStateHelper().put(PropertyKeys.value, value );
     }
 
     /**
@@ -98,7 +89,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder
      * implements the Converter interface.
      * </p>
      */
-    @JSFProperty
+    @JSFProperty(stateHolder=true)
     public Converter getConverter()
     {
         if (_converter != null)
@@ -116,29 +107,121 @@ public class UIOutput extends UIComponentBase implements ValueHolder
     public void setConverter(Converter converter)
     {
         this._converter = converter;
-        
+        if (initialStateMarked())
+        {
+            getStateHelper().put(PropertyKeys.converterSet,Boolean.TRUE);
+        }
         // The argument converter must be inspected for the presence of the ResourceDependency annotation.
         _handleAnnotations(FacesContext.getCurrentInstance(), converter);
+    }
+    
+    private boolean _isSetConverter()
+    {
+        Boolean value = (Boolean) getStateHelper().get(PropertyKeys.converterSet);
+        return value == null ? false : value;
+    }
+    
+    public void markInitialState()
+    {
+        super.markInitialState();
+        if (_converter != null && 
+            _converter instanceof PartialStateHolder)
+        {
+            ((PartialStateHolder)_converter).markInitialState();
+        }
+    }
+    
+    public void clearInitialState()
+    {
+        if (initialStateMarked())
+        {
+            super.clearInitialState();
+            if (_converter != null && 
+                _converter instanceof PartialStateHolder)
+            {
+                ((PartialStateHolder)_converter).clearInitialState();
+            }
+        }
+    }
+    
+    enum PropertyKeys
+    {
+         value
+        , converterSet
     }
 
     @Override
     public Object saveState(FacesContext facesContext)
     {
-        Object[] values = new Object[3];
-        values[0] = super.saveState(facesContext);
-        values[1] = _value;
-        values[2] = saveAttachedState(facesContext, _converter);
-
-        return values;
+        if (initialStateMarked())
+        {
+            Object parentSaved = super.saveState(facesContext);
+            Object converterSaved = null;
+            boolean nullDelta = true;
+            if (!_isSetConverter() &&
+                _converter != null && 
+                _converter instanceof PartialStateHolder)
+            {
+                //Delta
+                StateHolder holder = (StateHolder) _converter;
+                if (!holder.isTransient())
+                {
+                    Object attachedState = holder.saveState(facesContext);
+                    if (attachedState != null)
+                    {
+                        nullDelta = false;
+                    }
+                    converterSaved = new _AttachedDeltaWrapper(_converter.getClass(),
+                        attachedState);
+                }
+                else
+                {
+                    converterSaved = null;
+                }
+            }
+            else
+            {
+                //Full
+                converterSaved = saveAttachedState(facesContext,_converter);
+                nullDelta = false;
+            }
+            
+            if (parentSaved == null && nullDelta)
+            {
+                //No values
+                return null;
+            }   
+            return new Object[]{parentSaved, converterSaved};
+        }
+        else
+        {
+            Object[] values = new Object[2];
+            values[0] = super.saveState(facesContext);
+            values[1] = saveAttachedState(facesContext,_converter);
+            return values;
+        } 
     }
 
     @Override
     public void restoreState(FacesContext facesContext, Object state)
     {
-        Object[] values = (Object[]) state;
-        super.restoreState(facesContext, values[0]);
-        _value = values[1];
-        _converter = (Converter) restoreAttachedState(facesContext, values[2]);
+        if (state == null)
+        {
+            return;
+        }
+        
+        Object[] values = (Object[])state;
+        super.restoreState(facesContext,values[0]);
+        if (values[1] instanceof _AttachedDeltaWrapper)
+        {
+            //Delta
+            ((StateHolder)_converter).restoreState(facesContext, ((_AttachedDeltaWrapper) values[1]).getWrappedStateObject());
+        }
+        else
+        {
+            //Full
+            _converter = (javax.faces.convert.Converter) restoreAttachedState(facesContext,values[1]);
+        }         
     }
     
     void _handleAnnotations(FacesContext context, Object inspected)

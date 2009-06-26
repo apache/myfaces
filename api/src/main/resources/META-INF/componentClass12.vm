@@ -104,6 +104,7 @@ $innersource
 #set ($defaultValue = false)
 #end
     // Property: $property.name
+#if ($property.isStateHolder())
 #if ($property.isLiteralOnly() || $property.isTagExcluded() )
     private $type $field #if($defaultValue) = $defaultValue;#{else};#{end}
 
@@ -112,6 +113,13 @@ $innersource
     private $type $field;
     
 #end
+
+    private boolean _$utils.getPrefixedPropertyName("isSet", $property.name)()
+    {
+        Boolean value = (Boolean) getStateHelper().get(PropertyKeys.${property.name}Set);
+        return value == null ? false : value;
+    }
+
 #if($utils.isPrimitiveClass($type) && !$property.isTagExcluded() )
     private boolean ${field}Set;
     
@@ -178,74 +186,263 @@ $innersource
     public void $utils.getPrefixedPropertyName("set", $property.name)($type $utils.getVariableFromName($property.name))
     {
         this.$field = $utils.getVariableFromName($property.name);
+        if (initialStateMarked())
+        {
+            getStateHelper().put(PropertyKeys.${property.name}Set,Boolean.TRUE);
+        }
 #if ($utils.isPrimitiveClass($type) && !$property.isTagExcluded() )
         this.${field}Set = true;        
 #end
     }
+#else
+## StateHelper aware property
+#if ($property.name == "for")
+## To keep compatibility with RI, we should call it forVal
+#set ($field = "forVal")
+#else
+#set ($field = $property.name)
 #end
 
-    @Override
-    public Object saveState(FacesContext facesContext)
+    public $type $utils.getMethodReaderFromProperty($property.name, $type)()
     {
-#set ($primitiveCount = $propertyList.size() + 1)
+#if ($property.isLiteralOnly())
+#if ($defaultValue)
+        Object value = getStateHelper().get(PropertyKeys.$field);
+        if (value != null)
+        {
+            return $utils.castIfNecessary($type) value;        
+        }
+        return $defaultValue;        
+#else
+        return $utils.castIfNecessary($type) getStateHelper().get(PropertyKeys.$field);        
+#end
+#else
+#if ($defaultValue)
+        return $utils.castIfNecessary($type) getStateHelper().eval(PropertyKeys.$field, $defaultValue);
+#else
+        return $utils.castIfNecessary($type) getStateHelper().eval(PropertyKeys.$field);
+#end
+#end
+    }
+    
+    public void $utils.getPrefixedPropertyName("set", $property.name)($type $utils.getVariableFromName($property.name))
+    {
+        getStateHelper().put(PropertyKeys.$field, $utils.getVariableFromName($property.name) ); 
+    }    
+#end
+#end
+
+#if ($component.className.startsWith("javax.faces.component.html"))
+    protected enum PropertyKeys
+    {
+#else
+    enum PropertyKeys
+    {
+#end
+#set ($comma = "")
+#set ($addc = "false")
 #foreach( $property in $propertyList )
+#if ($property.name == "for")
+#set ($addc = "true")
+## To keep compatibility with RI, we should call it forVal
+#set ($field = "forVal")
+#else
+#set ($field = $property.name)
+#end
+#set ($type = $utils.getClassFromFullClass($property.className))
+#if($utils.getDefaultValueField($property)) 
+#set ($defaultValue = $utils.getDefaultValueField($property))
+#else
+#set ($defaultValue = false)
+#end
+#if ($property.name == "for")
+        $comma $field("for")
+#else
+#if ($property.isStateHolder())
+        $comma ${field}Set
+#else
+        $comma $field
+#end
+#end
+#set($comma = ",")
+#end
+#if ("true" == $addc)
+        ;
+        String c;
+        
+        PropertyKeys()
+        {
+        }
+        
+        //Constructor needed by "for" property
+        PropertyKeys(String c)
+        { 
+            this.c = c;
+        }
+        
+        public String toString()
+        {
+            return ((this.c != null) ? this.c : super.toString());
+        }
+#end
+    }
+
+#set ($primitiveCount = 1) ## $propertyList.size() + 1 
+#foreach( $property in $propertyList )
+#if ($property.isStateHolder())
+#set ($primitiveCount = $primitiveCount + 1)
 #if($utils.isPrimitiveClass($property.className))
 #set ($primitiveCount = $primitiveCount + 1)
 #end
 #end
-        Object[] values = new Object[$primitiveCount];
-        values[0] = super.saveState(facesContext);
+#end
+## saveState and restoreState methods only has sense if we have properties
+## that does not use StateHelper class.
+#if ($primitiveCount > 1)
+
+    public void markInitialState()
+    {
+        super.markInitialState();
+#foreach( $property in $propertyList )
+#set ($field = $property.fieldName)
+#if ($property.isStateHolder())        
+        if ($field != null && 
+            $field instanceof PartialStateHolder)
+        {
+            ((PartialStateHolder)$field).markInitialState();
+        }
+#end
+#end
+    }
+    
+    public void clearInitialState()
+    {
+        if (initialStateMarked())
+        {
+            super.clearInitialState();
+#foreach( $property in $propertyList )
+#set ($field = $property.fieldName)
+#if ($property.isStateHolder())
+##          //Only has sense propagate this method if is initialStateMarked
+            if ($field != null && 
+                $field instanceof PartialStateHolder)
+            {
+                ((PartialStateHolder)$field).clearInitialState();
+            }
+#end
+#end
+        }
+    }
+
+    @Override
+    public Object saveState(FacesContext facesContext)
+    {
+        if (initialStateMarked())
+        {
+            boolean nullDelta = true;
+            Object parentSaved = super.saveState(facesContext);
 #set ($arrayIndex = 0)
 #foreach( $property in $propertyList )
 #set ($field = $property.fieldName)
 #set ($type = $property.className)
+#if ($property.isStateHolder())
 #set ($arrayIndex = $arrayIndex + 1)
-#if ($property.jspName == "validator" && $property.isMethodBinding() )
-        values[$arrayIndex] = saveAttachedState(facesContext,${field}List);
-#elseif ( $property.isStateHolder() )## || $utils.isConverter($type)
-        values[$arrayIndex] = saveAttachedState(facesContext,$field);
-#elseif($utils.isPrimitiveClass($type))
-        values[$arrayIndex] = ${utils.getBoxedClass($type)}.valueOf($field);
-#else
-        values[$arrayIndex] = $field;
+            Object ${property.name}Saved = null;
+            if (!_$utils.getPrefixedPropertyName("isSet", $property.name)() &&
+                $field != null && $field instanceof PartialStateHolder)
+            {
+                //Delta
+                StateHolder holder = (StateHolder) $field;
+                if (!holder.isTransient())
+                {
+                    Object attachedState = holder.saveState(facesContext);
+                    if (attachedState != null)
+                    {
+                        nullDelta = false;
+                    }
+                    ${property.name}Saved = new _AttachedDeltaWrapper(${field}.getClass(),
+                        attachedState);
+                }
+            }
+            else
+            {
+                //Full
+                ${property.name}Saved = saveAttachedState(facesContext,$field);
+                nullDelta = false;
+            }        
+## StateHelper Properties does not need save and restore
 #end
-#if($utils.isPrimitiveClass($type) && !$property.isTagExcluded())
+#end
+            if (parentSaved == null && nullDelta)
+            {
+                //No values
+                return null;
+            }
+            
+            Object[] values = new Object[$primitiveCount];
+            values[0] = parentSaved;
+## Save full state
+#set ($arrayIndex = 0)
+#foreach( $property in $propertyList )
+#set ($field = $property.fieldName)
+#set ($type = $property.className)
+#if ($property.isStateHolder())
 #set ($arrayIndex = $arrayIndex + 1)
-        values[$arrayIndex] = Boolean.valueOf(${field}Set);
+            values[$arrayIndex] = ${property.name}Saved;
+## StateHelper Properties does not need save and restore
 #end
 #end
-        return values; 
+            return values;
+        }
+        else
+        {
+            Object[] values = new Object[$primitiveCount];
+            values[0] = super.saveState(facesContext);
+## Save full state
+#set ($arrayIndex = 0)
+#foreach( $property in $propertyList )
+#set ($field = $property.fieldName)
+#set ($type = $property.className)
+#if ($property.isStateHolder())
+#set ($arrayIndex = $arrayIndex + 1)
+            values[$arrayIndex] = saveAttachedState(facesContext,$field);
+## StateHelper Properties does not need save and restore
+#end
+#end
+            return values;
+        }
     }
 
     @Override
     public void restoreState(FacesContext facesContext, Object state)
     {
+        if (state == null)
+        {
+            return;
+        }
+        
         Object[] values = (Object[])state;
         super.restoreState(facesContext,values[0]);
 #set ($arrayIndex = 0)
 #foreach( $property in $propertyList )
 #set ($field = $property.fieldName)
 #set ($type = $property.className)
+#if ($property.isStateHolder())
 #set ($arrayIndex = $arrayIndex + 1)
-#if ( $property.isStateHolder() )
-#if ($property.jspName == "validator" && $property.isMethodBinding() )
-        ${field}List = (List<Validator>) restoreAttachedState(facesContext,values[$arrayIndex]);
-#elseif ($utils.isList($type))
-        $field = (List) restoreAttachedState(facesContext,values[$arrayIndex]);
+        if (values[$arrayIndex] instanceof _AttachedDeltaWrapper)
+        {
+            //Delta
+            ((StateHolder)$field).restoreState(facesContext, ((_AttachedDeltaWrapper) values[$arrayIndex]).getWrappedStateObject());
+        }
+        else
+        {
+            //Full
+            $field = $utils.castIfNecessary($type) restoreAttachedState(facesContext,values[$arrayIndex]);
+        }         
 #else
-        $field = $utils.castIfNecessary($type) restoreAttachedState(facesContext,values[$arrayIndex]); 
-#end
-#elseif ($utils.isConverter($type)) 
-        $field = (Converter) restoreAttachedState(facesContext,values[$arrayIndex]);
-#elseif ($utils.isPrimitiveClass($type))
-        $field = ($utils.castIfNecessary($type) values[$arrayIndex]).${type}Value();
-#else
-        $field = $utils.castIfNecessary($type) values[$arrayIndex];
-#end
-#if($utils.isPrimitiveClass($type) && !$property.isTagExcluded() )
-#set ($arrayIndex = $arrayIndex + 1)
-        ${field}Set = ((Boolean) values[$arrayIndex]).booleanValue();
+## StateHelper Properties does not need save and restore
 #end
 #end
     }
+#end
 }
