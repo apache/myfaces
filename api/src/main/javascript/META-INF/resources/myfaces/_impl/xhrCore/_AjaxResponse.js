@@ -109,7 +109,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
                  * </eval>
                  */
 
-            
+
 
                 //this ought to be enough for eval
                 //however the run scripts still makes sense
@@ -240,34 +240,61 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
 
             switch(node.getAttribute('id')) {
                 case "javax.faces.ViewRoot":
+                    this._replaceBody(request, context,  cDataBlock );
 
-                    var parser =  myfaces.ajax._impl = new (myfaces._impl._util._Utils.getGlobalConfig("updateParser",myfaces._impl._util._HtmlStripper))();
-                
-                    document.documentElement.innerHTML  =  parser.parse(cDataBlock);
-                        // innerHTML doesn't execute scripts, so no browser switch here
-                    myfaces._impl._util._Utils.runScripts(request, context, cDataBlock);
-                   
                     break;
                 case "javax.faces.ViewHead":
                     //we assume the cdata block is our head including the tag
                     this._replaceElement(request, context, head, cDataBlock );
-                    
+
 
                     break;
                 case "javax.faces.ViewBody":
                     //we assume the cdata block is our body including the tag
-                    this._replaceElement(request, context, body, cDataBlock );
-  
+                    this._replaceBody(request, context,  cDataBlock );
                     break;
 
                 default:
                     this._replaceElement(request, context,node.getAttribute('id'), cDataBlock );
-                   
+
                     break;
             }
         }
         return true;
     };
+
+    /**
+     * special method to handle the body dom manipulation,
+     * replacing the entire body does not work fully by simply adding a second body
+     * and by creating a range instead we have to work around that by dom creating a second
+     * body and then filling it properly!
+     * 
+     * @param {Object} request our request object
+     * @param {Map} context the response context
+     * @param {String} newData the markup which replaces the old dom node!
+     */
+    myfaces._impl.xhrCore._AjaxResponse.prototype._replaceBody = function(request, context, newData) {
+        var parser =  myfaces.ajax._impl = new (myfaces._impl._util._Utils.getGlobalConfig("updateParser",myfaces._impl._util._HtmlStripper))();
+                 
+        var oldBody = document.getElementsByTagName("body")[0];
+        var newBody = document.createElement("body");
+        var placeHolder = document.createElement("div");
+        var bodyParent = oldBody.parentNode;
+
+        newBody.appendChild(placeHolder);
+        bodyParent.replaceChild(newBody, oldBody);
+
+        //the contextualFragment trick does not work on the body tag instead we have to generate a manual body
+        //element and then add a child which then is the replacement holder for our fragment!
+        this._replaceElement(request, context, placeHolder , parser.parse(newData,"body") );
+
+        for(var key in parser.tagAttributes) {
+            var value = parser.tagAttributes[key];
+            myfaces._impl._util._Utils.setAttribute(newBody, key, value);
+        }
+    };
+
+
 
     /**
      * Helper method to avoid duplicate code

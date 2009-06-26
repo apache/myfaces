@@ -231,9 +231,12 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
      */
     myfaces._impl._util._Utils.replaceHtmlItem = function(request, context, itemIdToReplace, newTag, form) {
         try {
+            //for webkit we have to trim otherwise he does not add the adjancent elements correctly
+            newTag = myfaces._impl._util._LangUtils.trim(newTag);
         	// (itemIdToReplace instanceof Node) is NOT compatible with IE8
             var item = (typeof itemIdToReplace == "object") ? itemIdToReplace :
             myfaces._impl._util._Utils.getElementFromForm(request, context, itemIdToReplace, form);
+
             if (item == null) {
                 myfaces._impl.xhrCore._Exception.throwNewWarning
                 (request, context, "Utils", "replaceHTMLItem", "Unknown Html-Component-ID: " + itemIdToReplace);
@@ -254,9 +257,9 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
                     myfaces._impl._util._Utils.runScripts(request, context, item.previousSibling);
                 }
             }
-
             // and remove the old item
             item.parentNode.removeChild(item);
+            
         } catch (e) {
             myfaces._impl.xhrCore._Exception.throwNewError (request, context, "Utils", "replaceHTMLItem", e);
         }
