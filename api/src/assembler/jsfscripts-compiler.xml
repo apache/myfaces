@@ -4,7 +4,6 @@
         <script>
             <fileName>jsf.js</fileName>
             <includes>
-                <include>**/api/OpenAjax.js</include>
                 <include>**/_impl/_util/_LangUtils.js</include>
                 <include>**/_impl/_util/_ListenerQueue.js</include>
                 <include>**/_impl/_util/_Utils.js</include>
