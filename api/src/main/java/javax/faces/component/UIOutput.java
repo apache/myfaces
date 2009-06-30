@@ -24,7 +24,6 @@ import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.application.ResourceDependencies;
 import javax.faces.application.ResourceDependency;
-import javax.faces.component.UIOutputGenerated.PropertyKeys;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
