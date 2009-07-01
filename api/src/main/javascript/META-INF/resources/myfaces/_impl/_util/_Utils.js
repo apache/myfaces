@@ -308,7 +308,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
 
             Btw. thank you Microsoft for providing all necessary tools for free
             for being able to debug this entire mess in the ie rendering engine out
-            (which is the Microsoft ie vms, developers toolbar, Visual Studio 200x express
+            (which is the Microsoft ie vms, developers toolbar, Visual Web Developer 2008 express
             and the ie8 8 developers toolset!)
 
             also thank you http://www.quirksmode.org/
