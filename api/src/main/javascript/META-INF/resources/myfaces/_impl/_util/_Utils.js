@@ -292,29 +292,40 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
         //quirks mode and ie7 mode has the attributes problems ie8 standards mode behaves like
         //a good citizen
         if (!myfaces._impl._util._Utils.isUserAgentInternetExplorer() || myfaces._impl._util._Utils.browser.isIE > 7) {
-
             domNode.setAttribute(attribute, value);
             return;
         }
 
-        //Now to the broken browsers IE6+.... ie7 and ie8 quirks mode
-        //now ie has the behavior of not wanting events to be set directly and also
-        //class must be renamed to classname
-        //according to http://www.quirksmode.org/dom/w3c_core.html it does not set styles
-        //also class == className we have to rechange that
-        //additionally events are not triggered as well
+        /*
+            Now to the broken browsers IE6+.... ie7 and ie8 quirks mode
 
-        //what we do is following for now:
-        //1. remap the class
+            we deal mainly with three problems here
+            class and for are not handled correctly
+            styles are arrays and cannot be set directly
+            and javascript events cannot be set via setAttribute as well!
+
+            or in original words of quirksmode.org ... this is a mess!
+
+            Btw. thank you Microsoft for providing all necessary tools for free
+            for being able to debug this entire mess in the ie rendering engine out
+            (which is the Microsoft ie vms, developers toolbar, Visual Studio 200x express
+            and the ie8 8 developers toolset!)
+
+            also thank you http://www.quirksmode.org/
+            dojotoolkit.org and   //http://delete.me.uk/2004/09/ieproto.html
+            for additional information on this mess!
+
+            The lowest common denominator tested within this code
+            is IE6, older browsers for now are legacy!
+         */
         attribute = attribute.toLowerCase();
 
         if (attribute === "class") {
             domNode.setAttribute("className", value);
         } else if (attribute === "for") {
-            //http://delete.me.uk/2004/09/ieproto.html
+
             domNode.setAttribute("htmlFor", value);
         } else if (attribute === "style") {
-
             //We have to split the styles here and assign them one by one
             var styleEntries = value.split(";");
             for (var loop = 0; loop < styleEntries.length; loop++) {
@@ -323,7 +334,6 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
                     domNode.style.setAttribute(keyVal[0], keyVal[1]);
                 }
             }
-
         } else {
             //check if the attribute is an event, since this applies only
             //to quirks mode of ie anyway we can live with the standard html4/xhtml
