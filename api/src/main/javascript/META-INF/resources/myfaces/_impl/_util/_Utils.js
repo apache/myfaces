@@ -20,14 +20,12 @@
 
 _reserveMyfacesNamespaces();
 
-if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
+if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
     /**
      * Constructor
      */
     myfaces._impl._util._Utils = function() {
-
-        }
-
+    }
 
     myfaces._impl._util._Utils.browserDetection = function() {
         /**
@@ -44,16 +42,16 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
          */
         var n = navigator;
         var dua = n.userAgent,
-        dav = n.appVersion,
-        tv = parseFloat(dav);
+                dav = n.appVersion,
+                tv = parseFloat(dav);
 
         myfaces._impl._util._Utils.browser = {};
         var d = myfaces._impl._util._Utils.browser;
 
-        if(dua.indexOf("Opera") >= 0){
+        if (dua.indexOf("Opera") >= 0) {
             myfaces._impl._util._Utils.isOpera = tv;
         }
-        if(dua.indexOf("AdobeAIR") >= 0){
+        if (dua.indexOf("AdobeAIR") >= 0) {
             d.isAIR = 1;
         }
         d.isKhtml = (dav.indexOf("Konqueror") >= 0) ? tv : 0;
@@ -64,36 +62,35 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
         //		http://developer.apple.com/internet/safari/faq.html#anchor2
         //		http://developer.apple.com/internet/safari/uamatrix.html
         var index = Math.max(dav.indexOf("WebKit"), dav.indexOf("Safari"), 0);
-        if(index && !d.isChrome){
+        if (index && !d.isChrome) {
             // try to grab the explicit Safari version first. If we don't get
             // one, look for less than 419.3 as the indication that we're on something
             // "Safari 2-ish".
             d.isSafari = parseFloat(dav.split("Version/")[1]);
-            if(!d.isSafari || parseFloat(dav.substr(index + 7)) <= 419.3){
+            if (!d.isSafari || parseFloat(dav.substr(index + 7)) <= 419.3) {
                 d.isSafari = 2;
             }
         }
 
         //>>excludeStart("webkitMobile", kwArgs.webkitMobile);
-        if(dua.indexOf("Gecko") >= 0 && !d.isKhtml && !d.isWebKit){
+        if (dua.indexOf("Gecko") >= 0 && !d.isKhtml && !d.isWebKit) {
             d.isMozilla = d.isMoz = tv;
         }
-        if(d.isMoz){
+        if (d.isMoz) {
             //We really need to get away from this. Consider a sane isGecko approach for the future.
             d.isFF = parseFloat(dua.split("Firefox/")[1] || dua.split("Minefield/")[1] || dua.split("Shiretoko/")[1]) || undefined;
         }
-        if(document.all && !d.isOpera){
+        if (document.all && !d.isOpera) {
             d.isIE = parseFloat(dav.split("MSIE ")[1]) || undefined;
             //In cases where the page has an HTTP header or META tag with
             //X-UA-Compatible, then it is in emulation mode, for a previous
             //version. Make sure isIE reflects the desired version.
             //document.documentMode of 5 means quirks mode.
-            if(d.isIE >= 8 && document.documentMode != 5){
+            if (d.isIE >= 8 && document.documentMode != 5) {
                 d.isIE = document.documentMode;
             }
         }
     };
-
 
     /**
      * encapsulated xhr object which tracks down various implementations
@@ -103,14 +100,14 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
      * newer ie versions adhere to the standard and all other new browsers do anyway)
      */
     myfaces._impl._util._Utils.getXHRObject = function() {
-        if('undefined' != typeof XMLHttpRequest && null != XMLHttpRequest) {
+        if ('undefined' != typeof XMLHttpRequest && null != XMLHttpRequest) {
             return new XMLHttpRequest();
         }
         //IE
         try {
             return new ActiveXObject("Msxml2.XMLHTTP");
         } catch (e) {
-            
+
         }
         return new ActiveXObject('Microsoft.XMLHTTP');
     }
@@ -126,31 +123,31 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
         var xhr = myfaces._impl._util._Utils.getXHRObject();
         xhr.open("GET", src, false);
 
-        if('undefined' != typeof charSet && null != charSet) {
-            xhr.setRequestHeader("Content-Type","application/x-javascript; charset:"+charSet);
+        if ('undefined' != typeof charSet && null != charSet) {
+            xhr.setRequestHeader("Content-Type", "application/x-javascript; charset:" + charSet);
         }
 
         xhr.send(null);
 
         //since we are synchronous we do it after not with onReadyStateChange
-        if(xhr.readyState == 4) {
+        if (xhr.readyState == 4) {
             if (xhr.status == 200) {
                 //defer also means we have to process after the ajax response
                 //has been processed
                 //we can achieve that with a small timeout, the timeout
                 //triggers after the processing is done!
-                if(!defer) {
+                if (!defer) {
                     myfaces._impl._util._Utils.globalEval(xhr.responseText);
                 } else {
-                   setTimeout(function() {
-                     myfaces._impl._util._Utils.globalEval(xhr.responseText);
-                   },1);
+                    setTimeout(function() {
+                        myfaces._impl._util._Utils.globalEval(xhr.responseText);
+                    }, 1);
                 }
             } else {
                 throw Error(xhr.responseText);
             }
         } else {
-            throw Error("Loading of script "+src+" failed ");
+            throw Error("Loading of script " + src + " failed ");
         }
     }
 
@@ -166,33 +163,33 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
         if (item.nodeType == 1) { // only if it's an element node
             if (item.tagName.toLowerCase() == 'script') {
                 try {
-	            	if (typeof item.getAttribute('src') != 'undefined' 
-	                	&& item.getAttribute('src') != null
-	                	&& item.getAttribute('src').length > 0 ) {
-	            		// external script auto eval
-	            		myfaces._impl._util._Utils.loadScript(item.getAttribute('src'), item.getAttribute('type'), false, "ISO-8859-1");
-	            	} else {
-	            		// embedded script auto eval
-	                    var test = item.text;
-	                    var go = true;
-	                    while (go) {
-	                        go = false;
-	                        if (test.substring(0, 1) == " ") {
-	                            test = test.substring(1);
-	                            go = true;
-	                        }
-	                        if (test.substring(0, 4) == "<!--") {
-	                            test = test.substring(4);
-	                            go = true;
-	                        }
-	                        if (test.substring(0, 11) == "//<![CDATA[") {
-	                            test = test.substring(11);
-	                            go = true;
-	                        }
-	                    }
-	                    // we have to run the script under a global context
-	                    myfaces._impl._util._Utils.globalEval(test); // run the script
-	            	}
+                    if (typeof item.getAttribute('src') != 'undefined'
+                            && item.getAttribute('src') != null
+                            && item.getAttribute('src').length > 0) {
+                        // external script auto eval
+                        myfaces._impl._util._Utils.loadScript(item.getAttribute('src'), item.getAttribute('type'), false, "ISO-8859-1");
+                    } else {
+                        // embedded script auto eval
+                        var test = item.text;
+                        var go = true;
+                        while (go) {
+                            go = false;
+                            if (test.substring(0, 1) == " ") {
+                                test = test.substring(1);
+                                go = true;
+                            }
+                            if (test.substring(0, 4) == "<!--") {
+                                test = test.substring(4);
+                                go = true;
+                            }
+                            if (test.substring(0, 11) == "//<![CDATA[") {
+                                test = test.substring(11);
+                                go = true;
+                            }
+                        }
+                        // we have to run the script under a global context
+                        myfaces._impl._util._Utils.globalEval(test); // run the script
+                    }
                 } catch (e) {
                     myfaces._impl.xhrCore._Exception.throwNewError(request, context, "Utils", "runScripts", e);
                 }
@@ -213,7 +210,7 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
         var item = document.getElementById(itemIdToReplace);
         if (item == null) {
             myfaces._impl.xhrCore._Exception.throwNewWarning
-            (request, context, "Utils", "deleteItem", "Unknown Html-Component-ID: " + itemIdToReplace);
+                    (request, context, "Utils", "deleteItem", "Unknown Html-Component-ID: " + itemIdToReplace);
             return;
         }
 
@@ -233,19 +230,19 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
         try {
             //for webkit we have to trim otherwise he does not add the adjancent elements correctly
             newTag = myfaces._impl._util._LangUtils.trim(newTag);
-        	// (itemIdToReplace instanceof Node) is NOT compatible with IE8
+            // (itemIdToReplace instanceof Node) is NOT compatible with IE8
             var item = (typeof itemIdToReplace == "object") ? itemIdToReplace :
-            myfaces._impl._util._Utils.getElementFromForm(request, context, itemIdToReplace, form);
+                       myfaces._impl._util._Utils.getElementFromForm(request, context, itemIdToReplace, form);
 
             if (item == null) {
                 myfaces._impl.xhrCore._Exception.throwNewWarning
-                (request, context, "Utils", "replaceHTMLItem", "Unknown Html-Component-ID: " + itemIdToReplace);
+                        (request, context, "Utils", "replaceHTMLItem", "Unknown Html-Component-ID: " + itemIdToReplace);
                 return;
             }
 
             if (newTag != "") {
                 if (typeof window.Range != 'undefined'
-                    && typeof Range.prototype.createContextualFragment == 'function' ) {
+                        && typeof Range.prototype.createContextualFragment == 'function') {
                     var range = document.createRange();
                     range.setStartBefore(item);
                     var fragment = range.createContextualFragment(newTag);
@@ -253,15 +250,15 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
                 } else {
                     item.insertAdjacentHTML('beforeBegin', newTag);
                 }
-                if(myfaces._impl._util._Utils.isManualScriptEval()) {
+                if (myfaces._impl._util._Utils.isManualScriptEval()) {
                     myfaces._impl._util._Utils.runScripts(request, context, item.previousSibling);
                 }
             }
             // and remove the old item
             item.parentNode.removeChild(item);
-            
+
         } catch (e) {
-            myfaces._impl.xhrCore._Exception.throwNewError (request, context, "Utils", "replaceHTMLItem", e);
+            myfaces._impl.xhrCore._Exception.throwNewError(request, context, "Utils", "replaceHTMLItem", e);
         }
     };
 
@@ -292,13 +289,15 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
      */
     myfaces._impl._util._Utils.setAttribute = function(domNode, attribute, value) {
 
-        if(!myfaces._impl._util._Utils.isUserAgentInternetExplorer()) {
-            domNode.setAttribute(attribute,value);
+        //quirks mode and ie7 mode has the attributes problems ie8 standards mode behaves like
+        //a good citizen
+        if (!myfaces._impl._util._Utils.isUserAgentInternetExplorer() || myfaces._impl._util._Utils.browser.isIE > 7) {
+
+            domNode.setAttribute(attribute, value);
             return;
         }
+
         //Now to the broken browsers IE6+.... ie7 and ie8 quirks mode
-
-
         //now ie has the behavior of not wanting events to be set directly and also
         //class must be renamed to classname
         //according to http://www.quirksmode.org/dom/w3c_core.html it does not set styles
@@ -309,30 +308,37 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
         //1. remap the class
         attribute = attribute.toLowerCase();
 
-        if(attribute === "class") {
-            domNode["className"] = value;
-        } else if(attribute === style) {
+        if (attribute === "class") {
+            domNode.setAttribute("className", value);
+        } else if (attribute === "for") {
+            //http://delete.me.uk/2004/09/ieproto.html
+            domNode.setAttribute("htmlFor", value);
+        } else if (attribute === "style") {
+
             //We have to split the styles here and assign them one by one
             var styleEntries = value.split(";");
-            for(var loop = 0; loop < styleEntries.length; loop++) {
+            for (var loop = 0; loop < styleEntries.length; loop++) {
                 var keyVal = styleEntries[loop].split(":");
-                domNode["style"][keyVal[0]] = keyVal[1];
+                if (keyVal[0] != "") {
+                    domNode.style.setAttribute(keyVal[0], keyVal[1]);
+                }
             }
+
         } else {
             //check if the attribute is an event, since this applies only
             //to quirks mode of ie anyway we can live with the standard html4/xhtml
             //ie supported events
-            if(myfaces._impl._util._Utils.ieQuircksEvents[attribute]) {
-                if(myfaces._impl._util._LangUtils.isString(attribute)) {
-                    domNode[attribute] = function(event) {
-                        //TODO check the scope of this handler
+            if (myfaces._impl._util._Utils.ieQuircksEvents[attribute]) {
+                if (myfaces._impl._util._LangUtils.isString(attribute)) {
+                    domNode.setAttribute(attribute, function(event) {
                         myfaces._impl._util._Utils.globalEval(attribute);
-                    };
+                    });
                 }
+            } else {
+                //unknown cases we try to catch them via standard setAttributes
+                domNode.setAttribute(attribute, value);
             }
-            domNode[attribute] = value;
         }
-    //TODO this needs further testing I will leave it for now...
     };
 
     /**
@@ -347,25 +353,24 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
         //TODO test this with various browsers so that we have auto eval wherever possible
         //
         //tested currently safari, ie, firefox, opera
-        var retVal = (_LangUtils.exists(myfaces._impl._util._Utils.browser,"isIE") &&
-            ( myfaces._impl._util._Utils.browser.isIE > 5.5))||
-        (_LangUtils.exists(myfaces._impl._util._Utils.browser,"isKhtml") &&
-            (myfaces._impl._util._Utils.browser.isKhtml > 0))   ||
-        (_LangUtils.exists(myfaces._impl._util._Utils.browser,"isWebKit") &&
-            (myfaces._impl._util._Utils.browser.isWebKit > 0)) ||
-         (_LangUtils.exists(myfaces._impl._util._Utils.browser,"isSafari") &&
-            (myfaces._impl._util._Utils.browser.isSafari > 0));
-      
+        var retVal = (_LangUtils.exists(myfaces._impl._util._Utils.browser, "isIE") &&
+                      ( myfaces._impl._util._Utils.browser.isIE > 5.5)) ||
+                     (_LangUtils.exists(myfaces._impl._util._Utils.browser, "isKhtml") &&
+                      (myfaces._impl._util._Utils.browser.isKhtml > 0)) ||
+                     (_LangUtils.exists(myfaces._impl._util._Utils.browser, "isWebKit") &&
+                      (myfaces._impl._util._Utils.browser.isWebKit > 0)) ||
+                     (_LangUtils.exists(myfaces._impl._util._Utils.browser, "isSafari") &&
+                      (myfaces._impl._util._Utils.browser.isSafari > 0));
+
         return retVal;
-               
-    //another way to determine this without direct user agent parsing probably could
-    //be to add an embedded script tag programmatically and check for the script variable
-    //set by the script if existing, the add went through an eval if not then we
-    //have to deal with it outselves, this might be dangerous in case of the ie however
-    //so in case of ie we have to parse for all other browsers we can make a dynamic
-    //check if the browser does auto eval
-    //TODO discuss those things
-       
+
+        //another way to determine this without direct user agent parsing probably could
+        //be to add an embedded script tag programmatically and check for the script variable
+        //set by the script if existing, the add went through an eval if not then we
+        //have to deal with it outselves, this might be dangerous in case of the ie however
+        //so in case of ie we have to parse for all other browsers we can make a dynamic
+        //check if the browser does auto eval
+        //TODO discuss those things
     };
 
     /**
@@ -395,25 +400,24 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
     myfaces._impl._util._Utils.getElementFromForm = function(request, context, itemIdOrName, form, nameSearch, localSearchOnly) {
         try {
 
-            if('undefined' == typeof form || form == null) {
+            if ('undefined' == typeof form || form == null) {
                 return document.getElementById(itemIdOrName);
             }
-            if('undefined' == typeof includeName || nameSearch == null) {
+            if ('undefined' == typeof includeName || nameSearch == null) {
                 nameSearch = false;
             }
-            if('undefined' == typeof localSearchOnly || localSearchOnly == null) {
+            if ('undefined' == typeof localSearchOnly || localSearchOnly == null) {
                 localSearchOnly = false;
             }
 
-
             var fLen = form.elements.length;
-            
+
             //we first check for a name entry!
-            if(nameSearch && 'undefined' != typeof form.elements[itemIdOrName] && null != form.elements[itemIdOrName]) {
+            if (nameSearch && 'undefined' != typeof form.elements[itemIdOrName] && null != form.elements[itemIdOrName]) {
                 return form.elements[itemIdOrName];
             }
             //if no name entry is found we check for an Id
-            for ( var f = 0; f < fLen; f++) {
+            for (var f = 0; f < fLen; f++) {
                 var element = form.elements[f];
                 if (element.id != null && element.id == itemIdOrName) {
                     return element;
@@ -421,7 +425,7 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
             }
             // element not found inside the form -> try document.getElementById
             // (kann be null if element doesn't exist)
-            if(!localSearchOnly) {
+            if (!localSearchOnly) {
                 return document.getElementById(itemIdOrName);
             }
         } catch (e) {
@@ -429,8 +433,6 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
         }
         return null;
     };
-
-
 
     /**
      * [STATIC]
@@ -445,18 +447,18 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
             // parent tag parentName suchen
             var parentItem = item.parentNode;
             while (parentItem != null
-                && parentItem.tagName.toLowerCase() != parentName) {
+                    && parentItem.tagName.toLowerCase() != parentName) {
                 parentItem = parentItem.parentNode;
             }
             if (parentItem != null) {
                 return parentItem;
             } else {
                 myfaces._impl.xhrCore._Exception.throwNewWarning
-                (request, context, "Utils", "getParent", "The item has no parent with type <" + parentName + ">");
+                        (request, context, "Utils", "getParent", "The item has no parent with type <" + parentName + ">");
                 return null;
             }
         } catch (e) {
-            myfaces._impl.xhrCore._Exception.throwNewError (request, context, "Utils", "getParent", e);
+            myfaces._impl.xhrCore._Exception.throwNewError(request, context, "Utils", "getParent", e);
         }
     };
 
@@ -469,20 +471,16 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
      */
     myfaces._impl._util._Utils.getChild = function(item, childName, itemName) {
         var childItems = item.childNodes;
-        for ( var c = 0, cLen = childItems.length; c < cLen; c++) {
+        for (var c = 0, cLen = childItems.length; c < cLen; c++) {
             if (childItems[c].tagName != null
-                && childItems[c].tagName.toLowerCase() == childName
-                && (itemName == null || (itemName != null && itemName == childItems[c]
+                    && childItems[c].tagName.toLowerCase() == childName
+                    && (itemName == null || (itemName != null && itemName == childItems[c]
                     .getAttribute("name")))) {
                 return childItems[c];
             }
         }
         return null;
     }
-
-
-  
-
 
     /**
      * fetches a global config entry
@@ -495,7 +493,7 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
         /*use(myfaces._impl._util)*/
         var _LangUtils = myfaces._impl._util._LangUtils;
 
-        if (_LangUtils.exists(myfaces,"config") && _LangUtils.exists(myfaces.config,configName)) {
+        if (_LangUtils.exists(myfaces, "config") && _LangUtils.exists(myfaces.config, configName)) {
             return myfaces.config[configName];
         }
         return defaultValue;
@@ -503,7 +501,7 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
 
     /**
      * global eval on scripts
-     * 
+     *
      */
     myfaces._impl._util._Utils.globalEval = function(code) {
 
@@ -531,7 +529,7 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces._impl._util,"_Utils")) {
         var _LangUtils = myfaces._impl._util._LangUtils;
 
         var globalOption = myfaces._impl._util._Utils.getGlobalConfig(configName, defaultValue);
-        if(!_LangUtils.exists(localOptions, "myfaces") || !_LangUtils.exists(localOptions.myfaces,configName)) {
+        if (!_LangUtils.exists(localOptions, "myfaces") || !_LangUtils.exists(localOptions.myfaces, configName)) {
             return globalOption;
         }
         return localOptions.myfaces[configName];

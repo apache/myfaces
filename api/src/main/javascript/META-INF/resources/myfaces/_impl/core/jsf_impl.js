@@ -347,6 +347,8 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
             } catch (e) {
             	myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_CLIENT_ERROR, "ErrorRetrievingResponse",
                     "Parts of the response couldn't be retrieved when constructing the event data: " + e);
+                //client errors are not swallowed 
+                throw e;
             }
         }
 

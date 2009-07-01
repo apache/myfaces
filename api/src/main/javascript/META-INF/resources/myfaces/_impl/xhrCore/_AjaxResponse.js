@@ -109,8 +109,6 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
                  * </eval>
                  */
 
-
-
                 //this ought to be enough for eval
                 //however the run scripts still makes sense
                 //in the update and insert area for components
@@ -182,14 +180,11 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
                 if (!this.processDelete(request, context, changes[i])) return false;
             } else if (changes[i].tagName == this._PCMD_ATTRIBUTES) {
                 if (!this.processAttributes(request, context, changes[i])) return false;
-            // this._responseHandler.doAtttributes(childNode);
-            //TODO check the spec if this part is obsolete!!!
             } else if (changes[i].tagName == this._PCMD_EXTENSION) {
                 //DO nothing we do not have any implementation specifics for now!
                 //but if you need some implementation specific stuff
                 //you have to insert it here
-            //  this._responseHandler.doExtension(childNode);
-
+                //  this._responseHandler.doExtension(childNode);
             } else {
             	myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML);
                 return false;
@@ -235,18 +230,15 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
             //a join is more efficient that normal string ops!
             cDataBlock = cDataBlock.join("");
 
-            var body = document.getElementsByTagName('body')[0];
-            var head = document.getElementsByTagName('head')[0];
-
             switch(node.getAttribute('id')) {
                 case "javax.faces.ViewRoot":
                     this._replaceBody(request, context,  cDataBlock );
 
                     break;
                 case "javax.faces.ViewHead":
-                    //we assume the cdata block is our head including the tag
-                    this._replaceElement(request, context, head, cDataBlock );
-
+                    //we cannot replace the head, almost no browser allows this, some of them throw errors
+                    //others simply ignore it or replace it and destroy the dom that way!
+                    throw new Error("Head cannot be replaced, due to browser deficiencies!");
 
                     break;
                 case "javax.faces.ViewBody":
@@ -282,11 +274,12 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
         var bodyParent = oldBody.parentNode;
 
         newBody.appendChild(placeHolder);
-        bodyParent.replaceChild(newBody, oldBody);
 
         //the contextualFragment trick does not work on the body tag instead we have to generate a manual body
         //element and then add a child which then is the replacement holder for our fragment!
-        this._replaceElement(request, context, placeHolder , parser.parse(newData,"body") );
+        var bodyData = parser.parse(newData,"body");
+        bodyParent.replaceChild(newBody, oldBody);
+        this._replaceElement(request, context, placeHolder , bodyData );
 
         for(var key in parser.tagAttributes) {
             var value = parser.tagAttributes[key];

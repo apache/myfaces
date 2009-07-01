@@ -34,7 +34,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_Exception"))
  * static method used by static methods that throw errors
  */
     myfaces._impl.xhrCore._Exception.throwNewError = function(request, context, sourceClass, func, exception) {
-        newException = new myfaces._impl.xhrCore._Exception(request, context, sourceClass, "ERROR");
+        var newException = new myfaces._impl.xhrCore._Exception(request, context, sourceClass, "ERROR");
         newException.throwError(request, context, func, exception);
     };
 
@@ -43,7 +43,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_Exception"))
  * static method used by static methods that throw warnings
  */
     myfaces._impl.xhrCore._Exception.throwNewWarning = function(request, context, sourceClass, func, message){
-        newException = new myfaces._impl.xhrCore._Exception(request, context, sourceClass, "WARNING");
+        var newException = new myfaces._impl.xhrCore._Exception(request, context, sourceClass, "WARNING");
         newException.throwWarning(request, context, func, message);
     };
 
@@ -63,6 +63,9 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_Exception"))
                 + "Error line number: " + exception.lineNumber);
         }
         this.destroy();
+        //client exceptions should not be swallowed they have to be delegated to the client itself!
+        //TODO check if we are even allowed to issue client errors via the ajax API!
+        throw exception;
     };
 
     /**

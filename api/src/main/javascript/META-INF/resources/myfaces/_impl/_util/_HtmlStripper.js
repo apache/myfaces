@@ -76,6 +76,9 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
         this.tokens = theString.split("");
         this.tagAttributes = {};
 
+        this._tagStart = -1;
+        this._tagEnd = -1;
+
         this._contentStart = -1;
         this._contentEnd = -1;
         this._tokenPos = 0;
@@ -116,6 +119,34 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
     };
 
     /**
+     * fetches the content block which has been parsed
+     */
+    myfaces._impl._util._HtmlStripper.prototype.getContentBlock = function() {
+        return this.tokens.slice(this._contentStart, this._contentEnd + 1).join("");
+    },
+
+    /**
+     * fetches the content tag block including the tag code
+     */
+    myfaces._impl._util._HtmlStripper.prototype.getContentTagBlock = function() {
+        return this.tokens.slice(this._tagStart, this._tagEnd + 1).join("");
+    },
+
+    /**
+     * fetches the block before the tag begin
+     */
+    myfaces._impl._util._HtmlStripper.prototype.getPreTagBlock = function() {
+        return this.tokens.slice(0, this._tagStart).join("");
+    },
+
+    /**
+     * fetches the block after the tag end
+     */
+    myfaces._impl._util._HtmlStripper.prototype.getPostTagBlock = function() {
+        return this.tokens.slice(this._tagEnd, this.tokens.length).join("");
+    },
+
+    /**
      * normal characters are skipped
      * a < clearly is an indicator for
      * a ... normal chars should not occur here, but
@@ -137,6 +168,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
      */
     myfaces._impl._util._HtmlStripper.prototype.handleDocument = function() {
 
+        this._tagStart = this.tokenPos;
         this._skipBlank(1);
 
         if (this._tokenPos >= this.tokens.length) {
@@ -332,7 +364,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
     };
 
     myfaces._impl._util._HtmlStripper.prototype.handleEndTagPart = function() {
-
+        this._tagEnd = this._tokenPos;
         this._skipBlank(1);
 
         if (this._tokenPos < 0) {

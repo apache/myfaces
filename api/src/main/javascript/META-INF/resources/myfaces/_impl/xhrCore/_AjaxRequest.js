@@ -106,6 +106,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxRequest"
             }
         } catch (e) {
             this.m_exception.throwError(this.m_xhr, this.m_context, "send", e);
+           
         }
     };
 
