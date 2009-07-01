@@ -23,9 +23,11 @@ function _reserveMyfacesNamespaces() {
      *
      * reserve the namespaces used by the myfaces core
      */
-    if ('undefined' != typeof OpenAjax && ( 'undefined' == typeof myfaces || null == myfaces)) {
-        OpenAjax.hub.registerLibrary("myfaces", "myfaces.apache.org", "1.0", null);
-    }
+    //we have not registered the namespace with openajax so we dont do it for now
+
+    //if ('undefined' != typeof OpenAjax && ( 'undefined' == typeof myfaces || null == myfaces)) {
+    //    OpenAjax.hub.registerLibrary("myfaces", "myfaces.apache.org", "1.0", null);
+    //}
 
     /*originally we had it at org.apache.myfaces, but we are now down to myfaces since the openajax seems to have problems registering more than a root domain and org is not only apache specific*/
     if('undefined' == typeof myfaces || null == myfaces) {
