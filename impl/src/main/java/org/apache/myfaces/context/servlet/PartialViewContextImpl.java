@@ -350,7 +350,8 @@ public class PartialViewContextImpl extends PartialViewContext {
             try {
                 writer.startUpdate(target.getClientId(_facesContext));
                 inUpdate = true;
-                target.encodeBegin(_facesContext);
+                target.encodeAll(_facesContext);
+                writer.endUpdate();
             } catch (IOException ex) {
                 Log log = LogFactory.getLog(PartialViewContextImpl.class);
                 if (log.isErrorEnabled()) {
