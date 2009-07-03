@@ -1175,6 +1175,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             PartialViewContext pvc = context.getPartialViewContext();
             // Perform partial processing by calling PartialViewContext.processPartial(javax.faces.event.PhaseId) with PhaseId.UPDATE_MODEL_VALUES if:
             //   * PartialViewContext.isPartialRequest() returns true and we don't have a request to process all components in the view (PartialViewContext.isExecuteAll() returns false)
+            //section 13.4.2 from the  JSF2  spec also see https://issues.apache.org/jira/browse/MYFACES-2119
             if (pvc.isPartialRequest() && !pvc.isExecuteAll())
             {
                 pvc.processPartial(PhaseId.APPLY_REQUEST_VALUES);
@@ -1195,7 +1196,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         {
             PartialViewContext pvc = context.getPartialViewContext();
             // Perform partial processing by calling PartialViewContext.processPartial(javax.faces.event.PhaseId) with PhaseId.UPDATE_MODEL_VALUES if:
-            //   * PartialViewContext.isPartialRequest() returns true and we don't have a request to process all components in the view (PartialViewContext.isExecuteAll() returns false)
+            // PartialViewContext.isPartialRequest() returns true and we don't have a request to process all components in the view (PartialViewContext.isExecuteAll() returns false)
+            //section 13.4.2 from the  JSF2  spec also see https://issues.apache.org/jira/browse/MYFACES-2119
             if (pvc.isPartialRequest() && !pvc.isExecuteAll())
             {
                 pvc.processPartial(PhaseId.PROCESS_VALIDATIONS);
@@ -1217,6 +1219,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             PartialViewContext pvc = context.getPartialViewContext();
             // Perform partial processing by calling PartialViewContext.processPartial(javax.faces.event.PhaseId) with PhaseId.UPDATE_MODEL_VALUES if:
             //   * PartialViewContext.isPartialRequest() returns true and we don't have a request to process all components in the view (PartialViewContext.isExecuteAll() returns false)
+            //section 13.4.2 from the JSF2 spec also see https://issues.apache.org/jira/browse/MYFACES-2119
             if (pvc.isPartialRequest() && !pvc.isExecuteAll())
             {
                 pvc.processPartial(PhaseId.UPDATE_MODEL_VALUES);
