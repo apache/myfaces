@@ -84,24 +84,6 @@ if ('undefined' == typeof jsf.ajax || null == jsf.ajax) {
     }
 
     /**
-     * RI compatibility method
-     * TODO make sure this method also occurrs in the specs
-     * otherwise simply pull it
-     */
-    jsf.ajax.sendError = function sendError(/*Object*/request, /*Object*/ context, /*String*/ name, /*String*/ serverErrorName, /*String*/ serverErrorMessage) {
-        jsf.ajax._impl.sendError(request, context, name, serverErrorName, serverErrorMessage);
-    };
-
-    /**
-     * RI compatibility method
-     * TODO make sure this method also occurrs in the specs
-     * otherwise simply pull it
-     */
-    jsf.ajax.sendEvent = function sendEvent(/*Object*/request, /*Object*/ context, /*event name*/ name) {
-        jsf.ajax._impl.sendEvent(request, context, name);
-    }
-
-    /**
      * processes the ajax response if the ajax request completes successfully
      * @param request the ajax request!
      * @param context the ajax context!

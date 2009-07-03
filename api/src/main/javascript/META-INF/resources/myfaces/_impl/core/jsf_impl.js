@@ -37,21 +37,21 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
     /*CONSTANTS*/
 
     /*internal identifiers for options*/
-    myfaces._impl.core._jsfImpl.prototype._OPT_IDENT_ALL = "@all";
-    myfaces._impl.core._jsfImpl.prototype._OPT_IDENT_NONE = "@none";
-    myfaces._impl.core._jsfImpl.prototype._OPT_IDENT_THIS = "@this";
-    myfaces._impl.core._jsfImpl.prototype._OPT_IDENT_FORM = "@form";
+    myfaces._impl.core._jsfImpl.prototype._OPT_IDENT_ALL    = "@all";
+    myfaces._impl.core._jsfImpl.prototype._OPT_IDENT_NONE   = "@none";
+    myfaces._impl.core._jsfImpl.prototype._OPT_IDENT_THIS   = "@this";
+    myfaces._impl.core._jsfImpl.prototype._OPT_IDENT_FORM   = "@form";
 
     /*
      * [STATIC] constants
      */
 
-    myfaces._impl.core._jsfImpl._PROP_PARTIAL_SOURCE = "javax.faces.source";
-    myfaces._impl.core._jsfImpl._PROP_VIEWSTATE = "javax.faces.ViewState";
-    myfaces._impl.core._jsfImpl._PROP_AJAX = "javax.faces.partial.ajax";
-    myfaces._impl.core._jsfImpl._PROP_EXECUTE = "javax.faces.partial.execute";
-    myfaces._impl.core._jsfImpl._PROP_RENDER = "javax.faces.partial.render";
-    myfaces._impl.core._jsfImpl._PROP_EVENT = "javax.faces.partial.event";
+    myfaces._impl.core._jsfImpl._PROP_PARTIAL_SOURCE    = "javax.faces.source";
+    myfaces._impl.core._jsfImpl._PROP_VIEWSTATE         = "javax.faces.ViewState";
+    myfaces._impl.core._jsfImpl._PROP_AJAX              = "javax.faces.partial.ajax";
+    myfaces._impl.core._jsfImpl._PROP_EXECUTE           = "javax.faces.partial.execute";
+    myfaces._impl.core._jsfImpl._PROP_RENDER            = "javax.faces.partial.render";
+    myfaces._impl.core._jsfImpl._PROP_EVENT             = "javax.faces.partial.event";
 
     /* message types */
     myfaces._impl.core._jsfImpl._MSG_TYPE_ERROR       = "error";
@@ -189,7 +189,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
          * onevent and onerror
          */
         var ajaxContext = {};
-        ajaxContext.source = element;
+        ajaxContext.source  = element;
         ajaxContext.onevent = options.onevent;
         ajaxContext.onerror = options.onerror;
 
@@ -237,6 +237,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
         } else {
             passThroughArguments[myfaces._impl.core._jsfImpl._PROP_EXECUTE] = element.id;
         }
+
         if (JSF2Utils.exists(passThroughArguments, "render")) {
             var renderString = JSF2Utils.arrayToString(passThroughArguments.render, ' ');
             var renderNone = renderString.indexOf(this._OPT_IDENT_NONE) != -1;
@@ -258,6 +259,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
             ajaxContext.myfaces = passThroughArguments.myfaces;
             delete passThroughArguments.myfaces;
         }
+
         this._requestHandler._ajaxRequest(element, sourceForm, ajaxContext, passThroughArguments);
 
     };
@@ -298,6 +300,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
         eventData.name = name;
         eventData.serverErrorName = serverErrorName;
         eventData.serverErrorMessage = serverErrorMessage;
+
         try {
             eventData.source = context.source;
             eventData.responseXML = request.responseXML;
@@ -311,11 +314,11 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
         if (myfaces._impl._util._LangUtils.exists(context, "onerror")) {
             context.onerror(eventData);
         }
+
         /*now we serve the queue as well*/
         this._errorListenerQueue.broadcastEvent(eventData);
         
         if(jsf.getProjectStage() === "Development") {
-            
             var defaultErrorOutput = myfaces._impl._util._Utils.getGlobalConfig("defaultErrorOutput",alert);
             var finalMessage = [];
 
@@ -324,14 +327,11 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
             finalMessage.push ( ('undefined' != typeof serverErrorMessage && null != serverErrorMessage)? serverErrorMessage:"");
 
             defaultErrorOutput(finalMessage.join("-"));
-            
         }
     };
 
     /**
-     * RI compatibility method
-     * TODO make sure this method also occurrs in the specs
-     * otherwise simply pull it
+     * sends an event 
      */
     myfaces._impl.core._jsfImpl.prototype.sendEvent = function sendEvent(/*Object*/request, /*Object*/ context, /*event name*/ name) {
         var eventData = {};
@@ -339,7 +339,9 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
 
         eventData.name = name;
         eventData.source = context.source;
+
         if (name !== myfaces._impl.core._jsfImpl._AJAX_STAGE_BEGIN) {
+
             try {
                 eventData.responseXML = request.responseXML;
                 eventData.responseText = request.responseText;
@@ -350,6 +352,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
                 //client errors are not swallowed 
                 throw e;
             }
+
         }
 
         /**/
@@ -357,6 +360,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
             /*calling null to preserve the original scope*/
             context.onevent.call(null, eventData);
         }
+
         /*now we serve the queue as well*/
         this._eventListenerQueue.broadcastEvent(eventData);
     }
@@ -426,6 +430,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
             //here
             if('undefined' != typeof retVal && retVal === false) return;
         }
+
    }
     
     // singleton
