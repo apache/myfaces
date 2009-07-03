@@ -59,14 +59,21 @@ class PartialVisitIdProxy implements Set<String>{
         return _inverseCache;
     }
 
-
+    /**
+     * Partial visit id proxy constructor
+     * @param separatorChar the separator char for the reverse indexing
+     * ie: ':' means view1:view2:component the ':' will be used for splitting
+     * which is the standard char for now according to the specs
+     *
+     * @param ids a set of ids client ids to be processed
+     */
     public PartialVisitIdProxy(char separatorChar, Collection<String> ids) {
         _ids = new HashSet<String>(ids);
         _separatorChar = separatorChar;
         initCaches();
     }
 
-    private void removeFromCache(String clientId) {
+    private void removeFromIndex(String clientId) {
         char[] ids = clientId.toCharArray();
         
         StringBuilder finalContainer = new StringBuilder(clientId.length());
@@ -171,7 +178,7 @@ class PartialVisitIdProxy implements Set<String>{
         if(!_ids.remove((String)o)) {
             return false;
         }
-        removeFromCache((String)o);
+        removeFromIndex((String)o);
         return true;
     }
 
@@ -240,7 +247,7 @@ class PartialVisitIdProxy implements Set<String>{
         public void remove() {
            
             _delegate.remove();
-            removeFromCache(_currentValue);
+            removeFromIndex(_currentValue);
         }
 
     }
