@@ -71,6 +71,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.ApplicationFactoryImpl;
 import org.apache.myfaces.application.ApplicationImpl;
+import org.apache.myfaces.component.visit.VisitContextFactoryImpl;
 import org.apache.myfaces.config.annotation.AnnotationConfigurator;
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
@@ -124,6 +125,7 @@ public class FacesConfigurator
     private static final String DEFAULT_LIFECYCLE_FACTORY = LifecycleFactoryImpl.class.getName();
     private static final String DEFAULT_RENDER_KIT_FACTORY = RenderKitFactoryImpl.class.getName();
     private static final String DEFAULT_PARTIAL_VIEW_CONTEXT_FACTORY = PartialViewContextFactoryImpl.class.getName();
+    private static final String DEFAULT_VISIT_CONTEXT_FACTORY = VisitContextFactoryImpl.class.getName();
     private static final String DEFAULT_FACES_CONFIG = "/WEB-INF/faces-config.xml";
 
     private static final Set<String> FACTORY_NAMES = new HashSet<String>();
@@ -133,6 +135,7 @@ public class FacesConfigurator
         FACTORY_NAMES.add(FactoryFinder.LIFECYCLE_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.RENDER_KIT_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY);
+        FACTORY_NAMES.add(FactoryFinder.VISIT_CONTEXT_FACTORY);
     }
 
     private final ExternalContext _externalContext;
@@ -628,6 +631,9 @@ public class FacesConfigurator
                     } else if (factoryName.equals(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY))
                     {
                         getDispenser().feedPartialViewContextFactory(className);
+                    } else if(factoryName.equals(FactoryFinder.VISIT_CONTEXT_FACTORY)) 
+                    {
+                        getDispenser().feedVisitContextFactory(className);
                     } else
                     {
                         throw new IllegalStateException("Unexpected factory name " + factoryName);
@@ -1494,6 +1500,8 @@ public class FacesConfigurator
                      DEFAULT_RENDER_KIT_FACTORY);
         setFactories(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY, dispenser.getPartialViewContextFactoryIterator(),
                      DEFAULT_PARTIAL_VIEW_CONTEXT_FACTORY);
+        setFactories(FactoryFinder.VISIT_CONTEXT_FACTORY, dispenser.getVisitContextFactoryIterator(),
+                     DEFAULT_VISIT_CONTEXT_FACTORY);
     }
 
     private void setFactories(String factoryName, Collection<String> factories, String defaultFactory)

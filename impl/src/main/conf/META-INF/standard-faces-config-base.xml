@@ -52,6 +52,7 @@
       <partial-view-context-factory>org.apache.myfaces.context.PartialViewContextFactoryImpl</partial-view-context-factory>
       <lifecycle-factory>org.apache.myfaces.lifecycle.LifecycleFactoryImpl</lifecycle-factory>
       <render-kit-factory>org.apache.myfaces.renderkit.RenderKitFactoryImpl</render-kit-factory>
+      <visit-context-factory>org.apache.myfaces.component.visit.VisitContextFactoryImpl</visit-context-factory>
    </factory>
    
    <!-- standard converters by class -->

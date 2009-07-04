@@ -34,6 +34,10 @@ public class VisitContextFactoryImpl extends VisitContextFactory {
 
     VisitContextFactory _wrapped = null;
 
+    public VisitContextFactoryImpl()
+    {
+    }
+    
     public VisitContextFactoryImpl(VisitContextFactory wrapped) {
         _wrapped = wrapped;
     }
