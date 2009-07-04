@@ -942,14 +942,14 @@ public class UIInput extends UIOutput implements EditableValueHolder
             if (_validatorList != null)
             {
                 ((StateHolder)_validatorList).restoreState(facesContext,
-                        ((_AttachedDeltaWrapper) values[0]).getWrappedStateObject());
+                        ((_AttachedDeltaWrapper) values[3]).getWrappedStateObject());
             }
         }
-        else if (values[0] != null || !initialStateMarked())
+        else if (values[3] != null || !initialStateMarked())
         {
             //Full
             _validatorList = (_DeltaList<Validator>)
-                restoreAttachedState(facesContext,values[0]);
+                restoreAttachedState(facesContext,values[3]);
         }
     }
     
