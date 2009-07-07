@@ -39,4 +39,8 @@ public abstract class Flash implements Map<String, Object>
     public abstract void setKeepMessages(boolean newValue);
     
     public abstract void setRedirect(boolean newValue);
+    
+    public abstract void doPrePhaseActions(FacesContext context);
+    
+    public abstract void doPostPhaseActions(FacesContext context);
 }

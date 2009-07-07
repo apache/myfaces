@@ -21,6 +21,7 @@ package org.apache.myfaces.el.unified;
 import javax.el.CompositeELResolver;
 
 import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.el.FlashELResolver;
 import org.apache.myfaces.el.unified.resolver.ManagedBeanResolver;
 import org.apache.myfaces.el.unified.resolver.ResourceBundleResolver;
 import org.apache.myfaces.el.unified.resolver.ResourceResolver;
@@ -43,6 +44,9 @@ public class ResolverBuilderForJSP extends ResolverBuilderBase implements ELReso
     public void build(CompositeELResolver elResolver)
     {
         elResolver.add(ImplicitObjectResolver.makeResolverForJSP());
+        //Flash object is instanceof Map, so it is necessary to resolve
+        //before MapELResolver. Better to put this one before
+        elResolver.add(new FlashELResolver());        
         elResolver.add(new ManagedBeanResolver());
         elResolver.add(new ResourceBundleResolver());
         elResolver.add(new ResourceResolver());

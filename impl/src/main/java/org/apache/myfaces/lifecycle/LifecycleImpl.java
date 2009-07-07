@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 import javax.faces.lifecycle.Lifecycle;
@@ -95,6 +96,7 @@ public class LifecycleImpl extends Lifecycle
         }
 
         PhaseId currentPhaseId = executor.getPhase();
+        Flash flash = context.getExternalContext().getFlash();
 
         try
         {
@@ -105,6 +107,8 @@ public class LifecycleImpl extends Lifecycle
              * phase as the first instruction at the beginning of each phase
              */
             context.setCurrentPhaseId(currentPhaseId);
+            
+            flash.doPrePhaseActions(context);
 
             phaseListenerMgr.informPhaseListenersBefore(currentPhaseId);
 
@@ -126,6 +130,8 @@ public class LifecycleImpl extends Lifecycle
         finally
         {
             phaseListenerMgr.informPhaseListenersAfter(currentPhaseId);
+            
+            flash.doPostPhaseActions(context);
         }
 
         if (isResponseComplete(context, currentPhaseId, false) || shouldRenderResponse(context, currentPhaseId, false))
@@ -154,9 +160,13 @@ public class LifecycleImpl extends Lifecycle
             log.trace("entering " + renderExecutor.getPhase() + " in " + LifecycleImpl.class.getName());
 
         PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, facesContext, getPhaseListeners());
-
+        Flash flash = facesContext.getExternalContext().getFlash();
+        
         try
         {
+            facesContext.setCurrentPhaseId(renderExecutor.getPhase());
+            
+            flash.doPrePhaseActions(facesContext);
             phaseListenerMgr.informPhaseListenersBefore(renderExecutor.getPhase());
             // also possible that one of the listeners completed the response
             if (isResponseComplete(facesContext, renderExecutor.getPhase(), true))
@@ -169,6 +179,7 @@ public class LifecycleImpl extends Lifecycle
         finally
         {
             phaseListenerMgr.informPhaseListenersAfter(renderExecutor.getPhase());
+            flash.doPostPhaseActions(facesContext);
         }
 
         if (log.isTraceEnabled())

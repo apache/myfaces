@@ -38,6 +38,7 @@ import java.util.Set;
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -49,6 +50,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.myfaces.context.ReleaseableExternalContext;
+import org.apache.myfaces.context.flash.FlashImpl;
 import org.apache.myfaces.util.EnumerationIterator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -894,5 +896,13 @@ public final class ServletExternalContextImpl extends ExternalContext implements
         }
 
         return newUrl.toString();
+    }
+    
+    /**
+     * @since 2.0
+     */
+    public Flash getFlash()
+    {
+        return FlashImpl.getCurrentInstance(this);
     }
 }

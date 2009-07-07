@@ -91,7 +91,9 @@ public class NavigationHandlerImpl
                 ExternalContext externalContext = facesContext.getExternalContext();
                 ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
                 String redirectPath = viewHandler.getActionURL(facesContext, navigationCase.getToViewId());
-
+                
+                // JSF 2.0 Spec call Flash.setRedirect(true) to notify Flash scope and take proper actions
+                externalContext.getFlash().setRedirect(true);
                 try
                 {
                     externalContext.redirect(externalContext.encodeActionURL(redirectPath));

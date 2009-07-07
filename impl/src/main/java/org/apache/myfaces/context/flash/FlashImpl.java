@@ -1,0 +1,671 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.apache.myfaces.context.flash;
+
+import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
+
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
+import javax.faces.event.PhaseId;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
+
+/**
+ * Implementation of Flash object
+ * 
+ * 
+ * @author Leonardo Uribe (latest modification by $Author$)
+ * @version $Revision$ $Date$
+ */
+public class FlashImpl extends Flash
+{
+    /**
+     * Key on app map to keep current instance
+     */
+    static protected final String FLASH_INSTANCE = FlashImpl.class.getName()
+            + ".INSTANCE";
+
+    /**
+     * Key used to check if there is the current request will be or was redirected
+     */
+    static protected final String FLASH_REDIRECT = FlashImpl.class.getName()
+            + ".REDIRECT";
+    
+    /**
+     * Key used to check if this request should keep messages (like tomahawk sandbox RedirectTracker. 
+     * Used when post-redirect-get pattern is used)
+     */
+    static protected final String FLASH_KEEP_MESSAGES = FlashImpl.class.getName()
+            + ".KEEP_MESSAGES";
+
+    /**
+     * Session map prefix to flash maps
+     */
+    static protected final String FLASH_SCOPE_CACHE = FlashImpl.class.getName()
+            + ".SCOPE";
+
+    static protected final String FLASH_CURRENT_MAP_CACHE = FlashImpl.class.getName()
+            + ".CURRENTMAP.CACHE";
+    
+    static protected final String FLASH_CURRENT_MAP_KEY = FlashImpl.class.getName()
+            + ".CURRENTMAP.KEY";
+
+    static protected final String FLASH_POSTBACK_MAP_CACHE = FlashImpl.class.getName()
+            + ".POSTBACKMAP.CACHE";
+
+    static protected final String FLASH_POSTBACK_MAP_KEY = FlashImpl.class.getName()
+            + ".POSTBACKMAP.KEY";
+    
+    static private final char SEPARATOR_CHAR = '.';
+
+    // the current token value
+    private final AtomicLong _count;
+
+    public FlashImpl()
+    {
+        _count = new AtomicLong(_getSeed());
+    }
+
+    /**
+     * Returns a cryptographically secure random number to use as the _count seed
+     */
+    static long _getSeed()
+    {
+        SecureRandom rng;
+        try
+        {
+            // try SHA1 first
+            rng = SecureRandom.getInstance("SHA1PRNG");
+        }
+        catch (NoSuchAlgorithmException e)
+        {
+            // SHA1 not present, so try the default (which could potentially not be
+            // cryptographically secure)
+            rng = new SecureRandom();
+        }
+
+        // use 48 bits for strength and fill them in
+        byte[] randomBytes = new byte[6];
+        rng.nextBytes(randomBytes);
+
+        // convert to a long
+        return new BigInteger(randomBytes).longValue();
+    }
+
+    /**
+     * Get the next token to be assigned to this request
+     * 
+     * @return
+     */
+    String _getNextToken()
+    {
+        // atomically increment the value
+        long nextToken = _count.incrementAndGet();
+
+        // convert using base 36 because it is a fast efficient subset of base-64
+        return Long.toString(nextToken, 36);
+    }
+
+    /**
+     * Return a Flash instance from the application map
+     * 
+     * @param context
+     * @return
+     */
+    public static Flash getCurrentInstance(ExternalContext context)
+    {
+        Map<String, Object> applicationMap = context.getApplicationMap();
+        Flash flash = (Flash) applicationMap.get(FLASH_INSTANCE);
+
+        synchronized (applicationMap)
+        {
+            if (flash == null)
+            {
+                flash = new FlashImpl();
+                context.getApplicationMap().put(FLASH_INSTANCE, flash);
+            }
+        }
+        return flash;
+    }
+
+    /**
+     * Return a wrapper from the session map used to implement flash maps
+     * for more information see SubKeyMap doc
+     */
+    @SuppressWarnings("unchecked")
+    Map<String, Object> _getMapFromSession(FacesContext context,
+            String token, boolean createIfNeeded)
+    {
+        ExternalContext external = context.getExternalContext();
+        Object session = external.getSession(true);
+
+        Map<String, Object> map = null;
+
+        // Synchronize on the session object to ensure that
+        // we don't ever create two different caches
+        synchronized (session)
+        {
+            map = (Map<String, Object>) external.getSessionMap().get(token);
+            if ((map == null) && createIfNeeded)
+            {
+                map = new SubKeyMap<Object>(context.getExternalContext()
+                        .getSessionMap(), token);
+            }
+        }
+
+        return map;
+    }
+
+    /**
+     * Return the flash map created on this traversal. This one will be sent
+     * on next request, so it will be retrieved as postback map of the next
+     * request.
+     * 
+     * Note it is supposed that FLASH_CURRENT_MAP_KEY is initialized before
+     * restore view phase (see doPrePhaseActions() for details).
+     * 
+     * @param context
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    Map<String, Object> getCurrentRequestMap(FacesContext context)
+    {
+        Map<String, Object> requestMap = context.getExternalContext().getRequestMap();
+        Map<String, Object> map = (Map<String, Object>) requestMap.get(FLASH_CURRENT_MAP_CACHE);
+        if (map == null)
+        {
+            String token = (String) requestMap.get(FLASH_CURRENT_MAP_KEY);
+            String fullToken = FLASH_SCOPE_CACHE + SEPARATOR_CHAR + token;
+            map =  _getMapFromSession(context, fullToken, true);
+            requestMap.put(FLASH_CURRENT_MAP_CACHE, map);
+        }
+        return map;
+    }
+    
+    @SuppressWarnings("unchecked")
+    Map<String, Object> getPostbackRequestMap(FacesContext context)
+    {
+        Map<String, Object> requestMap = context.getExternalContext().getRequestMap();
+        Map<String, Object> map = (Map<String, Object>) requestMap.get(FLASH_POSTBACK_MAP_CACHE);
+        if (map == null)
+        {
+            String token = (String) requestMap.get(FLASH_POSTBACK_MAP_KEY);
+            if (token == null && isRedirect())
+            {
+                // In post-redirect-get, request values are reset, so we need
+                // to get the postback key again.
+                token = _getPostbackMapKey(context.getExternalContext());
+            }
+            String fullToken = FLASH_SCOPE_CACHE + SEPARATOR_CHAR + token;
+            map =  _getMapFromSession(context, fullToken, true);
+            requestMap.put(FLASH_POSTBACK_MAP_CACHE, map);
+        }
+        return map;
+    }
+    
+    /**
+     * Get the proper map according to the current phase:
+     * 
+     * Normal case:
+     * 
+     * - First request, restore view phase (create a new one): current map n
+     * - First request, execute phase: Skipped
+     * - First request, render  phase: current map n
+     * 
+     *   Current map n saved and put as postback map n
+     * 
+     * - Second request, execute phase: postback map n
+     * - Second request, render  phase: current map n+1
+     * 
+     * Post Redirect Get case: Redirect is triggered by a call to setRedirect(true) from NavigationHandler
+     * or earlier using c:set tag.
+     * 
+     * - First request, restore view phase (create a new one): current map n
+     * - First request, execute phase: Skipped
+     * - First request, render  phase: current map n
+     * 
+     *   Current map n saved and put as postback map n
+     * 
+     * POST
+     * 
+     * - Second request, execute phase: postback map n
+     * 
+     * REDIRECT
+     * 
+     * - NavigationHandler do the redirect, requestMap data lost, called Flash.setRedirect(true)
+     * 
+     *   Current map n saved and put as postback map n
+     * 
+     * GET
+     * 
+     * - Third  request, restore view phase (create a new one): current map n+1 
+     *   (isRedirect() should return true as javadoc says)
+     * - Third  request, execute phase: skipped
+     * - Third  request, render  phase: current map n+1
+     * 
+     * In this way proper behavior is preserved even in the case of redirect, since the GET part is handled as
+     * the "render" part of the current traversal, keeping the semantic of flash object.
+     * 
+     * @return
+     */
+    Map<String, Object> getCurrentPhaseMap()
+    {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (PhaseId.RENDER_RESPONSE.equals(facesContext.getCurrentPhaseId()) ||
+            !facesContext.isPostback() || isRedirect())
+        {
+            return getCurrentRequestMap(facesContext);
+        }
+        else
+        {
+            return getPostbackRequestMap(facesContext);
+        }
+    }
+    
+    void _removeAllChildren(FacesContext facesContext)
+    {
+        Map<String, Object> map = getPostbackRequestMap(facesContext);
+        
+        // Clear everything - note that because of naming conventions,
+        // this will in fact automatically recurse through all children
+        // grandchildren etc. - which is kind of a design flaw of SubKeyMap,
+        // but one we're relying on
+        map.clear();
+    }
+
+    /**
+     * 
+     */
+    @Override
+    public void doPrePhaseActions(FacesContext facesContext)
+    {
+        Map<String, Object> requestMap = facesContext.getExternalContext().getRequestMap();
+        
+        if (PhaseId.RESTORE_VIEW.equals(facesContext.getCurrentPhaseId()))
+        {
+            // Generate token and put on requestMap
+            // It is necessary to set this token always, because on the next request
+            // it should be possible to change postback map.
+            String currentToken = _getNextToken();
+            requestMap.put(FLASH_CURRENT_MAP_KEY, currentToken);
+            
+            if (facesContext.isPostback())
+            {
+                //Retore token
+                String previousToken = _getPostbackMapKey(facesContext.getExternalContext());
+                
+                if (previousToken != null)
+                {
+                    requestMap.put(FLASH_POSTBACK_MAP_KEY, previousToken);
+                }
+            }
+        }
+        
+        //
+        if (PhaseId.RENDER_RESPONSE.equals(facesContext.getCurrentPhaseId()))
+        {
+            // Put current map on next previous map
+            // but only if this request is not a redirect
+            if (!isRedirect())
+            {
+                _addPostbackMapKey(facesContext.getExternalContext());
+            }
+        }
+    }
+    
+    @Override
+    public void doPostPhaseActions(FacesContext facesContext)
+    {
+        // TODO Auto-generated method stub
+        if (PhaseId.RENDER_RESPONSE.equals(facesContext.getCurrentPhaseId()))
+        {
+            //Remove previous flash from session
+            Map<String, Object> requestMap = facesContext.getExternalContext().getRequestMap();
+            String token = (String) requestMap.get(FLASH_POSTBACK_MAP_KEY);
+            
+            if (token != null)
+            {
+                _removeAllChildren(facesContext);
+            }
+        }
+    }
+    
+    //private void _addPreviousToken
+    
+    /**
+     * Retrieve the postback map key
+     */
+    String _getPostbackMapKey(ExternalContext externalContext)
+    {
+        String token = null;
+        Object response = externalContext.getResponse();
+        if (response instanceof HttpServletResponse)
+        {
+            //Use a cookie
+            Cookie cookie = (Cookie) externalContext.getRequestCookieMap().get(FLASH_POSTBACK_MAP_KEY);
+            if (cookie != null)
+            {
+                token = cookie.getValue();
+            }
+        }
+        else
+        {
+            //Use HttpSession or PortletSession object
+            Map<String, Object> sessionMap = externalContext.getSessionMap();
+            token = (String) sessionMap.get(FLASH_POSTBACK_MAP_KEY);
+        }
+        return token;
+    }
+    
+    /**
+     * Take the current map key and store it as a postback key for the next request.
+     * 
+     * @param externalContext
+     */
+    void _addPostbackMapKey(ExternalContext externalContext)
+    {
+        Object response = externalContext.getResponse();
+        String token = (String) externalContext.getRequestMap().get(FLASH_CURRENT_MAP_KEY);
+        if (response instanceof HttpServletResponse)
+        {
+            Cookie cookie = new Cookie(FLASH_POSTBACK_MAP_KEY,token);
+            cookie.setMaxAge(-1);
+            ((HttpServletResponse)response).addCookie(cookie);
+        }
+        else
+        {
+            //Use HttpSession or PortletSession object
+            Map<String, Object> sessionMap = externalContext.getSessionMap();
+            sessionMap.put(FLASH_POSTBACK_MAP_KEY, token);
+        }
+    }
+    
+    
+    /**
+     * For check if there is a redirect we to take into accout this points:
+     * 
+     * 1. isRedirect() could be accessed many times during the same
+     *    request.
+     * 2. According to Post-Redirect-Get pattern, we cannot 
+     * ensure request scope values are preserved.
+     * 
+     */
+    @Override
+    public boolean isRedirect()
+    {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = facesContext.getExternalContext();
+        Map<String, Object> requestMap = externalContext.getRequestMap();
+        Boolean redirect = (Boolean) requestMap.get(FLASH_REDIRECT);
+        if (redirect == null)
+        {
+            Object response = externalContext.getResponse();
+            if (response instanceof HttpServletResponse)
+            {
+                // Request values are lost after a redirect. We can create a 
+                // temporal cookie to pass the params between redirect calls.
+                // It is better than use HttpSession object, because this cookie
+                // is never sent by the server.
+                Cookie cookie = (Cookie) externalContext.getRequestCookieMap()
+                        .get(FLASH_REDIRECT);
+                if (cookie != null)
+                {
+                    redirect = Boolean.TRUE;
+                    HttpServletResponse httpResponse = (HttpServletResponse) response;
+                    // A redirect happened, so it is safe to remove the cookie, setting
+                    // the maxAge to 0 seconds. The effect is we passed FLASH_REDIRECT param 
+                    // to this request object
+                    cookie.setMaxAge(0);
+                    cookie.setValue(null);
+                    httpResponse.addCookie(cookie);
+                    requestMap.put(FLASH_REDIRECT, redirect);
+                }
+                else
+                {
+                    redirect = Boolean.FALSE;
+                }
+            }
+            else
+            {
+                // Note that on portlet world we can't create cookies,
+                // so we are forced to use the session map. Anyway, 
+                // according to the Bridge implementation(for example see 
+                // org.apache.myfaces.portlet.faces.bridge.BridgeImpl)
+                // session object is created at start faces request
+                Map<String, Object> sessionMap = externalContext
+                        .getSessionMap();
+                redirect = (Boolean) sessionMap.get(FLASH_REDIRECT);
+                if (redirect != null)
+                {
+                    sessionMap.remove(FLASH_REDIRECT);
+                    requestMap.put(FLASH_REDIRECT, redirect);
+                }
+                else
+                {
+                    redirect = Boolean.FALSE;
+                }
+            }
+        }
+        return redirect;
+    }
+
+    @Override
+    public void setRedirect(boolean redirect)
+    {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = facesContext.getExternalContext();
+        Map<String, Object> requestMap = externalContext.getRequestMap();
+        
+        Boolean previousRedirect = (Boolean) requestMap.get(FLASH_REDIRECT);
+        previousRedirect = (previousRedirect == null) ? Boolean.FALSE : previousRedirect;
+        
+        if (!previousRedirect.booleanValue() && redirect)
+        {
+            // This request contains a redirect. This condition is in general 
+            // triggered by a NavigationHandler. After a redirect all request scope
+            // values get lost, so in order to preserve this value we need to
+            // pass it between request. One strategy is use a cookie that is never sent
+            // to the client. Other alternative is use the session map.
+            Object response = externalContext.getResponse();
+            if (response instanceof HttpServletResponse)
+            {
+                HttpServletResponse servletResponse = (HttpServletResponse) response;
+                Cookie cookie = new Cookie(FLASH_REDIRECT,"true");
+                cookie.setMaxAge(-1);
+                servletResponse.addCookie(cookie);
+            }
+            else
+            {
+                externalContext.getSessionMap().put(FLASH_REDIRECT, redirect);
+            }
+        }
+        requestMap.put(FLASH_REDIRECT, redirect);
+    }
+
+    /**
+     * In few words take a value from request scope map and put it on current request map,
+     * so it is visible on the next request.
+     */
+    @Override
+    public void keep(String key)
+    {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Map<String, Object> requestMap = facesContext.getExternalContext().getRequestMap();
+        Object value = requestMap.get(key);
+        getCurrentRequestMap(facesContext).put(key, value);
+    }
+
+    /**
+     * This is just an alias for request scope map.
+     */
+    @Override
+    public void putNow(String key, Object value)
+    {
+        FacesContext.getCurrentInstance().getExternalContext().getRequestMap().put(key, value);
+    }
+
+    @Override
+    public boolean isKeepMessages()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+    
+    @Override
+    public void setKeepMessages(boolean newValue)
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void clear()
+    {
+        getCurrentPhaseMap().clear();
+    }
+
+    @Override
+    public boolean containsKey(Object key)
+    {
+        return getCurrentPhaseMap().containsKey(key);
+    }
+
+    @Override
+    public boolean containsValue(Object value)
+    {
+        return getCurrentPhaseMap().containsValue(value);
+    }
+
+    @Override
+    public Set<java.util.Map.Entry<String, Object>> entrySet()
+    {
+        return getCurrentPhaseMap().entrySet();
+    }
+
+    @Override
+    public Object get(Object key)
+    {
+        if (key == null)
+            return null;
+        
+        if ("keepMessages".equals(key))
+        {
+            return isKeepMessages();
+        }
+        else if ("redirect".equals(key))
+        {
+            return isRedirect();
+        }
+        
+        FacesContext context = FacesContext.getCurrentInstance();
+        Map<String, Object> postbackMap = getPostbackRequestMap(context);
+        Object returnValue = null;
+        
+        if (postbackMap != null)
+        {
+            returnValue = postbackMap.get(key);
+        }
+         
+        return returnValue;
+    }
+
+    @Override
+    public boolean isEmpty()
+    {
+        return getCurrentPhaseMap().isEmpty();
+    }
+
+    @Override
+    public Set<String> keySet()
+    {
+        return getCurrentPhaseMap().keySet();
+    }
+
+    @Override
+    public Object put(String key, Object value)
+    {
+        if (key == null)
+            return null;
+        
+        if ("keepMessages".equals(key))
+        {
+            Boolean booleanValue = convertToBoolean(value);
+            this.setKeepMessages(booleanValue);
+            return booleanValue;
+        }
+        else if ("redirect".equals(key))
+        {
+            Boolean booleanValue = convertToBoolean(value);
+            this.setRedirect(booleanValue);
+            return booleanValue;
+        }
+        else
+        {
+            Object returnValue = getCurrentPhaseMap().put(key, value); 
+            return returnValue;
+        }
+    }
+
+    private Boolean convertToBoolean(Object value)
+    {
+        Boolean booleanValue;
+        if (value instanceof Boolean)
+        {
+            booleanValue = (Boolean) value;
+        }
+        else
+        {
+            booleanValue = Boolean.parseBoolean(value.toString());
+        }
+        return booleanValue;
+    }
+
+    @Override
+    public void putAll(Map<? extends String, ? extends Object> m)
+    {
+        getCurrentPhaseMap().putAll(m);
+    }
+
+    @Override
+    public Object remove(Object key)
+    {
+        return getCurrentPhaseMap().remove(key);
+    }
+
+    @Override
+    public int size()
+    {
+        return getCurrentPhaseMap().size();
+    }
+
+    @Override
+    public Collection<Object> values()
+    {
+        return getCurrentPhaseMap().values();
+    }
+    
+}

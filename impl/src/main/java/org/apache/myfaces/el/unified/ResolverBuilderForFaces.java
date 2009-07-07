@@ -18,19 +18,20 @@
  */
 package org.apache.myfaces.el.unified;
 
-import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.el.unified.resolver.ManagedBeanResolver;
-import org.apache.myfaces.el.unified.resolver.ResourceBundleResolver;
-import org.apache.myfaces.el.unified.resolver.ScopedAttributeResolver;
-import org.apache.myfaces.el.unified.resolver.implicitobject.ImplicitObjectResolver;
-import org.apache.myfaces.el.unified.resolver.ResourceResolver;
-
 import javax.el.ArrayELResolver;
 import javax.el.BeanELResolver;
 import javax.el.CompositeELResolver;
 import javax.el.ListELResolver;
 import javax.el.MapELResolver;
 import javax.el.ResourceBundleELResolver;
+
+import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.el.FlashELResolver;
+import org.apache.myfaces.el.unified.resolver.ManagedBeanResolver;
+import org.apache.myfaces.el.unified.resolver.ResourceBundleResolver;
+import org.apache.myfaces.el.unified.resolver.ResourceResolver;
+import org.apache.myfaces.el.unified.resolver.ScopedAttributeResolver;
+import org.apache.myfaces.el.unified.resolver.implicitobject.ImplicitObjectResolver;
 
 /**
  * Create the el resolver for faces. see 1.2 spec section 5.6.2
@@ -52,6 +53,9 @@ public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELRe
 
         addFromRuntimeConfig(elResolver);
 
+        //Flash object is instanceof Map, so it is necessary to resolve
+        //before MapELResolver. Better to put this one before
+        elResolver.add(new FlashELResolver());
         elResolver.add(new ManagedBeanResolver());
         elResolver.add(new ResourceBundleELResolver());
         elResolver.add(new ResourceBundleResolver());
