@@ -137,6 +137,8 @@ public class LifecycleImpl
         PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, facesContext, getPhaseListeners());
 
         try {
+            facesContext.setCurrentPhaseId(renderExecutor.getPhase());
+            
             phaseListenerMgr.informPhaseListenersBefore(renderExecutor.getPhase());
             // also possible that one of the listeners completed the response
             if(isResponseComplete(facesContext, renderExecutor.getPhase(), true)) {
