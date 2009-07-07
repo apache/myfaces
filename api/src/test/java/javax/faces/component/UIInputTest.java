@@ -30,9 +30,17 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
+import javax.faces.context.ExternalContext;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shale.test.base.AbstractJsfTestCase;
 import org.apache.shale.test.el.MockValueExpression;
+import org.apache.shale.test.mock.MockExternalContext12;
+
+import java.util.Map;
+import java.util.HashMap;
 
 public class UIInputTest extends AbstractJsfTestCase
 {
@@ -116,4 +124,106 @@ public class UIInputTest extends AbstractJsfTestCase
         String updatedValue = expression.getValue(facesContext.getELContext()).toString();
         assertEquals("testValue", updatedValue);
     }
+
+    public void testValidateWithEmptyStringWithEmptyStringAsNullEnabled()
+    {
+        try
+        {
+            InitParameterMockExternalContext mockExtCtx =
+                    new InitParameterMockExternalContext(servletContext, request, response);
+            mockExtCtx.getInitParameterMap().put("javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL", "true");
+            facesContext.setExternalContext(mockExtCtx);
+            input.setSubmittedValue("");
+            input.validate(facesContext);
+
+            assertEquals(null, input.getSubmittedValue());
+        }
+        finally
+        {
+            facesContext.setExternalContext(externalContext);
+        }
+    }
+
+    public void testValidateWithNonEmptyStringWithEmptyStringAsNullEnabled()
+    {
+        try
+        {
+            InitParameterMockExternalContext mockExtCtx =
+                    new InitParameterMockExternalContext(servletContext, request, response);
+            mockExtCtx.getInitParameterMap().put("javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL", "true");
+            facesContext.setExternalContext(mockExtCtx);
+            input.setValue("asd");
+            input.setSubmittedValue("asd");
+            input.validate(facesContext);
+
+            assertEquals(null, input.getSubmittedValue());
+            assertEquals("asd", input.getValue());
+        }
+        finally
+        {
+            facesContext.setExternalContext(externalContext);
+        }
+    }
+
+    public void testValidateWithEmptyStringWithEmptyStringAsNullDisabled()
+    {
+        try
+        {
+            InitParameterMockExternalContext mockExtCtx =
+                    new InitParameterMockExternalContext(servletContext, request, response);
+            mockExtCtx.getInitParameterMap().put("javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL", "false");
+            facesContext.setExternalContext(mockExtCtx);
+            input.setValue("");
+            input.setSubmittedValue("");
+            input.validate(facesContext);
+
+            assertEquals("", input.getValue());
+        }
+        finally
+        {
+            facesContext.setExternalContext(externalContext);
+        }
+    }
+
+    public void testValidateWithEmptyStringWithEmptyStringAsNullNotSpecified()
+    {
+        try
+        {
+            InitParameterMockExternalContext mockExtCtx =
+                    new InitParameterMockExternalContext(servletContext, request, response);
+            //mockExtCtx.getInitParameterMap().put("javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL", "false");
+            facesContext.setExternalContext(mockExtCtx);
+            input.setValue("");
+            input.setSubmittedValue("");
+            input.validate(facesContext);
+
+            assertEquals("", input.getValue());
+        }
+        finally
+        {
+            facesContext.setExternalContext(externalContext);
+        }
+    }
+
+    static public class InitParameterMockExternalContext extends org.apache.shale.test.mock.MockExternalContext {
+
+        private Map initParameters = new HashMap();
+
+        public InitParameterMockExternalContext(ServletContext context, HttpServletRequest request, HttpServletResponse response) {
+            super(context, request, response);
+        }
+
+        public String encodePartialActionURL(String url) {
+            return null;
+        }
+
+        public String getInitParameter(String name) {
+            return (String) initParameters.get(name);
+        }
+
+        public Map getInitParameterMap() {
+            return initParameters;
+        }
+    }
+
 }

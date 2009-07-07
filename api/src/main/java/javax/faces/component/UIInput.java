@@ -69,6 +69,8 @@ public class UIInput extends UIOutput implements EditableValueHolder
     public static final String UPDATE_MESSAGE_ID = "javax.faces.component.UIInput.UPDATE";
     private static final String ERROR_HANDLING_EXCEPTION_LIST = "org.apache.myfaces.errorHandling.exceptionList";
 
+    private static final String EMPTY_VALUES_AS_NULL_PARAM_NAME = "javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL";
+
     private static final Validator[] EMPTY_VALIDATOR_ARRAY = new Validator[0];
 
     private MethodBinding _validator;
@@ -378,7 +380,21 @@ public class UIInput extends UIOutput implements EditableValueHolder
 
             Object submittedValue = getSubmittedValue();
             if (submittedValue == null)
+            {
                 return;
+            }
+
+            // Begin new JSF 2.0 requirement (INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL)
+            String contextParam = context.getExternalContext().getInitParameter(EMPTY_VALUES_AS_NULL_PARAM_NAME);
+            if (contextParam != null && contextParam.toLowerCase().equals("true"))
+            {
+                if (submittedValue.toString().length() == 0)
+                {
+                    setSubmittedValue(null);
+                    submittedValue = null;
+                }
+            }
+            // End new JSF 2.0 requirement (INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL)
 
             Object convertedValue = getConvertedValue(context, submittedValue);
 
