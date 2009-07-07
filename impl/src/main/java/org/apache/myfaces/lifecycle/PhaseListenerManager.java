@@ -22,12 +22,12 @@ package org.apache.myfaces.lifecycle;
 import java.util.HashMap;
 import java.util.Map;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ExceptionQueuedEvent;
+import javax.faces.event.ExceptionQueuedEventContext;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 import javax.faces.lifecycle.Lifecycle;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * This class encapsulates the logic used to call PhaseListeners. It was needed because of issue 9 of the JSF 1.2 spec.
@@ -37,9 +37,6 @@ import org.apache.commons.logging.LogFactory;
  */
 class PhaseListenerManager
 {
-
-    private static final Log log = LogFactory.getLog(PhaseListenerManager.class);
-
     private Lifecycle lifecycle;
     private FacesContext facesContext;
     private PhaseListener[] phaseListeners;
@@ -78,10 +75,14 @@ class PhaseListenerManager
                     phaseListener.beforePhase(new PhaseEvent(facesContext, phaseId, lifecycle));
                     beforePhaseSuccess[i] = true;
                 }
-                catch (Exception e)
+                catch (Throwable e)
                 {
                     beforePhaseSuccess[i] = false; // redundant - for clarity
-                    log.error("Exception in PhaseListener " + phaseId.toString() + " beforePhase.", e);
+                    
+                    // JSF 2.0: publish exceptions instead of logging them.
+                    
+                    publishException (e, phaseId, ExceptionQueuedEventContext.IN_BEFORE_PHASE_KEY);
+                    
                     return;
                 }
             }
@@ -101,12 +102,23 @@ class PhaseListenerManager
                 {
                     phaseListener.afterPhase(new PhaseEvent(facesContext, phaseId, lifecycle));
                 }
-                catch (Exception e)
+                catch (Throwable e)
                 {
-                    log.error("Exception in PhaseListener " + phaseId.toString() + " afterPhase", e);
+                    // JSF 2.0: publish exceptions instead of logging them.
+                    
+                    publishException (e, phaseId, ExceptionQueuedEventContext.IN_AFTER_PHASE_KEY);
                 }
             }
         }
 
+    }
+    
+    private void publishException (Throwable e, PhaseId phaseId, String key)
+    {
+        ExceptionQueuedEventContext context = new ExceptionQueuedEventContext (facesContext, e, null, phaseId);
+        
+        context.getAttributes().put (key, Boolean.TRUE);
+        
+        facesContext.getApplication().publishEvent (ExceptionQueuedEvent.class, context);
     }
 }

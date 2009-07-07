@@ -24,6 +24,8 @@ import java.util.List;
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
+import javax.faces.event.ExceptionQueuedEvent;
+import javax.faces.event.ExceptionQueuedEventContext;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 import javax.faces.lifecycle.Lifecycle;
@@ -127,6 +129,13 @@ public class LifecycleImpl extends Lifecycle
                 return true;
             }
         }
+        
+        catch (Throwable e) {
+            // JSF 2.0: publish the executor's exception (if any).
+            
+            publishException (e, currentPhaseId, context);
+        }
+        
         finally
         {
             phaseListenerMgr.informPhaseListenersAfter(currentPhaseId);
@@ -176,6 +185,13 @@ public class LifecycleImpl extends Lifecycle
 
             renderExecutor.execute(facesContext);
         }
+        
+        catch (Throwable e) {
+            // JSF 2.0: publish the executor's exception (if any).
+            
+            publishException (e, renderExecutor.getPhase(), facesContext);
+        }
+        
         finally
         {
             phaseListenerMgr.informPhaseListenersAfter(renderExecutor.getPhase());
@@ -266,5 +282,12 @@ public class LifecycleImpl extends Lifecycle
             }
             return _phaseListenerArray;
         }
+    }
+    
+    private void publishException (Throwable e, PhaseId phaseId, FacesContext facesContext)
+    {
+        ExceptionQueuedEventContext context = new ExceptionQueuedEventContext (facesContext, e, null, phaseId);
+        
+        facesContext.getApplication().publishEvent (ExceptionQueuedEvent.class, context);
     }
 }
