@@ -132,5 +132,16 @@ public abstract class ResponseWriterWrapper extends ResponseWriter implements Fa
     {
         getWrapped().writeText(object, component, string);
     }
-
+    
+    @Override
+    public void startCDATA() throws IOException
+    {
+        getWrapped().startCDATA();
+    }
+    
+    @Override
+    public void endCDATA() throws IOException
+    {
+        getWrapped().endCDATA();
+    }
 }

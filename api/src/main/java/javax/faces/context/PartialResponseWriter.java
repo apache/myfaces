@@ -77,7 +77,7 @@ public class PartialResponseWriter extends ResponseWriterWrapper
     {
         // Close open <error-message> element.
         
-        endCDATA();
+        _wrapped.endCDATA();
         _wrapped.endElement ("error-message");
         _wrapped.endElement ("error");
     }
@@ -86,7 +86,7 @@ public class PartialResponseWriter extends ResponseWriterWrapper
     {
         // Close open <eval> element.
         
-        endCDATA();
+        _wrapped.endCDATA();
         _wrapped.endElement ("eval");
     }
 
@@ -105,7 +105,7 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         
         // Close open <insert> element.
         
-        endCDATA();
+        _wrapped.endCDATA();
         _wrapped.endElement (insertType);
         _wrapped.endElement ("insert");
         
@@ -114,7 +114,7 @@ public class PartialResponseWriter extends ResponseWriterWrapper
 
     public void endUpdate() throws IOException
     {
-        endCDATA();
+        _wrapped.endCDATA();
         _wrapped.endElement ("update");
     }
 
@@ -154,7 +154,7 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         _wrapped.endElement ("error-name");
         
         _wrapped.startElement ("error-message", null);
-        startCDATA();
+        _wrapped.startCDATA();
         
         // Leave open; caller will write message.
     }
@@ -164,7 +164,7 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         startChanges();
         
         _wrapped.startElement ("eval", null);
-        startCDATA();
+        _wrapped.startCDATA();
         
         // Leave open; caller will write statements.
     }
@@ -207,7 +207,7 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         
         _wrapped.startElement ("update", null);
         _wrapped.writeAttribute ("id", targetId, null);
-        startCDATA();
+        _wrapped.startCDATA();
         
         // Leave open; caller will write content.
     }
@@ -257,21 +257,8 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         _wrapped.startElement ("insert", null);
         _wrapped.startElement (insertType, null);
         _wrapped.writeAttribute ("id", targetId, null);
-        startCDATA();
+        _wrapped.startCDATA();
         
         // Leave open; caller will write content.
-    }
-    
-    /*
-     * These methods are needed since we can't be sure that the data written by the caller will not
-     * contain reserved characters.
-     */
-    
-    private void endCDATA () throws IOException {
-        _wrapped.write ("]]>");
-    }
-    
-    private void startCDATA () throws IOException {
-        _wrapped.write ("<![CDATA[");
     }
 }

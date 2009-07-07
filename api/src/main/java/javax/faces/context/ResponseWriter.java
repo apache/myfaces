@@ -44,7 +44,17 @@ public abstract class ResponseWriter extends Writer
     public abstract void startElement(String name, UIComponent component) throws IOException;
 
     public abstract void endElement(String name) throws IOException;
-
+    
+    public void startCDATA() throws IOException
+    {
+        // no-op
+    }
+    
+    public void endCDATA() throws IOException
+    {
+        // no-op
+    }
+    
     public abstract void writeAttribute(String name, Object value, String property) throws IOException;
 
     public abstract void writeURIAttribute(String name, Object value, String property) throws IOException;
