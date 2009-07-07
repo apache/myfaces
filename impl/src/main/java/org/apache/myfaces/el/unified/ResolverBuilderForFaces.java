@@ -27,6 +27,7 @@ import javax.el.ResourceBundleELResolver;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.el.FlashELResolver;
+import org.apache.myfaces.el.unified.resolver.CompositeComponentELResolver;
 import org.apache.myfaces.el.unified.resolver.ManagedBeanResolver;
 import org.apache.myfaces.el.unified.resolver.ResourceBundleResolver;
 import org.apache.myfaces.el.unified.resolver.ResourceResolver;
@@ -50,6 +51,7 @@ public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELRe
     public void build(CompositeELResolver elResolver)
     {
         elResolver.add(ImplicitObjectResolver.makeResolverForFaces());
+        elResolver.add (new CompositeComponentELResolver());
 
         addFromRuntimeConfig(elResolver);
 
