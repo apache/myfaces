@@ -30,6 +30,7 @@ import javax.faces.render.RenderKitFactory;
 
 import org.apache.myfaces.config.FacesConfigDispenser;
 import org.apache.myfaces.config.element.Behavior;
+import org.apache.myfaces.config.element.ClientBehaviorRenderer;
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.Renderer;
@@ -61,7 +62,8 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
     
     private String defaultRenderKitId;
     private String messageBundle;
-
+    private String partialTraversal;
+    
     private LocaleConfig localeConfig;
 
     private Map<String, String> components = new HashMap<String, String>();
@@ -83,6 +85,7 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
     private List<String> stateManagers = new ArrayList<String>();
     private List<String> variableResolver = new ArrayList<String>();
     private List<String> viewHandlers = new ArrayList<String>();
+    private List<String> defaultValidatorIds = new ArrayList<String>();
     
     private List<ManagedBean> managedBeans = new ArrayList<ManagedBean>();
     
@@ -134,7 +137,12 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
             {
                 localeConfig = application.getLocaleConfig().get(application.getLocaleConfig().size() - 1);
             }
-
+            
+            if (!application.getPartialTraversal().isEmpty())
+            {
+                partialTraversal = application.getPartialTraversal().get (application.getPartialTraversal().size() - 1);
+            }
+            
             actionListeners.addAll(application.getActionListener());
             navigationHandlers.addAll(application.getNavigationHandler());
             resourceHandlers.addAll(application.getResourceHandler());
@@ -144,7 +152,8 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
             variableResolver.addAll(application.getVariableResolver());
             resourceBundles.addAll(application.getResourceBundle());
             elResolvers.addAll(application.getElResolver());
-            systemEventListeners.addAll(application.getSystemEventListener());
+            defaultValidatorIds.addAll (application.getDefaultValidatorIds());
+            systemEventListeners.addAll(application.getSystemEventListeners());
         }
 
         for (Converter converter : config.getConverters())
@@ -358,6 +367,14 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
     }
 
     /**
+     * @return the partial traversal class name
+     */
+    public String getPartialTraversal ()
+    {
+        return partialTraversal;
+    }
+    
+    /**
      * @return Collection over ResourceHandler class names
      */
     public Collection<String> getResourceHandlerIterator()
@@ -487,6 +504,14 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
     }
 
     /**
+     * @return Collection over all defined default validator ids
+     */
+    public Collection<String> getDefaultValidatorIds ()
+    {
+        return defaultValidatorIds;
+    }
+    
+    /**
      * @return Collection over all defined validator ids
      */
     public Collection<String> getValidatorIds()
@@ -534,6 +559,14 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
         return renderKits.get(renderKitId).getRenderKitClass();
     }
 
+    /**
+     * @return Iterator over {@link org.apache.myfaces.config.element.ClientBehaviorRenderer ClientBehaviorRenderer}s for the given renderKitId
+     */
+    public Collection<ClientBehaviorRenderer> getClientBehaviorRenderers (String renderKitId)
+    {
+        return renderKits.get (renderKitId).getClientBehaviorRenderers();
+    }
+    
     /**
      * @return Collection over {@link org.apache.myfaces.config.element.Renderer Renderer}s for the given renderKitId
      */

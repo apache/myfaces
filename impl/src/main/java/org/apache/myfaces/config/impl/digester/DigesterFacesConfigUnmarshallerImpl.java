@@ -78,8 +78,10 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addSetNext("faces-config/application", "addApplication");
         digester.addCallMethod("faces-config/application/action-listener", "addActionListener", 0);
         digester.addCallMethod("faces-config/application/default-render-kit-id", "addDefaultRenderkitId", 0);
+        digester.addCallMethod("faces-config/application/default-validators/validator-id", "addDefaultValidatorId", 0);
         digester.addCallMethod("faces-config/application/message-bundle", "addMessageBundle", 0);
         digester.addCallMethod("faces-config/application/navigation-handler", "addNavigationHandler", 0);
+        digester.addCallMethod("faces-config/application/partial-traversal", "addPartialTraversal", 0);
         digester.addCallMethod("faces-config/application/resource-handler", "addResourceHandler", 0);
         digester.addCallMethod("faces-config/application/view-handler", "addViewHandler", 0);
         digester.addCallMethod("faces-config/application/state-manager", "addStateManager", 0);
@@ -108,7 +110,7 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addCallMethod("faces-config/application/resource-handler", "addResourceHandler", 0);
         digester.addCallMethod("faces-config/factory/exception-handler-factory", "addExceptionHandlerFactory", 0);
         digester.addCallMethod("faces-config/factory/external-context-factory", "addExternalContextFactory", 0);
-        digester.addCallMethod("faces-config/factory/page-declaration-language-factory",
+        digester.addCallMethod("faces-config/factory/view-declaration-language-factory",
                                "addViewDeclarationLanguageFactory", 0);
         digester.addCallMethod("faces-config/factory/partial-view-context-factory", "addPartialViewContextFactory", 0);
         digester.addCallMethod("faces-config/factory/tag-handler-delegate-factory", "addTagHandlerDelegateFactory", 0);
@@ -226,19 +228,43 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addCallMethod("faces-config/render-kit/renderer/component-family", "setComponentFamily", 0);
         digester.addCallMethod("faces-config/render-kit/renderer/renderer-type", "setRendererType", 0);
         digester.addCallMethod("faces-config/render-kit/renderer/renderer-class", "setRendererClass", 0);
-
+        digester.addObjectCreate("faces-config/render-kit/client-behavior-renderer", ClientBehaviorRenderer.class);
+        digester.addSetNext("faces-config/render-kit/client-behavior-renderer", "addClientBehaviorRenderer");
+        digester.addCallMethod("faces-config/render-kit/renderer/client-behavior-renderer-type", "setRendererType", 0);
+        digester.addCallMethod("faces-config/render-kit/renderer/client-behavior-renderer-class", "setRendererClass", 0);
+        
+        // 2.0 behavior start
+        digester.addObjectCreate("faces-config/behavior", Behavior.class);
+        digester.addSetNext("faces-config/behavior", "addBehavior");
+        digester.addCallMethod("faces-config/behavior/behavior-id", "setBehaviorId", 0);
+        digester.addCallMethod("faces-config/behavior/behavior-class", "setBehaviorClass", 0);
+        digester.addObjectCreate("faces-config/behavior/attribute", Attribute.class);
+        digester.addSetNext("faces-config/behavior/attribute", "addAttribute");
+        digester.addCallMethod("faces-config/behavior/attribute/description", "addDescription", 0);
+        digester.addCallMethod("faces-config/behavior/attribute/display-name", "addDisplayName", 0);
+        digester.addCallMethod("faces-config/behavior/attribute/icon", "addIcon", 0);
+        digester.addCallMethod("faces-config/behavior/attribute/attribute-name", "setAttributeName", 0);
+        digester.addCallMethod("faces-config/behavior/attribute/attribute-class", "setAttributeClass", 0);
+        digester.addCallMethod("faces-config/behavior/attribute/default-value", "setDefaultValue", 0);
+        digester.addCallMethod("faces-config/behavior/attribute/suggested-value", "setSuggestedValue", 0);
+        digester.addCallMethod("faces-config/behavior/attribute/attribute-extension", "addAttributeExtension", 0);
+        digester.addObjectCreate("faces-config/behavior/property", Property.class);
+        digester.addSetNext("faces-config/behavior/property", "addProperty");
+        digester.addCallMethod("faces-config/behavior/property/description", "addDescription", 0);
+        digester.addCallMethod("faces-config/behavior/property/display-name", "addDisplayName", 0);
+        digester.addCallMethod("faces-config/behavior/property/icon", "addIcon", 0);
+        digester.addCallMethod("faces-config/behavior/property/property-name", "setPropertyName", 0);
+        digester.addCallMethod("faces-config/behavior/property/property-class", "setPropertyClass", 0);
+        digester.addCallMethod("faces-config/behavior/property/default-value", "setDefaultValue", 0);
+        digester.addCallMethod("faces-config/behavior/property/suggested-value", "setSuggestedValue", 0);
+        digester.addCallMethod("faces-config/behavior/property/property-extension", "addPropertyExtension", 0);
+        // 2.0 behavior end
+        
         digester.addCallMethod("faces-config/lifecycle/phase-listener", "addLifecyclePhaseListener", 0);
 
         digester.addCallMethod("faces-config/validator", "addValidator", 2);
         digester.addCallParam("faces-config/validator/validator-id", 0);
         digester.addCallParam("faces-config/validator/validator-class", 1);
-        
-        // 2.0 specific start
-        digester.addObjectCreate ("faces-config/behavior", Behavior.class);
-        digester.addSetNext ("faces-config/behavior", "addBehavior");
-        digester.addCallMethod ("faces-config/behavior/behavior-class", "setBehaviorClass", 0);
-        digester.addCallMethod ("faces-config/behavior/behavior-id", "setBehaviorId", 0);
-        // 2.0 specific end
     }
 
     public FacesConfig getFacesConfig(InputStream in, String systemId) throws IOException, SAXException

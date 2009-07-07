@@ -65,6 +65,7 @@
             <xsd:element name="render-kit" type="javaee:faces-config-render-kitType"/>
             <xsd:element name="lifecycle" type="javaee:faces-config-lifecycleType"/>
             <xsd:element name="validator" type="javaee:faces-config-validatorType"/>
+            <xsd:element name="behavior" type="faces-config-behaviorType"/>
             <xsd:element maxOccurs="unbounded" minOccurs="0" name="faces-config-extension"
                 type="javaee:faces-config-extensionType"/>
         </xsd:choice>
@@ -95,6 +96,9 @@
             <xsd:element name="locale-config" type="javaee:faces-config-locale-configType"/>
             <xsd:element name="resource-bundle"
                 type="javaee:faces-config-application-resource-bundleType"/>
+            <xsd:element name="default-validators" type="javaee:faces-config-default-validatorsType"/>
+            <xsd:element name="partial-traversal" type="javaee:fully-qualified-classType"/>
+            <xsd:element name="system-event-listener" type="javaee:faces-config-system-event-listenerType"/>
             <xsd:element maxOccurs="unbounded" minOccurs="0" name="application-extension"
                 type="javaee:faces-config-application-extensionType"/>
         </xsd:choice>
@@ -149,6 +153,7 @@
             <xsd:element name="partial-view-context-factory" type="javaee:fully-qualified-classType"/>
             <xsd:element name="lifecycle-factory" type="javaee:fully-qualified-classType"/>
             <xsd:element name="render-kit-factory" type="javaee:fully-qualified-classType"/>
+            <xsd:element name="view-declaration-language-factory" type="javaee:fully-qualified-classType"/>
             <xsd:element maxOccurs="unbounded" minOccurs="0" name="factory-extension"
                 type="javaee:faces-config-factory-extensionType"/>
         </xsd:choice>
@@ -470,6 +475,8 @@
                 type="javaee:fully-qualified-classType"/>
             <xsd:element maxOccurs="unbounded" minOccurs="0" name="renderer"
                 type="javaee:faces-config-rendererType"/>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="client-behavior-renderer"
+                type="javaee:faces-config-client-behavior-rendererType"/>
             <xsd:element maxOccurs="unbounded" minOccurs="0" name="render-kit-extension"
                 type="javaee:faces-config-render-kit-extensionType"/>
         </xsd:sequence>
@@ -562,6 +569,55 @@
             </xsd:choice>
         </xsd:sequence>
         <xsd:attribute name="id" type="xsd:ID"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="faces-config-default-validatorsType">
+        <xsd:sequence>
+            <xsd:element name="validator-id" type="javaee:string" minOccurs="0"
+                maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="faces-config-system-event-listenerType">
+        <xsd:sequence>
+            <xsd:element name="system-event-listener-class"
+                type="javaee:fully-qualified-classType"/>
+            <xsd:element name="system-event-class"
+                type="javaee:fully-qualified-classType"/>
+            <xsd:element name="source-class"
+                type="javaee:fully-qualified-classType"/>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="faces-config-behaviorType">
+        <xsd:sequence>
+            <xsd:group ref="javaee:descriptionGroup"/>
+            <xsd:element name="behavior-id" type="javaee:string"/>
+            <xsd:element name="behavior-class" type="javaee:fully-qualified-classType"/>
+            <xsd:element name="attribute" type="javaee:faces-config-attributeType" 
+                minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="property" type="javaee:faces-config-propertyType" 
+                minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="extension" type="javaee:faces-config-behavior-extensionType" 
+                minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="faces-config-behavior-extensionType">
+        <xsd:sequence>
+            <xsd:any namespace="##any" processContents="lax" minOccurs="0"
+                maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="faces-config-client-behavior-rendererType">
+        <xsd:sequence>
+            <xsd:element name="client-behavior-renderer-type" type="javaee:string"/>
+            <xsd:element name="client-behavior-renderer-class" type="javaee:fully-qualified-classType"/>
+        </xsd:sequence>
     </xsd:complexType>
 
     <xsd:simpleType name="faces-config-versionType">

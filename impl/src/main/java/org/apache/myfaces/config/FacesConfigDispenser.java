@@ -23,6 +23,7 @@ import java.util.Collection;
 import javax.el.ELResolver;
 
 import org.apache.myfaces.config.element.Behavior;
+import org.apache.myfaces.config.element.ClientBehaviorRenderer;
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.Renderer;
@@ -224,6 +225,11 @@ public interface FacesConfigDispenser<C>
     public String getRenderKitClass(String renderKitId);
 
     /**
+     * @return Iterator over {@link org.apache.myfaces.config.element.ClientBehaviorRenderer ClientBehaviorRenderer}s for the given renderKitId
+     */
+    public Collection<ClientBehaviorRenderer> getClientBehaviorRenderers (String renderKitId);
+    
+    /**
      * @return Iterator over {@link org.apache.myfaces.config.element.Renderer Renderer}s for the given renderKitId
      */
     public Collection<Renderer> getRenderers(String renderKitId);
@@ -250,8 +256,17 @@ public interface FacesConfigDispenser<C>
     public Collection<SystemEventListener> getSystemEventListeners();
     
     /**
-     * @return collection of behaviors
+     * @return Collection over behaviors
      */
-    
     public Collection<Behavior> getBehaviors ();
+    
+    /**
+     * @return Collection over all defined default validator ids
+     */
+    public Collection<String> getDefaultValidatorIds ();
+    
+    /**
+     * @return the partial traversal class name
+     */
+    public String getPartialTraversal ();
 }

@@ -29,8 +29,10 @@ public class Application
 
     private final List<String> actionListener = new ArrayList<String>();
     private final List<String> defaultRenderkitId = new ArrayList<String>();
+    private final List<String> defaultValidatorIds = new ArrayList<String>();
     private final List<String> messageBundle = new ArrayList<String>();
     private final List<String> navigationHandler = new ArrayList<String>();
+    private final List<String> partialTraversal = new ArrayList<String>();
     private final List<String> resourceHandler = new ArrayList<String>();
     private final List<String> viewHandler = new ArrayList<String>();
     private final List<String> stateManager = new ArrayList<String>();
@@ -39,7 +41,7 @@ public class Application
     private final List<LocaleConfig> localeConfig = new ArrayList<LocaleConfig>();
     private final List<String> elResolver = new ArrayList<String>();
     private final List<ResourceBundle> resourceBundle = new ArrayList<ResourceBundle>();
-    private final List<SystemEventListener> systemEventListener = new ArrayList<SystemEventListener>();
+    private final List<SystemEventListener> systemEventListeners = new ArrayList<SystemEventListener>();
     
     public void addActionListener(String listener)
     {
@@ -50,7 +52,12 @@ public class Application
     {
         defaultRenderkitId.add(id);
     }
-
+    
+    public void addDefaultValidatorId (String id)
+    {
+        defaultValidatorIds.add (id);
+    }
+    
     public void addMessageBundle(String bundle)
     {
         messageBundle.add(bundle);
@@ -60,12 +67,22 @@ public class Application
     {
         navigationHandler.add(handler);
     }
-
+    
+    public void addPartialTraversal (String traversal)
+    {
+        partialTraversal.add (traversal);
+    }
+    
     public void addStateManager(String manager)
     {
         stateManager.add(manager);
     }
-
+    
+    public void addSystemEventListener (SystemEventListener systemEventListener)
+    {
+        systemEventListeners.add (systemEventListener);
+    }
+    
     public void addPropertyResolver(String resolver)
     {
         propertyResolver.add(resolver);
@@ -101,11 +118,6 @@ public class Application
         resourceBundle.add(bundle);
     }
 
-    public void addSystemEventListener(SystemEventListener listener)
-    {
-        systemEventListener.add(listener);
-    }
-    
     public List<String> getActionListener()
     {
         return actionListener;
@@ -115,7 +127,12 @@ public class Application
     {
         return defaultRenderkitId;
     }
-
+    
+    public List<String> getDefaultValidatorIds()
+    {
+        return defaultValidatorIds;
+    }
+    
     public List<String> getMessageBundle()
     {
         return messageBundle;
@@ -125,12 +142,22 @@ public class Application
     {
         return navigationHandler;
     }
-
+    
+    public List<String> getPartialTraversal ()
+    {
+        return partialTraversal;
+    }
+    
     public List<String> getResourceHandler()
     {
         return resourceHandler;
     }
-
+    
+    public List<SystemEventListener> getSystemEventListeners ()
+    {
+        return systemEventListeners;
+    }
+    
     public List<String> getViewHandler()
     {
         return viewHandler;
@@ -164,10 +191,5 @@ public class Application
     public List<ResourceBundle> getResourceBundle()
     {
         return resourceBundle;
-    }
-
-    public List<SystemEventListener> getSystemEventListener()
-    {
-        return systemEventListener;
     }
 }

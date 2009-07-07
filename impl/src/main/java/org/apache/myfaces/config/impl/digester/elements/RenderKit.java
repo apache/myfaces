@@ -30,7 +30,8 @@ public class RenderKit
     private String id;
     private String renderKitClass;
     private List<org.apache.myfaces.config.element.Renderer> renderer = new ArrayList<org.apache.myfaces.config.element.Renderer>();
-
+    private List<org.apache.myfaces.config.element.ClientBehaviorRenderer> clientBehaviorRenderers = new ArrayList<org.apache.myfaces.config.element.ClientBehaviorRenderer>();
+    
     public String getId()
     {
         return id;
@@ -45,17 +46,27 @@ public class RenderKit
     {
         return renderKitClass;
     }
-
+    
     public void setRenderKitClass(String renderKitClass)
     {
         this.renderKitClass = renderKitClass;
     }
-
+    
+    public List<org.apache.myfaces.config.element.ClientBehaviorRenderer> getClientBehaviorRenderers ()
+    {
+        return clientBehaviorRenderers;
+    }
+    
     public List<org.apache.myfaces.config.element.Renderer> getRenderer()
     {
         return renderer;
     }
 
+    public void addClientBehaviorRenderer (org.apache.myfaces.config.element.ClientBehaviorRenderer renderer)
+    {
+        clientBehaviorRenderers.add (renderer);   
+    }
+    
     public void addRenderer(org.apache.myfaces.config.element.Renderer value)
     {
         renderer.add(value);
@@ -63,6 +74,7 @@ public class RenderKit
 
     public void merge(RenderKit renderKit)
     {
+        clientBehaviorRenderers.addAll (renderKit.getClientBehaviorRenderers());
         renderer.addAll(renderKit.getRenderer());
     }
 
