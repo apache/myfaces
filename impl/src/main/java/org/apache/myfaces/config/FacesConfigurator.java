@@ -73,6 +73,7 @@ import org.apache.myfaces.application.ApplicationFactoryImpl;
 import org.apache.myfaces.application.ApplicationImpl;
 import org.apache.myfaces.component.visit.VisitContextFactoryImpl;
 import org.apache.myfaces.config.annotation.AnnotationConfigurator;
+import org.apache.myfaces.config.element.Behavior;
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.Renderer;
@@ -1623,7 +1624,11 @@ public class FacesConfigurator
         {
             application.addValidator(validatorId, dispenser.getValidatorClass(validatorId));
         }
-
+        
+        for (Behavior behavior : dispenser.getBehaviors()) {
+            application.addBehavior(behavior.getBehaviorId(), behavior.getBehaviorClass());
+        }
+        
         RuntimeConfig runtimeConfig = getRuntimeConfig();
 
         runtimeConfig.setPropertyResolverChainHead(getApplicationObject(PropertyResolver.class,

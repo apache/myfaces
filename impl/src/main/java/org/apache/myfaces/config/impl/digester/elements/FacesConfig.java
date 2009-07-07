@@ -38,6 +38,7 @@ public class FacesConfig
     private List<RenderKit> renderKits = new ArrayList<RenderKit>();
     private List<String> lifecyclePhaseListener = new ArrayList<String>();
     private Map<String, String> validators = new HashMap<String, String>();
+    private List<Behavior> behaviors = new ArrayList<Behavior>();
     
     private String metadataComplete;
     //Ordering variables
@@ -91,7 +92,12 @@ public class FacesConfig
     {
         validators.put(id, validatorClass);
     }
-
+    
+    public void addBehavior (Behavior behavior)
+    {
+        behaviors.add (behavior);
+    }
+    
     public List<Application> getApplications()
     {
         return applications;
@@ -136,7 +142,12 @@ public class FacesConfig
     {
         return validators;
     }
-
+    
+    public List<Behavior> getBehaviors ()
+    {
+        return behaviors;
+    }
+    
     public String getName()
     {
         return name;

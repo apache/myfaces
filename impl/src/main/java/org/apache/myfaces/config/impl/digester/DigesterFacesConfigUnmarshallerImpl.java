@@ -232,6 +232,13 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addCallMethod("faces-config/validator", "addValidator", 2);
         digester.addCallParam("faces-config/validator/validator-id", 0);
         digester.addCallParam("faces-config/validator/validator-class", 1);
+        
+        // 2.0 specific start
+        digester.addObjectCreate ("faces-config/behavior", Behavior.class);
+        digester.addSetNext ("faces-config/behavior", "addBehavior");
+        digester.addCallMethod ("faces-config/behavior/behavior-class", "setBehaviorClass", 0);
+        digester.addCallMethod ("faces-config/behavior/behavior-id", "setBehaviorId", 0);
+        // 2.0 specific end
     }
 
     public FacesConfig getFacesConfig(InputStream in, String systemId) throws IOException, SAXException

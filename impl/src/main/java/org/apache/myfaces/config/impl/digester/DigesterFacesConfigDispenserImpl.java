@@ -29,6 +29,7 @@ import java.util.Map;
 import javax.faces.render.RenderKitFactory;
 
 import org.apache.myfaces.config.FacesConfigDispenser;
+import org.apache.myfaces.config.element.Behavior;
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.Renderer;
@@ -67,6 +68,7 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
     private Map<String, String> converterByClass = new HashMap<String, String>();
     private Map<String, String> converterById = new HashMap<String, String>();
     private Map<String, String> validators = new HashMap<String, String>();
+    private List<Behavior> behaviors = new ArrayList<Behavior>();
     
     private Map<String, Converter> converterConfigurationByClassName = new HashMap<String, Converter>();
     
@@ -113,7 +115,8 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
 
         components.putAll(config.getComponents());
         validators.putAll(config.getValidators());
-
+        behaviors.addAll (config.getBehaviors());
+        
         for (Application application : config.getApplications())
         {
             if (!application.getDefaultRenderkitId().isEmpty())
@@ -562,5 +565,9 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
     {        
         return systemEventListeners;
     }
-
+    
+    public Collection<Behavior> getBehaviors ()
+    {
+        return behaviors;
+    }
 }

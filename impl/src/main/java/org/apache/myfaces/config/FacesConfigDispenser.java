@@ -22,6 +22,7 @@ import java.util.Collection;
 
 import javax.el.ELResolver;
 
+import org.apache.myfaces.config.element.Behavior;
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.Renderer;
@@ -247,4 +248,10 @@ public interface FacesConfigDispenser<C>
      * @return Iterator over (@link SystemEventListener) implementation class names 
      */
     public Collection<SystemEventListener> getSystemEventListeners();
+    
+    /**
+     * @return collection of behaviors
+     */
+    
+    public Collection<Behavior> getBehaviors ();
 }

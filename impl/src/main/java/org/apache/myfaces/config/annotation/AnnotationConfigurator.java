@@ -46,6 +46,8 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.FacesComponent;
+import javax.faces.component.behavior.Behavior;
+import javax.faces.component.behavior.FacesBehavior;
 import javax.faces.context.ExternalContext;
 import javax.faces.convert.FacesConverter;
 import javax.faces.event.ComponentSystemEvent;
@@ -876,6 +878,27 @@ public class AnnotationConfigurator
             
             NamedEventManager.getInstance().addNamedEvent (namedEvent.shortName(),
                 (Class<? extends ComponentSystemEvent>) clazz);
+        }
+        
+        FacesBehavior facesBehavior = (FacesBehavior) clazz.getAnnotation (FacesBehavior.class);
+        
+        if (facesBehavior != null) {
+            // Can only apply @FacesBehavior to Behavior implementors.
+            
+            if (!Behavior.class.isAssignableFrom (clazz)) {
+                // Just log this.  We'll catch it later in the runtime.
+                
+                if (log.isWarnEnabled()) {
+                    log.warn (clazz.getName() + " is annotated with @javax.faces.component.behavior.FacesBehavior, " +
+                            "but does not implement javax.faces.component.behavior.Behavior");
+                }
+            }
+            
+            if (log.isTraceEnabled()) {
+                log.trace ("addBehavior(" + facesBehavior.value() + ", " + clazz.getName() + ")");
+            }
+            
+            application.addBehavior (facesBehavior.value(), clazz.getName());
         }
         
         // TODO: All annotations scanned at startup must be configured here!
