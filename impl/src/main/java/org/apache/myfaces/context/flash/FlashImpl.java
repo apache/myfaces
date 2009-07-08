@@ -100,7 +100,7 @@ public class FlashImpl extends Flash
     /**
      * Returns a cryptographically secure random number to use as the _count seed
      */
-    static long _getSeed()
+    private static long _getSeed()
     {
         SecureRandom rng;
         try
@@ -128,7 +128,7 @@ public class FlashImpl extends Flash
      * 
      * @return
      */
-    String _getNextToken()
+    protected String _getNextToken()
     {
         // atomically increment the value
         long nextToken = _count.incrementAndGet();
@@ -164,7 +164,7 @@ public class FlashImpl extends Flash
      * for more information see SubKeyMap doc
      */
     @SuppressWarnings("unchecked")
-    Map<String, Object> _getMapFromSession(FacesContext context,
+    private Map<String, Object> _getMapFromSession(FacesContext context,
             String token, boolean createIfNeeded)
     {
         ExternalContext external = context.getExternalContext();
@@ -199,7 +199,7 @@ public class FlashImpl extends Flash
      * @return
      */
     @SuppressWarnings("unchecked")
-    Map<String, Object> getCurrentRequestMap(FacesContext context)
+    protected Map<String, Object> getCurrentRequestMap(FacesContext context)
     {
         Map<String, Object> requestMap = context.getExternalContext().getRequestMap();
         Map<String, Object> map = (Map<String, Object>) requestMap.get(FLASH_CURRENT_MAP_CACHE);
@@ -214,7 +214,7 @@ public class FlashImpl extends Flash
     }
     
     @SuppressWarnings("unchecked")
-    Map<String, Object> getPostbackRequestMap(FacesContext context)
+    protected Map<String, Object> getPostbackRequestMap(FacesContext context)
     {
         Map<String, Object> requestMap = context.getExternalContext().getRequestMap();
         Map<String, Object> map = (Map<String, Object>) requestMap.get(FLASH_POSTBACK_MAP_CACHE);
@@ -279,7 +279,7 @@ public class FlashImpl extends Flash
      * 
      * @return
      */
-    Map<String, Object> getCurrentPhaseMap()
+    private Map<String, Object> getCurrentPhaseMap()
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (PhaseId.RENDER_RESPONSE.equals(facesContext.getCurrentPhaseId()) ||
@@ -293,7 +293,7 @@ public class FlashImpl extends Flash
         }
     }
     
-    void _removeAllChildren(FacesContext facesContext)
+    private void _removeAllChildren(FacesContext facesContext)
     {
         Map<String, Object> map = getPostbackRequestMap(facesContext);
         
@@ -451,7 +451,7 @@ public class FlashImpl extends Flash
     /**
      * Retrieve the postback map key
      */
-    String _getPostbackMapKey(ExternalContext externalContext)
+    private String _getPostbackMapKey(ExternalContext externalContext)
     {
         String token = null;
         Object response = externalContext.getResponse();
@@ -478,7 +478,7 @@ public class FlashImpl extends Flash
      * 
      * @param externalContext
      */
-    void _addPostbackMapKey(ExternalContext externalContext)
+    private void _addPostbackMapKey(ExternalContext externalContext)
     {
         Object response = externalContext.getResponse();
         String token = (String) externalContext.getRequestMap().get(FLASH_CURRENT_MAP_KEY);
