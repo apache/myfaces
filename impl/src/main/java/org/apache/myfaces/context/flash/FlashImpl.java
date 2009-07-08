@@ -18,14 +18,19 @@
  */
 package org.apache.myfaces.context.flash;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
@@ -61,6 +66,8 @@ public class FlashImpl extends Flash
      */
     static protected final String FLASH_KEEP_MESSAGES = FlashImpl.class.getName()
             + ".KEEP_MESSAGES";
+
+    static protected final String FLASH_KEEP_MESSAGES_LIST = "KEEPMESSAGESLIST";
 
     /**
      * Session map prefix to flash maps
@@ -323,6 +330,11 @@ public class FlashImpl extends Flash
                     requestMap.put(FLASH_POSTBACK_MAP_KEY, previousToken);
                 }
             }
+            
+            if (isKeepMessages())
+            {
+                restoreMessages(facesContext);
+            }
         }
         
         //
@@ -340,7 +352,6 @@ public class FlashImpl extends Flash
     @Override
     public void doPostPhaseActions(FacesContext facesContext)
     {
-        // TODO Auto-generated method stub
         if (PhaseId.RENDER_RESPONSE.equals(facesContext.getCurrentPhaseId()))
         {
             //Remove previous flash from session
@@ -351,8 +362,89 @@ public class FlashImpl extends Flash
             {
                 _removeAllChildren(facesContext);
             }
+            
+            if (isKeepMessages())
+            {
+                saveMessages(facesContext);
+            }
+        }
+        else if ( isRedirect() && 
+                  (facesContext.getResponseComplete() || facesContext.getRenderResponse()) )
+        {
+            if (isKeepMessages())
+            {
+                saveMessages(facesContext);
+            }
         }
     }
+    
+    private static class MessageEntry implements Serializable
+    {
+        private final Object clientId;
+        private final Object message;
+
+        public MessageEntry(Object clientId, Object message)
+        {
+            this.clientId = clientId;
+            this.message = message;
+        }
+    }
+    
+    protected void saveMessages(FacesContext facesContext)
+    {
+        List<MessageEntry> messageList = null;
+            
+        Iterator<String> iterClientIds = facesContext.getClientIdsWithMessages();
+        while (iterClientIds.hasNext())
+        {
+            String clientId = (String) iterClientIds.next();
+            Iterator<FacesMessage> iterMessages = facesContext.getMessages(clientId);
+            
+            while (iterMessages.hasNext())
+            {
+                FacesMessage message = iterMessages.next();
+
+                if (messageList == null)
+                {
+                    messageList = new ArrayList<MessageEntry>();
+                }
+                messageList.add(new MessageEntry(clientId, message));
+            }
+        }
+
+        if (messageList != null)
+        {
+            if (isRedirect())
+            {
+                getPostbackRequestMap(facesContext).put(FLASH_KEEP_MESSAGES_LIST, messageList);
+            }
+            else
+            {
+                getCurrentRequestMap(facesContext).put(FLASH_KEEP_MESSAGES_LIST, messageList);
+            }
+        }
+    }
+    
+    protected void restoreMessages(FacesContext facesContext)
+    {
+        Map<String,Object> postbackMap = getPostbackRequestMap(facesContext); 
+        List<MessageEntry> messageList = (List<MessageEntry>) 
+            postbackMap.get(FLASH_KEEP_MESSAGES_LIST);
+        
+        if (messageList != null)
+        {
+            Iterator iterMessages = messageList.iterator();
+    
+            while (iterMessages.hasNext())
+            {
+                MessageEntry message = (MessageEntry) iterMessages.next();
+                facesContext.addMessage((String) message.clientId, (FacesMessage) message.message);
+            }
+            
+            postbackMap.remove(FLASH_KEEP_MESSAGES_LIST);
+        }
+    }
+    
     
     //private void _addPreviousToken
     
@@ -531,17 +623,101 @@ public class FlashImpl extends Flash
     @Override
     public boolean isKeepMessages()
     {
-        // TODO Auto-generated method stub
-        return false;
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = facesContext.getExternalContext();
+        Map<String, Object> requestMap = externalContext.getRequestMap();
+        Boolean keepMessages = (Boolean) requestMap.get(FLASH_KEEP_MESSAGES);
+        if (keepMessages == null)
+        {
+            Object response = externalContext.getResponse();
+            if (response instanceof HttpServletResponse)
+            {
+                // Request values are lost after a redirect. We can create a 
+                // temporal cookie to pass the params between redirect calls.
+                // It is better than use HttpSession object, because this cookie
+                // is never sent by the server.
+                Cookie cookie = (Cookie) externalContext.getRequestCookieMap()
+                        .get(FLASH_KEEP_MESSAGES);
+                if (cookie != null)
+                {
+                    keepMessages = Boolean.TRUE;
+                    HttpServletResponse httpResponse = (HttpServletResponse) response;
+                    // It is safe to remove the cookie, setting
+                    // the maxAge to 0 seconds. The effect is we passed FLASH_KEEP_MESSAGES param 
+                    // to this request object
+                    cookie.setMaxAge(0);
+                    cookie.setValue(null);
+                    httpResponse.addCookie(cookie);
+                    requestMap.put(FLASH_KEEP_MESSAGES, keepMessages);
+                }
+                else
+                {
+                    keepMessages = Boolean.FALSE;
+                }
+            }
+            else
+            {
+                // Note that on portlet world we can't create cookies,
+                // so we are forced to use the session map. Anyway, 
+                // according to the Bridge implementation(for example see 
+                // org.apache.myfaces.portlet.faces.bridge.BridgeImpl)
+                // session object is created at start faces request
+                Map<String, Object> sessionMap = externalContext
+                        .getSessionMap();
+                keepMessages = (Boolean) sessionMap.get(FLASH_KEEP_MESSAGES);
+                if (keepMessages != null)
+                {
+                    sessionMap.remove(FLASH_KEEP_MESSAGES);
+                    requestMap.put(FLASH_KEEP_MESSAGES, keepMessages);
+                }
+                else
+                {
+                    keepMessages = Boolean.FALSE;
+                }
+            }
+        }
+        return keepMessages;
     }
     
+    /**
+     * If this property is true, the messages should be keep for the next request, no matter
+     * if it is a normal postback case or a post-redirect-get case.
+     */
     @Override
-    public void setKeepMessages(boolean newValue)
+    public void setKeepMessages(boolean keepMessages)
     {
-        // TODO Auto-generated method stub
-
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = facesContext.getExternalContext();
+        Map<String, Object> requestMap = externalContext.getRequestMap();
+        
+        Boolean previousKeepMessages = (Boolean) requestMap.get(FLASH_KEEP_MESSAGES);
+        previousKeepMessages = (previousKeepMessages == null) ? Boolean.FALSE : previousKeepMessages;
+        
+        if (!previousKeepMessages.booleanValue() && keepMessages)
+        {
+            // This request contains a keep messages indication. This condition is in general 
+            // triggered by a NavigationHandler. After a redirect all request scope
+            // values get lost, so in order to preserve this value we need to
+            // pass it between request. One strategy is use a cookie that is never sent
+            // to the client. Other alternative is use the session map.
+            Object response = externalContext.getResponse();
+            if (response instanceof HttpServletResponse)
+            {
+                //If no redirect this cookie will be send to the client,
+                //but this behavior is expected.
+                HttpServletResponse servletResponse = (HttpServletResponse) response;
+                Cookie cookie = new Cookie(FLASH_KEEP_MESSAGES,"true");
+                cookie.setMaxAge(-1);
+                servletResponse.addCookie(cookie);
+            }
+            else
+            {
+                externalContext.getSessionMap().put(FLASH_KEEP_MESSAGES, keepMessages);
+            }
+        }
+        requestMap.put(FLASH_KEEP_MESSAGES, keepMessages);
     }
-
+    
     @Override
     public void clear()
     {
