@@ -221,7 +221,7 @@ public abstract class UIComponentBase extends UIComponent
      */
     private static void _publishPostAddToViewEvent(FacesContext context, UIComponent component)
     {
-        context.getApplication().publishEvent(PostAddToViewEvent.class, component);
+        context.getApplication().publishEvent(context, PostAddToViewEvent.class, component);
         
         if (component.getChildCount() > 0)
         {
@@ -247,7 +247,7 @@ public abstract class UIComponentBase extends UIComponent
      */
     private static void _publishPreRemoveFromViewEvent(FacesContext context, UIComponent component)
     {
-        context.getApplication().publishEvent(PreRemoveFromViewEvent.class, component);
+        context.getApplication().publishEvent(context, PreRemoveFromViewEvent.class, component);
         
         if (component.getChildCount() > 0)
         {
@@ -396,7 +396,7 @@ public abstract class UIComponentBase extends UIComponent
 
             // Call Application.publishEvent(java.lang.Class, java.lang.Object), passing BeforeRenderEvent.class as
             // the first argument and the component instance to be rendered as the second argument.
-            context.getApplication().publishEvent(PreRenderComponentEvent.class, this);
+            context.getApplication().publishEvent(context, PreRenderComponentEvent.class, this);
 
             Renderer renderer = getRenderer(context);
             if (renderer != null)

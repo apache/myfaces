@@ -573,7 +573,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         if (_viewScope == null && create)
         {
             _viewScope = new ViewScope();
-            getFacesContext().getApplication().publishEvent(PostConstructViewMapEvent.class, this);
+            FacesContext facesContext = getFacesContext();
+            facesContext.getApplication().publishEvent(facesContext, PostConstructViewMapEvent.class, this);
         }
 
         return _viewScope;
@@ -1269,7 +1270,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
              * Application.publishEvent(java.lang.Class, java.lang.Object) to be called, passing
              * ViewMapDestroyedEvent.class as the first argument and this UIViewRoot instance as the second argument.
              */
-            getFacesContext().getApplication().publishEvent(PreDestroyViewMapEvent.class, UIViewRoot.this);
+            FacesContext facesContext = getFacesContext(); 
+            facesContext.getApplication().publishEvent(facesContext, PreDestroyViewMapEvent.class, UIViewRoot.this);
             
             super.clear();
         }

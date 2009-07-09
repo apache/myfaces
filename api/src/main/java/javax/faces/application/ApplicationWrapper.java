@@ -324,15 +324,15 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
     public abstract Application getWrapped();
 
     @Override
-    public void publishEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source)
+    public void publishEvent(FacesContext facesContext, Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source)
     {
-        getWrapped().publishEvent(systemEventClass, sourceBaseType, source);
+        getWrapped().publishEvent(facesContext, systemEventClass, sourceBaseType, source);
     }
 
     @Override
-    public void publishEvent(Class<? extends SystemEvent> systemEventClass, Object source)
+    public void publishEvent(FacesContext facesContext, Class<? extends SystemEvent> systemEventClass, Object source)
     {
-        getWrapped().publishEvent(systemEventClass, source);
+        getWrapped().publishEvent(facesContext, systemEventClass, source);
     }
 
     @Override

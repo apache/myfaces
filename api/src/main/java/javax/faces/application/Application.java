@@ -873,18 +873,19 @@ public abstract class Application
 
     /**
      * 
+     * @param facesContext
      * @param systemEventClass
      * @param sourceBaseType
      * @param source
      * 
      * @since 2.0
      */
-    public void publishEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source)
+    public void publishEvent(FacesContext facesContext, Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source)
     {
-        Application application = getMyfacesApplicationInstance();
+        Application application = getMyfacesApplicationInstance(facesContext);
         if (application != null)
         {
-            application.publishEvent(systemEventClass, sourceBaseType, source);
+            application.publishEvent(facesContext, systemEventClass, sourceBaseType, source);
             return;
         }
         throw new UnsupportedOperationException();
@@ -953,12 +954,12 @@ public abstract class Application
      * 
      * @since 2.0
      */
-    public void publishEvent(Class<? extends SystemEvent> systemEventClass, Object source)
+    public void publishEvent(FacesContext facesContext, Class<? extends SystemEvent> systemEventClass, Object source)
     {
-        Application application = getMyfacesApplicationInstance();
+        Application application = getMyfacesApplicationInstance(facesContext);
         if (application != null)
         {
-            application.publishEvent(systemEventClass, source);
+            application.publishEvent(facesContext, systemEventClass, source);
             return;
         }
         throw new UnsupportedOperationException();
