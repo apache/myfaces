@@ -19,6 +19,7 @@
 package javax.faces.component;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -988,5 +989,50 @@ public class UIInput extends UIOutput implements EditableValueHolder
         {
             return saveAttachedState(facesContext,_validatorList);
         }            
-    }    
+    }
+
+    /**
+     * Check if a value is empty or not. Since we don't know the class of
+     * value we have to check and deal with it properly.
+     * 
+     * @since 2.0
+     * @param value
+     * @return
+     */
+    public static boolean isEmpty(Object value)
+    {
+        if (value == null)
+        {
+            return true;
+        }
+        else if (value instanceof String)
+        {
+            if ( ((String)value).length() <= 0 )
+            {
+                return true;
+            }
+        }
+        else if (value instanceof Collection)
+        {
+            if ( ((Collection)value).isEmpty())
+            {
+                return true;
+            }
+        }
+        else if (value.getClass().isArray())
+        {
+            if (java.lang.reflect.Array.getLength(value) <= 0)
+            {
+                return true;
+            }
+        }
+        else if (value instanceof Map)
+        {
+            if ( ((Map)value).isEmpty())
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }
