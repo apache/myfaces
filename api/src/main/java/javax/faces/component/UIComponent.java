@@ -67,6 +67,7 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
     public static final String CURRENT_COMPONENT = "javax.faces.component.CURRENT_COMPONENT";
     public static final String CURRENT_COMPOSITE_COMPONENT = "javax.faces.component.CURRENT_COMPOSITE_COMPONENT";
     public static final String FACETS_KEY = "javax.faces.component.FACETS_KEY";
+    public static final String VIEW_LOCATION_KEY = "javax.faces.component.VIEW_LOCATION_KEY";
     private static final String _COMPONENT_STACK = "componentStack:" + UIComponent.class.getName();
     private Map<Class<? extends SystemEvent>, List<SystemEventListener>> _systemEventListenerClassMap;
     
@@ -736,7 +737,7 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
     }
 
     @SuppressWarnings("unchecked")
-    protected void popComponentFromEL(FacesContext context) {
+    public void popComponentFromEL(FacesContext context) {
         Map<Object, Object> contextAttributes = context.getAttributes();
 
         // Pop the current UIComponent from the FacesContext attributes map so that the previous
@@ -766,7 +767,7 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
     }
 
     @SuppressWarnings("unchecked")
-    protected void pushComponentToEL(FacesContext context, UIComponent component) {
+    public void pushComponentToEL(FacesContext context, UIComponent component) {
         Map<Object, Object> contextAttributes = context.getAttributes();
         Stack<UIComponent> componentStack = (Stack<UIComponent>) contextAttributes.get(_COMPONENT_STACK);
         if (componentStack == null) {

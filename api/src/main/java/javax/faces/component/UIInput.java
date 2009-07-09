@@ -67,6 +67,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
     public static final String CONVERSION_MESSAGE_ID = "javax.faces.component.UIInput.CONVERSION";
     public static final String REQUIRED_MESSAGE_ID = "javax.faces.component.UIInput.REQUIRED";
     public static final String UPDATE_MESSAGE_ID = "javax.faces.component.UIInput.UPDATE";
+    public static final String VALIDATE_EMPTY_FIELDS_PARAM_NAME = "javax.faces.VALIDATE_EMPTY_FIELDS";
     private static final String ERROR_HANDLING_EXCEPTION_LIST = "org.apache.myfaces.errorHandling.exceptionList";
 
     private static final String EMPTY_VALUES_AS_NULL_PARAM_NAME = "javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL";
