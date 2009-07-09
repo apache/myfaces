@@ -25,6 +25,7 @@ import java.util.Map;
 import javax.el.ELContext;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
+import javax.faces.application.ProjectStage;
 import javax.faces.component.UIViewRoot;
 import javax.faces.event.PhaseId;
 import javax.faces.render.RenderKit;
@@ -207,7 +208,7 @@ public abstract class FacesContext
      * 
      * @since 2.0
      */
-    public boolean getValidationFailed()
+    public boolean isValidationFailed()
     {
         throw new UnsupportedOperationException();
     }
@@ -307,5 +308,19 @@ public abstract class FacesContext
     public void validationFailed()
     {
         throw new UnsupportedOperationException();
+    }
+    
+    public boolean isProjectStage(ProjectStage stage)
+    {
+        if (stage == null)
+        {
+            throw new NullPointerException();
+        }
+        
+        if (stage.equals(getApplication().getProjectStage()))
+        {
+            return true;
+        }
+        return false;
     }
 }

@@ -26,6 +26,7 @@ import javax.el.ELContext;
 import javax.faces.FacesWrapper;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
+import javax.faces.application.ProjectStage;
 import javax.faces.application.FacesMessage.Severity;
 import javax.faces.component.UIViewRoot;
 import javax.faces.event.PhaseId;
@@ -154,9 +155,9 @@ public abstract class FacesContextWrapper extends FacesContext implements FacesW
     }
 
     @Override
-    public boolean getValidationFailed()
+    public boolean isValidationFailed()
     {
-        return getWrapped().getValidationFailed();
+        return getWrapped().isValidationFailed();
     }
 
     @Override
@@ -237,5 +238,11 @@ public abstract class FacesContextWrapper extends FacesContext implements FacesW
     public void validationFailed()
     {
         getWrapped().validationFailed();
+    }
+
+    @Override
+    public boolean isProjectStage(ProjectStage stage)
+    {
+        return getWrapped().isProjectStage(stage);
     }
 }
