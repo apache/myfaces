@@ -19,6 +19,7 @@
 
 package javax.faces.convert;
 
+import javax.faces.component.PartialStateHolder;
 import javax.faces.component.StateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -31,7 +32,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFConvert
  * @author Stan Silvert
  */
 @JSFConverter
-public class EnumConverter implements Converter, StateHolder
+public class EnumConverter implements Converter, PartialStateHolder
 {
 
     public static final String CONVERTER_ID = "javax.faces.Enum";
@@ -126,12 +127,19 @@ public class EnumConverter implements Converter, StateHolder
 
     public void restoreState(FacesContext context, Object state)
     {
-        targetClass = (Class<?>)state;
+        if (state != null)
+        {
+            targetClass = (Class<?>)state;
+        }
     }
 
     public Object saveState(FacesContext context)
     {
-        return targetClass;
+        if (!initialStateMarked())
+        {
+            return targetClass;
+        }
+        return null;
     }
 
     public void setTransient(boolean newTransientValue)
@@ -142,6 +150,26 @@ public class EnumConverter implements Converter, StateHolder
     public boolean isTransient()
     {
         return isTransient;
+    }
+    
+    private boolean _initialStateMarked = false;
+
+    @Override
+    public void clearInitialState()
+    {
+        _initialStateMarked = false;
+    }
+
+    @Override
+    public boolean initialStateMarked()
+    {
+        return _initialStateMarked;
+    }
+
+    @Override
+    public void markInitialState()
+    {
+        _initialStateMarked = true;
     }
 
 }
