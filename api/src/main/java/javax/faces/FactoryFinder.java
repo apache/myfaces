@@ -54,7 +54,7 @@ public final class FactoryFinder
     public static final String LIFECYCLE_FACTORY = "javax.faces.lifecycle.LifecycleFactory";
     public static final String PARTIAL_VIEW_CONTEXT_FACTORY = "javax.faces.context.PartialViewContextFactory";
     public static final String RENDER_KIT_FACTORY = "javax.faces.render.RenderKitFactory";
-    public static final String TAG_HANDLER_DELEGATE_FACTORY = "javax.faces.view.facelets.tag.TagHandlerDelegateFactory";
+    public static final String TAG_HANDLER_DELEGATE_FACTORY = "javax.faces.view.facelets.TagHandlerDelegateFactory";
     public static final String VIEW_DECLARATION_LANGUAGE_FACTORY = "javax.faces.view.ViewDeclarationLanguageFactory";
     public static final String VISIT_CONTEXT_FACTORY = "javax.faces.component.visit.VisitContextFactory";
 
