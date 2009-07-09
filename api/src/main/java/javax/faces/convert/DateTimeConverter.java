@@ -25,7 +25,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import javax.faces.component.StateHolder;
+import javax.faces.component.PartialStateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
@@ -52,7 +52,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
     returnType = "javax.faces.convert.DateTimeConverter",
     longDesc = "A ValueExpression that evaluates to a DateTimeConverter.")
 public class DateTimeConverter
-        implements Converter, StateHolder
+        implements Converter, PartialStateHolder
 {
 
     // API field
@@ -222,25 +222,32 @@ public class DateTimeConverter
     // STATE SAVE/RESTORE
     public void restoreState(FacesContext facesContext, Object state)
     {
-        Object[] values = (Object[])state;
-        _dateStyle = (String)values[0];
-        _locale = (Locale)values[1];
-        _pattern = (String)values[2];
-        _timeStyle = (String)values[3];
-        _timeZone = (TimeZone)values[4];
-        _type = (String)values[5];
+        if (state != null)
+        {
+            Object[] values = (Object[])state;
+            _dateStyle = (String)values[0];
+            _locale = (Locale)values[1];
+            _pattern = (String)values[2];
+            _timeStyle = (String)values[3];
+            _timeZone = (TimeZone)values[4];
+            _type = (String)values[5];
+        }
     }
 
     public Object saveState(FacesContext facesContext)
     {
-        Object[] values = new Object[6];
-        values[0] = _dateStyle;
-        values[1] = _locale;
-        values[2] = _pattern;
-        values[3] = _timeStyle;
-        values[4] = _timeZone;
-        values[5] = _type;
-        return values;
+        if (!initialStateMarked())
+        {
+            Object[] values = new Object[6];
+            values[0] = _dateStyle;
+            values[1] = _locale;
+            values[2] = _pattern;
+            values[3] = _timeStyle;
+            values[4] = _timeZone;
+            values[5] = _type;
+            return values;
+        }
+        return null;
     }
 
     // GETTER & SETTER
@@ -260,6 +267,7 @@ public class DateTimeConverter
     {
         //TODO: validate timeStyle
         _dateStyle = dateStyle;
+        clearInitialState();
     }
 
     /**
@@ -277,6 +285,7 @@ public class DateTimeConverter
     public void setLocale(Locale locale)
     {
         _locale = locale;
+        clearInitialState();
     }
 
     /**
@@ -292,6 +301,7 @@ public class DateTimeConverter
     public void setPattern(String pattern)
     {
         _pattern = pattern;
+        clearInitialState();
     }
 
     /**
@@ -309,6 +319,7 @@ public class DateTimeConverter
     {
         //TODO: validate timeStyle
         _timeStyle = timeStyle;
+        clearInitialState();
     }
 
     /**
@@ -328,6 +339,7 @@ public class DateTimeConverter
     public void setTimeZone(TimeZone timeZone)
     {
         _timeZone = timeZone;
+        clearInitialState();
     }
 
     public boolean isTransient()
@@ -356,5 +368,26 @@ public class DateTimeConverter
     {
         //TODO: validate type
         _type = type;
+        clearInitialState();
+    }
+    
+    private boolean _initialStateMarked = false;
+
+    @Override
+    public void clearInitialState()
+    {
+        _initialStateMarked = false;
+    }
+
+    @Override
+    public boolean initialStateMarked()
+    {
+        return _initialStateMarked;
+    }
+
+    @Override
+    public void markInitialState()
+    {
+        _initialStateMarked = true;
     }
 }

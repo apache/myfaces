@@ -18,7 +18,7 @@
  */
 package javax.faces.validator;
 
-import javax.faces.component.StateHolder;
+import javax.faces.component.PartialStateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
@@ -50,7 +50,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidat
     returnType = "javax.faces.validator.LongRangeValidator",
     longDesc = "A ValueExpression that evaluates to a LongRangeValidator.")
 public class LongRangeValidator
-        implements Validator, StateHolder
+        implements Validator, PartialStateHolder
 {
     // FIELDS
     public static final String MAXIMUM_MESSAGE_ID = "javax.faces.validator.LongRangeValidator.MAXIMUM";
@@ -158,6 +158,7 @@ public class LongRangeValidator
     public void setMaximum(long maximum)
     {
         _maximum = new Long(maximum);
+        clearInitialState();
     }
 
     /**
@@ -173,6 +174,7 @@ public class LongRangeValidator
     public void setMinimum(long minimum)
     {
         _minimum = new Long(minimum);
+        clearInitialState();
     }
 
     public boolean isTransient()
@@ -188,18 +190,25 @@ public class LongRangeValidator
     // RESTORE & SAVE STATE
     public Object saveState(FacesContext context)
     {
-        Object values[] = new Object[2];
-        values[0] = _maximum;
-        values[1] = _minimum;
-        return values;
+        if (!initialStateMarked())
+        {
+            Object values[] = new Object[2];
+            values[0] = _maximum;
+            values[1] = _minimum;
+            return values;
+        }
+        return null;
     }
 
     public void restoreState(FacesContext context,
                              Object state)
     {
-        Object values[] = (Object[])state;
-        _maximum = (Long)values[0];
-        _minimum = (Long)values[1];
+        if (state != null)
+        {
+            Object values[] = (Object[])state;
+            _maximum = (Long)values[0];
+            _minimum = (Long)values[1];
+        }
     }
 
     // MISC
@@ -216,5 +225,24 @@ public class LongRangeValidator
 
         return true;
     }
+    
+    private boolean _initialStateMarked = false;
 
+    @Override
+    public void clearInitialState()
+    {
+        _initialStateMarked = false;
+    }
+
+    @Override
+    public boolean initialStateMarked()
+    {
+        return _initialStateMarked;
+    }
+
+    @Override
+    public void markInitialState()
+    {
+        _initialStateMarked = true;
+    }
 }

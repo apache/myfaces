@@ -25,7 +25,7 @@ import java.text.ParseException;
 import java.util.Currency;
 import java.util.Locale;
 
-import javax.faces.component.StateHolder;
+import javax.faces.component.PartialStateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
@@ -53,7 +53,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
     returnType = "javax.faces.convert.NumberConverter",
     longDesc = "A ValueExpression that evaluates to a NumberConverter.")
 public class NumberConverter
-        implements Converter, StateHolder
+        implements Converter, PartialStateHolder
 {
     // API FIELDS
     public static final String CONVERTER_ID = "javax.faces.Number";
@@ -264,47 +264,54 @@ public class NumberConverter
     // STATE SAVE/RESTORE
     public void restoreState(FacesContext facesContext, Object state)
     {
-        Object values[] = (Object[])state;
-        _currencyCode = (String)values[0];
-        _currencySymbol = (String)values[1];
-        _locale = (Locale)values[2];
-        Integer value = (Integer)values[3];
-        _maxFractionDigits = value != null ? value.intValue() : 0;
-        value = (Integer)values[4];
-        _maxIntegerDigits = value != null ? value.intValue() : 0;
-        value = (Integer)values[5];
-        _minFractionDigits = value != null ? value.intValue() : 0;
-        value = (Integer)values[6];
-        _minIntegerDigits = value != null ? value.intValue() : 0;
-        _pattern = (String)values[7];
-        _type = (String)values[8];
-        _groupingUsed = ((Boolean)values[9]).booleanValue();
-        _integerOnly = ((Boolean)values[10]).booleanValue();
-        _maxFractionDigitsSet = ((Boolean)values[11]).booleanValue();
-        _maxIntegerDigitsSet = ((Boolean)values[12]).booleanValue();
-        _minFractionDigitsSet = ((Boolean)values[13]).booleanValue();
-        _minIntegerDigitsSet = ((Boolean)values[14]).booleanValue();
+        if (state != null)
+        {
+            Object values[] = (Object[])state;
+            _currencyCode = (String)values[0];
+            _currencySymbol = (String)values[1];
+            _locale = (Locale)values[2];
+            Integer value = (Integer)values[3];
+            _maxFractionDigits = value != null ? value.intValue() : 0;
+            value = (Integer)values[4];
+            _maxIntegerDigits = value != null ? value.intValue() : 0;
+            value = (Integer)values[5];
+            _minFractionDigits = value != null ? value.intValue() : 0;
+            value = (Integer)values[6];
+            _minIntegerDigits = value != null ? value.intValue() : 0;
+            _pattern = (String)values[7];
+            _type = (String)values[8];
+            _groupingUsed = ((Boolean)values[9]).booleanValue();
+            _integerOnly = ((Boolean)values[10]).booleanValue();
+            _maxFractionDigitsSet = ((Boolean)values[11]).booleanValue();
+            _maxIntegerDigitsSet = ((Boolean)values[12]).booleanValue();
+            _minFractionDigitsSet = ((Boolean)values[13]).booleanValue();
+            _minIntegerDigitsSet = ((Boolean)values[14]).booleanValue();
+        }
     }
 
     public Object saveState(FacesContext facesContext)
     {
-        Object values[] = new Object[15];
-        values[0] = _currencyCode;
-        values[1] = _currencySymbol;
-        values[2] = _locale;
-        values[3] = _maxFractionDigitsSet ? new Integer(_maxFractionDigits) : null;
-        values[4] = _maxIntegerDigitsSet ? new Integer(_maxIntegerDigits) : null;
-        values[5] = _minFractionDigitsSet ? new Integer(_minFractionDigits) : null;
-        values[6] = _minIntegerDigitsSet ? new Integer(_minIntegerDigits) : null;
-        values[7] = _pattern;
-        values[8] = _type;
-        values[9] = _groupingUsed ? Boolean.TRUE : Boolean.FALSE;
-        values[10] = _integerOnly ? Boolean.TRUE : Boolean.FALSE;
-        values[11] = _maxFractionDigitsSet ? Boolean.TRUE : Boolean.FALSE;
-        values[12] = _maxIntegerDigitsSet ? Boolean.TRUE : Boolean.FALSE;
-        values[13] = _minFractionDigitsSet ? Boolean.TRUE : Boolean.FALSE;
-        values[14] = _minIntegerDigitsSet ? Boolean.TRUE : Boolean.FALSE;
-        return values;
+        if (!initialStateMarked())
+        {
+            Object values[] = new Object[15];
+            values[0] = _currencyCode;
+            values[1] = _currencySymbol;
+            values[2] = _locale;
+            values[3] = _maxFractionDigitsSet ? new Integer(_maxFractionDigits) : null;
+            values[4] = _maxIntegerDigitsSet ? new Integer(_maxIntegerDigits) : null;
+            values[5] = _minFractionDigitsSet ? new Integer(_minFractionDigits) : null;
+            values[6] = _minIntegerDigitsSet ? new Integer(_minIntegerDigits) : null;
+            values[7] = _pattern;
+            values[8] = _type;
+            values[9] = _groupingUsed ? Boolean.TRUE : Boolean.FALSE;
+            values[10] = _integerOnly ? Boolean.TRUE : Boolean.FALSE;
+            values[11] = _maxFractionDigitsSet ? Boolean.TRUE : Boolean.FALSE;
+            values[12] = _maxIntegerDigitsSet ? Boolean.TRUE : Boolean.FALSE;
+            values[13] = _minFractionDigitsSet ? Boolean.TRUE : Boolean.FALSE;
+            values[14] = _minIntegerDigitsSet ? Boolean.TRUE : Boolean.FALSE;
+            return values;
+        }
+        return null;
     }
 
     // GETTER & SETTER
@@ -324,6 +331,7 @@ public class NumberConverter
     public void setCurrencyCode(String currencyCode)
     {
         _currencyCode = currencyCode;
+        clearInitialState();
     }
 
     /**
@@ -342,6 +350,7 @@ public class NumberConverter
     public void setCurrencySymbol(String currencySymbol)
     {
         _currencySymbol = currencySymbol;
+        clearInitialState();
     }
 
     /**
@@ -357,6 +366,7 @@ public class NumberConverter
     public void setGroupingUsed(boolean groupingUsed)
     {
         _groupingUsed = groupingUsed;
+        clearInitialState();
     }
 
     /**
@@ -372,6 +382,7 @@ public class NumberConverter
     public void setIntegerOnly(boolean integerOnly)
     {
         _integerOnly = integerOnly;
+        clearInitialState();
     }
 
     /**
@@ -390,6 +401,7 @@ public class NumberConverter
     public void setLocale(Locale locale)
     {
         _locale = locale;
+        clearInitialState();
     }
 
     /**
@@ -406,6 +418,7 @@ public class NumberConverter
     {
         _maxFractionDigitsSet = true;
         _maxFractionDigits = maxFractionDigits;
+        clearInitialState();
     }
 
     /**
@@ -422,6 +435,7 @@ public class NumberConverter
     {
         _maxIntegerDigitsSet = true;
         _maxIntegerDigits = maxIntegerDigits;
+        clearInitialState();
     }
 
     /**
@@ -438,6 +452,7 @@ public class NumberConverter
     {
         _minFractionDigitsSet = true;
         _minFractionDigits = minFractionDigits;
+        clearInitialState();
     }
 
     /**
@@ -454,6 +469,7 @@ public class NumberConverter
     {
         _minIntegerDigitsSet = true;
         _minIntegerDigits = minIntegerDigits;
+        clearInitialState();
     }
 
     /**
@@ -469,6 +485,7 @@ public class NumberConverter
     public void setPattern(String pattern)
     {
         _pattern = pattern;
+        clearInitialState();
     }
 
     public boolean isTransient()
@@ -496,6 +513,7 @@ public class NumberConverter
     {
         //TODO: validate type
         _type = type;
+        clearInitialState();
     }
 
     private static boolean checkJavaVersion14()
@@ -554,5 +572,25 @@ public class NumberConverter
     private DecimalFormatSymbols getDecimalFormatSymbols()
     {
         return new DecimalFormatSymbols(getLocale());
+    }
+    
+    private boolean _initialStateMarked = false;
+
+    @Override
+    public void clearInitialState()
+    {
+        _initialStateMarked = false;
+    }
+
+    @Override
+    public boolean initialStateMarked()
+    {
+        return _initialStateMarked;
+    }
+
+    @Override
+    public void markInitialState()
+    {
+        _initialStateMarked = true;
     }
 }

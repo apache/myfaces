@@ -18,6 +18,7 @@
  */
 package javax.faces.validator;
 
+import javax.faces.component.PartialStateHolder;
 import javax.faces.component.StateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -50,7 +51,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidat
     returnType = "javax.faces.validator.DoubleRangeValidator",
     longDesc = "A ValueExpression that evaluates to a DoubleRangeValidator.")
 public class DoubleRangeValidator
-        implements Validator, StateHolder
+        implements Validator, PartialStateHolder
 {
     // FIELDS
     public static final String VALIDATOR_ID       = "javax.faces.DoubleRange";
@@ -157,6 +158,7 @@ public class DoubleRangeValidator
     public void setMaximum(double maximum)
     {
         _maximum = new Double(maximum);
+        clearInitialState();
     }
 
     /**
@@ -172,24 +174,32 @@ public class DoubleRangeValidator
     public void setMinimum(double minimum)
     {
         _minimum = new Double(minimum);
+        clearInitialState();
     }
 
 
     // RESTORE/SAVE STATE
     public Object saveState(FacesContext context)
     {
-        Object values[] = new Object[2];
-        values[0] = _maximum;
-        values[1] = _minimum;
-        return values;
+        if (!initialStateMarked())
+        {
+            Object values[] = new Object[2];
+            values[0] = _maximum;
+            values[1] = _minimum;
+            return values;
+        }
+        return null;
     }
 
     public void restoreState(FacesContext context,
                              Object state)
     {
-        Object values[] = (Object[])state;
-        _maximum = (Double)values[0];
-        _minimum = (Double)values[1];
+        if (state != null)
+        {
+            Object values[] = (Object[])state;
+            _maximum = (Double)values[0];
+            _minimum = (Double)values[1];
+        }
     }
 
     public boolean isTransient()
@@ -217,4 +227,23 @@ public class DoubleRangeValidator
         return true;
     }
 
+    private boolean _initialStateMarked = false;
+
+    @Override
+    public void clearInitialState()
+    {
+        _initialStateMarked = false;
+    }
+
+    @Override
+    public boolean initialStateMarked()
+    {
+        return _initialStateMarked;
+    }
+
+    @Override
+    public void markInitialState()
+    {
+        _initialStateMarked = true;
+    }
 }

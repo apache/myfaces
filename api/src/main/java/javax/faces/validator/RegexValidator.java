@@ -18,17 +18,17 @@
  */
 package javax.faces.validator;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidator;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
-
-import javax.faces.component.StateHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.el.ValueExpression;
-import javax.el.ELContext;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+
+import javax.el.ELContext;
+import javax.faces.component.PartialStateHolder;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidator;
 
 /**
  * <p>
@@ -85,7 +85,7 @@ import java.util.regex.PatternSyntaxException;
     name="binding",
     returnType = "javax.faces.validator.RegexValidator",
     longDesc = "A ValueExpression that evaluates to a RegexValidator.")
-public class RegexValidator implements Validator, StateHolder
+public class RegexValidator implements Validator, PartialStateHolder
 {
 
     /**
@@ -175,13 +175,22 @@ public class RegexValidator implements Validator, StateHolder
     /** {@inheritDoc} */
     public Object saveState(FacesContext context)
     {
-        return pattern;
+        if (!initialStateMarked())
+        {
+            return pattern;
+        }
+        return null;
     }
 
     /** {@inheritDoc} */
     public void restoreState(FacesContext context, Object state)
     {
-        this.pattern = (String) state;
+        if (state != null)
+        {
+            //Since pattern is required, if state is null
+            //nothing has changed
+            this.pattern = (String) state;
+        }
     }
 
     // SETTER & GETTER
@@ -208,6 +217,7 @@ public class RegexValidator implements Validator, StateHolder
     {
         //TODO: Validate input parameter
         this.pattern = pattern;
+        clearInitialState();
     }
 
     /**
@@ -221,4 +231,23 @@ public class RegexValidator implements Validator, StateHolder
         return this.pattern;
     }
 
+    private boolean _initialStateMarked = false;
+
+    @Override
+    public void clearInitialState()
+    {
+        _initialStateMarked = false;
+    }
+
+    @Override
+    public boolean initialStateMarked()
+    {
+        return _initialStateMarked;
+    }
+
+    @Override
+    public void markInitialState()
+    {
+        _initialStateMarked = true;
+    }
 }
