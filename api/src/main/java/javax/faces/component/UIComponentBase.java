@@ -23,10 +23,12 @@ import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
@@ -85,6 +87,8 @@ public abstract class UIComponentBase extends UIComponent
     private UIComponent _parent = null;
     private boolean _transient = false;
 
+    private Map<String, List<ClientBehavior>> _behaviorsMap = null;
+    
     public UIComponentBase()
     {
     }
@@ -296,7 +300,53 @@ public abstract class UIComponentBase extends UIComponent
      */
     public void addClientBehavior(String eventName, ClientBehavior behavior)
     {
-        // TODO: IMPLEMENT HERE
+        Collection<String> eventNames = getEventNames();
+        
+        if(eventNames == null)
+        {
+            //component didn't implement getEventNames properly
+            //log an error and return
+            if(log.isErrorEnabled())
+            {
+                log.error("attempted to add a behavior to a component which did not properly implement getEventNames.  getEventNames must not return null");
+                return;
+            }
+        }
+        
+        if(eventNames.contains(eventName))
+        {
+            if (initialStateMarked()) 
+            {
+                if (_behaviorsMap != null) 
+                {
+                    for (String key : _behaviorsMap.keySet()) 
+                    {
+                        for (ClientBehavior curBehavior : _behaviorsMap.get(key)) 
+                        {
+                            if (curBehavior instanceof PartialStateHolder) 
+                            {
+                                ((PartialStateHolder)behavior).clearInitialState();
+                            }
+                        }
+                    }
+                }
+            }
+            
+            if(_behaviorsMap == null)
+            {
+                _behaviorsMap = new HashMap<String,List<ClientBehavior>>();
+            }
+            
+            List<ClientBehavior> behaviorsForEvent = _behaviorsMap.get(eventName);
+            if(behaviorsForEvent == null)
+            {
+                behaviorsForEvent = new ArrayList<ClientBehavior>();
+                _behaviorsMap.put(eventName, behaviorsForEvent);
+            }
+            
+            behaviorsForEvent.add(behavior);
+            
+        }
     }
 
     /**
@@ -632,8 +682,12 @@ public abstract class UIComponentBase extends UIComponent
      */
     public Map<String,List<ClientBehavior>> getClientBehaviors()
     {
-        // TODO: IMPLEMENT HERE
-        return null;
+        if(_behaviorsMap == null)
+        {
+            return Collections.emptyMap();
+        }
+
+        return wrapBehaviorsMap();
     }
 
     /**
@@ -731,7 +785,7 @@ public abstract class UIComponentBase extends UIComponent
      */
     public String getDefaultEventName()
     {
-        // TODO: IMPLEMENT HERE
+        // if a default event exists for a component, this method is overriden thus assume null
         return null;
     }
     
@@ -743,7 +797,7 @@ public abstract class UIComponentBase extends UIComponent
      */
     public Collection<String> getEventNames()
     {
-        // TODO: IMPLEMENT HERE
+        // must be specified by the implementing component.  Returning null will force an error message in addClientBehavior.
         return null;
     }
 
@@ -1719,4 +1773,8 @@ public abstract class UIComponentBase extends UIComponent
 
     // ------------------ GENERATED CODE END ---------------------------------------
 
+    private Map<String, List<ClientBehavior>> wrapBehaviorsMap()
+    {
+        return Collections.unmodifiableMap(_behaviorsMap);
+    }
 }
