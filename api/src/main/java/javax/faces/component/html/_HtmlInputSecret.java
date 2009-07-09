@@ -45,7 +45,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 (name = "h:inputSecret",
 clazz = "javax.faces.component.html.HtmlInputSecret",template=true,
 tagClass = "org.apache.myfaces.taglib.html.HtmlInputSecretTag",
-defaultRendererType = "javax.faces.Secret"
+defaultRendererType = "javax.faces.Secret",
+implementz = "javax.faces.component.behavior.ClientBehaviorHolder"
 )
 abstract class _HtmlInputSecret extends UIInput implements _AccesskeyProperty,
     _AltProperty, _UniversalProperties, _FocusBlurProperties, _EventProperties,

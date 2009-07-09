@@ -38,7 +38,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 (name = "h:dataTable",
 clazz = "javax.faces.component.html.HtmlDataTable",template=true,
 tagClass = "org.apache.myfaces.taglib.html.HtmlDataTableTag",
-defaultRendererType = "javax.faces.Table"
+defaultRendererType = "javax.faces.Table",
+implementz = "javax.faces.component.behavior.ClientBehaviorHolder"
 )
 abstract class _HtmlDataTable extends UIData
     implements _EventProperties, _StyleProperties, _UniversalProperties 

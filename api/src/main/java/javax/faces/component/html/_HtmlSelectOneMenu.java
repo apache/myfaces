@@ -57,7 +57,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 (name = "h:selectOneMenu",
 clazz = "javax.faces.component.html.HtmlSelectOneMenu",template=true,
 tagClass = "org.apache.myfaces.taglib.html.HtmlSelectOneMenuTag",
-defaultRendererType = "javax.faces.Menu"
+defaultRendererType = "javax.faces.Menu",
+implementz = "javax.faces.component.behavior.ClientBehaviorHolder"
 )
 abstract class _HtmlSelectOneMenu extends UISelectOne implements
 _AccesskeyProperty, _UniversalProperties, _DisabledReadonlyProperties,

@@ -54,7 +54,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 (name = "h:selectOneRadio",
 clazz = "javax.faces.component.html.HtmlSelectOneRadio",template=true,
 tagClass = "org.apache.myfaces.taglib.html.HtmlSelectOneRadioTag",
-defaultRendererType = "javax.faces.Radio"
+defaultRendererType = "javax.faces.Radio",
+implementz = "javax.faces.component.behavior.ClientBehaviorHolder"
 )
 abstract class _HtmlSelectOneRadio extends UISelectOne implements
 _AccesskeyProperty, _UniversalProperties, _DisabledReadonlyProperties,

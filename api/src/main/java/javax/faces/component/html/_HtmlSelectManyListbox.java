@@ -65,7 +65,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 (name = "h:selectManyListbox",
 clazz = "javax.faces.component.html.HtmlSelectManyListbox",template=true,
 tagClass = "org.apache.myfaces.taglib.html.HtmlSelectManyListboxTag",
-defaultRendererType = "javax.faces.Listbox"
+defaultRendererType = "javax.faces.Listbox",
+implementz = "javax.faces.component.behavior.ClientBehaviorHolder"
 )
 abstract class _HtmlSelectManyListbox extends UISelectMany implements 
 _AccesskeyProperty, _UniversalProperties, _DisabledReadonlyProperties,

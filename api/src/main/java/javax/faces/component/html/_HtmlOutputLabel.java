@@ -31,7 +31,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 (name = "h:outputLabel",
 clazz = "javax.faces.component.html.HtmlOutputLabel",template=true,
 tagClass = "org.apache.myfaces.taglib.html.HtmlOutputLabelTag",
-defaultRendererType = "javax.faces.Label"
+defaultRendererType = "javax.faces.Label",
+implementz = "javax.faces.component.behavior.ClientBehaviorHolder"
 )
 abstract class _HtmlOutputLabel extends UIOutput implements _FocusBlurProperties,
 _EventProperties, _StyleProperties, _UniversalProperties, _AccesskeyProperty,

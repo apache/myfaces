@@ -34,7 +34,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 (name = "h:graphicImage",
 clazz = "javax.faces.component.html.HtmlGraphicImage",template=true,
 tagClass = "org.apache.myfaces.taglib.html.HtmlGraphicImageTag",
-defaultRendererType = "javax.faces.Image"
+defaultRendererType = "javax.faces.Image",
+implementz = "javax.faces.component.behavior.ClientBehaviorHolder"
 )
 abstract class _HtmlGraphicImage extends UIGraphic 
     implements _EventProperties,

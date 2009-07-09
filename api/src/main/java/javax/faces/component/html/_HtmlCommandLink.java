@@ -46,7 +46,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 (name = "h:commandLink",
 clazz = "javax.faces.component.html.HtmlCommandLink",template=true,
 tagClass = "org.apache.myfaces.taglib.html.HtmlCommandLinkTag",
-defaultRendererType = "javax.faces.Link"
+defaultRendererType = "javax.faces.Link",
+implementz = "javax.faces.component.behavior.ClientBehaviorHolder"
 )
 abstract class _HtmlCommandLink extends UICommand
     implements _EventProperties, _UniversalProperties, _StyleProperties,

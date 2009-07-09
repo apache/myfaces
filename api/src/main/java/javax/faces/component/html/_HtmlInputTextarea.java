@@ -44,7 +44,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 (name = "h:inputTextarea",
 clazz = "javax.faces.component.html.HtmlInputTextarea",template=true,
 tagClass = "org.apache.myfaces.taglib.html.HtmlInputTextareaTag",
-defaultRendererType = "javax.faces.Textarea"
+defaultRendererType = "javax.faces.Textarea",
+implementz = "javax.faces.component.behavior.ClientBehaviorHolder"
 )
 abstract class _HtmlInputTextarea extends UIInput implements _AccesskeyProperty,
     _UniversalProperties, _FocusBlurProperties, _ChangeSelectProperties,

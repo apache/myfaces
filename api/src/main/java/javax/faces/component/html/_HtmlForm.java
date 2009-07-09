@@ -30,7 +30,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 (name = "h:form",
 clazz = "javax.faces.component.html.HtmlForm",template=true,
 tagClass = "org.apache.myfaces.taglib.html.HtmlFormTag",
-defaultRendererType = "javax.faces.Form"
+defaultRendererType = "javax.faces.Form",
+implementz = "javax.faces.component.behavior.ClientBehaviorHolder"
 )
 abstract class _HtmlForm extends UIForm
     implements _EventProperties, _UniversalProperties, _StyleProperties

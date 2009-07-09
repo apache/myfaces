@@ -32,7 +32,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 (name = "h:outputLink",
 clazz = "javax.faces.component.html.HtmlOutputLink",template=true,
 tagClass = "org.apache.myfaces.taglib.html.HtmlOutputLinkTag",
-defaultRendererType = "javax.faces.Link"
+defaultRendererType = "javax.faces.Link",
+implementz = "javax.faces.component.behavior.ClientBehaviorHolder"
 )
 abstract class _HtmlOutputLink extends UIOutput implements _AccesskeyProperty,
 _UniversalProperties, _FocusBlurProperties, _EventProperties, _StyleProperties,
