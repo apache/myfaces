@@ -119,6 +119,6 @@ class PhaseListenerManager
         
         context.getAttributes().put (key, Boolean.TRUE);
         
-        facesContext.getApplication().publishEvent (ExceptionQueuedEvent.class, context);
+        facesContext.getApplication().publishEvent (facesContext, ExceptionQueuedEvent.class, context);
     }
 }

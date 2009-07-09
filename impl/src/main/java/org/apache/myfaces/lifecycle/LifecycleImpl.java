@@ -288,6 +288,6 @@ public class LifecycleImpl extends Lifecycle
     {
         ExceptionQueuedEventContext context = new ExceptionQueuedEventContext (facesContext, e, null, phaseId);
         
-        facesContext.getApplication().publishEvent (ExceptionQueuedEvent.class, context);
+        facesContext.getApplication().publishEvent (facesContext, ExceptionQueuedEvent.class, context);
     }
 }

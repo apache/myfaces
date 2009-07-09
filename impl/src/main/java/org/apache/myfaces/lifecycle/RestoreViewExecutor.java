@@ -120,7 +120,7 @@ class RestoreViewExecutor implements PhaseExecutor
             facesContext.renderResponse();
             
             // Publish an AfterAddToParent event with the created UIViewRoot as the event source.
-            application.publishEvent(PostAddToViewEvent.class, viewRoot);
+            application.publishEvent(facesContext, PostAddToViewEvent.class, viewRoot);
         }
 
         return false;

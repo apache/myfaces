@@ -443,7 +443,7 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public void publishEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source)
+    public void publishEvent(FacesContext facesContext, Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source)
     {
         checkNull(systemEventClass, "systemEventClass");
         checkNull(source, "source");
@@ -479,9 +479,9 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public void publishEvent(Class<? extends SystemEvent> systemEventClass, Object source)
+    public void publishEvent(FacesContext facesContext, Class<? extends SystemEvent> systemEventClass, Object source)
     {
-        publishEvent(systemEventClass, source.getClass(), source);
+        publishEvent(facesContext, systemEventClass, source.getClass(), source);
     }
 
     @Override
