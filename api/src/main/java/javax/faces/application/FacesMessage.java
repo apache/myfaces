@@ -101,6 +101,7 @@ public class FacesMessage implements Serializable
     private FacesMessage.Severity _severity;
     private String _summary;
     private String _detail;
+    private boolean _rendered;
 
     /**
      *Construct a new {@link FacesMessage} with no initial values. The severity is set to Severity.INFO.
@@ -108,6 +109,7 @@ public class FacesMessage implements Serializable
     public FacesMessage()
     {
         _severity = SEVERITY_INFO;
+        _rendered = false;
     }
 
     /**
@@ -118,6 +120,7 @@ public class FacesMessage implements Serializable
     {
         _summary = summary;
         _severity = SEVERITY_INFO;
+        _rendered = false;
     }
 
     /**
@@ -133,6 +136,7 @@ public class FacesMessage implements Serializable
         _summary = summary;
         _detail = detail;
         _severity = SEVERITY_INFO;
+        _rendered = false;
     }
 
     /**
@@ -152,6 +156,7 @@ public class FacesMessage implements Serializable
         _severity = severity;
         _summary = summary;
         _detail = detail;
+        _rendered = false;
     }
 
     /**
@@ -244,6 +249,16 @@ public class FacesMessage implements Serializable
         {
             return getOrdinal() - o.getOrdinal();
         }
+    }
+
+    public boolean isRendered()
+    {
+        return _rendered;
+    }
+
+    public void rendered()
+    {
+        this._rendered = true;
     }
 
 }
