@@ -23,7 +23,7 @@ import javax.el.ValueExpression;
 public class UIOutcomeTarget extends UIOutput
 {
     public static final String COMPONENT_TYPE = "javax.faces.OutcomeTarget";
-    public static final String COMPONENT_FAMILY = "javax.faces.UIOutcomeTarget";
+    public static final String COMPONENT_FAMILY = "javax.faces.OutcomeTarget";
     
     private static final boolean DEFAULT_INCLUDEVIEWPARAMS = false;
     
