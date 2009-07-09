@@ -89,7 +89,7 @@ public class RestoreViewExecutorTest extends FacesTestCase
 
         expect(_viewHandler.createView(same(_facesContext), eq("calculatedViewId"))).andReturn(viewRoot);
 
-        _application.publishEvent(_facesContext, same(PostAddToViewEvent.class), same(viewRoot));
+        _application.publishEvent(same(_facesContext), same(PostAddToViewEvent.class), same(viewRoot));
         _facesContext.setViewRoot(same(viewRoot));
 
         _mocksControl.replay();
