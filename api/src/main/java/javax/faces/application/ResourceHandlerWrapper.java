@@ -18,6 +18,7 @@
  */
 package javax.faces.application;
 
+import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
 
 /**
@@ -27,6 +28,7 @@ import javax.faces.context.FacesContext;
  * @since 2.0
  */
 public abstract class ResourceHandlerWrapper extends ResourceHandler
+    implements FacesWrapper<ResourceHandler>
 {
     @Override
     public Resource createResource(String resourceName)
@@ -70,5 +72,5 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler
         return getWrapped().libraryExists(libraryName);
     }
     
-    protected abstract ResourceHandler getWrapped();
+    public abstract ResourceHandler getWrapped();
 }

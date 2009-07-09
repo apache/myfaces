@@ -21,7 +21,9 @@ package javax.faces.application;
 
 import java.io.IOException;
 import java.util.Locale;
+
 import javax.faces.FacesException;
+import javax.faces.FacesWrapper;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
@@ -31,6 +33,7 @@ import javax.faces.context.FacesContext;
  * @author Stan Silvert
  */
 public abstract class ViewHandlerWrapper extends ViewHandler
+    implements FacesWrapper<ViewHandler>
 {
 
     @Override
@@ -45,7 +48,7 @@ public abstract class ViewHandlerWrapper extends ViewHandler
         getWrapped().initView(context);
     }
 
-    protected abstract ViewHandler getWrapped();
+    public abstract ViewHandler getWrapped();
 
     @Override
     public void renderView(FacesContext context, UIViewRoot viewToRender) throws IOException, FacesException

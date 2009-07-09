@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Map;
 
+import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
 
 /**
@@ -31,6 +32,7 @@ import javax.faces.context.FacesContext;
  * @since 2.0
  */
 public abstract class ResourceWrapper extends Resource
+    implements FacesWrapper<Resource>
 {
     @Override
     public InputStream getInputStream()
@@ -62,5 +64,5 @@ public abstract class ResourceWrapper extends Resource
         return getWrapped().userAgentNeedsUpdate(context);
     }
     
-    protected abstract Resource getWrapped();
+    public abstract Resource getWrapped();
 }
