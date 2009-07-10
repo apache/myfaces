@@ -47,6 +47,8 @@ import javax.faces.event.PhaseListener;
 import javax.faces.event.PostConstructViewMapEvent;
 import javax.faces.event.PostRestoreStateEvent;
 import javax.faces.event.PreDestroyViewMapEvent;
+import javax.faces.event.SystemEvent;
+import javax.faces.event.SystemEventListener;
 import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.view.ViewDeclarationLanguage;
@@ -1115,6 +1117,24 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             //Full
             _beforePhaseListener = (javax.el.MethodExpression) restoreAttachedState(facesContext,values[2]);
         }
+    }
+    
+    public List<SystemEventListener> getViewListenersForEventClass(Class<? extends SystemEvent> systemEvent)
+    {
+        //TODO: Implement this method
+        return null;
+    }
+    
+    public void subscribeToViewEvent(Class<? extends SystemEvent> systemEvent,
+            SystemEventListener listener)
+    {
+        //TODO: Implement this method
+    }
+    
+    public void unsubscribeFromViewEvent(Class<? extends SystemEvent> systemEvent,
+            SystemEventListener listener)
+    {
+        //TODO: Implement this method
     }
 
     /**
