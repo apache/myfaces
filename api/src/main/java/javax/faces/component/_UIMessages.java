@@ -69,4 +69,24 @@ abstract class _UIMessages extends UIComponentBase
   (defaultValue = "true")
   public abstract boolean isShowSummary();
   
+  /**
+   * Indicate this component should render already handled messages.
+   * Default value is true
+   * 
+   * @since 2.0
+   * @return
+   */
+  @JSFProperty
+  (defaultValue = "true")  
+  public abstract boolean isRedisplay();
+
+  /**
+   * The ID of the component whose attached FacesMessage object (if present) 
+   * should be diplayed by this component. It takes precedence over globalOnly.
+   *
+   * @since 2.0
+   * @return  the new for value
+   */
+  @JSFProperty
+  public abstract String getFor();  
 }

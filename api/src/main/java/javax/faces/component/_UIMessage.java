@@ -71,4 +71,14 @@ abstract class _UIMessage extends UIComponentBase
   (defaultValue = "false")
   public abstract boolean isShowSummary();
 
+  /**
+   * Indicate this component should render already handled messages.
+   * Default value is true
+   * 
+   * @since 2.0
+   * @return
+   */
+  @JSFProperty
+  (defaultValue = "true")  
+  public abstract boolean isRedisplay();
 }
