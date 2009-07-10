@@ -62,4 +62,13 @@ abstract class _HtmlColumn extends UIColumn
   @JSFProperty
   public abstract String getFooterClass();
 
+  /**
+   * If true the column is rendered with "th" and scope="row" attribute,
+   * instead "td"
+   *
+   * @since 2.0
+   * @return
+   */
+  @JSFProperty (defaultValue="false")
+  public abstract boolean isRowHeader();
 }
