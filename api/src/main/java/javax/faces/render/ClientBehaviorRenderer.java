@@ -33,12 +33,25 @@ public abstract class ClientBehaviorRenderer
 {
     public void decode(FacesContext context, UIComponent component, ClientBehavior behavior)
     {
-        // TODO: IMPLEMENT HERE
+        //default impl won't do anything...implementing classes will do the actual decoding.  
+        //just check for null args
+        if(context == null)
+        {
+            throw new NullPointerException("context argument must not be null");
+        }
+        if(component == null)
+        {
+            throw new NullPointerException("component argument must not be null");
+        }
+        if(behavior == null)
+        {
+            throw new NullPointerException("behavior argument must not be null");
+        }
     }
 
     public String getScript(ClientBehaviorContext behaviorContext, ClientBehavior behavior)
     {
-        // TODO: IMPLEMENT HERE
+        // default implementation returns null per the javadoc
         return null;
     }
 }

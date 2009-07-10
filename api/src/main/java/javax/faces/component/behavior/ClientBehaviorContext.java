@@ -31,12 +31,25 @@ import javax.faces.context.FacesContext;
  */
 public abstract class ClientBehaviorContext
 {
+
     public static ClientBehaviorContext createClientBehaviorContext(FacesContext context, UIComponent component, String eventName,
                                                         String sourceId, Collection<Parameter> parameters)
     {
-        // TODO: IMPLEMENT HERE
         // This method is weird... Creating a dummy impl class seems stupid, yet I don't see any other way...
-        return null;
+        if(context == null)
+        {
+            throw new NullPointerException("context argument must not be null");
+        }
+        if(component == null)
+        {
+            throw new NullPointerException("component argument must not be null");
+        }
+        if(eventName == null)
+        {
+            throw new NullPointerException("eventName argument must not be null");
+        }
+
+        return new ClientBehaviorContextImpl(context,component,eventName,sourceId, parameters);
     }
 
     public abstract UIComponent getComponent();
@@ -79,6 +92,55 @@ public abstract class ClientBehaviorContext
         public Object getValue()
         {
             return _value;
+        }
+    }
+    
+    private static final class ClientBehaviorContextImpl extends ClientBehaviorContext
+    {
+        private FacesContext _facesContext;
+        private UIComponent _component;
+        private String _eventName;
+        private String _sourceId;
+        private Collection<ClientBehaviorContext.Parameter> _parameters;
+        
+        public ClientBehaviorContextImpl(FacesContext context, UIComponent component, String eventName,
+                String sourceId, Collection<ClientBehaviorContext.Parameter> parameters)
+        {
+            _facesContext = context;
+            _component = component;
+            _eventName = eventName;
+            _sourceId = sourceId;
+            _parameters = parameters;            
+        }
+
+        @Override
+        public UIComponent getComponent()
+        {
+            return _component;
+        }
+
+        @Override
+        public String getEventName()
+        {
+            return _eventName;
+        }
+
+        @Override
+        public FacesContext getFacesContext()
+        {
+            return _facesContext;
+        }
+
+        @Override
+        public Collection<Parameter> getParameters()
+        {
+            return _parameters;
+        }
+
+        @Override
+        public String getSourceId()
+        {
+            return _sourceId;
         }
     }
 }
