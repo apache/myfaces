@@ -66,4 +66,12 @@ abstract class _UIParameter extends UIComponentBase
     @JSFProperty
     public abstract String getName();
 
+    /**
+     *  If this property is true, the value of this component is
+     *  just ignored or skipped.
+     *  
+     *  @since 2.0
+     */
+    @JSFProperty(defaultValue="false", tagExcluded=true)
+    public abstract boolean isDisable();
 }
