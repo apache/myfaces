@@ -31,7 +31,7 @@ import javax.faces.context.FacesContext;
  */
 public abstract class ClientBehaviorContext
 {
-    public static ClientBehaviorContext createBehaviorContext(FacesContext context, UIComponent component, String eventName,
+    public static ClientBehaviorContext createClientBehaviorContext(FacesContext context, UIComponent component, String eventName,
                                                         String sourceId, Collection<Parameter> parameters)
     {
         // TODO: IMPLEMENT HERE

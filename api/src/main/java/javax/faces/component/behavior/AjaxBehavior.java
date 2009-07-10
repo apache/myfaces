@@ -34,7 +34,7 @@ import javax.faces.event.AjaxBehaviorListener;
  * 
  * @since 2.0
  */
-public abstract class AjaxBehavior extends ClientBehaviorBase
+public class AjaxBehavior extends ClientBehaviorBase
 {
     public static final String BEHAVIOR_ID = "javax.faces.behavior.Ajax";
     
@@ -52,7 +52,7 @@ public abstract class AjaxBehavior extends ClientBehaviorBase
     private Boolean _immediate;
     private String _onError;
     private String _onEvent;
-    private Set<String> _render;
+    private Collection<String> _render;
     
     private Map<String, ValueExpression> _expressions;
     
@@ -72,7 +72,7 @@ public abstract class AjaxBehavior extends ClientBehaviorBase
         addBehaviorListener(listener);
     }
     
-    public Collection<String> getExecute(FacesContext context)
+    public Collection<String> getExecute()
     {
         return _getIds(ATTR_EXECUTE, _execute);
     }
@@ -84,17 +84,17 @@ public abstract class AjaxBehavior extends ClientBehaviorBase
         return HINTS;
     }
     
-    public String getOnError(FacesContext context)
+    public String getOnerror()
     {
         return _resolve(ATTR_ON_ERROR, _onError);
     }
     
-    public String getOnEvent(FacesContext context)
+    public String getOnevent()
     {
         return _resolve(ATTR_ON_EVENT, _onEvent);
     }
     
-    public Collection<String> getRender(FacesContext context)
+    public Collection<String> getRender()
     {
         return _getIds(ATTR_RENDER, _render);
     }
@@ -111,17 +111,17 @@ public abstract class AjaxBehavior extends ClientBehaviorBase
         return _expressions.get(name);
     }
     
-    public boolean isDisabled(FacesContext context)
+    public boolean isDisabled()
     {
         return Boolean.TRUE.equals(_resolve(ATTR_DISABLED, _disabled));
     }
     
-    public boolean isImmediate(FacesContext context)
+    public boolean isImmediate()
     {
         return Boolean.TRUE.equals(_resolve(ATTR_IMMEDIATE, _immediate));
     }
     
-    public boolean isImmediateSet(FacesContext context)
+    public boolean isImmediateSet()
     {
         return _immediate != null || _expressions.containsKey(ATTR_IMMEDIATE);
     }
@@ -145,7 +145,7 @@ public abstract class AjaxBehavior extends ClientBehaviorBase
         return super.saveState(context);
     }
     
-    public void setDisabled(Boolean disabled)
+    public void setDisabled(boolean disabled)
     {
         this._disabled = disabled;
     }
@@ -155,22 +155,22 @@ public abstract class AjaxBehavior extends ClientBehaviorBase
         this._execute = execute;
     }
 
-    public void setImmediate(Boolean immediate)
+    public void setImmediate(boolean immediate)
     {
         this._immediate = immediate;
     }
 
-    public void setOnError(String error)
+    public void setOnerror(String error)
     {
         _onError = error;
     }
 
-    public void setOnEvent(String event)
+    public void setOnevent(String event)
     {
         _onEvent = event;
     }
 
-    public void setRender(Set<String> render)
+    public void setRender(Collection<String> render)
     {
         this._render = render;
     }
