@@ -548,7 +548,7 @@ public class FacesContextImpl extends FacesContext
     }
 
     @Override
-    public boolean getValidationFailed()
+    public boolean isValidationFailed()
     {
         assertNotReleased();
         
