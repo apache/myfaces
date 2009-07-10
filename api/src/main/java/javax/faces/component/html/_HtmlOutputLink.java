@@ -21,6 +21,7 @@ package javax.faces.component.html;
 import javax.faces.component.UIOutput;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
  * Renders a HTML a element.
@@ -45,4 +46,11 @@ _TabindexProperty, _LinkProperties
   static public final String COMPONENT_TYPE =
     "javax.faces.HtmlOutputLink";
 
+  /**
+   * append text to url after '#'
+   * 
+   * @return
+   */
+  @JSFProperty
+  public abstract String getFragment();
 }
