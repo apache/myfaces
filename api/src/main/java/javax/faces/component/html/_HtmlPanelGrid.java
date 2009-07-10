@@ -55,6 +55,14 @@ _StyleProperties, _UniversalProperties
   public abstract String getBgcolor();
 
   /**
+   * CSV of several row index to start (and end a previous) tbody element
+   * 
+   * @since 2.0
+   */
+  @JSFProperty
+  public abstract String getBodyrows();
+  
+  /**
    * HTML: Specifies the width of the border of this element, in pixels.  Deprecated in HTML 4.01.
    * 
    * @JSFProperty
