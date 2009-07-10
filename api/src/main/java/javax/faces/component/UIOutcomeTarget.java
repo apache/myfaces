@@ -18,17 +18,20 @@
  */
 package javax.faces.component;
 
-import javax.el.ValueExpression;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
+/**
+ * 
+ * @since 2.0
+ */
+@JSFComponent
 public class UIOutcomeTarget extends UIOutput
 {
     public static final String COMPONENT_TYPE = "javax.faces.OutcomeTarget";
     public static final String COMPONENT_FAMILY = "javax.faces.OutcomeTarget";
     
     private static final boolean DEFAULT_INCLUDEVIEWPARAMS = false;
-    
-    private String _outcome;
-    private boolean _includeViewParams;
     
     public UIOutcomeTarget()
     {
@@ -41,41 +44,37 @@ public class UIOutcomeTarget extends UIOutput
         return COMPONENT_FAMILY;
     }
 
+    @JSFProperty
     public String getOutcome()
     {
-        if (_outcome != null)
-        {
-            return _outcome;
-        }
+        String outcome = (String) getStateHelper().eval(PropertyKeys.outcome);
         
-        ValueExpression expression = getValueExpression("Outcome");
-        if (expression != null)
-        {
-            return (String) expression.getValue(getFacesContext().getELContext());
-        }
-        
-        if(isInView())  //default to the view id
+        if(outcome == null && isInView())  //default to the view id
         {
             return getFacesContext().getViewRoot().getViewId();
         }
         
-        return _outcome;
+        return outcome;
     }
 
     public void setOutcome(String outcome)
     {
-        _outcome = outcome;
+        getStateHelper().put(PropertyKeys.outcome, outcome);
     }
 
+    @JSFProperty(defaultValue="false")
     public boolean isIncludeViewParams()
     {        
-        return getExpressionValue("includePageParams", _includeViewParams, DEFAULT_INCLUDEVIEWPARAMS);
+        return (Boolean) getStateHelper().eval(PropertyKeys.includeViewParams, DEFAULT_INCLUDEVIEWPARAMS);
     }
 
     public void setIncludeViewParams(boolean includeViewParams)
     {
-        _includeViewParams = includeViewParams;
+        getStateHelper().put(PropertyKeys.includeViewParams, includeViewParams);
     }
-
     
+    enum PropertyKeys {
+        includeViewParams,
+        outcome
+    }
 }
