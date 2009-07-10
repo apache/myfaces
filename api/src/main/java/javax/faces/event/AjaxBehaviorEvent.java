@@ -19,7 +19,7 @@
 package javax.faces.event;
 
 import javax.faces.component.UIComponent;
-import javax.faces.component.behavior.ClientBehavior;
+import javax.faces.component.behavior.Behavior;
 
 /**
  * @author Simon Lessard (latest modification by $Author: slessard $)
@@ -34,7 +34,7 @@ public class AjaxBehaviorEvent extends BehaviorEvent
      * @param component
      * @param behavior
      */
-    public AjaxBehaviorEvent(UIComponent component, ClientBehavior behavior)
+    public AjaxBehaviorEvent(UIComponent component, Behavior behavior)
     {
         super(component, behavior);
     }

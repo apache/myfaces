@@ -19,6 +19,7 @@
 package javax.faces.event;
 
 import javax.faces.component.UIComponent;
+import javax.faces.component.behavior.Behavior;
 import javax.faces.component.behavior.ClientBehavior;
 
 /**
@@ -29,16 +30,16 @@ import javax.faces.component.behavior.ClientBehavior;
  */
 public abstract class BehaviorEvent extends FacesEvent
 {
-    private ClientBehavior _behavior;
+    private Behavior _behavior;
     
-    public BehaviorEvent(UIComponent component, ClientBehavior behavior) 
+    public BehaviorEvent(UIComponent component, Behavior behavior) 
     {
         super(component);
         
         _behavior = behavior;
     }
     
-    public ClientBehavior getBehavior()
+    public Behavior getBehavior()
     {
         return _behavior;
     }
