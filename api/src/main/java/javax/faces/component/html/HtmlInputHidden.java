@@ -69,4 +69,9 @@ public class HtmlInputHidden extends UIInput
   {
     return COMPONENT_FAMILY;
   }
+  
+  protected enum PropertyKeys
+  {
+      //No properties, but we need it for maintain binary compatibility
+  }
 }
