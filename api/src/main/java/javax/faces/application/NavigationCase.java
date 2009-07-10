@@ -20,6 +20,8 @@ package javax.faces.application;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
 
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
@@ -45,7 +47,7 @@ public class NavigationCase
     private ValueExpression _conditionExpression;
 
     public NavigationCase(String fromViewId, String fromAction, String fromOutcome, String condition, String toViewId,
-                          boolean redirect, boolean includeViewParams)
+            Map<String,List<String>> parameters, boolean redirect, boolean includeViewParams)
     {
         _condition = condition;
         _fromViewId = fromViewId;
@@ -54,6 +56,7 @@ public class NavigationCase
         _toViewId = toViewId;
         _redirect = redirect;
         _includeViewParams = includeViewParams;
+        //TODO: deal with parameters
     }
 
     /**
@@ -92,8 +95,9 @@ public class NavigationCase
                 ^ hash(Boolean.valueOf(_includeViewParams));
     }
 
-    public URL getActionURL() throws MalformedURLException
+    public URL getActionURL(FacesContext context) throws MalformedURLException
     {
+        //TODO: Implementation goes here
         return null;
     }
 
@@ -123,10 +127,29 @@ public class NavigationCase
     {
         return _fromViewId;
     }
-
-    public URL getResourceURL() throws MalformedURLException
+    
+    public URL getBookmarkableURL(FacesContext context) throws MalformedURLException
     {
+        //TODO: Implementation goes here
+        return null;        
+    }
+
+    public URL getResourceURL(FacesContext context) throws MalformedURLException
+    {
+        //TODO: Implementation goes here
         return null;
+    }
+    
+    public URL getRedirectURL(FacesContext context) throws MalformedURLException
+    {
+        //TODO: Implementation goes here
+        return null;
+    }
+    
+    public Map<String,List<String>> getParameters()
+    {
+        //TODO: Implementation goes here
+        return null;        
     }
 
     public String getToViewId(FacesContext context)
