@@ -103,4 +103,14 @@ abstract class _UISelectItem extends UIComponentBase
     @JSFProperty
     public abstract Object getItemValue();
 
+    /**
+     * Indicate this component represent no selection option. 
+     * Default value is false.
+     * 
+     * @since 2.0
+     * @return is the component represent no select option
+     */
+    @JSFProperty
+    (defaultValue="false")
+    public abstract boolean isNoSelectionOption();
 }
