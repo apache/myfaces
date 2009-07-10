@@ -21,6 +21,7 @@ package javax.faces.component.html;
 import javax.faces.component.UISelectMany;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
  * Allow the user to select zero or more items from a set of available options.
@@ -92,5 +93,23 @@ abstract class _HtmlSelectManyCheckbox extends UISelectMany implements
    * @JSFProperty
    */
   public abstract String getLayout();
+  
+  /**
+   * CSS class to be applied to selected items
+   * 
+   * @since 2.0
+   * @return
+   */
+  @JSFProperty
+  public abstract String getSelectedClass();
+
+  /**
+   * CSS class to be applied to unselected items
+   * 
+   * @since 2.0
+   * @return
+   */
+  @JSFProperty
+  public abstract String getUnselectedClass();
 
 }
