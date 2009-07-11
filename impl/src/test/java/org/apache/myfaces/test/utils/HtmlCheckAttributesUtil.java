@@ -61,9 +61,7 @@ public class HtmlCheckAttributesUtil
     {
         
         addBaseAttributes(component, attrs);
-        component.encodeBegin(context);
-        component.encodeChildren(context);
-        component.encodeEnd(context);
+        component.encodeAll(context);
         context.renderResponse();
         checkRenderedAttributes(attrs, writer.getWriter().toString());
     }
