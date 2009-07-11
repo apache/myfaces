@@ -85,6 +85,7 @@ import org.apache.myfaces.config.impl.digester.elements.FacesConfigNameSlot;
 import org.apache.myfaces.config.impl.digester.elements.OrderSlot;
 import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
 import org.apache.myfaces.config.impl.digester.elements.SystemEventListener;
+import org.apache.myfaces.context.ExceptionHandlerFactoryImpl;
 import org.apache.myfaces.context.FacesContextFactoryImpl;
 import org.apache.myfaces.context.PartialViewContextFactoryImpl;
 import org.apache.myfaces.el.DefaultPropertyResolver;
@@ -129,6 +130,7 @@ public class FacesConfigurator
     private static final String DEFAULT_PARTIAL_VIEW_CONTEXT_FACTORY = PartialViewContextFactoryImpl.class.getName();
     private static final String DEFAULT_VISIT_CONTEXT_FACTORY = VisitContextFactoryImpl.class.getName();
     private static final String DEFAULT_VIEW_DECLARATION_LANGUAGE_FACTORY = ViewDeclarationLanguageFactoryImpl.class.getName();
+    private static final String DEFAULT_EXCEPTION_HANDLER_FACTORY = ExceptionHandlerFactoryImpl.class.getName();
     private static final String DEFAULT_FACES_CONFIG = "/WEB-INF/faces-config.xml";
 
     private static final Set<String> FACTORY_NAMES = new HashSet<String>();
@@ -140,6 +142,7 @@ public class FacesConfigurator
         FACTORY_NAMES.add(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.VISIT_CONTEXT_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);
+        FACTORY_NAMES.add(FactoryFinder.EXCEPTION_HANDLER_FACTORY);
     }
 
     private final ExternalContext _externalContext;
@@ -1508,6 +1511,8 @@ public class FacesConfigurator
                      DEFAULT_VISIT_CONTEXT_FACTORY);
         setFactories(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY, dispenser.getViewDeclarationLanguageFactoryIterator(),
                 DEFAULT_VIEW_DECLARATION_LANGUAGE_FACTORY);
+        setFactories(FactoryFinder.EXCEPTION_HANDLER_FACTORY, dispenser.getExceptionHandlerFactoryIterator(),
+                DEFAULT_EXCEPTION_HANDLER_FACTORY);
     }
 
     private void setFactories(String factoryName, Collection<String> factories, String defaultFactory)
