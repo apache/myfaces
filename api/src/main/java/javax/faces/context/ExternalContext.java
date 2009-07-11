@@ -87,7 +87,11 @@ public abstract class ExternalContext
     /**
      * @since 2.0
      */
-    public abstract String encodePartialActionURL(String url);     // TODO: IMPLEMENT IMPL
+    public String encodePartialActionURL(String url)
+    {
+        // TODO: IMPLEMENT IMPL
+        throw new UnsupportedOperationException();
+    }
 
     /**
      *

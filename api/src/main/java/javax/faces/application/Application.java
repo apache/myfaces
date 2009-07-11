@@ -19,6 +19,7 @@
 package javax.faces.application;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
@@ -570,7 +571,18 @@ public abstract class Application
      * 
      * FIXME: Notify EG, this should not be abstract and throw UnsupportedOperationException
      */
-    public abstract Iterator<String> getBehaviorIds();
+    public Iterator<String> getBehaviorIds()
+    {
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            return application.getBehaviorIds();
+        }
+        // It is better to return an empty iterator,
+        // to keep compatiblity with previous jsf 2.0 Application
+        // instances
+        return Collections.EMPTY_LIST.iterator();
+    }
 
     /**
      * Return an <code>Iterator</code> over the set of currently defined component types for this
