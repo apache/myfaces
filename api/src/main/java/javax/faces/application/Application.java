@@ -128,7 +128,15 @@ public abstract class Application
      * 
      * FIXME: Notify EG, this should not be abstract and throw UnsupportedOperationException
      */
-    public abstract void addBehavior(String behaviorId, String behaviorClass);
+    public void addBehavior(String behaviorId, String behaviorClass)
+    {
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            application.addBehavior(behaviorId, behaviorClass);
+        }
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * Define a new mapping from a logical "component type" to an actual java class name. This controls what type is
@@ -275,7 +283,15 @@ public abstract class Application
      * 
      * FIXME: Notify EG, this should not be abstract and throw UnsupportedOperationException
      */
-    public abstract Behavior createBehavior(String behaviorId) throws FacesException;
+    public Behavior createBehavior(String behaviorId) throws FacesException
+    {
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            return application.createBehavior(behaviorId);
+        }
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * ???
