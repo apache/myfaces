@@ -471,9 +471,9 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.shale</groupId>
-      <artifactId>shale-test</artifactId>
-      <version>1.0.4</version>
+      <groupId>org.apache.myfaces.test</groupId>
+      <artifactId>myfaces-test20</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -584,6 +584,6 @@
   </repositories>
 
   <properties>
-    <myfaces-shared.version>3.0.6</myfaces-shared.version>
+    <myfaces-shared.version>4.0.1-SNAPSHOT</myfaces-shared.version>
   </properties>
 </project>
