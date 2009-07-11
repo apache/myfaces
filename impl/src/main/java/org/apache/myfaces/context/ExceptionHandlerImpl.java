@@ -44,6 +44,11 @@ public class ExceptionHandlerImpl extends ExceptionHandler
     private Queue<ExceptionQueuedEvent> handled;
     private Queue<ExceptionQueuedEvent> unhandled;
 
+    public ExceptionHandlerImpl()
+    {
+        
+    }
+    
     /**
      * {@inheritDoc}
      */
