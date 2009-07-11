@@ -98,6 +98,7 @@ import org.apache.myfaces.shared_impl.util.LocaleUtils;
 import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
 import org.apache.myfaces.shared_impl.util.serial.SerialFactory;
+import org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl;
 import org.apache.myfaces.view.facelets.util.Classpath;
 import org.xml.sax.SAXException;
 
@@ -127,6 +128,7 @@ public class FacesConfigurator
     private static final String DEFAULT_RENDER_KIT_FACTORY = RenderKitFactoryImpl.class.getName();
     private static final String DEFAULT_PARTIAL_VIEW_CONTEXT_FACTORY = PartialViewContextFactoryImpl.class.getName();
     private static final String DEFAULT_VISIT_CONTEXT_FACTORY = VisitContextFactoryImpl.class.getName();
+    private static final String DEFAULT_VIEW_DECLARATION_LANGUAGE_FACTORY = ViewDeclarationLanguageFactoryImpl.class.getName();
     private static final String DEFAULT_FACES_CONFIG = "/WEB-INF/faces-config.xml";
 
     private static final Set<String> FACTORY_NAMES = new HashSet<String>();
@@ -137,6 +139,7 @@ public class FacesConfigurator
         FACTORY_NAMES.add(FactoryFinder.RENDER_KIT_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.VISIT_CONTEXT_FACTORY);
+        FACTORY_NAMES.add(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);
     }
 
     private final ExternalContext _externalContext;
@@ -1503,6 +1506,8 @@ public class FacesConfigurator
                      DEFAULT_PARTIAL_VIEW_CONTEXT_FACTORY);
         setFactories(FactoryFinder.VISIT_CONTEXT_FACTORY, dispenser.getVisitContextFactoryIterator(),
                      DEFAULT_VISIT_CONTEXT_FACTORY);
+        setFactories(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY, dispenser.getViewDeclarationLanguageFactoryIterator(),
+                DEFAULT_VIEW_DECLARATION_LANGUAGE_FACTORY);
     }
 
     private void setFactories(String factoryName, Collection<String> factories, String defaultFactory)
