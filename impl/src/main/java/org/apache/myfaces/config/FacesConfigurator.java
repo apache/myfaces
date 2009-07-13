@@ -430,12 +430,24 @@ public class FacesConfigurator
             
             //4. Retrieve webAppFacesConfig
             FacesConfig webAppFacesConfig = getWebAppConfig();
-            
+
+            System.out.println("testing webappfacesconfig");
             //read metadata-complete attribute on WEB-INF/faces-config.xml
-            metadataComplete = Boolean.valueOf(webAppFacesConfig.getMetadataComplete());
+            if(webAppFacesConfig != null)
+            {
+                System.out.println("webapp facesconfig was not null");
+                metadataComplete = Boolean.valueOf(webAppFacesConfig.getMetadataComplete());    
+            }
+            else
+            {
+                System.out.println("webapp facesconfig was null");
+                metadataComplete = false;   //assume false if no faces-config.xml was found
+                                            //metadata-complete can only be specified in faces-config.xml per the JSF 2.0 schema 
+            }
+            
             
             //5. Ordering of Artifacts (see section 11.4.7 of the spec)
-            orderAndFeedArtifacts(appConfigResources,webAppFacesConfig);
+            orderAndFeedArtifacts(appConfigResources,webAppFacesConfig); 
 
             if (log.isInfoEnabled())
             {
@@ -855,7 +867,11 @@ public class FacesConfigurator
                 getDispenser().feed(resource);
             }            
         }
-        getDispenser().feed(webAppConfig);
+        
+        if(webAppConfig != null)    //add null check for apps which don't have a faces-config.xml (e.g. tomahawk examples for 1.1/1.2)
+        {
+            getDispenser().feed(webAppConfig);
+        }
     }
 
     /**
