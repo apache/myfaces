@@ -43,7 +43,9 @@ public class RenderPhaseClientIdsTest extends AbstractJsfTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         FactoryFinder.setFactory(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY,
-        "org.apache.myfaces.context.PartialViewContextFactoryImpl");        
+        "org.apache.myfaces.context.PartialViewContextFactoryImpl");     
+        FactoryFinder.setFactory (FactoryFinder.EXCEPTION_HANDLER_FACTORY,
+        "org.apache.myfaces.context.ExceptionHandlerFactoryImpl");
     }
     
     /**

@@ -35,6 +35,7 @@ import javax.faces.application.ApplicationFactory;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExceptionHandler;
+import javax.faces.context.ExceptionHandlerFactory;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
@@ -105,11 +106,15 @@ public class FacesContextImpl extends FacesContext
 
     private void init(final ReleaseableExternalContext externalContext)
     {
+        ExceptionHandlerFactory exceptionHandlerFactory = (ExceptionHandlerFactory)
+            FactoryFinder.getFactory (FactoryFinder.EXCEPTION_HANDLER_FACTORY);
+        
         _externalContext = externalContext;
         FacesContext.setCurrentInstance(this);  //protected method, therefore must be called from here
         _application = ((ApplicationFactory)FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY))
                 .getApplication();
         _renderKitFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+        _exceptionHandler = exceptionHandlerFactory.getExceptionHandler();
     }
 
     // ~ Methods ------------------------------------------------------------------------------------
