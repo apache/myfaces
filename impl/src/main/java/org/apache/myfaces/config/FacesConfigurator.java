@@ -74,6 +74,7 @@ import org.apache.myfaces.application.ApplicationImpl;
 import org.apache.myfaces.component.visit.VisitContextFactoryImpl;
 import org.apache.myfaces.config.annotation.AnnotationConfigurator;
 import org.apache.myfaces.config.element.Behavior;
+import org.apache.myfaces.config.element.ClientBehaviorRenderer;
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.Renderer;
@@ -1819,6 +1820,8 @@ public class FacesConfigurator
             for (Renderer element : dispenser.getRenderers(renderKitId))
             {
                 javax.faces.render.Renderer renderer;
+                Collection<ClientBehaviorRenderer> clientBehaviorRenderers = dispenser.getClientBehaviorRenderers (renderKitId);
+                
                 try
                 {
                     renderer = (javax.faces.render.Renderer) ClassUtils.newInstance(element.getRendererClass());
@@ -1831,6 +1834,26 @@ public class FacesConfigurator
                 }
 
                 renderKit.addRenderer(element.getComponentFamily(), element.getRendererType(), renderer);
+                
+                // Add in client behavior renderers.
+                
+                for (ClientBehaviorRenderer clientBehaviorRenderer : clientBehaviorRenderers) {
+                    try {
+                        javax.faces.render.ClientBehaviorRenderer behaviorRenderer = (javax.faces.render.ClientBehaviorRenderer)
+                            ClassUtils.newInstance (clientBehaviorRenderer.getRendererClass());
+                        
+                        renderKit.addClientBehaviorRenderer(clientBehaviorRenderer.getRendererType(), behaviorRenderer);
+                    }
+                    
+                    catch (Throwable e) {
+                        // Ignore.
+                        
+                        if (log.isErrorEnabled()) {
+                            log.error ("failed to configure client behavior renderer class " +
+                                 clientBehaviorRenderer.getRendererClass(), e);
+                        }
+                    }
+                }
             }
 
             renderKitFactory.addRenderKit(renderKitId, renderKit);

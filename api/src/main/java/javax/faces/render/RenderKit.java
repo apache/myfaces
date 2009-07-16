@@ -21,6 +21,7 @@ package javax.faces.render;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -35,9 +36,24 @@ import javax.faces.context.ResponseWriter;
  */
 public abstract class RenderKit
 {
+    private HashMap<String, ClientBehaviorRenderer> clientBehaviorRenderers;
+    
+    public RenderKit ()
+    {
+        this.clientBehaviorRenderers = new HashMap<String, ClientBehaviorRenderer>();
+    }
+    
     public void addClientBehaviorRenderer(String type, ClientBehaviorRenderer renderer)
     {
-        throw new UnsupportedOperationException();
+        if (type == null) {
+            throw new NullPointerException ("type is null");
+        }
+        
+        if (renderer == null) {
+            throw new NullPointerException ("renderer is null");
+        }
+        
+        this.clientBehaviorRenderers.put (type, renderer);
     }
 
     public abstract void addRenderer(String family, String rendererType, Renderer renderer);
@@ -48,14 +64,16 @@ public abstract class RenderKit
     
     public ClientBehaviorRenderer getClientBehaviorRenderer(String type)
     {
-        throw new UnsupportedOperationException();
+        if (type == null) {
+            throw new NullPointerException ("type is null");
+        }
+        
+        return this.clientBehaviorRenderers.get (type);
     }
     
     public Iterator<String> getClientBehaviorRendererTypes()
     {
-        List<String> emptyList = Collections.emptyList();
-
-        return emptyList.iterator();
+        return this.clientBehaviorRenderers.keySet().iterator();
     }
 
     /**

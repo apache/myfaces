@@ -52,6 +52,8 @@ import javax.faces.context.ExternalContext;
 import javax.faces.convert.FacesConverter;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.NamedEvent;
+import javax.faces.render.ClientBehaviorRenderer;
+import javax.faces.render.FacesBehaviorRenderer;
 import javax.faces.render.FacesRenderer;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
@@ -901,8 +903,33 @@ public class AnnotationConfigurator
             application.addBehavior (facesBehavior.value(), clazz.getName());
         }
         
+        FacesBehaviorRenderer facesBehaviorRenderer = (FacesBehaviorRenderer) clazz.getAnnotation (FacesBehaviorRenderer.class);
+        
+        if (facesBehaviorRenderer != null) {
+            String renderKitId = facesBehaviorRenderer.renderKitId();
+            RenderKit renderKit;
+            
+            if (log.isTraceEnabled()) {
+                log.trace ("addClientBehaviorRenderer(" + renderKitId + ", " + facesBehaviorRenderer.rendererType() + ", " +
+                     clazz.getName() + ")");
+            }
+            
+            try {
+                ClientBehaviorRenderer clientBehaviorRenderer;
+                
+                renderKit = renderKitFactory().getRenderKit (null, renderKitId);
+                
+                clientBehaviorRenderer = (ClientBehaviorRenderer) clazz.newInstance();
+                
+                renderKit.addClientBehaviorRenderer(facesBehaviorRenderer.rendererType(), clientBehaviorRenderer);
+            }
+            
+            catch (Throwable e) {
+                throw new FacesException (e);
+            }
+        }
+        
         // TODO: All annotations scanned at startup must be configured here!
-        //FacesBehaviorRenderer
     }
     
     /**
