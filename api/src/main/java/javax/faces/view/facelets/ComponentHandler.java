@@ -30,38 +30,45 @@ import javax.faces.view.facelets.FaceletContext;
  */
 public class ComponentHandler extends DelegatingMetaTagHandler
 {
+    private ComponentConfig config;
+    private TagHandlerDelegate helper;
+    
     public ComponentHandler(ComponentConfig config)
     {
         super(config);
-
-        // TODO IMPLEMENT API
+        
+        this.config = config;
+        
+        // Spec seems to indicate that the helper is created here, as opposed to other Handler
+        // instances, where it's presumably a new instance for every getter call.
+        
+        this.helper = delegateFactory.createComponentHandlerDelegate (this);
     }
 
     public ComponentConfig getComponentConfig()
     {
-        // TODO IMPLEMENT API
-        return null;
+        return config;
     }
 
     public static final boolean isNew(UIComponent component)
     {
-        // TODO IMPLEMENT API
-        return true;
+        // TODO: only partially done... how do we determine that the component is "new to the tree"?
+        
+        return (component != null);
     }
 
     public void onComponentCreated(FaceletContext ctx, UIComponent c, UIComponent parent)
     {
-        // TODO IMPLEMENT API
+        // no-op.
     }
 
     public void onComponentPopulated(FaceletContext ctx, UIComponent c, UIComponent parent)
     {
-        // TODO IMPLEMENT API
+        // no-op.
     }
 
     protected TagHandlerDelegate getTagHandlerHelper()
     {
-        // TODO IMPLEMENT API
-        return null;
+        return helper;
     }
 }

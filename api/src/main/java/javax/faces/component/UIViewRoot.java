@@ -100,13 +100,17 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     private Map<String, Object> _viewScope;
 
     private transient Lifecycle _lifecycle = null;
-
+    
+    private HashMap<Class<? extends SystemEvent>, List<SystemEventListener>> _systemEventListeners;
+    
     /**
      * Construct an instance of the UIViewRoot.
      */
     public UIViewRoot()
     {
         setRendererType(null);
+        
+        _systemEventListeners = new HashMap<Class<? extends SystemEvent>, List<SystemEventListener>>();
     }
 
     /**
@@ -1121,20 +1125,43 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     
     public List<SystemEventListener> getViewListenersForEventClass(Class<? extends SystemEvent> systemEvent)
     {
-        //TODO: Implement this method
-        return null;
+        checkNull (systemEvent, "systemEvent");
+        
+        return _systemEventListeners.get (systemEvent);
     }
     
     public void subscribeToViewEvent(Class<? extends SystemEvent> systemEvent,
             SystemEventListener listener)
     {
-        //TODO: Implement this method
+        List<SystemEventListener> listeners;
+        
+        checkNull (systemEvent, "systemEvent");
+        checkNull (listener, "listener");
+        
+        listeners = _systemEventListeners.get (systemEvent);
+        
+        if (listeners == null) {
+            listeners = new ArrayList<SystemEventListener>();
+            
+            _systemEventListeners.put (systemEvent, listeners);
+        }
+        
+        listeners.add (listener);
     }
     
     public void unsubscribeFromViewEvent(Class<? extends SystemEvent> systemEvent,
             SystemEventListener listener)
     {
-        //TODO: Implement this method
+        List<SystemEventListener> listeners;
+        
+        checkNull (systemEvent, "systemEvent");
+        checkNull (listener, "listener");
+        
+        listeners = _systemEventListeners.get (systemEvent);
+        
+        if (listeners != null) {
+            listeners.remove (listener);
+        }
     }
 
     /**

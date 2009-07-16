@@ -28,34 +28,45 @@ import javax.faces.view.BehaviorHolderAttachedObjectHandler;
  */
 public class BehaviorHandler extends FaceletsAttachedObjectHandler implements BehaviorHolderAttachedObjectHandler
 {
+    private String behaviorId;
+    private TagAttribute event;
+    
     /**
      * @param config
      */
-    public BehaviorHandler(TagConfig config)
+    public BehaviorHandler(BehaviorConfig config)
     {
         super(config);
-        // TODO IMPLEMENT API
+        
+        behaviorId = config.getBehaviorId();
+        event = getAttribute ("event");
     }
     
     public String getBehaviorId()
     {
-        // TODO IMPLEMENT API
-        return null;
+        return behaviorId;
     }
     
     public TagAttribute getEvent()
     {
-        // TODO IMPLEMENT API
-        return null;
+        return event;
     }
 
+    public String getEventName ()
+    {
+        if (event == null) {
+            return null;
+        }
+        
+        return event.getValue();
+    }
+    
     /**
      * {@inheritDoc}
      */
     @Override
     protected TagHandlerDelegate getTagHandlerHelper()
     {
-        // TODO IMPLEMENT API
-        return null;
+        return delegateFactory.createBehaviorHandlerDelegate (this);
     }
 }

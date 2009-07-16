@@ -32,22 +32,27 @@ import javax.faces.view.facelets.FaceletContext;
  */
 public class ValidatorHandler extends FaceletsAttachedObjectHandler implements EditableValueHolderAttachedObjectHandler
 {
+    private ValidatorConfig config;
+    
     public ValidatorHandler(ValidatorConfig config)
     {
         super(config);
-
-        // TODO: IMPLEMENT HERE
+        
+        this.config = config;
     }
-
+    
+    public ValidatorConfig getValidatorConfig ()
+    {
+        return this.config;
+    }
+    
     public String getValidatorId(FaceletContext ctx)
     {
-        // TODO: IMPLEMENT HERE
-        return null;
+        return config.getValidatorId();
     }
 
     protected TagHandlerDelegate getTagHandlerHelper()
     {
-        // TODO: IMPLEMENT HERE
-        return null;
+        return delegateFactory.createValidatorHandlerDelegate (this);
     }
 }

@@ -34,22 +34,22 @@ import javax.faces.view.ValueHolderAttachedObjectHandler;
  */
 public class ConverterHandler extends FaceletsAttachedObjectHandler implements ValueHolderAttachedObjectHandler
 {
+    private String converterId;
+    
     public ConverterHandler(ConverterConfig config)
     {
         super(config);
         
-        // TODO IMPLEMENT API
+        converterId = config.getConverterId();
     }
     
-    public String getConverterId()
+    public String getConverterId (FaceletContext ctx)
     {
-        // TODO IMPLEMENT API
-        return null;
+        return converterId;
     }
     
     protected TagHandlerDelegate getTagHandlerHelper()
     {
-        // TODO IMPLEMENT API
-        return null;
+        return delegateFactory.createConverterHandlerDelegate (this);
     }
 }
