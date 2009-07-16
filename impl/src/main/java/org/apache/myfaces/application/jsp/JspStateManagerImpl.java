@@ -367,6 +367,7 @@ public class JspStateManagerImpl extends MyfacesStateManager
             uiViewRoot = tsm.restoreTreeStructure(stateArray[0]);
 
             if (uiViewRoot != null) {
+                facesContext.setViewRoot (uiViewRoot);
                 uiViewRoot.processRestoreState(facesContext, stateArray[1]);
             }
         }
