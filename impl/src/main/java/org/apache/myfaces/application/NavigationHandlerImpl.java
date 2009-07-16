@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.el.ExpressionFactory;
+import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.application.NavigationHandler;
 import javax.faces.application.ViewHandler;
@@ -138,7 +140,7 @@ public class NavigationHandlerImpl
         if (casesList != null)
         {
             // Exact match?
-            navigationCase = calcMatchingNavigationCase(casesList, fromAction, outcome);
+            navigationCase = calcMatchingNavigationCase(facesContext, casesList, fromAction, outcome);
         }
 
         if (navigationCase == null)
@@ -154,7 +156,7 @@ public class NavigationHandlerImpl
                         casesList = casesMap.get(fromViewId);
                         if (casesList != null)
                         {
-                            navigationCase = calcMatchingNavigationCase(casesList, fromAction, outcome);
+                            navigationCase = calcMatchingNavigationCase(facesContext, casesList, fromAction, outcome);
                             if (navigationCase != null) break;
                         }
                     }
@@ -164,7 +166,7 @@ public class NavigationHandlerImpl
                     casesList = casesMap.get(fromViewId);
                     if (casesList != null)
                     {
-                        navigationCase = calcMatchingNavigationCase(casesList, fromAction, outcome);
+                        navigationCase = calcMatchingNavigationCase(facesContext, casesList, fromAction, outcome);
                         if (navigationCase != null) break;
                     }
                 }
@@ -194,16 +196,93 @@ public class NavigationHandlerImpl
         return null;
     }
 
-    private NavigationCase calcMatchingNavigationCase(List<? extends NavigationCase> casesList, String actionRef, 
+    private NavigationCase calcMatchingNavigationCase(FacesContext context, List<? extends NavigationCase> casesList, String actionRef, 
                                                       String outcome)
     {
         for (NavigationCase caze : casesList)
         {
             String cazeOutcome = caze.getFromOutcome();
             String cazeActionRef = caze.getFromAction();
-            if ((cazeOutcome == null || cazeOutcome.equals(outcome)) &&
-                (cazeActionRef == null || cazeActionRef.equals(actionRef)))
-            {
+            String cazeIf = caze.getIf();
+            ExpressionFactory expFactory = context.getApplication().getExpressionFactory();
+            boolean ifMatches = false;
+
+            // JSF 2.0: support conditional navigation via <if>.
+            
+            // Use for later cases.
+            
+            if (cazeIf != null) {
+                ValueExpression ifExpr = expFactory.createValueExpression (context.getELContext(), caze.getIf(), Boolean.class);
+                Boolean value = (Boolean) ifExpr.getValue (context.getELContext());
+                
+                ifMatches = value.booleanValue();
+            }
+            
+            if (cazeActionRef != null) {
+                if (cazeOutcome != null) {
+                    if ((actionRef != null) && (outcome != null) && cazeActionRef.equals (actionRef) &&
+                        cazeOutcome.equals (outcome)) {
+                        // First case: match if <from-action> matches action and <from-outcome> matches outcome.
+                        // Caveat: evaluate <if> if available.
+                        
+                        if (cazeIf != null) {
+                            return (ifMatches ? caze : null);
+                        }
+                        
+                        else {
+                            return caze;
+                        }
+                    }
+                }
+                
+                else {
+                    if ((actionRef != null) && cazeActionRef.equals (actionRef)) {
+                        // Third case: if only <from-action> specified, match against action.
+                        // Caveat: if <if> is available, evaluate.  If not, only match if outcome is not null.
+                        
+                        if (cazeIf != null) {
+                            return (ifMatches ? caze : null);
+                        }
+                        
+                        else {
+                            return ((outcome != null) ? caze : null);
+                        }
+                    }
+                }
+            }
+            
+            else {
+                if (cazeOutcome != null) {
+                    if ((outcome != null) && cazeOutcome.equals (outcome)) {
+                        // Second case: if only <from-outcome> specified, match against outcome.
+                        // Caveat: if <if> is available, evaluate.
+                        
+                        if (cazeIf != null) {
+                            return (ifMatches ? caze : null);
+                        }
+                        
+                        else {
+                            return caze;
+                        }
+                    }
+                }
+            }
+            
+            // Fourth case: anything else matches if outcome is not null or <if> is specified.
+            
+            if (outcome != null) {
+                // Again, if <if> present, evaluate.
+                
+                if (cazeIf != null) {
+                    return (ifMatches ? caze : null);
+                }
+                
+                else {
+                    return caze;
+                }
+            }
+            
+            if ((cazeIf != null) && ifMatches) {
                 return caze;
             }
         }

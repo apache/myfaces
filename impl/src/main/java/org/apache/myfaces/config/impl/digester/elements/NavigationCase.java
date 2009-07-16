@@ -29,6 +29,7 @@ public class NavigationCase implements org.apache.myfaces.config.element.Navigat
 
     private String fromAction;
     private String fromOutcome;
+    private String ifValue;
     private String toViewId;
     private boolean redirect;
 
@@ -55,8 +56,17 @@ public class NavigationCase implements org.apache.myfaces.config.element.Navigat
     {
         this.fromOutcome = fromOutcome;
     }
-
-
+    
+    public String getIf ()
+    {
+        return ifValue;
+    }
+    
+    public void setIf (String ifValue)
+    {
+        this.ifValue = ifValue;
+    }
+    
     public String getToViewId()
     {
         return toViewId;
