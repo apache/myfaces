@@ -225,6 +225,10 @@ public class UIOutput extends UIComponentBase implements ValueHolder
     
     void _handleAnnotations(FacesContext context, Object inspected)
     {
+        if (inspected == null) {
+            return;
+        }
+        
         ResourceDependency annotation = inspected.getClass().getAnnotation(ResourceDependency.class);
         
         if (annotation == null)

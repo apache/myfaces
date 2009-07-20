@@ -23,8 +23,12 @@ import javax.el.MethodExpression;
 import javax.faces.FacesException;
 import javax.faces.application.Application;
 import javax.faces.application.NavigationHandler;
+import javax.faces.component.ActionSource;
 import javax.faces.component.ActionSource2;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.el.EvaluationException;
+import javax.faces.el.MethodBinding;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
@@ -41,13 +45,26 @@ public class ActionListenerImpl implements ActionListener
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Application application = facesContext.getApplication();
-
-        ActionSource2 actionSource = (ActionSource2)actionEvent.getComponent();
+        UIComponent component = actionEvent.getComponent();
         
-        MethodExpression methodExpression = actionSource.getActionExpression();
-
+        MethodExpression methodExpression = null;
+        MethodBinding methodBinding = null;
+        
         String fromAction = null;
         String outcome = null;
+        
+        // Backwards compatibility for pre-1.2.
+        
+        if (component instanceof ActionSource) {
+            methodBinding = ((ActionSource) component).getAction();
+        }
+        
+        else {
+            // Must be an instance of ActionSource2.
+            
+            methodExpression = ((ActionSource2) component).getActionExpression();
+        }
+        
         if (methodExpression != null)
         {
             fromAction = methodExpression.getExpressionString();
@@ -75,7 +92,35 @@ public class ActionListenerImpl implements ActionListener
                 throw new FacesException("Error calling action method of component with id " + actionEvent.getComponent().getClientId(facesContext), e);
             }
         }
+        
+        else if (methodBinding != null) {
+            fromAction = methodBinding.getExpressionString();
+            try
+            {
+                Object objOutcome = methodBinding.invoke(facesContext, null);
 
+                if (objOutcome != null)
+                {
+                    outcome = objOutcome.toString();
+                }
+            }
+            catch (EvaluationException e)
+            {
+                Throwable cause = e.getCause();
+                if (cause != null && cause instanceof AbortProcessingException)
+                {
+                    throw (AbortProcessingException)cause;
+                }
+   
+                throw new FacesException("Error calling action method of component with id " + actionEvent.getComponent().getClientId(facesContext), e);
+                
+            }
+            catch (RuntimeException e)
+            {
+                throw new FacesException("Error calling action method of component with id " + actionEvent.getComponent().getClientId(facesContext), e);
+            }
+        }
+        
         NavigationHandler navigationHandler = application.getNavigationHandler();
         navigationHandler.handleNavigation(facesContext, fromAction, outcome);
         //Render Response if needed
