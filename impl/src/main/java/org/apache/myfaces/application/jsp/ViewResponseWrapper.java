@@ -86,7 +86,21 @@ public class ViewResponseWrapper extends HttpServletResponseWrapper
         }
         else if (_byteArrayWriter != null)
         {
-            getResponse().getOutputStream().write(_byteArrayWriter.toByteArray());
+            // MYFACES-1955 cannot call getWriter() after getOutputStream()
+            // _byteArrayWriter is not null only if getOutputStream() was called
+            // before. This method is called from f:view to flush data before tag
+            // start, or if an error page is flushed after dispatch.
+            // A resource inside /faces/* (see MYFACES-1815) is handled on flushToWriter.
+            // If response.getOuputStream() was called before, an IllegalStateException
+            // is raised on response.getWriter(), so we should try through stream.
+            try
+            {
+                _byteArrayWriter.writeTo(getResponse().getWriter(), getResponse().getCharacterEncoding());
+            }
+            catch (IllegalStateException e)
+            {
+                getResponse().getOutputStream().write(_byteArrayWriter.toByteArray());
+            }
             _byteArrayWriter.reset();
             _byteArrayWriter.flush();
         }
