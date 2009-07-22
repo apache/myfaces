@@ -28,7 +28,7 @@
 
    <application>
       <action-listener>org.apache.myfaces.application.ActionListenerImpl</action-listener>
-      <view-handler>org.apache.myfaces.application.jsp.JspViewHandlerImpl</view-handler>
+      <view-handler>org.apache.myfaces.application.ViewHandlerImpl</view-handler>
       <state-manager>org.apache.myfaces.application.jsp.JspStateManagerImpl</state-manager>
       <navigation-handler>org.apache.myfaces.application.NavigationHandlerImpl</navigation-handler>
       <resource-handler>org.apache.myfaces.application.ResourceHandlerImpl</resource-handler>

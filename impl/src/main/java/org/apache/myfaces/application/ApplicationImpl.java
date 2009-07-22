@@ -81,7 +81,6 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.jsp.JspStateManagerImpl;
-import org.apache.myfaces.application.jsp.JspViewHandlerImpl;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.impl.digester.elements.Property;
 import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
@@ -211,7 +210,7 @@ public class ApplicationImpl extends Application
         }
         // set default implementation in constructor
         // pragmatic approach, no syncronizing will be needed in get methods
-        _viewHandler = new JspViewHandlerImpl(); //TODO: replace with new ViewHandlerImpl class when VDL methods are fully implemented
+        _viewHandler = new ViewHandlerImpl();
         _navigationHandler = new NavigationHandlerImpl();
         _actionListener = new ActionListenerImpl();
         _defaultRenderKitId = "HTML_BASIC";
