@@ -63,7 +63,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 clazz = "javax.faces.component.html.HtmlSelectOneListbox",template=true,
 tagClass = "org.apache.myfaces.taglib.html.HtmlSelectOneListboxTag",
 defaultRendererType = "javax.faces.Listbox",
-implementz = "javax.faces.component.behavior.ClientBehaviorHolder"
+implementz = "javax.faces.component.behavior.ClientBehaviorHolder",
+defaultEventName = "valueChange"
 )
 abstract class _HtmlSelectOneListbox extends UISelectOne implements
 _AccesskeyProperty, _UniversalProperties, _DisabledReadonlyProperties,

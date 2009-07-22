@@ -684,7 +684,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * 
      * @deprecated
      */
-    @JSFProperty(stateHolder = true, returnSignature = "void", methodSignature = "javax.faces.event.ValueChangeEvent")
+    @JSFProperty(stateHolder = true, returnSignature = "void", methodSignature = "javax.faces.event.ValueChangeEvent", clientEvent="valueChange")
     public MethodBinding getValueChangeListener()
     {
         if (_valueChangeListener != null)

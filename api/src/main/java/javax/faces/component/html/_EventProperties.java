@@ -27,70 +27,70 @@ interface _EventProperties
      * HTML: Script to be invoked when the element is clicked.
      * 
      */
-    @JSFProperty    
+    @JSFProperty(clientEvent="click")
     public String getOnclick();
 
     /**
      * HTML: Script to be invoked when the element is double-clicked.
      * 
      */
-    @JSFProperty
+    @JSFProperty(clientEvent="dblclick")
     public String getOndblclick();
 
     /**
      * HTML: Script to be invoked when a key is pressed down over this element.
      * 
      */
-    @JSFProperty
+    @JSFProperty(clientEvent="keydown")
     public String getOnkeydown();
 
     /**
      * HTML: Script to be invoked when a key is pressed over this element.
      * 
      */
-    @JSFProperty
+    @JSFProperty(clientEvent="keypress")
     public String getOnkeypress();
 
     /**
      * HTML: Script to be invoked when a key is released over this element.
      * 
      */
-    @JSFProperty
+    @JSFProperty(clientEvent="keyup")
     public String getOnkeyup();
 
     /**
      * HTML: Script to be invoked when the pointing device is pressed over this element.
      * 
      */
-    @JSFProperty
+    @JSFProperty(clientEvent="mousedown")
     public String getOnmousedown();
 
     /**
      * HTML: Script to be invoked when the pointing device is moved while it is in this element.
      * 
      */
-    @JSFProperty
+    @JSFProperty(clientEvent="mousemove")
     public String getOnmousemove();
 
     /**
      * HTML: Script to be invoked when the pointing device is moves out of this element.
      * 
      */
-    @JSFProperty
+    @JSFProperty(clientEvent="mouseout")
     public String getOnmouseout();
 
     /**
      * HTML: Script to be invoked when the pointing device is moved into this element.
      * 
      */
-    @JSFProperty
+    @JSFProperty(clientEvent="mouseover")
     public String getOnmouseover();
 
     /**
      * HTML: Script to be invoked when the pointing device is released over this element.
      * 
      */
-    @JSFProperty
+    @JSFProperty(clientEvent="mouseup")
     public String getOnmouseup();
 
 }

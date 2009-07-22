@@ -63,7 +63,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 clazz = "javax.faces.component.html.HtmlSelectManyMenu",template=true,
 tagClass = "org.apache.myfaces.taglib.html.HtmlSelectManyMenuTag",
 defaultRendererType = "javax.faces.Menu",
-implementz = "javax.faces.component.behavior.ClientBehaviorHolder"
+implementz = "javax.faces.component.behavior.ClientBehaviorHolder",
+defaultEventName = "valueChange"
 )
 abstract class _HtmlSelectManyMenu extends UISelectMany implements
 _AccesskeyProperty, _UniversalProperties, _DisabledReadonlyProperties,

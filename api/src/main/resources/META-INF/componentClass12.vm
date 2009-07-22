@@ -92,9 +92,45 @@ $innersource
     {
         return COMPONENT_FAMILY;
     }
-    
-#set ($propertyList = ${component.propertyComponentList})
 
+## Iterate over full component property list
+#set ($propertyList = ${component.propertyList})
+
+## TODO: this condition should be checked for parent components
+## and csv implements
+#if ($component.implements == "javax.faces.component.behavior.ClientBehaviorHolder")
+    static private final java.util.Collection<String> CLIENT_EVENTS_LIST = 
+        java.util.Collections.unmodifiableCollection(
+            java.util.Arrays.asList(
+#set ($commavar = "")
+#foreach( $property in $propertyList )
+#if ($property.clientEvent)
+#if ($property.clientEvent != "")
+            $commavar "$property.clientEvent"
+#set ($commavar = ",")            
+#end
+#end
+#end
+        ));
+
+    public java.util.Collection<String> getEventNames()
+    {
+        return CLIENT_EVENTS_LIST;
+    }
+#end
+#if ($component.defaultEventName)
+#if ($component.defaultEventName != "")
+
+    //ClientBehaviorHolder default: $component.defaultEventName
+    public String getDefaultEventName()
+    {
+        return "$component.defaultEventName";
+    }
+#end
+#end
+
+#set ($propertyList = ${component.propertyComponentList})
+    
 #foreach( $property in $propertyList )
 #set ($field = $property.fieldName)
 #set ($type = $utils.getClassFromFullClass($property.className))

@@ -51,7 +51,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 clazz = "javax.faces.component.html.HtmlSelectBooleanCheckbox",template=true,
 tagClass = "org.apache.myfaces.taglib.html.HtmlSelectBooleanCheckboxTag",
 defaultRendererType = "javax.faces.Checkbox",
-implementz = "javax.faces.component.behavior.ClientBehaviorHolder"
+implementz = "javax.faces.component.behavior.ClientBehaviorHolder",
+defaultEventName = "valueChange"
 )
 abstract class _HtmlSelectBooleanCheckbox extends UISelectBoolean implements
 _AccesskeyProperty, _UniversalProperties, _DisabledReadonlyProperties,

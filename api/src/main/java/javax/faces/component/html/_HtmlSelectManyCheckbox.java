@@ -64,7 +64,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 clazz = "javax.faces.component.html.HtmlSelectManyCheckbox",template=true,
 tagClass = "org.apache.myfaces.taglib.html.HtmlSelectManyCheckboxTag",
 defaultRendererType = "javax.faces.Checkbox",
-implementz = "javax.faces.component.behavior.ClientBehaviorHolder"
+implementz = "javax.faces.component.behavior.ClientBehaviorHolder",
+defaultEventName = "valueChange"
 )
 abstract class _HtmlSelectManyCheckbox extends UISelectMany implements 
     _AccesskeyProperty, _UniversalProperties, _FocusBlurProperties,

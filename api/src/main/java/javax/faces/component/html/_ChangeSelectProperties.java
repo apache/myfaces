@@ -26,7 +26,7 @@ interface _ChangeSelectProperties
      * HTML: Specifies a script to be invoked when the element is modified.
      * 
      */
-    @JSFProperty
+    @JSFProperty(clientEvent="change")
     public abstract String getOnchange();
 
 
@@ -34,7 +34,7 @@ interface _ChangeSelectProperties
      * HTML: Specifies a script to be invoked when the element is selected.
      * 
      */
-    @JSFProperty
+    @JSFProperty(clientEvent="select")
     public abstract String getOnselect();
 
 }

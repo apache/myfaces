@@ -170,7 +170,7 @@
             <plugin>
                 <groupId>org.apache.myfaces.buildtools</groupId>
                 <artifactId>myfaces-builder-plugin</artifactId>
-                <version>1.0.3</version>
+                <version>1.0.4-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <goals>
@@ -307,7 +307,7 @@
         <dependency>
             <groupId>org.apache.myfaces.buildtools</groupId>
             <artifactId>myfaces-builder-annotations</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

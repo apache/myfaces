@@ -47,7 +47,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 clazz = "javax.faces.component.html.HtmlCommandButton",template=true,
 tagClass = "org.apache.myfaces.taglib.html.HtmlCommandButtonTag",
 defaultRendererType = "javax.faces.Button",
-implementz = "javax.faces.component.behavior.ClientBehaviorHolder"
+implementz = "javax.faces.component.behavior.ClientBehaviorHolder",
+defaultEventName = "action"
 )
 abstract class _HtmlCommandButton extends UICommand
     implements _FocusBlurProperties, 

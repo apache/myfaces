@@ -46,7 +46,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 clazz = "javax.faces.component.html.HtmlInputText",template=true,
 tagClass = "org.apache.myfaces.taglib.html.HtmlInputTextTag",
 defaultRendererType = "javax.faces.Text",
-implementz = "javax.faces.component.behavior.ClientBehaviorHolder"
+implementz = "javax.faces.component.behavior.ClientBehaviorHolder",
+defaultEventName = "valueChange"
 )
 abstract class _HtmlInputText extends UIInput
     implements _AccesskeyProperty,
