@@ -26,7 +26,6 @@ import javax.el.ELException;
 import javax.faces.FacesException;
 import javax.faces.context.ExceptionHandler;
 import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ExceptionEventContext;
 import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
 import javax.faces.event.SystemEvent;
@@ -155,7 +154,7 @@ public class ExceptionHandlerImpl extends ExceptionHandler
     @Override
     public boolean isListenerForSource(Object source)
     {
-        return source instanceof ExceptionEventContext;
+        return source instanceof ExceptionQueuedEventContext;
     }
 
     /**

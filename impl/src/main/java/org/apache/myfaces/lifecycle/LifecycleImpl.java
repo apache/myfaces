@@ -142,7 +142,9 @@ public class LifecycleImpl extends Lifecycle
             
             flash.doPostPhaseActions(context);
         }
-
+        
+        context.getExceptionHandler().handle();
+        
         if (isResponseComplete(context, currentPhaseId, false) || shouldRenderResponse(context, currentPhaseId, false))
         {
             // since this phase is completed we don't need to return right away even if the response is completed
@@ -197,7 +199,9 @@ public class LifecycleImpl extends Lifecycle
             phaseListenerMgr.informPhaseListenersAfter(renderExecutor.getPhase());
             flash.doPostPhaseActions(facesContext);
         }
-
+        
+        facesContext.getExceptionHandler().handle();
+        
         if (log.isTraceEnabled())
         {
             // Note: DebugUtils Logger must also be in trace level
