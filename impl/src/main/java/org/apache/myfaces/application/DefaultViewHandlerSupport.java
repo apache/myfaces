@@ -50,7 +50,11 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         FacesServletMapping mapping = getFacesServletMapping(context);
         if (mapping == null || mapping.isExtensionMapping())
         {
-            viewId = applyDefaultSuffix(context, viewId);
+            viewId = handleSuffixMapping(context, viewId);
+        }
+        else if(mapping.isPrefixMapping())
+        {
+            viewId = handlePrefixMapping(viewId,mapping.getPrefix());
         }
         else if (viewId != null && mapping.getUrlPattern().startsWith(viewId))
         {
@@ -194,68 +198,155 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         }
         return defaultSuffix.split(" ");
     }
+    
+    protected String getFaceletsContextSuffix(FacesContext context)
+    {
+        String defaultSuffix = context.getExternalContext().getInitParameter(ViewHandler.FACELETS_SUFFIX_PARAM_NAME);
+        if (defaultSuffix == null)
+        {
+            defaultSuffix = ViewHandler.DEFAULT_FACELETS_SUFFIX;
+        }
+        return defaultSuffix;
+    }
+    
+    
+    
+    protected String[] getFaceletsViewMappings(FacesContext context)
+    {
+        String faceletsViewMappings= context.getExternalContext().getInitParameter(ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME);
+        if(faceletsViewMappings == null)    //consider alias facelets.VIEWMAPPINGS
+        {
+            faceletsViewMappings= context.getExternalContext().getInitParameter("facelets.VIEWMAPPINGS");
+        }
+        
+        return faceletsViewMappings == null ? null : faceletsViewMappings.split(";");
+    }
 
+    /**
+     * Return the normalized viewId according to the algorithm specified in 7.5.2 
+     * by stripping off any number of occurrences of the prefix mapping from the viewId.
+     * <p/>
+     * For example, both /faces/view.xhtml and /faces/faces/faces/view.xhtml would both return view.xhtml
+     * F 
+     */
+    protected String handlePrefixMapping(String viewId, String prefix)
+    {
+        /*  If prefix mapping (such as “/faces/*”) is used for FacesServlet, normalize the viewId according to the following
+            algorithm, or its semantic equivalent, and return it.
+               
+            Remove any number of occurrences of the prefix mapping from the viewId. For example, if the incoming value
+            was /faces/faces/faces/view.xhtml the result would be simply view.xhtml.
+         */
+        String uri = viewId;
+        prefix = prefix + '/';  //need to make sure its really /faces/* and not /facesPage.xhtml
+        while (uri.startsWith(prefix)) 
+        {
+            uri = uri.substring(prefix.length() - 1);    //cut off only /faces, leave the trailing '/' char for the next iteration
+        }
+        //now delete any remaining leading '/'
+        if(uri.startsWith("/"))
+        {
+            uri = uri.substring(1);
+        }
+        return uri;
+    }
+    
     /**
      * Return the viewId with any non-standard suffix stripped off and replaced with
      * the default suffix configured for the specified context.
      * <p/>
      * For example, an input parameter of "/foo.jsf" may return "/foo.jsp".
      */
-    protected String applyDefaultSuffix(FacesContext context, String viewId)
+    protected String handleSuffixMapping(FacesContext context, String requestViewId)
     {
-        String[] defaultSuffixes = getContextSuffix(context);
-
-        if (viewId == null)
+        String[] faceletsViewMappings = getFaceletsViewMappings(context);
+        String[] jspDefaultSuffixes = getContextSuffix(context);
+        
+        int slashPos = requestViewId.lastIndexOf('/');
+        int extensionPos = requestViewId.lastIndexOf('.');
+        
+        //Try to locate any resource that match with the expected id
+        for (String defaultSuffix : jspDefaultSuffixes)
         {
-            return null;
-        }
-
-        boolean endWithAnyDefaultSuffix = false;
-        for (String defaultSuffix : defaultSuffixes)
-        {
-            if (viewId.endsWith(defaultSuffix))
+            StringBuilder builder = new StringBuilder(requestViewId);
+           
+            if (extensionPos > -1 && extensionPos > slashPos)
             {
-                endWithAnyDefaultSuffix = true;
-                break;
+                builder.replace(extensionPos, requestViewId.length(), defaultSuffix);
             }
-        }
-
-        if (!endWithAnyDefaultSuffix)
-        {
-            //Try to locate any resource that match with the expected id
-            for (String defaultSuffix : defaultSuffixes)
+            else
             {
-                StringBuilder builder = new StringBuilder(viewId);
-                int slashPos = viewId.lastIndexOf('/');
-                int extensionPos = viewId.lastIndexOf('.');
-                if (extensionPos > -1 && extensionPos > slashPos)
+                builder.append(defaultSuffix);
+            }
+            String candidateViewId = builder.toString();
+            
+            if( faceletsViewMappings != null && faceletsViewMappings.length > 0 )
+            {
+                for (String mapping : faceletsViewMappings)
                 {
-                    builder.replace(extensionPos, viewId.length(), defaultSuffix);
-                }
-                else
-                {
-                    builder.append(defaultSuffix);
-                }
-                String tempViewId = builder.toString();
-                try
-                {
-                    if (context.getExternalContext().getResource(tempViewId) != null)
+                    if(mapping.startsWith("/"))
                     {
-                        viewId = builder.toString();
-                        break;
-                    }                    
-                }
-                catch(MalformedURLException e)
-                {
-                    //Keep looking for an id
+                        continue;   //skip this entry, its a prefix mapping
+                    }
+                    if(mapping.equals(candidateViewId))
+                    {
+                        return candidateViewId;
+                    }
+                    if(mapping.startsWith(".")) //this is a wildcard entry
+                    {
+                        builder.setLength(0); //reset/reuse the builder object 
+                        builder.append(candidateViewId); 
+                        builder.replace(candidateViewId.lastIndexOf('.'), candidateViewId.length(), mapping);
+                        String tempViewId = builder.toString();
+                        if(checkResourceExists(context,tempViewId))
+                            return tempViewId;
+                    }
                 }
             }
-            if (log.isTraceEnabled())
-            {
-                log.trace("view id after applying the context suffix: " + viewId);
-            }
+
+            // forced facelets mappings did not match or there were no entries in faceletsViewMappings array
+            if(checkResourceExists(context,candidateViewId))
+                return candidateViewId;
+                       
         }
-        return viewId;
+        
+        //jsp suffixes didn't match, try facelets suffix
+        String faceletsDefaultSuffix = this.getFaceletsContextSuffix(context);
+        StringBuilder builder = new StringBuilder(requestViewId);
+        
+        if (extensionPos > -1 && extensionPos > slashPos)
+        {
+            builder.replace(extensionPos, requestViewId.length(), faceletsDefaultSuffix);
+        }
+        else
+        {
+            builder.append(faceletsDefaultSuffix);
+        }
+        
+        String candidateViewId = builder.toString();
+        if(checkResourceExists(context,candidateViewId))
+            return candidateViewId;
+
+        if(checkResourceExists(context,requestViewId))
+            return requestViewId;
+        
+        return null;
+    }
+    
+    protected boolean checkResourceExists(FacesContext context, String viewId)
+    {
+        try
+        {
+            if (context.getExternalContext().getResource(viewId) != null)
+            {
+                return true;
+            }                                 
+        }
+        catch(MalformedURLException e)
+        {
+            //ignore and move on
+        }     
+        return false;
     }
 
     /**
@@ -366,6 +457,18 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             return extension != null;
         }
 
+        /**
+         * Indicates whether this mapping is based on a prefix (e.g.
+         * /faces/*").
+         *
+         * @return <code>true</code>, if this mapping is based is on a
+         *         prefix, <code>false</code> otherwise
+         */
+        public boolean isPrefixMapping()
+        {
+            return prefix != null;
+        }
+        
         /**
          * Returns the url-pattern entry for this servlet mapping.
          *
