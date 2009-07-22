@@ -87,17 +87,18 @@ public class ViewHandlerImpl extends ViewHandler
     @Override
     public String deriveViewId(FacesContext context, String input)
     {
-        String calculatedViewId = input;
-        try
-        {
-            //TODO: JSF 2.0 - need to make sure calculateViewId follows the new algorithm from 7.5.2 
-            calculatedViewId = getViewHandlerSupport().calculateViewId(context, input);
+        if(input != null){
+            try
+            {
+                //TODO: JSF 2.0 - need to make sure calculateViewId follows the new algorithm from 7.5.2 
+                return getViewHandlerSupport().calculateViewId(context, input);
+            }
+            catch (InvalidViewIdException e)
+            {
+                sendSourceNotFound(context, e.getMessage());
+            }
         }
-        catch (InvalidViewIdException e)
-        {
-            sendSourceNotFound(context, e.getMessage());
-        }
-        return calculatedViewId;
+        return input;   // If the argument input is null, return null.
     }
 
     @Override
@@ -364,6 +365,11 @@ public class ViewHandlerImpl extends ViewHandler
             throw new FacesException(ioe);
         }
     }
+    
+    public void setViewHandlerSupport(ViewHandlerSupport viewHandlerSupport)
+    {
+        _viewHandlerSupport = viewHandlerSupport;
+    }    
     
     protected ViewHandlerSupport getViewHandlerSupport()
     {

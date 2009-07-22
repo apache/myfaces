@@ -49,7 +49,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.DefaultViewHandlerSupport;
 import org.apache.myfaces.application.ViewHandlerSupport;
-import org.apache.myfaces.application.jsp.JspViewHandlerImpl;
 import org.apache.myfaces.application.jsp.ViewResponseWrapper;
 import org.apache.myfaces.shared_impl.config.MyfacesConfig;
 import org.apache.myfaces.shared_impl.renderkit.html.util.JavascriptUtils;
@@ -256,11 +255,14 @@ public class JspViewDeclarationLanguage extends ViewDeclarationLanguageBase
     @Override
     public UIViewRoot restoreView(FacesContext context, String viewId)
     {
+        checkNull(context, "context");
+        checkNull(viewId, "viewId");
+        
         Application application = context.getApplication();
         ViewHandler applicationViewHandler = application.getViewHandler();
         String renderKitId = applicationViewHandler.calculateRenderKitId(context);
-        String calculatedViewId = calculateViewId(context, viewId);
-        UIViewRoot viewRoot = application.getStateManager().restoreView(context, calculatedViewId, renderKitId);
+        
+        UIViewRoot viewRoot = application.getStateManager().restoreView(context, viewId, renderKitId);
         return viewRoot;
     }
 

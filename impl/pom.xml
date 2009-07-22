@@ -133,6 +133,9 @@
         <configuration>
           <excludes>
             <exclude>**/JspStateManagerImplTest*</exclude>
+            <exclude>**/DefaultViewHandlerSupportTest*</exclude>
+            <exclude>**/ApplicationImplTest*</exclude>
+            <exclude>**/ApplicationImplAnnotationTest*</exclude>
           </excludes>
         </configuration>
       </plugin>

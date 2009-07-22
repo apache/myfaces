@@ -276,10 +276,6 @@ public class NavigationHandlerImpl
                 if (cazeIf != null) {
                     return (ifMatches ? caze : null);
                 }
-                
-                else {
-                    return caze;
-                }
             }
             
             if ((cazeIf != null) && ifMatches) {
