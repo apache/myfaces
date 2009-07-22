@@ -59,6 +59,9 @@ import org.apache.shale.test.mock.lifecycle.MockLifecycleFactory;
 
 public class ApplicationImplAnnotationTest extends TestCase
 {
+    //TODO: need mock objects for VDL/VDLFactory
+    //remove from excludes list in pom.xml after complete
+    
     // Mock object instances for our tests
     protected ApplicationImpl application = null;
     protected MockServletConfig       config = null;

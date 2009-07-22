@@ -60,7 +60,9 @@ import org.easymock.classextension.IMocksControl;
  */
 public class ApplicationImplTest extends TestCase
 {
-
+    //TODO: need mock objects for VDL/VDLFactory
+    //remove from excludes list in pom.xml after complete
+    
     private ApplicationImpl app;
     private MockFacesContext12 context;
 
