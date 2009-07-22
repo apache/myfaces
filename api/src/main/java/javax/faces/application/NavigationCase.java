@@ -25,6 +25,7 @@ import java.util.Map;
 
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 /**
@@ -40,9 +41,9 @@ public class NavigationCase
     private String _fromOutcome;
     private String _fromViewId;
     private String _toViewId;
-
     private boolean _includeViewParams;
     private boolean _redirect;
+    private Map<String,List<String>> _parameters;
 
     private ValueExpression _conditionExpression;
 
@@ -56,7 +57,7 @@ public class NavigationCase
         _toViewId = toViewId;
         _redirect = redirect;
         _includeViewParams = includeViewParams;
-        //TODO: deal with parameters
+        _parameters = parameters;
     }
 
     /**
@@ -97,8 +98,9 @@ public class NavigationCase
 
     public URL getActionURL(FacesContext context) throws MalformedURLException
     {
-        //TODO: Implementation goes here
-        return null;
+        ExternalContext externalContext = context.getExternalContext();
+        return new URL(externalContext.getRequestScheme(), externalContext.getRequestServerName(), externalContext.getRequestServerPort(),
+                context.getApplication().getViewHandler().getActionURL(context, getToViewId(context)));
     }
 
     public Boolean getCondition(FacesContext context)
@@ -130,26 +132,32 @@ public class NavigationCase
     
     public URL getBookmarkableURL(FacesContext context) throws MalformedURLException
     {
-        //TODO: Implementation goes here
-        return null;        
+        ExternalContext externalContext = context.getExternalContext();
+        return new URL(externalContext.getRequestScheme(),
+                externalContext.getRequestServerName(),
+                externalContext.getRequestServerPort(),
+                context.getApplication().getViewHandler().getBookmarkableURL(context, getToViewId(context), getParameters(), isIncludeViewParams()));  
     }
 
     public URL getResourceURL(FacesContext context) throws MalformedURLException
     {
-        //TODO: Implementation goes here
-        return null;
+        ExternalContext externalContext = context.getExternalContext();
+        return new URL(externalContext.getRequestScheme(), externalContext.getRequestServerName(), externalContext.getRequestServerPort(),
+                context.getApplication().getViewHandler().getResourceURL(context, getToViewId(context)));      
     }
     
     public URL getRedirectURL(FacesContext context) throws MalformedURLException
     {
-        //TODO: Implementation goes here
-        return null;
+        ExternalContext externalContext = context.getExternalContext();
+        return new URL(externalContext.getRequestScheme(),
+                externalContext.getRequestServerName(),
+                externalContext.getRequestServerPort(),
+                context.getApplication().getViewHandler().getRedirectURL(context, getToViewId(context), getParameters(), isIncludeViewParams()));
     }
     
     public Map<String,List<String>> getParameters()
     {
-        //TODO: Implementation goes here
-        return null;        
+        return _parameters;        
     }
 
     public String getToViewId(FacesContext context)
