@@ -24,12 +24,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
+import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.NavigationHandler;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
@@ -39,7 +42,7 @@ import javax.faces.context.FacesContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.config.element.NavigationCase;
+import javax.faces.application.NavigationCase;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.shared_impl.util.HashMapUtils;
 
@@ -49,13 +52,13 @@ import org.apache.myfaces.shared_impl.util.HashMapUtils;
  * @version $Revision$ $Date$
  */
 public class NavigationHandlerImpl
-    extends NavigationHandler
+    extends ConfigurableNavigationHandler
 {
     private static final Log log = LogFactory.getLog(NavigationHandlerImpl.class);
 
     private static final String ASTERISK = "*";
 
-    private Map<String, List<NavigationCase>> _navigationCases = null;
+    private Map<String, Set<NavigationCase>> _navigationCases = null;
     private List<String> _wildcardKeys = new ArrayList<String>();
 
     public NavigationHandlerImpl()
@@ -79,7 +82,7 @@ public class NavigationHandlerImpl
             if (log.isTraceEnabled())
             {
                 log.trace("handleNavigation fromAction=" + fromAction + " outcome=" + outcome +
-                          " toViewId =" + navigationCase.getToViewId() +
+                          " toViewId =" + navigationCase.getToViewId(facesContext) +
                           " redirect=" + navigationCase.isRedirect());
             }
             if (navigationCase.isRedirect())
@@ -92,7 +95,7 @@ public class NavigationHandlerImpl
                 
                 ExternalContext externalContext = facesContext.getExternalContext();
                 ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
-                String redirectPath = viewHandler.getActionURL(facesContext, navigationCase.getToViewId());
+                String redirectPath = viewHandler.getActionURL(facesContext, navigationCase.getToViewId(facesContext));
                 
                 // JSF 2.0 Spec call Flash.setRedirect(true) to notify Flash scope and take proper actions
                 externalContext.getFlash().setRedirect(true);
@@ -109,7 +112,7 @@ public class NavigationHandlerImpl
             {
                 ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
                 //create new view
-                String newViewId = navigationCase.getToViewId();
+                String newViewId = navigationCase.getToViewId(facesContext);
                 UIViewRoot viewRoot = viewHandler.createView(facesContext, newViewId);
                 facesContext.setViewRoot(viewRoot);
                 facesContext.renderResponse();
@@ -133,14 +136,14 @@ public class NavigationHandlerImpl
     public NavigationCase getNavigationCase(FacesContext facesContext, String fromAction, String outcome)
     {
         String viewId = facesContext.getViewRoot().getViewId();
-        Map<String, List<NavigationCase>> casesMap = getNavigationCases(facesContext);
+        Map<String, Set<NavigationCase>> casesMap = getNavigationCases();
         NavigationCase navigationCase = null;
 
-        List<? extends NavigationCase> casesList = casesMap.get(viewId);
-        if (casesList != null)
+        Set<? extends NavigationCase> casesSet = casesMap.get(viewId);
+        if (casesSet != null)
         {
             // Exact match?
-            navigationCase = calcMatchingNavigationCase(facesContext, casesList, fromAction, outcome);
+            navigationCase = calcMatchingNavigationCase(facesContext, casesSet, fromAction, outcome);
         }
 
         if (navigationCase == null)
@@ -153,20 +156,20 @@ public class NavigationHandlerImpl
                     String prefix = fromViewId.substring(0, fromViewId.length() - 1);
                     if (viewId != null && viewId.startsWith(prefix))
                     {
-                        casesList = casesMap.get(fromViewId);
-                        if (casesList != null)
+                        casesSet = casesMap.get(fromViewId);
+                        if (casesSet != null)
                         {
-                            navigationCase = calcMatchingNavigationCase(facesContext, casesList, fromAction, outcome);
+                            navigationCase = calcMatchingNavigationCase(facesContext, casesSet, fromAction, outcome);
                             if (navigationCase != null) break;
                         }
                     }
                 }
                 else
                 {
-                    casesList = casesMap.get(fromViewId);
-                    if (casesList != null)
+                    casesSet = casesMap.get(fromViewId);
+                    if (casesSet != null)
                     {
-                        navigationCase = calcMatchingNavigationCase(facesContext, casesList, fromAction, outcome);
+                        navigationCase = calcMatchingNavigationCase(facesContext, casesSet, fromAction, outcome);
                         if (navigationCase != null) break;
                     }
                 }
@@ -181,7 +184,7 @@ public class NavigationHandlerImpl
      */
     public String getViewId(FacesContext context, String fromAction, String outcome)
     {
-        return this.getNavigationCase(context, fromAction, outcome).getToViewId();
+        return this.getNavigationCase(context, fromAction, outcome).getToViewId(context);
     }
 
     /**
@@ -196,93 +199,83 @@ public class NavigationHandlerImpl
         return null;
     }
 
-    private NavigationCase calcMatchingNavigationCase(FacesContext context, List<? extends NavigationCase> casesList, String actionRef, 
+    private NavigationCase calcMatchingNavigationCase(FacesContext context, Set<? extends NavigationCase> casesList, String actionRef, 
                                                       String outcome)
     {
         for (NavigationCase caze : casesList)
         {
             String cazeOutcome = caze.getFromOutcome();
             String cazeActionRef = caze.getFromAction();
-            String cazeIf = caze.getIf();
-            ExpressionFactory expFactory = context.getApplication().getExpressionFactory();
-            boolean ifMatches = false;
-
+            Boolean cazeIf = caze.getCondition(context);
+            boolean ifMatches = (cazeIf == null ? false : cazeIf.booleanValue());
             // JSF 2.0: support conditional navigation via <if>.
-            
             // Use for later cases.
-            
-            if (cazeIf != null) {
-                ValueExpression ifExpr = expFactory.createValueExpression (context.getELContext(), caze.getIf(), Boolean.class);
-                Boolean value = (Boolean) ifExpr.getValue (context.getELContext());
-                
-                ifMatches = value.booleanValue();
-            }
-            
+
             if (cazeActionRef != null) {
                 if (cazeOutcome != null) {
                     if ((actionRef != null) && (outcome != null) && cazeActionRef.equals (actionRef) &&
-                        cazeOutcome.equals (outcome)) {
+                            cazeOutcome.equals (outcome)) {
                         // First case: match if <from-action> matches action and <from-outcome> matches outcome.
                         // Caveat: evaluate <if> if available.
-                        
+
                         if (cazeIf != null) {
                             return (ifMatches ? caze : null);
                         }
-                        
+
                         else {
                             return caze;
                         }
                     }
                 }
-                
+
                 else {
                     if ((actionRef != null) && cazeActionRef.equals (actionRef)) {
                         // Third case: if only <from-action> specified, match against action.
                         // Caveat: if <if> is available, evaluate.  If not, only match if outcome is not null.
-                        
+
                         if (cazeIf != null) {
                             return (ifMatches ? caze : null);
                         }
-                        
+
                         else {
                             return ((outcome != null) ? caze : null);
                         }
                     }
                 }
             }
-            
+
             else {
                 if (cazeOutcome != null) {
                     if ((outcome != null) && cazeOutcome.equals (outcome)) {
                         // Second case: if only <from-outcome> specified, match against outcome.
                         // Caveat: if <if> is available, evaluate.
-                        
+
                         if (cazeIf != null) {
                             return (ifMatches ? caze : null);
                         }
-                        
+
                         else {
                             return caze;
                         }
                     }
                 }
             }
-            
+
             // Fourth case: anything else matches if outcome is not null or <if> is specified.
-            
+
             if (outcome != null) {
                 // Again, if <if> present, evaluate.
-                
+
                 if (cazeIf != null) {
                     return (ifMatches ? caze : null);
                 }
             }
-            
+
             if ((cazeIf != null) && ifMatches) {
                 return caze;
             }
         }
-        
+
         return null;
     }
 
@@ -291,23 +284,25 @@ public class NavigationHandlerImpl
         return _wildcardKeys;
     }
 
-    private Map<String, List<NavigationCase>> getNavigationCases(FacesContext facesContext)
+    @Override
+    public Map<String, Set<NavigationCase>> getNavigationCases()
     {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
         ExternalContext externalContext = facesContext.getExternalContext();
         RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
 
         if (_navigationCases == null || runtimeConfig.isNavigationRulesChanged())
         {
-            synchronized(this)
+            synchronized (this)
             {
                 if (_navigationCases == null || runtimeConfig.isNavigationRulesChanged())
                 {
                     Collection<? extends NavigationRule> rules = runtimeConfig.getNavigationRules();
                     int rulesSize = rules.size();
-                    
-                    Map<String, List<NavigationCase>> cases = 
-                        new HashMap<String, List<NavigationCase>>(HashMapUtils.calcCapacity(rulesSize));
-                    
+
+                    Map<String, Set<NavigationCase>> cases = new HashMap<String, Set<NavigationCase>>(
+                            HashMapUtils.calcCapacity(rulesSize));
+
                     List<String> wildcardKeys = new ArrayList<String>();
 
                     for (NavigationRule rule : rules)
@@ -324,11 +319,11 @@ public class NavigationHandlerImpl
                             fromViewId = fromViewId.trim();
                         }
 
-                        List<NavigationCase> list = cases.get(fromViewId);
-                        if (list == null)
+                        Set<NavigationCase> set = cases.get(fromViewId);
+                        if (set == null)
                         {
-                            list = new ArrayList<NavigationCase>(rule.getNavigationCases());
-                            cases.put(fromViewId, list);
+                            set = new HashSet<NavigationCase>(convertNavigationCasesToAPI(rule));
+                            cases.put(fromViewId, set);
                             if (fromViewId.endsWith(ASTERISK))
                             {
                                 wildcardKeys.add(fromViewId);
@@ -336,10 +331,10 @@ public class NavigationHandlerImpl
                         }
                         else
                         {
-                            list.addAll(rule.getNavigationCases());
+                            set.addAll(convertNavigationCasesToAPI(rule));
                         }
                     }
-                    
+
                     Collections.sort(wildcardKeys, new KeyComparator());
 
                     synchronized (cases)
@@ -366,4 +361,19 @@ public class NavigationHandlerImpl
             return -s1.compareTo(s2);
         }
     }
+    
+    private Set<NavigationCase> convertNavigationCasesToAPI(NavigationRule rule)
+    {
+        Collection<? extends org.apache.myfaces.config.element.NavigationCase> configCases = rule.getNavigationCases();
+        Set<NavigationCase> apiCases = new HashSet<NavigationCase>(configCases.size());
+        
+        for(org.apache.myfaces.config.element.NavigationCase configCase : configCases)
+        {   
+            //TODO: handle view params
+            apiCases.add(new NavigationCase(rule.getFromViewId(),configCase.getFromAction(),configCase.getFromOutcome(),configCase.getIf(),configCase.getToViewId(),null,configCase.isRedirect(),false)); 
+        }
+        
+        return apiCases;
+    }
+
 }
