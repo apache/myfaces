@@ -369,8 +369,14 @@ public class NavigationHandlerImpl
         
         for(org.apache.myfaces.config.element.NavigationCase configCase : configCases)
         {   
-            //TODO: handle view params
-            apiCases.add(new NavigationCase(rule.getFromViewId(),configCase.getFromAction(),configCase.getFromOutcome(),configCase.getIf(),configCase.getToViewId(),null,configCase.isRedirect(),false)); 
+            if(configCase.getRedirect() != null)
+            {
+                apiCases.add(new NavigationCase(rule.getFromViewId(),configCase.getFromAction(),configCase.getFromOutcome(),configCase.getIf(),configCase.getToViewId(),configCase.getRedirect().getViewParams(),true,configCase.getRedirect().isIncludeViewParams()));
+            }
+            else
+            {
+                apiCases.add(new NavigationCase(rule.getFromViewId(),configCase.getFromAction(),configCase.getFromOutcome(),configCase.getIf(),configCase.getToViewId(),null,false,false));
+            }
         }
         
         return apiCases;

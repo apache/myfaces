@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.config.impl.digester.elements;
 
+import org.apache.myfaces.config.impl.digester.elements.Redirect;
+
 
 
 
@@ -31,7 +33,7 @@ public class NavigationCase implements org.apache.myfaces.config.element.Navigat
     private String fromOutcome;
     private String ifValue;
     private String toViewId;
-    private boolean redirect;
+    private Redirect redirect;
 
 
     public String getFromAction()
@@ -79,13 +81,13 @@ public class NavigationCase implements org.apache.myfaces.config.element.Navigat
     }
 
 
-    public void setRedirect()
+    public void setRedirect(Redirect redirect)
     {
-        this.redirect = true;
+        this.redirect = redirect;
     }
 
 
-    public boolean isRedirect()
+    public Redirect getRedirect()
     {
         return redirect;
     }
