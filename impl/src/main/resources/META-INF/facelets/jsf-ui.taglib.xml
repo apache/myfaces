@@ -21,5 +21,5 @@
   "http://java.sun.com/dtd/facelet-taglib_1_0.dtd">
 
 <facelet-taglib>
-	<library-class>com.sun.facelets.tag.ui.UILibrary</library-class>
+	<library-class>org.apache.myfaces.view.facelets.tag.ui.UILibrary</library-class>
 </facelet-taglib>

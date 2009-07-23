@@ -7,22 +7,22 @@
 <faces-config>
     <component>
 		<component-type>facelets.ui.Repeat</component-type>
-		<component-class>com.sun.facelets.component.UIRepeat</component-class>
+		<component-class>org.apache.myfaces.view.facelets.component.UIRepeat</component-class>
 	</component>
 	<component>
 		<component-type>facelets.ui.ComponentRef</component-type>
-		<component-class>com.sun.facelets.tag.ui.ComponentRef</component-class>
+		<component-class>org.apache.myfaces.view.facelets.tag.ui.ComponentRef</component-class>
 	</component>
 	<component>
 		<component-type>facelets.ui.Debug</component-type>
-		<component-class>com.sun.facelets.tag.ui.UIDebug</component-class>
+		<component-class>org.apache.myfaces.view.facelets.tag.ui.UIDebug</component-class>
 	</component>
 	<render-kit>
         <render-kit-id>HTML_BASIC</render-kit-id>
         <renderer>
             <component-family>facelets</component-family>
             <renderer-type>facelets.ui.Repeat</renderer-type>
-            <renderer-class>com.sun.facelets.component.RepeatRenderer</renderer-class>
+            <renderer-class>org.apache.myfaces.view.facelets.component.RepeatRenderer</renderer-class>
         </renderer>
     </render-kit>
 </faces-config>

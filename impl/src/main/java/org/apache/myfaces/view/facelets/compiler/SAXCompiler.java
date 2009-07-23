@@ -167,7 +167,7 @@ public final class SAXCompiler extends Compiler
 
         public InputSource resolveEntity(String publicId, String systemId) throws SAXException
         {
-            String dtd = "default.dtd";
+            String dtd = "org/apache/myfaces/resource/default.dtd";
             /*
              * if ("-//W3C//DTD XHTML 1.0 Transitional//EN".equals(publicId)) { dtd = "xhtml1-transitional.dtd"; } else
              * if (systemId != null && systemId.startsWith("file:/")) { return new InputSource(systemId); }

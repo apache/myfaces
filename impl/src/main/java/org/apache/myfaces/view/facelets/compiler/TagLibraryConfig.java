@@ -388,7 +388,7 @@ public final class TagLibraryConfig
         {
             if ("-//Sun Microsystems, Inc.//DTD Facelet Taglib 1.0//EN".equals(publicId))
             {
-                URL url = ClassUtils.getContextClassLoader().getResource("facelet-taglib_1_0.dtd");
+                URL url = ClassUtils.getContextClassLoader().getResource("org/apache/myfaces/resource/facelet-taglib_1_0.dtd");
                 return new InputSource(url.toExternalForm());
             }
             return null;
