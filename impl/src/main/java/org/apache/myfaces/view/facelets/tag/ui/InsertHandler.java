@@ -30,6 +30,7 @@ import javax.faces.view.facelets.TagAttributeException;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
+import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.TemplateClient;
 
 /**
@@ -70,7 +71,21 @@ public final class InsertHandler extends TagHandler implements TemplateClient
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {
-        this.nextHandler.apply(ctx, parent);
+        AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+        actx.extendClient(this);
+        boolean found = false;
+        try
+        {
+            found = actx.includeDefinition(parent, this.name);
+        }
+        finally
+        {
+            actx.popClient(this);
+        }
+        if (!found)
+        {
+            this.nextHandler.apply(ctx, parent);
+        }
     }
 
     public boolean apply(FaceletContext ctx, UIComponent parent, String name) throws IOException, FacesException,

@@ -36,6 +36,7 @@ import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandler;
 
+import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.TemplateClient;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
 import org.apache.myfaces.view.facelets.tag.ui.DefineHandler;
@@ -104,10 +105,11 @@ final class UserTagHandler extends TagHandler implements TemplateClient
             ctx.setVariableMapper(varMapper);
         }
 
+        AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
         // eval include
         try
         {
-            //ctx.pushClient(this);
+            actx.pushClient(this);
             ctx.includeFacelet(parent, this._location);
         }
         catch (FileNotFoundException e)
@@ -118,7 +120,7 @@ final class UserTagHandler extends TagHandler implements TemplateClient
         {
 
             // make sure we undo our changes
-            //ctx.popClient(this);
+            actx.popClient(this);
             ctx.setVariableMapper(orig);
         }
     }

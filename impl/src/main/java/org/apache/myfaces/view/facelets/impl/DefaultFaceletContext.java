@@ -22,8 +22,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.el.ELContext;
 import javax.el.ELException;
@@ -36,7 +39,10 @@ import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletContext;
+import javax.faces.view.facelets.FaceletException;
 
+import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.TemplateClient;
 import org.apache.myfaces.view.facelets.el.DefaultVariableMapper;
 
 /**
@@ -49,7 +55,7 @@ import org.apache.myfaces.view.facelets.el.DefaultVariableMapper;
  * @author Jacob Hookom
  * @version $Id: DefaultFaceletContext.java,v 1.4.4.3 2006/03/25 01:01:53 jhook Exp $
  */
-final class DefaultFaceletContext extends FaceletContext
+final class DefaultFaceletContext extends AbstractFaceletContext
 {
 
     private final FacesContext _faces;
@@ -68,10 +74,13 @@ final class DefaultFaceletContext extends FaceletContext
     private String _prefix;
     
     private final StringBuilder _uniqueIdBuilder = new StringBuilder(30);
+    
+    private final List<TemplateManager> _clients;
 
     public DefaultFaceletContext(DefaultFaceletContext ctx, DefaultFacelet facelet)
     {
         _ctx = ctx._ctx;
+        _clients = ctx._clients;
         _faces = ctx._faces;
         _fnMapper = ctx._fnMapper;
         _ids = ctx._ids;
@@ -88,6 +97,7 @@ final class DefaultFaceletContext extends FaceletContext
         _ctx = faces.getELContext();
         _ids = new HashMap<String, Integer>();
         _prefixes = new HashMap<Integer, Integer>();
+        _clients = new ArrayList(5);
         _faces = faces;
         _faceletHierarchy = new ArrayList<DefaultFacelet>(1);
         _faceletHierarchy.add(facelet);
@@ -295,7 +305,110 @@ final class DefaultFaceletContext extends FaceletContext
     {
         return _ctx.getELResolver();
     }
+    
+    //Begin methods from AbstractFaceletContext
 
+    @Override
+    public void popClient(TemplateClient client)
+    {
+        if (!this._clients.isEmpty())
+        {
+            Iterator<TemplateManager> itr = this._clients.iterator();
+            while (itr.hasNext())
+            {
+                if (itr.next().equals(client))
+                {
+                    itr.remove();
+                    return;
+                }
+            }
+        }
+        throw new IllegalStateException(client + " not found");
+    }
+
+    @Override
+    public void pushClient(final TemplateClient client)
+    {
+        this._clients.add(0, new TemplateManager(this._facelet, client, true));
+    }
+
+    @Override
+    public void extendClient(final TemplateClient client)
+    {
+        this._clients.add(new TemplateManager(this._facelet, client, false));
+    }
+
+    @Override
+    public boolean includeDefinition(UIComponent parent, String name)
+            throws IOException, FaceletException, FacesException, ELException
+    {
+        boolean found = false;
+        TemplateManager client;
+
+        for (int i = 0, size = this._clients.size(); i < size && !found; i++)
+        {
+            client = ((TemplateManager) this._clients.get(i));
+            if (client.equals(this._facelet))
+                continue;
+            found = client.apply(this, parent, name);
+        }
+
+        return found;
+    }
+
+    private final static class TemplateManager implements TemplateClient
+    {
+        private final DefaultFacelet _owner;
+
+        private final TemplateClient _target;
+
+        private final boolean _root;
+
+        private final Set<String> _names = new HashSet<String>();
+
+        public TemplateManager(DefaultFacelet owner, TemplateClient target,
+                boolean root)
+        {
+            this._owner = owner;
+            this._target = target;
+            this._root = root;
+        }
+
+        public boolean apply(FaceletContext ctx, UIComponent parent, String name)
+                throws IOException, FacesException, FaceletException,
+                ELException
+        {
+            String testName = (name != null) ? name : "facelets._NULL_DEF_";
+            if (this._names.contains(testName))
+            {
+                return false;
+            }
+            else
+            {
+                this._names.add(testName);
+                boolean found = false;
+                found = this._target.apply(new DefaultFaceletContext(
+                        (DefaultFaceletContext) ctx, this._owner), parent, name);
+                this._names.remove(testName);
+                return found;
+            }
+        }
+
+        public boolean equals(Object o)
+        {
+            // System.out.println(this.owner.getAlias() + " == " +
+            // ((DefaultFacelet) o).getAlias());
+            return this._owner == o || this._target == o;
+        }
+
+        public boolean isRoot()
+        {
+            return this._root;
+        }
+    }
+    
+    //End methods from AbstractFaceletContext
+    
     /**
      * {@inheritDoc}
      */

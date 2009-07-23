@@ -35,6 +35,7 @@ import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
+import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.TemplateClient;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
 import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
@@ -120,15 +121,15 @@ public final class CompositionHandler extends TagHandler implements TemplateClie
                     _params[i].apply(ctx, parent);
                 }
             }
-
-            // ctx.extendClient(this);
+            AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+            actx.extendClient(this);
             try
             {
                 ctx.includeFacelet(parent, _template.getValue(ctx));
             }
             finally
             {
-                // ctx.popClient(this);
+                actx.popClient(this);
                 ctx.setVariableMapper(orig);
             }
         }
