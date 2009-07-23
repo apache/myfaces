@@ -859,7 +859,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         {
             ExternalContext extCtx = context.getExternalContext();
             String viewSuffix = extCtx.getInitParameter(ViewHandler.DEFAULT_SUFFIX_PARAM_NAME);
-            this.defaultSuffix = (viewSuffix != null) ? viewSuffix : ViewHandler.DEFAULT_SUFFIX;
+            this.defaultSuffix = (viewSuffix != null) ? viewSuffix : ViewHandler.DEFAULT_FACELETS_SUFFIX;
         }
         return this.defaultSuffix;
     }
