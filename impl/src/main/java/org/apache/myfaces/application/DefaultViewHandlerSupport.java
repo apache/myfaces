@@ -231,7 +231,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
      */
     protected String handlePrefixMapping(String viewId, String prefix)
     {
-        /*  If prefix mapping (such as “/faces/*”) is used for FacesServlet, normalize the viewId according to the following
+        /*  If prefix mapping (such as "/faces/*") is used for FacesServlet, normalize the viewId according to the following
             algorithm, or its semantic equivalent, and return it.
                
             Remove any number of occurrences of the prefix mapping from the viewId. For example, if the incoming value
