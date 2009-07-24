@@ -30,6 +30,8 @@ import java.util.Map;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.visit.VisitCallback;
+import javax.faces.component.visit.VisitContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.FacesEvent;
@@ -1091,6 +1093,13 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     public String getVar()
     {
         return (String) getStateHelper().get(PropertyKeys.var);
+    }
+
+    @Override
+    public boolean visitTree(VisitContext context, VisitCallback callback)
+    {
+        // TODO: on MYFACES-2137 Implement traverse over all rows (See javadoc for details)
+        return super.visitTree(context, callback);
     }
 
     public void setVar(String var)
