@@ -461,6 +461,14 @@ public class ApplicationImpl extends Application
                 event = _traverseListenerList(holder.getListenersForEventClass(systemEventClass), systemEventClass,
                                               source, event);
             }
+            
+            UIViewRoot uiViewRoot = facesContext.getViewRoot();
+            if (uiViewRoot != null)
+            {
+                //Call listeners on view level
+                event = _traverseListenerList(uiViewRoot.getViewListenersForEventClass(systemEventClass), 
+                        systemEventClass, source, event);
+            }
 
             SystemListenerEntry systemListenerEntry = _systemEventListenerClassMap.get(systemEventClass);
             if (systemListenerEntry != null)
