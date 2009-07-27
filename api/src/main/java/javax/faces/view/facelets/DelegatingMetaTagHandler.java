@@ -52,7 +52,7 @@ public abstract class DelegatingMetaTagHandler extends MetaTagHandler
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException
     {
-        getTagHandlerHelper().apply(ctx, parent);
+        getTagHandlerDelegate().apply(ctx, parent);
     }
 
     public void applyNextHandler(FaceletContext ctx, UIComponent c) throws IOException
@@ -100,9 +100,9 @@ public abstract class DelegatingMetaTagHandler extends MetaTagHandler
     @Override
     protected MetaRuleset createMetaRuleset(Class<?> type)
     {
-        return getTagHandlerHelper().createMetaRuleset(type);
+        return getTagHandlerDelegate().createMetaRuleset(type);
     }
 
-    protected abstract TagHandlerDelegate getTagHandlerHelper();
+    protected abstract TagHandlerDelegate getTagHandlerDelegate();
 
 }

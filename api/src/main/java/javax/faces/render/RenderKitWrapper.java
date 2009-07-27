@@ -40,6 +40,11 @@ import java.util.Iterator;
  */
 public abstract class RenderKitWrapper extends RenderKit implements FacesWrapper<RenderKit>
 {
+    public void addClientBehaviorRenderer(String type, ClientBehaviorRenderer renderer)
+    {
+        getWrapped().addClientBehaviorRenderer(type,renderer);
+    }
+    
     /** {@inheritDoc} */
     public void addRenderer(String family, String rendererType, Renderer renderer)
     {
@@ -58,6 +63,16 @@ public abstract class RenderKitWrapper extends RenderKit implements FacesWrapper
         return getWrapped().createResponseWriter(writer, contentTypeList, characterEncoding);
     }
 
+    public ClientBehaviorRenderer getClientBenaviorRenderer(String type)
+    {
+        return getWrapped().getClientBehaviorRenderer(type);
+    }
+    
+    public Iterator<String> getClientBehaviorRendererTypes()
+    {
+        return getWrapped().getClientBehaviorRendererTypes();
+    }
+    
     /** {@inheritDoc} */
     public Renderer getRenderer(String family, String rendererType)
     {

@@ -51,7 +51,7 @@ public class ValidatorHandler extends FaceletsAttachedObjectHandler implements E
         return config.getValidatorId();
     }
 
-    protected TagHandlerDelegate getTagHandlerHelper()
+    protected TagHandlerDelegate getTagHandlerDelegate()
     {
         return delegateFactory.createValidatorHandlerDelegate (this);
     }

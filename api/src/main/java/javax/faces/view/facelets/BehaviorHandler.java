@@ -65,7 +65,7 @@ public class BehaviorHandler extends FaceletsAttachedObjectHandler implements Be
      * {@inheritDoc}
      */
     @Override
-    protected TagHandlerDelegate getTagHandlerHelper()
+    protected TagHandlerDelegate getTagHandlerDelegate()
     {
         return delegateFactory.createBehaviorHandlerDelegate (this);
     }

@@ -30,7 +30,7 @@ public class FaceletException extends FacesException
 {
     public FaceletException()
     {
-        
+        super();
     }
 
     public FaceletException(Throwable cause)

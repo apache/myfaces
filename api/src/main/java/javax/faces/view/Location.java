@@ -16,20 +16,43 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package javax.faces.render;
 
-/**
- * TODO: REMOVE - No longer existing in latst spec 2009-03-27 -= Leonardo Uribe =-
- * 
- * @author Simon Lessard (latest modification by $Author: slessard $)
- * @version $Revision: 696523 $ $Date: 2008-09-24 18:56:27 -0400 (mer., 17 sept. 2008) $
- */
-public @interface FacesRenderKit
+package javax.faces.view;
+
+import java.io.Serializable;
+
+public class Location implements Serializable
 {
-    /**
-     * The value of this annotation attribute is taken to be the <i>render-kit-id</i> with which a reference to an
-     * instance of this class of {@link RenderKit} can be obtained by calling {@link
-     * RenderKitFactory.getRenderKit(javax.faces.context.FacesContext, java.lang.String)}.
-     */
-    public String value();
+    private static final long serialVersionUID = 1L;
+
+    private int column;
+    private int line;
+    private String path;
+    
+    public Location(String path, int line, int column)
+    {
+        this.column = column;
+        this.line = line;
+        this.path = path;        
+    }
+    
+    public int getColumn()
+    {
+        return column;
+    }
+    
+    public int getLine()
+    {
+        return line;
+    }
+    
+    public String getPath()
+    {
+        return path;
+    }
+    
+    public String toString()
+    {
+        return path + "at line " + line + " and column " + column;
+    }
 }

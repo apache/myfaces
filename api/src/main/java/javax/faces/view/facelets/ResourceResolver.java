@@ -16,33 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package javax.faces.model;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package javax.faces.view.facelets;
 
-/**
- * @author Simon Lessard (latest modification by $Author: slessard $)
- * @version $Revision: 696523 $ $Date: 2008-09-24 18:45:00 -0400 (mer., 17 sept. 2008) $
- *
- * @since 2.0
- */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-@Inherited
-public @interface ManagedBean
+import java.net.URL;
+
+public abstract class ResourceResolver
 {
-    /**
-     * Taken to be the value of the eager attribute of the managed-bean.
-     */
-    public boolean eager() default false;
+    public static final String FACELETS_RESOURCE_RESOLVER_PARAM_NAME = "javax.faces.FACELETS_RESOURCE_RESOLVER";
+    
+    public ResourceResolver()
+    {
+        //no-op
+    }
 
-    /**
-     * Taken to be the managed-bean-name. See class documentation for details.
-     */
-    public String name() default "";
-
+    public abstract URL resolveUrl(String path);
+    
 }

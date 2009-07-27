@@ -18,6 +18,8 @@
  */
 package javax.faces.validator;
 
+import java.util.Collection;
+
 import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
 
@@ -33,7 +35,20 @@ public class ValidatorException
 {
     private static final long serialVersionUID = 5965885122446047949L;
     private FacesMessage _facesMessage;
+    private Collection<FacesMessage> _facesMessages;
 
+    public ValidatorException(Collection<FacesMessage> messages)
+    {
+        super(facesMessagesToString(messages));
+        _facesMessages = messages;
+    }
+    
+    public ValidatorException(Collection<FacesMessage> messages, Throwable cause)
+    {
+        super(facesMessagesToString(messages),cause);
+        _facesMessages = messages;
+    }
+    
     public ValidatorException(FacesMessage message)
     {
         super(facesMessageToString(message));
@@ -50,7 +65,11 @@ public class ValidatorException
     public FacesMessage getFacesMessage()
     {
         return _facesMessage;
-
+    }
+    
+    public Collection<FacesMessage> getFacesMessages()
+    {
+        return _facesMessages;
     }
 
     private static String facesMessageToString(FacesMessage message)
@@ -70,5 +89,36 @@ public class ValidatorException
         
         return detail != null ? detail : "";
     }
-
+    
+    private static String facesMessagesToString(Collection<FacesMessage> messages)
+    {
+        if(messages == null || messages.isEmpty())
+        {
+            return "";
+        }
+        StringBuffer buffer = new StringBuffer("");
+        
+        for(FacesMessage message : messages)
+        {
+            if(message != null)
+            {
+                String summary = message.getSummary();
+                String detail = message.getDetail();
+                
+                if (summary != null)
+                {
+                    if (detail != null)
+                    {
+                        buffer.append(summary + ": " + detail);
+                    }
+                    else
+                    {
+                        buffer.append(summary);
+                    }
+                }
+            }
+            
+        }
+        return buffer.toString();
+    }
 }

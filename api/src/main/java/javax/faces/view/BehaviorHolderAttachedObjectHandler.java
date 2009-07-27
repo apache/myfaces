@@ -26,5 +26,5 @@ package javax.faces.view;
  */
 public interface BehaviorHolderAttachedObjectHandler extends AttachedObjectHandler
 {
-
+    public String getEventName();
 }

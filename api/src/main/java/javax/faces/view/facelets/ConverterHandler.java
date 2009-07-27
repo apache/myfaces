@@ -48,7 +48,7 @@ public class ConverterHandler extends FaceletsAttachedObjectHandler implements V
         return converterId;
     }
     
-    protected TagHandlerDelegate getTagHandlerHelper()
+    protected TagHandlerDelegate getTagHandlerDelegate()
     {
         return delegateFactory.createConverterHandlerDelegate (this);
     }

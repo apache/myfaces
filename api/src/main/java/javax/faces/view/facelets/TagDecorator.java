@@ -16,24 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package javax.faces.model;
+package javax.faces.view.facelets;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-/**
- * @author Simon Lessard (latest modification by $Author: slessard $)
- * @version $Revision: 696523 $ $Date: 2009-03-21 09:35:26 -0400 (mer., 17 sept. 2008) $
- *
- * @since 2.0
- */
-@Target(value=ElementType.TYPE)
-@Retention(value=RetentionPolicy.RUNTIME)
-@Inherited
-public @interface CustomScoped
+public interface TagDecorator
 {
-    public String value() default "";
+    /**
+     * If handled, return a new Tag instance, otherwise return null
+     * @param tag - a tag to be decorated
+     * @return a decorated tag, otherwise return null
+     */
+    public Tag decorate(Tag tag);
 }

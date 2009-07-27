@@ -67,7 +67,7 @@ public class ComponentHandler extends DelegatingMetaTagHandler
         // no-op.
     }
 
-    protected TagHandlerDelegate getTagHandlerHelper()
+    protected TagHandlerDelegate getTagHandlerDelegate()
     {
         return helper;
     }
