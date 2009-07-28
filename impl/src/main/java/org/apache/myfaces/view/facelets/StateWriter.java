@@ -43,7 +43,7 @@ import org.apache.myfaces.view.facelets.util.FastWriter;
  * @author Adam Winer
  * @version $Id: StateWriter.java,v 1.2 2008/07/13 19:01:40 rlubke Exp $
  */
-final class StateWriter extends Writer
+public final class StateWriter extends Writer
 {
 
     private int initialSize;

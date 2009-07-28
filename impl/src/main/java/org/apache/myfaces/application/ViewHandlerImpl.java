@@ -18,48 +18,25 @@
  */
 package org.apache.myfaces.application;
 
-import java.beans.BeanDescriptor;
-import java.beans.BeanInfo;
-import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.el.ExpressionFactory;
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
 import javax.faces.application.StateManager;
 import javax.faces.application.ViewHandler;
-import javax.faces.component.ActionSource2;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
-import javax.faces.event.MethodExpressionActionListener;
-import javax.faces.event.MethodExpressionValueChangeListener;
-import javax.faces.event.ValueChangeEvent;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
-import javax.faces.validator.MethodExpressionValidator;
-import javax.faces.view.ActionSource2AttachedObjectHandler;
-import javax.faces.view.ActionSource2AttachedObjectTarget;
-import javax.faces.view.AttachedObjectHandler;
-import javax.faces.view.AttachedObjectTarget;
-import javax.faces.view.EditableValueHolderAttachedObjectHandler;
-import javax.faces.view.EditableValueHolderAttachedObjectTarget;
-import javax.faces.view.ValueHolderAttachedObjectHandler;
-import javax.faces.view.ValueHolderAttachedObjectTarget;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.ViewDeclarationLanguageFactory;
 import javax.faces.view.ViewMetadata;
@@ -69,6 +46,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.shared_impl.config.MyfacesConfig;
 import org.apache.myfaces.shared_impl.renderkit.html.util.JavascriptUtils;
+import org.apache.myfaces.view.facelets.StateWriter;
 
 public class ViewHandlerImpl extends ViewHandler
 {
@@ -259,6 +237,18 @@ public class ViewHandlerImpl extends ViewHandler
 
         if(context.getPartialViewContext().isAjaxRequest())
             return;
+
+        // Facelets specific hack:
+        // Tell the StateWriter that we're about to write state
+        StateWriter stateWriter = StateWriter.getCurrentInstance();
+        if (stateWriter != null)
+        {
+            // Write the STATE_KEY out. Unfortunately, this will
+            // be wasteful for pure server-side state managers where nothing
+            // is actually written into the output, but this cannot
+            // programatically be discovered
+            stateWriter.writingState();
+        }
 
         StateManager stateManager = context.getApplication().getStateManager();
         if (stateManager.isSavingStateInClient(context))

@@ -38,6 +38,9 @@ import javax.faces.context.FacesContext;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
+import javax.faces.view.StateManagementStrategy;
+import javax.faces.view.ViewDeclarationLanguage;
+
 import java.io.*;
 import java.lang.reflect.Method;
 import java.security.AccessController;
@@ -340,43 +343,95 @@ public class JspStateManagerImpl extends MyfacesStateManager
     {
         if (log.isTraceEnabled()) log.trace("Entering restoreView - viewId: "+viewId+" ; renderKitId: "+renderKitId);
 
-        RenderKit renderKit = getRenderKitFactory().getRenderKit(facesContext, renderKitId);
-        ResponseStateManager responseStateManager = renderKit.getResponseStateManager();
-
-        Object state;
-        if (isSavingStateInClient(facesContext))
+        UIViewRoot uiViewRoot = null;
+        
+        ViewDeclarationLanguage vdl = facesContext.getApplication().
+            getViewHandler().getViewDeclarationLanguage(facesContext,viewId);
+        StateManagementStrategy sms = null; 
+        if (vdl != null)
         {
-            if (log.isTraceEnabled()) log.trace("Restoring view from client");
-
-            state = responseStateManager.getState(facesContext, viewId);
+            sms = vdl.getStateManagementStrategy(facesContext, viewId);
+        }
+        
+        if (sms != null)
+        {
+            if (log.isTraceEnabled()) log.trace("Redirect to StateManagementStrategy: "+sms.getClass().getName());
+            
+            uiViewRoot = sms.restoreView(facesContext, viewId, renderKitId);
         }
         else
         {
-            if (log.isTraceEnabled()) log.trace("Restoring view from session");
+            RenderKit renderKit = getRenderKitFactory().getRenderKit(facesContext, renderKitId);
+            ResponseStateManager responseStateManager = renderKit.getResponseStateManager();
 
-            Integer serverStateId = getServerStateId((Object[]) responseStateManager.getState(facesContext, viewId));
+            Object state;
+            if (isSavingStateInClient(facesContext))
+            {
+                if (log.isTraceEnabled()) log.trace("Restoring view from client");
 
-            state = getSerializedViewFromServletSession(facesContext, viewId, serverStateId);
-        }
-
-        UIViewRoot uiViewRoot = null;
-
-        if (state != null) {
-            Object[] stateArray = (Object[])state;
-            TreeStructureManager tsm = new TreeStructureManager();
-            uiViewRoot = tsm.restoreTreeStructure(stateArray[0]);
-
-            if (uiViewRoot != null) {
-                facesContext.setViewRoot (uiViewRoot);
-                uiViewRoot.processRestoreState(facesContext, stateArray[1]);
+                state = responseStateManager.getState(facesContext, viewId);
             }
-        }
+            else
+            {
+                if (log.isTraceEnabled()) log.trace("Restoring view from session");
 
+                Integer serverStateId = getServerStateId((Object[]) responseStateManager.getState(facesContext, viewId));
+
+                state = getSerializedViewFromServletSession(facesContext, viewId, serverStateId);
+            }
+
+            if (state != null) {
+                Object[] stateArray = (Object[])state;
+                TreeStructureManager tsm = new TreeStructureManager();
+                uiViewRoot = tsm.restoreTreeStructure(stateArray[0]);
+
+                if (uiViewRoot != null) {
+                    facesContext.setViewRoot (uiViewRoot);
+                    uiViewRoot.processRestoreState(facesContext, stateArray[1]);
+                }
+            }            
+        }
         if (log.isTraceEnabled()) log.trace("Exiting restoreView - "+viewId);
 
         return uiViewRoot;
     }
 
+    /**
+     * Wrap the original method and redirect to VDL StateManagementStrategy when
+     * necessary
+     */
+    @Override
+    public Object saveView(FacesContext facesContext)
+    {
+        UIViewRoot uiViewRoot = facesContext.getViewRoot();
+        
+        String viewId = uiViewRoot.getViewId();
+        ViewDeclarationLanguage vdl = facesContext.getApplication().
+            getViewHandler().getViewDeclarationLanguage(facesContext,viewId);
+        if (vdl != null)
+        {
+            StateManagementStrategy sms = vdl.getStateManagementStrategy(facesContext, viewId);
+            
+            if (sms != null)
+            {
+                if (log.isTraceEnabled()) log.trace("Calling saveView of StateManagementStrategy: "+sms.getClass().getName());
+                
+                return sms.saveView(facesContext);
+            }
+        }
+
+        // In StateManagementStrategy.saveView there is a check for transient at
+        // start, but the same applies for VDL without StateManagementStrategy,
+        // so this should be checked before call parent (note that parent method
+        // does not do this check).
+        if (uiViewRoot.isTransient())
+        {
+            return null;
+        }
+
+        return super.saveView(facesContext);
+    }
+    
     @Override
     public SerializedView saveSerializedView(FacesContext facesContext) throws IllegalStateException
     {
