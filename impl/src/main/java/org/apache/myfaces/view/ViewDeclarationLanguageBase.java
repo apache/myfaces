@@ -18,40 +18,13 @@
  */
 package org.apache.myfaces.view;
 
-import java.beans.BeanDescriptor;
-import java.beans.BeanInfo;
-import java.beans.PropertyDescriptor;
-import java.util.List;
-
-import javax.el.ExpressionFactory;
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.application.ViewHandler;
-import javax.faces.component.ActionSource2;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
-import javax.faces.event.MethodExpressionActionListener;
-import javax.faces.event.MethodExpressionValueChangeListener;
-import javax.faces.event.ValueChangeEvent;
-import javax.faces.validator.MethodExpressionValidator;
-import javax.faces.view.ActionSource2AttachedObjectHandler;
-import javax.faces.view.ActionSource2AttachedObjectTarget;
-import javax.faces.view.AttachedObjectHandler;
-import javax.faces.view.AttachedObjectTarget;
-import javax.faces.view.EditableValueHolderAttachedObjectHandler;
-import javax.faces.view.EditableValueHolderAttachedObjectTarget;
-import javax.faces.view.ValueHolderAttachedObjectHandler;
-import javax.faces.view.ValueHolderAttachedObjectTarget;
 import javax.faces.view.ViewDeclarationLanguage;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.InvalidViewIdException;
-import org.apache.myfaces.application.ViewHandlerImpl;
 
 /**
  * @author Simon Lessard (latest modification by $Author: slessard $)
@@ -76,6 +49,7 @@ public abstract class ViewDeclarationLanguageBase extends ViewDeclarationLanguag
         try
         {
             viewId = calculateViewId(context, viewId);
+            
             Application application = context.getApplication();
 
             // Create a new UIViewRoot object instance using Application.createComponent(UIViewRoot.COMPONENT_TYPE).
@@ -114,10 +88,55 @@ public abstract class ViewDeclarationLanguageBase extends ViewDeclarationLanguag
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UIViewRoot restoreView(FacesContext context, String viewId)
+    {
+        checkNull(context, "context");
+        checkNull(viewId, "viewId");
+
+        Application application = context.getApplication();
+        
+        ViewHandler applicationViewHandler = application.getViewHandler();
+        
+        String renderKitId = applicationViewHandler.calculateRenderKitId(context);
+
+        UIViewRoot viewRoot = application.getStateManager().restoreView(context, viewId, renderKitId);
+
+        return viewRoot;
+    }
+
+    /**
+     * Calculates the effective view identifier for the specified raw view identifier.
+     * 
+     * @param context le current FacesContext
+     * @param viewId the raw view identifier
+     * 
+     * @return the effective view identifier
+     */
     protected abstract String calculateViewId(FacesContext context, String viewId);
     
+    /**
+     * Send a source not found to the client. Although it can be considered ok in JSP mode,
+     * I think it's pretty lame to have this kind of requirement at VDL level considering VDL 
+     * represents the page --> JSF tree link, not the transport layer required to send a 
+     * SC_NOT_FOUND.
+     * 
+     * @param context le current FacesContext
+     * @param message the message associated with the error
+     */
     protected abstract void sendSourceNotFound(FacesContext context, String message);
-        
+    
+    /**
+     * Check if the specified value of a param is <code>null</code>.
+     * 
+     * @param o the parameter's value
+     * @param param the parameter's name
+     * 
+     * @throws NullPointerException if the value is <code>null</code>
+     */
     protected void checkNull(final Object o, final String param)
     {
         if (o == null)

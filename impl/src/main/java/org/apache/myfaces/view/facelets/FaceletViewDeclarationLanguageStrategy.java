@@ -30,28 +30,28 @@ import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
 /**
  * @author Simon Lessard (latest modification by $Author: slessard $)
  * @version $Revision: 696523 $ $Date: 2009-03-22 13:15:03 -0400 (mer., 17 sept. 2008) $
- *
+ * 
  * @since 2.0
  */
 public class FaceletViewDeclarationLanguageStrategy implements ViewDeclarationLanguageStrategy
 {
     private Pattern _acceptPatterns;
     private String _extension;
-    
+
     private ViewDeclarationLanguage _language;
-    
+
     public FaceletViewDeclarationLanguageStrategy()
     {
-        ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-        
-        _acceptPatterns = loadAcceptPattern(context);
-        
-        _extension = loadFaceletExtension(context);
-        
-        _language = new FaceletViewDeclarationLanguage
-            (FacesContext.getCurrentInstance().getApplication().getViewHandler());
+        FacesContext context = FacesContext.getCurrentInstance();
+        ExternalContext eContext = context.getExternalContext();
+
+        _acceptPatterns = loadAcceptPattern(eContext);
+
+        _extension = loadFaceletExtension(eContext);
+
+        _language = new FaceletViewDeclarationLanguage(context);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -68,38 +68,46 @@ public class FaceletViewDeclarationLanguageStrategy implements ViewDeclarationLa
         // Check extension first as it's faster than mappings
         if (viewId.endsWith(_extension))
         {
+            // If the extension matches, it's a Facelet viewId.
             return true;
         }
-        
-        
-        // Try to match the view identifier with the facelet mappings
+
+        // Otherwise, try to match the view identifier with the facelet mappings
         return _acceptPatterns != null && _acceptPatterns.matcher(viewId).matches();
     }
-    
+
+    /**
+     * Load and compile a regular expression pattern built from the Facelet view mapping parameters.
+     * 
+     * @param context
+     *            the application's external context
+     * 
+     * @return the compiled regular expression
+     */
     private Pattern loadAcceptPattern(ExternalContext context)
     {
         assert context != null;
-        
+
         String mappings = context.getInitParameter(ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME);
         if (mappings == null)
         {
             return null;
         }
-        
+
         // Make sure the mappings contain something
         mappings = mappings.trim();
         if (mappings.length() == 0)
         {
             return null;
         }
-        
+
         return Pattern.compile(toRegex(mappings));
     }
-    
+
     private String loadFaceletExtension(ExternalContext context)
     {
         assert context != null;
-        
+
         String suffix = context.getInitParameter(ViewHandler.FACELETS_SUFFIX_PARAM_NAME);
         if (suffix == null)
         {
@@ -113,33 +121,34 @@ public class FaceletViewDeclarationLanguageStrategy implements ViewDeclarationLa
                 suffix = ViewHandler.DEFAULT_FACELETS_SUFFIX;
             }
         }
-        
+
         return suffix;
     }
-    
+
     /**
      * Convert the specified mapping string to an equivalent regular expression.
      * 
-     * @param mappings le mapping string
+     * @param mappings
+     *            le mapping string
      * 
      * @return an uncompiled regular expression representing the mappings
      */
     private String toRegex(String mappings)
     {
         assert mappings != null;
-        
+
         // Get rid of spaces
         mappings = mappings.replaceAll("\\s", "");
-        
+
         // Escape '.'
         mappings = mappings.replaceAll("\\.", "\\\\.");
-        
+
         // Change '*' to '.*' to represent any match
         mappings = mappings.replaceAll("\\*", ".*");
-        
+
         // Split the mappings by changing ';' to '|'
         mappings = mappings.replaceAll(";", "|");
-        
+
         return mappings;
     }
 }

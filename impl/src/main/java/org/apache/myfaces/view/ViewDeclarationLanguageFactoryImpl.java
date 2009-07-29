@@ -61,6 +61,9 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
             throw new NullPointerException("viewId");
         }
         
+        // TODO: It would be nice to be able to preinitialize the factory. However, since it requires 
+        //       access to the ExternalContext it may not be possible, depending on the loading order 
+        //       in the FactoryFinder. Could use ideas here. -= SL =-
         initialize();
         
         for (ViewDeclarationLanguageStrategy strategy : _supportedLanguages)
@@ -71,10 +74,12 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
             }
         }
         
-        // FIXME: Notify EG - Cannot throw undeclared ClassNotFoundException like the spec requires
-        throw new FacesException(new ClassNotFoundException("Cannot find a valid PDL for view id " + viewId));
+        throw new FacesException("Cannot find a valid PDL for view id " + viewId);
     }
     
+    /**
+     * Initialize the supported view declaration languages.
+     */
     private void initialize()
     {
         if (!_initialized)
@@ -87,6 +92,7 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
             }
             else
             {
+                // Support JSP only
                 _supportedLanguages = new ViewDeclarationLanguageStrategy[1];
                 _supportedLanguages[0] = new JspViewDeclarationLanguageStrategy();
             }
@@ -95,12 +101,19 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
         }
     }
     
+    /**
+     * Determines if the current application uses Facelets.
+     * 
+     * @return <code>true</code> if the current application uses Facelets, <code>false</code> 
+     *         otherwise.
+     */
     private boolean isFaceletsEnabled()
     {
         FacesContext context = FacesContext.getCurrentInstance();
         String param = context.getExternalContext().getInitParameter(PARAM_DISABLE_JSF_FACELET);
         if (param == null)
         {
+            // Facelets is supported by default
             return true;
         }
         else

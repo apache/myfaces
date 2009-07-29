@@ -18,35 +18,26 @@
  */
 package org.apache.myfaces.view;
 
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
 import javax.faces.view.ViewMetadata;
 
 /**
  * This class represents the default implementation of javax.faces.view.ViewMetaData.
  */
-
-public class ViewMetadataImpl extends ViewMetadata
+public abstract class ViewMetadataBase extends ViewMetadata
 {
-    private String viewID;
-    
-    public ViewMetadataImpl (String viewID)
+    private String _viewId;
+
+    public ViewMetadataBase(String viewId)
     {
-        this.viewID = viewID;
-    }
-    
-    @Override
-    public UIViewRoot createMetadataView (FacesContext context)
-    {
-        // TODO implement.  This will require supporting Facelet parser/compiler logic
-        // to extract metadata.
-        
-        return null;
+        _viewId = viewId;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String getViewId ()
+    public String getViewId()
     {
-        return this.viewID;
+        return _viewId;
     }
 }

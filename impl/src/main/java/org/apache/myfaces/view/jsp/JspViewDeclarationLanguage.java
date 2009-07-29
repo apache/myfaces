@@ -26,7 +26,6 @@ import java.util.Locale;
 
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
 import javax.faces.application.Resource;
 import javax.faces.application.StateManager;
 import javax.faces.application.ViewHandler;
@@ -57,7 +56,7 @@ import org.apache.myfaces.view.ViewDeclarationLanguageBase;
 /**
  * @author Simon Lessard (latest modification by $Author: slessard $)
  * @version $Revision: 696523 $ $Date: 2009-03-22 13:55:12 -0400 (mer., 17 sept. 2008) $
- *
+ * 
  * @since 2.0
  */
 public class JspViewDeclarationLanguage extends ViewDeclarationLanguageBase
@@ -66,18 +65,19 @@ public class JspViewDeclarationLanguage extends ViewDeclarationLanguageBase
     public static final String FORM_STATE_MARKER = "<!--@@JSF_FORM_STATE_MARKER@@-->";
     public static final int FORM_STATE_MARKER_LEN = FORM_STATE_MARKER.length();
 
-    private static final String AFTER_VIEW_TAG_CONTENT_PARAM = JspViewDeclarationLanguage.class + ".AFTER_VIEW_TAG_CONTENT";
-    
+    private static final String AFTER_VIEW_TAG_CONTENT_PARAM = JspViewDeclarationLanguage.class
+            + ".AFTER_VIEW_TAG_CONTENT";
+
     private ViewHandlerSupport _cachedViewHandlerSupport;
-    
+
     /**
      * 
      */
     public JspViewDeclarationLanguage()
     {
         if (log.isTraceEnabled())
-            log.trace("New JspViewDeclarationLanguage instance created");    
-        }
+            log.trace("New JspViewDeclarationLanguage instance created");
+    }
 
     /**
      * {@inheritDoc}
@@ -86,7 +86,7 @@ public class JspViewDeclarationLanguage extends ViewDeclarationLanguageBase
     public void buildView(FacesContext context, UIViewRoot view) throws IOException
     {
         ExternalContext externalContext = context.getExternalContext();
-        ServletResponse response = (ServletResponse)externalContext.getResponse(); 
+        ServletResponse response = (ServletResponse) externalContext.getResponse();
         String viewId = view.getViewId();
         ViewResponseWrapper wrappedResponse = new ViewResponseWrapper((HttpServletResponse) response);
 
@@ -137,12 +137,12 @@ public class JspViewDeclarationLanguage extends ViewDeclarationLanguageBase
     {
         // Not necessary given that this method always returns null, but staying true to
         // the spec.
-        
+
         checkNull(context, "context");
         checkNull(viewId, "viewId");
-        
+
         // JSP impl must return null.
-        
+
         return null;
     }
 
@@ -199,7 +199,8 @@ public class JspViewDeclarationLanguage extends ViewDeclarationLanguageBase
         if (responseWriter == null)
         {
             responseWriter = renderKit.createResponseWriter(response.getWriter(), null,
-                    ((HttpServletRequest) externalContext.getRequest()).getCharacterEncoding());
+                                                            ((HttpServletRequest) externalContext.getRequest())
+                                                                    .getCharacterEncoding());
             context.setResponseWriter(responseWriter);
         }
 
@@ -222,9 +223,9 @@ public class JspViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
         context.setResponseWriter(oldResponseWriter);
 
-        //We're done with the document - now we can write all content
-        //to the response, properly replacing the state-markers on the way out
-        //by using the stateAwareWriter
+        // We're done with the document - now we can write all content
+        // to the response, properly replacing the state-markers on the way out
+        // by using the stateAwareWriter
         if (stateManager.isSavingStateInClient(context))
         {
             stateAwareWriter.flushToWriter(response.getWriter());
@@ -236,34 +237,17 @@ public class JspViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
         // Final step - we output any content in the wrappedResponse response from above to the response,
         // removing the wrappedResponse response from the request, we don't need it anymore
-        ViewResponseWrapper afterViewTagResponse = (ViewResponseWrapper) externalContext.getRequestMap().get(
-                AFTER_VIEW_TAG_CONTENT_PARAM);
+        ViewResponseWrapper afterViewTagResponse = (ViewResponseWrapper) externalContext.getRequestMap()
+                .get(AFTER_VIEW_TAG_CONTENT_PARAM);
         externalContext.getRequestMap().remove(AFTER_VIEW_TAG_CONTENT_PARAM);
 
         if (afterViewTagResponse != null)
         {
-            afterViewTagResponse.flushToWriter(response.getWriter(),
-                    context.getExternalContext().getResponseCharacterEncoding());
+            afterViewTagResponse.flushToWriter(response.getWriter(), context.getExternalContext()
+                    .getResponseCharacterEncoding());
         }
 
         response.flushBuffer();
-        }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public UIViewRoot restoreView(FacesContext context, String viewId)
-    {
-        checkNull(context, "context");
-        checkNull(viewId, "viewId");
-        
-        Application application = context.getApplication();
-        ViewHandler applicationViewHandler = application.getViewHandler();
-        String renderKitId = applicationViewHandler.calculateRenderKitId(context);
-        
-        UIViewRoot viewRoot = application.getStateManager().restoreView(context, viewId, renderKitId);
-        return viewRoot;
     }
 
     @Override
@@ -273,10 +257,9 @@ public class JspViewDeclarationLanguage extends ViewDeclarationLanguageBase
         {
             _cachedViewHandlerSupport = new DefaultViewHandlerSupport();
         }
-        
+
         return _cachedViewHandlerSupport.calculateViewId(context, viewId);
     }
-
 
     @Override
     protected void sendSourceNotFound(FacesContext context, String message)
@@ -294,21 +277,20 @@ public class JspViewDeclarationLanguage extends ViewDeclarationLanguageBase
     }
 
     @Override
-    public StateManagementStrategy getStateManagementStrategy(
-            FacesContext context, String viewId)
+    public StateManagementStrategy getStateManagementStrategy(FacesContext context, String viewId)
     {
         return null;
     }
-    
+
     /**
      * Render the view now - properly setting and resetting the response writer
      */
-    private void actuallyRenderView(FacesContext facesContext,
-                                    UIViewRoot viewToRender) throws IOException {
+    private void actuallyRenderView(FacesContext facesContext, UIViewRoot viewToRender) throws IOException
+    {
         // Set the new ResponseWriter into the FacesContext, saving the old one aside.
         ResponseWriter responseWriter = facesContext.getResponseWriter();
 
-        //Now we actually render the document
+        // Now we actually render the document
         // Call startDocument() on the ResponseWriter.
         responseWriter.startDocument();
 
@@ -320,7 +302,7 @@ public class JspViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
         responseWriter.flush();
     }
-    
+
     /**
      * Writes the response and replaces the state marker tags with the state information for the current context
      */
@@ -346,10 +328,12 @@ public class JspViewDeclarationLanguage extends ViewDeclarationLanguageBase
         @Override
         public void write(char[] cbuf, int off, int len) throws IOException
         {
-            if ((off < 0) || (off > cbuf.length) || (len < 0) ||
-                    ((off + len) > cbuf.length) || ((off + len) < 0)) {
+            if ((off < 0) || (off > cbuf.length) || (len < 0) || ((off + len) > cbuf.length) || ((off + len) < 0))
+            {
                 throw new IndexOutOfBoundsException();
-            } else if (len == 0) {
+            }
+            else if (len == 0)
+            {
                 return;
             }
             buf.append(cbuf, off, len);
@@ -378,11 +362,15 @@ public class JspViewDeclarationLanguage extends ViewDeclarationLanguageBase
             String state = stateWriter.getBuffer().toString();
 
             ExternalContext extContext = facesContext.getExternalContext();
-            if (JavascriptUtils.isJavascriptAllowed(extContext) && MyfacesConfig.getCurrentInstance(extContext).isViewStateJavascript()) {
+            if (JavascriptUtils.isJavascriptAllowed(extContext)
+                    && MyfacesConfig.getCurrentInstance(extContext).isViewStateJavascript())
+            {
                 // If javascript viewstate is enabled no state markers were written
                 write(contentBuffer, 0, contentBuffer.length(), writer);
                 writer.write(state);
-            } else {
+            }
+            else
+            {
                 // If javascript viewstate is disabled state markers must be replaced
                 int lastFormMarkerPos = 0;
                 int formMarkerPos = 0;
@@ -397,7 +385,8 @@ public class JspViewDeclarationLanguage extends ViewDeclarationLanguageBase
                     lastFormMarkerPos = formMarkerPos;
                 }
                 // Write content after last state marker
-                if (lastFormMarkerPos < contentBuffer.length()) {
+                if (lastFormMarkerPos < contentBuffer.length())
+                {
                     write(contentBuffer, lastFormMarkerPos, contentBuffer.length(), writer);
                 }
             }
@@ -405,16 +394,22 @@ public class JspViewDeclarationLanguage extends ViewDeclarationLanguageBase
         }
 
         /**
-         * Writes the content of the specified StringBuffer from index
-         * <code>beginIndex</code> to index <code>endIndex - 1</code>.
-         *
-         * @param contentBuffer  the <code>StringBuffer</code> to copy content from
-         * @param beginIndex  the beginning index, inclusive.
-         * @param endIndex  the ending index, exclusive
-         * @param writer  the <code>Writer</code> to write to
-         * @throws IOException  if an error occurs writing to specified <code>Writer</code>
+         * Writes the content of the specified StringBuffer from index <code>beginIndex</code> to index
+         * <code>endIndex - 1</code>.
+         * 
+         * @param contentBuffer
+         *            the <code>StringBuffer</code> to copy content from
+         * @param beginIndex
+         *            the beginning index, inclusive.
+         * @param endIndex
+         *            the ending index, exclusive
+         * @param writer
+         *            the <code>Writer</code> to write to
+         * @throws IOException
+         *             if an error occurs writing to specified <code>Writer</code>
          */
-        private void write(StringBuilder contentBuffer, int beginIndex, int endIndex, Writer writer) throws IOException {
+        private void write(StringBuilder contentBuffer, int beginIndex, int endIndex, Writer writer) throws IOException
+        {
             int index = beginIndex;
             int bufferSize = 2048;
             char[] bufToWrite = new char[bufferSize];

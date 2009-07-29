@@ -25,14 +25,14 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
 import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.FaceletHandler;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.view.facelets.Facelet;
 import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.compiler.Compiler;
@@ -46,19 +46,22 @@ import org.apache.myfaces.view.facelets.util.ParameterCheck;
  */
 public final class DefaultFaceletFactory extends FaceletFactory
 {
-    protected final static Logger log = Logger.getLogger("facelets.factory");
+    private static final long INFINITE_DELAY = -1;
+    private static final long NO_CACHE_DELAY = 0;
+    
+    protected final Log log = LogFactory.getLog(DefaultFaceletFactory.class);
 
-    private final Compiler _compiler;
+    private URL _baseUrl;
+
+    private Compiler _compiler;
 
     private Map<String, DefaultFacelet> _facelets;
 
+    private long _refreshPeriod;
+
     private Map<String, URL> _relativeLocations;
 
-    private final ResourceResolver _resolver;
-
-    private final URL _baseUrl;
-
-    private final long _refreshPeriod;
+    private ResourceResolver _resolver;
 
     public DefaultFaceletFactory(Compiler compiler, ResourceResolver resolver) throws IOException
     {
@@ -69,15 +72,34 @@ public final class DefaultFaceletFactory extends FaceletFactory
     {
         ParameterCheck.notNull("compiler", compiler);
         ParameterCheck.notNull("resolver", resolver);
+
         _compiler = compiler;
+
         _facelets = new HashMap<String, DefaultFacelet>();
+
         _relativeLocations = new HashMap<String, URL>();
+
         _resolver = resolver;
+
         _baseUrl = resolver.resolveUrl("/");
-        // this.location = url;
-        log.fine("Using ResourceResolver: " + resolver);
-        _refreshPeriod = (refreshPeriod >= 0) ? refreshPeriod * 1000 : -1;
-        log.fine("Using Refresh Period: " + _refreshPeriod);
+
+        _refreshPeriod = refreshPeriod < 0 ? INFINITE_DELAY : refreshPeriod * 1000;
+
+        if (log.isDebugEnabled())
+        {
+            log.debug("Using ResourceResolver: " + _resolver);
+            log.debug("Using Refresh Period: " + _refreshPeriod);
+        }
+    }
+
+    /**
+     * Compiler this factory uses
+     * 
+     * @return final Compiler instance
+     */
+    public Compiler getCompiler()
+    {
+        return _compiler;
     }
 
     /*
@@ -90,7 +112,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
         URL url = (URL) _relativeLocations.get(uri);
         if (url == null)
         {
-            url = this.resolveURL(_baseUrl, uri);
+            url = resolveURL(_baseUrl, uri);
             if (url != null)
             {
                 Map<String, URL> newLoc = new HashMap<String, URL>(_relativeLocations);
@@ -103,6 +125,45 @@ public final class DefaultFaceletFactory extends FaceletFactory
             }
         }
         return this.getFacelet(url);
+    }
+
+    /**
+     * Create a Facelet from the passed URL. This method checks if the cached Facelet needs to be refreshed before
+     * returning. If so, uses the passed URL to build a new instance;
+     * 
+     * @param url
+     *            source url
+     * @return Facelet instance
+     * @throws IOException
+     * @throws FaceletException
+     * @throws FacesException
+     * @throws ELException
+     */
+    public Facelet getFacelet(URL url) throws IOException, FaceletException, FacesException, ELException
+    {
+        ParameterCheck.notNull("url", url);
+        
+        String key = url.toString();
+        
+        DefaultFacelet f = _facelets.get(key);
+        
+        if (f == null || this.needsToBeRefreshed(f))
+        {
+            f = this._createFacelet(url);
+            if (_refreshPeriod != NO_CACHE_DELAY)
+            {
+                Map<String, DefaultFacelet> newLoc = new HashMap<String, DefaultFacelet>(_facelets);
+                newLoc.put(key, f);
+                _facelets = newLoc;
+            }
+        }
+        
+        return f;
+    }
+
+    public long getRefreshPeriod()
+    {
+        return _refreshPeriod;
     }
 
     /**
@@ -136,36 +197,6 @@ public final class DefaultFaceletFactory extends FaceletFactory
     }
 
     /**
-     * Create a Facelet from the passed URL. This method checks if the cached Facelet needs to be refreshed before
-     * returning. If so, uses the passed URL to build a new instance;
-     * 
-     * @param url
-     *            source url
-     * @return Facelet instance
-     * @throws IOException
-     * @throws FaceletException
-     * @throws FacesException
-     * @throws ELException
-     */
-    public Facelet getFacelet(URL url) throws IOException, FaceletException, FacesException, ELException
-    {
-        ParameterCheck.notNull("url", url);
-        String key = url.toString();
-        DefaultFacelet f = _facelets.get(key);
-        if (f == null || this.needsToBeRefreshed(f))
-        {
-            f = this.createFacelet(url);
-            if (_refreshPeriod != 0)
-            {
-                Map<String, DefaultFacelet> newLoc = new HashMap<String, DefaultFacelet>(_facelets);
-                newLoc.put(key, f);
-                _facelets = newLoc;
-            }
-        }
-        return f;
-    }
-
-    /**
      * Template method for determining if the Facelet needs to be refreshed.
      * 
      * @param facelet
@@ -175,42 +206,43 @@ public final class DefaultFaceletFactory extends FaceletFactory
     protected boolean needsToBeRefreshed(DefaultFacelet facelet)
     {
         // if set to 0, constantly reload-- nocache
-        if (_refreshPeriod == 0)
-            return true;
-        // if set to -1, never reload
-        if (_refreshPeriod == -1)
-            return false;
-        long ttl = facelet.getCreateTime() + _refreshPeriod;
-        URL url = facelet.getSource();
-        InputStream is = null;
-        if (System.currentTimeMillis() > ttl)
+        if (_refreshPeriod == NO_CACHE_DELAY)
         {
+            return true;
+        }
+
+        // if set to -1, never reload
+        if (_refreshPeriod == INFINITE_DELAY)
+        {
+            return false;
+        }
+
+        long target = facelet.getCreateTime() + _refreshPeriod;
+        if (System.currentTimeMillis() > target)
+        {
+            // Should check for file modification
+
             try
             {
-                URLConnection conn = url.openConnection();
-                is = conn.getInputStream();
-                long atl = conn.getLastModified();
-                return atl == 0 || atl > ttl;
+                URLConnection conn = facelet.getSource().openConnection();
+                InputStream is = conn.getInputStream();
+                try
+                {
+                    long lastModified = conn.getLastModified();
+
+                    return lastModified == 0 || lastModified > target;
+                }
+                finally
+                {
+                    is.close();
+                }
             }
-            catch (Exception e)
+            catch (IOException e)
             {
                 throw new FaceletException("Error Checking Last Modified for " + facelet.getAlias(), e);
             }
-            finally
-            {
-                if (is != null)
-                {
-                    try
-                    {
-                        is.close();
-                    }
-                    catch (Exception e)
-                    {
-                        // do nothing
-                    }
-                }
-            }
         }
+
         return false;
     }
 
@@ -225,12 +257,13 @@ public final class DefaultFaceletFactory extends FaceletFactory
      * @throws FacesException
      * @throws ELException
      */
-    private DefaultFacelet createFacelet(URL url) throws IOException, FaceletException, FacesException, ELException
+    private DefaultFacelet _createFacelet(URL url) throws IOException, FaceletException, FacesException, ELException
     {
-        if (log.isLoggable(Level.FINE))
+        if (log.isDebugEnabled())
         {
-            log.fine("Creating Facelet for: " + url);
+            log.debug("Creating Facelet for: " + url);
         }
+
         String alias = "/" + url.getFile().replaceFirst(_baseUrl.getFile(), "");
         try
         {
@@ -242,20 +275,5 @@ public final class DefaultFaceletFactory extends FaceletFactory
         {
             throw new FileNotFoundException("Facelet " + alias + " not found at: " + url.toExternalForm());
         }
-    }
-
-    /**
-     * Compiler this factory uses
-     * 
-     * @return final Compiler instance
-     */
-    public Compiler getCompiler()
-    {
-        return _compiler;
-    }
-
-    public long getRefreshPeriod()
-    {
-        return _refreshPeriod;
     }
 }
