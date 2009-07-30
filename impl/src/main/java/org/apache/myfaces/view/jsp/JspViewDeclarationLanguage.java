@@ -220,8 +220,12 @@ public class JspViewDeclarationLanguage extends ViewDeclarationLanguageBase
         }
 
         actuallyRenderView(context, view);
-
-        context.setResponseWriter(oldResponseWriter);
+        
+        if(oldResponseWriter != null)
+        {
+            context.setResponseWriter(oldResponseWriter);    
+        }
+        
 
         // We're done with the document - now we can write all content
         // to the response, properly replacing the state-markers on the way out

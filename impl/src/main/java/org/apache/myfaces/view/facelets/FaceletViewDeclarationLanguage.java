@@ -250,7 +250,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         if (end >= 0)
                         {
                             // save state
-                            Object stateObj = stateMgr.saveSerializedView(context);
+                            Object stateObj = stateMgr.saveView(context);
                             String stateStr;
                             if (stateObj == null)
                             {
@@ -258,7 +258,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                             }
                             else
                             {
-                                stateMgr.writeState(context, (StateManager.SerializedView) stateObj);
+                                stateMgr.writeState(context, stateObj);
                                 stateStr = stateWriter.getAndResetBuffer();
                             }
 
