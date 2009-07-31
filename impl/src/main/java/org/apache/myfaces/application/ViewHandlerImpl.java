@@ -227,7 +227,7 @@ public class ViewHandlerImpl extends ViewHandler
         checkNull(context, "context");
     
         String calculatedViewId = getViewHandlerSupport().calculateViewId(context, viewId);
-        return getViewDeclarationLanguage(context,calculatedViewId).restoreView(context, viewId); 
+        return getViewDeclarationLanguage(context,calculatedViewId).restoreView(context, calculatedViewId); 
     }
     
     @Override
