@@ -87,6 +87,7 @@ import org.apache.myfaces.config.impl.digester.elements.OrderSlot;
 import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
 import org.apache.myfaces.config.impl.digester.elements.SystemEventListener;
 import org.apache.myfaces.context.ExceptionHandlerFactoryImpl;
+import org.apache.myfaces.context.ExternalContextFactoryImpl;
 import org.apache.myfaces.context.FacesContextFactoryImpl;
 import org.apache.myfaces.context.PartialViewContextFactoryImpl;
 import org.apache.myfaces.el.DefaultPropertyResolver;
@@ -125,6 +126,7 @@ public class FacesConfigurator
 
     private static final String DEFAULT_RENDER_KIT_CLASS = HtmlRenderKitImpl.class.getName();
     private static final String DEFAULT_APPLICATION_FACTORY = ApplicationFactoryImpl.class.getName();
+    private static final String DEFAULT_EXTERNAL_CONTEXT_FACTORY = ExternalContextFactoryImpl.class.getName();
     private static final String DEFAULT_FACES_CONTEXT_FACTORY = FacesContextFactoryImpl.class.getName();
     private static final String DEFAULT_LIFECYCLE_FACTORY = LifecycleFactoryImpl.class.getName();
     private static final String DEFAULT_RENDER_KIT_FACTORY = RenderKitFactoryImpl.class.getName();
@@ -137,13 +139,14 @@ public class FacesConfigurator
     private static final Set<String> FACTORY_NAMES = new HashSet<String>();
     {
         FACTORY_NAMES.add(FactoryFinder.APPLICATION_FACTORY);
+        FACTORY_NAMES.add(FactoryFinder.EXCEPTION_HANDLER_FACTORY);
+        FACTORY_NAMES.add(FactoryFinder.EXTERNAL_CONTEXT_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.FACES_CONTEXT_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.LIFECYCLE_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.RENDER_KIT_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.VISIT_CONTEXT_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);
-        FACTORY_NAMES.add(FactoryFinder.EXCEPTION_HANDLER_FACTORY);
     }
 
     private final ExternalContext _externalContext;
@@ -639,6 +642,9 @@ public class FacesConfigurator
                     if (factoryName.equals(FactoryFinder.APPLICATION_FACTORY))
                     {
                         getDispenser().feedApplicationFactory(className);
+                    } else if (factoryName.equals(FactoryFinder.EXTERNAL_CONTEXT_FACTORY))
+                    {
+                        getDispenser().feedExternalContextFactory(className);
                     } else if (factoryName.equals(FactoryFinder.FACES_CONTEXT_FACTORY))
                     {
                         getDispenser().feedFacesContextFactory(className);
@@ -1516,6 +1522,10 @@ public class FacesConfigurator
         FacesConfigDispenser<FacesConfig> dispenser = getDispenser();
         setFactories(FactoryFinder.APPLICATION_FACTORY, dispenser.getApplicationFactoryIterator(),
                      DEFAULT_APPLICATION_FACTORY);
+        setFactories(FactoryFinder.EXCEPTION_HANDLER_FACTORY, dispenser.getExceptionHandlerFactoryIterator(),
+                     DEFAULT_EXCEPTION_HANDLER_FACTORY);        
+        setFactories(FactoryFinder.EXTERNAL_CONTEXT_FACTORY, dispenser.getExternalContextFactoryIterator(),
+                     DEFAULT_EXTERNAL_CONTEXT_FACTORY);
         setFactories(FactoryFinder.FACES_CONTEXT_FACTORY, dispenser.getFacesContextFactoryIterator(),
                      DEFAULT_FACES_CONTEXT_FACTORY);
         setFactories(FactoryFinder.LIFECYCLE_FACTORY, dispenser.getLifecycleFactoryIterator(),
@@ -1527,9 +1537,7 @@ public class FacesConfigurator
         setFactories(FactoryFinder.VISIT_CONTEXT_FACTORY, dispenser.getVisitContextFactoryIterator(),
                      DEFAULT_VISIT_CONTEXT_FACTORY);
         setFactories(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY, dispenser.getViewDeclarationLanguageFactoryIterator(),
-                DEFAULT_VIEW_DECLARATION_LANGUAGE_FACTORY);
-        setFactories(FactoryFinder.EXCEPTION_HANDLER_FACTORY, dispenser.getExceptionHandlerFactoryIterator(),
-                DEFAULT_EXCEPTION_HANDLER_FACTORY);
+                     DEFAULT_VIEW_DECLARATION_LANGUAGE_FACTORY);
     }
 
     private void setFactories(String factoryName, Collection<String> factories, String defaultFactory)

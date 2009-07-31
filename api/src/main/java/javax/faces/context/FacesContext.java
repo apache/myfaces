@@ -54,7 +54,14 @@ public abstract class FacesContext
      */
     public Map<Object, Object> getAttributes()
     {
-        throw new UnsupportedOperationException();
+        FacesContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.getAttributes();
     }
 
     public abstract Iterator<String> getClientIdsWithMessages();
@@ -72,7 +79,14 @@ public abstract class FacesContext
      */
     public PhaseId getCurrentPhaseId()
     {
-        throw new UnsupportedOperationException();
+        FacesContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.getCurrentPhaseId();
     }
     
     /**
@@ -139,7 +153,14 @@ public abstract class FacesContext
      */
     public ExceptionHandler getExceptionHandler()
     {
-        throw new UnsupportedOperationException();
+        FacesContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.getExceptionHandler();
     }
 
     public abstract ExternalContext getExternalContext();
@@ -154,7 +175,14 @@ public abstract class FacesContext
      */
     public List<FacesMessage> getMessageList()
     {
-        throw new UnsupportedOperationException();
+        FacesContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.getMessageList();
     }
     
     /**
@@ -166,7 +194,14 @@ public abstract class FacesContext
      */
     public List<FacesMessage> getMessageList(String clientId)
     {
-        throw new UnsupportedOperationException();
+        FacesContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.getMessageList(clientId);
     }
 
     public abstract Iterator<FacesMessage> getMessages();
@@ -189,7 +224,14 @@ public abstract class FacesContext
      */
     public PartialViewContext getPartialViewContext()
     {
-        throw new UnsupportedOperationException();
+        FacesContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.getPartialViewContext();
     }
 
     public abstract RenderKit getRenderKit();
@@ -210,7 +252,14 @@ public abstract class FacesContext
      */
     public boolean isValidationFailed()
     {
-        throw new UnsupportedOperationException();
+        FacesContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.isValidationFailed();
     }
 
     public abstract UIViewRoot getViewRoot();
@@ -223,7 +272,14 @@ public abstract class FacesContext
      */
     public boolean isPostback()
     {
-        throw new UnsupportedOperationException();
+        FacesContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.isPostback();
     }
     
     /**
@@ -234,7 +290,14 @@ public abstract class FacesContext
      */
     public boolean isProcessingEvents()
     {
-        throw new UnsupportedOperationException();
+        FacesContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.isProcessingEvents();
     }
 
     public abstract void release();
@@ -269,7 +332,14 @@ public abstract class FacesContext
      */
     public void setCurrentPhaseId(PhaseId currentPhaseId)
     {
-        throw new UnsupportedOperationException();
+        FacesContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        ctx.setCurrentPhaseId(currentPhaseId);
     }
 
     /**
@@ -280,7 +350,14 @@ public abstract class FacesContext
      */
     public void setExceptionHandler(ExceptionHandler exceptionHandler)
     {
-        throw new UnsupportedOperationException();
+        FacesContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        ctx.setExceptionHandler(exceptionHandler);
     }
     
     /**
@@ -291,7 +368,14 @@ public abstract class FacesContext
      */
     public void setProcessingEvents(boolean processingEvents)
     {
-        throw new UnsupportedOperationException();
+        FacesContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        ctx.setProcessingEvents(processingEvents);
     }
 
     public abstract void setResponseStream(ResponseStream responseStream);
@@ -307,7 +391,14 @@ public abstract class FacesContext
      */
     public void validationFailed()
     {
-        throw new UnsupportedOperationException();
+        FacesContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        ctx.validationFailed();
     }
     
     public boolean isProjectStage(ProjectStage stage)

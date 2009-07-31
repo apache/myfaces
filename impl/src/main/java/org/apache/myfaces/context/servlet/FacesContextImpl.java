@@ -50,6 +50,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.apache.myfaces.context.ReleaseableExternalContext;
+import org.apache.myfaces.context.ReleaseableFacesContextFactory;
 import org.apache.myfaces.el.unified.FacesELContext;
 import org.apache.myfaces.shared_impl.util.NullIterator;
 
@@ -68,7 +69,8 @@ public class FacesContextImpl extends FacesContext
     private Map<String, List<FacesMessage>> _messages = null;
     private Application _application;
     private PhaseId _currentPhaseId;
-    private ReleaseableExternalContext _externalContext;
+    private ExternalContext _externalContext;
+    private ReleaseableExternalContext _defaultExternalContext;
     private ResponseStream _responseStream = null;
     private ResponseWriter _responseWriter = null;
     private FacesMessage.Severity _maximumSeverity = null;
@@ -84,6 +86,7 @@ public class FacesContextImpl extends FacesContext
     private boolean _processingEvents = true;
     private ExceptionHandler _exceptionHandler = null;
     private PartialViewContext _partialViewContext = null;
+    private ReleaseableFacesContextFactory _facesContextFactory = null;
 
     // ~ Constructors -------------------------------------------------------------------------------
     public FacesContextImpl(final ServletContext servletContext, final ServletRequest servletRequest,
@@ -103,18 +106,27 @@ public class FacesContextImpl extends FacesContext
             log.fatal("Could not obtain the response writers! Detail:" + ex.toString());
         }*/
     }
+    
+    public FacesContextImpl(final ExternalContext externalContext,
+            final ReleaseableExternalContext defaultExternalContext , 
+            final ReleaseableFacesContextFactory facesContextFactory)
+    {
+        _facesContextFactory = facesContextFactory;
+        init(externalContext, defaultExternalContext);
+    }
 
     private void init(final ReleaseableExternalContext externalContext)
     {
-        ExceptionHandlerFactory exceptionHandlerFactory = (ExceptionHandlerFactory)
-            FactoryFinder.getFactory (FactoryFinder.EXCEPTION_HANDLER_FACTORY);
-        
+        init((ExternalContext) externalContext, externalContext);
+    }
+
+    private void init(final ExternalContext externalContext, final ReleaseableExternalContext defaultExternalContext)
+    {       
         _externalContext = externalContext;
         FacesContext.setCurrentInstance(this);  //protected method, therefore must be called from here
         _application = ((ApplicationFactory)FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY))
                 .getApplication();
         _renderKitFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
-        _exceptionHandler = exceptionHandlerFactory.getExceptionHandler();
     }
 
     // ~ Methods ------------------------------------------------------------------------------------
@@ -394,11 +406,17 @@ public class FacesContextImpl extends FacesContext
     {
         assertNotReleased();
 
-        if (_externalContext != null)
+        if (_facesContextFactory != null)
         {
-            _externalContext.release();
-            _externalContext = null;
+            _facesContextFactory.release();
+            _facesContextFactory = null;
         }
+        if (_defaultExternalContext != null)
+        {
+            _defaultExternalContext.release();
+            _defaultExternalContext = null;
+        }
+        _externalContext = null;
 
         /*
          * Spec JSF 2 section getAttributes when release is called the attributes map must!!! be cleared!
@@ -486,13 +504,14 @@ public class FacesContextImpl extends FacesContext
 
     // Portlet need to do this to change from ActionRequest/Response to
     // RenderRequest/Response
+    /* This code comes from jsf 1.1 and is not valid anymore
     public final void setExternalContext(ReleaseableExternalContext extContext)
     {
         assertNotReleased();
 
         _externalContext = extContext;
         FacesContext.setCurrentInstance(this); // TODO: figure out if I really need to do this
-    }
+    }*/
 
     @Override
     public final ELContext getELContext()

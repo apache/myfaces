@@ -39,6 +39,22 @@ public abstract class ExternalContext
     public static final String CLIENT_CERT_AUTH = "CLIENT_CERT";
     public static final String DIGEST_AUTH = "DIGEST";
     public static final String FORM_AUTH = "FORM";
+    
+    /**
+     * This variable holds the firstInstance where all ExternalContext
+     * objects should call when new jsf 2.0 methods are called.
+     * 
+     * This variable is an implementation detail and should be 
+     * initialized and released on FacesContextFactoryImpl (because
+     * this is the place where ExternalContextFactory.getExternalContext()
+     * is called).
+     * 
+     * The objective of this is keep compatibility of libraries that wrap 
+     * ExternalContext objects before 2.0. It is similar as FacesContext._firstInstace,
+     * but since we don't have any place to init and release this variable properly
+     * we should do it using reflection.
+     */
+    private static ThreadLocal<ExternalContext> _firstInstance = new ThreadLocal<ExternalContext>();
 
     /**
      *
@@ -50,7 +66,14 @@ public abstract class ExternalContext
      */
     public void addResponseCookie(String name, String value, Map<String, Object> properties)
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        ctx.addResponseCookie(name, value, properties);
     }
 
     /**
@@ -62,7 +85,14 @@ public abstract class ExternalContext
      */
     public void addResponseHeader(String name, String value)
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        ctx.addResponseHeader(name, value);
     }
 
     public abstract void dispatch(String path) throws IOException;
@@ -78,7 +108,14 @@ public abstract class ExternalContext
      */
     public String encodeBookmarkableURL(String baseUrl, Map<String,List<String>> parameters)
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.encodeBookmarkableURL(baseUrl, parameters);
     }
 
     public abstract String encodeNamespace(String name);
@@ -90,7 +127,14 @@ public abstract class ExternalContext
     public String encodePartialActionURL(String url)
     {
         // TODO: IMPLEMENT IMPL
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.encodePartialActionURL(url);
     }
 
     /**
@@ -102,7 +146,14 @@ public abstract class ExternalContext
      */
     public String encodeRedirectURL(String baseUrl, Map<String,List<String>> parameters)
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.encodeRedirectURL(baseUrl, parameters);
     }
 
     public abstract String encodeResourceURL(String url);
@@ -122,7 +173,14 @@ public abstract class ExternalContext
      */
     public String getContextName()
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.getContextName();
     }
 
     /**
@@ -130,7 +188,14 @@ public abstract class ExternalContext
      */
     public Flash getFlash()
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.getFlash();
     }
 
     public abstract String getInitParameter(String name);
@@ -143,7 +208,14 @@ public abstract class ExternalContext
      */
     public String getMimeType(String file)
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.getMimeType(file);
     }
 
     /**
@@ -151,7 +223,14 @@ public abstract class ExternalContext
      */
     public String getRealPath(String path)
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.getRealPath(path);
     }
 
     public abstract String getRemoteUser();
@@ -160,7 +239,14 @@ public abstract class ExternalContext
 
     public String getRequestCharacterEncoding()
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.getRequestCharacterEncoding();
     }
 
     /**
@@ -171,12 +257,26 @@ public abstract class ExternalContext
      */
     public int getRequestContentLength()
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.getRequestContentLength();
     }
 
     public String getRequestContentType()
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.getRequestContentType();
     }
 
     public abstract String getRequestContextPath();
@@ -206,7 +306,14 @@ public abstract class ExternalContext
      */
     public String getRequestScheme()
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.getRequestScheme();
     }
 
     /**
@@ -214,7 +321,14 @@ public abstract class ExternalContext
      */
     public String getRequestServerName()
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.getRequestServerName();
     }
 
     /**
@@ -222,7 +336,14 @@ public abstract class ExternalContext
      */
     public int getRequestServerPort()
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.getRequestServerPort();
     }
 
     public abstract String getRequestServletPath();
@@ -243,12 +364,26 @@ public abstract class ExternalContext
      */
     public int getResponseBufferSize()
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.getResponseBufferSize();
     }
 
     public String getResponseCharacterEncoding()
     {
-        throw new UnsupportedOperationException("JSF 1.2 : figure out how to tell if this is a Portlet request");
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException("JSF 1.2 : figure out how to tell if this is a Portlet request");
+        }
+        
+        return ctx.getResponseCharacterEncoding();
     }
 
     /**
@@ -258,7 +393,14 @@ public abstract class ExternalContext
      */
     public String getResponseContentType()
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.getResponseContentType();
     }
 
     /**
@@ -266,7 +408,14 @@ public abstract class ExternalContext
      */
     public OutputStream getResponseOutputStream() throws IOException
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.getResponseOutputStream();
     }
 
     /**
@@ -274,7 +423,14 @@ public abstract class ExternalContext
      */
     public Writer getResponseOutputWriter() throws IOException
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.getResponseOutputWriter();
     }
 
     public abstract Object getSession(boolean create);
@@ -288,7 +444,14 @@ public abstract class ExternalContext
      */
     public void invalidateSession()
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        ctx.invalidateSession();
     }
 
     /**
@@ -296,7 +459,14 @@ public abstract class ExternalContext
      */
     public boolean isResponseCommitted()
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.isResponseCommitted();
     }
 
     public abstract boolean isUserInRole(String role);
@@ -321,7 +491,14 @@ public abstract class ExternalContext
      */
     public void responseFlushBuffer() throws IOException
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        ctx.responseFlushBuffer();
     }
 
     /**
@@ -330,7 +507,14 @@ public abstract class ExternalContext
      */
     public void responseReset()
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        ctx.responseReset();
     }
 
     /**
@@ -343,7 +527,14 @@ public abstract class ExternalContext
      */
     public void responseSendError(int statusCode, String message) throws IOException
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        ctx.responseSendError(statusCode, message);
     }
 
     /**
@@ -354,7 +545,14 @@ public abstract class ExternalContext
      */
     public void setRequest(Object request)
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        ctx.setRequest(request);
     }
 
     /**
@@ -366,7 +564,14 @@ public abstract class ExternalContext
      */
     public void setRequestCharacterEncoding(String encoding) throws java.io.UnsupportedEncodingException
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        ctx.setRequestCharacterEncoding(encoding);
     }
 
     /**
@@ -377,7 +582,14 @@ public abstract class ExternalContext
      */
     public void setResponse(Object response)
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        ctx.setResponse(response);
     }
 
     /**
@@ -388,7 +600,14 @@ public abstract class ExternalContext
      */
     public void setResponseBufferSize(int size)
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        ctx.setResponseBufferSize(size);
     }
 
     /**
@@ -399,7 +618,14 @@ public abstract class ExternalContext
      */
     public void setResponseCharacterEncoding(String encoding)
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        ctx.setResponseCharacterEncoding(encoding);
     }
 
     /**
@@ -410,7 +636,14 @@ public abstract class ExternalContext
      */
     public void setResponseContentLength(int length)
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        ctx.setResponseContentLength(length);
     }
 
     /**
@@ -421,7 +654,14 @@ public abstract class ExternalContext
      */
     public void setResponseContentType(String contentType)
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        ctx.setResponseContentType(contentType);
     }
 
     /**
@@ -433,7 +673,14 @@ public abstract class ExternalContext
      */
     public void setResponseHeader(String name, String value)
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        ctx.setResponseHeader(name, value);
     }
 
     /**
@@ -444,6 +691,13 @@ public abstract class ExternalContext
      */
     public void setResponseStatus(int statusCode)
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        ctx.setResponseStatus(statusCode);
     }
 }
