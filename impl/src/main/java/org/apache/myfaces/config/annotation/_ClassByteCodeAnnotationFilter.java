@@ -48,7 +48,7 @@ class _ClassByteCodeAnnotationFilter
      * Checks if the .class file referenced by the DataInput could 
      * contain the annotation names available in the set.
      * 
-     * @param stream
+     * @param in
      * @param byteCodeAnnotationsNames
      * @return
      * @throws IOException
@@ -143,6 +143,7 @@ class _ClassByteCodeAnnotationFilter
                     break;
                 case CP_INFO_STRING: //ignore
                     //u2 string_index
+                    in.readUnsignedShort();
                     break;
                 case CP_INFO_INTEGER: //ignore
                 case CP_INFO_FLOAT: //ignore
@@ -153,6 +154,7 @@ class _ClassByteCodeAnnotationFilter
                 case CP_INFO_DOUBLE: //ignore
                     //u4 high_bytes
                     //u4 low_bytes
+                    in.readInt();
                     in.readInt();
                     break;
                 case CP_INFO_NAME_AND_TYPE: //ignore

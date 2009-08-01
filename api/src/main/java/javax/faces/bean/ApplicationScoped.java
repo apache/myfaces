@@ -18,12 +18,18 @@
  */
 package javax.faces.bean;
 
+import java.lang.annotation.*;
+
 /**
  * 
  * @since 2.0
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
+@Documented
+@Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@Inherited
 public @interface ApplicationScoped
 {
 

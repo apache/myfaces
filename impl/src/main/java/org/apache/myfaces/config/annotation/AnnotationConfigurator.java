@@ -140,11 +140,11 @@ public class AnnotationConfigurator
     static
     {
         Set<String> bcan = new HashSet<String>(10, 1f);
-        bcan.add("Lorg/apache/myfaces/test/annotations/component/FacesComponent;");
-        bcan.add("Lorg/apache/myfaces/test/annotations/converter/FacesConverter;");
-        bcan.add("Lorg/apache/myfaces/test/annotations/validator/FacesValidator;");
-        bcan.add("Lorg/apache/myfaces/test/annotations/render/FacesRenderer;");
-        bcan.add("Lorg/apache/myfaces/test/annotations/bean/ManagedBean;");
+        bcan.add("Ljavax/faces/component/FacesComponent;");
+        bcan.add("Ljavax/faces/convert/FacesConverter;");
+        bcan.add("Ljavax/faces/validator/FacesValidator;");
+        bcan.add("Ljavax/faces/render/FacesRenderer;");
+        bcan.add("Ljavax/faces/bean/ManagedBean;");
 
         byteCodeAnnotationsNames = Collections.unmodifiableSet(bcan);
     }
