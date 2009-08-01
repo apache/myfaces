@@ -360,7 +360,7 @@ public class UICommand extends UIComponentBase implements ActionSource2
                         attachedState);
                 }
             }
-            else
+            else  if (_isSetActionListener() || _actionListener != null)
             {
                 //Full
                 actionListenerSaved = saveAttachedState(facesContext,_actionListener);
@@ -383,7 +383,7 @@ public class UICommand extends UIComponentBase implements ActionSource2
                         attachedState);
                 }
             }
-            else
+            else  if (_isSetActionExpression() || _actionExpression != null)
             {
                 //Full
                 actionExpressionSaved = saveAttachedState(facesContext,_actionExpression);

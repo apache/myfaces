@@ -868,7 +868,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
                         attachedState);
                 }
             }
-            else
+            else if (_isSetValidator() || _validator != null)
             {
                 //Full
                 validatorSaved = saveAttachedState(facesContext,_validator);
@@ -891,7 +891,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
                         attachedState);
                 }
             }
-            else
+            else  if (_isSetValueChangeListener() || _valueChangeListener != null)
             {
                 //Full
                 valueChangeListenerSaved = saveAttachedState(facesContext,_valueChangeListener);

@@ -178,7 +178,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder
                     converterSaved = null;
                 }
             }
-            else
+            else if (_isSetConverter() || _converter != null)
             {
                 //Full
                 converterSaved = saveAttachedState(facesContext,_converter);

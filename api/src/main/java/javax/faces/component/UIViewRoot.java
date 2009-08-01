@@ -1039,7 +1039,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                         attachedState);
                 }
             }
-            else
+            else if (_isSetAfterPhaseListener() || _afterPhaseListener != null)
             {
                 //Full
                 afterPhaseListenerSaved = saveAttachedState(facesContext,_afterPhaseListener);
@@ -1062,7 +1062,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                         attachedState);
                 }
             }
-            else
+            else if (_isSetBeforePhaseListener() || _beforePhaseListener != null)
             {
                 //Full
                 beforePhaseListenerSaved = saveAttachedState(facesContext,_beforePhaseListener);
