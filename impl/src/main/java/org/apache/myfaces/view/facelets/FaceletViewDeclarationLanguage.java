@@ -173,9 +173,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     {
         context.getAttributes().put(view.toString(), Boolean.TRUE);
         
-        markInitialState(view);
+        //markInitialState(view);
     }
     
+    /* TEST CODE USED, IT WILL BE REMOVED IN THE FUTURE! -= Leonardo Uribe =- 
     private void markInitialState(UIComponent component)
     {
         component.markInitialState();
@@ -186,7 +187,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         {
             markInitialState(it.next());
         }
-    }
+    }*/
 
     /**
      * {@inheritDoc}
