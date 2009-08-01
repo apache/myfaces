@@ -69,7 +69,8 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
             }
             else
             {
-                log.error("No tree structure to be saved in client response!");
+                if (log.isTraceEnabled())
+                    log.trace("No tree structure to be saved in client response!");
             }
 
             if (compStates != null)
@@ -78,7 +79,8 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
             }
             else
             {
-                log.error("No component states to be saved in client response!");
+                if (log.isTraceEnabled())
+                    log.trace("No component states to be saved in client response!");
             }
         }
         else

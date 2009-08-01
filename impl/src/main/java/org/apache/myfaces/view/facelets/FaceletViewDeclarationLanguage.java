@@ -23,15 +23,20 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
+import java.util.Collections;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
-import javax.faces.application.Application;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.Resource;
 import javax.faces.application.StateManager;
 import javax.faces.application.ViewHandler;
+import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -47,6 +52,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.DefaultViewHandlerSupport;
 import org.apache.myfaces.application.ViewHandlerSupport;
+import org.apache.myfaces.shared_impl.util.StringUtils;
 import org.apache.myfaces.view.ViewDeclarationLanguageBase;
 import org.apache.myfaces.view.ViewMetadataBase;
 import org.apache.myfaces.view.facelets.FaceletViewHandler.NullWriter;
@@ -97,13 +103,14 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
     public final static String PARAM_VIEW_MAPPINGS = "facelets.VIEW_MAPPINGS";
 
-    private final static String STATE_KEY = "~facelets.VIEW_STATE~";
+    private final static String STATE_KEY = "<!--@@JSF_FORM_STATE_MARKER@@-->";
 
     private final static int STATE_KEY_LEN = STATE_KEY.length();
 
     private int _bufferSize;
 
-    private boolean _buildBeforeRestore = false;
+    // This param evolve in jsf 2.0 to partial state saving
+    //private boolean _buildBeforeRestore = false;
 
     private ViewHandlerSupport _cachedViewHandlerSupport;
 
@@ -112,6 +119,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     private FaceletFactory _faceletFactory;
 
     private StateManagementStrategy stateMgmtStrategy;
+    
+    private boolean _partialStateSaving;
+    
+    private Set<String> _viewIds;
 
     /**
      * 
@@ -127,6 +138,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     @Override
     public void buildView(FacesContext context, UIViewRoot view) throws IOException
     {
+        if (isFilledView(context, view))
+            return;
+        
         // setup our viewId
         String renderedViewId = getRenderedViewId(context, view.getViewId());
 
@@ -139,6 +153,39 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
         // populate UIViewRoot
         _getFacelet(renderedViewId).apply(context, view);
+        
+        // set this view as filled
+        setFilledView(context, view);
+        
+        // Suscribe listeners if we are using partialStateSaving
+        if (_usePartialStateSavingOnThisView(view.getViewId()))
+        {
+            ((DefaultFaceletsStateManagementStrategy) stateMgmtStrategy).suscribeListeners(view);
+        }
+    }
+    
+    private boolean isFilledView(FacesContext context, UIViewRoot view)
+    {
+        return context.getAttributes().containsKey(view.toString());
+    }
+    
+    private void setFilledView(FacesContext context, UIViewRoot view)
+    {
+        context.getAttributes().put(view.toString(), Boolean.TRUE);
+        
+        markInitialState(view);
+    }
+    
+    private void markInitialState(UIComponent component)
+    {
+        component.markInitialState();
+        
+        Iterator<UIComponent> it = component.getFacetsAndChildren();
+        
+        while(it.hasNext())
+        {
+            markInitialState(it.next());
+        }
     }
 
     /**
@@ -167,8 +214,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     @Override
     public StateManagementStrategy getStateManagementStrategy(FacesContext context, String viewId)
     {
-        // TODO Auto-generated method stub
-        return null;
+        // Use partial state saving strategy only if javax.faces.PARTIAL_STATE_SAVING is "true" and
+        // the current view is not on javax.faces.FULL_STATE_SAVING_VIEW_IDS.
+        return _usePartialStateSavingOnThisView(viewId) ? stateMgmtStrategy : null;
     }
 
     /**
@@ -206,7 +254,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             // should that be handled? Or
             // is this optimization simply so minor that it should just
             // be trimmed altogether?
-            if (view.getChildren().isEmpty())
+            if (!isFilledView(context, view))
             {
                 buildView(context, view);
             }
@@ -316,14 +364,16 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         {
             return new UIViewRoot();
         }
-        else if (!_buildBeforeRestore)
-        {
+        //else if (!_buildBeforeRestore)
+        //{
             return super.restoreView(context, viewId);
-        }
-        else
-        {
+        //}
+        //else
+        //{
             // TODO: VALIDATE - Is _buildBeforeRestore relevant at all for 2.0? -= SL =-
-
+            // ANS: buildBeforeRestore evolved to partial state saving, so this logic 
+            // is now on StateManagerStrategy implementation -= Leo U =- 
+            /*
             UIViewRoot viewRoot = createView(context, viewId);
 
             context.setViewRoot(viewRoot);
@@ -347,6 +397,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
             return viewRoot;
         }
+        */
     }
 
     /**
@@ -669,6 +720,11 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         _initializeBuffer(eContext);
         _initializeMode(eContext);
 
+        if (_partialStateSaving)
+        {
+            stateMgmtStrategy = new DefaultFaceletsStateManagementStrategy(this);
+        }
+        
         log.trace("Initialization Successful");
     }
 
@@ -974,7 +1030,28 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
     private void _initializeMode(ExternalContext context)
     {
-        _buildBeforeRestore = _getBooleanParameter(context, PARAM_BUILD_BEFORE_RESTORE, false);
+        // In jsf 2.0 this code evolve as PartialStateSaving feature
+        //_buildBeforeRestore = _getBooleanParameter(context, PARAM_BUILD_BEFORE_RESTORE, false);
+        _partialStateSaving = _getBooleanParameter(context, 
+                StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, false);
+        
+        String [] viewIds = StringUtils.splitShortString(_getStringParameter(context,
+                StateManager.FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME), ',');
+        
+        if (viewIds.length > 0)
+        {
+            _viewIds = new HashSet<String>(viewIds.length, 1.0f);
+            Collections.addAll(_viewIds, viewIds);
+        }
+        else
+        {
+            _viewIds = null;
+        }
+    }
+    
+    private boolean _usePartialStateSavingOnThisView(String viewId)
+    {
+        return _partialStateSaving && !(_viewIds != null && _viewIds.contains(viewId) );
     }
     
     /**
