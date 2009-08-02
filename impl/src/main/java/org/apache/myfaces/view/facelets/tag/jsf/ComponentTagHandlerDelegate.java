@@ -38,6 +38,7 @@ import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandlerDelegate;
 
+import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
 
 /**
@@ -188,7 +189,14 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         else
         {
             parent.getFacets().put(facetName, c);
-        }        
+        }
+        
+        if (ctx.getFacesContext().getAttributes().containsKey(
+                FaceletViewDeclarationLanguage.MARK_INITIAL_STATE_KEY))
+        {
+            //Call it only if we are using partial state saving
+            c.markInitialState();
+        }
     }
     
     /**

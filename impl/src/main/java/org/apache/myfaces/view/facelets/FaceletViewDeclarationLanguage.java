@@ -102,6 +102,13 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     public final static String PARAM_SKIP_COMMENTS = "facelets.SKIP_COMMENTS";
 
     public final static String PARAM_VIEW_MAPPINGS = "facelets.VIEW_MAPPINGS";
+    
+    /**
+     * Marker to indicate tag handlers the view currently being built is using
+     * partial state saving and it is necessary to call UIComponent.markInitialState
+     * after component instances are populated. 
+     */
+    public final static String MARK_INITIAL_STATE_KEY = "org.apache.myfaces.MARK_INITIAL_STATE";
 
     private final static String STATE_KEY = "<!--@@JSF_FORM_STATE_MARKER@@-->";
 
@@ -151,6 +158,24 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             log.trace("Building View: " + renderedViewId);
         }
 
+        boolean usePartialStateSavingOnThisView = _usePartialStateSavingOnThisView(renderedViewId);
+        
+        if (usePartialStateSavingOnThisView)
+        {
+            // Before apply we need to make sure the current view has
+            // a clientId that will be used as a key to save and restore
+            // the current view. Note that getClientId is never called (or used)
+            // from UIViewRoot.
+            if (view.getId() == null)
+            {
+                view.setId(view.createUniqueId(context,null));
+            }
+            
+            //Add a key to indicate ComponentTagHandlerDelegate to 
+            //call UIComponent.markInitialState after it is populated
+            context.getAttributes().put(MARK_INITIAL_STATE_KEY, Boolean.TRUE);
+        }
+
         // populate UIViewRoot
         _getFacelet(renderedViewId).apply(context, view);
         
@@ -158,8 +183,17 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         setFilledView(context, view);
         
         // Suscribe listeners if we are using partialStateSaving
-        if (_usePartialStateSavingOnThisView(view.getViewId()))
+        if (usePartialStateSavingOnThisView)
         {
+            // UIViewRoot.markInitialState() is not called because it does
+            // not have a facelet tag handler class that create it, instead
+            // new instances are created programatically.
+            view.markInitialState();
+            
+            //Remove the key that indicate we need to call UIComponent.markInitialState
+            //on the current tree
+            context.getAttributes().remove(MARK_INITIAL_STATE_KEY);
+            
             ((DefaultFaceletsStateManagementStrategy) stateMgmtStrategy).suscribeListeners(view);
         }
     }
@@ -172,23 +206,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     private void setFilledView(FacesContext context, UIViewRoot view)
     {
         context.getAttributes().put(view.toString(), Boolean.TRUE);
-        
-        //markInitialState(view);
     }
     
-    /* TEST CODE USED, IT WILL BE REMOVED IN THE FUTURE! -= Leonardo Uribe =- 
-    private void markInitialState(UIComponent component)
-    {
-        component.markInitialState();
-        
-        Iterator<UIComponent> it = component.getFacetsAndChildren();
-        
-        while(it.hasNext())
-        {
-            markInitialState(it.next());
-        }
-    }*/
-
     /**
      * {@inheritDoc}
      */
