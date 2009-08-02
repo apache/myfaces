@@ -23,13 +23,13 @@ import javax.faces.FacesException;
 import javax.faces.convert.Converter;
 import javax.faces.convert.NumberConverter;
 import javax.faces.view.facelets.ConverterConfig;
+import javax.faces.view.facelets.ConverterHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.MetaRuleset;
 import javax.faces.view.facelets.TagAttribute;
 
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
-import org.apache.myfaces.view.facelets.tag.jsf.ConvertHandler;
 
 /**
  * Register a NumberConverter instance on the UIComponent associated with the closest parent UIComponent custom action.
@@ -39,7 +39,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ConvertHandler;
  * @author Jacob Hookom
  * @version $Id: ConvertNumberHandler.java,v 1.4 2008/07/13 19:01:44 rlubke Exp $
  */
-public final class ConvertNumberHandler extends ConvertHandler
+public final class ConvertNumberHandler extends ConverterHandler
 {
 
     private final TagAttribute locale;
@@ -69,7 +69,7 @@ public final class ConvertNumberHandler extends ConvertHandler
      * 
      * @see org.apache.myfaces.view.facelets.tag.ObjectHandler#setAttributes(javax.faces.view.facelets.FaceletContext, java.lang.Object)
      */
-    protected void setAttributes(FaceletContext ctx, Object obj)
+    public void setAttributes(FaceletContext ctx, Object obj)
     {
         super.setAttributes(ctx, obj);
         NumberConverter c = (NumberConverter) obj;

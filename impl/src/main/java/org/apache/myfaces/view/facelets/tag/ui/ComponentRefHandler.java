@@ -19,8 +19,8 @@
 package org.apache.myfaces.view.facelets.tag.ui;
 
 import javax.faces.view.facelets.ComponentConfig;
+import javax.faces.view.facelets.ComponentHandler;
 
-import org.apache.myfaces.view.facelets.tag.jsf.ComponentHandler;
 
 public final class ComponentRefHandler extends ComponentHandler
 {

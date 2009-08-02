@@ -20,11 +20,11 @@ package org.apache.myfaces.view.facelets.tag.jsf.core;
 
 import javax.faces.component.UIComponent;
 import javax.faces.view.facelets.ComponentConfig;
+import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TextHandler;
 
 import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
-import org.apache.myfaces.view.facelets.tag.jsf.ComponentHandler;
 
 /**
  * Handler for f:verbatim
@@ -39,7 +39,7 @@ public final class VerbatimHandler extends ComponentHandler
         super(config);
     }
 
-    protected void onComponentCreated(FaceletContext ctx, UIComponent c, UIComponent parent)
+    public void onComponentCreated(FaceletContext ctx, UIComponent c, UIComponent parent)
     {
         StringBuffer content = new StringBuffer();
         for (TextHandler handler : TagHandlerUtils.findNextByType(nextHandler, TextHandler.class))
@@ -52,7 +52,7 @@ public final class VerbatimHandler extends ComponentHandler
         c.setTransient(true);
     }
 
-    protected void applyNextHandler(FaceletContext ctx, UIComponent c)
+    public void applyNextHandler(FaceletContext ctx, UIComponent c)
     {
     }
 }

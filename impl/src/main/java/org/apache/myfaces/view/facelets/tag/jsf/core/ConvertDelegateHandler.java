@@ -22,12 +22,11 @@ import javax.el.ELException;
 import javax.faces.FacesException;
 import javax.faces.convert.Converter;
 import javax.faces.view.facelets.ConverterConfig;
+import javax.faces.view.facelets.ConverterHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.MetaRuleset;
 import javax.faces.view.facelets.TagAttribute;
-
-import org.apache.myfaces.view.facelets.tag.jsf.ConvertHandler;
 
 /**
  * Register a named Converter instance on the UIComponent associated with the closest parent UIComponent custom action.
@@ -37,7 +36,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ConvertHandler;
  * @author Jacob Hookom
  * @version $Id: ConvertDelegateHandler.java,v 1.4 2008/07/13 19:01:44 rlubke Exp $
  */
-public final class ConvertDelegateHandler extends ConvertHandler
+public final class ConvertDelegateHandler extends ConverterHandler
 {
 
     private final TagAttribute converterId;

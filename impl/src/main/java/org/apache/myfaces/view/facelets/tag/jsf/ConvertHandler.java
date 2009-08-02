@@ -43,12 +43,14 @@ import org.apache.myfaces.view.facelets.tag.MetaTagHandlerImpl;
  * set/create Converter is the passed UIComponent's parent is null, signifying that it wasn't restored from an existing
  * tree.
  * 
+ * @deprecated use javax.faces.view.facelets.ConverterHandler instead
  * @see javax.faces.webapp.ConverterELTag
  * @see javax.faces.convert.Converter
  * @see javax.faces.component.ValueHolder
  * @author Jacob Hookom
  * @version $Id: ConvertHandler.java,v 1.4 2008/07/13 19:01:46 rlubke Exp $
  */
+@Deprecated
 public class ConvertHandler extends MetaTagHandlerImpl
 {
 

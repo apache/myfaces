@@ -19,9 +19,8 @@
 package org.apache.myfaces.view.facelets.tag.jsf.html;
 
 import javax.faces.view.facelets.ComponentConfig;
+import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.MetaRuleset;
-
-import org.apache.myfaces.view.facelets.tag.jsf.ComponentHandler;
 
 /**
  * @author Jacob Hookom

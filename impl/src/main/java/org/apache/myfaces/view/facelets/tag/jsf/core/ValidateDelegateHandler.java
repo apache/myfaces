@@ -23,8 +23,8 @@ import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.MetaRuleset;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.ValidatorConfig;
+import javax.faces.view.facelets.ValidatorHandler;
 
-import org.apache.myfaces.view.facelets.tag.jsf.ValidateHandler;
 
 /**
  * Register a named Validator instance on the UIComponent associated with the closest parent UIComponent custom
@@ -34,7 +34,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ValidateHandler;
  * @author Jacob Hookom
  * @version $Id: ValidateDelegateHandler.java,v 1.4 2008/07/13 19:01:44 rlubke Exp $
  */
-public final class ValidateDelegateHandler extends ValidateHandler
+public final class ValidateDelegateHandler extends ValidatorHandler
 {
 
     private final TagAttribute validatorId;

@@ -45,9 +45,11 @@ import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
  * Implementation of the tag logic used in the JSF specification. This is your golden hammer for wiring UIComponents to
  * Facelets.
  * 
+ * @deprecated Use javax.faces.view.facelets.ComponentHandler instead
  * @author Jacob Hookom
  * @version $Id: ComponentHandler.java,v 1.19 2008/07/13 19:01:47 rlubke Exp $
  */
+@Deprecated
 public class ComponentHandler extends MetaTagHandler
 {
 

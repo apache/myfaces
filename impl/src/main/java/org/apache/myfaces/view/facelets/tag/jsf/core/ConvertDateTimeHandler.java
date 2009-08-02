@@ -25,6 +25,7 @@ import javax.faces.FacesException;
 import javax.faces.convert.Converter;
 import javax.faces.convert.DateTimeConverter;
 import javax.faces.view.facelets.ConverterConfig;
+import javax.faces.view.facelets.ConverterHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.MetaRuleset;
@@ -32,17 +33,17 @@ import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagAttributeException;
 
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
-import org.apache.myfaces.view.facelets.tag.jsf.ConvertHandler;
 
 /**
  * Register a DateTimeConverter instance on the UIComponent associated with the closest parent UIComponent custom
  * action. <p/> See <a target="_new"
  * href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/convertDateTime.html">tag documentation</a>.
  * 
+ * @deprecated use 
  * @author Jacob Hookom
  * @version $Id: ConvertDateTimeHandler.java,v 1.6 2008/07/13 19:01:44 rlubke Exp $
  */
-public final class ConvertDateTimeHandler extends ConvertHandler
+public final class ConvertDateTimeHandler extends ConverterHandler
 {
 
     private final TagAttribute dateStyle;
@@ -88,7 +89,7 @@ public final class ConvertDateTimeHandler extends ConvertHandler
      * 
      * @see org.apache.myfaces.view.facelets.tag.ObjectHandler#setAttributes(javax.faces.view.facelets.FaceletContext, java.lang.Object)
      */
-    protected void setAttributes(FaceletContext ctx, Object obj)
+    public void setAttributes(FaceletContext ctx, Object obj)
     {
         DateTimeConverter c = (DateTimeConverter) obj;
         if (this.locale != null)
