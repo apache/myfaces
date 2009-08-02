@@ -50,25 +50,9 @@ public class ConverterTagHandlerDelegate extends TagHandlerDelegate implements A
 {
     private ConverterHandler _delegate;
     
-    private final TagAttribute _binding;
-
-    private String _converterId;
-
     public ConverterTagHandlerDelegate(ConverterHandler delegate)
     {
         _delegate = delegate;
-
-        //TODO: Is this the way?
-        if (_delegate.getConverterId(null) != null)
-        {
-            this._binding = null;
-            this._converterId = _delegate.getConverterId(null);
-        }
-        else
-        {
-            this._binding = delegate.getTagAttribute("binding");
-            this._converterId = null;
-        }
     }
 
     /**
@@ -102,9 +86,9 @@ public class ConverterTagHandlerDelegate extends TagHandlerDelegate implements A
             ValueHolder vh = (ValueHolder) parent;
             ValueExpression ve = null;
             Converter c = null;
-            if (this._binding != null)
+            if (_delegate.getBinding() != null)
             {
-                ve = this._binding.getValueExpression(ctx, Converter.class);
+                ve = _delegate.getBinding().getValueExpression(ctx, Converter.class);
                 c = (Converter) ve.getValue(ctx);
             }
             if (c == null)
@@ -139,13 +123,13 @@ public class ConverterTagHandlerDelegate extends TagHandlerDelegate implements A
      */
     protected Converter createConverter(FaceletContext ctx)
     {
-        if (this._converterId == null)
+        if (_delegate.getConverterId(ctx) == null)
         {
             throw new TagException(
                                    _delegate.getTag(),
                                    "Default behavior invoked of requiring a converter-id passed in the constructor, must override ConvertHandler(ConverterConfig)");
         }
-        return ctx.getFacesContext().getApplication().createConverter(this._converterId);
+        return ctx.getFacesContext().getApplication().createConverter(_delegate.getConverterId(ctx));
     }
 
     @Override

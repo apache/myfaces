@@ -56,8 +56,6 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
     private final static Logger log = Logger.getLogger("facelets.tag.component");
 
     private final ComponentHandler _delegate;
-    
-    private final TagAttribute _binding;
 
     private final String _componentType;
 
@@ -72,7 +70,6 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         _componentType = delegateComponentConfig.getComponentType();
         _rendererType = delegateComponentConfig.getRendererType();
         _id = delegate.getTagAttribute("id");
-        _binding = delegate.getTagAttribute("binding");
     }
 
     /**
@@ -228,9 +225,9 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         UIComponent c = null;
         FacesContext faces = ctx.getFacesContext();
         Application app = faces.getApplication();
-        if (this._binding != null)
+        if (_delegate.getBinding() != null)
         {
-            ValueExpression ve = this._binding.getValueExpression(ctx, Object.class);
+            ValueExpression ve = _delegate.getBinding().getValueExpression(ctx, Object.class);
             
             c = app.createComponent(ve, faces, this._componentType);
             if (c != null)

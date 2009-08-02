@@ -50,25 +50,9 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements A
 {
     private ValidatorHandler _delegate;
     
-    private final TagAttribute _binding;
-    
-    private String _validatorId;
-    
     public ValidatorTagHandlerDelegate(ValidatorHandler delegate)
     {
         _delegate = delegate;
-
-        //TODO: Is this the way?
-        if (_delegate.getValidatorConfig().getValidatorId() != null)
-        {
-            this._binding = null;
-            this._validatorId = _delegate.getValidatorConfig().getValidatorId();
-        }
-        else
-        {
-            this._binding = delegate.getTagAttribute("binding");
-            this._validatorId = null;
-        }
     }
 
     @Override
@@ -87,9 +71,9 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements A
             EditableValueHolder evh = (EditableValueHolder) parent;
             ValueExpression ve = null;
             Validator v = null;
-            if (this._binding != null)
+            if (_delegate.getBinding() != null)
             {
-                ve = this._binding.getValueExpression(ctx, Validator.class);
+                ve = _delegate.getBinding().getValueExpression(ctx, Validator.class);
                 v = (Validator) ve.getValue(ctx);
             }
             if (v == null)
@@ -118,13 +102,13 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements A
      */
     protected Validator createValidator(FaceletContext ctx)
     {
-        if (this._validatorId == null)
+        if (_delegate.getValidatorId(ctx) == null)
         {
             throw new TagException(
                                    _delegate.getTag(),
                                    "Default behavior invoked of requiring a validator-id passed in the constructor, must override ValidateHandler(ValidatorConfig)");
         }
-        return ctx.getFacesContext().getApplication().createValidator(this._validatorId);
+        return ctx.getFacesContext().getApplication().createValidator(_delegate.getValidatorId(ctx));
     }
 
     @Override
