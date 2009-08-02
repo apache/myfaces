@@ -23,7 +23,9 @@ import java.io.IOException;
 import javax.el.ValueExpression;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 import javax.faces.validator.Validator;
+import javax.faces.view.AttachedObjectHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.MetaRuleset;
 import javax.faces.view.facelets.TagAttribute;
@@ -44,7 +46,7 @@ import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
  *
  * @since 2.0
  */
-public class ValidatorTagHandlerDelegate extends TagHandlerDelegate
+public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements AttachedObjectHandler
 {
     private ValidatorHandler _delegate;
     
@@ -129,6 +131,20 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate
     public MetaRuleset createMetaRuleset(Class<?> type)
     {
         return new MetaRulesetImpl(_delegate.getTag(), type).ignore("binding");
+    }
+
+    @Override
+    public void applyAttachedObject(FacesContext context, UIComponent parent)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public String getFor()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

@@ -21,6 +21,8 @@ package org.apache.myfaces.view.facelets.tag.jsf;
 import java.io.IOException;
 
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.view.AttachedObjectHandler;
 import javax.faces.view.facelets.BehaviorHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.MetaRuleset;
@@ -32,7 +34,7 @@ import javax.faces.view.facelets.TagHandlerDelegate;
  *
  * @since 2.0
  */
-public class BehaviorTagHandlerDelegate extends TagHandlerDelegate
+public class BehaviorTagHandlerDelegate extends TagHandlerDelegate implements AttachedObjectHandler
 {
 
     private BehaviorHandler _delegate;
@@ -51,6 +53,20 @@ public class BehaviorTagHandlerDelegate extends TagHandlerDelegate
 
     @Override
     public MetaRuleset createMetaRuleset(Class<?> type)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void applyAttachedObject(FacesContext context, UIComponent parent)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public String getFor()
     {
         // TODO Auto-generated method stub
         return null;

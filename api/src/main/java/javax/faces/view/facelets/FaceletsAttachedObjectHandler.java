@@ -44,17 +44,20 @@ public abstract class FaceletsAttachedObjectHandler extends DelegatingMetaTagHan
     @Override
     public final void applyAttachedObject(FacesContext context, UIComponent parent)
     {
-        // TODO: IMPLEMENT HERE
+        //Just redirect to delegate handler
+        getAttachedObjectHandlerHelper().applyAttachedObject(context, parent);
     }
     
     /**
+     * Return the delegate handler for this instance. Note that this suppose
+     * delegate tag handlers wrapping this class should implement AttachedObjectHandler
+     * interface.
      * 
      * @return
      */
     protected final AttachedObjectHandler getAttachedObjectHandlerHelper()
     {
-        // TODO: IMPLEMENT HERE
-        return null;
+        return (AttachedObjectHandler) getTagHandlerDelegate();
     }
 
     /**
@@ -63,7 +66,7 @@ public abstract class FaceletsAttachedObjectHandler extends DelegatingMetaTagHan
     @Override
     public final String getFor()
     {
-        // TODO: IMPLEMENT HERE
-        return null;
+        //Just redirect to delegate handler
+        return getAttachedObjectHandlerHelper().getFor();
     }
 }
