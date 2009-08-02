@@ -26,9 +26,9 @@ import javax.faces.application.FacesMessage;
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  *
- * @author Manfred Geiler (latest modification by $Author$)
+ * @author Manfred Geiler (latest modification by $Author: mconcini $)
  * @author Thomas Spiegl
- * @version $Revision$ $Date$
+ * @version $Revision: 798178 $ $Date: 2009-07-27 16:52:07 +0200 (ma, 27 jul 2009) $
  */
 public class ValidatorException
         extends FacesException
@@ -92,33 +92,33 @@ public class ValidatorException
     
     private static String facesMessagesToString(Collection<FacesMessage> messages)
     {
-        if(messages == null || messages.isEmpty())
+        if (messages == null || messages.isEmpty())
         {
             return "";
         }
-        StringBuffer buffer = new StringBuffer("");
-        
-        for(FacesMessage message : messages)
+        StringBuilder sb = new StringBuilder();
+
+        String separator = "";
+        for (FacesMessage message : messages)
         {
-            if(message != null)
+            if (message != null)
             {
                 String summary = message.getSummary();
                 String detail = message.getDetail();
                 
                 if (summary != null)
                 {
+                    sb.append(separator);
+                    sb.append(summary);
                     if (detail != null)
                     {
-                        buffer.append(summary + ": " + detail);
+                        sb.append(": ");
+                        sb.append(detail);
                     }
-                    else
-                    {
-                        buffer.append(summary);
-                    }
+                    separator = ", ";
                 }
             }
-            
         }
-        return buffer.toString();
+        return sb.toString();
     }
 }
