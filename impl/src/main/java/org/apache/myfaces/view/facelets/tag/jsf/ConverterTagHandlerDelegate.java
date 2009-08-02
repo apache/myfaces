@@ -33,7 +33,6 @@ import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandlerDelegate;
 
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
-import org.omg.CORBA.portable.Delegate;
 
 /**
  * Handles setting a Converter instance on a ValueHolder. Will wire all attributes set to the Converter instance
