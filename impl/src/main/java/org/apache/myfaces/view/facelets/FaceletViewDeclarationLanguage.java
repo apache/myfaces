@@ -864,7 +864,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      * @param name
      *            the init parameter's name
      * @param defaultValue
-     *            the default value to return in case the ârameter was not set
+     *            the default value to return in case the parameter was not set
      * 
      * @return the init parameter value as a boolean
      * 
@@ -895,7 +895,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      * @param name
      *            the init parameter's name
      * @param defaultValue
-     *            the default value to return in case the ârameter was not set
+     *            the default value to return in case the parameter was not set
      * 
      * @return the init parameter value as a int
      * 
@@ -951,7 +951,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      * @param name
      *            the init parameter's name
      * @param defaultValue
-     *            the default value to return in case the ârameter was not set
+     *            the default value to return in case the parameter was not set
      * 
      * @return the init parameter value as an object instance
      * 
@@ -990,7 +990,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      * @param name
      *            the init parameter's name
      * @param defaultValue
-     *            the default value to return in case the ârameter was not set
+     *            the default value to return in case the parameter was not set
      * 
      * @return the init parameter value as a long
      * 
