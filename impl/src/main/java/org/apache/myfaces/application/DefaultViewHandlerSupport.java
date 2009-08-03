@@ -244,10 +244,14 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             uri = uri.substring(prefix.length() - 1);    //cut off only /faces, leave the trailing '/' char for the next iteration
         }
         //now delete any remaining leading '/'
-        if(uri.startsWith("/"))
+        // TODO: CJH: I don't think this is correct, considering that getActionURL() expects everything to
+        // start with '/', and in the suffix case we only mess with the suffix and leave leading
+        // slashes alone.  Please review...
+        /*if(uri.startsWith("/"))
         {
             uri = uri.substring(1);
-        }
+        }*/
+        
         return uri;
     }
     

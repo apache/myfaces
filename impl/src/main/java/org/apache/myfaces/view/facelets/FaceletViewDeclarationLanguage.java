@@ -32,6 +32,7 @@ import java.util.Collections;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
+import javax.faces.application.Application;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.Resource;
 import javax.faces.application.StateManager;
@@ -386,14 +387,15 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         }
         //else if (!_buildBeforeRestore)
         //{
-            return super.restoreView(context, viewId);
+            //return super.restoreView(context, viewId);
         //}
         //else
         //{
             // TODO: VALIDATE - Is _buildBeforeRestore relevant at all for 2.0? -= SL =-
             // ANS: buildBeforeRestore evolved to partial state saving, so this logic 
             // is now on StateManagerStrategy implementation -= Leo U =- 
-            /*
+            // CJH: uncommenting for now, seems to work.
+        
             UIViewRoot viewRoot = createView(context, viewId);
 
             context.setViewRoot(viewRoot);
@@ -416,8 +418,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             application.getStateManager().restoreView(context, viewId, renderKitId);
 
             return viewRoot;
-        }
-        */
+        //}
+        
     }
 
     /**
