@@ -792,7 +792,26 @@ public class AnnotationConfigurator
             RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(_externalContext);
             org.apache.myfaces.config.impl.digester.elements.ManagedBean mbc =
                 new org.apache.myfaces.config.impl.digester.elements.ManagedBean();
-            mbc.setName(bean.name());
+            String beanName = bean.name();
+            
+            if ((beanName == null) || beanName.equals ("")) {
+                int index;
+                
+                // Missing name attribute algorithm: take the unqualified name and make the
+                // first character lowercase.
+                
+                beanName = clazz.getName();
+                index = beanName.lastIndexOf (".");
+                
+                if (index != -1) {
+                    beanName = beanName.substring (index + 1);
+                }
+                
+                beanName = Character.toLowerCase (beanName.charAt (0)) +
+                    beanName.substring (1);
+            }
+            
+            mbc.setName(beanName);
             mbc.setBeanClass(clazz.getName());
             
             ApplicationScoped appScoped = (ApplicationScoped) clazz.getAnnotation(ApplicationScoped.class);

@@ -59,6 +59,7 @@ public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELRe
         //before MapELResolver. Better to put this one before
         elResolver.add(new FlashELResolver());
         elResolver.add(new ManagedBeanResolver());
+        elResolver.add(new ResourceResolver());
         elResolver.add(new ResourceBundleELResolver());
         elResolver.add(new ResourceBundleResolver());
         elResolver.add(new MapELResolver());
@@ -66,7 +67,6 @@ public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELRe
         elResolver.add(new ArrayELResolver());
         elResolver.add(new BeanELResolver());
         elResolver.add(new ScopedAttributeResolver());
-        elResolver.add(new ResourceResolver());
     }
 
 }

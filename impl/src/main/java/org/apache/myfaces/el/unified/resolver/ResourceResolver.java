@@ -71,29 +71,30 @@ public final class ResourceResolver extends ELResolver
             String reference = (String) property;
             int colonIndex = (reference).indexOf(':');
             Resource resource = null;
-            if (colonIndex < 0)
-            {
-                if (reference.indexOf(':', colonIndex + 1) < 0
-                        && colonIndex != 0
-                        && colonIndex + 1 < reference.length())
-                {
-                    resource = ((ResourceHandler) base).createResource(
-                            reference.substring(0, colonIndex - 1), reference
-                                    .substring(colonIndex + 1));
+            
+            if (colonIndex == -1) {
+                // No library name, just create as a simple resource.
+                
+                resource = ((ResourceHandler) base).createResource (reference);
+            }
+            
+            else {
+                if (reference.lastIndexOf (':') != colonIndex) {
+                    // Max of one ":" allowed, so throw an exception.
+                    
+                    throw new ELException ("Malformed resource reference found when " +
+                        "resolving " + property);
                 }
-                else
-                {
-                    throw new ELException(
-                            "Malformed resource reference found when resolving "
-                                    + property);
+                
+                else {
+                    // Otherwise, portion before the ":" is the library name.
+                    
+                    resource = ((ResourceHandler) base).createResource
+                        (reference.substring (0, colonIndex), reference.substring
+                        (colonIndex + 1));
                 }
             }
-            else
-            {
-                resource = ((ResourceHandler) base).createResource(reference);
-                context.setPropertyResolved(true);
-                return resource.getRequestPath();
-            }
+            
             if (resource != null)
             {
                 context.setPropertyResolved(true);
