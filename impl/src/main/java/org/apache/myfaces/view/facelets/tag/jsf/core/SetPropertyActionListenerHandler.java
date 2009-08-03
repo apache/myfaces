@@ -31,6 +31,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
+import javax.faces.view.ActionSource2AttachedObjectHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.TagAttribute;
@@ -41,6 +42,7 @@ import javax.faces.view.facelets.TagHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 public class SetPropertyActionListenerHandler extends TagHandler
+    implements ActionSource2AttachedObjectHandler 
 {
     private final TagAttribute _target;
     private final TagAttribute _value;
@@ -57,13 +59,9 @@ public class SetPropertyActionListenerHandler extends TagHandler
     {
         if (parent instanceof ActionSource)
         {
-            ActionSource src = (ActionSource) parent;
             if (ComponentSupport.isNew(parent))
             {
-                ValueExpression valueExpr = _value.getValueExpression(ctx, Object.class);
-                ValueExpression targetExpr = _target.getValueExpression(ctx, Object.class);
-
-                src.addActionListener(new SetPropertyListener(valueExpr, targetExpr));
+                applyAttachedObject(ctx.getFacesContext(), parent);
             }
         }
         else
@@ -96,6 +94,35 @@ public class SetPropertyActionListenerHandler extends TagHandler
             Object valueObj = _value.getValue(el);
             
             _target.setValue(el, valueObj);
+        }
+    }
+
+    @Override
+    public void applyAttachedObject(FacesContext context, UIComponent parent)
+    {
+        // Retrieve the current FaceletContext from FacesContext object
+        FaceletContext faceletContext = (FaceletContext) context.getAttributes().get(
+                FaceletContext.FACELET_CONTEXT_KEY);
+
+        ActionSource src = (ActionSource) parent;
+        ValueExpression valueExpr = _value.getValueExpression(faceletContext, Object.class);
+        ValueExpression targetExpr = _target.getValueExpression(faceletContext, Object.class);
+
+        src.addActionListener(new SetPropertyListener(valueExpr, targetExpr));
+    }
+
+    @Override
+    public String getFor()
+    {
+        TagAttribute forAttribute = getAttribute("for");
+        
+        if (forAttribute == null)
+        {
+            return null;
+        }
+        else
+        {
+            return forAttribute.getValue();
         }
     }
 }

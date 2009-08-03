@@ -30,6 +30,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
+import javax.faces.view.ActionSource2AttachedObjectHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.TagAttribute;
@@ -52,6 +53,7 @@ import org.apache.myfaces.view.facelets.util.ReflectionUtil;
  * @version $Id: ActionListenerHandler.java,v 1.7 2008/07/13 19:01:44 rlubke Exp $
  */
 public final class ActionListenerHandler extends TagHandler
+    implements ActionSource2AttachedObjectHandler 
 {
 
     private final static class LazyActionListener implements ActionListener, Serializable
@@ -152,19 +154,44 @@ public final class ActionListenerHandler extends TagHandler
         {
             if (ComponentSupport.isNew(parent))
             {
-                ActionSource as = (ActionSource) parent;
-                ValueExpression b = null;
-                if (this.binding != null)
-                {
-                    b = this.binding.getValueExpression(ctx, ActionListener.class);
-                }
-                ActionListener listener = new LazyActionListener(this.listenerType, b);
-                as.addActionListener(listener);
+                applyAttachedObject(ctx.getFacesContext(), parent);
             }
         }
         else
         {
             throw new TagException(this.tag, "Parent is not of type ActionSource, type is: " + parent);
+        }
+    }
+
+    @Override
+    public void applyAttachedObject(FacesContext context, UIComponent parent)
+    {
+        // Retrieve the current FaceletContext from FacesContext object
+        FaceletContext faceletContext = (FaceletContext) context.getAttributes().get(
+                FaceletContext.FACELET_CONTEXT_KEY);
+
+        ActionSource as = (ActionSource) parent;
+        ValueExpression b = null;
+        if (this.binding != null)
+        {
+            b = this.binding.getValueExpression(faceletContext, ActionListener.class);
+        }
+        ActionListener listener = new LazyActionListener(this.listenerType, b);
+        as.addActionListener(listener);
+    }
+
+    @Override
+    public String getFor()
+    {
+        TagAttribute forAttribute = getAttribute("for");
+        
+        if (forAttribute == null)
+        {
+            return null;
+        }
+        else
+        {
+            return forAttribute.getValue();
         }
     }
 }

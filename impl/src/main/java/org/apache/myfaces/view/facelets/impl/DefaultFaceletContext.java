@@ -90,6 +90,10 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         _faceletHierarchy.addAll(ctx._faceletHierarchy);
         _faceletHierarchy.add(facelet);
         _facelet = facelet;
+        
+        //Update FACELET_CONTEXT_KEY on FacesContext attribute map, to 
+        //reflect the current facelet context instance
+        ctx.getFacesContext().getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY, this);
     }
 
     public DefaultFaceletContext(FacesContext faces, DefaultFacelet facelet)
@@ -108,6 +112,10 @@ final class DefaultFaceletContext extends AbstractFaceletContext
             _varMapper = new DefaultVariableMapper();
         }
         _fnMapper = _ctx.getFunctionMapper();
+        
+        //Set FACELET_CONTEXT_KEY on FacesContext attribute map, to 
+        //reflect the current facelet context instance
+        faces.getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY, this);
     }
 
     /**

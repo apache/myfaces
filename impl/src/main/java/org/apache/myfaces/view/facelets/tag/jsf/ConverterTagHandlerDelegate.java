@@ -82,35 +82,7 @@ public class ConverterTagHandlerDelegate extends TagHandlerDelegate implements A
         // only process if it's been created
         if (parent.getParent() == null)
         {
-            // cast to a ValueHolder
-            ValueHolder vh = (ValueHolder) parent;
-            ValueExpression ve = null;
-            Converter c = null;
-            if (_delegate.getBinding() != null)
-            {
-                ve = _delegate.getBinding().getValueExpression(ctx, Converter.class);
-                c = (Converter) ve.getValue(ctx);
-            }
-            if (c == null)
-            {
-                c = this.createConverter(ctx);
-                if (ve != null)
-                {
-                    ve.setValue(ctx, c);
-                }
-            }
-            if (c == null)
-            {
-                throw new TagException(_delegate.getTag(), "No Converter was created");
-            }
-            _delegate.setAttributes(ctx, c);
-            vh.setConverter(c);
-            Object lv = vh.getLocalValue();
-            FacesContext faces = ctx.getFacesContext();
-            if (lv instanceof String)
-            {
-                vh.setValue(c.getAsObject(faces, parent, (String) lv));
-            }
+            applyAttachedObject(ctx.getFacesContext(), parent);
         }        
     }
 
@@ -141,14 +113,53 @@ public class ConverterTagHandlerDelegate extends TagHandlerDelegate implements A
     @Override
     public void applyAttachedObject(FacesContext context, UIComponent parent)
     {
-        // TODO Auto-generated method stub
+        // Retrieve the current FaceletContext from FacesContext object
+        FaceletContext faceletContext = (FaceletContext) context.getAttributes().get(
+                FaceletContext.FACELET_CONTEXT_KEY);
         
+        // cast to a ValueHolder
+        ValueHolder vh = (ValueHolder) parent;
+        ValueExpression ve = null;
+        Converter c = null;
+        if (_delegate.getBinding() != null)
+        {
+            ve = _delegate.getBinding().getValueExpression(faceletContext, Converter.class);
+            c = (Converter) ve.getValue(faceletContext);
+        }
+        if (c == null)
+        {
+            c = this.createConverter(faceletContext);
+            if (ve != null)
+            {
+                ve.setValue(faceletContext, c);
+            }
+        }
+        if (c == null)
+        {
+            throw new TagException(_delegate.getTag(), "No Converter was created");
+        }
+        _delegate.setAttributes(faceletContext, c);
+        vh.setConverter(c);
+        Object lv = vh.getLocalValue();
+        FacesContext faces = faceletContext.getFacesContext();
+        if (lv instanceof String)
+        {
+            vh.setValue(c.getAsObject(faces, parent, (String) lv));
+        }
     }
 
     @Override
     public String getFor()
     {
-        // TODO Auto-generated method stub
-        return null;
+        TagAttribute forAttribute = _delegate.getTagAttribute("for");
+        
+        if (forAttribute == null)
+        {
+            return null;
+        }
+        else
+        {
+            return forAttribute.getValue();
+        }
     }
 }

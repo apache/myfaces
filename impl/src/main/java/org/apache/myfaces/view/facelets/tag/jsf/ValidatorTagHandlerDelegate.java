@@ -67,29 +67,7 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements A
         // only process if it's been created
         if (parent.getParent() == null)
         {
-            // cast to a ValueHolder
-            EditableValueHolder evh = (EditableValueHolder) parent;
-            ValueExpression ve = null;
-            Validator v = null;
-            if (_delegate.getBinding() != null)
-            {
-                ve = _delegate.getBinding().getValueExpression(ctx, Validator.class);
-                v = (Validator) ve.getValue(ctx);
-            }
-            if (v == null)
-            {
-                v = this.createValidator(ctx);
-                if (ve != null)
-                {
-                    ve.setValue(ctx, v);
-                }
-            }
-            if (v == null)
-            {
-                throw new TagException(_delegate.getTag(), "No Validator was created");
-            }
-            _delegate.setAttributes(ctx, v);
-            evh.addValidator(v);
+            applyAttachedObject(ctx.getFacesContext(), parent);
         }
     }
 
@@ -120,15 +98,48 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements A
     @Override
     public void applyAttachedObject(FacesContext context, UIComponent parent)
     {
-        // TODO Auto-generated method stub
+        // Retrieve the current FaceletContext from FacesContext object
+        FaceletContext faceletContext = (FaceletContext) context.getAttributes().get(
+                FaceletContext.FACELET_CONTEXT_KEY);
         
+        // cast to a ValueHolder
+        EditableValueHolder evh = (EditableValueHolder) parent;
+        ValueExpression ve = null;
+        Validator v = null;
+        if (_delegate.getBinding() != null)
+        {
+            ve = _delegate.getBinding().getValueExpression(faceletContext, Validator.class);
+            v = (Validator) ve.getValue(faceletContext);
+        }
+        if (v == null)
+        {
+            v = this.createValidator(faceletContext);
+            if (ve != null)
+            {
+                ve.setValue(faceletContext, v);
+            }
+        }
+        if (v == null)
+        {
+            throw new TagException(_delegate.getTag(), "No Validator was created");
+        }
+        _delegate.setAttributes(faceletContext, v);
+        evh.addValidator(v);
     }
 
     @Override
     public String getFor()
     {
-        // TODO Auto-generated method stub
-        return null;
+        TagAttribute forAttribute = _delegate.getTagAttribute("for");
+        
+        if (forAttribute == null)
+        {
+            return null;
+        }
+        else
+        {
+            return forAttribute.getValue();
+        }
     }
 
 }

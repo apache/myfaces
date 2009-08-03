@@ -30,6 +30,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.event.ValueChangeListener;
+import javax.faces.view.EditableValueHolderAttachedObjectHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.TagAttribute;
@@ -50,6 +51,7 @@ import org.apache.myfaces.view.facelets.util.ReflectionUtil;
  * @version $Id: ValueChangeListenerHandler.java,v 1.2 2005/08/24 04:38:50 jhook Exp $
  */
 public final class ValueChangeListenerHandler extends TagHandler
+    implements EditableValueHolderAttachedObjectHandler
 {
 
     private static class LazyValueChangeListener implements ValueChangeListener, Serializable
@@ -148,19 +150,44 @@ public final class ValueChangeListenerHandler extends TagHandler
         {
             if (ComponentSupport.isNew(parent))
             {
-                EditableValueHolder evh = (EditableValueHolder) parent;
-                ValueExpression b = null;
-                if (this.binding != null)
-                {
-                    b = this.binding.getValueExpression(ctx, ValueChangeListener.class);
-                }
-                ValueChangeListener listener = new LazyValueChangeListener(this.listenerType, b);
-                evh.addValueChangeListener(listener);
+                applyAttachedObject(ctx.getFacesContext(), parent);
             }
         }
         else
         {
             throw new TagException(this.tag, "Parent is not of type EditableValueHolder, type is: " + parent);
+        }
+    }
+
+    @Override
+    public void applyAttachedObject(FacesContext context, UIComponent parent)
+    {
+        // Retrieve the current FaceletContext from FacesContext object
+        FaceletContext faceletContext = (FaceletContext) context.getAttributes().get(
+                FaceletContext.FACELET_CONTEXT_KEY);
+
+        EditableValueHolder evh = (EditableValueHolder) parent;
+        ValueExpression b = null;
+        if (this.binding != null)
+        {
+            b = this.binding.getValueExpression(faceletContext, ValueChangeListener.class);
+        }
+        ValueChangeListener listener = new LazyValueChangeListener(this.listenerType, b);
+        evh.addValueChangeListener(listener);
+    }
+
+    @Override
+    public String getFor()
+    {
+        TagAttribute forAttribute = getAttribute("for");
+        
+        if (forAttribute == null)
+        {
+            return null;
+        }
+        else
+        {
+            return forAttribute.getValue();
         }
     }
 
