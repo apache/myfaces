@@ -25,10 +25,14 @@
            <!--
            javascript plugin adjusted to our build process
            please do not delete this it is just disabled for now
-           
+           -->
+
+
             <plugin>
                 <artifactId>javascript-maven-plugin</artifactId>
                 <groupId>org.codehaus.mojo.javascript</groupId>
+                <!-- we have to enforce a version for now which works due to the alpha stage of the plugin -->
+                <version>1.0-alpha-1-20090530.211438-7</version>
                 <extensions>true</extensions>
                 <executions>
                      <execution>
@@ -60,7 +64,7 @@
                     <outputDirectory>${basedir}/target/classes/META-INF/resources/javax.faces/</outputDirectory>
                 </configuration>
             </plugin>
-            -->
+        
 
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>

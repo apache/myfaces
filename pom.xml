@@ -185,6 +185,7 @@
         </pluginRepository>
         <!--
         disabled for now must be enabled to enable javascript compression
+		 -->
         <pluginRepository>
             <id>Codehaus Snapshots</id>
             <url>http://snapshots.repository.codehaus.org/</url>
@@ -195,7 +196,7 @@
                 <enabled>true</enabled>
             </releases>
         </pluginRepository>
-        -->
+       
     </pluginRepositories>
 
     <distributionManagement>
