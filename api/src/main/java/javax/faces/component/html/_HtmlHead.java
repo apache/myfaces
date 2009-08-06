@@ -19,8 +19,10 @@
 package javax.faces.component.html;
 
 import javax.faces.component.UIOutput;
+import javax.faces.convert.Converter;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFExclude;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
@@ -48,4 +50,36 @@ abstract class _HtmlHead extends UIOutput
    */
   @JSFProperty
   public abstract String getLang();
+  
+  @JSFExclude
+  @JSFProperty(tagExcluded=true)
+  @Override
+  public Converter getConverter()
+  {
+    return super.getConverter();
+  }
+
+  @JSFExclude  
+  @JSFProperty(tagExcluded=true)
+  @Override
+  public Object getValue()
+  {
+    return super.getValue();
+  }
+
+  @JSFExclude
+  @JSFProperty(tagExcluded=true)
+  @Override
+  public String getId()
+  {
+    return super.getId();
+  }
+
+  @JSFExclude
+  @JSFProperty(tagExcluded=true)
+  @Override
+  public boolean isRendered()
+  {
+    return super.isRendered();
+  }
 }
