@@ -35,7 +35,7 @@ $baseContent
 #set ($componentList = ${model.getComponents()})
 #foreach( $component in $componentList )
 #if ($modelIds.contains($component.modelId) 
-    && ($component.name))
+    && ($component.name) && ($component.tagClass))
 #if ($utils.getTagPrefix($component.name) == $shortname) 
    <tag>
       <description><![CDATA[$component.longDescription]]></description>
@@ -105,7 +105,7 @@ $baseContent
 #set ($componentList = ${model.getConverters()})
 #foreach( $component in $componentList )
 #if ($modelIds.contains($component.modelId) 
-    && ($component.name))
+    && ($component.name)  && ($component.tagClass))
 #if ($utils.getTagPrefix($component.name) == $shortname) 
    <tag>
       <description><![CDATA[$component.longDescription]]></description>
@@ -161,7 +161,7 @@ $baseContent
 #set ($componentList = ${model.getValidators()})
 #foreach( $component in $componentList )
 #if ($modelIds.contains($component.modelId) 
-    && ($component.name))
+    && ($component.name) && ($component.tagClass))
 #if ($utils.getTagPrefix($component.name) == $shortname) 
    <tag>
       <description><![CDATA[$component.longDescription]]></description>
