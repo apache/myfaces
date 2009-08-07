@@ -18,17 +18,17 @@
  */
 package org.apache.myfaces.view.facelets;
 
+import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URL;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Collections;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
@@ -43,7 +43,17 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.render.RenderKit;
+import javax.faces.view.ActionSource2AttachedObjectHandler;
+import javax.faces.view.ActionSource2AttachedObjectTarget;
+import javax.faces.view.AttachedObjectHandler;
+import javax.faces.view.AttachedObjectTarget;
+import javax.faces.view.BehaviorHolderAttachedObjectHandler;
+import javax.faces.view.BehaviorHolderAttachedObjectTarget;
+import javax.faces.view.EditableValueHolderAttachedObjectHandler;
+import javax.faces.view.EditableValueHolderAttachedObjectTarget;
 import javax.faces.view.StateManagementStrategy;
+import javax.faces.view.ValueHolderAttachedObjectHandler;
+import javax.faces.view.ValueHolderAttachedObjectTarget;
 import javax.faces.view.ViewMetadata;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -217,6 +227,120 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     {
         // TODO Auto-generated method stub
         return null;
+    }
+    
+    /**
+     * In short words, this method take care of "target" an "attached object".
+     * <ul>
+     * <li>The "attached object" is instantiated by a tag handler.</li> 
+     * <li>The "target" is an object used as "marker", that exposes a List<UIComponent></li>
+     * </ul>
+     * This method should be called from some composite component tag handler, after
+     * all children of composite component has been applied.
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public void retargetAttachedObjects(FacesContext context,
+            UIComponent topLevelComponent, List<AttachedObjectHandler> handlerList)
+    {
+        BeanInfo compositeComponentMetadata = (BeanInfo) topLevelComponent.getAttributes().get(UIComponent.BEANINFO_KEY);
+        
+        if (compositeComponentMetadata == null)
+        {
+            log.error("Composite component metadata not found for: "+topLevelComponent.getClientId());
+            return;
+        }
+        
+        BeanDescriptor compositeComponentDescriptor = compositeComponentMetadata.getBeanDescriptor();
+        
+        List<AttachedObjectTarget> targetList = (List<AttachedObjectTarget>) 
+            compositeComponentDescriptor.getValue(AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY);
+        
+        if (targetList == null || targetList.isEmpty())
+        {
+            return;
+        }
+        
+        for (AttachedObjectHandler currentHandler : handlerList)
+        {
+            // In the spec javadoc this variable is referred as forAttributeValue, but
+            // note it is also called curTargetName
+            String forValue = currentHandler.getFor();
+            
+            for (AttachedObjectTarget currentTarget : targetList)
+            {
+                if (  forValue.equals(currentTarget.getName()) &&
+                      ((currentTarget  instanceof ActionSource2AttachedObjectTarget &&
+                       currentHandler instanceof ActionSource2AttachedObjectHandler) ||
+                      (currentTarget  instanceof EditableValueHolderAttachedObjectTarget &&
+                       currentHandler instanceof EditableValueHolderAttachedObjectHandler) ||
+                      (currentTarget  instanceof ValueHolderAttachedObjectTarget &&
+                       currentHandler instanceof ValueHolderAttachedObjectHandler)) )
+                {
+                    for (UIComponent component : currentTarget.getTargets(topLevelComponent))
+                    {
+                        // If we found composite components when traverse the tree
+                        // we have to call this one recursively, because each composite component
+                        // should have its own AttachedObjectHandler list, filled earlier when
+                        // its tag handler is applied.
+                        if (UIComponent.isCompositeComponent(component))
+                        {
+                            // TODO: How we obtain the list of AttachedObjectHandler for
+                            // the current composite component? It should be a component
+                            // attribute or retrieved by a key inside component.getAttributes
+                            // map. Since api does not specify any attribute, we suppose
+                            // this is an implementation detail and it should be retrieved
+                            // from component attribute map.
+                            // But this is only the point of the iceberg, because we should
+                            // define how we register attached object handlers in this list.
+                        }
+                        else
+                        {
+                            currentHandler.applyAttachedObject(context, component);                            
+                        }
+                    }
+                }
+                else if ((currentTarget  instanceof BehaviorHolderAttachedObjectTarget &&
+                       currentHandler instanceof BehaviorHolderAttachedObjectHandler))
+                {
+                    String eventName = ((BehaviorHolderAttachedObjectHandler) currentHandler).getEventName();
+                    boolean isDefaultEvent = ((BehaviorHolderAttachedObjectTarget) currentTarget).isDefaultEvent(); 
+                    
+                    if (forValue.equals(eventName) || (eventName == null && isDefaultEvent))
+                    {
+                        for (UIComponent component : currentTarget.getTargets(topLevelComponent))
+                        {
+                            // If we found composite components when traverse the tree
+                            // we have to call this one recursively, because each composite component
+                            // should have its own AttachedObjectHandler list, filled earlier when
+                            // its tag handler is applied.
+                            if (UIComponent.isCompositeComponent(component))
+                            {
+                                // TODO: How we obtain the list of AttachedObjectHandler for
+                                // the current composite component? It should be a component
+                                // attribute or retrieved by a key inside component.getAttributes
+                                // map. Since api does not specify any attribute, we suppose
+                                // this is an implementation detail and it should be retrieved
+                                // from component attribute map.
+                                // But this is only the point of the iceberg, because we should
+                                // define how we register attached object handlers in this list.
+                            }
+                            else
+                            {
+                                currentHandler.applyAttachedObject(context, component);                            
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void retargetMethodExpressions(FacesContext context,
+            UIComponent topLevelComponent)
+    {
+        // TODO Auto-generated method stub
     }
 
     /**
