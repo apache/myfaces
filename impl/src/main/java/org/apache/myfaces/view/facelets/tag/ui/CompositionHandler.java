@@ -35,6 +35,8 @@ import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.TemplateClient;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
@@ -46,6 +48,7 @@ import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
  * @author Jacob Hookom
  * @version $Id: CompositionHandler.java,v 1.14 2008/07/13 19:01:42 rlubke Exp $
  */
+@JSFFaceletTag(name="ui:composition")
 public final class CompositionHandler extends TagHandler implements TemplateClient
 {
 
@@ -53,6 +56,14 @@ public final class CompositionHandler extends TagHandler implements TemplateClie
 
     public final static String Name = "composition";
 
+    /**
+     * The resolvable URI of the template to use. The content within the composition tag will 
+     * be used in populating the template specified.
+     */
+    @JSFFaceletAttribute(
+            name="template",
+            className="javax.el.ValueExpression",
+            deferredValueType="java.lang.String")
     protected final TagAttribute _template;
 
     protected final Map<String, DefineHandler> _handlers;

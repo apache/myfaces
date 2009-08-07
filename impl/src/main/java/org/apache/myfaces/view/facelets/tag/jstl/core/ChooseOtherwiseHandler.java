@@ -28,10 +28,17 @@ import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+
 /**
+ * Subtag of &lt;choose&gt; that follows &lt;when&gt; tags
+ * and runs only if all of the prior conditions evaluated to
+ * 'false'
+ * 
  * @author Jacob Hookom
  * @version $Id: ChooseOtherwiseHandler.java,v 1.3 2008/07/13 19:01:44 rlubke Exp $
  */
+@JSFFaceletTag(name="c:otherwise")
 public final class ChooseOtherwiseHandler extends TagHandler
 {
 

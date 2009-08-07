@@ -35,22 +35,40 @@ import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.TemplateClient;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
 import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
 
 /**
+ * The decorate tag acts the same as a composition tag, but it will not trim 
+ * everything outside of it. This is useful in cases where you have a list of 
+ * items in a document, which you would like to be decorated or framed.
+ *  
+ * The sum of it all is that you can take any element in the document and decorate 
+ * it with some external logic as provided by the template.
+ * 
  * TODO: REFACTOR - This class could easily use a common parent with CompositionHandler
  * 
  * @author Jacob Hookom
  * @version $Id: DecorateHandler.java,v 1.16 2008/07/13 19:01:41 rlubke Exp $
  */
+@JSFFaceletTag(name="ui:decorate")
 public final class DecorateHandler extends TagHandler implements TemplateClient
 {
 
     private static final Logger log = Logger.getLogger("facelets.tag.ui.decorate");
 
+    /**
+     * The resolvable URI of the template to use. The content within the decorate tag 
+     * will be used in populating the template specified.
+     */
+    @JSFFaceletAttribute(
+            name="template",
+            className="javax.el.ValueExpression",
+            deferredValueType="java.lang.String")
     private final TagAttribute _template;
 
     private final Map<String, DefineHandler> _handlers;

@@ -39,6 +39,7 @@ import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandler;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
@@ -50,6 +51,10 @@ import org.apache.myfaces.view.facelets.util.ReflectionUtil;
  * @author Jacob Hookom
  * @version $Id: ValueChangeListenerHandler.java,v 1.2 2005/08/24 04:38:50 jhook Exp $
  */
+@JSFFaceletTag(
+        name = "f:valueChangeListener",
+        bodyContent = "empty", 
+        tagClass="org.apache.myfaces.taglib.core.ValueChangeListenerTag")
 public final class ValueChangeListenerHandler extends TagHandler
     implements EditableValueHolderAttachedObjectHandler
 {

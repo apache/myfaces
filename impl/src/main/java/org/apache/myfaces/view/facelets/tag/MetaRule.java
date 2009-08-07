@@ -18,25 +18,29 @@
  */
 package org.apache.myfaces.view.facelets.tag;
 
-//import javax.faces.view.facelets.tag.TagAttribute;
-//
-///**
-// * A potential rule for Metadata on the passed MetadataTarget
-// * 
-// * @see org.apache.myfaces.view.facelets.tag.Metadata
-// * @see org.apache.myfaces.view.facelets.tag.MetadataTarget
-// * @author Jacob Hookom
-// * @version $Id: MetaRule.java,v 1.3 2008/07/13 19:01:36 rlubke Exp $
-// */
-//public abstract class MetaRule
-//{
-//
-//    /**
-//     * @param name
-//     * @param attribute
-//     * @param meta
-//     * @return
-//     */
-//    public abstract Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta);
-//
-//}
+import javax.faces.view.facelets.Metadata;
+import javax.faces.view.facelets.MetadataTarget;
+import javax.faces.view.facelets.TagAttribute;
+
+/**
+ * A potential rule for Metadata on the passed MetadataTarget
+ * 
+ * @deprecated use javax.faces.view.facelets.MetaRule 
+ * @see org.apache.myfaces.view.facelets.tag.Metadata
+ * @see org.apache.myfaces.view.facelets.tag.MetadataTarget
+ * @author Jacob Hookom
+ * @version $Id: MetaRule.java,v 1.3 2008/07/13 19:01:36 rlubke Exp $
+ */
+@Deprecated
+public abstract class MetaRule
+{
+
+    /**
+     * @param name
+     * @param attribute
+     * @param meta
+     * @return
+     */
+    public abstract Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta);
+
+}

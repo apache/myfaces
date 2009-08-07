@@ -29,6 +29,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  */
 @JSFComponent
 (
+name="h:link",
 clazz = "javax.faces.component.html.HtmlOutcomeTargetLink",template=true,
 implementz = "javax.faces.component.behavior.ClientBehaviorHolder"
 )

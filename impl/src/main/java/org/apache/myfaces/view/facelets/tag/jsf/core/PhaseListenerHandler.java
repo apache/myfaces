@@ -39,9 +39,14 @@ import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandler;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
+@JSFFaceletTag(
+        name = "f:phaseListener",
+        bodyContent = "empty", 
+        tagClass="org.apache.myfaces.taglib.core.PhaseListenerTag")
 public class PhaseListenerHandler extends TagHandler
 {
 

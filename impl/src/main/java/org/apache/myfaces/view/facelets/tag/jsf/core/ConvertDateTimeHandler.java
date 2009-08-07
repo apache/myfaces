@@ -32,6 +32,7 @@ import javax.faces.view.facelets.MetaRuleset;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagAttributeException;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
@@ -43,6 +44,10 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
  * @author Jacob Hookom
  * @version $Id: ConvertDateTimeHandler.java,v 1.6 2008/07/13 19:01:44 rlubke Exp $
  */
+@JSFFaceletTag(
+        name = "f:convertDateTime",
+        bodyContent = "empty", 
+        converterClass="javax.faces.convert.DateTimeConverter")
 public final class ConvertDateTimeHandler extends ConverterHandler
 {
 

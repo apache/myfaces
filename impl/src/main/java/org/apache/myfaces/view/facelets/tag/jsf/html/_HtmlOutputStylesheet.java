@@ -16,38 +16,39 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package javax.faces.component.html;
+package org.apache.myfaces.view.facelets.tag.jsf.html;
 
-import javax.faces.component.UIOutcomeTarget;
+import javax.faces.component.UIOutput;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
- * 
- * @since 2.0
+ * TODO: DOCUMENT ME! This class is just for documentation purposes
+ * <p>
+ * This tag is backed using a javax.faces.component.UIOutput component instance.
+ * In other words, instances of this component class are created when it is resolved
+ * a Resource annotation, so there is no concrete class or specific tag handler for it,
+ * but there exists a concrete renderer for it.
+ * </p>
  */
-@JSFComponent
-(
-name="h:button",
-clazz = "javax.faces.component.html.HtmlOutcomeTargetButton",template=true,
-implementz = "javax.faces.component.behavior.ClientBehaviorHolder"
-)
-abstract class _HtmlOutcomeTargetButton extends UIOutcomeTarget implements _FocusBlurProperties,
-_EventProperties, _StyleProperties, _UniversalProperties, _AccesskeyProperty,
-_TabindexProperty, _AltProperty
+@JSFComponent(
+        configExcluded=true,
+        defaultRendererType="javax.faces.resource.Script")
+abstract class _HtmlOutputStylesheet extends UIOutput
 {
+    /**
+     * 
+     * @return
+     */
+    @JSFProperty
+    public abstract String getLibrary();
+    
+    /**
+     * 
+     * @return
+     */
+    @JSFProperty
+    public abstract String getName();
 
-  static public final String COMPONENT_FAMILY =
-    "javax.faces.Output";
-  static public final String COMPONENT_TYPE =
-    "javax.faces.HtmlOutcomeTargetButton";
-
-  /**
-   * HTML: the value to put as image attribute
-   * 
-   * @return
-   */
-  @JSFProperty
-  public abstract String getImage(); 
 }

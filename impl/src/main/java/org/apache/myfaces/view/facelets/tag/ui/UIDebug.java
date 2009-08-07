@@ -31,13 +31,29 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 import org.apache.myfaces.view.facelets.util.DevTools;
 import org.apache.myfaces.view.facelets.util.FastWriter;
 
 /**
+ * The debug tag will capture the component tree and variables when it is encoded, 
+ * storing the data for retrieval later. You may launch the debug window at any time 
+ * from your browser by pressing 'CTRL' + 'SHIFT' + 'D' (by default).
+ * 
+ * The debug tag doesn't need to be used with the facelet.DEVELOPMENT parameter.
+ * The best place to put this tag is in your site's main template where it can be 
+ * enabled/disabled across your whole application. 
+ * 
+ * If your application uses multiple windows, you might want to assign different 
+ * hot keys to each one.
+ * 
  * @author Jacob Hookom
  * @version $Id: UIDebug.java,v 1.6 2008/07/13 19:01:41 rlubke Exp $
  */
+@JSFComponent(name="ui:debug")
+@JSFJspProperty(name = "binding", tagExcluded=true)
 public final class UIDebug extends UIComponentBase
 {
     public static final String COMPONENT_TYPE = "facelets.ui.Debug";
@@ -182,6 +198,22 @@ public final class UIDebug extends UIComponentBase
         return false;
     }
 
+    @JSFProperty(tagExcluded=true)
+    @Override
+    public String getId()
+    {
+        // TODO Auto-generated method stub
+        return super.getId();
+    }
+
+    /**
+     * The hot key to use in combination with 'CTRL' + 'SHIFT' to launch the debug window. 
+     * By default, when the debug tag is used, you may launch the debug window with 
+     * 'CTRL' + 'SHIFT' + 'D'. This value cannot be an EL expression.
+     * 
+     * @return
+     */
+    @JSFProperty
     public String getHotkey()
     {
         return _hotkey;

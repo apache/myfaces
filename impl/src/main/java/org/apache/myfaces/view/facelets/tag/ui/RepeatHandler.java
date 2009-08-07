@@ -32,9 +32,26 @@ import javax.faces.view.facelets.MetaRuleset;
 import javax.faces.view.facelets.Metadata;
 import javax.faces.view.facelets.TagAttribute;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttributes;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+
+/**
+ * Facelet alternative to c:forEach or h:dataTable
+ *
+ */
+@JSFFaceletTag(name="ui:repeat")
+@JSFFaceletAttributes(attributes={
+    @JSFFaceletAttribute(name ="offset", className="javax.el.ValueExpression",deferredValueType="int"),        
+    @JSFFaceletAttribute(name ="size", className="javax.el.ValueExpression",deferredValueType="int"),
+    @JSFFaceletAttribute(name ="step", className="javax.el.ValueExpression",deferredValueType="int"),
+    @JSFFaceletAttribute(name ="value", className="javax.el.ValueExpression"),
+    @JSFFaceletAttribute(name ="var", className="javax.el.ValueExpression"),
+    @JSFFaceletAttribute(name ="varStatus", className="javax.el.ValueExpression")
+})
 public class RepeatHandler extends ComponentHandler
 {
-
+    
     public RepeatHandler(ComponentConfig config)
     {
         super(config);

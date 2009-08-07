@@ -40,6 +40,7 @@ import javax.faces.view.facelets.TagAttributeException;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
@@ -51,6 +52,10 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
  * @author Jacob Hookom
  * @version $Id: LoadBundleHandler.java,v 1.4 2008/07/13 19:01:44 rlubke Exp $
  */
+@JSFFaceletTag(
+        name = "f:loadBundle",
+        bodyContent = "empty", 
+        tagClass="org.apache.myfaces.taglib.core.LoadBundleTag")
 public final class LoadBundleHandler extends TagHandler
 {
 

@@ -28,6 +28,8 @@ import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.MetaRuleset;
 import javax.faces.view.facelets.TagAttribute;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+
 /**
  * Register a named Converter instance on the UIComponent associated with the closest parent UIComponent custom action.
  * <p/> See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/converter.html">tag
@@ -36,6 +38,10 @@ import javax.faces.view.facelets.TagAttribute;
  * @author Jacob Hookom
  * @version $Id: ConvertDelegateHandler.java,v 1.4 2008/07/13 19:01:44 rlubke Exp $
  */
+@JSFFaceletTag(
+        name = "f:converter",
+        bodyContent = "empty", 
+        tagClass="org.apache.myfaces.taglib.core.ConverterImplTag")
 public final class ConvertDelegateHandler extends ConverterHandler
 {
 

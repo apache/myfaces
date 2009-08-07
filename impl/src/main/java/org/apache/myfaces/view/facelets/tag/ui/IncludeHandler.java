@@ -30,15 +30,34 @@ import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
 
 /**
+ * The include tag can point at any Facelet which might use the composition tag,
+ * component tag, or simply be straight XHTML/XML. It should be noted that the 
+ * src path does allow relative path names, but they will always be resolved 
+ * against the original Facelet requested. 
+ * 
+ * The include tag can be used in conjunction with multiple &lt;ui:param/&gt; 
+ * tags to pass EL expressions/values to the target page.
+ * 
  * @author Jacob Hookom
  * @version $Id: IncludeHandler.java,v 1.5 2008/07/13 19:01:41 rlubke Exp $
  */
+@JSFFaceletTag(name="ui:include", bodyContent="JSP")
 public final class IncludeHandler extends TagHandler
 {
 
+    /**
+     * A literal or EL expression that specifies the target Facelet that you 
+     * would like to include into your document.
+     */
+    @JSFFaceletAttribute(
+            className="javax.el.ValueExpression",
+            deferredValueType="java.lang.String",
+            required=true)
     private final TagAttribute src;
 
     /**

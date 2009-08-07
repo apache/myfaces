@@ -288,6 +288,193 @@
         </build>
     </profile>
     <profile>
+      <id>generate-tlddoc</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>copy_fn_tld</id>
+                    <phase>install</phase>
+                    <configuration>
+                        <tasks>
+                            <copy todir="${project.build.directory}/tlddoc-facelets" flatten="true" overwrite="true" 
+                                  verbose="true" failonerror="true">
+                                <fileset dir="${basedir}/src/main/conf/META-INF"  
+                                         includes="myfaces_facelet_fn.tld"/>
+                            </copy>
+                        </tasks>
+                    </configuration>
+                    <goals>
+                        <goal>run</goal>
+                    </goals>
+                </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <!-- To generate facelet taglib doc we need to create alternate facelets files
+                 so taglibdoc goal can extract the required information and create html files.
+                 We put this one here temporally but generate-assembly profile should trigger
+                 this execution tasks too. -->
+            <groupId>org.apache.myfaces.buildtools</groupId>
+            <artifactId>myfaces-builder-plugin</artifactId>
+            <version>1.0.4-SNAPSHOT</version>
+            <executions>
+              <execution>
+                <id>make_core_facelet_tld</id>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/tlddoc-facelets</outputDirectory>
+                    <xmlFile>myfaces_facelets_core.tld</xmlFile>
+                    <xmlBaseFile>src/main/conf/META-INF/myfaces_core-base.tld</xmlBaseFile>
+                    <templateFile>myfaces_facelet_core20.vm</templateFile>
+                    <modelIds>
+                        <modelId>myfaces-api</modelId>
+                        <modelId>myfaces-impl</modelId>
+                    </modelIds>
+                    <params>
+                        <shortname>f</shortname>
+                        <uri>http://java.sun.com/jsf/core</uri>
+                        <displayname>JSF Core Facelets Tag Library.</displayname>
+                        <description>This tag library implements the standard JSF core tags for Facelets.</description>
+                    </params>
+                </configuration>
+                <goals>
+                    <goal>make-config</goal>
+                </goals>
+              </execution>          
+              <execution>
+                <id>make_html_facelet_tld</id>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/tlddoc-facelets</outputDirectory>
+                    <xmlFile>myfaces_facelets_html.tld</xmlFile>
+                    <xmlBaseFile>src/main/conf/META-INF/myfaces_html-base.tld</xmlBaseFile>
+                    <templateFile>myfaces_facelet_html20.vm</templateFile>
+                    <modelIds>
+                        <modelId>myfaces-api</modelId>
+                        <modelId>myfaces-impl</modelId>
+                    </modelIds>
+                    <params>
+                       <shortname>h</shortname>
+                       <uri>http://java.sun.com/jsf/html</uri>
+                       <displayname>JSF HTML Facelets Tag Library.</displayname>
+                       <description>This tag library implements the standard JSF HTML tags for Facelets.</description>
+                    </params>
+                </configuration>
+                <goals>
+                    <goal>make-config</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>make_c_facelet_tld</id>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/tlddoc-facelets</outputDirectory>
+                    <xmlFile>myfaces_facelets_c.tld</xmlFile>
+                    <xmlBaseFile>src/main/conf/META-INF/myfaces_html-base.tld</xmlBaseFile>
+                    <templateFile>myfaces_facelet_html20.vm</templateFile>
+                    <modelIds>
+                        <modelId>myfaces-api</modelId>
+                        <modelId>myfaces-impl</modelId>
+                    </modelIds>
+                    <params>
+                       <shortname>c</shortname>
+                       <uri>http://java.sun.com/jsp/jstl/core</uri>
+                       <displayname>JSTL core Facelets Tag Library.</displayname>
+                       <description>JSTL core Facelets Tag Library.</description>
+                    </params>
+                </configuration>
+                <goals>
+                    <goal>make-config</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>make_ui_facelet_tld</id>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/tlddoc-facelets</outputDirectory>
+                    <xmlFile>myfaces_facelets_ui.tld</xmlFile>
+                    <xmlBaseFile>src/main/conf/META-INF/myfaces_ui-base.tld</xmlBaseFile>
+                    <templateFile>myfaces_facelet_html20.vm</templateFile>
+                    <modelIds>
+                        <modelId>myfaces-api</modelId>
+                        <modelId>myfaces-impl</modelId>
+                    </modelIds>
+                    <params>
+                       <shortname>ui</shortname>
+                       <uri>http://java.sun.com/jsf/facelets</uri>
+                       <displayname>JSF UI Facelets Tag Library.</displayname>
+                       <description>JSF UI Facelets Tag Library.</description>
+                    </params>
+                </configuration>
+                <goals>
+                    <goal>make-config</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>make_composite_facelet_tld</id>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/tlddoc-facelets</outputDirectory>
+                    <xmlFile>myfaces_facelets_composite.tld</xmlFile>
+                    <xmlBaseFile>src/main/conf/META-INF/myfaces_html-base.tld</xmlBaseFile>
+                    <templateFile>myfaces_facelet_html20.vm</templateFile>
+                    <modelIds>
+                        <modelId>myfaces-api</modelId>
+                        <modelId>myfaces-impl</modelId>
+                    </modelIds>
+                    <params>
+                       <shortname>composite</shortname>
+                       <uri>http://java.sun.com/jsf/composite</uri>
+                       <displayname>JSF Composite Facelets Tag Library.</displayname>
+                       <description>JSF Composite Facelets Tag Library.</description>
+                    </params>
+                </configuration>
+                <goals>
+                    <goal>make-config</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>        
+          <plugin>
+            <!-- Unfortunately we can't execute the same report twice, so
+                 we have to generate this files outside report generation. -->
+            <groupId>net.sourceforge.maven-taglib</groupId>
+            <artifactId>maven-taglib-plugin</artifactId>
+            <version>2.3.1</version>
+            <executions>
+                <execution>
+                    <id>tlddoc-facelets</id>
+                    <!-- TODO: The phase value should be "site", but since we are not released yet
+                         and this documentation is used to implement jsf 2.0, we put this one
+                         on site so just doing mvn -Pgenerate-site install we can create this
+                         javadoc -->
+                    <phase>install</phase>
+                    <goals>
+                      <goal>taglibdoc</goal>
+                    </goals>
+                    <inherited>false</inherited>
+                    <configuration>
+                      <title>${project.name} Tag library documentation for Facelets</title>
+                      <srcDir>${basedir}/target/tlddoc-facelets</srcDir>
+                      <tldDocDir>${basedir}/target/site/tlddoc-facelets</tldDocDir>
+                    </configuration>
+                </execution>
+                <execution>
+                    <id>tlddoc-jsp</id>
+                    <phase>install</phase>
+                    <goals>
+                      <goal>taglibdoc</goal>
+                    </goals>
+                    <inherited>false</inherited>
+                    <configuration>
+                      <taglib.src.dir>${basedir}/target/classes/META-INF</taglib.src.dir>
+                      <tldDocDir>${basedir}/target/site/tlddoc</tldDocDir>            
+                    </configuration>
+                </execution>                
+            </executions>
+          </plugin>        
+        </plugins>
+      </build>        
+    </profile>
+    <profile>
       <!--
         - Whenever the full website is generated, the command
         -   mvn -Pgenerate-site site

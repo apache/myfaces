@@ -39,6 +39,8 @@ import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandler;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
@@ -52,6 +54,10 @@ import org.apache.myfaces.view.facelets.util.ReflectionUtil;
  * @author Jacob Hookom
  * @version $Id: ActionListenerHandler.java,v 1.7 2008/07/13 19:01:44 rlubke Exp $
  */
+@JSFFaceletTag(
+            name = "f:actionListener",
+            bodyContent = "empty", 
+            tagClass="org.apache.myfaces.taglib.core.ActionListenerTag")
 public final class ActionListenerHandler extends TagHandler
     implements ActionSource2AttachedObjectHandler 
 {
@@ -180,6 +186,10 @@ public final class ActionListenerHandler extends TagHandler
         as.addActionListener(listener);
     }
 
+    /**
+     * TODO: Document me!
+     */
+    @JSFFaceletAttribute
     @Override
     public String getFor()
     {

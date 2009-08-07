@@ -30,6 +30,8 @@ import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandler;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+
 /**
  * Sets the specified name and attribute on the parent UIComponent. If the "value" specified is not a literal, it will
  * instead set the ValueExpression on the UIComponent. <p /> See <a target="_new"
@@ -40,6 +42,10 @@ import javax.faces.view.facelets.TagHandler;
  * @author Jacob Hookom
  * @version $Id: AttributeHandler.java,v 1.3 2008/07/13 19:01:44 rlubke Exp $
  */
+@JSFFaceletTag(
+        name = "f:attribute",
+        bodyContent = "empty", 
+        tagClass="org.apache.myfaces.taglib.core.AttributeTag")
 public final class AttributeHandler extends TagHandler
 {
     private final TagAttribute _name;

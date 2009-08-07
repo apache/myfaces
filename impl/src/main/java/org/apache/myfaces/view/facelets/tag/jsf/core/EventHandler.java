@@ -38,13 +38,27 @@ import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandler;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttributes;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.config.NamedEventManager;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
 /**
  * Registers a listener for a given system event class on the UIComponent associated with this tag.
  */
-
+@JSFFaceletTag(
+        name = "f:event",
+        bodyContent = "empty")
+@JSFFaceletAttributes(attributes={
+        @JSFFaceletAttribute(name="name",
+                className="javax.el.ValueExpression",
+                deferredValueType="java.lang.String"),
+        @JSFFaceletAttribute(name="listener",
+                className="javax.el.MethodExpression",
+                deferredMethodSignature=
+                "public void listener(javax.faces.event.ComponentSystemEvent evt) throws javax.faces.event.AbortProcessingException")
+})
 public final class EventHandler extends TagHandler {
     private TagAttribute listener;
     private TagAttribute name;

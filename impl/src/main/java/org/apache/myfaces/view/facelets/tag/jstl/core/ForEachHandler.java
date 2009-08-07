@@ -37,11 +37,19 @@ import javax.faces.view.facelets.TagAttributeException;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+
 /**
+ * The basic iteration tag, accepting many different
+ * collection types and supporting subsetting and other
+ * functionality
+ * 
  * @author Jacob Hookom
  * @author Andrew Robinson
  * @version $Id: ForEachHandler.java,v 1.12 2008/07/13 19:01:43 rlubke Exp $
  */
+@JSFFaceletTag(name="c:forEach")
 public final class ForEachHandler extends TagHandler
 {
 
@@ -77,18 +85,58 @@ public final class ForEachHandler extends TagHandler
         }
     }
 
+    /**
+     * If items specified:
+     * Iteration begins at the item located at the
+     * specified index. First item of the collection has
+     * index 0.
+     * If items not specified:
+     * Iteration begins with index set at the value
+     * specified.
+     */
+    @JSFFaceletAttribute(className="int")
     private final TagAttribute begin;
 
+    /**
+     * If items specified:
+     * Iteration ends at the item located at the
+     * specified index (inclusive).
+     * If items not specified:
+     * Iteration ends when index reaches the value
+     * specified.
+     */
+    @JSFFaceletAttribute(className="int")
     private final TagAttribute end;
 
+    /**
+     * Collection of items to iterate over.
+     */
+    @JSFFaceletAttribute(className="javax.el.ValueExpression")
     private final TagAttribute items;
 
+    /**
+     * Iteration will only process every step items of
+     * the collection, starting with the first one.
+     */
+    @JSFFaceletAttribute(className="int")
     private final TagAttribute step;
 
     private final TagAttribute tranzient;
 
+    /**
+     * Name of the exported scoped variable for the
+     * current item of the iteration. This scoped
+     * variable has nested visibility. Its type depends
+     * on the object of the underlying collection.
+     */
+    @JSFFaceletAttribute(className="java.lang.String")
     private final TagAttribute var;
 
+    /**
+     * Name of the exported scoped variable for the
+     * status of the iteration. 
+     */
+    @JSFFaceletAttribute(className="java.lang.String")
     private final TagAttribute varStatus;
 
     /**

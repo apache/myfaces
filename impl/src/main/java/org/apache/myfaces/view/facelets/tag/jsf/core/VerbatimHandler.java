@@ -24,6 +24,7 @@ import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TextHandler;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
 
 /**
@@ -32,6 +33,10 @@ import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
  * @author Adam Winer
  * @version $Id: VerbatimHandler.java,v 1.3 2008/07/13 19:01:44 rlubke Exp $
  */
+@JSFFaceletTag(
+        name = "f:verbatim",
+        bodyContent = "empty", 
+        tagClass="org.apache.myfaces.taglib.core.VerbatimTag")
 public final class VerbatimHandler extends ComponentHandler
 {
     public VerbatimHandler(ComponentConfig config)

@@ -30,17 +30,53 @@ import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttributes;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTags;
+
 /**
  * Simplified implementation of c:set
+ * 
+ * Sets the result of an expression evaluation in a 'scope'
  * 
  * @author Jacob Hookom
  * @version $Id: SetHandler.java,v 1.2 2008/07/13 19:01:44 rlubke Exp $
  */
+@JSFFaceletTag(name="c:set")
+@JSFFaceletAttributes(attributes={
+    @JSFFaceletAttribute(
+        name="target",
+        className="java.lang.String",
+        longDescription="Target object whose property will be set."+
+        " Must evaluate to a JavaBeans object with setter property"+
+        "property, or to a java.util.Map object."),
+    @JSFFaceletAttribute(
+        name="property",
+        className="java.lang.String",
+        longDescription="Name of the property to be set in the target object."),
+    @JSFFaceletAttribute(
+            name="scope",
+            className="java.lang.String",
+            longDescription="Scope for var.")
+})
 public class SetHandler extends TagHandler
 {
 
+    /**
+     * Name of the exported scoped variable to hold the value
+     * specified in the action. The type of the scoped variable is
+     * whatever type the value expression evaluates to.
+     */
+    @JSFFaceletAttribute(className="java.lang.String")
     private final TagAttribute var;
 
+    /**
+     * Expression to be evaluated.
+     */
+    @JSFFaceletAttribute(
+            className="javax.el.ValueExpression",
+            deferredValueType="java.lang.String")
     private final TagAttribute value;
 
     public SetHandler(TagConfig config)

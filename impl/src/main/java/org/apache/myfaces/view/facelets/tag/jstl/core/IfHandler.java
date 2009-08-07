@@ -28,15 +28,38 @@ import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+
 /**
+ * Simple conditional tag, which evalutes its body if the
+ * supplied condition is true and optionally exposes a Boolean
+ * scripting variable representing the evaluation of this condition
+ * 
  * @author Jacob Hookom
  * @version $Id: IfHandler.java,v 1.5 2008/07/13 19:01:44 rlubke Exp $
  */
+@JSFFaceletTag(name="c:if")
+@JSFFaceletAttribute(
+        name="scope",
+        className="java.lang.String",
+        longDescription="Scope for var.")
 public final class IfHandler extends TagHandler
 {
 
+    /**
+     * The test condition that determines whether or
+     * not the body content should be processed.
+     */
+    @JSFFaceletAttribute(className="boolean")
     private final TagAttribute test;
 
+    /**
+     * Name of the exported scoped variable for the
+     * resulting value of the test condition. The type
+     * of the scoped variable is Boolean.  
+     */
+    @JSFFaceletAttribute(className="java.lang.String")
     private final TagAttribute var;
 
     /**

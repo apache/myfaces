@@ -30,15 +30,33 @@ import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+
 /**
  * @author Jacob Hookom
  * @version $Id: ParamHandler.java,v 1.6 2008/07/13 19:01:42 rlubke Exp $
  */
+@JSFFaceletTag(name="ui:param")
 public class ParamHandler extends TagHandler
 {
 
+    /**
+     * The name of the variable to pass to the included Facelet.
+     */
+    @JSFFaceletAttribute(
+            className="javax.el.ValueExpression",
+            deferredValueType="java.lang.String",
+            required=true)
     private final TagAttribute name;
 
+    /**
+     * The literal or EL expression value to assign to the named variable.
+     */
+    @JSFFaceletAttribute(
+            className="javax.el.ValueExpression",
+            deferredValueType="java.lang.String",
+            required=true)
     private final TagAttribute value;
 
     /**

@@ -30,13 +30,28 @@ import javax.faces.view.facelets.TagAttributeException;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+
 /**
+ * The define tag can be used within tags that allow templating. 
+ * This includes composition and decorate tags.
+ * 
  * @author Jacob Hookom
  * @version $Id: DefineHandler.java,v 1.5 2008/07/13 19:01:41 rlubke Exp $
  */
+@JSFFaceletTag(name="ui:define")
 public final class DefineHandler extends TagHandler
 {
 
+    /**
+     * The literal name for this definition. This name will match up with 
+     * a &lt;ui:insert/&gt; tag in a target template.
+     */
+    @JSFFaceletAttribute(
+            className="javax.el.ValueExpression",
+            deferredValueType="java.lang.String",
+            required=true)
     private final String name;
 
     /**

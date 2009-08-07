@@ -25,6 +25,8 @@ import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.ValidatorConfig;
 import javax.faces.view.facelets.ValidatorHandler;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+
 
 /**
  * Register a named Validator instance on the UIComponent associated with the closest parent UIComponent custom
@@ -34,6 +36,10 @@ import javax.faces.view.facelets.ValidatorHandler;
  * @author Jacob Hookom
  * @version $Id: ValidateDelegateHandler.java,v 1.4 2008/07/13 19:01:44 rlubke Exp $
  */
+@JSFFaceletTag(
+        name = "f:validator",
+        bodyContent = "empty", 
+        tagClass="org.apache.myfaces.taglib.core.ValidatorImplTag")
 public final class ValidateDelegateHandler extends ValidatorHandler
 {
 

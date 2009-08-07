@@ -29,6 +29,7 @@ import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.MetaRuleset;
 import javax.faces.view.facelets.TagAttribute;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
@@ -39,6 +40,10 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
  * @author Jacob Hookom
  * @version $Id: ConvertNumberHandler.java,v 1.4 2008/07/13 19:01:44 rlubke Exp $
  */
+@JSFFaceletTag(
+        name = "f:convertNumber",
+        bodyContent = "empty", 
+        converterClass="javax.faces.convert.NumberConverter")
 public final class ConvertNumberHandler extends ConverterHandler
 {
 

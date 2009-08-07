@@ -20,6 +20,10 @@ package org.apache.myfaces.view.facelets.tag.ui;
 
 import javax.faces.component.UIComponentBase;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
+
+@JSFComponent
 public final class ComponentRef extends UIComponentBase
 {
 
@@ -36,4 +40,10 @@ public final class ComponentRef extends UIComponentBase
         return COMPONENT_FAMILY;
     }
 
+    @JSFProperty(tagExcluded=true)
+    @Override
+    public boolean isRendered()
+    {
+        return super.isRendered();
+    }
 }

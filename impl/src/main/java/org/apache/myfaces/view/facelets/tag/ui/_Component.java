@@ -16,38 +16,36 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package javax.faces.component.html;
+package org.apache.myfaces.view.facelets.tag.ui;
 
-import javax.faces.component.UIOutcomeTarget;
+import javax.faces.component.UIComponentBase;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
- * 
- * @since 2.0
+ * The component tag and the composition tag behave exactly the same, except the component
+ * tag will insert a new UIComponent instance into the tree as the root of all the child 
+ * components/fragments it has.
+ * <p>
+ * The component class used for this tag is 
+ * org.apache.myfaces.view.facelets.tag.ui.ComponentRef and the 
+ * real java class that contains this description is not used on runtime.
+ * </p>
  */
-@JSFComponent
-(
-name="h:button",
-clazz = "javax.faces.component.html.HtmlOutcomeTargetButton",template=true,
-implementz = "javax.faces.component.behavior.ClientBehaviorHolder"
-)
-abstract class _HtmlOutcomeTargetButton extends UIOutcomeTarget implements _FocusBlurProperties,
-_EventProperties, _StyleProperties, _UniversalProperties, _AccesskeyProperty,
-_TabindexProperty, _AltProperty
+@JSFComponent(
+        configExcluded=true,
+        defaultRendererType="javax.faces.resource.Script")
+abstract class _Component extends UIComponentBase
 {
+    public final static String COMPONENT_TYPE = "facelets.ui.ComponentRef";
+    public final static String COMPONENT_FAMILY = "facelets";
 
-  static public final String COMPONENT_FAMILY =
-    "javax.faces.Output";
-  static public final String COMPONENT_TYPE =
-    "javax.faces.HtmlOutcomeTargetButton";
 
-  /**
-   * HTML: the value to put as image attribute
-   * 
-   * @return
-   */
-  @JSFProperty
-  public abstract String getImage(); 
+    @JSFProperty(tagExcluded=true)
+    @Override
+    public boolean isRendered()
+    {
+        return super.isRendered();
+    }
 }
