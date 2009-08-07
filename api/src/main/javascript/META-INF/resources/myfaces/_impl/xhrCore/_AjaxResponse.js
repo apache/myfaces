@@ -414,7 +414,26 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
                 attributeValue = "";
             }
 
-            myfaces._impl._util._Utils.setAttribute(document.getElementById(elementId), attributeName, attributeValue);
+            switch(elementId) {
+                case "javax.faces.ViewRoot":
+                    throw new Error("Changing of viewRoot attributes is not supported");
+                    break;
+
+                case "javax.faces.ViewBody":
+                    throw new Error("Changing of head attributes is not supported");
+                    break;
+
+                case "javax.faces.ViewHead":
+                    var element = document.getElementsByTagName("body")[0];
+                    myfaces._impl._util._Utils.setAttribute(element, attributeName, attributeValue);
+                    break;
+
+                default:
+                    myfaces._impl._util._Utils.setAttribute(document.getElementById(elementId), attributeName, attributeValue);
+                    break;
+            }
+
+
         }
         return true;
     }
