@@ -291,7 +291,7 @@ public class ClassLoaderResourceLoader extends ResourceLoader
                 e.printStackTrace();
             }
         }
-        else if (url.getProtocol().equals("jar"))
+        else if (isJarResourceProtocol(url.getProtocol()))
         {
             try
             {
@@ -415,4 +415,22 @@ public class ClassLoaderResourceLoader extends ResourceLoader
         }
         return false;
     }
+
+    /**
+     * <p>Determines whether the given URL resource protocol refers to a JAR file. Note that
+     * BEA WebLogic and IBM WebSphere don't use the "jar://" protocol for some reason even
+     * though you can treat these resources just like normal JAR files, i.e. you can ignore
+     * the difference between these protocols after this method has returned.</p>
+     *
+     * @param protocol the URL resource protocol you want to check
+     *
+     * @return <code>true</code> if the given URL resource protocol refers to a JAR file,
+     *          <code>false</code> otherwise
+     */
+    private static boolean isJarResourceProtocol(String protocol)
+    {
+        // Websphere uses the protocol "wsjar://" and Weblogic uses the protocol "zip://".
+        return "jar".equals(protocol) || "wsjar".equals(protocol) || "zip".equals(protocol); 
+    }
+
 }
