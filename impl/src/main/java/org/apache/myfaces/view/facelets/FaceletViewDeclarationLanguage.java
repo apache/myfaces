@@ -18,8 +18,10 @@
  */
 package org.apache.myfaces.view.facelets;
 
+import java.awt.event.ActionEvent;
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
+import java.beans.PropertyDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
@@ -31,18 +33,27 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.el.ELException;
+import javax.el.MethodExpression;
+import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.application.Application;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.Resource;
 import javax.faces.application.StateManager;
 import javax.faces.application.ViewHandler;
+import javax.faces.component.ActionSource;
+import javax.faces.component.ActionSource2;
+import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
+import javax.faces.event.MethodExpressionActionListener;
+import javax.faces.event.MethodExpressionValueChangeListener;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.render.RenderKit;
+import javax.faces.validator.MethodExpressionValidator;
 import javax.faces.view.ActionSource2AttachedObjectHandler;
 import javax.faces.view.ActionSource2AttachedObjectTarget;
 import javax.faces.view.AttachedObjectHandler;
@@ -236,6 +247,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     }
     
     /**
+     * retargetMethodExpressions(FacesContext, UIComponent) has some clues about the behavior of this method
+     * 
      * {@inheritDoc}
      */
     @Override
@@ -356,7 +369,149 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     public void retargetMethodExpressions(FacesContext context,
             UIComponent topLevelComponent)
     {
-        // TODO Auto-generated method stub
+        BeanInfo compositeComponentMetadata = (BeanInfo) topLevelComponent.getAttributes().get(UIComponent.BEANINFO_KEY);
+        
+        if (compositeComponentMetadata == null)
+        {
+            log.error("Composite component metadata not found for: "+topLevelComponent.getClientId());
+            return;
+        }
+
+        // "...For each attribute that is a MethodExpression..." This means we have to scan
+        // all attributes with "method-signature" attribute and no "type" attribute
+        // javax.faces.component._ComponentAttributesMap uses BeanInfo.getPropertyDescriptors to
+        // traverse over it, but here the metadata returned by UIComponent.BEANINFO_KEY is available
+        // only for composite components.
+        // That means somewhere we need to create a custom BeanInfo object for composite components
+        // that will be filled somewhere (theorically in ViewDeclarationLanguage.getComponentMetadata())
+        
+        PropertyDescriptor[] propertyDescriptors = compositeComponentMetadata.getPropertyDescriptors();
+        
+        for (PropertyDescriptor propertyDescriptor : propertyDescriptors)
+        {
+            if (propertyDescriptor.getValue("type") == null)
+            {
+                // This check is necessary if we have both "type" and "method-signature" set.
+                // In that case, "method-signature" is ignored
+                continue;
+            }
+            
+            // <composite:attribute> method-signature attribute is 
+            // ValueExpression that must evaluate to String
+            ValueExpression methodSignatureExpression = 
+                (ValueExpression) propertyDescriptor.getValue("method-signature");
+            
+            if (methodSignatureExpression != null)
+            {
+                // Check if the value expression holds a method signature
+                // Note that it could be null, so in that case we don't have to do anything
+                String methodSignature = (String) methodSignatureExpression.getValue(context.getELContext());
+                if (methodSignature != null)
+                {
+                    ValueExpression targetsExpression = 
+                        (ValueExpression) propertyDescriptor.getValue("targets");
+                    
+                    String attributeName = propertyDescriptor.getName();
+                    
+                    String targets = null;
+                    // <composite:attribute> targets attribute is 
+                    // ValueExpression that must evaluate to String
+                    if (targetsExpression != null)
+                    {
+                        targets = (String) targetsExpression.getValue(context.getELContext());
+                    }
+                    
+                    if (targets == null)
+                    {
+                        // "...let the name of the metadata element be the 
+                        // evaluated value of the targets attribute..."
+                        targets = attributeName; 
+                    }
+                    
+                    String [] targetsArray = StringUtils.splitShortString(targets, ' ');
+                    
+                    ValueExpression attributeNameValueExpression = 
+                        (ValueExpression) topLevelComponent.getAttributes().get(attributeName);
+                    
+                    if (attributeNameValueExpression == null)
+                    {
+                        if (log.isErrorEnabled())
+                            log.error("attributeValueExpression not found under the key \""+attributeName+
+                                    "\". Looking for the next attribute");
+                        
+                        //TODO: what is the "next" attribute? we have to take a look at examples.
+                    }
+                    
+                    String attributeExpressionString = attributeNameValueExpression.getExpressionString();
+                    MethodExpression methodExpression = null;
+                                        
+                    for (String target : targetsArray)
+                    {
+                        UIComponent innerComponent = topLevelComponent.findComponent(target);
+                        
+                        if (innerComponent == null)
+                        {
+                            if (log.isErrorEnabled())
+                                log.error("Inner component "+target+"not found when retargetMethodExpressions");
+                            continue;
+                        }
+
+                        if (attributeName == "action")
+                        {
+                            // target is ActionSource2
+                            methodExpression = context.getApplication().getExpressionFactory().
+                                createMethodExpression(context.getELContext(),
+                                        attributeExpressionString, Object.class, new Class[]{});
+                            
+                            ((ActionSource2)innerComponent).setActionExpression(methodExpression);
+                        }
+                        else if (attributeName == "actionListener")
+                        {
+                           // target is ActionSource2
+                            methodExpression = context.getApplication().getExpressionFactory().
+                            createMethodExpression(context.getELContext(),
+                                    attributeExpressionString, Void.TYPE, new Class[]{ActionEvent.class});
+                            
+                            ((ActionSource)innerComponent).addActionListener(
+                                    new MethodExpressionActionListener(methodExpression));
+                        }
+                        else if (attributeName == "validator")
+                        {
+                            // target is EditableValueHolder
+                            methodExpression = context.getApplication().getExpressionFactory().
+                            createMethodExpression(context.getELContext(),
+                                    attributeExpressionString, Void.TYPE, 
+                                    new Class[]{FacesContext.class, UIComponent.class, Object.class});
+
+                            ((EditableValueHolder)innerComponent).addValidator(
+                                    new MethodExpressionValidator(methodExpression));
+                        }
+                        else if (attributeName == "valueChangeListener")
+                        {
+                            // target is EditableValueHolder
+                            methodExpression = context.getApplication().getExpressionFactory().
+                            createMethodExpression(context.getELContext(),
+                                    attributeExpressionString, Void.TYPE, 
+                                    new Class[]{ValueChangeEvent.class});
+
+                            ((EditableValueHolder)innerComponent).addValueChangeListener(
+                                    new MethodExpressionValueChangeListener(methodExpression));
+                        }
+                        else
+                        {
+                            // TODO: we need to find expected return type and parameters before
+                            // create the method expression
+                            methodExpression = context.getApplication().getExpressionFactory().
+                            createMethodExpression(context.getELContext(),
+                                    attributeExpressionString, Void.TYPE, 
+                                    new Class[]{});
+                            
+                            innerComponent.getAttributes().put(attributeName, methodExpression);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
