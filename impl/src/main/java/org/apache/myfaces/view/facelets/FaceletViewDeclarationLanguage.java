@@ -95,24 +95,40 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     public final static long DEFAULT_REFRESH_PERIOD = 2;
 
     public final static String DEFAULT_CHARACTER_ENCODING = "UTF-8";
+    
+    //public final static String PARAM_BUFFER_SIZE = "javax.faces.FACELETS_BUFFER_SIZE";
+    
+    public final static String PARAM_BUFFER_SIZE = "javax.faces.FACELETS_BUFFER_SIZE";
+    
+    private final static String PARAM_BUFFER_SIZE_DEPRECATED = "facelets.BUFFER_SIZE";
 
-    public final static String PARAM_BUFFER_SIZE = "facelets.BUFFER_SIZE";
-
-    public final static String PARAM_BUILD_BEFORE_RESTORE = "facelets.BUILD_BEFORE_RESTORE";
-
-    public final static String PARAM_DECORATORS = "facelets.DECORATORS";
+    private final static String PARAM_BUILD_BEFORE_RESTORE = "facelets.BUILD_BEFORE_RESTORE";
+    
+    public final static String PARAM_DECORATORS = "javax.faces.FACELETS_DECORATORS";
+    
+    private final static String PARAM_DECORATORS_DEPRECATED = "facelets.DECORATORS";
 
     public final static String PARAM_ENCODING = "facelets.Encoding";
 
-    public final static String PARAM_LIBRARIES = "facelets.LIBRARIES";
+    public final static String PARAM_LIBRARIES = "javax.faces.FACELETS_LIBRARIES";
+    
+    private final static String PARAM_LIBRARIES_DEPRECATED = "facelets.LIBRARIES";
 
-    public final static String PARAM_REFRESH_PERIOD = "facelets.REFRESH_PERIOD";
-
-    public final static String PARAM_RESOURCE_RESOLVER = "facelets.RESOURCE_RESOLVER";
-
-    public final static String PARAM_SKIP_COMMENTS = "facelets.SKIP_COMMENTS";
-
-    public final static String PARAM_VIEW_MAPPINGS = "facelets.VIEW_MAPPINGS";
+    public final static String PARAM_REFRESH_PERIOD = "javax.faces.FACELETS_REFRESH_PERIOD";
+    
+    private final static String PARAM_REFRESH_PERIOD_DEPRECATED = "facelets.REFRESH_PERIOD";
+    
+    public final static String PARAM_RESOURCE_RESOLVER = "javax.faces.FACELETS_RESOURCE_RESOLVER";
+    
+    private final static String PARAM_RESOURCE_RESOLVER_DEPRECATED = "facelets.RESOURCE_RESOLVER";
+    
+    public final static String PARAM_SKIP_COMMENTS = "javax.faces.FACELETS_SKIP_COMMENTS";
+    
+    private final static String PARAM_SKIP_COMMENTS_DEPRECATED = "facelets.SKIP_COMMENTS";
+    
+    public final static String PARAM_VIEW_MAPPINGS = "javax.faces.FACELETS_VIEW_MAPPINGS";
+    
+    private final static String PARAM_VIEW_MAPPINGS_DEPRECATED = "facelets.VIEW_MAPPINGS";
     
     /**
      * Marker to indicate tag handlers the view currently being built is using
@@ -594,10 +610,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         ExternalContext eContext = context.getExternalContext();
 
         // refresh period
-        long refreshPeriod = _getLongParameter(eContext, PARAM_REFRESH_PERIOD, DEFAULT_REFRESH_PERIOD);
+        long refreshPeriod = _getLongParameter(eContext, PARAM_REFRESH_PERIOD, PARAM_REFRESH_PERIOD_DEPRECATED, DEFAULT_REFRESH_PERIOD);
 
         // resource resolver
-        ResourceResolver resolver = _getInstanceParameter(eContext, PARAM_RESOURCE_RESOLVER, null);
+        ResourceResolver resolver = _getInstanceParameter(eContext, PARAM_RESOURCE_RESOLVER, PARAM_RESOURCE_RESOLVER_DEPRECATED, null);
         if (resolver == null)
         {
             resolver = new DefaultResourceResolver();
@@ -884,7 +900,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      */
     protected void loadDecorators(FacesContext context, Compiler compiler)
     {
-        String param = _getStringParameter(context.getExternalContext(), PARAM_DECORATORS);
+        String param = _getStringParameter(context.getExternalContext(), PARAM_DECORATORS, PARAM_DECORATORS_DEPRECATED);
         if (param != null)
         {
             for (String decorator : param.split(";"))
@@ -917,7 +933,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     {
         ExternalContext eContext = context.getExternalContext();
 
-        String param = _getStringParameter(eContext, PARAM_LIBRARIES);
+        String param = _getStringParameter(eContext, PARAM_LIBRARIES, PARAM_LIBRARIES_DEPRECATED);
         if (param != null)
         {
             for (String library : param.split(";"))
@@ -957,7 +973,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         ExternalContext eContext = context.getExternalContext();
 
         // skip comments?
-        compiler.setTrimmingComments(_getBooleanParameter(eContext, PARAM_SKIP_COMMENTS, false));
+        compiler.setTrimmingComments(_getBooleanParameter(eContext, PARAM_SKIP_COMMENTS, PARAM_SKIP_COMMENTS_DEPRECATED, false));
     }
 
     /**
@@ -989,6 +1005,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      *            the application's external context
      * @param name
      *            the init parameter's name
+     * @param deprecatedName
+     *            the init parameter's deprecated name.
      * @param defaultValue
      *            the default value to return in case the parameter was not set
      * 
@@ -997,9 +1015,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      * @throws NullPointerException
      *             if context or name is <code>null</code>
      */
-    private boolean _getBooleanParameter(ExternalContext context, String name, boolean defaultValue)
+    private boolean _getBooleanParameter(ExternalContext context, String name, String deprecatedName, boolean defaultValue)
     {
-        String param = _getStringParameter(context, name);
+        String param = _getStringParameter(context, name, deprecatedName);
         if (param == null)
         {
             return defaultValue;
@@ -1020,6 +1038,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      *            the application's external context
      * @param name
      *            the init parameter's name
+     * @param deprecatedName
+     *            the init parameter's deprecated name.
      * @param defaultValue
      *            the default value to return in case the parameter was not set
      * 
@@ -1028,9 +1048,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      * @throws NullPointerException
      *             if context or name is <code>null</code>
      */
-    private int _getIntegerParameter(ExternalContext context, String name, int defaultValue)
+    private int _getIntegerParameter(ExternalContext context, String name, String deprecatedName, int defaultValue)
     {
-        String param = _getStringParameter(context, name);
+        String param = _getStringParameter(context, name, deprecatedName);
         if (param == null)
         {
             return defaultValue;
@@ -1076,6 +1096,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      *            the application's external context
      * @param name
      *            the init parameter's name
+     * @param deprecatedName
+     *            the init parameter's deprecated name.
      * @param defaultValue
      *            the default value to return in case the parameter was not set
      * 
@@ -1085,9 +1107,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      *             if context or name is <code>null</code>
      */
     @SuppressWarnings("unchecked")
-    private <T> T _getInstanceParameter(ExternalContext context, String name, T defaultValue)
+    private <T> T _getInstanceParameter(ExternalContext context, String name, String deprecatedName, T defaultValue)
     {
-        String param = _getStringParameter(context, name);
+        String param = _getStringParameter(context, name, deprecatedName);
         if (param == null)
         {
             return defaultValue;
@@ -1115,6 +1137,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      *            the application's external context
      * @param name
      *            the init parameter's name
+     * @param deprecatedName
+     *            the init parameter's deprecated name.
      * @param defaultValue
      *            the default value to return in case the parameter was not set
      * 
@@ -1123,9 +1147,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      * @throws NullPointerException
      *             if context or name is <code>null</code>
      */
-    private long _getLongParameter(ExternalContext context, String name, long defaultValue)
+    private long _getLongParameter(ExternalContext context, String name, String deprecatedName, long defaultValue)
     {
-        String param = _getStringParameter(context, name);
+        String param = _getStringParameter(context, name, deprecatedName);
         if (param == null)
         {
             return defaultValue;
@@ -1146,15 +1170,23 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      *            the application's external context
      * @param name
      *            the init parameter's name
-     * 
+     * @param deprecatedName
+     *            the init parameter's deprecated name.
+     *
      * @return the parameter if it was specified and was not empty, <code>null</code> otherwise
      * 
      * @throws NullPointerException
      *             if context or name is <code>null</code>
      */
-    private String _getStringParameter(ExternalContext context, String name)
+    private String _getStringParameter(ExternalContext context, String name, String deprecatedName)
     {
         String param = context.getInitParameter(name);
+        
+        if ((param == null) && (deprecatedName != null))
+        {
+            param = context.getInitParameter (deprecatedName);
+        }
+        
         if (param == null)
         {
             return null;
@@ -1171,7 +1203,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
     private void _initializeBuffer(ExternalContext context)
     {
-        _bufferSize = _getIntegerParameter(context, PARAM_BUFFER_SIZE, -1);
+        _bufferSize = _getIntegerParameter(context, PARAM_BUFFER_SIZE, PARAM_BUFFER_SIZE_DEPRECATED, -1);
     }
 
     private void _initializeMode(ExternalContext context)
@@ -1179,10 +1211,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         // In jsf 2.0 this code evolve as PartialStateSaving feature
         //_buildBeforeRestore = _getBooleanParameter(context, PARAM_BUILD_BEFORE_RESTORE, false);
         _partialStateSaving = _getBooleanParameter(context, 
-                StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, false);
+                StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, null, false);
         
         String [] viewIds = StringUtils.splitShortString(_getStringParameter(context,
-                StateManager.FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME), ',');
+                StateManager.FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME, null), ',');
         
         if (viewIds.length > 0)
         {

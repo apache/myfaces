@@ -131,7 +131,48 @@ public final class TagLibraryConfig
             this.addFunction(name, method);
         }
     }
+    
+    /*
+     * We need this class to do a quick check on a facelets taglib document to see if it's
+     * a pre-2.0 document.  If it is, we really need to construct a DTD validating, non-namespace
+     * aware parser. Otherwise, we have to construct a schema validating, namespace-aware parser.
+     */
+    
+    private static class VersionCheckHandler extends DefaultHandler
+    {
+        private boolean version20OrLater;
+        
+        public boolean isVersion20OrLater ()
+        {
+            return this.version20OrLater;
+        }
+        
+        @Override
+        public void startElement (String uri, String localName, String name, Attributes attributes) throws SAXException
+        {
+            if (name.equals ("facelet-taglib"))
+            {
+                int length = attributes.getLength();
+                
+                for (int i = 0; i < length; ++i)
+                {
+                    if (attributes.getLocalName (i).equals ("version"))
+                    {
+                        // This document has a "version" attribute in the <facelet-taglib> element, so
+                        // it must be a 2.0 or later document as this attribute was never required before.
 
+                        this.version20OrLater = true;
+                    }
+                }
+                
+                // Throw a dummy parsing exception to terminate parsing as there really isn't any need to go any
+                // further.
+                
+                throw new SAXException();
+            }
+        }
+    }
+    
     private static class LibraryHandler extends DefaultHandler
     {
         private final URL source;
@@ -454,7 +495,7 @@ public final class TagLibraryConfig
         {
             is = url.openStream();
             LibraryHandler handler = new LibraryHandler(url);
-            SAXParser parser = createSAXParser(handler);
+            SAXParser parser = createSAXParser(handler, url);
             parser.parse(is, handler);
             t = handler.getLibrary();
         }
@@ -499,18 +540,97 @@ public final class TagLibraryConfig
         }
     }
 
-    private static final SAXParser createSAXParser(LibraryHandler handler) throws SAXException,
+    private static final SAXParser createSAXParser(LibraryHandler handler, URL url) throws SAXException,
             ParserConfigurationException
     {
         SAXParserFactory factory = SAXParserFactory.newInstance();
-        factory.setNamespaceAware(false);
-        factory.setFeature("http://xml.org/sax/features/validation", true);
-        factory.setValidating(true);
+        
+        // We have to make two different parsers depending on whether or not the facelets taglib
+        // document is version 2.0 or later.  If pre-version 2.0, then the parser must not be
+        // namespace-aware and must be DTD validating.  If verison 2.0 or later, the parser must be
+        // namespace-aware and must be schema validating.
+        
+        if (!isTaglibDocument20OrLater (url))
+        {
+            factory.setNamespaceAware(false);
+            factory.setFeature("http://xml.org/sax/features/validation", true);
+            factory.setValidating(true);
+        }
+        
+        else
+        {
+            // TODO: CJH: the Facelets project does not make the 2.0 schema available via their
+            // CVS.  The schema is also not available at its URL.  For now, 2.0 documents will simply
+            // have no validation.  We must get a copy of their schema once they release it and set up
+            // the parser to use it.
+            
+            factory.setNamespaceAware(true);
+            factory.setFeature("http://xml.org/sax/features/validation", false);
+            factory.setValidating(false);
+        }
+        
         SAXParser parser = factory.newSAXParser();
         XMLReader reader = parser.getXMLReader();
         reader.setErrorHandler(handler);
         reader.setEntityResolver(handler);
         return parser;
     }
+    
+    private static final boolean isTaglibDocument20OrLater (URL url)
+    {
+        InputStream input = null;
+        boolean result = false;
+        
+        try
+        {
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            SAXParser parser;
+            VersionCheckHandler handler = new VersionCheckHandler();
+            
+            // We need to create a non-validating, non-namespace aware parser used to simply check
+            // which version of the facelets taglib document we are dealing with.
 
+            factory.setNamespaceAware(false);
+            factory.setFeature("http://xml.org/sax/features/validation", false);
+            factory.setValidating(false);
+            
+            parser = factory.newSAXParser();
+            
+            input = url.openStream();
+            
+            try
+            {
+                parser.parse (input, handler);
+            }
+            
+            catch (SAXException e)
+            {
+                // This is as a result of our aborted parse, so ignore.
+            }
+            
+            result = handler.isVersion20OrLater();
+        }
+        
+        catch (Throwable e)
+        {
+            // Most likely a result of our aborted parse, so ignore.
+        }
+        
+        finally
+        {
+            if (input != null)
+            {
+                try
+                {
+                    input.close();
+                }
+                
+                catch (Throwable e)
+                {
+                }
+            }
+        }
+        
+        return result;
+    }
 }
