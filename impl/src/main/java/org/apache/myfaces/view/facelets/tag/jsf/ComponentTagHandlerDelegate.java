@@ -222,6 +222,10 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
      */
     protected UIComponent createComponent(FaceletContext ctx)
     {
+        if (_delegate instanceof ComponentBuilderHandler)
+        {
+            return ((ComponentBuilderHandler) _delegate).createComponent(ctx);
+        }
         UIComponent c = null;
         FacesContext faces = ctx.getFacesContext();
         Application app = faces.getApplication();
