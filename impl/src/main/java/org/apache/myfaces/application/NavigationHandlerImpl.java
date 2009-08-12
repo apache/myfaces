@@ -176,9 +176,132 @@ public class NavigationHandlerImpl
             }
         }
         
+        if (navigationCase == null)
+        {
+            // Still can't find a navigation case, so we need to look at the outcome and see what navigation case
+            // can be determined from it.
+            
+            navigationCase = getOutcomeNavigationCase (facesContext, fromAction, outcome);
+        }
+        
         return navigationCase;
     }
-
+    
+    /**
+     * Performs the algorithm specified in 7.4.2 for situations where no navigation cases are defined and instead
+     * the navigation case is to be determined from the outcome.
+     * 
+     * TODO: cache results?
+     */
+    
+    private NavigationCase getOutcomeNavigationCase (FacesContext facesContext, String fromAction, String outcome)
+    {
+        String implicitViewId = null;
+        boolean includeViewParams = false;
+        int index;
+        boolean isRedirect = false;
+        String queryString = null;
+        NavigationCase result = null;
+        String viewId = facesContext.getViewRoot().getViewId();
+        String viewIdToTest = outcome;
+        
+        // If viewIdToTest contains a query string, remove it and set queryString with that value.
+        
+        index = viewIdToTest.indexOf ("?");
+        
+        if (index != -1)
+        {
+            queryString = viewIdToTest.substring (index + 1);
+            viewIdToTest = viewIdToTest.substring (0, index);
+            
+            // If queryString contains "faces-redirect=true", set isRedirect to true.
+            
+            if (queryString.indexOf ("faces-redirect=true") != -1)
+            {
+                isRedirect = true;
+            }
+            
+            // If queryString contains "includeViewParams=true", set includeViewParams to true.
+            
+            if (queryString.indexOf ("includeViewParams=true") != -1)
+            {
+                includeViewParams = true;
+            }
+        }
+        
+        // FIXME: the spec states that redirection (i.e., isRedirect=true) is implied when preemptive navigation is performed,
+        // though I'm not sure how we're supposed to determine that.
+        
+        // If viewIdToTest does not have a "file extension", use the one from the current viewId.
+        // TODO: I don't know exactly what the spec means by "file extension".  I'm assuming everything after "."
+        
+        index = viewIdToTest.indexOf (".");
+        
+        if (index == -1)
+        {
+            index = viewId.indexOf (".");
+            
+            if (index != -1)
+            {
+                viewIdToTest += viewId.substring (index);
+            }
+        }
+        
+        // If viewIdToTest does not start with "/", look for the last "/" in viewId.  If not found, simply prepend "/".
+        // Otherwise, prepend everything before and including the last "/" in viewId.
+        
+        if (!viewIdToTest.startsWith ("/"))
+        {
+            index = viewId.lastIndexOf ("/");
+            
+            if (index == -1)
+            {
+                viewIdToTest = "/" + viewIdToTest;
+            }
+            
+            else
+            {
+                viewIdToTest = viewId.substring (0, index + 1) + viewIdToTest;
+            }
+        }
+        
+        // Call ViewHandler.deriveViewId() and set the result as implicitViewId.
+        
+        try
+        {
+            implicitViewId = facesContext.getApplication().getViewHandler().deriveViewId (facesContext, viewIdToTest);
+        }
+        
+        catch (UnsupportedOperationException e)
+        {
+            // This is the case when a pre-JSF 2.0 ViewHandler is used.  In this case, the default algorithm must be used.
+            // FIXME: I think we're always calling the "default" ViewHandler.deriveViewId() algorithm and we don't
+            // distinguish between pre-JSF 2.0 and JSF 2.0 ViewHandlers.  This probably needs to be addressed.
+        }
+        
+        if (implicitViewId != null)
+        {
+            Map<String, List<String>> params = new HashMap<String, List<String>>();
+            
+            // Append queryString to implicitViewId if it exists.
+            
+            if (queryString != null)
+            {
+                implicitViewId += "?" + queryString;
+            }
+            
+            // Finally, create the NavigationCase.
+            
+            // FIXME: the spec doesn't really say how the redirect parameters are supposed to be
+            // populated.  Assuming for now that they should stay empty...
+            
+            result = new NavigationCase (viewId, fromAction, outcome, null, implicitViewId, params,
+                isRedirect, includeViewParams);
+        }
+        
+        return result;
+    }
+    
     /**
      * Returns the view ID that would be created for the given action and outcome
      */
