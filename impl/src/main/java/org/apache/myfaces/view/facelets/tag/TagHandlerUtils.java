@@ -52,9 +52,9 @@ public final class TagHandlerUtils
         {
             found.add((T)nextHandler);
         }
-        else if (nextHandler instanceof CompositeFaceletHandler)
+        else if (nextHandler instanceof javax.faces.view.facelets.CompositeFaceletHandler)
         {
-            for (FaceletHandler handler : ((CompositeFaceletHandler)nextHandler).getHandlers())
+            for (FaceletHandler handler : ((javax.faces.view.facelets.CompositeFaceletHandler)nextHandler).getHandlers())
             {
                 if (type.isAssignableFrom(handler.getClass()))
                 {

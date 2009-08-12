@@ -47,6 +47,10 @@ import javax.faces.model.ResultSetDataModel;
 import javax.faces.model.ScalarDataModel;
 import javax.faces.render.Renderer;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
+
+@JSFComponent(name="ui:repeat")
 public class UIRepeat extends UIComponentBase implements NamingContainer
 {
     public static final String COMPONENT_TYPE = "facelets.ui.Repeat";
@@ -73,7 +77,11 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     private int _offset = -1;
 
     private int _size = -1;
-
+    
+    private int _step = -1;
+    
+    private String _varStatus;
+    
     private transient StringBuffer _buffer;
     private transient DataModel<?> _model;
     private transient Object _origValue;
@@ -87,7 +95,8 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     {
         return COMPONENT_FAMILY;
     }
-
+    
+    @JSFProperty
     public int getOffset()
     {
         if (_offset != -1)
@@ -108,7 +117,8 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     {
         _offset = offset;
     }
-
+    
+    @JSFProperty
     public int getSize()
     {
         if (_size != -1)
@@ -129,7 +139,30 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     {
         _size = size;
     }
+    
+    @JSFProperty
+    public int getStep()
+    {
+        if (_step != -1)
+        {
+            return _step;
+        }
+        
+        ValueExpression ve = getValueExpression("step");
+        if (ve != null)
+        {
+            return ((Integer)ve.getValue(getFacesContext().getELContext())).intValue();
+        }
+        
+        return -1;
+    }
 
+    public void setStep(int step)
+    {
+        _step = step;
+    }
+    
+    @JSFProperty
     public String getVar()
     {
         return _var;
@@ -139,7 +172,18 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     {
         _var = var;
     }
-
+    
+    @JSFProperty
+    public String getVarStatus ()
+    {
+        return _varStatus;
+    }
+    
+    public void setVarStatus (String varStatus)
+    {
+        _varStatus = varStatus;
+    }
+    
     private synchronized void setDataModel(DataModel<?> model)
     {
         _model = model;
@@ -178,7 +222,8 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         }
         return _model;
     }
-
+    
+    @JSFProperty
     public Object getValue()
     {
         if (_value == null)
