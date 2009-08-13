@@ -67,4 +67,10 @@ public final class ValidateDelegateHandler extends ValidatorHandler
         return super.createMetaRuleset(type).ignoreAll();
     }
 
+    @Override
+    public String getValidatorId(FaceletContext ctx)
+    {
+        return validatorId.getValue(ctx);
+    }
+
 }

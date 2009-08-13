@@ -50,7 +50,10 @@ import javax.faces.render.Renderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
-@JSFComponent(name="ui:repeat")
+/**
+ * TODO: PartialStateSaving and pluginize this component! 
+ */
+@JSFComponent(name="ui:repeat", defaultRendererType="facelets.ui.Repeat")
 public class UIRepeat extends UIComponentBase implements NamingContainer
 {
     public static final String COMPONENT_TYPE = "facelets.ui.Repeat";

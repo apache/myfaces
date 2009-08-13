@@ -1,0 +1,41 @@
+<!--
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ $Id: home.xhtml,v 1.2 2008/07/13 19:01:37 rlubke Exp $
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html">
+<head>
+<title>JSF Hangman</title>
+<link rel="stylesheet" type="text/css" href="css/hangman.css"/>
+</head>
+<body>
+<table>
+  <tr>
+    <td><img alt="[Tapestry Hangman]" src="images/tapestry-hangman.png" width="197" height="50" border="0"/> </td>
+    <td width="70" align="right"><img height="36" alt="5" src="images/Chalkboard_3x8.png" width="36" border="0"/> </td>
+    <td><img alt="Guesses Left" src="images/guesses-left.png" width="164" height="11" border="0"/> </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td><img alt="" src="images/scaffold.png" border="0"/> </td>
+  </tr>
+</table>
+<br/>
+<form id="form" jsfc="h:form">
+  <a href="#" id="link" jsfc="h:commandLink" action="#{visit.startGame}"><img src="images/start.png" width="250" height="23" border="0" alt="Start"/></a>
+</form>
+</body>
+</html>

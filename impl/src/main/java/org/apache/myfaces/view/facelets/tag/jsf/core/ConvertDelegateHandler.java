@@ -71,4 +71,10 @@ public final class ConvertDelegateHandler extends ConverterHandler
     {
         return super.createMetaRuleset(type).ignoreAll();
     }
+
+    @Override
+    public String getConverterId(FaceletContext ctx)
+    {
+        return converterId.getValue(ctx);
+    }
 }

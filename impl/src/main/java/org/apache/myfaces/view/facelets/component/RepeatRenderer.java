@@ -26,6 +26,11 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.render.Renderer;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
+
+@JSFRenderer(family="facelets",
+        renderKitId="HTML_BASIC",
+        type="facelets.ui.Repeat")
 public class RepeatRenderer extends Renderer
 {
 
