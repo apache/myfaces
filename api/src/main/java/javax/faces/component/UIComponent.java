@@ -159,7 +159,7 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
 
         //return component.getRendererType().equals("javax.faces.Composite");
 
-        return component.getAttributes().get(Resource.COMPONENT_RESOURCE_KEY) != null;
+        return component.getAttributes().containsKey(Resource.COMPONENT_RESOURCE_KEY);
     }
 
     /**
