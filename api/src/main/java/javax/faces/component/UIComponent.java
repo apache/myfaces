@@ -751,7 +751,14 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
         UIComponent oldCurrent = (UIComponent) contextAttributes.put(UIComponent.CURRENT_COMPONENT, newCurrent);
 
         if (oldCurrent != null && oldCurrent._isCompositeComponent()) {
-            newCurrent = componentStack.peek();
+            if (componentStack != null && !componentStack.isEmpty())
+            {
+                newCurrent = componentStack.peek();
+            }
+            else
+            {
+                newCurrent = null;
+            }
         }
         contextAttributes.put(UIComponent.CURRENT_COMPONENT, newCurrent);
 
