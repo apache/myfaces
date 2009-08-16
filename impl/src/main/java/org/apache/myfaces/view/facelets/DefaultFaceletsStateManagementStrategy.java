@@ -40,7 +40,6 @@ import javax.faces.render.ResponseStateManager;
 import javax.faces.view.StateManagementStrategy;
 import javax.faces.view.ViewDeclarationLanguage;
 
-import org.apache.myfaces.application.TreeStructureManager.TreeStructComponent;
 import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 
