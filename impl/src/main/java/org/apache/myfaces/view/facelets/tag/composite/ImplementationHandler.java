@@ -25,25 +25,33 @@ import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
+import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
+
 /**
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
 public class ImplementationHandler extends TagHandler
 {
-
+    public final static String NAME = "implementation";
+    
     public ImplementationHandler(TagConfig config)
     {
         super(config);
-        // TODO Auto-generated constructor stub
     }
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {
-        // TODO Auto-generated method stub
-        
+        if (!FaceletViewDeclarationLanguage.
+                isBuildingCompositeComponentMetadata(ctx.getFacesContext()))
+        {
+            // If this tag is found in a facelet, the compiler has trimmed all
+            // tags outside this one excluding composite:interface, so "parent"
+            // is a component used as value for the facet key
+            // UIComponent.COMPOSITE_FACET_NAME in a composite component. 
+            nextHandler.apply(ctx, parent);
+        }        
     }
-
 }
