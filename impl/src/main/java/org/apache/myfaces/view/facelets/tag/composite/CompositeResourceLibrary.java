@@ -120,8 +120,8 @@ public class CompositeResourceLibrary implements TagLibrary
             {
                 String libraryName = ns.substring(NAMESPACE_PREFIX.length());
                 String resourceName = localName + ".xhtml";
-                Resource compositeComponentResource = 
-                    resourceHandler.createResource(resourceName, libraryName);
+                Resource compositeComponentResource = new CompositeResouceWrapper(
+                    resourceHandler.createResource(resourceName, libraryName));
                 
                 ComponentConfig componentConfig = new ComponentConfigWrapper(tag,
                         "javax.faces.NamingContainer", null);
