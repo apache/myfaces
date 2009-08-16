@@ -37,6 +37,7 @@ import junit.framework.TestCase;
 
 import org.apache.myfaces.application.ApplicationFactoryImpl;
 import org.apache.myfaces.application.ApplicationImpl;
+import org.apache.myfaces.application.ResourceHandlerImpl;
 import org.apache.myfaces.config.FacesConfigDispenser;
 import org.apache.myfaces.config.FacesConfigUnmarshaller;
 import org.apache.myfaces.config.RuntimeConfig;
@@ -49,12 +50,10 @@ import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
-import org.apache.myfaces.view.facelets.compiler.Compiler;
-import org.apache.myfaces.view.facelets.compiler.SAXCompiler;
-import org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory;
 import org.apache.myfaces.view.facelets.impl.ResourceResolver;
 import org.apache.myfaces.view.facelets.mock.MockHttpServletRequest;
 import org.apache.myfaces.view.facelets.mock.MockHttpServletResponse;
+import org.apache.myfaces.view.facelets.mock.MockResourceHandlerSupport;
 import org.apache.myfaces.view.facelets.mock.MockServletContext;
 import org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory;
 import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
@@ -181,6 +180,11 @@ public abstract class FaceletTestCase extends TestCase implements
         setupComponents();
         setupConvertersAndValidators();
         setupRenderers();
+        
+        // Redirect resource request to the directory where the test class is,
+        // to make easier test composite components.
+        ((ResourceHandlerImpl)application.getResourceHandler()).
+            setResourceHandlerSupport(new MockResourceHandlerSupport(this.getClass()));
 
         //Compiler c = new SAXCompiler();
         //c.setTrimmingWhitespace(true);

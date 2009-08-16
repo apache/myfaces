@@ -33,6 +33,9 @@ import javax.faces.view.facelets.TagException;
 import org.apache.myfaces.view.facelets.tag.TagAttributesImpl;
 import org.apache.myfaces.view.facelets.tag.TagDecorator;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
+import org.apache.myfaces.view.facelets.tag.composite.CompositeLibrary;
+import org.apache.myfaces.view.facelets.tag.composite.ImplementationHandler;
+import org.apache.myfaces.view.facelets.tag.composite.InterfaceHandler;
 import org.apache.myfaces.view.facelets.tag.ui.ComponentRefHandler;
 import org.apache.myfaces.view.facelets.tag.ui.CompositionHandler;
 import org.apache.myfaces.view.facelets.tag.ui.UILibrary;
@@ -65,6 +68,8 @@ final class CompilationManager
     private boolean finished;
 
     private final String alias;
+    
+    private CompilationUnit interfaceCompilationUnit;
 
     public CompilationManager(String alias, Compiler compiler)
     {
@@ -89,6 +94,8 @@ final class CompilationManager
         // our compilationunit stack
         this.units = new Stack<CompilationUnit>();
         this.units.push(new CompilationUnit());
+        
+        this.interfaceCompilationUnit = null; 
     }
 
     public void writeInstruction(String value)
@@ -217,6 +224,42 @@ final class CompilationManager
         {
             this.units.push(new RemoveUnit());
         }
+        else if (isCompositeComponentInterface(qname[0], qname[1]))
+        {
+            // Here we have two cases when we found a <composite:interface> tag:
+            //
+            // -  If a page has a <composite:interface> tag and a <composite:implementation> tag.
+            //   In this case, we need to trim all tags outside this two tags, otherwise these
+            //   unwanted tags will be added when the composite component is applied.
+            //   Unfortunately, this is the only point we can do it, because after the compiler,
+            //   html tags are wrapped on facelets UIInstruction or UIText components as "list",
+            //   losing the original structure required to trim.
+            //
+            // -  If a page has a <composite:interface> tag and not a <composite:implementation> tag.
+            //   In this case, it is not necessary to trim, because we use the facelet only to create
+            //   metadata and the component tree created is not used (see
+            //   ViewDeclarationLanguage.getComponentMetadata() ). On InterfaceHandler, instead
+            //   there is some code that found the right component in the temporal tree to add the
+            //   generated BeanInfo, which it is retrieved later.
+            //
+            log.fine("Composite Component Interface Found, saving unit");
+            interfaceCompilationUnit = new TagUnit(this.tagLibrary, qname[0], qname[1], t, this.nextTagId());
+            this.startUnit(interfaceCompilationUnit);
+        }        
+        else if (isCompositeComponentImplementation(qname[0], qname[1]))
+        {
+            log.fine("Composite component Found, Popping Parent Tags");
+            this.units.clear();
+            NamespaceUnit nsUnit = this.namespaceManager.toNamespaceUnit(this.tagLibrary);
+            this.units.push(nsUnit);
+            if (interfaceCompilationUnit != null)
+            {
+                this.currentUnit().addChild(interfaceCompilationUnit);
+                interfaceCompilationUnit = null;
+            }
+            this.startUnit(new TrimmedTagUnit(this.tagLibrary, qname[0], qname[1], t, this.nextTagId()));
+            log.fine("New Namespace and TagUnit pushed");
+        }        
         else if (this.tagLibrary.containsTagHandler(qname[0], qname[1]))
         {
             this.startUnit(new TagUnit(this.tagLibrary, qname[0], qname[1], t, this.nextTagId()));
@@ -363,6 +406,16 @@ final class CompilationManager
     {
         return UILibrary.Namespace.equals(ns)
                 && (CompositionHandler.Name.equals(name) || ComponentRefHandler.Name.equals(name));
+    }
+    
+    protected static boolean isCompositeComponentInterface(String ns, String name)
+    {
+        return CompositeLibrary.NAMESPACE.equals(ns) && InterfaceHandler.NAME.equals(name);
+    }
+
+    protected static boolean isCompositeComponentImplementation(String ns, String name)
+    {
+        return CompositeLibrary.NAMESPACE.equals(ns) && ImplementationHandler.NAME.equals(name);
     }
 
     private String[] determineQName(Tag tag)

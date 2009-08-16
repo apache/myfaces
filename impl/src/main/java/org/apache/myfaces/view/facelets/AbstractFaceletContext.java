@@ -22,6 +22,7 @@ import java.io.IOException;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
+import javax.faces.application.Resource;
 import javax.faces.component.UIComponent;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
@@ -71,5 +72,23 @@ public abstract class AbstractFaceletContext extends FaceletContext
      * @throws ELException
      */
     public abstract boolean includeDefinition(UIComponent parent, String name)
+            throws IOException, FaceletException, FacesException, ELException;
+    
+    /**
+     * Apply the facelet referenced by a url containing a composite component
+     * definition to the current UIComponent. In other words, apply the section
+     * composite:implementation in the facelet to the current component.
+     * 
+     * We need to do this here because DefaultFacelet is the one who has and
+     * handle the current FaceletFactory instance.
+     * 
+     * @param parent
+     * @param url
+     * @throws IOException
+     * @throws FaceletException
+     * @throws FacesException
+     * @throws ELException
+     */
+    public abstract void applyCompositeComponent(UIComponent parent, Resource resource)
             throws IOException, FaceletException, FacesException, ELException;
 }

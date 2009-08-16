@@ -36,6 +36,7 @@ import javax.el.FunctionMapper;
 import javax.el.ValueExpression;
 import javax.el.VariableMapper;
 import javax.faces.FacesException;
+import javax.faces.application.Resource;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletContext;
@@ -433,5 +434,12 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     public void setPropertyResolved(boolean resolved)
     {
         _ctx.setPropertyResolved(resolved);
+    }
+
+    @Override
+    public void applyCompositeComponent(UIComponent parent, Resource resource)
+            throws  IOException, FaceletException, FacesException, ELException
+    {
+        _facelet.applyCompositeComponent(this, parent, resource);
     }
 }

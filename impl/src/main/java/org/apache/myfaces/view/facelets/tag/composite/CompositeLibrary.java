@@ -26,11 +26,17 @@ import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
  */
 public class CompositeLibrary extends AbstractTagLibrary
 {
-    public final static String NAMESPACE = "http://java.sun.com/jsf/core";
+    public final static String NAMESPACE = "http://java.sun.com/jsf/composite";
     
-    public CompositeLibrary(String namespace)
+    public CompositeLibrary()
     {
         super(NAMESPACE);
+        
+        addTagHandler("interface", InterfaceHandler.class);
+        
+        addTagHandler("implementation", ImplementationHandler.class);
+        
+        addTagHandler("attribute", AttributeHandler.class);
         
         //TODO: Add composite tag handlers
     }

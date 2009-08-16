@@ -1077,7 +1077,7 @@ public class ApplicationImpl extends Application
                  */
                 if (component == null)
                 {
-                    createComponent(UINamingContainer.COMPONENT_TYPE);
+                    component = createComponent(UINamingContainer.COMPONENT_TYPE);
                 }
             }
         }
