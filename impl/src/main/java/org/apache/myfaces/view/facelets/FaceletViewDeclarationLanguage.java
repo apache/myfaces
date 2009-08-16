@@ -35,6 +35,7 @@ import java.util.Set;
 import javax.el.ELException;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
+import javax.el.VariableMapper;
 import javax.faces.FacesException;
 import javax.faces.application.Application;
 import javax.faces.application.ProjectStage;
@@ -45,6 +46,7 @@ import javax.faces.component.ActionSource;
 import javax.faces.component.ActionSource2;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -66,6 +68,7 @@ import javax.faces.view.StateManagementStrategy;
 import javax.faces.view.ValueHolderAttachedObjectHandler;
 import javax.faces.view.ValueHolderAttachedObjectTarget;
 import javax.faces.view.ViewMetadata;
+import javax.faces.view.facelets.FaceletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
@@ -81,10 +84,13 @@ import org.apache.myfaces.view.facelets.FaceletViewHandler.NullWriter;
 import org.apache.myfaces.view.facelets.compiler.Compiler;
 import org.apache.myfaces.view.facelets.compiler.SAXCompiler;
 import org.apache.myfaces.view.facelets.compiler.TagLibraryConfig;
+import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
 import org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory;
 import org.apache.myfaces.view.facelets.impl.DefaultResourceResolver;
 import org.apache.myfaces.view.facelets.impl.ResourceResolver;
 import org.apache.myfaces.view.facelets.tag.TagDecorator;
+import org.apache.myfaces.view.facelets.tag.composite.CompositeLibrary;
+import org.apache.myfaces.view.facelets.tag.composite.CompositeResourceLibrary;
 import org.apache.myfaces.view.facelets.tag.ui.UIDebug;
 import org.apache.myfaces.view.facelets.util.DevTools;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
@@ -140,6 +146,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     public final static String PARAM_VIEW_MAPPINGS = "javax.faces.FACELETS_VIEW_MAPPINGS";
     
     private final static String PARAM_VIEW_MAPPINGS_DEPRECATED = "facelets.VIEW_MAPPINGS";
+    
+    public final static String FILLED_VIEW = "org.apache.myfaces.FILLED_VIEW";
+    
+    public final static String BUILDING_COMPOSITE_COMPONENT_METADATA = "org.apache.myfaces.BUILDING_COMPOSITE_COMPONENT_METADATA";
     
     /**
      * Marker to indicate tag handlers the view currently being built is using
@@ -238,12 +248,17 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     
     private boolean isFilledView(FacesContext context, UIViewRoot view)
     {
-        return context.getAttributes().containsKey(view.toString());
+        // The view is only built on restoreView or renderView, but if
+        // we are not using partial state saving, we need to mark the current
+        // view as filled, otherwise it will be filled again on renderView.
+        // return context.getAttributes().containsKey(view.toString());
+        return view.getAttributes().containsKey(FILLED_VIEW);
     }
     
     private void setFilledView(FacesContext context, UIViewRoot view)
     {
-        context.getAttributes().put(view.toString(), Boolean.TRUE);
+        //context.getAttributes().put(view.toString(), Boolean.TRUE);
+        view.getAttributes().put(FILLED_VIEW, Boolean.TRUE);
     }
     
     /**
@@ -254,8 +269,77 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     @Override
     public BeanInfo getComponentMetadata(FacesContext context, Resource componentResource)
     {
-        // TODO Auto-generated method stub
-        return null;
+        BeanInfo beanInfo = null;
+        boolean initFaceletFactory = false;
+        try 
+        {
+            Facelet compositeComponentFacelet;
+            FaceletFactory.setInstance(_faceletFactory);
+            try
+            {
+                compositeComponentFacelet = _faceletFactory.getFacelet(componentResource.getURL());
+            }
+            finally
+            {
+                FaceletFactory.setInstance(null);
+            }
+            context.getAttributes().put(BUILDING_COMPOSITE_COMPONENT_METADATA, Boolean.TRUE);
+            
+            // Create a temporal tree where all components will be put, but we are only
+            // interested in metadata.
+            UINamingContainer parent = (UINamingContainer) context.getApplication().createComponent(UINamingContainer.COMPONENT_TYPE);
+            
+            // Fill the component resource key, because this information should be available
+            // on metadata to recognize which is the component used as composite component base.
+            // Since this method is called from Application.createComponent(FacesContext,Resource),
+            // and in that specific method this key is updated, this is the best option we
+            // have for recognize it (also this key is used by UIComponent.isCompositeComponent)
+            parent.getAttributes().put(Resource.COMPONENT_RESOURCE_KEY, componentResource);
+            //TODO: Fill it
+            
+            // According to UserTagHandler, in this point we need to wrap the facelet
+            // VariableMapper, so local changes are applied on "page context", but
+            // data is retrieved from full context
+            FaceletContext faceletContext = (FaceletContext) context.
+                getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
+            VariableMapper orig = faceletContext.getVariableMapper();
+            try
+            {
+                faceletContext.setVariableMapper(new VariableMapperWrapper(orig));
+                compositeComponentFacelet.apply(context, parent);
+            }
+            finally
+            {
+                faceletContext.setVariableMapper(orig);
+            }
+            
+            beanInfo = (BeanInfo) parent.getAttributes().get(UIComponent.BEANINFO_KEY);
+        }
+        catch(IOException e)
+        {
+            throw new FacesException(e);
+        }
+        finally
+        {
+            context.getAttributes().remove(BUILDING_COMPOSITE_COMPONENT_METADATA);
+            if (initFaceletFactory)
+            {
+                                
+            }
+        }
+        
+        return beanInfo;
+    }
+    
+    /**
+     * Check if the current facelet applied is used to build composite component metadata.
+     * 
+     * @param context
+     * @return
+     */
+    public static boolean isBuildingCompositeComponentMetadata(FacesContext context)
+    {
+        return context.getAttributes().containsKey(BUILDING_COMPOSITE_COMPONENT_METADATA);
     }
     
     /**
@@ -1086,6 +1170,11 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     protected void loadLibraries(FacesContext context, Compiler compiler)
     {
         ExternalContext eContext = context.getExternalContext();
+        
+        // TODO: We don't need to add default libraries from xml files. It is better
+        // to add it here and remove the referenced xml files from META-INF/facelets/
+        compiler.addTagLibrary(new CompositeLibrary());
+        compiler.addTagLibrary(new CompositeResourceLibrary());
 
         String param = _getStringParameter(eContext, PARAM_LIBRARIES, PARAM_LIBRARIES_DEPRECATED);
         if (param != null)
