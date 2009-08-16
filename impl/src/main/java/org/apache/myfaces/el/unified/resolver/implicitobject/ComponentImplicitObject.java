@@ -26,14 +26,15 @@ import javax.faces.component.UIComponent;
 /**
  * Encapsulates information needed by the ImplicitObjectResolver
  * 
- * @author Leonardo Uribe
+ * @author Leonardo Uribe (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public class ComponentImplicitObject extends ImplicitObject
 {
 
     private static final String NAME = "component".intern();
 
-    /** Creates a new instance of ApplicationImplicitObject */
+    /** Creates a new instance of ComponentImplicitObject */
     public ComponentImplicitObject()
     {
     }
@@ -41,8 +42,7 @@ public class ComponentImplicitObject extends ImplicitObject
     @Override
     public Object getValue(ELContext context)
     {
-        return facesContext(context).getAttributes()
-            .get(UIComponent.CURRENT_COMPONENT);
+        return UIComponent.getCurrentComponent(facesContext(context));
     }
 
     @Override
