@@ -18,32 +18,200 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite;
 
+import java.beans.BeanDescriptor;
+import java.beans.BeanInfo;
 import java.io.IOException;
+import java.util.Collection;
 
+import javax.faces.application.Resource;
 import javax.faces.component.UIComponent;
 import javax.faces.view.facelets.FaceletContext;
+import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
+
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
+import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
+@JSFFaceletTag(name="composite:interface")
 public class InterfaceHandler extends TagHandler
 {
-
+    public final static String NAME = "interface";
+    
+    @JSFFaceletAttribute
+    private final TagAttribute _name;
+    
+    @JSFFaceletAttribute
+    private final TagAttribute _componentType;
+    
+    @JSFFaceletAttribute
+    private final TagAttribute _displayName;
+    
+    @JSFFaceletAttribute
+    private final TagAttribute _preferred;
+    
+    @JSFFaceletAttribute
+    private final TagAttribute _expert;
+    
+    @JSFFaceletAttribute
+    private final TagAttribute _shortDescription;
+    
+    private boolean _cacheable;
+    
+    private volatile BeanInfo _cachedBeanInfo;
+    
     public InterfaceHandler(TagConfig config)
     {
         super(config);
-        // TODO Auto-generated constructor stub
+        _name = getAttribute("name");
+        _componentType = getAttribute("componentType");
+        _displayName = getAttribute("displayName");
+        _preferred = getAttribute("preferred");
+        _expert = getAttribute("expert");
+        _shortDescription = getAttribute("shortDescription");
+        
+        if (    (_name == null             || _name.isLiteral()             ) &&
+                (_componentType == null    || _componentType.isLiteral()    ) &&   
+                (_displayName == null      || _displayName.isLiteral()      ) &&
+                (_preferred == null        || _preferred.isLiteral()        ) &&
+                (_expert == null           || _expert.isLiteral()           ) &&
+                (_shortDescription == null || _shortDescription.isLiteral() ) )
+        {
+            _cacheable = true;
+            // Check if all attributes are cacheable. If that so, we can cache this
+            // instance, otherwise not.
+            Collection<AttributeHandler> attrHandlerList = TagHandlerUtils.findNextByType(nextHandler, AttributeHandler.class);
+            for (AttributeHandler handler : attrHandlerList)
+            {
+                if (!handler.isCacheable())
+                {
+                    _cacheable = false;
+                    break;
+                }
+            }
+            if (_cacheable)
+            {
+                // Disable cache on attributes because this tag is the responsible for reuse
+                for (AttributeHandler handler : attrHandlerList)
+                {
+                    handler.setCacheable(false);
+                }
+            }
+        }
+        else
+        {
+            _cacheable = false;
+        }
     }
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {
-        // TODO Auto-generated method stub
-        
+        // Only apply if we are building composite component metadata,
+        // in other words we are calling ViewDeclarationLanguage.getComponentMetadata
+        if (FaceletViewDeclarationLanguage.
+                isBuildingCompositeComponentMetadata(ctx.getFacesContext()))
+        {
+            UIComponent compositeBaseParent = _getCompositeBaseParent(parent);
+            
+            CompositeComponentBeanInfo tempBeanInfo = 
+                (CompositeComponentBeanInfo) parent.getAttributes()
+                .get(UIComponent.BEANINFO_KEY);
+            
+            if (tempBeanInfo == null)
+            {
+                if (_cacheable)
+                {
+                    if (_cachedBeanInfo == null)
+                    {
+                        _cachedBeanInfo = _createCompositeComponentMetadata(ctx, compositeBaseParent);
+                        parent.getAttributes().put(
+                                UIComponent.BEANINFO_KEY, _cachedBeanInfo);
+                        nextHandler.apply(ctx, compositeBaseParent);
+                    }
+                    else
+                    {
+                        // Put the cached instance, but in that case it is not necessary to call
+                        // nextHandler
+                        parent.getAttributes().put(
+                                UIComponent.BEANINFO_KEY, _cachedBeanInfo);
+                    }
+                }
+                else
+                {
+                    tempBeanInfo = _createCompositeComponentMetadata(ctx, compositeBaseParent);
+                    parent.getAttributes().put(
+                            UIComponent.BEANINFO_KEY, tempBeanInfo);
+                    nextHandler.apply(ctx, compositeBaseParent);
+                }
+            }
+        }
     }
-
+    
+    /**
+     * Get the base component used temporally to hold metadata
+     * information generated by this handler. 
+     * TODO: Could this method be replaced by UIComponent.getCurrentCompositeComponent ?
+     * 
+     * @param component
+     * @return
+     */
+    private UIComponent _getCompositeBaseParent(UIComponent component)
+    {
+        if (!component.getAttributes().containsKey(Resource.COMPONENT_RESOURCE_KEY))
+        {
+            UIComponent parent = component.getParent();
+            if (parent != null)
+            {
+                return _getCompositeBaseParent(parent);
+            }
+        }
+        return component;
+    }
+    
+    private CompositeComponentBeanInfo _createCompositeComponentMetadata(
+            FaceletContext ctx, UIComponent parent)
+    {
+        BeanDescriptor descriptor = new BeanDescriptor(parent.getClass());
+        CompositeComponentBeanInfo beanInfo = new CompositeComponentBeanInfo(descriptor);
+        
+        // Add values to descriptor according to pld javadoc
+        if (_name != null)
+        {
+            descriptor.setName(_name.getValue(ctx));
+        }
+        if (_componentType != null)
+        {
+            // componentType is required by Application.createComponent(FacesContext, Resource)
+            // to instantiate the base component for this composite component. It should be
+            // as family javax.faces.NamingContainer .
+            descriptor.setValue(UIComponent.COMPOSITE_COMPONENT_TYPE_KEY, 
+                    _componentType.getValue(ctx));
+        }
+        if (_displayName != null)
+        {
+            descriptor.setDisplayName(_displayName.getValue(ctx));
+        }
+        if (_preferred != null)
+        {
+            descriptor.setPreferred(_preferred.getBoolean(ctx));
+        }
+        if (_expert != null)
+        {
+            descriptor.setExpert(_expert.getBoolean(ctx));
+        }
+        if (_shortDescription != null)
+        {
+            descriptor.setShortDescription(_shortDescription.getValue(ctx));
+        }
+        
+        return beanInfo;
+    }
 }
