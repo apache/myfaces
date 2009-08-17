@@ -24,6 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.config.ManagedBeanBuilder;
 import org.apache.myfaces.util.ContainerUtils;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 import javax.faces.FactoryFinder;
 import javax.servlet.ServletContext;
@@ -74,7 +75,7 @@ public class StartupServletContextListener extends AbstractMyFacesListener
         for(String plugin: pluginEntries) {
             log.info("Processing plugin:"+plugin);
             try {
-                Class pluginClass = Thread.currentThread().getContextClassLoader().loadClass(plugin);
+                Class pluginClass = ClassUtils.getContextClassLoader().loadClass(plugin);
                 ServletContextListener initializer = (ServletContextListener) pluginClass.newInstance();
                 initializer.contextInitialized(event);
             } catch (ClassNotFoundException e) {
