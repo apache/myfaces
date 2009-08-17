@@ -36,8 +36,8 @@
      <repository>
        <id>java.net</id>
        <name>java.net Maven 1 Repository</name>
-       <url>http://download.java.net/maven/1</url>
-       <layout>legacy</layout>
+       <url>http://download.java.net/maven/2</url>
+      
     </repository>
   </repositories>
   <build>
