@@ -45,6 +45,9 @@
          <supported-locale>ru</supported-locale>
          <supported-locale>zh_CN</supported-locale>
       </locale-config>
+      <default-validators>
+         <validator-id>javax.faces.Bean</validator-id>
+      </default-validators>
    </application>
    <factory>
       <application-factory>org.apache.myfaces.application.ApplicationFactoryImpl</application-factory>

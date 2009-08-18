@@ -357,7 +357,23 @@
             <version>2.3</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>1.0.CR3</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>jboss releases</id>
+            <name>JBoss Releases</name>
+            <url>http://repository.jboss.org/maven2/</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
+
     <reporting>
         <plugins>
             <plugin>
@@ -409,7 +425,7 @@
                         <ruleset>/rulesets/basic.xml</ruleset>
                         <ruleset>/rulesets/unusedcode.xml</ruleset>
                     </rulesets>
-                    <linkXref>true</linkXref>
+                    <linkXRef>true</linkXRef>
                     <minimumTokens>100</minimumTokens>
                     <targetJdk>1.5</targetJdk>
                     <excludes>

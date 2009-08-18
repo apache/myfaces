@@ -18,14 +18,14 @@
  */
 package javax.faces.component;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
+import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
@@ -36,10 +36,9 @@ import javax.faces.event.FacesEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.event.ValueChangeListener;
 import javax.faces.render.Renderer;
+import javax.faces.validator.BeanValidator;
 import javax.faces.validator.Validator;
-
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
+import java.util.*;
 
 /**
  * UICommand is a base abstraction for components that implement ActionSource.
@@ -68,10 +67,10 @@ public class UIInput extends UIOutput implements EditableValueHolder
     public static final String CONVERSION_MESSAGE_ID = "javax.faces.component.UIInput.CONVERSION";
     public static final String REQUIRED_MESSAGE_ID = "javax.faces.component.UIInput.REQUIRED";
     public static final String UPDATE_MESSAGE_ID = "javax.faces.component.UIInput.UPDATE";
-    public static final String VALIDATE_EMPTY_FIELDS_PARAM_NAME = "javax.faces.VALIDATE_EMPTY_FIELDS";
     private static final String ERROR_HANDLING_EXCEPTION_LIST = "org.apache.myfaces.errorHandling.exceptionList";
 
-    private static final String EMPTY_VALUES_AS_NULL_PARAM_NAME = "javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL";
+    public static final String EMPTY_VALUES_AS_NULL_PARAM_NAME = "javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL";
+    public static final String VALIDATE_EMPTY_FIELDS_PARAM_NAME = "javax.faces.VALIDATE_EMPTY_FIELDS";
 
     private static final Validator[] EMPTY_VALIDATOR_ARRAY = new Validator[0];
 
@@ -327,7 +326,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         boolean empty = convertedValue == null
                 || (convertedValue instanceof String && ((String) convertedValue).length() == 0);
 
-        if (isRequired() && empty)
+        if (isValid() && isRequired() && empty)
         {
             if (getRequiredMessage() != null)
             {
@@ -346,9 +345,101 @@ public class UIInput extends UIOutput implements EditableValueHolder
 
         if (!empty)
         {
+            //TODO: Jan-Kees: This is not the most elegant solution, but for now it works
+            addDefaultValidators(context);
             _ComponentUtils.callValidators(context, this, convertedValue);
         }
+        else
+        {
+            if (shouldValidateEmptyFields(context))
+            {
+                //TODO: Jan-Kees: This is not the most elegant solution, but for now it works
+                addDefaultValidators(context);
+                _ComponentUtils.callValidators(context, this, convertedValue);
+            }
+        }
+    }
 
+    /**
+     * Add the default Validators to this component.
+     *
+     * @param context The FacesContext.
+     */
+    private void addDefaultValidators(FacesContext context)
+    {
+        Application application = context.getApplication();
+        Map<String, String> defaultValidators = application.getDefaultValidatorInfo();
+        if (defaultValidators != null && defaultValidators.size() != 0)
+        {
+            Set<Map.Entry<String, String>> defaultValidatorInfoSet = defaultValidators.entrySet();
+            for (Map.Entry<String, String> entry : defaultValidatorInfoSet)
+            {
+                String validatorId = entry.getKey();
+                if (shouldAddDefaultValidator(validatorId, context))
+                {
+                    this.addValidator(application.createValidator(validatorId));
+                }
+            }
+        }
+    }
+
+    /**
+     * Determine if the default Validator with the given validatorId should be added to this component.
+     *
+     * @param validatorId The validatorId.
+     * @param context The FacesContext.
+     * @return true if the Validator should be added, false otherwise.
+     */
+    private boolean shouldAddDefaultValidator(String validatorId, FacesContext context)
+    {
+        // Some extra rules are required for Bean Validation.
+        if (validatorId.equals(BeanValidator.VALIDATOR_ID))
+        {
+            if (!BeanValidator.isAvailable)
+            {
+                return false;
+            }
+            ExternalContext externalContext = context.getExternalContext();
+            String disabled = externalContext.getInitParameter(BeanValidator.DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME);
+            if (disabled != null && disabled.toLowerCase().equals("true"))
+            {
+                return false;
+            }
+        }
+
+        // By default, all default validators should be added
+        return true;
+    }
+
+    private boolean shouldValidateEmptyFields(FacesContext context)
+    {
+        ExternalContext extCtx = context.getExternalContext();
+        String validateEmptyFields = (String) extCtx.getInitParameter(VALIDATE_EMPTY_FIELDS_PARAM_NAME);
+        if (validateEmptyFields == null)
+        {
+            validateEmptyFields = (String) extCtx.getApplicationMap().get(VALIDATE_EMPTY_FIELDS_PARAM_NAME);
+        }
+
+        // null means the same as auto.
+        if (validateEmptyFields == null)
+        {
+            validateEmptyFields = "auto";
+        }
+        else
+        {
+            // The environment variables are case insensitive.
+            validateEmptyFields = validateEmptyFields.toLowerCase();
+        }
+
+        if (validateEmptyFields.equals("auto") && BeanValidator.isAvailable)
+        {
+            return true;
+        }
+        else if (validateEmptyFields.equals("true"))
+        {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -785,7 +876,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
     {
         return (ValueChangeListener[]) getFacesListeners(ValueChangeListener.class);
     }
-    
+
     enum PropertyKeys
     {
          immediate

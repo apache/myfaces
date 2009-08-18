@@ -18,8 +18,6 @@
  */
 package javax.faces.component;
 
-import java.util.Iterator;
-
 import javax.el.ValueExpression;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -28,6 +26,8 @@ import javax.faces.el.MethodBinding;
 import javax.faces.el.ValueBinding;
 import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * A collection of static helper methods for locating UIComponents.
@@ -175,6 +175,15 @@ class _ComponentUtils
                         facesMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
                         context.addMessage(input.getClientId(context), facesMessage);
                     }
+                    Collection<FacesMessage> facesMessages = e.getFacesMessages();
+                    if (facesMessages != null)
+                    {
+                        for (FacesMessage message : facesMessages)
+                        {
+                            message.setSeverity(FacesMessage.SEVERITY_ERROR);
+                            context.addMessage(input.getClientId(context), message);
+                        }
+                    }
                 }
             }
         }
@@ -207,6 +216,15 @@ class _ComponentUtils
                         {
                             facesMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
                             context.addMessage(input.getClientId(context), facesMessage);
+                        }
+                        Collection<FacesMessage> facesMessages = ((ValidatorException)cause).getFacesMessages();
+                        if (facesMessages != null)
+                        {
+                            for (FacesMessage message : facesMessages)
+                            {
+                                message.setSeverity(FacesMessage.SEVERITY_ERROR);
+                                context.addMessage(input.getClientId(context), message);
+                            }
                         }
                     }
                 }
