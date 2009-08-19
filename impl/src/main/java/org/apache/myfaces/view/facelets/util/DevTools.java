@@ -50,8 +50,8 @@ public final class DevTools
 {
     private final static String TS = "&lt;";
 
-    private static final String DEBUG_TEMPLATE = "META-INF/rsc/facelet-dev-debug.xml";
-    private static final String ERROR_TEMPLATE = "META-INF/rsc/facelet-dev-error.xml";
+    private static final String DEBUG_TEMPLATE = "META-INF/rsc/myfaces-dev-debug.xml";
+    private static final String ERROR_TEMPLATE = "META-INF/rsc/myfaces-dev-error.xml";
     private final static String[] IGNORE = new String[] { "parent", "rendererType" };
 
 
