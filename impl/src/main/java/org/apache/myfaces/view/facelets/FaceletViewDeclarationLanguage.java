@@ -634,6 +634,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     @Override
     public void renderView(FacesContext context, UIViewRoot view) throws IOException
     {
+        Object stateObj;
+        
         if (!view.isRendered())
         {
             return;
@@ -676,7 +678,11 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                     {
                         context.getExternalContext().getSession(true);
                     }
-
+                    
+                    // Spec indicates that saveView() must be called before startDocument().
+                    
+                    stateObj = stateMgr.saveView(context);
+                    
                     // render the view to the response
                     writer.startDocument();
 
@@ -698,7 +704,6 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         if (end >= 0)
                         {
                             // save state
-                            Object stateObj = stateMgr.saveView(context);
                             String stateStr;
                             if (stateObj == null)
                             {
@@ -730,6 +735,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         else
                         {
                             origWriter.write(content);
+                            
+                            //stateMgr.saveView(context);
                         }
                     }
                 }
