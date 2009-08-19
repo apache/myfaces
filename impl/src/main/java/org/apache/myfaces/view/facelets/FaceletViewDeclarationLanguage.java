@@ -735,8 +735,6 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         else
                         {
                             origWriter.write(content);
-                            
-                            //stateMgr.saveView(context);
                         }
                     }
                 }
