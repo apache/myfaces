@@ -22,6 +22,8 @@ package org.apache.myfaces.view.facelets.tag.jsf.html;
 import javax.el.MethodExpression;
 import javax.faces.component.ActionSource2;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIForm;
+import javax.faces.component.UIOutput;
 import javax.faces.component.UIParameter;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.html.HtmlCommandButton;
@@ -30,6 +32,10 @@ import javax.faces.component.html.HtmlOutputText;
 import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.context.FacesContext;
 
+import org.apache.myfaces.renderkit.html.HtmlButtonRenderer;
+import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
+import org.apache.myfaces.renderkit.html.HtmlGridRenderer;
+import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.view.facelets.Facelet;
 import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
@@ -61,6 +67,14 @@ public class HtmlTestCase extends FaceletTestCase {
     @Override
     protected void setupRenderers() throws Exception
     {
+        renderKit.addRenderer(UIOutput.COMPONENT_FAMILY,
+                "javax.faces.Text", new HtmlTextRenderer());
+        renderKit.addRenderer(UIForm.COMPONENT_FAMILY,
+                "javax.faces.Form", new HtmlFormRenderer());
+        renderKit.addRenderer(HtmlCommandButton.COMPONENT_FAMILY,
+                "javax.faces.Button", new HtmlButtonRenderer());
+        renderKit.addRenderer(HtmlPanelGrid.COMPONENT_FAMILY,
+                "javax.faces.Grid", new HtmlGridRenderer());
     }    
     
     public void testCommandComponent() throws Exception {

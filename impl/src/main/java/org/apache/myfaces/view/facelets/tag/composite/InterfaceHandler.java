@@ -62,9 +62,20 @@ public class InterfaceHandler extends TagHandler
     @JSFFaceletAttribute
     private final TagAttribute _shortDescription;
     
+    /**
+     * Check if the BeanInfo instance created by this handler
+     * can be cacheable or not. 
+     */
     private boolean _cacheable;
     
-    private volatile BeanInfo _cachedBeanInfo;
+    /**
+     * Cached instance used by this component. Note here we have a 
+     * "racy single-check".If this field is used, it is supposed 
+     * the object cached by this handler is immutable, and this is
+     * granted if all properties not saved as ValueExpression are
+     * "literal". 
+     **/
+    private BeanInfo _cachedBeanInfo;
     
     public InterfaceHandler(TagConfig config)
     {

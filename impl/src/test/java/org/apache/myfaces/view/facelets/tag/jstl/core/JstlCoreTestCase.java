@@ -25,11 +25,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIForm;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.html.HtmlCommandButton;
 import javax.faces.component.html.HtmlForm;
 import javax.faces.context.FacesContext;
 
+import org.apache.myfaces.renderkit.html.HtmlButtonRenderer;
+import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
 import org.apache.myfaces.view.facelets.Facelet;
 import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
@@ -58,6 +61,10 @@ public final class JstlCoreTestCase extends FaceletTestCase {
     @Override
     protected void setupRenderers() throws Exception
     {
+        renderKit.addRenderer(UIForm.COMPONENT_FAMILY,
+                "javax.faces.Form", new HtmlFormRenderer());
+        renderKit.addRenderer(HtmlCommandButton.COMPONENT_FAMILY,
+                "javax.faces.Button", new HtmlButtonRenderer());
     }
     
     public void testIf() throws Exception {

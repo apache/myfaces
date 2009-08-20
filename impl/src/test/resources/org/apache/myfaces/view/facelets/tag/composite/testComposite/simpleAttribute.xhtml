@@ -22,10 +22,11 @@
 </head>
 <body>
 <composite:interface>
-    <composite:attribute name="style" type="java.lang.String" required="true" />
+    <composite:attribute name="style" default="background:red"/>
+    <composite:attribute name="styleClass" />
 </composite:interface>
 <composite:implementation>
-    <h:outputText value="Hello World"/>
+    <h:outputText value="Hello World" style="#{cc.attrs.style}" styleClass="#{cc.attrs.styleClass}"/>
 </composite:implementation>
 </body>
 </html>

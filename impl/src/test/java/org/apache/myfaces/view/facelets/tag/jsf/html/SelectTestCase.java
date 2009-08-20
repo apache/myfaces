@@ -30,7 +30,10 @@ import javax.faces.component.html.HtmlSelectOneMenu;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.IntegerConverter;
 
+import org.apache.myfaces.renderkit.html.HtmlButtonRenderer;
 import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
+import org.apache.myfaces.renderkit.html.HtmlMenuRenderer;
+import org.apache.myfaces.renderkit.html.HtmlMessagesRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.view.facelets.Facelet;
 import org.apache.myfaces.view.facelets.FaceletFactory;
@@ -67,9 +70,15 @@ public class SelectTestCase extends FaceletTestCase
     protected void setupRenderers() throws Exception
     {
         renderKit.addRenderer(UIOutput.COMPONENT_FAMILY,
-                "javax.faces.Text", new HtmlTextRenderer());
+                "javax.faces.Text", new HtmlTextRenderer());        
         renderKit.addRenderer(UIForm.COMPONENT_FAMILY,
                 "javax.faces.Form", new HtmlFormRenderer());
+        renderKit.addRenderer(HtmlSelectOneMenu.COMPONENT_FAMILY,
+                "javax.faces.Menu", new HtmlMenuRenderer());        
+        renderKit.addRenderer(HtmlCommandButton.COMPONENT_FAMILY,
+                "javax.faces.Button", new HtmlButtonRenderer());
+        renderKit.addRenderer(HtmlMessages.COMPONENT_FAMILY,
+                "javax.faces.Messages", new HtmlMessagesRenderer());
     }
     
     public void testSelectOne() throws Exception

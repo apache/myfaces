@@ -28,6 +28,7 @@ import java.net.URL;
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
 import javax.faces.application.ApplicationFactory;
+import javax.faces.application.ProjectStage;
 import javax.faces.context.ResponseWriter;
 import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.render.RenderKitFactory;
@@ -161,6 +162,8 @@ public abstract class FaceletTestCase extends TestCase implements
         StateUtils.initSecret(servletContext);
         externalContext.getApplicationMap().put(StateUtils.SERIAL_FACTORY,
                 new DefaultSerialFactory());
+        
+        servletContext.addInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME, "UnitTest");
 
         RenderKitFactory renderKitFactory = (RenderKitFactory) FactoryFinder
                 .getFactory(FactoryFinder.RENDER_KIT_FACTORY);
