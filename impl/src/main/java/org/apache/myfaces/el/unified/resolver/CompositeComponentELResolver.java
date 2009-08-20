@@ -21,15 +21,18 @@ package org.apache.myfaces.el.unified.resolver;
 import java.beans.BeanInfo;
 import java.beans.FeatureDescriptor;
 import java.beans.PropertyDescriptor;
+import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 
 import javax.el.ELContext;
 import javax.el.ELResolver;
 import javax.el.ValueExpression;
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 import javax.faces.el.CompositeComponentExpressionHolder;
 
 /**
@@ -38,6 +41,13 @@ import javax.faces.el.CompositeComponentExpressionHolder;
 
 public final class CompositeComponentELResolver extends ELResolver
 {
+    private static final String ATTRIBUTES_MAP = "attrs".intern();
+    
+    private static final String PARENT_COMPOSITE_COMPONENT = "parent".intern();
+    
+    private static final String COMPOSITE_COMPONENT_ATTRIBUTES_MAPS = 
+        "org.apache.myfaces.COMPOSITE_COMPONENT_ATTRIBUTES_MAPS";
+    
     @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base)
     {
@@ -76,16 +86,16 @@ public final class CompositeComponentELResolver extends ELResolver
             String propName = property.toString();
             UIComponent baseComponent = (UIComponent) base;
 
-            if (propName.equals("attrs"))
+            if (propName.equals(ATTRIBUTES_MAP))
             {
                 // Return a wrapped map that delegates all calls except get() and put().
 
                 context.setPropertyResolved(true);
 
-                return new AttributesMap(baseComponent.getAttributes(), context);
+                return _getCompositeComponentAttributesMapWrapper(baseComponent, context);
             }
 
-            else if (propName.equals("parent"))
+            else if (propName.equals(PARENT_COMPOSITE_COMPONENT))
             {
                 // Return the parent.
 
@@ -98,6 +108,62 @@ public final class CompositeComponentELResolver extends ELResolver
         // Otherwise, spec says to do nothing (return null).
 
         return null;
+    }
+    
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> _getCompositeComponentAttributesMapWrapper(
+            UIComponent baseComponent, ELContext elContext)
+    {
+        Map<Object, Object> contextMap = (Map<Object, Object>) facesContext(
+                elContext).getAttributes();
+
+        // We use a WeakHashMap<UIComponent, WeakReference<Map<String, Object>>> to
+        // hold attribute map wrappers by two reasons:
+        //
+        // 1. The wrapper is used multiple times for a very short amount of time (in fact on current request).
+        // 2. The original attribute map has an inner reference to UIComponent, so we need to wrap it
+        //    with WeakReference.
+        //
+        Map<UIComponent, WeakReference<Map<String, Object>>> compositeComponentAttributesMaps = 
+            (Map<UIComponent, WeakReference<Map<String, Object>>>) contextMap
+                .get(COMPOSITE_COMPONENT_ATTRIBUTES_MAPS);
+
+        Map<String, Object> attributesMap = null;
+        WeakReference<Map<String, Object>> weakReference;
+        if (compositeComponentAttributesMaps != null)
+        {
+            weakReference = compositeComponentAttributesMaps.get(baseComponent);
+            if (weakReference != null)
+            {
+                attributesMap = weakReference.get();                
+            }
+            if (attributesMap == null)
+            {
+                //create a wrapper map
+                attributesMap = new CompositeComponentAttributesMapWrapper(
+                        baseComponent.getAttributes(), elContext);
+                compositeComponentAttributesMaps.put(baseComponent,
+                        new WeakReference<Map<String, Object>>(attributesMap));
+            }
+        }
+        else
+        {
+            //Create both required maps
+            attributesMap = new CompositeComponentAttributesMapWrapper(
+                    baseComponent.getAttributes(), elContext);
+            compositeComponentAttributesMaps = new WeakHashMap<UIComponent, WeakReference<Map<String, Object>>>();
+            compositeComponentAttributesMaps.put(baseComponent,
+                    new WeakReference<Map<String, Object>>(attributesMap));
+            contextMap.put(COMPOSITE_COMPONENT_ATTRIBUTES_MAPS,
+                    compositeComponentAttributesMaps);
+        }
+        return attributesMap;
+    }
+    
+    // get the FacesContext from the ELContext
+    private static FacesContext facesContext(final ELContext context)
+    {
+        return (FacesContext)context.getContext(FacesContext.class);
     }
 
     @Override
@@ -117,24 +183,21 @@ public final class CompositeComponentELResolver extends ELResolver
 
     // Wrapper map for composite component attributes.  Follows spec, section 5.6.2.2, table 5-11.
     //
-    // TODO: This map could be cached at request level (or context). If we have many attribute 
-    // lookups in a composite component, a map is created per each lookup, and it is possible to 
-    // reduce object allocation. Put this map on view scope is not wanted because it will be
-    // saved an restored, and there is no way to restore the reference to the component
-    // holding this object.
-    private final class AttributesMap implements CompositeComponentExpressionHolder,
+    private final class CompositeComponentAttributesMapWrapper implements CompositeComponentExpressionHolder,
             Map<String, Object>
     {
 
         private final BeanInfo _beanInfo;
         private final Map<String, Object> _originalMap;
         private final ELContext _elContext;
+        private final PropertyDescriptor [] _propertyDescriptors;
 
-        private AttributesMap(Map<String, Object> _originalMap, ELContext context)
+        private CompositeComponentAttributesMapWrapper(Map<String, Object> _originalMap, ELContext context)
         {
             this._originalMap =_originalMap;
             this._beanInfo = (BeanInfo) _originalMap.get(UIComponent.BEANINFO_KEY);
             this._elContext = context;
+            this._propertyDescriptors = _beanInfo.getPropertyDescriptors();
         }
 
         @Override
@@ -192,17 +255,13 @@ public final class CompositeComponentELResolver extends ELResolver
             }
             else
             {
-                // TODO: each call to getPropertyDescriptors() create one array.
-                // we need to save its value but first we need to cache this whole class
-                // at request level.
-                for (PropertyDescriptor attribute : _beanInfo.getPropertyDescriptors())
+                for (PropertyDescriptor attribute : _propertyDescriptors)
                 {
                     if (attribute.getName().equals(key))
                     {
                         obj = attribute.getValue("default");
                         break;
                     }
-                    
                 }
                 if (obj != null && obj instanceof ValueExpression)
                 {
