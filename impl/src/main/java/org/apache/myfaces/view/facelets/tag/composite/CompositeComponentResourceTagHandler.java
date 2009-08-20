@@ -18,9 +18,13 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite;
 
+import java.beans.BeanInfo;
+import java.beans.PropertyDescriptor;
 import java.io.IOException;
 
+import javax.el.ValueExpression;
 import javax.el.VariableMapper;
+import javax.faces.application.ProjectStage;
 import javax.faces.application.Resource;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIPanel;
@@ -30,6 +34,7 @@ import javax.faces.view.facelets.ComponentConfig;
 import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.MetaRuleset;
+import javax.faces.view.facelets.TagException;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
@@ -48,7 +53,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
     implements ComponentBuilderHandler
 {
     private final Resource _resource;
-
+    
     public CompositeComponentResourceTagHandler(ComponentConfig config, Resource resource)
     {
         super(config);
@@ -58,8 +63,30 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
     @Override
     public UIComponent createComponent(FaceletContext ctx)
     {
-        FacesContext faceContext = ctx.getFacesContext();
-        return faceContext.getApplication().createComponent(faceContext, _resource);
+        FacesContext facesContext = ctx.getFacesContext();
+        UIComponent component = facesContext.getApplication().createComponent(facesContext, _resource);
+        
+        // Check required attributes if the app is not on production stage. 
+        // Unfortunately, we can't check it on constructor because we need to call
+        // ViewDeclarationLanguage.getComponentMetadata() and on that point it is possible to not
+        // have a viewId.
+        if (!facesContext.isProjectStage(ProjectStage.Production))
+        {
+            BeanInfo beanInfo = (BeanInfo) component.getAttributes().get(UIComponent.BEANINFO_KEY);
+            for (PropertyDescriptor propertyDescriptor : beanInfo.getPropertyDescriptors())
+            {
+                ValueExpression ve = (ValueExpression) propertyDescriptor.getValue("required");
+                if (ve != null)
+                {
+                    Boolean required = Boolean.valueOf((String)ve.getValue(facesContext.getELContext()));
+                    if (required != null && required.booleanValue())
+                    {
+                        throw new TagException(this.tag, "Attribute '" + propertyDescriptor.getName() + "' is required");
+                    }
+                }
+            }
+        }
+        return component;
     }
 
     @Override
@@ -80,7 +107,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         //vdl.retargetAttachedObjects(facesContext, c, handlers)
         
         // TODO: Uncomment this code and test it.
-        //vdl.retargetMethodExpressions(facesContext, c);
+        vdl.retargetMethodExpressions(facesContext, c);
         
         if (ctx.getFacesContext().getAttributes().containsKey(
                 FaceletViewDeclarationLanguage.MARK_INITIAL_STATE_KEY))
