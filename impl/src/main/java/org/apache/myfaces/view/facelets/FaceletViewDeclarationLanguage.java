@@ -25,7 +25,9 @@ import java.beans.PropertyDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.reflect.Array;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -37,7 +39,6 @@ import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 import javax.el.VariableMapper;
 import javax.faces.FacesException;
-import javax.faces.application.Application;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.Resource;
 import javax.faces.application.StateManager;
@@ -77,6 +78,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.DefaultViewHandlerSupport;
 import org.apache.myfaces.application.ViewHandlerSupport;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.shared_impl.util.StringUtils;
 import org.apache.myfaces.view.ViewDeclarationLanguageBase;
 import org.apache.myfaces.view.ViewMetadataBase;
@@ -270,7 +272,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     public BeanInfo getComponentMetadata(FacesContext context, Resource componentResource)
     {
         BeanInfo beanInfo = null;
-        boolean initFaceletFactory = false;
+        
         try 
         {
             Facelet compositeComponentFacelet;
@@ -295,7 +297,6 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             // and in that specific method this key is updated, this is the best option we
             // have for recognize it (also this key is used by UIComponent.isCompositeComponent)
             parent.getAttributes().put(Resource.COMPONENT_RESOURCE_KEY, componentResource);
-            //TODO: Fill it
             
             // According to UserTagHandler, in this point we need to wrap the facelet
             // VariableMapper, so local changes are applied on "page context", but
@@ -322,10 +323,6 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         finally
         {
             context.getAttributes().remove(BUILDING_COMPOSITE_COMPONENT_METADATA);
-            if (initFaceletFactory)
-            {
-                                
-            }
         }
         
         return beanInfo;
@@ -519,11 +516,17 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                     
                     if (attributeNameValueExpression == null)
                     {
-                        if (log.isErrorEnabled())
-                            log.error("attributeValueExpression not found under the key \""+attributeName+
-                                    "\". Looking for the next attribute");
-                        
-                        //TODO: what is the "next" attribute? we have to take a look at examples.
+                        // composite:attribute has a default property, so if we can't found on the
+                        // component attribute map, we should get the default as CompositeComponentELResolver
+                        // does.
+                        attributeNameValueExpression = (ValueExpression) propertyDescriptor.getValue("default");
+                        if (attributeNameValueExpression == null)
+                        {
+                            if (log.isErrorEnabled())
+                                log.error("attributeValueExpression not found under the key \""+attributeName+
+                                        "\". Looking for the next attribute");
+                            continue;
+                        }
                     }
                     
                     String attributeExpressionString = attributeNameValueExpression.getExpressionString();
@@ -583,12 +586,11 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         }
                         else
                         {
-                            // TODO: we need to find expected return type and parameters before
-                            // create the method expression
+                            methodSignature = methodSignature.trim();
                             methodExpression = context.getApplication().getExpressionFactory().
                             createMethodExpression(context.getELContext(),
-                                    attributeExpressionString, Void.TYPE, 
-                                    new Class[]{});
+                                    attributeExpressionString, _getReturnType(methodSignature), 
+                                    _getParameters(methodSignature));
                             
                             innerComponent.getAttributes().put(attributeName, methodExpression);
                         }
@@ -596,6 +598,110 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                 }
             }
         }
+    }
+    
+    /**
+     * This method is similar to shared ClassUtils.javaTypeToClass,
+     * but the default package is java.lang
+     * TODO: Move to shared project
+     * 
+     * @param type
+     * @return
+     * @throws ClassNotFoundException
+     */
+    private static Class _javaTypeToClass(String type)
+        throws ClassNotFoundException
+    {
+        if (type == null) throw new NullPointerException("type");
+
+        // try common types and arrays of common types first
+        Class clazz = (Class) ClassUtils.COMMON_TYPES.get(type);
+        if (clazz != null)
+        {
+            return clazz;
+        }
+
+        int len = type.length();
+        if (len > 2 && type.charAt(len - 1) == ']' && type.charAt(len - 2) == '[')
+        {
+            String componentType = type.substring(0, len - 2);
+            Class componentTypeClass = ClassUtils.classForName(componentType);
+            return Array.newInstance(componentTypeClass, 0).getClass();
+        }
+
+        if (type.indexOf('.') == -1)
+        {
+            type = "java.lang."+type;
+        }
+        return ClassUtils.classForName(type);
+    }
+    
+    private Class _getReturnType(String signature)
+    {
+        int endName = signature.indexOf('(');
+        if (endName < 0)
+        {
+            throw new FacesException("Invalid method signature:" + signature);
+        }
+        int end = signature.lastIndexOf(' ', endName);
+        if (end < 0)
+        {
+            throw new FacesException("Invalid method signature:" + signature);
+        }
+        try
+        {
+            return _javaTypeToClass(signature.substring(0,end));
+        }
+        catch(ClassNotFoundException e)
+        {
+            throw new FacesException("Invalid method signature:"+signature);
+        }
+    }
+
+    /**
+     * Get the parameters types from the function signature.
+     * 
+     * @return An array of parameter class names
+     */
+    private Class[] _getParameters(String signature) throws FacesException
+    {
+        ArrayList<Class> params = new ArrayList<Class>();
+        // Signature is of the form
+        // <return-type> S <method-name S? '('
+        // < <arg-type> ( ',' <arg-type> )* )? ')'
+        int start = signature.indexOf('(') + 1;
+        boolean lastArg = false;
+        while (true)
+        {
+            int p = signature.indexOf(',', start);
+            if (p < 0)
+            {
+                p = signature.indexOf(')', start);
+                if (p < 0)
+                {
+                    throw new FacesException("Invalid method signature:"+signature);
+                }
+                lastArg = true;
+            }
+            String arg = signature.substring(start, p).trim();
+            if (!"".equals(arg))
+            {
+                try 
+                {
+                    params.add(_javaTypeToClass(arg));
+                }
+                catch(ClassNotFoundException e)
+                {
+                    throw new FacesException("Invalid method signature:"+signature);
+                }
+            }
+            if (lastArg)
+            {
+                break;
+            }
+            start = p + 1;
+        }
+        return params.toArray(new Class[params.size()]);
     }
 
     /**
