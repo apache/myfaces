@@ -24,10 +24,12 @@ import java.util.logging.Logger;
 
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
+import javax.faces.application.ProjectStage;
 import javax.faces.component.ActionSource;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
+import javax.faces.component.UniqueIdVendor;
 import javax.faces.component.ValueHolder;
 import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.ComponentConfig;
@@ -104,6 +106,8 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         {
             throw new TagException(_delegate.getTag(), "Parent UIComponent was null");
         }
+        
+        FacesContext facesContext = ctx.getFacesContext();
 
         // possible facet scoped
         String facetName = this.getFacetName(ctx, parent);
@@ -131,11 +135,21 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             {
                 log.fine(_delegate.getTag() + " Component[" + id + "] Created: " + c.getClass().getName());
             }
+            
+            // TODO: What should we have to do for composite components?
+            // It depends on how composite:attribute works and which MetaRuleset
+            // is applied.
             _delegate.setAttributes(ctx, c);
 
             // mark it owned by a facelet instance
             c.getAttributes().put(ComponentSupport.MARK_CREATED, id);
 
+            if (facesContext.isProjectStage(ProjectStage.Development))
+            {
+                c.getAttributes().put(UIComponent.VIEW_LOCATION_KEY,
+                        _delegate.getTag().getLocation());
+            }
+            
             // assign our unique id
             if (this._id != null)
             {
@@ -143,10 +157,12 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             }
             else
             {
-                UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
+                UniqueIdVendor root = ComponentSupport.getClosestUniqueIdVendor(facesContext, parent);
                 if (root != null)
                 {
-                    String uid = root.createUniqueId();
+                    String uid = (root instanceof UIViewRoot) ?
+                            ((UIViewRoot)root).createUniqueId() :
+                                root.createUniqueId(facesContext, id);
                     c.setId(uid);
                 }
             }
@@ -159,6 +175,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             // hook method
             _delegate.onComponentCreated(ctx, c, parent);
         }
+        c.pushComponentToEL(facesContext, c);
 
         // first allow c to get populated
         _delegate.applyNextHandler(ctx, c);
@@ -188,7 +205,9 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             parent.getFacets().put(facetName, c);
         }
         
-        if (ctx.getFacesContext().getAttributes().containsKey(
+        c.popComponentFromEL(facesContext);
+        
+        if (facesContext.getAttributes().containsKey(
                 FaceletViewDeclarationLanguage.MARK_INITIAL_STATE_KEY))
         {
             //Call it only if we are using partial state saving
@@ -224,6 +243,8 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
     {
         if (_delegate instanceof ComponentBuilderHandler)
         {
+            // the call to Application.createComponent(FacesContext, Resource)
+            // is delegated because we don't have here the required Resource instance
             return ((ComponentBuilderHandler) _delegate).createComponent(ctx);
         }
         UIComponent c = null;
@@ -232,8 +253,14 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         if (_delegate.getBinding() != null)
         {
             ValueExpression ve = _delegate.getBinding().getValueExpression(ctx, Object.class);
-            
-            c = app.createComponent(ve, faces, this._componentType);
+            if (this._rendererType == null)
+            {
+                c = app.createComponent(ve, faces, this._componentType);
+            }
+            else
+            {
+                c = app.createComponent(ve, faces, this._componentType, this._rendererType);
+            }
             if (c != null)
             {
                 c.setValueExpression("binding", ve);
@@ -241,7 +268,14 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         }
         else
         {
-            c = app.createComponent(this._componentType);
+            if (this._rendererType == null)
+            {
+                c = app.createComponent(this._componentType);
+            }
+            else
+            {
+                c = app.createComponent(faces, this._componentType, this._rendererType);
+            }
         }
         return c;
     }
