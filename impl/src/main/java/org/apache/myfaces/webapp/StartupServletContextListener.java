@@ -56,6 +56,10 @@ public class StartupServletContextListener extends AbstractMyFacesListener
     /*comma delimited list of plugin classes which can be hooked into myfaces*/
     static final String FACES_INIT_PLUGINS = "org.apache.myfaces.FACES_INIT_PLUGINS";
 
+    private static final byte FACES_INIT_PHASE_PREINIT = 0;
+    private static final byte FACES_INIT_PHASE_POSTINIT = 1;
+    private static final byte FACES_INIT_PHASE_PREDESTROY = 2;
+    private static final byte FACES_INIT_PHASE_POSTDESTROY = 3;
 
     private static final Log log = LogFactory.getLog(StartupServletContextListener.class);
 
@@ -63,47 +67,50 @@ public class StartupServletContextListener extends AbstractMyFacesListener
     private ServletContext _servletContext;
 
 
-    private void initializePlugins(ServletContextEvent event) {
+    /**
+     * the central initialisation event dispatcher which calls
+     * our listeners
+     * @param event
+     * @param operation
+     */
+    private void dispatchInitializationEvent(ServletContextEvent event, int operation) {
+        String [] pluginEntries = (String []) _servletContext.getAttribute(FACES_INIT_PLUGINS);
 
-        String plugins = (String) _servletContext.getInitParameter(FACES_INIT_PLUGINS);
-
-        log.info("Checking for plugins:"+FACES_INIT_PLUGINS);
-        if(plugins == null) return;
-        log.info("Plugins found");
-        String [] pluginEntries = plugins.split(",");
-        //now we process the plugins
-        for(String plugin: pluginEntries) {
-            log.info("Processing plugin:"+plugin);
-            try {
-                Class pluginClass = ClassUtils.getContextClassLoader().loadClass(plugin);
-                ServletContextListener initializer = (ServletContextListener) pluginClass.newInstance();
-                initializer.contextInitialized(event);
-            } catch (ClassNotFoundException e) {
-                log.error(e);
-            } catch (IllegalAccessException e) {
-                log.error(e);
-            } catch (InstantiationException e) {
-                log.error(e);
-            }
-
+        if(pluginEntries == null) {
+            String plugins = (String) _servletContext.getInitParameter(FACES_INIT_PLUGINS);
+            log.info("Checking for plugins:"+FACES_INIT_PLUGINS);
+            if(plugins == null) return;
+            log.info("Plugins found");
+            pluginEntries = plugins.split(",");
+            _servletContext.setAttribute(FACES_INIT_PLUGINS, pluginEntries);
         }
-        log.info("Processing plugins done");
-    }
 
-    private void deinitializePlugins(ServletContextEvent event) {
-        String plugins = (String) _servletContext.getInitParameter(FACES_INIT_PLUGINS);
-
-        log.info("Checking for plugins:"+FACES_INIT_PLUGINS);
-        if(plugins == null) return;
-        log.info("Plugins found");
-        String [] pluginEntries = plugins.split(",");
         //now we process the plugins
         for(String plugin: pluginEntries) {
             log.info("Processing plugin:"+plugin);
             try {
-                Class pluginClass = Thread.currentThread().getContextClassLoader().loadClass(plugin);
-                ServletContextListener initializer = (ServletContextListener) pluginClass.newInstance();
-                initializer.contextDestroyed(event);
+                //for now the initializers have to be stateless to
+                //so that we do not have to enforce that the initializer
+                //must be serializable
+                Class pluginClass = ClassUtils.getContextClassLoader().loadClass(plugin);
+                StartupListener initializer = (StartupListener) pluginClass.newInstance();
+                
+                switch(operation) {
+                    case FACES_INIT_PHASE_PREINIT:
+                        initializer.preInit(event);
+                        break;
+                    case FACES_INIT_PHASE_POSTINIT:
+                        initializer.postInit(event);
+                        break;
+                    case FACES_INIT_PHASE_PREDESTROY:
+                        initializer.preDestroy(event);
+                        break;
+                    default:
+                        initializer.postDestroy(event);
+                        break;
+                }
+
+               
             } catch (ClassNotFoundException e) {
                 log.error(e);
             } catch (IllegalAccessException e) {
@@ -128,8 +135,9 @@ public class StartupServletContextListener extends AbstractMyFacesListener
 
         if (b == null || b.booleanValue() == false)
         {
-            initializePlugins(event);
+            dispatchInitializationEvent(event, FACES_INIT_PHASE_PREINIT);
             getFacesInitializer().initFaces(_servletContext);
+            dispatchInitializationEvent(event, FACES_INIT_PHASE_POSTINIT);
             _servletContext.setAttribute(FACES_INIT_DONE, Boolean.TRUE);
         }
         else
@@ -182,6 +190,8 @@ public class StartupServletContextListener extends AbstractMyFacesListener
             _facesInitializer.destroyFaces(_servletContext);
         }
         FactoryFinder.releaseFactories();
+        dispatchInitializationEvent(event, FACES_INIT_PHASE_POSTDESTROY);
+
         _servletContext = null;
     }
     
@@ -189,7 +199,7 @@ public class StartupServletContextListener extends AbstractMyFacesListener
                 
            ServletContext ctx = event.getServletContext();
 
-           deinitializePlugins(event);
+           dispatchInitializationEvent(event, FACES_INIT_PHASE_PREDESTROY);
            Enumeration<String> attributes = ctx.getAttributeNames();
 
            while(attributes.hasMoreElements()) 
