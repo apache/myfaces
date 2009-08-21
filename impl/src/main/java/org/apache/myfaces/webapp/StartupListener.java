@@ -27,6 +27,8 @@ import javax.servlet.ServletContextEvent;
  * Plugins which then can be hooked into the various stages
  * of our initialisation process to add various plugins
  * which depend on the various phases of the init
+ *
+ * @author Werner Punz
  */
 public interface StartupListener {
     /**
