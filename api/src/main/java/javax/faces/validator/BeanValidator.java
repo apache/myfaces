@@ -120,6 +120,20 @@ public class BeanValidator implements Validator, PartialStateHolder
         try
         {
             tmp = (Class.forName("javax.validation.Validation") != null);
+
+            if (tmp)
+            {
+                try
+                {
+                    // Trial-error approach to check for Bean Validation impl existence.
+                    Validation.buildDefaultValidatorFactory().getValidator();
+                }
+                catch (Throwable t)
+                {
+                    log.debug("Error initializing Bean Validation (could be normal)", t);
+                    tmp = false;
+                }
+            }
         }
         catch (Throwable t)
         {
