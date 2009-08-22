@@ -34,7 +34,7 @@ public class HtmlCheckAttributesUtil
      * @param output     The html output of the component's renderer.
      * @throws Exception
      */
-    private static void checkRenderedAttributes(HtmlRenderedAttr[] attrs, String output) throws Exception 
+    public static void checkRenderedAttributes(HtmlRenderedAttr[] attrs, String output) throws Exception 
     {
         for(int i = 0; i < attrs.length; i++) 
         {

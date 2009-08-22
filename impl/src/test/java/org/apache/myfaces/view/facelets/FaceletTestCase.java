@@ -29,6 +29,8 @@ import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
 import javax.faces.application.ApplicationFactory;
 import javax.faces.application.ProjectStage;
+import javax.faces.application.StateManager;
+import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.render.RenderKitFactory;
@@ -39,6 +41,8 @@ import junit.framework.TestCase;
 import org.apache.myfaces.application.ApplicationFactoryImpl;
 import org.apache.myfaces.application.ApplicationImpl;
 import org.apache.myfaces.application.ResourceHandlerImpl;
+import org.apache.myfaces.application.ViewHandlerImpl;
+import org.apache.myfaces.application.ViewHandlerSupport;
 import org.apache.myfaces.config.FacesConfigDispenser;
 import org.apache.myfaces.config.FacesConfigUnmarshaller;
 import org.apache.myfaces.config.RuntimeConfig;
@@ -162,7 +166,18 @@ public abstract class FaceletTestCase extends TestCase implements
         StateUtils.initSecret(servletContext);
         externalContext.getApplicationMap().put(StateUtils.SERIAL_FACTORY,
                 new DefaultSerialFactory());
-        
+
+        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME,
+                StateManager.STATE_SAVING_METHOD_CLIENT);
+        servletContext.addInitParameter("org.apache.myfaces.PRETTY_HTML","true");
+        servletContext.addInitParameter("org.apache.myfaces.ALLOW_JAVASCRIPT","true");
+        servletContext.addInitParameter("org.apache.myfaces.RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON","false");
+        servletContext.addInitParameter("org.apache.myfaces.SAVE_FORM_SUBMIT_LINK_IE","false");
+        servletContext.addInitParameter("org.apache.myfaces.READONLY_AS_DISABLED_FOR_SELECTS","true");
+        servletContext.addInitParameter("org.apache.myfaces.RENDER_VIEWSTATE_ID","true");
+        servletContext.addInitParameter("org.apache.myfaces.STRICT_XHTML_LINKS","true");
+        servletContext.addInitParameter("org.apache.myfaces.CONFIG_REFRESH_PERIOD","0");
+        servletContext.addInitParameter("org.apache.myfaces.VIEWSTATE_JAVASCRIPT","false");
         servletContext.addInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME, "UnitTest");
 
         RenderKitFactory renderKitFactory = (RenderKitFactory) FactoryFinder
@@ -193,6 +208,23 @@ public abstract class FaceletTestCase extends TestCase implements
         //c.setTrimmingWhitespace(true);
         //FaceletFactory factory = new DefaultFaceletFactory(c, this);
         //FaceletFactory.setInstance(factory);
+        ViewHandlerImpl viewHandler = (ViewHandlerImpl) facesContext.getApplication().getViewHandler();
+        viewHandler.setViewHandlerSupport(new ViewHandlerSupport(){
+
+            @Override
+            public String calculateActionURL(FacesContext facesContext,
+                    String viewId)
+            {
+                return viewId;
+            }
+
+            @Override
+            public String calculateViewId(FacesContext context, String viewId)
+            {
+                return viewId;
+            }
+            
+        });
         
         facesContext.setViewRoot(facesContext.getApplication().getViewHandler()
                 .createView(facesContext, "/test"));

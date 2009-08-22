@@ -22,9 +22,10 @@
 </head>
 <body>
 <composite:interface>
+    <composite:attribute name="action" targets="button" method-signature="String someAction()"/>
 </composite:interface>
 <composite:implementation>
-    <h:outputText id="text" value="Hello World!"/>
+    <h:commandButton id="button" action="#{cc.attrs.action}" value="Press Me" />
 </composite:implementation>
 </body>
 </html>
