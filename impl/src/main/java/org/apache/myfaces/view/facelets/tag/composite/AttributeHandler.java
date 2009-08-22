@@ -25,6 +25,7 @@ import java.util.List;
 
 import javax.faces.component.UIComponent;
 import javax.faces.view.facelets.FaceletContext;
+import javax.faces.view.facelets.FaceletHandler;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagException;
@@ -40,12 +41,12 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
  * @version $Revision$ $Date$
  */
 @JSFFaceletTag(name="composite:attribute")
-public class AttributeHandler extends TagHandler
+public class AttributeHandler extends TagHandler implements InterfaceDescriptorCreator
 {
     
     private static final Log log = LogFactory.getLog(AttributeHandler.class);
 
-    @JSFFaceletAttribute
+    @JSFFaceletAttribute(name="name")
     private final TagAttribute _name;
     
     @JSFFaceletAttribute
@@ -119,7 +120,7 @@ public class AttributeHandler extends TagHandler
         // We can reuse the same PropertyDescriptor only if the properties
         // that requires to be evaluated when apply (build view time)
         // occur are literal or null. Otherwise we need to create it.
-        if ( (_name == null             || _name.isLiteral()             ) &&
+        if ( (                             _name.isLiteral()             ) &&
              (_displayName == null      || _displayName.isLiteral()      ) &&
              (_preferred == null        || _preferred.isLiteral()        ) &&
              (_expert == null           || _expert.isLiteral()           ) &&
@@ -190,26 +191,26 @@ public class AttributeHandler extends TagHandler
     {
         try
         {
-            CompositeComponentPropertyDescriptor attribute = 
+            CompositeComponentPropertyDescriptor attributeDescriptor = 
                 new CompositeComponentPropertyDescriptor(_name.getValue());
             
             if (_displayName != null)
             {
-                attribute.setDisplayName(_displayName.getValue());
+                attributeDescriptor.setDisplayName(_displayName.getValue());
             }
             if (_preferred != null)
             {
-                attribute.setPreferred(Boolean.valueOf(_preferred.getValue()));
+                attributeDescriptor.setPreferred(Boolean.valueOf(_preferred.getValue()));
             }
             if (_expert != null)
             {
-                attribute.setExpert(Boolean.valueOf(_expert.getValue()));
+                attributeDescriptor.setExpert(Boolean.valueOf(_expert.getValue()));
             }
             if (_shortDescription != null)
             {
-                attribute.setShortDescription(_shortDescription.getValue());
+                attributeDescriptor.setShortDescription(_shortDescription.getValue());
             }            
-            return attribute;
+            return attributeDescriptor;
         }
         catch (IntrospectionException e)
         {
@@ -226,53 +227,48 @@ public class AttributeHandler extends TagHandler
     {
         try
         {
-            CompositeComponentPropertyDescriptor attribute = 
+            CompositeComponentPropertyDescriptor attributeDescriptor = 
                 new CompositeComponentPropertyDescriptor(_name.getValue(ctx));
             
             // The javadoc of ViewDeclarationLanguage.retargetMethodExpressions says that
             // 'type', 'method-signature', 'targets' should return ValueExpressions.
             if (_targets != null)
             {
-                attribute.setValue("targets", _targets.getValueExpression(ctx, String.class));
+                attributeDescriptor.setValue("targets", _targets.getValueExpression(ctx, String.class));
             }
             if (_default != null)
             {
-                attribute.setValue("default", _default.getValueExpression(ctx, String.class));
+                attributeDescriptor.setValue("default", _default.getValueExpression(ctx, String.class));
             }
             if (_displayName != null)
             {
-                attribute.setDisplayName(_displayName.getValue(ctx));
+                attributeDescriptor.setDisplayName(_displayName.getValue(ctx));
             }
             if (_required != null)
             {
-                attribute.setValue("required", _required.getValueExpression(ctx, Boolean.class));
+                attributeDescriptor.setValue("required", _required.getValueExpression(ctx, Boolean.class));
             }
             if (_preferred != null)
             {
-                attribute.setPreferred(_preferred.getBoolean(ctx));
+                attributeDescriptor.setPreferred(_preferred.getBoolean(ctx));
             }
             if (_expert != null)
             {
-                attribute.setExpert(_expert.getBoolean(ctx));
+                attributeDescriptor.setExpert(_expert.getBoolean(ctx));
             }
             if (_shortDescription != null)
             {
-                attribute.setShortDescription(_shortDescription.getValue(ctx));
+                attributeDescriptor.setShortDescription(_shortDescription.getValue(ctx));
             }
             if (_methodSignature != null)
             {
-                attribute.setValue("method-signature", _methodSignature.getValueExpression(ctx, String.class));
+                attributeDescriptor.setValue("method-signature", _methodSignature.getValueExpression(ctx, String.class));
             }
             if (_type != null)
             {
-                attribute.setValue("type", _type.getValueExpression(ctx, String.class));
+                attributeDescriptor.setValue("type", _type.getValueExpression(ctx, String.class));
             }
-            
-            if (isCacheable())
-            {
-                attribute.setCacheable(true);
-            }
-            return attribute;
+            return attributeDescriptor;
         }
         catch (IntrospectionException e)
         {
@@ -284,14 +280,19 @@ public class AttributeHandler extends TagHandler
         }
     }
 
-    boolean isCacheable()
+    public boolean isCacheable()
     {
         return _cacheable;
     }
     
-    void setCacheable(boolean cacheable)
+    public void setCacheable(boolean cacheable)
     {
         _cacheable = cacheable;
     }
 
+    @Override
+    public FaceletHandler getNextHandler()
+    {
+        return nextHandler;
+    }
 }
