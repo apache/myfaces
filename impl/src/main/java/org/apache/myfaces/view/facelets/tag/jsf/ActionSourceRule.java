@@ -34,7 +34,7 @@ import javax.faces.view.facelets.TagAttribute;
  * @author Jacob Hookom
  * @version $Id: ActionSourceRule.java,v 1.5 2008/07/13 19:01:46 rlubke Exp $
  */
-final class ActionSourceRule extends MetaRule
+public final class ActionSourceRule extends MetaRule
 {
     public final static Class<?>[] ACTION_SIG = new Class[0];
 

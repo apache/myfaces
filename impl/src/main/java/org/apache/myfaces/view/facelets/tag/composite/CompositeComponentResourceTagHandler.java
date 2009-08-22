@@ -26,20 +26,27 @@ import javax.el.ValueExpression;
 import javax.el.VariableMapper;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.Resource;
+import javax.faces.component.ActionSource;
+import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIPanel;
+import javax.faces.component.ValueHolder;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.facelets.ComponentConfig;
 import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.MetaRuleset;
+import javax.faces.view.facelets.Metadata;
 import javax.faces.view.facelets.TagException;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
+import org.apache.myfaces.view.facelets.tag.jsf.ActionSourceRule;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentBuilderHandler;
+import org.apache.myfaces.view.facelets.tag.jsf.EditableValueHolderRule;
+import org.apache.myfaces.view.facelets.tag.jsf.ValueHolderRule;
 
 /**
  * This handler is responsible for apply composite components. It
@@ -53,6 +60,10 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
     implements ComponentBuilderHandler
 {
     private final Resource _resource;
+    
+    private Metadata _mapper;
+    
+    private Class<?> _lastType = Object.class;
     
     public CompositeComponentResourceTagHandler(ComponentConfig config, Resource resource)
     {
@@ -106,7 +117,6 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         // its handlers from somewhere.
         //vdl.retargetAttachedObjects(facesContext, c, handlers)
         
-        // TODO: Uncomment this code and test it.
         vdl.retargetMethodExpressions(facesContext, c);
         
         if (ctx.getFacesContext().getAttributes().containsKey(
@@ -141,11 +151,53 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
     }
 
     @Override
-    protected MetaRuleset createMetaRuleset(Class<?> type)
+    public void setAttributes(FaceletContext ctx, Object instance)
     {
-        // TODO: Which metadata rules should be applied for a composite component?
-        // For now we apply the same as a default component (from delegate), but there
-        // are properties like "binding" that does not apply for.
-        return super.createMetaRuleset(type);
+        if (instance != null)
+        {
+            UIComponent component = (UIComponent) instance;
+
+            Class<?> type = instance.getClass();
+            if (_mapper == null || !_lastType.equals(type))
+            {
+                _lastType = type;
+                BeanInfo beanInfo = (BeanInfo)((UIComponent) component).getAttributes().get(UIComponent.BEANINFO_KEY);    
+                _mapper = createMetaRuleset(type , beanInfo).finish();
+            }
+            
+            _mapper.applyMetadata(ctx, instance);
+        }        
+    }
+
+    protected MetaRuleset createMetaRuleset(Class<?> type, BeanInfo beanInfo)
+    {
+        MetaRuleset m = new CompositeMetaRulesetImpl(this.getTag(), type, beanInfo);
+        // ignore standard component attributes
+        m.ignore("binding").ignore("id");
+
+        // add auto wiring for attributes
+        m.addRule(CompositeComponentRule.Instance);
+        
+        // add retarget method expression rules
+        m.addRule(RetargetMethodExpressionRule.Instance);
+        
+        if (ActionSource.class.isAssignableFrom(type))
+        {
+            m.addRule(ActionSourceRule.Instance);
+        }
+
+        if (ValueHolder.class.isAssignableFrom(type))
+        {
+            m.addRule(ValueHolderRule.Instance);
+
+            if (EditableValueHolder.class.isAssignableFrom(type))
+            {
+                m.ignore("submittedValue");
+                m.ignore("valid");
+                m.addRule(EditableValueHolderRule.Instance);
+            }
+        }
+        
+        return m;
     }
 }

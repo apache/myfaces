@@ -38,8 +38,6 @@ public class CompositeComponentPropertyDescriptor extends PropertyDescriptor
     implements Externalizable
 {
     
-    private boolean _cacheable;
-
     /**
      * Used for serialization only
      * 
@@ -48,14 +46,12 @@ public class CompositeComponentPropertyDescriptor extends PropertyDescriptor
     public CompositeComponentPropertyDescriptor() throws IntrospectionException
     {
         super("a",null,null);
-        _cacheable = false;
     }
     
     public CompositeComponentPropertyDescriptor(String propertyName)
             throws IntrospectionException
     {
         super(propertyName, null, null);
-        _cacheable = false;
     }
 
     @Override
@@ -96,15 +92,4 @@ public class CompositeComponentPropertyDescriptor extends PropertyDescriptor
         }
         out.writeObject(map);
     }
-
-    public boolean isCacheable()
-    {
-        return _cacheable;
-    }
-
-    public void setCacheable(boolean cacheable)
-    {
-        _cacheable = cacheable;
-    }
-
 }

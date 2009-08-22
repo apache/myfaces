@@ -26,7 +26,7 @@ import javax.faces.view.facelets.Metadata;
  * @author Jacob Hookom
  * @version $Id: MetadataImpl.java,v 1.3 2008/07/13 19:01:36 rlubke Exp $
  */
-final class MetadataImpl extends Metadata
+public final class MetadataImpl extends Metadata
 {
     private final Metadata[] _mappers;
     private final int _size;

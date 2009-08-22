@@ -257,11 +257,11 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         // The get() method of the Map must take the following additional action if this component instance is a 
         // composite component instance (indicated by the presence of a component attribute under the key given 
         // by the value of Resource.COMPONENT_RESOURCE_KEY)
-        if (value instanceof ValueExpression && getUnderlyingMap().containsKey(Resource.COMPONENT_RESOURCE_KEY))
-        {
+        // if (value instanceof ValueExpression && getUnderlyingMap().containsKey(Resource.COMPONENT_RESOURCE_KEY))
+        //{
             // call the ValueExpression.getValue(javax.el.ELContext) method and return the result from get().
-            value = ((ValueExpression)value).getValue(FacesContext.getCurrentInstance().getELContext());
-        }
+        //    value = ((ValueExpression)value).getValue(FacesContext.getCurrentInstance().getELContext());
+        //}
         
         // Otherwise, return the actual value from the get() method. 
         return value;

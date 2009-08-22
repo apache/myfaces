@@ -32,7 +32,7 @@ import javax.faces.view.facelets.TagAttribute;
  * @author Jacob Hookom
  * @version $Id: ValueHolderRule.java,v 1.4 2008/07/13 19:01:46 rlubke Exp $
  */
-final class ValueHolderRule extends MetaRule
+public final class ValueHolderRule extends MetaRule
 {
 
     final static class LiteralConverterMetadata extends Metadata

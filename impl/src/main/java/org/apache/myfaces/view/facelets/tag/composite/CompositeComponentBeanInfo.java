@@ -86,7 +86,10 @@ public class CompositeComponentBeanInfo extends SimpleBeanInfo
      */
     private List<PropertyDescriptor> _propertyDescriptors;
     
-    private static final PropertyDescriptor[] EMPTY_PROPERTY_DESCRIPTOR_ARRAY = new PropertyDescriptor[0];    
+    private static final PropertyDescriptor[] EMPTY_PROPERTY_DESCRIPTOR_ARRAY = new PropertyDescriptor[0];
+    
+    private PropertyDescriptor[] _propertyDescriptorsArray;
+    
     /**
      * Used for Serialization
      */
@@ -116,8 +119,17 @@ public class CompositeComponentBeanInfo extends SimpleBeanInfo
         }
         else
         {
-            return _propertyDescriptors.toArray(
-                new PropertyDescriptor[_propertyDescriptors.size()]);
+            if (_propertyDescriptorsArray == null)
+            {
+                _propertyDescriptorsArray = _propertyDescriptors.toArray(
+                        new PropertyDescriptor[_propertyDescriptors.size()]); 
+            }
+            else if (_propertyDescriptorsArray.length != _propertyDescriptors.size())
+            {
+                _propertyDescriptorsArray = _propertyDescriptors.toArray(
+                        new PropertyDescriptor[_propertyDescriptors.size()]);
+            }
+            return _propertyDescriptorsArray; 
         }
     }
 

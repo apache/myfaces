@@ -470,7 +470,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         
         for (PropertyDescriptor propertyDescriptor : propertyDescriptors)
         {
-            if (propertyDescriptor.getValue("type") == null)
+            if (propertyDescriptor.getValue("type") != null)
             {
                 // This check is necessary if we have both "type" and "method-signature" set.
                 // In that case, "method-signature" is ignored
@@ -543,7 +543,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                             continue;
                         }
 
-                        if (attributeName == "action")
+                        if ("action".equals(attributeName))
                         {
                             // target is ActionSource2
                             methodExpression = context.getApplication().getExpressionFactory().
@@ -552,7 +552,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                             
                             ((ActionSource2)innerComponent).setActionExpression(methodExpression);
                         }
-                        else if (attributeName == "actionListener")
+                        else if ("actionListener".equals(attributeName))
                         {
                            // target is ActionSource2
                             methodExpression = context.getApplication().getExpressionFactory().
@@ -562,7 +562,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                             ((ActionSource)innerComponent).addActionListener(
                                     new MethodExpressionActionListener(methodExpression));
                         }
-                        else if (attributeName == "validator")
+                        else if ("validator".equals(attributeName))
                         {
                             // target is EditableValueHolder
                             methodExpression = context.getApplication().getExpressionFactory().
@@ -573,7 +573,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                             ((EditableValueHolder)innerComponent).addValidator(
                                     new MethodExpressionValidator(methodExpression));
                         }
-                        else if (attributeName == "valueChangeListener")
+                        else if ("valueChangeListener".equals(attributeName))
                         {
                             // target is EditableValueHolder
                             methodExpression = context.getApplication().getExpressionFactory().
@@ -609,7 +609,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      * @return
      * @throws ClassNotFoundException
      */
-    private static Class _javaTypeToClass(String type)
+    public static Class _javaTypeToClass(String type)
         throws ClassNotFoundException
     {
         if (type == null) throw new NullPointerException("type");
