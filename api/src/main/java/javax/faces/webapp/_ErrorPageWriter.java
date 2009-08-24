@@ -59,6 +59,8 @@ final class _ErrorPageWriter
     private static final String DEBUG_TEMPLATE_RESOURCE = "org.apache.myfaces.DEBUG_TEMPLATE_RESOURCE";
 
     private static String[] DEBUG_PARTS;
+    
+    private static final String REGEX_PATTERN = ".*?\\Q,Id:\\E\\s*(\\S+)\\s*\\].*?";
 
     public _ErrorPageWriter()
     {
@@ -124,8 +126,7 @@ final class _ErrorPageWriter
             return null;
 
         List<String> list = new ArrayList<String>();
-        // TODO: Use a constant to reduce the compilation overhaul
-        Pattern pattern = Pattern.compile(".*?\\Q,Id:\\E\\s*(\\S+)\\s*\\].*?");
+        Pattern pattern = Pattern.compile(REGEX_PATTERN);
         Matcher matcher = pattern.matcher(message);
 
         while (matcher.find())
