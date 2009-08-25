@@ -81,7 +81,7 @@ public abstract class ViewHandler
         {
             String _tempEnc =_contentType.substring(_indexOf); //charset=UTF-8 
             _encoding = _tempEnc.substring(_tempEnc.indexOf("=")+1); //UTF-8
-            if (_encoding.isEmpty())
+            if (_encoding.length() == 0)
             {
                 _encoding = null;
             }
