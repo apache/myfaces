@@ -60,7 +60,20 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         {
             throw new InvalidViewIdException(viewId);
         }
-        return viewId;
+
+        try 
+        {
+            return ((context.getExternalContext().getResource(viewId) != null) ? viewId : null);
+        } 
+        catch (MalformedURLException e) 
+        {
+            if (log.isErrorEnabled())
+            {
+                log.error("Caught malformed URL exception attempting to validate the view resource",e);
+            }   
+        }
+
+        return null;    // return null if no physical resource exists
     }
 
     public String calculateActionURL(FacesContext context, String viewId)

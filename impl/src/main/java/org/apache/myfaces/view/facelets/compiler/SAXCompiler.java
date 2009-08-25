@@ -29,7 +29,7 @@ import javax.el.ELException;
 import javax.faces.FacesException;
 import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.FaceletHandler;
-import javax.faces.view.facelets.Location;
+import javax.faces.view.Location;
 import javax.faces.view.facelets.Tag;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagAttributes;

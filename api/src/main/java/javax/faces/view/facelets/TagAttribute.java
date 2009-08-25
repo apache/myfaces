@@ -21,6 +21,7 @@ package javax.faces.view.facelets;
 import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
+import javax.faces.view.Location;
 import javax.faces.view.facelets.FaceletContext;
 
 /**

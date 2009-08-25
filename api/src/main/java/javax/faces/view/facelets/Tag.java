@@ -18,6 +18,8 @@
  */
 package javax.faces.view.facelets;
 
+import javax.faces.view.Location;
+
 /**
  * Representation of a Tag in the Facelet definition
  * 
