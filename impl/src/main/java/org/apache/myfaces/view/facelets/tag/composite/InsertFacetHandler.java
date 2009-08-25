@@ -22,9 +22,11 @@ import java.io.IOException;
 
 import javax.faces.component.UIComponent;
 import javax.faces.view.facelets.FaceletContext;
+import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 
 /**
@@ -34,19 +36,49 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 @JSFFaceletTag(name="composite:insertFacet")
 public class InsertFacetHandler extends TagHandler
 {
-
+    @JSFFaceletAttribute(name="name",
+            className="javax.el.ValueExpression",
+            deferredValueType="java.lang.String")
+    protected final TagAttribute _name;
+    
+    @JSFFaceletAttribute(name="required",
+            className="javax.el.ValueExpression",
+            deferredValueType="boolean")
+    protected final TagAttribute _required;
+    
     public InsertFacetHandler(TagConfig config)
     {
         super(config);
-        // TODO Auto-generated constructor stub
+        _name = getRequiredAttribute("name");
+        _required = getAttribute("required");
     }
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {
-        // TODO Auto-generated method stub
+        // TODO: Add "required" behavior: "... If true, and there is no 
+        // such facet present on the top level component, a 
+        // TagException must be thrown, containing the Location, 
+        // the facet name, and a localized descriptive error message...."
         
+        String facetName = _name.getValue(ctx);
+        
+        UIComponent parentCompositeComponent = 
+            UIComponent.getCurrentCompositeComponent(ctx.getFacesContext());
+        
+        UIComponent facetComponent = parentCompositeComponent.getFacet(facetName);
+        
+        if (facetComponent != null)
+        {
+            parent.getFacets().put(facetName, facetComponent);
+        }
+        
+        //TODO: Reset clientId calling setId() when necessary            
+        //for (UIComponent child : childList)
+        //{
+        //    child.setId(child.getId());
+        //}
     }
 
 }
