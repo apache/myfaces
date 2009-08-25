@@ -19,6 +19,8 @@
 package org.apache.myfaces.view.facelets.tag.composite;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.faces.component.UIComponent;
 import javax.faces.view.facelets.FaceletContext;
@@ -38,15 +40,27 @@ public class InsertChildrenHandler extends TagHandler
     public InsertChildrenHandler(TagConfig config)
     {
         super(config);
-        // TODO Auto-generated constructor stub
     }
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {
-        // TODO Auto-generated method stub
+        UIComponent parentCompositeComponent = UIComponent.getCurrentCompositeComponent(ctx.getFacesContext());
         
+        if (parentCompositeComponent.getChildCount() > 0)
+        {
+            List<UIComponent> childList = new ArrayList(parentCompositeComponent.getChildren());
+            
+            List<UIComponent> targetChildrenList = parent.getChildren(); 
+            
+            targetChildrenList.addAll(childList);
+            
+            //TODO: Reset clientId calling setId() when necessary            
+            //for (UIComponent child : childList)
+            //{
+            //    child.setId(child.getId());
+            //}
+        }
     }
-
 }
