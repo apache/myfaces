@@ -350,6 +350,45 @@
         </plugins>
       </build>
     </profile>
+    <profile>
+        <id>checkJDK</id>
+        <activation>
+            <property>
+                <name>performRelease</name>
+                <value>true</value>
+            </property>
+        </activation>
+        <build>
+            <plugins>
+                <plugin>
+                  <groupId>org.jvnet</groupId>
+                  <artifactId>animal-sniffer</artifactId>
+                  <version>1.2</version>
+                  <executions>
+                    <execution>
+                      <goals>
+                        <goal>check</goal>
+                      </goals>
+                      <configuration>
+                        <signature>
+                          <groupId>org.jvnet.animal-sniffer</groupId>
+                          <artifactId>java1.5</artifactId>
+                          <version>1.0</version>
+                        </signature>
+                      </configuration>
+                    </execution>
+                  </executions>
+                </plugin>            
+            </plugins>
+        </build>
+        <pluginRepositories>
+            <pluginRepository>
+                <id>java.net.repo</id>
+                <name>java.net repository</name>
+                <url>http://download.java.net/maven/2/</url>
+            </pluginRepository>
+        </pluginRepositories>
+    </profile>
   </profiles>
   <dependencies>
     <dependency>
