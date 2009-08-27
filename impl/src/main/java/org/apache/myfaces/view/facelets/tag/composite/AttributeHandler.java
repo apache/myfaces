@@ -177,8 +177,11 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
             PropertyDescriptor attribute = _createPropertyDescriptor(ctx, parent);
             attributeList.add(attribute);
         }
-                
-        nextHandler.apply(ctx, parent);
+        
+        // Any "next" handler is going to be used to process nested attributes, which we don't want
+        // to do since they can only possibly refer to bean properties.
+        
+        //nextHandler.apply(ctx, parent);
     }
     
     /**
