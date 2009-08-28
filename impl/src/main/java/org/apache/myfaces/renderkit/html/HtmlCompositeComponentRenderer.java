@@ -22,7 +22,6 @@ import java.io.IOException;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -68,8 +67,6 @@ public class HtmlCompositeComponentRenderer extends HtmlRenderer
             }
             return;            
         }
-        ResponseWriter writer = context.getResponseWriter();
-        
         compositeFacet.encodeAll(context);
     }
 
