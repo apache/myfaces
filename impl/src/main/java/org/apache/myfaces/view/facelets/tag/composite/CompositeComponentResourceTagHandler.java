@@ -21,6 +21,8 @@ package org.apache.myfaces.view.facelets.tag.composite;
 import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.el.ValueExpression;
 import javax.el.VariableMapper;
@@ -32,6 +34,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIPanel;
 import javax.faces.component.ValueHolder;
 import javax.faces.context.FacesContext;
+import javax.faces.view.AttachedObjectHandler;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.facelets.ComponentConfig;
 import javax.faces.view.facelets.ComponentHandler;
@@ -59,6 +62,17 @@ import org.apache.myfaces.view.facelets.tag.jsf.ValueHolderRule;
 public class CompositeComponentResourceTagHandler extends ComponentHandler
     implements ComponentBuilderHandler
 {
+    /**
+     * This key is used to keep the list of AttachedObjectHandlers
+     * created when a composite component is created. Tag handlers
+     * exposing attached objects should call 
+     * addAttachedObjectHandler(UIComponent, AttachedObjectHandler)
+     * that uses this key to save this list on component attribute
+     * map.  
+     */
+    public final static String ATTACHED_OBJECT_HANDLERS_KEY = 
+            "org.apache.myfaces.ATTACHED_OBJECT_HANDLERS_KEY";    
+    
     private final Resource _resource;
     
     private Metadata _mapper;
@@ -120,6 +134,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         return component;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void applyNextHandler(FaceletContext ctx, UIComponent c)
             throws IOException
@@ -133,9 +148,18 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         ViewDeclarationLanguage vdl = facesContext.getApplication().getViewHandler().
             getViewDeclarationLanguage(facesContext, facesContext.getViewRoot().getViewId());
         
-        // TODO: This method should be called from here, but we have to retrieve
-        // its handlers from somewhere.
-        //vdl.retargetAttachedObjects(facesContext, c, handlers)
+        List<AttachedObjectHandler> handlers = (List<AttachedObjectHandler>) 
+            c.getAttributes().get(ATTACHED_OBJECT_HANDLERS_KEY);
+        
+        if (handlers != null)
+        {
+            vdl.retargetAttachedObjects(facesContext, c, handlers);
+            
+            // Since handlers list is not serializable and it is not necessary to
+            // keep them anymore on attribute map, it is better to remove it from
+            // component attribute map
+            c.getAttributes().remove(ATTACHED_OBJECT_HANDLERS_KEY);
+        }
         
         vdl.retargetMethodExpressions(facesContext, c);
         
@@ -168,6 +192,32 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         {
             faceletContext.setVariableMapper(orig);
         }
+    }
+    
+    /**
+     * Add to the composite component parent this handler, so it will be processed later when
+     * ViewDeclarationLanguage.retargetAttachedObjects is called (see applyNextHandler method).
+     * 
+     * Tag Handlers exposing attached objects should call this method to expose them when the
+     * parent to be applied is a composite components.
+     * 
+     * @param compositeComponentParent
+     * @param handler
+     */
+    @SuppressWarnings("unchecked")
+    public static void addAttachedObjectHandler(UIComponent compositeComponentParent, AttachedObjectHandler handler)
+    {
+        List<AttachedObjectHandler> list = (List<AttachedObjectHandler>) 
+            compositeComponentParent.getAttributes().get(
+                ATTACHED_OBJECT_HANDLERS_KEY);
+        
+        if (list == null)
+        {
+            list = new ArrayList<AttachedObjectHandler>();
+            compositeComponentParent.getAttributes().put(ATTACHED_OBJECT_HANDLERS_KEY, list);
+        }
+        
+        list.add(handler);
     }
 
     @Override

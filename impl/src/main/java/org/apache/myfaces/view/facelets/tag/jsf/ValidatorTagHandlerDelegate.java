@@ -25,7 +25,8 @@ import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.Validator;
-import javax.faces.view.AttachedObjectHandler;
+import javax.faces.view.EditableValueHolderAttachedObjectHandler;
+import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.MetaRuleset;
 import javax.faces.view.facelets.TagAttribute;
@@ -34,6 +35,7 @@ import javax.faces.view.facelets.TagHandlerDelegate;
 import javax.faces.view.facelets.ValidatorHandler;
 
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
+import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
 
 /**
  * Handles setting a Validator instance on a EditableValueHolder. Will wire all attributes set to the Validator instance
@@ -46,7 +48,7 @@ import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
  *
  * @since 2.0
  */
-public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements AttachedObjectHandler
+public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements EditableValueHolderAttachedObjectHandler
 {
     private ValidatorHandler _delegate;
     
@@ -58,16 +60,21 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements A
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException
     {
-
-        if (parent == null || !(parent instanceof EditableValueHolder))
+        if (!ComponentHandler.isNew(parent))
         {
-            throw new TagException(_delegate.getTag(), "Parent not an instance of EditableValueHolder: " + parent);
+            return;
         }
-
-        // only process if it's been created
-        if (parent.getParent() == null)
+        if (parent instanceof EditableValueHolder)
         {
             applyAttachedObject(ctx.getFacesContext(), parent);
+        }
+        else if (UIComponent.isCompositeComponent(parent))
+        {
+            CompositeComponentResourceTagHandler.addAttachedObjectHandler(parent, _delegate);
+        }
+        else
+        {
+            throw new TagException(_delegate.getTag(), "Parent not composite component or an instance of EditableValueHolder: " + parent);
         }
     }
 

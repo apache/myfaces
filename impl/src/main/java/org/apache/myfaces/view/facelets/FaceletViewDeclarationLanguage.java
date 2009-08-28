@@ -91,6 +91,7 @@ import org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory;
 import org.apache.myfaces.view.facelets.impl.DefaultResourceResolver;
 import org.apache.myfaces.view.facelets.impl.ResourceResolver;
 import org.apache.myfaces.view.facelets.tag.TagDecorator;
+import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeLibrary;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeResourceLibrary;
 import org.apache.myfaces.view.facelets.tag.ui.UIDebug;
@@ -395,7 +396,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         // its tag handler is applied.
                         if (UIComponent.isCompositeComponent(component))
                         {
-                            // TODO: How we obtain the list of AttachedObjectHandler for
+                            // How we obtain the list of AttachedObjectHandler for
                             // the current composite component? It should be a component
                             // attribute or retrieved by a key inside component.getAttributes
                             // map. Since api does not specify any attribute, we suppose
@@ -403,6 +404,16 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                             // from component attribute map.
                             // But this is only the point of the iceberg, because we should
                             // define how we register attached object handlers in this list.
+                            // ANS: see CompositeComponentResourceTagHandler.
+                            // The current handler should be added to the list, to be chained.
+                            // Note that the inner component should have a target with the same name
+                            // as "for" attribute
+                            CompositeComponentResourceTagHandler.addAttachedObjectHandler(component, currentHandler);
+                            
+                            List<AttachedObjectHandler> handlers = (List<AttachedObjectHandler>) 
+                                component.getAttributes().get(CompositeComponentResourceTagHandler.ATTACHED_OBJECT_HANDLERS_KEY);
+                            
+                            retargetAttachedObjects(context, component, handlers);
                         }
                         else
                         {
@@ -426,14 +437,12 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                             // its tag handler is applied.
                             if (UIComponent.isCompositeComponent(component))
                             {
-                                // TODO: How we obtain the list of AttachedObjectHandler for
-                                // the current composite component? It should be a component
-                                // attribute or retrieved by a key inside component.getAttributes
-                                // map. Since api does not specify any attribute, we suppose
-                                // this is an implementation detail and it should be retrieved
-                                // from component attribute map.
-                                // But this is only the point of the iceberg, because we should
-                                // define how we register attached object handlers in this list.
+                                CompositeComponentResourceTagHandler.addAttachedObjectHandler(component, currentHandler);
+                                
+                                List<AttachedObjectHandler> handlers = (List<AttachedObjectHandler>) 
+                                    component.getAttributes().get(CompositeComponentResourceTagHandler.ATTACHED_OBJECT_HANDLERS_KEY);
+                                
+                                retargetAttachedObjects(context, component, handlers);
                             }
                             else
                             {

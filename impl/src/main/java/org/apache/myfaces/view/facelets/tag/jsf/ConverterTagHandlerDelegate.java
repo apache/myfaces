@@ -25,7 +25,8 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.ValueHolder;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
-import javax.faces.view.AttachedObjectHandler;
+import javax.faces.view.ValueHolderAttachedObjectHandler;
+import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.ConverterHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.MetaRuleset;
@@ -34,6 +35,9 @@ import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandlerDelegate;
 
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
+import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
+
+import com.sun.beans.ObjectHandler;
 
 /**
  * Handles setting a Converter instance on a ValueHolder. Will wire all attributes set to the Converter instance
@@ -46,7 +50,7 @@ import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
  *
  * @since 2.0
  */
-public class ConverterTagHandlerDelegate extends TagHandlerDelegate implements AttachedObjectHandler
+public class ConverterTagHandlerDelegate extends TagHandlerDelegate implements ValueHolderAttachedObjectHandler
 {
     private ConverterHandler _delegate;
     
@@ -74,16 +78,23 @@ public class ConverterTagHandlerDelegate extends TagHandlerDelegate implements A
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException
     {
-        if (parent == null || !(parent instanceof ValueHolder))
-        {
-            throw new TagException(_delegate.getTag(), "Parent not an instance of ValueHolder: " + parent);
-        }
-
         // only process if it's been created
-        if (parent.getParent() == null)
+        if (!ComponentHandler.isNew(parent))
+        {
+            return;
+        }
+        if (parent instanceof ValueHolder)
         {
             applyAttachedObject(ctx.getFacesContext(), parent);
-        }        
+        }
+        else if (UIComponent.isCompositeComponent(parent))
+        {
+            CompositeComponentResourceTagHandler.addAttachedObjectHandler(parent, _delegate);
+        }
+        else
+        {
+            throw new TagException(_delegate.getTag(), "Parent not composite component or an instance of ValueHolder: " + parent);
+        }      
     }
 
     /**
