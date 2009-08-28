@@ -55,10 +55,20 @@ public class FacetHandler extends TagHandler implements InterfaceDescriptorCreat
 
     private static final Log log = LogFactory.getLog(FacetHandler.class);
 
-    @JSFFaceletAttribute
+    /**
+     * 
+     */
+    @JSFFaceletAttribute(name="name",
+            className="javax.el.ValueExpression",
+            deferredValueType="java.lang.String")
     private final TagAttribute _name;
 
-    @JSFFaceletAttribute
+    /**
+     * 
+     */
+    @JSFFaceletAttribute(name="displayName",
+            className="javax.el.ValueExpression",
+            deferredValueType="java.lang.String")
     private final TagAttribute _displayName;
 
     /**
@@ -68,16 +78,33 @@ public class FacetHandler extends TagHandler implements InterfaceDescriptorCreat
      * not ProjectStage.Production when a composite component is created.
      * </p>
      */
-    @JSFFaceletAttribute
+    @JSFFaceletAttribute(name="required",
+            className="javax.el.ValueExpression",
+            deferredValueType="boolean")
     private final TagAttribute _required;
 
-    @JSFFaceletAttribute
+    /**
+     * 
+     */
+    @JSFFaceletAttribute(name="preferred",
+            className="javax.el.ValueExpression",
+            deferredValueType="boolean")
     private final TagAttribute _preferred;
 
-    @JSFFaceletAttribute
+    /**
+     * 
+     */
+    @JSFFaceletAttribute(name="expert",
+            className="javax.el.ValueExpression",
+            deferredValueType="boolean")
     private final TagAttribute _expert;
 
-    @JSFFaceletAttribute
+    /**
+     * 
+     */
+    @JSFFaceletAttribute(name="shortDescription",
+            className="javax.el.ValueExpression",
+            deferredValueType="java.lang.String")
     private final TagAttribute _shortDescription;
     
     /**
