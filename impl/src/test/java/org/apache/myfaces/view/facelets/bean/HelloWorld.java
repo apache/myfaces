@@ -18,6 +18,13 @@
 */
 package org.apache.myfaces.view.facelets.bean;
 
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.event.AbortProcessingException;
+import javax.faces.event.ActionEvent;
+import javax.faces.event.ActionListener;
+import javax.faces.event.ValueChangeEvent;
+
 /**
  * A typical simple backing bean, that is backed to <code>helloworld.jsp</code>
  * 
@@ -48,5 +55,41 @@ public class HelloWorld {
     public String send(){
         //do real logic, return a string which will be used for the navigation system of JSF
         return "success";
+    }
+    
+    public void doSomething(ActionEvent evt)
+    {
+        
+    }
+    
+    public void validateName(FacesContext context, UIComponent toValidate,
+            Object value)
+    {
+
+    }
+    
+    public void afterValueChange(ValueChangeEvent evt)
+    {
+        
+    }
+    
+    private ActionListener _actionListener;
+    
+    public ActionListener getActionListener()
+    {
+        if (_actionListener == null)
+        {
+            _actionListener = new ActionListener()
+            {
+
+                @Override
+                public void processAction(ActionEvent actionEvent)
+                        throws AbortProcessingException
+                {
+                    
+                }
+            };
+        }
+        return _actionListener;
     }
 }

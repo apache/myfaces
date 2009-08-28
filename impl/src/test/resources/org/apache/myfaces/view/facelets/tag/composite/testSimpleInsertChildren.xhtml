@@ -21,14 +21,8 @@
 <head>
 </head>
 <body>
-<h:form id="testForm1">
-	<testComposite:simpleAttributeMethodExpression id="same"
-	    action="#{helloWorldBean.send}"
-	    actionListener="#{helloWorldBean.doSomething}"
-	    validator="#{helloWorldBean.validateName}"
-	    valueChangeListener="#{helloWorldBean.afterValueChange}"
-	    metodo="#{helloWorldBean.send}">
-	</testComposite:simpleAttributeMethodExpression>
-</h:form>
+<testComposite:simpleInsertChildren>
+<h:outputText value="Leonardo " /><h:outputText value="Alfredo " /><h:outputText value="Uribe " />    
+</testComposite:simpleInsertChildren>
 </body>
 </html>

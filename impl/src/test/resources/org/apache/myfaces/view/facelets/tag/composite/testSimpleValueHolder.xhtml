@@ -22,13 +22,9 @@
 </head>
 <body>
 <h:form id="testForm1">
-	<testComposite:simpleAttributeMethodExpression id="same"
-	    action="#{helloWorldBean.send}"
-	    actionListener="#{helloWorldBean.doSomething}"
-	    validator="#{helloWorldBean.validateName}"
-	    valueChangeListener="#{helloWorldBean.afterValueChange}"
-	    metodo="#{helloWorldBean.send}">
-	</testComposite:simpleAttributeMethodExpression>
+<testComposite:simpleValueHolder>
+    <f:converter for="text" converterId="javax.faces.Integer"/>
+</testComposite:simpleValueHolder>
 </h:form>
 </body>
 </html>

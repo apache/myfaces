@@ -21,14 +21,12 @@
 <head>
 </head>
 <body>
-<h:form id="testForm1">
-	<testComposite:simpleAttributeMethodExpression id="same"
-	    action="#{helloWorldBean.send}"
-	    actionListener="#{helloWorldBean.doSomething}"
-	    validator="#{helloWorldBean.validateName}"
-	    valueChangeListener="#{helloWorldBean.afterValueChange}"
-	    metodo="#{helloWorldBean.send}">
-	</testComposite:simpleAttributeMethodExpression>
-</h:form>
+<h:panelGroup id="testGroup1">
+<testComposite:compositeInsertFacet>
+    <f:facet name="header">
+        <h:outputText value="GAMMA " />    
+    </f:facet>
+</testComposite:compositeInsertFacet>
+</h:panelGroup>
 </body>
 </html>

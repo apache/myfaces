@@ -22,13 +22,11 @@
 </head>
 <body>
 <h:form id="testForm1">
-	<testComposite:simpleAttributeMethodExpression id="same"
-	    action="#{helloWorldBean.send}"
-	    actionListener="#{helloWorldBean.doSomething}"
-	    validator="#{helloWorldBean.validateName}"
-	    valueChangeListener="#{helloWorldBean.afterValueChange}"
-	    metodo="#{helloWorldBean.send}">
-	</testComposite:simpleAttributeMethodExpression>
+<testComposite:simpleActionSource>
+    <f:actionListener for="button" binding="#{helloWorldBean.actionListener}"/>
+    <f:actionListener for="button2" binding="#{helloWorldBean.actionListener}"/>
+    <f:setPropertyActionListener for="button" value="Hector" target="#{helloWorldBean.name}" />
+</testComposite:simpleActionSource>
 </h:form>
 </body>
 </html>

@@ -17,18 +17,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:testComposite="http://java.sun.com/jsf/composite/testComposite">
+	xmlns:composite="http://java.sun.com/jsf/composite">
 <head>
 </head>
 <body>
-<h:form id="testForm1">
-	<testComposite:simpleAttributeMethodExpression id="same"
-	    action="#{helloWorldBean.send}"
-	    actionListener="#{helloWorldBean.doSomething}"
-	    validator="#{helloWorldBean.validateName}"
-	    valueChangeListener="#{helloWorldBean.afterValueChange}"
-	    metodo="#{helloWorldBean.send}">
-	</testComposite:simpleAttributeMethodExpression>
-</h:form>
+<composite:interface>
+</composite:interface>
+<composite:implementation>
+    <h:outputText value="ALFA " />
+    <composite:insertChildren/>
+    <h:outputText value="OMEGA " />
+</composite:implementation>
 </body>
 </html>
