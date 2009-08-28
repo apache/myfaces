@@ -72,7 +72,6 @@ public class ValidateHandler extends MetaTagHandlerImpl
     }
 
     /**
-     * TODO
      * 
      * @see javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, javax.faces.component.UIComponent)
      */

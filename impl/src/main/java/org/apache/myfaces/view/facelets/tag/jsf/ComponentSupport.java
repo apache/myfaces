@@ -221,6 +221,25 @@ public final class ComponentSupport
 
         return facesContext.getViewRoot();
     }
+   
+    /*
+    public static UniqueIdVendor getClosestUniqueIdVendor(UIComponent parent)
+    {
+        UIComponent c = parent;
+        do
+        {
+            if (c instanceof UniqueIdVendor)
+            {
+                return (UniqueIdVendor) c;
+            }
+            else
+            {
+                c = c.getParent();
+            }
+        } while (c != null);
+
+        return null;
+    }*/
 
     /**
      * Marks all direct children and Facets with an attribute for deletion.
@@ -307,10 +326,12 @@ public final class ComponentSupport
      * Determine if the passed component is not null and if it's new to the tree. This operation can be used for
      * determining if attributes should be wired to the component.
      * 
+     * @deprecated use ComponentHandler.isNew
      * @param component
      *            the component you wish to modify
      * @return true if it's new
      */
+    @Deprecated
     public static boolean isNew(UIComponent component)
     {
         return component != null && component.getParent() == null;

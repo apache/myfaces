@@ -136,9 +136,6 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 log.fine(_delegate.getTag() + " Component[" + id + "] Created: " + c.getClass().getName());
             }
             
-            // TODO: What should we have to do for composite components?
-            // It depends on how composite:attribute works and which MetaRuleset
-            // is applied.
             _delegate.setAttributes(ctx, c);
 
             // mark it owned by a facelet instance
