@@ -81,7 +81,7 @@ public final class ConvertDateTimeHandler extends ConverterHandler
      * Returns a new DateTimeConverter
      * 
      * @see DateTimeConverter
-     * @see org.apache.myfaces.view.facelets.tag.jsf.ConvertHandler#createConverter(javax.faces.view.facelets.FaceletContext)
+     * @see javax.faces.view.facelets.ConverterHandler#createConverter(javax.faces.view.facelets.FaceletContext)
      */
     protected Converter createConverter(FaceletContext ctx) throws FacesException, ELException, FaceletException
     {
