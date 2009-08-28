@@ -19,13 +19,18 @@
 package org.apache.myfaces.view.facelets;
 
 import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Map;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
 import javax.faces.application.Resource;
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
+
 
 /**
  * This class contains methods that belongs to original FaceletContext shipped in
@@ -43,6 +48,8 @@ import javax.faces.view.facelets.FaceletException;
  */
 public abstract class AbstractFaceletContext extends FaceletContext
 {
+    public final static String COMPOSITE_COMPONENT_STACK = "org.apache.myfaces.view.facelets.COMPOSITE_COMPONENT_STACK";
+
     /**
      * Push the passed TemplateClient onto the stack for Definition Resolution
      * @param client
@@ -91,4 +98,22 @@ public abstract class AbstractFaceletContext extends FaceletContext
      */
     public abstract void applyCompositeComponent(UIComponent parent, Resource resource)
             throws IOException, FaceletException, FacesException, ELException;
+
+    /**
+     * Return the composite component being applied on the current facelet. 
+     * 
+     * Note this is different to UIComponent.getCurrentCompositeComponent, because a composite
+     * component is added to the stack each time a composite:implementation tag handler is applied.
+     * 
+     * This could be used by InsertChildrenHandler and InsertFacetHandler to retrieve the current
+     * composite component to be applied.
+     * 
+     * @param facesContext
+     * @return
+     */
+    public abstract UIComponent getCompositeComponentFromStack();
+
+    public abstract void pushCompositeComponentToStack(UIComponent parent);
+
+    public abstract void popCompositeComponentToStack();
 }

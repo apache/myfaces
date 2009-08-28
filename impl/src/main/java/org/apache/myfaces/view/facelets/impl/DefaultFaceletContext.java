@@ -20,7 +20,9 @@ package org.apache.myfaces.view.facelets.impl;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -442,4 +444,44 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     {
         _facelet.applyCompositeComponent(this, parent, resource);
     }
+    
+    @Override
+    public UIComponent getCompositeComponentFromStack()
+    {
+        Map<Object, Object> attributes = getFacesContext().getAttributes();   
+        
+        Deque<UIComponent> componentStack = (Deque<UIComponent>) attributes.get(AbstractFaceletContext.COMPOSITE_COMPONENT_STACK);
+        if(componentStack != null && !componentStack.isEmpty())
+        {
+            return componentStack.peek();
+        }
+        return null;
+    }
+
+    @Override
+    public void pushCompositeComponentToStack(UIComponent parent)    {
+        Map<Object, Object> attributes = getFacesContext().getAttributes();   
+        
+        Deque<UIComponent> componentStack = (Deque<UIComponent>) attributes.get(AbstractFaceletContext.COMPOSITE_COMPONENT_STACK);
+        if(componentStack == null)
+        {
+            componentStack = new ArrayDeque<UIComponent>();
+            attributes.put(AbstractFaceletContext.COMPOSITE_COMPONENT_STACK, componentStack);
+        }
+        
+        componentStack.push(parent);
+    }
+
+    @Override
+    public void popCompositeComponentToStack()
+    {
+        Map<Object, Object> contextAttributes = getFacesContext().getAttributes();   
+        
+        Deque<UIComponent> componentStack = (Deque<UIComponent>) contextAttributes.get(AbstractFaceletContext.COMPOSITE_COMPONENT_STACK);
+        if(componentStack != null && !componentStack.isEmpty())
+        {
+            componentStack.pop();
+        }
+    }    
+
 }
