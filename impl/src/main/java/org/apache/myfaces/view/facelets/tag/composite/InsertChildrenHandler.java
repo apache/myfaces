@@ -23,11 +23,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.component.UIComponent;
+import javax.faces.event.ComponentSystemEvent;
+import javax.faces.event.ComponentSystemEventListener;
+import javax.faces.event.PostAddToViewEvent;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)
@@ -46,20 +50,49 @@ public class InsertChildrenHandler extends TagHandler
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {
-        UIComponent parentCompositeComponent = UIComponent.getCurrentCompositeComponent(ctx.getFacesContext());
+        UIComponent parentCompositeComponent = ((AbstractFaceletContext)ctx).getCompositeComponentFromStack();
         
-        if (parentCompositeComponent.getChildCount() > 0)
+        parentCompositeComponent.subscribeToEvent(PostAddToViewEvent.class, 
+                new RelocateAllChildrenListener(parent, parentCompositeComponent.getChildCount()));
+    }
+    
+    public static final class RelocateAllChildrenListener 
+        implements ComponentSystemEventListener
+    {
+        private final UIComponent _targetComponent;
+        
+        private final int _childIndex;
+
+        public RelocateAllChildrenListener(UIComponent targetComponent, int childIndex)
         {
-            List<UIComponent> childList = new ArrayList(parentCompositeComponent.getChildren());
+            _targetComponent = targetComponent;
+            _childIndex = childIndex;
+        }
+        
+        @Override
+        public void processEvent(ComponentSystemEvent event)
+        {
+            UIComponent parentCompositeComponent = event.getComponent();
+
+            List<UIComponent> childList = new ArrayList<UIComponent>(parentCompositeComponent.getChildren());
             
-            List<UIComponent> targetChildrenList = parent.getChildren(); 
+            List<UIComponent> targetChildrenList = _targetComponent.getChildren(); 
             
-            targetChildrenList.addAll(childList);
+            targetChildrenList.addAll(_childIndex, childList);
             
-            //TODO: Reset clientId calling setId() when necessary            
-            //for (UIComponent child : childList)
+            // After check, the commented code is not necessary because at this 
+            // point there is no any call to getClientId() yet. But it is better
+            // let this code commented, because some day could be useful.
+            //
+            //UIComponent uniqueIdVendor = (UIComponent) ComponentSupport.getClosestUniqueIdVendor(_targetComponent);
+            //
+            //if (uniqueIdVendor != null && !uniqueIdVendor.getClientId().equals(parentCompositeComponent.getClientId()))
             //{
-            //    child.setId(child.getId());
+                //Reset clientId calling setId()
+                //for (UIComponent child : childList)
+                //{
+                //    child.setId(child.getId());
+                //}
             //}
         }
     }
