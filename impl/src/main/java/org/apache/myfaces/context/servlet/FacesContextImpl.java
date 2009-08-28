@@ -350,7 +350,12 @@ public class FacesContextImpl extends FacesContext
         // the clear method must be called on the Map returned from UIViewRoot.getViewMap().
         if (_viewRoot != null && !_viewRoot.equals(viewRoot))
         {
-            _viewRoot.getViewMap().clear();
+            //call getViewMap(false) to prevent unnecessary map creation
+            Map<String, Object> viewMap = _viewRoot.getViewMap(false);
+            if (viewMap != null)
+            {
+                viewMap.clear();
+            }
         }
         _viewRoot = viewRoot;
     }

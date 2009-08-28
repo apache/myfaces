@@ -97,6 +97,12 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     private MethodExpression _beforePhaseListener;
     private MethodExpression _afterPhaseListener;
 
+    /**
+     * Map containing view scope objects. 
+     * 
+     * It is not expected this map hold PartialStateHolder instances,
+     * so we can use saveAttachedState and restoreAttachedState methods.
+     */
     private Map<String, Object> _viewScope;
 
     private transient Lifecycle _lifecycle = null;
@@ -1068,24 +1074,26 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                 beforePhaseListenerSaved = saveAttachedState(facesContext,_beforePhaseListener);
                 nullDelta = false;
             }        
-            if (parentSaved == null && nullDelta)
+            if (parentSaved == null && _viewScope == null && nullDelta)
             {
                 //No values
                 return null;
             }
             
-            Object[] values = new Object[3];
+            Object[] values = new Object[4];
             values[0] = parentSaved;
             values[1] = afterPhaseListenerSaved;
             values[2] = beforePhaseListenerSaved;
+            values[3] = saveAttachedState(facesContext,_viewScope);
             return values;
         }
         else
         {
-            Object[] values = new Object[3];
+            Object[] values = new Object[4];
             values[0] = super.saveState(facesContext);
             values[1] = saveAttachedState(facesContext,_afterPhaseListener);
             values[2] = saveAttachedState(facesContext,_beforePhaseListener);
+            values[3] = saveAttachedState(facesContext,_viewScope);
             return values;
         }
     }
@@ -1121,6 +1129,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             //Full
             _beforePhaseListener = (javax.el.MethodExpression) restoreAttachedState(facesContext,values[2]);
         }
+        _viewScope = (Map<String, Object>) restoreAttachedState(facesContext, values[3]);
     }
     
     public List<SystemEventListener> getViewListenersForEventClass(Class<? extends SystemEvent> systemEvent)
