@@ -26,7 +26,6 @@ import java.util.List;
 import javax.faces.component.UIComponent;
 import javax.faces.view.AttachedObjectTarget;
 import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletHandler;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
@@ -153,11 +152,11 @@ public abstract class AttachedObjectTargetHandler<T extends AttachedObjectTarget
         _cacheable = cacheable;
     }
     
-    @Override
-    public FaceletHandler getNextHandler()
-    {
-        return nextHandler;
-    }
+    //@Override
+    //public FaceletHandler getNextHandler()
+    //{
+    //    return nextHandler;
+    //}
 
     /**
      * Create a new AttachedObjectTarget instance to be added on the 

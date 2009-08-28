@@ -27,7 +27,6 @@ import java.util.Map;
 
 import javax.faces.component.UIComponent;
 import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletHandler;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagException;
@@ -300,9 +299,9 @@ public class FacetHandler extends TagHandler implements InterfaceDescriptorCreat
         _cacheable = cacheable;
     }
 
-    @Override
-    public FaceletHandler getNextHandler()
-    {
-        return nextHandler;
-    }
+    //@Override
+    //public FaceletHandler getNextHandler()
+    //{
+    //    return nextHandler;
+    //}
 }

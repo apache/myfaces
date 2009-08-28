@@ -25,7 +25,6 @@ import java.util.List;
 
 import javax.faces.component.UIComponent;
 import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletHandler;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagException;
@@ -293,9 +292,9 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
         _cacheable = cacheable;
     }
 
-    @Override
-    public FaceletHandler getNextHandler()
-    {
-        return nextHandler;
-    }
+    //@Override
+    //public FaceletHandler getNextHandler()
+    //{
+    //    return nextHandler;
+    //}
 }

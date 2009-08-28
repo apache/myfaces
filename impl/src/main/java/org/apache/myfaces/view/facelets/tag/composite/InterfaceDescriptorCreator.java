@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite;
 
-import javax.faces.view.facelets.FaceletHandler;
 
 /**
  * Used to identify tag handlers used on composite:interface for
@@ -33,5 +32,5 @@ interface InterfaceDescriptorCreator
     
     void setCacheable(boolean cacheable);
     
-    FaceletHandler getNextHandler();
+    //FaceletHandler getNextHandler();
 }
