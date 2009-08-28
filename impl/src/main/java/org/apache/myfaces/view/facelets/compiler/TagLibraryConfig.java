@@ -193,6 +193,21 @@ public final class TagLibraryConfig
             ParameterCheck.notNull("method", method);
             this.addFunction(name, method);
         }
+        
+        public void putBehavior(String name, String id)
+        {
+            ParameterCheck.notNull("name", name);
+            ParameterCheck.notNull("id", id);
+            this.addBehavior(name, id);
+        }
+        
+        public void putBehavior(String name, String id, Class<? extends TagHandler> handlerClass)
+        {
+            ParameterCheck.notNull("name", name);
+            ParameterCheck.notNull("id", id);
+            ParameterCheck.notNull("handlerClass", handlerClass);
+            this.addBehavior(name, id, handlerClass);
+        }
     }
     
     private static class ComponentConfigWrapper implements ComponentConfig {
@@ -287,6 +302,8 @@ public final class TagLibraryConfig
         private String converterId;
 
         private String validatorId;
+        
+        private String behaviorId;
 
         private String componentType;
 
@@ -431,6 +448,23 @@ public final class TagLibraryConfig
                             impl.putValidator(this.tagName, this.validatorId);
                         }
                         this.validatorId = null;
+                    }
+                    else if ("behavior-id".equals(qName))
+                    {
+                        this.behaviorId = this.captureBuffer();
+                    }
+                    else if ("behavior".equals(qName))
+                    {
+                        if (this.handlerClass != null)
+                        {
+                            impl.putBehavior(this.tagName, this.behaviorId, handlerClass);
+                            this.handlerClass = null;
+                        }
+                        else
+                        {
+                            impl.putBehavior(this.tagName, this.behaviorId);
+                        }
+                        this.behaviorId = null;
                     }
                     else if ("source".equals(qName))
                     {

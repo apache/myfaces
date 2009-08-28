@@ -27,6 +27,8 @@ import java.util.Map;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
+import javax.faces.view.facelets.BehaviorConfig;
+import javax.faces.view.facelets.BehaviorHandler;
 import javax.faces.view.facelets.ComponentConfig;
 import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.ConverterConfig;
@@ -271,6 +273,28 @@ public abstract class AbstractTagLibrary implements TagLibrary
     {
         _functions.put(name, method);
     }
+    
+    /**
+     * @since 2.0
+     * @param behaviorId
+     * @param behaviorClass
+     */
+    protected final void addBehavior(String name, String behaviorId)
+    {
+        _factories.put(name, new BehaviorHandlerFactory(behaviorId));
+    }
+    
+    /**
+     * @since 2.0
+     * @param behaviorId
+     * @param behaviorClass
+     * @param handlerType
+     */
+    protected final void addBehavior(String name, String behaviorId,
+            Class<? extends TagHandler> handlerType)
+    {
+        _factories.put(name, new UserBehaviorHandlerFactory(behaviorId,handlerType));
+    }    
 
     private static class ValidatorConfigWrapper implements ValidatorConfig
     {
@@ -618,6 +642,102 @@ public abstract class AbstractTagLibrary implements TagLibrary
             catch (Exception e)
             {
                 throw new FaceletException("Error Instantiating ValidatorHandler: " + type.getName(), e);
+            }
+        }
+    }
+    
+    private static class BehaviorConfigWrapper implements BehaviorConfig
+    {
+        protected final TagConfig parent;
+
+        protected final String behaviorId;
+
+        public BehaviorConfigWrapper(TagConfig parent, String behaviorId)
+        {
+            this.parent = parent;
+            this.behaviorId = behaviorId;
+        }
+
+        @Override
+        public FaceletHandler getNextHandler()
+        {
+            return this.parent.getNextHandler();
+        }
+
+        @Override
+        public Tag getTag()
+        {
+            return this.parent.getTag();
+        }
+
+        @Override
+        public String getTagId()
+        {
+            return this.parent.getTagId();
+        }
+
+        @Override
+        public String getBehaviorId()
+        {
+            return this.behaviorId;
+        }
+    }
+    
+    private static class BehaviorHandlerFactory implements TagHandlerFactory
+    {
+        protected final String behaviorId;
+               
+        public BehaviorHandlerFactory(String behaviorId)
+        {
+            super();
+            this.behaviorId = behaviorId;
+        }
+
+        public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException
+        {
+            BehaviorConfig bcfg = new BehaviorConfigWrapper(cfg,this.behaviorId);
+            return new BehaviorHandler(bcfg);
+        }
+    }
+
+    private static class UserBehaviorHandlerFactory implements TagHandlerFactory
+    {
+        private final static Class<?>[] CONS_SIG = new Class[] { ComponentConfig.class };
+
+        protected final String behaviorId;
+
+        protected final Class<? extends TagHandler> type;
+
+        protected final Constructor<? extends TagHandler> constructor;
+
+        public UserBehaviorHandlerFactory(String behaviorId, Class<? extends TagHandler> type)
+        {
+            this.behaviorId = behaviorId;
+            this.type = type;
+            try
+            {
+                this.constructor = this.type.getConstructor(CONS_SIG);
+            }
+            catch (Exception e)
+            {
+                throw new FaceletException("Must have a Constructor that takes in a BehaviorConfig", e);
+            }
+        }
+
+        public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException
+        {
+            try
+            {
+                BehaviorConfig bcfg = new BehaviorConfigWrapper(cfg,this.behaviorId);
+                return constructor.newInstance(new Object[] { bcfg });
+            }
+            catch (InvocationTargetException e)
+            {
+                throw new FaceletException(e.getCause().getMessage(), e.getCause().getCause());
+            }
+            catch (Exception e)
+            {
+                throw new FaceletException("Error Instantiating BehaviorHandler: " + this.type.getName(), e);
             }
         }
     }
