@@ -25,6 +25,7 @@ import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
+import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 
 /**
@@ -34,7 +35,7 @@ import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 public class ImplementationHandler extends TagHandler
 {
     public final static String NAME = "implementation";
-    
+
     public ImplementationHandler(TagConfig config)
     {
         super(config);
@@ -51,7 +52,12 @@ public class ImplementationHandler extends TagHandler
             // tags outside this one excluding composite:interface, so "parent"
             // is a component used as value for the facet key
             // UIComponent.COMPOSITE_FACET_NAME in a composite component. 
+            
+            ((AbstractFaceletContext)ctx).pushCompositeComponentToStack(parent.getParent());
+            
             nextHandler.apply(ctx, parent);
+            
+            ((AbstractFaceletContext)ctx).popCompositeComponentToStack();
         }        
     }
 }
