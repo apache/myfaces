@@ -31,14 +31,29 @@ public class CompositeLibrary extends AbstractTagLibrary
     public CompositeLibrary()
     {
         super(NAMESPACE);
+
+        addTagHandler("actionSource", ActionSourceHandler.class);
+
+        addTagHandler("attribute", AttributeHandler.class);
         
-        addTagHandler("interface", InterfaceHandler.class);
+        addTagHandler("editableValueHolder", EditableValueHolderHandler.class);
+        
+        addTagHandler("extension", ExtensionHandler.class);
+        
+        addTagHandler("facet", FacetHandler.class);
         
         addTagHandler("implementation", ImplementationHandler.class);
         
-        addTagHandler("attribute", AttributeHandler.class);
+        addTagHandler("insertChildren", InsertChildrenHandler.class);
         
-        //TODO: Add composite tag handlers
+        addTagHandler("insertFacet", InsertFacetHandler.class);
+        
+        addTagHandler("interface", InterfaceHandler.class);
+        
+        addComponent("renderFacet", "javax.faces.Output", 
+                "javax.faces.CompositeFacet", RenderFacetHandler.class);
+
+        addTagHandler("valueHolder", ValueHolderHandler.class);
     }
 
 }

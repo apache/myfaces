@@ -25,6 +25,14 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.faces.FacesException;
+import javax.faces.application.Resource;
+import javax.faces.application.ResourceHandler;
+import javax.faces.context.FacesContext;
+import javax.faces.view.facelets.ComponentConfig;
+import javax.faces.view.facelets.FaceletHandler;
+import javax.faces.view.facelets.Tag;
+import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -33,6 +41,8 @@ import javax.xml.parsers.SAXParserFactory;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
+import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
+import org.apache.myfaces.view.facelets.tag.composite.CompositeResouceWrapper;
 import org.apache.myfaces.view.facelets.util.Classpath;
 import org.apache.myfaces.view.facelets.util.ParameterCheck;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
@@ -59,9 +69,62 @@ public final class TagLibraryConfig
 
     private static class TagLibraryImpl extends AbstractTagLibrary
     {
+        private String _compositeLibraryName;
+        
         public TagLibraryImpl(String namespace)
         {
             super(namespace);
+            _compositeLibraryName = null;
+        }
+        
+        @Override
+        public boolean containsTagHandler(String ns, String localName)
+        {
+            boolean result = super.containsTagHandler(ns, localName);
+            
+            if (!result && _compositeLibraryName != null)
+            {
+                ResourceHandler resourceHandler = 
+                    FacesContext.getCurrentInstance().getApplication().getResourceHandler();
+
+                Resource compositeComponentResource = resourceHandler.createResource(
+                        localName +".xhtml", _compositeLibraryName);
+                
+                URL url = compositeComponentResource.getURL();
+                return (url != null);
+            }
+            return result;
+        }
+        
+        @Override
+        public TagHandler createTagHandler(String ns, String localName,
+                TagConfig tag) throws FacesException
+        {
+            TagHandler tagHandler = super.createTagHandler(ns, localName, tag);
+            
+            if (tagHandler == null && containsNamespace(ns) && _compositeLibraryName != null)
+            {
+                ResourceHandler resourceHandler = 
+                    FacesContext.getCurrentInstance().getApplication().getResourceHandler();
+
+                String resourceName = localName + ".xhtml";
+                Resource compositeComponentResource = new CompositeResouceWrapper(
+                    resourceHandler.createResource(resourceName, _compositeLibraryName));
+                
+                if (compositeComponentResource != null)
+                {
+                    ComponentConfig componentConfig = new ComponentConfigWrapper(tag,
+                            "javax.faces.NamingContainer", null);
+                    
+                    return new CompositeComponentResourceTagHandler(componentConfig, compositeComponentResource);
+                }
+            }
+            return tagHandler;
+        }
+
+        public void setCompositeLibrary(String compositeLibraryName)
+        {
+            _compositeLibraryName = compositeLibraryName;
         }
 
         public void putConverter(String name, String id)
@@ -132,6 +195,42 @@ public final class TagLibraryConfig
         }
     }
     
+    private static class ComponentConfigWrapper implements ComponentConfig {
+
+        protected final TagConfig parent;
+
+        protected final String componentType;
+
+        protected final String rendererType;
+
+        public ComponentConfigWrapper(TagConfig parent, String componentType,
+                String rendererType) {
+            this.parent = parent;
+            this.componentType = componentType;
+            this.rendererType = rendererType;
+        }
+
+        public String getComponentType() {
+            return this.componentType;
+        }
+
+        public String getRendererType() {
+            return this.rendererType;
+        }
+
+        public FaceletHandler getNextHandler() {
+            return this.parent.getNextHandler();
+        }
+
+        public Tag getTag() {
+            return this.parent.getTag();
+        }
+
+        public String getTagId() {
+            return this.parent.getTagId();
+        }
+    }    
+    
     /*
      * We need this class to do a quick check on a facelets taglib document to see if it's
      * a pre-2.0 document.  If it is, we really need to construct a DTD validating, non-namespace
@@ -200,6 +299,8 @@ public final class TagLibraryConfig
         private Class<?> functionClass;
 
         private String functionSignature;
+        
+        private String compositeLibraryName;
 
         public LibraryHandler(URL source)
         {
@@ -227,6 +328,18 @@ public final class TagLibraryConfig
                 else if ("namespace".equals(qName))
                 {
                     this.library = new TagLibraryImpl(this.captureBuffer());
+                    if (this.compositeLibraryName != null)
+                    {
+                        ((TagLibraryImpl)this.library).setCompositeLibrary(compositeLibraryName);
+                    }
+                }
+                else if ("composite-library-name".equals(qName))
+                {
+                    this.compositeLibraryName = this.captureBuffer();
+                    if (this.library != null)
+                    {
+                        ((TagLibraryImpl)this.library).setCompositeLibrary(compositeLibraryName);
+                    }
                 }
                 else if ("component-type".equals(qName))
                 {

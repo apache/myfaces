@@ -34,6 +34,10 @@ import javax.faces.view.facelets.TagHandler;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
 
 /**
+ * This class create composite component tag handlers for "http://java.sun.com/jsf/composite/"
+ * namespace. Note that the class that create composite component tag handlers using its own 
+ * namespace defined in facelet taglib .xml file see TagLibraryConfig.TagLibraryImpl
+ * 
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -41,23 +45,11 @@ public class CompositeResourceLibrary implements TagLibrary
 {
     public final static String NAMESPACE_PREFIX = "http://java.sun.com/jsf/composite/";
     
-    //TODO: namespace and compositeLibraryName could be set
-    //when facelet-taglib is readed. In that case, an instance
-    //of this class should be created.
-    //
-    //<facelet-taglib>
-    //  <namespace>http://some.domain.com/path</namespace> 
-    //  <composite-library-name>compositeLibName</composite-library-name> 
-    //</facelet-taglib>    
-    //private final String _namespace;
-    //private final String _compositeLibraryName;
     
     @Override
     public boolean containsFunction(String ns, String name)
     {
         // Composite component tag library does not suport functions
-        // TODO: Maybe it is possible since we can configure it
-        // through xml 
         return false;
     }
 
@@ -91,8 +83,11 @@ public class CompositeResourceLibrary implements TagLibrary
                 String libraryName = ns.substring(NAMESPACE_PREFIX.length());
                 String resourceName = localName + ".xhtml";
                 Resource compositeComponentResource = resourceHandler.createResource(resourceName, libraryName);
-                URL url = compositeComponentResource.getURL();
-                return (url != null);
+                if (compositeComponentResource != null)
+                {
+                    URL url = compositeComponentResource.getURL();
+                    return (url != null);
+                }
             }
         }
         return false;
@@ -102,8 +97,6 @@ public class CompositeResourceLibrary implements TagLibrary
     public Method createFunction(String ns, String name)
     {
         // Composite component tag library does not suport functions
-        // TODO: Maybe it is possible since we can configure it
-        // through xml
         return null;
     }
 
@@ -122,17 +115,19 @@ public class CompositeResourceLibrary implements TagLibrary
                 String resourceName = localName + ".xhtml";
                 Resource compositeComponentResource = new CompositeResouceWrapper(
                     resourceHandler.createResource(resourceName, libraryName));
-                
-                ComponentConfig componentConfig = new ComponentConfigWrapper(tag,
-                        "javax.faces.NamingContainer", null);
-                
-                return new CompositeComponentResourceTagHandler(componentConfig, compositeComponentResource);
+                if (compositeComponentResource != null)
+                {
+                    ComponentConfig componentConfig = new ComponentConfigWrapper(tag,
+                            "javax.faces.NamingContainer", null);
+                    
+                    return new CompositeComponentResourceTagHandler(componentConfig, compositeComponentResource);
+                }
             }
         }
         return null;
     }
     
-    protected static class ComponentConfigWrapper implements ComponentConfig {
+    private static class ComponentConfigWrapper implements ComponentConfig {
 
         protected final TagConfig parent;
 
