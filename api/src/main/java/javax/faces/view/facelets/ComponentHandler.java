@@ -52,9 +52,16 @@ public class ComponentHandler extends DelegatingMetaTagHandler
 
     public static final boolean isNew(UIComponent component)
     {
-        // TODO: only partially done... how do we determine that the component is "new to the tree"?
-        
-        return (component != null);
+        // -= Leonardo Uribe =- It seems org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport.isNew(UIComponent)
+        // has been moved to this location.
+        // Originally this method was called from all tags that generate any kind of listeners
+        // (f:actionListener, f:phaseListener, f:setPropertyActionListener, f:valueChangeListener).
+        // This method prevent add listener when a facelet is applied twice. But at this moment we don't have
+        // a valid use case that reproduce this behavior, and tracking down the original code from facelets
+        // cvs log, there is no information or bug related to.
+        // TODO: Only partially done... how do we determine that the component is "new to the tree"?
+        // pending update it when composite components are created. (Aparently it is not necessary)
+        return component != null && component.getParent() == null;
     }
 
     public void onComponentCreated(FaceletContext ctx, UIComponent c, UIComponent parent)

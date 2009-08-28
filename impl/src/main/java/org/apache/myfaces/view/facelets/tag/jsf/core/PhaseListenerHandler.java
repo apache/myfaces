@@ -31,6 +31,7 @@ import javax.faces.event.AbortProcessingException;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
+import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.TagAttribute;
@@ -159,7 +160,7 @@ public class PhaseListenerHandler extends TagHandler
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {
-        if (ComponentSupport.isNew(parent))
+        if (ComponentHandler.isNew(parent))
         {
             UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
             if (root == null)

@@ -32,6 +32,7 @@ import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
 import javax.faces.view.ActionSource2AttachedObjectHandler;
+import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.TagAttribute;
@@ -40,7 +41,7 @@ import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
-import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
+import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
 
 @JSFFaceletTag(
         name = "f:setPropertyActionListener",
@@ -62,16 +63,22 @@ public class SetPropertyActionListenerHandler extends TagHandler
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {
+        //Apply only if we are creating a new component
+        if (!ComponentHandler.isNew(parent))
+        {
+            return;
+        }
         if (parent instanceof ActionSource)
         {
-            if (ComponentSupport.isNew(parent))
-            {
-                applyAttachedObject(ctx.getFacesContext(), parent);
-            }
+            applyAttachedObject(ctx.getFacesContext(), parent);
+        }
+        else if (UIComponent.isCompositeComponent(parent))
+        {
+            CompositeComponentResourceTagHandler.addAttachedObjectHandler(parent, this);
         }
         else
         {
-            throw new TagException(this.tag, "Parent is not of type ActionSource, type is: " + parent);
+            throw new TagException(this.tag, "Parent is not composite component or of type ActionSource, type is: " + parent);
         }
     }
 

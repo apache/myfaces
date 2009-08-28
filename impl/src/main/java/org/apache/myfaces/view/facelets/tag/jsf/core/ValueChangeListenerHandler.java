@@ -31,6 +31,7 @@ import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.event.ValueChangeListener;
 import javax.faces.view.EditableValueHolderAttachedObjectHandler;
+import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.TagAttribute;
@@ -40,7 +41,7 @@ import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
-import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
+import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
 /**
@@ -151,16 +152,21 @@ public final class ValueChangeListenerHandler extends TagHandler
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {
+        if (!ComponentHandler.isNew(parent))
+        {
+            return;
+        }
         if (parent instanceof EditableValueHolder)
         {
-            if (ComponentSupport.isNew(parent))
-            {
-                applyAttachedObject(ctx.getFacesContext(), parent);
-            }
+            applyAttachedObject(ctx.getFacesContext(), parent);
+        }
+        else if (UIComponent.isCompositeComponent(parent))
+        {
+            CompositeComponentResourceTagHandler.addAttachedObjectHandler(parent, this);
         }
         else
         {
-            throw new TagException(this.tag, "Parent is not of type EditableValueHolder, type is: " + parent);
+            throw new TagException(this.tag, "Parent not composite component or an instance of EditableValueHolder: " + parent);
         }
     }
 
