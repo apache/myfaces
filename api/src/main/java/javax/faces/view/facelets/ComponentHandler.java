@@ -50,7 +50,7 @@ public class ComponentHandler extends DelegatingMetaTagHandler
         return config;
     }
 
-    public static final boolean isNew(UIComponent component)
+    public static boolean isNew(UIComponent component)
     {
         // -= Leonardo Uribe =- It seems org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport.isNew(UIComponent)
         // has been moved to this location.
