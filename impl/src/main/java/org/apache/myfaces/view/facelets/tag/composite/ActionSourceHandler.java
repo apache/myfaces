@@ -18,12 +18,9 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite;
 
-import java.io.IOException;
-
-import javax.faces.component.UIComponent;
+import javax.faces.view.ActionSource2AttachedObjectTarget;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 
@@ -32,21 +29,28 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
  * @version $Revision$ $Date$
  */
 @JSFFaceletTag(name="composite:actionSource")
-public class ActionSourceHandler extends TagHandler
+public class ActionSourceHandler extends AttachedObjectTargetHandler<ActionSource2AttachedObjectTarget>
 {
 
     public ActionSourceHandler(TagConfig config)
     {
         super(config);
-        // TODO Auto-generated constructor stub
     }
 
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException
+    protected ActionSource2AttachedObjectTarget createAttachedObjectTarget(FaceletContext ctx)
     {
-        // TODO Auto-generated method stub
+        ActionSource2AttachedObjectTargetImpl target = new ActionSource2AttachedObjectTargetImpl();
         
+        if (_name != null)
+        {
+            target.setName(_name.getValueExpression(ctx, String.class));
+        }
+        if (_targets != null)
+        {
+            target.setTargets(_targets.getValueExpression(ctx, String.class));
+        }
+        return target;
     }
 
 }
