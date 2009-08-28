@@ -311,16 +311,7 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
      * @since 2.0
      */
     public static UIComponent getCurrentComponent(FacesContext context) {
-        /*
-         * Return the UIComponent instance that is currently processing. This is equivalent to evaluating the EL
-         * expression "#{component}" and doing a getValue operation on the resultant ValueExpression.
-         */
-        Application application = context.getApplication();
-
-        ELContext elContext = context.getELContext();
-        Object result = application.getELResolver().getValue(context.getELContext(), null, "component");
-
-        return elContext.isPropertyResolved() ? (UIComponent) result : null;
+        return (UIComponent) context.getAttributes().get(UIComponent.CURRENT_COMPONENT);
     }
 
     /**
@@ -738,36 +729,38 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
 
     @SuppressWarnings("unchecked")
     public void popComponentFromEL(FacesContext context) {
-        Map<Object, Object> contextAttributes = context.getAttributes();
-
-        // Pop the current UIComponent from the FacesContext attributes map so that the previous
+        Map<Object, Object> contextAttributes = context.getAttributes();        
+        
+        // Pop the current UIComponent from the FacesContext attributes map so that the previous 
         // UIComponent, if any, becomes the current component.
-        Stack<UIComponent> componentStack = (Stack<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
-
+        Deque<UIComponent> componentStack = (Deque<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
+        
         UIComponent newCurrent = null;
-        if (componentStack != null && !componentStack.isEmpty()) {
+        if (componentStack != null && !componentStack.isEmpty())
+        {
             newCurrent = componentStack.pop();
         }
-        UIComponent oldCurrent = (UIComponent) contextAttributes.put(UIComponent.CURRENT_COMPONENT, newCurrent);
-
-        if (oldCurrent != null && oldCurrent._isCompositeComponent()) {
-            if (componentStack != null && !componentStack.isEmpty())
+        UIComponent oldCurrent = (UIComponent)contextAttributes.put(UIComponent.CURRENT_COMPONENT, newCurrent);
+        
+        if (oldCurrent != null && oldCurrent._isCompositeComponent())
+        {
+            // Recalculate the current composite component
+            if (newCurrent != null)
             {
-                newCurrent = componentStack.peek();
-            }
-            else
-            {
-                newCurrent = null;
-            }
-        }
-        contextAttributes.put(UIComponent.CURRENT_COMPONENT, newCurrent);
-
-        // Find and put (if exists) the current composite component into the EL.
-        if (componentStack != null && !componentStack.isEmpty()) {
-            for (UIComponent component : componentStack) {
-                if (component._isCompositeComponent()) {
-                    contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, component);
-                    break;
+                if (newCurrent._isCompositeComponent())
+                {
+                    contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, newCurrent);
+                }
+                else
+                {
+                    for (UIComponent component : componentStack)
+                    {
+                        if (component._isCompositeComponent())
+                        {
+                            contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, component);
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -775,16 +768,28 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
 
     @SuppressWarnings("unchecked")
     public void pushComponentToEL(FacesContext context, UIComponent component) {
-        Map<Object, Object> contextAttributes = context.getAttributes();
-        Stack<UIComponent> componentStack = (Stack<UIComponent>) contextAttributes.get(_COMPONENT_STACK);
-        if (componentStack == null) {
-            componentStack = new Stack<UIComponent>();
-            contextAttributes.put(_COMPONENT_STACK, componentStack);
+        Map<Object, Object> contextAttributes = context.getAttributes();        
+        UIComponent currentComponent = (UIComponent) contextAttributes.get(UIComponent.CURRENT_COMPONENT);
+        
+        if(currentComponent != null)
+        {
+            Deque<UIComponent> componentStack = (Deque<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
+            if(componentStack == null)
+            {
+                componentStack = new ArrayDeque<UIComponent>();
+                contextAttributes.put(UIComponent._COMPONENT_STACK, componentStack);
+            }
+            
+            componentStack.push(currentComponent);
         }
-
-        componentStack.push(component);
+        
+        // Push the current UIComponent this to the FacesContext  attribute map using the key CURRENT_COMPONENT 
+        // saving the previous UIComponent associated with CURRENT_COMPONENT for a subsequent call to 
+        // popComponentFromEL(javax.faces.context.FacesContext).
         contextAttributes.put(UIComponent.CURRENT_COMPONENT, component);
-        if (component._isCompositeComponent()) {
+ 
+        if (component._isCompositeComponent())
+        {
             contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, component);
         }
     }
