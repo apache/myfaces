@@ -25,6 +25,8 @@ import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 
 /**
@@ -35,18 +37,36 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 public class ExtensionHandler extends TagHandler
 {
 
+    private static final Log log = LogFactory.getLog(ExtensionHandler.class);
+    
     public ExtensionHandler(TagConfig config)
     {
         super(config);
-        // TODO Auto-generated constructor stub
     }
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {
-        // TODO Auto-generated method stub
+        // TODO: In theory the xml data inside this tag should be saved,
+        // but the spec does not say where and how this should be done.
+        // For now we just prevent execute any handler inside this tag.
+        // As soon JSR-276 is available, some behavior for this tag
+        // should be added.
+        CompositeComponentBeanInfo beanInfo = 
+            (CompositeComponentBeanInfo) parent.getAttributes()
+            .get(UIComponent.BEANINFO_KEY);
         
+        if (beanInfo == null)
+        {
+            if (log.isErrorEnabled())
+            {
+                log.error("Cannot found composite bean descriptor UIComponent.BEANINFO_KEY ");
+            }
+            return;
+        }
+        
+        //BeanDescriptor beanDescriptor = beanInfo.getBeanDescriptor();
     }
 
 }
