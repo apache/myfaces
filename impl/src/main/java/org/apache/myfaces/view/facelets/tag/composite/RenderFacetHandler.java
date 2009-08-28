@@ -18,35 +18,63 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite;
 
-import java.io.IOException;
-
 import javax.faces.component.UIComponent;
+import javax.faces.view.facelets.ComponentConfig;
+import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagHandler;
+import javax.faces.view.facelets.TagAttribute;
+import javax.faces.view.facelets.TagException;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 
 /**
+ * Render the facet defined on the composite component body to the current location
+ * 
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
 @JSFFaceletTag(name="composite:renderFacet")
-public class RenderFacetHandler extends TagHandler
+public class RenderFacetHandler extends ComponentHandler
 {
-
-    public RenderFacetHandler(TagConfig config)
+    /**
+     * The name that identify the current facet.
+     */
+    @JSFFaceletAttribute(name="name",
+            className="javax.el.ValueExpression",
+            deferredValueType="java.lang.String")
+    protected final TagAttribute _name;
+    
+    /**
+     * Define if the facet to be inserted is required or not for every instance of
+     * this composite component.
+     */
+    @JSFFaceletAttribute(name="required",
+            className="javax.el.ValueExpression",
+            deferredValueType="boolean")
+    protected final TagAttribute _required;
+    
+    public RenderFacetHandler(ComponentConfig config)
     {
         super(config);
-        // TODO Auto-generated constructor stub
+        _name = getRequiredAttribute("name");
+        _required = getAttribute("required");
     }
 
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException
+    public void onComponentPopulated(FaceletContext ctx, UIComponent c,
+            UIComponent parent)
     {
-        // TODO Auto-generated method stub
+        UIComponent parentCompositeComponent = UIComponent.getCurrentCompositeComponent(ctx.getFacesContext());
         
-    }
+        String facetName = _name.getValue(ctx);
 
+        if (_required != null && _required.getBoolean(ctx) && parentCompositeComponent.getFacet(facetName) == null)
+        {
+            throw new TagException(this.tag, "Cannot found facet with name "+facetName+" in composite component "
+                    +parentCompositeComponent.getClientId(ctx.getFacesContext()));
+        }
+        
+        c.getAttributes().put(UIComponent.FACETS_KEY, facetName);
+    }
 }
