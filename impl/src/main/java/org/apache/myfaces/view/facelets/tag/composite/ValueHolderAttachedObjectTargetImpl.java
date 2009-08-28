@@ -19,39 +19,19 @@
 package org.apache.myfaces.view.facelets.tag.composite;
 
 import javax.faces.view.ValueHolderAttachedObjectTarget;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagConfig;
-
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 
 /**
+ * 
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-@JSFFaceletTag(name="composite:valueHolder")
-public class ValueHolderHandler extends AttachedObjectTargetHandler<ValueHolderAttachedObjectTarget>
+public class ValueHolderAttachedObjectTargetImpl extends
+        AttachedObjectTargetImpl implements ValueHolderAttachedObjectTarget
 {
 
-    public ValueHolderHandler(TagConfig config)
-    {
-        super(config);
-    }
-
-    @Override
-    protected ValueHolderAttachedObjectTarget createAttachedObjectTarget(
-            FaceletContext ctx)
-    {
-        ValueHolderAttachedObjectTargetImpl target = new ValueHolderAttachedObjectTargetImpl();
-        
-        if (_name != null)
-        {
-            target.setName(_name.getValueExpression(ctx, String.class));
-        }
-        if (_targets != null)
-        {
-            target.setTargets(_targets.getValueExpression(ctx, String.class));
-        }
-        return target;
-    }
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -8906008286971349133L;
 
 }
