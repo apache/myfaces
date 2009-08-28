@@ -19,38 +19,19 @@
 package org.apache.myfaces.view.facelets.tag.composite;
 
 import javax.faces.view.EditableValueHolderAttachedObjectTarget;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagConfig;
-
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 
 /**
+ * 
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-@JSFFaceletTag(name="composite:editableValueHolder")
-public class EditableValueHolderHandler extends AttachedObjectTargetHandler<EditableValueHolderAttachedObjectTarget>
+public class EditableValueHolderAttachedObjectTargetImpl extends
+        AttachedObjectTargetImpl implements EditableValueHolderAttachedObjectTarget
 {
 
-    public EditableValueHolderHandler(TagConfig config)
-    {
-        super(config);
-    }
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -9102891289180454L;
 
-    @Override
-    protected EditableValueHolderAttachedObjectTarget createAttachedObjectTarget(
-            FaceletContext ctx)
-    {
-        EditableValueHolderAttachedObjectTargetImpl target = new EditableValueHolderAttachedObjectTargetImpl();
-        
-        if (_name != null)
-        {
-            target.setName(_name.getValueExpression(ctx, String.class));
-        }
-        if (_targets != null)
-        {
-            target.setTargets(_targets.getValueExpression(ctx, String.class));
-        }
-        return target;
-    }
 }
