@@ -21,26 +21,40 @@ package org.apache.myfaces.view.facelets.tag.composite;
 import java.io.IOException;
 
 import javax.faces.component.UIComponent;
+import javax.faces.event.ComponentSystemEvent;
+import javax.faces.event.ComponentSystemEventListener;
+import javax.faces.event.PostAddToViewEvent;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagConfig;
+import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 
 /**
+ * Insert or move the facet from the composite component body to the expected location.
+ * 
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
 @JSFFaceletTag(name="composite:insertFacet")
 public class InsertFacetHandler extends TagHandler
 {
+    /**
+     * The name that identify the current facet.
+     */
     @JSFFaceletAttribute(name="name",
             className="javax.el.ValueExpression",
             deferredValueType="java.lang.String")
     protected final TagAttribute _name;
     
+    /**
+     * Define if the facet to be inserted is required or not for every instance of
+     * this composite component.
+     */
     @JSFFaceletAttribute(name="required",
             className="javax.el.ValueExpression",
             deferredValueType="boolean")
@@ -57,28 +71,44 @@ public class InsertFacetHandler extends TagHandler
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {
-        // TODO: Add "required" behavior: "... If true, and there is no 
-        // such facet present on the top level component, a 
-        // TagException must be thrown, containing the Location, 
-        // the facet name, and a localized descriptive error message...."
-        
         String facetName = _name.getValue(ctx);
         
-        UIComponent parentCompositeComponent = 
-            UIComponent.getCurrentCompositeComponent(ctx.getFacesContext());
+        UIComponent parentCompositeComponent = ((AbstractFaceletContext)ctx).getCompositeComponentFromStack();
         
-        UIComponent facetComponent = parentCompositeComponent.getFacet(facetName);
-        
-        if (facetComponent != null)
+        if (_required != null && _required.getBoolean(ctx) && parentCompositeComponent.getFacet(facetName) == null)
         {
-            parent.getFacets().put(facetName, facetComponent);
+            throw new TagException(this.tag, "Cannot found facet with name "+facetName+" in composite component "
+                    +parentCompositeComponent.getClientId(ctx.getFacesContext()));
         }
         
-        //TODO: Reset clientId calling setId() when necessary            
-        //for (UIComponent child : childList)
-        //{
-        //    child.setId(child.getId());
-        //}
+        parentCompositeComponent.subscribeToEvent(PostAddToViewEvent.class, 
+                new RelocateFacetListener(parent, facetName));
     }
 
+    public static final class RelocateFacetListener 
+        implements ComponentSystemEventListener
+    {
+        private final UIComponent _targetComponent;
+        
+        private final String _facetName;
+    
+        public RelocateFacetListener(UIComponent targetComponent, String facetName)
+        {
+            _targetComponent = targetComponent;
+            _facetName = facetName;
+        }
+        
+        @Override
+        public void processEvent(ComponentSystemEvent event)
+        {
+            UIComponent parentCompositeComponent = event.getComponent();
+            
+            UIComponent facetComponent = parentCompositeComponent.getFacet(_facetName);
+            
+            if (facetComponent != null)
+            {
+                _targetComponent.getFacets().put(_facetName, facetComponent);
+            }
+        }
+    }
 }
