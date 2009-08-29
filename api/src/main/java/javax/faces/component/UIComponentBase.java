@@ -87,6 +87,21 @@ public abstract class UIComponentBase extends UIComponent
     private UIComponent _parent = null;
     private boolean _transient = false;
 
+    /**
+     * This map holds ClientBehavior instances.
+     * 
+     *  Note that BehaviorBase implements PartialStateHolder, so this class 
+     *  should deal with that fact on clearInitialState() and 
+     *  markInitialState() methods.
+     * 
+     *  Also, the map used by this instance is not set from outside this class.
+     *  
+     *  Note it is possible (but maybe not expected/valid) to manipulate 
+     *  the values of the map(the list) but not put instances on the map 
+     *  directly, because ClientBehaviorHolder.getClientBehaviors says that 
+     *  this method should return a non null unmodificable map.
+     *  
+     */
     private Map<String, List<ClientBehavior>> _behaviorsMap = null;
     
     public UIComponentBase()
@@ -315,23 +330,6 @@ public abstract class UIComponentBase extends UIComponent
         
         if(eventNames.contains(eventName))
         {
-            if (initialStateMarked()) 
-            {
-                if (_behaviorsMap != null) 
-                {
-                    for (String key : _behaviorsMap.keySet()) 
-                    {
-                        for (ClientBehavior curBehavior : _behaviorsMap.get(key)) 
-                        {
-                            if (curBehavior instanceof PartialStateHolder) 
-                            {
-                                ((PartialStateHolder)behavior).clearInitialState();
-                            }
-                        }
-                    }
-                }
-            }
-            
             if(_behaviorsMap == null)
             {
                 _behaviorsMap = new HashMap<String,List<ClientBehavior>>();
@@ -340,12 +338,11 @@ public abstract class UIComponentBase extends UIComponent
             List<ClientBehavior> behaviorsForEvent = _behaviorsMap.get(eventName);
             if(behaviorsForEvent == null)
             {
-                behaviorsForEvent = new ArrayList<ClientBehavior>();
+                behaviorsForEvent = new _DeltaList<ClientBehavior>(new ArrayList<ClientBehavior>());
                 _behaviorsMap.put(eventName, behaviorsForEvent);
             }
             
             behaviorsForEvent.add(behavior);
-            
         }
     }
 
@@ -402,6 +399,13 @@ public abstract class UIComponentBase extends UIComponent
         if (_facesListeners != null)
         {
             _facesListeners.clearInitialState();
+        }
+        if (_behaviorsMap != null)
+        {
+            for (Map.Entry<String, List<ClientBehavior> > entry : _behaviorsMap.entrySet())
+            {
+                ((PartialStateHolder) entry.getValue()).clearInitialState();
+            }
         }
     }
 
@@ -969,6 +973,13 @@ public abstract class UIComponentBase extends UIComponent
         {
             _facesListeners.markInitialState();
         }
+        if (_behaviorsMap != null)
+        {
+            for (Map.Entry<String, List<ClientBehavior> > entry : _behaviorsMap.entrySet())
+            {
+                ((PartialStateHolder) entry.getValue()).markInitialState();
+            }
+        }
     }
 
     @Override
@@ -1503,6 +1514,7 @@ public abstract class UIComponentBase extends UIComponent
             //_id and _clientId was already restored from template
             //and never changes during component life.
             Object facesListenersSaved = saveFacesListenersList(context);
+            Object behaviorsMapSaved = saveBehaviorsMap(context);
             Object stateHelperSaved = null;
             StateHelper stateHelper = getStateHelper(false);
             if (stateHelper != null)
@@ -1510,25 +1522,26 @@ public abstract class UIComponentBase extends UIComponent
                 stateHelperSaved = stateHelper.saveState(context);
             }
             
-            if (facesListenersSaved == null && stateHelperSaved == null)
+            if (facesListenersSaved == null && stateHelperSaved == null && behaviorsMapSaved == null)
             {
                 return null;
             }
             
-            return new Object[] {facesListenersSaved, stateHelperSaved};
+            return new Object[] {facesListenersSaved, stateHelperSaved, behaviorsMapSaved};
         }
         else
         {
             //Full
-            Object values[] = new Object[4];
+            Object values[] = new Object[5];
             values[0] = saveFacesListenersList(context);
             StateHelper stateHelper = getStateHelper(false);
             if (stateHelper != null)
             {
                 values[1] = stateHelper.saveState(context);
             }
-            values[2] = _id;
-            values[3] = _clientId;
+            values[2] = saveBehaviorsMap(context);
+            values[3] = _id;
+            values[4] = _clientId;
 
             return values;
         }
@@ -1553,7 +1566,7 @@ public abstract class UIComponentBase extends UIComponent
         
         Object values[] = (Object[]) state;
         
-        if ( values.length == 4 && initialStateMarked())
+        if ( values.length == 5 && initialStateMarked())
         {
             //Delta mode is active, but we are restoring a full state.
             //we need to clear the initial state, to restore state without
@@ -1563,14 +1576,15 @@ public abstract class UIComponentBase extends UIComponent
         
         if (values[0] instanceof _AttachedDeltaWrapper)
         {
-            //Delta
-            if (_facesListeners != null)
-            {
+            //Delta: check for null is not necessary since _facesListener field
+            //is only set once and never reset
+            //if (_facesListeners != null)
+            //{
                 ((StateHolder)_facesListeners).restoreState(context,
                         ((_AttachedDeltaWrapper) values[0]).getWrappedStateObject());
-            }
+            //}
         }
-        else if (values[0] != null || (values.length == 4))
+        else if (values[0] != null || (values.length == 5))
         {
             //Full
             _facesListeners = (_DeltaList<FacesListener>)
@@ -1583,10 +1597,21 @@ public abstract class UIComponentBase extends UIComponent
         
         getStateHelper().restoreState(context, values[1]);
         
-        if (values.length == 4)
+        if (values.length == 5)
         {
-            _id = (String) values[2];
-            _clientId = (String) values[3];
+            //Full restore
+            restoreFullBehaviorsMap(context, values[2]);
+        }
+        else
+        {
+            //Delta restore
+            restoreDeltaBehaviorsMap(context, values[2]);
+        }
+        
+        if (values.length == 5)
+        {
+            _id = (String) values[3];
+            _clientId = (String) values[4];
         }
     }
     
@@ -1608,7 +1633,100 @@ public abstract class UIComponentBase extends UIComponent
         {
             return saveAttachedState(facesContext,_facesListeners);
         }            
-    }    
+    }
+
+    @SuppressWarnings("unchecked")
+    private void restoreFullBehaviorsMap(FacesContext facesContext, Object stateObj)
+    {
+        if (stateObj != null)
+        {
+            Map<String, Object> stateMap = (Map<String, Object>) stateObj;
+            int initCapacity = (stateMap.size() * 4 + 3) / 3;
+            _behaviorsMap = new HashMap<String,  List<ClientBehavior> >(initCapacity);
+            for (Map.Entry<String, Object> entry : stateMap.entrySet())
+            {
+                _behaviorsMap.put(entry.getKey(), (List<ClientBehavior>) restoreAttachedState(facesContext, entry.getValue()));
+            }
+        }
+        else
+        {
+            _behaviorsMap = null;
+        }        
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void restoreDeltaBehaviorsMap(FacesContext facesContext, Object stateObj)
+    {
+        if (stateObj != null)
+        {
+            Map<String, Object> stateMap = (Map<String, Object>) stateObj;
+            int initCapacity = (stateMap.size() * 4 + 3) / 3;
+            if (_behaviorsMap == null)
+            {
+                _behaviorsMap = new HashMap<String,  List<ClientBehavior> >(initCapacity);
+            }
+            for (Map.Entry<String, Object> entry : stateMap.entrySet())
+            {
+                Object savedObject = entry.getValue(); 
+                if (savedObject instanceof _AttachedDeltaWrapper)
+                {
+                    StateHolder holderList = (StateHolder) _behaviorsMap.get(entry.getKey());
+                    holderList.restoreState(facesContext, ((_AttachedDeltaWrapper) savedObject).getWrappedStateObject());
+                }
+                else
+                {
+                    _behaviorsMap.put(entry.getKey(), (List<ClientBehavior>) restoreAttachedState(facesContext, savedObject));
+                }
+            }
+        }
+    }
+    
+    private Object saveBehaviorsMap(FacesContext facesContext)
+    {
+        if (_behaviorsMap != null)
+        {
+            if (initialStateMarked())
+            {
+                HashMap<String, Object> stateMap = new HashMap<String, Object>(_behaviorsMap.size(), 1);
+                
+                for (Map.Entry<String, List<ClientBehavior> > entry : _behaviorsMap.entrySet())
+                {
+                    // The list is always an instance of _DeltaList so we can cast to
+                    // PartialStateHolder 
+                    PartialStateHolder holder = (PartialStateHolder) entry.getValue();
+                    if (holder.initialStateMarked())
+                    {
+                        Object attachedState = holder.saveState(facesContext);
+                        if (attachedState != null)
+                        {
+                            stateMap.put(entry.getKey(), new _AttachedDeltaWrapper(_facesListeners.getClass(),
+                                    attachedState));
+                        }
+                    }
+                    else
+                    {
+                        stateMap.put(entry.getKey(), saveAttachedState(facesContext, holder));
+                    }
+                }
+                return stateMap;
+            }
+            else
+            {
+                //Save it in the traditional way
+                HashMap<String, Object> stateMap = 
+                    new HashMap<String, Object>(_behaviorsMap.size(), 1);
+                for (Map.Entry<String, List<ClientBehavior> > entry : _behaviorsMap.entrySet())
+                {
+                    stateMap.put(entry.getKey(), saveAttachedState(facesContext, entry.getValue()));
+                }
+                return stateMap;
+            }
+        }
+        else
+        {
+            return null;
+        }
+    } 
 
     /*
     private Object saveBindings(FacesContext context)
