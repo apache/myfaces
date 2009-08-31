@@ -380,7 +380,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             
             for (AttachedObjectTarget currentTarget : targetList)
             {
-                if (  forValue.equals(currentTarget.getName()) &&
+                if (  ( forValue != null && forValue.equals(currentTarget.getName()) ) &&
                       ((currentTarget  instanceof ActionSource2AttachedObjectTarget &&
                        currentHandler instanceof ActionSource2AttachedObjectHandler) ||
                       (currentTarget  instanceof EditableValueHolderAttachedObjectTarget &&
@@ -427,7 +427,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                     String eventName = ((BehaviorHolderAttachedObjectHandler) currentHandler).getEventName();
                     boolean isDefaultEvent = ((BehaviorHolderAttachedObjectTarget) currentTarget).isDefaultEvent(); 
                     
-                    if (forValue.equals(eventName) || (eventName == null && isDefaultEvent))
+                    if ( (eventName != null && eventName.equals(currentTarget.getName()) ) || 
+                         (eventName == null && isDefaultEvent) )
                     {
                         for (UIComponent component : currentTarget.getTargets(topLevelComponent))
                         {
