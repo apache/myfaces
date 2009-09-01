@@ -20,9 +20,14 @@ package org.apache.myfaces.view.facelets.tag.jsf.core;
 
 import java.io.IOException;
 
+import javax.el.MethodExpression;
 import javax.faces.component.UIComponent;
+import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AbortProcessingException;
+import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.event.AjaxBehaviorListener;
 import javax.faces.view.BehaviorHolderAttachedObjectHandler;
 import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
@@ -50,84 +55,71 @@ import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResource
  * <li>Since this tag attach objects to UIComponent instances, and those instances 
  * implements Behavior interface, this component should implement 
  * BehaviorHolderAttachedObjectHandler interface.</li>
- * <li></li>
- * <li></li>
- * <li></li>
- * <li></li>
- * <li></li>
+ * <li>f:ajax does not support binding property. In theory we should do something similar
+ * to f:convertDateTime tag does: extends from ConverterHandler and override setAttributes
+ * method, but in this case BehaviorTagHandlerDelegate has binding property defined, so
+ * if we extend from BehaviorHandler we add binding support to f:ajax.</li>
+ * <li>This tag works as a attached object handler, but note on the api there is no component
+ * to define a target for a behavior. See comment inside apply() method.</li>
  * </ul>
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-@JSFFaceletTag(name="f:ajax")
-public class AjaxHandler extends TagHandler implements BehaviorHolderAttachedObjectHandler
+@JSFFaceletTag(name = "f:ajax")
+public class AjaxHandler extends TagHandler implements
+        BehaviorHolderAttachedObjectHandler
 {
+
+    public final static Class<?>[] AJAX_BEHAVIOR_LISTENER_SIG = new Class<?>[] { AjaxBehaviorEvent.class };
 
     /**
      * 
      */
-    @JSFFaceletAttribute(name="disabled",
-            className="javax.el.ValueExpression",
-            deferredValueType="java.lang.Boolean")
+    @JSFFaceletAttribute(name = "disabled", className = "javax.el.ValueExpression", deferredValueType = "java.lang.Boolean")
     private TagAttribute _disabled;
-    
+
     /**
      * 
      */
-    @JSFFaceletAttribute(name="event",
-            className="javax.el.ValueExpression",
-            deferredValueType="java.lang.String")
+    @JSFFaceletAttribute(name = "event", className = "javax.el.ValueExpression", deferredValueType = "java.lang.String")
     private TagAttribute _event;
-    
+
     /**
      * 
      */
-    @JSFFaceletAttribute(name="execute",
-            className="javax.el.ValueExpression",
-            deferredValueType="java.lang.Object")
+    @JSFFaceletAttribute(name = "execute", className = "javax.el.ValueExpression", deferredValueType = "java.lang.Object")
     private TagAttribute _execute;
-    
+
     /**
      * 
      */
-    @JSFFaceletAttribute(name="immediate",
-            className="javax.el.ValueExpression",
-            deferredValueType="java.lang.Boolean")
+    @JSFFaceletAttribute(name = "immediate", className = "javax.el.ValueExpression", deferredValueType = "java.lang.Boolean")
     private TagAttribute _immediate;
-    
+
     /**
      * 
      */
-    @JSFFaceletAttribute(name="listener",
-            className="javax.el.MethodExpression",
-            deferredMethodSignature=
-"public void m(javax.faces.event.AjaxBehaviorEvent evt) throws javax.faces.event.AbortProcessingException")
+    @JSFFaceletAttribute(name = "listener", className = "javax.el.MethodExpression", deferredMethodSignature = "public void m(javax.faces.event.AjaxBehaviorEvent evt) throws javax.faces.event.AbortProcessingException")
     private TagAttribute _listener;
-    
+
     /**
      * 
      */
-    @JSFFaceletAttribute(name="onevent",
-            className="javax.el.ValueExpression",
-            deferredValueType="java.lang.String")
+    @JSFFaceletAttribute(name = "onevent", className = "javax.el.ValueExpression", deferredValueType = "java.lang.String")
     private TagAttribute _onevent;
-    
+
     /**
      * 
      */
-    @JSFFaceletAttribute(name="onerror",
-            className="javax.el.ValueExpression",
-            deferredValueType="java.lang.String")
+    @JSFFaceletAttribute(name = "onerror", className = "javax.el.ValueExpression", deferredValueType = "java.lang.String")
     private TagAttribute _onerror;
-    
+
     /**
      * 
      */
-    @JSFFaceletAttribute(name="render",
-            className="javax.el.ValueExpression",
-            deferredValueType="java.lang.Object")
+    @JSFFaceletAttribute(name = "render", className = "javax.el.ValueExpression", deferredValueType = "java.lang.Object")
     private TagAttribute _render;
-    
+
     public AjaxHandler(TagConfig config)
     {
         super(config);
@@ -156,11 +148,22 @@ public class AjaxHandler extends TagHandler implements BehaviorHolderAttachedObj
         }
         else if (UIComponent.isCompositeComponent(parent))
         {
-            CompositeComponentResourceTagHandler.addAttachedObjectHandler(parent, this);
+            // It is supposed that for composite components, this tag should
+            // add itself as a target, but note that on whole api does not exists
+            // some tag that expose client behaviors as targets for composite
+            // components. In RI, there exists a tag called composite:clientBehavior,
+            // but does not appear on spec or javadoc, maybe because this could be
+            // understand as an implementation detail, after all there exists a key
+            // called AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY that could be
+            // used to create a tag outside jsf implementation to attach targets.
+            CompositeComponentResourceTagHandler.addAttachedObjectHandler(
+                    parent, this);
         }
         else
         {
-            throw new TagException(this.tag, "Parent is not composite component or of type ClientBehaviorHolder, type is: " + parent);
+            throw new TagException(this.tag,
+                    "Parent is not composite component or of type ClientBehaviorHolder, type is: "
+                            + parent);
         }
     }
 
@@ -192,7 +195,93 @@ public class AjaxHandler extends TagHandler implements BehaviorHolderAttachedObj
     @Override
     public void applyAttachedObject(FacesContext context, UIComponent parent)
     {
-        // TODO Auto-generated method stub
+        // Retrieve the current FaceletContext from FacesContext object
+        FaceletContext faceletContext = (FaceletContext) context
+                .getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
+
+        // cast to a ClientBehaviorHolder
+        ClientBehaviorHolder cvh = (ClientBehaviorHolder) parent;
+        
+        // TODO: check if the behavior could be applied to the current parent
+        // For run tests it is not necessary, so we let this one pending.
+
+        AjaxBehavior ajaxBehavior = (AjaxBehavior) context.getApplication()
+                .createBehavior(AjaxBehavior.BEHAVIOR_ID);
+
+        if (_disabled != null)
+        {
+            if (_disabled.isLiteral())
+            {
+                ajaxBehavior.setDisabled(_disabled.getBoolean(faceletContext));
+            }
+            else
+            {
+                ajaxBehavior.setValueExpression("disabled", _disabled
+                        .getValueExpression(faceletContext, Boolean.class));
+            }
+        }
+        if (_execute != null)
+        {
+            ajaxBehavior.setValueExpression("execute", _execute
+                    .getValueExpression(faceletContext, Object.class));
+        }
+        if (_immediate != null)
+        {
+            if (_immediate.isLiteral())
+            {
+                ajaxBehavior
+                        .setImmediate(_immediate.getBoolean(faceletContext));
+            }
+            else
+            {
+                ajaxBehavior.setValueExpression("immediate", _immediate
+                        .getValueExpression(faceletContext, Boolean.class));
+            }
+        }
+        if (_listener != null)
+        {
+            MethodExpression expr = _listener.getMethodExpression(
+                    faceletContext, Void.TYPE, AJAX_BEHAVIOR_LISTENER_SIG);
+            AjaxBehaviorListener abl = new AjaxBehaviorListenerImpl(expr);
+            ajaxBehavior.addAjaxBehaviorListener(abl);
+        }
+        if (_onerror != null)
+        {
+            if (_onerror.isLiteral())
+            {
+                ajaxBehavior.setOnerror(_onerror.getValue(faceletContext));
+            }
+            else
+            {
+                ajaxBehavior.setValueExpression("onerror", _onerror
+                        .getValueExpression(faceletContext, String.class));
+            }
+        }
+        if (_onevent != null)
+        {
+            if (_onevent.isLiteral())
+            {
+                ajaxBehavior.setOnevent(_onevent.getValue(faceletContext));
+            }
+            else
+            {
+                ajaxBehavior.setValueExpression("onevent", _onevent
+                        .getValueExpression(faceletContext, String.class));
+            }
+        }
+        if (_render != null)
+        {
+            ajaxBehavior.setValueExpression("render", _render
+                    .getValueExpression(faceletContext, Object.class));
+        }
+
+        String eventName = getEventName();
+        if (eventName == null)
+        {
+            eventName = cvh.getDefaultEventName();
+        }
+
+        cvh.addClientBehavior(eventName, ajaxBehavior);
     }
 
     /**
@@ -204,5 +293,30 @@ public class AjaxHandler extends TagHandler implements BehaviorHolderAttachedObj
     public String getFor()
     {
         return null;
+    }
+
+    /**
+     * Wraps a method expression in a AjaxBehaviorListener 
+     * TODO: This instance should be StateHolder or Serializable,
+     * since ClientBehaviorBase implements PartialStateHolder
+     *
+     */
+    private final static class AjaxBehaviorListenerImpl implements
+            AjaxBehaviorListener
+    {
+        private final MethodExpression _expr;
+
+        public AjaxBehaviorListenerImpl(MethodExpression expr)
+        {
+            _expr = expr;
+        }
+
+        @Override
+        public void processAjaxBehavior(AjaxBehaviorEvent event)
+                throws AbortProcessingException
+        {
+            _expr.invoke(FacesContext.getCurrentInstance().getELContext(),
+                    new Object[] { event });
+        }
     }
 }

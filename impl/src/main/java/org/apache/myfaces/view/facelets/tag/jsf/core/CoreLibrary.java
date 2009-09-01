@@ -50,6 +50,8 @@ public final class CoreLibrary extends AbstractTagLibrary
 
         this.addTagHandler("actionListener", ActionListenerHandler.class);
 
+        this.addTagHandler("ajax", AjaxHandler.class);
+        
         this.addTagHandler("attribute", AttributeHandler.class);
 
         this.addConverter("convertDateTime", DateTimeConverter.CONVERTER_ID, ConvertDateTimeHandler.class);
