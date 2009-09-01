@@ -32,6 +32,8 @@ import javax.faces.component.ActionSource;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIPanel;
+import javax.faces.component.UIViewRoot;
+import javax.faces.component.UniqueIdVendor;
 import javax.faces.component.ValueHolder;
 import javax.faces.context.FacesContext;
 import javax.faces.view.AttachedObjectHandler;
@@ -48,6 +50,7 @@ import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
 import org.apache.myfaces.view.facelets.tag.jsf.ActionSourceRule;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentBuilderHandler;
+import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.tag.jsf.EditableValueHolderRule;
 import org.apache.myfaces.view.facelets.tag.jsf.ValueHolderRule;
 
@@ -179,6 +182,18 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         UIPanel compositeFacetPanel = (UIPanel)
             faceletContext.getFacesContext().getApplication().createComponent(UIPanel.COMPONENT_TYPE);
         compositeComponentBase.getFacets().put(UIComponent.COMPOSITE_FACET_NAME, compositeFacetPanel);
+        
+        // Set an id to the created facet component, to prevent id generation and make
+        // partial state saving work without problem.
+        UniqueIdVendor root = ComponentSupport.getClosestUniqueIdVendor(faceletContext.getFacesContext(), compositeFacetPanel);
+        if (root != null)
+        {
+            String uid = (root instanceof UIViewRoot) ?
+                    ((UIViewRoot)root).createUniqueId() :
+                        root.createUniqueId(faceletContext.getFacesContext(),
+                                faceletContext.generateUniqueId(this.getTagId()));
+            compositeFacetPanel.setId(uid);
+        }
         
         VariableMapper orig = faceletContext.getVariableMapper();
         AbstractFaceletContext actx = (AbstractFaceletContext) faceletContext;
