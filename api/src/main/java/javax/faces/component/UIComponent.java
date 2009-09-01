@@ -19,18 +19,31 @@
 package javax.faces.component;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.PropertyResourceBundle;
+import java.util.ResourceBundle;
+import java.util.Set;
 
-import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
-import javax.faces.application.Application;
 import javax.faces.application.Resource;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitResult;
 import javax.faces.component.visit.VisitHint;
+import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
@@ -69,7 +82,7 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
     public static final String FACETS_KEY = "javax.faces.component.FACETS_KEY";
     public static final String VIEW_LOCATION_KEY = "javax.faces.component.VIEW_LOCATION_KEY";
     private static final String _COMPONENT_STACK = "componentStack:" + UIComponent.class.getName();
-    private Map<Class<? extends SystemEvent>, List<SystemEventListener>> _systemEventListenerClassMap;
+    Map<Class<? extends SystemEvent>, List<SystemEventListener>> _systemEventListenerClassMap;
     
     @Deprecated
     protected Map<String, ValueExpression> bindings;
@@ -591,7 +604,7 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
         List<SystemEventListener> listeners = _systemEventListenerClassMap.get(eventClass);
         // Make sure the list for class exists
         if (listeners == null) {
-            listeners = new ArrayList<SystemEventListener>(2);
+            listeners = new _DeltaList<SystemEventListener>(new ArrayList<SystemEventListener>(2));
             _systemEventListenerClassMap.put(eventClass, listeners);
         }
 

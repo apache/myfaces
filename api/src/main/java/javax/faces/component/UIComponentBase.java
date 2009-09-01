@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
@@ -43,6 +42,8 @@ import javax.faces.event.PhaseId;
 import javax.faces.event.PostAddToViewEvent;
 import javax.faces.event.PreRemoveFromViewEvent;
 import javax.faces.event.PreRenderComponentEvent;
+import javax.faces.event.SystemEvent;
+import javax.faces.event.SystemEventListener;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.render.Renderer;
@@ -403,6 +404,14 @@ public abstract class UIComponentBase extends UIComponent
         if (_behaviorsMap != null)
         {
             for (Map.Entry<String, List<ClientBehavior> > entry : _behaviorsMap.entrySet())
+            {
+                ((PartialStateHolder) entry.getValue()).clearInitialState();
+            }
+        }
+        if (_systemEventListenerClassMap != null)
+        {
+            for (Map.Entry<Class<? extends SystemEvent>, List<SystemEventListener>> entry : 
+                _systemEventListenerClassMap.entrySet())
             {
                 ((PartialStateHolder) entry.getValue()).clearInitialState();
             }
@@ -980,6 +989,14 @@ public abstract class UIComponentBase extends UIComponent
                 ((PartialStateHolder) entry.getValue()).markInitialState();
             }
         }
+        if (_systemEventListenerClassMap != null)
+        {
+            for (Map.Entry<Class<? extends SystemEvent>, List<SystemEventListener>> entry : 
+                _systemEventListenerClassMap.entrySet())
+            {
+                ((PartialStateHolder) entry.getValue()).markInitialState();
+            }
+        }
     }
 
     @Override
@@ -1515,6 +1532,7 @@ public abstract class UIComponentBase extends UIComponent
             //and never changes during component life.
             Object facesListenersSaved = saveFacesListenersList(context);
             Object behaviorsMapSaved = saveBehaviorsMap(context);
+            Object systemEventListenerClassMapSaved = saveSystemEventListenerClassMap(context);
             Object stateHelperSaved = null;
             StateHelper stateHelper = getStateHelper(false);
             if (stateHelper != null)
@@ -1522,17 +1540,18 @@ public abstract class UIComponentBase extends UIComponent
                 stateHelperSaved = stateHelper.saveState(context);
             }
             
-            if (facesListenersSaved == null && stateHelperSaved == null && behaviorsMapSaved == null)
+            if (facesListenersSaved == null && stateHelperSaved == null && 
+                behaviorsMapSaved == null && systemEventListenerClassMapSaved == null)
             {
                 return null;
             }
             
-            return new Object[] {facesListenersSaved, stateHelperSaved, behaviorsMapSaved};
+            return new Object[] {facesListenersSaved, stateHelperSaved, behaviorsMapSaved, systemEventListenerClassMapSaved};
         }
         else
         {
             //Full
-            Object values[] = new Object[5];
+            Object values[] = new Object[6];
             values[0] = saveFacesListenersList(context);
             StateHelper stateHelper = getStateHelper(false);
             if (stateHelper != null)
@@ -1540,8 +1559,9 @@ public abstract class UIComponentBase extends UIComponent
                 values[1] = stateHelper.saveState(context);
             }
             values[2] = saveBehaviorsMap(context);
-            values[3] = _id;
-            values[4] = _clientId;
+            values[3] = saveSystemEventListenerClassMap(context);
+            values[4] = _id;
+            values[5] = _clientId;
 
             return values;
         }
@@ -1566,7 +1586,7 @@ public abstract class UIComponentBase extends UIComponent
         
         Object values[] = (Object[]) state;
         
-        if ( values.length == 5 && initialStateMarked())
+        if ( values.length == 6 && initialStateMarked())
         {
             //Delta mode is active, but we are restoring a full state.
             //we need to clear the initial state, to restore state without
@@ -1584,7 +1604,7 @@ public abstract class UIComponentBase extends UIComponent
                         ((_AttachedDeltaWrapper) values[0]).getWrappedStateObject());
             //}
         }
-        else if (values[0] != null || (values.length == 5))
+        else if (values[0] != null || (values.length == 6))
         {
             //Full
             _facesListeners = (_DeltaList<FacesListener>)
@@ -1597,21 +1617,23 @@ public abstract class UIComponentBase extends UIComponent
         
         getStateHelper().restoreState(context, values[1]);
         
-        if (values.length == 5)
+        if (values.length == 6)
         {
             //Full restore
             restoreFullBehaviorsMap(context, values[2]);
+            restoreFullSystemEventListenerClassMap(context, values[3]);
         }
         else
         {
             //Delta restore
             restoreDeltaBehaviorsMap(context, values[2]);
+            restoreDeltaSystemEventListenerClassMap(context, values[3]);
         }
         
-        if (values.length == 5)
+        if (values.length == 6)
         {
-            _id = (String) values[3];
-            _clientId = (String) values[4];
+            _id = (String) values[4];
+            _clientId = (String) values[5];
         }
     }
     
@@ -1726,8 +1748,101 @@ public abstract class UIComponentBase extends UIComponent
         {
             return null;
         }
-    } 
-
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void restoreFullSystemEventListenerClassMap(FacesContext facesContext, Object stateObj)
+    {
+        if (stateObj != null)
+        {
+            Map<Class<? extends SystemEvent>, Object> stateMap = (Map<Class<? extends SystemEvent>, Object>) stateObj;
+            int initCapacity = (stateMap.size() * 4 + 3) / 3;
+            _systemEventListenerClassMap = new HashMap<Class<? extends SystemEvent>, List<SystemEventListener>>(initCapacity);
+            for (Map.Entry<Class<? extends SystemEvent>, Object> entry : stateMap.entrySet())
+            {
+                _systemEventListenerClassMap.put(entry.getKey(), (List<SystemEventListener>) restoreAttachedState(facesContext, entry.getValue()));
+            }
+        }
+        else
+        {
+            _systemEventListenerClassMap = null;
+        }        
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void restoreDeltaSystemEventListenerClassMap(FacesContext facesContext, Object stateObj)
+    {
+        if (stateObj != null)
+        {
+            Map<Class<? extends SystemEvent>, Object> stateMap = (Map<Class<? extends SystemEvent>, Object>) stateObj;
+            int initCapacity = (stateMap.size() * 4 + 3) / 3;
+            if (_systemEventListenerClassMap == null)
+            {
+                _systemEventListenerClassMap = new HashMap<Class<? extends SystemEvent>, List<SystemEventListener>>(initCapacity);
+            }
+            for (Map.Entry<Class<? extends SystemEvent>, Object> entry : stateMap.entrySet())
+            {
+                Object savedObject = entry.getValue(); 
+                if (savedObject instanceof _AttachedDeltaWrapper)
+                {
+                    StateHolder holderList = (StateHolder) _systemEventListenerClassMap.get(entry.getKey());
+                    holderList.restoreState(facesContext, ((_AttachedDeltaWrapper) savedObject).getWrappedStateObject());
+                }
+                else
+                {
+                    _systemEventListenerClassMap.put(entry.getKey(), (List<SystemEventListener>) restoreAttachedState(facesContext, savedObject));
+                }
+            }
+        }
+    }
+    
+    private Object saveSystemEventListenerClassMap(FacesContext facesContext)
+    {
+        if (_systemEventListenerClassMap != null)
+        {
+            if (initialStateMarked())
+            {
+                HashMap<Class<? extends SystemEvent>, Object> stateMap = new HashMap<Class<? extends SystemEvent>, Object>(_systemEventListenerClassMap.size(), 1);
+                
+                for (Map.Entry<Class<? extends SystemEvent>, List<SystemEventListener> > entry : _systemEventListenerClassMap.entrySet())
+                {
+                    // The list is always an instance of _DeltaList so we can cast to
+                    // PartialStateHolder 
+                    PartialStateHolder holder = (PartialStateHolder) entry.getValue();
+                    if (holder.initialStateMarked())
+                    {
+                        Object attachedState = holder.saveState(facesContext);
+                        if (attachedState != null)
+                        {
+                            stateMap.put(entry.getKey(), new _AttachedDeltaWrapper(_facesListeners.getClass(),
+                                    attachedState));
+                        }
+                    }
+                    else
+                    {
+                        stateMap.put(entry.getKey(), saveAttachedState(facesContext, holder));
+                    }
+                }
+                return stateMap;
+            }
+            else
+            {
+                //Save it in the traditional way
+                HashMap<Class<? extends SystemEvent>, Object> stateMap = 
+                    new HashMap<Class<? extends SystemEvent>, Object>(_systemEventListenerClassMap.size(), 1);
+                for (Map.Entry<Class<? extends SystemEvent>, List<SystemEventListener> > entry : _systemEventListenerClassMap.entrySet())
+                {
+                    stateMap.put(entry.getKey(), saveAttachedState(facesContext, entry.getValue()));
+                }
+                return stateMap;
+            }
+        }
+        else
+        {
+            return null;
+        }
+    }
+    
     /*
     private Object saveBindings(FacesContext context)
     {
