@@ -96,10 +96,10 @@ public class ConverterImplTag extends ConverterELTag
     {
         if (_converterId != null && _converterId.isLiteralText())
         {
-            this.createClassicConverter();
+            return this.createClassicConverter();
         }
         if (_converterIdString != null){
-            this.createClassicConverter();
+            return this.createClassicConverter();
         }
         
         return new DelegateConverter(_converterId, _binding,
