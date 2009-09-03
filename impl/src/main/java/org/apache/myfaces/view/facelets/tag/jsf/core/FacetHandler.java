@@ -43,7 +43,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
         name = "f:facet",
         bodyContent = "JSP", 
         tagClass="javax.faces.webapp.FacetTag")
-public final class FacetHandler extends TagHandler
+public final class FacetHandler extends TagHandler 
+    implements javax.faces.view.facelets.FacetHandler
 {
 
     public static final String KEY = "facelets.FACET_NAME";
@@ -77,5 +78,11 @@ public final class FacetHandler extends TagHandler
         {
             parent.getAttributes().remove(KEY);
         }
+    }
+
+    @Override
+    public String getFacetName(FaceletContext ctx)
+    {
+        return this.name.getValue(ctx);
     }
 }
