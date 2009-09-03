@@ -42,6 +42,7 @@ import javax.faces.view.facelets.TagHandlerDelegate;
 
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
+import org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler;
 
 /**
  *  
@@ -220,9 +221,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
      */
     protected final String getFacetName(FaceletContext ctx, UIComponent parent)
     {
-        // TODO: REFACTOR - "facelets.FACET_NAME" should be a constant somewhere, used to be in FacetHandler
-        //                  from real Facelets
-        return (String) parent.getAttributes().get("facelets.FACET_NAME");
+        return (String) parent.getAttributes().get(FacetHandler.KEY);
     }
 
     /**
