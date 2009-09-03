@@ -23,7 +23,6 @@ import java.io.IOException;
 import javax.el.ValueExpression;
 import javax.faces.FactoryFinder;
 import javax.faces.application.FacesMessage;
-import javax.faces.component.UIForm.PropertyKeys;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;

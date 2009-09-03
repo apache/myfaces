@@ -1642,8 +1642,14 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                 
                 // FIXME: spec doesn't say that this is necessary, but we blow up later if
                 // the viewroot isn't available from the FacesContext.
-                
                 context.setViewRoot(view);
+                
+                // TODO: -= Leonardo Uribe =- This part is related to section 2.5.5 of jsf 2.0 spec.
+                // In theory what we need here is fill UIViewRoot.METADATA_FACET_NAME facet
+                // with UIViewParameter instances. Later, ViewHandlerImpl.getBookmarkableURL(),
+                // ViewHandlerImpl.getRedirectURL() and UIViewRoot.encodeEnd uses them. 
+                // For now, the only way to do this is call buildView(context,view) method, but 
+                // this is a waste of resources. We need to find another way to handle facelets view metadata.
                 buildView(context, view);
                 
                 return view;
