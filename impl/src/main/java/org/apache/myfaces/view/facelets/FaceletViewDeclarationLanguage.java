@@ -1579,7 +1579,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         // Per spec section 11.1.3, the default value for the partial state saving feature needs
         // to be true if 2.0, false otherwise.
         
-        partialStateSavingDefault = facesVersion.equals ("2.0");
+        partialStateSavingDefault = "2.0".equals(facesVersion);
         
         // In jsf 2.0 this code evolve as PartialStateSaving feature
         //_buildBeforeRestore = _getBooleanParameter(context, PARAM_BUILD_BEFORE_RESTORE, false);
