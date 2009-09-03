@@ -22,6 +22,7 @@ import java.beans.BeanInfo;
 import java.io.IOException;
 import java.util.Iterator;
 
+import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
 import javax.faces.application.Resource;
 import javax.faces.component.UIComponent;
@@ -39,10 +40,10 @@ import javax.faces.view.StateManagementStrategy;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.ViewMetadata;
 
-import org.apache.myfaces.component.visit.VisitContextFactoryImpl;
 import org.apache.myfaces.renderkit.html.HtmlButtonRenderer;
 import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
+import org.apache.myfaces.view.ViewMetadataBase;
 import org.apache.shale.test.base.AbstractJsfTestCase;
 import org.apache.shale.test.mock.MockRenderKit;
 
@@ -242,7 +243,25 @@ public class DefaultFaceletsStateManagementStrategyTest extends
         @Override
         public ViewMetadata getViewMetadata(FacesContext context, String viewId)
         {
-            return null;
+            return new ViewMetadataBase(viewId)
+            {
+
+                @Override
+                public UIViewRoot createMetadataView(FacesContext context)
+                {
+                    try
+                    {
+                        context.setProcessingEvents(false);
+                        String viewId = getViewId();
+                        UIViewRoot view = createView(context, viewId);
+                        return view;
+                    }
+                    finally
+                    {
+                        context.setProcessingEvents(true);
+                    }
+                }                
+            };
         }
 
         @Override
