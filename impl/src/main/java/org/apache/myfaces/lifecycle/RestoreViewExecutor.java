@@ -77,6 +77,10 @@ class RestoreViewExecutor implements PhaseExecutor
 
         String viewId = restoreViewSupport.calculateViewId(facesContext);
 
+        // TODO: JSF 2.0 spec section 2.5.5 if the browser issues a GET request with query parameters,
+        // no state is restored but full lifecycle minus invoke application should happen 
+        // if query parameters are set!
+        
         // Determine if this request is a postback or initial request
         if (restoreViewSupport.isPostback(facesContext))
         { // If the request is a postback
