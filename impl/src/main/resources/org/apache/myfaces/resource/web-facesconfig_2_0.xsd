@@ -627,6 +627,7 @@
     <xsd:simpleType name="faces-config-versionType">
         <xsd:restriction base="xsd:token">
             <xsd:enumeration value="1.2"/>
+            <xsd:enumeration value="2.0"/>
         </xsd:restriction>
     </xsd:simpleType>
 

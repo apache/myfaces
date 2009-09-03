@@ -269,4 +269,9 @@ public interface FacesConfigDispenser<C>
      * @return the partial traversal class name
      */
     public String getPartialTraversal ();
+    
+    /**
+     * @return Faces application version.
+     */
+    public String getFacesVersion ();
 }

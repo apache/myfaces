@@ -78,6 +78,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.DefaultViewHandlerSupport;
 import org.apache.myfaces.application.ViewHandlerSupport;
+import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.shared_impl.util.StringUtils;
 import org.apache.myfaces.view.ViewDeclarationLanguageBase;
@@ -1572,10 +1573,18 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
     private void _initializeMode(ExternalContext context)
     {
+        String facesVersion = RuntimeConfig.getCurrentInstance(context).getFacesVersion();
+        boolean partialStateSavingDefault;
+        
+        // Per spec section 11.1.3, the default value for the partial state saving feature needs
+        // to be true if 2.0, false otherwise.
+        
+        partialStateSavingDefault = facesVersion.equals ("2.0");
+        
         // In jsf 2.0 this code evolve as PartialStateSaving feature
         //_buildBeforeRestore = _getBooleanParameter(context, PARAM_BUILD_BEFORE_RESTORE, false);
         _partialStateSaving = _getBooleanParameter(context, 
-                StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, null, false);
+                StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, null, partialStateSavingDefault);
         
         String [] viewIds = StringUtils.splitShortString(_getStringParameter(context,
                 StateManager.FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME, null), ',');
@@ -1630,8 +1639,13 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
                 String viewId = getViewId();
                 UIViewRoot view = createView(context, viewId);
+                
+                // FIXME: spec doesn't say that this is necessary, but we blow up later if
+                // the viewroot isn't available from the FacesContext.
+                
+                context.setViewRoot(view);
                 buildView(context, view);
-
+                
                 return view;
             }
             catch (IOException ioe)

@@ -57,7 +57,9 @@ public class RuntimeConfig
     private boolean _navigationRulesChanged = false;
     private final Map<String, ResourceBundle> _resourceBundles = new HashMap<String, ResourceBundle>();
     private final Map<String, ManagedBean> _oldManagedBeans = new HashMap<String, ManagedBean>();
-
+    
+    private String _facesVersion;
+    
     private CompositeELResolver facesConfigElResolvers;
     private CompositeELResolver applicationElResolvers;
 
@@ -263,5 +265,15 @@ public class RuntimeConfig
     public void resetManagedBeansNotReaddedAfterPurge()
     {
         _oldManagedBeans.clear();
+    }
+    
+    public String getFacesVersion ()
+    {
+        return _facesVersion;
+    }
+    
+    void setFacesVersion (String facesVersion)
+    {
+        _facesVersion = facesVersion;
     }
 }

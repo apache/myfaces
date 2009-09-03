@@ -104,11 +104,13 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         // Per the spec: build the view.
         
         try {
-            view = vdl.createView (context, viewId);
+            view = vdl.getViewMetadata (context, viewId).createMetadataView (context);
             
+            context.setViewRoot (view); 
+            
+            context.setProcessingEvents (true);
             vdl.buildView (context, view);
-            
-            context.setViewRoot (view);
+            context.setProcessingEvents (false);
         }
         
         catch (Throwable e) {
@@ -234,6 +236,11 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     private void restoreStateFromMap(final FacesContext context, final Map<String,Object> states,
             final UIComponent component)
     {
+        if (states == null)
+        {
+            return;
+        }
+        
         //Restore view
         Object state = states.get(component.getClientId());
         if (state != null)

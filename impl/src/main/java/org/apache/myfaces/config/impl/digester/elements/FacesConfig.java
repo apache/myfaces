@@ -41,6 +41,7 @@ public class FacesConfig
     private List<Behavior> behaviors = new ArrayList<Behavior>();
     
     private String metadataComplete;
+    private String version;
     //Ordering variables
     //This information are not merged, and helps
     //with preprocessing of faces-config files
@@ -186,5 +187,15 @@ public class FacesConfig
     public void setMetadataComplete(String metadataComplete)
     {
         this.metadataComplete = metadataComplete;
+    }
+    
+    public String getVersion ()
+    {
+        return version;
+    }
+    
+    public void setVersion (String version)
+    {
+        this.version = version;
     }
 }

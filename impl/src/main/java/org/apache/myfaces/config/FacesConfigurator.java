@@ -1765,7 +1765,8 @@ public class FacesConfigurator
         {
             runtimeConfig.addFacesConfigElResolver((ELResolver)ClassUtils.newInstance(className, ELResolver.class));
         }
-
+        
+        runtimeConfig.setFacesVersion (dispenser.getFacesVersion());
     }
 
     private void removePurgedBeansFromSessionAndApplication(RuntimeConfig runtimeConfig)

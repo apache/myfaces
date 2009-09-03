@@ -47,6 +47,8 @@ public final class CompositeComponentELResolver extends ELResolver
     
     private static final String COMPOSITE_COMPONENT_ATTRIBUTES_MAPS = 
         "org.apache.myfaces.COMPOSITE_COMPONENT_ATTRIBUTES_MAPS";
+    private static final String COMPOSITE_COMPONENT_GET_VALUE_EXPRESSION =
+        "org.apache.myfaces.COMPOSITE_COMPONENT_GET_VALUE_EXPRESSION";
     
     @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base)
@@ -203,7 +205,7 @@ public final class CompositeComponentELResolver extends ELResolver
         @Override
         public ValueExpression getExpression(String name)
         {
-            Object valueExpr = _originalMap.get(name);
+            Object valueExpr = getAsValueExpression (name);
 
             // TODO: spec's not clear, I guess this is what we're supposed to do...
 
@@ -238,7 +240,7 @@ public final class CompositeComponentELResolver extends ELResolver
         @Override
         public Object get(Object key)
         {
-            Object obj = _originalMap.get(key);
+            Object obj = getAsValueExpression (key);
 
             // Per the spec, if the result is a ValueExpression, evaluate it and return the value.
 
@@ -273,7 +275,29 @@ public final class CompositeComponentELResolver extends ELResolver
                 }
             }
         }
-
+        
+        private Object getAsValueExpression (Object key)
+        {
+            Object obj;
+            
+            // FIXME: this is a hack, but I think it's necessary.  The component attributes map
+            // that this class wraps requires that all ValueExpressions be evaluated before they're
+            // returned, but the get() and put() methods defined in this class rely on ValueExpressions
+            // being returned so the underlying beans (if specified) can be updated with new values.
+            // This may be something to notify the EG about.
+            
+            // The presence of this attribute will tell the component attributes map not to evaluate
+            // ValueExpressions.
+            
+            _originalMap.put (COMPOSITE_COMPONENT_GET_VALUE_EXPRESSION, Boolean.TRUE);
+            
+            obj = _originalMap.get (key);
+            
+            _originalMap.remove (COMPOSITE_COMPONENT_GET_VALUE_EXPRESSION);
+            
+            return obj;
+        }
+        
         @Override
         public boolean isEmpty()
         {
@@ -289,7 +313,7 @@ public final class CompositeComponentELResolver extends ELResolver
         @Override
         public Object put(String key, Object value)
         {
-            Object obj = _originalMap.get(key);
+            Object obj = getAsValueExpression (key);
 
             // Per the spec, if the result is a ValueExpression, call setValue().
 

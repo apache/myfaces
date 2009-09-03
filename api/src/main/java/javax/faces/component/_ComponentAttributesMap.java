@@ -244,6 +244,17 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                 ValueExpression ve = _component.getValueExpression((String) key);
                 if (ve != null)
                 {
+                    if (getUnderlyingMap().get ("org.apache.myfaces.COMPOSITE_COMPONENT_GET_VALUE_EXPRESSION") != null)
+                    {
+                        // FIXME: this is "technically" a hack for the composite component attribute
+                        // EL resolver.  #{cc.attrs} is supposed to wrap this map and call getValue()
+                        // and setValue() on the ValueExpressions it returns... but the spec says that
+                        // this method always needs to evaluate ValueExpressions, and therefore the EL
+                        // resolver never even gets to see ValuExpressions.
+                        
+                        return ve;
+                    }
+                    
                     value = ve.getValue(FacesContext.getCurrentInstance().getELContext());
                 }
                 else

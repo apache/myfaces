@@ -63,6 +63,7 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
     private String defaultRenderKitId;
     private String messageBundle;
     private String partialTraversal;
+    private String facesVersion;
     
     private LocaleConfig localeConfig;
 
@@ -196,6 +197,7 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
         lifecyclePhaseListeners.addAll(config.getLifecyclePhaseListener());
         managedBeans.addAll(config.getManagedBeans());
         navigationRules.addAll(config.getNavigationRules());
+        facesVersion = config.getVersion();
     }
 
     /**
@@ -602,5 +604,10 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
     public Collection<Behavior> getBehaviors ()
     {
         return behaviors;
+    }
+    
+    public String getFacesVersion ()
+    {
+        return facesVersion;
     }
 }
