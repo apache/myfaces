@@ -69,12 +69,6 @@ public class NavigationHandlerImpl
     @Override
     public void handleNavigation(FacesContext facesContext, String fromAction, String outcome)
     {
-        if (outcome == null)
-        {
-            // stay on current ViewRoot
-            return;
-        }
-
         NavigationCase navigationCase = getNavigationCase(facesContext, fromAction, outcome);
 
         if (navigationCase != null)
@@ -176,15 +170,15 @@ public class NavigationHandlerImpl
             }
         }
         
-        if (navigationCase == null)
+        if (outcome != null && navigationCase == null)
         {
-            // Still can't find a navigation case, so we need to look at the outcome and see what navigation case
-            // can be determined from it.
-            
+            //if outcome is null, we don't check outcome based nav cases
+            //otherwise, if navgiationCase is still null, check outcome-based nav cases
             navigationCase = getOutcomeNavigationCase (facesContext, fromAction, outcome);
         }
-        
-        return navigationCase;
+
+        return navigationCase;  //if navigationCase == null, will stay on current view
+
     }
     
     /**
@@ -333,7 +327,12 @@ public class NavigationHandlerImpl
             boolean ifMatches = (cazeIf == null ? false : cazeIf.booleanValue());
             // JSF 2.0: support conditional navigation via <if>.
             // Use for later cases.
-
+            
+            if(outcome == null && (cazeOutcome != null || cazeIf == null))
+            {
+                continue;   //To match an outcome value of null, the <from-outcome> must be absent and the <if> element present.
+            }
+            
             if (cazeActionRef != null) {
                 if (cazeOutcome != null) {
                     if ((actionRef != null) && (outcome != null) && cazeActionRef.equals (actionRef) &&
