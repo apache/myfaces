@@ -31,6 +31,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.faces.view.AttachedObjectTarget;
+
 /**
  * Implementation of BeanInfo object used by composite components.
  * Instances of this class are found on component attribute map
@@ -59,7 +61,10 @@ import java.util.Map;
  *   this instance should be Serializable. But note that BeanDescriptor
  *   is not, so the best way is implements Externalizable interface
  *   and implement its methods. The only information we need to be Serializable
- *   from this object is the related to BeanDescriptor.
+ *   from this object is the related to BeanDescriptor, but note that
+ *   serialize information used only in build view time ( like
+ *   AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY list) is not required 
+ *   and could cause serialization exceptions. 
  * 
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
@@ -192,7 +197,15 @@ public class CompositeComponentBeanInfo extends SimpleBeanInfo
         for (Enumeration<String> e = _descriptor.attributeNames(); e.hasMoreElements();)
         {
             String name = e.nextElement();
-            map.put(name, _descriptor.getValue(name));
+            
+            // It is not necessary to serialize AttachedObjectTarget list because
+            // we only use it when VDL.retargetAttachedObjects() is called and this only
+            // happen when the view is built. Also, try to serialize this instances could
+            // cause unwanted exceptions.
+            if (!AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY.equals(name))
+            {
+                map.put(name, _descriptor.getValue(name));
+            }
         }
         out.writeObject(map);
         out.writeObject(_propertyDescriptors);
