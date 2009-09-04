@@ -289,11 +289,11 @@ public final class CompositeComponentELResolver extends ELResolver
             // The presence of this attribute will tell the component attributes map not to evaluate
             // ValueExpressions.
             
-            _originalMap.put (COMPOSITE_COMPONENT_GET_VALUE_EXPRESSION, Boolean.TRUE);
+            //_originalMap.put (COMPOSITE_COMPONENT_GET_VALUE_EXPRESSION, Boolean.TRUE);
             
             obj = _originalMap.get (key);
             
-            _originalMap.remove (COMPOSITE_COMPONENT_GET_VALUE_EXPRESSION);
+            //_originalMap.remove (COMPOSITE_COMPONENT_GET_VALUE_EXPRESSION);
             
             return obj;
         }

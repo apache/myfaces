@@ -21,7 +21,6 @@ package org.apache.myfaces.view.facelets.tag.composite;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.ValueExpression;
 import javax.faces.component.UIComponent;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.MetaRule;
@@ -75,7 +74,14 @@ final class CompositeComponentRule extends MetaRule
 
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
-            ((UIComponent) instance).setValueExpression(_name, _attr.getValueExpression(ctx, _type));
+            // Call setValueExpression to set ValueExpression instances
+            // cause problems later because when getAttributes().get() is called
+            // it is evaluated. put the ValueExpression directly on the map
+            // prevents it and does not cause any side effects.
+            // Maybe we should call setValueExpression when the getter and 
+            // setter exists on the component class.
+            ((UIComponent) instance).getAttributes().put(_name, _attr.getValueExpression(ctx, _type));
+            //((UIComponent) instance).setValueExpression(_name, _attr.getValueExpression(ctx, _type));
             //((UIComponent) instance).setValueExpression(_name, 
             //        ctx.getFacesContext().getApplication().
             //        getExpressionFactory().createValueExpression(
