@@ -18,11 +18,7 @@
  */
 package javax.faces.component.behavior;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.el.ValueExpression;
 import javax.faces.context.FacesContext;
@@ -31,196 +27,245 @@ import javax.faces.event.AjaxBehaviorListener;
 /**
  * @author Simon Lessard (latest modification by $Author: slessard $)
  * @version $Revision: 696523 $ $Date: 2009-03-14 16:04:27 -0400 (mer., 17 sept. 2008) $
- * 
  * @since 2.0
  */
-public class AjaxBehavior extends ClientBehaviorBase
-{
-    public static final String BEHAVIOR_ID = "javax.faces.behavior.Ajax";
-    
-    private static final Set<ClientBehaviorHint> HINTS = Collections.singleton(ClientBehaviorHint.SUBMITTING);
-
-    private static final String ATTR_DISABLED = "disabled";
-    private static final String ATTR_EXECUTE = "execute";
-    private static final String ATTR_IMMEDIATE = "immediate";
-    private static final String ATTR_ON_ERROR = "onError";
-    private static final String ATTR_ON_EVENT = "onEvent";
-    private static final String ATTR_RENDER = "render";
-    
-    private Boolean _disabled;
-    private Collection<String> _execute;
-    private Boolean _immediate;
-    private String _onError;
-    private String _onEvent;
-    private Collection<String> _render;
-    
-    private Map<String, ValueExpression> _expressions;
-    
+public class AjaxBehavior extends ClientBehaviorBase {
 
     /**
-     * 
+     * not needed anymore but enforced by the spec
+     * theoretically a
+     * @FacesBehavior(value = "javax.faces.behavior.Ajax")
+     * could do it
      */
-    public AjaxBehavior()
-    {
-        // Default capacity (10) should be decent with the default load factor (0.75)
-        // So there's a total of 7 slots in the map with 7 default attributes
-        _expressions = new HashMap<String, ValueExpression>();
-    }
-    
-    public void addAjaxBehaviorListener(AjaxBehaviorListener listener)
-    {
-        addBehaviorListener(listener);
-    }
-    
-    public Collection<String> getExecute()
-    {
-        return _getIds(ATTR_EXECUTE, _execute);
-    }
-    
-    public Set<ClientBehaviorHint> getHints()
-    {
-        // FIXME: Useless, notify the EG... Mojarra returns a static Set containing SUBMITTING...
-        // Copying Mojarra behavior for now by assuming they simply forgot to add JavaDoc in the class
-        return HINTS;
-    }
-    
-    public String getOnerror()
-    {
-        return _resolve(ATTR_ON_ERROR, _onError);
-    }
-    
-    public String getOnevent()
-    {
-        return _resolve(ATTR_ON_EVENT, _onEvent);
-    }
-    
-    public Collection<String> getRender()
-    {
-        return _getIds(ATTR_RENDER, _render);
+    public static final String BEHAVIOR_ID = "javax.faces.behavior.Ajax";
+
+    //To enable delta state saving we need this one
+    _AjaxBehaviorDeltaStateHelper<AjaxBehavior> deltaStateHelper = new _AjaxBehaviorDeltaStateHelper<AjaxBehavior>(this);
+    private static final String ATTR_EXECUTE = "execute";
+    private static final String ATTR_ON_ERROR = "onerror";
+    private static final String ATTR_ON_EVENT = "onevent";
+    private static final String ATTR_RENDER = "render";
+    private static final String ATTR_DISABLED = "disabled";
+    private static final String ATTR_IMMEDIATE = "immediate";
+
+
+    /**
+     * special render and execute targets
+     */
+    private static final String VAL_FORM = "@form";
+    private static final String VAL_ALL = "@all";
+    private static final String VAL_THIS = "@this";
+    private static final String VAL_NONE = "@none";
+
+    //we cannot use Collection - singletons here otherwise the delta state restore would fail
+    private static final Collection<String> VAL_FORM_LIST = new ArrayList<String>(1);
+    private static final Collection<String> VAL_ALL_LIST = new ArrayList<String>(1);
+    private static final Collection<String> VAL_THIS_LIST = new ArrayList<String>(1);
+    private static final Collection<String> VAL_NONE_LIST = new ArrayList<String>(1);
+
+    /**
+     * internal errors
+     */
+    private static final String ERR_KEY_IS_NULL = "Given value expression key is null";
+
+
+    Map<String, ValueExpression> _valueExpressions = new HashMap<String, ValueExpression>();
+
+    static {
+        VAL_FORM_LIST.add(VAL_FORM);
+        VAL_ALL_LIST.add(VAL_ALL);
+        VAL_THIS_LIST.add(VAL_THIS);
+        VAL_NONE_LIST.add(VAL_NONE);
+
     }
 
-    public String getRendererType()
-    {
-        return BEHAVIOR_ID;
+
+    public AjaxBehavior() {
+        super();
+        getValueExpressionMap();
     }
-    
-    public ValueExpression getValueExpression(String name)
-    {
-        _checkNull(name);
-        
-        return _expressions.get(name);
+
+
+    private Map<String, ValueExpression> getValueExpressionMap() {
+        return _valueExpressions;
     }
-    
-    public boolean isDisabled()
-    {
-        return Boolean.TRUE.equals(_resolve(ATTR_DISABLED, _disabled));
+
+
+    public void addAjaxBehaviorListener(AjaxBehaviorListener listener) {
+        super.addBehaviorListener(listener);
     }
-    
-    public boolean isImmediate()
-    {
-        return Boolean.TRUE.equals(_resolve(ATTR_IMMEDIATE, _immediate));
+
+    public Collection<String> getExecute() {
+        Object execute = deltaStateHelper.eval(ATTR_EXECUTE);
+
+        return (Collection<String>) execute;
     }
-    
-    public boolean isImmediateSet()
-    {
-        return _immediate != null || _expressions.containsKey(ATTR_IMMEDIATE);
+
+
+    public void setExecute(Collection<String> execute) {
+        deltaStateHelper.put(ATTR_EXECUTE, execute);
     }
-    
-    public void removeAjaxBehaviorListener(AjaxBehaviorListener listener)
-    {
+
+    public String getOnerror() {
+        return (String) deltaStateHelper.eval(ATTR_ON_ERROR);
+    }
+
+    public void setOnerror(String onError) {
+        deltaStateHelper.put(ATTR_ON_ERROR, onError);
+    }
+
+    public String getOnevent() {
+        return (String) deltaStateHelper.eval(ATTR_ON_EVENT);
+    }
+
+    public void setOnevent(String onEvent) {
+        deltaStateHelper.put(ATTR_ON_EVENT, onEvent);
+    }
+
+    public Collection<String> getRender() {
+        Object render = deltaStateHelper.eval(ATTR_RENDER);
+        if (render instanceof String) {
+            render = ((String) render).split(" ");
+            render = Arrays.asList((String[]) render);
+        }
+
+        return (Collection<String>) render;
+    }
+
+    public void setRender(Collection<String> render) {
+        deltaStateHelper.put(ATTR_RENDER, render);
+    }
+
+    public ValueExpression getValueExpression(String name) {
+        return getValueExpressionMap().get(name);
+    }
+
+    public void setValueExpression(String name, ValueExpression item) {
+        if (item == null) {
+            getValueExpressionMap().remove(name);
+            deltaStateHelper.remove(name);
+        } else {
+            Object value = item.getValue(FacesContext.getCurrentInstance().getELContext());
+            //the tag handler sets the values over value expressions we do have to do a conversion
+            if (name.equals(ATTR_EXECUTE) && value instanceof String) {
+                //TODO please move this conversion code over to the tag handler
+                //I do not think it belongs in here
+                applyArrayAttributeFromString(ATTR_EXECUTE, value);
+            } else if (name.equals(ATTR_RENDER) && value instanceof String) {
+                applyArrayAttributeFromString(ATTR_RENDER, value);
+            }
+            getValueExpressionMap().put(name, item);
+        }
+    }
+
+    /**
+     * facelets applies its values over the value expressions
+     * to have our system working fully we need to reapply
+     * the values to our delta state saver
+     * in converted form so that getters and setters can work on the maps instead
+     * of the string value expression, the delta states have higher priority
+     * than the value expressions
+     * Since Behaviors do not have converters we have to do it here (the getter
+     * or setter is a no go due to the call frequency of this method)
+     *
+     * @param attribute the attribute name
+     * @param value     the value expression to be changed to a collection
+     */
+    private void applyArrayAttributeFromString(String attribute, Object value) {
+
+        String stringValue = (String) value;
+        //@special handling for @all, @none, @form and @this
+        if (stringValue.equals(VAL_FORM)) {
+            deltaStateHelper.put(attribute, VAL_FORM_LIST);
+            return;
+        } else if (stringValue.equals(VAL_ALL)) {
+            deltaStateHelper.put(attribute, VAL_ALL_LIST);
+            return;
+        } else if (stringValue.equals(VAL_NONE)) {
+            deltaStateHelper.put(attribute, VAL_NONE_LIST);
+            return;
+        } else if (stringValue.equals(VAL_THIS)) {
+            deltaStateHelper.put(attribute, VAL_THIS_LIST);
+            return;
+        }
+
+        String[] arrValue = ((String) stringValue).split(",");
+
+        //we have to manually convert otherwise the delta state saving fails
+        //Arrays.asList returns a list which is not instantiable
+
+        List<String> saveVal = new ArrayList<String>(arrValue.length);
+        saveVal.addAll(Arrays.asList(arrValue));
+
+        deltaStateHelper.put(attribute, saveVal);
+    }
+
+
+    public boolean isDisabled() {
+        Boolean retVal = (Boolean) deltaStateHelper.eval(ATTR_DISABLED);
+        retVal = (retVal == null) ? false : retVal;
+        return retVal;
+    }
+
+    public void setDisabled(boolean disabled) {
+        deltaStateHelper.put(ATTR_DISABLED, disabled);
+    }
+
+    public boolean isImmediate() {
+        Boolean retVal = (Boolean) deltaStateHelper.eval(ATTR_IMMEDIATE);
+        retVal = (retVal == null) ? false : retVal;
+        return retVal;
+    }
+
+    public void setImmediate(Boolean immediate) {
+        deltaStateHelper.put(ATTR_IMMEDIATE, immediate);
+    }
+
+    public boolean isImmediateSet() {
+        return deltaStateHelper.eval(ATTR_IMMEDIATE) != null;
+    }
+
+
+    public void removeAjaxBehaviorListener(AjaxBehaviorListener listener) {
         removeBehaviorListener(listener);
     }
-    
-    @Override
-    public void restoreState(FacesContext context, Object state)
-    {
-        // TODO: IMPLEMENT HERE - Full + delta support
-        super.restoreState(context, state);
-    }
+
 
     @Override
-    public Object saveState(FacesContext context)
-    {
-        // TODO: IMPLEMENT HERE - Full + delta support
-        return super.saveState(context);
+    public Set<ClientBehaviorHint> getHints() {
+        return EnumSet.of(ClientBehaviorHint.SUBMITTING);
+    }
+
+
+    @Override
+    public String getRendererType() {
+        return BEHAVIOR_ID;
+    }
+
+
+    @Override
+    public void restoreState(FacesContext facesContext, Object o) {
+        Object[] values = (Object[]) o;
+
+        if (values[0] != null) {
+            super.restoreState(facesContext, values[0]);
+        }
+       deltaStateHelper.restoreState(facesContext, values[1]);
+    }
+
+    @Override
+    public Object saveState(FacesContext facesContext) {
+        Object[] values = new Object[2];
+        values[0] = super.saveState(facesContext);
+        values[1] = deltaStateHelper.saveState(facesContext);
+        return values;
+    }
+
+    private void assertNull(Object item) {
+        if (item == null) {
+            throw new NullPointerException(ERR_KEY_IS_NULL);
+        }
     }
     
-    public void setDisabled(boolean disabled)
-    {
-        this._disabled = disabled;
-    }
 
-    public void setExecute(Collection<String> execute)
-    {
-        this._execute = execute;
-    }
-
-    public void setImmediate(boolean immediate)
-    {
-        this._immediate = immediate;
-    }
-
-    public void setOnerror(String error)
-    {
-        _onError = error;
-    }
-
-    public void setOnevent(String event)
-    {
-        _onEvent = event;
-    }
-
-    public void setRender(Collection<String> render)
-    {
-        this._render = render;
-    }
-    
-    public void setValueExpression(String name, ValueExpression expression)
-    {
-        _checkNull(name);
-        
-        if (expression == null)
-        {
-            _expressions.remove(name);
-        }
-        else
-        {
-            _expressions.put(name, expression);
-        }
-    }
-
-    private void _checkNull(String name)
-    {
-        if (name == null)
-        {
-            throw new NullPointerException();
-        }
-    }
-
-    private Collection<String> _getIds(String name, Collection<String> explicitValue)
-    {
-        // FIXME: I don't see how I can make it non empty when there's nothing that I can put in it
-        //        by default
-        Collection<String> ids = _resolve(name, explicitValue);
-        
-        return ids == null ? Collections.<String>emptyList() : ids;
-    }
-    
-    @SuppressWarnings("unchecked")
-    private <T> T _resolve(String name, T explicitValue)
-    {
-        assert name != null;
-        assert name.length() > 0;
-        
-        if (explicitValue == null)
-        {
-            ValueExpression expression = _expressions.get(name);
-            if (expression != null)
-            {
-                explicitValue = (T)expression.getValue(FacesContext.getCurrentInstance().getELContext());
-            }
-        }
-        
-        return explicitValue;
-    }
 }
