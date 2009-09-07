@@ -330,7 +330,14 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
             var styleEntries = value.split(";");
             for (var loop = 0; loop < styleEntries.length; loop++) {
                 var keyVal = styleEntries[loop].split(":");
-                if (keyVal[0] != "") {
+                if (keyVal[0] != "" && keyVal[0] == "opacity") {
+                  //special ie quirks handling for opacity
+                    
+                  var opacityVal = Math.max(100, Math.round(parseFloat( keyVal[1] ) * 10)); 
+                  domNode.style.setAttribute("filter","alpha(opacity="+opacityVal+")");
+                  //if you need more hacks I would recommend
+                  //to use the class attribute and conditional ie includes!
+                } else if (keyVal[0] != "") {
                     domNode.style.setAttribute(keyVal[0], keyVal[1]);
                 }
             }
@@ -514,13 +521,32 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
      *
      */
     myfaces._impl._util._Utils.globalEval = function(code) {
-
-        if (window.execScript) {
+        //chrome as a diferent global eval, thanks for pointing this out
+        //TODO add a config param which allows to evaluate global scripts even if the call
+        //is embedded in an iframe
+        if (myfaces._impl._util._Utils.browser.isIE && window.execScript) {
+            //execScript definitely only for IE otherwise we might have a custom
+            //window extension with undefined behavior on our necks
             window.execScript(code);
             return;
-        }
+        } else if (undefined != typeof (window.eval) && null != window.eval) {
+            myfaces._impl._util._LangUtils.hitch (window, function() {
+            //even if we eval under a different scope the function this references
+            // another function instead of the window object on firefox in the evaled code
+            //Scoping the outer function ensures that the evaluated this points towards
+            //the window object instead of the calling function
 
-        eval.call(null, code);
+            //The funny thing is chrome references window as this without scoping the outer function
+            //Firefox does not and references the calling function as this pointer
+             window.eval.call(this, code);
+            })();
+            return;
+       }
+       myfaces._impl._util._LangUtils.hitch (window, function() {
+            //even if we eval under a different scope the function this references
+            // another function instead of the window object on firefox
+             eval.call(this, code);
+       })(); 
     }
 
     /**
