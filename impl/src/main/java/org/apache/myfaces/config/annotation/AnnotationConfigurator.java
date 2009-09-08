@@ -236,8 +236,10 @@ public class AnnotationConfigurator
         {
             archives = webArchives(_externalContext);
 
-            System.out.println("Receiving " + archives.size()
-                    + " jar files to check");
+            if (log.isTraceEnabled())
+            {
+                log.trace("Receiving " + archives.size() + " jar files to check");
+            }
             for (JarFile archive : archives)
             {
                 classes = archiveClasses(_externalContext, archive);
@@ -567,13 +569,15 @@ public class AnnotationConfigurator
         ClassLoader loader = getClassLoader();
 
         Set<String> paths = externalContext.getResourcePaths(prefix);
+        if(paths == null)
+        {
+            return; //need this in case there is no WEB-INF/classes directory
+        }
         if (log.isTraceEnabled())
         {
             log.trace("webClasses(" + prefix + ") - Received " + paths.size()
                     + " paths to check");
         }
-        System.out.println("webClasses(" + prefix + ") - Received "
-                + paths.size() + " paths to check");
 
         String path = null;
 

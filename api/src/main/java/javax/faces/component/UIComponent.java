@@ -921,11 +921,18 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
         }
     }
 
-    private class EventListenerWrapper implements SystemEventListener {
+    private class EventListenerWrapper implements SystemEventListener, StateHolder {
 
         private UIComponent component;
         private ComponentSystemEventListener listener;
-
+        private boolean transientObject = false;
+        
+        public EventListenerWrapper()
+        {
+            //need a no-arg constructor for state saving purposes
+            super();
+        }
+        
         public EventListenerWrapper(UIComponent component, ComponentSystemEventListener listener) {
             assert component != null;
             assert listener != null;
@@ -965,6 +972,34 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
             assert event instanceof ComponentSystemEvent;
 
             listener.processEvent((ComponentSystemEvent) event);
+        }
+        
+        @Override
+        public boolean isTransient() {
+            return transientObject;
+        }
+
+        @Override
+        public void restoreState(FacesContext context, Object state) 
+        {
+            Object[] values = (Object[]) state;
+            component = (UIComponent) values[0];
+            listener = (ComponentSystemEventListener) values[1];
+        }
+
+        @Override
+        public Object saveState(FacesContext context) 
+        {
+            Object[] state = new Object[2];
+            state[0] = component;
+            state[1] = listener;
+            return state;   
+        }
+         
+        @Override
+        public void setTransient(boolean transientObject) 
+        {   
+            this.transientObject = transientObject;
         }
     }
 }
