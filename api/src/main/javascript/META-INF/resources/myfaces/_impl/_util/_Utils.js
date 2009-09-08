@@ -530,24 +530,22 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
             window.execScript(code);
             return;
         } else if (undefined != typeof (window.eval) && null != window.eval) {
-            myfaces._impl._util._LangUtils.hitch (window, function() {
-            //even if we eval under a different scope the function this references
-            // another function instead of the window object on firefox in the evaled code
-            //Scoping the outer function ensures that the evaluated this points towards
-            //the window object instead of the calling function
 
-            //The funny thing is chrome references window as this without scoping the outer function
-            //Firefox does not and references the calling function as this pointer
-             window.eval.call(this, code);
-            })();
+            //fixup for a mozilla bug, a bug in mozilla prevents, that the window is properly applied
+            //the former approach was to scope an outer anonymouse function but the scoping is not necessary
+            //mozilla behaves correctly if you just add an outer function, then the window scope is again
+            //accepted as the real scope
+            var func = function () {
+                window.eval.call(window, code);
+            };
+            func();
+
             return;
-       }
-       myfaces._impl._util._LangUtils.hitch (window, function() {
-            //even if we eval under a different scope the function this references
-            // another function instead of the window object on firefox
-             eval.call(this, code);
-       })(); 
-    }
+        }
+        //we probably have covered all browsers, but this is a safety net which might be triggered
+        //by some foreign browser which is not covered by the above cases
+        eval.call(window, code);
+    };
 
     /**
      * gets the local or global options with local ones having higher priority
