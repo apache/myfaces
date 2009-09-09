@@ -18,32 +18,23 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderers;
-import org.apache.myfaces.shared_impl.renderkit.html.HtmlLinkRendererBase;
+import java.io.IOException;
 
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
+import org.apache.myfaces.shared_impl.renderkit.html.HtmlOutcomeTargetButtonRendererBase;
 
 /**
- * 
- * @author Manfred Geiler (latest modification by $Author$)
+ * @since 2.0
+ * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-@JSFRenderers(renderers={
-    @JSFRenderer(
-        renderKitId="HTML_BASIC",
-        family="javax.faces.Output",
-        type="javax.faces.Link"),    
-    @JSFRenderer(
-        renderKitId="HTML_BASIC",
-        family="javax.faces.Command",
-        type="javax.faces.Link"),
-    @JSFRenderer(
-        renderKitId = "HTML_BASIC",
-        family = "javax.faces.OutcomeTarget",
-        type = "javax.faces.Link")
-})
-public class HtmlLinkRenderer
-    extends HtmlLinkRendererBase
+@JSFRenderer(renderKitId = "HTML_BASIC",
+        family="javax.faces.OutcomeTarget",
+        type="javax.faces.Button")
+public class HtmlOutcomeTargetButtonRenderer extends HtmlOutcomeTargetButtonRendererBase
 {
-    //private static final Log log = LogFactory.getLog(HtmlLinkRenderer.class);
+    
 }

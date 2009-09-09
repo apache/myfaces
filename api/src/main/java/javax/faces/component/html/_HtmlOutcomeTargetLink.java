@@ -31,11 +31,12 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 (
 name="h:link",
 clazz = "javax.faces.component.html.HtmlOutcomeTargetLink",template=true,
-implementz = "javax.faces.component.behavior.ClientBehaviorHolder"
+implementz = "javax.faces.component.behavior.ClientBehaviorHolder",
+defaultRendererType = "javax.faces.Link"
 )
 abstract class _HtmlOutcomeTargetLink extends UIOutcomeTarget implements _FocusBlurProperties,
 _EventProperties, _StyleProperties, _UniversalProperties, _AccesskeyProperty,
-_TabindexProperty, _AltProperty, _LinkProperties
+_TabindexProperty, _LinkProperties
 {
 
   static public final String COMPONENT_FAMILY =
