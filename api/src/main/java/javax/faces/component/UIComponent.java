@@ -19,6 +19,10 @@
 package javax.faces.component;
 
 import java.io.IOException;
+import java.io.Serializable;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -821,7 +825,7 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
         //moved to the static method
         return UIComponent.isCompositeComponent(this);
     }
-
+    
     private static class BundleMap implements Map<String, String> {
 
         private ResourceBundle _bundle;
@@ -921,7 +925,7 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
         }
     }
 
-    private class EventListenerWrapper implements SystemEventListener, StateHolder {
+    static class EventListenerWrapper implements SystemEventListener, StateHolder {
 
         private UIComponent component;
         private ComponentSystemEventListener listener;
@@ -982,17 +986,68 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
         @Override
         public void restoreState(FacesContext context, Object state) 
         {
+            if(state == null)
+            {
+                return;
+            }
+            
             Object[] values = (Object[]) state;
-            component = (UIComponent) values[0];
-            listener = (ComponentSystemEventListener) values[1];
+            component = (UIComponent) getClassInstance((String)values[0]);
+            String listenerClass = (String)values[1];
+            Serializable listenerState = (Serializable)values[2];
+            
+            if(listenerClass == null && listenerState == null) 
+            {   
+                //no listenerClass or listenerState to restore
+                listener = null;
+            }
+            else if(listenerClass == null && listenerState != null)
+            {
+                // the listenerState is the listener for Serializable but not StateHolder objects
+                listener = (ComponentSystemEventListener)listenerState;
+            }
+            else
+            {
+                // restore the listener and listenerState for StateHolder objects
+                listener = (ComponentSystemEventListener)getClassInstance(listenerClass);
+                
+                if(listener != null && listenerState != null && listener instanceof StateHolder)
+                {
+                    ((StateHolder) listener).restoreState(context, listenerState);
+                }
+            }            
         }
 
         @Override
         public Object saveState(FacesContext context) 
         {
-            Object[] state = new Object[2];
-            state[0] = component;
-            state[1] = listener;
+            Serializable listenerState = null;
+            String listenerClass = null;
+
+            if(listener instanceof UIComponent)
+            {
+                //just save the component
+            }
+            else if (listener instanceof StateHolder) 
+            {
+                //save component, listener state and listener class
+                if (!((StateHolder) listener).isTransient()) 
+                {
+                    listenerState = (Serializable) ((StateHolder) listener).saveState(context);
+                    listenerClass = listener.getClass().getName();
+                }
+            } 
+            else if (listener instanceof Serializable) 
+            {
+                //save only listener state 
+                listenerState = (Serializable) listener;
+                listenerClass = null;
+            }
+            
+            Object[] state = new Object[3];
+            state[0] = component.getClass().getName();
+            state[1] = listenerClass;
+            state[2] = listenerState;
             return state;   
         }
          
@@ -1000,6 +1055,52 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
         public void setTransient(boolean transientObject) 
         {   
             this.transientObject = transientObject;
+        }
+        private Object getClassInstance(String name) 
+        {
+            ClassLoader cl;
+            if (System.getSecurityManager() != null) 
+            {
+                try {
+                    cl = AccessController.doPrivileged(new PrivilegedExceptionAction<ClassLoader>()
+                            {
+                                public ClassLoader run() throws PrivilegedActionException
+                                {
+                                    return Thread.currentThread().getContextClassLoader();
+                                }
+                            });
+                }
+                catch (PrivilegedActionException pae)
+                {
+                    throw new FacesException(pae);
+                }
+            }
+            else
+            {
+                cl = Thread.currentThread().getContextClassLoader();
+            }
+     
+            if (cl == null) 
+            {
+                cl = this.getClass().getClassLoader();
+            }
+            
+            try
+            {
+                return Class.forName(name, false, cl).newInstance();
+            }
+            catch (IllegalAccessException e)
+            {
+                throw new IllegalStateException(e);
+            }
+            catch (InstantiationException e)
+            {
+                throw new IllegalStateException(e);
+            }
+            catch (ClassNotFoundException e)
+            {
+                throw new IllegalStateException(e);
+            }
         }
     }
 }
