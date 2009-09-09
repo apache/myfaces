@@ -63,6 +63,37 @@ public abstract class FaceletFactory
     public abstract Facelet getFacelet(URL url) throws IOException, FaceletException, FacesException, ELException;
     
     /**
+     * Return a Facelet instance as specified by the file at the passed URI. The returned facelet is used
+     * to create view metadata in this form: 
+     * <p>
+     * UIViewRoot(in facet javax_faces_metadata(one or many UIViewParameter instances))
+     * </p>
+     * <p>
+     * This method should be called from FaceletViewMetadata.createMetadataView(FacesContext context)  
+     * </p>
+     * 
+     * @since 2.0
+     * @param uri
+     * @return
+     * @throws IOException
+     */
+    public abstract Facelet getViewMetadataFacelet(String uri) throws IOException;
+    
+    /**
+     * Create a Facelet used to create view metadata from the passed URL. This method checks if the 
+     * cached Facelet needs to be refreshed before returning. If so, uses the passed URL to build a new instance;
+     * 
+     * @since 2.0
+     * @param url source url
+     * @return Facelet instance
+     * @throws IOException
+     * @throws FaceletException
+     * @throws FacesException
+     * @throws ELException
+     */
+    public abstract Facelet getViewMetadataFacelet(URL url) throws IOException, FaceletException, FacesException, ELException;
+    
+    /**
      * Set the static instance
      * 
      * @param factory

@@ -276,4 +276,19 @@ public final class DefaultFaceletFactory extends FaceletFactory
             throw new FileNotFoundException("Facelet " + alias + " not found at: " + url.toExternalForm());
         }
     }
+
+    @Override
+    public Facelet getViewMetadataFacelet(String uri) throws IOException
+    {
+        // TODO MYFACES-2345
+        return null;
+    }
+
+    @Override
+    public Facelet getViewMetadataFacelet(URL url) throws IOException,
+            FaceletException, FacesException, ELException
+    {
+        // TODO MYFACES-2345
+        return null;
+    }
 }

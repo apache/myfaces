@@ -28,6 +28,7 @@ import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PostAddToViewEvent;
+import javax.faces.view.ViewDeclarationLanguage;
 
 import org.apache.myfaces.FacesTestCase;
 import org.apache.myfaces.TestRunner;
@@ -87,6 +88,11 @@ public class RestoreViewExecutorTest extends FacesTestCase
         UIViewRoot viewRoot = _mocksControl.createMock(UIViewRoot.class);
         viewRoot.subscribeToEvent(same(PostAddToViewEvent.class), same(viewRoot));
 
+        ViewDeclarationLanguage vdl = _mocksControl.createMock(ViewDeclarationLanguage.class);
+        expect(_viewHandler.getViewDeclarationLanguage(same(_facesContext), eq("calculatedViewId")))
+            .andReturn(vdl);
+        expect(vdl.getViewMetadata(same(_facesContext), eq("calculatedViewId")))
+            .andReturn(null);
         expect(_viewHandler.createView(same(_facesContext), eq("calculatedViewId"))).andReturn(viewRoot);
 
         _application.publishEvent(same(_facesContext), same(PostAddToViewEvent.class), same(viewRoot));

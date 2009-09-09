@@ -95,6 +95,7 @@ import org.apache.myfaces.view.facelets.tag.TagDecorator;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeLibrary;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeResourceLibrary;
+import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.tag.ui.UIDebug;
 import org.apache.myfaces.view.facelets.util.DevTools;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
@@ -1450,6 +1451,20 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             FaceletFactory.setInstance(null);
         }
     }
+    
+    private Facelet _getViewMetadataFacelet(String viewId) throws IOException
+    {
+        // grab our FaceletFactory and create a Facelet used to create view metadata
+        FaceletFactory.setInstance(_faceletFactory);
+        try
+        {
+            return _faceletFactory.getViewMetadataFacelet(viewId);
+        }
+        finally
+        {
+            FaceletFactory.setInstance(null);
+        }
+    }
 
     /**
      * Gets the init parameter value from the specified context and instanciate it. If the parameter was not specified,
@@ -1642,7 +1657,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                 
                 // FIXME: spec doesn't say that this is necessary, but we blow up later if
                 // the viewroot isn't available from the FacesContext.
-                context.setViewRoot(view);
+                // context.setViewRoot(view);
                 
                 // TODO: -= Leonardo Uribe =- This part is related to section 2.5.5 of jsf 2.0 spec.
                 // In theory what we need here is fill UIViewRoot.METADATA_FACET_NAME facet
@@ -1650,7 +1665,13 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                 // ViewHandlerImpl.getRedirectURL() and UIViewRoot.encodeEnd uses them. 
                 // For now, the only way to do this is call buildView(context,view) method, but 
                 // this is a waste of resources. We need to find another way to handle facelets view metadata.
+                
+                // Call to buildView causes the view is not created on Render Response phase,
+                // if buildView is called from here all components pass through current lifecycle and only
+                // UIViewParameter instances should be taken into account.
+                // It should be an additional call to buildView on Render Response phase.
                 buildView(context, view);
+                //_getViewMetadataFacelet(viewId);
                 
                 return view;
             }

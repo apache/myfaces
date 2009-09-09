@@ -18,14 +18,19 @@
  */
 package org.apache.myfaces.lifecycle;
 
+import java.util.Collection;
+
 import javax.faces.FacesException;
 import javax.faces.application.Application;
 import javax.faces.application.ViewExpiredException;
 import javax.faces.application.ViewHandler;
+import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PostAddToViewEvent;
+import javax.faces.view.ViewDeclarationLanguage;
+import javax.faces.view.ViewMetadata;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -77,10 +82,6 @@ class RestoreViewExecutor implements PhaseExecutor
 
         String viewId = restoreViewSupport.calculateViewId(facesContext);
 
-        // TODO: JSF 2.0 spec section 2.5.5 if the browser issues a GET request with query parameters,
-        // no state is restored but full lifecycle minus invoke application should happen 
-        // if query parameters are set!
-        
         // Determine if this request is a postback or initial request
         if (restoreViewSupport.isPostback(facesContext))
         { // If the request is a postback
@@ -108,28 +109,59 @@ class RestoreViewExecutor implements PhaseExecutor
         { // If the request is a non-postback
             if (log.isTraceEnabled())
                 log.trace("Request is not a postback. New UIViewRoot will be created");
-
-            // call ViewHandler.createView(), passing the FacesContext instance for the current request and 
-            // the view identifier
-            viewRoot = viewHandler.createView(facesContext, viewId);
             
-            // Subscribe the newly created UIViewRoot instance to the AfterAddToParent event, passing the 
-            // UIViewRoot instance itself as the listener.
-            viewRoot.subscribeToEvent(PostAddToViewEvent.class, viewRoot);
+            ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, viewId);
             
-            // Store the new UIViewRoot instance in the FacesContext.
-            facesContext.setViewRoot(viewRoot);
-            
-            // Call renderResponse() on the FacesContext.
-            facesContext.renderResponse();
-            
-            // Publish an AfterAddToParent event with the created UIViewRoot as the event source.
-            application.publishEvent(facesContext, PostAddToViewEvent.class, viewRoot);
+            if (vdl != null)
+            {
+                ViewMetadata metadata = vdl.getViewMetadata(facesContext, viewId);
+                
+                Collection<UIViewParameter> viewParameters = null;
+                
+                if (metadata != null)
+                {
+                    viewRoot = metadata.createMetadataView(facesContext);
+                    
+                    if (viewRoot != null)
+                    {
+                        viewParameters = metadata.getViewParameters(viewRoot);
+                    }
+                }
+    
+                // call ViewHandler.createView(), passing the FacesContext instance for the current request and 
+                // the view identifier
+                if (viewRoot == null)
+                {
+                    viewRoot = viewHandler.createView(facesContext, viewId);
+                }
+                
+                // Subscribe the newly created UIViewRoot instance to the AfterAddToParent event, passing the 
+                // UIViewRoot instance itself as the listener.
+                viewRoot.subscribeToEvent(PostAddToViewEvent.class, viewRoot);
+                
+                // Store the new UIViewRoot instance in the FacesContext.
+                facesContext.setViewRoot(viewRoot);
+    
+                // If viewParameters is not an empty collection DO NOT call renderResponse
+                if ( !(viewParameters != null && !viewParameters.isEmpty()) )
+                {
+                    // Call renderResponse() on the FacesContext.
+                    facesContext.renderResponse();
+                }
+                
+                // Publish an AfterAddToParent event with the created UIViewRoot as the event source.
+                application.publishEvent(facesContext, PostAddToViewEvent.class, viewRoot);
+            }
+            else
+            {
+                //Call renderResponse but do not publish event because no viewRoot is created
+                facesContext.renderResponse();
+            }
         }
 
         return false;
     }
-
+    
     protected RestoreViewSupport getRestoreViewSupport()
     {
         if (_restoreViewSupport == null)
