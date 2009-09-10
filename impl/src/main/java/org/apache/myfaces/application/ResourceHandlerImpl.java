@@ -253,7 +253,7 @@ public class ResourceHandlerImpl extends ResourceHandler
         Resource resource = null;
         if (libraryName != null)
         {
-            log.info("libraryName=" + libraryName);
+            //log.info("libraryName=" + libraryName);
             resource = createResource(resourceName, libraryName);
         }
         else
