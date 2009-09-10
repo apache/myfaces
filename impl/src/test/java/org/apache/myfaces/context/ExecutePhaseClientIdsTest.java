@@ -113,7 +113,7 @@ public class ExecutePhaseClientIdsTest extends AbstractJsfTestCase {
      * blank chars
      */
     public void testRequestParams6() {
-        String params = " view1:panel1:_component1,view1:panel1:_component2 \n , component3, component4  ";
+        String params = " view1:panel1:_component1 view1:panel1:_component2 \n  component3 component4  ";
         Map<String, String> requestParamMap = new HashMap<String, String>();
         requestParamMap.put(PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME, params);
         ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);

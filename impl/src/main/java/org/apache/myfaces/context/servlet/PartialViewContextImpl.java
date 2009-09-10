@@ -145,17 +145,42 @@ public class PartialViewContextImpl extends PartialViewContext {
             if (executeMode != null && !"".equals(executeMode) &&
                     !PartialViewContext.NO_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode) &&
                     !PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode)) {
-                String[] clientIds = StringUtils.splitShortString(executeMode.replaceAll("[ \\t\\n]*", ""), ',');
+                
+                String[] clientIds = StringUtils.splitShortString(_replaceTabOrEnterCharactersWithSpaces(executeMode), ' ');
 
                 //The collection must be mutable
                 List<String> tempList = new ArrayList<String>();
-                Collections.addAll(tempList, clientIds);
+                for (String clientId : clientIds)
+                {
+                    if (clientId.length() > 0)
+                    {
+                        tempList.add(clientId);
+                    }
+                }
                 _executeClientIds = tempList;
             } else {
                 _executeClientIds = new ArrayList<String>();
             }
         }
         return _executeClientIds;
+    }
+    
+    private String _replaceTabOrEnterCharactersWithSpaces(String mode)
+    {
+        StringBuilder builder = new StringBuilder(mode.length());
+        for (int i = 0; i < mode.length(); i++)
+        {
+            if (mode.charAt(i) == '\t' || 
+                mode.charAt(i) == '\n')
+            {
+                builder.append(' ');
+            }
+            else
+            {
+                builder.append(mode.charAt(i));
+            }
+        }
+        return builder.toString();
     }
 
     @Override
@@ -169,12 +194,19 @@ public class PartialViewContextImpl extends PartialViewContext {
 
             if (renderMode != null && !"".equals(renderMode) &&
                     !PartialViewContext.NO_PARTIAL_PHASE_CLIENT_IDS.equals(renderMode) &&
-                    !PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(renderMode)) {
-                String[] clientIds = StringUtils.splitShortString(renderMode.replaceAll("[ \\t\\n]*", ""), ',');
+                    !PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(renderMode))
+            {
+                String[] clientIds = StringUtils.splitShortString(_replaceTabOrEnterCharactersWithSpaces(renderMode), ' ');
 
                 //The collection must be mutable
                 List<String> tempList = new ArrayList<String>();
-                Collections.addAll(tempList, clientIds);
+                for (String clientId : clientIds)
+                {
+                    if (clientId.length() > 0)
+                    {
+                        tempList.add(clientId);
+                    }
+                }
                 _renderClientIds = tempList;
             } else {
                 _renderClientIds = new ArrayList<String>();
