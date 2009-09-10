@@ -1721,7 +1721,7 @@ public abstract class UIComponentBase extends UIComponent
                         Object attachedState = holder.saveState(facesContext);
                         if (attachedState != null)
                         {
-                            stateMap.put(entry.getKey(), new _AttachedDeltaWrapper(_facesListeners.getClass(),
+                            stateMap.put(entry.getKey(), new _AttachedDeltaWrapper(_behaviorsMap.getClass(),
                                     attachedState));
                         }
                     }
@@ -1814,7 +1814,7 @@ public abstract class UIComponentBase extends UIComponent
                         Object attachedState = holder.saveState(facesContext);
                         if (attachedState != null)
                         {
-                            stateMap.put(entry.getKey(), new _AttachedDeltaWrapper(_facesListeners.getClass(),
+                            stateMap.put(entry.getKey(), new _AttachedDeltaWrapper(_systemEventListenerClassMap.getClass(),
                                     attachedState));
                         }
                     }
