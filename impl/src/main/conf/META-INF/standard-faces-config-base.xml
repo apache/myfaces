@@ -63,6 +63,12 @@
       <exception-handler-factory>org.apache.myfaces.context.ExceptionHandlerFactoryImpl</exception-handler-factory>
    </factory>
    
+   <!-- behaviors by id -->
+   <behavior>
+      <behavior-id>javax.faces.behavior.Ajax</behavior-id>
+      <behavior-class>javax.faces.component.behavior.AjaxBehavior</behavior-class>
+   </behavior>
+   
    <!-- standard converters by class -->
    
    <converter>

@@ -32,10 +32,12 @@ import java.util.Map;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
+import javax.faces.component.behavior.Behavior;
 import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
+import javax.faces.event.BehaviorEvent;
 import javax.faces.event.FacesEvent;
 import javax.faces.event.FacesListener;
 import javax.faces.event.PhaseId;
@@ -381,6 +383,14 @@ public abstract class UIComponentBase extends UIComponent
                 if (event.isAppropriateListener(facesListener))
                 {
                     event.processListener(facesListener);
+                }
+            }
+            if (event instanceof BehaviorEvent && event.getComponent() == this)
+            {
+                Behavior behavior = ((BehaviorEvent) event).getBehavior();
+                if (behavior instanceof ClientBehavior)
+                {
+                    behavior.broadcast((BehaviorEvent) event);
                 }
             }
         }
