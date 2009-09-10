@@ -110,7 +110,8 @@ class RestoreViewExecutor implements PhaseExecutor
             if (log.isTraceEnabled())
                 log.trace("Request is not a postback. New UIViewRoot will be created");
             
-            ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, viewId);
+            ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, 
+                    viewId);
             
             if (vdl != null)
             {

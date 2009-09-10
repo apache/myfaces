@@ -854,7 +854,7 @@ public final class ServletExternalContextImpl extends ExternalContext implements
         }
 
         // start building the new URL
-        StringBuilder newUrl = new StringBuilder();
+        StringBuilder newUrl = new StringBuilder(baseUrl);
 
         //now add the updated param list onto the url
         if (paramMap.size()>0)

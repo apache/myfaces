@@ -200,6 +200,8 @@ public abstract class ViewHandler
     public ViewDeclarationLanguage getViewDeclarationLanguage(FacesContext context, String viewId)
     {
         // FIXME: Notify EG - The JavaDoc mention 2 default implementation, how lovely, using the most useful one.
+        // TODO: In some places like RestoreViewExecutor, we are calling deriveViewId after call restoreViewSupport.calculateViewId
+        // Maybe this method should be called from here, because it is supposed that calculateViewId "calculates the view id!"
         return _getViewDeclarationLanguageFactory().getViewDeclarationLanguage(viewId);
     }
 

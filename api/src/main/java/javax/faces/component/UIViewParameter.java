@@ -55,6 +55,11 @@ public class UIViewParameter extends UIInput
     
     private static Renderer _delegateRenderer;
 
+    public UIViewParameter()
+    {
+        setRendererType(null);
+    }
+
     @Override
     public String getFamily()
     {

@@ -156,6 +156,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     
     public final static String BUILDING_COMPOSITE_COMPONENT_METADATA = "org.apache.myfaces.BUILDING_COMPOSITE_COMPONENT_METADATA";
     
+    public final static String BUILDING_VIEW_METADATA = "org.apache.myfaces.BUILDING_VIEW_METADATA";
+    
     /**
      * Marker to indicate tag handlers the view currently being built is using
      * partial state saving and it is necessary to call UIComponent.markInitialState
@@ -340,6 +342,17 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     public static boolean isBuildingCompositeComponentMetadata(FacesContext context)
     {
         return context.getAttributes().containsKey(BUILDING_COMPOSITE_COMPONENT_METADATA);
+    }
+    
+    /**
+     * Check if the current facelet applied is used to build view metadata.
+     * 
+     * @param context
+     * @return
+     */
+    public static boolean isBuildingViewMetadata(FacesContext context)
+    {
+        return context.getAttributes().containsKey(BUILDING_VIEW_METADATA);
     }
     
     /**
@@ -1651,28 +1664,33 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             try
             {
                 context.setProcessingEvents(false);
-
-                String viewId = getViewId();
-                UIViewRoot view = createView(context, viewId);
                 
-                // FIXME: spec doesn't say that this is necessary, but we blow up later if
+                // spec doesn't say that this is necessary, but we blow up later if
                 // the viewroot isn't available from the FacesContext.
+                // -= Leonardo Uribe =- since it is supposed when we apply view metadata
+                // facelet we don't apply components with renderers and we don't call getRenderKit()
+                // it is safe to let this one commented
                 // context.setViewRoot(view);
                 
-                // TODO: -= Leonardo Uribe =- This part is related to section 2.5.5 of jsf 2.0 spec.
+                // -= Leonardo Uribe =- This part is related to section 2.5.5 of jsf 2.0 spec.
                 // In theory what we need here is fill UIViewRoot.METADATA_FACET_NAME facet
                 // with UIViewParameter instances. Later, ViewHandlerImpl.getBookmarkableURL(),
                 // ViewHandlerImpl.getRedirectURL() and UIViewRoot.encodeEnd uses them. 
                 // For now, the only way to do this is call buildView(context,view) method, but 
                 // this is a waste of resources. We need to find another way to handle facelets view metadata.
-                
                 // Call to buildView causes the view is not created on Render Response phase,
                 // if buildView is called from here all components pass through current lifecycle and only
                 // UIViewParameter instances should be taken into account.
                 // It should be an additional call to buildView on Render Response phase.
-                buildView(context, view);
-                //_getViewMetadataFacelet(viewId);
+                // buildView(context, view);
                 
+                context.getAttributes().put(BUILDING_VIEW_METADATA, Boolean.TRUE);
+
+                String viewId = getViewId();
+                UIViewRoot view = createView(context, viewId);
+                Facelet facelet = _getViewMetadataFacelet(viewId);
+                facelet.apply(context, view);
+
                 return view;
             }
             catch (IOException ioe)
@@ -1681,6 +1699,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             }
             finally
             {
+                context.getAttributes().remove(BUILDING_VIEW_METADATA);
+                
                 context.setProcessingEvents(true);
             }
         }

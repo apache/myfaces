@@ -29,6 +29,7 @@ import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 /**
  * Defines the view metadata. It is expected that this tag contains only
  * one or many f:viewParam tags.
@@ -49,22 +50,26 @@ public final class ViewMetadataHandler extends TagHandler
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {
-        if (parent == null)
+        if (FaceletViewDeclarationLanguage.
+                isBuildingViewMetadata(ctx.getFacesContext()))
         {
-            throw new TagException(this.tag, "Parent UIComponent was null");
+            if (parent == null)
+            {
+                throw new TagException(this.tag, "Parent UIComponent was null");
+            }
+            if (! (parent instanceof UIViewRoot) )
+            {
+                throw new TagException(this.tag, "Parent UIComponent "+parent.getId()+" should be instance of UIViewRoot");
+            }
+            UIComponent metadataFacet = parent.getFacet(UIViewRoot.METADATA_FACET_NAME);
+            if (metadataFacet == null)
+            {
+                metadataFacet = ctx.getFacesContext().
+                    getApplication().createComponent(UIPanel.COMPONENT_TYPE);
+                metadataFacet.setId(UIViewRoot.METADATA_FACET_NAME);
+                parent.getFacets().put(UIViewRoot.METADATA_FACET_NAME, metadataFacet);
+            }
+            this.nextHandler.apply(ctx, metadataFacet);
         }
-        if (! (parent instanceof UIViewRoot) )
-        {
-            throw new TagException(this.tag, "Parent UIComponent "+parent.getId()+" should be instance of UIViewRoot");
-        }
-        UIComponent metadataFacet = parent.getFacet(UIViewRoot.METADATA_FACET_NAME);
-        if (metadataFacet == null)
-        {
-            metadataFacet = ctx.getFacesContext().
-                getApplication().createComponent(UIPanel.COMPONENT_TYPE);
-            metadataFacet.setId(UIViewRoot.METADATA_FACET_NAME);
-            parent.getChildren().add(metadataFacet);
-        }
-        this.nextHandler.apply(ctx, metadataFacet);
     }
 }

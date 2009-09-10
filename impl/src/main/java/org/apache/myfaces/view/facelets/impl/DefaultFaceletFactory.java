@@ -56,6 +56,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
     private Compiler _compiler;
 
     private Map<String, DefaultFacelet> _facelets;
+    
+    private Map<String, DefaultFacelet> _viewMetadataFacelets;
 
     private long _refreshPeriod;
 
@@ -76,6 +78,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
         _compiler = compiler;
 
         _facelets = new HashMap<String, DefaultFacelet>();
+        
+        _viewMetadataFacelets = new HashMap<String, DefaultFacelet>();
 
         _relativeLocations = new HashMap<String, URL>();
 
@@ -276,19 +280,89 @@ public final class DefaultFaceletFactory extends FaceletFactory
             throw new FileNotFoundException("Facelet " + alias + " not found at: " + url.toExternalForm());
         }
     }
+    
+    /**
+     * @since 2.0
+     * @param url
+     * @return
+     * @throws IOException
+     * @throws FaceletException
+     * @throws FacesException
+     * @throws ELException
+     */
+    private DefaultFacelet _createViewMetadataFacelet(URL url) throws IOException, FaceletException, FacesException, ELException
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug("Creating Facelet used to create View Metadata for: " + url);
+        }
 
+        // The alias is used later for informative purposes, so we append 
+        // some prefix to identify later where the errors comes from.
+        String alias = "/viewMetadata/" + url.getFile().replaceFirst(_baseUrl.getFile(), "");
+        try
+        {
+            FaceletHandler h = _compiler.compileViewMetadata(url, alias);
+            DefaultFacelet f = new DefaultFacelet(this, _compiler.createExpressionFactory(), url, alias, h);
+            return f;
+        }
+        catch (FileNotFoundException fnfe)
+        {
+            throw new FileNotFoundException("Facelet " + alias + " not found at: " + url.toExternalForm());
+        }
+
+    }
+
+    /**
+     * Works in the same way as getFacelet(String uri), but redirect
+     * to getViewMetadataFacelet(URL url)
+     * @since 2.0
+     */
     @Override
     public Facelet getViewMetadataFacelet(String uri) throws IOException
     {
-        // TODO MYFACES-2345
-        return null;
+        URL url = (URL) _relativeLocations.get(uri);
+        if (url == null)
+        {
+            url = resolveURL(_baseUrl, uri);
+            if (url != null)
+            {
+                Map<String, URL> newLoc = new HashMap<String, URL>(_relativeLocations);
+                newLoc.put(uri, url);
+                _relativeLocations = newLoc;
+            }
+            else
+            {
+                throw new IOException("'" + uri + "' not found.");
+            }
+        }
+        return this.getViewMetadataFacelet(url);
     }
 
+    /**
+     * @since 2.0
+     */
     @Override
     public Facelet getViewMetadataFacelet(URL url) throws IOException,
             FaceletException, FacesException, ELException
     {
-        // TODO MYFACES-2345
-        return null;
+        ParameterCheck.notNull("url", url);
+        
+        String key = url.toString();
+        
+        DefaultFacelet f = _viewMetadataFacelets.get(key);
+        
+        if (f == null || this.needsToBeRefreshed(f))
+        {
+            f = this._createViewMetadataFacelet(url);
+            if (_refreshPeriod != NO_CACHE_DELAY)
+            {
+                Map<String, DefaultFacelet> newLoc = new HashMap<String, DefaultFacelet>(_viewMetadataFacelets);
+                newLoc.put(key, f);
+                _viewMetadataFacelets = newLoc;
+            }
+        }
+        
+        return f;
     }
 }

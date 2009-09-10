@@ -40,7 +40,7 @@ _TabindexProperty, _LinkProperties
 {
 
   static public final String COMPONENT_FAMILY =
-    "javax.faces.Output";
+    "javax.faces.OutcomeTarget";
   static public final String COMPONENT_TYPE =
     "javax.faces.HtmlOutcomeTargetLink";
 

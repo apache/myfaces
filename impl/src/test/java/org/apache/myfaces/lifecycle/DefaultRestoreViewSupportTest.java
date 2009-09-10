@@ -30,6 +30,7 @@ import java.util.Map;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
+import javax.faces.application.ViewHandler;
 import javax.faces.component.UIComponent;
 
 import org.apache.myfaces.Assert;
@@ -91,7 +92,11 @@ public class DefaultRestoreViewSupportTest extends FacesTestCase
         String expectedValue = "javax.servlet.include.path_info_VIEWID";
         map.put("javax.servlet.include.path_info", expectedValue);
         expect(_externalContext.getRequestMap()).andReturn(map);
-
+        expect(_facesContext.getApplication()).andReturn(_application);
+        ViewHandler viewHandler = _mocksControl.createMock(ViewHandler.class);
+        expect(_application.getViewHandler()).andReturn(viewHandler);
+        expect(viewHandler.deriveViewId(
+                same(_facesContext), eq(expectedValue))).andReturn(expectedValue);
         _mocksControl.replay();
         assertEquals(expectedValue, _testimpl.calculateViewId(_facesContext));
         _mocksControl.verify();
@@ -110,6 +115,11 @@ public class DefaultRestoreViewSupportTest extends FacesTestCase
         expect(_externalContext.getRequestMap()).andReturn(emptyMap);
         String expectedValue = "requestPathInfo_VIEWID";
         expect(_externalContext.getRequestPathInfo()).andReturn(expectedValue);
+        expect(_facesContext.getApplication()).andReturn(_application);
+        ViewHandler viewHandler = _mocksControl.createMock(ViewHandler.class);
+        expect(_application.getViewHandler()).andReturn(viewHandler);
+        expect(viewHandler.deriveViewId(
+                same(_facesContext), eq(expectedValue))).andReturn(expectedValue);
 
         _mocksControl.replay();
         assertEquals(expectedValue, _testimpl.calculateViewId(_facesContext));
@@ -129,6 +139,11 @@ public class DefaultRestoreViewSupportTest extends FacesTestCase
         map.put("javax.servlet.include.servlet_path", expectedValue);
         expect(_externalContext.getRequestMap()).andReturn(map);
         expect(_externalContext.getRequestPathInfo()).andReturn(null);
+        expect(_facesContext.getApplication()).andReturn(_application);
+        ViewHandler viewHandler = _mocksControl.createMock(ViewHandler.class);
+        expect(_application.getViewHandler()).andReturn(viewHandler);
+        expect(viewHandler.deriveViewId(
+                same(_facesContext), eq(expectedValue))).andReturn(expectedValue);
 
         _mocksControl.replay();
         assertEquals(expectedValue, _testimpl.calculateViewId(_facesContext));
@@ -150,6 +165,11 @@ public class DefaultRestoreViewSupportTest extends FacesTestCase
         expect(_externalContext.getRequestPathInfo()).andReturn(null);
         String expectedValue = "RequestServletPath_VIEWID";
         expect(_externalContext.getRequestServletPath()).andReturn(expectedValue);
+        expect(_facesContext.getApplication()).andReturn(_application);
+        ViewHandler viewHandler = _mocksControl.createMock(ViewHandler.class);
+        expect(_application.getViewHandler()).andReturn(viewHandler);
+        expect(viewHandler.deriveViewId(
+                same(_facesContext), eq(expectedValue))).andReturn(expectedValue);
 
         _mocksControl.replay();
         assertEquals(expectedValue, _testimpl.calculateViewId(_facesContext));
