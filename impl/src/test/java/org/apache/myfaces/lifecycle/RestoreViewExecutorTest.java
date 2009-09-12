@@ -86,7 +86,7 @@ public class RestoreViewExecutorTest extends FacesTestCase
         _facesContext.renderResponse();
 
         UIViewRoot viewRoot = _mocksControl.createMock(UIViewRoot.class);
-        viewRoot.subscribeToEvent(same(PostAddToViewEvent.class), same(viewRoot));
+        //viewRoot.subscribeToEvent(same(PostAddToViewEvent.class), same(viewRoot));
 
         ViewDeclarationLanguage vdl = _mocksControl.createMock(ViewDeclarationLanguage.class);
         expect(_viewHandler.getViewDeclarationLanguage(same(_facesContext), eq("calculatedViewId")))

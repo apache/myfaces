@@ -138,7 +138,9 @@ class RestoreViewExecutor implements PhaseExecutor
                 
                 // Subscribe the newly created UIViewRoot instance to the AfterAddToParent event, passing the 
                 // UIViewRoot instance itself as the listener.
-                viewRoot.subscribeToEvent(PostAddToViewEvent.class, viewRoot);
+                // -= Leonardo Uribe =- This line it is not necessary because it was
+                // removed from jsf 2.0 section 2.2.1 when pass from EDR2 to Public Review 
+                // viewRoot.subscribeToEvent(PostAddToViewEvent.class, viewRoot);
                 
                 // Store the new UIViewRoot instance in the FacesContext.
                 facesContext.setViewRoot(viewRoot);
