@@ -640,4 +640,30 @@ public class _DeltaListTest extends AbstractComponentTest
         assertTrue(a._facesListeners.contains(listener1));
         assertFalse(b._facesListeners.contains(listener1));
     }
+    
+    public void testSimpleSaveRestoreTransient5()
+    {
+        UITestComponent a = new UITestComponent();
+        UITestComponent b = new UITestComponent();
+        StateFacesListener listener1 = new StateFacesListener();
+        listener1.setTransient(true);
+        listener1.setValue("value");
+        StateFacesListener listener2 = new StateFacesListener();
+        listener2.setValue("value");
+        a.addTestFacesListener(listener1);
+        a.addTestFacesListener(listener2);
+        b.addTestFacesListener(listener1);
+        b.addTestFacesListener(listener2);
+        a.markInitialState();
+        b.markInitialState();
+        listener2.setValue("value2");
+        //Since listener1 is transient
+        Object [] savedState1 = (Object[]) a.saveState(facesContext);
+        b.restoreState(facesContext, savedState1);  
+        assertTrue(a._facesListeners.contains(listener1));
+        assertFalse(b._facesListeners.contains(listener1));
+        assertTrue(a._facesListeners.contains(listener2));
+        assertTrue(b._facesListeners.contains(listener2));
+        assertEquals("value2", ((StateFacesListener)b._facesListeners.get(b._facesListeners.indexOf(listener2))).getValue());
+    }
 }

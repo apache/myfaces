@@ -925,11 +925,10 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
         }
     }
 
-    static class EventListenerWrapper implements SystemEventListener, StateHolder {
+    static class EventListenerWrapper implements SystemEventListener, PartialStateHolder {
 
-        private UIComponent component;
+        private Class<?> componentClass;
         private ComponentSystemEventListener listener;
-        private boolean transientObject = false;
         
         public EventListenerWrapper()
         {
@@ -937,21 +936,38 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
             super();
         }
         
+        /**
+         * Note we have two cases:
+         * 
+         * 1. listener is an instance of UIComponent. In this case we cannot save and restore
+         *    it because we need to point to the real component, but we can assume the instance
+         *    is the same because UIComponent.subscribeToEvent says so. Also take into account
+         *    this case is the reason why we need a wrapper for UIComponent.subscribeToEvent
+         * 2. listener is an instance of ComponentSystemEventListener but not from UIComponent.
+         *    In this case, the instance could implement StateHolder, PartialStateHolder or do
+         *    implement anything, so we have to deal with that case as usual.
+         * 
+         * @param component
+         * @param listener
+         */
         public EventListenerWrapper(UIComponent component, ComponentSystemEventListener listener) {
             assert component != null;
             assert listener != null;
 
-            this.component = component;
+            this.componentClass = component.getClass();
             this.listener = listener;
         }
 
         @Override
         public boolean equals(Object o) {
-            if (o == this) {
+            if (o == this)
+            {
                 return true;
-            } else if (o instanceof EventListenerWrapper) {
+            }
+            else if (o instanceof EventListenerWrapper)
+            {
                 EventListenerWrapper other = (EventListenerWrapper) o;
-                return component.equals(other.component) && listener.equals(other.listener);
+                return componentClass.equals(other.componentClass) && listener.equals(other.listener);
             } else {
                 return false;
             }
@@ -959,17 +975,21 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
 
         @Override
         public int hashCode() {
-            return component.hashCode() + listener.hashCode();
+            return componentClass.hashCode() + listener.hashCode();
         }
 
-        public boolean isListenerForSource(Object source) {
+        @Override
+        public boolean isListenerForSource(Object source)
+        {
             // and its implementation of SystemEventListener.isListenerForSource(java.lang.Object) must return true
             // if the instance class of this UIComponent is assignable from the argument to isListenerForSource.
 
-            return source.getClass().isAssignableFrom(component.getClass());
+            return source.getClass().isAssignableFrom(componentClass);
         }
 
-        public void processEvent(SystemEvent event) {
+        @Override
+        public void processEvent(SystemEvent event)
+        {
             // This inner class must call through to the argument componentListener in its implementation of
             // SystemEventListener.processEvent(javax.faces.event.SystemEvent)
 
@@ -977,130 +997,76 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
 
             listener.processEvent((ComponentSystemEvent) event);
         }
-        
+
         @Override
-        public boolean isTransient() {
-            return transientObject;
+        public void clearInitialState()
+        {
+            if (!(listener instanceof UIComponent) && listener instanceof PartialStateHolder)
+            {
+                ((PartialStateHolder)listener).clearInitialState();
+            }
         }
 
         @Override
-        public void restoreState(FacesContext context, Object state) 
+        public boolean initialStateMarked()
         {
-            if(state == null)
+            if (!(listener instanceof UIComponent) && listener instanceof PartialStateHolder)
             {
-                return;
+                ((PartialStateHolder)listener).initialStateMarked();
             }
-            
-            Object[] values = (Object[]) state;
-            component = (UIComponent) getClassInstance((String)values[0]);
-            String listenerClass = (String)values[1];
-            Serializable listenerState = (Serializable)values[2];
-            
-            if(listenerClass == null && listenerState == null) 
-            {   
-                //no listenerClass or listenerState to restore
-                listener = null;
-            }
-            else if(listenerClass == null && listenerState != null)
+            return false;
+        }
+
+        @Override
+        public void markInitialState()
+        {
+            if (!(listener instanceof UIComponent) && listener instanceof PartialStateHolder)
             {
-                // the listenerState is the listener for Serializable but not StateHolder objects
-                listener = (ComponentSystemEventListener)listenerState;
+                ((PartialStateHolder)listener).markInitialState();
             }
-            else
+        }
+
+        @Override
+        public boolean isTransient()
+        {
+            if (listener instanceof StateHolder)
             {
-                // restore the listener and listenerState for StateHolder objects
-                listener = (ComponentSystemEventListener)getClassInstance(listenerClass);
-                
-                if(listener != null && listenerState != null && listener instanceof StateHolder)
-                {
-                    ((StateHolder) listener).restoreState(context, listenerState);
-                }
+                return ((StateHolder)listener).isTransient();
             }            
+            return false;
         }
 
         @Override
-        public Object saveState(FacesContext context) 
+        public void restoreState(FacesContext context, Object state)
         {
-            Serializable listenerState = null;
-            String listenerClass = null;
+            //TODO: Delta
+            Object[] values = (Object[]) state;
+            componentClass = (Class) values[0];
+            listener = values[1] == null ? 
+                    UIComponent.getCurrentComponent(context) : 
+                        (ComponentSystemEventListener) UIComponentBase.restoreAttachedState(context, values[1]);
+        }
 
-            if(listener instanceof UIComponent)
-            {
-                //just save the component
-            }
-            else if (listener instanceof StateHolder) 
-            {
-                //save component, listener state and listener class
-                if (!((StateHolder) listener).isTransient()) 
-                {
-                    listenerState = (Serializable) ((StateHolder) listener).saveState(context);
-                    listenerClass = listener.getClass().getName();
-                }
-            } 
-            else if (listener instanceof Serializable) 
-            {
-                //save only listener state 
-                listenerState = (Serializable) listener;
-                listenerClass = null;
-            }
-            
-            Object[] state = new Object[3];
-            state[0] = component.getClass().getName();
-            state[1] = listenerClass;
-            state[2] = listenerState;
-            return state;   
-        }
-         
         @Override
-        public void setTransient(boolean transientObject) 
-        {   
-            this.transientObject = transientObject;
-        }
-        private Object getClassInstance(String name) 
+        public Object saveState(FacesContext context)
         {
-            ClassLoader cl;
-            if (System.getSecurityManager() != null) 
+            //TODO: Delta
+            Object[] state = new Object[2];
+            state[0] = componentClass;
+            if (!(listener instanceof UIComponent))
             {
-                try {
-                    cl = AccessController.doPrivileged(new PrivilegedExceptionAction<ClassLoader>()
-                            {
-                                public ClassLoader run() throws PrivilegedActionException
-                                {
-                                    return Thread.currentThread().getContextClassLoader();
-                                }
-                            });
-                }
-                catch (PrivilegedActionException pae)
-                {
-                    throw new FacesException(pae);
-                }
+                state[1] = UIComponentBase.saveAttachedState(context, listener);
             }
-            else
+            return state;                
+        }
+
+        @Override
+        public void setTransient(boolean newTransientValue)
+        {
+            if (listener instanceof StateHolder)
             {
-                cl = Thread.currentThread().getContextClassLoader();
-            }
-     
-            if (cl == null) 
-            {
-                cl = this.getClass().getClassLoader();
-            }
-            
-            try
-            {
-                return Class.forName(name, false, cl).newInstance();
-            }
-            catch (IllegalAccessException e)
-            {
-                throw new IllegalStateException(e);
-            }
-            catch (InstantiationException e)
-            {
-                throw new IllegalStateException(e);
-            }
-            catch (ClassNotFoundException e)
-            {
-                throw new IllegalStateException(e);
-            }
+                ((StateHolder)listener).setTransient(newTransientValue);
+            }            
         }
     }
 }

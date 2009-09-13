@@ -20,6 +20,7 @@ package org.apache.myfaces.view.facelets;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -30,6 +31,7 @@ import java.util.Set;
 import javax.faces.FacesException;
 import javax.faces.component.ContextCallback;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PostAddToViewEvent;
@@ -39,6 +41,7 @@ import javax.faces.event.SystemEventListener;
 import javax.faces.render.ResponseStateManager;
 import javax.faces.view.StateManagementStrategy;
 import javax.faces.view.ViewDeclarationLanguage;
+import javax.faces.view.ViewMetadata;
 
 import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
@@ -99,15 +102,32 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         Object state[];
         Map<String, Object> states;
         
-        UIViewRoot view;
+        UIViewRoot view = null;
         
         // Per the spec: build the view.
         
         try {
-            view = vdl.getViewMetadata (context, viewId).createMetadataView (context);
+            ViewMetadata metadata = vdl.getViewMetadata (context, viewId);
+            
+            Collection<UIViewParameter> viewParameters = null;
+            
+            if (metadata != null)
+            {
+                view = metadata.createMetadataView(context);
+                
+                if (view != null)
+                {
+                    viewParameters = metadata.getViewParameters(view);
+                }
+            }
+            if (view == null)
+            {
+                view = vdl.createView(context, viewId);
+            }
             
             context.setViewRoot (view); 
             
+            //TODO: Why is necessary disable event processing?
             context.setProcessingEvents (true);
             vdl.buildView (context, view);
             context.setProcessingEvents (false);
@@ -241,44 +261,52 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             return;
         }
         
-        //Restore view
-        Object state = states.get(component.getClientId());
-        if (state != null)
+        try
         {
-            component.restoreState(context, state);
-        }
-
-        //Scan children
-        if (component.getChildCount() > 0)
-        {
-            String currentClientId = component.getClientId();
-            
-            List<UIComponent> children  = component.getChildren();
-            for (int i = 0; i < children.size(); i++)
+            //Restore view
+            component.pushComponentToEL(context, component);
+            Object state = states.get(component.getClientId());
+            if (state != null)
             {
-                UIComponent child = children.get(i);
-                if (child != null && !child.isTransient())
+                component.restoreState(context, state);
+            }
+    
+            //Scan children
+            if (component.getChildCount() > 0)
+            {
+                String currentClientId = component.getClientId();
+                
+                List<UIComponent> children  = component.getChildren();
+                for (int i = 0; i < children.size(); i++)
                 {
-                    restoreStateFromMap( context, states, child);
+                    UIComponent child = children.get(i);
+                    if (child != null && !child.isTransient())
+                    {
+                        restoreStateFromMap( context, states, child);
+                    }
+                }
+            }
+    
+            //Scan facets
+            Map<String, UIComponent> facetMap = component.getFacets();
+            if (!facetMap.isEmpty())
+            {
+                String currentClientId = component.getClientId();
+                
+                for (Map.Entry<String, UIComponent> entry : facetMap.entrySet())
+                {
+                    UIComponent child = entry.getValue();
+                    if (child != null && !child.isTransient())
+                    {
+                        String facetName = entry.getKey();
+                        restoreStateFromMap( context, states, child);
+                    }
                 }
             }
         }
-
-        //Scan facets
-        Map<String, UIComponent> facetMap = component.getFacets();
-        if (!facetMap.isEmpty())
+        finally
         {
-            String currentClientId = component.getClientId();
-            
-            for (Map.Entry<String, UIComponent> entry : facetMap.entrySet())
-            {
-                UIComponent child = entry.getValue();
-                if (child != null && !child.isTransient())
-                {
-                    String facetName = entry.getKey();
-                    restoreStateFromMap( context, states, child);
-                }
-            }
+            component.popComponentFromEL(context);
         }
     }
     
@@ -304,76 +332,84 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             
     private void saveStateOnMap(final FacesContext context, final Map<String,Object> states,
             final UIComponent component)
-    {        
-        //Save state        
-        Object savedState = component.saveState(context);
-        
-        //Only save if the value returned is null
-        if (savedState != null)
+    {
+        try
         {
-            states.put(component.getClientId(), savedState);            
-        }
-        
-        //Scan children
-        if (component.getChildCount() > 0)
-        {
-            String currentClientId = component.getClientId();
+            component.pushComponentToEL(context, component);
+            //Save state        
+            Object savedState = component.saveState(context);
             
-            List<UIComponent> children  = component.getChildren();
-            for (int i = 0; i < children.size(); i++)
+            //Only save if the value returned is null
+            if (savedState != null)
             {
-                UIComponent child = children.get(i);
-                if (child != null && !child.isTransient())
+                states.put(component.getClientId(), savedState);            
+            }
+            
+            //Scan children
+            if (component.getChildCount() > 0)
+            {
+                String currentClientId = component.getClientId();
+                
+                List<UIComponent> children  = component.getChildren();
+                for (int i = 0; i < children.size(); i++)
                 {
-                    if (child.getAttributes().containsKey(COMPONENT_ADDED_AFTER_BUILD_VIEW))
+                    UIComponent child = children.get(i);
+                    if (child != null && !child.isTransient())
                     {
-                        //Save all required info to restore the subtree.
-                        //This includes position, structure and state of subtree
-                        states.put(child.getClientId(), 
-                                new Object[]{
-                                    currentClientId,
-                                    null,
-                                    i,
-                                    internalBuildTreeStructureToSave(child),
-                                    child.processSaveState(context)});
+                        if (child.getAttributes().containsKey(COMPONENT_ADDED_AFTER_BUILD_VIEW))
+                        {
+                            //Save all required info to restore the subtree.
+                            //This includes position, structure and state of subtree
+                            states.put(child.getClientId(), 
+                                    new Object[]{
+                                        currentClientId,
+                                        null,
+                                        i,
+                                        internalBuildTreeStructureToSave(child),
+                                        child.processSaveState(context)});
+                        }
+                        else
+                        {
+                            saveStateOnMap( context, states, child);
+                        }
                     }
-                    else
+                }
+            }
+    
+            //Scan facets
+            Map<String, UIComponent> facetMap = component.getFacets();
+            if (!facetMap.isEmpty())
+            {
+                String currentClientId = component.getClientId();
+                
+                for (Map.Entry<String, UIComponent> entry : facetMap.entrySet())
+                {
+                    UIComponent child = entry.getValue();
+                    if (child != null && !child.isTransient())
                     {
-                        saveStateOnMap( context, states, child);
+                        String facetName = entry.getKey();
+                        if (child.getAttributes().containsKey(COMPONENT_ADDED_AFTER_BUILD_VIEW))
+                        {
+                            //Save all required info to restore the subtree.
+                            //This includes position, structure and state of subtree
+                            states.put(child.getClientId(), new Object[]{
+                                currentClientId,
+                                facetName,
+                                null,
+                                internalBuildTreeStructureToSave(child),
+                                child.processSaveState(context)});
+                        }
+                        else
+                        {
+                            saveStateOnMap( context, states, child);
+                        }
                     }
                 }
             }
         }
-
-        //Scan facets
-        Map<String, UIComponent> facetMap = component.getFacets();
-        if (!facetMap.isEmpty())
+        finally
         {
-            String currentClientId = component.getClientId();
-            
-            for (Map.Entry<String, UIComponent> entry : facetMap.entrySet())
-            {
-                UIComponent child = entry.getValue();
-                if (child != null && !child.isTransient())
-                {
-                    String facetName = entry.getKey();
-                    if (child.getAttributes().containsKey(COMPONENT_ADDED_AFTER_BUILD_VIEW))
-                    {
-                        //Save all required info to restore the subtree.
-                        //This includes position, structure and state of subtree
-                        states.put(child.getClientId(), new Object[]{
-                            currentClientId,
-                            facetName,
-                            null,
-                            internalBuildTreeStructureToSave(child),
-                            child.processSaveState(context)});
-                    }
-                    else
-                    {
-                        saveStateOnMap( context, states, child);
-                    }
-                }
-            }
+            component.popComponentFromEL(context);
         }
     }
     
