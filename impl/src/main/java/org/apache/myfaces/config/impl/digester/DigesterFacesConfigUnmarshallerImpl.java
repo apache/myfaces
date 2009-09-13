@@ -240,8 +240,8 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addCallMethod("faces-config/render-kit/renderer/renderer-class", "setRendererClass", 0);
         digester.addObjectCreate("faces-config/render-kit/client-behavior-renderer", ClientBehaviorRenderer.class);
         digester.addSetNext("faces-config/render-kit/client-behavior-renderer", "addClientBehaviorRenderer");
-        digester.addCallMethod("faces-config/render-kit/renderer/client-behavior-renderer-type", "setRendererType", 0);
-        digester.addCallMethod("faces-config/render-kit/renderer/client-behavior-renderer-class", "setRendererClass", 0);
+        digester.addCallMethod("faces-config/render-kit/client-behavior-renderer/client-behavior-renderer-type", "setRendererType", 0);
+        digester.addCallMethod("faces-config/render-kit/client-behavior-renderer/client-behavior-renderer-class", "setRendererClass", 0);
         
         // 2.0 behavior start
         digester.addObjectCreate("faces-config/behavior", Behavior.class);

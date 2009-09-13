@@ -18,29 +18,30 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import javax.faces.context.FacesContext;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
+import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorContext;
-import javax.faces.component.behavior.AjaxBehavior;
-import javax.faces.event.PhaseId;
+import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
-import javax.faces.FacesException;
-import javax.faces.render.FacesBehaviorRenderer;
-import java.util.Collection;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
+import javax.faces.event.PhaseId;
+import javax.faces.render.ClientBehaviorRenderer;
 
 /**
  * @author Werner Punz  (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-@FacesBehaviorRenderer(rendererType = "javax.faces.behavior.Ajax", renderKitId = "HTML_BASIC")
-public class HtmlAjaxBehaviorRenderer {
+public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
+{
 
     private static final String QUOTE = "'";
     private static final String BLANK = " ";
