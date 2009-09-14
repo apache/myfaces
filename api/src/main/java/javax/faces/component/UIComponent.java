@@ -430,7 +430,7 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
         if (_resourceBundleMap == null) {
             FacesContext context = getFacesContext();
             Locale locale = context.getViewRoot().getLocale();
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            ClassLoader loader = _ClassUtils.getContextClassLoader();
 
             try {
                 // looks for a ResourceBundle with a base name equal to the fully qualified class

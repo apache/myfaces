@@ -74,8 +74,7 @@ abstract class _MethodBindingToListener implements StateHolder {
     public void restoreState(FacesContext context, Object state) {
         Object[] stateArray = (Object[])state;
         try {
-            methodBinding = (MethodBinding)Thread.currentThread()
-                                                 .getContextClassLoader()
+            methodBinding = (MethodBinding)_ClassUtils.getContextClassLoader()
                                                  .loadClass((String)stateArray[0])
                                                  .newInstance();
         } catch (Exception e) {

@@ -18,12 +18,16 @@
  */
 package javax.faces.validator;
 
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import javax.el.ValueExpression;
+import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -142,15 +146,15 @@ class _MessageUtils
     }
 
     private static ResourceBundle getBundle(FacesContext facesContext,
-                                            Locale locale,
-                                            String bundleName)
+            Locale locale,
+            String bundleName)
     {
         try
         {
             //First we try the JSF implementation class loader
             return ResourceBundle.getBundle(bundleName,
-                                            locale,
-                                            facesContext.getClass().getClassLoader());
+                    locale,
+                    facesContext.getClass().getClassLoader());
         }
         catch (MissingResourceException ignore1)
         {
@@ -158,20 +162,28 @@ class _MessageUtils
             {
                 //Next we try the JSF API class loader
                 return ResourceBundle.getBundle(bundleName,
-                                                locale,
-                                                _MessageUtils.class.getClassLoader());
+                        locale,
+                        _MessageUtils.class.getClassLoader());
             }
             catch (MissingResourceException ignore2)
             {
                 try
                 {
                     //Last resort is the context class loader
-                    return ResourceBundle.getBundle(bundleName,
-                                                    locale,
-                                                    Thread.currentThread().getContextClassLoader());
-                }
-                catch (MissingResourceException damned)
-                {
+                    if (System.getSecurityManager() != null) {
+                        Object cl = AccessController.doPrivileged(new PrivilegedExceptionAction() {
+                            public Object run() throws PrivilegedActionException {
+                                return Thread.currentThread().getContextClassLoader();
+                            }
+                        });
+                        return ResourceBundle.getBundle(bundleName,locale,(ClassLoader)cl);
+
+                    }else{
+                        return ResourceBundle.getBundle(bundleName,locale, Thread.currentThread().getContextClassLoader()); 
+                    }                   
+                }catch(PrivilegedActionException pae){
+                    throw new FacesException(pae);
+                }catch (MissingResourceException damned){
                     facesContext.getExternalContext().log("resource bundle " + bundleName + " could not be found");
                     return null;
                 }

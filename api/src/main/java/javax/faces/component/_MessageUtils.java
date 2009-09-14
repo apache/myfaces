@@ -154,7 +154,7 @@ class _MessageUtils
                 try
                 {
                     // Last resort is the context class loader
-                    return ResourceBundle.getBundle(bundleName, locale, Thread.currentThread().getContextClassLoader());
+                    return ResourceBundle.getBundle(bundleName, locale, _ClassUtils.getContextClassLoader());
                 }
                 catch (MissingResourceException damned)
                 {

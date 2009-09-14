@@ -20,6 +20,7 @@ package javax.faces;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -358,7 +359,18 @@ public final class FactoryFinder
     {
         try
         {
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            ClassLoader classLoader = null;
+            if (System.getSecurityManager() != null) {                
+                classLoader = (ClassLoader) AccessController.doPrivileged(new java.security.PrivilegedExceptionAction() {
+                    public Object run() {
+                        return Thread.currentThread().getContextClassLoader();
+                    }
+                });
+            }
+            else {
+                classLoader = Thread.currentThread().getContextClassLoader();
+            }
+            
             if (classLoader == null)
             {
                 throw new FacesException("web application class loader cannot be identified", null);

@@ -21,6 +21,7 @@ package javax.faces.webapp;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ExternalContext;
 import javax.faces.component.UIComponent;
@@ -33,6 +34,9 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.*;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.text.DateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -102,7 +106,23 @@ final class _ErrorPageWriter
 
     private static String[] splitTemplate(String rsc) throws IOException
     {
-        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(rsc);
+        InputStream is = null;
+
+        if(System.getSecurityManager()!=null){
+            try{
+                Object cl = AccessController.doPrivileged(new PrivilegedExceptionAction() {
+                    public Object run() throws PrivilegedActionException {
+                        return Thread.currentThread().getContextClassLoader();
+                    }
+                });
+                is = ((ClassLoader)cl).getResourceAsStream(rsc);
+            }catch(PrivilegedActionException pae){
+                throw new FacesException(pae);
+            }
+        }else{
+            is = Thread.currentThread().getContextClassLoader().getResourceAsStream(rsc);
+        }
+
         if (is == null)
         {
             throw new FileNotFoundException(rsc);

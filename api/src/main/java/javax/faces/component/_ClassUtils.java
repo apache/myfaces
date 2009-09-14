@@ -22,6 +22,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -137,7 +140,7 @@ final class _ClassUtils
         {
             // Try WebApp ClassLoader first
             return Class.forName(type, false, // do not initialize for faster startup
-                Thread.currentThread().getContextClassLoader());
+                getContextClassLoader());
         }
         catch (ClassNotFoundException ignore)
         {
@@ -231,7 +234,7 @@ final class _ClassUtils
 
     public static InputStream getResourceAsStream(String resource)
     {
-        InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
+        InputStream stream = getContextClassLoader().getResourceAsStream(resource);
         if (stream == null)
         {
             // fallback
@@ -351,11 +354,35 @@ final class _ClassUtils
      */
     protected static ClassLoader getCurrentLoader(Object defaultObject)
     {
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        ClassLoader loader = getContextClassLoader();
+        
         if (loader == null)
         {
             loader = defaultObject.getClass().getClassLoader();
         }
         return loader;
     }
+    
+    /**
+     * Gets the ClassLoader associated with the current thread. Returns the class loader associated with the specified
+     * default object if no context loader is associated with the current thread.
+     * 
+     * @return ClassLoader
+     */
+    protected static ClassLoader getContextClassLoader(){
+        if (System.getSecurityManager() != null) {
+            try {
+                Object cl = AccessController.doPrivileged(new PrivilegedExceptionAction() {
+                            public Object run() throws PrivilegedActionException {
+                                return Thread.currentThread().getContextClassLoader();
+                            }
+                        });
+                return (ClassLoader) cl;
+            } catch (PrivilegedActionException pae) {
+                throw new FacesException(pae);
+            }
+        }else{
+            return Thread.currentThread().getContextClassLoader();
+        }
+    }   
 }
