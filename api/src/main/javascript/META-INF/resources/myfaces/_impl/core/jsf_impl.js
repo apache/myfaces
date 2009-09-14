@@ -20,7 +20,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
     myfaces._impl.core._jsfImpl = function() {
 
         //third option myfaces._impl.xhrCoreAjax which will be the new core impl for now
-        this._requestHandler = new (myfaces._impl._util._Utils.getGlobalConfig("transport", myfaces._impl.xhrCore._Ajax ))();
+        this._requestHandler = new (myfaces._impl._util._Utils.getGlobalConfig("transport", myfaces._impl.xhrCore._Ajax))();
 
         /**
          * external event listener queue!
@@ -37,37 +37,37 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
     /*CONSTANTS*/
 
     /*internal identifiers for options*/
-    myfaces._impl.core._jsfImpl.prototype._OPT_IDENT_ALL    = "@all";
-    myfaces._impl.core._jsfImpl.prototype._OPT_IDENT_NONE   = "@none";
-    myfaces._impl.core._jsfImpl.prototype._OPT_IDENT_THIS   = "@this";
-    myfaces._impl.core._jsfImpl.prototype._OPT_IDENT_FORM   = "@form";
+    myfaces._impl.core._jsfImpl.prototype._OPT_IDENT_ALL = "@all";
+    myfaces._impl.core._jsfImpl.prototype._OPT_IDENT_NONE = "@none";
+    myfaces._impl.core._jsfImpl.prototype._OPT_IDENT_THIS = "@this";
+    myfaces._impl.core._jsfImpl.prototype._OPT_IDENT_FORM = "@form";
 
     /*
      * [STATIC] constants
      */
 
-    myfaces._impl.core._jsfImpl._PROP_PARTIAL_SOURCE    = "javax.faces.source";
-    myfaces._impl.core._jsfImpl._PROP_VIEWSTATE         = "javax.faces.ViewState";
-    myfaces._impl.core._jsfImpl._PROP_AJAX              = "javax.faces.partial.ajax";
-    myfaces._impl.core._jsfImpl._PROP_EXECUTE           = "javax.faces.partial.execute";
-    myfaces._impl.core._jsfImpl._PROP_RENDER            = "javax.faces.partial.render";
-    myfaces._impl.core._jsfImpl._PROP_EVENT             = "javax.faces.partial.event";
+    myfaces._impl.core._jsfImpl._PROP_PARTIAL_SOURCE = "javax.faces.source";
+    myfaces._impl.core._jsfImpl._PROP_VIEWSTATE = "javax.faces.ViewState";
+    myfaces._impl.core._jsfImpl._PROP_AJAX = "javax.faces.partial.ajax";
+    myfaces._impl.core._jsfImpl._PROP_EXECUTE = "javax.faces.partial.execute";
+    myfaces._impl.core._jsfImpl._PROP_RENDER = "javax.faces.partial.render";
+    myfaces._impl.core._jsfImpl._PROP_EVENT = "javax.faces.partial.event";
 
     /* message types */
-    myfaces._impl.core._jsfImpl._MSG_TYPE_ERROR       = "error";
-    myfaces._impl.core._jsfImpl._MSG_TYPE_EVENT       = "event";
+    myfaces._impl.core._jsfImpl._MSG_TYPE_ERROR = "error";
+    myfaces._impl.core._jsfImpl._MSG_TYPE_EVENT = "event";
 
     /* event emitting stages */
-    myfaces._impl.core._jsfImpl._AJAX_STAGE_BEGIN     = "begin";
-    myfaces._impl.core._jsfImpl._AJAX_STAGE_COMPLETE  = "complete";
-    myfaces._impl.core._jsfImpl._AJAX_STAGE_SUCCESS   = "success";
+    myfaces._impl.core._jsfImpl._AJAX_STAGE_BEGIN = "begin";
+    myfaces._impl.core._jsfImpl._AJAX_STAGE_COMPLETE = "complete";
+    myfaces._impl.core._jsfImpl._AJAX_STAGE_SUCCESS = "success";
 
     /*ajax errors spec 14.4.2*/
-    myfaces._impl.core._jsfImpl._ERROR_HTTPERROR      = "httpError";
+    myfaces._impl.core._jsfImpl._ERROR_HTTPERROR = "httpError";
     myfaces._impl.core._jsfImpl._ERROR_EMPTY_RESPONSE = "emptyResponse";
-    myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML   = "malformedXML";
-    myfaces._impl.core._jsfImpl._ERROR_SERVER_ERROR   = "serverError";
-    myfaces._impl.core._jsfImpl._ERROR_CLIENT_ERROR   = "clientError";
+    myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML = "malformedXML";
+    myfaces._impl.core._jsfImpl._ERROR_SERVER_ERROR = "serverError";
+    myfaces._impl.core._jsfImpl._ERROR_CLIENT_ERROR = "clientError";
 
     /**
      * collect and encode data for a given form element (must be of type form)
@@ -111,9 +111,9 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
         if ('undefined' == typeof( element ) || null == element) {
             throw new Exception("jsf.ajax, element must be set!");
         }
-//        if (!JSF2Utils.isString(element) && !(element instanceof Node)) {
-//            throw new Exception("jsf.ajax, element either must be a string or a dom node");
-//        }
+        //        if (!JSF2Utils.isString(element) && !(element instanceof Node)) {
+        //            throw new Exception("jsf.ajax, element either must be a string or a dom node");
+        //        }
 
         element = JSF2Utils.byId(element);
         if ('undefined' == typeof element || null == element) {
@@ -189,7 +189,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
          * onevent and onerror
          */
         var ajaxContext = {};
-        ajaxContext.source  = element;
+        ajaxContext.source = element;
         ajaxContext.onevent = options.onevent;
         ajaxContext.onerror = options.onerror;
 
@@ -203,7 +203,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
         }
 
         /**
-         * binding contract the javax.faces.source must be set 
+         * binding contract the javax.faces.source must be set
          */
         passThroughArguments[myfaces._impl.core._jsfImpl._PROP_PARTIAL_SOURCE] = element.id;
 
@@ -254,8 +254,8 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
             delete passThroughArguments.render;
         }
 
-       //implementation specific options are added to the context for further processing
-        if('undefined' != typeof passThroughArguments.myfaces && null != passThroughArguments.myfaces) {
+        //implementation specific options are added to the context for further processing
+        if ('undefined' != typeof passThroughArguments.myfaces && null != passThroughArguments.myfaces) {
             ajaxContext.myfaces = passThroughArguments.myfaces;
             delete passThroughArguments.myfaces;
         }
@@ -317,21 +317,21 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
 
         /*now we serve the queue as well*/
         this._errorListenerQueue.broadcastEvent(eventData);
-        
-        if(jsf.getProjectStage() === "Development") {
-            var defaultErrorOutput = myfaces._impl._util._Utils.getGlobalConfig("defaultErrorOutput",alert);
+
+        if (jsf.getProjectStage() === "Development") {
+            var defaultErrorOutput = myfaces._impl._util._Utils.getGlobalConfig("defaultErrorOutput", alert);
             var finalMessage = [];
 
-            finalMessage.push ( ('undefined' != typeof name && null != name)? name:"" );
-            finalMessage.push ( ('undefined' != typeof serverErrorName && null != serverErrorName)? serverErrorName:"");
-            finalMessage.push ( ('undefined' != typeof serverErrorMessage && null != serverErrorMessage)? serverErrorMessage:"");
+            finalMessage.push(('undefined' != typeof name && null != name) ? name : "");
+            finalMessage.push(('undefined' != typeof serverErrorName && null != serverErrorName) ? serverErrorName : "");
+            finalMessage.push(('undefined' != typeof serverErrorMessage && null != serverErrorMessage) ? serverErrorMessage : "");
 
             defaultErrorOutput(finalMessage.join("-"));
         }
     };
 
     /**
-     * sends an event 
+     * sends an event
      */
     myfaces._impl.core._jsfImpl.prototype.sendEvent = function sendEvent(/*Object*/request, /*Object*/ context, /*event name*/ name) {
         var eventData = {};
@@ -347,8 +347,8 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
                 eventData.responseText = request.responseText;
                 eventData.responseCode = request.status;
             } catch (e) {
-            	myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_CLIENT_ERROR, "ErrorRetrievingResponse",
-                    "Parts of the response couldn't be retrieved when constructing the event data: " + e);
+                myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_CLIENT_ERROR, "ErrorRetrievingResponse",
+                        "Parts of the response couldn't be retrieved when constructing the event data: " + e);
                 //client errors are not swallowed 
                 throw e;
             }
@@ -375,7 +375,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
         this._requestHandler._ajaxResponse(request, context);
     };
 
-/**
+    /**
      * @return the project stage also emitted by the server:
      * it cannot be cached and must be delivered over the server
      *
@@ -384,29 +384,30 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
         return "#{facesContext.application.projectStage}";
     };
 
-
-  /**
-   * implementation of the external chain function
-   * moved into the impl
-   *
-   * according to the ri the source will be the scope
-   * for the functions the event will be the object passed
-   * @param {Object} source the source which also becomes
-   * the scope for the calling function (not sure if this is correct however
-   * the RI does it that way!
-   * @param {Event} event the event object being passed down into the
-   */
-   myfaces._impl.core._jsfImpl.prototype.chain = function(source, event) {
+    /**
+     * implementation of the external chain function
+     * moved into the impl
+     *
+     * according to  some testing with this against the ri the source
+     * is the this for the calling function (easily testable by alerting
+     * or debugging this)
+     *
+     *  @param {Object} source the source which also becomes
+     * the scope for the calling function (not sure if this is correct however
+     * the RI does it that way!
+     * @param {Event} event the event object being passed down into the
+     */
+    myfaces._impl.core._jsfImpl.prototype.chain = function(source, event) {
         var len = arguments.length;
-        if(len < 3) return;
+        if (len < 3) return;
         //now we fetch from what is given from the parameter list
         //we cannot work with splice here in any performant way so we do it the hard way
         //arguments only are give if not set to undefined even null values!
 
-        var thisVal = ('object' == typeof source ) ? source: null;
-        var param   = ('undefined' != typeof event) ? event: null;
+        var thisVal = ('object' == typeof source ) ? source : null;
+        var param = ('undefined' != typeof event) ? event : null;
 
-        for(loop = 2; loop < len; loop++) {
+        for (loop = 2; loop < len; loop++) {
             //we do not change the scope of the incoming functions
             //but we reuse the argument array capabilities of apply
             var retVal = false;
@@ -421,18 +422,18 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
             //not my personal design decision, I probably would
             //enforce functions only to keep the caller code clean,
             //oh well
-            if('function' == typeof arguments[loop]) {    
-                 retVal = arguments[loop].call(thisVal, param);
+            if ('function' == typeof arguments[loop]) {
+                retVal = arguments[loop].call(thisVal, param);
             } else {
-	            retVal = new Function("event", arguments[loop]).call(thisVal, param);   
+                retVal = new Function("event", arguments[loop]).call(thisVal, param);
             }
-            //now if one function returns null in between we stop the execution of the cycle
+            //now if one function returns false in between we stop the execution of the cycle
             //here
-            if('undefined' != typeof retVal && retVal === false) return;
+            if ('undefined' != typeof retVal && retVal === false) return;
         }
 
-   }
-    
+    }
+
     // singleton
     myfaces.ajax = new myfaces._impl.core._jsfImpl();
 }
