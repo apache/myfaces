@@ -275,9 +275,8 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
     }
 
     /**
-     * RI compatibility method
-     * TODO make sure this method also occurrs in the specs
-     * otherwise simply pull it
+     * implementation triggering the error chain
+     *
      * @param {Object} request the request object which comes from the xhr cycle
      * @param {Map} context the context object being pushed over the xhr cycle keeping additional metadata �
      * @param {String} name, the error name
@@ -388,14 +387,18 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
      * implementation of the external chain function
      * moved into the impl
      *
-     * according to  some testing with this against the ri the source
-     * is the this for the calling function (easily testable by alerting
-     * or debugging this)
-     *
      *  @param {Object} source the source which also becomes
-     * the scope for the calling function (not sure if this is correct however
-     * the RI does it that way!
-     * @param {Event} event the event object being passed down into the
+     * the scope for the calling function (unspecified sidebehavior)
+     * the spec states here that the source can be any arbitrary code block.
+     * Which means it either is a javascript function directly passed or a codeblock
+     * which has to be evaluated separately.
+     *
+     * Aftert revisiting the code additional testing against components showed that
+     * the this parameter is only targetted at the component triggering the eval
+     * (event) if a string codeblock is passed. This is behavior we have to resemble
+     * in our function here as well, I guess.
+     *
+     * @param {Event} event the event object being passed down into the the chain as event origin
      */
     myfaces._impl.core._jsfImpl.prototype.chain = function(source, event) {
         var len = arguments.length;
@@ -404,28 +407,65 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
         //we cannot work with splice here in any performant way so we do it the hard way
         //arguments only are give if not set to undefined even null values!
 
-        var thisVal = ('object' == typeof source ) ? source : null;
-        var param = ('undefined' != typeof event) ? event : null;
+        //assertions source either null or set as dom element:
+        //assertion 2 event either null or cannot be a function or string
+        //assertion 3 source and ev
 
-        for (loop = 2; loop < len; loop++) {
+        if ('undefined' == typeof source) {
+            throw new Error(" source must be defined");
+        //allowed chain datatypes
+        } else if ('function' == typeof source) {
+            throw new Error(" source cannot be a function (probably source and event were not defined or set to null");
+        } if (myfaces._impl._util._LangUtils.isString(source)) {
+            throw new Error(" source cannot be a string ");
+        }
+
+        if ('undefined' == typeof event) {
+            throw new Error(" event must be defined or null");
+        } else if ('function' == typeof event) {
+            throw new Error(" event cannot be a function (probably source and event were not defined or set to null");
+        } else if (myfaces._impl._util._LangUtils.isString(event)) {
+                throw new Error(" event cannot be a string ");
+        }
+
+        var thisVal = source;
+        var eventParam = event;
+
+        for (var loop = 2; loop < len; loop++) {
             //we do not change the scope of the incoming functions
             //but we reuse the argument array capabilities of apply
             var retVal = false;
-            //The spec states arbitrary codeblock
-            //the ri wraps everything into functions
-            //we do it differently here,
-            //
-            //We wrap only if the block itself
-            //is not a function! Should be compatible
-            //to the ri, but saner in its usage because
-            //it saves one intermediate step in most cases
-            //not my personal design decision, I probably would
-            //enforce functions only to keep the caller code clean,
-            //oh well
+
+            /*
+             * Ok I have revisted this part again, the blackboxed ri test reveals:
+             *
+             <h:outputScript name = "jsf.js" library = "javax.faces" target = "head" />
+             <script type="text/javascript">
+             function pressMe(event) {
+             alert(this);
+             return true;
+             }
+             function chainMe(origin, event) {
+             jsf.util.chain(origin, event, "alert('hello world'); return true;", pressMe);
+             }
+
+             </script>
+
+             <div onclick="chainMe(this, event);">
+             press me
+             </div>
+
+             that the RI can only handle stringed scripts we can handle functions and scripts
+             I will contact the members of the EG on what the correct behavior is
+             *
+             * Arbitrary code block in my opinon means that we have to deal with both functions
+             * and evaled strings
+             */
             if ('function' == typeof arguments[loop]) {
-                retVal = arguments[loop].call(thisVal, param);
+                retVal = arguments[loop].call(thisVal, eventParam);
             } else {
-                retVal = new Function("event", arguments[loop]).call(thisVal, param);
+                //either a function or a string can be passed in case of a string we have to wrap it into another functon
+                retVal = new Function("event", arguments[loop]).call(thisVal, eventParam);
             }
             //now if one function returns false in between we stop the execution of the cycle
             //here
