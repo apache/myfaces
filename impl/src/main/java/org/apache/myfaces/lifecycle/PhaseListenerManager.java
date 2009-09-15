@@ -60,11 +60,11 @@ class PhaseListenerManager
         return (listenerPhaseId == PhaseId.ANY_PHASE.getOrdinal() || listenerPhaseId == phaseId.getOrdinal());
     }
 
-    void informPhaseListenersBefore(PhaseId phaseId)
+    boolean informPhaseListenersBefore(PhaseId phaseId)
     {
         boolean[] beforePhaseSuccess = new boolean[phaseListeners.length];
         listenerSuccessMap.put(phaseId, beforePhaseSuccess);
-
+        
         for (int i = 0; i < phaseListeners.length; i++)
         {
             PhaseListener phaseListener = phaseListeners[i];
@@ -83,10 +83,11 @@ class PhaseListenerManager
                     
                     publishException (e, phaseId, ExceptionQueuedEventContext.IN_BEFORE_PHASE_KEY);
                     
-                    return;
+                    return false;   //if this is the render phase, do not render so we can go to the error page
                 }
             }
         }
+        return true; //if this is the render phase, render the response
     }
 
     void informPhaseListenersAfter(PhaseId phaseId)
