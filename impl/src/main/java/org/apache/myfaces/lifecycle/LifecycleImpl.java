@@ -34,6 +34,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.util.DebugUtils;
 import org.apache.myfaces.config.FacesConfigurator;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
 
 /**
@@ -184,8 +185,8 @@ public class LifecycleImpl extends Lifecycle
             {
                 return;
             }
-            if(renderResponse)
-            renderExecutor.execute(facesContext);
+            if(renderResponse || facesContext.getExceptionHandler().getClass().equals(ClassUtils.classForName("javax.faces.webapp.PreJsf2ExceptionHandlerFactory$PreJsf2ExceptionHandlerImpl")))
+                renderExecutor.execute(facesContext);
         }
         
         catch (Throwable e) {

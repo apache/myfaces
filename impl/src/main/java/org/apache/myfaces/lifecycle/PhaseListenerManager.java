@@ -20,6 +20,7 @@
 package org.apache.myfaces.lifecycle;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ExceptionQueuedEvent;
@@ -87,6 +88,12 @@ class PhaseListenerManager
                 }
             }
         }
+        
+        if( facesContext.getExceptionHandler().getUnhandledExceptionQueuedEvents().iterator().hasNext())
+        {
+            return false;   //an exception was queued, do not render so we can go to the error page 
+        }
+        
         return true; //if this is the render phase, render the response
     }
 
