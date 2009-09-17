@@ -37,8 +37,6 @@ import javax.faces.view.facelets.TagHandlerDelegate;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
 
-import com.sun.beans.ObjectHandler;
-
 /**
  * Handles setting a Converter instance on a ValueHolder. Will wire all attributes set to the Converter instance
  * created/fetched. Uses the "binding" attribute for grabbing instances to apply attributes to. <p/> Will only
