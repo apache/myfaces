@@ -32,19 +32,6 @@
       <state-manager>org.apache.myfaces.application.jsp.JspStateManagerImpl</state-manager>
       <navigation-handler>org.apache.myfaces.application.NavigationHandlerImpl</navigation-handler>
       <resource-handler>org.apache.myfaces.application.ResourceHandlerImpl</resource-handler>
-      <locale-config>
-         <supported-locale>en</supported-locale>
-         <supported-locale>de</supported-locale>
-         <supported-locale>fr</supported-locale>
-         <supported-locale>ja</supported-locale>
-         <supported-locale>it</supported-locale>
-         <supported-locale>es</supported-locale>
-         <supported-locale>ca</supported-locale>
-         <supported-locale>ar</supported-locale>
-         <supported-locale>pt_BR</supported-locale>
-         <supported-locale>ru</supported-locale>
-         <supported-locale>zh_CN</supported-locale>
-      </locale-config>
       <default-validators>
          <validator-id>javax.faces.Bean</validator-id>
       </default-validators>
