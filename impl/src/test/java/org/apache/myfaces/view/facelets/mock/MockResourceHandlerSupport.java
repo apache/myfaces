@@ -59,7 +59,6 @@ public class MockResourceHandlerSupport extends DefaultResourceHandlerSupport
     private String getDirectory()
     {
         return _referenceClass.getName().substring(0,
-                _referenceClass.getName().lastIndexOf('.')).replace('.', '/')
-                + "/";
+                _referenceClass.getName().lastIndexOf('.')).replace('.', '/');
     }
 }

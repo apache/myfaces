@@ -247,9 +247,26 @@ public abstract class UIComponentBase extends UIComponent
         
         if (component.getChildCount() > 0)
         {
-            for (UIComponent child : component.getChildren())
+            // PostAddToViewEvent could cause component relocation
+            // (h:outputScript, h:outputStylesheet, composite:insertChildren, composite:insertFacet)
+            // so we need to check if the component was relocated or not
+            List<UIComponent> children = component.getChildren();
+            UIComponent child = null;
+            UIComponent currentChild = null;
+            int i = 0;
+            while (i < children.size())
             {
-                _publishPostAddToViewEvent(context, child);
+                child = children.get(i);
+                // Iterate over the same index if the component was removed
+                // This prevents skip components when processing
+                do 
+                {
+                    _publishPostAddToViewEvent(context, child);
+                    currentChild = child;
+                }
+                while ((i < children.size()) &&
+                       ((child = children.get(i)) != currentChild) );
+                i++;
             }
         }
         if (component.getFacetCount() > 0)

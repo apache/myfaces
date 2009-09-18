@@ -191,8 +191,9 @@ public class ResourceImpl extends Resource
         }
         else
         {
-            path = _resourceHandlerSupport.getMapping() + 
-                ResourceHandler.RESOURCE_IDENTIFIER + '/' + getResourceName();
+            String mapping = _resourceHandlerSupport.getMapping(); 
+            path = ResourceHandler.RESOURCE_IDENTIFIER + '/' + getResourceName();
+            path = (mapping == null) ? path : mapping + path;
         }
  
         String metadata = null;
