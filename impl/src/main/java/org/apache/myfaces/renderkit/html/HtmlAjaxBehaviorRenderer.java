@@ -150,7 +150,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         String onEvent = behavior.getOnevent();
         onEvent = (onEvent != null && onEvent.trim().equals(EMPTY)) ? AJAX_KEY_ONEVENT + COLON + onEvent : null;
 
-        String sourceId = (context.getSourceId() == null) ? AJAX_VAL_THIS : context.getSourceId();
+        String sourceId = (context.getSourceId() == null) ? AJAX_VAL_THIS : '\''+context.getSourceId()+'\'';
         String event = context.getEventName();
 
         retVal.append(JS_AJAX_REQUEST);

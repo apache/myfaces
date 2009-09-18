@@ -158,6 +158,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
          * we cross reference statically hence the mapping here
          * the entire mapping between the functions is stateless
          */
+        element = JSF2Utils.byId(element);
 
         /*assert a valid structure of a given element*/
         this._assertElement(element);
