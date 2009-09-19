@@ -75,5 +75,46 @@ class _SelectItemsUtil
             }
         }
         return false;
+    }  
+    
+    /**
+     * @param context the faces context
+     * @param value the value to check
+     * @param converter 
+     * @param iterator contains instances of SelectItem
+     * @return if the value is a SelectItem of selectItemsIter, on which noSelectionOption is true
+     */
+    public static boolean isNoSelectionOption(FacesContext context, Object value,
+            Iterator<SelectItem> selectItemsIter, _ValueConverter converter)
+    {
+        while (selectItemsIter.hasNext())
+        {
+            SelectItem item = selectItemsIter.next();
+            if (item instanceof SelectItemGroup)
+            {
+                SelectItemGroup itemgroup = (SelectItemGroup) item;
+                SelectItem[] selectItems = itemgroup.getSelectItems();
+                if (selectItems != null
+                                && selectItems.length > 0
+                                && isNoSelectionOption(context, value, Arrays.asList(
+                                                selectItems).iterator(), converter))
+                {
+                    return true;
+                }
+            }
+            else if(item.isNoSelectionOption())
+            {
+                Object itemValue = item.getValue();
+                if(converter != null && itemValue instanceof String)
+                {
+                    itemValue = converter.getConvertedValue(context, (String)itemValue);
+                }
+                if (value==itemValue || value.equals(itemValue))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+        }
     }
-}

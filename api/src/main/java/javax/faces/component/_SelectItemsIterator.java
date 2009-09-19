@@ -19,6 +19,9 @@
 package javax.faces.component;
 
 import java.util.*;
+
+import javax.el.ValueExpression;
+import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 import javax.faces.model.SelectItem;
 
@@ -52,6 +55,12 @@ class _SelectItemsIterator implements Iterator<SelectItem>
             {
                 return true;
             }
+            // remove the last value from the request map
+            if(_currentUISelectItems.getVar() != null && !"".equals(_currentUISelectItems.getVar()))
+            {
+                FacesContext.getCurrentInstance().getExternalContext()
+                    .getRequestMap().remove(_currentUISelectItems.getVar());
+            } 
             _nestedItems = null;
         }
         if (_childs.hasNext())
@@ -171,12 +180,41 @@ class _SelectItemsIterator implements Iterator<SelectItem>
         if (_nestedItems != null)
         {
             Object item = _nestedItems.next();
+            
+            // write the current item into the request map under the key listed in var, if available
+            if(_currentUISelectItems.getVar() != null && !"".equals(_currentUISelectItems.getVar()))
+            {
+                FacesContext.getCurrentInstance().getExternalContext()
+                    .getRequestMap().put(_currentUISelectItems.getVar(), item);
+            }
+            
             if (!(item instanceof SelectItem))
             {
-                ValueBinding binding = _currentUISelectItems.getValueBinding("value");
-                throw new IllegalArgumentException(_collectionLabel + " referenced by UISelectItems with binding '"
-                        + binding.getExpressionString() + "' and Component-Path : "
-                        + getPathToComponent(_currentUISelectItems) + " does not contain Objects of type SelectItem");
+                // check new params of SelectItems (since 2.0) itemValue, itemLabel, itemDescription,...
+                Object itemValue = _currentUISelectItems.getItemValue();
+                if(itemValue != null) 
+                {
+                    String itemLabel = _currentUISelectItems.getItemLabel() == null ?
+                            itemValue.toString() : 
+                            _currentUISelectItems.getItemLabel();
+                    item = new SelectItem(itemValue,
+                        itemLabel,
+                        _currentUISelectItems.getItemDescription(),
+                        _currentUISelectItems.isItemDisabled(),
+                        _currentUISelectItems.isItemLabelEscaped(),
+                        itemValue.equals(_currentUISelectItems.getNoSelectionValue())
+                            || itemLabel.equals(_currentUISelectItems.getNoSelectionValue())); 
+                }
+                else 
+                {
+                    ValueExpression expression = _currentUISelectItems.getValueExpression("value");
+                    throw new IllegalArgumentException(
+                        _collectionLabel + " referenced by UISelectItems with binding '"
+                        + expression.getExpressionString()
+                        + "' and Component-Path : " + getPathToComponent(_currentUISelectItems)
+                        + " does not contain Objects of type SelectItem"
+                        + " or does not provide the attribute itemValue");
+                }
             }
             return (SelectItem) item;
         }

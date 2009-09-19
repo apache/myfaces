@@ -69,5 +69,76 @@ abstract class _UISelectItems extends UIComponentBase
    */
   @JSFProperty
   public abstract Object getValue();
+  
+  /**
+   * Name of a request-scope attribute under which the current item
+   * of the collection, array, etc. of the value attribute will be 
+   * exposed so that it can be referred to in EL for other attributes 
+   * of this component.
+   * 
+   * @since 2.0
+   * @return
+   */
+  @JSFProperty(literalOnly = true)
+  public abstract String getVar();
+  
+  /**
+   * The value for the current item.
+   * 
+   * @since 2.0
+   * @return
+   */
+  @JSFProperty
+  public abstract Object getItemValue();
+  
+  /**
+   * The label of the current item.
+   * 
+   * @since 2.0
+   * @return
+   */
+  @JSFProperty
+  public abstract String getItemLabel();
+  
+  /**
+   * The description of the current item.
+   * 
+   * @since 2.0
+   * @return
+   */
+  @JSFProperty
+  public abstract String getItemDescription();
+  
+  /**
+   * Determines if the current item is selectable or not.
+   * 
+   * @since 2.0
+   * @return
+   */
+  @JSFProperty(defaultValue = "false")
+  public abstract boolean isItemDisabled();
+  
+  /**
+   * Determines if the rendered markup for the current item receives
+   * normal JSF HTML escaping or not.
+   * 
+   * @since 2.0
+   * @return
+   */
+  @JSFProperty(defaultValue = "true")
+  public abstract boolean isItemLabelEscaped();
+  
+  /**
+   * Is either an EL expression pointing to the element in the value collection
+   * whose value should be marked as a "no selection" item, or a literal string
+   * that exactly matches the value of the item in the collection that must be 
+   * marked as the "no selection" item. If the user selects such an item and 
+   * the field is marked as required, then it will not pass validation.
+   * 
+   * @since 2.0
+   * @return
+   */
+  @JSFProperty
+  public abstract Object getNoSelectionValue();
 
 }

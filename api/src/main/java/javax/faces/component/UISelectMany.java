@@ -381,8 +381,13 @@ public class UISelectMany extends UIInput
             {
                 Object itemValue = itemValues.next();
 
-                if (!_SelectItemsUtil.matchValue(context, itemValue, items.iterator(), converter))
-                {
+                // selected value must match to one of the available options
+                // and if required is true it must not match an option with noSelectionOption set to true (since 2.0)
+                if (!(_SelectItemsUtil.matchValue(context, itemValue, items.iterator(), converter)
+                      && (!this.isRequired() 
+                          || (this.isRequired() 
+                              && !_SelectItemsUtil.isNoSelectionOption(context, itemValue, items.iterator(), converter)))))
+                {    
                     _MessageUtils.addErrorMessage(context, this, INVALID_MESSAGE_ID,
                         new Object[] { _MessageUtils.getLabel(context, this) });
                     setValid(false);
