@@ -105,9 +105,10 @@ public class HtmlGridRendererTest extends AbstractJsfTestCase
         facesContext.renderResponse();
 
         String output = writer.getWriter().toString();
-        assertEquals("<table><tbody><tr><td>col1Text</td></tr>" + LINE_SEPARATOR +
+        assertEquals("<table><tbody>"+LINE_SEPARATOR+
+                "<tr><td>col1Text</td></tr>" + LINE_SEPARATOR +
                 "<tr><td>col2Text</td></tr>" + LINE_SEPARATOR +
-                "</tbody></table>", output);
+                "</tbody>"+LINE_SEPARATOR+"</table>", output);
     }
 
     public void testHtmlPropertyPassTru() throws Exception 
