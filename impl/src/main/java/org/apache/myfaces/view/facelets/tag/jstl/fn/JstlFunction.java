@@ -71,7 +71,10 @@ public final class JstlFunction
             return null;
         }
         
-        return value.replaceAll("<", "&lt;");
+        value = value.replaceAll("<", "&lt;");
+        value = value.replaceAll(">", "&gt;");
+                
+        return value;
     }
 
     public static int indexOf(String name, String searchString)
