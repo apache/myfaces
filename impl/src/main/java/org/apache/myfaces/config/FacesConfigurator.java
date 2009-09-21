@@ -33,6 +33,7 @@ import org.apache.myfaces.config.impl.digester.DigesterFacesConfigDispenserImpl;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
 import org.apache.myfaces.config.impl.digester.elements.*;
 import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
+import org.apache.myfaces.config.impl.digester.elements.SystemEventListener;
 import org.apache.myfaces.context.ExceptionHandlerFactoryImpl;
 import org.apache.myfaces.context.ExternalContextFactoryImpl;
 import org.apache.myfaces.context.FacesContextFactoryImpl;
@@ -61,9 +62,7 @@ import javax.faces.application.*;
 import javax.faces.context.ExternalContext;
 import javax.faces.el.PropertyResolver;
 import javax.faces.el.VariableResolver;
-import javax.faces.event.ActionListener;
-import javax.faces.event.PhaseListener;
-import javax.faces.event.SystemEvent;
+import javax.faces.event.*;
 import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.render.RenderKit;
@@ -1589,15 +1588,24 @@ public class FacesConfigurator
         application.setViewHandler(getApplicationObject(ViewHandler.class,
                                                         dispenser.getViewHandlerIterator(),
                                                         application.getViewHandler()));
-
         for (SystemEventListener systemEventListener : dispenser.getSystemEventListeners())
         {
-            
-            application.subscribeToEvent(
-                    (Class<? extends SystemEvent>)ClassUtils.newInstance(systemEventListener.getSystemEventClass(),SystemEvent.class), 
-                    (Class<?>)ClassUtils.newInstance(systemEventListener.getSourceClass()), 
-                    (javax.faces.event.SystemEventListener)ClassUtils.newInstance(systemEventListener.getSystemEventClass(),javax.faces.event.SystemEventListener.class));
+
+
+            try {
+                //note here used to be an instantiation to deal with the explicit source type in the registration,
+                // that cannot work because all system events need to have the source being passed in the constructor
+                //instead we now  rely on the standard system event types and map them to their appropriate constructor types
+                Class eventClass = ClassUtils.classForName((systemEventListener.getSystemEventClass() != null) ? systemEventListener.getSystemEventClass():SystemEvent.class.getName());
+                application.subscribeToEvent(
+                    (Class<? extends SystemEvent>)eventClass ,
+                        (Class<?>)ClassUtils.classForName((systemEventListener.getSourceClass() != null) ? systemEventListener.getSourceClass(): getDefaultSourcClassForSystemEvent(eventClass) ), //Application.class???
+                        (javax.faces.event.SystemEventListener)ClassUtils.newInstance(systemEventListener.getSystemEventListenerClass()));
+            } catch (ClassNotFoundException e) {
+                log.error("System event listener could not be initialized, reason:",e);
+            }
         }
+
         
         for (String componentType : dispenser.getComponentTypes())
         {
@@ -1655,6 +1663,32 @@ public class FacesConfigurator
                                                                         dispenser.getVariableResolverIterator(),
                                                                         new VariableResolverImpl()));
     }
+
+    /**
+     * A mapper for the handful of system listener defaults
+     * since every default mapper has the source type embedded
+     * in the constructor we can rely on introspection for the
+     * default mapping
+     *
+     * @param systemEventClass the system listener class which has to be checked
+     * @return
+     */
+    String getDefaultSourcClassForSystemEvent(Class systemEventClass)
+    {
+        Constructor[] constructors = systemEventClass.getConstructors();
+        for(Constructor constr: constructors) {
+            Class [] parms = constr.getParameterTypes();
+            if(parms == null || parms.length != 1)
+            {
+                //for standard types we have only one parameter representing the type
+                continue;
+            }
+            return parms[0].getName();
+        }
+        log.warn("The SystemEvent source type for "+systemEventClass.getName() + " could not be detected, either register it manually or use a constructor argument for auto detection, defaulting now to java.lang.Object");
+        return "java.lang.Object";
+    };
+
 
     protected RuntimeConfig getRuntimeConfig()
     {

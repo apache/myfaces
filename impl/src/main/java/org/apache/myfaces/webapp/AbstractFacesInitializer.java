@@ -22,11 +22,21 @@ import java.util.List;
 
 import javax.el.ExpressionFactory;
 import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.faces.context.FacesContextFactory;
+import javax.faces.FactoryFinder;
+import javax.faces.lifecycle.LifecycleFactory;
+import javax.faces.event.PostConstructApplicationEvent;
+import javax.faces.event.PreDestroyApplicationEvent;
+import javax.faces.application.ApplicationFactory;
+import javax.faces.application.Application;
 import javax.servlet.ServletContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.ApplicationImpl;
+import org.apache.myfaces.application._SystemEventServletResponse;
+import org.apache.myfaces.application._SystemEventServletRequest;
 import org.apache.myfaces.config.FacesConfigValidator;
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.config.RuntimeConfig;
@@ -36,15 +46,13 @@ import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
 
 /**
  * Performs common initialization tasks.
- *
  */
-public abstract class AbstractFacesInitializer implements FacesInitializer
-{
+public abstract class AbstractFacesInitializer implements FacesInitializer {
     /**
      * The logger instance for this class.
      */
     private static final Log log = LogFactory.getLog(AbstractFacesInitializer.class);
-    
+
     /**
      * This parameter specifies the ExpressionFactory implementation to use.
      */
@@ -54,8 +62,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
      * Performs all necessary initialization tasks like configuring this JSF
      * application.
      */
-    public void initFaces(ServletContext servletContext)
-    {
+    public void initFaces(ServletContext servletContext) {
         try {
             if (log.isTraceEnabled()) {
                 log.trace("Initializing MyFaces");
@@ -73,7 +80,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             if (webXml == null) {
                 if (log.isWarnEnabled()) {
                     log.warn("Couldn't find the web.xml configuration file. "
-                            + "Abort initializing MyFaces.");
+                             + "Abort initializing MyFaces.");
                 }
 
                 return;
@@ -84,7 +91,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
 
                 return;
             }
-            
+
             initContainerIntegration(servletContext, externalContext);
 
             String useEncryption = servletContext.getInitParameter(StateUtils.USE_ENCRYPTION);
@@ -95,18 +102,48 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             if (log.isInfoEnabled()) {
                 log.info("ServletContext '" + servletContext.getRealPath("/") + "' initialized.");
             }
+
+            dispatchInitDestroyEvent(servletContext, PostConstructApplicationEvent.class);
         } catch (Exception ex) {
             log.error("An error occured while initializing MyFaces: "
-                    + ex.getMessage(), ex);
+                      + ex.getMessage(), ex);
         }
+    }
+
+
+    /**
+     * Eventually we can use our plugin infrastructure for this as well
+     * it would be a cleaner interception point than the base class
+     * but for now this position is valid as well
+     * <p/>
+     * Note we add it for now here because the application factory object
+     * leaves no possibility to have a destroy interceptor
+     * and applications are per web application singletons
+     * Note if this does not work out
+     * move the event handler into the application factory
+     *
+     * @param servletContext the servlet context to be passed down
+     * @param eventClass     the class to be passed down into the dispatching
+     *                       code
+     */
+    private void dispatchInitDestroyEvent(Object servletContext, Class eventClass) {
+        ApplicationFactory appFac = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
+        FacesContext fc = null;
+
+        fc = FacesContext.getCurrentInstance();
+        if (fc == null) {
+            LifecycleFactory lifeFac = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
+            FacesContextFactory facFac = (FacesContextFactory) FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
+            fc = facFac.getFacesContext(servletContext, new _SystemEventServletRequest(), new _SystemEventServletResponse(), lifeFac.getLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE));
+        }
+        appFac.getApplication().publishEvent(fc, eventClass, Application.class, appFac.getApplication());
     }
 
     /**
      * Cleans up all remaining resources (well, theoretically).
-     * 
      */
-    public void destroyFaces(ServletContext servletContext)
-    {
+    public void destroyFaces(ServletContext servletContext) {
+        dispatchInitDestroyEvent(servletContext, PreDestroyApplicationEvent.class);
         // TODO is it possible to make a real cleanup?
     }
 
@@ -114,102 +151,88 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
      * Configures this JSF application. It's required that every
      * FacesInitializer (i.e. every subclass) calls this method during
      * initialization.
-     * 
-     * @param servletContext
-     *            the current ServletContext
-     * @param externalContext
-     *            the current ExternalContext
-     * @param expressionFactory
-     *            the ExpressionFactory to use
-     * 
+     *
+     * @param servletContext    the current ServletContext
+     * @param externalContext   the current ExternalContext
+     * @param expressionFactory the ExpressionFactory to use
      * @return the current runtime configuration
      */
     protected RuntimeConfig buildConfiguration(ServletContext servletContext,
-            ExternalContext externalContext, ExpressionFactory expressionFactory)
-    {
+                                               ExternalContext externalContext, ExpressionFactory expressionFactory) {
         RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
         runtimeConfig.setExpressionFactory(expressionFactory);
-        
+
         ApplicationImpl.setInitializingRuntimeConfig(runtimeConfig);
-        
+
         // And configure everything
         new FacesConfigurator(externalContext).configure();
-        
+
         validateFacesConfig(servletContext, externalContext);
-        
+
         return runtimeConfig;
     }
-    
-    protected void validateFacesConfig(ServletContext servletContext, ExternalContext externalContext)
-    {
+
+    protected void validateFacesConfig(ServletContext servletContext, ExternalContext externalContext) {
         String validate = servletContext.getInitParameter(FacesConfigValidator.VALIDATE_CONTEXT_PARAM);
         if ("true".equals(validate) && log.isWarnEnabled()) { // the default value is false
             List<String> warnings = FacesConfigValidator.validate(
                     externalContext, servletContext.getRealPath("/"));
-            
+
             for (String warning : warnings) {
                 log.warn(warning);
             }
         }
     }
-    
+
     /**
      * Try to load user-definied ExpressionFactory. Returns <code>null</code>,
-     * if no custom ExpressionFactory was specified. 
-     * 
+     * if no custom ExpressionFactory was specified.
+     *
      * @param externalContext the current ExternalContext
-     * 
-     * @return User-specified ExpressionFactory, or 
-     *          <code>null</code>, if no no custom implementation was specified
-     * 
+     * @return User-specified ExpressionFactory, or
+     *         <code>null</code>, if no no custom implementation was specified
      */
-    protected static ExpressionFactory getUserDefinedExpressionFactory(ExternalContext externalContext)
-    {
+    protected static ExpressionFactory getUserDefinedExpressionFactory(ExternalContext externalContext) {
         String expressionFactoryClassName = externalContext.getInitParameter(EXPRESSION_FACTORY);
         if (expressionFactoryClassName != null
-                && expressionFactoryClassName.trim().length() > 0) {
+            && expressionFactoryClassName.trim().length() > 0) {
             if (log.isDebugEnabled()) {
-                log.debug("Attempting to load the ExpressionFactory implementation " 
-                        + "you've specified: '" + expressionFactoryClassName + "'.");
+                log.debug("Attempting to load the ExpressionFactory implementation "
+                          + "you've specified: '" + expressionFactoryClassName + "'.");
             }
-            
+
             return loadExpressionFactory(expressionFactoryClassName);
         }
-        
+
         return null;
     }
-    
+
     /**
      * Loads and instantiates the given ExpressionFactory implementation.
-     * 
-     * @param expressionFactoryClassName
-     *            the class name of the ExpressionFactory implementation
-     * 
+     *
+     * @param expressionFactoryClassName the class name of the ExpressionFactory implementation
      * @return the newly created ExpressionFactory implementation, or
      *         <code>null</code>, if an error occurred
      */
-    protected static ExpressionFactory loadExpressionFactory(String expressionFactoryClassName) 
-    {
-       try {
-           Class<?> expressionFactoryClass = Class.forName(expressionFactoryClassName);
-           return (ExpressionFactory) expressionFactoryClass.newInstance();
-       } catch (Exception ex) {
-           if (log.isDebugEnabled()) {
-               log.debug("An error occured while instantiating a new ExpressionFactory. " 
-                   + "Attempted to load class '" + expressionFactoryClassName + "'.", ex);
-           }
-       }
-       
-       return null;
+    protected static ExpressionFactory loadExpressionFactory(String expressionFactoryClassName) {
+        try {
+            Class<?> expressionFactoryClass = Class.forName(expressionFactoryClassName);
+            return (ExpressionFactory) expressionFactoryClass.newInstance();
+        } catch (Exception ex) {
+            if (log.isDebugEnabled()) {
+                log.debug("An error occured while instantiating a new ExpressionFactory. "
+                          + "Attempted to load class '" + expressionFactoryClassName + "'.", ex);
+            }
+        }
+
+        return null;
     }
 
     /**
      * Performs initialization tasks depending on the current environment.
-     * 
-     * @param servletContext
-     *            the current ServletContext
-     * @param externalContext
-     *            the current ExternalContext
+     *
+     * @param servletContext  the current ServletContext
+     * @param externalContext the current ExternalContext
      */
     protected abstract void initContainerIntegration(
             ServletContext servletContext, ExternalContext externalContext);
