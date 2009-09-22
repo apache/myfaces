@@ -33,8 +33,12 @@ import javax.faces.component.ContextCallback;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
+import javax.faces.component.visit.VisitCallback;
+import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PostAddToViewEvent;
+import javax.faces.event.PostRestoreStateEvent;
 import javax.faces.event.PreRemoveFromViewEvent;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
@@ -213,6 +217,10 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 }
             }
         }
+        
+        // Restore binding, because UIViewRoot.processRestoreState() is never called
+        view.visitTree(VisitContext.createVisitContext(context), new RestoreStateCallback());
+        
         return view;
     }
 
@@ -443,6 +451,31 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         
         while (children.hasNext()) {
             checkIds (context, children.next(), existingIds);
+        }
+    }
+    
+    private static class RestoreStateCallback implements VisitCallback
+    {
+        private PostRestoreStateEvent event;
+
+        @Override
+        public VisitResult visit(VisitContext context, UIComponent target)
+        {
+            if (event == null)
+            {
+                event = new PostRestoreStateEvent(target);
+            }
+            else
+            {
+                event.setComponent(target);
+            }
+
+            // call the processEvent method of the current component.
+            // The argument event must be an instance of AfterRestoreStateEvent whose component
+            // property is the current component in the traversal.
+            target.processEvent(event);
+            
+            return VisitResult.ACCEPT;
         }
     }
     

@@ -76,6 +76,7 @@ class RestoreViewExecutor implements PhaseExecutor
             // Set the locale on this UIViewRoot to the value returned by the getRequestLocale() method on the
             // ExternalContext for this request
             viewRoot.setLocale(facesContext.getExternalContext().getRequestLocale());
+            
             restoreViewSupport.processComponentBinding(facesContext, viewRoot);
             return false;
         }
@@ -100,7 +101,9 @@ class RestoreViewExecutor implements PhaseExecutor
             }
             
             // Restore binding
-            restoreViewSupport.processComponentBinding(facesContext, viewRoot);
+            // This code was already called on UIViewRoot.processRestoreState, or if a StateManagementStrategy
+            // is used, it is called from there.
+            //restoreViewSupport.processComponentBinding(facesContext, viewRoot);
             
             // Store the restored UIViewRoot in the FacesContext.
             facesContext.setViewRoot(viewRoot);

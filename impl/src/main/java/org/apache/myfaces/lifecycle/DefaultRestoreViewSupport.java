@@ -24,8 +24,12 @@ import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIComponent;
+import javax.faces.component.visit.VisitCallback;
+import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitResult;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.event.PostRestoreStateEvent;
 import javax.faces.render.ResponseStateManager;
 
 import org.apache.commons.logging.Log;
@@ -48,6 +52,11 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
 
     public void processComponentBinding(FacesContext facesContext, UIComponent component)
     {
+        // JSF 2.0: Old hack related to t:aliasBean was fixed defining a event that traverse
+        // whole tree and let components to override UIComponent.processEvent() method to include it.
+        component.visitTree(VisitContext.createVisitContext(facesContext), new RestoreStateCallback());
+        
+        /*
         ValueExpression binding = component.getValueExpression("binding");
         if (binding != null)
         {
@@ -65,6 +74,7 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
         // {
         // processComponentBinding(facesContext, iter.next());
         // }
+         */
     }
 
     public String calculateViewId(FacesContext facesContext)
@@ -127,5 +137,30 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
         String renderkitId = viewHandler.calculateRenderKitId(facesContext);
         ResponseStateManager rsm = RendererUtils.getResponseStateManager(facesContext, renderkitId);
         return rsm.isPostback(facesContext);
+    }
+        
+    private static class RestoreStateCallback implements VisitCallback
+    {
+        private PostRestoreStateEvent event;
+
+        @Override
+        public VisitResult visit(VisitContext context, UIComponent target)
+        {
+            if (event == null)
+            {
+                event = new PostRestoreStateEvent(target);
+            }
+            else
+            {
+                event.setComponent(target);
+            }
+
+            // call the processEvent method of the current component.
+            // The argument event must be an instance of AfterRestoreStateEvent whose component
+            // property is the current component in the traversal.
+            target.processEvent(event);
+            
+            return VisitResult.ACCEPT;
+        }
     }
 }

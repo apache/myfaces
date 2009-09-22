@@ -39,7 +39,17 @@ import javax.faces.component.visit.VisitResult;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
-import javax.faces.event.*;
+import javax.faces.event.AbortProcessingException;
+import javax.faces.event.FacesEvent;
+import javax.faces.event.PhaseEvent;
+import javax.faces.event.PhaseId;
+import javax.faces.event.PhaseListener;
+import javax.faces.event.PostConstructViewMapEvent;
+import javax.faces.event.PostRestoreStateEvent;
+import javax.faces.event.PreDestroyViewMapEvent;
+import javax.faces.event.PreRenderViewEvent;
+import javax.faces.event.SystemEvent;
+import javax.faces.event.SystemEventListener;
 import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.view.ViewDeclarationLanguage;
@@ -1287,7 +1297,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         }
     }
 
-    private class RestoreStateCallback implements VisitCallback
+    private static class RestoreStateCallback implements VisitCallback
     {
         private PostRestoreStateEvent event;
 
@@ -1306,7 +1316,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             // call the processEvent method of the current component.
             // The argument event must be an instance of AfterRestoreStateEvent whose component
             // property is the current component in the traversal.
-            processEvent(event);
+            target.processEvent(event);
             
             return VisitResult.ACCEPT;
         }
