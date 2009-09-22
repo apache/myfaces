@@ -89,24 +89,32 @@ class RestoreViewExecutor implements PhaseExecutor
             if (log.isTraceEnabled())
                 log.trace("Request is a postback");
 
-            // call ViewHandler.restoreView(), passing the FacesContext instance for the current request and the 
-            // view identifier, and returning a UIViewRoot for the restored view.
-            viewRoot = viewHandler.restoreView(facesContext, viewId);
-            if (viewRoot == null)
+            try
             {
-                // If the return from ViewHandler.restoreView() is null, throw a ViewExpiredException with an 
-                // appropriate error message.
-                throw new ViewExpiredException("No saved view state could be found for the view identifier: " + viewId,
-                    viewId);
+                facesContext.setProcessingEvents(false);
+                // call ViewHandler.restoreView(), passing the FacesContext instance for the current request and the 
+                // view identifier, and returning a UIViewRoot for the restored view.
+                viewRoot = viewHandler.restoreView(facesContext, viewId);
+                if (viewRoot == null)
+                {
+                    // If the return from ViewHandler.restoreView() is null, throw a ViewExpiredException with an 
+                    // appropriate error message.
+                    throw new ViewExpiredException("No saved view state could be found for the view identifier: " + viewId,
+                        viewId);
+                }
+                
+                // Restore binding
+                // This code was already called on UIViewRoot.processRestoreState, or if a StateManagementStrategy
+                // is used, it is called from there.
+                //restoreViewSupport.processComponentBinding(facesContext, viewRoot);
+                
+                // Store the restored UIViewRoot in the FacesContext.
+                facesContext.setViewRoot(viewRoot);
             }
-            
-            // Restore binding
-            // This code was already called on UIViewRoot.processRestoreState, or if a StateManagementStrategy
-            // is used, it is called from there.
-            //restoreViewSupport.processComponentBinding(facesContext, viewRoot);
-            
-            // Store the restored UIViewRoot in the FacesContext.
-            facesContext.setViewRoot(viewRoot);
+            finally
+            {
+                facesContext.setProcessingEvents(true);
+            }
         }
         else
         { // If the request is a non-postback

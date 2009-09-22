@@ -446,7 +446,13 @@ public class ApplicationImpl extends Application
     {
         checkNull(systemEventClass, "systemEventClass");
         checkNull(source, "source");
-
+        
+        //Call events only if event processing is enabled.
+        if (!facesContext.isProcessingEvents())
+        {
+            return;
+        }
+        
         try
         {
             SystemEvent event = null;

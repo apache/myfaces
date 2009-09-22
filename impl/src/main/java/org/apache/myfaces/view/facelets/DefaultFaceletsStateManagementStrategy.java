@@ -131,12 +131,22 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             
             context.setViewRoot (view); 
             
-            //TODO: Why is necessary disable event processing?
-            context.setProcessingEvents (true);
-            vdl.buildView (context, view);
-            context.setProcessingEvents (false);
+            // TODO: Why is necessary enable event processing?
+            // ANS: On RestoreViewExecutor, setProcessingEvents is called first to false
+            // and then to true when postback. Since we need listeners registered to PostAddToViewEvent
+            // event to be handled, we should enable it again. We are waiting a response from EG about
+            // the behavior of those listeners, because for partial state saving we need this listeners
+            // be called from here and relocate components properly, but for now we have to let this code as is.
+            try 
+            {
+                context.setProcessingEvents (true);
+                vdl.buildView (context, view);
+            }
+            finally
+            {
+                context.setProcessingEvents (false);
+            }
         }
-        
         catch (Throwable e) {
             throw new FacesException ("unable to create view \"" + viewId + "\"", e);
         }
