@@ -39,16 +39,7 @@ import javax.faces.component.visit.VisitResult;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.FacesEvent;
-import javax.faces.event.PhaseEvent;
-import javax.faces.event.PhaseId;
-import javax.faces.event.PhaseListener;
-import javax.faces.event.PostConstructViewMapEvent;
-import javax.faces.event.PostRestoreStateEvent;
-import javax.faces.event.PreDestroyViewMapEvent;
-import javax.faces.event.SystemEvent;
-import javax.faces.event.SystemEventListener;
+import javax.faces.event.*;
 import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.view.ViewDeclarationLanguage;
@@ -266,6 +257,11 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
 
         if (!skipPhase)
         {
+            //prerendering happens, we now publish the prerender view event
+            //the specs states that the viewroot as source is about to be rendered
+            //hence we issue the event immediately before publish, if the phase is not skipped
+            context.getApplication().publishEvent(context, PreRenderViewEvent.class, this);
+            //then the view rendering is about to begin
             super.encodeBegin(context);
         }
         else
