@@ -25,8 +25,8 @@ import javax.faces.component.UIComponent;
  * @author Jan-Kees van Andel 
  * @since 2.0
  *
- * TODO this class seems deprecated it is no longer in the latest
- * spec (26.06.2009) as it seems, please clear this up
+ * Note in the specification this class is specified in the specs but not in the javadocs
+ *
  */
 public class InitialStateEvent extends ComponentSystemEvent
 {
