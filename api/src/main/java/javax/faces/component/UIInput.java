@@ -31,10 +31,7 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.el.EvaluationException;
 import javax.faces.el.MethodBinding;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.FacesEvent;
-import javax.faces.event.ValueChangeEvent;
-import javax.faces.event.ValueChangeListener;
+import javax.faces.event.*;
 import javax.faces.render.Renderer;
 import javax.faces.validator.BeanValidator;
 import javax.faces.validator.Validator;
@@ -468,8 +465,11 @@ public class UIInput extends UIOutput implements EditableValueHolder
         if (context == null)
             throw new NullPointerException("context");
 
+
         try
         {
+            //Pre validation event dispatch for component
+            context.getApplication().publishEvent(context,  PreValidateEvent.class, UIComponent.class, this);
 
             Object submittedValue = getSubmittedValue();
             if (submittedValue == null)
