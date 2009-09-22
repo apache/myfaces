@@ -56,6 +56,7 @@ public class DefaultRestoreViewSupportTest extends FacesTestCase
      * Test method for
      * {@link org.apache.myfaces.lifecycle.DefaultRestoreViewSupport#processComponentBinding(javax.faces.context.FacesContext, javax.faces.component.UIComponent)}.
      */
+    /*
     public void testProcessComponentBinding()
     {
         UIComponent root = _mocksControl.createMock(UIComponent.class);
@@ -79,6 +80,7 @@ public class DefaultRestoreViewSupportTest extends FacesTestCase
         _testimpl.processComponentBinding(_facesContext, root);
         _mocksControl.verify();
     }
+    */
 
     /**
      * Test method for
