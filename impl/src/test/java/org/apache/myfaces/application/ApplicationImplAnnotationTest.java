@@ -22,6 +22,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.el.ValueExpression;
 import javax.faces.FactoryFinder;
@@ -32,6 +33,8 @@ import javax.faces.component.UIComponentBase;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIPanel;
 import javax.faces.component.UIViewRoot;
+import javax.faces.convert.Converter;
+import javax.faces.convert.DateTimeConverter;
 import javax.faces.event.ListenerFor;
 import javax.faces.event.PostAddToViewEvent;
 import javax.faces.lifecycle.LifecycleFactory;
@@ -118,6 +121,8 @@ public class ApplicationImplAnnotationTest extends TestCase
         "org.apache.shale.test.mock.lifecycle.MockLifecycleFactory");
         FactoryFinder.setFactory(FactoryFinder.RENDER_KIT_FACTORY,
         "org.apache.shale.test.mock.MockRenderKitFactory");
+        FactoryFinder.setFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY,
+                "org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl");
 
         lifecycleFactory = (MockLifecycleFactory)
         FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
@@ -395,5 +400,13 @@ public class ApplicationImplAnnotationTest extends TestCase
         }
     }
     
-    
+    public void testDatetimeconverterDefaultTimezoneIsSystemTimezoneInitParameter()
+    {
+        servletContext.addInitParameter(
+                "javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE", "true");
+        application.addConverter(java.util.Date.class, "javax.faces.convert.DateTimeConverter");
+        Converter converter = application.createConverter(java.util.Date.class);
+        assertEquals(((DateTimeConverter) converter).getTimeZone(), TimeZone.getDefault());
+    }
+
 }

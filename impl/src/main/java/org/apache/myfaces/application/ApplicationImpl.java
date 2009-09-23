@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
+import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -57,6 +58,7 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.component.behavior.Behavior;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
+import javax.faces.convert.DateTimeConverter;
 import javax.faces.el.MethodBinding;
 import javax.faces.el.PropertyResolver;
 import javax.faces.el.ReferenceSyntaxException;
@@ -118,6 +120,9 @@ public class ApplicationImpl extends Application
 
     // MyFaces specific System Property to set the ProjectStage, if not present via the standard way
     public final static String MYFACES_PROJECT_STAGE_SYSTEM_PROPERTY_NAME = "org.apache.myfaces.PROJECT_STAGE";
+    
+    public final static String DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME 
+        = "javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE";
 
     // ~ Instance fields
     // --------------------------------------------------------------------------
@@ -1346,6 +1351,17 @@ public class ApplicationImpl extends Application
     {
         final org.apache.myfaces.config.impl.digester.elements.Converter converterConfig = _converterClassNameToConfigurationMap
                 .get(converterClass.getName());
+        
+        // if the converter is a DataTimeConverter, check the init param for the default timezone (since 2.0)
+        if (converter instanceof DateTimeConverter)
+        {    
+            String configParam = getFaceContext().getExternalContext()
+                    .getInitParameter(DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME);
+            if (configParam != null && configParam.toLowerCase().equals("true"))
+            {
+                ((DateTimeConverter) converter).setTimeZone(TimeZone.getDefault());
+            }
+        }
 
         if (converterConfig != null)
         {
