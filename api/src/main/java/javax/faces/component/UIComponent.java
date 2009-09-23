@@ -594,7 +594,9 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
             //but a quick blackbox test against the ri revealed that the event clearly is dispatched
             //at restore level for every component so we either issue it here or in UIViewRoot and/or the facelet
             // and jsp restore state triggers, a central point is preferrble so we do it here
-            getFacesContext().getApplication().publishEvent(getFacesContext(), PostRestoreStateEvent.class, UIComponent.class, this);
+            //TODO ask the EG the spec clearly contradicts blackbox RI behavior here 
+
+           //getFacesContext().getApplication().publishEvent(getFacesContext(), PostRestoreStateEvent.class, UIComponent.class, this);
         }
 
     }

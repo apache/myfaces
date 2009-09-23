@@ -229,14 +229,17 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         }
         
         // Restore binding, because UIViewRoot.processRestoreState() is never called
-        boolean oldContextEventState = context.isProcessingEvents();
+        //boolean oldContextEventState = context.isProcessingEvents();
         //the event processing has to be enabled because of the restore view event triggers
-        context.setProcessingEvents(true);
-        try {
+        //TODO ask the EG the this is a spec violation if we do it that way
+        //see Section 2.2.1 
+
+        //context.setProcessingEvents(true);
+        //try {
             view.visitTree(VisitContext.createVisitContext(context), new RestoreStateCallback());
-        } finally {
-            context.setProcessingEvents(oldContextEventState);
-        }
+        //} finally {
+        //    context.setProcessingEvents(oldContextEventState);
+        //}
         return view;
     }
 
