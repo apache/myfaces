@@ -579,6 +579,7 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
         // The default implementation performs the following action. If the argument event is an instance of
         // AfterRestoreStateEvent,
         if (event instanceof PostRestoreStateEvent) {
+
             // call this.getValueExpression(java.lang.String) passing the literal string "binding"
             ValueExpression expression = getValueExpression("binding");
 
@@ -586,7 +587,16 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
             if (expression != null) {
                 expression.setValue(getFacesContext().getELContext(), this);
             }
+
+            //we issue a PostRestoreStateEvent
+            //we issue it here because the spec clearly states what UIComponent is allowed to do
+            //the main issue is that the spec does not say anything about a global dispatch on this level
+            //but a quick blackbox test against the ri revealed that the event clearly is dispatched
+            //at restore level for every component so we either issue it here or in UIViewRoot and/or the facelet
+            // and jsp restore state triggers, a central point is preferrble so we do it here
+            getFacesContext().getApplication().publishEvent(getFacesContext(), PostRestoreStateEvent.class, UIComponent.class, this);
         }
+
     }
 
     public abstract void processValidators(FacesContext context);

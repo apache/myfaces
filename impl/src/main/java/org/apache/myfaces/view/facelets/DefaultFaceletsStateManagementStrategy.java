@@ -229,8 +229,14 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         }
         
         // Restore binding, because UIViewRoot.processRestoreState() is never called
-        view.visitTree(VisitContext.createVisitContext(context), new RestoreStateCallback());
-        
+        boolean oldContextEventState = context.isProcessingEvents();
+        //the event processing has to be enabled because of the restore view event triggers
+        context.setProcessingEvents(true);
+        try {
+            view.visitTree(VisitContext.createVisitContext(context), new RestoreStateCallback());
+        } finally {
+            context.setProcessingEvents(oldContextEventState);
+        }
         return view;
     }
 
