@@ -40,6 +40,7 @@ import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandlerDelegate;
 
+import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
 import org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler;
@@ -116,6 +117,9 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         // our id
         String id = ctx.generateUniqueId(_delegate.getTagId());
 
+        // Cast to use UniqueIdVendor stuff
+        AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+                
         // grab our component
         UIComponent c = ComponentSupport.findChildByTagId(parent, id);
         boolean componentFound = false;
@@ -147,7 +151,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 c.getAttributes().put(UIComponent.VIEW_LOCATION_KEY,
                         _delegate.getTag().getLocation());
             }
-            
+
             // assign our unique id
             if (this._id != null)
             {
@@ -155,12 +159,16 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             }
             else
             {
-                UniqueIdVendor root = ComponentSupport.getClosestUniqueIdVendor(facesContext, parent);
-                if (root != null)
+                UniqueIdVendor uniqueIdVendor = actx.getUniqueIdVendorFromStack();
+                if (uniqueIdVendor == null)
                 {
-                    String uid = (root instanceof UIViewRoot) ?
-                            ((UIViewRoot)root).createUniqueId() :
-                                root.createUniqueId(facesContext, id);
+                    uniqueIdVendor = facesContext.getViewRoot();
+                }
+                if (uniqueIdVendor != null)
+                {
+                    // UIViewRoot implements UniqueIdVendor, so there is no need to cast to UIViewRoot
+                    // and call createUniqueId()
+                    String uid = uniqueIdVendor.createUniqueId(facesContext, id);
                     c.setId(uid);
                 }
             }
@@ -175,6 +183,10 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         }
         c.pushComponentToEL(facesContext, c);
 
+        if (c instanceof UniqueIdVendor)
+        {
+            actx.pushUniqueIdVendorToStack((UniqueIdVendor)c);
+        }
         // first allow c to get populated
         _delegate.applyNextHandler(ctx, c);
 
@@ -202,7 +214,12 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         {
             parent.getFacets().put(facetName, c);
         }
-        
+
+        if (c instanceof UniqueIdVendor)
+        {
+            actx.popUniqueIdVendorToStack();
+        }
+
         c.popComponentFromEL(facesContext);
         
         if (facesContext.getAttributes().containsKey(

@@ -27,7 +27,6 @@ import java.util.Map;
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
-import javax.faces.component.UniqueIdVendor;
 import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagAttribute;
@@ -204,43 +203,6 @@ public final class ComponentSupport
         return ctx.getFacesContext().getViewRoot();
     }
     
-    public static UniqueIdVendor getClosestUniqueIdVendor(FacesContext facesContext, UIComponent parent)
-    {
-        UIComponent c = parent;
-        do
-        {
-            if (c instanceof UniqueIdVendor)
-            {
-                return (UniqueIdVendor) c;
-            }
-            else
-            {
-                c = c.getParent();
-            }
-        } while (c != null);
-
-        return facesContext.getViewRoot();
-    }
-   
-    /*
-    public static UniqueIdVendor getClosestUniqueIdVendor(UIComponent parent)
-    {
-        UIComponent c = parent;
-        do
-        {
-            if (c instanceof UniqueIdVendor)
-            {
-                return (UniqueIdVendor) c;
-            }
-            else
-            {
-                c = c.getParent();
-            }
-        } while (c != null);
-
-        return null;
-    }*/
-
     /**
      * Marks all direct children and Facets with an attribute for deletion.
      * 

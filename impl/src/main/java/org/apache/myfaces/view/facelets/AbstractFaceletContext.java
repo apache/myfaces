@@ -19,15 +19,12 @@
 package org.apache.myfaces.view.facelets;
 
 import java.io.IOException;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.Map;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
 import javax.faces.application.Resource;
 import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
+import javax.faces.component.UniqueIdVendor;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 
@@ -41,6 +38,9 @@ import javax.faces.view.facelets.FaceletException;
  * The methods here are only used by the current implementation and the intention
  * is not expose it as public api.
  * 
+ * Aditionally, it also contains methods used by the current implementation for
+ * implement new features, like composite components and UniqueIdVendor support.
+ * 
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  * 
@@ -50,6 +50,9 @@ public abstract class AbstractFaceletContext extends FaceletContext
 {
     public final static String COMPOSITE_COMPONENT_STACK = "org.apache.myfaces.view.facelets.COMPOSITE_COMPONENT_STACK";
 
+    public final static String UNIQUEID_VENDOR_STACK = "org.apache.myfaces.view.facelets.UNIQUEID_VENDOR_STACK";
+    
+    
     /**
      * Push the passed TemplateClient onto the stack for Definition Resolution
      * @param client
@@ -108,12 +111,42 @@ public abstract class AbstractFaceletContext extends FaceletContext
      * This could be used by InsertChildrenHandler and InsertFacetHandler to retrieve the current
      * composite component to be applied.
      * 
+     * @since 2.0
      * @param facesContext
      * @return
      */
     public abstract UIComponent getCompositeComponentFromStack();
 
+    /**
+     * @since 2.0
+     * @param parent
+     */
     public abstract void pushCompositeComponentToStack(UIComponent parent);
 
+    /**
+     * @since 2.0
+     */
     public abstract void popCompositeComponentToStack();
+    
+    /**
+     * Return the latest UniqueIdVendor created from stack. The reason why we need to keep
+     * a UniqueIdVendor stack is because we need to look the closest one in ComponentTagHandlerDelegate.
+     * Note that facelets tree is built from leafs to root, that means use UIComponent.getParent() does not
+     * always return parent components.
+     * 
+     * @since 2.0
+     * @return
+     */
+    public abstract UniqueIdVendor getUniqueIdVendorFromStack();
+
+    /**
+     * @since 2.0
+     * @param parent
+     */
+    public abstract void pushUniqueIdVendorToStack(UniqueIdVendor parent);
+
+    /**
+     * @since 2.0
+     */
+    public abstract void popUniqueIdVendorToStack();    
 }

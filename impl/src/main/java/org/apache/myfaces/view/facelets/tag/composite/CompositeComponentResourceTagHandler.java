@@ -185,18 +185,21 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         
         // Set an id to the created facet component, to prevent id generation and make
         // partial state saving work without problem.
-        UniqueIdVendor root = ComponentSupport.getClosestUniqueIdVendor(faceletContext.getFacesContext(), compositeFacetPanel);
-        if (root != null)
+        AbstractFaceletContext actx = (AbstractFaceletContext) faceletContext;
+        UniqueIdVendor uniqueIdVendor = actx.getUniqueIdVendorFromStack();
+        if (uniqueIdVendor == null)
         {
-            String uid = (root instanceof UIViewRoot) ?
-                    ((UIViewRoot)root).createUniqueId() :
-                        root.createUniqueId(faceletContext.getFacesContext(),
-                                faceletContext.generateUniqueId(this.getTagId()));
+            uniqueIdVendor = ComponentSupport.getViewRoot(faceletContext, compositeComponentBase);
+        }
+        if (uniqueIdVendor != null)
+        {
+            // UIViewRoot implements UniqueIdVendor, so there is no need to cast to UIViewRoot
+            // and call createUniqueId()
+            String uid = uniqueIdVendor.createUniqueId(faceletContext.getFacesContext(),null);
             compositeFacetPanel.setId(uid);
         }
         
         VariableMapper orig = faceletContext.getVariableMapper();
-        AbstractFaceletContext actx = (AbstractFaceletContext) faceletContext;
         try
         {
             faceletContext.setVariableMapper(new VariableMapperWrapper(orig));

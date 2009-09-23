@@ -69,6 +69,21 @@ class _ComponentUtils
         return null;
     }
 
+    static UniqueIdVendor findParentUniqueIdVendor(UIComponent component)
+    {
+        UIComponent parent = component.getParent();
+
+        while (parent != null)
+        {
+            if (parent instanceof UniqueIdVendor)
+            {
+                return (UniqueIdVendor) parent;
+            }
+            parent = parent.getParent();
+        }
+        return null;
+    }
+    
     static UIComponent getRootComponent(UIComponent component)
     {
         UIComponent parent;

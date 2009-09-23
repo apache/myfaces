@@ -30,8 +30,10 @@ import java.util.Map;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UINamingContainer.PropertyKeys;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.FacesEvent;
@@ -698,8 +700,22 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     @Override
     public String createUniqueId(FacesContext context, String seed)
     {
-        // TODO: IMPLEMENT HERE
-        return null;
+        ExternalContext extCtx = context.getExternalContext();
+        StringBuilder bld = __getSharedStringBuilder();
+
+        Long uniqueIdCounter = (Long) getStateHelper().get(PropertyKeys.uniqueIdCounter);
+        uniqueIdCounter = (uniqueIdCounter == null) ? 0 : uniqueIdCounter;
+        getStateHelper().put(PropertyKeys.uniqueIdCounter, (uniqueIdCounter+1L));
+        // Generate an identifier for a component. The identifier will be prefixed with UNIQUE_ID_PREFIX, and will be unique within this UIViewRoot. 
+        if(seed==null)
+        {
+            return extCtx.encodeNamespace(bld.append(UIViewRoot.UNIQUE_ID_PREFIX).append(uniqueIdCounter).toString());    
+        }
+        // Optionally, a unique seed value can be supplied by component creators which should be included in the generated unique id.
+        else
+        {
+            return extCtx.encodeNamespace(bld.append(UIViewRoot.UNIQUE_ID_PREFIX).append(seed).toString());
+        }
     }
 
     /**
@@ -1113,6 +1129,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         , first
         , rows
         , var
+        , uniqueIdCounter
     }
 
     @Override

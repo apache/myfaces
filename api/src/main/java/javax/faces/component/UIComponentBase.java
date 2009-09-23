@@ -765,17 +765,31 @@ public abstract class UIComponentBase extends UIComponent
         {
             // Although this is an error prone side effect, we automatically create a new id
             // just to be compatible to the RI
-            UIViewRoot viewRoot = context.getViewRoot();
-            if (viewRoot != null)
+            
+            // The documentation of UniqueIdVendor says that this interface should be implemented by
+            // components that also implements NamingContainer. The only component that does not implement
+            // NamingContainer but UniqueIdVendor is UIViewRoot. Anyway we just can't be 100% sure about this
+            // fact, so it is better to scan for the closest UniqueIdVendor. If it is not found use 
+            // viewRoot.createUniqueId, otherwise use UniqueIdVendor.createUniqueId(context,seed).
+            UniqueIdVendor parentUniqueIdVendor = _ComponentUtils.findParentUniqueIdVendor(this);
+            if (parentUniqueIdVendor == null)
             {
-                id = viewRoot.createUniqueId();
+                UIViewRoot viewRoot = context.getViewRoot();
+                if (viewRoot != null)
+                {
+                    id = viewRoot.createUniqueId();
+                }
+                else
+                {
+                    // The RI throws a NPE
+                    throw new FacesException(
+                                             "Cannot create clientId. No id is assigned for component to create an id and UIViewRoot is not defined: "
+                                                     + getPathToComponent(this));
+                }
             }
             else
             {
-                // The RI throws a NPE
-                throw new FacesException(
-                                         "Cannot create clientId. No id is assigned for component to create an id and UIViewRoot is not defined: "
-                                                 + getPathToComponent(this));
+                id = parentUniqueIdVendor.createUniqueId(context, null);
             }
             setId(id);
             // We remember that the id was null and log a warning down below

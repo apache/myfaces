@@ -24,9 +24,11 @@ import java.io.Writer;
 import javax.el.ELException;
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UniqueIdVendor;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 
+import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.el.ELText;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.util.FastWriter;
@@ -114,7 +116,21 @@ final class UIInstructionHandler extends AbstractUIHandler
 
                 c = new UIInstructions(txt, applied);
                 // mark it owned by a facelet instance
-                c.setId(ComponentSupport.getViewRoot(ctx, parent).createUniqueId());
+                //c.setId(ComponentSupport.getViewRoot(ctx, parent).createUniqueId());
+                AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+                UniqueIdVendor uniqueIdVendor = actx.getUniqueIdVendorFromStack();
+                if (uniqueIdVendor == null)
+                {
+                    uniqueIdVendor = ComponentSupport.getViewRoot(ctx, parent);
+                }
+                if (uniqueIdVendor != null)
+                {
+                    // UIViewRoot implements UniqueIdVendor, so there is no need to cast to UIViewRoot
+                    // and call createUniqueId(). Also, note that UIViewRoot.createUniqueId() javadoc
+                    // says we could send as seed the facelet generated id.
+                    String uid = uniqueIdVendor.createUniqueId(ctx.getFacesContext(), id);
+                    c.setId(uid);
+                }                
                 c.getAttributes().put(ComponentSupport.MARK_CREATED, id);
             }
             // finish cleaning up orphaned children
