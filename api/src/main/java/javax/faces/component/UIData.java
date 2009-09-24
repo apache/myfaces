@@ -30,9 +30,9 @@ import java.util.Map;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
-import javax.faces.component.UINamingContainer.PropertyKeys;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitResult;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
@@ -1111,11 +1111,128 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         return (String) getStateHelper().get(PropertyKeys.var);
     }
 
+    /**
+     * Overrides the behavior in 
+     * UIComponent.visitTree(javax.faces.component.visit.VisitContext, javax.faces.component.visit.VisitCallback)
+     * to handle iteration correctly.
+     * 
+     * @param context the visit context which handles the processing details
+     * @param callback the callback to be performed
+     * @return false if the processing is not done true if we can shortcut
+     * the visiting because we are done with everything
+     * 
+     * @since 2.0
+     */
     @Override
     public boolean visitTree(VisitContext context, VisitCallback callback)
     {
-        // TODO: on MYFACES-2137 Implement traverse over all rows (See javadoc for details)
-        return super.visitTree(context, callback);
+        if (!isVisitable(context))
+        {
+            return false;
+        }
+
+        // save the current row index
+        int oldRowIndex = getRowIndex();
+        // set row index to -1 to process the facets and to get the rowless clientId
+        setRowIndex(-1);
+        // push the Component to EL
+        pushComponentToEL(context.getFacesContext(), this);
+        try
+        {
+            VisitResult visitResult = context.invokeVisitCallback(this,
+                    callback);
+            switch (visitResult)
+            {
+            //we are done nothing has to be processed anymore
+            case COMPLETE:
+                return true;
+
+            case REJECT:
+                return false;
+
+                //accept
+            default:
+                // determine if we need to visit our children 
+                Collection<String> subtreeIdsToVisit = context
+                        .getSubtreeIdsToVisit(this);
+                boolean doVisitChildren = subtreeIdsToVisit != null
+                        && !subtreeIdsToVisit.isEmpty();
+                if (doVisitChildren)
+                {
+                    // visit the facets of the component
+                    for (UIComponent facet : getFacets().values())
+                    {
+                        if (facet.visitTree(context, callback))
+                        {
+                            return true;
+                        }
+                    }
+                    // process the component's children's facets
+                    for (UIComponent child : getChildren())
+                    {
+                        // visit the children's facets
+                        for (UIComponent facet : child.getFacets().values())
+                        {
+                            if (facet.visitTree(context, callback))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                    // visit the columns
+                    for (UIComponent child : getChildren())
+                    {
+                        if (child instanceof UIColumn)
+                        {
+                            if (child.visitTree(context, callback))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                    // iterate over the rows
+                    int rowsToProcess = getRows();
+                    // if getRows() returns 0, all rows have to be processed
+                    if (rowsToProcess == 0)
+                    {
+                        rowsToProcess = getRowCount();
+                    }
+                    int rowIndex = getFirst();
+                    for (int rowsProcessed = 0; rowsProcessed < rowsToProcess; rowsProcessed++, rowIndex++)
+                    {
+                        setRowIndex(rowIndex);
+                        if (!isRowAvailable())
+                        {
+                            return false;
+                        }
+                        // visit the children of every child of the UIData that is an instance of UIColumn
+                        for (UIComponent child : getChildren())
+                        {
+                            if (child instanceof UIColumn)
+                            {
+                                for (UIComponent grandchild : child
+                                        .getChildren())
+                                {
+                                    if (grandchild.visitTree(context, callback))
+                                    {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        finally
+        {
+            // pop the component from EL and restore the old row index
+            popComponentFromEL(context.getFacesContext());
+            setRowIndex(oldRowIndex);
+        }
+
+        // Return false to allow the visiting to continue
+        return false;
     }
 
     public void setVar(String var)

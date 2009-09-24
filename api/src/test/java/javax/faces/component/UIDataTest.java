@@ -18,13 +18,22 @@
  */
 package javax.faces.component;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+
+import javax.faces.component.html.HtmlPanelGroup;
+import javax.faces.component.visit.VisitCallback;
+import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitHint;
+import javax.faces.component.visit.VisitResult;
+import javax.faces.render.Renderer;
+
 import org.apache.myfaces.Assert;
 import org.apache.myfaces.TestRunner;
 import org.apache.shale.test.base.AbstractJsfTestCase;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
-
-import javax.faces.render.Renderer;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -332,5 +341,56 @@ public class UIDataTest extends AbstractJsfTestCase
     {
         // TODO
     }
-
+    
+    /**
+     * Test method for 
+     * {@link javax.faces.component.UIData#visitTree(javax.faces.component.visit.VisitContext, javax.faces.component.visit.VisitCallback)}.
+     */
+    public void testVisitTree() {
+        UIData uidata = new UIData();
+        // value
+        Collection<String> value = new ArrayList<String>();
+        value.add("value#1");
+        value.add("value#2");
+        uidata.setValue(value);
+        // header facet
+        UIComponent headerFacet = new HtmlPanelGroup();
+        uidata.setHeader(headerFacet);
+        // footer facet
+        UIComponent footerFacet = new HtmlPanelGroup();
+        uidata.setFooter(footerFacet);
+        // first child
+        UIComponent child1 = new UIColumn();
+        // facet of first child
+        UIComponent facetOfChild1 = new HtmlPanelGroup();
+        child1.getFacets().put("someFacet", facetOfChild1);
+        // child of first child
+        UIOutput childOfChild1 = new UIOutput();
+        child1.getChildren().add(childOfChild1);
+        uidata.getChildren().add(child1);
+        // second child (should not be processed --> != UIColumn)
+        UIComponent child2 = new HtmlPanelGroup(); 
+        uidata.getChildren().add(child2);
+        VisitCallback callback = null;
+        
+        IMocksControl control = EasyMock.createControl();
+        VisitContext visitContextMock = control.createMock(VisitContext.class);
+        EasyMock.expect(visitContextMock.getFacesContext()).andReturn(facesContext).anyTimes();
+        EasyMock.expect(visitContextMock.getHints()).andReturn(Collections.<VisitHint>emptySet()).anyTimes();
+        Collection<String> subtreeIdsToVisit = new ArrayList<String>();
+        subtreeIdsToVisit.add("1");
+        EasyMock.expect(visitContextMock.getSubtreeIdsToVisit(uidata)).andReturn(subtreeIdsToVisit);
+        EasyMock.expect(visitContextMock.invokeVisitCallback(uidata, callback)).andReturn(VisitResult.ACCEPT);
+        EasyMock.expect(visitContextMock.invokeVisitCallback(headerFacet, callback)).andReturn(VisitResult.ACCEPT);
+        EasyMock.expect(visitContextMock.invokeVisitCallback(footerFacet, callback)).andReturn(VisitResult.ACCEPT);
+        EasyMock.expect(visitContextMock.invokeVisitCallback(facetOfChild1, callback)).andReturn(VisitResult.ACCEPT);
+        EasyMock.expect(visitContextMock.invokeVisitCallback(child1, callback)).andReturn(VisitResult.ACCEPT);
+        EasyMock.expect(visitContextMock.invokeVisitCallback(childOfChild1, callback)).andReturn(VisitResult.ACCEPT).times(3);
+        control.replay();
+        
+        uidata.visitTree(visitContextMock, callback);
+        
+        control.verify();        
+    }
+       
 }
