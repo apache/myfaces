@@ -20,7 +20,6 @@ package javax.faces.component;
 
 import java.util.Iterator;
 
-import javax.faces.component.UINamingContainer.PropertyKeys;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
