@@ -44,7 +44,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
  * 
  * @since 2.0
  */
-@JSFComponent(name = "f:viewParam", bodyContent = "JSP", tagClass = "org.apache.myfaces.taglib.core.ViewParamTag")
+@JSFComponent(name = "f:viewParam", bodyContent = "JSP")
 public class UIViewParameter extends UIInput
 {
     public static final String COMPONENT_FAMILY = "javax.faces.ViewParameter";

@@ -48,7 +48,7 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
     @JSFFaceletAttribute(name="name")
     private final TagAttribute _name;
     
-    @JSFFaceletAttribute
+    @JSFFaceletAttribute(name="targets")
     private final TagAttribute _targets;
     
     /**
@@ -56,35 +56,34 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
      * value (null), the value set on this property is returned as default
      * instead null.
      */
-    @JSFFaceletAttribute
+    @JSFFaceletAttribute(name="default")
     private final TagAttribute _default;
     
-    @JSFFaceletAttribute
+    @JSFFaceletAttribute(name="displayName")
     private final TagAttribute _displayName;
 
     /**
      * Indicate if the attribute is required or not
      * <p>
      * Myfaces specific feature: this attribute is checked only if project stage is
-     * not ProjectStage.Production when a composite component is created.
-     * </p>
+     * not ProjectStage.Production when a composite component is created.</p>
      */
-    @JSFFaceletAttribute
+    @JSFFaceletAttribute(name="required")
     private final TagAttribute _required;
 
-    @JSFFaceletAttribute
+    @JSFFaceletAttribute(name="preferred")
     private final TagAttribute _preferred;
 
-    @JSFFaceletAttribute
+    @JSFFaceletAttribute(name="expert")
     private final TagAttribute _expert;
 
-    @JSFFaceletAttribute
+    @JSFFaceletAttribute(name="shortDescription")
     private final TagAttribute _shortDescription;
 
-    @JSFFaceletAttribute
+    @JSFFaceletAttribute(name="method-signature")
     private final TagAttribute _methodSignature;
 
-    @JSFFaceletAttribute
+    @JSFFaceletAttribute(name="type")
     private final TagAttribute _type;
     
     /**

@@ -21,6 +21,7 @@ package javax.faces.validator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidator;
 
 import javax.el.*;
@@ -49,7 +50,9 @@ import java.util.*;
  * @author Jan-Kees van Andel
  * @since 2.0
  */
-@JSFValidator
+@JSFValidator(
+        name="f:validateBean",
+        bodyContent="empty")
 @JSFJspProperty(
         name = "binding",
         returnType = "javax.faces.validator.BeanValidator",
@@ -349,6 +352,7 @@ public class BeanValidator implements Validator, PartialStateHolder
      * Get the Bean Validation validation groups.
      * @return The validation groups String.
      */
+    @JSFProperty
     public String getValidationGroups()
     {
         return validationGroups;
@@ -363,6 +367,18 @@ public class BeanValidator implements Validator, PartialStateHolder
     {
         this.validationGroups = validationGroups;
         postSetValidationGroups();
+    }
+
+    @JSFProperty
+    private Boolean isDisabled()
+    {
+        return null;
+    }
+    
+    @JSFProperty
+    private String getFor()
+    {
+        return null;
     }
 
     /** {@inheritDoc} */
