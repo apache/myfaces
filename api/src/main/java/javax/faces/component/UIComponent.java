@@ -769,6 +769,11 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
         {
             newCurrent = componentStack.pop();
         }
+        else
+        {
+            //Reset the current composite component
+            contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, null);
+        }
         UIComponent oldCurrent = (UIComponent)contextAttributes.put(UIComponent.CURRENT_COMPONENT, newCurrent);
         
         if (oldCurrent != null && oldCurrent._isCompositeComponent())
@@ -782,14 +787,17 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
                 }
                 else
                 {
-                    for (UIComponent component : componentStack)
+                    UIComponent previousCompositeComponent = null;
+                    for (Iterator<UIComponent> it = componentStack.descendingIterator(); it.hasNext();)
                     {
+                        UIComponent component = it.next();
                         if (component._isCompositeComponent())
                         {
-                            contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, component);
+                            previousCompositeComponent = component;
                             break;
                         }
                     }
+                    contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, previousCompositeComponent);
                 }
             }
         }
