@@ -49,10 +49,7 @@ import java.util.*;
  * @author Jan-Kees van Andel
  * @since 2.0
  */
-@JSFValidator(
-        name = "f:validateBean",
-        bodyContent = "empty",
-        tagClass = "org.apache.myfaces.taglib.core.ValidateBeanTag")
+@JSFValidator
 @JSFJspProperty(
         name = "binding",
         returnType = "javax.faces.validator.BeanValidator",
