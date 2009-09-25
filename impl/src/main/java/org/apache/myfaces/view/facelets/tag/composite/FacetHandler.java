@@ -243,7 +243,7 @@ public class FacetHandler extends TagHandler implements InterfaceDescriptorCreat
         {
             if (log.isErrorEnabled())
             {
-                log.error("Cannot create PropertyDescriptor for attribute ",e);
+                log.error("Cannot create PropertyDescriptor for facet ",e);
             }
             throw new TagException(tag,e);
         }

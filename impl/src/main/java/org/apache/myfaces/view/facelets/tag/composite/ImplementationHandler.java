@@ -18,13 +18,21 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite;
 
+import java.beans.BeanDescriptor;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.faces.component.UIComponent;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagConfig;
+import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandler;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 
@@ -34,6 +42,8 @@ import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
  */
 public class ImplementationHandler extends TagHandler
 {
+    private static final Log log = LogFactory.getLog(ImplementationHandler.class);
+    
     public final static String NAME = "implementation";
 
     public ImplementationHandler(TagConfig config)
@@ -58,6 +68,50 @@ public class ImplementationHandler extends TagHandler
             nextHandler.apply(ctx, parent);
             
             ((AbstractFaceletContext)ctx).popCompositeComponentToStack();
-        }        
+        }
+        else
+        {
+            // Register the facet UIComponent.COMPOSITE_FACET_NAME
+            CompositeComponentBeanInfo beanInfo = 
+                (CompositeComponentBeanInfo) parent.getAttributes()
+                .get(UIComponent.BEANINFO_KEY);
+            
+            if (beanInfo == null)
+            {
+                if (log.isErrorEnabled())
+                {
+                    log.error("Cannot found composite bean descriptor UIComponent.BEANINFO_KEY ");
+                }
+                return;
+            }
+            
+            BeanDescriptor beanDescriptor = beanInfo.getBeanDescriptor();
+            
+            Map<String, PropertyDescriptor> facetPropertyDescriptorMap = 
+                (Map<String, PropertyDescriptor>) beanDescriptor.getValue(UIComponent.FACETS_KEY);
+        
+            if (facetPropertyDescriptorMap == null)
+            {
+                facetPropertyDescriptorMap = new HashMap<String, PropertyDescriptor>();
+                beanDescriptor.setValue(UIComponent.FACETS_KEY, facetPropertyDescriptorMap);
+            }
+            
+            if (!facetPropertyDescriptorMap.containsKey(UIComponent.COMPOSITE_FACET_NAME))
+            {
+                try
+                {
+                    facetPropertyDescriptorMap.put(UIComponent.COMPOSITE_FACET_NAME, 
+                            new CompositeComponentPropertyDescriptor(UIComponent.COMPOSITE_FACET_NAME));
+                }
+                catch (IntrospectionException e)
+                {
+                    if (log.isErrorEnabled())
+                    {
+                        log.error("Cannot create PropertyDescriptor for facet ",e);
+                    }
+                    throw new TagException(tag,e);
+                }
+            }
+        }
     }
 }
