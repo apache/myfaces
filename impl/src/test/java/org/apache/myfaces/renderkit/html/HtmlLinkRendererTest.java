@@ -288,4 +288,18 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
         }
         
     }
+    
+    /**
+     * Test for the right use of the fragment attribute.
+     * The value of the fragment attribute is appended to the end of target URL following a hash (#) mark.
+     * @throws Exception
+     */
+    public void testOutputLinkFragment() throws Exception
+    {
+        outputLink.setFragment("fragment");
+        outputLink.setValue("http://www.irian.at");
+        outputLink.encodeAll(facesContext);
+        String output = writer.getWriter().toString();
+        assertEquals("<a href=\"http://www.irian.at#fragment\"></a>", output);
+    }
 }
