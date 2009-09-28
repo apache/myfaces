@@ -61,7 +61,8 @@ public class ValidatorImplTag extends ValidatorELTag
     /**
      * The registered ID of the desired Validator.
      */
-    @JSFJspAttribute(rtexprvalue = true, className = "java.lang.String")
+    @JSFJspAttribute(className="javax.el.ValueExpression",
+            deferredValueType="java.lang.String")
     public void setValidatorId(ValueExpression validatorId)
     {
         _validatorId = validatorId;
@@ -70,7 +71,8 @@ public class ValidatorImplTag extends ValidatorELTag
     /**
      * A ValueExpression that evaluates to an implementation of the javax.faces.validator.Validator interface.
      */
-    @JSFJspAttribute(rtexprvalue = true, className = "javax.faces.validator.Validator")
+    @JSFJspAttribute(className="javax.el.ValueExpression",
+            deferredValueType="javax.faces.validator.Validator")
     public void setBinding(ValueExpression binding)
     {
         _binding = binding;

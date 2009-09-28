@@ -76,7 +76,7 @@ public class SetHandler extends TagHandler
      */
     @JSFFaceletAttribute(
             className="javax.el.ValueExpression",
-            deferredValueType="java.lang.String")
+            deferredValueType="java.lang.Object")
     private final TagAttribute value;
 
     public SetHandler(TagConfig config)

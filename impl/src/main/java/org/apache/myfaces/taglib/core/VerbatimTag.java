@@ -69,7 +69,8 @@ public class VerbatimTag extends UIComponentELTagBase
     /**
      * If true, generated markup is escaped. Default: false.
      */
-    @JSFJspAttribute(rtexprvalue = true, className = "java.lang.Boolean")
+    @JSFJspAttribute(className="javax.el.ValueExpression",
+            deferredValueType="java.lang.Boolean")
     public void setEscape(ValueExpression escape)
     {
         _escape = escape;
@@ -80,7 +81,8 @@ public class VerbatimTag extends UIComponentELTagBase
      * any subsequent form submit. The default value for this property is true.
      */
     @Override
-    @JSFJspAttribute(rtexprvalue = true, className = "java.lang.Boolean")
+    @JSFJspAttribute(className="javax.el.ValueExpression",
+            deferredValueType="java.lang.Boolean")
     public void setRendered(ValueExpression rendered)
     {
         _rendered = rendered;

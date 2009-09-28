@@ -56,7 +56,8 @@ public abstract class AttachedObjectTargetHandler<T extends AttachedObjectTarget
      */
     @JSFFaceletAttribute(name="name",
             className="javax.el.ValueExpression",
-            deferredValueType="java.lang.String")
+            deferredValueType="java.lang.String",
+            required=true)
     protected final TagAttribute _name;
 
     /**

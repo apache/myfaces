@@ -90,7 +90,9 @@ public class SetPropertyActionListenerTag extends TagSupport
     /**
      * ValueExpression for the destination of the value attribute.
      */
-    @JSFJspAttribute(required = true)
+    @JSFJspAttribute(required = true,
+            className="javax.el.ValueExpression",
+            deferredValueType="java.lang.Object")
     public ValueExpression getTarget()
     {
         return target;
@@ -106,7 +108,9 @@ public class SetPropertyActionListenerTag extends TagSupport
      * 
      * @return
      */
-    @JSFJspAttribute(required = true)
+    @JSFJspAttribute(required = true,
+            className="javax.el.ValueExpression",
+            deferredValueType="java.lang.Object")
     public ValueExpression getValue()
     {
         return value;

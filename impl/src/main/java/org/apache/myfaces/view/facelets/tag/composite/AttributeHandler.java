@@ -45,10 +45,15 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
     
     private static final Log log = LogFactory.getLog(AttributeHandler.class);
 
-    @JSFFaceletAttribute(name="name")
+    @JSFFaceletAttribute(name="name",
+            className="javax.el.ValueExpression",
+            deferredValueType="java.lang.String",
+            required=true)
     private final TagAttribute _name;
     
-    @JSFFaceletAttribute(name="targets")
+    @JSFFaceletAttribute(name="targets",
+            className="javax.el.ValueExpression",
+            deferredValueType="java.lang.String")
     private final TagAttribute _targets;
     
     /**
@@ -56,10 +61,14 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
      * value (null), the value set on this property is returned as default
      * instead null.
      */
-    @JSFFaceletAttribute(name="default")
+    @JSFFaceletAttribute(name="default",
+            className="javax.el.ValueExpression",
+            deferredValueType="java.lang.String")
     private final TagAttribute _default;
     
-    @JSFFaceletAttribute(name="displayName")
+    @JSFFaceletAttribute(name="displayName",
+            className="javax.el.ValueExpression",
+            deferredValueType="java.lang.String")
     private final TagAttribute _displayName;
 
     /**
@@ -68,22 +77,34 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
      * Myfaces specific feature: this attribute is checked only if project stage is
      * not ProjectStage.Production when a composite component is created.</p>
      */
-    @JSFFaceletAttribute(name="required")
+    @JSFFaceletAttribute(name="required",
+            className="javax.el.ValueExpression",
+            deferredValueType="boolean")
     private final TagAttribute _required;
 
-    @JSFFaceletAttribute(name="preferred")
+    @JSFFaceletAttribute(name="preferred",
+            className="javax.el.ValueExpression",
+            deferredValueType="boolean")
     private final TagAttribute _preferred;
 
-    @JSFFaceletAttribute(name="expert")
+    @JSFFaceletAttribute(name="expert",
+            className="javax.el.ValueExpression",
+            deferredValueType="boolean")
     private final TagAttribute _expert;
 
-    @JSFFaceletAttribute(name="shortDescription")
+    @JSFFaceletAttribute(name="shortDescription",
+            className="javax.el.ValueExpression",
+            deferredValueType="java.lang.String")
     private final TagAttribute _shortDescription;
 
-    @JSFFaceletAttribute(name="method-signature")
+    @JSFFaceletAttribute(name="method-signature",
+            className="javax.el.ValueExpression",
+            deferredValueType="java.lang.String")
     private final TagAttribute _methodSignature;
 
-    @JSFFaceletAttribute(name="type")
+    @JSFFaceletAttribute(name="type",
+            className="javax.el.ValueExpression",
+            deferredValueType="java.lang.String")
     private final TagAttribute _type;
     
     /**

@@ -67,7 +67,8 @@ public class AttributeTag extends TagSupport
      * 
      * @param nameExpression
      */
-    @JSFJspAttribute(rtexprvalue = true, className = "java.lang.String")
+    @JSFJspAttribute(className="javax.el.ValueExpression",
+            deferredValueType="java.lang.String")
     public void setName(ValueExpression nameExpression)
     {
         _nameExpression = nameExpression;
@@ -78,7 +79,8 @@ public class AttributeTag extends TagSupport
      * 
      * @param valueExpression
      */
-    @JSFJspAttribute(rtexprvalue = true, className = "java.lang.Object")
+    @JSFJspAttribute(className="javax.el.ValueExpression",
+            deferredValueType="java.lang.Object")
     public void setValue(ValueExpression valueExpression)
     {
         _valueExpression = valueExpression;

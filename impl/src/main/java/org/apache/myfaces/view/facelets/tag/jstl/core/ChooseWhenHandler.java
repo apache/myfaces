@@ -47,7 +47,7 @@ public final class ChooseWhenHandler extends TagHandler
      * The test condition that determines whether or not the
      * body content should be processed. 
      */
-    @JSFFaceletAttribute(className="boolean")
+    @JSFFaceletAttribute(className="boolean",required=true)
     private final TagAttribute test;
 
     public ChooseWhenHandler(TagConfig config)

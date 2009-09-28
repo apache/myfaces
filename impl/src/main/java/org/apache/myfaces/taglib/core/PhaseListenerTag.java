@@ -60,7 +60,8 @@ public class PhaseListenerTag extends TagSupport
     /**
      * Class name of the PhaseListener to be created and registered.
      */
-    @JSFJspAttribute(rtexprvalue = true, className = "java.lang.String")
+    @JSFJspAttribute(className="javax.el.ValueExpression",
+            deferredValueType="java.lang.String")
     public void setType(ValueExpression type)
     {
         this.type = type;
@@ -69,7 +70,8 @@ public class PhaseListenerTag extends TagSupport
     /**
      * Value binding expression that evaluates to a PhaseListener.
      */
-    @JSFJspAttribute(className = "javax.faces.event.PhaseListener", rtexprvalue = true)
+    @JSFJspAttribute(className="javax.el.ValueExpression",
+            deferredValueType="javax.faces.event.PhaseListener")
     public void setBinding(ValueExpression binding)
     {
         this.binding = binding;

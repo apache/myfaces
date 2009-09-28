@@ -47,8 +47,8 @@ public final class CompositeComponentELResolver extends ELResolver
     
     private static final String COMPOSITE_COMPONENT_ATTRIBUTES_MAPS = 
         "org.apache.myfaces.COMPOSITE_COMPONENT_ATTRIBUTES_MAPS";
-    private static final String COMPOSITE_COMPONENT_GET_VALUE_EXPRESSION =
-        "org.apache.myfaces.COMPOSITE_COMPONENT_GET_VALUE_EXPRESSION";
+    //private static final String COMPOSITE_COMPONENT_GET_VALUE_EXPRESSION =
+    //    "org.apache.myfaces.COMPOSITE_COMPONENT_GET_VALUE_EXPRESSION";
     
     @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base)

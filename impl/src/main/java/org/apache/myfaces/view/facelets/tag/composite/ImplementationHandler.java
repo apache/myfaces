@@ -33,6 +33,7 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 
@@ -40,6 +41,7 @@ import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
+@JSFFaceletTag(name="composite:implementation")
 public class ImplementationHandler extends TagHandler
 {
     private static final Log log = LogFactory.getLog(ImplementationHandler.class);

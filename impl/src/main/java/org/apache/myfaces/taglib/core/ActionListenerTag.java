@@ -60,7 +60,8 @@ public class ActionListenerTag extends GenericListenerTag<ActionSource, ActionLi
      * The fully qualified class name of the ActionListener class.
      */
     @Override
-    @JSFJspAttribute(className = "java.lang.String", rtexprvalue = true)
+    @JSFJspAttribute(className="javax.el.ValueExpression",
+            deferredValueType="java.lang.String")
     public void setType(ValueExpression type)
     {
         super.setType(type);
@@ -70,7 +71,8 @@ public class ActionListenerTag extends GenericListenerTag<ActionSource, ActionLi
      * Value binding expression that evaluates to an object that implements javax.faces.event.ActionListener.
      */
     @Override
-    @JSFJspAttribute(className = "javax.faces.event.ActionListener", rtexprvalue = true)
+    @JSFJspAttribute(className="javax.el.ValueExpression",
+            deferredValueType="javax.faces.event.ActionListener")
     public void setBinding(ValueExpression binding)
     {
         super.setBinding(binding);

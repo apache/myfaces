@@ -52,7 +52,8 @@ public class ConverterImplTag extends ConverterELTag
     /**
      * The converter's registered ID.
      */
-    @JSFJspAttribute(rtexprvalue = true, className = "java.lang.String")
+    @JSFJspAttribute(className="javax.el.ValueExpression",
+            deferredValueType="java.lang.String")
     public void setConverterId(ValueExpression converterId)
     {
         _converterId = converterId;
@@ -61,7 +62,8 @@ public class ConverterImplTag extends ConverterELTag
     /**
      * A ValueExpression that evaluates to a Converter.
      */
-    @JSFJspAttribute(rtexprvalue = true, className = "javax.faces.convert.Converter")
+    @JSFJspAttribute(className="javax.el.ValueExpression",
+            deferredValueType="javax.faces.convert.Converter")
     public void setBinding(ValueExpression binding)
     {
         _binding = binding;

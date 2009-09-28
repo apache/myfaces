@@ -237,12 +237,15 @@ $baseContent
          <name>$attribute.name</name>
          <required>$attribute.isRequired()</required>
 #set ($type = $utils.getClassFromFullClass($attribute.className))
-#if ($type == "ValueExpression")
-         <deferred-value></deferred-value>
-#else
-#if($attribute.isRtexprvalue())
+#if ($type == "MethodExpression")
+        <deferred-method>
+          <method-signature>${attribute.deferredMethodSignature}</method-signature>
+        </deferred-method>
+#elseif ($type == "ValueExpression")
          <deferred-value>
-             <type>$attribute.className</type>
+#if($attribute.deferredValueType)
+             <type>$attribute.deferredValueType</type>
+#end
          </deferred-value>
 #else
          <rtexprvalue>$attribute.isRtexprvalue()</rtexprvalue>
@@ -250,7 +253,6 @@ $baseContent
          <type>$attribute.className</type>
 #else
          <type>java.lang.String</type>
-#end
 #end
 #end
       </attribute>
@@ -282,12 +284,15 @@ $baseContent
          <name>$attribute.name</name>
          <required>$attribute.isRequired()</required>
 #set ($type = $utils.getClassFromFullClass($attribute.className))
-#if ($type == "ValueExpression")
-         <deferred-value></deferred-value>
-#else
-#if($attribute.isRtexprvalue())
+#if ($type == "MethodExpression")
+        <deferred-method>
+          <method-signature>${attribute.deferredMethodSignature}</method-signature>
+        </deferred-method>
+#elseif ($type == "ValueExpression")
          <deferred-value>
-             <type>$attribute.className</type>
+#if($attribute.deferredValueType)
+             <type>$attribute.deferredValueType</type>
+#end
          </deferred-value>
 #else
          <rtexprvalue>$attribute.isRtexprvalue()</rtexprvalue>
@@ -295,7 +300,6 @@ $baseContent
          <type>$attribute.className</type>
 #else
          <type>java.lang.String</type>
-#end
 #end
 #end
       </attribute>
