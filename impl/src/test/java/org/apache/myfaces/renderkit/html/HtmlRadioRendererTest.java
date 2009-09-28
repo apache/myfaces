@@ -22,7 +22,9 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.faces.component.UISelectItem;
 import javax.faces.component.UISelectItems;
+import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.html.HtmlSelectOneRadio;
 import javax.faces.model.SelectItem;
 
@@ -124,5 +126,35 @@ public class HtmlRadioRendererTest extends AbstractJsfTestCase
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
             fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
+    }
+    
+    /**
+     * Components that render client behaviors should always render "id" and "name" attribute
+     */
+    public void testClientBehaviorHolderRendersIdAndName() 
+    {
+        UISelectItem item1 = new UISelectItem();
+        item1.setItemLabel("#1");
+        item1.setItemValue("#1");
+        
+        UISelectItem item2 = new UISelectItem();
+        item2.setItemLabel("#2");
+        item2.setItemValue("#2");
+        
+        selectOneRadio.addClientBehavior("keypress", new AjaxBehavior());
+        try 
+        {
+            selectOneRadio.getChildren().add(item1);
+            selectOneRadio.getChildren().add(item2);
+            selectOneRadio.encodeAll(facesContext);
+            String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
+            assertTrue(output.matches(".+id=\".+\".+"));
+            assertTrue(output.matches(".+name=\".+\".+"));
+        }
+        catch (Exception e)
+        {
+            fail(e.getMessage());
+        }
+        
     }
 }

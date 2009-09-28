@@ -20,6 +20,7 @@ package org.apache.myfaces.renderkit.html;
 
 import java.io.StringWriter;
 
+import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.html.HtmlInputTextarea;
 
 import junit.framework.Test;
@@ -102,5 +103,25 @@ public class HtmlTextareaRendererTest extends AbstractJsfTestCase
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
             fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
+    }
+    
+    /**
+     * Components that render client behaviors should always render "id" and "name" attribute
+     */
+    public void testClientBehaviorHolderRendersIdAndName() 
+    {
+        inputTextarea.addClientBehavior("keypress", new AjaxBehavior());
+        try 
+        {
+            inputTextarea.encodeAll(facesContext);
+            String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
+            assertTrue(output.matches("(?s).+id=\".+\".+"));
+            assertTrue(output.matches("(?s).+name=\".+\".+"));
+        }
+        catch (Exception e)
+        {
+            fail(e.getMessage());
+        }
+        
     }
 }

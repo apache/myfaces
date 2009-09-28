@@ -20,6 +20,7 @@ package org.apache.myfaces.renderkit.html;
 
 import java.io.StringWriter;
 
+import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.html.HtmlDataTable;
 
 import junit.framework.Test;
@@ -93,5 +94,25 @@ public class HtmlTableRendererTest extends AbstractJsfTestCase
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
             fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
+    }
+    
+    /**
+     * Components that render client behaviors should always render "id" and "name" attribute
+     */
+    public void testClientBehaviorHolderRendersIdAndName() 
+    {
+        dataTable.addClientBehavior("keypress", new AjaxBehavior());
+        try 
+        {
+            dataTable.encodeAll(facesContext);
+            String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
+            assertTrue(output.matches("(?s).+id=\".+\".+"));
+            assertTrue(output.matches("(?s).+name=\".+\".+"));
+        }
+        catch (Exception e)
+        {
+            fail(e.getMessage());
+        }
+        
     }
 }

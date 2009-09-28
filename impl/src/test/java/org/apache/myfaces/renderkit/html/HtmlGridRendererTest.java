@@ -21,6 +21,7 @@ package org.apache.myfaces.renderkit.html;
 import java.io.StringWriter;
 
 import javax.faces.component.UIColumn;
+import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.component.html.HtmlPanelGrid;
 
@@ -131,5 +132,25 @@ public class HtmlGridRendererTest extends AbstractJsfTestCase
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
             fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
+    }
+    
+    /**
+     * Components that render client behaviors should always render "id" and "name" attribute
+     */
+    public void testClientBehaviorHolderRendersIdAndName() 
+    {
+        panelGrid.addClientBehavior("click", new AjaxBehavior());
+        try 
+        {
+            panelGrid.encodeAll(facesContext);
+            String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
+            assertTrue(output.matches(".+id=\".+\".+"));
+            assertTrue(output.matches(".+name=\".+\".+"));
+        }
+        catch (Exception e)
+        {
+            fail(e.getMessage());
+        }
+        
     }
 }

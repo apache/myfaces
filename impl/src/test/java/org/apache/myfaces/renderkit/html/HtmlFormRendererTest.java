@@ -21,6 +21,7 @@ package org.apache.myfaces.renderkit.html;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.html.HtmlForm;
 
 import junit.framework.Test;
@@ -116,5 +117,25 @@ public class HtmlFormRendererTest extends AbstractJsfTestCase
             }
         }
         return buffer.toString();
+    }
+    
+    /**
+     * Components that render client behaviors should always render "id" and "name" attribute
+     */
+    public void testClientBehaviorHolderRendersIdAndName() 
+    {
+        form.addClientBehavior("focus", new AjaxBehavior());
+        try 
+        {
+            form.encodeAll(facesContext);
+            String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
+            assertTrue(output.matches(".+id=\".+\".+"));
+            assertTrue(output.matches(".+name=\".+\".+"));
+        }
+        catch (Exception e)
+        {
+            fail(e.getMessage());
+        }
+        
     }
 }

@@ -21,77 +21,54 @@ package org.apache.myfaces.renderkit.html;
 import java.io.StringWriter;
 
 import javax.faces.component.behavior.AjaxBehavior;
-import javax.faces.component.html.HtmlInputSecret;
+import javax.faces.component.html.HtmlForm;
+import javax.faces.component.html.HtmlOutcomeTargetButton;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
-import org.apache.myfaces.test.utils.HtmlRenderedAttr;
+import org.apache.myfaces.application.NavigationHandlerImpl;
 import org.apache.shale.test.base.AbstractJsfTestCase;
 import org.apache.shale.test.mock.MockRenderKitFactory;
 import org.apache.shale.test.mock.MockResponseWriter;
 
-/**
- * @author Bruno Aranda (latest modification by $Author: baranda $)
- * @version $Revision: 451814 $ $Date: 2006-10-01 22:28:42 +0100 (dom, 01 oct 2006) $
- */
-public class HtmlSecretRendererTest extends AbstractJsfTestCase
-{
-    private MockResponseWriter writer ;
-    private HtmlInputSecret inputText;
+public class HtmlOutcomeTargetButtonRendererTest extends AbstractJsfTestCase {
 
-    public HtmlSecretRendererTest(String name)
-    {
+    private MockResponseWriter writer;
+    private HtmlOutcomeTargetButton outcomeTargetButton;
+    private HtmlForm form;
+    
+    public HtmlOutcomeTargetButtonRendererTest(String name) {
         super(name);
     }
     
     public static Test suite() {
-        return new TestSuite(HtmlSecretRendererTest.class);
+        return new TestSuite(HtmlOutcomeTargetButtonRendererTest.class);
     }
-
-    public void setUp() throws Exception
-    {
+    
+    public void setUp() throws Exception {
         super.setUp();
-
-        inputText = new HtmlInputSecret();
-
         writer = new MockResponseWriter(new StringWriter(), null, null);
         facesContext.setResponseWriter(writer);
-
+        facesContext.getApplication().setNavigationHandler(new NavigationHandlerImpl());
+        outcomeTargetButton = new HtmlOutcomeTargetButton();
+        form = new HtmlForm();
+        outcomeTargetButton.setParent(form);
+        
         facesContext.getViewRoot().setRenderKitId(MockRenderKitFactory.HTML_BASIC_RENDER_KIT);
         facesContext.getRenderKit().addRenderer(
-                inputText.getFamily(),
-                inputText.getRendererType(),
-                new HtmlSecretRenderer());
-
+                outcomeTargetButton.getFamily(),
+                outcomeTargetButton.getRendererType(),
+                new HtmlOutcomeTargetButtonRenderer());
+        facesContext.getRenderKit().addRenderer(
+                form.getFamily(),
+                form.getRendererType(),
+                new HtmlFormRenderer());
     }
-
-    public void tearDown() throws Exception
-    {
+    
+    public void tearDown() throws Exception {
         super.tearDown();
-        inputText = null;
         writer = null;
-    }
-
-    public void testInputTextDefault() throws Exception
-    {
-        inputText.encodeEnd(facesContext);
-        facesContext.renderResponse();
-
-        String output = writer.getWriter().toString();
-        assertEquals("<input type=\"password\" name=\"j_id0\"/>", output);
-    }
-
-    public void testHtmlPropertyPassTru() throws Exception
-    {
-        HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicAttrs();
-        
-        HtmlCheckAttributesUtil.checkRenderedAttributes(
-                inputText, facesContext, writer, attrs);
-        if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
-        }
     }
     
     /**
@@ -99,10 +76,10 @@ public class HtmlSecretRendererTest extends AbstractJsfTestCase
      */
     public void testClientBehaviorHolderRendersIdAndName() 
     {
-        inputText.addClientBehavior("keypress", new AjaxBehavior());
+        outcomeTargetButton.addClientBehavior("keypress", new AjaxBehavior());
         try 
         {
-            inputText.encodeAll(facesContext);
+            outcomeTargetButton.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
             assertTrue(output.matches(".+id=\".+\".+"));
             assertTrue(output.matches(".+name=\".+\".+"));
@@ -113,4 +90,5 @@ public class HtmlSecretRendererTest extends AbstractJsfTestCase
         }
         
     }
+    
 }

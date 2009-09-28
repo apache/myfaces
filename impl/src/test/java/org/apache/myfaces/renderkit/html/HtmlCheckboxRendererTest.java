@@ -21,6 +21,7 @@ package org.apache.myfaces.renderkit.html;
 import java.io.StringWriter;
 
 import javax.faces.component.UISelectItem;
+import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.html.HtmlSelectBooleanCheckbox;
 import javax.faces.component.html.HtmlSelectManyCheckbox;
 
@@ -140,4 +141,54 @@ public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
         }
     
     }   
+    
+    /**
+     * Components that render client behaviors should always render "id" and "name" attribute
+     */
+    public void testClientBehaviorHolderRendersIdAndNameSelectBooleanCheckbox() 
+    {
+        selectBooleanCheckbox.addClientBehavior("focus", new AjaxBehavior());
+        try 
+        {
+            selectBooleanCheckbox.encodeAll(facesContext);
+            String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
+            assertTrue(output.matches(".+id=\".+\".+"));
+            assertTrue(output.matches(".+name=\".+\".+"));
+        }
+        catch (Exception e)
+        {
+            fail(e.getMessage());
+        }
+        
+    }
+    
+    /**
+     * Components that render client behaviors should always render "id" and "name" attribute
+     */
+    public void testClientBehaviorHolderRendersIdAndNameSelectManyCheckbox() 
+    {
+        UISelectItem item1 = new UISelectItem();
+        item1.setItemLabel("#1");
+        item1.setItemValue("#1");
+        
+        UISelectItem item2 = new UISelectItem();
+        item2.setItemLabel("#2");
+        item2.setItemValue("#2");
+        
+        selectManyCheckbox.addClientBehavior("focus", new AjaxBehavior());
+        try 
+        {
+            selectManyCheckbox.getChildren().add(item1);
+            selectManyCheckbox.getChildren().add(item2);
+            selectManyCheckbox.encodeAll(facesContext);
+            String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
+            assertTrue(output.matches(".+id=\".+\".+"));
+            assertTrue(output.matches(".+name=\".+\".+"));
+        }
+        catch (Exception e)
+        {
+            fail(e.getMessage());
+        }
+        
+    }
 }

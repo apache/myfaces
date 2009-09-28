@@ -62,17 +62,25 @@ public class HtmlLabelRenderer extends HtmlRenderer
         encodeBefore(facesContext, writer, uiComponent);
 
         writer.startElement(HTML.LABEL_ELEM, uiComponent);
-        HtmlRendererUtils.writeIdIfNecessary(writer, uiComponent, facesContext);
         Map<String, List<ClientBehavior>> behaviors = null;
         if (uiComponent instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
         {
             behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
+            if (!behaviors.isEmpty())
+            {
+                HtmlRendererUtils.writeIdAndName(writer, uiComponent, facesContext);
+            }
+            else
+            {
+                HtmlRendererUtils.writeIdIfNecessary(writer, uiComponent, facesContext);
+            }
             HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
             HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(facesContext, writer, uiComponent, behaviors);
             HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.LABEL_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
         }
         else
         {
+            HtmlRendererUtils.writeIdIfNecessary(writer, uiComponent, facesContext);
             HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.LABEL_PASSTHROUGH_ATTRIBUTES);
         }
 

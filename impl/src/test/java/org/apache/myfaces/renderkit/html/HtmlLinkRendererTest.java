@@ -21,12 +21,15 @@ package org.apache.myfaces.renderkit.html;
 import java.io.StringWriter;
 
 import javax.faces.component.UIForm;
+import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.html.HtmlCommandLink;
+import javax.faces.component.html.HtmlOutcomeTargetLink;
 import javax.faces.component.html.HtmlOutputLink;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.apache.myfaces.application.NavigationHandlerImpl;
 import org.apache.myfaces.shared_impl.config.MyfacesConfig;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
@@ -48,6 +51,7 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
     private MockResponseWriter writer;
     private HtmlCommandLink commandLink;
     private HtmlOutputLink outputLink;
+    private HtmlOutcomeTargetLink outcomeTargetLink;
 
     public HtmlLinkRendererTest(String name)
     {
@@ -67,11 +71,13 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
         commandLink = new HtmlCommandLink();
         outputLink = new HtmlOutputLink();
         outputLink.setValue("http://someurl");
+        outcomeTargetLink = new HtmlOutcomeTargetLink();
 
         form.getChildren().add(commandLink);
 
         writer = new MockResponseWriter(new StringWriter(), null, null);
         facesContext.setResponseWriter(writer);
+        facesContext.getApplication().setNavigationHandler(new NavigationHandlerImpl());
 
         facesContext.getViewRoot().setRenderKitId(MockRenderKitFactory.HTML_BASIC_RENDER_KIT);
         facesContext.getRenderKit().addRenderer(
@@ -85,6 +91,10 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
         facesContext.getRenderKit().addRenderer(
                 outputLink.getFamily(),
                 outputLink.getRendererType(),
+                new HtmlLinkRenderer());
+        facesContext.getRenderKit().addRenderer(
+                outcomeTargetLink.getFamily(),
+                outcomeTargetLink.getRendererType(),
                 new HtmlLinkRenderer());
     }
 
@@ -217,5 +227,65 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
             fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
+    }
+    
+    /**
+     * Components that render client behaviors should always render "id" and "name" attribute
+     */
+    public void testClientBehaviorHolderRendersIdAndNameOutputLink() 
+    {
+        outputLink.addClientBehavior("keypress", new AjaxBehavior());
+        try 
+        {
+            outputLink.encodeAll(facesContext);
+            String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
+            assertTrue(output.matches(".+id=\".+\".+"));
+            assertTrue(output.matches(".+name=\".+\".+"));
+        }
+        catch (Exception e)
+        {
+            fail(e.getMessage());
+        }
+        
+    }
+    
+    /**
+     * Components that render client behaviors should always render "id" and "name" attribute
+     */
+    public void testClientBehaviorHolderRendersIdAndNameCommandLink() 
+    {
+        commandLink.addClientBehavior("keypress", new AjaxBehavior());
+        try 
+        {
+            commandLink.encodeAll(facesContext);
+            String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
+            assertTrue(output.matches("(?s).+id=\".+\".+"));
+            assertTrue(output.matches("(?s).+name=\".+\".+"));
+        }
+        catch (Exception e)
+        {
+            fail(e.getMessage());
+        }
+        
+    }
+    
+    /**
+     * Components that render client behaviors should always render "id" and "name" attribute
+     */
+    public void testClientBehaviorHolderRendersIdAndNameOutcomeTargetLink() 
+    {
+        outcomeTargetLink.addClientBehavior("keypress", new AjaxBehavior());
+        try 
+        {
+            outcomeTargetLink.encodeAll(facesContext);
+            String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
+            assertTrue(output.matches(".+id=\".+\".+"));
+            assertTrue(output.matches(".+name=\".+\".+"));
+        }
+        catch (Exception e)
+        {
+            fail(e.getMessage());
+        }
+        
     }
 }
