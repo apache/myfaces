@@ -146,12 +146,19 @@ public class UIInput extends UIOutput implements EditableValueHolder
         {
             try
             {
+                //Pre validation event dispatch for component
+                context.getApplication().publishEvent(context,  PreValidateEvent.class, UIComponent.class, this);
+
                 validate(context);
             }
             catch (RuntimeException e)
             {
                 context.renderResponse();
                 throw e;
+            }
+            finally
+            {
+                context.getApplication().publishEvent(context,  PostValidateEvent.class, UIComponent.class, this);
             }
             if (!isValid())
             {
@@ -178,12 +185,19 @@ public class UIInput extends UIOutput implements EditableValueHolder
         {
             try
             {
+                //Pre validation event dispatch for component
+                context.getApplication().publishEvent(context,  PreValidateEvent.class, UIComponent.class, this);
+
                 validate(context);
             }
             catch (RuntimeException e)
             {
                 context.renderResponse();
                 throw e;
+            }
+            finally
+            {
+                context.getApplication().publishEvent(context,  PostValidateEvent.class, UIComponent.class, this);
             }
             if (!isValid())
             {
@@ -468,9 +482,6 @@ public class UIInput extends UIOutput implements EditableValueHolder
 
         try
         {
-            //Pre validation event dispatch for component
-            context.getApplication().publishEvent(context,  PreValidateEvent.class, UIComponent.class, this);
-
             Object submittedValue = getSubmittedValue();
             if (submittedValue == null)
             {
@@ -512,7 +523,6 @@ public class UIInput extends UIOutput implements EditableValueHolder
             throw new FacesException("Exception while validating component with path : "
                     + _ComponentUtils.getPathToComponent(this), ex);
         }
-
     }
 
     /**
