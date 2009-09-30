@@ -149,22 +149,40 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         // Call getComponentResources to obtain the child list for the given target
         List<UIComponent> componentResources = _getComponentResources(context, target);
 
-        // If the component ID of componentResource matches the the ID of a resource that has already been added, remove the old resource.
+        // If the component ID of componentResource matches the ID of a resource that has already been added, remove the old resource.
         String componentId = componentResource.getId();
+        
+        // This var helps to handle the case when we try to add a component that already is
+        // on the resource list, because PostAddToViewEvent also is sent to components 
+        // backing resources. The problem start when a component is already inside
+        // componentResources list and we try to relocate it again. This leads to a StackOverflowException
+        // so we need to check if a component is and prevent remove and add it again. Note
+        // that remove and then add a component trigger another PostAddToViewEvent. The right
+        // point to prevent this StackOverflowException is here, because this method is 
+        // responsible to traverse the componentResources list and add when necessary.
+        boolean alreadyAdded = false;
         
         if (componentId != null)
         {
-            for(UIComponent component : componentResources)
+            for(Iterator<UIComponent> it = componentResources.iterator(); it.hasNext();)
             {
-                if(componentId.equals(component.getId()))
+                UIComponent component = it.next();
+                if(componentId.equals(component.getId()) && componentResource != component)
                 {
-                    componentResources.remove(component);
+                    it.remove();
+                }
+                else if (componentResource == component)
+                {
+                    alreadyAdded = true;
                 }
             }
         }
         
         // Add the component resource to the list
-        componentResources.add(componentResource);
+        if (!alreadyAdded)
+        {
+            componentResources.add(componentResource);
+        }
     }
 
     /**

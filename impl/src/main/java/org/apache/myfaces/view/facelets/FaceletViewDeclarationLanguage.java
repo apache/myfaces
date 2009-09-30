@@ -95,7 +95,7 @@ import org.apache.myfaces.view.facelets.tag.TagDecorator;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeLibrary;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeResourceLibrary;
-import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
+import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
 import org.apache.myfaces.view.facelets.tag.ui.UIDebug;
 import org.apache.myfaces.view.facelets.util.DevTools;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
@@ -266,6 +266,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     {
         //context.getAttributes().put(view.toString(), Boolean.TRUE);
         view.getAttributes().put(FILLED_VIEW, Boolean.TRUE);
+        // Remove this var from faces context because this one prevent AjaxHandler
+        // register the standard script library on Post-Redirect-Get pattern or
+        // in the next view
+        context.getAttributes().remove(AjaxHandler.STANDARD_JSF_AJAX_LIBRARY_LOADED);
     }
     
     /**

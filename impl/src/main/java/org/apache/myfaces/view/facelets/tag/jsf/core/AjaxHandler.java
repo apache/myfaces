@@ -19,6 +19,7 @@
 package org.apache.myfaces.view.facelets.tag.jsf.core;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.el.MethodExpression;
 import javax.faces.component.UIComponent;
@@ -28,6 +29,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.AjaxBehaviorListener;
+import javax.faces.event.ComponentSystemEvent;
+import javax.faces.event.ComponentSystemEventListener;
 import javax.faces.view.BehaviorHolderAttachedObjectHandler;
 import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
@@ -71,6 +74,13 @@ public class AjaxHandler extends TagHandler implements
 {
 
     public final static Class<?>[] AJAX_BEHAVIOR_LISTENER_SIG = new Class<?>[] { AjaxBehaviorEvent.class };
+    
+    /**
+     * Constant used to check if in the current build view it has been rendered the standard jsf javascript
+     * library. It is necessary to remove this key from facesContext attribute map after build, to keep
+     * working this code for next views to be built.
+     */
+    public final static String STANDARD_JSF_AJAX_LIBRARY_LOADED = "org.apache.myfaces.STANDARD_JSF_AJAX_LIBRARY_LOADED"; 
 
     /**
      * 
@@ -164,6 +174,27 @@ public class AjaxHandler extends TagHandler implements
             throw new TagException(this.tag,
                     "Parent is not composite component or of type ClientBehaviorHolder, type is: "
                             + parent);
+        }
+        
+        // Register the standard ajax library on the current page in this way:
+        //
+        // <h:outputScript name="jsf.js" library="javax.faces" target="head"/>
+        //
+        // If no h:head component is in the page, we must anyway render the script inline,
+        // so the only way to make sure we are doing this is add a outputScript component.
+        // Note that call directly UIViewRoot.addComponentResource or use a listener 
+        // does not work in this case, because check this condition will requires 
+        // traverse the whole tree looking for h:head component.
+        FacesContext facesContext = ctx.getFacesContext();
+        if (facesContext.getAttributes().containsKey(STANDARD_JSF_AJAX_LIBRARY_LOADED))
+        {
+            UIComponent outputScript = facesContext.getApplication().
+                createComponent(facesContext, "javax.faces.Output", "javax.faces.resource.Script");
+            outputScript.getAttributes().put("name", "jsf.js");
+            outputScript.getAttributes().put("library", "javax.faces");
+            outputScript.getAttributes().put("target", "head");
+            parent.getChildren().add(outputScript);
+            facesContext.getAttributes().put(STANDARD_JSF_AJAX_LIBRARY_LOADED, Boolean.TRUE);
         }
     }
 
