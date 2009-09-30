@@ -93,6 +93,12 @@ public class HtmlFormatRenderer extends HtmlRenderer
             {
                 if (child instanceof UIParameter)
                 {
+                    // check for the disable attribute (since 2.0)
+                    if (((UIParameter) child).isDisable())
+                    {
+                        // ignore this UIParameter and continue
+                        continue;
+                    }
                     argsList.add(((UIParameter)child).getValue());
                 }
             }

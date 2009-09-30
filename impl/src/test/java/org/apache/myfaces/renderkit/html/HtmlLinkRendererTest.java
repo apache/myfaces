@@ -21,6 +21,7 @@ package org.apache.myfaces.renderkit.html;
 import java.io.StringWriter;
 
 import javax.faces.component.UIForm;
+import javax.faces.component.UIParameter;
 import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.html.HtmlCommandLink;
 import javax.faces.component.html.HtmlOutcomeTargetLink;
@@ -40,6 +41,7 @@ import org.apache.shale.test.mock.MockHttpServletResponse;
 import org.apache.shale.test.mock.MockRenderKitFactory;
 import org.apache.shale.test.mock.MockResponseWriter;
 import org.apache.shale.test.mock.MockServletContext;
+import org.easymock.EasyMock;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)
@@ -75,7 +77,7 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
 
         form.getChildren().add(commandLink);
 
-        writer = new MockResponseWriter(new StringWriter(), null, null);
+        writer = new MockResponseWriter(new StringWriter(), null, "UTF-8");
         facesContext.setResponseWriter(writer);
         facesContext.getApplication().setNavigationHandler(new NavigationHandlerImpl());
 
@@ -301,5 +303,55 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
         outputLink.encodeAll(facesContext);
         String output = writer.getWriter().toString();
         assertEquals("<a href=\"http://www.irian.at#fragment\"></a>", output);
+    }
+    
+    /**
+     * If the disable attribute of a child UIParameter is true,
+     * he should be ignored.
+     * @throws Exception
+     */
+    public void testDisabledUIParameterNotRenderedCommandLink() throws Exception
+    {
+        UIParameter param1 = new UIParameter();
+        param1.setName("param1");
+        param1.setValue("value1");
+        param1.setDisable(true);
+        UIParameter param2 = new UIParameter();
+        param2.setName("param2");
+        param2.setValue("value2");
+        commandLink.getChildren().add(param1);
+        commandLink.getChildren().add(param2);
+        
+        commandLink.encodeAll(facesContext);
+        String output = writer.getWriter().toString();
+        assertFalse(output.contains("param1"));
+        assertFalse(output.contains("value1"));
+        assertTrue(output.contains("param2"));
+        assertTrue(output.contains("value2"));
+    }
+    
+    /**
+     * If the disable attribute of a child UIParameter is true,
+     * he should be ignored.
+     * @throws Exception
+     */
+    public void testDisabledUIParameterNotRenderedOutputLink() throws Exception
+    {
+        UIParameter param1 = new UIParameter();
+        param1.setName("param1");
+        param1.setValue("value1");
+        param1.setDisable(true);
+        UIParameter param2 = new UIParameter();
+        param2.setName("param2");
+        param2.setValue("value2");
+        outputLink.getChildren().add(param1);
+        outputLink.getChildren().add(param2);
+        
+        outputLink.encodeAll(facesContext);
+        String output = writer.getWriter().toString();
+        assertFalse(output.contains("param1"));
+        assertFalse(output.contains("value1"));
+        assertTrue(output.contains("param2"));
+        assertTrue(output.contains("value2"));
     }
 }
