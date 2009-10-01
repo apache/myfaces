@@ -206,9 +206,9 @@ public class HtmlScriptRenderer extends Renderer implements
             renderedResources.add(resourceKey);
             ResponseWriter writer = facesContext.getResponseWriter();
             writer.startElement(HTML.SCRIPT_ELEM, component);
-            writer.writeAttribute(HTML.SCRIPT_TYPE_ATTR, 
-                    (resource.getContentType() == null ? HTML.SCRIPT_TYPE_TEXT_JAVASCRIPT
-                            : resource.getContentType()) , null);
+            // We can't render the content type, because usually it returns "application/x-javascript"
+            // and this is not compatible with IE. We should force render "text/javascript".
+            writer.writeAttribute(HTML.SCRIPT_TYPE_ATTR, HTML.SCRIPT_TYPE_TEXT_JAVASCRIPT , null);
             writer.writeURIAttribute(HTML.SRC_ATTR, resource.getRequestPath(), null);
             writer.endElement(HTML.SCRIPT_ELEM);
         }
