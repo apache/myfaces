@@ -24,10 +24,12 @@ import javax.faces.component.UISelectItems;
 import javax.faces.component.UIViewParameter;
 import javax.faces.convert.DateTimeConverter;
 import javax.faces.convert.NumberConverter;
+import javax.faces.validator.BeanValidator;
 import javax.faces.validator.DoubleRangeValidator;
 import javax.faces.validator.LengthValidator;
 import javax.faces.validator.LongRangeValidator;
 import javax.faces.validator.RegexValidator;
+import javax.faces.validator.RequiredValidator;
 
 import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
 
@@ -81,6 +83,8 @@ public final class CoreLibrary extends AbstractTagLibrary
 
         this.addComponent("subview", "javax.faces.NamingContainer", null);
 
+        this.addValidator("validateBean", BeanValidator.VALIDATOR_ID);
+        
         this.addValidator("validateLength", LengthValidator.VALIDATOR_ID);
 
         this.addValidator("validateLongRange", LongRangeValidator.VALIDATOR_ID);
@@ -88,6 +92,8 @@ public final class CoreLibrary extends AbstractTagLibrary
         this.addValidator("validateDoubleRange", DoubleRangeValidator.VALIDATOR_ID);
 
         this.addValidator("validateRegex", RegexValidator.VALIDATOR_ID);
+        
+        this.addValidator("validateRequired", RequiredValidator.VALIDATOR_ID);
 
         this.addValidator("validator", null, ValidateDelegateHandler.class);
 
