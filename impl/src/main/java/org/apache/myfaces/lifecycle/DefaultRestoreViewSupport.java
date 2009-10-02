@@ -126,9 +126,7 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
             throw new FacesException("Could not determine view id.");
         }
 
-        // JSF 2.0: We need to resolve which extension does this viewId holds, in other words
-        // sometimes convert from .jsf to .xhtml
-        return facesContext.getApplication().getViewHandler().deriveViewId(facesContext, viewId);
+        return viewId;
     }
 
     public boolean isPostback(FacesContext facesContext)

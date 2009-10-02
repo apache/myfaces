@@ -1652,7 +1652,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     private class FaceletViewMetadata extends ViewMetadataBase
     {
         /**
+         * Constructor
          * 
+         * Note that this viewId is not the one after calculateViewId() method
          */
         public FaceletViewMetadata(String viewId)
         {
@@ -1692,7 +1694,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
                 String viewId = getViewId();
                 UIViewRoot view = createView(context, viewId);
-                Facelet facelet = _getViewMetadataFacelet(viewId);
+                // inside createView(context,viewId), calculateViewId() is called and
+                // the result is stored inside created UIViewRoot, so we can safely take the derived
+                // viewId from there.
+                Facelet facelet = _getViewMetadataFacelet(view.getViewId());
                 facelet.apply(context, view);
 
                 return view;
