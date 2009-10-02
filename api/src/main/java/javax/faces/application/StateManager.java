@@ -182,16 +182,13 @@ public abstract class StateManager
     }
     
     /**
-     * Convenience method to return the view state as a String with no RenderKit specific markup. This default 
-     * implementation of this method will call {@link #saveView(javax.faces.context.FacesContext)} and passing the 
-     * result to and returning the resulting value from 
-     * ResponseStateManager.getViewState(javax.faces.context.FacesContext, Object). 
-     * 
-     * @param context {@link FacesContext} for the current request
-     * 
-     * @return the view state as a String with no RenderKit specific markup.
+     * TODO: This method should be called from somewhere when ajax response is created to update the state saving param
+     * on client. The place where this method is called is an implementation detail, so there is no references about
+     * from where in the spec javadoc. 
      * 
      * @since 2.0
+     * @param context
+     * @return
      */
     public String getViewState(FacesContext context)
     {

@@ -27,7 +27,9 @@ import org.apache.myfaces.shared_impl.renderkit.html.HtmlRendererUtils;
 import org.apache.myfaces.shared_impl.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.shared_impl.util.StateUtils;
 
+import javax.faces.FacesException;
 import javax.faces.application.StateManager;
+import javax.faces.application.StateManager.SerializedView;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
@@ -233,5 +235,71 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     public boolean isPostback(FacesContext context)
     {
         return context.getExternalContext().getRequestParameterMap().containsKey(ResponseStateManager.VIEW_STATE_PARAM);
+    }
+
+    @Override
+    public String getViewState(FacesContext facesContext, Object state)
+    {
+        if (state == null)
+        {
+            return null;
+        }
+        
+        Object treeStruct = null;
+        Object compStates = null;
+        
+        if (state instanceof SerializedView)
+        {
+            SerializedView view = (SerializedView)state; 
+            treeStruct = view.getStructure();
+            compStates = view.getState();
+        }
+        else if (state instanceof Object[])
+        {
+            Object[] structureAndState = (Object[])state;
+
+            if (structureAndState.length == 2)
+            {
+                treeStruct = structureAndState[0];
+                compStates = structureAndState[1];
+            }
+            else
+            {
+                throw new FacesException("The state should be an array of Object[] of lenght 2");
+            }
+        }
+        else
+        {
+            throw new FacesException("The state should be an array of Object[] of lenght 2, or a SerializedView instance");
+        }
+        
+        Object[] savedState = new Object[3];
+
+        if (facesContext.getApplication().getStateManager().isSavingStateInClient(facesContext))
+        {
+            if (treeStruct != null)
+            {
+                savedState[TREE_PARAM] = treeStruct;
+            }
+
+            if (compStates != null)
+            {
+                savedState[STATE_PARAM] = compStates;
+            }
+        }
+        else
+        {
+            // write viewSequence
+            if (treeStruct != null)
+            {
+                if (treeStruct instanceof String)
+                {
+                    savedState[TREE_PARAM] = treeStruct;
+                }
+            }
+        }
+        savedState[VIEWID_PARAM] = facesContext.getViewRoot().getViewId();
+
+        return StateUtils.construct(savedState, facesContext.getExternalContext());
     }
 }
