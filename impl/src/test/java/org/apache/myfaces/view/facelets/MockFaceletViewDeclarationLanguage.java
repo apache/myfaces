@@ -63,7 +63,13 @@ public class MockFaceletViewDeclarationLanguage extends
     @Override
     public String calculateViewId(FacesContext context, String viewId)
     {
-        return super.calculateViewId(context, viewId);
+        String calculatedViewId = super.calculateViewId(context, viewId);
+        if (calculatedViewId == null)
+        {
+            //can't calculate it, just passthrough the received one
+            calculatedViewId = viewId;
+        }
+        return calculatedViewId;
     }
 
     @Override
