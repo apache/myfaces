@@ -60,6 +60,7 @@ import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
 import javax.faces.application.*;
 import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.faces.el.PropertyResolver;
 import javax.faces.el.VariableResolver;
 import javax.faces.event.*;
@@ -359,6 +360,12 @@ public class FacesConfigurator
                     log.fatal("Error during configuration clean-up" + e.getMessage());
                 }
                 configure();
+                
+                // JSF 2.0 Publish PostConstructApplicationEvent after all configuration resources
+                // has been parsed and processed
+                FacesContext facesContext = FacesContext.getCurrentInstance();
+                Application application = facesContext.getApplication(); 
+                application.publishEvent(facesContext, PostConstructApplicationEvent.class, Application.class, application);
             }
         }
     }
