@@ -22,10 +22,13 @@ import java.io.IOException;
 import java.util.*;
 
 
+import javax.faces.FactoryFinder;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialResponseWriter;
 import javax.faces.context.PartialViewContext;
 import javax.faces.event.PhaseId;
+import javax.faces.render.RenderKit;
+import javax.faces.render.RenderKitFactory;
 import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitCallback;
@@ -34,6 +37,8 @@ import javax.faces.component.UIComponent;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.ResponseWriter;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.shared_impl.util.StringUtils;
@@ -54,6 +59,7 @@ public class PartialViewContextImpl extends PartialViewContext {
     // Values that need to be saved because exists a setXX method 
     private Boolean _partialRequest = null;
     private Boolean _renderAll = null;
+    private PartialResponseWriter _partialResponseWriter = null;
 
     public PartialViewContextImpl(FacesContext context) {
         _facesContext = context;
@@ -218,9 +224,38 @@ public class PartialViewContextImpl extends PartialViewContext {
     @Override
     public PartialResponseWriter getPartialResponseWriter() {
         assertNotReleased();
-        //TODO: JSF 2.0, add impl
-
-        return new PartialResponseWriter(_facesContext.getResponseWriter());
+        
+        if (_partialResponseWriter == null)
+        {
+            ResponseWriter responseWriter = _facesContext.getResponseWriter();
+            if (responseWriter == null)
+            {
+                // This case happens when getPartialResponseWriter() is called before
+                // render phase, like in ExternalContext.redirect(). We have to create a
+                // ResponseWriter from the RenderKit and then wrap if necessary. 
+                try
+                {
+                    responseWriter = _facesContext.getRenderKit().createResponseWriter(
+                            _facesContext.getExternalContext().getResponseOutputWriter(), "text/xml",
+                            _facesContext.getExternalContext().getRequestCharacterEncoding());
+                }
+                catch (IOException e)
+                {
+                    throw new IllegalStateException("Cannot create Partial Response Writer",e);
+                }
+            }
+            // It is possible that the RenderKit return a PartialResponseWriter instance when 
+            // createResponseWriter,  so we should cast here for it and prevent double wrapping.
+            if (responseWriter instanceof PartialResponseWriter)
+            {
+                _partialResponseWriter = (PartialResponseWriter) responseWriter;
+            }
+            else
+            {
+                _partialResponseWriter = new PartialResponseWriter(responseWriter);
+            }
+        }
+        return _partialResponseWriter;
     }
 
     /**

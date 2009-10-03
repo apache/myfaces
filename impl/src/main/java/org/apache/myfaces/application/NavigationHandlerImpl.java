@@ -38,6 +38,7 @@ import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.context.PartialViewContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -89,7 +90,20 @@ public class NavigationHandlerImpl
                 
                 ExternalContext externalContext = facesContext.getExternalContext();
                 ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
-                String redirectPath = viewHandler.getActionURL(facesContext, navigationCase.getToViewId(facesContext));
+                String toViewId = navigationCase.getToViewId(facesContext);
+                String redirectPath = viewHandler.getActionURL(facesContext, toViewId );
+                
+                // JSF 2.0 the javadoc of handleNavigation() says something like this 
+                // "...If the view has changed after an application action, call
+                // PartialViewContext.setRenderAll(true)...". The effect is that ajax requests
+                // are included on navigation.
+                PartialViewContext partialViewContext = facesContext.getPartialViewContext();
+                if ( partialViewContext.isPartialRequest() && 
+                     !partialViewContext.isRenderAll() && 
+                     !facesContext.getViewRoot().getViewId().equals(toViewId))
+                {
+                    partialViewContext.setRenderAll(true);
+                }
                 
                 // JSF 2.0 Spec call Flash.setRedirect(true) to notify Flash scope and take proper actions
                 externalContext.getFlash().setRedirect(true);
@@ -107,6 +121,18 @@ public class NavigationHandlerImpl
                 ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
                 //create new view
                 String newViewId = navigationCase.getToViewId(facesContext);
+                // JSF 2.0 the javadoc of handleNavigation() says something like this 
+                // "...If the view has changed after an application action, call
+                // PartialViewContext.setRenderAll(true)...". The effect is that ajax requests
+                // are included on navigation.
+                PartialViewContext partialViewContext = facesContext.getPartialViewContext();
+                if ( partialViewContext.isPartialRequest() && 
+                     !partialViewContext.isRenderAll() && 
+                     !facesContext.getViewRoot().getViewId().equals(newViewId))
+                {
+                    partialViewContext.setRenderAll(true);
+                }
+                
                 UIViewRoot viewRoot = viewHandler.createView(facesContext, newViewId);
                 facesContext.setViewRoot(viewRoot);
                 facesContext.renderResponse();

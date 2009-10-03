@@ -36,6 +36,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
     /*partial response types*/
     myfaces._impl.xhrCore._AjaxResponse.prototype._RESPONSE_PARTIAL         = "partial-response";
     myfaces._impl.xhrCore._AjaxResponse.prototype._RESPONSETYPE_ERROR       = "error";
+    /*TODO: -=Leonardo Uribe=- Does this response type really exists? really from server comes a partial-response with redirect command*/
     myfaces._impl.xhrCore._AjaxResponse.prototype._RESPONSETYPE_REDIRECT    = "redirect";
     myfaces._impl.xhrCore._AjaxResponse.prototype._RESPONSETYPE_REDIRECT    = "changes";
 
@@ -48,7 +49,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
     myfaces._impl.xhrCore._AjaxResponse.prototype._PCMD_ERROR       = "error";
     myfaces._impl.xhrCore._AjaxResponse.prototype._PCMD_ATTRIBUTES  = "attributes";
     myfaces._impl.xhrCore._AjaxResponse.prototype._PCMD_EXTENSION   = "extension";
-
+    myfaces._impl.xhrCore._AjaxResponse.prototype._PCMD_REDIRECT    = "redirect"
     /**
      * uses response to start Html element replacement
      *
