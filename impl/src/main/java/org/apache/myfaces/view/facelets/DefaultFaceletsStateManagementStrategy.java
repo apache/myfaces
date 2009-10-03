@@ -141,6 +141,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             {
                 context.setProcessingEvents (true);
                 vdl.buildView (context, view);
+                _publishPostBuildComponentTreeOnRestoreViewEvent(context, view);
             }
             finally
             {
@@ -241,6 +242,43 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         //    context.setProcessingEvents(oldContextEventState);
         //}
         return view;
+    }
+    
+    private static void _publishPostBuildComponentTreeOnRestoreViewEvent(FacesContext context, UIComponent component)
+    {
+        context.getApplication().publishEvent(context, PostBuildComponentTreeOnRestoreViewEvent.class, UIComponent.class, component);
+        
+        if (component.getChildCount() > 0)
+        {
+            // PostAddToViewEvent could cause component relocation
+            // (h:outputScript, h:outputStylesheet, composite:insertChildren, composite:insertFacet)
+            // so we need to check if the component was relocated or not
+            List<UIComponent> children = component.getChildren();
+            UIComponent child = null;
+            UIComponent currentChild = null;
+            int i = 0;
+            while (i < children.size())
+            {
+                child = children.get(i);
+                // Iterate over the same index if the component was removed
+                // This prevents skip components when processing
+                do 
+                {
+                    _publishPostBuildComponentTreeOnRestoreViewEvent(context, child);
+                    currentChild = child;
+                }
+                while ((i < children.size()) &&
+                       ((child = children.get(i)) != currentChild) );
+                i++;
+            }
+        }
+        if (component.getFacetCount() > 0)
+        {
+            for (UIComponent child : component.getFacets().values())
+            {
+                _publishPostBuildComponentTreeOnRestoreViewEvent(context, child);
+            }
+        }        
     }
 
     @Override

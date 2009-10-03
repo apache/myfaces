@@ -32,6 +32,8 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
+import org.apache.myfaces.view.facelets.PostBuildComponentTreeOnRestoreViewEvent;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)
@@ -54,6 +56,13 @@ public class InsertChildrenHandler extends TagHandler
         
         parentCompositeComponent.subscribeToEvent(PostAddToViewEvent.class, 
                 new RelocateAllChildrenListener(parent, parentCompositeComponent.getChildCount()));
+        
+        if (ctx.getFacesContext().getAttributes().containsKey(
+                FaceletViewDeclarationLanguage.MARK_INITIAL_STATE_KEY))
+        {
+            parentCompositeComponent.subscribeToEvent(PostBuildComponentTreeOnRestoreViewEvent.class, 
+                    new RelocateAllChildrenListener(parent, parentCompositeComponent.getChildCount()));
+        }
     }
     
     public static final class RelocateAllChildrenListener 

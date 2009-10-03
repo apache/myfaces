@@ -32,6 +32,7 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ComponentSystemEventListener;
 import javax.faces.event.ListenerFor;
+import javax.faces.event.ListenersFor;
 import javax.faces.event.PostAddToViewEvent;
 import javax.faces.render.Renderer;
 
@@ -40,6 +41,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
 import org.apache.myfaces.shared_impl.renderkit.html.HTML;
+import org.apache.myfaces.view.facelets.PostBuildComponentTreeOnRestoreViewEvent;
 
 /**
  * Renderer used by h:outputStylesheet component
@@ -49,7 +51,10 @@ import org.apache.myfaces.shared_impl.renderkit.html.HTML;
  * @version $Revision$ $Date$
  */
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Output", type = "javax.faces.resource.Stylesheet")
-@ListenerFor(systemEventClass = PostAddToViewEvent.class)
+@ListenersFor(value={
+        @ListenerFor(systemEventClass = PostAddToViewEvent.class),
+        @ListenerFor(systemEventClass = PostBuildComponentTreeOnRestoreViewEvent.class)        
+})
 public class HtmlStylesheetRenderer extends Renderer implements
     ComponentSystemEventListener
 {

@@ -33,6 +33,8 @@ import javax.faces.view.facelets.TagHandler;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
+import org.apache.myfaces.view.facelets.PostBuildComponentTreeOnRestoreViewEvent;
 
 /**
  * Insert or move the facet from the composite component body to the expected location.
@@ -84,6 +86,13 @@ public class InsertFacetHandler extends TagHandler
         
         parentCompositeComponent.subscribeToEvent(PostAddToViewEvent.class, 
                 new RelocateFacetListener(parent, facetName));
+        
+        if (ctx.getFacesContext().getAttributes().containsKey(
+                FaceletViewDeclarationLanguage.MARK_INITIAL_STATE_KEY))
+        {
+            parentCompositeComponent.subscribeToEvent(PostBuildComponentTreeOnRestoreViewEvent.class, 
+                    new RelocateFacetListener(parent, facetName));
+        }
     }
 
     public static final class RelocateFacetListener 

@@ -1551,7 +1551,7 @@ public class ApplicationImpl extends Application
     {
         _handleListenerFor(context, inspected, component, inspected.getClass().getAnnotation(ListenerFor.class));
 
-        ListenersFor listeners = component.getClass().getAnnotation(ListenersFor.class);
+        ListenersFor listeners = inspected.getClass().getAnnotation(ListenersFor.class);
         if (listeners != null)
         {
             for (ListenerFor listenerFor : listeners.value())
