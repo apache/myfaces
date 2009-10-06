@@ -298,9 +298,14 @@ public class PartialViewContextImpl extends PartialViewContext {
         //TODO process partial rendering
         //https://issues.apache.org/jira/browse/MYFACES-2118
         Collection<String> renderIds = getRenderIds();
-        if (renderIds == null || renderIds.isEmpty()) {
-            return;
-        }
+        
+        // We need to always update the view state marker when processing partial
+        // rendering, because there is no way to check when the state has been changed
+        // or not. Anyway, if we return empty response, according to the spec a javascript
+        // message displayed, so we need to return something.
+        //if (renderIds == null || renderIds.isEmpty()) {
+        //    return;
+        //}
 
 
 
@@ -325,13 +330,25 @@ public class PartialViewContextImpl extends PartialViewContext {
             inDocument = true;
             _facesContext.setResponseWriter(writer);
 
-            Set<VisitHint> hints = new HashSet<VisitHint>();
-            /*unrendered have to be skipped, transient definitely must be added to our list!*/
-            hints.add(VisitHint.SKIP_UNRENDERED);
-
-            VisitContext visitCtx = VisitContext.createVisitContext(_facesContext, renderIds, hints);
-            viewRoot.visitTree(visitCtx, new PhaseAwareVisitCallback(_facesContext, phaseId));
-
+            //Only apply partial visit if we have ids to traverse
+            if (renderIds != null && !renderIds.isEmpty())
+            {
+                Set<VisitHint> hints = new HashSet<VisitHint>();
+                /*unrendered have to be skipped, transient definitely must be added to our list!*/
+                hints.add(VisitHint.SKIP_UNRENDERED);
+    
+                VisitContext visitCtx = VisitContext.createVisitContext(_facesContext, renderIds, hints);
+                viewRoot.visitTree(visitCtx, new PhaseAwareVisitCallback(_facesContext, phaseId));
+            }
+            
+            //Retrieve the state and apply it if it is not null.
+            String viewState = _facesContext.getApplication().getStateManager().getViewState(_facesContext);
+            if (viewState != null)
+            {
+                writer.startUpdate(PartialResponseWriter.VIEW_STATE_MARKER);
+                writer.write(viewState);
+                writer.endUpdate();
+            }
         } catch (IOException ex) {
             Log log = LogFactory.getLog(PartialViewContextImpl.class);
             if (log.isErrorEnabled()) {
