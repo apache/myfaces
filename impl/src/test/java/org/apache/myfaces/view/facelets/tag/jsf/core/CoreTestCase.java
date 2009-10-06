@@ -27,6 +27,8 @@ import java.util.TimeZone;
 import javax.faces.component.UICommand;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIData;
+import javax.faces.component.UIForm;
+import javax.faces.component.UIGraphic;
 import javax.faces.component.UIInput;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIViewRoot;
@@ -44,6 +46,10 @@ import javax.faces.validator.LengthValidator;
 import javax.faces.validator.LongRangeValidator;
 import javax.faces.validator.Validator;
 
+import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
+import org.apache.myfaces.renderkit.html.HtmlImageRenderer;
+import org.apache.myfaces.renderkit.html.HtmlLinkRenderer;
+import org.apache.myfaces.renderkit.html.HtmlTableRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 
@@ -89,6 +95,16 @@ public class CoreTestCase extends FaceletTestCase
     {
         renderKit.addRenderer(UIOutput.COMPONENT_FAMILY, "javax.faces.Text",
                 new HtmlTextRenderer());
+        renderKit.addRenderer(UIInput.COMPONENT_FAMILY, "javax.faces.Text",
+                new HtmlTextRenderer());
+        renderKit.addRenderer(UIGraphic.COMPONENT_FAMILY, "javax.faces.Image",
+                new HtmlImageRenderer());
+        renderKit.addRenderer(UICommand.COMPONENT_FAMILY, "javax.faces.Link",
+                new HtmlLinkRenderer());
+        renderKit.addRenderer(UIForm.COMPONENT_FAMILY, "javax.faces.Form",
+                new HtmlFormRenderer());
+        renderKit.addRenderer(UIData.COMPONENT_FAMILY, "javax.faces.Table",
+                new HtmlTableRenderer());
     }
 
     public void testActionListenerHandler() throws Exception
@@ -141,6 +157,7 @@ public class CoreTestCase extends FaceletTestCase
         Date now = new Date(1000 * 360 * 60 * 24 * 7);
         facesContext.getExternalContext().getRequestMap().put("now", now);
         UIViewRoot root = facesContext.getViewRoot();
+        root.setLocale(Locale.US);
         vdl.buildView(facesContext, root, "convertDateTime.xml");
 
         UIOutput out1 = (UIOutput) root.findComponent("form:out1");
@@ -181,6 +198,7 @@ public class CoreTestCase extends FaceletTestCase
     public void testConvertDelegateHandler() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
+        root.setLocale(Locale.US);
         vdl.buildView(facesContext, root, "converter.xml");
 
         UIOutput out1 = (UIOutput) root.findComponent("out1");
@@ -196,6 +214,7 @@ public class CoreTestCase extends FaceletTestCase
     public void testConvertNumberHandler() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
+        root.setLocale(Locale.US);
         vdl.buildView(facesContext, root, "convertNumber.xml");
 
         UIOutput out1 = (UIOutput) root.findComponent("out1");
