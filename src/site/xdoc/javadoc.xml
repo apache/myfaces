@@ -28,13 +28,14 @@
         </section>
         <section name="TLD Links">
             <ul>
-                <li><a href="myfaces-impl/tlddoc/index.html">Core: Impl</a></li>
+                <li><a href="myfaces-impl/tlddoc/index.html">Core: Tlddoc for Jsp.</a></li>
+                <li><a href="myfaces-impl/tlddoc-facelets/index.html">Core: Tlddoc for Facelets.</a></li>
             </ul>
         </section>
         <section name="Links to Sun's RI docu">
             <ul>
-                <li><a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">Javadoc (API)</a></li>
-                <li><a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/tlddocs/index.html">TLD</a></li>
+                <li><a href="http://java.sun.com/j2ee/javaserverfaces/2.0/docs/api/index.html">Javadoc (API)</a></li>
+                <li><a href="http://java.sun.com/j2ee/javaserverfaces/2.0/docs/tlddocs/index.html">TLD</a></li>
             </ul>
         </section>
     </body>

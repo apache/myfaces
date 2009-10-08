@@ -1,10 +1,10 @@
  ------
- Myfaces Core 1.2
+ Myfaces Core 2.0
  ------
 
-MyFaces Core 1.2 Project
+MyFaces Core 2.0 Project
 
-  This project provides an implementation of the JavaServer Faces 1.2 (JSF 1.2) specification.
+  This project provides an implementation of the JavaServer Faces 2.0 (JSF 2.0) specification.
 
     * The API submodule implements all of the classes that are defined in the specification. 
       If you are looking for API documentation about the classes that your JSF application
@@ -22,11 +22,13 @@ MyFaces Core 1.2 Project
 
 Requirements
 
-  JSF 1.2 requires java 1.5 or later, JSP 2.1, JSTL 1.2 and a Java Servlet 2.5 implementation.
+  JSF 2.0 requires java 1.6 or later, JSP 2.1, JSTL 1.2 and a Java Servlet 2.5 implementation.
 
 Specifications
 
-  MyFaces implements {{{http://www.jcp.org/en/jsr/detail?id=252}Java Specification Request 252}}
+  MyFaces implements {{{http://www.jcp.org/en/jsr/detail?id=314}Java Specification Request 314}}
   Each major release of MyFaces is certified against the Sun TCK to ensure compliance.
-
-  The JSF 1.2 specification was issued on 11 May 2006.
+  
+  At the time this was written (October 2009) there is still no TCK or any official release of 
+  jsf 2.0, but we are working hard to keep the code in sync with JSR 314 spec. You can check the 
+  nightly builds {{{http://people.apache.org/repo/m2-snapshot-repository/org/apache/myfaces/core}here}}. 

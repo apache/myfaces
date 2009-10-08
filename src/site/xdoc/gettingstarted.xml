@@ -75,7 +75,7 @@
       See <a href="risamples.html">the detailed instructions</a>.
       </p>
     </section>
-    <section name="Using MyFaces Core JSF 1.2 for your own web application">
+    <section name="Using MyFaces Core JSF 2.0 for your own web application">
       <p>
       First, check the <a href="../compatibility.html">compatibility list</a> 
       to find out if your servlet container is supported.

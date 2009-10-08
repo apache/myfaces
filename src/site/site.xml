@@ -22,7 +22,7 @@
   - starts with the project's url is converted into a relative url. Other
   - urls are left unaltered.
   -->
-<project name="MyFaces Core JSF-1.2">
+<project name="MyFaces Core JSF-2.0">
     <bannerLeft>
         <name>Apache MyFaces</name>
         <src>img/banners/MyFaces_logo.jpg</src>
@@ -58,9 +58,12 @@
             <item name="Core JSF-1.1"   href="http://myfaces.apache.org/core11/index.html" collapse="true">
               <item name="dummy"        href="dummy"/>
             </item>
-            <item name="Core JSF-1.2"   href="http://myfaces.apache.org/core12/index.html" collapse="false">
-              <item name="API"          href="http://myfaces.apache.org/core12/myfaces-api/index.html"/>
-              <item name="Impl"         href="http://myfaces.apache.org/core12/myfaces-impl/index.html"/>
+            <item name="Core JSF-1.2"   href="http://myfaces.apache.org/core12/index.html" collapse="true">
+              <item name="dummy"        href="dummy"/>
+            </item>
+            <item name="Core JSF-2.0"   href="http://myfaces.apache.org/core20/index.html" collapse="false">
+              <item name="API"          href="http://myfaces.apache.org/core20/myfaces-api/index.html"/>
+              <item name="Impl"         href="http://myfaces.apache.org/core20/myfaces-impl/index.html"/>
             </item>
             <item name="Trinidad"       href="http://myfaces.apache.org/trinidad/index.html"/>
             <item name="Tobago"         href="http://myfaces.apache.org/tobago/index.html"/>
@@ -71,11 +74,11 @@
         </menu>
         
         <menu name="Documentation" inherit="top">
-            <item name="Getting Started" href="http://myfaces.apache.org/core12/gettingstarted.html"/>
-            <item name="MyFaces and RI"  href="http://myfaces.apache.org/core12/risamples.html"/>
-            <item name="Tomcat Config"   href="http://myfaces.apache.org/core12/tomcat.html"/>
-            <item name="Javadocs"        href="http://myfaces.apache.org/core12/javadoc.html"/>
-            <item name="FAQ"             href="http://myfaces.apache.org/core12/faq.html"/>
+            <item name="Getting Started" href="http://myfaces.apache.org/core20/gettingstarted.html"/>
+            <item name="MyFaces and RI"  href="http://myfaces.apache.org/core20/risamples.html"/>
+            <item name="Tomcat Config"   href="http://myfaces.apache.org/core20/tomcat.html"/>
+            <item name="Javadocs"        href="http://myfaces.apache.org/core20/javadoc.html"/>
+            <item name="FAQ"             href="http://myfaces.apache.org/core20/faq.html"/>
         </menu>
 
         <menu ref="reports" inherit="top"/>
