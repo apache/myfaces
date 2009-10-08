@@ -18,14 +18,22 @@
  */
 package javax.faces.component;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The util methods in this class are shared between the javax.faces.component package and the
@@ -37,6 +45,9 @@ import java.util.List;
  */
 class _SharedRendererUtils
 {
+    
+    static final String COLLECTION_TYPE_KEY = "collectionType";
+    
     static Converter findUIOutputConverter(FacesContext facesContext, UIOutput component)
     {
         // Attention!
@@ -78,131 +89,225 @@ class _SharedRendererUtils
         // If you change something here please do the same in the other class!
 
         if (submittedValue == null)
+        {
             throw new NullPointerException("submittedValue");
+        }
 
         ValueExpression expression = component.getValueExpression("value");
-        Class<?> valueType = null;
-        Class<?> arrayComponentType = null;
-        if (expression != null)
-        {
-            // By some strange reason vb.getType(facesContext.getELContext());
-            // does not return the same as vb.getValue(facesContext.getELContext()).getClass(),
-            // so we need to use this instead.
-            Object value = expression.getValue(facesContext.getELContext());
-            valueType = (value != null) ? value.getClass() : expression.getType(facesContext.getELContext());
-
-            if (valueType != null && valueType.isArray())
-            {
-                arrayComponentType = valueType.getComponentType();
-            }
-        }
-
+        Object targetForConvertedValues = null;
+        // if the component has an attached converter, use it
         Converter converter = component.getConverter();
-        if (converter == null)
-        {
-            if (valueType == null)
-            {
-                // No converter, and no idea of expected type
-                // --> return the submitted String array
-                return submittedValue;
-            }
-
-            if (List.class.isAssignableFrom(valueType))
-            {
-                // expected type is a List
-                // --> according to javadoc of UISelectMany we assume that the element type
-                // is java.lang.String, and copy the String array to a new List
-                List<String> lst = new ArrayList<String>(submittedValue.length);
-                for (String value : submittedValue)
-                {
-                    lst.add(value);
-                }
-                return lst;
-            }
-
-            if (arrayComponentType == null)
-            {
-                throw new IllegalArgumentException("ValueBinding for UISelectMany must be of type List or Array");
-            }
-
-            if (Object.class.equals(arrayComponentType))
-                return submittedValue; // No conversion for Object class
-
-            converter = facesContext.getApplication().createConverter(arrayComponentType);
-
-            if (converter == null)
-            {
-                return submittedValue;
-            }
-        }
-
-        // Now, we have a converter...
-        // We determine the type of the component array after converting one of it's elements
         if (expression != null)
         {
-            valueType = expression.getType(facesContext.getELContext());
-            if (valueType != null && valueType.isArray())
+            Class<?> modelType = expression
+                    .getType(facesContext.getELContext());
+            if (modelType.isArray())
             {
-                if (submittedValue.length > 0)
+                // the target should be an array
+                Class<?> componentType = modelType.getComponentType();
+                // check for optimization if the target is
+                // a string array --> no conversion needed
+                if (String.class.equals(componentType))
                 {
-                    arrayComponentType = converter.getAsObject(facesContext, component, submittedValue[0]).getClass();
+                    return submittedValue;
+                }
+                if (converter == null)
+                {
+                    // the compononent does not have an attached converter
+                    // --> try to get a registered-by-class converter
+                    converter = facesContext.getApplication().createConverter(
+                            componentType);
+
+                    if (converter == null)
+                    {
+                        // could not obtain a Converter
+                        // --> check if we maybe do not really have to convert
+                        if (!Object.class.equals(componentType))
+                        {
+                            // target is not an Object array
+                            // and not a String array (checked some lines above)
+                            // and we do not have a Converter
+                            throw new ConverterException(
+                                    "Could not obtain a Converter for "
+                                            + componentType.getName());
+                        }
+                    }
+                }
+                // instantiate the array
+                targetForConvertedValues = Array.newInstance(componentType,
+                        submittedValue.length);
+            }
+            else if (Collection.class.isAssignableFrom(modelType))
+            {
+                // the target should be a Collection
+                Object collectionTypeAttr = component.getAttributes().get(
+                        COLLECTION_TYPE_KEY);
+                if (collectionTypeAttr != null)
+                {
+                    Class<?> collectionType = null;
+                    // if there is a value, it must be a ...
+                    // ... a ValueExpression that evaluates to a String or a Class
+                    if (collectionTypeAttr instanceof ValueExpression)
+                    {
+                        // get the value of the ValueExpression
+                        collectionTypeAttr = ((ValueExpression) collectionTypeAttr)
+                                .getValue(facesContext.getELContext());
+                    }
+                    // ... String that is a fully qualified Java class name
+                    if (collectionTypeAttr instanceof String)
+                    {
+                        try
+                        {
+                            collectionType = Class
+                                    .forName((String) collectionTypeAttr);
+                        }
+                        catch (ClassNotFoundException cnfe)
+                        {
+                            throw new FacesException(
+                                    "Unable to find class "
+                                            + collectionTypeAttr
+                                            + " on the classpath.", cnfe);
+                        }
+
+                    }
+                    // ... a Class object
+                    else if (collectionTypeAttr instanceof Class)
+                    {
+                        collectionType = (Class<?>) collectionTypeAttr;
+                    }
+                    else
+                    {
+                        throw new FacesException(
+                                "The attribute "
+                                        + COLLECTION_TYPE_KEY
+                                        + " of component "
+                                        + component.getClientId()
+                                        + " does not evaluate to a "
+                                        + "String, a Class object or a ValueExpression pointing "
+                                        + "to a String or a Class object.");
+                    }
+                    // now we have a collectionType --> but is it really some kind of Collection
+                    if (!Collection.class.isAssignableFrom(collectionType))
+                    {
+                        throw new FacesException("The attribute "
+                                + COLLECTION_TYPE_KEY + " of component "
+                                + component.getClientId()
+                                + " does not point to a valid type of Collection.");
+                    }
+                    // now we have a real collectionType --> try to instantiate it
+                    try
+                    {
+                        targetForConvertedValues = collectionType.newInstance();
+                    }
+                    catch (Exception e)
+                    {
+                        throw new FacesException("The Collection "
+                                + collectionType.getName()
+                                + "can not be instantiated.", e);
+                    }
+                }
+                else
+                {
+                    // component.getValue() will implement Collection at this point
+                    Collection<?> componentValue = (Collection<?>) component
+                            .getValue();
+                    // can we clone the Collection
+                    if (componentValue instanceof Cloneable)
+                    {
+                        // clone method of Object is protected --> use reflection
+                        try
+                        {
+                            Method cloneMethod = componentValue.getClass()
+                                    .getMethod("clone");
+                            Collection<?> clone = (Collection<?>) cloneMethod
+                                    .invoke(componentValue);
+                            clone.clear();
+                            targetForConvertedValues = clone;
+                        }
+                        catch (Exception e)
+                        {
+                            log(facesContext, "Could not clone "
+                                    + componentValue.getClass().getName(), e);
+                        }
+                    }
+
+                    // if clone did not work
+                    if (targetForConvertedValues == null)
+                    {
+                        // try to create the (concrete) collection from modelType 
+                        // or with the class object of componentValue (if any)
+                        try
+                        {
+                            targetForConvertedValues = (componentValue != null ? componentValue
+                                    .getClass()
+                                    : modelType).newInstance();
+                        }
+                        catch (Exception e)
+                        {
+                            // this did not work either
+                            // use the standard concrete type
+                            if (SortedSet.class.isAssignableFrom(modelType))
+                            {
+                                targetForConvertedValues = new TreeSet();
+                            }
+                            else if (Queue.class.isAssignableFrom(modelType))
+                            {
+                                targetForConvertedValues = new LinkedList();
+                            }
+                            else if (Set.class.isAssignableFrom(modelType))
+                            {
+                                targetForConvertedValues = new HashSet(
+                                        submittedValue.length);
+                            }
+                            else
+                            {
+                                targetForConvertedValues = new ArrayList(
+                                        submittedValue.length);
+                            }
+                        }
+                    }
                 }
             }
-        }
-
-        if (valueType == null)
-        {
-            // ...but have no idea of expected type
-            // --> so let's convert it to an Object array
-            int len = submittedValue.length;
-            Object[] convertedValues = (Object[])Array.newInstance(arrayComponentType == null ? Object.class
-                    : arrayComponentType, len);
-            for (int i = 0; i < len; i++)
+            else
             {
-                convertedValues[i] = converter.getAsObject(facesContext, component, submittedValue[i]);
+                // the expression does neither point to an array nor to a collection
+                throw new ConverterException(
+                        "ValueExpression for UISelectMany must be of type Collection or Array.");
             }
-            return convertedValues;
+        }
+        else
+        {
+            targetForConvertedValues = new Object[submittedValue.length];
         }
 
-        if (List.class.isAssignableFrom(valueType))
+        // convert the values with the selected converter (if any)
+        // and store them in targetForConvertedValues
+        boolean isArray = (targetForConvertedValues.getClass().isArray());
+        for (int i = 0; i < submittedValue.length; i++)
         {
-            // Curious case: According to specs we should assume, that the element type
-            // of this List is java.lang.String. But there is a Converter set for this
-            // component. Because the user must know what he is doing, we will convert the values.
-            List<Object> lst = new ArrayList<Object>(submittedValue.length);
-            for (String value : submittedValue)
+            // get the value
+            Object value;
+            if (converter != null)
             {
-                lst.add(converter.getAsObject(facesContext, component, value));
+                value = converter.getAsObject(facesContext, component,
+                        submittedValue[i]);
             }
-            return lst;
-        }
-
-        if (arrayComponentType == null)
-        {
-            throw new IllegalArgumentException("ValueBinding for UISelectMany must be of type List or Array");
-        }
-
-        if (arrayComponentType.isPrimitive())
-        {
-            // primitive array
-            int len = submittedValue.length;
-            Object convertedValues = Array.newInstance(arrayComponentType, len);
-            for (int i = 0; i < len; i++)
+            else
             {
-                Array.set(convertedValues, i, converter.getAsObject(facesContext, component, submittedValue[i]));
+                value = submittedValue[i];
             }
-            return convertedValues;
+            // store it in targetForConvertedValues
+            if (isArray)
+            {
+                Array.set(targetForConvertedValues, i, value);
+            }
+            else
+            {
+                ((Collection) targetForConvertedValues).add(value);
+            }
         }
 
-        // Object array
-        int len = submittedValue.length;
-        ArrayList<Object> convertedValues = new ArrayList<Object>(len);
-        for (int i = 0; i < len; i++)
-        {
-            convertedValues.add(i, converter.getAsObject(facesContext, component, submittedValue[i]));
-        }
-        
-        return convertedValues.toArray((Object[])Array.newInstance(arrayComponentType, len));
+        return targetForConvertedValues;
     }
 
     /**
