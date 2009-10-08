@@ -29,6 +29,9 @@ import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.render.Renderer;
 
+import javax.faces.context.FacesContext;
+import javax.faces.render.Renderer;
+
 import org.apache.myfaces.Assert;
 import org.apache.myfaces.TestRunner;
 import org.apache.shale.test.base.AbstractJsfTestCase;
@@ -95,10 +98,39 @@ public class UIDataTest extends AbstractJsfTestCase
      * Test method for
      * {@link javax.faces.component.UIData#invokeOnComponent(javax.faces.context.FacesContext, java.lang.String, javax.faces.component.ContextCallback)}
      * .
+     * Tests, if invokeOnComponent also checks the facets of the h:column children (MYFACES-2370)
      */
     public void testInvokeOnComponentFacesContextStringContextCallback()
     {
-        // TODO
+        /**
+         * Concrete class of ContextCallback needed to test invokeOnComponent. 
+         * @author Jakob Korherr
+         */
+        final class MyContextCallback implements ContextCallback
+        {
+            
+            private boolean invoked = false;
+
+            public void invokeContextCallback(FacesContext context,
+                    UIComponent target)
+            {
+                this.invoked = true;
+            }
+            
+        }
+        
+        UIComponent facet = new UIOutput();
+        facet.setId("facet");
+        UIColumn column = new UIColumn();
+        column.setId("column");
+        column.getFacets().put("header", facet);
+        _testImpl.setId("uidata");
+        _testImpl.getChildren().add(column);
+        
+        MyContextCallback callback = new MyContextCallback();
+        _testImpl.invokeOnComponent(facesContext, facet.getClientId(facesContext), callback);
+        // the callback should have been invoked
+        assertTrue(callback.invoked);
     }
 
     /**

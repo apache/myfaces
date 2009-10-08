@@ -71,6 +71,7 @@ public class HtmlMessagesRendererTest extends AbstractJsfTestCase
         messages.setErrorClass(ERROR_CLASS);
         messages.setWarnClass(WARN_CLASS);
         messages.setInfoClass(INFO_CLASS);
+        messages.setWarnStyle("warnStyle");
     }
 
     public void tearDown() throws Exception
@@ -84,24 +85,28 @@ public class HtmlMessagesRendererTest extends AbstractJsfTestCase
     {
         HtmlRenderedAttr[] attrs = {
             //_EventProperties
-            new HtmlRenderedAttr("onclick"), 
-            new HtmlRenderedAttr("ondblclick"), 
-            new HtmlRenderedAttr("onkeydown"), 
-            new HtmlRenderedAttr("onkeypress"),
-            new HtmlRenderedAttr("onkeyup"), 
-            new HtmlRenderedAttr("onmousedown"), 
-            new HtmlRenderedAttr("onmousemove"), 
-            new HtmlRenderedAttr("onmouseout"),
-            new HtmlRenderedAttr("onmouseover"), 
-            new HtmlRenderedAttr("onmouseup"),
+            new HtmlRenderedAttr("onclick",2), 
+            new HtmlRenderedAttr("ondblclick",2), 
+            new HtmlRenderedAttr("onkeydown",2), 
+            new HtmlRenderedAttr("onkeypress",2),
+            new HtmlRenderedAttr("onkeyup",2), 
+            new HtmlRenderedAttr("onmousedown",2), 
+            new HtmlRenderedAttr("onmousemove",2), 
+            new HtmlRenderedAttr("onmouseout",2),
+            new HtmlRenderedAttr("onmouseover",2), 
+            new HtmlRenderedAttr("onmouseup",2),
             //_StyleProperties
-            new HtmlRenderedAttr("styleClass", "styleClass", "class=\"warnClass\""),
+            new HtmlRenderedAttr("styleClass", "styleClass", "class=\"styleClass\""),
+            new HtmlRenderedAttr("style"),
+            new HtmlRenderedAttr("warnClass", "warnClass", "class=\"warnClass\"",2),
+            new HtmlRenderedAttr("warnStyle", "warnStyle", "style=\"warnStyle\"",2)
         };
         
         facesContext.addMessage("test1", new FacesMessage(FacesMessage.SEVERITY_WARN, "warnSumary", "detailWarnSummary"));
+        facesContext.addMessage("test2", new FacesMessage(FacesMessage.SEVERITY_WARN, "warnSumary2", "detailWarnSummary2"));        
 
         messages.setLayout("table");
-        messages.setStyle("left: 48px; top: 432px; position: absolute");
+        //messages.setStyle("left: 48px; top: 432px; position: absolute");
         
         MockResponseWriter writer = (MockResponseWriter)facesContext.getResponseWriter();
         HtmlCheckAttributesUtil.checkRenderedAttributes(

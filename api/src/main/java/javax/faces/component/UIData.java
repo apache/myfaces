@@ -328,42 +328,69 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         {
             return returnValue;
         }
-
+        
         // Now we have to check if it is searching an inner component
         String baseClientId = super.getClientId(context);
-
-        // First check if the clientId starts with the baseClientId of
-        // this component, to check if continue trying to find the component
-        // inside the children of this component.
-        if (clientId.matches(baseClientId + ":[0-9]+:.*"))
+        
+        // is the component an inner component?
+        if (clientId.startsWith(baseClientId))
         {
-
-            String subId = clientId.substring(baseClientId.length() + 1);
-            String clientRow = subId.substring(0, subId.indexOf(':'));
-
-            // Now we save the current position
-            int oldRow = this.getRowIndex();
-
-            // The conversion is safe, because its already checked on the
-            // regular expresion
-            this.setRowIndex(Integer.parseInt(clientRow));
-
-            for (Iterator<UIComponent> it1 = getChildren().iterator(); !returnValue && it1.hasNext();)
+            // Check if the clientId for the component, which we 
+            // are looking for, has a rowIndex attached
+            if (clientId.matches(baseClientId + ":[0-9]+:.*"))
             {
-                // recursive call to find the component
-                UIComponent child = it1.next();
-                returnValue = child.invokeOnComponent(context, clientId, callback);
+                String subId = clientId.substring(baseClientId.length() + 1);
+                String clientRow = subId.substring(0, subId.indexOf(':'));
+    
+                //Now we save the current position
+                int oldRow = this.getRowIndex();
+                
+                // try-finally --> make sure, that the old row index is restored
+                try
+                {
+                    //The conversion is safe, because its already checked on the
+                    //regular expresion
+                    this.setRowIndex(Integer.parseInt(clientRow));
+                    
+                    // check, if the row is available
+                    if (!isRowAvailable())
+                    {
+                        return false;
+                    }
+        
+                    for (Iterator<UIComponent> it1 = getChildren().iterator(); 
+                            !returnValue && it1.hasNext();)
+                    {
+                        //recursive call to find the component
+                        returnValue = it1.next().invokeOnComponent(context, clientId, callback);
+                    }
+                }
+                finally
+                {
+                    //Restore the old position. Doing this prevent
+                    //side effects.
+                    this.setRowIndex(oldRow);
+                }
             }
-
-            // Restore the old position. Doing this prevent
-            // side effects.
-            this.setRowIndex(oldRow);
-        }
-        else
-        {
-            // The component that matches this clientId must be outside
-            // of this component
-            return false;
+            else
+            {
+                // MYFACES-2370: search the component in the childrens' facets too.
+                // We have to check the childrens' facets here, because in MyFaces
+                // the rowIndex is not attached to the clientId for the children of
+                // facets of the UIColumns. However, in RI the rowIndex is 
+                // attached to the clientId of UIColumns' Facets' children.
+                for (Iterator<UIComponent> itChildren = this.getChildren().iterator();
+                        !returnValue && itChildren.hasNext();)
+                {
+                    // process the child's facets
+                    for (Iterator<UIComponent> itChildFacets = itChildren.next().getFacets().values().iterator(); 
+                            !returnValue && itChildFacets.hasNext();)
+                    {
+                        //recursive call to find the component
+                        returnValue = itChildFacets.next().invokeOnComponent(context, clientId, callback);
+                    }
+                }
+            }
         }
 
         return returnValue;
