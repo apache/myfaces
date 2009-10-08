@@ -54,6 +54,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.event.MethodExpressionActionListener;
 import javax.faces.event.MethodExpressionValueChangeListener;
+import javax.faces.event.PhaseId;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.render.RenderKit;
 import javax.faces.validator.MethodExpressionValidator;
@@ -92,6 +93,7 @@ import org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory;
 import org.apache.myfaces.view.facelets.impl.DefaultResourceResolver;
 import org.apache.myfaces.view.facelets.impl.ResourceResolver;
 import org.apache.myfaces.view.facelets.tag.TagDecorator;
+import org.apache.myfaces.view.facelets.tag.TagLibrary;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeLibrary;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeResourceLibrary;
@@ -249,7 +251,15 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             //on the current tree
             context.getAttributes().remove(MARK_INITIAL_STATE_KEY);
             
-            ((DefaultFaceletsStateManagementStrategy) stateMgmtStrategy).suscribeListeners(view);
+            // We need to suscribe the listeners of changes in the component tree
+            // only the first time here. Later we suscribe this listeners on
+            // DefaultFaceletsStateManagement.restoreView after calling 
+            // _publishPostBuildComponentTreeOnRestoreViewEvent(), to ensure 
+            // relocated components are not retrieved later on getClientIdsRemoved().
+            if (!(context.isPostback() && PhaseId.RESTORE_VIEW.equals(context.getCurrentPhaseId())))
+            {
+                ((DefaultFaceletsStateManagementStrategy) stateMgmtStrategy).suscribeListeners(view);
+            }
         }
     }
     

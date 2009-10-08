@@ -142,6 +142,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 context.setProcessingEvents (true);
                 vdl.buildView (context, view);
                 _publishPostBuildComponentTreeOnRestoreViewEvent(context, view);
+                suscribeListeners(view);
             }
             finally
             {
