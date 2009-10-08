@@ -98,7 +98,12 @@ import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResource
 import org.apache.myfaces.view.facelets.tag.composite.CompositeLibrary;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeResourceLibrary;
 import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
+import org.apache.myfaces.view.facelets.tag.jsf.core.CoreLibrary;
+import org.apache.myfaces.view.facelets.tag.jsf.html.HtmlLibrary;
+import org.apache.myfaces.view.facelets.tag.jstl.core.JstlCoreLibrary;
+import org.apache.myfaces.view.facelets.tag.jstl.fn.JstlFnLibrary;
 import org.apache.myfaces.view.facelets.tag.ui.UIDebug;
+import org.apache.myfaces.view.facelets.tag.ui.UILibrary;
 import org.apache.myfaces.view.facelets.util.DevTools;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
@@ -1321,8 +1326,11 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     {
         ExternalContext eContext = context.getExternalContext();
         
-        // TODO: We don't need to add default libraries from xml files. It is better
-        // to add it here and remove the referenced xml files from META-INF/facelets/
+        compiler.addTagLibrary(new CoreLibrary());
+        compiler.addTagLibrary(new HtmlLibrary());
+        compiler.addTagLibrary(new UILibrary());
+        compiler.addTagLibrary(new JstlCoreLibrary());
+        compiler.addTagLibrary(new JstlFnLibrary());
         compiler.addTagLibrary(new CompositeLibrary());
         compiler.addTagLibrary(new CompositeResourceLibrary());
 
@@ -1339,7 +1347,11 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         throw new FileNotFoundException(library);
                     }
 
-                    compiler.addTagLibrary(TagLibraryConfig.create(src));
+                    TagLibrary tl = TagLibraryConfig.create(src);
+                    if (tl != null)
+                    {
+                        compiler.addTagLibrary(tl);
+                    }
                     if (log.isDebugEnabled())
                     {
                         log.debug("Successfully loaded library: " + library);

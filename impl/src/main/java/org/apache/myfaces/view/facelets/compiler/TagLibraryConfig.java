@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.FacesException;
+import javax.faces.application.ProjectStage;
 import javax.faces.application.Resource;
 import javax.faces.application.ResourceHandler;
 import javax.faces.context.FacesContext;
@@ -251,7 +252,6 @@ public final class TagLibraryConfig
      * a pre-2.0 document.  If it is, we really need to construct a DTD validating, non-namespace
      * aware parser. Otherwise, we have to construct a schema validating, namespace-aware parser.
      */
-    
     private static class VersionCheckHandler extends DefaultHandler
     {
         private boolean version20OrLater;
@@ -281,8 +281,9 @@ public final class TagLibraryConfig
                 
                 // Throw a dummy parsing exception to terminate parsing as there really isn't any need to go any
                 // further.
-                
-                throw new SAXException();
+                // -= Leonardo Uribe =- THIS IS NOT GOOD PRACTICE! It is better to let the checker continue that                
+                // throw an exception, and run this one only when project stage != production.
+                //throw new SAXException();
             }
         }
     }
@@ -318,6 +319,8 @@ public final class TagLibraryConfig
         private String functionSignature;
         
         private String compositeLibraryName;
+        
+        private boolean version20OrLater;
 
         public LibraryHandler(URL source)
         {
@@ -327,7 +330,11 @@ public final class TagLibraryConfig
 
         public TagLibrary getLibrary()
         {
-            return this.library;
+            if (this.version20OrLater)
+            {
+                return this.library;
+            }
+            return null;
         }
 
         public void endElement(String uri, String localName, String qName) throws SAXException
@@ -337,6 +344,10 @@ public final class TagLibraryConfig
                 if ("facelet-taglib".equals(qName))
                 {
                     ; // Nothing to do
+                }                
+                else if (!version20OrLater)
+                {
+                    return;
                 }
                 else if ("library-class".equals(qName))
                 {
@@ -590,6 +601,25 @@ public final class TagLibraryConfig
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
         {
             this.buffer.setLength(0);
+            if ("facelet-taglib".equals(qName))
+            {
+                int length = attributes.getLength();
+                
+                for (int i = 0; i < length; ++i)
+                {
+                    if (attributes.getLocalName (i).equals ("version"))
+                    {
+                        // This document has a "version" attribute in the <facelet-taglib> element, so
+                        // it must be a 2.0 or later document as this attribute was never required before.
+
+                        this.version20OrLater = true;
+                    }
+                }
+            }
+            else if (!version20OrLater)
+            {
+                return;
+            }
             if ("tag".equals(qName))
             {
                 this.handlerClass = null;
@@ -674,7 +704,11 @@ public final class TagLibraryConfig
         {
             try
             {
-                compiler.addTagLibrary(create(urls[i]));
+                TagLibrary tl = create(urls[i]);
+                if (tl != null)
+                {
+                    compiler.addTagLibrary(tl);
+                }
                 if (log.isLoggable(Level.FINE))
                 {
                     log.fine("Added Library from: " + urls[i]);
@@ -691,38 +725,51 @@ public final class TagLibraryConfig
             ParserConfigurationException
     {
         SAXParserFactory factory = SAXParserFactory.newInstance();
-        
-        // We have to make two different parsers depending on whether or not the facelets taglib
-        // document is version 2.0 or later.  If pre-version 2.0, then the parser must not be
-        // namespace-aware and must be DTD validating.  If verison 2.0 or later, the parser must be
-        // namespace-aware and must be schema validating.
-        
-        if (!isTaglibDocument20OrLater (url))
-        {
-            factory.setNamespaceAware(false);
-            factory.setFeature("http://xml.org/sax/features/validation", true);
-            factory.setValidating(true);
-        }
-        
-        else
-        {
-            // TODO: CJH: the Facelets project does not make the 2.0 schema available via their
-            // CVS.  The schema is also not available at its URL.  For now, 2.0 documents will simply
-            // have no validation.  We must get a copy of their schema once they release it and set up
-            // the parser to use it.
-            
+       
+        // -= Leonardo Uribe =- this code is commented because it is not mandatory to
+        // validate facelets tag lib and this cause performance issues. Maybe we can 
+        // refactor this part an use SchemaFactory for validation instead the proposed here
+        // only on ProjectStage.Development time before parse it (on create(URL) method).
+        //if (FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Development))
+        //{
+            // We have to make two different parsers depending on whether or not the facelets taglib
+            // document is version 2.0 or later.  If pre-version 2.0, then the parser must not be
+            // namespace-aware and must be DTD validating.  If verison 2.0 or later, the parser must be
+            // namespace-aware and must be schema validating.
+            //if (!isTaglibDocument20OrLater (url))
+            //{
+            //    factory.setNamespaceAware(false);
+            //    factory.setFeature("http://xml.org/sax/features/validation", true);
+            //    factory.setValidating(true);
+            //}
+            //else
+            //{
+                // TODO: CJH: the Facelets project does not make the 2.0 schema available via their
+                // CVS.  The schema is also not available at its URL.  For now, 2.0 documents will simply
+                // have no validation.  We must get a copy of their schema once they release it and set up
+                // the parser to use it.
+                
+                //factory.setNamespaceAware(true);
+                //factory.setFeature("http://xml.org/sax/features/validation", false);
+                //factory.setValidating(false);
+            //}
+        //}
+        //else
+        //{
+            //Just parse it and do not validate, because it is not necessary.
             factory.setNamespaceAware(true);
             factory.setFeature("http://xml.org/sax/features/validation", false);
             factory.setValidating(false);
-        }
-        
+        //}
+
         SAXParser parser = factory.newSAXParser();
         XMLReader reader = parser.getXMLReader();
         reader.setErrorHandler(handler);
         reader.setEntityResolver(handler);
         return parser;
     }
-    
+
+    /*
     private static final boolean isTaglibDocument20OrLater (URL url)
     {
         InputStream input = null;
@@ -779,5 +826,5 @@ public final class TagLibraryConfig
         }
         
         return result;
-    }
+    }*/
 }
