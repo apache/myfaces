@@ -59,7 +59,8 @@ import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
 public final class DecorateHandler extends TagHandler implements TemplateClient
 {
 
-    private static final Logger log = Logger.getLogger("facelets.tag.ui.decorate");
+    //private static final Logger log = Logger.getLogger("facelets.tag.ui.decorate");
+    private static final Logger log = Logger.getLogger(DecorateHandler.class.getName());
 
     /**
      * The resolvable URI of the template to use. The content within the decorate tag 

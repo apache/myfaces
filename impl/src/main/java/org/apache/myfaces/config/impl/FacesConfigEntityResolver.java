@@ -18,19 +18,18 @@
  */
 package org.apache.myfaces.config.impl;
 
-import org.apache.myfaces.shared_impl.util.ClassUtils;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import javax.faces.context.ExternalContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.jar.JarEntry;
+import java.util.logging.Logger;
+
+import javax.faces.context.ExternalContext;
+
+import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
 
 /**
  * DOCUMENT ME!
@@ -41,7 +40,8 @@ import java.util.jar.JarEntry;
 public class FacesConfigEntityResolver
     implements EntityResolver
 {
-    private static final Log log = LogFactory.getLog(FacesConfigEntityResolver.class);
+    //private static final Log log = LogFactory.getLog(FacesConfigEntityResolver.class);
+    private static final Logger log = Logger.getLogger(FacesConfigEntityResolver.class.getName());
 
     private static final String FACES_CONFIG_1_0_DTD_SYSTEM_ID = "http://java.sun.com/dtd/web-facesconfig_1_0.dtd";
     private static final String FACES_CONFIG_1_0_DTD_RESOURCE
@@ -85,7 +85,7 @@ public class FacesConfigEntityResolver
             JarEntry jarEntry = conn.getJarEntry();
             if (jarEntry == null)
             {
-                log.fatal("JAR entry '" + systemId + "' not found.");
+                log.severe("JAR entry '" + systemId + "' not found.");
             }
             //_jarFile.getInputStream(jarEntry);
             stream = conn.getJarFile().getInputStream(jarEntry);

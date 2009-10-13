@@ -21,6 +21,8 @@ package javax.faces.webapp;
 import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.Queue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
@@ -31,9 +33,6 @@ import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
 import javax.faces.event.SystemEvent;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * @author Simon Lessard (latest modification by $Author: slessard $)
  * @version $Revision: 696523 $ $Date: 2009-03-14 20:06:50 -0400 (mer., 17 sept. 2008) $
@@ -42,7 +41,8 @@ import org.apache.commons.logging.LogFactory;
  */
 public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory
 {
-    private static final Log log = LogFactory.getLog (PreJsf2ExceptionHandlerFactory.class);
+    //private static final Log log = LogFactory.getLog (PreJsf2ExceptionHandlerFactory.class);
+    private static final Logger log = Logger.getLogger(PreJsf2ExceptionHandlerFactory.class.getName());
     
     private static PreJsf2ExceptionHandlerImpl exceptionHandler =
         new PreJsf2ExceptionHandlerFactory.PreJsf2ExceptionHandlerImpl();
@@ -169,7 +169,7 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory
                         // According to the spec, just need to log and swallow the exceptions.
                         // TODO: better message?
                         
-                        log.error ("Exception encountered", exception);
+                        log.log(Level.SEVERE, "Exception encountered", exception);
                     }
                 } while (!unhandled.isEmpty());
             }

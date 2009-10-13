@@ -18,14 +18,9 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
-import org.apache.myfaces.shared_impl.config.MyfacesConfig;
-import org.apache.myfaces.shared_impl.renderkit.html.HTML;
-import org.apache.myfaces.shared_impl.renderkit.html.HtmlRendererUtils;
-import org.apache.myfaces.shared_impl.renderkit.html.util.JavascriptUtils;
-import org.apache.myfaces.shared_impl.util.StateUtils;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.FacesException;
 import javax.faces.application.StateManager;
@@ -35,7 +30,13 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
-import java.io.IOException;
+
+import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
+import org.apache.myfaces.shared_impl.config.MyfacesConfig;
+import org.apache.myfaces.shared_impl.renderkit.html.HTML;
+import org.apache.myfaces.shared_impl.renderkit.html.HtmlRendererUtils;
+import org.apache.myfaces.shared_impl.renderkit.html.util.JavascriptUtils;
+import org.apache.myfaces.shared_impl.util.StateUtils;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
@@ -43,7 +44,8 @@ import java.io.IOException;
  */
 public class HtmlResponseStateManager extends MyfacesResponseStateManager
 {
-    private static final Log log = LogFactory.getLog(HtmlResponseStateManager.class);
+    //private static final Log log = LogFactory.getLog(HtmlResponseStateManager.class);
+    private static final Logger log = Logger.getLogger(HtmlResponseStateManager.class.getName());
 
     private static final int TREE_PARAM = 0;
     private static final int STATE_PARAM = 1;
@@ -60,8 +62,8 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
 
         if (facescontext.getApplication().getStateManager().isSavingStateInClient(facescontext))
         {
-            if (log.isTraceEnabled())
-                log.trace("Writing state in client");
+            if (log.isLoggable(Level.FINEST))
+                log.finest("Writing state in client");
             Object treeStruct = serializedview.getStructure();
             Object compStates = serializedview.getState();
 
@@ -71,8 +73,8 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
             }
             else
             {
-                if (log.isTraceEnabled())
-                    log.trace("No tree structure to be saved in client response!");
+                if (log.isLoggable(Level.FINEST))
+                    log.finest("No tree structure to be saved in client response!");
             }
 
             if (compStates != null)
@@ -81,14 +83,14 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
             }
             else
             {
-                if (log.isTraceEnabled())
-                    log.trace("No component states to be saved in client response!");
+                if (log.isLoggable(Level.FINEST))
+                    log.finest("No component states to be saved in client response!");
             }
         }
         else
         {
-            if (log.isTraceEnabled())
-                log.trace("Writing state in server");
+            if (log.isLoggable(Level.FINEST))
+                log.finest("Writing state in server");
             // write viewSequence
             Object treeStruct = serializedview.getStructure();
             if (treeStruct != null)
@@ -102,8 +104,8 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
 
         savedState[VIEWID_PARAM] = facescontext.getViewRoot().getViewId();
 
-        if (log.isTraceEnabled())
-            log.trace("Writing view state and renderKit fields");
+        if (log.isLoggable(Level.FINEST))
+            log.finest("Writing view state and renderKit fields");
 
         // write the view state field
         writeViewStateField(facescontext, responseWriter, savedState);
@@ -215,9 +217,9 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         if (restoredViewId == null)
         {
             // no saved state or state of different viewId
-            if (log.isTraceEnabled())
+            if (log.isLoggable(Level.FINEST))
             {
-                log.trace("No saved state or state of a different viewId: " + restoredViewId);
+                log.finest("No saved state or state of a different viewId: " + restoredViewId);
             }
 
             return null;

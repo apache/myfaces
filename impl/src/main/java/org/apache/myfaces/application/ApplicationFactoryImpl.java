@@ -18,13 +18,13 @@
  */
 package org.apache.myfaces.application;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.faces.application.Application;
 import javax.faces.application.ApplicationFactory;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
@@ -33,7 +33,8 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ApplicationFactoryImpl extends ApplicationFactory
 {
-    private static final Log log = LogFactory.getLog(ApplicationFactoryImpl.class);
+    //private static final Log log = LogFactory.getLog(ApplicationFactoryImpl.class);
+    private static final Logger log = Logger.getLogger(ApplicationFactoryImpl.class.getName());
 
     /**
      * Application is thread-safe (see Application javadoc)
@@ -53,7 +54,7 @@ public class ApplicationFactoryImpl extends ApplicationFactory
     {
         _application = new ApplicationImpl();
         putApplicationOnMap();
-        if (log.isTraceEnabled()) log.trace("New ApplicationFactory instance created");
+        if (log.isLoggable(Level.FINEST)) log.finest("New ApplicationFactory instance created");
     }
 
     public void purgeApplication()

@@ -18,10 +18,6 @@
  */
 package org.apache.myfaces.config.annotation;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -33,6 +29,10 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 /**
  * Copied from org.apache.shale.tiger.view.faces.PackageInfo
@@ -50,7 +50,7 @@ class _PackageInfo
     /**
      * <p>The <code>Log</code> instance we will be using.</p>
      */
-    private transient Log log = null;
+    private transient Logger log = null;
 
     /**
      * the singleton for this class
@@ -175,7 +175,7 @@ class _PackageInfo
                 }
                 catch (URISyntaxException e)
                 {
-                    log().warn("error loading directory " + connection, e);
+                    log().log(Level.WARNING, "error loading directory " + connection, e);
                     continue;
                 }
 
@@ -225,11 +225,11 @@ class _PackageInfo
         }
         catch (NoClassDefFoundError e)
         {
-            log().warn("error loading class " + className, e);
+            log().log(Level.WARNING, "error loading class " + className, e);
         }
         catch (ClassNotFoundException e)
         {
-            log().warn("error loading class " + className, e);
+            log().log(Level.WARNING, "error loading class " + className, e);
         }
 
     }
@@ -278,12 +278,12 @@ class _PackageInfo
      * <p>Return the <code>Log</code> instance to be used for this class,
      * instantiating a new one if necessary.</p>
      */
-    private Log log()
+    private Logger log()
     {
 
         if (log == null)
         {
-            log = LogFactory.getLog(_PackageInfo.class);
+            log = Logger.getLogger(_PackageInfo.class.getName());
         }
         return log;
 

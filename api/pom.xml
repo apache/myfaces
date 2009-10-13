@@ -342,11 +342,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
+        <!-- dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
             <version>1.1.1</version>
-        </dependency>
+        </dependency -->
         <dependency>
             <groupId>org.apache.myfaces.buildtools</groupId>
             <artifactId>myfaces-builder-annotations</artifactId>

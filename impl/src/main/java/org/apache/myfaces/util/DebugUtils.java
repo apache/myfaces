@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
@@ -41,7 +43,6 @@ import javax.faces.event.FacesListener;
 import javax.faces.validator.Validator;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * Utilities for logging.
@@ -51,7 +52,8 @@ import org.apache.commons.logging.LogFactory;
  */
 public class DebugUtils
 {
-    private static final Log log = LogFactory.getLog(DebugUtils.class);
+    //private static final Log log = LogFactory.getLog(DebugUtils.class);
+    private static final Logger log = Logger.getLogger(DebugUtils.class.getName());
 
     // Attributes that should not be printed
     private static final HashSet<String> IGNORE_ATTRIBUTES;
@@ -102,18 +104,18 @@ public class DebugUtils
 
     public static void traceView(String additionalMsg)
     {
-        if (log.isTraceEnabled())
+        if (log.isLoggable(Level.FINEST))
         {
             FacesContext facesContext = FacesContext.getCurrentInstance();
             if (facesContext == null)
             {
-                log.error("Cannot not print view to console (no FacesContext).");
+                log.severe("Cannot not print view to console (no FacesContext).");
                 return;
             }
             UIViewRoot viewRoot = facesContext.getViewRoot();
             if (viewRoot == null)
             {
-                log.error("Cannot not print view to console (no ViewRoot in FacesContext).");
+                log.severe("Cannot not print view to console (no ViewRoot in FacesContext).");
                 return;
             }
 
@@ -140,7 +142,7 @@ public class DebugUtils
         printView(viewRoot, ps);
         ps.println("========================================");
         ps.close();
-        log.trace(baos.toString());
+        log.finest(baos.toString());
     }
 
     public static void printView(UIViewRoot uiViewRoot, PrintStream stream)
@@ -226,7 +228,7 @@ public class DebugUtils
                             }
                             catch (Exception e)
                             {
-                                log.error(e);
+                                log.log(Level.SEVERE, e.getMessage() , e);
                                 printAttribute(stream, name, null);
                             }
                         }

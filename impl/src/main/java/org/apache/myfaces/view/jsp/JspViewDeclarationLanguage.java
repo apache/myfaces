@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
@@ -44,8 +46,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.jstl.core.Config;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.DefaultViewHandlerSupport;
 import org.apache.myfaces.application.ViewHandlerSupport;
 import org.apache.myfaces.application.jsp.ViewResponseWrapper;
@@ -61,7 +61,8 @@ import org.apache.myfaces.view.ViewDeclarationLanguageBase;
  */
 public class JspViewDeclarationLanguage extends ViewDeclarationLanguageBase
 {
-    private static final Log log = LogFactory.getLog(JspViewDeclarationLanguage.class);
+    //private static final Log log = LogFactory.getLog(JspViewDeclarationLanguage.class);
+    private static final Logger log = Logger.getLogger(JspViewDeclarationLanguage.class.getName());
     public static final String FORM_STATE_MARKER = "<!--@@JSF_FORM_STATE_MARKER@@-->";
     public static final int FORM_STATE_MARKER_LEN = FORM_STATE_MARKER.length();
 
@@ -75,8 +76,8 @@ public class JspViewDeclarationLanguage extends ViewDeclarationLanguageBase
      */
     public JspViewDeclarationLanguage()
     {
-        if (log.isTraceEnabled())
-            log.trace("New JspViewDeclarationLanguage instance created");
+        if (log.isLoggable(Level.FINEST))
+            log.finest("New JspViewDeclarationLanguage instance created");
     }
 
     /**
@@ -158,8 +159,8 @@ public class JspViewDeclarationLanguage extends ViewDeclarationLanguageBase
         // do not render the view if the rendered attribute for the view is false
         if (!view.isRendered())
         {
-            if (log.isTraceEnabled())
-                log.trace("View is not rendered");
+            if (log.isLoggable(Level.FINEST))
+                log.finest("View is not rendered");
             return;
         }
 
@@ -167,8 +168,8 @@ public class JspViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
         String viewId = context.getViewRoot().getViewId();
 
-        if (log.isTraceEnabled())
-            log.trace("Rendering JSP view: " + viewId);
+        if (log.isLoggable(Level.FINEST))
+            log.finest("Rendering JSP view: " + viewId);
 
         ServletResponse response = (ServletResponse) externalContext.getResponse();
         ServletRequest request = (ServletRequest) externalContext.getRequest();

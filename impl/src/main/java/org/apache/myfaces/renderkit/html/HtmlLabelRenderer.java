@@ -21,6 +21,8 @@ package org.apache.myfaces.renderkit.html;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.ValueHolder;
@@ -30,8 +32,6 @@ import javax.faces.component.html.HtmlOutputLabel;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
 import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
@@ -50,7 +50,8 @@ import org.apache.myfaces.shared_impl.renderkit.html.util.JavascriptUtils;
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Output", type = "javax.faces.Label")
 public class HtmlLabelRenderer extends HtmlRenderer
 {
-    private static final Log log = LogFactory.getLog(HtmlLabelRenderer.class);
+    //private static final Log log = LogFactory.getLog(HtmlLabelRenderer.class);
+    private static final Logger log = Logger.getLogger(HtmlLabelRenderer.class.getName());
 
     @Override
     public void encodeBegin(FacesContext facesContext, UIComponent uiComponent) throws IOException
@@ -92,9 +93,9 @@ public class HtmlLabelRenderer extends HtmlRenderer
         }
         else
         {
-            if (log.isWarnEnabled())
+            if (log.isLoggable(Level.WARNING))
             {
-                log.warn("Attribute 'for' of label component with id " + uiComponent.getClientId(facesContext)
+                log.warning("Attribute 'for' of label component with id " + uiComponent.getClientId(facesContext)
                         + " is not defined");
             }
         }

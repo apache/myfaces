@@ -20,6 +20,8 @@ package org.apache.myfaces.lifecycle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
@@ -30,12 +32,10 @@ import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 import javax.faces.lifecycle.Lifecycle;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.util.DebugUtils;
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
+import org.apache.myfaces.util.DebugUtils;
 
 /**
  * Implements the lifecycle as described in Spec. 1.0 PFD Chapter 2
@@ -45,7 +45,8 @@ import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
  */
 public class LifecycleImpl extends Lifecycle
 {
-    private static final Log log = LogFactory.getLog(LifecycleImpl.class);
+    //private static final Log log = LogFactory.getLog(LifecycleImpl.class);
+    private static final Logger log = Logger.getLogger(LifecycleImpl.class.getName());
 
     private PhaseExecutor[] lifecycleExecutors;
     private PhaseExecutor renderExecutor;
@@ -93,9 +94,9 @@ public class LifecycleImpl extends Lifecycle
     {
         boolean skipFurtherProcessing = false;
 
-        if (log.isTraceEnabled())
+        if (log.isLoggable(Level.FINEST))
         {
-            log.trace("entering " + executor.getPhase() + " in " + LifecycleImpl.class.getName());
+            log.finest("entering " + executor.getPhase() + " in " + LifecycleImpl.class.getName());
         }
 
         PhaseId currentPhaseId = executor.getPhase();
@@ -152,9 +153,9 @@ public class LifecycleImpl extends Lifecycle
             skipFurtherProcessing = true;
         }
 
-        if (!skipFurtherProcessing && log.isTraceEnabled())
+        if (!skipFurtherProcessing && log.isLoggable(Level.FINEST))
         {
-            log.trace("exiting " + executor.getPhase() + " in " + LifecycleImpl.class.getName());
+            log.finest("exiting " + executor.getPhase() + " in " + LifecycleImpl.class.getName());
         }
 
         return skipFurtherProcessing;
@@ -168,8 +169,8 @@ public class LifecycleImpl extends Lifecycle
         {
             return;
         }
-        if (log.isTraceEnabled())
-            log.trace("entering " + renderExecutor.getPhase() + " in " + LifecycleImpl.class.getName());
+        if (log.isLoggable(Level.FINEST))
+            log.finest("entering " + renderExecutor.getPhase() + " in " + LifecycleImpl.class.getName());
 
         PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, facesContext, getPhaseListeners());
         Flash flash = facesContext.getExternalContext().getFlash();
@@ -203,15 +204,15 @@ public class LifecycleImpl extends Lifecycle
         
         facesContext.getExceptionHandler().handle();
         
-        if (log.isTraceEnabled())
+        if (log.isLoggable(Level.FINEST))
         {
             // Note: DebugUtils Logger must also be in trace level
             DebugUtils.traceView("View after rendering");
         }
 
-        if (log.isTraceEnabled())
+        if (log.isLoggable(Level.FINEST))
         {
-            log.trace("exiting " + renderExecutor.getPhase() + " in " + LifecycleImpl.class.getName());
+            log.finest("exiting " + renderExecutor.getPhase() + " in " + LifecycleImpl.class.getName());
         }
     }
 
@@ -220,9 +221,9 @@ public class LifecycleImpl extends Lifecycle
         boolean flag = false;
         if (facesContext.getResponseComplete())
         {
-            if (log.isDebugEnabled())
+            if (log.isLoggable(Level.FINE))
             {
-                log.debug("exiting from lifecycle.execute in " + phase
+                log.fine("exiting from lifecycle.execute in " + phase
                         + " because getResponseComplete is true from one of the " + (before ? "before" : "after")
                         + " listeners");
             }
@@ -236,9 +237,9 @@ public class LifecycleImpl extends Lifecycle
         boolean flag = false;
         if (facesContext.getRenderResponse())
         {
-            if (log.isDebugEnabled())
+            if (log.isLoggable(Level.FINE))
             {
-                log.debug("exiting from lifecycle.execute in " + phase
+                log.fine("exiting from lifecycle.execute in " + phase
                         + " because getRenderResponse is true from one of the " + (before ? "before" : "after")
                         + " listeners");
             }

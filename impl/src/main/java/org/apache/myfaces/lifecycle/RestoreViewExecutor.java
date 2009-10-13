@@ -19,6 +19,8 @@
 package org.apache.myfaces.lifecycle;
 
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.FacesException;
 import javax.faces.application.Application;
@@ -32,9 +34,6 @@ import javax.faces.event.PostAddToViewEvent;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.ViewMetadata;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * Implements the Restore View Phase (JSF Spec 2.2.1)
  * 
@@ -46,7 +45,9 @@ import org.apache.commons.logging.LogFactory;
 class RestoreViewExecutor implements PhaseExecutor
 {
 
-    private static final Log log = LogFactory.getLog(RestoreViewExecutor.class);
+    //private static final Log log = LogFactory.getLog(RestoreViewExecutor.class);
+    private static final Logger log = Logger.getLogger(RestoreViewExecutor.class.getName());
+    
     private RestoreViewSupport _restoreViewSupport;
 
     public boolean execute(FacesContext facesContext)
@@ -70,8 +71,8 @@ class RestoreViewExecutor implements PhaseExecutor
         // Examine the FacesContext instance for the current request. If it already contains a UIViewRoot
         if (viewRoot != null)
         {
-            if (log.isTraceEnabled())
-                log.trace("View already exists in the FacesContext");
+            if (log.isLoggable(Level.FINEST))
+                log.finest("View already exists in the FacesContext");
             
             // Set the locale on this UIViewRoot to the value returned by the getRequestLocale() method on the
             // ExternalContext for this request
@@ -86,8 +87,8 @@ class RestoreViewExecutor implements PhaseExecutor
         // Determine if this request is a postback or initial request
         if (restoreViewSupport.isPostback(facesContext))
         { // If the request is a postback
-            if (log.isTraceEnabled())
-                log.trace("Request is a postback");
+            if (log.isLoggable(Level.FINEST))
+                log.finest("Request is a postback");
 
             try
             {
@@ -118,8 +119,8 @@ class RestoreViewExecutor implements PhaseExecutor
         }
         else
         { // If the request is a non-postback
-            if (log.isTraceEnabled())
-                log.trace("Request is not a postback. New UIViewRoot will be created");
+            if (log.isLoggable(Level.FINEST))
+                log.finest("Request is not a postback. New UIViewRoot will be created");
             
             ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, 
                     viewHandler.deriveViewId(facesContext, viewId));

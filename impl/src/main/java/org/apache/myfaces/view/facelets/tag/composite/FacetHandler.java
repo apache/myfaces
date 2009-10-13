@@ -24,6 +24,8 @@ import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.component.UIComponent;
 import javax.faces.view.facelets.FaceletContext;
@@ -32,8 +34,6 @@ import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandler;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 
@@ -52,7 +52,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 public class FacetHandler extends TagHandler implements InterfaceDescriptorCreator
 {
 
-    private static final Log log = LogFactory.getLog(FacetHandler.class);
+    //private static final Log log = LogFactory.getLog(FacetHandler.class);
+    private static final Logger log = Logger.getLogger(FacetHandler.class.getName());
 
     /**
      * 
@@ -169,9 +170,9 @@ public class FacetHandler extends TagHandler implements InterfaceDescriptorCreat
         
         if (beanInfo == null)
         {
-            if (log.isErrorEnabled())
+            if (log.isLoggable(Level.SEVERE))
             {
-                log.error("Cannot found composite bean descriptor UIComponent.BEANINFO_KEY ");
+                log.severe("Cannot found composite bean descriptor UIComponent.BEANINFO_KEY ");
             }
             return;
         }
@@ -241,9 +242,9 @@ public class FacetHandler extends TagHandler implements InterfaceDescriptorCreat
         }
         catch (IntrospectionException e)
         {
-            if (log.isErrorEnabled())
+            if (log.isLoggable(Level.SEVERE))
             {
-                log.error("Cannot create PropertyDescriptor for facet ",e);
+                log.log(Level.SEVERE, "Cannot create PropertyDescriptor for facet ",e);
             }
             throw new TagException(tag,e);
         }
@@ -281,9 +282,9 @@ public class FacetHandler extends TagHandler implements InterfaceDescriptorCreat
         }
         catch (IntrospectionException e)
         {
-            if (log.isErrorEnabled())
+            if (log.isLoggable(Level.SEVERE))
             {
-                log.error("Cannot create PropertyDescriptor for attribute ",e);
+                log.log(Level.SEVERE, "Cannot create PropertyDescriptor for attribute ",e);
             }
             throw new TagException(tag,e);
         }

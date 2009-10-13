@@ -33,6 +33,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.el.ELException;
 import javax.el.MethodExpression;
@@ -75,8 +77,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.DefaultViewHandlerSupport;
 import org.apache.myfaces.application.ViewHandlerSupport;
 import org.apache.myfaces.config.RuntimeConfig;
@@ -117,7 +117,8 @@ import org.apache.myfaces.view.facelets.util.ReflectionUtil;
  */
 public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 {
-    private static final Log log = LogFactory.getLog(FaceletViewDeclarationLanguage.class);
+    //private static final Log log = LogFactory.getLog(FaceletViewDeclarationLanguage.class);
+    private static final Logger log = Logger.getLogger(FaceletViewDeclarationLanguage.class.getName());
 
     public static final String CHARACTER_ENCODING_KEY = "javax.faces.request.charset";
 
@@ -215,9 +216,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
         view.setViewId(renderedViewId);
 
-        if (log.isTraceEnabled())
+        if (log.isLoggable(Level.FINEST))
         {
-            log.trace("Building View: " + renderedViewId);
+            log.finest("Building View: " + renderedViewId);
         }
 
         boolean usePartialStateSavingOnThisView = _usePartialStateSavingOnThisView(renderedViewId);
@@ -392,7 +393,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         
         if (compositeComponentMetadata == null)
         {
-            log.error("Composite component metadata not found for: "+topLevelComponent.getClientId());
+            log.severe("Composite component metadata not found for: "+topLevelComponent.getClientId());
             return;
         }
         
@@ -498,7 +499,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         
         if (compositeComponentMetadata == null)
         {
-            log.error("Composite component metadata not found for: "+topLevelComponent.getClientId());
+            log.severe("Composite component metadata not found for: "+topLevelComponent.getClientId());
             return;
         }
 
@@ -566,8 +567,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         attributeNameValueExpression = (ValueExpression) propertyDescriptor.getValue("default");
                         if (attributeNameValueExpression == null)
                         {
-                            if (log.isErrorEnabled())
-                                log.error("attributeValueExpression not found under the key \""+attributeName+
+                            if (log.isLoggable(Level.SEVERE))
+                                log.severe("attributeValueExpression not found under the key \""+attributeName+
                                         "\". Looking for the next attribute");
                             continue;
                         }
@@ -582,8 +583,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         
                         if (innerComponent == null)
                         {
-                            if (log.isErrorEnabled())
-                                log.error("Inner component "+target+"not found when retargetMethodExpressions");
+                            if (log.isLoggable(Level.SEVERE))
+                                log.severe("Inner component "+target+"not found when retargetMethodExpressions");
                             continue;
                         }
 
@@ -792,9 +793,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         }
 
         // log request
-        if (log.isDebugEnabled())
+        if (log.isLoggable(Level.FINE))
         {
-            log.debug("Rendering View: " + view.getViewId());
+            log.fine("Rendering View: " + view.getViewId());
         }
 
         try
@@ -939,7 +940,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             }
             catch (IOException ioe)
             {
-                log.error("Error Building View", ioe);
+                log.severe("Error Building View", ioe);
             }
 
             Application application = context.getApplication();
@@ -1059,7 +1060,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         {
             // Added because of an RI bug prior to 1.2_05-b3. Might as well leave it in case other
             // impls have the same problem. https://javaserverfaces.dev.java.net/issues/show_bug.cgi?id=613
-            log.trace("The impl didn't correctly handled '*/*' in the content type list.  Trying '*/*' directly.");
+            log.finest("The impl didn't correctly handled '*/*' in the content type list.  Trying '*/*' directly.");
             writer = renderKit.createResponseWriter(NullWriter.Instance, "*/*", encoding);
         }
 
@@ -1106,9 +1107,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             viewId = builder.replace(viewId.lastIndexOf('.'), viewId.length(), viewSuffix).toString();
         }
 
-        if (log.isTraceEnabled())
+        if (log.isLoggable(Level.FINEST))
         {
-            log.trace("ActionId -> ViewId: " + actionId + " -> " + viewId);
+            log.finest("ActionId -> ViewId: " + actionId + " -> " + viewId);
         }
 
         return viewId;
@@ -1130,9 +1131,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         if (m.containsKey("facelets.ContentType"))
         {
             contentType = (String) m.get("facelets.ContentType");
-            if (log.isTraceEnabled())
+            if (log.isLoggable(Level.FINEST))
             {
-                log.trace("Facelet specified alternate contentType '" + contentType + "'");
+                log.finest("Facelet specified alternate contentType '" + contentType + "'");
             }
         }
 
@@ -1140,7 +1141,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         if (contentType == null)
         {
             contentType = "text/html";
-            log.trace("ResponseWriter created had a null ContentType, defaulting to text/html");
+            log.finest("ResponseWriter created had a null ContentType, defaulting to text/html");
         }
 
         return contentType;
@@ -1165,9 +1166,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         if (m.containsKey(PARAM_ENCODING))
         {
             encoding = (String) m.get(PARAM_ENCODING);
-            if (encoding != null && log.isTraceEnabled())
+            if (encoding != null && log.isLoggable(Level.FINEST))
             {
-                log.trace("Facelet specified alternate encoding '" + encoding + "'");
+                log.finest("Facelet specified alternate encoding '" + encoding + "'");
             }
             
             sm.put(CHARACTER_ENCODING_KEY, encoding);
@@ -1184,9 +1185,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         if (encoding == null)
         {
             encoding = (String) sm.get(CHARACTER_ENCODING_KEY);
-            if (encoding != null && log.isTraceEnabled())
+            if (encoding != null && log.isLoggable(Level.FINEST))
             {
-                log.trace("Session specified alternate encoding '" + encoding + "'");
+                log.finest("Session specified alternate encoding '" + encoding + "'");
             }
         }
 
@@ -1194,9 +1195,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         if (encoding == null)
         {
             encoding = DEFAULT_CHARACTER_ENCODING;
-            if (log.isTraceEnabled())
+            if (log.isLoggable(Level.FINEST))
             {
-                log.trace("ResponseWriter created had a null CharacterEncoding, defaulting to " + encoding);
+                log.finest("ResponseWriter created had a null CharacterEncoding, defaulting to " + encoding);
             }
         }
 
@@ -1230,7 +1231,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             sb.append(']');
         }
         
-        log.error(sb.toString(), e);
+        log.log(Level.SEVERE, sb.toString(), e);
 
         // handle dev response
         if (_isDevelopmentMode(context) && !context.getResponseComplete() && resp instanceof HttpServletResponse)
@@ -1265,7 +1266,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      */
     protected void initialize(FacesContext context)
     {
-        log.trace("Initializing");
+        log.finest("Initializing");
 
         Compiler compiler = createCompiler(context);
 
@@ -1280,7 +1281,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             stateMgmtStrategy = new DefaultFaceletsStateManagementStrategy(this);
         }
         
-        log.trace("Initialization Successful");
+        log.finest("Initialization Successful");
     }
 
     /**
@@ -1301,14 +1302,14 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                 try
                 {
                     compiler.addTagDecorator((TagDecorator) ReflectionUtil.forName(decorator).newInstance());
-                    if (log.isDebugEnabled())
+                    if (log.isLoggable(Level.FINE))
                     {
-                        log.debug("Successfully loaded decorator: " + decorator);
+                        log.fine("Successfully loaded decorator: " + decorator);
                     }
                 }
                 catch (Exception e)
                 {
-                    log.error("Error Loading decorator: " + decorator, e);
+                    log.log(Level.SEVERE, "Error Loading decorator: " + decorator, e);
                 }
             }
         }
@@ -1352,14 +1353,14 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                     {
                         compiler.addTagLibrary(tl);
                     }
-                    if (log.isDebugEnabled())
+                    if (log.isLoggable(Level.FINE))
                     {
-                        log.debug("Successfully loaded library: " + library);
+                        log.fine("Successfully loaded library: " + library);
                     }
                 }
                 catch (IOException e)
                 {
-                    log.error("Error Loading library: " + library, e);
+                    log.log(Level.SEVERE, "Error Loading library: " + library, e);
                 }
             }
         }

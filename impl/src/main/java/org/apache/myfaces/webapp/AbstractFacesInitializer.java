@@ -19,24 +19,24 @@
 package org.apache.myfaces.webapp;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.el.ExpressionFactory;
+import javax.faces.FactoryFinder;
+import javax.faces.application.Application;
+import javax.faces.application.ApplicationFactory;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextFactory;
-import javax.faces.FactoryFinder;
-import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.event.PostConstructApplicationEvent;
 import javax.faces.event.PreDestroyApplicationEvent;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.application.Application;
+import javax.faces.lifecycle.LifecycleFactory;
 import javax.servlet.ServletContext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.ApplicationImpl;
-import org.apache.myfaces.application._SystemEventServletResponse;
 import org.apache.myfaces.application._SystemEventServletRequest;
+import org.apache.myfaces.application._SystemEventServletResponse;
 import org.apache.myfaces.config.FacesConfigValidator;
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.config.RuntimeConfig;
@@ -51,7 +51,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
     /**
      * The logger instance for this class.
      */
-    private static final Log log = LogFactory.getLog(AbstractFacesInitializer.class);
+    //private static final Log log = LogFactory.getLog(AbstractFacesInitializer.class);
+    private static final Logger log = Logger.getLogger(AbstractFacesInitializer.class.getName());
 
     /**
      * This parameter specifies the ExpressionFactory implementation to use.
@@ -64,8 +65,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
      */
     public void initFaces(ServletContext servletContext) {
         try {
-            if (log.isTraceEnabled()) {
-                log.trace("Initializing MyFaces");
+            if (log.isLoggable(Level.FINEST)) {
+                log.finest("Initializing MyFaces");
             }
 
             // Some parts of the following configuration tasks have been implemented 
@@ -78,15 +79,15 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
             // Parse and validate the web.xml configuration file
             WebXml webXml = WebXml.getWebXml(externalContext);
             if (webXml == null) {
-                if (log.isWarnEnabled()) {
-                    log.warn("Couldn't find the web.xml configuration file. "
+                if (log.isLoggable(Level.WARNING)) {
+                    log.warning("Couldn't find the web.xml configuration file. "
                              + "Abort initializing MyFaces.");
                 }
 
                 return;
             } else if (webXml.getFacesServletMappings().isEmpty()) {
-                if (log.isWarnEnabled()) {
-                    log.warn("No mappings of FacesServlet found. Abort initializing MyFaces.");
+                if (log.isLoggable(Level.WARNING)) {
+                    log.warning("No mappings of FacesServlet found. Abort initializing MyFaces.");
                 }
 
                 return;
@@ -99,13 +100,13 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
                 StateUtils.initSecret(servletContext);
             }
 
-            if (log.isInfoEnabled()) {
+            if (log.isLoggable(Level.INFO)) {
                 log.info("ServletContext '" + servletContext.getRealPath("/") + "' initialized.");
             }
 
             dispatchInitDestroyEvent(servletContext, PostConstructApplicationEvent.class);
         } catch (Exception ex) {
-            log.error("An error occured while initializing MyFaces: "
+            log.log(Level.SEVERE, "An error occured while initializing MyFaces: "
                       + ex.getMessage(), ex);
         }
     }
@@ -174,12 +175,12 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
 
     protected void validateFacesConfig(ServletContext servletContext, ExternalContext externalContext) {
         String validate = servletContext.getInitParameter(FacesConfigValidator.VALIDATE_CONTEXT_PARAM);
-        if ("true".equals(validate) && log.isWarnEnabled()) { // the default value is false
+        if ("true".equals(validate) && log.isLoggable(Level.WARNING)) { // the default value is false
             List<String> warnings = FacesConfigValidator.validate(
                     externalContext, servletContext.getRealPath("/"));
 
             for (String warning : warnings) {
-                log.warn(warning);
+                log.warning(warning);
             }
         }
     }
@@ -196,8 +197,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
         String expressionFactoryClassName = externalContext.getInitParameter(EXPRESSION_FACTORY);
         if (expressionFactoryClassName != null
             && expressionFactoryClassName.trim().length() > 0) {
-            if (log.isDebugEnabled()) {
-                log.debug("Attempting to load the ExpressionFactory implementation "
+            if (log.isLoggable(Level.FINE)) {
+                log.fine("Attempting to load the ExpressionFactory implementation "
                           + "you've specified: '" + expressionFactoryClassName + "'.");
             }
 
@@ -219,8 +220,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
             Class<?> expressionFactoryClass = Class.forName(expressionFactoryClassName);
             return (ExpressionFactory) expressionFactoryClass.newInstance();
         } catch (Exception ex) {
-            if (log.isDebugEnabled()) {
-                log.debug("An error occured while instantiating a new ExpressionFactory. "
+            if (log.isLoggable(Level.FINE)) {
+                log.log(Level.FINE, "An error occured while instantiating a new ExpressionFactory. "
                           + "Attempted to load class '" + expressionFactoryClassName + "'.", ex);
             }
         }

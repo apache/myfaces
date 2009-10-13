@@ -18,10 +18,10 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.application.jsp.ViewResponseWrapper;
-import org.apache.myfaces.shared_impl.util.LocaleUtils;
+import java.io.IOException;
+import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.el.ELContext;
 import javax.el.MethodExpression;
@@ -34,8 +34,9 @@ import javax.faces.render.RenderKitFactory;
 import javax.faces.webapp.UIComponentELTag;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.jstl.core.Config;
-import java.io.IOException;
-import java.util.Locale;
+
+import org.apache.myfaces.application.jsp.ViewResponseWrapper;
+import org.apache.myfaces.shared_impl.util.LocaleUtils;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
@@ -44,7 +45,8 @@ import java.util.Locale;
  */
 public class ViewTag extends UIComponentELTag
 {
-    private static final Log log = LogFactory.getLog(ViewTag.class);
+    //private static final Log log = LogFactory.getLog(ViewTag.class);
+    private static final Logger log = Logger.getLogger(ViewTag.class.getName());
 
     @Override
     public String getComponentType()
@@ -87,8 +89,8 @@ public class ViewTag extends UIComponentELTag
     @Override
     public int doStartTag() throws JspException
     {
-        if (log.isTraceEnabled())
-            log.trace("entering ViewTag.doStartTag");
+        if (log.isLoggable(Level.FINEST))
+            log.finest("entering ViewTag.doStartTag");
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Object response = facesContext.getExternalContext().getResponse();
@@ -109,28 +111,28 @@ public class ViewTag extends UIComponentELTag
 
         Config.set(pageContext.getRequest(), Config.FMT_LOCALE, facesContext.getViewRoot().getLocale());
 
-        if (log.isTraceEnabled())
-            log.trace("leaving ViewTag.doStartTag");
+        if (log.isLoggable(Level.FINEST))
+            log.finest("leaving ViewTag.doStartTag");
         return retVal;
     }
 
     @Override
     public int doEndTag() throws JspException
     {
-        if (log.isTraceEnabled())
-            log.trace("entering ViewTag.doEndTag");
+        if (log.isLoggable(Level.FINEST))
+            log.finest("entering ViewTag.doEndTag");
         int retVal = super.doEndTag();
 
-        if (log.isTraceEnabled())
-            log.trace("leaving ViewTag.doEndTag");
+        if (log.isLoggable(Level.FINEST))
+            log.finest("leaving ViewTag.doEndTag");
         return retVal;
     }
 
     @Override
     public int doAfterBody() throws JspException
     {
-        if (log.isTraceEnabled())
-            log.trace("entering ViewTag.doAfterBody");
+        if (log.isLoggable(Level.FINEST))
+            log.finest("entering ViewTag.doAfterBody");
 
         UIComponent verbatimComp = createVerbatimComponentFromBodyContent();
 
@@ -139,8 +141,8 @@ public class ViewTag extends UIComponentELTag
             FacesContext.getCurrentInstance().getViewRoot().getChildren().add(verbatimComp);
         }
 
-        if (log.isTraceEnabled())
-            log.trace("leaving ViewTag.doAfterBody");
+        if (log.isLoggable(Level.FINEST))
+            log.finest("leaving ViewTag.doAfterBody");
         return EVAL_PAGE;
     }
 

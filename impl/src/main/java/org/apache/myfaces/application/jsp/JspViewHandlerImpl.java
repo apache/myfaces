@@ -18,13 +18,13 @@
  */
 package org.apache.myfaces.application.jsp;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.application.DefaultViewHandlerSupport;
-import org.apache.myfaces.application.InvalidViewIdException;
-import org.apache.myfaces.application.ViewHandlerSupport;
-import org.apache.myfaces.shared_impl.config.MyfacesConfig;
-import org.apache.myfaces.shared_impl.renderkit.html.util.JavascriptUtils;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
@@ -44,11 +44,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.jstl.core.Config;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.Iterator;
-import java.util.Locale;
+
+import org.apache.myfaces.application.DefaultViewHandlerSupport;
+import org.apache.myfaces.application.InvalidViewIdException;
+import org.apache.myfaces.application.ViewHandlerSupport;
+import org.apache.myfaces.shared_impl.config.MyfacesConfig;
+import org.apache.myfaces.shared_impl.renderkit.html.util.JavascriptUtils;
 
 /**
  * Implementation of the ViewHandler interface that knows how to use JSP pages
@@ -110,7 +111,8 @@ import java.util.Locale;
  */
 public class JspViewHandlerImpl extends ViewHandler
 {
-    private static final Log log = LogFactory.getLog(JspViewHandlerImpl.class);
+    //private static final Log log = LogFactory.getLog(JspViewHandlerImpl.class);
+    private static final Logger log = Logger.getLogger(JspViewHandlerImpl.class.getName());
     public static final String FORM_STATE_MARKER = "<!--@@JSF_FORM_STATE_MARKER@@-->";
     public static final int FORM_STATE_MARKER_LEN = FORM_STATE_MARKER.length();
 
@@ -120,8 +122,8 @@ public class JspViewHandlerImpl extends ViewHandler
 
     public JspViewHandlerImpl()
     {
-        if (log.isTraceEnabled())
-            log.trace("New ViewHandler instance created");
+        if (log.isLoggable(Level.FINEST))
+            log.finest("New ViewHandler instance created");
     }
 
     /**
@@ -253,8 +255,8 @@ public class JspViewHandlerImpl extends ViewHandler
             uiViewRoot.setRenderKitId(applicationViewHandler.calculateRenderKitId(facesContext));
         }
 
-        if (log.isTraceEnabled())
-            log.trace("Created view " + viewId);
+        if (log.isLoggable(Level.FINEST))
+            log.finest("Created view " + viewId);
         return uiViewRoot;
     }
 
@@ -314,15 +316,15 @@ public class JspViewHandlerImpl extends ViewHandler
     {
         if (viewToRender == null)
         {
-            log.fatal("viewToRender must not be null");
+            log.severe("viewToRender must not be null");
             throw new NullPointerException("viewToRender must not be null");
         }
 
         // do not render the view if the rendered attribute for the view is false
         if (!viewToRender.isRendered())
         {
-            if (log.isTraceEnabled())
-                log.trace("View is not rendered");
+            if (log.isLoggable(Level.FINEST))
+                log.finest("View is not rendered");
             return;
         }
 
@@ -330,8 +332,8 @@ public class JspViewHandlerImpl extends ViewHandler
 
         String viewId = facesContext.getViewRoot().getViewId();
 
-        if (log.isTraceEnabled())
-            log.trace("Rendering JSP view: " + viewId);
+        if (log.isLoggable(Level.FINEST))
+            log.finest("Rendering JSP view: " + viewId);
 
         ServletResponse response = (ServletResponse) externalContext.getResponse();
         ServletRequest request = (ServletRequest) externalContext.getRequest();

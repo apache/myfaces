@@ -19,6 +19,8 @@
 package org.apache.myfaces.webapp;
 
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.el.ExpressionFactory;
 import javax.faces.FactoryFinder;
@@ -29,8 +31,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspFactory;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.el.ResolverForJSPInitializer;
 import org.apache.myfaces.el.unified.ELResolverBuilder;
@@ -47,7 +47,8 @@ public class Jsp21FacesInitializer extends AbstractFacesInitializer
     /**
      * The logger instance for this class.
      */
-    private static final Log log = LogFactory.getLog(Jsp21FacesInitializer.class);
+    //private static final Log log = LogFactory.getLog(Jsp21FacesInitializer.class);
+    private static final Logger log = Logger.getLogger(Jsp21FacesInitializer.class.getName());
     
     /**
      * Cached instance of the JspFactory to use.
@@ -86,7 +87,7 @@ public class Jsp21FacesInitializer extends AbstractFacesInitializer
             } catch (ClassNotFoundException e) {
                 ; // ignore
             } catch (Exception ex) {
-                log.debug("An unexpected exception occured "
+                log.log(Level.FINE, "An unexpected exception occured "
                         + "while loading the JspRuntimeContext.", ex);
             }
 

@@ -27,11 +27,9 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.servlet.RequestDispatcher;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * 
@@ -42,7 +40,8 @@ public class MockServletContext extends
         org.apache.shale.test.mock.MockServletContext
 {
 
-    private static Log log = LogFactory.getLog(MockServletContext.class);
+    //private static Log log = LogFactory.getLog(MockServletContext.class);
+    private static Logger log = Logger.getLogger(MockServletContext.class.getName());
 
     protected final URI base;
 
@@ -107,12 +106,12 @@ public class MockServletContext extends
             }
             catch (MalformedURLException e)
             {
-                this.log.error(e.getMessage());
+                this.log.severe(e.getMessage());
                 return null;
             }
             catch (IOException e)
             {
-                this.log.error(e.getMessage());
+                this.log.severe(e.getMessage());
                 return null;
             }
         }
@@ -133,7 +132,7 @@ public class MockServletContext extends
                 }
                 catch (MalformedURLException e)
                 {
-                    this.log.error(e.getMessage());
+                    this.log.severe(e.getMessage());
                     return null;
                 }
             }

@@ -19,14 +19,13 @@ package org.apache.myfaces.test;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.shared_impl.test.ClassElementHandler;
 
 /**
@@ -43,7 +42,8 @@ import org.apache.myfaces.shared_impl.test.ClassElementHandler;
 public abstract class AbstractClassElementTestCase extends TestCase
 {
 
-    private Log log = LogFactory.getLog(AbstractClassElementTestCase.class);
+    //private Log log = LogFactory.getLog(AbstractClassElementTestCase.class);
+    private Logger log = Logger.getLogger(AbstractClassElementTestCase.class.getName());
 
     protected List<String> resource = new ArrayList<String>();
     private List<String> className = new ArrayList<String>();
@@ -101,6 +101,6 @@ public abstract class AbstractClassElementTestCase extends TestCase
             }
         }
 
-        log.debug((i + 1) + " class found ");
+        log.fine((i + 1) + " class found ");
     }
 }

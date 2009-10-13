@@ -19,6 +19,8 @@
 package org.apache.myfaces.context;
 
 import java.lang.reflect.Field;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
@@ -30,8 +32,6 @@ import javax.faces.context.FacesContextFactory;
 import javax.faces.lifecycle.Lifecycle;
 import javax.servlet.ServletContext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.context.servlet.FacesContextImpl;
 
 /**
@@ -43,7 +43,8 @@ import org.apache.myfaces.context.servlet.FacesContextImpl;
 public class FacesContextFactoryImpl extends FacesContextFactory
     implements ReleaseableFacesContextFactory
 {
-    private static final Log log = LogFactory.getLog(FacesContextFactoryImpl.class);
+    //private static final Log log = LogFactory.getLog(FacesContextFactoryImpl.class);
+    private static final Logger log = Logger.getLogger(FacesContextFactoryImpl.class.getName());
     
     /**
      * Reference to factory to prevent unnecessary lookups
@@ -85,14 +86,14 @@ public class FacesContextFactoryImpl extends FacesContextFactory
         catch (SecurityException e)
         {
             // It could happen, but we can ignore it.
-            if (log.isDebugEnabled())
-                log.debug("Cannot access private field _firstInstance from ExternalContext ",e);
+            if (log.isLoggable(Level.FINE))
+                log.log(Level.FINE, "Cannot access private field _firstInstance from ExternalContext ",e);
         }
         catch (Exception e)
         {
             //It should not happen if we have only myfaces on classpath
-            if (log.isErrorEnabled())
-                log.error("Cannot found private field _firstInstance from ExternalContext ",e);
+            if (log.isLoggable(Level.SEVERE))
+                log.log(Level.SEVERE, "Cannot found private field _firstInstance from ExternalContext ",e);
         }
         
         _firstExternalContextInstance = firstExternalContextInstance;

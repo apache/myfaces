@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIOutput;
@@ -29,8 +31,6 @@ import javax.faces.component.UIParameter;
 import javax.faces.component.html.HtmlOutputFormat;
 import javax.faces.context.FacesContext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
 import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
@@ -46,7 +46,8 @@ import org.apache.myfaces.shared_impl.renderkit.html.HtmlTextRendererBase;
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Output", type = "javax.faces.Format")
 public class HtmlFormatRenderer extends HtmlRenderer
 {
-    private static final Log log = LogFactory.getLog(HtmlFormatRenderer.class);
+    //private static final Log log = LogFactory.getLog(HtmlFormatRenderer.class);
+    private static final Logger log = Logger.getLogger(HtmlFormatRenderer.class.getName());
 
     private static final Object[] EMPTY_ARGS = new Object[0];
 
@@ -113,7 +114,7 @@ public class HtmlFormatRenderer extends HtmlRenderer
         }
         catch (Exception e)
         {
-            log.error("Error formatting message of component " + htmlOutputFormat.getClientId(facesContext));
+            log.log(Level.SEVERE, "Error formatting message of component " + htmlOutputFormat.getClientId(facesContext));
             return "";
         }
     }

@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.taglib.core;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.el.ValueExpression;
 import javax.faces.component.ActionSource;
 import javax.faces.component.UIComponent;
@@ -25,9 +28,6 @@ import javax.faces.event.ActionListener;
 import javax.faces.webapp.UIComponentClassicTagBase;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;
@@ -41,7 +41,8 @@ import org.apache.myfaces.event.SetPropertyActionListener;
 public class SetPropertyActionListenerTag extends TagSupport
 {
 
-    private static final Log log = LogFactory.getLog(SetPropertyActionListenerTag.class);
+    //private static final Log log = LogFactory.getLog(SetPropertyActionListenerTag.class);
+    private static final Logger log = Logger.getLogger(SetPropertyActionListenerTag.class.getName());
 
     private ValueExpression target;
 
@@ -51,8 +52,8 @@ public class SetPropertyActionListenerTag extends TagSupport
     public int doStartTag() throws JspException
     {
 
-        if (log.isDebugEnabled())
-            log.debug("JSF 1.2 Spec : Create a new instance of the ActionListener");
+        if (log.isLoggable(Level.FINE))
+            log.fine("JSF 1.2 Spec : Create a new instance of the ActionListener");
 
         ActionListener actionListener = new SetPropertyActionListener(target, value);
 
@@ -76,8 +77,8 @@ public class SetPropertyActionListenerTag extends TagSupport
                         + " is associated w/ a tag w/ JSP id of " + tag.getJspId() + ". This component is of type "
                         + component.getClass() + ", which is not an " + ActionSource.class);
 
-            if (log.isDebugEnabled())
-                log.debug(" ... register it with the UIComponent " + "instance associated with our most immediately "
+            if (log.isLoggable(Level.FINE))
+                log.fine(" ... register it with the UIComponent " + "instance associated with our most immediately "
                         + "surrounding UIComponentTagBase");
 
             ((ActionSource)component).addActionListener(actionListener);

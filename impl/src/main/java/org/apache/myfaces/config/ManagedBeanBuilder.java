@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.el.ELContext;
 import javax.el.ELException;
@@ -39,8 +41,6 @@ import javax.faces.context.FacesContext;
 import javax.naming.NamingException;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.config.annotation.LifecycleProvider;
 import org.apache.myfaces.config.annotation.LifecycleProvider2;
 import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
@@ -62,7 +62,8 @@ import org.apache.myfaces.util.ContainerUtils;
  */
 public class ManagedBeanBuilder
 {
-    private static Log log = LogFactory.getLog(ManagedBeanBuilder.class);
+    //private static Log log = LogFactory.getLog(ManagedBeanBuilder.class);
+    private static Logger log = Logger.getLogger(ManagedBeanBuilder.class.getName());
     private RuntimeConfig _runtimeConfig;
     public final static String REQUEST = "request";
     public final static String APPLICATION = "application";
@@ -295,7 +296,7 @@ public class ManagedBeanBuilder
         {
             String message = "Cannot coerce " + value.getClass().getName()
                     + " to " + desiredClass.getName();
-            log.error(message, e);
+            log.log(Level.SEVERE, message , e);
             throw new FacesException(message, e);
         }
     }

@@ -19,6 +19,9 @@
 
 package javax.faces.component;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.PropertyNotFoundException;
@@ -28,8 +31,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.el.EvaluationException;
 import javax.faces.el.ValueBinding;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * Wraps a ValueBinding inside a ValueExpression. Also allows access to the original ValueBinding object.
@@ -45,7 +46,8 @@ class _ValueBindingToValueExpression extends ValueExpression implements StateHol
 {
     private static final long serialVersionUID = 8071429285360496554L;
 
-    private static final Log logger = LogFactory.getLog(_ValueBindingToValueExpression.class);
+    //private static final Log logger = LogFactory.getLog(_ValueBindingToValueExpression.class);
+    private static final Logger logger = Logger.getLogger(_ValueBindingToValueExpression.class.getName());
 
     private ValueBinding _valueBinding;
 
@@ -193,7 +195,7 @@ class _ValueBindingToValueExpression extends ValueExpression implements StateHol
             }
             catch (Throwable e)
             {
-                logger.warn("Could not determine expected type for '" + _valueBinding.getExpressionString() + "': "
+                logger.log(Level.WARNING, "Could not determine expected type for '" + _valueBinding.getExpressionString() + "': "
                         + e.getMessage(), e);
             }
         }

@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.webapp;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
@@ -25,9 +28,6 @@ import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
 import javax.servlet.ServletContext;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * Initializes MyFaces in a JSP 2.0 (or less) environment.
@@ -38,7 +38,8 @@ public class Jsp20FacesInitializer extends AbstractFacesInitializer
     /**
      * The logger instance for this class.
      */
-    private static final Log log = LogFactory.getLog(Jsp20FacesInitializer.class);
+    //private static final Log log = LogFactory.getLog(Jsp20FacesInitializer.class);
+    private static final Logger log = Logger.getLogger(Jsp20FacesInitializer.class.getName());
 
     /**
      * The ExpressionFactory implementation of the EL-RI.
@@ -59,7 +60,7 @@ public class Jsp20FacesInitializer extends AbstractFacesInitializer
     @Override
     protected void initContainerIntegration(ServletContext servletContext, ExternalContext externalContext)
     {
-        if (log.isInfoEnabled())
+        if (log.isLoggable(Level.INFO))
         {
             log.info("This application isn't running in a JSP 2.1 container.");
         }
@@ -73,7 +74,7 @@ public class Jsp20FacesInitializer extends AbstractFacesInitializer
         ExpressionFactory expressionFactory = getUserDefinedExpressionFactory(externalContext);
 
         if (expressionFactory == null) {
-            if (log.isInfoEnabled()) {
+            if (log.isLoggable(Level.INFO)) {
                 log.info("Either you haven't specified the ExpressionFactory implementation, or an " 
                         + "error occured while instantiating the implementation you've specified. "
                         + "However, attempting to load a known implementation.");
@@ -82,9 +83,9 @@ public class Jsp20FacesInitializer extends AbstractFacesInitializer
             expressionFactory = findExpressionFactory(KNOWN_EXPRESSION_FACTORIES);
             if (expressionFactory == null)
             { // if we still haven't got a valid implementation
-                if (log.isErrorEnabled())
+                if (log.isLoggable(Level.SEVERE))
                 {
-                    log.error("No valid ExpressionFactory implementation is available "
+                    log.severe("No valid ExpressionFactory implementation is available "
                             + "but that's required as this application isn't running in a JSP 2.1 container.");
                 }
 
@@ -93,9 +94,9 @@ public class Jsp20FacesInitializer extends AbstractFacesInitializer
             }
         }
 
-        if (log.isDebugEnabled())
+        if (log.isLoggable(Level.FINE))
         {
-            log.debug("The following ExpressionFactory implementation will " + "be used: '" + expressionFactory + "'.");
+            log.fine("The following ExpressionFactory implementation will " + "be used: '" + expressionFactory + "'.");
         }
 
         buildConfiguration(servletContext, externalContext, expressionFactory);

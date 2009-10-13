@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.application.ProjectStage;
@@ -36,8 +37,6 @@ import javax.faces.event.ListenersFor;
 import javax.faces.event.PostAddToViewEvent;
 import javax.faces.render.Renderer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
 import org.apache.myfaces.shared_impl.renderkit.html.HTML;
@@ -58,7 +57,8 @@ import org.apache.myfaces.view.facelets.PostBuildComponentTreeOnRestoreViewEvent
 public class HtmlStylesheetRenderer extends Renderer implements
     ComponentSystemEventListener
 {
-    private static final Log log = LogFactory.getLog(HtmlStylesheetRenderer.class);
+    //private static final Log log = LogFactory.getLog(HtmlStylesheetRenderer.class);
+    private static final Logger log = Logger.getLogger(HtmlStylesheetRenderer.class.getName());
     
     private final static String RENDERED_RESOURCES_SET = HtmlStylesheetRenderer.class+".RENDERED_RESOURCES_SET"; 
 
@@ -191,7 +191,7 @@ public class HtmlStylesheetRenderer extends Renderer implements
         if (resource == null)
         {
             //no resource found
-            log.warn("Resource referenced by resourceName "+ resourceName +
+            log.warning("Resource referenced by resourceName "+ resourceName +
                     (libraryName == null ? "" : " and libraryName " + libraryName) +
                     " not found in call to ResourceHandler.createResource."+
                     " It will be silenty ignored.");

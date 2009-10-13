@@ -39,7 +39,8 @@ import javax.servlet.ServletContext;
 public final class Resource
 {
 
-    protected final static Logger log = Logger.getLogger("facelets.factory");
+    //protected final static Logger log = Logger.getLogger("facelets.factory");
+    protected final static Logger log = Logger.getLogger(Resource.class.getName());
 
     /**
      * Get an URL of an internal resource. First, {@link javax.faces.context.ExternalContext#getResource(String)} is

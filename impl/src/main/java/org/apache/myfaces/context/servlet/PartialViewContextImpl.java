@@ -19,28 +19,26 @@
 package org.apache.myfaces.context.servlet;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-
-import javax.faces.FactoryFinder;
+import javax.faces.component.UIComponent;
+import javax.faces.component.visit.VisitCallback;
+import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitHint;
+import javax.faces.component.visit.VisitResult;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialResponseWriter;
 import javax.faces.context.PartialViewContext;
-import javax.faces.event.PhaseId;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitHint;
-import javax.faces.component.visit.VisitCallback;
-import javax.faces.component.visit.VisitResult;
-import javax.faces.component.UIComponent;
-
-import javax.faces.context.ExternalContext;
 import javax.faces.context.ResponseWriter;
-import javax.servlet.http.HttpServletRequest;
+import javax.faces.event.PhaseId;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.shared_impl.util.StringUtils;
 
 public class PartialViewContextImpl extends PartialViewContext {
@@ -350,9 +348,9 @@ public class PartialViewContextImpl extends PartialViewContext {
                 writer.endUpdate();
             }
         } catch (IOException ex) {
-            Log log = LogFactory.getLog(PartialViewContextImpl.class);
-            if (log.isErrorEnabled()) {
-                log.error(ex);
+            Logger log = Logger.getLogger(PartialViewContextImpl.class.getName());
+            if (log.isLoggable(Level.SEVERE)) {
+                log.log(Level.SEVERE, "" , ex);
             }
 
         } finally {
@@ -362,9 +360,9 @@ public class PartialViewContextImpl extends PartialViewContext {
                 }
                 writer.flush();
             } catch (IOException ex) {
-                Log log = LogFactory.getLog(PartialViewContextImpl.class);
-                if (log.isErrorEnabled()) {
-                    log.error(ex);
+                Logger log = Logger.getLogger(PartialViewContextImpl.class.getName());
+                if (log.isLoggable(Level.SEVERE)) {
+                    log.log(Level.SEVERE, "" , ex);
                 }
             }
 
@@ -436,18 +434,18 @@ public class PartialViewContextImpl extends PartialViewContext {
                 inUpdate = true;
                 target.encodeAll(_facesContext);
             } catch (IOException ex) {
-                Log log = LogFactory.getLog(PartialViewContextImpl.class);
-                if (log.isErrorEnabled()) {
-                    log.error("IOException for rendering component", ex);
+                Logger log = Logger.getLogger(PartialViewContextImpl.class.getName());
+                if (log.isLoggable(Level.SEVERE)) {
+                    log.log(Level.SEVERE, "IOException for rendering component", ex);
                 }
             } finally {
                 if (inUpdate) {
                     try {
                         writer.endUpdate();
                     } catch (IOException ex) {
-                        Log log = LogFactory.getLog(PartialViewContextImpl.class);
-                        if (log.isErrorEnabled()) {
-                            log.error("IOException for rendering component, stopping update rendering", ex);
+                        Logger log = Logger.getLogger(PartialViewContextImpl.class.getName());
+                        if (log.isLoggable(Level.SEVERE)) {
+                            log.log(Level.SEVERE, "IOException for rendering component, stopping update rendering", ex);
                         }
                     }
                 }

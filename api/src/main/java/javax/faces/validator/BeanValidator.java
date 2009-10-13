@@ -18,13 +18,21 @@
  */
 package javax.faces.validator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidator;
+import java.beans.FeatureDescriptor;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import javax.el.*;
+import javax.el.ELContext;
+import javax.el.ELResolver;
+import javax.el.FunctionMapper;
+import javax.el.ValueExpression;
+import javax.el.VariableMapper;
 import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.PartialStateHolder;
@@ -37,8 +45,10 @@ import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 import javax.validation.groups.Default;
 import javax.validation.metadata.BeanDescriptor;
-import java.beans.FeatureDescriptor;
-import java.util.*;
+
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidator;
 
 /**
  * <p>
@@ -61,7 +71,8 @@ import java.util.*;
 public class BeanValidator implements Validator, PartialStateHolder
 {
 
-    private static final Log log = LogFactory.getLog(BeanValidator.class);
+    //private static final Log log = LogFactory.getLog(BeanValidator.class);
+    private static final Logger log = Logger.getLogger(BeanValidator.class.getName());
 
     /**
      * Converter ID, as defined by the JSF 2.0 specification.
@@ -130,14 +141,14 @@ public class BeanValidator implements Validator, PartialStateHolder
                 }
                 catch (Throwable t)
                 {
-                    log.debug("Error initializing Bean Validation (could be normal)", t);
+                    log.log(Level.FINE, "Error initializing Bean Validation (could be normal)", t);
                     tmp = false;
                 }
             }
         }
         catch (Throwable t)
         {
-            log.debug("Error loading class (could be normal)", t);
+            log.log(Level.FINE, "Error loading class (could be normal)", t);
             tmp = false;
         }
         isAvailable = tmp;
@@ -159,7 +170,7 @@ public class BeanValidator implements Validator, PartialStateHolder
         }
         catch (Throwable t)
         {
-            log.debug("Error loading class (could be normal)", t);
+            log.log(Level.FINE, "Error loading class (could be normal)", t);
             tmp = false;
         }
         isUnifiedELAvailable = tmp;

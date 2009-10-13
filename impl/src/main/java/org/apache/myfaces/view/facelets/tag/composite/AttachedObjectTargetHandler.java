@@ -22,6 +22,8 @@ import java.beans.BeanDescriptor;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.component.UIComponent;
 import javax.faces.view.AttachedObjectTarget;
@@ -30,8 +32,6 @@ import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 
@@ -49,7 +49,8 @@ public abstract class AttachedObjectTargetHandler<T extends AttachedObjectTarget
     extends TagHandler implements InterfaceDescriptorCreator
 {
 
-    private static final Log log = LogFactory.getLog(AttachedObjectTargetHandler.class);
+    //private static final Log log = LogFactory.getLog(AttachedObjectTargetHandler.class);
+    private static final Logger log = Logger.getLogger(AttachedObjectTargetHandler.class.getName());
     
     /**
      * 
@@ -102,9 +103,9 @@ public abstract class AttachedObjectTargetHandler<T extends AttachedObjectTarget
         
         if (beanInfo == null)
         {
-            if (log.isErrorEnabled())
+            if (log.isLoggable(Level.SEVERE))
             {
-                log.error("Cannot found composite bean descriptor UIComponent.BEANINFO_KEY ");
+                log.severe("Cannot found composite bean descriptor UIComponent.BEANINFO_KEY ");
             }
             return;
         }

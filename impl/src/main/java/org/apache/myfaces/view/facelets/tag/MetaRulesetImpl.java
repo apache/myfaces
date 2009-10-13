@@ -47,7 +47,8 @@ public final class MetaRulesetImpl extends MetaRuleset
 {
     private final static Metadata NONE = new NullMetadata();
 
-    private final static Logger log = Logger.getLogger("facelets.tag.meta");
+    //private final static Logger log = Logger.getLogger("facelets.tag.meta");
+    private final static Logger log = Logger.getLogger(MetaRulesetImpl.class.getName());
 
     private final static WeakHashMap<String, MetadataTarget> _metadata = new WeakHashMap<String, MetadataTarget>();
 

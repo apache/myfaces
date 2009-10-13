@@ -74,7 +74,8 @@ final class ComponentRule extends MetaRule
         }
     }
 
-    private final static Logger log = Logger.getLogger("facelets.tag.component");
+    //private final static Logger log = Logger.getLogger("facelets.tag.component");
+    private final static Logger log = Logger.getLogger(ComponentRule.class.getName());
 
     public final static ComponentRule Instance = new ComponentRule();
 

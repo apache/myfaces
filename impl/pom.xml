@@ -646,11 +646,11 @@
       <artifactId>commons-collections</artifactId>
       <version>3.2</version>
     </dependency>
-    <dependency>
+    <!-- dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
       <version>1.1.1</version>
-    </dependency>
+    </dependency -->
     <dependency>
       <groupId>commons-discovery</groupId>
       <artifactId>commons-discovery</artifactId>

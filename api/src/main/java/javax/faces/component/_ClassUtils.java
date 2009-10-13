@@ -31,13 +31,12 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.el.ExpressionFactory;
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
@@ -48,7 +47,8 @@ final class _ClassUtils
 {
     // ~ Static fields/initializers -----------------------------------------------------------------
 
-    private static final Log log = LogFactory.getLog(_ClassUtils.class);
+    //private static final Log log = LogFactory.getLog(_ClassUtils.class);
+    private static final Logger log = Logger.getLogger(_ClassUtils.class.getName());
 
     public static final Class<boolean[]> BOOLEAN_ARRAY_CLASS = boolean[].class;
     public static final Class<byte[]> BYTE_ARRAY_CLASS = byte[].class;
@@ -168,7 +168,7 @@ final class _ClassUtils
         }
         catch (ClassNotFoundException e)
         {
-            log.error("Class " + type + " not found", e);
+            log.log(Level.SEVERE, "Class " + type + " not found", e);
             throw new FacesException(e);
         }
     }
@@ -227,7 +227,7 @@ final class _ClassUtils
         }
         catch (ClassNotFoundException e)
         {
-            log.error("Class " + type + " not found", e);
+            log.log(Level.SEVERE, "Class " + type + " not found", e);
             throw new FacesException(e);
         }
     }
@@ -264,7 +264,7 @@ final class _ClassUtils
         }
         catch (IOException e)
         {
-            log.error(e.getMessage(), e);
+            log.log(Level.SEVERE, e.getMessage(), e);
             throw new FacesException(e);
         }
     }
@@ -311,17 +311,17 @@ final class _ClassUtils
         }
         catch (NoClassDefFoundError e)
         {
-            log.error("Class : " + clazz.getName() + " not found.", e);
+            log.log(Level.SEVERE, "Class : " + clazz.getName() + " not found.", e);
             throw new FacesException(e);
         }
         catch (InstantiationException e)
         {
-            log.error(e.getMessage(), e);
+            log.log(Level.SEVERE, e.getMessage(), e);
             throw new FacesException(e);
         }
         catch (IllegalAccessException e)
         {
-            log.error(e.getMessage(), e);
+            log.log(Level.SEVERE, e.getMessage(), e);
             throw new FacesException(e);
         }
     }
@@ -339,7 +339,7 @@ final class _ClassUtils
         catch (Exception e)
         {
             String message = "Cannot coerce " + value.getClass().getName() + " to " + desiredClass.getName();
-            log.error(message, e);
+            log.log(Level.SEVERE, message, e);
             throw new FacesException(message, e);
         }
     }

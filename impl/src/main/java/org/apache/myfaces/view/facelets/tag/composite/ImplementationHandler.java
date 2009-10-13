@@ -24,6 +24,8 @@ import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.component.UIComponent;
 import javax.faces.view.facelets.FaceletContext;
@@ -31,8 +33,6 @@ import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandler;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
@@ -44,7 +44,8 @@ import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 @JSFFaceletTag(name="composite:implementation")
 public class ImplementationHandler extends TagHandler
 {
-    private static final Log log = LogFactory.getLog(ImplementationHandler.class);
+    //private static final Log log = LogFactory.getLog(ImplementationHandler.class);
+    private static final Logger log = Logger.getLogger(ImplementationHandler.class.getName());
     
     public final static String NAME = "implementation";
 
@@ -80,9 +81,9 @@ public class ImplementationHandler extends TagHandler
             
             if (beanInfo == null)
             {
-                if (log.isErrorEnabled())
+                if (log.isLoggable(Level.SEVERE))
                 {
-                    log.error("Cannot found composite bean descriptor UIComponent.BEANINFO_KEY ");
+                    log.severe("Cannot found composite bean descriptor UIComponent.BEANINFO_KEY ");
                 }
                 return;
             }
@@ -107,9 +108,9 @@ public class ImplementationHandler extends TagHandler
                 }
                 catch (IntrospectionException e)
                 {
-                    if (log.isErrorEnabled())
+                    if (log.isLoggable(Level.SEVERE))
                     {
-                        log.error("Cannot create PropertyDescriptor for facet ",e);
+                        log.log(Level.SEVERE, "Cannot create PropertyDescriptor for facet ",e);
                     }
                     throw new TagException(tag,e);
                 }

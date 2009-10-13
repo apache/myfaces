@@ -23,12 +23,12 @@ import java.io.OutputStream;
 import java.io.Writer;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.context.ResponseStream;
 import javax.faces.context.ResponseWriter;
@@ -37,8 +37,6 @@ import javax.faces.render.RenderKit;
 import javax.faces.render.Renderer;
 import javax.faces.render.ResponseStateManager;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderKit;
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlRendererUtils;
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlResponseWriterImpl;
@@ -50,7 +48,8 @@ import org.apache.myfaces.shared_impl.renderkit.html.HtmlResponseWriterImpl;
 @JSFRenderKit(renderKitId = "HTML_BASIC")
 public class HtmlRenderKitImpl extends RenderKit
 {
-    private static final Log log = LogFactory.getLog(HtmlRenderKitImpl.class);
+    //private static final Log log = LogFactory.getLog(HtmlRenderKitImpl.class);
+    private static final Logger log = Logger.getLogger(HtmlRenderKitImpl.class.getName());
 
     // ~ Instance fields ----------------------------------------------------------------------------
 
@@ -122,7 +121,7 @@ public class HtmlRenderKitImpl extends RenderKit
         }
         if (renderer == null)
         {
-            log.warn("Unsupported component-family/renderer-type: " + componentFamily + "/" + rendererType);
+            log.warning("Unsupported component-family/renderer-type: " + componentFamily + "/" + rendererType);
         }
         return renderer;
     }
@@ -132,24 +131,24 @@ public class HtmlRenderKitImpl extends RenderKit
     {
         if (componentFamily == null)
         {
-            log.error("addRenderer: componentFamily = null is not allowed");
+            log.severe("addRenderer: componentFamily = null is not allowed");
             throw new NullPointerException("component family must not be null.");
         }
         if (rendererType == null)
         {
-            log.error("addRenderer: rendererType = null is not allowed");
+            log.severe("addRenderer: rendererType = null is not allowed");
             throw new NullPointerException("renderer type must not be null.");
         }
         if (renderer == null)
         {
-            log.error("addRenderer: renderer = null is not allowed");
+            log.severe("addRenderer: renderer = null is not allowed");
             throw new NullPointerException("renderer must not be null.");
         }
         
         _put(componentFamily, rendererType, renderer);
 
-        if (log.isTraceEnabled())
-            log.trace("add Renderer family = " + componentFamily + " rendererType = " + rendererType
+        if (log.isLoggable(Level.FINEST))
+            log.finest("add Renderer family = " + componentFamily + " rendererType = " + rendererType
                     + " renderer class = " + renderer.getClass().getName());
     }
     
@@ -174,7 +173,7 @@ public class HtmlRenderKitImpl extends RenderKit
                 // this is not necessarily an error, but users do need to be
                 // very careful about jar processing order when overriding
                 // some component's renderer with an alternate renderer.
-                log.debug("Overwriting renderer with family = " + componentFamily +
+                log.fine("Overwriting renderer with family = " + componentFamily +
                    " rendererType = " + rendererType +
                    " renderer class = " + renderer.getClass().getName());
             }

@@ -19,14 +19,14 @@
 package org.apache.myfaces.view.facelets.tag.composite;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.component.UIComponent;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 
 /**
@@ -37,7 +37,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 public class ExtensionHandler extends TagHandler
 {
 
-    private static final Log log = LogFactory.getLog(ExtensionHandler.class);
+    //private static final Log log = LogFactory.getLog(ExtensionHandler.class);
+    private static final Logger log = Logger.getLogger(ExtensionHandler.class.getName());
     
     public ExtensionHandler(TagConfig config)
     {
@@ -59,9 +60,9 @@ public class ExtensionHandler extends TagHandler
         
         if (beanInfo == null)
         {
-            if (log.isErrorEnabled())
+            if (log.isLoggable(Level.SEVERE))
             {
-                log.error("Cannot found composite bean descriptor UIComponent.BEANINFO_KEY ");
+                log.severe("Cannot found composite bean descriptor UIComponent.BEANINFO_KEY ");
             }
             return;
         }

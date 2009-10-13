@@ -32,6 +32,8 @@ import java.util.MissingResourceException;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.el.CompositeELResolver;
 import javax.el.ELContext;
@@ -80,8 +82,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.jsp.JspStateManagerImpl;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.impl.digester.elements.Property;
@@ -109,7 +109,8 @@ import org.apache.myfaces.shared_impl.util.ClassUtils;
 @SuppressWarnings("deprecation")
 public class ApplicationImpl extends Application
 {
-    private static final Log log = LogFactory.getLog(ApplicationImpl.class);
+    //private static final Log log = LogFactory.getLog(ApplicationImpl.class);
+    private static final Logger log = Logger.getLogger(ApplicationImpl.class.getName());
 
     private final static VariableResolver VARIABLERESOLVER = new VariableResolverToApplicationELResolverAdapter();
 
@@ -224,8 +225,8 @@ public class ApplicationImpl extends Application
         _resourceHandler = new ResourceHandlerImpl();
         _runtimeConfig = runtimeConfig;
 
-        if (log.isTraceEnabled())
-            log.trace("New Application instance created");
+        if (log.isLoggable(Level.FINEST))
+            log.finest("New Application instance created");
     }
 
     public static void setInitializingRuntimeConfig(RuntimeConfig config)
@@ -492,7 +493,7 @@ public class ApplicationImpl extends Application
             // If the act of invoking the processListener method causes an AbortProcessingException to be thrown,
             // processing of the listeners must be aborted, no further processing of the listeners for this event must
             // take place, and the exception must be logged with Level.SEVERE.
-            log.error("Event processing was aborted", e);
+            log.log(Level.SEVERE, "Event processing was aborted", e);
         }
     }
 
@@ -526,8 +527,8 @@ public class ApplicationImpl extends Application
         checkNull(actionListener, "actionListener");
 
         _actionListener = actionListener;
-        if (log.isTraceEnabled())
-            log.trace("set actionListener = " + actionListener.getClass().getName());
+        if (log.isLoggable(Level.FINEST))
+            log.finest("set actionListener = " + actionListener.getClass().getName());
     }
 
     @Override
@@ -566,8 +567,8 @@ public class ApplicationImpl extends Application
         checkNull(locale, "locale");
 
         _defaultLocale = locale;
-        if (log.isTraceEnabled())
-            log.trace("set defaultLocale = " + locale.getCountry() + " " + locale.getLanguage());
+        if (log.isLoggable(Level.FINEST))
+            log.finest("set defaultLocale = " + locale.getCountry() + " " + locale.getLanguage());
     }
 
     @Override
@@ -582,8 +583,8 @@ public class ApplicationImpl extends Application
         checkNull(messageBundle, "messageBundle");
 
         _messageBundle = messageBundle;
-        if (log.isTraceEnabled())
-            log.trace("set MessageBundle = " + messageBundle);
+        if (log.isLoggable(Level.FINEST))
+            log.finest("set MessageBundle = " + messageBundle);
     }
 
     @Override
@@ -598,8 +599,8 @@ public class ApplicationImpl extends Application
         checkNull(navigationHandler, "navigationHandler");
 
         _navigationHandler = navigationHandler;
-        if (log.isTraceEnabled())
-            log.trace("set NavigationHandler = " + navigationHandler.getClass().getName());
+        if (log.isLoggable(Level.FINEST))
+            log.finest("set NavigationHandler = " + navigationHandler.getClass().getName());
     }
 
     @Override
@@ -624,8 +625,8 @@ public class ApplicationImpl extends Application
 
         _runtimeConfig.setPropertyResolver(propertyResolver);
 
-        if (log.isTraceEnabled())
-            log.trace("set PropertyResolver = " + propertyResolver.getClass().getName());
+        if (log.isLoggable(Level.FINEST))
+            log.finest("set PropertyResolver = " + propertyResolver.getClass().getName());
     }
 
     @Override
@@ -652,7 +653,7 @@ public class ApplicationImpl extends Application
                     }
                     else
                     {
-                        log.error("JNDI lookup for key " + ProjectStage.PROJECT_STAGE_JNDI_NAME
+                        log.severe("JNDI lookup for key " + ProjectStage.PROJECT_STAGE_JNDI_NAME
                                 + " should return a java.lang.String value");
                     }
                 }
@@ -694,12 +695,12 @@ public class ApplicationImpl extends Application
                 }
                 catch (IllegalArgumentException e)
                 {
-                    log.error("Couldn't discover the current project stage", e);
+                    log.log(Level.SEVERE, "Couldn't discover the current project stage", e);
                 }
             }
             else
             {
-                if (log.isInfoEnabled())
+                if (log.isLoggable(Level.INFO))
                 {
                     log.info("Couldn't discover the current project stage, using " + ProjectStage.Production);
                 }
@@ -746,8 +747,8 @@ public class ApplicationImpl extends Application
         checkNull(locales, "locales");
 
         _supportedLocales = locales;
-        if (log.isTraceEnabled())
-            log.trace("set SupportedLocales");
+        if (log.isLoggable(Level.FINEST))
+            log.finest("set SupportedLocales");
     }
 
     @Override
@@ -778,8 +779,8 @@ public class ApplicationImpl extends Application
 
         _runtimeConfig.setVariableResolver(variableResolver);
 
-        if (log.isTraceEnabled())
-            log.trace("set VariableResolver = " + variableResolver.getClass().getName());
+        if (log.isLoggable(Level.FINEST))
+            log.finest("set VariableResolver = " + variableResolver.getClass().getName());
     }
 
     /**
@@ -798,8 +799,8 @@ public class ApplicationImpl extends Application
         checkNull(viewHandler, "viewHandler");
 
         _viewHandler = viewHandler;
-        if (log.isTraceEnabled())
-            log.trace("set ViewHandler = " + viewHandler.getClass().getName());
+        if (log.isLoggable(Level.FINEST))
+            log.finest("set ViewHandler = " + viewHandler.getClass().getName());
     }
 
     @Override
@@ -855,12 +856,12 @@ public class ApplicationImpl extends Application
         try
         {
             _behaviorClassMap.put(behaviorId, ClassUtils.simpleClassForName(behaviorClass));
-            if (log.isTraceEnabled())
-                log.trace("add Behavior class = " + behaviorClass + " for id = " + behaviorId);
+            if (log.isLoggable(Level.FINEST))
+                log.finest("add Behavior class = " + behaviorClass + " for id = " + behaviorId);
         }
         catch (Exception e)
         {
-            log.error("Behavior class " + behaviorClass + " not found", e);
+            log.log(Level.SEVERE, "Behavior class " + behaviorClass + " not found", e);
         }
 
     }
@@ -877,12 +878,12 @@ public class ApplicationImpl extends Application
         try
         {
             _componentClassMap.put(componentType, ClassUtils.simpleClassForName(componentClassName));
-            if (log.isTraceEnabled())
-                log.trace("add Component class = " + componentClassName + " for type = " + componentType);
+            if (log.isLoggable(Level.FINEST))
+                log.finest("add Component class = " + componentClassName + " for type = " + componentType);
         }
         catch (Exception e)
         {
-            log.error("Component class " + componentClassName + " not found", e);
+            log.log(Level.SEVERE, "Component class " + componentClassName + " not found", e);
         }
     }
 
@@ -898,12 +899,12 @@ public class ApplicationImpl extends Application
         try
         {
             _converterIdToClassMap.put(converterId, ClassUtils.simpleClassForName(converterClass));
-            if (log.isTraceEnabled())
-                log.trace("add Converter id = " + converterId + " converterClass = " + converterClass);
+            if (log.isLoggable(Level.FINEST))
+                log.finest("add Converter id = " + converterId + " converterClass = " + converterClass);
         }
         catch (Exception e)
         {
-            log.error("Converter class " + converterClass + " not found", e);
+            log.log(Level.SEVERE, "Converter class " + converterClass + " not found", e);
         }
     }
 
@@ -917,12 +918,12 @@ public class ApplicationImpl extends Application
         try
         {
             _converterClassNameToClassMap.put(targetClass, converterClass);
-            if (log.isTraceEnabled())
-                log.trace("add Converter for class = " + targetClass + " converterClass = " + converterClass);
+            if (log.isLoggable(Level.FINEST))
+                log.finest("add Converter for class = " + targetClass + " converterClass = " + converterClass);
         }
         catch (Exception e)
         {
-            log.error("Converter class " + converterClass + " not found", e);
+            log.log(Level.SEVERE, "Converter class " + converterClass + " not found", e);
         }
     }
 
@@ -949,12 +950,12 @@ public class ApplicationImpl extends Application
         try
         {
             _validatorClassMap.put(validatorId, ClassUtils.simpleClassForName(validatorClass));
-            if (log.isTraceEnabled())
-                log.trace("add Validator id = " + validatorId + " class = " + validatorClass);
+            if (log.isLoggable(Level.FINEST))
+                log.finest("add Validator id = " + validatorId + " class = " + validatorClass);
         }
         catch (Exception e)
         {
-            log.error("Validator class " + validatorClass + " not found", e);
+            log.log(Level.SEVERE, "Validator class " + validatorClass + " not found", e);
         }
     }
 
@@ -977,7 +978,7 @@ public class ApplicationImpl extends Application
         }
         catch (Exception e)
         {
-            log.error("Could not instantiate behavior " + behaviorClass, e);
+            log.log(Level.SEVERE, "Could not instantiate behavior " + behaviorClass, e);
             throw new FacesException("Could not instantiate behavior: " + behaviorClass, e);
         }
     }
@@ -1068,17 +1069,17 @@ public class ApplicationImpl extends Application
                     }
                     catch (InstantiationException e)
                     {
-                        log.error("Could not instantiate component class name = " + fqcn, e);
+                        log.log(Level.SEVERE, "Could not instantiate component class name = " + fqcn, e);
                         throw new FacesException("Could not instantiate component class name = " + fqcn, e);
                     }
                     catch (IllegalAccessException e)
                     {
-                        log.error("Could not instantiate component class name = " + fqcn, e);
+                        log.log(Level.SEVERE, "Could not instantiate component class name = " + fqcn, e);
                         throw new FacesException("Could not instantiate component class name = " + fqcn, e);
                     }
                     catch (Exception e)
                     {
-                        log.error("Could not instantiate component class name = " + fqcn, e);
+                        log.log(Level.SEVERE, "Could not instantiate component class name = " + fqcn, e);
                     }
                 }
 
@@ -1144,7 +1145,7 @@ public class ApplicationImpl extends Application
         final Class<? extends UIComponent> componentClass = _componentClassMap.get(componentType);
         if (componentClass == null)
         {
-            log.error("Undefined component type " + componentType);
+            log.log(Level.SEVERE, "Undefined component type " + componentType);
             throw new FacesException("Undefined component type " + componentType);
         }
 
@@ -1156,7 +1157,7 @@ public class ApplicationImpl extends Application
         }
         catch (Exception e)
         {
-            log.error("Could not instantiate component componentType = " + componentType, e);
+            log.log(Level.SEVERE, "Could not instantiate component componentType = " + componentType, e);
             throw new FacesException("Could not instantiate component componentType = " + componentType, e);
         }
     }
@@ -1226,7 +1227,7 @@ public class ApplicationImpl extends Application
         }
         catch (Exception e)
         {
-            log.error("Could not instantiate converter " + converterClass, e);
+            log.log(Level.SEVERE, "Could not instantiate converter " + converterClass, e);
             throw new FacesException("Could not instantiate converter: " + converterClass, e);
         }
     }
@@ -1299,7 +1300,7 @@ public class ApplicationImpl extends Application
             }
             catch (Exception e)
             {
-                log.error("Could not instantiate converter " + converterClassName, e);
+                log.log(Level.SEVERE, "Could not instantiate converter " + converterClassName, e);
                 throw new FacesException("Could not instantiate converter: " + converterClassName, e);
             }
         }
@@ -1373,7 +1374,7 @@ public class ApplicationImpl extends Application
                 }
                 catch (Throwable th)
                 {
-                    log.error("Initializing converter : " + converterClass.getName() + " with property : "
+                    log.log(Level.SEVERE, "Initializing converter : " + converterClass.getName() + " with property : "
                             + property.getPropertyName() + " and value : " + property.getDefaultValue() + " failed.");
                 }
             }
@@ -1427,7 +1428,7 @@ public class ApplicationImpl extends Application
         if (validatorClass == null)
         {
             String message = "Unknown validator id '" + validatorId + "'.";
-            log.error(message);
+            log.severe(message);
             throw new FacesException(message);
         }
 
@@ -1437,7 +1438,7 @@ public class ApplicationImpl extends Application
         }
         catch (Exception e)
         {
-            log.error("Could not instantiate validator " + validatorClass, e);
+            log.log(Level.SEVERE, "Could not instantiate validator " + validatorClass, e);
             throw new FacesException("Could not instantiate validator: " + validatorClass, e);
         }
     }
@@ -1705,7 +1706,7 @@ public class ApplicationImpl extends Application
         if (renderer == null)
         {
             // If no such Renderer can be found, a message must be logged with a helpful error message.
-            log.error("renderer cannot be found for component type " + componentType + " and renderer type "
+            log.severe("renderer cannot be found for component type " + componentType + " and renderer type "
                     + rendererType);
         }
         else

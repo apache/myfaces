@@ -24,6 +24,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ELResolver;
@@ -31,8 +34,7 @@ import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 import org.apache.myfaces.config.ManagedBeanBuilder;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.ManagedBean;
@@ -44,7 +46,8 @@ import org.apache.myfaces.config.element.ManagedBean;
  */
 public class ManagedBeanResolver extends ELResolver
 {
-    private static final Log log = LogFactory.getLog(ManagedBeanResolver.class);
+    //private static final Log log = LogFactory.getLog(ManagedBeanResolver.class);
+    private static final Logger log = Logger.getLogger(ManagedBeanResolver.class.getName());
     private static final String BEANS_UNDER_CONSTRUCTION =
             "org.apache.myfaces.el.unified.resolver.managedbean.beansUnderConstruction";
 
@@ -231,8 +234,8 @@ public class ManagedBeanResolver extends ELResolver
 
         if (obj == null)
         {
-            if (log.isDebugEnabled())
-                log.debug("Variable '" + managedBeanName + "' could not be resolved.");
+            if (log.isLoggable(Level.FINE))
+                log.fine("Variable '" + managedBeanName + "' could not be resolved.");
         }
         else
         {
@@ -243,7 +246,7 @@ public class ManagedBeanResolver extends ELResolver
             final Scope scope = _scopes.get(scopeKey);
             if (scope == null)
             {
-                log.error("Managed bean '" + managedBeanName + "' has illegal scope: " + scopeKey);
+                log.severe("Managed bean '" + managedBeanName + "' has illegal scope: " + scopeKey);
             }
             else
             {

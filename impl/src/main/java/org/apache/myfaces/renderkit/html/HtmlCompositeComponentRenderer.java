@@ -19,12 +19,12 @@
 package org.apache.myfaces.renderkit.html;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlRenderer;
 
@@ -36,7 +36,8 @@ import org.apache.myfaces.shared_impl.renderkit.html.HtmlRenderer;
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.NamingContainer", type = "javax.faces.Composite")
 public class HtmlCompositeComponentRenderer extends HtmlRenderer
 {
-    private static final Log log = LogFactory.getLog(HtmlCompositeComponentRenderer.class);
+    //private static final Log log = LogFactory.getLog(HtmlCompositeComponentRenderer.class);
+    private static final Logger log = Logger.getLogger(HtmlCompositeComponentRenderer.class.getName());
     
     public boolean getRendersChildren()
     {
@@ -60,9 +61,9 @@ public class HtmlCompositeComponentRenderer extends HtmlRenderer
         
         if (compositeFacet == null)
         {
-            if (log.isErrorEnabled())
+            if (log.isLoggable(Level.SEVERE))
             {
-                log.error("facet UIComponent.COMPOSITE_FACET_NAME not found when rendering composite component "+
+                log.severe("facet UIComponent.COMPOSITE_FACET_NAME not found when rendering composite component "+
                         component.getClientId(context));
             }
             return;            

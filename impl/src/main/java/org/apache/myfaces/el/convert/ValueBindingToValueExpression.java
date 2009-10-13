@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.el.convert;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.PropertyNotFoundException;
@@ -28,8 +31,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.el.EvaluationException;
 import javax.faces.el.ValueBinding;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 /**
@@ -47,7 +48,8 @@ public class ValueBindingToValueExpression extends ValueExpression implements St
 {
     private static final long serialVersionUID = 8071429285360496554L;
 
-    private static final Log logger = LogFactory.getLog(ValueBindingToValueExpression.class);
+    //private static final Log logger = LogFactory.getLog(ValueBindingToValueExpression.class);
+    private static final Logger logger = Logger.getLogger(ValueBindingToValueExpression.class.getName());
 
     private ValueBinding _valueBinding;
 
@@ -194,7 +196,7 @@ public class ValueBindingToValueExpression extends ValueExpression implements St
             }
             catch (Throwable e)
             {
-                logger.warn("Could not determine expected type for '" + _valueBinding.getExpressionString() + "': "
+                logger.log(Level.WARNING, "Could not determine expected type for '" + _valueBinding.getExpressionString() + "': "
                         + e.getMessage(), e);
             }
         }

@@ -28,6 +28,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
@@ -50,11 +52,10 @@ import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.render.Renderer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
+
 
 /**
  * TODO: IMPLEMENT HERE - Delta state saving support
@@ -75,7 +76,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 @JSFJspProperty(name = "binding", returnType = "javax.faces.component.UIComponent", longDesc = "Identifies a backing bean property (of type UIComponent or appropriate subclass) to bind to this component instance. This value must be an EL expression.", desc = "backing bean property to bind to this component instance")
 public abstract class UIComponentBase extends UIComponent
 {
-    private static Log log = LogFactory.getLog(UIComponentBase.class);
+    //private static Log log = LogFactory.getLog(UIComponentBase.class);
+    private static Logger log = Logger.getLogger(UIComponentBase.class.getName());
 
     private static final ThreadLocal<StringBuilder> _STRING_BUILDER = new ThreadLocal<StringBuilder>();
 
@@ -341,9 +343,9 @@ public abstract class UIComponentBase extends UIComponent
         {
             //component didn't implement getEventNames properly
             //log an error and return
-            if(log.isErrorEnabled())
+            if(log.isLoggable(Level.SEVERE))
             {
-                log.error("attempted to add a behavior to a component which did not properly implement getEventNames.  getEventNames must not return null");
+                log.severe("attempted to add a behavior to a component which did not properly implement getEventNames.  getEventNames must not return null");
                 return;
             }
         }
@@ -821,9 +823,9 @@ public abstract class UIComponentBase extends UIComponent
             _clientId = renderer.convertClientId(context, _clientId);
         }
 
-        if (idWasNull && log.isWarnEnabled())
+        if (idWasNull && log.isLoggable(Level.WARNING))
         {
-            log.warn("WARNING: Component " + _clientId
+            log.warning("WARNING: Component " + _clientId
                     + " just got an automatic id, because there was no id assigned yet. "
                     + "If this component was created dynamically (i.e. not by a JSP tag) you should assign it an "
                     + "explicit static id or assign it the id you get from "
@@ -1115,7 +1117,7 @@ public abstract class UIComponentBase extends UIComponent
                                                        "No Renderer found for component " + getPathToComponent(this)
                                                                + " (component-family=" + getFamily()
                                                                + ", renderer-type=" + rendererType + ")");
-            log.warn("No Renderer found for component " + getPathToComponent(this) + " (component-family="
+            log.warning("No Renderer found for component " + getPathToComponent(this) + " (component-family="
                     + getFamily() + ", renderer-type=" + rendererType + ")");
         }
         return renderer;

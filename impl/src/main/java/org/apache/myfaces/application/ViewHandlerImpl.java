@@ -25,6 +25,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
@@ -42,15 +44,14 @@ import javax.faces.view.ViewDeclarationLanguageFactory;
 import javax.faces.view.ViewMetadata;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.shared_impl.config.MyfacesConfig;
 import org.apache.myfaces.shared_impl.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.view.facelets.StateWriter;
 
 public class ViewHandlerImpl extends ViewHandler
 {
-    private static final Log log = LogFactory.getLog(ViewHandlerImpl.class);
+    //private static final Log log = LogFactory.getLog(ViewHandlerImpl.class);
+    private static final Logger log = Logger.getLogger(ViewHandlerImpl.class.getName());
     public static final String FORM_STATE_MARKER = "<!--@@JSF_FORM_STATE_MARKER@@-->";
     private ViewHandlerSupport _viewHandlerSupport;
     private ViewDeclarationLanguageFactory _vdlFactory;
@@ -58,8 +59,8 @@ public class ViewHandlerImpl extends ViewHandler
     public ViewHandlerImpl()
     {
         _vdlFactory = (ViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);
-        if (log.isTraceEnabled())
-            log.trace("New ViewHandler instance created");
+        if (log.isLoggable(Level.FINEST))
+            log.finest("New ViewHandler instance created");
     }
 
     @Override

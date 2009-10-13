@@ -19,17 +19,17 @@
 package org.apache.myfaces.webapp;
 
 import java.util.Enumeration;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.config.ManagedBeanBuilder;
-import org.apache.myfaces.util.ContainerUtils;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.FactoryFinder;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+
+import org.apache.myfaces.config.ManagedBeanBuilder;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.util.ContainerUtils;
 
 /**
  * Initialise the MyFaces system.
@@ -57,7 +57,8 @@ public class StartupServletContextListener extends AbstractMyFacesListener imple
     private static final byte FACES_INIT_PHASE_PREDESTROY = 2;
     private static final byte FACES_INIT_PHASE_POSTDESTROY = 3;
 
-    private static final Log log = LogFactory.getLog(StartupServletContextListener.class);
+    //private static final Log log = LogFactory.getLog(StartupServletContextListener.class);
+    private static final Logger log = Logger.getLogger(StartupServletContextListener.class.getName());
 
     private FacesInitializer _facesInitializer;
     private ServletContext _servletContext;
@@ -107,11 +108,11 @@ public class StartupServletContextListener extends AbstractMyFacesListener imple
 
                
             } catch (ClassNotFoundException e) {
-                log.error(e);
+                log.log(Level.SEVERE, e.getMessage(), e);
             } catch (IllegalAccessException e) {
-                log.error(e);
+                log.log(Level.SEVERE, e.getMessage(), e);
             } catch (InstantiationException e) {
-                log.error(e);
+                log.log(Level.SEVERE, e.getMessage(), e);
             }
 
         }

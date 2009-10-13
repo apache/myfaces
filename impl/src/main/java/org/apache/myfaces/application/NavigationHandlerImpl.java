@@ -28,22 +28,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.application.ConfigurableNavigationHandler;
-import javax.faces.application.NavigationHandler;
+import javax.faces.application.NavigationCase;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.config.RuntimeConfig;
-import javax.faces.application.NavigationCase;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.shared_impl.util.HashMapUtils;
 
@@ -55,7 +52,8 @@ import org.apache.myfaces.shared_impl.util.HashMapUtils;
 public class NavigationHandlerImpl
     extends ConfigurableNavigationHandler
 {
-    private static final Log log = LogFactory.getLog(NavigationHandlerImpl.class);
+    //private static final Log log = LogFactory.getLog(NavigationHandlerImpl.class);
+    private static final Logger log = Logger.getLogger(NavigationHandlerImpl.class.getName());
 
     private static final String ASTERISK = "*";
 
@@ -64,7 +62,7 @@ public class NavigationHandlerImpl
 
     public NavigationHandlerImpl()
     {
-        if (log.isTraceEnabled()) log.trace("New NavigationHandler instance created");
+        if (log.isLoggable(Level.FINEST)) log.finest("New NavigationHandler instance created");
     }
 
     @Override
@@ -74,9 +72,9 @@ public class NavigationHandlerImpl
 
         if (navigationCase != null)
         {
-            if (log.isTraceEnabled())
+            if (log.isLoggable(Level.FINEST))
             {
-                log.trace("handleNavigation fromAction=" + fromAction + " outcome=" + outcome +
+                log.finest("handleNavigation fromAction=" + fromAction + " outcome=" + outcome +
                           " toViewId =" + navigationCase.getToViewId(facesContext) +
                           " redirect=" + navigationCase.isRedirect());
             }
@@ -141,9 +139,9 @@ public class NavigationHandlerImpl
         else
         {
             // no navigationcase found, stay on current ViewRoot
-            if (log.isTraceEnabled())
+            if (log.isLoggable(Level.FINEST))
             {
-                log.trace("handleNavigation fromAction=" + fromAction + " outcome=" + outcome +
+                log.finest("handleNavigation fromAction=" + fromAction + " outcome=" + outcome +
                           " no matching navigation-case found, staying on current ViewRoot");
             }
         }

@@ -18,22 +18,23 @@
  */
 package org.apache.myfaces.webapp;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.servlet.ServletContextAttributeEvent;
 import javax.servlet.ServletRequestAttributeEvent;
 import javax.servlet.http.HttpSessionBindingEvent;
 
 import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author Dennis Byrne
  */
 
 public abstract class AbstractMyFacesListener {
-    private static Log log = LogFactory.getLog(AbstractMyFacesListener.class);
+    //private static Log log = LogFactory.getLog(AbstractMyFacesListener.class);
+    private static Logger log = Logger.getLogger(AbstractMyFacesListener.class.getName());
 
     protected void doPreDestroy(ServletRequestAttributeEvent event, String scope) {
         doPreDestroy(event.getValue(), event.getName(), scope);
@@ -61,10 +62,10 @@ public abstract class AbstractMyFacesListener {
                 LifecycleProviderFactory.getLifecycleProviderFactory().getLifecycleProvider(null).destroyInstance(value);
             } catch (IllegalAccessException e)
             {
-                log.error("", e);
+                log.log(Level.SEVERE, "", e);
             } catch (InvocationTargetException e)
             {
-                log.error("", e);
+                log.log(Level.SEVERE, "", e);
             }
         }
     }

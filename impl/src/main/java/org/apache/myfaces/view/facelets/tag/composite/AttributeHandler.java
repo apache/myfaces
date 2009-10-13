@@ -22,6 +22,8 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.component.UIComponent;
 import javax.faces.view.facelets.FaceletContext;
@@ -30,8 +32,6 @@ import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandler;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 
@@ -43,7 +43,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 public class AttributeHandler extends TagHandler implements InterfaceDescriptorCreator
 {
     
-    private static final Log log = LogFactory.getLog(AttributeHandler.class);
+    //private static final Log log = LogFactory.getLog(AttributeHandler.class);
+    private static final Logger log = Logger.getLogger(AttributeHandler.class.getName());
 
     @JSFFaceletAttribute(name="name",
             className="javax.el.ValueExpression",
@@ -174,9 +175,9 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
         
         if (beanInfo == null)
         {
-            if (log.isErrorEnabled())
+            if (log.isLoggable(Level.SEVERE))
             {
-                log.error("Cannot found composite bean descriptor UIComponent.BEANINFO_KEY ");
+                log.severe("Cannot found composite bean descriptor UIComponent.BEANINFO_KEY ");
             }
             return;
         }
@@ -236,9 +237,9 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
         }
         catch (IntrospectionException e)
         {
-            if (log.isErrorEnabled())
+            if (log.isLoggable(Level.SEVERE))
             {
-                log.error("Cannot create PropertyDescriptor for attribute ",e);
+                log.log(Level.SEVERE, "Cannot create PropertyDescriptor for attribute ",e);
             }
             throw new TagException(tag,e);
         }
@@ -294,9 +295,9 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
         }
         catch (IntrospectionException e)
         {
-            if (log.isErrorEnabled())
+            if (log.isLoggable(Level.SEVERE))
             {
-                log.error("Cannot create PropertyDescriptor for attribute ",e);
+                log.log(Level.SEVERE, "Cannot create PropertyDescriptor for attribute ",e);
             }
             throw new TagException(tag,e);
         }

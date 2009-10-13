@@ -18,15 +18,14 @@
  */
 package org.apache.myfaces.application;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.net.MalformedURLException;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.application.ViewHandler;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-
-import java.net.MalformedURLException;
-import java.util.Map;
 
 /**
  * A ViewHandlerSupport implementation for use with standard Java Servlet engines,
@@ -43,7 +42,8 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
     private static final String CACHED_SERVLET_MAPPING =
         DefaultViewHandlerSupport.class.getName() + ".CACHED_SERVLET_MAPPING";
 
-    private static final Log log = LogFactory.getLog(DefaultViewHandlerSupport.class);
+    //private static final Log log = LogFactory.getLog(DefaultViewHandlerSupport.class);
+    private static final Logger log = Logger.getLogger(DefaultViewHandlerSupport.class.getName());
 
     public String calculateViewId(FacesContext context, String viewId)
     {
@@ -120,9 +120,9 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             builder.append(viewId);
         }
         String calculatedActionURL = builder.toString();
-        if (log.isTraceEnabled())
+        if (log.isLoggable(Level.FINEST))
         {
-            log.trace("Calculated actionURL: '" + calculatedActionURL + "' for viewId: '" + viewId + "'");
+            log.finest("Calculated actionURL: '" + calculatedActionURL + "' for viewId: '" + viewId + "'");
         }
         return calculatedActionURL;
     }

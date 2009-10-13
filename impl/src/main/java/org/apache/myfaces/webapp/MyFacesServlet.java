@@ -18,14 +18,20 @@
  */
 package org.apache.myfaces.webapp;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.shared_impl.webapp.webxml.DelegatedFacesServlet;
-import org.apache.myfaces.util.ContainerUtils;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.webapp.FacesServlet;
-import javax.servlet.*;
-import java.io.IOException;
+import javax.servlet.Servlet;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+
+import org.apache.myfaces.shared_impl.webapp.webxml.DelegatedFacesServlet;
+import org.apache.myfaces.util.ContainerUtils;
 
 /**
  * Derived FacesServlet that can be used for debugging purpose
@@ -36,7 +42,8 @@ import java.io.IOException;
  */
 public class MyFacesServlet implements Servlet, DelegatedFacesServlet
 {
-    private static final Log log = LogFactory.getLog(MyFacesServlet.class);
+    //private static final Log log = LogFactory.getLog(MyFacesServlet.class);
+    private static final Logger log = Logger.getLogger(MyFacesServlet.class.getName());
 
     private final FacesServlet delegate = new FacesServlet();
     
@@ -87,8 +94,8 @@ public class MyFacesServlet implements Servlet, DelegatedFacesServlet
         Boolean b = (Boolean)servletContext.getAttribute(StartupServletContextListener.FACES_INIT_DONE);
         if (b == null || b.booleanValue() == false)
         {
-            if(log.isWarnEnabled())
-                log.warn("ServletContextListener not yet called");
+            if(log.isLoggable(Level.WARNING))
+                log.warning("ServletContextListener not yet called");
             getFacesInitializer().initFaces(servletConfig.getServletContext());
         }
         delegate.init(servletConfig);
@@ -99,9 +106,9 @@ public class MyFacesServlet implements Servlet, DelegatedFacesServlet
             throws IOException,
                    ServletException
     {
-        if (log.isTraceEnabled()) log.trace("MyFacesServlet service start");
+        if (log.isLoggable(Level.FINEST)) log.finest("MyFacesServlet service start");
         delegate.service(request, response);
-        if (log.isTraceEnabled()) log.trace("MyFacesServlet service finished");
+        if (log.isLoggable(Level.FINEST)) log.finest("MyFacesServlet service finished");
     }
 
 }

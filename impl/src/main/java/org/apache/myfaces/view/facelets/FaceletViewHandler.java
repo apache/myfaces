@@ -66,7 +66,8 @@ import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 public class FaceletViewHandler extends ViewHandler
 {
 
-    protected final static Logger log = Logger.getLogger("facelets.viewhandler");
+    //protected final static Logger log = Logger.getLogger("facelets.viewhandler");
+    protected final static Logger log = Logger.getLogger(FaceletViewHandler.class.getName());
 
     public final static long DEFAULT_REFRESH_PERIOD = 2;
 

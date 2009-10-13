@@ -23,6 +23,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.el.CompositeELResolver;
 import javax.el.ELResolver;
@@ -31,8 +33,6 @@ import javax.faces.context.ExternalContext;
 import javax.faces.el.PropertyResolver;
 import javax.faces.el.VariableResolver;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
@@ -48,7 +48,8 @@ import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
 @SuppressWarnings("deprecation")
 public class RuntimeConfig
 {
-    private static final Log log = LogFactory.getLog(RuntimeConfig.class);
+    //private static final Log log = LogFactory.getLog(RuntimeConfig.class);
+    private static final Logger log = Logger.getLogger(RuntimeConfig.class.getName());
 
     private static final String APPLICATION_MAP_PARAM_NAME = RuntimeConfig.class.getName();
 
@@ -169,9 +170,9 @@ public class RuntimeConfig
             throw new IllegalArgumentException("bundle must not be null");
         }
         String var = bundle.getVar();
-        if (_resourceBundles.containsKey(var) && log.isWarnEnabled())
+        if (_resourceBundles.containsKey(var) && log.isLoggable(Level.WARNING))
         {
-            log.warn("Another resource bundle for var '" + var + "' with base name '"
+            log.warning("Another resource bundle for var '" + var + "' with base name '"
                     + _resourceBundles.get(var).getBaseName() + "' is already registered. '"
                     + _resourceBundles.get(var).getBaseName() + "' will be replaced with '" + bundle.getBaseName()
                     + "'.");

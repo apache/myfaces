@@ -53,7 +53,8 @@ import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
 public class ComponentHandler extends MetaTagHandler
 {
 
-    private final static Logger log = Logger.getLogger("facelets.tag.component");
+    //private final static Logger log = Logger.getLogger("facelets.tag.component");
+    private final static Logger log = Logger.getLogger(ComponentHandler.class.getName());
 
     private final TagAttribute binding;
 

@@ -18,29 +18,43 @@
  */
 package javax.faces.webapp;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ExternalContext;
-import javax.faces.component.UIComponent;
-import javax.el.Expression;
-import javax.el.ValueExpression;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.text.DateFormat;
-import java.util.*;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.el.Expression;
+import javax.el.ValueExpression;
+import javax.faces.FacesException;
+import javax.faces.component.UIComponent;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Jacob Hookom (ICLA with ASF filed)
@@ -48,7 +62,8 @@ import java.util.regex.Matcher;
 final class _ErrorPageWriter
 {
 
-    private static final Log log = LogFactory.getLog(_ErrorPageWriter.class);
+    //private static final Log log = LogFactory.getLog(_ErrorPageWriter.class);
+    private static final Logger log = Logger.getLogger(_ErrorPageWriter.class.getName());
 
     private final static String TS = "&lt;";
 
@@ -567,7 +582,7 @@ final class _ErrorPageWriter
 
                 debugHtml(writer, facesContext, ex);
 
-                log.error("An exception occurred", ex);
+                log.log(Level.SEVERE, "An exception occurred", ex);
             }
             else
             {
@@ -602,7 +617,7 @@ final class _ErrorPageWriter
 
                 for (Exception exception : exceptionList)
                 {
-                    log.error("An exception occurred", exception);
+                    log.log(Level.SEVERE, "An exception occurred", exception);
                 }
             }
             else

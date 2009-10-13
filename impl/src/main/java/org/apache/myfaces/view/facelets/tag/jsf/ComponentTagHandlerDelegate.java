@@ -57,7 +57,8 @@ import org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler;
  */
 public class ComponentTagHandlerDelegate extends TagHandlerDelegate
 {
-    private final static Logger log = Logger.getLogger("facelets.tag.component");
+    //private final static Logger log = Logger.getLogger("facelets.tag.component");
+    private final static Logger log = Logger.getLogger(ComponentTagHandlerDelegate.class.getName());
 
     private final ComponentHandler _delegate;
 

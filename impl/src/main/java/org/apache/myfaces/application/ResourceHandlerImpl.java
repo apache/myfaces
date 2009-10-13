@@ -25,6 +25,8 @@ import java.net.URL;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.application.Resource;
 import javax.faces.application.ResourceHandler;
@@ -33,8 +35,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.ServletResponseWrapper;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.resource.ResourceImpl;
 import org.apache.myfaces.resource.ResourceLoader;
 import org.apache.myfaces.resource.ResourceMeta;
@@ -54,7 +54,8 @@ public class ResourceHandlerImpl extends ResourceHandler
 
     private ResourceHandlerSupport _resourceHandlerSupport;
 
-    private static final Log log = LogFactory.getLog(ResourceHandlerImpl.class);
+    //private static final Log log = LogFactory.getLog(ResourceHandlerImpl.class);
+    private static final Logger log = Logger.getLogger(ResourceHandlerImpl.class.getName());
 
     private static final int _BUFFER_SIZE = 2048;
 
@@ -310,8 +311,8 @@ public class ResourceHandlerImpl extends ResourceHandler
         catch (IOException e)
         {
             //TODO: Log using a localized message (which one?)
-            if (log.isErrorEnabled())
-                log.error("Error trying to load resource " + resourceName
+            if (log.isLoggable(Level.SEVERE))
+                log.severe("Error trying to load resource " + resourceName
                         + " with library " + libraryName + " :"
                         + e.getMessage());
             httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);

@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
@@ -51,11 +52,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.context.flash.FlashImpl;
-import org.apache.myfaces.shared_impl.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.util.EnumerationIterator;
 
 /**
@@ -67,7 +65,8 @@ import org.apache.myfaces.util.EnumerationIterator;
  */
 public final class ServletExternalContextImpl extends ExternalContext implements ReleaseableExternalContext
 {
-    private static final Log log = LogFactory.getLog(ServletExternalContextImpl.class);
+    //private static final Log log = LogFactory.getLog(ServletExternalContextImpl.class);
+    private static final Logger log = Logger.getLogger(ServletExternalContextImpl.class.getName());
 
     private static final String INIT_PARAMETER_MAP_ATTRIBUTE = InitParameterMap.class.getName();
     private static final String URL_PARAM_SEPERATOR="&";
@@ -710,7 +709,7 @@ public final class ServletExternalContextImpl extends ExternalContext implements
         else
         {
             // I did not throw an exception just to be sure nothing breaks.
-            log.error("Cannot set content type. Response already committed");
+            log.severe("Cannot set content type. Response already committed");
         }
     }
 

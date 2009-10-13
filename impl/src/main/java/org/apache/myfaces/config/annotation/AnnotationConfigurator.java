@@ -35,6 +35,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
@@ -60,8 +62,6 @@ import javax.faces.render.RenderKitFactory;
 import javax.faces.render.Renderer;
 import javax.faces.validator.FacesValidator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.config.FacesConfigDispenser;
 import org.apache.myfaces.config.NamedEventManager;
 import org.apache.myfaces.config.RuntimeConfig;
@@ -92,8 +92,8 @@ import org.apache.myfaces.view.facelets.util.Classpath;
  */
 public class AnnotationConfigurator
 {
-    private static final Log log = LogFactory
-            .getLog(AnnotationConfigurator.class);
+    //private static final Log log = LogFactory.getLog(AnnotationConfigurator.class);
+    private static final Logger log = Logger.getLogger(AnnotationConfigurator.class.getName());
 
     private static final String META_INF_PREFIX = "META-INF/";
 
@@ -236,9 +236,9 @@ public class AnnotationConfigurator
         {
             archives = webArchives(_externalContext);
 
-            if (log.isTraceEnabled())
+            if (log.isLoggable(Level.FINEST))
             {
-                log.trace("Receiving " + archives.size() + " jar files to check");
+                log.finest("Receiving " + archives.size() + " jar files to check");
             }
             for (JarFile archive : archives)
             {
@@ -417,10 +417,10 @@ public class AnnotationConfigurator
                 }
                 if (signal == null)
                 {
-                    if (log.isTraceEnabled())
+                    if (log.isLoggable(Level.FINEST))
                     {
                         log
-                                .trace("Skip JAR file "
+                                .finest("Skip JAR file "
                                         + path
                                         + " because it has no META-INF/faces-config.xml resource");
                     }
@@ -487,9 +487,9 @@ public class AnnotationConfigurator
                 // load it using the classLoader. Anyway, log a debug
                 // message.
                 couldContainAnnotation = true;
-                if (log.isDebugEnabled())
+                if (log.isLoggable(Level.FINE))
                 {
-                    log.debug("IOException when filtering class " + name
+                    log.fine("IOException when filtering class " + name
                             + " for annotations");
                 }
             }
@@ -573,9 +573,9 @@ public class AnnotationConfigurator
         {
             return; //need this in case there is no WEB-INF/classes directory
         }
-        if (log.isTraceEnabled())
+        if (log.isLoggable(Level.FINEST))
         {
-            log.trace("webClasses(" + prefix + ") - Received " + paths.size()
+            log.finest("webClasses(" + prefix + ") - Received " + paths.size()
                     + " paths to check");
         }
 
@@ -583,10 +583,10 @@ public class AnnotationConfigurator
 
         if (paths.isEmpty())
         {
-            if (log.isWarnEnabled())
+            if (log.isLoggable(Level.WARNING))
             {
                 log
-                        .warn("AnnotationConfigurator does not found classes "
+                        .warning("AnnotationConfigurator does not found classes "
                                 + "for annotations in "
                                 + prefix
                                 + " ."
@@ -624,9 +624,9 @@ public class AnnotationConfigurator
                         // load it using the classLoader. Anyway, log a debug
                         // message.
                         couldContainAnnotation = true;
-                        if (log.isDebugEnabled())
+                        if (log.isLoggable(Level.FINE))
                         {
-                            log.debug("IOException when filtering class " + path
+                            log.fine("IOException when filtering class " + path
                                     + " for annotations");
                         }
                     }
@@ -682,18 +682,18 @@ public class AnnotationConfigurator
      */
     protected void configureClass( Application application, FacesConfigDispenser<FacesConfig> dispenser, Class clazz)
     {
-        if (log.isTraceEnabled())
+        if (log.isLoggable(Level.FINEST))
         {
-            log.trace("registerClass(" + clazz.getName() + ")");
+            log.finest("registerClass(" + clazz.getName() + ")");
         }
 
         FacesComponent comp = (FacesComponent) clazz
                 .getAnnotation(FacesComponent.class);
         if (comp != null)
         {
-            if (log.isTraceEnabled())
+            if (log.isLoggable(Level.FINEST))
             {
-                log.trace("addComponent(" + comp.value() + ","
+                log.finest("addComponent(" + comp.value() + ","
                         + clazz.getName() + ")");
             }
             
@@ -709,9 +709,9 @@ public class AnnotationConfigurator
                 .getAnnotation(FacesConverter.class);
         if (conv != null)
         {
-            if (log.isTraceEnabled())
+            if (log.isLoggable(Level.FINEST))
             {
-                log.trace("addConverter(" + conv.value() + ","
+                log.finest("addConverter(" + conv.value() + ","
                         + clazz.getName() + ")");
             }
             //If there is a previous entry on Application Configuration Resources,
@@ -731,9 +731,9 @@ public class AnnotationConfigurator
         .getAnnotation(FacesValidator.class);
         if (val != null)
         {
-            if (log.isTraceEnabled())
+            if (log.isLoggable(Level.FINEST))
             {
-                log.trace("addValidator(" + val.value() + "," + clazz.getName()
+                log.finest("addValidator(" + val.value() + "," + clazz.getName()
                         + ")");
             }
             //If there is a previous entry on Application Configuration Resources,
@@ -757,9 +757,9 @@ public class AnnotationConfigurator
             {
                 renderKitId = RenderKitFactory.HTML_BASIC_RENDER_KIT;
             }
-            if (log.isTraceEnabled())
+            if (log.isLoggable(Level.FINEST))
             {
-                log.trace("addRenderer(" + renderKitId + ", "
+                log.finest("addRenderer(" + renderKitId + ", "
                         + rend.componentFamily() + ", " + rend.rendererType()
                         + ", " + clazz.getName() + ")");
             }
@@ -769,9 +769,9 @@ public class AnnotationConfigurator
                         renderKitId);
                 if (rk == null)
                 {
-                    if (log.isErrorEnabled())
+                    if (log.isLoggable(Level.SEVERE))
                     {
-                        log.error("RenderKit "+renderKitId+" not found when adding @FacesRenderer annotation");
+                        log.severe("RenderKit "+renderKitId+" not found when adding @FacesRenderer annotation");
                     }
                     throw new FacesException("RenderKit "+renderKitId+" not found when adding @FacesRenderer annotation");
                 }
@@ -789,9 +789,9 @@ public class AnnotationConfigurator
         
         if (bean != null)
         {
-            if (log.isDebugEnabled())
+            if (log.isLoggable(Level.FINE))
             {
-                log.debug("Class '" + clazz.getName() + "' has an @ManagedBean annotation");
+                log.fine("Class '" + clazz.getName() + "' has an @ManagedBean annotation");
             }
             RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(_externalContext);
             org.apache.myfaces.config.impl.digester.elements.ManagedBean mbc =
@@ -851,17 +851,17 @@ public class AnnotationConfigurator
             Field[] fields = fields(clazz);
             for (Field field : fields)
             {
-                if (log.isTraceEnabled())
+                if (log.isLoggable(Level.FINEST))
                 {
-                    log.trace("  Scanning field '" + field.getName() + "'");
+                    log.finest("  Scanning field '" + field.getName() + "'");
                 }
                 javax.faces.bean.ManagedProperty property = (javax.faces.bean.ManagedProperty) field
                         .getAnnotation(javax.faces.bean.ManagedProperty.class);
                 if (property != null)
                 {
-                    if (log.isDebugEnabled())
+                    if (log.isLoggable(Level.FINE))
                     {
-                        log.debug("  Field '" + field.getName()
+                        log.fine("  Field '" + field.getName()
                                 + "' has a @ManagedProperty annotation");
                     }
                     org.apache.myfaces.config.impl.digester.elements.ManagedProperty mpc = 
@@ -889,8 +889,8 @@ public class AnnotationConfigurator
             if (!ComponentSystemEvent.class.isAssignableFrom (clazz)) {
                 // Just log this.  We'll catch it later in the runtime.
                 
-                if (log.isWarnEnabled()) {
-                    log.warn (clazz.getName() + " is annotated with @javax.faces.event.NamedEvent, but does " +
+                if (log.isLoggable(Level.WARNING)) {
+                    log.warning (clazz.getName() + " is annotated with @javax.faces.event.NamedEvent, but does " +
                         "not extend javax.faces.event.ComponentSystemEvent");
                 }
                 
@@ -913,14 +913,14 @@ public class AnnotationConfigurator
             if (!Behavior.class.isAssignableFrom (clazz)) {
                 // Just log this.  We'll catch it later in the runtime.
                 
-                if (log.isWarnEnabled()) {
-                    log.warn (clazz.getName() + " is annotated with @javax.faces.component.behavior.FacesBehavior, " +
+                if (log.isLoggable(Level.WARNING)) {
+                    log.warning (clazz.getName() + " is annotated with @javax.faces.component.behavior.FacesBehavior, " +
                             "but does not implement javax.faces.component.behavior.Behavior");
                 }
             }
             
-            if (log.isTraceEnabled()) {
-                log.trace ("addBehavior(" + facesBehavior.value() + ", " + clazz.getName() + ")");
+            if (log.isLoggable(Level.FINEST)) {
+                log.finest ("addBehavior(" + facesBehavior.value() + ", " + clazz.getName() + ")");
             }
             
             application.addBehavior (facesBehavior.value(), clazz.getName());
@@ -932,8 +932,8 @@ public class AnnotationConfigurator
             String renderKitId = facesBehaviorRenderer.renderKitId();
             RenderKit renderKit;
             
-            if (log.isTraceEnabled()) {
-                log.trace ("addClientBehaviorRenderer(" + renderKitId + ", " + facesBehaviorRenderer.rendererType() + ", " +
+            if (log.isLoggable(Level.FINEST)) {
+                log.finest ("addClientBehaviorRenderer(" + renderKitId + ", " + facesBehaviorRenderer.rendererType() + ", " +
                      clazz.getName() + ")");
             }
             

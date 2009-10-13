@@ -25,14 +25,14 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
 import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.FaceletHandler;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.view.facelets.Facelet;
 import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.compiler.Compiler;
@@ -49,7 +49,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
     private static final long INFINITE_DELAY = -1;
     private static final long NO_CACHE_DELAY = 0;
     
-    protected final Log log = LogFactory.getLog(DefaultFaceletFactory.class);
+    //protected final Log log = LogFactory.getLog(DefaultFaceletFactory.class);
+    protected final Logger log = Logger.getLogger(DefaultFaceletFactory.class.getName());
 
     private URL _baseUrl;
 
@@ -89,10 +90,10 @@ public final class DefaultFaceletFactory extends FaceletFactory
 
         _refreshPeriod = refreshPeriod < 0 ? INFINITE_DELAY : refreshPeriod * 1000;
 
-        if (log.isDebugEnabled())
+        if (log.isLoggable(Level.FINE))
         {
-            log.debug("Using ResourceResolver: " + _resolver);
-            log.debug("Using Refresh Period: " + _refreshPeriod);
+            log.fine("Using ResourceResolver: " + _resolver);
+            log.fine("Using Refresh Period: " + _refreshPeriod);
         }
     }
 
@@ -263,9 +264,9 @@ public final class DefaultFaceletFactory extends FaceletFactory
      */
     private DefaultFacelet _createFacelet(URL url) throws IOException, FaceletException, FacesException, ELException
     {
-        if (log.isDebugEnabled())
+        if (log.isLoggable(Level.FINE))
         {
-            log.debug("Creating Facelet for: " + url);
+            log.fine("Creating Facelet for: " + url);
         }
 
         String alias = "/" + url.getFile().replaceFirst(_baseUrl.getFile(), "");
@@ -292,9 +293,9 @@ public final class DefaultFaceletFactory extends FaceletFactory
      */
     private DefaultFacelet _createViewMetadataFacelet(URL url) throws IOException, FaceletException, FacesException, ELException
     {
-        if (log.isDebugEnabled())
+        if (log.isLoggable(Level.FINE))
         {
-            log.debug("Creating Facelet used to create View Metadata for: " + url);
+            log.fine("Creating Facelet used to create View Metadata for: " + url);
         }
 
         // The alias is used later for informative purposes, so we append 

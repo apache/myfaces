@@ -18,8 +18,59 @@
  */
 package org.apache.myfaces.config;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.el.ELResolver;
+import javax.faces.FacesException;
+import javax.faces.FactoryFinder;
+import javax.faces.application.Application;
+import javax.faces.application.ApplicationFactory;
+import javax.faces.application.NavigationHandler;
+import javax.faces.application.ResourceHandler;
+import javax.faces.application.StateManager;
+import javax.faces.application.ViewHandler;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.faces.el.PropertyResolver;
+import javax.faces.el.VariableResolver;
+import javax.faces.event.ActionListener;
+import javax.faces.event.PhaseListener;
+import javax.faces.event.PostConstructApplicationEvent;
+import javax.faces.event.SystemEvent;
+import javax.faces.lifecycle.Lifecycle;
+import javax.faces.lifecycle.LifecycleFactory;
+import javax.faces.render.RenderKit;
+import javax.faces.render.RenderKitFactory;
+import javax.faces.webapp.FacesServlet;
+
 import org.apache.myfaces.application.ApplicationFactoryImpl;
 import org.apache.myfaces.application.ApplicationImpl;
 import org.apache.myfaces.component.visit.VisitContextFactoryImpl;
@@ -31,7 +82,10 @@ import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.Renderer;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigDispenserImpl;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
-import org.apache.myfaces.config.impl.digester.elements.*;
+import org.apache.myfaces.config.impl.digester.elements.ConfigOthersSlot;
+import org.apache.myfaces.config.impl.digester.elements.FacesConfig;
+import org.apache.myfaces.config.impl.digester.elements.FacesConfigNameSlot;
+import org.apache.myfaces.config.impl.digester.elements.OrderSlot;
 import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
 import org.apache.myfaces.config.impl.digester.elements.SystemEventListener;
 import org.apache.myfaces.context.ExceptionHandlerFactoryImpl;
@@ -54,32 +108,6 @@ import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
 import org.apache.myfaces.view.facelets.util.Classpath;
 import org.xml.sax.SAXException;
 
-import javax.el.ELResolver;
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.*;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.VariableResolver;
-import javax.faces.event.*;
-import javax.faces.lifecycle.Lifecycle;
-import javax.faces.lifecycle.LifecycleFactory;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.webapp.FacesServlet;
-import java.io.*;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.JarURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
  * Configures everything for a given context. The FacesConfigurator is independent of the concrete implementations that
  * lie behind FacesConfigUnmarshaller and FacesConfigDispenser.
@@ -90,7 +118,8 @@ import java.util.regex.Pattern;
 @SuppressWarnings("deprecation")
 public class FacesConfigurator
 {
-    private static final Log log = LogFactory.getLog(FacesConfigurator.class);
+    //private static final Log log = LogFactory.getLog(FacesConfigurator.class);
+    private static final Logger log = Logger.getLogger(FacesConfigurator.class.getName());
 
     private static final String STANDARD_FACES_CONFIG_RESOURCE = "META-INF/standard-faces-config.xml";
     private static final String FACES_CONFIG_RESOURCE = "META-INF/faces-config.xml";
@@ -241,7 +270,7 @@ public class FacesConfigurator
         }
         catch (IOException e)
         {
-            log.error("Could not read resource " + resource, e);
+            log.log(Level.SEVERE, "Could not read resource " + resource, e);
         }
         return 0;
     }
@@ -342,7 +371,7 @@ public class FacesConfigurator
                 }
                 catch (NoSuchMethodException e)
                 {
-                    log.error("Configuration objects do not support clean-up. Update aborted");
+                    log.severe("Configuration objects do not support clean-up. Update aborted");
 
                     // We still want to update the timestamp to avoid running purge on every subsequent
                     // request after this one.
@@ -353,11 +382,11 @@ public class FacesConfigurator
                 }
                 catch (IllegalAccessException e)
                 {
-                    log.fatal("Error during configuration clean-up" + e.getMessage());
+                    log.severe("Error during configuration clean-up" + e.getMessage());
                 }
                 catch (InvocationTargetException e)
                 {
-                    log.fatal("Error during configuration clean-up" + e.getMessage());
+                    log.severe("Error during configuration clean-up" + e.getMessage());
                 }
                 configure();
                 
@@ -433,7 +462,7 @@ public class FacesConfigurator
             //5. Ordering of Artifacts (see section 11.4.7 of the spec)
             orderAndFeedArtifacts(appConfigResources,webAppFacesConfig); 
 
-            if (log.isInfoEnabled())
+            if (log.isLoggable(Level.INFO))
             {
                 logMetaInf();
             }
@@ -471,7 +500,7 @@ public class FacesConfigurator
         InputStream stream = ClassUtils.getResourceAsStream(STANDARD_FACES_CONFIG_RESOURCE);
         if (stream == null)
             throw new FacesException("Standard faces config " + STANDARD_FACES_CONFIG_RESOURCE + " not found");
-        if (log.isInfoEnabled())
+        if (log.isLoggable(Level.INFO))
             log.info("Reading standard config " + STANDARD_FACES_CONFIG_RESOURCE);
         getDispenser().feed(getUnmarshaller().getFacesConfig(stream, STANDARD_FACES_CONFIG_RESOURCE));
         stream.close();
@@ -517,13 +546,13 @@ public class FacesConfigurator
                 }
             }
 
-            if (log.isInfoEnabled())
+            if (log.isLoggable(Level.INFO))
             {
                 String[] artifactIds = { MYFACES_API_PACKAGE_NAME, MYFACES_IMPL_PACKAGE_NAME,
                         MYFACES_TOMAHAWK_PACKAGE_NAME, MYFACES_TOMAHAWK_SANDBOX_PACKAGE_NAME,
                         MYFACES_TOMAHAWK_SANDBOX15_PACKAGE_NAME, COMMONS_EL_PACKAGE_NAME, JSP_API_PACKAGE_NAME };
 
-                if (log.isWarnEnabled())
+                if (log.isLoggable(Level.WARNING))
                 {
                     for (String artifactId : artifactIds)
                     {
@@ -555,7 +584,7 @@ public class FacesConfigurator
                                 needComma = true;
                             }
 
-                            log.warn(builder);
+                            log.warning(builder.toString());
                         }
                     }
                 }
@@ -614,7 +643,7 @@ public class FacesConfigurator
                     }
 
 
-                    if (log.isInfoEnabled())
+                    if (log.isLoggable(Level.INFO))
                     {
                         log.info("Found " + factoryName + " factory implementation: " + className);
                     }
@@ -691,7 +720,7 @@ public class FacesConfigurator
                 try
                 {
                     stream = openStreamWithoutCache(entry.getValue());
-                    if (log.isInfoEnabled())
+                    if (log.isLoggable(Level.INFO))
                     {
                         log.info("Reading config : " + entry.getKey());
                     }
@@ -720,11 +749,11 @@ public class FacesConfigurator
             InputStream stream = _externalContext.getResourceAsStream(systemId);
             if (stream == null)
             {
-                log.error("Faces config resource " + systemId + " not found");
+                log.severe("Faces config resource " + systemId + " not found");
                 continue;
             }
 
-            if (log.isInfoEnabled())
+            if (log.isLoggable(Level.INFO))
             {
                 log.info("Reading config " + systemId);
             }
@@ -746,9 +775,9 @@ public class FacesConfigurator
 
                 if (DEFAULT_FACES_CONFIG.equals(systemId))
                 {
-                    if (log.isWarnEnabled())
+                    if (log.isLoggable(Level.WARNING))
                     {
-                        log.warn(DEFAULT_FACES_CONFIG + " has been specified in the " + FacesServlet.CONFIG_FILES_ATTR
+                        log.warning(DEFAULT_FACES_CONFIG + " has been specified in the " + FacesServlet.CONFIG_FILES_ATTR
                                 + " context parameter of "
                                 + "the deployment descriptor. This will automatically be removed, "
                                 + "if we wouldn't do this, it would be loaded twice.  See JSF spec 1.1, 10.3.2");
@@ -770,7 +799,7 @@ public class FacesConfigurator
         InputStream stream = _externalContext.getResourceAsStream(DEFAULT_FACES_CONFIG);
         if (stream != null)
         {
-            if (log.isInfoEnabled())
+            if (log.isLoggable(Level.INFO))
                 log.info("Reading config /WEB-INF/faces-config.xml");
             webAppConfig = getUnmarshaller().getFacesConfig(stream, DEFAULT_FACES_CONFIG);
             //getDispenser().feed(getUnmarshaller().getFacesConfig(stream, DEFAULT_FACES_CONFIG));
@@ -786,9 +815,9 @@ public class FacesConfigurator
         {
             if (webAppConfig.getOrdering() != null)
             {
-                if (log.isWarnEnabled())
+                if (log.isLoggable(Level.WARNING))
                 {
-                    log.warn("<ordering> element found in application faces config. " +
+                    log.warning("<ordering> element found in application faces config. " +
                             "This description will be ignored and the actions described " +
                             "in <absolute-ordering> element will be taken into account instead.");
                 }                
@@ -834,9 +863,9 @@ public class FacesConfigurator
             {
                 if (resource.getOrdering() != null)
                 {
-                    if (log.isWarnEnabled())
+                    if (log.isLoggable(Level.WARNING))
                     {
-                        log.warn("<absolute-ordering> element found in application " +
+                        log.warning("<absolute-ordering> element found in application " +
                                 "configuration resource "+resource.getName()+". " +
                                 "This description will be ignored and the actions described " +
                                 "in <ordering> elements will be taken into account instead.");
@@ -1006,7 +1035,7 @@ public class FacesConfigurator
                             }
                             if (founded)
                             {
-                                log.fatal("Circular references detected when sorting " +
+                                log.severe("Circular references detected when sorting " +
                                           "application config resources. Use absolute ordering instead.");
                                 throw new FacesException("Circular references detected when sorting " +
                                         "application config resources. Use absolute ordering instead.");
@@ -1032,7 +1061,7 @@ public class FacesConfigurator
                             }
                             if (founded)
                             {
-                                log.fatal("Circular references detected when sorting " +
+                                log.severe("Circular references detected when sorting " +
                                     "application config resources. Use absolute ordering instead.");
                                 throw new FacesException("Circular references detected when sorting " +
                                     "application config resources. Use absolute ordering instead.");
@@ -1609,7 +1638,7 @@ public class FacesConfigurator
                         (Class<?>)ClassUtils.classForName((systemEventListener.getSourceClass() != null) ? systemEventListener.getSourceClass(): getDefaultSourcClassForSystemEvent(eventClass) ), //Application.class???
                         (javax.faces.event.SystemEventListener)ClassUtils.newInstance(systemEventListener.getSystemEventListenerClass()));
             } catch (ClassNotFoundException e) {
-                log.error("System event listener could not be initialized, reason:",e);
+                log.log(Level.SEVERE, "System event listener could not be initialized, reason:",e);
             }
         }
 
@@ -1633,7 +1662,7 @@ public class FacesConfigurator
             }
             catch (Exception ex)
             {
-                log.error("Converter could not be added. Reason:", ex);
+                log.log(Level.SEVERE, "Converter could not be added. Reason:", ex);
             }
         }
 
@@ -1692,7 +1721,7 @@ public class FacesConfigurator
             }
             return parms[0].getName();
         }
-        log.warn("The SystemEvent source type for "+systemEventClass.getName() + " could not be detected, either register it manually or use a constructor argument for auto detection, defaulting now to java.lang.Object");
+        log.warning("The SystemEvent source type for "+systemEventClass.getName() + " could not be detected, either register it manually or use a constructor argument for auto detection, defaulting now to java.lang.Object");
         return "java.lang.Object";
     };
 
@@ -1745,17 +1774,17 @@ public class FacesConfigurator
                     }
                     catch (InstantiationException e)
                     {
-                        log.error(e.getMessage(), e);
+                        log.log(Level.SEVERE, e.getMessage(), e);
                         throw new FacesException(e);
                     }
                     catch (IllegalAccessException e)
                     {
-                        log.error(e.getMessage(), e);
+                        log.log(Level.SEVERE, e.getMessage(), e);
                         throw new FacesException(e);
                     }
                     catch (InvocationTargetException e)
                     {
-                        log.error(e.getMessage(), e);
+                        log.log(Level.SEVERE, e.getMessage(), e);
                         throw new FacesException(e);
                     }
                 }
@@ -1777,9 +1806,9 @@ public class FacesConfigurator
         FacesConfigDispenser<FacesConfig> dispenser = getDispenser();
         for (ManagedBean bean : dispenser.getManagedBeans())
         {
-            if (log.isWarnEnabled() && runtimeConfig.getManagedBean(bean.getManagedBeanName()) != null)
+            if (log.isLoggable(Level.WARNING) && runtimeConfig.getManagedBean(bean.getManagedBeanName()) != null)
             {
-                log.warn("More than one managed bean w/ the name of '" + bean.getManagedBeanName()
+                log.warning("More than one managed bean w/ the name of '" + bean.getManagedBeanName()
                         + "' - only keeping the last ");
             }
 
@@ -1860,7 +1889,7 @@ public class FacesConfigurator
                 catch (Throwable e)
                 {
                     // ignore the failure so that the render kit is configured
-                    log.error("failed to configure class " + element.getRendererClass(), e);
+                    log.log(Level.SEVERE, "failed to configure class " + element.getRendererClass(), e);
                     continue;
                 }
 
@@ -1879,8 +1908,8 @@ public class FacesConfigurator
                     catch (Throwable e) {
                         // Ignore.
                         
-                        if (log.isErrorEnabled()) {
-                            log.error ("failed to configure client behavior renderer class " +
+                        if (log.isLoggable(Level.SEVERE)) {
+                            log.log(Level.SEVERE, "failed to configure client behavior renderer class " +
                                  clientBehaviorRenderer.getRendererClass(), e);
                         }
                     }
@@ -1906,7 +1935,7 @@ public class FacesConfigurator
             }
             catch (ClassCastException e)
             {
-                log.error("Class " + listenerClassName + " does not implement PhaseListener");
+                log.severe("Class " + listenerClassName + " does not implement PhaseListener");
             }
         }
     }
@@ -2180,18 +2209,18 @@ public class FacesConfigurator
             }
             catch (ClassCastException e)
             {
-                log.error("Make sure '" + serialProvider + "' implements the correct interface", e);
+                log.log(Level.SEVERE, "Make sure '" + serialProvider + "' implements the correct interface", e);
             }
             catch (Exception e)
             {
-                log.error(e);
+                log.log(Level.SEVERE,"", e);
             }
             finally
             {
                 if (serialFactory == null)
                 {
                     serialFactory = new DefaultSerialFactory();
-                    log.error("Using default serialization provider");
+                    log.severe("Using default serialization provider");
                 }
             }
 

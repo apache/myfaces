@@ -18,11 +18,8 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspAttribute;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
+import java.io.Serializable;
+import java.util.logging.Logger;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
@@ -36,7 +33,10 @@ import javax.faces.webapp.UIComponentELTag;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
-import java.io.Serializable;
+
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspAttribute;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 /**
  * Register a PhaseListener instance
@@ -47,6 +47,9 @@ import java.io.Serializable;
 @JSFJspTag(name = "f:phaseListener", bodyContent = "empty")
 public class PhaseListenerTag extends TagSupport
 {
+    
+    private static final Logger log = Logger.getLogger(PhaseListenerTag.class.getName());
+    
     /**
      * The fully qualified class name of the PhaseListener which should be created.
      */
@@ -144,7 +147,7 @@ public class PhaseListenerTag extends TagSupport
         private transient PhaseListener phaseListenerCache = null;
         private ValueExpression type;
         private ValueExpression binding;
-        private final Log log = LogFactory.getLog(PhaseListenerTag.class);
+        //private final Log log = LogFactory.getLog(PhaseListenerTag.class);
 
         BindingPhaseListener(ValueExpression binding, ValueExpression type)
         {
@@ -196,7 +199,7 @@ public class PhaseListenerTag extends TagSupport
             }
             if (phaseListenerCache == null)
             {
-                log.warn("PhaseListener will not be installed. Both binding and type are null.");
+                log.warning("PhaseListener will not be installed. Both binding and type are null.");
 
             }
 

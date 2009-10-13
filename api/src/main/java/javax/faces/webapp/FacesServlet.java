@@ -23,6 +23,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
@@ -39,9 +41,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  * 
@@ -50,7 +49,8 @@ import org.apache.commons.logging.LogFactory;
  */
 public final class FacesServlet implements Servlet
 {
-    private static final Log log = LogFactory.getLog(FacesServlet.class);
+    //private static final Log log = LogFactory.getLog(FacesServlet.class);
+    private static final Logger log = Logger.getLogger(FacesServlet.class.getName());
     public static final String CONFIG_FILES_ATTR = "javax.faces.CONFIG_FILES";
     public static final String LIFECYCLE_ID_ATTR = "javax.faces.LIFECYCLE_ID";
 
@@ -73,8 +73,8 @@ public final class FacesServlet implements Servlet
         _servletConfig = null;
         _facesContextFactory = null;
         _lifecycle = null;
-        if (log.isTraceEnabled())
-            log.trace("destroy");
+        if (log.isLoggable(Level.FINEST))
+            log.finest("destroy");
     }
 
     public ServletConfig getServletConfig()
@@ -100,8 +100,8 @@ public final class FacesServlet implements Servlet
 
     public void init(ServletConfig servletConfig) throws ServletException
     {
-        if (log.isTraceEnabled())
-            log.trace("init begin");
+        if (log.isLoggable(Level.FINEST))
+            log.finest("init begin");
         _servletConfig = servletConfig;
         _facesContextFactory = (FacesContextFactory)FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
         // TODO: null-check for Weblogic, that tries to initialize Servlet before ContextListener
@@ -111,8 +111,8 @@ public final class FacesServlet implements Servlet
         // So we can acquire it here once:
         LifecycleFactory lifecycleFactory = (LifecycleFactory)FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
         _lifecycle = lifecycleFactory.getLifecycle(getLifecycleId());
-        if (log.isTraceEnabled())
-            log.trace("init end");
+        if (log.isLoggable(Level.FINEST))
+            log.finest("init end");
     }
 
     public void service(ServletRequest request, ServletResponse response) throws IOException, ServletException
@@ -145,7 +145,7 @@ public final class FacesServlet implements Servlet
             buffer.append("\n remote user is ").append(httpRequest.getRemoteUser());
             buffer.append("\n request URI is ").append(httpRequest.getRequestURI());
 
-            log.warn(buffer.toString());
+            log.warning(buffer.toString());
 
             // Why does RI return a 404 and not a 403, SC_FORBIDDEN ?
 
@@ -155,8 +155,8 @@ public final class FacesServlet implements Servlet
         
         // If none of the cases described above in the specification for this method apply to the servicing of this 
         // request, the following action must be taken to service the request.
-        if (log.isTraceEnabled())
-            log.trace("service begin");
+        if (log.isLoggable(Level.FINEST))
+            log.finest("service begin");
 
         // Acquire a FacesContext instance for this request.
         FacesContext facesContext = prepareFacesContext(request, response);
@@ -195,8 +195,8 @@ public final class FacesServlet implements Servlet
             // In a finally block, FacesContext.release() must be called. 
             facesContext.release();
         }
-        if (log.isTraceEnabled())
-            log.trace("service end");
+        if (log.isLoggable(Level.FINEST))
+            log.finest("service end");
     }
 
     /**
@@ -322,7 +322,7 @@ public final class FacesServlet implements Servlet
                 catch (NoSuchMethodException ex)
                 {
                     log
-                       .error(
+                       .log(Level.SEVERE,
                            "Error-Handler : "
                                    + errorHandlerClass
                                    + " did not have a method with name : handleException and parameters : javax.faces.context.FacesContext, java.lang.Exception. Error-Handler is specified in web.xml-parameter : "
