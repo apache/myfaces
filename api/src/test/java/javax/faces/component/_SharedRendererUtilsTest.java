@@ -109,7 +109,7 @@ public class _SharedRendererUtilsTest extends AbstractJsfTestCase
     }
     
     /**
-     * A Bean used für testing.
+     * A Bean used for testing.
      * @author Jakob Korher
      */
     public static class Bean
