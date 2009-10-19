@@ -774,20 +774,46 @@ public abstract class UIComponentTag
             if (_componentInstance == null)
             {
                 _componentInstance = createComponentInstance(context, id);
-                setProperties(_componentInstance);
-                int index = getAddedChildrenCount(parentTag);
-                List children = parent.getChildren();
-                if (index <= children.size())
+                if (id.equals(_componentInstance.getId()) )
                 {
-                    children.add(index, _componentInstance);
+                    setProperties(_componentInstance);
+                    int index = getAddedChildrenCount(parentTag);
+                    List children = parent.getChildren();
+                    if (index <= children.size())
+                    {
+                        children.add(index, _componentInstance);
+                    }
+                    else
+                    {
+                        throw new FacesException("cannot add component with id '" +
+                                _componentInstance.getId() + " to its parent component with id : '"+parent.getId()+"' and path '"+
+                                getPathToComponent(parent)+"'at position :"+index+" in list of children. "+
+                                "This might be a problem due to a duplicate id in a previously added component,"+
+                                "if this is the case, the problematic id might be one of : "+printSet(parentTag._childrenAdded));
+                    }
                 }
-                else
+                // On weblogic portal using faces-adapter, the id set and the retrieved 
+                // one for <netuix:namingContainer> is different. The reason is 
+                // this custom solution for integrate jsf changes the id of the parent
+                // component to allow the same native portlet to be allocated multiple
+                // times in the same page
+                else if (null == findComponent(parent,_componentInstance.getId()))
                 {
-                    throw new FacesException("cannot add component with id '" +
-                            _componentInstance.getId() + " to its parent component with id : '"+parent.getId()+"' and path '"+
-                            getPathToComponent(parent)+"'at position :"+index+" in list of children. "+
-                            "This might be a problem due to a duplicate id in a previously added component,"+
-                            "if this is the case, the problematic id might be one of : "+printSet(parentTag._childrenAdded));
+                    setProperties(_componentInstance);
+                    int index = getAddedChildrenCount(parentTag);
+                    List children = parent.getChildren();
+                    if (index <= children.size())
+                    {
+                        children.add(index, _componentInstance);
+                    }
+                    else
+                    {
+                        throw new FacesException("cannot add component with id '" +
+                                _componentInstance.getId() + " to its parent component with id : '"+parent.getId()+"' and path '"+
+                                getPathToComponent(parent)+"'at position :"+index+" in list of children. "+
+                                "This might be a problem due to a duplicate id in a previously added component,"+
+                                "if this is the case, the problematic id might be one of : "+printSet(parentTag._childrenAdded));
+                    }
                 }
             }
             addChildIdToParentTag(parentTag, id);
