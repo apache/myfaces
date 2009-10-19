@@ -1102,15 +1102,35 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         if (_componentInstance == null)
         {
             _componentInstance = createComponent(context, id);
-            _created = true;
-            int index = parentTag.getIndexOfNextChildTag();
-            if (index > parent.getChildCount())
+            if (id.equals(_componentInstance.getId()) )
             {
-                index = parent.getChildCount();
-            }
+                _created = true;
+                int index = parentTag.getIndexOfNextChildTag();
+                if (index > parent.getChildCount())
+                {
+                    index = parent.getChildCount();
+                }
 
-            List<UIComponent> children = parent.getChildren();
-            children.add(index, _componentInstance);
+                List<UIComponent> children = parent.getChildren();
+                children.add(index, _componentInstance);
+            }
+            // On weblogic portal using faces-adapter, the id set and the retrieved 
+            // one for <netuix:namingContainer> is different. The reason is 
+            // this custom solution for integrate jsf changes the id of the parent
+            // component to allow the same native portlet to be allocated multiple
+            // times in the same page
+            else if (null == findComponent(parent,_componentInstance.getId()))
+            {
+                _created = true;
+                int index = parentTag.getIndexOfNextChildTag();
+                if (index > parent.getChildCount())
+                {
+                    index = parent.getChildCount();
+                }
+
+                List<UIComponent> children = parent.getChildren();
+                children.add(index, _componentInstance);
+            }
         }
 
         return _componentInstance;
