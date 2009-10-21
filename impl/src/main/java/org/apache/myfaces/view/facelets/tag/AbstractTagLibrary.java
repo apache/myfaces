@@ -701,7 +701,7 @@ public abstract class AbstractTagLibrary implements TagLibrary
 
     private static class UserBehaviorHandlerFactory implements TagHandlerFactory
     {
-        private final static Class<?>[] CONS_SIG = new Class[] { ComponentConfig.class };
+        private final static Class<?>[] CONS_SIG = new Class[] { BehaviorConfig.class };
 
         protected final String behaviorId;
 

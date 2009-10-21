@@ -141,6 +141,7 @@ public class AnnotationConfigurator
     {
         Set<String> bcan = new HashSet<String>(10, 1f);
         bcan.add("Ljavax/faces/component/FacesComponent;");
+        bcan.add("Ljavax/faces/component/behavior/FacesBehavior;");
         bcan.add("Ljavax/faces/convert/FacesConverter;");
         bcan.add("Ljavax/faces/validator/FacesValidator;");
         bcan.add("Ljavax/faces/render/FacesRenderer;");
