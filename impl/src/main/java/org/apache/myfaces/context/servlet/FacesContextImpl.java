@@ -18,10 +18,12 @@
  */
 package org.apache.myfaces.context.servlet;
 
-import org.apache.myfaces.context.ReleaseableExternalContext;
-import org.apache.myfaces.context.portlet.PortletExternalContextImpl;
-import org.apache.myfaces.el.unified.FacesELContext;
-import org.apache.myfaces.shared_impl.util.NullIterator;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.el.ELContext;
 import javax.el.ELContextEvent;
@@ -43,7 +45,12 @@ import javax.portlet.PortletResponse;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import java.util.*;
+
+import org.apache.myfaces.context.ReleaseableExternalContext;
+import org.apache.myfaces.context.ReleaseableFacesContextFactory;
+import org.apache.myfaces.context.portlet.PortletExternalContextImpl;
+import org.apache.myfaces.el.unified.FacesELContext;
+import org.apache.myfaces.shared_impl.util.NullIterator;
 
 
 /**
@@ -69,25 +76,35 @@ public class FacesContextImpl
     private RenderKitFactory            _renderKitFactory;
     private boolean                     _released = false;
     private ELContext                   _elContext;
+    private ReleaseableFacesContextFactory _facesContextFactory = null;
 
     //~ Constructors -------------------------------------------------------------------------------
 
+    @Deprecated
     public FacesContextImpl(final PortletContext portletContext,
-                            final PortletRequest portletRequest,
-                            final PortletResponse portletResponse)
+            final PortletRequest portletRequest,
+            final PortletResponse portletResponse)
     {
         this(new PortletExternalContextImpl(portletContext,
-                                            portletRequest,
-                                            portletResponse));
+                                    portletRequest,
+                                    portletResponse));
     }
-
+    
+    @Deprecated
     public FacesContextImpl(final ServletContext servletContext,
-                            final ServletRequest servletRequest,
-                            final ServletResponse servletResponse)
+                final ServletRequest servletRequest,
+                final ServletResponse servletResponse)
     {
         this(new ServletExternalContextImpl(servletContext,
-                                            servletRequest,
-                                            servletResponse));
+                                    servletRequest,
+                                    servletResponse));
+    }    
+    
+    public FacesContextImpl(final ReleaseableExternalContext externalContext,
+                            final ReleaseableFacesContextFactory facesContextFactory)
+    {
+        this(externalContext);
+        _facesContextFactory = facesContextFactory;
     }
 
     private FacesContextImpl(final ReleaseableExternalContext externalContext)
@@ -301,6 +318,11 @@ public class FacesContextImpl
     {
         if (_released) {
             throw new IllegalStateException("FacesContext already released");
+        }
+        if (_facesContextFactory != null)
+        {
+            _facesContextFactory.release();
+            _facesContextFactory = null;
         }
         if (_externalContext != null)
         {

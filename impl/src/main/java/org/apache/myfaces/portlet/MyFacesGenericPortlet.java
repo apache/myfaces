@@ -53,6 +53,7 @@ import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
  * This portlet initializes MyFaces and converts portlet requests into
  * JSF requests.
  *
+ * @deprecated Replaced by jsr 301 portlet bridge. 
  * @author  Stan Silvert (latest modification by $Author$)
  * @version $Revision$ $Date$
  */

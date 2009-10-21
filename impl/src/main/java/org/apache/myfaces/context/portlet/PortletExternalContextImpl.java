@@ -47,6 +47,7 @@ import org.apache.myfaces.util.EnumerationIterator;
 /**
  * An ExternalContext implementation for JSF applications that run inside a Portlet.
  * 
+ * @deprecated Replaced by jsr 301 portlet bridge. 
  * @author Stan Silvert (latest modification by $Author$)
  * @version $Revision$ $Date$
  */

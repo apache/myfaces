@@ -35,6 +35,8 @@ public abstract class ExternalContext
     public static final String CLIENT_CERT_AUTH = "CLIENT_CERT";
     public static final String DIGEST_AUTH = "DIGEST";
     public static final String FORM_AUTH = "FORM";
+    
+    private static ThreadLocal<ExternalContext> _firstInstance = new ThreadLocal<ExternalContext>();
 
     public abstract void dispatch(String path)
             throws java.io.IOException;
@@ -61,12 +63,26 @@ public abstract class ExternalContext
     
     public String getRequestCharacterEncoding()
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.getRequestCharacterEncoding();
     }
     
     public String getRequestContentType()
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.getRequestContentType();
     }
     
     public abstract String getRequestContextPath();
@@ -108,7 +124,14 @@ public abstract class ExternalContext
      */
     public String getResponseContentType()
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.getResponseContentType();
     }
 
     public abstract Object getSession(boolean create);
@@ -124,7 +147,14 @@ public abstract class ExternalContext
      */
     public void setRequest(java.lang.Object request)
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        ctx.setRequest(request);
     }
     
     /**
@@ -134,9 +164,16 @@ public abstract class ExternalContext
      * @throws java.io.UnsupportedEncodingException
      */
     public void setRequestCharacterEncoding(java.lang.String encoding)
-            throws java.io.UnsupportedEncodingException{
+            throws java.io.UnsupportedEncodingException
+    {
+        ExternalContext ctx = _firstInstance.get();
         
-        throw new UnsupportedOperationException();
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        ctx.setRequestCharacterEncoding(encoding);
     }
     
     /**
@@ -146,7 +183,14 @@ public abstract class ExternalContext
      */
     public void setResponse(java.lang.Object response)
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        ctx.setResponse(response);
     }
     
     /**
@@ -156,13 +200,26 @@ public abstract class ExternalContext
      */
     public void setResponseCharacterEncoding(java.lang.String encoding)
     {
-        throw new UnsupportedOperationException();
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        ctx.setResponseCharacterEncoding(encoding);
     }
     
     public String getResponseCharacterEncoding()
     {
-        throw new UnsupportedOperationException(
-                "JSF 1.2 : figure out how to tell if this is a Portlet request");
+        ExternalContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException("JSF 1.2 : figure out how to tell if this is a Portlet request");
+        }
+        
+        return ctx.getResponseCharacterEncoding();
     }
     
     public abstract boolean isUserInRole(String role);
