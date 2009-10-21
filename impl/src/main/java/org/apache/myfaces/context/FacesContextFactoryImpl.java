@@ -133,19 +133,16 @@ public class FacesContextFactoryImpl extends FacesContextFactory
         
         if (_firstExternalContextInstance != null)
         {
-            if (_firstExternalContextInstance.get() == null)
+            defaultExternalContext = (ExternalContext)
+                externalContext.getRequestMap().remove(
+                        ExternalContextFactoryImpl.EXTERNAL_CONTEXT_KEY);
+            
+            if (defaultExternalContext != null)
             {
-                defaultExternalContext = (ExternalContext)
-                    externalContext.getRequestMap().remove(
-                            ExternalContextFactoryImpl.EXTERNAL_CONTEXT_KEY);
-                
-                if (defaultExternalContext != null)
-                {
-                    // Initialize the firstExternalContext that old jsf 1.2 or lower
-                    // implementations of ExternalContext should fall when call jsf 2.0
-                    // methods.
-                    _firstExternalContextInstance.set(defaultExternalContext);
-                }
+                // Initialize the firstExternalContext that old jsf 1.2 or lower
+                // implementations of ExternalContext should fall when call jsf 2.0
+                // methods.
+                _firstExternalContextInstance.set(defaultExternalContext);
             }
         }
         
