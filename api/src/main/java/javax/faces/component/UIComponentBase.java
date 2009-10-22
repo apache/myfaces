@@ -162,20 +162,7 @@ public abstract class UIComponentBase extends UIComponent
                 //Component / Facet removed, set to false
                 //isInView to all parent and children
                 preRemoveFromViewEvent = true;
-                this.setInView(false);
-                if (this.getChildCount() > 0)
-                {
-                    for (Iterator<UIComponent> it = this.getFacetsAndChildren();
-                        it.hasNext();)
-                    {
-                        UIComponent comp = it.next();
-                        if (comp.isInView())
-                        {
-                            //Change to false all descendants
-                            _updateChild(comp,false);
-                        }
-                    }
-                }
+                _delegateInViewState(this, false);
             }
             //else
             //{
@@ -190,21 +177,8 @@ public abstract class UIComponentBase extends UIComponent
             {
                 //Component / Facet added, set to true
                 //isInView to all parent and children
-                this.setInView(true);
                 postAddToViewEvent = true;
-                if (this.getChildCount() > 0)
-                {
-                    for (Iterator<UIComponent> it = this.getFacetsAndChildren();
-                        it.hasNext();)
-                    {
-                        UIComponent comp = it.next();
-                        if (!comp.isInView())
-                        {
-                            //Change to false all descendants
-                            _updateChild(comp,true);
-                        }
-                    }
-                }
+                _delegateInViewState(this, true);
             }
             //else
             //{
@@ -216,7 +190,6 @@ public abstract class UIComponentBase extends UIComponent
         _parent = parent;
         
         FacesContext context = getFacesContext();
-        
         if (postAddToViewEvent)
         {
             // After the child component has been added to the view, if the following condition is not met
@@ -236,6 +209,25 @@ public abstract class UIComponentBase extends UIComponent
         }
     }
 
+    private void _delegateInViewState(UIComponent component, boolean inViewState)
+    {
+      component.setInView(inViewState);
+      if (component.getChildCount() > 0)
+      {
+          for (Iterator<UIComponent> it = component.getFacetsAndChildren();
+              it.hasNext();)
+          {
+              UIComponent comp = it.next();
+              // can we do that directly ?
+              if (comp.isInView() != inViewState)
+              {
+                  //Change to false all descendants
+                  _updateChild(comp,inViewState);
+              }
+          }
+      }
+    }
+    
     /**
      * Publish PostAddToViewEvent to the component and all facets and children.
      * 
