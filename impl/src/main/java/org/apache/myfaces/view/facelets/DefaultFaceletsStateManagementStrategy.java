@@ -36,6 +36,7 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitResult;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PostAddToViewEvent;
 import javax.faces.event.PostRestoreStateEvent;
@@ -93,9 +94,12 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     
     private ViewDeclarationLanguage vdl;
     
+    private DefaultFaceletsStateManagementHelper helper;
+    
     public DefaultFaceletsStateManagementStrategy (ViewDeclarationLanguage vdl)
     {
         this.vdl = vdl;
+        this.helper = new DefaultFaceletsStateManagementHelper();
     }
     
     @SuppressWarnings("unchecked")
@@ -154,10 +158,19 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         }
         
         // Get previous state from ResponseStateManager.
-        
         manager = RendererUtils.getResponseStateManager (context, renderKitId);
-        
-        state = (Object[]) manager.getState (context, viewId);
+
+        if (context.getApplication().getStateManager().isSavingStateInClient(context))
+        {
+            state = (Object[]) manager.getState (context, viewId);
+        }
+        else
+        {
+            Integer serverStateId = helper.getServerStateId((Object[]) manager.getState(context, viewId));
+
+            state = (Object[]) helper.getSerializedViewFromServletSession(context, viewId, serverStateId);
+        }
+                
         states = (Map<String, Object>) state[1];
         
         // Visit the children and restore their state.
@@ -316,7 +329,24 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         // As required by ResponseStateManager, the return value is an Object array.  First
         // element is the structure object, second is the state map.
         
-        return new Object[] { null, states };
+        ExternalContext externalContext = context.getExternalContext();
+        
+        Object serializedView = externalContext.getRequestMap()
+            .get(DefaultFaceletsStateManagementHelper.SERIALIZED_VIEW_REQUEST_ATTR);
+        
+        if (serializedView == null)
+        {
+            serializedView = new Object[] { null, states };
+            externalContext.getRequestMap().put(DefaultFaceletsStateManagementHelper.SERIALIZED_VIEW_REQUEST_ATTR,
+                    serializedView);
+        }
+        
+        if (!context.getApplication().getStateManager().isSavingStateInClient(context))
+        {
+            helper.saveSerializedViewInServletSession(context, serializedView);
+        }
+        
+        return serializedView;
     }
     
     private void restoreStateFromMap(final FacesContext context, final Map<String,Object> states,

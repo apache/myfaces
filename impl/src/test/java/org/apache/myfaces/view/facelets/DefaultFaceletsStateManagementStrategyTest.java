@@ -119,6 +119,8 @@ public class DefaultFaceletsStateManagementStrategyTest extends
         ViewDeclarationLanguage vdl = new MockViewDeclarationLanguage();
         DefaultFaceletsStateManagementStrategy stateManagement = new DefaultFaceletsStateManagementStrategy(vdl);
         
+        servletContext.addInitParameter("javax.faces.STATE_SAVING_METHOD", "client");
+        
         UIViewRoot viewRoot = vdl.createView(facesContext, "/root");
         vdl.buildView(facesContext, viewRoot);
         
@@ -137,6 +139,8 @@ public class DefaultFaceletsStateManagementStrategyTest extends
     {
         ViewDeclarationLanguage vdl = new MockViewDeclarationLanguage();
         DefaultFaceletsStateManagementStrategy stateManagement = new DefaultFaceletsStateManagementStrategy(vdl);
+        
+        servletContext.addInitParameter("javax.faces.STATE_SAVING_METHOD", "client");
         
         UIViewRoot viewRoot = vdl.createView(facesContext, "/root");
         vdl.buildView(facesContext, viewRoot);
