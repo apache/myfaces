@@ -215,10 +215,10 @@ public abstract class UIComponentBase extends UIComponent
         
         _parent = parent;
         
+        FacesContext context = getFacesContext();
+        
         if (postAddToViewEvent)
         {
-            FacesContext context = FacesContext.getCurrentInstance();
-            
             // After the child component has been added to the view, if the following condition is not met
             // FacesContext.isPostback() returns true and FacesContext.getCurrentPhaseId() returns PhaseId.RESTORE_VIEW
             if (!(context.isPostback() && PhaseId.RESTORE_VIEW.equals(context.getCurrentPhaseId())))
@@ -232,7 +232,6 @@ public abstract class UIComponentBase extends UIComponent
         
         if (preRemoveFromViewEvent)
         {
-            FacesContext context = FacesContext.getCurrentInstance();
             _publishPreRemoveFromViewEvent(context, this);
         }
     }
