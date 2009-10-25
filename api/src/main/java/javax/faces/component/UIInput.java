@@ -406,7 +406,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         // Some extra rules are required for Bean Validation.
         if (validatorId.equals(BeanValidator.VALIDATOR_ID))
         {
-            if (!BeanValidator.isAvailable)
+            if (!_ExternalSpecifications.isBeanValidationAvailable)
             {
                 return false;
             }
@@ -442,7 +442,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
             validateEmptyFields = validateEmptyFields.toLowerCase();
         }
 
-        if (validateEmptyFields.equals("auto") && BeanValidator.isAvailable)
+        if (validateEmptyFields.equals("auto") && _ExternalSpecifications.isBeanValidationAvailable)
         {
             return true;
         }

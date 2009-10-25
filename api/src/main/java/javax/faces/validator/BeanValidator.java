@@ -18,21 +18,11 @@
  */
 package javax.faces.validator;
 
-import java.beans.FeatureDescriptor;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidator;
 
-import javax.el.ELContext;
-import javax.el.ELResolver;
-import javax.el.FunctionMapper;
-import javax.el.ValueExpression;
-import javax.el.VariableMapper;
+import javax.el.*;
 import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.PartialStateHolder;
@@ -45,10 +35,9 @@ import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 import javax.validation.groups.Default;
 import javax.validation.metadata.BeanDescriptor;
-
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidator;
+import java.beans.FeatureDescriptor;
+import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * <p>
@@ -117,64 +106,6 @@ public class BeanValidator implements Validator, PartialStateHolder
     private boolean isTransient = false;
 
     private boolean _initialStateMarked = false;
-
-    /**
-     * This boolean indicates if Bean Validation is present.
-     *
-     * Eager initialization is used for performance. This means Bean Validation binaries
-     * should not be added at runtime after this variable has been set.
-     */
-    public static final boolean isAvailable;
-    static
-    {
-        boolean tmp = false;
-        try
-        {
-            tmp = (Class.forName("javax.validation.Validation") != null);
-
-            if (tmp)
-            {
-                try
-                {
-                    // Trial-error approach to check for Bean Validation impl existence.
-                    Validation.buildDefaultValidatorFactory().getValidator();
-                }
-                catch (Throwable t)
-                {
-                    log.log(Level.FINE, "Error initializing Bean Validation (could be normal)", t);
-                    tmp = false;
-                }
-            }
-        }
-        catch (Throwable t)
-        {
-            log.log(Level.FINE, "Error loading class (could be normal)", t);
-            tmp = false;
-        }
-        isAvailable = tmp;
-    }
-
-    /**
-     * This boolean indicates if Unified EL is present.
-     *
-     * Eager initialization is used for performance. This means Unified EL binaries
-     * should not be added at runtime after this variable has been set.
-     */
-    private static final boolean isUnifiedELAvailable;
-    static {
-        boolean tmp = false;
-        try
-        {
-            //TODO: Check this class name when Unified EL for Java EE6 is final.
-            tmp = (Class.forName("javax.el.ValueReference") != null);
-        }
-        catch (Throwable t)
-        {
-            log.log(Level.FINE, "Error loading class (could be normal)", t);
-            tmp = false;
-        }
-        isUnifiedELAvailable = tmp;
-    }
 
     /**
      * {@inheritDoc}
@@ -254,7 +185,7 @@ public class BeanValidator implements Validator, PartialStateHolder
      */
     private ValueReferenceWrapper getValueReference(UIComponent component, FacesContext context)
     {
-        if (isUnifiedELAvailable)
+        if (_ExternalSpecifications.isUnifiedELAvailable)
         {
             //TODO: Implement when Unified EL for Java EE6 is available.
             throw new FacesException("Unified EL for Java EE6 support is not yet implemented");
@@ -291,7 +222,7 @@ public class BeanValidator implements Validator, PartialStateHolder
             }
             else
             {
-                if (BeanValidator.isAvailable)
+                if (_ExternalSpecifications.isBeanValidationAvailable)
                 {
                     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
                     servletCtx.setAttribute(VALIDATOR_FACTORY_KEY, attr);
