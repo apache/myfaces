@@ -223,7 +223,7 @@ public class FacesMessage implements Serializable
         _detail = detail;
     }
 
-    public static class Severity implements Comparable<Severity>
+    public static class Severity implements Comparable
     {
         private String _name;
         private int _ordinal;
@@ -245,9 +245,9 @@ public class FacesMessage implements Serializable
             return _name;
         }
 
-        public int compareTo(Severity o)
+        public int compareTo(Object o)
         {
-            return getOrdinal() - o.getOrdinal();
+            return getOrdinal() - ((Severity)o).getOrdinal();
         }
     }
 
