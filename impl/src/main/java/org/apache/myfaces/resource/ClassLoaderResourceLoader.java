@@ -135,7 +135,7 @@ public class ClassLoaderResourceLoader extends ResourceLoader
                 // resolved.
             }
         }
-        else if (url.getProtocol().equals("jar"))
+        else if (isJarResourceProtocol(url.getProtocol()))
         {
             try
             {
