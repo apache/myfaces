@@ -801,7 +801,7 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
     }
 
     @SuppressWarnings("unchecked")
-    public void popComponentFromEL(FacesContext context) {
+    public final void popComponentFromEL(FacesContext context) {
         Map<Object, Object> contextAttributes = context.getAttributes();        
         
         // Pop the current UIComponent from the FacesContext attributes map so that the previous 
@@ -848,7 +848,7 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
     }
 
     @SuppressWarnings("unchecked")
-    public void pushComponentToEL(FacesContext context, UIComponent component) {
+    public final void pushComponentToEL(FacesContext context, UIComponent component) {
         Map<Object, Object> contextAttributes = context.getAttributes();        
         UIComponent currentComponent = (UIComponent) contextAttributes.get(UIComponent.CURRENT_COMPONENT);
         
