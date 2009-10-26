@@ -79,7 +79,6 @@ import org.apache.myfaces.view.facelets.util.Classpath;
  * <li>{@link javax.faces.render.FacesRenderer}</li>
  * <li>{@link javax.faces.bean.ManagedBean}</li>
  * <li>{@link javax.faces.bean.ManagedProperty}</li>
- * <li>PENDING:</li>
  * <li>{@link javax.faces.render.FacesBehaviorRenderer}</li>
  * </ul>
  * <p>
@@ -135,6 +134,10 @@ public class AnnotationConfigurator
     
     private final _ClassByteCodeAnnotationFilter _filter;    
 
+    /**
+     * This set contains the annotation names that this AnnotationConfigurator is able to scan
+     * in the format that is read from .class file.
+     */
     private static Set<String> byteCodeAnnotationsNames;
 
     static
@@ -146,6 +149,8 @@ public class AnnotationConfigurator
         bcan.add("Ljavax/faces/validator/FacesValidator;");
         bcan.add("Ljavax/faces/render/FacesRenderer;");
         bcan.add("Ljavax/faces/bean/ManagedBean;");
+        bcan.add("Ljavax/faces/event/NamedEvent;");
+        bcan.add("Ljavax/faces/render/FacesBehaviorRenderer;");
 
         byteCodeAnnotationsNames = Collections.unmodifiableSet(bcan);
     }
@@ -161,7 +166,9 @@ public class AnnotationConfigurator
             boolean metadataComplete) throws FacesException
     {
         List<Class> classes;
-        
+
+        // Here we have two cases, if metadataComplete we have only to scan
+        // annotations on myfaces impl jar file, otherwise, scan as usual.
         if (metadataComplete)
         {
             //Read only annotations available myfaces-impl
@@ -184,46 +191,71 @@ public class AnnotationConfigurator
             {
                 throw new FacesException(e);
             }
-            return;
-        }
-
-        // Scan annotation available in org.apache.myfaces.annotation.SCAN_PACKAGES 
-        // init param
-        String scanPackages = _externalContext.getInitParameter(SCAN_PACKAGES);
-        if (scanPackages != null)
-        {
-            // Scan the classes configured by the scan_packages context parameter
-            try
-            {
-                classes = packageClasses(_externalContext, scanPackages);
-            }
-            catch (ClassNotFoundException e)
-            {
-                throw new FacesException(e);
-            }
-            catch (IOException e)
-            {
-                throw new FacesException(e);
-            }
         }
         else
         {
-            // Scan the classes in /WEB-INF/classes for interesting annotations
+            // Scan annotation available in org.apache.myfaces.annotation.SCAN_PACKAGES 
+            // init param
+            String scanPackages = _externalContext.getInitParameter(SCAN_PACKAGES);
+            if (scanPackages != null)
+            {
+                // Scan the classes configured by the scan_packages context parameter
+                try
+                {
+                    classes = packageClasses(_externalContext, scanPackages);
+                }
+                catch (ClassNotFoundException e)
+                {
+                    throw new FacesException(e);
+                }
+                catch (IOException e)
+                {
+                    throw new FacesException(e);
+                }
+            }
+            else
+            {
+                // Scan the classes in /WEB-INF/classes for interesting annotations
+                try
+                {
+                    classes = webClasses(_externalContext);
+                }
+                catch (ClassNotFoundException e)
+                {
+                    throw new FacesException(e);
+                }
+            }
+    
             try
             {
-                classes = webClasses(_externalContext);
+                for (Class clazz : classes)
+                {
+                    configureClass(application, dispenser, clazz);
+                }
             }
-            catch (ClassNotFoundException e)
+            catch (Exception e)
             {
                 throw new FacesException(e);
             }
-        }
-
-        try
-        {
-            for (Class clazz : classes)
+    
+            // Scan the classes in /WEB-INF/lib for interesting annotations
+            List<JarFile> archives = null;
+            try
             {
-                configureClass(application, dispenser, clazz);
+                archives = webArchives(_externalContext);
+    
+                if (log.isTraceEnabled())
+                {
+                    log.trace("Receiving " + archives.size() + " jar files to check");
+                }
+                for (JarFile archive : archives)
+                {
+                    classes = archiveClasses(_externalContext, archive);
+                    for (Class clazz : classes)
+                    {
+                        configureClass(application, dispenser, clazz);
+                    }
+                }
             }
         }
         catch (Exception e)
@@ -241,41 +273,36 @@ public class AnnotationConfigurator
             {
                 log.finest("Receiving " + archives.size() + " jar files to check");
             }
-            for (JarFile archive : archives)
-            {
-                classes = archiveClasses(_externalContext, archive);
-                for (Class clazz : classes)
+            
+            // Scan annotations available myfaces-impl
+            try
+            {                
+                //Also scan jar including META-INF/standard-faces-config.xml
+                //(myfaces-impl jar file)
+                JarFile jarFile = getMyfacesImplJarFile();
+                if (jarFile != null)
                 {
-                    configureClass(application, dispenser, clazz);
+                    classes = archiveClasses(_externalContext, jarFile);
+                    for (Class clazz : classes)
+                    {
+                        configureClass(application, dispenser, clazz);
+                    }
                 }
             }
-        }
-        catch (Exception e)
-        {
-            throw new FacesException(e);
-        }
-        
-        // Scan annotations available myfaces-impl
-        try
-        {                
-            //Also scan jar including META-INF/standard-faces-config.xml
-            //(myfaces-impl jar file)
-            JarFile jarFile = getMyfacesImplJarFile();
-            if (jarFile != null)
+            catch (Exception e)
             {
-                classes = archiveClasses(_externalContext, jarFile);
-                for (Class clazz : classes)
-                {
-                    configureClass(application, dispenser, clazz);
-                }
+                throw new FacesException(e);
             }
-        }
-        catch (Exception e)
-        {
-            throw new FacesException(e);
         }
     }
 
+    /**
+     * Return the JarFile related to myfaces-impl, based on standard-faces-config.xml is
+     * inside it.
+     * 
+     * @return myfaces JarFile instance
+     * @throws IOException
+     */
     private JarFile getMyfacesImplJarFile() throws IOException
     {
         URL url = getClassLoader().getResource(STANDARD_FACES_CONFIG_RESOURCE);
