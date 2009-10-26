@@ -49,7 +49,7 @@ class _DeltaList<T> implements List<T>, PartialStateHolder
 {
 
     private List<T> _delegate;
-    private UIComponent _component;
+    //private UIComponent _component;
     private Map<Object,Boolean> _deltas;
     private boolean _initialStateMarked;
     
