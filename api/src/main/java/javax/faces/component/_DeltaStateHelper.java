@@ -141,7 +141,7 @@ import javax.faces.context.FacesContext;
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Rev$ $Date$
  */
-public class _DeltaStateHelper implements StateHelper
+class _DeltaStateHelper implements StateHelper
 {
 
     /**
