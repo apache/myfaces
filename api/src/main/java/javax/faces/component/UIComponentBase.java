@@ -201,6 +201,8 @@ public abstract class UIComponentBase extends UIComponent
             // PostAddToViewEvent could cause component relocation
             // (h:outputScript, h:outputStylesheet, composite:insertChildren, composite:insertFacet)
             // so we need to check if the component was relocated or not
+          
+            // is this all really needed ?
             List<UIComponent> children = component.getChildren();
             UIComponent child = null;
             UIComponent currentChild = null;
@@ -230,7 +232,7 @@ public abstract class UIComponentBase extends UIComponent
     }
     
     /**
-     * Publish PostAddToViewEvent to the component and all facets and children.
+     * Publish PreRemoveFromViewEvent to the component and all facets and children.
      * 
      * @param context
      * @param component
@@ -256,28 +258,6 @@ public abstract class UIComponentBase extends UIComponent
         }        
     }    
     
-    private static void _updateChild(UIComponent component, boolean isInView)
-    {
-        if (component.getChildCount() > 0)
-        {
-            for (UIComponent child : component.getChildren())
-            {
-                child.setInView(isInView);
-                //recursive call to set to all descendants
-                _updateChild(child, isInView);
-            }
-        }
-        if (component.getFacetCount() > 0)
-        {
-            for (UIComponent child : component.getFacets().values())
-            {
-                child.setInView(isInView);
-                //recursive call to set to all descendants
-                _updateChild(child, isInView);
-            }
-        }         
-    }
-
     /**
      * 
      * @param eventName
@@ -1154,6 +1134,8 @@ public abstract class UIComponentBase extends UIComponent
             {
                 it.next().processValidators(context);
             }
+            
+            popComponentFromEL(context);
         }
     }
 
