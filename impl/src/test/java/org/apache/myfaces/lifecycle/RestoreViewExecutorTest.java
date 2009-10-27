@@ -19,8 +19,11 @@
 package org.apache.myfaces.lifecycle;
 
 import static org.apache.myfaces.Assert.assertException;
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.same;
 
+import java.util.HashMap;
 import java.util.Locale;
 
 import javax.faces.application.ViewExpiredException;
@@ -82,6 +85,8 @@ public class RestoreViewExecutorTest extends FacesTestCase
     public void testExecuteWOExistingViewRootNoPostBack()
     {
         setupWOExistingViewRoot();
+        expect(_facesContext.getExternalContext()).andReturn(_externalContext).anyTimes();
+        expect(_externalContext.getRequestMap()).andReturn(new HashMap());
         expect(_restoreViewSupport.isPostback(same(_facesContext))).andReturn(false);
         _facesContext.renderResponse();
 
@@ -111,6 +116,8 @@ public class RestoreViewExecutorTest extends FacesTestCase
     public void testExecuteWOExistingViewRootPostBack()
     {
         setupWOExistingViewRoot();
+        expect(_facesContext.getExternalContext()).andReturn(_externalContext).anyTimes();
+        expect(_externalContext.getRequestMap()).andReturn(new HashMap());
         expect(_restoreViewSupport.isPostback(same(_facesContext))).andReturn(true);
         _facesContext.setProcessingEvents(eq(true));
         UIViewRoot viewRoot = _mocksControl.createMock(UIViewRoot.class);
@@ -131,6 +138,8 @@ public class RestoreViewExecutorTest extends FacesTestCase
     public void testExecuteWOExistingViewRootPostBackAndViewExpired()
     {
         setupWOExistingViewRoot();
+        expect(_facesContext.getExternalContext()).andReturn(_externalContext).anyTimes();
+        expect(_externalContext.getRequestMap()).andReturn(new HashMap());
         expect(_restoreViewSupport.isPostback(same(_facesContext))).andReturn(true);
         _facesContext.setProcessingEvents(eq(true));
         expect(_viewHandler.restoreView(same(_facesContext), eq("calculatedViewId"))).andReturn(null);
