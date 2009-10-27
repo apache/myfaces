@@ -42,7 +42,6 @@ import javax.faces.event.AbortProcessingException;
 import javax.faces.event.BehaviorEvent;
 import javax.faces.event.FacesEvent;
 import javax.faces.event.FacesListener;
-import javax.faces.event.PhaseId;
 import javax.faces.event.PostAddToViewEvent;
 import javax.faces.event.PreRemoveFromViewEvent;
 import javax.faces.event.PreRenderComponentEvent;
@@ -150,83 +149,41 @@ public abstract class UIComponentBase extends UIComponent
         _clientId = null;
     }
 
+    /**
+     * <p>Set the parent <code>UIComponent</code> of this
+     * <code>UIComponent</code>.</p>
+     * 
+     * @param parent The new parent, or <code>null</code> for the root node
+     *  of a component tree
+     */
     @Override
     public void setParent(UIComponent parent)
     {
-        boolean postAddToViewEvent = false;
-        boolean preRemoveFromViewEvent = false;
-        if (_parent != null && _parent.isInView())
+        // removing kids OR this is UIViewRoot
+        if (parent == null)
         {
-            if (!(parent != null && parent.isInView()))
+            // not UIViewRoot...
+            if (_parent != null && _parent.isInView())
             {
-                //Component / Facet removed, set to false
-                //isInView to all parent and children
-                preRemoveFromViewEvent = true;
-                _delegateInViewState(this, false);
+                // trigger the "remove event" lifecycle
+                // and call setInView(false) for all children/facets
+                // doing this => recursive
+                _publishPreRemoveFromViewEvent(getFacesContext(), this);
             }
-            //else
-            //{
-                // Component moved inside the same view
-                // There is no reason to call PostAddToViewEvent
-                // because there is already on the view
-            //}
-        }
-        else
-        {
-            if (parent != null && parent.isInView())
+        } else {
+            if (parent.isInView())
             {
-                //Component / Facet added, set to true
-                //isInView to all parent and children
-                postAddToViewEvent = true;
-                _delegateInViewState(this, true);
-            }
-            //else
-            //{
-                //Component manipulated but it is not on the
-                //view yet. No event is published.
-            //}
-        }
-        
-        _parent = parent;
-        
-        FacesContext context = getFacesContext();
-        if (postAddToViewEvent)
-        {
-            // After the child component has been added to the view, if the following condition is not met
-            // FacesContext.isPostback() returns true and FacesContext.getCurrentPhaseId() returns PhaseId.RESTORE_VIEW
-            if (!(context.isPostback() && PhaseId.RESTORE_VIEW.equals(context.getCurrentPhaseId())))
-            {
+                // trigger the ADD_EVENT and call setInView(true)
+                // recursive for all kids/facets...
                 // Application.publishEvent(java.lang.Class, java.lang.Object)  must be called, passing 
                 // PostAddToViewEvent.class as the first argument and the newly added component as the second 
                 // argument.
-                _publishPostAddToViewEvent(context, this);
+                _publishPostAddToViewEvent(getFacesContext(), this);
             }
         }
-        
-        if (preRemoveFromViewEvent)
-        {
-            _publishPreRemoveFromViewEvent(context, this);
-        }
+        _parent = parent;
     }
 
-    private void _delegateInViewState(UIComponent component, boolean inViewState)
-    {
-      component.setInView(inViewState);
-      if (component.getChildCount() > 0)
-      {
-          for (Iterator<UIComponent> it = component.getFacetsAndChildren();
-              it.hasNext();)
-          {
-              UIComponent comp = it.next();
-              // can we do that directly ?
-              if (comp.isInView() != inViewState)
-              {
-                  //Change to false all descendants
-                  _updateChild(comp,inViewState);
-              }
-          }
-      }
-    }
     
     /**
      * Publish PostAddToViewEvent to the component and all facets and children.
@@ -236,6 +193,7 @@ public abstract class UIComponentBase extends UIComponent
      */
     private static void _publishPostAddToViewEvent(FacesContext context, UIComponent component)
     {
+        component.setInView(true);
         context.getApplication().publishEvent(context, PostAddToViewEvent.class, UIComponent.class, component);
         
         if (component.getChildCount() > 0)
@@ -279,6 +237,7 @@ public abstract class UIComponentBase extends UIComponent
      */
     private static void _publishPreRemoveFromViewEvent(FacesContext context, UIComponent component)
     {
+        component.setInView(false);
         context.getApplication().publishEvent(context, PreRemoveFromViewEvent.class, UIComponent.class, component);
         
         if (component.getChildCount() > 0)
