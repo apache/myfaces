@@ -81,11 +81,19 @@ class RestoreViewExecutor implements PhaseExecutor
             restoreViewSupport.processComponentBinding(facesContext, viewRoot);
             return false;
         }
-
+        
         String viewId = restoreViewSupport.calculateViewId(facesContext);
 
-        // Determine if this request is a postback or initial request
-        if (restoreViewSupport.isPostback(facesContext))
+        // Determine if the current request is an attempt by the 
+        // servlet container to display an error page.
+        // If the request is an error page request, the servlet container
+        // is required to set the request parameter "javax.servlet.error.message".
+        boolean errorPageRequest = facesContext.getExternalContext().getRequestMap()
+                                           .get("javax.servlet.error.message") != null;
+        
+        // Determine if this request is a postback or an initial request.
+        // But if it is an error page request, do not treat it as a postback (since 2.0)
+        if (!errorPageRequest && restoreViewSupport.isPostback(facesContext))
         { // If the request is a postback
             if (log.isLoggable(Level.FINEST))
                 log.finest("Request is a postback");
