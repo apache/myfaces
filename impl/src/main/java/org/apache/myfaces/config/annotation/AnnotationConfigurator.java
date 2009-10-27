@@ -166,33 +166,11 @@ public class AnnotationConfigurator
             boolean metadataComplete) throws FacesException
     {
         List<Class> classes;
-
+        List<JarFile> archives = null;
+        
         // Here we have two cases, if metadataComplete we have only to scan
         // annotations on myfaces impl jar file, otherwise, scan as usual.
-        if (metadataComplete)
-        {
-            //Read only annotations available myfaces-impl
-            List<JarFile> archives = null;
-            try
-            {                
-                //Also scan jar including META-INF/standard-faces-config.xml
-                //(myfaces-impl jar file)
-                JarFile jarFile = getMyfacesImplJarFile();
-                if (jarFile != null)
-                {
-                    classes = archiveClasses(_externalContext, jarFile);
-                    for (Class clazz : classes)
-                    {
-                        configureClass(application, dispenser, clazz);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                throw new FacesException(e);
-            }
-        }
-        else
+        if (!metadataComplete)
         {
             // Scan annotation available in org.apache.myfaces.annotation.SCAN_PACKAGES 
             // init param
@@ -239,14 +217,13 @@ public class AnnotationConfigurator
             }
     
             // Scan the classes in /WEB-INF/lib for interesting annotations
-            List<JarFile> archives = null;
             try
             {
                 archives = webArchives(_externalContext);
     
-                if (log.isTraceEnabled())
+                if (log.isLoggable(Level.FINEST))
                 {
-                    log.trace("Receiving " + archives.size() + " jar files to check");
+                    log.finest("Receiving " + archives.size() + " jar files to check");
                 }
                 for (JarFile archive : archives)
                 {
@@ -257,42 +234,29 @@ public class AnnotationConfigurator
                     }
                 }
             }
-        }
-        catch (Exception e)
-        {
-            throw new FacesException(e);
-        }
-
-        // Scan the classes in /WEB-INF/lib for interesting annotations
-        List<JarFile> archives = null;
-        try
-        {
-            archives = webArchives(_externalContext);
-
-            if (log.isLoggable(Level.FINEST))
-            {
-                log.finest("Receiving " + archives.size() + " jar files to check");
-            }
-            
-            // Scan annotations available myfaces-impl
-            try
-            {                
-                //Also scan jar including META-INF/standard-faces-config.xml
-                //(myfaces-impl jar file)
-                JarFile jarFile = getMyfacesImplJarFile();
-                if (jarFile != null)
-                {
-                    classes = archiveClasses(_externalContext, jarFile);
-                    for (Class clazz : classes)
-                    {
-                        configureClass(application, dispenser, clazz);
-                    }
-                }
-            }
             catch (Exception e)
             {
                 throw new FacesException(e);
             }
+        }
+        //Read only annotations available myfaces-impl
+        try
+        {                
+            //Also scan jar including META-INF/standard-faces-config.xml
+            //(myfaces-impl jar file)
+            JarFile jarFile = getMyfacesImplJarFile();
+            if (jarFile != null)
+            {
+                classes = archiveClasses(_externalContext, jarFile);
+                for (Class clazz : classes)
+                {
+                    configureClass(application, dispenser, clazz);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            throw new FacesException(e);
         }
     }
 
