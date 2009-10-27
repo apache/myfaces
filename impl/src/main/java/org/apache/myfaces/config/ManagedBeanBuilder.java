@@ -21,7 +21,7 @@ package org.apache.myfaces.config;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -36,6 +36,7 @@ import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.application.Application;
+import javax.faces.application.ProjectStage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.naming.NamingException;
@@ -69,6 +70,65 @@ public class ManagedBeanBuilder
     public final static String APPLICATION = "application";
     public final static String SESSION = "session";
     public final static String NONE = "none";
+    
+    /**
+     * Comparator used to compare Scopes in the following order:
+     * REQUEST SESSION APPLICATION NONE
+     * @author Jakob Korherr
+     */
+    private final static Comparator<String> scopeComparator = new Comparator<String>()
+    {
+
+        @Override
+        public int compare(String o1, String o2)
+        {
+            if (o1.equalsIgnoreCase(o2))
+            {
+                // the same scope
+                return 0;
+            }
+            if (o1.equalsIgnoreCase(NONE))
+            {
+                // none is greater than any other scope
+                return 1;
+            }
+            if (o1.equalsIgnoreCase(APPLICATION))
+            {
+                if (o2.equalsIgnoreCase(NONE))
+                {
+                    // application is smaller than none
+                    return -1;
+                }
+                else
+                {
+                    // ..but greater than any other scope
+                    return 1;
+                }
+            }
+            if (o1.equalsIgnoreCase(SESSION))
+            {
+                if (o2.equalsIgnoreCase(REQUEST))
+                {
+                    // session is greater than request
+                    return 1;
+                }
+                else
+                {
+                    // but smaller than any other scope
+                    return -1;
+                }
+            }
+            if (o1.equalsIgnoreCase(REQUEST))
+            {
+                // request is smaller than any other scope
+                return -1;
+            }
+            
+            // not a valid scope
+            throw new IllegalArgumentException(o1 + " is not a valid scope");
+        }
+        
+    };
 
     @SuppressWarnings("unchecked")
     public Object buildManagedBean(FacesContext facesContext, ManagedBean beanConfiguration) throws FacesException
@@ -93,8 +153,7 @@ public class ManagedBeanBuilder
                 case ManagedBean.INIT_MODE_PROPERTIES:
                     try
                     {
-                        initializeProperties(facesContext, beanConfiguration.getManagedProperties(),
-                                             beanConfiguration.getManagedBeanScope(), bean);
+                        initializeProperties(facesContext, beanConfiguration, bean);
                     }
                     catch (IllegalArgumentException e)
                     {
@@ -173,13 +232,12 @@ public class ManagedBeanBuilder
 
     @SuppressWarnings("unchecked")
     private void initializeProperties(FacesContext facesContext, 
-                                      Collection<? extends ManagedProperty> managedProperties, 
-                                      String targetScope, Object bean)
+                                      ManagedBean beanConfiguration, Object bean)
     {
         ELResolver elResolver = facesContext.getApplication().getELResolver();
         ELContext elContext = facesContext.getELContext();
 
-        for (ManagedProperty property : managedProperties)
+        for (ManagedProperty property : beanConfiguration.getManagedProperties())
         {
             Object value = null;
 
@@ -248,10 +306,11 @@ public class ManagedBeanBuilder
                     break;
                 case ManagedProperty.TYPE_VALUE:
                     // check for correct scope of a referenced bean
-                    if (!isInValidScope(facesContext, property, targetScope))
+                    if (!isInValidScope(facesContext, property, beanConfiguration))
                     {
                         throw new FacesException("Property " + property.getPropertyName() +
-                                " references object in a scope with shorter lifetime than the target scope " + targetScope);
+                                " references object in a scope with shorter lifetime than the target scope " +
+                                beanConfiguration.getManagedBeanScope());
                     }
                     value = property.getRuntimeValue(facesContext);
                     break;
@@ -303,78 +362,91 @@ public class ManagedBeanBuilder
 
 
     /**
-     * Check if the scope of the property value is valid for a bean to be stored in targetScope.
-     *
+     * Checks if the scope of the property value is valid for a bean to be stored in targetScope.
+     * If one of the scopes is a custom scope (since jsf 2.0), this method only checks the
+     * references if the current ProjectStage is not Production.
      * @param facesContext
-     * @param property     the property to be checked
-     * @param targetScope  name of the target scope of the bean under construction
+     * @param property           the property to be checked
+     * @param beanConfiguration  the ManagedBean, which will be created
      */
-    private boolean isInValidScope(FacesContext facesContext, ManagedProperty property, String targetScope)
+    private boolean isInValidScope(FacesContext facesContext, ManagedProperty property, ManagedBean beanConfiguration)
     {
         if (!property.isValueReference())
         {
             // no value reference but a literal value -> nothing to check
             return true;
         }
-        String[] expressions = extractExpressions(property.getValueBinding(facesContext).getExpressionString());
-
-        for (int i = 0; i < expressions.length; i++)
+        
+        // get the targetScope (since 2.0 this could be an EL ValueExpression)
+        String targetScope = null;
+        if (beanConfiguration.isManagedBeanScopeValueExpression())
         {
-            String expression = expressions[i];
-            if (expression == null)
+            // the scope is a custom scope
+            // Spec says, that the developer has to take care about the references
+            // to and from managed-beans in custom scopes.
+            // However, we do check the references, if we are not in Production stage
+            if (facesContext.getApplication().getProjectStage() == ProjectStage.Production)
+            {
+                return true;
+            }
+            else
+            {
+                targetScope = getNarrowestScope(facesContext, 
+                                                beanConfiguration
+                                                    .getManagedBeanScopeValueExpression(facesContext)
+                                                    .getExpressionString());
+            }
+        }
+        else
+        {
+            targetScope = beanConfiguration.getManagedBeanScope();
+            if (targetScope == null)
+            {
+                targetScope = NONE;
+            }
+        }
+        
+        // optimization: 'request' scope can reference any value scope
+        if (targetScope.equalsIgnoreCase(REQUEST))
+        {
+            return true;
+        }
+        
+        String valueScope = getNarrowestScope(facesContext, 
+                                              property.getValueBinding(facesContext)
+                                                  .getExpressionString());
+        
+        // the target scope needs to have a shorter (or equal) lifetime than the value scope
+        return (scopeComparator.compare(targetScope, valueScope) <= 0);
+    }
+
+    /**
+     * Gets the narrowest scope to which the ValueExpression points.
+     * @param facesContext
+     * @param valueExpression
+     * @return
+     */
+    private String getNarrowestScope(FacesContext facesContext, String valueExpression)
+    {
+        List<String> expressions = extractExpressions(valueExpression);
+        String narrowestScope = NONE;
+        
+        for (String expression : expressions)
+        {
+            String valueScope = getScope(facesContext, expression);
+            if (valueScope == null)
             {
                 continue;
             }
-
-            String valueScope = getScope(facesContext, expression);
-
-            // if the target scope is 'none' value scope has to be 'none', too
-            if (targetScope == null || targetScope.equalsIgnoreCase(NONE))
+            if (scopeComparator.compare(valueScope, narrowestScope) < 0)
             {
-                if (valueScope != null && !(valueScope.equalsIgnoreCase(NONE)))
-                {
-                    return false;
-                }
-                return true;
-            }
-
-            // 'application' scope can reference 'application' and 'none'
-            if (targetScope.equalsIgnoreCase(APPLICATION))
-            {
-                if (valueScope != null)
-                {
-                    if (valueScope.equalsIgnoreCase(REQUEST) ||
-                            valueScope.equalsIgnoreCase(SESSION))
-                    {
-                        return false;
-                    }
-                }
-                return true;
-            }
-
-            // 'session' scope can reference 'session', 'application', and 'none' but not 'request'
-            if (targetScope.equalsIgnoreCase(SESSION))
-            {
-                if (valueScope != null)
-                {
-                    if (valueScope.equalsIgnoreCase(REQUEST))
-                    {
-                        return false;
-                    }
-                }
-                return true;
-            }
-
-            // 'request' scope can reference any value scope
-            if (targetScope.equalsIgnoreCase(REQUEST))
-            {
-                return true;
+                narrowestScope = valueScope;
             }
         }
-        return false;
+        
+        return narrowestScope;
     }
-
-
+    
     private String getScope(FacesContext facesContext, String expression)
     {
         String beanName = getFirstSegment(expression);
@@ -450,7 +522,29 @@ public class ManagedBeanBuilder
 
         if (mbc != null)
         {
-            return mbc.getManagedBeanScope();
+            // managed-bean-scope could be a EL ValueExpression (since 2.0)
+            if (mbc.isManagedBeanScopeValueExpression())
+            {   
+                // the scope is a custom scope
+                // Spec says, that the developer has to take care about the references
+                // to and from managed-beans in custom scopes.
+                // However, we do check the references, if we are not in Production stage
+                if (facesContext.getApplication().getProjectStage() == ProjectStage.Production)
+                {
+                    // we return NONE, because the NONE scope can be referenced by any other scope
+                    return NONE;
+                }
+                else
+                {
+                    return getNarrowestScope(facesContext, 
+                                             mbc.getManagedBeanScopeValueExpression(facesContext)
+                                                 .getExpressionString());
+                }
+            }
+            else
+            {
+                return mbc.getManagedBeanScope();
+            }
         }
 
         return null;
@@ -483,20 +577,15 @@ public class ManagedBeanBuilder
 
     }
 
-    private String[] extractExpressions(String expressionString)
+    private List<String> extractExpressions(String expressionString)
     {
-        String[] expressions = expressionString.split("\\#\\{");
-        for (int i = 0; i < expressions.length; i++)
+        List<String> expressions = new ArrayList<String>();
+        for (String expression : expressionString.split("\\#\\{"))
         {
-            String expression = expressions[i];
-            if (expression.trim().length() == 0)
+            int index = expression.indexOf('}');
+            if (index >= 0)
             {
-                expressions[i] = null;
-            }
-            else
-            {
-                int index = expression.indexOf('}');
-                expressions[i] = expression.substring(0, index);
+                expressions.add(expression.substring(0, index));
             }
         }
         return expressions;

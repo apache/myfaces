@@ -22,7 +22,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.el.ValueExpression;
+import javax.faces.context.FacesContext;
+
 import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.view.facelets.el.ELText;
 
 
 /**
@@ -39,6 +43,7 @@ public class ManagedBean implements org.apache.myfaces.config.element.ManagedBea
     private List<ManagedProperty> property = new ArrayList<ManagedProperty>();
     private MapEntries mapEntries;
     private ListEntries listEntries;
+    private ValueExpression scopeValueExpression;
 
 
     public int getInitMode()
@@ -151,4 +156,29 @@ public class ManagedBean implements org.apache.myfaces.config.element.ManagedBea
     {
         return property;
     }
+    
+    @Override
+    public boolean isManagedBeanScopeValueExpression()
+    {
+        return (scope != null) 
+                   && (scopeValueExpression != null || !ELText.isLiteral(scope));
+    }
+    
+    @Override
+    public ValueExpression getManagedBeanScopeValueExpression(FacesContext facesContext)
+    {
+        if (scopeValueExpression == null)
+        {
+            // we need to set the expected type to Object, because we have to generate a 
+            // Exception text with the actual value and the actual type of the expression,
+            // if the expression does not resolve to java.util.Map
+            scopeValueExpression = 
+                isManagedBeanScopeValueExpression()
+                ? facesContext.getApplication().getExpressionFactory()
+                        .createValueExpression(facesContext.getELContext(), scope, Object.class)
+                : null;
+        }
+        return scopeValueExpression;
+    }
+    
 }

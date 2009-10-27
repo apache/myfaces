@@ -32,6 +32,8 @@ import javax.el.ELException;
 import javax.el.ELResolver;
 import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
+import javax.faces.FacesException;
+import javax.faces.application.ProjectStage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
@@ -50,6 +52,8 @@ public class ManagedBeanResolver extends ELResolver
     private static final Logger log = Logger.getLogger(ManagedBeanResolver.class.getName());
     private static final String BEANS_UNDER_CONSTRUCTION =
             "org.apache.myfaces.el.unified.resolver.managedbean.beansUnderConstruction";
+    private static final String CUSTOM_SCOPE_CYCLIC_REFERENCE_DETECTION =
+            "org.apache.myfaces.el.unified.resolver.managedbean.customScopeCyclicReferenceDetection";
 
     // adapted from Manfred's JSF 1.1 VariableResolverImpl
     protected static final Map<String, Scope> s_standardScopes = new HashMap<String, Scope>(16);
@@ -144,6 +148,7 @@ public class ManagedBeanResolver extends ELResolver
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Object getValue(final ELContext context, final Object base, final Object property)
         throws NullPointerException, PropertyNotFoundException, ELException
     {
@@ -178,7 +183,67 @@ public class ManagedBeanResolver extends ELResolver
         {
             FacesContext facesContext = facesContext(context);
             context.setPropertyResolved(true);
-            beanInstance = createManagedBean(managedBean, facesContext);
+            
+            // managed-bean-scope could be a ValueExpression pointing to a Map (since 2.0)
+            if (managedBean.isManagedBeanScopeValueExpression())
+            {
+                // check for cyclic references in custom scopes, if we are not in Production stage
+                boolean checkCyclicReferences = 
+                        facesContext.getApplication().getProjectStage() != ProjectStage.Production;
+                List<String> cyclicReferences = null;
+                
+                if (checkCyclicReferences)
+                {
+                    final Map<String, Object> requestMap = facesContext.getExternalContext().getRequestMap();
+                    final String managedBeanName = managedBean.getManagedBeanName();
+                    
+                    cyclicReferences = (List<String>) requestMap.get(CUSTOM_SCOPE_CYCLIC_REFERENCE_DETECTION);
+                    if (cyclicReferences == null)
+                    {
+                        cyclicReferences = new ArrayList<String>();
+                        requestMap.put(CUSTOM_SCOPE_CYCLIC_REFERENCE_DETECTION, cyclicReferences);
+                    }
+                    else if (cyclicReferences.contains(managedBeanName))
+                    {
+                        throw new ELException("Detected cyclic reference to managedBean " + managedBeanName);
+                    }
+
+                    cyclicReferences.add(managedBeanName);
+                }
+                try
+                {
+                    Object customScope = managedBean.getManagedBeanScopeValueExpression(facesContext)
+                                                .getValue(facesContext.getELContext());
+                    if (customScope instanceof Map)
+                    {
+                        beanInstance = ((Map) customScope).get(managedBean.getManagedBeanName());
+                    }
+                    else if (customScope != null)
+                    {
+                        throw new FacesException("The expression '" + managedBean.getManagedBeanScope() + 
+                                "' does not evaluate to java.util.Map. It evaluates to '" + customScope + 
+                                "' of type " + customScope.getClass().getName());
+                    }
+                    else
+                    {
+                        log.warning("Custom scope '" + managedBean.getManagedBeanScope() +
+                                "' evaluated to null. Unable to determine if managed bean '" +
+                                managedBean.getManagedBeanName() + "' exists.");
+                    }
+                }
+                finally
+                {
+                    if (checkCyclicReferences)
+                    {
+                        cyclicReferences.remove(managedBean.getManagedBeanName());
+                    }
+                }
+            }
+            
+            if (beanInstance == null)
+            {
+                beanInstance = createManagedBean(managedBean, facesContext);
+            }
         }
 
         return beanInstance;
@@ -195,6 +260,7 @@ public class ManagedBeanResolver extends ELResolver
 
         final ExternalContext extContext = facesContext.getExternalContext();
         final Map<String, Object> requestMap = extContext.getRequestMap();
+        final String managedBeanName = managedBean.getManagedBeanName();
 
         // check for cyclic references
         List<String> beansUnderConstruction = (List<String>)requestMap.get(BEANS_UNDER_CONSTRUCTION);
@@ -203,9 +269,7 @@ public class ManagedBeanResolver extends ELResolver
             beansUnderConstruction = new ArrayList<String>();
             requestMap.put(BEANS_UNDER_CONSTRUCTION, beansUnderConstruction);
         }
-
-        final String managedBeanName = managedBean.getManagedBeanName();
-        if (beansUnderConstruction.contains(managedBeanName))
+        else if (beansUnderConstruction.contains(managedBeanName))
         {
             throw new ELException("Detected cyclic reference to managedBean " + managedBeanName);
         }
@@ -222,12 +286,14 @@ public class ManagedBeanResolver extends ELResolver
             beansUnderConstruction.remove(managedBeanName);
         }
 
-        putInScope(managedBean, extContext, obj);
+        putInScope(managedBean, facesContext, extContext, obj);
 
         return obj;
     }
 
-    private void putInScope(final ManagedBean managedBean, final ExternalContext extContext, final Object obj)
+    @SuppressWarnings("unchecked")
+    private void putInScope(final ManagedBean managedBean, final FacesContext facesContext,
+            final ExternalContext extContext, final Object obj)
     {
 
         final String managedBeanName = managedBean.getManagedBeanName();
@@ -239,18 +305,41 @@ public class ManagedBeanResolver extends ELResolver
         }
         else
         {
-
             final String scopeKey = managedBean.getManagedBeanScope();
 
             // find the scope handler object
             final Scope scope = _scopes.get(scopeKey);
-            if (scope == null)
+            if (scope != null)
             {
-                log.severe("Managed bean '" + managedBeanName + "' has illegal scope: " + scopeKey);
+                scope.put(extContext, managedBeanName, obj);
+            }
+            else if (managedBean.isManagedBeanScopeValueExpression())
+            {
+                // managed-bean-scope could be a ValueExpression pointing to a Map (since 2.0)
+                // Optimisation: We do NOT check for cyclic references here, because when we reach this code,
+                // we have already checked for cyclic references in the custom scope
+                Object customScope = managedBean
+                                        .getManagedBeanScopeValueExpression(facesContext)
+                                            .getValue(facesContext.getELContext());
+                if (customScope instanceof Map)
+                {
+                    ((Map) customScope).put(managedBeanName, obj);
+                }
+                else if (customScope != null)
+                {
+                    throw new FacesException("The expression '" + scopeKey + "' does not evaluate to " +
+                            "java.util.Map. It evaluates to '" + customScope + "' of type " + 
+                            customScope.getClass().getName());
+                }
+                else
+                {
+                    log.warning("Custom scope '" + scopeKey + "' evaluated to null. " +
+                            "Cannot store managed bean '" + managedBeanName + "' in custom scope.");
+                }
             }
             else
             {
-                scope.put(extContext, managedBeanName, obj);
+                log.severe("Managed bean '" + managedBeanName + "' has illegal scope: " + scopeKey);
             }
         }
 

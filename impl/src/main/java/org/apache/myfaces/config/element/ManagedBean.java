@@ -20,6 +20,9 @@ package org.apache.myfaces.config.element;
 
 import java.util.Collection;
 
+import javax.el.ValueExpression;
+import javax.faces.context.FacesContext;
+
 /**
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
@@ -38,7 +41,7 @@ public interface ManagedBean
     public String getManagedBeanClassName();
     public Class<?> getManagedBeanClass();
     public String getManagedBeanScope();
-
+    
     public int getInitMode();
 
     /**
@@ -49,4 +52,21 @@ public interface ManagedBean
     public MapEntries getMapEntries();
 
     public ListEntries getListEntries();
+    
+    /**
+     * Is the value of managed-bean-scope a EL ValueExpression?
+     * @since 2.0
+     * @return
+     */
+    public boolean isManagedBeanScopeValueExpression();
+    
+    /**
+     * Returns the ValueExpression for managed-bean-scope
+     * or null, if managed-bean-scope is literal.
+     * @param facesContext
+     * @since 2.0
+     * @return
+     */
+    public ValueExpression getManagedBeanScopeValueExpression(FacesContext facesContext);
+    
 }
