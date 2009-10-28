@@ -38,6 +38,7 @@ import javax.faces.event.PostAddToViewEvent;
 import javax.faces.render.Renderer;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
+import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
 import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
 import org.apache.myfaces.shared_impl.renderkit.html.HTML;
 import org.apache.myfaces.view.facelets.PostBuildComponentTreeOnRestoreViewEvent;
@@ -109,7 +110,7 @@ public class HtmlScriptRenderer extends Renderer implements
             throw new NullPointerException("component");
 
         Map<String, Object> componentAttributesMap = component.getAttributes();
-        String resourceName = (String) componentAttributesMap.get("name");
+        String resourceName = (String) componentAttributesMap.get(JSFAttr.NAME_ATTR);
         boolean hasChildren = component.getChildCount() > 0;
         
         if (resourceName != null && (!"".equals(resourceName)) )
@@ -153,8 +154,8 @@ public class HtmlScriptRenderer extends Renderer implements
         super.encodeEnd(facesContext, component); //check for NP
         
         Map<String, Object> componentAttributesMap = component.getAttributes();
-        String resourceName = (String) componentAttributesMap.get("name");
-        String libraryName = (String) componentAttributesMap.get("library");
+        String resourceName = (String) componentAttributesMap.get(JSFAttr.NAME_ATTR);
+        String libraryName = (String) componentAttributesMap.get(JSFAttr.LIBRARY_ATTR);
 
         if (resourceName == null)
         {
