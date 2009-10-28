@@ -118,13 +118,16 @@ public class ClassLoaderResourceLoader extends ResourceLoader
                     for (int i = 0; i < versions.length; i++)
                     {
                         String version = versions[i].getName();
-                        if (libraryVersion == null)
+                        if (VERSION_CHECKER.matcher(version).matches())
                         {
-                            libraryVersion = version;
-                        }
-                        else if (getVersionComparator().compare(libraryVersion, version) < 0)
-                        {
-                            libraryVersion = version;
+                            if (libraryVersion == null)
+                            {
+                                libraryVersion = version;
+                            }
+                            else if (getVersionComparator().compare(libraryVersion, version) < 0)
+                            {
+                                libraryVersion = version;
+                            }
                         }
                     }
                 }
@@ -183,13 +186,16 @@ public class ClassLoaderResourceLoader extends ResourceLoader
                                     }
     
                                     String version = entryName;
-                                    if (libraryVersion == null)
+                                    if (VERSION_CHECKER.matcher(version).matches())
                                     {
-                                        libraryVersion = version;
-                                    }
-                                    else if (getVersionComparator().compare(libraryVersion, version) < 0)
-                                    {
-                                        libraryVersion = version;
+                                        if (libraryVersion == null)
+                                        {
+                                            libraryVersion = version;
+                                        }
+                                        else if (getVersionComparator().compare(libraryVersion, version) < 0)
+                                        {
+                                            libraryVersion = version;
+                                        }
                                     }
                                 }
                             }
@@ -321,29 +327,19 @@ public class ClassLoaderResourceLoader extends ResourceLoader
                                         // the same string, just skip it
                                         continue;
                                     }
-    
-                                    if (entryName.charAt(entryName.length() - 1) != '/')
+        
+                                    entryName = entryName.substring(path.length());
+                                    if (RESOURCE_VERSION_CHECKER.matcher(entryName).matches())
                                     {
-                                        // Skip files
-                                        continue;
-                                    }
-    
-                                    entryName = entryName.substring(path.length() + 1, entryName.length() - 1);
-    
-                                    if (entryName.indexOf('/') >= 0)
-                                    {
-                                        // Inner Directory
-                                        continue;
-                                    }
-    
-                                    String version = entryName;
-                                    if (resourceVersion == null)
-                                    {
-                                        resourceVersion = version;
-                                    }
-                                    else if (getVersionComparator().compare(resourceVersion, version) < 0)
-                                    {
-                                        resourceVersion = version;
+                                        String version = entryName.substring(1, entryName.lastIndexOf('.'));
+                                        if (resourceVersion == null)
+                                        {
+                                            resourceVersion = version;
+                                        }
+                                        else if (getVersionComparator().compare(resourceVersion, version) < 0)
+                                        {
+                                            resourceVersion = version;
+                                        }
                                     }
                                 }
                             }
