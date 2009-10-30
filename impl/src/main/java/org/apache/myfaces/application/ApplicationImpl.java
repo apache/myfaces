@@ -1685,6 +1685,7 @@ public class ApplicationImpl extends Application
             {
                 // If target is non-null, store it under the key "target".
                 attributes.put("target", target);
+                context.getViewRoot().addComponentResource(context, output, target);
             }
             else
             {
