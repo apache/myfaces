@@ -90,8 +90,7 @@ public final class ResourceResolver extends ELResolver
                     // Otherwise, portion before the ":" is the library name.
                     
                     resource = ((ResourceHandler) base).createResource
-                        (reference.substring (0, colonIndex), reference.substring
-                        (colonIndex + 1));
+                        ( reference.substring(colonIndex + 1), reference.substring (0, colonIndex));
                 }
             }
             
