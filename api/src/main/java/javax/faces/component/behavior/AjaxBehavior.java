@@ -124,10 +124,6 @@ public class AjaxBehavior extends ClientBehaviorBase {
 
     public Collection<String> getRender() {
         Object render = deltaStateHelper.eval(ATTR_RENDER);
-        if (render instanceof String) {
-            render = ((String) render).split(" ");
-            render = Arrays.asList((String[]) render);
-        }
 
         return (Collection<String>) render;
     }
@@ -189,7 +185,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
             return;
         }
 
-        String[] arrValue = ((String) stringValue).split(",");
+        String[] arrValue = ((String) stringValue).split(" ");
 
         //we have to manually convert otherwise the delta state saving fails
         //Arrays.asList returns a list which is not instantiable
