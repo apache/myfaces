@@ -212,7 +212,7 @@
                   javax.crypto,
                   javax.crypto.spec,
                   javax.ejb;resolution:=optional,
-                  javax.el,
+                  javax.el;version="[1.0.0, 3.0.0)",
                   javax.naming,
                   javax.persistence;version="[1.0.0, 2.0.0)";resolution:=optional,
                   javax.portlet;version="[1.0.0, 2.0.0)";resolution:=optional,
