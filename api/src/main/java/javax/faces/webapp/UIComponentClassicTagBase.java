@@ -778,7 +778,8 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     }
 
     /** Map of <ID,Tag> in the view */
-    private Map<String,Object> getViewComponentIds()
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> getViewComponentIds()
     {
         Map<String, Object> requestMap = _facesContext.getExternalContext().getRequestMap();
         Map<String, Object> viewComponentIds;
@@ -786,12 +787,20 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         if (_parent == null)
         {
             // top level _componentInstance
-            viewComponentIds = new HashMap<String,Object>();
+            viewComponentIds = new HashMap<String, Object>();
             requestMap.put(VIEW_IDS, viewComponentIds);
         }
         else
         {
-            viewComponentIds = (Map<String, Object>) requestMap.get(VIEW_IDS);
+            viewComponentIds = (Map<String, Object>)requestMap.get(VIEW_IDS);
+            
+            // Check if null, this can happen if someone programatically tries to do an include of a 
+            // JSP fragment. This code will prevent NullPointerException from happening in such cases.
+            if (viewComponentIds == null)
+            {
+                viewComponentIds = new HashMap<String, Object>();
+                requestMap.put(VIEW_IDS, viewComponentIds);
+            }
         }
 
         return viewComponentIds;
