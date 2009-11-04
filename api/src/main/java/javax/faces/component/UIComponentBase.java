@@ -1128,14 +1128,19 @@ public abstract class UIComponentBase extends UIComponent
             // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
             pushComponentToEL(context, this);
 
-            // Call the processValidators() method of all facets and children of this UIComponent, in the order
-            // determined by a call to getFacetsAndChildren().
-            for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
+            try
             {
-                it.next().processValidators(context);
+                // Call the processValidators() method of all facets and children of this UIComponent, in the order
+                // determined by a call to getFacetsAndChildren().
+                for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
+                {
+                    it.next().processValidators(context);
+                }
             }
-            
-            popComponentFromEL(context);
+            finally
+            {
+                popComponentFromEL(context);
+            }
         }
     }
 
