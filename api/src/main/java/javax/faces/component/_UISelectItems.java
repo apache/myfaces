@@ -19,6 +19,7 @@
 package javax.faces.component;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFExclude;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
@@ -79,8 +80,11 @@ abstract class _UISelectItems extends UIComponentBase
    * @since 2.0
    * @return
    */
+  @JSFExclude
   @JSFProperty(literalOnly = true)
-  public abstract String getVar();
+  public String getVar() {
+      return null;
+  }
   
   /**
    * The value for the current item.
@@ -88,8 +92,11 @@ abstract class _UISelectItems extends UIComponentBase
    * @since 2.0
    * @return
    */
+  @JSFExclude
   @JSFProperty
-  public abstract Object getItemValue();
+  public Object getItemValue() {
+      return null;
+  }
   
   /**
    * The label of the current item.
@@ -97,8 +104,11 @@ abstract class _UISelectItems extends UIComponentBase
    * @since 2.0
    * @return
    */
+  @JSFExclude
   @JSFProperty
-  public abstract String getItemLabel();
+  public String getItemLabel() {
+      return null;
+  }
   
   /**
    * The description of the current item.
@@ -106,8 +116,11 @@ abstract class _UISelectItems extends UIComponentBase
    * @since 2.0
    * @return
    */
+  @JSFExclude
   @JSFProperty
-  public abstract String getItemDescription();
+  public String getItemDescription() {
+      return null;
+  }
   
   /**
    * Determines if the current item is selectable or not.
@@ -115,8 +128,11 @@ abstract class _UISelectItems extends UIComponentBase
    * @since 2.0
    * @return
    */
+  @JSFExclude
   @JSFProperty(defaultValue = "false")
-  public abstract boolean isItemDisabled();
+  public boolean isItemDisabled() {
+      return false;
+  }
   
   /**
    * Determines if the rendered markup for the current item receives
@@ -125,8 +141,11 @@ abstract class _UISelectItems extends UIComponentBase
    * @since 2.0
    * @return
    */
+  @JSFExclude
   @JSFProperty(defaultValue = "true")
-  public abstract boolean isItemLabelEscaped();
+  public boolean isItemLabelEscaped() {
+      return true;
+  }
   
   /**
    * Is either an EL expression pointing to the element in the value collection
@@ -138,7 +157,10 @@ abstract class _UISelectItems extends UIComponentBase
    * @since 2.0
    * @return
    */
+  @JSFExclude
   @JSFProperty
-  public abstract Object getNoSelectionValue();
+  public Object getNoSelectionValue() {
+      return null;
+  }
 
 }

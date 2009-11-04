@@ -373,7 +373,7 @@ public class UISelectMany extends UIInput
             };
 
             Collection<SelectItem> items = new ArrayList<SelectItem>();
-            for (Iterator<SelectItem> iter = new _SelectItemsIterator(this); iter.hasNext();)
+            for (Iterator<SelectItem> iter = new _SelectItemsIterator(this, context); iter.hasNext();)
             {
                 items.add(iter.next());
             }

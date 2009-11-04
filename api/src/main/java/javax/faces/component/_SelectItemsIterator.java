@@ -18,28 +18,49 @@
  */
 package javax.faces.component;
 
-import java.util.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 import javax.el.ValueExpression;
 import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 import javax.faces.model.SelectItem;
+
+// ATTENTION
+// This class is associated with org.apache.myfaces.shared.util.SelectItemsIterator.
+// Changes here should also be applied to this class.
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
+ * @author Jakob Korherr (jsf 2.0)
  * @version $Revision$ $Date$
  */
 class _SelectItemsIterator implements Iterator<SelectItem>
 {
-    private final Iterator<UIComponent> _childs;
-    private Iterator<SelectItem> _nestedItems;
+    
+    // org.apache.myfaces.shared.util.SelectItemsIterator uses JSFAttr
+    private static final String VAR_ATTR = "var";
+    private static final String ITEM_VALUE_ATTR = "itemValue";
+    private static final String ITEM_LABEL_ATTR = "itemLabel";
+    private static final String ITEM_DESCRIPTION_ATTR = "itemDescription";
+    private static final String ITEM_DISABLED_ATTR = "itemDisabled";
+    private static final String ITEM_LABEL_ESCAPED_ATTR = "itemLabelEscaped";
+    private static final String NO_SELECTION_VALUE_ATTR = "noSelectionValue";
+    
+    private final Iterator<UIComponent> _children;
+    private Iterator<? extends Object> _nestedItems;
     private SelectItem _nextItem;
     private String _collectionLabel;
     private UISelectItems _currentUISelectItems;
+    private FacesContext _facesContext;
 
-    public _SelectItemsIterator(UIComponent selectItemsParent)
+    public _SelectItemsIterator(UIComponent selectItemsParent, FacesContext facesContext)
     {
-        _childs = selectItemsParent.getChildren().iterator();
+        _children = selectItemsParent.getChildren().iterator();
+        _facesContext = facesContext;
     }
 
     @SuppressWarnings("unchecked")
@@ -55,17 +76,11 @@ class _SelectItemsIterator implements Iterator<SelectItem>
             {
                 return true;
             }
-            // remove the last value from the request map
-            if(_currentUISelectItems.getVar() != null && !"".equals(_currentUISelectItems.getVar()))
-            {
-                FacesContext.getCurrentInstance().getExternalContext()
-                    .getRequestMap().remove(_currentUISelectItems.getVar());
-            } 
             _nestedItems = null;
         }
-        if (_childs.hasNext())
+        if (_children.hasNext())
         {
-            UIComponent child = _childs.next();
+            UIComponent child = _children.next();
             // When there is other components nested that does
             // not extends from UISelectItem or UISelectItems
             // the behavior for this iterator is just skip this
@@ -75,10 +90,10 @@ class _SelectItemsIterator implements Iterator<SelectItem>
             while (!(child instanceof UISelectItem) && !(child instanceof UISelectItems))
             {
                 // Try to skip it
-                if (_childs.hasNext())
+                if (_children.hasNext())
                 {
                     // Skip and do the same check
-                    child = _childs.next();
+                    child = _children.next();
                 }
                 else
                 {
@@ -93,24 +108,27 @@ class _SelectItemsIterator implements Iterator<SelectItem>
                 Object item = uiSelectItem.getValue();
                 if (item == null)
                 {
-                    Object itemValue = ((UISelectItem) child).getItemValue();
-                    String label = ((UISelectItem) child).getItemLabel();
-                    String description = ((UISelectItem) child).getItemDescription();
-                    boolean disabled = ((UISelectItem) child).isItemDisabled();
+                    // no value attribute --> create the SelectItem out of the other attributes
+                    Object itemValue = uiSelectItem.getItemValue();
+                    String label = uiSelectItem.getItemLabel();
+                    String description = uiSelectItem.getItemDescription();
+                    boolean disabled = uiSelectItem.isItemDisabled();
+                    boolean escape = uiSelectItem.isItemEscaped();
+                    boolean noSelectionOption = uiSelectItem.isNoSelectionOption();
                     if (label == null)
                     {
                         label = itemValue.toString();
                     }
-                    item = new SelectItem(itemValue, label, description, disabled);
+                    item = new SelectItem(itemValue, label, description, disabled, escape, noSelectionOption);
                 }
                 else if (!(item instanceof SelectItem))
                 {
-                    ValueBinding binding = ((UISelectItem) child).getValueBinding("value");
-                    throw new IllegalArgumentException("Value binding '"
-                            + (binding == null ? null : binding.getExpressionString()) + "' of UISelectItem : "
+                    ValueExpression expression = uiSelectItem.getValueExpression("value");
+                    throw new IllegalArgumentException("ValueExpression '"
+                            + (expression == null ? null : expression.getExpressionString()) + "' of UISelectItem : "
                             + getPathToComponent(child) + " does not reference an Object of type SelectItem");
                 }
-                _nextItem = (SelectItem)item;
+                _nextItem = (SelectItem) item;
                 return true;
             }
             else if (child instanceof UISelectItems)
@@ -120,19 +138,36 @@ class _SelectItemsIterator implements Iterator<SelectItem>
 
                 if (value instanceof SelectItem)
                 {
-                    _nextItem = (SelectItem)value;
+                    _nextItem = (SelectItem) value;
                     return true;
                 }
-                else if (value instanceof SelectItem[])
+                else if (value != null && value.getClass().isArray())
                 {
-                    _nestedItems = Arrays.asList((SelectItem[]) value).iterator();
+                    // value is any kind of array (primitive or non-primitive)
+                    // --> we have to use class Array to get the values
+                    final int length = Array.getLength(value);
+                    Collection<Object> items = new ArrayList<Object>(length);
+                    for (int i = 0; i < length; i++)
+                    {
+                        items.add(Array.get(value, i));
+                    }
+                    _nestedItems = items.iterator();
                     _collectionLabel = "Array";
                     return hasNext();
                 }
-                else if (value instanceof Collection)
+                else if (value instanceof Iterable)
                 {
-                    _nestedItems = ((Collection<SelectItem>) value).iterator();
-                    _collectionLabel = "Collection";
+                    // value is Iterable --> Collection, DataModel,...
+                    _nestedItems = ((Iterable<?>) value).iterator();
+                    // For better understanding ask if value is a Collection
+                    if (value instanceof Collection)
+                    {
+                        _collectionLabel = "Collection";
+                    }
+                    else
+                    {
+                        _collectionLabel = "Iterable";
+                    }
                     return hasNext();
                 }
                 else if (value instanceof Map)
@@ -150,15 +185,14 @@ class _SelectItemsIterator implements Iterator<SelectItem>
                 }
                 else
                 {
-                    ValueBinding binding = _currentUISelectItems.getValueBinding("value");
-
+                    ValueExpression expression = _currentUISelectItems.getValueExpression("value");
                     throw new IllegalArgumentException(
-                        "Value binding '"
-                                + (binding == null ? null : binding.getExpressionString())
-                                + "'of UISelectItems with component-path "
-                                + getPathToComponent(child)
-                                + " does not reference an Object of type SelectItem, SelectItem[], Collection or Map but of type : "
-                                + ((value == null) ? null : value.getClass().getName()));
+                            "ValueExpression '"
+                            + (expression == null ? null : expression.getExpressionString())
+                            + "'of UISelectItems with component-path "
+                            + getPathToComponent(child)
+                            + " does not reference an Object of type SelectItem, array, Iterable or Map, but of type : "
+                            + ((value == null) ? null : value.getClass().getName()));
                 }
             }
         }
@@ -181,39 +215,82 @@ class _SelectItemsIterator implements Iterator<SelectItem>
         {
             Object item = _nestedItems.next();
             
-            // write the current item into the request map under the key listed in var, if available
-            if(_currentUISelectItems.getVar() != null && !"".equals(_currentUISelectItems.getVar()))
-            {
-                FacesContext.getCurrentInstance().getExternalContext()
-                    .getRequestMap().put(_currentUISelectItems.getVar(), item);
-            }
-            
             if (!(item instanceof SelectItem))
             {
-                // check new params of SelectItems (since 2.0) itemValue, itemLabel, itemDescription,...
-                Object itemValue = _currentUISelectItems.getItemValue();
-                if(itemValue != null) 
+                // check new params of SelectItems (since 2.0): itemValue, itemLabel, itemDescription,...
+                // Note that according to the spec UISelectItems does not provide Getter and Setter 
+                // methods for this values, so we have to use the attribute map
+                Map<String, Object> attributeMap = _currentUISelectItems.getAttributes();
+                
+                // write the current item into the request map under the key listed in var, if available
+                boolean wroteRequestMapVarValue = false;
+                Object oldRequestMapVarValue = null;
+                final String var = (String) attributeMap.get(VAR_ATTR);
+                if(var != null && !"".equals(var))
                 {
-                    String itemLabel = _currentUISelectItems.getItemLabel() == null ?
-                            itemValue.toString() : 
-                            _currentUISelectItems.getItemLabel();
-                    item = new SelectItem(itemValue,
-                        itemLabel,
-                        _currentUISelectItems.getItemDescription(),
-                        _currentUISelectItems.isItemDisabled(),
-                        _currentUISelectItems.isItemLabelEscaped(),
-                        itemValue.equals(_currentUISelectItems.getNoSelectionValue())
-                            || itemLabel.equals(_currentUISelectItems.getNoSelectionValue())); 
+                    // save the current value of the key listed in var from the request map
+                    oldRequestMapVarValue = _facesContext.getExternalContext().getRequestMap().put(var, item);
+                    wroteRequestMapVarValue = true;
                 }
-                else 
+                try
                 {
-                    ValueExpression expression = _currentUISelectItems.getValueExpression("value");
-                    throw new IllegalArgumentException(
-                        _collectionLabel + " referenced by UISelectItems with binding '"
-                        + expression.getExpressionString()
-                        + "' and Component-Path : " + getPathToComponent(_currentUISelectItems)
-                        + " does not contain Objects of type SelectItem"
-                        + " or does not provide the attribute itemValue");
+                    Object itemValue = attributeMap.get(ITEM_VALUE_ATTR);
+                    if(itemValue != null) 
+                    {
+                        // Spec: When iterating over the select items, toString() 
+                        // must be called on the string rendered attribute values
+                        Object itemLabel = attributeMap.get(ITEM_LABEL_ATTR);
+                        if (itemLabel == null)
+                        {
+                            itemLabel = itemValue.toString();
+                        }
+                        else
+                        {
+                            itemLabel = itemLabel.toString();
+                        }
+                        Object itemDescription = attributeMap.get(ITEM_DESCRIPTION_ATTR);
+                        if (itemDescription != null)
+                        {
+                            itemDescription.toString();
+                        }
+                        Boolean itemDisabled = getBooleanAttribute(_currentUISelectItems, ITEM_DISABLED_ATTR, false);
+                        Boolean itemLabelEscaped = getBooleanAttribute(_currentUISelectItems, ITEM_LABEL_ESCAPED_ATTR, true);
+                        Object noSelectionValue = attributeMap.get(NO_SELECTION_VALUE_ATTR);
+                        item = new SelectItem(itemValue,
+                                (String) itemLabel,
+                                (String) itemDescription,
+                                itemDisabled,
+                                itemLabelEscaped,
+                                itemValue.equals(noSelectionValue)); 
+                    }
+                    else 
+                    {
+                        ValueExpression expression = _currentUISelectItems.getValueExpression("value");
+                        throw new IllegalArgumentException(
+                                _collectionLabel + " referenced by UISelectItems with ValueExpression '"
+                                + expression.getExpressionString()
+                                + "' and Component-Path : " + getPathToComponent(_currentUISelectItems)
+                                + " does not contain Objects of type SelectItem"
+                                + " or does not provide the attribute itemValue");
+                    }
+                }
+                finally
+                {
+                    // remove the value with the key from var from the request map, if previously written
+                    if(wroteRequestMapVarValue)
+                    {
+                        // If there was a previous value stored with the key from var in the request map, restore it
+                        if (oldRequestMapVarValue != null)
+                        {
+                            _facesContext.getExternalContext()
+                                    .getRequestMap().put(var, oldRequestMapVarValue);
+                        }
+                        else
+                        {
+                            _facesContext.getExternalContext()
+                                    .getRequestMap().remove(var);
+                        }
+                    } 
                 }
             }
             return (SelectItem) item;
@@ -224,6 +301,26 @@ class _SelectItemsIterator implements Iterator<SelectItem>
     public void remove()
     {
         throw new UnsupportedOperationException();
+    }
+    
+    private boolean getBooleanAttribute(UIComponent component, String attrName, boolean defaultValue)
+    {
+        Object value = component.getAttributes().get(attrName);
+        if (value == null)
+        {
+            return defaultValue;
+        }
+        else if (value instanceof Boolean)
+        {
+            return (Boolean) value;
+        }
+        else
+        {
+            // If the value is a String, parse the boolean.
+            // This makes the following code work: <tag attribute="true" />,
+            // otherwise you would have to write <tag attribute="#{true}" />.
+            return Boolean.valueOf(value.toString());
+        }
     }
 
     private String getPathToComponent(UIComponent component)
