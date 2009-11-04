@@ -313,30 +313,44 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             return null;
         }
         
-        // Make sure the client IDs are unique per the spec.
-        
-        checkIds (context, view, new HashSet<String>());
-        
-        // Create save state objects for every component.
-        
-        states = new HashMap<String, Object>();
-        
-        //view.visitTree (VisitContext.createVisitContext (context), new SaveStateVisitor (states));
-        saveStateOnMap(context, states, view);
-        
-        // TODO: not sure the best way to handle dynamic adds/removes as mandated by the spec.
-        
-        // As required by ResponseStateManager, the return value is an Object array.  First
-        // element is the structure object, second is the state map.
-        
         ExternalContext externalContext = context.getExternalContext();
         
         Object serializedView = externalContext.getRequestMap()
             .get(DefaultFaceletsStateManagementHelper.SERIALIZED_VIEW_REQUEST_ATTR);
         
+        //Note on ajax case the method saveState could be called twice: once before start
+        //document rendering and the other one when it is called StateManager.getViewState method.
         if (serializedView == null)
         {
-            serializedView = new Object[] { null, states };
+                    
+            // Make sure the client IDs are unique per the spec.
+            
+            checkIds (context, view, new HashSet<String>());
+            
+            // Create save state objects for every component.
+            
+            states = new HashMap<String, Object>();
+            
+            //view.visitTree (VisitContext.createVisitContext (context), new SaveStateVisitor (states));
+            saveStateOnMap(context, states, view);
+            
+            // TODO: not sure the best way to handle dynamic adds/removes as mandated by the spec.
+            
+            // As required by ResponseStateManager, the return value is an Object array.  First
+            // element is the structure object, second is the state map.
+        
+            if (context.getApplication().getStateManager().isSavingStateInClient(context))
+            {
+                serializedView = new Object[] { null, states };
+            }
+            else
+            {
+                // On server side state saving, the structure field is used to save the view sequence.
+                // Originally, on JspStateManagerImpl this is done in writeState method, not in saveView,
+                // but note that on ajax case the state is both saved and written using StateManager.getViewState,
+                // so we must save it early
+                serializedView = new Object[] {Integer.toString(helper.getNextViewSequence(context), Character.MAX_RADIX), states};
+            }
             externalContext.getRequestMap().put(DefaultFaceletsStateManagementHelper.SERIALIZED_VIEW_REQUEST_ATTR,
                     serializedView);
         }

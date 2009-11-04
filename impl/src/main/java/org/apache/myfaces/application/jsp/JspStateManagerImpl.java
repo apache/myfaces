@@ -595,6 +595,37 @@ public class JspStateManagerImpl extends MyfacesStateManager
 
     }
 
+    @Override
+    public String getViewState(FacesContext facesContext)
+    {
+        UIViewRoot uiViewRoot = facesContext.getViewRoot();
+        String viewId = uiViewRoot.getViewId();
+        ViewDeclarationLanguage vdl = facesContext.getApplication().getViewHandler().getViewDeclarationLanguage(facesContext,viewId);
+        if (vdl != null)
+        {
+            StateManagementStrategy sms = vdl.getStateManagementStrategy(facesContext, viewId);
+            
+            if (sms != null)
+            {
+                if (log.isLoggable(Level.FINEST)) log.finest("Calling saveView of StateManagementStrategy from getViewState: "+sms.getClass().getName());
+                
+                return facesContext.getRenderKit().getResponseStateManager().getViewState(facesContext, saveView(facesContext));
+            }
+        }
+        Object[] savedState = (Object[]) saveView(facesContext);
+        
+        if (!isSavingStateInClient(facesContext))
+        {
+            Object[] state = new Object[2];
+            state[JSF_SEQUENCE_INDEX] = Integer.toString(getNextViewSequence(facesContext), Character.MAX_RADIX);
+            return facesContext.getRenderKit().getResponseStateManager().getViewState(facesContext, state);
+        }
+        else
+        {
+            return facesContext.getRenderKit().getResponseStateManager().getViewState(facesContext, savedState);
+        }
+    }
+
     /**
      * MyFaces extension
      * @param facesContext
