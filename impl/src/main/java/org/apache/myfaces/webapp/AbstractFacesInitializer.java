@@ -27,6 +27,7 @@ import javax.servlet.ServletContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.ApplicationImpl;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.FacesConfigValidator;
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.config.RuntimeConfig;
@@ -48,6 +49,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
     /**
      * This parameter specifies the ExpressionFactory implementation to use.
      */
+    @JSFWebConfigParam(since="1.2.7")
     protected static final String EXPRESSION_FACTORY = "org.apache.myfaces.EXPRESSION_FACTORY";
 
     /**

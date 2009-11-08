@@ -23,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.discovery.resource.ClassLoaders;
 import org.apache.commons.discovery.resource.names.DiscoverServiceNames;
 import org.apache.commons.discovery.ResourceNameIterator;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 import javax.faces.context.ExternalContext;
@@ -39,6 +40,8 @@ import java.lang.reflect.Constructor;
 public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
     private static Log log = LogFactory.getLog(DefaultLifecycleProviderFactory.class);
     private static LifecycleProvider LIFECYCLE_PROVIDER_INSTANCE;
+    
+    @JSFWebConfigParam(name="org.apache.myfaces.config.annotation.LifecycleProvider", since="1.1")
     public static final String LIFECYCLE_PROVIDER = LifecycleProvider.class.getName();
 
 

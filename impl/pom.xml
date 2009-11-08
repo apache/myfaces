@@ -34,10 +34,16 @@
       <plugin>
         <groupId>org.apache.myfaces.buildtools</groupId>
         <artifactId>myfaces-builder-plugin</artifactId>
-        <version>1.0.3</version>
+        <version>${myfaces-builder-plugin.version}</version>
         <executions>          
           <execution>
             <id>makemyfacesmetadata</id>
+            <configuration>
+                <sourceDirectories>
+                    <dir>${basedir}/src/main/java</dir>
+                    <dir>${project.build.directory}/shared_sources</dir>
+                </sourceDirectories>
+            </configuration>
             <goals>
               <goal>build-metadata</goal>
             </goals>
@@ -363,6 +369,47 @@
         - docs on all the available tags and their properties.
         -->
       <id>generate-site</id>
+      <build>
+        <plugins>
+          <plugin>
+            <!-- Generate content for custom tagdoc report -->
+            <groupId>org.apache.myfaces.buildtools</groupId>
+            <artifactId>myfaces-builder-plugin</artifactId>
+            <version>${myfaces-builder-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>site-tagdoc-content</id>
+                <configuration>
+                  <modelIds>
+                    <modelId>myfaces-api</modelId>
+                    <modelId>myfaces-impl</modelId>
+                  </modelIds>
+                  <taglibs>
+                    <f>http://java.sun.com/jsf/core</f>
+                    <h>http://java.sun.com/jsf/html</h>
+                  </taglibs>
+                </configuration>
+                <goals><goal>tagdoc-content</goal></goals>
+              </execution>
+              <execution>
+                <id>site-web-config</id>
+                <configuration>
+                    <templateFile>xdoc-web-config.vm</templateFile>
+                    <outputDirectory>${project.build.directory}/generated-site/xdoc</outputDirectory>
+                    <xmlFile>webconfig.xml</xmlFile>
+                    <modelIds>
+                        <modelId>myfaces-api</modelId>
+                        <modelId>myfaces-impl</modelId>
+                    </modelIds>
+                </configuration>
+                <goals>
+                    <goal>make-config</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
       <reporting>
         <plugins>
           <plugin>
@@ -373,6 +420,27 @@
               <taglib.src.dir>${basedir}/target/classes/META-INF</taglib.src.dir>
               <tldDocDir>${basedir}/target/site/tlddoc</tldDocDir>
             </configuration>
+          </plugin>
+          <plugin>
+            <!-- trigger tagdoc-index report -->
+            <groupId>org.apache.myfaces.buildtools</groupId>
+            <artifactId>myfaces-builder-plugin</artifactId>
+            <version>${myfaces-builder-plugin.version}</version>
+            <reportSets>
+              <reportSet>
+              <configuration>
+                <modelIds>
+                  <modelId>myfaces-api</modelId>
+                  <modelId>myfaces-impl</modelId>
+                </modelIds>
+                <taglibs>
+                  <f>http://java.sun.com/jsf/core</f>
+                  <h>http://java.sun.com/jsf/html</h>
+                </taglibs>
+              </configuration>
+              <reports><report>tagdoc-index</report></reports>
+              </reportSet>
+            </reportSets>
           </plugin>
         </plugins>
       </reporting>
@@ -561,7 +629,7 @@
     <dependency>
       <groupId>org.apache.myfaces.buildtools</groupId>
       <artifactId>myfaces-builder-annotations</artifactId> 
-      <version>1.0.3</version>
+      <version>1.0.4-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     
@@ -694,5 +762,6 @@
 
   <properties>
     <myfaces-shared.version>3.0.7-SNAPSHOT</myfaces-shared.version>
+    <myfaces-builder-plugin.version>1.0.4-SNAPSHOT</myfaces-builder-plugin.version>
   </properties>
 </project>

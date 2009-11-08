@@ -20,6 +20,7 @@ package javax.faces.webapp;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
 import javax.faces.context.FacesContext;
 import javax.faces.context.ExternalContext;
@@ -49,12 +50,14 @@ final class _ErrorPageWriter {
 
     private static final String ERROR_TEMPLATE = "META-INF/rsc/myfaces-dev-error.xml";
 
+    @JSFWebConfigParam(defaultValue="META-INF/rsc/myfaces-dev-error.xml", since="1.2.4")
     private static final String ERROR_TEMPLATE_RESOURCE = "org.apache.myfaces.ERROR_TEMPLATE_RESOURCE";
 
     private static String[] ERROR_PARTS;
 
     private static final String DEBUG_TEMPLATE = "META-INF/rsc/myfaces-dev-debug.xml";
     
+    @JSFWebConfigParam(defaultValue="META-INF/rsc/myfaces-dev-debug.xml", since="1.2.4")
     private static final String DEBUG_TEMPLATE_RESOURCE = "org.apache.myfaces.DEBUG_TEMPLATE_RESOURCE";    
 
     private static String[] DEBUG_PARTS;

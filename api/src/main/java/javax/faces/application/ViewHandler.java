@@ -21,6 +21,8 @@ package javax.faces.application;
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
@@ -65,6 +67,11 @@ import java.util.Locale;
 public abstract class ViewHandler
 {
     public static final String CHARACTER_ENCODING_KEY = "javax.faces.request.charset";
+    
+    /**
+     * Indicate the default suffix to derive the file URI if extension mapping is used. 
+     */
+    @JSFWebConfigParam(defaultValue=".jsp", since="1.1")
     public static final String DEFAULT_SUFFIX_PARAM_NAME = "javax.faces.DEFAULT_SUFFIX";
     public static final String DEFAULT_SUFFIX = ".jsp";
 

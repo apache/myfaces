@@ -31,6 +31,11 @@
                 <li><a href="myfaces-impl/tlddoc/index.html">Core: Impl</a></li>
             </ul>
         </section>
+        <section name="Web Context Params">
+            <ul>
+                <li><a href="myfaces-impl/webconfig.html">Web Context Parameters List</a></li>
+            </ul>
+        </section>
         <section name="Links to Sun's RI docu">
             <ul>
                 <li><a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">Javadoc (API)</a></li>
