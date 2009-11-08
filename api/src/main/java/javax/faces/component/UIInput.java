@@ -35,6 +35,7 @@ import javax.faces.event.ValueChangeListener;
 import javax.faces.render.Renderer;
 import javax.faces.validator.Validator;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFListener;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
@@ -44,20 +45,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  * href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF
  * Specification</a> for further details.
  * <p>
- * <h4>Events:</h4>
- * <table border="1" width="100%" cellpadding="3" summary="">
- * <tr bgcolor="#CCCCFF" class="TableHeadingColor">
- * <th align="left">Type</th>
- * <th align="left">Phases</th>
- * <th align="left">Description</th>
- * </tr>
- * <tr class="TableRowColor">
- * <td valign="top"><code>javax.faces.event.ValueChangeEvent</code></td>
- * <td valign="top" nowrap></td>
- * <td valign="top">The valueChange event is delivered when the value attribute
- * is changed.</td>
- * </tr>
- * </table>
  */
 @JSFComponent(defaultRendererType = "javax.faces.Text")
 public class UIInput extends UIOutput implements EditableValueHolder
@@ -828,6 +815,11 @@ public class UIInput extends UIOutput implements EditableValueHolder
         removeFacesListener(listener);
     }
 
+    /**
+     * The valueChange event is delivered when the value attribute
+     * is changed.
+     */
+    @JSFListener(event="javax.faces.event.ValueChangeEvent")
     public ValueChangeListener[] getValueChangeListeners()
     {
         return (ValueChangeListener[]) getFacesListeners(ValueChangeListener.class);

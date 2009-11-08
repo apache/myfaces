@@ -26,21 +26,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 /**
  * This tag renders as an HTML input element.
  *
- * <h4>Events:</h4>
- * <table border="1" width="100%" cellpadding="3" summary="">
- * <tr bgcolor="#CCCCFF" class="TableHeadingColor">
- * <th align="left">Type</th>
- * <th align="left">Phases</th>
- * <th align="left">Description</th>
- * </tr>
- * <tr class="TableRowColor">
- * <td valign="top"><code>javax.faces.event.ActionEvent</code></td>
- * <td valign="top" nowrap="">Invoke Application<br/>Apply Request Values</td>
- * <td valign="top">Event delivered when the "action" of the component has been
- * invoked;  for example, by clicking on a button.  The action may result
- * in page navigation.</td>
- * </tr>
- * </table>
  */
 @JSFComponent
 (name = "h:commandButton",
