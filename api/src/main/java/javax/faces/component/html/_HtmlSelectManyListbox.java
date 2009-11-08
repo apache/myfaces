@@ -29,6 +29,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
  * <p>
  * The set of available options is defined by adding child
  * f:selectItem or f:selectItems components to this component.
+ * </p>
  * <p>
  * The list is rendered as an HTML select element. The "multiple"
  * attribute is set on the element and the size attribute is set to
@@ -36,6 +37,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
  * if no value is provided. If the size is set to 1, then a
  * "drop-down" list (aka "combo-box") is presented, though if this is
  * the intention then a selectManyMenu should be used instead.
+ * </p>
  * <p>
  * The value attribute must be a value-binding expression to a
  * property of type List, Object array or primitive array. That
@@ -45,6 +47,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
  * selected initially. During the update phase, the property is set
  * to contain a "collection" of values for those child SelectItem
  * objects that are currently selected.
+ * </p>
  *
  * <h4>Events:</h4>
  * <table border="1" width="100%" cellpadding="3" summary="">
@@ -55,7 +58,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
  * </tr>
  * <tr class="TableRowColor">
  * <td valign="top"><code>javax.faces.event.ValueChangeEvent</code></td>
- * <td valign="top" nowrap></td>
+ * <td valign="top" nowrap=""></td>
  * <td valign="top">The valueChange event is delivered when the value
                 attribute is changed.</td>
  * </tr>

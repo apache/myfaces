@@ -26,6 +26,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
  * Allow the user to choose one option from a set of options.
  * <p>
  * Rendered as a listbox with the MULTIPLE attribute set to false.
+ * </p>
  * <p>
  * The available choices are defined via child f:selectItem or
  * f:selectItems elements. The size of the listbox defaults to the
@@ -33,15 +34,18 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
  * smaller value, then scrollbars will be rendered. If size is set
  * to 1 then a "drop-down menu" (aka "combo-box") is rendered, though
  * if this is the intent then selectOneMenu should be used instead.
+ * </p>
  * <p>
  * The value attribute of this component is read to determine
  * which of the available options is initially selected; its value
  * should match the "value" property of one of the child SelectItem
  * objects.
+ * </p>
  * <p>
  * On submit of the enclosing form, the value attribute's bound
  * property is updated to contain the "value" property from the
  * chosen SelectItem.
+ * </p>
  *
  * <h4>Events:</h4>
  * <table border="1" width="100%" cellpadding="3" summary="">
@@ -52,7 +56,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
  * </tr>
  * <tr class="TableRowColor">
  * <td valign="top"><code>javax.faces.event.ValueChangeEvent</code></td>
- * <td valign="top" nowrap></td>
+ * <td valign="top" nowrap=""></td>
  * <td valign="top">The valueChange event is delivered when the value
                 attribute is changed.</td>
  * </tr>

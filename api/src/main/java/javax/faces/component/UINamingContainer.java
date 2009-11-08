@@ -26,6 +26,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProp
  * child components.
  * <p>
  * See the javadocs for interface NamingContainer for further details.
+ * </p>
  */
 @JSFComponent(
         name="f:subview",

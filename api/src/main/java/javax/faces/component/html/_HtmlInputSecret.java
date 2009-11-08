@@ -35,7 +35,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  * </tr>
  * <tr class="TableRowColor">
  * <td valign="top"><code>javax.faces.event.ValueChangeEvent</code></td>
- * <td valign="top" nowrap></td>
+ * <td valign="top" nowrap=""></td>
  * <td valign="top">The valueChange event is delivered when the value
                 attribute is changed.</td>
  * </tr>
