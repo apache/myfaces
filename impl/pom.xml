@@ -34,10 +34,16 @@
       <plugin>
         <groupId>org.apache.myfaces.buildtools</groupId>
         <artifactId>myfaces-builder-plugin</artifactId>
-        <version>1.0.4-SNAPSHOT</version>
+        <version>${myfaces-builder-plugin.version}</version>
         <executions>
           <execution>
             <id>makemyfacesmetadata</id>
+            <configuration>
+                <sourceDirectories>
+                    <dir>${basedir}/src/main/java</dir>
+                    <dir>${project.build.directory}/shared_sources</dir>
+                </sourceDirectories>
+            </configuration>
             <goals>
               <goal>build-metadata</goal>
             </goals>
@@ -177,6 +183,76 @@
         </executions>
       </plugin>
                -->
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <archive>  
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+       </configuration>
+      </plugin>
+      <plugin>   
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>bundle-manifest</id>
+            <phase>process-classes</phase>
+            <goals>    
+              <goal>manifest</goal>
+            </goals>
+            <configuration>
+              <instructions>
+                <Bundle-SymbolicName>org.apache.myfaces.core.impl</Bundle-SymbolicName>
+                <Bundle-Classpath>.</Bundle-Classpath>
+                <Build-Jdk>${java.version}</Build-Jdk>
+                <Implementation-Title>${project.name}</Implementation-Title>
+                <Implementation-Version>${project.version}</Implementation-Version>
+                <Implementation-Vendor>The Apache Software Foundation</Implementation-Vendor>
+                <Implementation-Vendor-Id>${project.groupId}</Implementation-Vendor-Id>
+                <Export-Package>
+                  *;version="${project.version}"
+                </Export-Package>
+                <Import-Package>
+                  !org.apache.myfaces.*,
+                  com.google.inject;version="[1.0.0, 2.0.0)";resolution:=optional,
+                  javax.annotation,
+                  javax.crypto,
+                  javax.crypto.spec,
+                  javax.ejb;resolution:=optional,
+                  javax.el;version="[1.0.0, 3.0.0)",
+                  javax.naming,
+                  javax.persistence;version="[1.0.0, 2.0.0)";resolution:=optional,
+                  javax.portlet;version="[1.0.0, 2.0.0)";resolution:=optional,
+                  javax.servlet;version="[2.5.0, 3.0.0)",
+                  javax.servlet.http;version="[2.5.0, 3.0.0)",
+                  javax.servlet.jsp;version="[2.1.0, 3.0.0)",
+                  javax.servlet.jsp.jstl.core;version="[1.1.2, 2.0.0)",
+                  javax.servlet.jsp.tagext;version="[2.1.0, 3.0.0)",
+                  javax.xml.parsers,
+                  org.apache;resolution:=optional,
+                  org.apache.commons.beanutils;version="[1.7.0, 2.0.0)",
+                  org.apache.commons.codec.binary;version="[1.3.0, 2.0.0)",
+                  org.apache.commons.collections.map;version="[3.2.0, 4.0.0)",
+                  org.apache.commons.digester;version="[1.8.0, 2.0.0)",
+                  org.apache.commons.discovery;version="[0.4.0, 1.0.0)",
+                  org.apache.commons.discovery.resource;version="[0.4.0, 1.0.0)",
+                  org.apache.commons.discovery.resource.names;version="[0.4.0, 1.0.0)",
+                  org.apache.commons.discovery.tools;version="[0.4.0, 1.0.0)",
+                  org.apache.commons.logging;version="[1.1.1, 2.0.0)",
+                  org.w3c.dom,
+                  org.xml.sax,
+                  org.xml.sax.helpers,
+                  org.apache.jasper.compiler;resolution:=optional,
+                  javax.faces.*;version="${project.version}",
+                  *
+                </Import-Package>
+              </instructions>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
   <profiles>
@@ -483,6 +559,47 @@
         - docs on all the available tags and their properties.
         -->
       <id>generate-site</id>
+      <build>
+        <plugins>
+          <plugin>
+            <!-- Generate content for custom tagdoc report -->
+            <groupId>org.apache.myfaces.buildtools</groupId>
+            <artifactId>myfaces-builder-plugin</artifactId>
+            <version>${myfaces-builder-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>site-tagdoc-content</id>
+                <configuration>
+                  <modelIds>
+                    <modelId>myfaces-api</modelId>
+                    <modelId>myfaces-impl</modelId>
+                  </modelIds>
+                  <taglibs>
+                    <f>http://java.sun.com/jsf/core</f>
+                    <h>http://java.sun.com/jsf/html</h>
+                  </taglibs>
+                </configuration>
+                <goals><goal>tagdoc-content</goal></goals>
+              </execution>
+              <execution>
+                <id>site-web-config</id>
+                <configuration>
+                    <templateFile>xdoc-web-config.vm</templateFile>
+                    <outputDirectory>${project.build.directory}/generated-site/xdoc</outputDirectory>
+                    <xmlFile>webconfig.xml</xmlFile>
+                    <modelIds>
+                        <modelId>myfaces-api</modelId>
+                        <modelId>myfaces-impl</modelId>
+                    </modelIds>
+                </configuration>
+                <goals>
+                    <goal>make-config</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
       <reporting>
         <plugins>
           <plugin>
@@ -493,6 +610,27 @@
               <taglib.src.dir>${basedir}/target/classes/META-INF</taglib.src.dir>
               <tldDocDir>${basedir}/target/site/tlddoc</tldDocDir>
             </configuration>
+          </plugin>
+          <plugin>
+            <!-- trigger tagdoc-index report -->
+            <groupId>org.apache.myfaces.buildtools</groupId>
+            <artifactId>myfaces-builder-plugin</artifactId>
+            <version>${myfaces-builder-plugin.version}</version>
+            <reportSets>
+              <reportSet>
+              <configuration>
+                <modelIds>
+                  <modelId>myfaces-api</modelId>
+                  <modelId>myfaces-impl</modelId>
+                </modelIds>
+                <taglibs>
+                  <f>http://java.sun.com/jsf/core</f>
+                  <h>http://java.sun.com/jsf/html</h>
+                </taglibs>
+              </configuration>
+              <reports><report>tagdoc-index</report></reports>
+              </reportSet>
+            </reportSets>
           </plugin>
         </plugins>
       </reporting>
@@ -814,5 +952,6 @@
 
   <properties>
     <myfaces-shared.version>4.0.1-SNAPSHOT</myfaces-shared.version>
+    <myfaces-builder-plugin.version>1.0.4-SNAPSHOT</myfaces-builder-plugin.version>
   </properties>
 </project>

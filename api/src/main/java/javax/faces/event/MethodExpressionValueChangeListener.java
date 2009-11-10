@@ -20,6 +20,7 @@
 package javax.faces.event;
 
 import javax.el.ELContext;
+import javax.el.ELException;
 import javax.el.MethodExpression;
 import javax.faces.component.StateHolder;
 import javax.faces.context.FacesContext;
@@ -53,9 +54,17 @@ public class MethodExpressionValueChangeListener implements ValueChangeListener,
             Object[] params = new Object[] { event };
             methodExpression.invoke(elContext(), params);
         }
-        catch (Exception e)
+        catch (ELException e)
         {
-            throw new AbortProcessingException(e);
+            Throwable cause = e.getCause();
+            if (cause != null && cause instanceof AbortProcessingException)
+            {
+                throw (AbortProcessingException)cause;
+            }
+            else
+            {
+                throw e;
+            }
         }
     }
 

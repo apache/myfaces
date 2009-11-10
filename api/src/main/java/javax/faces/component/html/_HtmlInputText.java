@@ -26,20 +26,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 /**
  * Renders a HTML input element.
  *
- * <h4>Events:</h4>
- * <table border="1" width="100%" cellpadding="3" summary="">
- * <tr bgcolor="#CCCCFF" class="TableHeadingColor">
- * <th align="left">Type</th>
- * <th align="left">Phases</th>
- * <th align="left">Description</th>
- * </tr>
- * <tr class="TableRowColor">
- * <td valign="top"><code>javax.faces.event.ValueChangeEvent</code></td>
- * <td valign="top" nowrap></td>
- * <td valign="top">The valueChange event is delivered when the value
-                attribute is changed.</td>
- * </tr>
- * </table>
  */
 @JSFComponent
 (name = "h:inputText",

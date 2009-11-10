@@ -34,6 +34,11 @@ import javax.faces.view.AttachedObjectHandler;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.ViewDeclarationLanguageFactory;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Locale;
+
 /**
  * A ViewHandler manages the component-tree-creation and component-tree-rendering parts of a request lifecycle (ie
  * "create view", "restore view" and "render response").
@@ -74,6 +79,11 @@ public abstract class ViewHandler
     public static final String CHARACTER_ENCODING_KEY = "javax.faces.request.charset";
     public static final String DEFAULT_FACELETS_SUFFIX = ".xhtml";
     public static final String DEFAULT_SUFFIX = ".xhtml .jsp";
+    
+    /**
+     * Indicate the default suffix to derive the file URI if extension mapping is used. 
+     */
+    @JSFWebConfigParam(defaultValue=".jsp", since="1.1")
     public static final String DEFAULT_SUFFIX_PARAM_NAME = "javax.faces.DEFAULT_SUFFIX";
     public static final String FACELETS_SUFFIX_PARAM_NAME = "javax.faces.FACELETS_SUFFIX";
     public static final String FACELETS_VIEW_MAPPINGS_PARAM_NAME = "javax.faces.FACELETS_VIEW_MAPPINGS";

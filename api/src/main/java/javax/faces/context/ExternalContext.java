@@ -562,7 +562,8 @@ public abstract class ExternalContext
      * @param encoding
      * @throws java.io.UnsupportedEncodingException
      */
-    public void setRequestCharacterEncoding(String encoding) throws java.io.UnsupportedEncodingException
+    public void setRequestCharacterEncoding(java.lang.String encoding)
+            throws java.io.UnsupportedEncodingException
     {
         ExternalContext ctx = _firstInstance.get();
         

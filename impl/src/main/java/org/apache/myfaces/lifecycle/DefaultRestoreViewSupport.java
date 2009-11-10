@@ -45,6 +45,12 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
     private static final String JAVAX_SERVLET_INCLUDE_SERVLET_PATH = "javax.servlet.include.servlet_path";
 
     private static final String JAVAX_SERVLET_INCLUDE_PATH_INFO = "javax.servlet.include.path_info";
+    
+    /**
+     * Constant defined on javax.portlet.faces.Bridge class that helps to 
+     * define if the current request is a portlet request or not.
+     */
+    private static final String PORTLET_LIFECYCLE_PHASE = "javax.portlet.faces.phase";
 
     //private final Log log = LogFactory.getLog(DefaultRestoreViewSupport.class);
     private final Logger log = Logger.getLogger(DefaultRestoreViewSupport.class.getName());
@@ -82,35 +88,44 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
         ExternalContext externalContext = facesContext.getExternalContext();
         Map<String, Object> requestMap = externalContext.getRequestMap();
 
-        String viewId = (String) requestMap.get(JAVAX_SERVLET_INCLUDE_PATH_INFO);
+        String viewId = null;
         boolean traceEnabled = log.isLoggable(Level.FINEST);
-        if (viewId != null)
+        
+        if (requestMap.containsKey(PORTLET_LIFECYCLE_PHASE))
         {
-            if (traceEnabled)
-            {
-                log.finest("Calculated viewId '" + viewId + "' from request param '" + JAVAX_SERVLET_INCLUDE_PATH_INFO
-                        + "'");
-            }
+            viewId = (String) externalContext.getRequestPathInfo();
         }
         else
         {
-            viewId = externalContext.getRequestPathInfo();
-            if (viewId != null && traceEnabled)
+            viewId = (String) requestMap.get(JAVAX_SERVLET_INCLUDE_PATH_INFO);
+            if (viewId != null)
             {
-                log.finest("Calculated viewId '" + viewId + "' from request path info");
+                if (traceEnabled)
+                {
+                    log.finest("Calculated viewId '" + viewId + "' from request param '" + JAVAX_SERVLET_INCLUDE_PATH_INFO
+                            + "'");
+                }
+            }
+            else
+            {
+                viewId = externalContext.getRequestPathInfo();
+                if (viewId != null && traceEnabled)
+                {
+                    log.finest("Calculated viewId '" + viewId + "' from request path info");
+                }
+            }
+    
+            if (viewId == null)
+            {
+                viewId = (String) requestMap.get(JAVAX_SERVLET_INCLUDE_SERVLET_PATH);
+                if (viewId != null && traceEnabled)
+                {
+                    log.finest("Calculated viewId '" + viewId + "' from request param '"
+                            + JAVAX_SERVLET_INCLUDE_SERVLET_PATH + "'");
+                }
             }
         }
-
-        if (viewId == null)
-        {
-            viewId = (String) requestMap.get(JAVAX_SERVLET_INCLUDE_SERVLET_PATH);
-            if (viewId != null && traceEnabled)
-            {
-                log.finest("Calculated viewId '" + viewId + "' from request param '"
-                        + JAVAX_SERVLET_INCLUDE_SERVLET_PATH + "'");
-            }
-        }
-
+        
         if (viewId == null)
         {
             viewId = externalContext.getRequestServletPath();

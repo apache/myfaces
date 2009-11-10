@@ -41,6 +41,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  * 
@@ -51,11 +52,37 @@ public final class FacesServlet implements Servlet
 {
     //private static final Log log = LogFactory.getLog(FacesServlet.class);
     private static final Logger log = Logger.getLogger(FacesServlet.class.getName());
+    
+    /**
+     * Comma separated list of URIs of (additional) faces config files.
+     * (e.g. /WEB-INF/my-config.xml)See JSF 1.0 PRD2, 10.3.2
+     * Attention: You do not need to put /WEB-INF/faces-config.xml in here.
+     */
+    @JSFWebConfigParam(since="1.1")
     public static final String CONFIG_FILES_ATTR = "javax.faces.CONFIG_FILES";
     public static final String LIFECYCLE_ID_ATTR = "javax.faces.LIFECYCLE_ID";
 
     private static final String SERVLET_INFO = "FacesServlet of the MyFaces API implementation";
+    
+    /**
+     * Indicate if myfaces is responsible to handle errors. 
+     * See http://wiki.apache.org/myfaces/Handling_Server_Errors for details. 
+     */
+    @JSFWebConfigParam(defaultValue="true",expectedValues="true,false", since="1.2.4")
     private static final String ERROR_HANDLING_PARAMETER = "org.apache.myfaces.ERROR_HANDLING";
+    
+    /**
+     * If you want to choose a different class for handling the exception.
+     * <p> 
+     * The error-handler needs to include the following methods:
+     * </p>
+     * <ul>
+     * <li>handleException(FacesContext fc, Exception ex)</li>
+     * <li>handleExceptionList(FacesContext facesContext, List exceptionList)</li>
+     * <li>handleThrowable(FacesContext facesContext, Throwable ex)</li>
+     * </ul>
+     */
+    @JSFWebConfigParam(since="1.2.4")
     private static final String ERROR_HANDLER_PARAMETER = "org.apache.myfaces.ERROR_HANDLER";
     private static final String ERROR_HANDLING_EXCEPTION_LIST = "org.apache.myfaces.errorHandling.exceptionList";
 

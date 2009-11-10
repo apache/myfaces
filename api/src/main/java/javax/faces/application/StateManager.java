@@ -18,6 +18,9 @@
  */
 package javax.faces.application;
 
+
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+
 import java.io.IOException;
 
 import javax.faces.component.UIViewRoot;
@@ -58,6 +61,22 @@ import javax.faces.context.FacesContext;
  */
 public abstract class StateManager
 {
+    /**
+     * Define the state method to be used. There are two different options defined by the 
+     * specification: "client" and "server" state.
+     * <p>
+     * When "client" state is configured, all state information required to create the tree is embedded within
+     * the data rendered to the client. Note that because data received from a remote client must always be
+     * treated as "tainted", care must be taken when using such data. Some StateManager implementations may
+     * use encryption to ensure that clients cannot modify the data, and that the data received on postback
+     * is therefore trustworthy.
+     * </p>
+     * <p>
+     * When "server" state is configured, the data is saved somewhere "on the back end", and (at most) a
+     * token is embedded in the data rendered to the user.
+     * </p>
+     */
+    @JSFWebConfigParam(defaultValue="server", expectedValues="server,client", since="1.1")
     public static final String STATE_SAVING_METHOD_PARAM_NAME = "javax.faces.STATE_SAVING_METHOD";
     public static final String STATE_SAVING_METHOD_CLIENT = "client";
     public static final String STATE_SAVING_METHOD_SERVER = "server";

@@ -29,28 +29,13 @@ import javax.faces.event.FacesEvent;
 import javax.faces.event.PhaseId;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFListener;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
  * 
  * UICommand is a base abstraction for components that implement ActionSource.
  * 
- * <h4>Events:</h4>
- * <table border="1" width="100%" cellpadding="3" summary="">
- * <tr bgcolor="#CCCCFF" class="TableHeadingColor">
- * <th align="left">Type</th>
- * <th align="left">Phases</th>
- * <th align="left">Description</th>
- * </tr>
- * <tr class="TableRowColor">
- * <td valign="top"><code>javax.faces.event.ActionEvent</code></td>
- * <td valign="top" nowrap>Invoke Application<br>
- * Apply Request Values</td>
- * <td valign="top">Event delivered when the "action" of the component has been
- * invoked; for example, by clicking on a button. The action may result in page
- * navigation.</td>
- * </tr>
- * </table>
  */
 @JSFComponent(defaultRendererType = "javax.faces.Button")
 public class UICommand extends UIComponentBase implements ActionSource2
@@ -290,6 +275,13 @@ public class UICommand extends UIComponentBase implements ActionSource2
         removeFacesListener(listener);
     }
 
+    /**
+     * Event delivered when the "action" of the component has been
+     * invoked; for example, by clicking on a button. The action may result 
+     * in page navigation.
+     */
+    @JSFListener(event="javax.faces.event.ActionEvent",
+            phases="Invoke Application, Apply Request Values")
     public ActionListener[] getActionListeners()
     {
         return (ActionListener[]) getFacesListeners(ActionListener.class);

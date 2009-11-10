@@ -167,28 +167,55 @@ public class FacesConfigurator
     public static final String MYFACES_API_PACKAGE_NAME = "myfaces-api";
     public static final String MYFACES_IMPL_PACKAGE_NAME = "myfaces-impl";
     public static final String MYFACES_TOMAHAWK_PACKAGE_NAME = "tomahawk";
+    public static final String MYFACES_TOMAHAWK12_PACKAGE_NAME = "tomahawk12";
+    public static final String MYFACES_ORCHESTRA_PACKAGE_NAME = "myfaces-orchestra-core";
+    public static final String MYFACES_ORCHESTRA12_PACKAGE_NAME = "myfaces-orchestra-core12";
+    public static final String MYFACES_TRINIDAD_API_PACKAGE_NAME = "trinidad-api";
+    public static final String MYFACES_TRINIDAD_IMPL_PACKAGE_NAME = "trinidad-impl";
+    public static final String MYFACES_TOBAGO_PACKAGE_NAME = "tobago";
     public static final String MYFACES_TOMAHAWK_SANDBOX_PACKAGE_NAME = "tomahawk-sandbox";
+    public static final String MYFACES_TOMAHAWK_SANDBOX12_PACKAGE_NAME = "tomahawk-sandbox12";
     public static final String MYFACES_TOMAHAWK_SANDBOX15_PACKAGE_NAME = "tomahawk-sandbox15";
     public static final String COMMONS_EL_PACKAGE_NAME = "commons-el";
     public static final String JSP_API_PACKAGE_NAME = "jsp-api";
-
+    
+    private static final String[] ARTIFACTS_IDS = 
+        { 
+            MYFACES_API_PACKAGE_NAME, MYFACES_IMPL_PACKAGE_NAME,
+            MYFACES_TOMAHAWK_PACKAGE_NAME, MYFACES_TOMAHAWK12_PACKAGE_NAME,
+            MYFACES_TOMAHAWK_SANDBOX_PACKAGE_NAME, MYFACES_TOMAHAWK_SANDBOX12_PACKAGE_NAME,
+            MYFACES_TOMAHAWK_SANDBOX15_PACKAGE_NAME,
+            MYFACES_ORCHESTRA_PACKAGE_NAME, MYFACES_ORCHESTRA12_PACKAGE_NAME,
+            MYFACES_TRINIDAD_API_PACKAGE_NAME, MYFACES_TRINIDAD_IMPL_PACKAGE_NAME,
+            MYFACES_TOBAGO_PACKAGE_NAME, 
+            COMMONS_EL_PACKAGE_NAME, JSP_API_PACKAGE_NAME
+        };
+    
     /**
-     * Regular expression used to extract the jar information from the files present in the classpath.
-     * <p>
-     * The groups found with the regular expression are:
-     * </p>
+     * Regular expression used to extract the jar information from the 
+     * files present in the classpath.
+     * <p>The groups found with the regular expression are:</p>
      * <ul>
-     * <li>Group 1: file path (required)</li>
-     * <li>Group 2: artifact id (required)</li>
-     * <li>Group 3: major version (required)</li>
-     * <li>Group 5: minor version (optional)</li>
-     * <li>Group 7: maintenance version (optional)</li>
-     * <li>Group 9: extra version (optional)</li>
-     * <li>Group 10: SNAPSHOT marker (optional)</li>
+     *   <li>Group 6: file path (required)</li>
+     *   <li>Group 7: artifact id (required)</li>
+     *   <li>Group 8: major version (required)</li>
+     *   <li>Group 10: minor version (optional)</li>
+     *   <li>Group 12: maintenance version (optional)</li>
+     *   <li>Group 14: extra version (optional)</li>
+     *   <li>Group 15: SNAPSHOT marker (optional)</li>
      * </ul>
      */
-    public static final String REGEX_LIBRARY = "jar:(file:.*/(.+)-"
-            + "(\\d+)(\\.(\\d+)(\\.(\\d+)(\\.(\\d+))?)?)?(-SNAPSHOT)?" + "\\.jar)!/META-INF/MANIFEST.MF";
+    public static final String REGEX_LIBRARY = "((jar)?(besjar)?(wsjar)?(zip)?)?:(file:.*/(.+)-" +
+            "(\\d+)(\\.(\\d+)(\\.(\\d+)(\\.(\\d+))?)?)?(-SNAPSHOT)?" +
+            "\\.jar)!/META-INF/MANIFEST.MF";
+    private static final Pattern REGEX_LIBRARY_PATTERN = Pattern.compile(REGEX_LIBRARY);
+    private static final int REGEX_LIBRARY_FILE_PATH = 6;
+    private static final int REGEX_LIBRARY_ARTIFACT_ID = 7;
+    private static final int REGEX_LIBRARY_MAJOR_VERSION = 8;
+    private static final int REGEX_LIBRARY_MINOR_VERSION = 10;
+    private static final int REGEX_LIBRARY_MAINTENANCE_VERSION = 12;
+    private static final int REGEX_LIBRARY_EXTRA_VERSION = 14;
+    private static final int REGEX_LIBRARY_SNAPSHOT_MARKER = 15;
 
     public FacesConfigurator(ExternalContext externalContext)
     {
@@ -509,23 +536,22 @@ public class FacesConfigurator
     /**
      * This method performs part of the factory search outlined in section 10.2.6.1.
      */
+    @SuppressWarnings("unchecked")
     protected void logMetaInf()
     {
         try
         {
             Map<String, List<JarInfo>> libs = new HashMap<String, List<JarInfo>>(30);
 
-            Pattern pattern = Pattern.compile(REGEX_LIBRARY);
-
             Iterator<URL> it = ClassUtils.getResources("META-INF/MANIFEST.MF", this);
             while (it.hasNext())
             {
                 URL url = it.next();
-                Matcher matcher = pattern.matcher(url.toString());
+                Matcher matcher = REGEX_LIBRARY_PATTERN.matcher(url.toString());
                 if (matcher.matches())
                 {
                     // We have a valid JAR
-                    String artifactId = matcher.group(2);
+                    String artifactId = matcher.group(REGEX_LIBRARY_ARTIFACT_ID);
                     List<JarInfo> versions = libs.get(artifactId);
                     if (versions == null)
                     {
@@ -533,10 +559,13 @@ public class FacesConfigurator
                         libs.put(artifactId, versions);
                     }
 
-                    String path = matcher.group(1);
+                    String path = matcher.group(REGEX_LIBRARY_FILE_PATH);
 
-                    Version version = new Version(matcher.group(3), matcher.group(5), matcher.group(7),
-                                                  matcher.group(9), matcher.group(10));
+                    Version version = new Version(matcher.group(REGEX_LIBRARY_MAJOR_VERSION), 
+                            matcher.group(REGEX_LIBRARY_MINOR_VERSION), 
+                            matcher.group(REGEX_LIBRARY_MAINTENANCE_VERSION),
+                            matcher.group(REGEX_LIBRARY_EXTRA_VERSION), 
+                            matcher.group(REGEX_LIBRARY_SNAPSHOT_MARKER));
 
                     JarInfo newInfo = new JarInfo(path, version);
                     if (!versions.contains(newInfo))
@@ -548,13 +577,9 @@ public class FacesConfigurator
 
             if (log.isLoggable(Level.INFO))
             {
-                String[] artifactIds = { MYFACES_API_PACKAGE_NAME, MYFACES_IMPL_PACKAGE_NAME,
-                        MYFACES_TOMAHAWK_PACKAGE_NAME, MYFACES_TOMAHAWK_SANDBOX_PACKAGE_NAME,
-                        MYFACES_TOMAHAWK_SANDBOX15_PACKAGE_NAME, COMMONS_EL_PACKAGE_NAME, JSP_API_PACKAGE_NAME };
-
                 if (log.isLoggable(Level.WARNING))
                 {
-                    for (String artifactId : artifactIds)
+                    for (String artifactId : ARTIFACTS_IDS)
                     {
                         List<JarInfo> versions = libs.get(artifactId);
                         if (versions != null && versions.size() > 1)
@@ -589,7 +614,7 @@ public class FacesConfigurator
                     }
                 }
 
-                for (String artifactId : artifactIds)
+                for (String artifactId : ARTIFACTS_IDS)
                 {
                     startLib(artifactId, libs);
                 }
@@ -1562,7 +1587,7 @@ public class FacesConfigurator
             }
         }
     }
-
+    
     private void startLib(String artifactId, Map<String, List<JarInfo>> libs)
     {
         List<JarInfo> versions = libs.get(artifactId);
@@ -1573,8 +1598,8 @@ public class FacesConfigurator
         else
         {
             JarInfo info = versions.get(0);
-            log.info("Starting up MyFaces-package : " + artifactId + " in version : " + info.getVersion()
-                    + " from path : " + info.getUrl());
+            log.info("Starting up MyFaces-package : " + artifactId + " in version : "
+                     + info.getVersion() + " from path : " + info.getUrl());
         }
     }
 
@@ -2044,7 +2069,7 @@ public class FacesConfigurator
         }
     }
 
-    private static class Version implements Comparable<Version>
+    static class Version implements Comparable<Version>
     {
         private Integer[] parts;
 

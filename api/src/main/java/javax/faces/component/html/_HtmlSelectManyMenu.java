@@ -29,10 +29,12 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
  * <p>
  * The set of available options is defined by adding child
  * f:selectItem or f:selectItems components to this component.
+ * </p>
  * <p>
  * Renders as an HTML select element, with the choices made up of
  * child f:selectItem or f:selectItems elements. The multiple
  * attribute is set and the size attribute is set to 1.
+ * </p>
  * <p>
  * The value attribute must be a value-binding expression to a
  * property of type List, Object array or primitive array. That
@@ -42,21 +44,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
  * selected initially. During the update phase, the property is set
  * to contain a "collection" of values for those child SelectItem
  * objects that are currently selected.
+ * </p>
  *
- * <h4>Events:</h4>
- * <table border="1" width="100%" cellpadding="3" summary="">
- * <tr bgcolor="#CCCCFF" class="TableHeadingColor">
- * <th align="left">Type</th>
- * <th align="left">Phases</th>
- * <th align="left">Description</th>
- * </tr>
- * <tr class="TableRowColor">
- * <td valign="top"><code>javax.faces.event.ValueChangeEvent</code></td>
- * <td valign="top" nowrap></td>
- * <td valign="top">The valueChange event is delivered when the value
-                attribute is changed.</td>
- * </tr>
- * </table>
  */
 @JSFComponent
 (name = "h:selectManyMenu",

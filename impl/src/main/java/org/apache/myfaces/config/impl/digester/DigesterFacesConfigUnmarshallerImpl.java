@@ -26,6 +26,7 @@ import org.apache.myfaces.config.FacesConfigUnmarshaller;
 import org.apache.myfaces.config.impl.digester.elements.*;
 import org.apache.myfaces.config.impl.FacesConfigEntityResolver;
 import org.apache.commons.digester.Digester;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -43,7 +44,8 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.setValidating(false);
         digester.setNamespaceAware(true);
         digester.setEntityResolver(new FacesConfigEntityResolver(externalContext));
-        digester.setUseContextClassLoader(true);
+        //digester.setUseContextClassLoader(true);
+        digester.setClassLoader(ClassUtils.getContextClassLoader());
 
         digester.addObjectCreate("faces-config", FacesConfig.class);
         // 2.0 specific start

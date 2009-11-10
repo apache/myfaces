@@ -26,24 +26,12 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
  * A component that allows the user to select or unselect an object.
  * <p>
  * This can also be used to choose between two states such as true/false or on/off.
- * <p>
- * <h4>Events:</h4>
- * <table border="1" width="100%" cellpadding="3" summary="">
- * <tr bgcolor="#CCCCFF" class="TableHeadingColor">
- * <th align="left">Type</th>
- * <th align="left">Phases</th>
- * <th align="left">Description</th>
- * </tr>
- * <tr class="TableRowColor">
- * <td valign="top"><code>javax.faces.event.ValueChangeEvent</code></td>
- * <td valign="top" nowrap></td>
- * <td valign="top">The valueChange event is delivered when the value attribute is changed.</td>
- * </tr>
- * </table>
+ * </p>
  * <p>
  * See the javadoc for this class in the
  * <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  * for further details.
+ * </p>
  */
 @JSFComponent(defaultRendererType = "javax.faces.Checkbox")
 public class UISelectBoolean extends UIInput
