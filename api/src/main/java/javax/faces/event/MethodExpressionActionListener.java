@@ -46,6 +46,11 @@ public class MethodExpressionActionListener implements ActionListener, StateHold
     {
         this.methodExpression = methodExpression;
     }
+    
+    public MethodExpressionActionListener(MethodExpression methodExpression1, MethodExpression methodExpression2)
+    {
+        //TODO: Implement this!
+    }
 
     public void processAction(ActionEvent actionEvent) throws AbortProcessingException
     {

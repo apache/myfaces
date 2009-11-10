@@ -213,7 +213,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
         return retVal;
     }
 
-    public void setImmediate(Boolean immediate) {
+    public void setImmediate(boolean immediate) {
         deltaStateHelper.put(ATTR_IMMEDIATE, immediate);
     }
 

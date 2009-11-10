@@ -97,7 +97,7 @@ public class BeanValidator implements Validator, PartialStateHolder
      * This regular expression is used to match for empty validation groups.
      * Currently, a string containing only whitespace is classified as empty.
      */
-    public static final String EMPTY_VALIDATION_GROUPS_PATTERN = "^\\s*$";
+    public static final String EMPTY_VALIDATION_GROUPS_PATTERN = "^[\\W,]*$";
 
     private String validationGroups;
 

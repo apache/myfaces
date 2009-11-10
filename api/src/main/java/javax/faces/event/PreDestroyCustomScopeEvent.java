@@ -34,7 +34,7 @@ public class PreDestroyCustomScopeEvent extends SystemEvent  {
     /**
      * @return the source as scope context representation for this event
      */
-    public ScopeContext getScope() {
+    public ScopeContext getContext() {
         return (ScopeContext) source;
     }
 }

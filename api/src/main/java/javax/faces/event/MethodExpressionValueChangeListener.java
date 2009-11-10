@@ -47,6 +47,11 @@ public class MethodExpressionValueChangeListener implements ValueChangeListener,
         this.methodExpression = methodExpression;
     }
 
+    public MethodExpressionValueChangeListener(MethodExpression methodExpression1, MethodExpression methodExpression2)
+    {
+        //TODO: Implement this!
+    }
+
     public void processValueChange(ValueChangeEvent event) throws AbortProcessingException
     {
         try
