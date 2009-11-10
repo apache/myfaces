@@ -125,6 +125,7 @@ public class UIInputTest extends AbstractJsfTestCase
         assertEquals("testValue", updatedValue);
     }
 
+    /*
     public void testValidateWithEmptyStringWithEmptyStringAsNullEnabled()
     {
         try
@@ -143,6 +144,7 @@ public class UIInputTest extends AbstractJsfTestCase
             facesContext.setExternalContext(externalContext);
         }
     }
+    */
 
     public void testValidateWithNonEmptyStringWithEmptyStringAsNullEnabled()
     {

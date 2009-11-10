@@ -34,8 +34,10 @@ import javax.faces.context.FacesContext;
  */
 public class ExceptionQueuedEventContext implements SystemEventListenerHolder
 {
-    public static final String IN_AFTER_PHASE_KEY = "ExceptionQueuedEventContext.IN_AFTER_PHASE_KEY";
-    public static final String IN_BEFORE_PHASE_KEY = "ExceptionQueuedEventContext.IN_BEFORE_PHASE_KEY";
+    // TODO: -=Leonardo Uribe=- This type of constants should be the same 
+    // for ri and myfaces, to keep binary compatibility and pass TCK test.
+    public static final String IN_AFTER_PHASE_KEY = ExceptionQueuedEventContext.class.getName() + ".IN_AFTER_PHASE";
+    public static final String IN_BEFORE_PHASE_KEY = ExceptionQueuedEventContext.class.getName() + ".IN_BEFORE_PHASE";
     
     private Map<Object, Object> _attributes;
     private UIComponent _component;

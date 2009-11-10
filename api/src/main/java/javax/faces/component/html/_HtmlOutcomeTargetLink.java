@@ -44,11 +44,4 @@ _TabindexProperty, _LinkProperties
   static public final String COMPONENT_TYPE =
     "javax.faces.HtmlOutcomeTargetLink";
 
-  /**
-   * HTML: the value to put as image attribute
-   * 
-   * @return
-   */
-  @JSFProperty
-  public abstract String getImage(); 
 }

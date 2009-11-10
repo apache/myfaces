@@ -40,52 +40,61 @@ import java.util.Iterator;
  */
 public abstract class RenderKitWrapper extends RenderKit implements FacesWrapper<RenderKit>
 {
+    @Override
     public void addClientBehaviorRenderer(String type, ClientBehaviorRenderer renderer)
     {
         getWrapped().addClientBehaviorRenderer(type,renderer);
     }
     
     /** {@inheritDoc} */
+    @Override
     public void addRenderer(String family, String rendererType, Renderer renderer)
     {
         getWrapped().addRenderer(family, rendererType, renderer);
     }
 
     /** {@inheritDoc} */
+    @Override
     public ResponseStream createResponseStream(OutputStream out)
     {
         return getWrapped().createResponseStream(out);
     }
 
     /** {@inheritDoc} */
+    @Override
     public ResponseWriter createResponseWriter(Writer writer, String contentTypeList, String characterEncoding)
     {
         return getWrapped().createResponseWriter(writer, contentTypeList, characterEncoding);
     }
 
-    public ClientBehaviorRenderer getClientBenaviorRenderer(String type)
+    @Override
+    public ClientBehaviorRenderer getClientBehaviorRenderer(String type)
     {
         return getWrapped().getClientBehaviorRenderer(type);
     }
     
+    @Override
     public Iterator<String> getClientBehaviorRendererTypes()
     {
         return getWrapped().getClientBehaviorRendererTypes();
     }
     
     /** {@inheritDoc} */
+    @Override
     public Renderer getRenderer(String family, String rendererType)
     {
         return getWrapped().getRenderer(family, rendererType);
     }
 
     /** {@inheritDoc} */
+    @Override
     public ResponseStateManager getResponseStateManager()
     {
         return getWrapped().getResponseStateManager();
     }
 
     /** {@inheritDoc} */
+    @Override
     public abstract RenderKit getWrapped();
 
     /** {@inheritDoc} */

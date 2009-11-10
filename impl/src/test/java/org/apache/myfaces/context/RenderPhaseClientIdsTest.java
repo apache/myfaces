@@ -82,6 +82,7 @@ public class RenderPhaseClientIdsTest extends AbstractJsfTestCase {
     /**
      * NO_PARTIAL_PHASE_CLIENT_IDS as request param, has to result in an empty list
      */
+    /*
     public void testRequestParams4() {
         Map<String, String> requestParamMap = new HashMap<String, String>();
         requestParamMap.put(PartialViewContext.PARTIAL_RENDER_PARAM_NAME, 
@@ -93,7 +94,7 @@ public class RenderPhaseClientIdsTest extends AbstractJsfTestCase {
         PartialViewContext pprContext = context.getPartialViewContext();
 
         assertTrue(pprContext.getRenderIds().isEmpty());
-    }
+    }*/
 
     /**
      * list with one element has to result in a list with one element

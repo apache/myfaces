@@ -31,7 +31,7 @@ import javax.faces.model.SelectItemGroup;
  */
 class _SelectItemsUtil
 {
-    public static interface _ValueConverter
+    static interface _ValueConverter
     {
         Object getConvertedValue(FacesContext context, String value);
     }

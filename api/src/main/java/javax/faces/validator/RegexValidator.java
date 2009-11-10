@@ -96,7 +96,8 @@ public class RegexValidator implements Validator, PartialStateHolder
     /**
      * This message ID is used when the pattern does not resolve to a String.
      */
-    public static final String NOT_STRING_MESSAGE_ID = "javax.faces.validator.RegexValidator.NOT_STRING";
+    //TODO: Remove it
+    //private static final String NOT_STRING_MESSAGE_ID = "javax.faces.validator.RegexValidator.NOT_STRING";
 
     /**
      * This message ID is used when the pattern is <code>null</code>, or an empty String.

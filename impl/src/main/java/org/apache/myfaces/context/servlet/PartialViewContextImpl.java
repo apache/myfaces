@@ -147,7 +147,7 @@ public class PartialViewContextImpl extends PartialViewContext {
                     PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME);
 
             if (executeMode != null && !"".equals(executeMode) &&
-                    !PartialViewContext.NO_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode) &&
+                    //!PartialViewContext.NO_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode) &&
                     !PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode)) {
                 
                 String[] clientIds = StringUtils.splitShortString(_replaceTabOrEnterCharactersWithSpaces(executeMode), ' ');
@@ -197,7 +197,7 @@ public class PartialViewContextImpl extends PartialViewContext {
                     PartialViewContext.PARTIAL_RENDER_PARAM_NAME);
 
             if (renderMode != null && !"".equals(renderMode) &&
-                    !PartialViewContext.NO_PARTIAL_PHASE_CLIENT_IDS.equals(renderMode) &&
+                    //!PartialViewContext.NO_PARTIAL_PHASE_CLIENT_IDS.equals(renderMode) &&
                     !PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(renderMode))
             {
                 String[] clientIds = StringUtils.splitShortString(_replaceTabOrEnterCharactersWithSpaces(renderMode), ' ');
