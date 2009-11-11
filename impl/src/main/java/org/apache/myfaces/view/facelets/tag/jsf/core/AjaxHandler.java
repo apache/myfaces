@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.el.MethodExpression;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UniqueIdVendor;
 import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.context.FacesContext;
@@ -41,7 +42,9 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
+import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
  * This tag creates an instance of AjaxBehavior, and associates it with the nearest 
@@ -186,13 +189,28 @@ public class AjaxHandler extends TagHandler implements
         // does not work in this case, because check this condition will requires 
         // traverse the whole tree looking for h:head component.
         FacesContext facesContext = ctx.getFacesContext();
-        if (facesContext.getAttributes().containsKey(STANDARD_JSF_AJAX_LIBRARY_LOADED))
+        if (!facesContext.getAttributes().containsKey(STANDARD_JSF_AJAX_LIBRARY_LOADED))
         {
             UIComponent outputScript = facesContext.getApplication().
                 createComponent(facesContext, "javax.faces.Output", "javax.faces.resource.Script");
             outputScript.getAttributes().put("name", "jsf.js");
             outputScript.getAttributes().put("library", "javax.faces");
             outputScript.getAttributes().put("target", "head");
+            
+            AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+            UniqueIdVendor uniqueIdVendor = actx.getUniqueIdVendorFromStack();
+            if (uniqueIdVendor == null)
+            {
+                uniqueIdVendor = ComponentSupport.getViewRoot(ctx, parent);
+            }
+            if (uniqueIdVendor != null)
+            {
+                // UIViewRoot implements UniqueIdVendor, so there is no need to cast to UIViewRoot
+                // and call createUniqueId()
+                String uid = uniqueIdVendor.createUniqueId(ctx.getFacesContext(),null);
+                outputScript.setId(uid);
+            }
+            
             parent.getChildren().add(outputScript);
             facesContext.getAttributes().put(STANDARD_JSF_AJAX_LIBRARY_LOADED, Boolean.TRUE);
         }
