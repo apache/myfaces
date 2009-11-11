@@ -288,7 +288,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             //prerendering happens, we now publish the prerender view event
             //the specs states that the viewroot as source is about to be rendered
             //hence we issue the event immediately before publish, if the phase is not skipped
-            context.getApplication().publishEvent(context, PreRenderViewEvent.class, this);
+            //context.getApplication().publishEvent(context, PreRenderViewEvent.class, this);
             //then the view rendering is about to begin
             super.encodeBegin(context);
         }

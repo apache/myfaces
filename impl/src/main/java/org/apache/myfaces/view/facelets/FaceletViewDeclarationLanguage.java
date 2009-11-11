@@ -807,10 +807,12 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             // should that be handled? Or
             // is this optimization simply so minor that it should just
             // be trimmed altogether?
-            if (!isFilledView(context, view))
-            {
-                buildView(context, view);
-            }
+            // See JSF 2.0 spec section 2.2.6, buildView is called before
+            // Render Response
+            //if (!isFilledView(context, view))
+            //{
+            //    buildView(context, view);
+            //}
 
             // setup writer and assign it to the context
             ResponseWriter origWriter = createResponseWriter(context);

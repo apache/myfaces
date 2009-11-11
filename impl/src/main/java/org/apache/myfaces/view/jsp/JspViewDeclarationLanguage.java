@@ -88,6 +88,12 @@ public class JspViewDeclarationLanguage extends ViewDeclarationLanguageBase
     {
         ExternalContext externalContext = context.getExternalContext();
         ServletResponse response = (ServletResponse) externalContext.getResponse();
+        ServletRequest request = (ServletRequest) externalContext.getRequest();
+        
+        Locale locale = view.getLocale();
+        response.setLocale(locale);
+        Config.set(request, Config.FMT_LOCALE, context.getViewRoot().getLocale());
+
         String viewId = view.getViewId();
         ViewResponseWrapper wrappedResponse = new ViewResponseWrapper((HttpServletResponse) response);
 
@@ -171,14 +177,10 @@ public class JspViewDeclarationLanguage extends ViewDeclarationLanguageBase
         if (log.isLoggable(Level.FINEST))
             log.finest("Rendering JSP view: " + viewId);
 
+        // Called on render response phase
+        //buildView(context, view);
         ServletResponse response = (ServletResponse) externalContext.getResponse();
         ServletRequest request = (ServletRequest) externalContext.getRequest();
-
-        Locale locale = view.getLocale();
-        response.setLocale(locale);
-        Config.set(request, Config.FMT_LOCALE, context.getViewRoot().getLocale());
-
-        buildView(context, view);
 
         // handle character encoding as of section 2.5.2.2 of JSF 1.1
         if (externalContext.getRequest() instanceof HttpServletRequest)

@@ -23,8 +23,11 @@ import java.io.IOException;
 import javax.faces.FacesException;
 import javax.faces.application.Application;
 import javax.faces.application.ViewHandler;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
+import javax.faces.event.PreRenderViewEvent;
+import javax.faces.view.ViewDeclarationLanguage;
 
 /**
  * Implements the lifecycle as described in Spec. 1.0 PFD Chapter 2
@@ -39,10 +42,35 @@ class RenderResponseExecutor implements PhaseExecutor
     {
         Application application = facesContext.getApplication();
         ViewHandler viewHandler = application.getViewHandler();
+        UIViewRoot root = facesContext.getViewRoot();
 
+        ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(
+                facesContext, root.getViewId());
+        
         try
         {
-            viewHandler.renderView(facesContext, facesContext.getViewRoot());
+            if (vdl != null)
+            {
+                vdl.buildView(facesContext, root);
+            }
+            
+            facesContext.getApplication().publishEvent(
+                    facesContext, PreRenderViewEvent.class, root);
+            
+            // TODO: JSF 2.0 section 2.2.6, it says if the current response
+            // is a partial response(ajax), then there must be no content written
+            // outside of the f:view. This has sense only on jsp case, because            
+            // we don't control jsp rendering and in this way we prevent unwanted
+            // rendering. But note f:ajax only works on facelets, and f:view
+            // tag handler only set properties for the current view root. It's
+            // more, in facelets, every thing that render is a UIComponent instance,
+            // so it is inside view root.
+            // Anyway, we should put the expected behavior (take a look at 
+            // context.servlet.ResponseSwitch) here and enable rendering when
+            // PartialViewContextImpl.processPartialRendering(UIComponent, PhaseId)
+            // do its own work, but for now it is 
+            
+            viewHandler.renderView(facesContext, root);
         }
         catch (IOException e)
         {
