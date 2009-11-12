@@ -22,6 +22,7 @@ import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.el.ValueExpression;
@@ -53,6 +54,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentBuilderHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.tag.jsf.EditableValueHolderRule;
 import org.apache.myfaces.view.facelets.tag.jsf.ValueHolderRule;
+import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
 
 /**
  * This handler is responsible for apply composite components. It
@@ -198,6 +200,21 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
             String uid = uniqueIdVendor.createUniqueId(faceletContext.getFacesContext(),null);
             compositeFacetPanel.setId(uid);
         }
+        
+        // Before call applyCompositeComponent we need to add ajax behaviors
+        // to the current compositeComponentBase. Note that super.applyNextHandler()
+        // has already been called, but this point is before vdl.retargetAttachedObjects,
+        // so we can't but this on ComponentTagHandlerDelegate, if we want this to be
+        // applied correctly.
+        Iterator<AjaxHandler> it = actx.getAjaxHandlers();
+        if (it != null)
+        {
+            while(it.hasNext())
+            {
+                CompositeComponentResourceTagHandler.addAttachedObjectHandler(
+                        compositeComponentBase, it.next());
+            }
+        }    
         
         VariableMapper orig = faceletContext.getVariableMapper();
         try

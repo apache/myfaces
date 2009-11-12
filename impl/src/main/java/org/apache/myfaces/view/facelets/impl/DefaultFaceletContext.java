@@ -42,12 +42,14 @@ import javax.faces.application.Resource;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UniqueIdVendor;
 import javax.faces.context.FacesContext;
+import javax.faces.view.BehaviorHolderAttachedObjectHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.TemplateClient;
 import org.apache.myfaces.view.facelets.el.DefaultVariableMapper;
+import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
 
 /**
  * Default FaceletContext implementation.
@@ -61,6 +63,11 @@ import org.apache.myfaces.view.facelets.el.DefaultVariableMapper;
  */
 final class DefaultFaceletContext extends AbstractFaceletContext
 {
+    public final static String COMPOSITE_COMPONENT_STACK = "org.apache.myfaces.view.facelets.COMPOSITE_COMPONENT_STACK";
+
+    public final static String UNIQUEID_VENDOR_STACK = "org.apache.myfaces.view.facelets.UNIQUEID_VENDOR_STACK";
+
+    public final static String AJAX_HANDLER_STACK = "org.apache.myfaces.view.facelets.AJAX_HANDLER_STACK";
 
     private final FacesContext _faces;
 
@@ -76,12 +83,13 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     private final Map<String, Integer> _ids;
     private final Map<Integer, Integer> _prefixes;
     private String _prefix;
-    
+
     private final StringBuilder _uniqueIdBuilder = new StringBuilder(30);
-    
+
     private final List<TemplateManager> _clients;
 
-    public DefaultFaceletContext(DefaultFaceletContext ctx, DefaultFacelet facelet)
+    public DefaultFaceletContext(DefaultFaceletContext ctx,
+            DefaultFacelet facelet)
     {
         _ctx = ctx._ctx;
         _clients = ctx._clients;
@@ -90,14 +98,16 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         _ids = ctx._ids;
         _prefixes = ctx._prefixes;
         _varMapper = ctx._varMapper;
-        _faceletHierarchy = new ArrayList<DefaultFacelet>(ctx._faceletHierarchy.size() + 1);
+        _faceletHierarchy = new ArrayList<DefaultFacelet>(ctx._faceletHierarchy
+                .size() + 1);
         _faceletHierarchy.addAll(ctx._faceletHierarchy);
         _faceletHierarchy.add(facelet);
         _facelet = facelet;
-        
+
         //Update FACELET_CONTEXT_KEY on FacesContext attribute map, to 
         //reflect the current facelet context instance
-        ctx.getFacesContext().getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY, this);
+        ctx.getFacesContext().getAttributes().put(
+                FaceletContext.FACELET_CONTEXT_KEY, this);
     }
 
     public DefaultFaceletContext(FacesContext faces, DefaultFacelet facelet)
@@ -164,7 +174,8 @@ final class DefaultFaceletContext extends AbstractFaceletContext
      * {@inheritDoc}
      */
     @Override
-    public void includeFacelet(UIComponent parent, String relativePath) throws IOException
+    public void includeFacelet(UIComponent parent, String relativePath)
+            throws IOException
     {
         _facelet.include(this, parent, relativePath);
     }
@@ -217,7 +228,8 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         if (_prefix == null)
         {
             // TODO: change to StringBuilder when JDK1.5 support is available
-            StringBuffer builder = new StringBuffer(_faceletHierarchy.size() * 30);
+            StringBuffer builder = new StringBuffer(
+                    _faceletHierarchy.size() * 30);
             for (int i = 0; i < _faceletHierarchy.size(); i++)
             {
                 DefaultFacelet facelet = _faceletHierarchy.get(i);
@@ -294,8 +306,8 @@ final class DefaultFaceletContext extends AbstractFaceletContext
             }
             else
             {
-                _varMapper.setVariable(name, 
-                                       _facelet.getExpressionFactory().createValueExpression(value, Object.class));
+                _varMapper.setVariable(name, _facelet.getExpressionFactory()
+                        .createValueExpression(value, Object.class));
             }
         }
     }
@@ -304,7 +316,8 @@ final class DefaultFaceletContext extends AbstractFaceletContext
      * {@inheritDoc}
      */
     @Override
-    public void includeFacelet(UIComponent parent, URL absolutePath) throws IOException, FacesException, ELException
+    public void includeFacelet(UIComponent parent, URL absolutePath)
+            throws IOException, FacesException, ELException
     {
         _facelet.include(this, parent, absolutePath);
     }
@@ -317,7 +330,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     {
         return _ctx.getELResolver();
     }
-    
+
     //Begin methods from AbstractFaceletContext
 
     @Override
@@ -399,8 +412,10 @@ final class DefaultFaceletContext extends AbstractFaceletContext
             {
                 this._names.add(testName);
                 boolean found = false;
-                found = this._target.apply(new DefaultFaceletContext(
-                        (DefaultFaceletContext) ctx, this._owner), parent, name);
+                found = this._target
+                        .apply(new DefaultFaceletContext(
+                                (DefaultFaceletContext) ctx, this._owner),
+                                parent, name);
                 this._names.remove(testName);
                 return found;
             }
@@ -441,19 +456,26 @@ final class DefaultFaceletContext extends AbstractFaceletContext
 
     @Override
     public void applyCompositeComponent(UIComponent parent, Resource resource)
-            throws  IOException, FaceletException, FacesException, ELException
+            throws IOException, FaceletException, FacesException, ELException
     {
+        Map<Object, Object> attributes = getFacesContext().getAttributes();
+
+        //
+        Deque<AjaxHandler> componentStack = (Deque<AjaxHandler>) attributes
+                .remove(AJAX_HANDLER_STACK);
         _facelet.applyCompositeComponent(this, parent, resource);
+        attributes.put(AJAX_HANDLER_STACK, componentStack);
     }
-    
+
     @Override
     @SuppressWarnings("unchecked")
     public UIComponent getCompositeComponentFromStack()
     {
-        Map<Object, Object> attributes = getFacesContext().getAttributes();   
-        
-        Deque<UIComponent> componentStack = (Deque<UIComponent>) attributes.get(AbstractFaceletContext.COMPOSITE_COMPONENT_STACK);
-        if(componentStack != null && !componentStack.isEmpty())
+        Map<Object, Object> attributes = getFacesContext().getAttributes();
+
+        Deque<UIComponent> componentStack = (Deque<UIComponent>) attributes
+                .get(COMPOSITE_COMPONENT_STACK);
+        if (componentStack != null && !componentStack.isEmpty())
         {
             return componentStack.peek();
         }
@@ -462,16 +484,18 @@ final class DefaultFaceletContext extends AbstractFaceletContext
 
     @Override
     @SuppressWarnings("unchecked")
-    public void pushCompositeComponentToStack(UIComponent parent)    {
-        Map<Object, Object> attributes = getFacesContext().getAttributes();   
-        
-        Deque<UIComponent> componentStack = (Deque<UIComponent>) attributes.get(AbstractFaceletContext.COMPOSITE_COMPONENT_STACK);
-        if(componentStack == null)
+    public void pushCompositeComponentToStack(UIComponent parent)
+    {
+        Map<Object, Object> attributes = getFacesContext().getAttributes();
+
+        Deque<UIComponent> componentStack = (Deque<UIComponent>) attributes
+                .get(COMPOSITE_COMPONENT_STACK);
+        if (componentStack == null)
         {
             componentStack = new ArrayDeque<UIComponent>();
-            attributes.put(AbstractFaceletContext.COMPOSITE_COMPONENT_STACK, componentStack);
+            attributes.put(COMPOSITE_COMPONENT_STACK, componentStack);
         }
-        
+
         componentStack.push(parent);
     }
 
@@ -479,10 +503,12 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     @SuppressWarnings("unchecked")
     public void popCompositeComponentToStack()
     {
-        Map<Object, Object> contextAttributes = getFacesContext().getAttributes();   
-        
-        Deque<UIComponent> componentStack = (Deque<UIComponent>) contextAttributes.get(AbstractFaceletContext.COMPOSITE_COMPONENT_STACK);
-        if(componentStack != null && !componentStack.isEmpty())
+        Map<Object, Object> contextAttributes = getFacesContext()
+                .getAttributes();
+
+        Deque<UIComponent> componentStack = (Deque<UIComponent>) contextAttributes
+                .get(COMPOSITE_COMPONENT_STACK);
+        if (componentStack != null && !componentStack.isEmpty())
         {
             componentStack.pop();
         }
@@ -492,10 +518,11 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     @SuppressWarnings("unchecked")
     public UniqueIdVendor getUniqueIdVendorFromStack()
     {
-        Map<Object, Object> attributes = getFacesContext().getAttributes();   
-        
-        Deque<UniqueIdVendor> componentStack = (Deque<UniqueIdVendor>) attributes.get(AbstractFaceletContext.UNIQUEID_VENDOR_STACK);
-        if(componentStack != null && !componentStack.isEmpty())
+        Map<Object, Object> attributes = getFacesContext().getAttributes();
+
+        Deque<UniqueIdVendor> componentStack = (Deque<UniqueIdVendor>) attributes
+                .get(UNIQUEID_VENDOR_STACK);
+        if (componentStack != null && !componentStack.isEmpty())
         {
             return componentStack.peek();
         }
@@ -506,10 +533,12 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     @SuppressWarnings("unchecked")
     public void popUniqueIdVendorToStack()
     {
-        Map<Object, Object> contextAttributes = getFacesContext().getAttributes();   
-        
-        Deque<UniqueIdVendor> uniqueIdVendorStack = (Deque<UniqueIdVendor>) contextAttributes.get(AbstractFaceletContext.UNIQUEID_VENDOR_STACK);
-        if(uniqueIdVendorStack != null && !uniqueIdVendorStack.isEmpty())
+        Map<Object, Object> contextAttributes = getFacesContext()
+                .getAttributes();
+
+        Deque<UniqueIdVendor> uniqueIdVendorStack = (Deque<UniqueIdVendor>) contextAttributes
+                .get(UNIQUEID_VENDOR_STACK);
+        if (uniqueIdVendorStack != null && !uniqueIdVendorStack.isEmpty())
         {
             uniqueIdVendorStack.pop();
         }
@@ -519,16 +548,64 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     @SuppressWarnings("unchecked")
     public void pushUniqueIdVendorToStack(UniqueIdVendor parent)
     {
-        Map<Object, Object> attributes = getFacesContext().getAttributes();   
-        
-        Deque<UniqueIdVendor> componentStack = (Deque<UniqueIdVendor>) attributes.get(AbstractFaceletContext.UNIQUEID_VENDOR_STACK);
-        if(componentStack == null)
+        Map<Object, Object> attributes = getFacesContext().getAttributes();
+
+        Deque<UniqueIdVendor> componentStack = (Deque<UniqueIdVendor>) attributes
+                .get(UNIQUEID_VENDOR_STACK);
+        if (componentStack == null)
         {
             componentStack = new ArrayDeque<UniqueIdVendor>();
-            attributes.put(AbstractFaceletContext.UNIQUEID_VENDOR_STACK, componentStack);
+            attributes.put(UNIQUEID_VENDOR_STACK, componentStack);
         }
-        
+
         componentStack.push(parent);
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public Iterator<AjaxHandler> getAjaxHandlers()
+    {
+        Map<Object, Object> attributes = getFacesContext().getAttributes();
+
+        Deque<AjaxHandler> componentStack = (Deque<AjaxHandler>) attributes
+                .get(AJAX_HANDLER_STACK);
+        if (componentStack != null && !componentStack.isEmpty())
+        {
+            return componentStack.descendingIterator();
+        }
+        return null;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void popAjaxHandlerToStack()
+    {
+        Map<Object, Object> contextAttributes = getFacesContext()
+                .getAttributes();
+
+        Deque<AjaxHandler> uniqueIdVendorStack = (Deque<AjaxHandler>) contextAttributes
+                .get(AJAX_HANDLER_STACK);
+        if (uniqueIdVendorStack != null && !uniqueIdVendorStack.isEmpty())
+        {
+            uniqueIdVendorStack.pop();
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void pushAjaxHandlerToStack(
+            AjaxHandler parent)
+    {
+        Map<Object, Object> attributes = getFacesContext().getAttributes();
+
+        Deque<AjaxHandler> componentStack = (Deque<AjaxHandler>) attributes
+                .get(AJAX_HANDLER_STACK);
+        if (componentStack == null)
+        {
+            componentStack = new ArrayDeque<AjaxHandler>();
+            attributes.put(AJAX_HANDLER_STACK, componentStack);
+        }
+
+        componentStack.push(parent);
+    }
 }

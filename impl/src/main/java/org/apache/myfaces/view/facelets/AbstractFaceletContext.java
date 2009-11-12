@@ -19,6 +19,7 @@
 package org.apache.myfaces.view.facelets;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
@@ -27,6 +28,8 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UniqueIdVendor;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
+
+import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
 
 
 /**
@@ -47,11 +50,7 @@ import javax.faces.view.facelets.FaceletException;
  * @since 2.0
  */
 public abstract class AbstractFaceletContext extends FaceletContext
-{
-    public final static String COMPOSITE_COMPONENT_STACK = "org.apache.myfaces.view.facelets.COMPOSITE_COMPONENT_STACK";
-
-    public final static String UNIQUEID_VENDOR_STACK = "org.apache.myfaces.view.facelets.UNIQUEID_VENDOR_STACK";
-    
+{    
     
     /**
      * Push the passed TemplateClient onto the stack for Definition Resolution
@@ -148,5 +147,25 @@ public abstract class AbstractFaceletContext extends FaceletContext
     /**
      * @since 2.0
      */
-    public abstract void popUniqueIdVendorToStack();    
+    public abstract void popUniqueIdVendorToStack();
+    
+    /**
+     * Return a descending iterator containing the ajax handlers to be applied
+     * to an specific component that implements ClientBehaviorHolder interface,
+     * according to the conditions specified on jsf 2.0 spec section 10.4.1.1.
+     * 
+     * @since 2.0
+     */
+    public abstract Iterator<AjaxHandler> getAjaxHandlers();
+    
+    /**
+     * @since 2.0
+     */
+    public abstract void popAjaxHandlerToStack();
+    
+    /**
+     * @since 2.0
+     */
+    public abstract void pushAjaxHandlerToStack(AjaxHandler parent);
+    
 }

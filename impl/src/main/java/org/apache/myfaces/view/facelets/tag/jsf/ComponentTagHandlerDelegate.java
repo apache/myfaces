@@ -19,6 +19,7 @@
 package org.apache.myfaces.view.facelets.tag.jsf;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,9 +29,9 @@ import javax.faces.application.ProjectStage;
 import javax.faces.component.ActionSource;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
 import javax.faces.component.UniqueIdVendor;
 import javax.faces.component.ValueHolder;
+import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.ComponentConfig;
 import javax.faces.view.facelets.ComponentHandler;
@@ -43,6 +44,8 @@ import javax.faces.view.facelets.TagHandlerDelegate;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
+import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
+import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler;
 
 /**
@@ -202,6 +205,17 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             }
         }
 
+        if (c instanceof ClientBehaviorHolder && !UIComponent.isCompositeComponent(c))
+        {
+            Iterator<AjaxHandler> it = actx.getAjaxHandlers();
+            if (it != null)
+            {
+                while(it.hasNext())
+                {
+                    it.next().applyAttachedObject(facesContext, c);
+                }
+            }
+        }
         _delegate.onComponentPopulated(ctx, c, parent);
 
         // add to the tree afterwards

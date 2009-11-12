@@ -19,23 +19,25 @@
 package org.apache.myfaces.view.facelets.tag.jsf.core;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.el.MethodExpression;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UniqueIdVendor;
 import javax.faces.component.behavior.AjaxBehavior;
+import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.AjaxBehaviorListener;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.ComponentSystemEventListener;
 import javax.faces.view.BehaviorHolderAttachedObjectHandler;
 import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagAttribute;
+import javax.faces.view.facelets.TagAttributeException;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandler;
@@ -43,6 +45,7 @@ import javax.faces.view.facelets.TagHandler;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
@@ -89,49 +92,51 @@ public class AjaxHandler extends TagHandler implements
      * 
      */
     @JSFFaceletAttribute(name = "disabled", className = "javax.el.ValueExpression", deferredValueType = "java.lang.Boolean")
-    private TagAttribute _disabled;
+    private final TagAttribute _disabled;
 
     /**
      * 
      */
     @JSFFaceletAttribute(name = "event", className = "javax.el.ValueExpression", deferredValueType = "java.lang.String")
-    private TagAttribute _event;
+    private final TagAttribute _event;
 
     /**
      * 
      */
     @JSFFaceletAttribute(name = "execute", className = "javax.el.ValueExpression", deferredValueType = "java.lang.Object")
-    private TagAttribute _execute;
+    private final TagAttribute _execute;
 
     /**
      * 
      */
     @JSFFaceletAttribute(name = "immediate", className = "javax.el.ValueExpression", deferredValueType = "java.lang.Boolean")
-    private TagAttribute _immediate;
+    private final TagAttribute _immediate;
 
     /**
      * 
      */
     @JSFFaceletAttribute(name = "listener", className = "javax.el.MethodExpression", deferredMethodSignature = "public void m(javax.faces.event.AjaxBehaviorEvent evt) throws javax.faces.event.AbortProcessingException")
-    private TagAttribute _listener;
+    private final TagAttribute _listener;
 
     /**
      * 
      */
     @JSFFaceletAttribute(name = "onevent", className = "javax.el.ValueExpression", deferredValueType = "java.lang.String")
-    private TagAttribute _onevent;
+    private final TagAttribute _onevent;
 
     /**
      * 
      */
     @JSFFaceletAttribute(name = "onerror", className = "javax.el.ValueExpression", deferredValueType = "java.lang.String")
-    private TagAttribute _onerror;
+    private final TagAttribute _onerror;
 
     /**
      * 
      */
     @JSFFaceletAttribute(name = "render", className = "javax.el.ValueExpression", deferredValueType = "java.lang.Object")
-    private TagAttribute _render;
+    private final TagAttribute _render;
+    
+    private final boolean _wrapMode;
 
     public AjaxHandler(TagConfig config)
     {
@@ -144,6 +149,24 @@ public class AjaxHandler extends TagHandler implements
         _onerror = getAttribute("onerror");
         _onevent = getAttribute("onevent");
         _render = getAttribute("render");
+        
+        // According to the spec, this tag works in two different ways:
+        // 1. Apply an ajax behavior for a selected component in this way
+        //    <x:component><f:ajax ..../></x:component>
+        // 2. Apply an ajax behavior for a group of components inside it
+        //   <f:ajax ....><x:componentA .../><x:componentB .../></f:ajax>
+        //
+        // The first problem is how to discriminate if f:ajax tag is on a
+        // "leaf" or if contain other components.
+        //
+        // One option is use the same strategy to cache instance for 
+        // <composite:interface> handler: traverse the tree for instances of 
+        // ComponentHandler. If it is found, wrapMode is used otherwise
+        // suppose f:ajax is the one wrapped by a component.
+        Collection<ComponentHandler> compHandlerList = 
+            TagHandlerUtils.findNextByType(nextHandler, ComponentHandler.class);
+        
+        _wrapMode = !compHandlerList.isEmpty();
     }
 
     @Override
@@ -155,28 +178,46 @@ public class AjaxHandler extends TagHandler implements
         {
             return;
         }
-        if (parent instanceof ClientBehaviorHolder)
+        if (_wrapMode)
         {
-            applyAttachedObject(ctx.getFacesContext(), parent);
-        }
-        else if (UIComponent.isCompositeComponent(parent))
-        {
-            // It is supposed that for composite components, this tag should
-            // add itself as a target, but note that on whole api does not exists
-            // some tag that expose client behaviors as targets for composite
-            // components. In RI, there exists a tag called composite:clientBehavior,
-            // but does not appear on spec or javadoc, maybe because this could be
-            // understand as an implementation detail, after all there exists a key
-            // called AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY that could be
-            // used to create a tag outside jsf implementation to attach targets.
-            CompositeComponentResourceTagHandler.addAttachedObjectHandler(
-                    parent, this);
+            AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+            // Push and pop this ajax handler to the stack, to delegate the
+            // call to applyAttachedObject to ComponentTagHandlerDelegate
+            // TODO: The spec is not clear about how to deal with 
+            // composite component instances. The default one proposed here is
+            // use a different stack on DefaultFaceletContext.applyCompositeComponent,
+            // so components inside composite:implementation tag will not be
+            // affected by f:ajax outsider handlers.
+            actx.pushAjaxHandlerToStack(this);
+            nextHandler.apply(ctx, parent);
+            actx.popAjaxHandlerToStack();
         }
         else
         {
-            throw new TagException(this.tag,
-                    "Parent is not composite component or of type ClientBehaviorHolder, type is: "
-                            + parent);
+            if (parent instanceof ClientBehaviorHolder)
+            {
+                //Apply this handler directly over the parent
+                applyAttachedObject(ctx.getFacesContext(), parent);
+            }
+            else if (UIComponent.isCompositeComponent(parent))
+            {
+                // It is supposed that for composite components, this tag should
+                // add itself as a target, but note that on whole api does not exists
+                // some tag that expose client behaviors as targets for composite
+                // components. In RI, there exists a tag called composite:clientBehavior,
+                // but does not appear on spec or javadoc, maybe because this could be
+                // understand as an implementation detail, after all there exists a key
+                // called AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY that could be
+                // used to create a tag outside jsf implementation to attach targets.
+                CompositeComponentResourceTagHandler.addAttachedObjectHandler(
+                        parent, this);
+            }
+            else
+            {
+                throw new TagException(this.tag,
+                        "Parent is not composite component or of type ClientBehaviorHolder, type is: "
+                                + parent);
+            }
         }
         
         // Register the standard ajax library on the current page in this way:
@@ -198,18 +239,15 @@ public class AjaxHandler extends TagHandler implements
             outputScript.getAttributes().put("target", "head");
             
             AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
-            UniqueIdVendor uniqueIdVendor = actx.getUniqueIdVendorFromStack();
-            if (uniqueIdVendor == null)
-            {
-                uniqueIdVendor = ComponentSupport.getViewRoot(ctx, parent);
-            }
-            if (uniqueIdVendor != null)
-            {
-                // UIViewRoot implements UniqueIdVendor, so there is no need to cast to UIViewRoot
-                // and call createUniqueId()
-                String uid = uniqueIdVendor.createUniqueId(ctx.getFacesContext(),null);
-                outputScript.setId(uid);
-            }
+            
+            // Since this component will be relocated, we need a generated clientId from the
+            // viewRoot, so when this one is relocated, its parent will be this UIViewRoot instance
+            // and prevent a duplicate id exception.
+            UniqueIdVendor uniqueIdVendor = ComponentSupport.getViewRoot(ctx, parent);
+            // UIViewRoot implements UniqueIdVendor, so there is no need to cast to UIViewRoot
+            // and call createUniqueId()
+            String uid = uniqueIdVendor.createUniqueId(ctx.getFacesContext(),null);
+            outputScript.setId(uid);
             
             parent.getChildren().add(outputScript);
             facesContext.getAttributes().put(STANDARD_JSF_AJAX_LIBRARY_LOADED, Boolean.TRUE);
@@ -251,8 +289,59 @@ public class AjaxHandler extends TagHandler implements
         // cast to a ClientBehaviorHolder
         ClientBehaviorHolder cvh = (ClientBehaviorHolder) parent;
         
-        // TODO: check if the behavior could be applied to the current parent
-        // For run tests it is not necessary, so we let this one pending.
+        String eventName = getEventName();
+        if (eventName == null)
+        {
+            eventName = cvh.getDefaultEventName();
+            if (eventName == null)
+            {
+                if (_wrapMode)
+                {
+                    // No eventName defined, we can't apply this tag to this component, because
+                    // there is no event defined to attach it, but since we are in wrap mode
+                    // we have here the case that the component could not be the target
+                    // for this attached object.
+                    return;
+                }
+                else
+                {
+                    throw new TagAttributeException(_event, "eventName could not be defined for f:ajax tag with no wrap mode.");
+                }
+            }
+        }
+        else if (!cvh.getEventNames().contains(eventName))
+        {
+            if (_wrapMode)
+            {
+                // The current component does not implement the event selected,
+                // this ajax behavior cannot be applied, but we can't throw any exception
+                // since we are in wrap mode and we have here the case that the 
+                // component could not be the target for this attached object.
+                return;
+            }
+            else
+            {
+                throw new TagAttributeException(_event, "event it is not a valid eventName defined for this component");
+            }
+        }
+        
+        Map<String, List<ClientBehavior>> clientBehaviors = cvh.getClientBehaviors();
+
+        List<ClientBehavior> clientBehaviorList = clientBehaviors.get(eventName);
+        if (clientBehaviorList != null && !clientBehaviorList.isEmpty())
+        {
+            for (ClientBehavior cb : clientBehaviorList)
+            {
+                if (cb instanceof AjaxBehavior)
+                {
+                    // The most inner one has been applied, so according to 
+                    // jsf 2.0 spec section 10.4.1.1 it is not necessary to apply
+                    // this one, because the inner one has precendece over
+                    // the outer one.
+                    return;
+                }
+            }
+        }
 
         AjaxBehavior ajaxBehavior = (AjaxBehavior) context.getApplication()
                 .createBehavior(AjaxBehavior.BEHAVIOR_ID);
@@ -323,13 +412,7 @@ public class AjaxHandler extends TagHandler implements
             ajaxBehavior.setValueExpression("render", _render
                     .getValueExpression(faceletContext, Object.class));
         }
-
-        String eventName = getEventName();
-        if (eventName == null)
-        {
-            eventName = cvh.getDefaultEventName();
-        }
-
+        
         cvh.addClientBehavior(eventName, ajaxBehavior);
     }
 
