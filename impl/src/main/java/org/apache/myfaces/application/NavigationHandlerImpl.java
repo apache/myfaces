@@ -365,7 +365,11 @@ public class NavigationHandlerImpl
                         // Caveat: evaluate <if> if available.
 
                         if (cazeIf != null) {
-                            return (ifMatches ? caze : null);
+                            if (ifMatches) {
+                                return caze;
+                            }
+                            
+                            continue;
                         }
 
                         else {
@@ -380,11 +384,19 @@ public class NavigationHandlerImpl
                         // Caveat: if <if> is available, evaluate.  If not, only match if outcome is not null.
 
                         if (cazeIf != null) {
-                            return (ifMatches ? caze : null);
+                            if (ifMatches) {
+                                return caze;
+                            }
+                            
+                            continue;
                         }
 
                         else {
-                            return ((outcome != null) ? caze : null);
+                            if (outcome != null) {
+                                return caze;
+                            }
+                            
+                            continue;
                         }
                     }
                 }
@@ -397,7 +409,11 @@ public class NavigationHandlerImpl
                         // Caveat: if <if> is available, evaluate.
 
                         if (cazeIf != null) {
-                            return (ifMatches ? caze : null);
+                            if (ifMatches) {
+                                return caze;
+                            }
+                            
+                            continue;
                         }
 
                         else {
@@ -413,7 +429,11 @@ public class NavigationHandlerImpl
                 // Again, if <if> present, evaluate.
 
                 if (cazeIf != null) {
-                    return (ifMatches ? caze : null);
+                    if (ifMatches) {
+                        return caze;
+                    }
+                    
+                    continue;
                 }
             }
 
