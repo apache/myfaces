@@ -169,7 +169,6 @@ public class AjaxHandler extends TagHandler implements
         _wrapMode = !compHandlerList.isEmpty();
     }
 
-    @Override
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {
@@ -258,7 +257,6 @@ public class AjaxHandler extends TagHandler implements
      * ViewDeclarationLanguage.retargetAttachedObjects uses it to check
      * if the the target to be processed is applicable for this handler
      */
-    @Override
     public String getEventName()
     {
         if (_event == null)
@@ -279,7 +277,6 @@ public class AjaxHandler extends TagHandler implements
      * to the selected component through ClientBehaviorHolder.getEventNames() or
      * ClientBehaviorHolder.getDefaultEventName()
      */
-    @Override
     public void applyAttachedObject(FacesContext context, UIComponent parent)
     {
         // Retrieve the current FaceletContext from FacesContext object
@@ -421,7 +418,6 @@ public class AjaxHandler extends TagHandler implements
      * taken into account. Instead, getEventName is used on 
      * ViewDeclarationLanguage.retargetAttachedObjects.
      */
-    @Override
     public String getFor()
     {
         return null;
@@ -443,7 +439,6 @@ public class AjaxHandler extends TagHandler implements
             _expr = expr;
         }
 
-        @Override
         public void processAjaxBehavior(AjaxBehaviorEvent event)
                 throws AbortProcessingException
         {

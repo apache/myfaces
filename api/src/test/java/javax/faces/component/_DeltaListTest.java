@@ -262,13 +262,11 @@ public class _DeltaListTest extends AbstractComponentTest
             this._transient = _transient;
         }
 
-        @Override
         public void restoreState(FacesContext context, Object state)
         {
             value = (String) state;
         }
 
-        @Override
         public Object saveState(FacesContext context)
         {
             return value;
@@ -308,19 +306,16 @@ public class _DeltaListTest extends AbstractComponentTest
             return null;
         }
 
-        @Override
         public void clearInitialState()
         {
             initialStateMarked = false;
         }
 
-        @Override
         public boolean initialStateMarked()
         {
             return initialStateMarked;
         }
 
-        @Override
         public void markInitialState()
         {
             initialStateMarked = true;

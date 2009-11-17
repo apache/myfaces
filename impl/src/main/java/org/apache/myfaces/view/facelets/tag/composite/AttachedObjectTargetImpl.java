@@ -50,7 +50,6 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
     {
     }
 
-    @Override
     public String getName()
     {
         if (_name != null)
@@ -60,7 +59,6 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
         return null;
     }
 
-    @Override
     public List<UIComponent> getTargets(UIComponent topLevelComponent)
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();

@@ -159,7 +159,6 @@ public class FacesContextFactoryImpl extends FacesContextFactory
         throw new FacesException("Unsupported context type " + context.getClass().getName());
     }
 
-    @Override
     public void release()
     {
         if (_firstExternalContextInstance != null)

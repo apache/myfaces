@@ -245,7 +245,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      * 
      * @since 2.0
      */
-    @Override
     public String createUniqueId(FacesContext context, String seed)
     {
         ExternalContext extCtx = context.getExternalContext();
@@ -1319,7 +1318,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     {
         private PostRestoreStateEvent event;
 
-        @Override
         public VisitResult visit(VisitContext context, UIComponent target)
         {
             if (event == null)

@@ -60,8 +60,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.0.2</version>
         <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
+          <source>1.5</source>
+          <target>1.5</target>
         </configuration>
       </plugin>
       <plugin>
@@ -113,7 +113,7 @@
           <artifactId>maven-idea-plugin</artifactId>
           <version>2.1</version>
           <configuration>
-            <jdkName>1.6</jdkName>
+            <jdkName>1.5</jdkName>
             <linkModules>true</linkModules>
             <downloadSources>true</downloadSources>
             <jdkLevel>1.5</jdkLevel>

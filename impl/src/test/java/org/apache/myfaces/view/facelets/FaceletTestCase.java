@@ -211,14 +211,12 @@ public abstract class FaceletTestCase extends TestCase implements
         ViewHandlerImpl viewHandler = (ViewHandlerImpl) facesContext.getApplication().getViewHandler();
         viewHandler.setViewHandlerSupport(new ViewHandlerSupport(){
 
-            @Override
             public String calculateActionURL(FacesContext facesContext,
                     String viewId)
             {
                 return viewId;
             }
 
-            @Override
             public String calculateViewId(FacesContext context, String viewId)
             {
                 return viewId;

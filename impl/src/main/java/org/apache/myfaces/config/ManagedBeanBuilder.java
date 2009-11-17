@@ -79,7 +79,6 @@ public class ManagedBeanBuilder
     private final static Comparator<String> scopeComparator = new Comparator<String>()
     {
 
-        @Override
         public int compare(String o1, String o2)
         {
             if (o1.equalsIgnoreCase(o2))

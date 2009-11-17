@@ -489,13 +489,10 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
     {
         public TestPhaseListener1(){}
         
-        @Override
         public void afterPhase(PhaseEvent event){}
 
-        @Override
         public void beforePhase(PhaseEvent event){}
 
-        @Override
         public PhaseId getPhaseId()
         {
             return PhaseId.ANY_PHASE;
@@ -514,13 +511,10 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
     {
         public TestPhaseListener2(){}
         
-        @Override
         public void afterPhase(PhaseEvent event){}
 
-        @Override
         public void beforePhase(PhaseEvent event){}
 
-        @Override
         public PhaseId getPhaseId()
         {
             return PhaseId.ANY_PHASE;

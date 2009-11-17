@@ -93,7 +93,6 @@ public abstract class AttachedObjectTargetHandler<T extends AttachedObjectTarget
     }
 
     @SuppressWarnings("unchecked")
-    @Override
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {

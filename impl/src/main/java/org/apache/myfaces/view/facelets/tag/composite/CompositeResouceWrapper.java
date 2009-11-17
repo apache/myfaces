@@ -89,7 +89,6 @@ public final class CompositeResouceWrapper extends Resource
         return getWrapped().userAgentNeedsUpdate(context);
     }
 
-    @Override
     public Resource getWrapped()
     {
         if (_delegate == null)
@@ -103,7 +102,6 @@ public final class CompositeResouceWrapper extends Resource
         return _delegate;
     }
 
-    @Override
     public void readExternal(ObjectInput in) throws IOException,
             ClassNotFoundException
     {
@@ -112,7 +110,6 @@ public final class CompositeResouceWrapper extends Resource
         setContentType((String) in.readObject());
     }
 
-    @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
         out.writeObject(getResourceName());

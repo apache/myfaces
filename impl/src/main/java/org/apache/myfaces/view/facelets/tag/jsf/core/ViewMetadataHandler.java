@@ -46,7 +46,6 @@ public final class ViewMetadataHandler extends TagHandler
         super(config);
     }
 
-    @Override
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {

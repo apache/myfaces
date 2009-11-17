@@ -18,8 +18,8 @@
  */
 package javax.faces.webapp;
 
-import java.util.ArrayDeque;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -138,7 +138,7 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory
             {
                 if (handled == null)
                 {
-                    handled = new ArrayDeque<ExceptionQueuedEvent>(1);
+                    handled = new LinkedList<ExceptionQueuedEvent>();
                 }
                 
                 do
@@ -192,7 +192,7 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory
         {
             if (unhandled == null)
             {
-                unhandled = new ArrayDeque<ExceptionQueuedEvent>(1);
+                unhandled = new LinkedList<ExceptionQueuedEvent>();
             }
             
             unhandled.add((ExceptionQueuedEvent)exceptionQueuedEvent);

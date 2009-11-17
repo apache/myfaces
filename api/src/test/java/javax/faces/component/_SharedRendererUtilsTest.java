@@ -92,14 +92,12 @@ public class _SharedRendererUtilsTest extends AbstractJsfTestCase
     public static class POJOConverter implements Converter
     {
 
-        @Override
         public Object getAsObject(FacesContext context, UIComponent component,
                 String value) throws ConverterException
         {
             return new POJO(new Integer(value), value);
         }
 
-        @Override
         public String getAsString(FacesContext context, UIComponent component,
                 Object value) throws ConverterException
         {

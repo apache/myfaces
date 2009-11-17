@@ -91,7 +91,6 @@ public class ExceptionQueuedEventContext implements SystemEventListenerHolder
     /**
      * {@inheritDoc}
      */
-    @Override
     public List<SystemEventListener> getListenersForEventClass(Class<? extends SystemEvent> facesEventClass)
     {
         return Collections.singletonList((SystemEventListener)getContext().getExceptionHandler());

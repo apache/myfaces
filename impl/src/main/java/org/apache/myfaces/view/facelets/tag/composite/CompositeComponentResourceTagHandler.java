@@ -90,7 +90,6 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         _resource = resource;
     }
 
-    @Override
     public UIComponent createComponent(FaceletContext ctx)
     {
         FacesContext facesContext = ctx.getFacesContext();

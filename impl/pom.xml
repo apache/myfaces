@@ -700,7 +700,7 @@
                       <configuration>
                         <signature>
                           <groupId>org.jvnet.animal-sniffer</groupId>
-                          <artifactId>java1.6</artifactId>
+                          <artifactId>java1.5</artifactId>
                           <version>1.0</version>
                         </signature>
                       </configuration>

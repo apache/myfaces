@@ -657,25 +657,21 @@ public abstract class AbstractTagLibrary implements TagLibrary
             this.behaviorId = behaviorId;
         }
 
-        @Override
         public FaceletHandler getNextHandler()
         {
             return this.parent.getNextHandler();
         }
 
-        @Override
         public Tag getTag()
         {
             return this.parent.getTag();
         }
 
-        @Override
         public String getTagId()
         {
             return this.parent.getTagId();
         }
 
-        @Override
         public String getBehaviorId()
         {
             return this.behaviorId;

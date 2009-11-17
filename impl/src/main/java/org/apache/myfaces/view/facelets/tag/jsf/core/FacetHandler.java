@@ -80,7 +80,6 @@ public final class FacetHandler extends TagHandler
         }
     }
 
-    @Override
     public String getFacetName(FaceletContext ctx)
     {
         return this.name.getValue(ctx);

@@ -54,7 +54,6 @@ public class CompositeComponentPropertyDescriptor extends PropertyDescriptor
         super(propertyName, null, null);
     }
 
-    @Override
     public void readExternal(ObjectInput in) throws IOException,
             ClassNotFoundException
     {
@@ -72,7 +71,6 @@ public class CompositeComponentPropertyDescriptor extends PropertyDescriptor
         }
     }
 
-    @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
         out.writeObject(getName());

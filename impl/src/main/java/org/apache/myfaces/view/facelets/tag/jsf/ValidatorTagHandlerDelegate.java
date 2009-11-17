@@ -102,7 +102,6 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
         return new MetaRulesetImpl(_delegate.getTag(), type).ignore("binding");
     }
 
-    @Override
     public void applyAttachedObject(FacesContext context, UIComponent parent)
     {
         // Retrieve the current FaceletContext from FacesContext object
@@ -134,7 +133,6 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
         evh.addValidator(v);
     }
 
-    @Override
     public String getFor()
     {
         TagAttribute forAttribute = _delegate.getTagAttribute("for");

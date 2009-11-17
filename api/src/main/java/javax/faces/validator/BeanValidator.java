@@ -336,21 +336,18 @@ public class BeanValidator implements Validator, PartialStateHolder
     }
 
     /** {@inheritDoc} */
-    @Override
     public void clearInitialState()
     {
         _initialStateMarked = false;
     }
 
     /** {@inheritDoc} */
-    @Override
     public boolean initialStateMarked()
     {
         return _initialStateMarked;
     }
 
     /** {@inheritDoc} */
-    @Override
     public void markInitialState()
     {
         _initialStateMarked = true;
@@ -399,14 +396,12 @@ class FacesMessageInterpolatorHolder
             this.interpolator = interpolator;
         }
 
-        @Override
         public String interpolate(String s, Context context)
         {
             Locale locale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
             return interpolator.interpolate(s, context, locale);
         }
 
-        @Override
         public String interpolate(String s, Context context, Locale locale)
         {
             return interpolator.interpolate(s, context, locale);

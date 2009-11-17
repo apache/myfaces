@@ -47,13 +47,11 @@ public class MockViewDeclarationLanguageFactory extends ViewDeclarationLanguageF
     {
         private ViewDeclarationLanguage _language;
         
-        @Override
         public boolean handles(String viewId)
         {
             return true;
         }
 
-        @Override
         public ViewDeclarationLanguage getViewDeclarationLanguage()
         {
             if (_language == null)

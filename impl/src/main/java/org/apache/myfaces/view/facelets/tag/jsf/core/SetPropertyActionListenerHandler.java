@@ -109,7 +109,6 @@ public class SetPropertyActionListenerHandler extends TagHandler
         }
     }
 
-    @Override
     public void applyAttachedObject(FacesContext context, UIComponent parent)
     {
         // Retrieve the current FaceletContext from FacesContext object
@@ -123,7 +122,6 @@ public class SetPropertyActionListenerHandler extends TagHandler
         src.addActionListener(new SetPropertyListener(valueExpr, targetExpr));
     }
 
-    @Override
     public String getFor()
     {
         TagAttribute forAttribute = getAttribute("for");

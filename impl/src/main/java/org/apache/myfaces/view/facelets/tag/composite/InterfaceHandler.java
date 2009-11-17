@@ -152,7 +152,6 @@ public class InterfaceHandler extends TagHandler
         }
     }
 
-    @Override
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {

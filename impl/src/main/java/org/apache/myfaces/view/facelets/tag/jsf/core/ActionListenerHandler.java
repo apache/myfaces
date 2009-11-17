@@ -176,7 +176,6 @@ public final class ActionListenerHandler extends TagHandler
         }
     }
 
-    @Override
     public void applyAttachedObject(FacesContext context, UIComponent parent)
     {
         // Retrieve the current FaceletContext from FacesContext object
@@ -197,7 +196,6 @@ public final class ActionListenerHandler extends TagHandler
      * TODO: Document me!
      */
     @JSFFaceletAttribute
-    @Override
     public String getFor()
     {
         TagAttribute forAttribute = getAttribute("for");

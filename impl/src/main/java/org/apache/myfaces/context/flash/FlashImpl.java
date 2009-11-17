@@ -718,31 +718,26 @@ public class FlashImpl extends Flash
         requestMap.put(FLASH_KEEP_MESSAGES, keepMessages);
     }
     
-    @Override
     public void clear()
     {
         getCurrentPhaseMap().clear();
     }
 
-    @Override
     public boolean containsKey(Object key)
     {
         return getCurrentPhaseMap().containsKey(key);
     }
 
-    @Override
     public boolean containsValue(Object value)
     {
         return getCurrentPhaseMap().containsValue(value);
     }
 
-    @Override
     public Set<java.util.Map.Entry<String, Object>> entrySet()
     {
         return getCurrentPhaseMap().entrySet();
     }
 
-    @Override
     public Object get(Object key)
     {
         if (key == null)
@@ -769,19 +764,16 @@ public class FlashImpl extends Flash
         return returnValue;
     }
 
-    @Override
     public boolean isEmpty()
     {
         return getCurrentPhaseMap().isEmpty();
     }
 
-    @Override
     public Set<String> keySet()
     {
         return getCurrentPhaseMap().keySet();
     }
 
-    @Override
     public Object put(String key, Object value)
     {
         if (key == null)
@@ -820,25 +812,21 @@ public class FlashImpl extends Flash
         return booleanValue;
     }
 
-    @Override
     public void putAll(Map<? extends String, ? extends Object> m)
     {
         getCurrentPhaseMap().putAll(m);
     }
 
-    @Override
     public Object remove(Object key)
     {
         return getCurrentPhaseMap().remove(key);
     }
 
-    @Override
     public int size()
     {
         return getCurrentPhaseMap().size();
     }
 
-    @Override
     public Collection<Object> values()
     {
         return getCurrentPhaseMap().values();

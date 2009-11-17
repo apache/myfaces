@@ -55,7 +55,6 @@ public class BehaviorBase implements Behavior, PartialStateHolder
     /**
      * {@inheritDoc}
      */
-    @Override
     public void broadcast(BehaviorEvent event)
     {
         if (event == null)
@@ -78,43 +77,36 @@ public class BehaviorBase implements Behavior, PartialStateHolder
         }
     }
 
-    @Override
     public void clearInitialState()
     {
         _initialState = false;
     }
 
-    @Override
     public boolean initialStateMarked()
     {
         return _initialState;
     }
 
-    @Override
     public boolean isTransient()
     {
         return _transient;
     }
 
-    @Override
     public void markInitialState()
     {
         _initialState = true;
     }
 
-    @Override
     public void restoreState(FacesContext context, Object state)
     {
         _behaviorListeners = (List<BehaviorListener>) UIComponentBase.restoreAttachedState(context, state);
     }
 
-    @Override
     public Object saveState(FacesContext context)
     {
         return UIComponentBase.saveAttachedState(context, _behaviorListeners);
     }
 
-    @Override
     public void setTransient(boolean newTransientValue)
     {
         _transient = newTransientValue;

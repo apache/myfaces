@@ -41,7 +41,6 @@ public abstract class FaceletsAttachedObjectHandler extends DelegatingMetaTagHan
     /**
      * {@inheritDoc}
      */
-    @Override
     public final void applyAttachedObject(FacesContext context, UIComponent parent)
     {
         //Just redirect to delegate handler
@@ -63,7 +62,6 @@ public abstract class FaceletsAttachedObjectHandler extends DelegatingMetaTagHan
     /**
      * {@inheritDoc}
      */
-    @Override
     public final String getFor()
     {
         //Just redirect to delegate handler

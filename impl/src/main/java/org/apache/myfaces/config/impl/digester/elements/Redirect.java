@@ -44,7 +44,6 @@ public class Redirect implements org.apache.myfaces.config.element.Redirect
         viewParams.put(viewParam.getName(), params);
     }
     
-    @Override
     public Map<String,List<String>> getViewParams()
     {
         return viewParams;
@@ -55,7 +54,6 @@ public class Redirect implements org.apache.myfaces.config.element.Redirect
         this.includeViewParams = includeViewParams;
     }
     
-    @Override
     public boolean isIncludeViewParams()
     {
         return includeViewParams;

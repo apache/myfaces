@@ -82,7 +82,6 @@ public class HelloWorld {
             _actionListener = new ActionListener()
             {
 
-                @Override
                 public void processAction(ActionEvent actionEvent)
                         throws AbortProcessingException
                 {

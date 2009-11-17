@@ -160,7 +160,6 @@ public class FacetHandler extends TagHandler implements InterfaceDescriptorCreat
     }
 
     @SuppressWarnings("unchecked")
-    @Override
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {

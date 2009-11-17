@@ -155,7 +155,6 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
     {
         private PostRestoreStateEvent event;
 
-        @Override
         public VisitResult visit(VisitContext context, UIComponent target)
         {
             if (event == null)

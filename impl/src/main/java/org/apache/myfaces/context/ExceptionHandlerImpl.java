@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.context;
 
-import java.util.ArrayDeque;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.Queue;
 
 import javax.el.ELException;
@@ -110,7 +110,7 @@ public class ExceptionHandlerImpl extends ExceptionHandler
         {
             if (handled == null)
             {
-                handled = new ArrayDeque<ExceptionQueuedEvent>(1);
+                handled = new LinkedList<ExceptionQueuedEvent>();
             }
             
             do
@@ -165,7 +165,7 @@ public class ExceptionHandlerImpl extends ExceptionHandler
     {
         if (unhandled == null)
         {
-            unhandled = new ArrayDeque<ExceptionQueuedEvent>(1);
+            unhandled = new LinkedList<ExceptionQueuedEvent>();
         }
         
         unhandled.add((ExceptionQueuedEvent)exceptionQueuedEvent);

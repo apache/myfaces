@@ -84,7 +84,6 @@ public final class EventHandler extends TagHandler {
         }
     }
     
-    @Override
     public void apply (FaceletContext ctx, UIComponent parent) throws ELException, FacesException, FaceletException, IOException
     {
         Class<? extends ComponentSystemEvent> eventClass = getEventClass (ctx);
@@ -181,7 +180,6 @@ public final class EventHandler extends TagHandler {
             this.methodExp = methodExp;
         }
         
-        @Override
         public void processEvent (ComponentSystemEvent event)
         {
             this.methodExp.invoke(elContext, new Object[] { event });

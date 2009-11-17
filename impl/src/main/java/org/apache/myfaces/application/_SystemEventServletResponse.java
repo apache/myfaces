@@ -37,77 +37,62 @@ public class _SystemEventServletResponse implements ServletResponse {
     private static final String ERR_OP = "This response class is an empty placeholder";
 
 
-    @Override
     public String getCharacterEncoding() {
         throw new RuntimeException(ERR_OP);
     }
 
-    @Override
     public String getContentType() {
         throw new RuntimeException(ERR_OP);
     }
 
-    @Override
     public ServletOutputStream getOutputStream() throws IOException {
         throw new RuntimeException(ERR_OP);
     }
 
-    @Override
     public PrintWriter getWriter() throws IOException {
         throw new RuntimeException(ERR_OP);
     }
 
-    @Override
     public void setCharacterEncoding(String s) {
         throw new RuntimeException(ERR_OP);
     }
 
-    @Override
     public void setContentLength(int i) {
         throw new RuntimeException(ERR_OP);
     }
 
-    @Override
     public void setContentType(String s) {
         throw new RuntimeException(ERR_OP);
     }
 
-    @Override
     public void setBufferSize(int i) {
         throw new RuntimeException(ERR_OP);
     }
 
-    @Override
     public int getBufferSize() {
         throw new RuntimeException(ERR_OP);
     }
 
-    @Override
     public void flushBuffer() throws IOException {
         throw new RuntimeException(ERR_OP);
     }
 
-    @Override
     public void resetBuffer() {
         throw new RuntimeException(ERR_OP);
     }
 
-    @Override
     public boolean isCommitted() {
         throw new RuntimeException(ERR_OP);
     }
 
-    @Override
     public void reset() {
         throw new RuntimeException(ERR_OP);
     }
 
-    @Override
     public void setLocale(Locale locale) {
         throw new RuntimeException(ERR_OP);
     }
 
-    @Override
     public Locale getLocale() {
         throw new RuntimeException(ERR_OP);
     }

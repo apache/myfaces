@@ -234,19 +234,16 @@ public class RegexValidator implements Validator, PartialStateHolder
 
     private boolean _initialStateMarked = false;
 
-    @Override
     public void clearInitialState()
     {
         _initialStateMarked = false;
     }
 
-    @Override
     public boolean initialStateMarked()
     {
         return _initialStateMarked;
     }
 
-    @Override
     public void markInitialState()
     {
         _initialStateMarked = true;

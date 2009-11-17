@@ -157,14 +157,12 @@ public class ManagedBean implements org.apache.myfaces.config.element.ManagedBea
         return property;
     }
     
-    @Override
     public boolean isManagedBeanScopeValueExpression()
     {
         return (scope != null) 
                    && (scopeValueExpression != null || !ELText.isLiteral(scope));
     }
     
-    @Override
     public ValueExpression getManagedBeanScopeValueExpression(FacesContext facesContext)
     {
         if (scopeValueExpression == null)

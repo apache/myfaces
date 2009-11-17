@@ -63,7 +63,6 @@ public class HtmlScriptRenderer extends Renderer implements
     
     private final static String RENDERED_RESOURCES_SET = HtmlScriptRenderer.class+".RENDERED_RESOURCES_SET"; 
 
-    @Override
     public void processEvent(ComponentSystemEvent event)
     {
         UIComponent component = event.getComponent();

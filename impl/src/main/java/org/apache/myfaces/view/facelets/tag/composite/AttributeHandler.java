@@ -165,7 +165,6 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
         }
     }
 
-    @Override
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {

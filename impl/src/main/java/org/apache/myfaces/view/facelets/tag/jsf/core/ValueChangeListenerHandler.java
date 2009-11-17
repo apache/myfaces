@@ -170,7 +170,6 @@ public final class ValueChangeListenerHandler extends TagHandler
         }
     }
 
-    @Override
     public void applyAttachedObject(FacesContext context, UIComponent parent)
     {
         // Retrieve the current FaceletContext from FacesContext object
@@ -187,7 +186,6 @@ public final class ValueChangeListenerHandler extends TagHandler
         evh.addValueChangeListener(listener);
     }
 
-    @Override
     public String getFor()
     {
         TagAttribute forAttribute = getAttribute("for");

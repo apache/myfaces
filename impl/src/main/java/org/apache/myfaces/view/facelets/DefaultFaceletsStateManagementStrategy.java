@@ -189,7 +189,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             {
                 view.invokeOnComponent(context, clientId, new ContextCallback()
                     {
-                        @Override
                         public void invokeContextCallback(FacesContext context,
                                 UIComponent target)
                         {
@@ -210,7 +209,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     final String parentClientId = (String) addedState[0];
                     view.invokeOnComponent(context, parentClientId, new ContextCallback()
                     {
-                        @Override
                         public void invokeContextCallback(FacesContext context,
                                 UIComponent target)
                         {
@@ -560,7 +558,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     {
         private PostRestoreStateEvent event;
 
-        @Override
         public VisitResult visit(VisitContext context, UIComponent target)
         {
             if (event == null)
@@ -640,7 +637,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     public static class PostAddPreRemoveFromViewListener implements SystemEventListener
     {
 
-        @Override
         public boolean isListenerForSource(Object source)
         {
             // PostAddToViewEvent and PreRemoveFromViewEvent are
@@ -648,7 +644,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             return (source instanceof UIComponent);
         }
 
-        @Override
         public void processEvent(SystemEvent event)
         {
             UIComponent component = (UIComponent) event.getSource();

@@ -595,7 +595,6 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
         return elResolvers;
     }
 
-    @Override
     public Collection<SystemEventListener> getSystemEventListeners()
     {        
         return systemEventListeners;

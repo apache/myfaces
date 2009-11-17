@@ -202,7 +202,6 @@ public final class CompositeComponentELResolver extends ELResolver
             this._propertyDescriptors = _beanInfo.getPropertyDescriptors();
         }
 
-        @Override
         public ValueExpression getExpression(String name)
         {
             Object valueExpr = getAsValueExpression (name);
@@ -213,31 +212,26 @@ public final class CompositeComponentELResolver extends ELResolver
                     : null);
         }
 
-        @Override
         public void clear()
         {
             _originalMap.clear();
         }
 
-        @Override
         public boolean containsKey(Object key)
         {
             return _originalMap.containsKey(key);
         }
 
-        @Override
         public boolean containsValue(Object value)
         {
             return _originalMap.containsValue(value);
         }
 
-        @Override
         public Set<java.util.Map.Entry<String, Object>> entrySet()
         {
             return _originalMap.entrySet();
         }
 
-        @Override
         public Object get(Object key)
         {
             Object obj = getAsValueExpression (key);
@@ -298,19 +292,16 @@ public final class CompositeComponentELResolver extends ELResolver
             return obj;
         }
         
-        @Override
         public boolean isEmpty()
         {
             return _originalMap.isEmpty();
         }
 
-        @Override
         public Set<String> keySet()
         {
             return _originalMap.keySet();
         }
 
-        @Override
         public Object put(String key, Object value)
         {
             Object obj = getAsValueExpression (key);
@@ -331,7 +322,6 @@ public final class CompositeComponentELResolver extends ELResolver
             return _originalMap.put(key, value);
         }
 
-        @Override
         public void putAll(Map<? extends String, ? extends Object> m)
         {
             for (String key : m.keySet())
@@ -340,19 +330,16 @@ public final class CompositeComponentELResolver extends ELResolver
             }
         }
 
-        @Override
         public Object remove(Object key)
         {
             return _originalMap.remove(key);
         }
 
-        @Override
         public int size()
         {
             return _originalMap.size();
         }
 
-        @Override
         public Collection<Object> values()
         {
             return _originalMap.values();

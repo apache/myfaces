@@ -46,14 +46,12 @@ public class CompositeResourceLibrary implements TagLibrary
     public final static String NAMESPACE_PREFIX = "http://java.sun.com/jsf/composite/";
     
     
-    @Override
     public boolean containsFunction(String ns, String name)
     {
         // Composite component tag library does not suport functions
         return false;
     }
 
-    @Override
     public boolean containsNamespace(String ns)
     {
         if (ns != null && ns.startsWith(NAMESPACE_PREFIX))
@@ -70,7 +68,6 @@ public class CompositeResourceLibrary implements TagLibrary
         return false;
     }
 
-    @Override
     public boolean containsTagHandler(String ns, String localName)
     {
         if (ns != null && ns.startsWith(NAMESPACE_PREFIX))
@@ -93,14 +90,12 @@ public class CompositeResourceLibrary implements TagLibrary
         return false;
     }
 
-    @Override
     public Method createFunction(String ns, String name)
     {
         // Composite component tag library does not suport functions
         return null;
     }
 
-    @Override
     public TagHandler createTagHandler(String ns, String localName,
             TagConfig tag) throws FacesException
     {

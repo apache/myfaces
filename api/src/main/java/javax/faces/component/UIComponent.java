@@ -19,15 +19,14 @@
 package javax.faces.component;
 
 import java.io.IOException;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -806,12 +805,12 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
         
         // Pop the current UIComponent from the FacesContext attributes map so that the previous 
         // UIComponent, if any, becomes the current component.
-        Deque<UIComponent> componentStack = (Deque<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
+        LinkedList<UIComponent> componentStack = (LinkedList<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
         
         UIComponent newCurrent = null;
         if (componentStack != null && !componentStack.isEmpty())
         {
-            newCurrent = componentStack.pop();
+            newCurrent = componentStack.removeFirst();
         }
         else
         {
@@ -832,7 +831,7 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
                 else
                 {
                     UIComponent previousCompositeComponent = null;
-                    for (Iterator<UIComponent> it = componentStack.descendingIterator(); it.hasNext();)
+                    for (Iterator<UIComponent> it = componentStack.iterator(); it.hasNext();)
                     {
                         UIComponent component = it.next();
                         if (component._isCompositeComponent())
@@ -854,14 +853,14 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
         
         if(currentComponent != null)
         {
-            Deque<UIComponent> componentStack = (Deque<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
+            LinkedList<UIComponent> componentStack = (LinkedList<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
             if(componentStack == null)
             {
-                componentStack = new ArrayDeque<UIComponent>();
+                componentStack = new LinkedList<UIComponent>();
                 contextAttributes.put(UIComponent._COMPONENT_STACK, componentStack);
             }
             
-            componentStack.push(currentComponent);
+            componentStack.addFirst(currentComponent);
         }
         
         // Push the current UIComponent this to the FacesContext  attribute map using the key CURRENT_COMPONENT 
@@ -1042,7 +1041,6 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
             return componentClass.hashCode() + listener.hashCode();
         }
 
-        @Override
         public boolean isListenerForSource(Object source)
         {
             // and its implementation of SystemEventListener.isListenerForSource(java.lang.Object) must return true
@@ -1051,7 +1049,6 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
             return source.getClass().isAssignableFrom(componentClass);
         }
 
-        @Override
         public void processEvent(SystemEvent event)
         {
             // This inner class must call through to the argument componentListener in its implementation of
@@ -1062,7 +1059,6 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
             listener.processEvent((ComponentSystemEvent) event);
         }
 
-        @Override
         public void clearInitialState()
         {
             if (!(listener instanceof UIComponent) && listener instanceof PartialStateHolder)
@@ -1071,7 +1067,6 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
             }
         }
 
-        @Override
         public boolean initialStateMarked()
         {
             if (!(listener instanceof UIComponent) && listener instanceof PartialStateHolder)
@@ -1081,7 +1076,6 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
             return false;
         }
 
-        @Override
         public void markInitialState()
         {
             if (!(listener instanceof UIComponent) && listener instanceof PartialStateHolder)
@@ -1090,7 +1084,6 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
             }
         }
 
-        @Override
         public boolean isTransient()
         {
             if (listener instanceof StateHolder)
@@ -1100,7 +1093,6 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
             return false;
         }
 
-        @Override
         public void restoreState(FacesContext context, Object state)
         {
             //TODO: Delta
@@ -1111,7 +1103,6 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
                         (ComponentSystemEventListener) UIComponentBase.restoreAttachedState(context, values[1]);
         }
 
-        @Override
         public Object saveState(FacesContext context)
         {
             //TODO: Delta
@@ -1124,7 +1115,6 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
             return state;                
         }
 
-        @Override
         public void setTransient(boolean newTransientValue)
         {
             if (listener instanceof StateHolder)

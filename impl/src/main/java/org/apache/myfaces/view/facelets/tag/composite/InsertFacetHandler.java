@@ -70,7 +70,6 @@ public class InsertFacetHandler extends TagHandler
         _required = getAttribute("required");
     }
 
-    @Override
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {
@@ -108,7 +107,6 @@ public class InsertFacetHandler extends TagHandler
             _facetName = facetName;
         }
         
-        @Override
         public void processEvent(ComponentSystemEvent event)
         {
             UIComponent parentCompositeComponent = event.getComponent();

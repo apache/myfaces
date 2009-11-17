@@ -44,7 +44,6 @@ public class ClientBehaviorBase extends BehaviorBase implements ClientBehavior
     /**
      * {@inheritDoc}
      */
-    @Override
     public void decode(FacesContext context, UIComponent component)
     {
         if (context == null)
@@ -69,8 +68,7 @@ public class ClientBehaviorBase extends BehaviorBase implements ClientBehavior
     /**
      * {@inheritDoc}
      */
-    @Override
-    public Set<ClientBehaviorHint> getHints()
+     public Set<ClientBehaviorHint> getHints()
     {
         return Collections.<ClientBehaviorHint>emptySet();
     }
@@ -86,7 +84,6 @@ public class ClientBehaviorBase extends BehaviorBase implements ClientBehavior
     /**
      * {@inheritDoc}
      */
-    @Override
     public String getScript(ClientBehaviorContext behaviorContext)
     {
         if (behaviorContext == null)

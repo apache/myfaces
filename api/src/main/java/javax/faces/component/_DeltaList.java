@@ -481,7 +481,6 @@ class _DeltaList<T> implements List<T>, PartialStateHolder
         }
     }
 
-    @Override
     public void clearInitialState()
     {
         //Reset delta setting to null
@@ -499,13 +498,11 @@ class _DeltaList<T> implements List<T>, PartialStateHolder
         }
     }
 
-    @Override
     public boolean initialStateMarked()
     {
         return _initialStateMarked;
     }
 
-    @Override
     public void markInitialState()
     {
         _initialStateMarked = true;
