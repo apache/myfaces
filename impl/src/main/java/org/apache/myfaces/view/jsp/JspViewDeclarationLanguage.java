@@ -146,7 +146,7 @@ public class JspViewDeclarationLanguage extends ViewDeclarationLanguageBase
         // the spec.
 
         checkNull(context, "context");
-        checkNull(viewId, "viewId");
+        //checkNull(viewId, "viewId");
 
         // JSP impl must return null.
 
