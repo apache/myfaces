@@ -653,6 +653,15 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
     public void subscribeToEvent(Class<? extends SystemEvent> eventClass, ComponentSystemEventListener componentListener) {
         // The default implementation creates an inner SystemEventListener instance that wraps argument
         // componentListener as the listener argument.
+        if (eventClass == null)
+        {
+            throw new NullPointerException("eventClass required");
+        }
+        if (componentListener == null)
+        {
+            throw new NullPointerException("componentListener required");
+        }
+        
         SystemEventListener listener = new EventListenerWrapper(this, componentListener);
 
         // Make sure the map exists
@@ -681,6 +690,15 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
          * What is that supposed to mean? Are we supposed to keep an internal map of created listener wrappers? TODO:
          * Check with the EG what's the meaning of this, equals should be commutative -= Simon Lessard =-
          */
+        if (eventClass == null)
+        {
+            throw new NullPointerException("eventClass required");
+        }
+        if (componentListener == null)
+        {
+            throw new NullPointerException("componentListener required");
+        }
+
         SystemEventListener listener = new EventListenerWrapper(this, componentListener);
 
         getFacesContext().getApplication().unsubscribeFromEvent(eventClass, listener);
