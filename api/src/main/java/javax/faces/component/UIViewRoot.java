@@ -1338,8 +1338,13 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         }
     }
 
-    private class ViewScope extends HashMap<String, Object>
+    // we cannot make this class a inner class, because the 
+    // enclosing class (UIViewRoot) would also have to be serialized.
+    private static class ViewScope extends HashMap<String, Object>
     {
+        
+        private static final long serialVersionUID = -1088893802269478164L;
+        
         @Override
         public void clear()
         {
@@ -1348,10 +1353,12 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
              * Application.publishEvent(java.lang.Class, java.lang.Object) to be called, passing
              * ViewMapDestroyedEvent.class as the first argument and this UIViewRoot instance as the second argument.
              */
-            FacesContext facesContext = getFacesContext(); 
-            facesContext.getApplication().publishEvent(facesContext, PreDestroyViewMapEvent.class, UIViewRoot.this);
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            facesContext.getApplication().publishEvent(facesContext, 
+                    PreDestroyViewMapEvent.class, facesContext.getViewRoot());
             
             super.clear();
         }
+        
     }
 }

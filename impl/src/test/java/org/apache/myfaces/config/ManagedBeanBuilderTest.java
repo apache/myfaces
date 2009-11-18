@@ -195,5 +195,44 @@ public class ManagedBeanBuilderTest extends AbstractJsfTestCase
         }
         fail();
     }
+    
+    /**
+     * Tests, if the ManagedBeanBuilder checks that no property of the managed bean
+     * references to a scope with a potentially shorter lifetime.
+     * E.g. a managed bean of scope session is only allowed to reference an object in
+     * the session, the application and the none scope.
+     * This test is to test the view scope, introduced in jsf 2.0.
+     */
+    public void testIsInValidScopeViewScope()
+    {
+        // create viewBean referencing requestBean
+        ManagedBean viewBean = new ManagedBean();
+        viewBean.setBeanClass(TestBean.class.getName());
+        viewBean.setName("viewBean");
+        viewBean.setScope("view");
+        ManagedProperty anotherBeanProperty = new ManagedProperty();
+        anotherBeanProperty.setPropertyName("anotherBean");
+        anotherBeanProperty.setValue("#{requestBean}");
+        viewBean.addProperty(anotherBeanProperty);
+        runtimeConfig.addManagedBean("viewBean", viewBean);
+        
+        // create requestBean
+        ManagedBean requestBean = new ManagedBean();
+        requestBean.setBeanClass(TestBean.class.getName());
+        requestBean.setName("requestBean");
+        requestBean.setScope("request");
+        runtimeConfig.addManagedBean("requestBean", requestBean);
+        
+        try
+        {
+            new MockValueExpression("#{viewBean}", TestBean.class).getValue(facesContext.getELContext());
+        }
+        catch (FacesException e)
+        {
+            // success --> the ManagedBeanBuilder discovered the reference to a shorter lifetime
+            return;
+        }
+        fail();
+    }
 
 }

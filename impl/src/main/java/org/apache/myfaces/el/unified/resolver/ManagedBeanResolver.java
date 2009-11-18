@@ -62,7 +62,7 @@ public class ManagedBeanResolver extends ELResolver
     {
         s_standardScopes.put("request", new Scope()
         {
-            public void put(ExternalContext extContext, String name, Object obj)
+            public void put(FacesContext facesContext, ExternalContext extContext, String name, Object obj)
             {
                 extContext.getRequestMap().put(name, obj);
             }
@@ -70,7 +70,7 @@ public class ManagedBeanResolver extends ELResolver
 
         s_standardScopes.put("session", new Scope()
         {
-            public void put(ExternalContext extContext, String name, Object obj)
+            public void put(FacesContext facesContext, ExternalContext extContext, String name, Object obj)
             {
                 extContext.getSessionMap().put(name, obj);
             }
@@ -78,7 +78,7 @@ public class ManagedBeanResolver extends ELResolver
 
         s_standardScopes.put("application", new Scope()
         {
-            public void put(ExternalContext extContext, String name, Object obj)
+            public void put(FacesContext facesContext, ExternalContext extContext, String name, Object obj)
             {
                 extContext.getApplicationMap().put(name, obj);
             }
@@ -86,9 +86,18 @@ public class ManagedBeanResolver extends ELResolver
 
         s_standardScopes.put("none", new Scope()
         {
-            public void put(ExternalContext extContext, String name, Object obj)
+            public void put(FacesContext facesContext, ExternalContext extContext, String name, Object obj)
             {
                 // do nothing
+            }
+        });
+        
+        // jsf 2.0 view scope
+        s_standardScopes.put("view", new Scope()
+        {
+            public void put(FacesContext facesContext, ExternalContext extContext, String name, Object obj)
+            {
+                facesContext.getViewRoot().getViewMap().put(name, obj);
             }
         });
     }
@@ -161,11 +170,18 @@ public class ManagedBeanResolver extends ELResolver
             throw new PropertyNotFoundException();
         }
 
-        final ExternalContext extContext = externalContext(context);
-
+        final FacesContext facesContext = facesContext(context);
+        if (facesContext == null)
+            return null;
+        
+        final ExternalContext extContext = facesContext.getExternalContext();
         if (extContext == null)
             return null;
+        
         if (extContext.getRequestMap().containsKey(property))
+            return null;
+        Map<String, Object> viewMap = facesContext.getViewRoot().getViewMap(false);
+        if (viewMap != null && viewMap.containsKey(property))
             return null;
         if (extContext.getSessionMap().containsKey(property))
             return null;
@@ -181,7 +197,6 @@ public class ManagedBeanResolver extends ELResolver
         Object beanInstance = null;
         if (managedBean != null)
         {
-            FacesContext facesContext = facesContext(context);
             context.setPropertyResolved(true);
             
             // managed-bean-scope could be a ValueExpression pointing to a Map (since 2.0)
@@ -311,7 +326,7 @@ public class ManagedBeanResolver extends ELResolver
             final Scope scope = _scopes.get(scopeKey);
             if (scope != null)
             {
-                scope.put(extContext, managedBeanName, obj);
+                scope.put(facesContext, extContext, managedBeanName, obj);
             }
             else if (managedBean.isManagedBeanScopeValueExpression())
             {
@@ -428,6 +443,6 @@ public class ManagedBeanResolver extends ELResolver
 
     interface Scope
     {
-        public void put(ExternalContext extContext, String name, Object obj);
+        public void put(FacesContext facesContext, ExternalContext extContext, String name, Object obj);
     }
 }

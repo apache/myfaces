@@ -215,5 +215,29 @@ public class ManagedBeanResolverTest extends AbstractJsfTestCase
         }
         fail();
     }
+    
+    /**
+     * Tests the view scope, which was introduced in jsf 2.0
+     */
+    public void testViewScope()
+    {
+        // create the managed bean
+        ManagedBean beanInViewScope = new ManagedBean();
+        beanInViewScope.setBeanClass(ArrayList.class.getName());
+        beanInViewScope.setName("beanInViewScope");
+        beanInViewScope.setScope("view");
+        runtimeConfig.addManagedBean("beanInViewScope", beanInViewScope);
+        
+        // resolve the managed bean
+        Object resolvedBeanInCustomScope = new MockValueExpression("#{beanInViewScope}", List.class)
+                                                   .getValue(facesContext.getELContext());
+        
+        // get the view map
+        Map<String, Object> viewMap = facesContext.getViewRoot().getViewMap();
+        
+        // the custom scope has to contain the resolved bean
+        assertTrue(viewMap.containsKey("beanInViewScope"));
+        assertTrue(viewMap.get("beanInViewScope").equals(resolvedBeanInCustomScope));
+    }
 
 }

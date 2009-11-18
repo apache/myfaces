@@ -67,13 +67,14 @@ public class ManagedBeanBuilder
     private static Logger log = Logger.getLogger(ManagedBeanBuilder.class.getName());
     private RuntimeConfig _runtimeConfig;
     public final static String REQUEST = "request";
+    public final static String VIEW = "view";
     public final static String APPLICATION = "application";
     public final static String SESSION = "session";
     public final static String NONE = "none";
     
     /**
      * Comparator used to compare Scopes in the following order:
-     * REQUEST SESSION APPLICATION NONE
+     * REQUEST VIEW SESSION APPLICATION NONE
      * @author Jakob Korherr
      */
     private final static Comparator<String> scopeComparator = new Comparator<String>()
@@ -106,14 +107,27 @@ public class ManagedBeanBuilder
             }
             if (o1.equalsIgnoreCase(SESSION))
             {
-                if (o2.equalsIgnoreCase(REQUEST))
+                if (o2.equalsIgnoreCase(REQUEST) || o2.equalsIgnoreCase(VIEW))
                 {
-                    // session is greater than request
+                    // session is greater than request and view
                     return 1;
                 }
                 else
                 {
                     // but smaller than any other scope
+                    return -1;
+                }
+            }
+            if (o1.equalsIgnoreCase(VIEW))
+            {
+                if (o2.equalsIgnoreCase(REQUEST))
+                {
+                    // view is greater than request
+                    return 1;
+                }
+                else
+                {
+                    // ..but smaller than any other scope
                     return -1;
                 }
             }
@@ -394,6 +408,11 @@ public class ManagedBeanBuilder
                                                 beanConfiguration
                                                     .getManagedBeanScopeValueExpression(facesContext)
                                                     .getExpressionString());
+                // if we could not obtain a targetScope, return true
+                if (targetScope == null)
+                {
+                    return true;
+                }
             }
         }
         else
@@ -415,6 +434,12 @@ public class ManagedBeanBuilder
                                               property.getValueBinding(facesContext)
                                                   .getExpressionString());
         
+        // if we could not obtain a valueScope, return true
+        if (valueScope == null)
+        {
+            return true;
+        }
+        
         // the target scope needs to have a shorter (or equal) lifetime than the value scope
         return (scopeComparator.compare(targetScope, valueScope) <= 0);
     }
@@ -428,7 +453,9 @@ public class ManagedBeanBuilder
     private String getNarrowestScope(FacesContext facesContext, String valueExpression)
     {
         List<String> expressions = extractExpressions(valueExpression);
-        String narrowestScope = NONE;
+        // exclude NONE scope, if there are more than one ValueExpressions (see Spec for details)
+        String narrowestScope = expressions.size() == 1 ? NONE : APPLICATION;
+        boolean scopeFound = false;
         
         for (String expression : expressions)
         {
@@ -437,13 +464,15 @@ public class ManagedBeanBuilder
             {
                 continue;
             }
+            // we have found at least one valid scope at this point
+            scopeFound = true;
             if (scopeComparator.compare(valueScope, narrowestScope) < 0)
             {
                 narrowestScope = valueScope;
             }
         }
         
-        return narrowestScope;
+        return scopeFound ? narrowestScope : null;
     }
     
     private String getScope(FacesContext facesContext, String expression)
@@ -474,7 +503,6 @@ public class ManagedBeanBuilder
         {
             return REQUEST;
         }
-
         if (beanName.equalsIgnoreCase("header"))
         {
             return REQUEST;
@@ -482,11 +510,6 @@ public class ManagedBeanBuilder
         if (beanName.equalsIgnoreCase("headerValues"))
         {
             return REQUEST;
-        }
-
-        if (beanName.equalsIgnoreCase("initParam"))
-        {
-            return APPLICATION;
         }
         if (beanName.equalsIgnoreCase("param"))
         {
@@ -496,9 +519,21 @@ public class ManagedBeanBuilder
         {
             return REQUEST;
         }
-        if (beanName.equalsIgnoreCase("view"))
+        if (beanName.equalsIgnoreCase("request"))
         {
             return REQUEST;
+        }
+        if (beanName.equalsIgnoreCase("view")) // Spec says that view is considered to be in request scope
+        {
+            return REQUEST;
+        }
+        if (beanName.equalsIgnoreCase("application"))
+        {
+            return APPLICATION;
+        }
+        if (beanName.equalsIgnoreCase("initParam"))
+        {
+            return APPLICATION;
         }
 
         // not found so far - check all scopes
@@ -513,6 +548,10 @@ public class ManagedBeanBuilder
         if (externalContext.getApplicationMap().get(beanName) != null)
         {
             return APPLICATION;
+        }
+        if (facesContext.getViewRoot().getViewMap().get(beanName) != null)
+        {
+            return VIEW;
         }
 
         //not found - check mangaged bean config
@@ -530,8 +569,7 @@ public class ManagedBeanBuilder
                 // However, we do check the references, if we are not in Production stage
                 if (facesContext.getApplication().getProjectStage() == ProjectStage.Production)
                 {
-                    // we return NONE, because the NONE scope can be referenced by any other scope
-                    return NONE;
+                    return null;
                 }
                 else
                 {
