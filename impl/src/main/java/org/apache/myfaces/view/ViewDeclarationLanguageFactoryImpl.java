@@ -56,10 +56,10 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
     @Override
     public ViewDeclarationLanguage getViewDeclarationLanguage(String viewId)
     {
-        if (viewId == null)
-        {
-            throw new NullPointerException("viewId");
-        }
+        //if (viewId == null)
+        //{
+        //    throw new NullPointerException("viewId");
+        //}
         
         // TODO: It would be nice to be able to preinitialize the factory. However, since it requires 
         //       access to the ExternalContext it may not be possible, depending on the loading order 

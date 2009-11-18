@@ -44,7 +44,7 @@ public abstract class ViewDeclarationLanguageBase extends ViewDeclarationLanguag
     public UIViewRoot createView(FacesContext context, String viewId)
     {
         checkNull(context, "context");
-        checkNull(viewId, "viewId");
+        //checkNull(viewId, "viewId");
 
         try
         {
@@ -95,7 +95,7 @@ public abstract class ViewDeclarationLanguageBase extends ViewDeclarationLanguag
     public UIViewRoot restoreView(FacesContext context, String viewId)
     {
         checkNull(context, "context");
-        checkNull(viewId, "viewId");
+        //checkNull(viewId, "viewId");
 
         Application application = context.getApplication();
         

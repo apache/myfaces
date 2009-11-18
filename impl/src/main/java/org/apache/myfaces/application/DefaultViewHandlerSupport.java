@@ -47,6 +47,11 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
 
     public String calculateViewId(FacesContext context, String viewId)
     {
+        //If no viewId found, don't try to derive it, just continue.
+        if (viewId == null)
+        {
+            return null;
+        }
         FacesServletMapping mapping = getFacesServletMapping(context);
         if (mapping == null || mapping.isExtensionMapping())
         {

@@ -65,6 +65,10 @@ public class FaceletViewDeclarationLanguageStrategy implements ViewDeclarationLa
      */
     public boolean handles(String viewId)
     {
+        if (viewId == null)
+        {
+            return false;
+        }
         // Check extension first as it's faster than mappings
         if (viewId.endsWith(_extension))
         {
