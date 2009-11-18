@@ -18,12 +18,6 @@
  */
 package org.apache.myfaces.view.jsp;
 
-import java.util.LinkedList;
-import java.util.StringTokenizer;
-
-import javax.faces.application.ViewHandler;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 import javax.faces.view.ViewDeclarationLanguage;
 
 import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
@@ -37,7 +31,7 @@ import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
 public class JspViewDeclarationLanguageStrategy implements ViewDeclarationLanguageStrategy
 {
     private ViewDeclarationLanguage _language;
-    private LinkedList<String> _suffixes;
+    //private LinkedList<String> _suffixes;
     
     public JspViewDeclarationLanguageStrategy()
     {
@@ -45,7 +39,7 @@ public class JspViewDeclarationLanguageStrategy implements ViewDeclarationLangua
         
         _language = new JspViewDeclarationLanguage();
         
-        _suffixes = loadSuffixes (FacesContext.getCurrentInstance().getExternalContext());
+        //_suffixes = loadSuffixes (FacesContext.getCurrentInstance().getExternalContext());
     }
     
     /**
@@ -61,6 +55,8 @@ public class JspViewDeclarationLanguageStrategy implements ViewDeclarationLangua
      */
     public boolean handles(String viewId)
     {
+        return true;
+        /*
         for (String suffix : _suffixes) {
             if (viewId.endsWith (suffix)) {
                 return true;
@@ -68,8 +64,10 @@ public class JspViewDeclarationLanguageStrategy implements ViewDeclarationLangua
         }
         
         return false;
+        */
     }
     
+    /*
     private LinkedList<String> loadSuffixes (ExternalContext context) {
         LinkedList<String> result = new LinkedList<String>();
         String definedSuffixes = context.getInitParameter (ViewHandler.DEFAULT_SUFFIX_PARAM_NAME);
@@ -89,4 +87,5 @@ public class JspViewDeclarationLanguageStrategy implements ViewDeclarationLangua
         
         return result;
     }
+    */
 }
