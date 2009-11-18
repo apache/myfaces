@@ -239,12 +239,10 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
                     if (!strVal.startsWith(IDENTIFYER_MARKER)) {
                         retVal.append(getComponentId(context, strVal));
                     } else {
-
                         retVal.append(strVal);
-                        if (cnt < dataHolder.size()) {
-                            retVal.append(BLANK);
-                        }
-
+                    }
+                    if (cnt < dataHolder.size()) {
+                        retVal.append(BLANK);
                     }
                 }
             }
