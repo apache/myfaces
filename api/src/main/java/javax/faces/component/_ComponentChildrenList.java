@@ -54,11 +54,11 @@ class _ComponentChildrenList extends AbstractList<UIComponent> implements Serial
     public UIComponent set(int index, UIComponent value)
     {
         checkValue(value);
-        
+        removeChildrenFromParent(value);
         UIComponent child = _list.set(index, value);
         if (child != value)
         {
-            childAdded(value);
+            updateParent(value);
             if (child != null)
             {
                 child.setParent(null);
@@ -72,10 +72,11 @@ class _ComponentChildrenList extends AbstractList<UIComponent> implements Serial
     public boolean add(UIComponent value)
     {
         checkValue(value);
-        
+
+        removeChildrenFromParent(value);
         boolean res = _list.add(value);
         
-        childAdded(value);
+        updateParent(value);
         
         return res;
     }
@@ -85,9 +86,11 @@ class _ComponentChildrenList extends AbstractList<UIComponent> implements Serial
     {
         checkValue(value);
         
+        removeChildrenFromParent(value);
+        
         _list.add(index, value);
         
-        childAdded(value);
+        updateParent(value);
     }
 
     @Override
@@ -115,11 +118,6 @@ class _ComponentChildrenList extends AbstractList<UIComponent> implements Serial
         }
     }
 
-    private void childAdded(UIComponent child)
-    {
-        updateParent(child);
-    }
-
     private void childRemoved(UIComponent child)
     {
         child.setParent(null);
@@ -127,18 +125,28 @@ class _ComponentChildrenList extends AbstractList<UIComponent> implements Serial
 
     private void updateParent(UIComponent child)
     {
+        child.setParent(_component);
+    }
+    
+    private void removeChildrenFromParent(UIComponent child)
+    {
         UIComponent oldParent = child.getParent();
         if (oldParent != null)
         {
             oldParent.getChildren().remove(child);
         }
-        
-        child.setParent(_component);
     }
 
     @Override
-    public boolean remove(Object o)
+    public boolean remove(Object value)
     {
-        return _list.remove(o);
+        checkValue(value);
+        
+        if (_list.remove(value))
+        {
+            childRemoved((UIComponent)value);
+            return true;
+        }
+        return false;
     }
 }
