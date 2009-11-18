@@ -347,7 +347,7 @@ public class AnnotationConfigurator
         List<JarFile> list = new ArrayList<JarFile>();
         Set<String> paths = externalContext.getResourcePaths(WEB_LIB_PREFIX);
 
-        if (paths.isEmpty())
+        if (paths == null || paths.isEmpty())
         {
             //This usually happens when maven-jetty-plugin is used
             //Scan jars looking for paths including META-INF/faces-config.xml
