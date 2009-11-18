@@ -349,72 +349,10 @@ public class UIInput extends UIOutput implements EditableValueHolder
             return;
         }
 
-        if (!empty)
+        if (!empty || shouldValidateEmptyFields(context))
         {
-            //TODO: Jan-Kees: This is not the most elegant solution, but for now it works
-            addDefaultValidators(context);
             _ComponentUtils.callValidators(context, this, convertedValue);
         }
-        else
-        {
-            if (shouldValidateEmptyFields(context))
-            {
-                //TODO: Jan-Kees: This is not the most elegant solution, but for now it works
-                addDefaultValidators(context);
-                _ComponentUtils.callValidators(context, this, convertedValue);
-            }
-        }
-    }
-
-    /**
-     * Add the default Validators to this component.
-     *
-     * @param context The FacesContext.
-     */
-    private void addDefaultValidators(FacesContext context)
-    {
-        Application application = context.getApplication();
-        Map<String, String> defaultValidators = application.getDefaultValidatorInfo();
-        if (defaultValidators != null && defaultValidators.size() != 0)
-        {
-            Set<Map.Entry<String, String>> defaultValidatorInfoSet = defaultValidators.entrySet();
-            for (Map.Entry<String, String> entry : defaultValidatorInfoSet)
-            {
-                String validatorId = entry.getKey();
-                if (shouldAddDefaultValidator(validatorId, context))
-                {
-                    this.addValidator(application.createValidator(validatorId));
-                }
-            }
-        }
-    }
-
-    /**
-     * Determine if the default Validator with the given validatorId should be added to this component.
-     *
-     * @param validatorId The validatorId.
-     * @param context The FacesContext.
-     * @return true if the Validator should be added, false otherwise.
-     */
-    private boolean shouldAddDefaultValidator(String validatorId, FacesContext context)
-    {
-        // Some extra rules are required for Bean Validation.
-        if (validatorId.equals(BeanValidator.VALIDATOR_ID))
-        {
-            if (!_ExternalSpecifications.isBeanValidationAvailable)
-            {
-                return false;
-            }
-            ExternalContext externalContext = context.getExternalContext();
-            String disabled = externalContext.getInitParameter(BeanValidator.DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME);
-            if (disabled != null && disabled.toLowerCase().equals("true"))
-            {
-                return false;
-            }
-        }
-
-        // By default, all default validators should be added
-        return true;
     }
 
     private boolean shouldValidateEmptyFields(FacesContext context)

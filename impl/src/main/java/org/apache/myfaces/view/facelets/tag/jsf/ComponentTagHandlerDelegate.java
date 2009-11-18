@@ -20,6 +20,8 @@ package org.apache.myfaces.view.facelets.tag.jsf;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,7 +34,10 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UniqueIdVendor;
 import javax.faces.component.ValueHolder;
 import javax.faces.component.behavior.ClientBehaviorHolder;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.validator.BeanValidator;
+import javax.faces.validator.Validator;
 import javax.faces.view.facelets.ComponentConfig;
 import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
@@ -41,10 +46,10 @@ import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandlerDelegate;
 
+import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
-import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler;
 
@@ -216,6 +221,14 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 }
             }
         }
+        
+        if (c instanceof EditableValueHolder)
+        {
+            // add default validators here, because this feature 
+            // is only available in facelets (see MYFACES-2362 for details)
+            addDefaultValidators(facesContext, (EditableValueHolder) c);
+        }
+        
         _delegate.onComponentPopulated(ctx, c, parent);
 
         // add to the tree afterwards
@@ -229,7 +242,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         {
             parent.getFacets().put(facetName, c);
         }
-
+        
         if (c instanceof UniqueIdVendor)
         {
             actx.popUniqueIdVendorToStack();
@@ -356,6 +369,71 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         }
         
         return m;
+    }
+    
+    /**
+     * Add the default Validators to the component.
+     *
+     * @param context The FacesContext.
+     * @param component The EditableValueHolder to which the validators should be added
+     */
+    private void addDefaultValidators(FacesContext context, EditableValueHolder component)
+    {
+        Application application = context.getApplication();
+        Map<String, String> defaultValidators = application.getDefaultValidatorInfo();
+        if (defaultValidators != null && defaultValidators.size() != 0)
+        {
+            Set<Map.Entry<String, String>> defaultValidatorInfoSet = defaultValidators.entrySet();
+            for (Map.Entry<String, String> entry : defaultValidatorInfoSet)
+            {
+                String validatorId = entry.getKey();
+                String validatorClassName = entry.getValue();
+                if (shouldAddDefaultValidator(validatorId, validatorClassName, context, component))
+                {
+                    component.addValidator(application.createValidator(validatorId));
+                }
+            }
+        }
+    }
+
+    /**
+     * Determine if the default Validator with the given validatorId should be added.
+     *
+     * @param validatorId The validatorId.
+     * @param validatorClassName The class name of the validator.
+     * @param context The FacesContext.
+     * @param component The EditableValueHolder to which the validator should be added.
+     * @return true if the Validator should be added, false otherwise.
+     */
+    private boolean shouldAddDefaultValidator(String validatorId, String validatorClassName,
+                                              FacesContext context, EditableValueHolder component)
+    {
+        // check if the validator is already registered for the given component
+        for (Validator v : component.getValidators())
+        {
+            if (v.getClass().getName().equals(validatorClassName))
+            {
+                return false;
+            }
+        }
+        
+        // Some extra rules are required for Bean Validation.
+        if (validatorId.equals(BeanValidator.VALIDATOR_ID))
+        {
+            if (!ExternalSpecifications.isBeanValidationAvailable)
+            {
+                return false;
+            }
+            ExternalContext externalContext = context.getExternalContext();
+            String disabled = externalContext.getInitParameter(BeanValidator.DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME);
+            if (disabled != null && disabled.toLowerCase().equals("true"))
+            {
+                return false;
+            }
+        }
+
+        // By default, all default validators should be added
+        return true;
     }
 
 }
