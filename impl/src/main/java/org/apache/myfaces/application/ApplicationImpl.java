@@ -986,6 +986,9 @@ public class ApplicationImpl extends Application
     @Override
     public UIComponent createComponent(FacesContext context, Resource componentResource)
     {
+        checkNull(context, "context");
+        checkNull(componentResource, "componentResource");
+        
         UIComponent component = null;
         Resource resource;
         String fqcn;
