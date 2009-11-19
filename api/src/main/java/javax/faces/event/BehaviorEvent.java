@@ -35,7 +35,10 @@ public abstract class BehaviorEvent extends FacesEvent
     public BehaviorEvent(UIComponent component, Behavior behavior) 
     {
         super(component);
-        
+        if (behavior == null)
+        {
+            throw new IllegalArgumentException("behavior");
+        }
         _behavior = behavior;
     }
     
