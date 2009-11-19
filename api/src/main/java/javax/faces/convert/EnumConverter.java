@@ -63,9 +63,11 @@ public class EnumConverter implements Converter, PartialStateHolder
             throw new NullPointerException("facesContext can not be null");
         if (uiComponent == null)
             throw new NullPointerException("uiComponent can not be null");
-        if (value == null)
-            return "";
+
         checkTargetClass(facesContext, uiComponent, value);
+
+        if (value == null)
+            return null;
 
         for (Object enumConstant : targetClass.getEnumConstants())
         {
