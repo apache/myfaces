@@ -136,7 +136,7 @@ public class EnumConverterTest extends AbstractJsfTestCase
     {
         UIInput input = new UIInput();
         String convertedStr = converter.getAsString(FacesContext.getCurrentInstance(), input, null);
-        assertEquals(convertedStr, "");
+        assertNull(convertedStr);
     }
 
     /**
