@@ -77,6 +77,10 @@ public abstract class Resource
 
     public void setResourceName(String resourceName)
     {
+        if (resourceName == null)
+        {
+            throw new NullPointerException();
+        }
         _resourceName = resourceName;
     }
     
