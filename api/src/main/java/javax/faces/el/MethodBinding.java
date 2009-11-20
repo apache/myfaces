@@ -27,7 +27,6 @@ import javax.faces.context.FacesContext;
  * @version $Revision$ $Date$
  * @deprecated
  */
-@Deprecated
 public abstract class MethodBinding
 {
 
@@ -37,7 +36,6 @@ public abstract class MethodBinding
     /**
      * @deprecated
      */
-    @Deprecated
     public MethodBinding()
     {
     }
@@ -49,7 +47,6 @@ public abstract class MethodBinding
      * 
      * @deprecated
      */
-    @Deprecated
     public String getExpressionString()
     {
         return null;
@@ -58,13 +55,11 @@ public abstract class MethodBinding
     /**
      * @deprecated
      */
-    @Deprecated
     public abstract Class getType(FacesContext facescontext) throws MethodNotFoundException;
 
     /**
      * @deprecated
      */
-    @Deprecated
     public abstract Object invoke(FacesContext facescontext, Object aobj[]) throws EvaluationException,
         MethodNotFoundException;
 }

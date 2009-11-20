@@ -18,6 +18,7 @@
  */
 package javax.faces.application;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Map;
@@ -35,7 +36,7 @@ public abstract class ResourceWrapper extends Resource
     implements FacesWrapper<Resource>
 {
     @Override
-    public InputStream getInputStream()
+    public InputStream getInputStream() throws IOException
     {
         return getWrapped().getInputStream();
     }

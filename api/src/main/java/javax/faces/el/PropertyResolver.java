@@ -29,14 +29,12 @@ package javax.faces.el;
  * @version $Revision$ $Date$
  * @deprecated
  */
-@Deprecated
 public abstract class PropertyResolver
 {
 
     /**
      * @deprecated
      */
-    @Deprecated
     public PropertyResolver()
     {
     }
@@ -48,7 +46,6 @@ public abstract class PropertyResolver
      * 
      * @deprecated
      */
-    @Deprecated
     public abstract Class getType(Object base, int index) throws EvaluationException, PropertyNotFoundException;
 
     /**
@@ -66,7 +63,6 @@ public abstract class PropertyResolver
      *            must be of type String, must not be null and must not be an empty string.
      * @deprecated
      */
-    @Deprecated
     @SuppressWarnings("unchecked")
     public abstract Class getType(Object base, java.lang.Object property) throws EvaluationException,
         PropertyNotFoundException;
@@ -83,7 +79,6 @@ public abstract class PropertyResolver
      *             if the base object is not an Array or List.
      * @deprecated
      */
-    @Deprecated
     public abstract Object getValue(Object base, int index) throws EvaluationException, PropertyNotFoundException;
 
     /**
@@ -98,20 +93,17 @@ public abstract class PropertyResolver
      *             if the provided object does not have the specified property.
      * @deprecated
      */
-    @Deprecated
     public abstract Object getValue(Object base, java.lang.Object property) throws EvaluationException,
         PropertyNotFoundException;
 
     /**
      * @deprecated
      */
-    @Deprecated
     public abstract boolean isReadOnly(Object base, int index) throws EvaluationException, PropertyNotFoundException;
 
     /**
      * @deprecated
      */
-    @Deprecated
     public abstract boolean isReadOnly(Object base, java.lang.Object property) throws EvaluationException,
         PropertyNotFoundException;
 
@@ -127,7 +119,6 @@ public abstract class PropertyResolver
      * 
      * @deprecated
      */
-    @Deprecated
     public abstract void setValue(Object base, int index, java.lang.Object value) throws EvaluationException,
         PropertyNotFoundException;
 
@@ -136,7 +127,6 @@ public abstract class PropertyResolver
      * 
      * @deprecated
      */
-    @Deprecated
     public abstract void setValue(Object base, Object property, java.lang.Object value) throws EvaluationException,
         PropertyNotFoundException;
 }

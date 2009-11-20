@@ -89,7 +89,7 @@ public abstract class TagAttribute
      *            parameter type
      * @return a MethodExpression instance
      */
-    public abstract MethodExpression getMethodExpression(FaceletContext ctx, Class<?> type, Class<?>[] paramTypes);
+    public abstract MethodExpression getMethodExpression(FaceletContext ctx, Class type, Class[] paramTypes);
 
     /**
      * The resolved Namespace for this attribute
@@ -121,7 +121,7 @@ public abstract class TagAttribute
      *            expected return type
      * @return Object value of this attribute
      */
-    public abstract Object getObject(FaceletContext ctx, Class<?> type);
+    public abstract Object getObject(FaceletContext ctx, Class type);
 
     /**
      * The qualified name for this attribute
@@ -158,7 +158,7 @@ public abstract class TagAttribute
      *            expected return type
      * @return ValueExpression instance
      */
-    public abstract ValueExpression getValueExpression(FaceletContext ctx, Class<?> type);
+    public abstract ValueExpression getValueExpression(FaceletContext ctx, Class type);
 
     /**
      * If this TagAttribute is literal (not #{..} or ${..})

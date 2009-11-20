@@ -62,6 +62,5 @@ public interface NamingContainer
     /**
      * @deprecated Use {@link UINamingContainer#getSeparatorChar(javax.faces.context.FacesContext)
      */
-    @Deprecated
     public static final char SEPARATOR_CHAR = ':';
 }

@@ -41,7 +41,7 @@ public abstract class MetadataTarget
      * @param name
      * @return
      */
-    public abstract Class<?> getPropertyType(String name);
+    public abstract Class getPropertyType(String name);
 
     /**
      * @param name
@@ -52,7 +52,7 @@ public abstract class MetadataTarget
     /**
      * @return
      */
-    public abstract Class<?> getTargetClass();
+    public abstract Class getTargetClass();
 
     /**
      * @param name
@@ -64,5 +64,5 @@ public abstract class MetadataTarget
      * @param type
      * @return
      */
-    public abstract boolean isTargetInstanceOf(Class<?> type);
+    public abstract boolean isTargetInstanceOf(Class type);
 }

@@ -35,7 +35,6 @@ import javax.servlet.jsp.tagext.TagSupport;
  * @version $Revision$ $Date$
  * @deprecated replaced by {@link ConverterELTag}
  */
-@Deprecated
 public class ConverterTag extends TagSupport
 {
     private static final long serialVersionUID = -6168345066829108081L;

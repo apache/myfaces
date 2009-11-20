@@ -18,6 +18,8 @@
  */
 package javax.faces.application;
 
+import java.io.IOException;
+
 import javax.faces.context.FacesContext;
 
 /**
@@ -41,7 +43,7 @@ public abstract class ResourceHandler
     
     public abstract String getRendererTypeForResourceName(String resourceName);
     
-    public abstract void handleResourceRequest(FacesContext context);
+    public abstract void handleResourceRequest(FacesContext context) throws IOException;
     
     public abstract boolean isResourceRequest(FacesContext context);
     

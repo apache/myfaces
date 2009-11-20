@@ -18,6 +18,8 @@
  */
 package javax.faces.application;
 
+import java.io.IOException;
+
 import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
 
@@ -55,7 +57,7 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler
     }
     
     @Override
-    public void handleResourceRequest(FacesContext context)
+    public void handleResourceRequest(FacesContext context) throws IOException
     {
         getWrapped().handleResourceRequest(context);
     }

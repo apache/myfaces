@@ -25,7 +25,6 @@ package javax.faces.el;
  * @version $Revision$ $Date$
  * @deprecated
  */
-@Deprecated
 public class MethodNotFoundException extends EvaluationException
 {
     private static final long serialVersionUID = 7107789255726890536L;
@@ -36,7 +35,6 @@ public class MethodNotFoundException extends EvaluationException
     /**
      * @deprecated
      */
-    @Deprecated
     public MethodNotFoundException()
     {
         super();
@@ -45,7 +43,6 @@ public class MethodNotFoundException extends EvaluationException
     /**
      * @deprecated
      */
-    @Deprecated
     public MethodNotFoundException(String message)
     {
         super(message);
@@ -54,7 +51,6 @@ public class MethodNotFoundException extends EvaluationException
     /**
      * @deprecated
      */
-    @Deprecated
     public MethodNotFoundException(String message, Throwable cause)
     {
         super(message, cause);
@@ -63,7 +59,6 @@ public class MethodNotFoundException extends EvaluationException
     /**
      * @deprecated
      */
-    @Deprecated
     public MethodNotFoundException(Throwable cause)
     {
         super(cause);

@@ -111,7 +111,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder
             getStateHelper().put(PropertyKeys.converterSet,Boolean.TRUE);
         }
         // The argument converter must be inspected for the presence of the ResourceDependency annotation.
-        _handleAnnotations(FacesContext.getCurrentInstance(), converter);
+        //_handleAnnotations(FacesContext.getCurrentInstance(), converter);
     }
     
     private boolean _isSetConverter()
@@ -223,6 +223,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder
         }         
     }
     
+    /*
     void _handleAnnotations(FacesContext context, Object inspected)
     {
         if (inspected == null) {
@@ -305,4 +306,5 @@ public class UIOutput extends UIComponentBase implements ValueHolder
             }
         }
     }
+    */
 }

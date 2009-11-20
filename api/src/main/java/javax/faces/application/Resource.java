@@ -18,6 +18,7 @@
  */
 package javax.faces.application;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Map;
@@ -47,7 +48,7 @@ public abstract class Resource
         return _contentType;
     }
     
-    public abstract InputStream getInputStream();
+    public abstract InputStream getInputStream() throws IOException;
 
     public String getLibraryName()
     {

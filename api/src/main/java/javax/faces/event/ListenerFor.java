@@ -19,6 +19,7 @@
 package javax.faces.event;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -31,10 +32,11 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@Inherited
 public @interface ListenerFor
 {
     public Class<? extends SystemEvent> systemEventClass();
 
     // FIXME: Spec is not Java 5 compliant, specified signature is Class sourceClass()
-    public Class<?> sourceClass() default Void.class;;
+    public Class sourceClass() default Void.class;;
 }

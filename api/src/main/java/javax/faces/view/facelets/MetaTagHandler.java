@@ -28,7 +28,7 @@ import javax.faces.view.facelets.FaceletContext;
  */
 public abstract class MetaTagHandler extends TagHandler
 {
-    private Class<?> _lastType = Object.class;
+    private Class _lastType = Object.class;
 
     private Metadata _mapper;
 
@@ -45,7 +45,7 @@ public abstract class MetaTagHandler extends TagHandler
      * 
      * FIXME: EG _ GENERIC
      */
-    protected abstract MetaRuleset createMetaRuleset(Class<?> type);
+    protected abstract MetaRuleset createMetaRuleset(Class type);
 
     /**
      * Invoking/extending this method will cause the results of the created MetaRuleset to auto-wire state to 

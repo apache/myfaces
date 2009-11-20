@@ -27,7 +27,6 @@ import javax.faces.FacesException;
  * @version $Revision$ $Date$
  * @deprecated
  */
-@Deprecated
 public class EvaluationException extends FacesException
 {
     private static final long serialVersionUID = 4668524591042216006L;
@@ -38,7 +37,6 @@ public class EvaluationException extends FacesException
     /**
      * @deprecated
      */
-    @Deprecated
     public EvaluationException()
     {
         super();
@@ -47,7 +45,6 @@ public class EvaluationException extends FacesException
     /**
      * @deprecated
      */
-    @Deprecated
     public EvaluationException(String message)
     {
         super(message);
@@ -56,7 +53,6 @@ public class EvaluationException extends FacesException
     /**
      * @deprecated
      */
-    @Deprecated
     public EvaluationException(String message, Throwable cause)
     {
         super(message, cause);
@@ -65,7 +61,6 @@ public class EvaluationException extends FacesException
     /**
      * @deprecated
      */
-    @Deprecated
     public EvaluationException(Throwable cause)
     {
         super(cause);

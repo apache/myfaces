@@ -117,7 +117,6 @@ public abstract class UIComponentBase extends UIComponent
      * 
      * @deprecated Replaced by setValueExpression
      */
-    @Deprecated
     @Override
     public void setValueBinding(String name, ValueBinding binding)
     {
@@ -902,7 +901,6 @@ public abstract class UIComponentBase extends UIComponent
      * 
      * @deprecated Replaced by getValueExpression
      */
-    @Deprecated
     @Override
     public ValueBinding getValueBinding(String name)
     {

@@ -43,7 +43,6 @@ import javax.servlet.jsp.tagext.Tag;
  * 
  * @deprecated replaced by {@link UIComponentELTag}
  */
-@Deprecated
 public abstract class UIComponentTag extends UIComponentClassicTagBase
 {
 
@@ -90,7 +89,6 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
      * 
      * @deprecated
      */
-    @Deprecated
     public static UIComponentTag getParentUIComponentTag(PageContext pageContext)
     {
         UIComponentClassicTagBase parentTag = getParentUIComponentClassicTagBase(pageContext);

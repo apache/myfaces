@@ -25,7 +25,6 @@ package javax.faces.el;
  * @version $Revision$ $Date$
  * @deprecated
  */
-@Deprecated
 public class PropertyNotFoundException extends EvaluationException
 {
     private static final long serialVersionUID = -7271529989175141594L;
@@ -36,7 +35,6 @@ public class PropertyNotFoundException extends EvaluationException
     /**
      * @deprecated
      */
-    @Deprecated
     public PropertyNotFoundException()
     {
         super();
@@ -45,7 +43,6 @@ public class PropertyNotFoundException extends EvaluationException
     /**
      * @deprecated
      */
-    @Deprecated
     public PropertyNotFoundException(String message)
     {
         super(message);
@@ -54,7 +51,6 @@ public class PropertyNotFoundException extends EvaluationException
     /**
      * @deprecated
      */
-    @Deprecated
     public PropertyNotFoundException(String message, Throwable cause)
     {
         super(message, cause);
@@ -63,7 +59,6 @@ public class PropertyNotFoundException extends EvaluationException
     /**
      * @deprecated
      */
-    @Deprecated
     public PropertyNotFoundException(Throwable cause)
     {
         super(cause);

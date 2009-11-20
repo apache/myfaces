@@ -70,7 +70,6 @@ public class UISelectBoolean extends UIInput
      * @deprecated Use getValueExpression instead
      */
     @Override
-    @Deprecated
     public ValueBinding getValueBinding(String name)
     {
         if (name == null)
@@ -91,7 +90,6 @@ public class UISelectBoolean extends UIInput
      * @deprecated Use setValueExpression instead
      */
     @Override
-    @Deprecated
     public void setValueBinding(String name, ValueBinding binding)
     {
         if (name == null)

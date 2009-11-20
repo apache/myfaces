@@ -97,7 +97,7 @@ public abstract class DelegatingMetaTagHandler extends MetaTagHandler
      * {@inheritDoc}
      */
     @Override
-    protected MetaRuleset createMetaRuleset(Class<?> type)
+    protected MetaRuleset createMetaRuleset(Class type)
     {
         return getTagHandlerDelegate().createMetaRuleset(type);
     }

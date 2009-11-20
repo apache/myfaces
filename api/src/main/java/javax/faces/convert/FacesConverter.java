@@ -40,7 +40,7 @@ public @interface FacesConverter
      *
      * @return The class this converter must be registered for.
      */
-    public Class<?> forClass() default Object.class;
+    public Class forClass() default Object.class;
 
     /**
      * The converter id. Alternative for providing the &lt;converter-id&gt; element in XML.

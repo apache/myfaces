@@ -32,7 +32,6 @@ import javax.servlet.jsp.tagext.TagSupport;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-@Deprecated
 public class AttributeTag extends TagSupport
 {
     private static final long serialVersionUID = 3147657100171678632L;
@@ -43,7 +42,6 @@ public class AttributeTag extends TagSupport
      * @deprecated
      * @param name
      */
-    @Deprecated
     public void setName(String name)
     {
         _name = name;
@@ -53,7 +51,6 @@ public class AttributeTag extends TagSupport
      * @deprecated
      * @param value
      */
-    @Deprecated
     public void setValue(String value)
     {
         _value = value;
@@ -63,7 +60,6 @@ public class AttributeTag extends TagSupport
      * @deprecated
      */
     @Override
-    @Deprecated
     public int doStartTag() throws JspException
     {
         UIComponentTag componentTag = UIComponentTag.getParentUIComponentTag(pageContext);
@@ -91,7 +87,6 @@ public class AttributeTag extends TagSupport
      * @deprecated
      */
     @Override
-    @Deprecated
     public void release()
     {
         super.release();

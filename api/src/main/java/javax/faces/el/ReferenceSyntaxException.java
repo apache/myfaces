@@ -25,7 +25,6 @@ package javax.faces.el;
  * @version $Revision$ $Date$
  * @deprecated
  */
-@Deprecated
 public class ReferenceSyntaxException extends EvaluationException
 {
     private static final long serialVersionUID = -2099185257291689817L;
@@ -36,7 +35,6 @@ public class ReferenceSyntaxException extends EvaluationException
     /**
      * @deprecated
      */
-    @Deprecated
     public ReferenceSyntaxException()
     {
         super();
@@ -45,7 +43,6 @@ public class ReferenceSyntaxException extends EvaluationException
     /**
      * @deprecated
      */
-    @Deprecated
     public ReferenceSyntaxException(String message)
     {
         super(message);
@@ -54,7 +51,6 @@ public class ReferenceSyntaxException extends EvaluationException
     /**
      * @deprecated
      */
-    @Deprecated
     public ReferenceSyntaxException(String message, Throwable cause)
     {
         super(message, cause);
@@ -63,7 +59,6 @@ public class ReferenceSyntaxException extends EvaluationException
     /**
      * @deprecated
      */
-    @Deprecated
     public ReferenceSyntaxException(Throwable cause)
     {
         super(cause);

@@ -28,7 +28,6 @@ import javax.faces.context.FacesContext;
  * 
  * @deprecated
  */
-@Deprecated
 public abstract class VariableResolver
 {
     // FIELDS
@@ -37,7 +36,6 @@ public abstract class VariableResolver
     /**
      * @deprecated
      */
-    @Deprecated
     public VariableResolver()
     {
     }
@@ -46,6 +44,5 @@ public abstract class VariableResolver
     /**
      * @deprecated
      */
-    @Deprecated
     public abstract Object resolveVariable(FacesContext facesContext, String name) throws EvaluationException;
 }

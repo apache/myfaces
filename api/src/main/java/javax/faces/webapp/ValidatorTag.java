@@ -36,7 +36,6 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @deprecated replaced by {@link ValidatorELTag}
  */
-@Deprecated
 public class ValidatorTag extends TagSupport
 {
     private static final long serialVersionUID = 8794036166323016663L;
@@ -123,7 +122,6 @@ public class ValidatorTag extends TagSupport
      * 
      * @deprecated
      */
-    @Deprecated
     public void setBinding(java.lang.String binding) throws javax.servlet.jsp.JspException
     {
         if (binding != null && !UIComponentTag.isValueReference(binding))

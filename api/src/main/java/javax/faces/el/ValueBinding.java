@@ -27,13 +27,11 @@ import javax.faces.context.FacesContext;
  * @version $Revision$ $Date$
  * @deprecated
  */
-@Deprecated
 public abstract class ValueBinding
 {
     /**
      * @deprecated
      */
-    @Deprecated
     public String getExpressionString()
     {
         return null;
@@ -42,25 +40,21 @@ public abstract class ValueBinding
     /**
      * @deprecated
      */
-    @Deprecated
     abstract public Class getType(FacesContext facesContext) throws EvaluationException, PropertyNotFoundException;
 
     /**
      * @deprecated
      */
-    @Deprecated
     public abstract Object getValue(FacesContext facesContext) throws EvaluationException, PropertyNotFoundException;
 
     /**
      * @deprecated
      */
-    @Deprecated
     public abstract boolean isReadOnly(FacesContext facesContext) throws EvaluationException, PropertyNotFoundException;
 
     /**
      * @deprecated
      */
-    @Deprecated
     public abstract void setValue(FacesContext facesContext, Object value) throws EvaluationException,
         PropertyNotFoundException;
 }

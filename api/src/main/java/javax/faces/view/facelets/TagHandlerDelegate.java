@@ -33,5 +33,5 @@ public abstract class TagHandlerDelegate
 {
     public abstract void apply(FaceletContext ctx, UIComponent comp) throws IOException;
     
-    public abstract MetaRuleset createMetaRuleset(Class<?> type);
+    public abstract MetaRuleset createMetaRuleset(Class type);
 }

@@ -137,13 +137,11 @@ public interface EditableValueHolder extends ValueHolder
      * 
      * @deprecated Use getValidators() instead.
      */
-    @Deprecated
     public MethodBinding getValidator();
 
     /**
      * @deprecated Use addValidator(MethodExpressionValidaotr) instead.
      */
-    @Deprecated
     public void setValidator(javax.faces.el.MethodBinding validatorBinding);
 
     /**
@@ -155,13 +153,11 @@ public interface EditableValueHolder extends ValueHolder
      * 
      * @deprecated Use getValueChangeLIsteners() instead.
      */
-    @Deprecated
     public MethodBinding getValueChangeListener();
 
     /**
      * @deprecated use addValueChangeListener(MethodExpressionValueChangeListener) instead.
      */
-    @Deprecated
     public void setValueChangeListener(MethodBinding valueChangeMethod);
 
     public void addValidator(Validator validator);
