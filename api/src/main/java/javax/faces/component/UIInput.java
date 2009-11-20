@@ -670,7 +670,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         _validatorList.add(validator);
         
         // The argument validator must be inspected for the presence of the ResourceDependency annotation.
-        _handleAnnotations(FacesContext.getCurrentInstance(), validator);
+        //_handleAnnotations(FacesContext.getCurrentInstance(), validator);
     }
 
     /** See getValidator. */
