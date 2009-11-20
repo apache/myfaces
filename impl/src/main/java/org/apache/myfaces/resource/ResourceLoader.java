@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.resource;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Comparator;
@@ -31,6 +32,8 @@ import java.util.Comparator;
  */
 public abstract class ResourceLoader
 {
+    
+    public static final String VERSION_INVALID = "INVALID";
     
     private String _prefix;
     

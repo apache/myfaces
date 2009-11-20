@@ -91,6 +91,11 @@ public class ExternalContextResourceLoader extends ResourceLoader
                     }
                 }
             }
+            //Since it is a directory and no version was found, set as invalid
+            if (resourceVersion == null)
+            {
+                resourceVersion = VERSION_INVALID;
+            }
         }
         return resourceVersion;
     }
@@ -166,7 +171,9 @@ public class ExternalContextResourceLoader extends ResourceLoader
         {
             try
             {
-                URL url = FacesContext.getCurrentInstance().getExternalContext().getResource(libraryName);
+                URL url =
+                    FacesContext.getCurrentInstance().getExternalContext().getResource(
+                        getPrefix() + '/' + libraryName);
                 if (url != null)
                 {
                     return true;
@@ -181,9 +188,9 @@ public class ExternalContextResourceLoader extends ResourceLoader
         {
             try
             {
-                URL url =
-                        FacesContext.getCurrentInstance().getExternalContext().getResource(
-                            getPrefix() + '/' + libraryName);
+
+                URL url = FacesContext.getCurrentInstance().getExternalContext().getResource(libraryName);
+
                 if (url != null)
                 {
                     return true;

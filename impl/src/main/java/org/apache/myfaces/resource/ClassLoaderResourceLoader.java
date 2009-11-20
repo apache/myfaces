@@ -28,6 +28,8 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import org.apache.myfaces.shared_impl.util.ClassUtils;
@@ -136,6 +138,11 @@ public class ClassLoaderResourceLoader extends ResourceLoader
             {
                 // Just return null, because library version cannot be
                 // resolved.
+                Logger log = Logger.getLogger(ClassLoaderResourceLoader.class.getName()); 
+                if (log.isLoggable(Level.WARNING))
+                {
+                    log.log(Level.WARNING, "url "+url.toString()+" cannot be translated to uri: "+e.getMessage(), e);
+                }
             }
         }
         else if (isJarResourceProtocol(url.getProtocol()))
@@ -222,6 +229,11 @@ public class ClassLoaderResourceLoader extends ResourceLoader
             {
                 // Just return null, because library version cannot be
                 // resolved.
+                Logger log = Logger.getLogger(ClassLoaderResourceLoader.class.getName()); 
+                if (log.isLoggable(Level.WARNING))
+                {
+                    log.log(Level.WARNING, "IOException when scanning for resource in jar file:", e);
+                }
             }
         }
         return libraryVersion;
@@ -290,11 +302,20 @@ public class ClassLoaderResourceLoader extends ResourceLoader
                             resourceVersion = version;
                         }
                     }
+                    //Since it is a directory and no version found set resourceVersion as invalid
+                    if (resourceVersion == null)
+                    {
+                        resourceVersion = VERSION_INVALID;
+                    }
                 }
             }
             catch (URISyntaxException e)
             {
-                e.printStackTrace();
+                Logger log = Logger.getLogger(ClassLoaderResourceLoader.class.getName()); 
+                if (log.isLoggable(Level.WARNING))
+                {
+                    log.log(Level.WARNING, "url "+url.toString()+" cannot be translated to uri: "+e.getMessage(), e);
+                }
             }
         }
         else if (isJarResourceProtocol(url.getProtocol()))
@@ -343,6 +364,10 @@ public class ClassLoaderResourceLoader extends ResourceLoader
                                     }
                                 }
                             }
+                            if (resourceVersion == null)
+                            {
+                                resourceVersion = VERSION_INVALID;
+                            }
                         }
                     }
                     finally
@@ -367,6 +392,11 @@ public class ClassLoaderResourceLoader extends ResourceLoader
             {
                 // Just return null, because library version cannot be
                 // resolved.
+                Logger log = Logger.getLogger(ClassLoaderResourceLoader.class.getName()); 
+                if (log.isLoggable(Level.WARNING))
+                {
+                    log.log(Level.WARNING, "IOException when scanning for resource in jar file:", e);
+                }
             }
         }
         return resourceVersion;
@@ -395,7 +425,7 @@ public class ClassLoaderResourceLoader extends ResourceLoader
     {
         if (getPrefix() != null && !"".equals(getPrefix()))
         {
-            URL url = getClassLoader().getResource(libraryName);
+            URL url = getClassLoader().getResource(getPrefix() + '/' + libraryName);
             if (url != null)
             {
                 return true;
@@ -403,7 +433,7 @@ public class ClassLoaderResourceLoader extends ResourceLoader
         }
         else
         {
-            URL url = getClassLoader().getResource(getPrefix() + '/' + libraryName);
+            URL url = getClassLoader().getResource(libraryName);
             if (url != null)
             {
                 return true;

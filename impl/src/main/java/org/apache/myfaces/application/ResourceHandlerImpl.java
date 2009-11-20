@@ -24,6 +24,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.Locale;
 import java.util.Map;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,6 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.myfaces.resource.ResourceImpl;
 import org.apache.myfaces.resource.ResourceLoader;
 import org.apache.myfaces.resource.ResourceMeta;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.shared_impl.util.StringUtils;
 
 /**
@@ -111,61 +113,111 @@ public class ResourceHandlerImpl extends ResourceHandler
         String localePrefix = getLocalePrefixForLocateResource();
         String resourceVersion = null;
         String libraryVersion = null;
-        ResourceMeta resourceId;
+        ResourceMeta resourceId = null;
+        
+        log.info("Derive Resource:"+localePrefix+" "+resourceName+" "+libraryName);
 
-        String prefix = "";
+        //1. Try to locate resource in a localized path
         if (localePrefix != null)
         {
-            prefix = localePrefix;
-        }
-        
-        boolean prependPrefix = !"".equals(prefix);
-
-        if (null != libraryName)
-        {
-            String pathToLib = prependPrefix ? prefix + '/' + libraryName
-                    : libraryName;
-            libraryVersion = resourceLoader.getLibraryVersion(pathToLib);
-
-            if (null != libraryVersion)
+            if (null != libraryName)
             {
-                String pathToResource = (prependPrefix ? prefix + '/'
-                        + libraryName + '/' + libraryVersion + '/'
-                        + resourceName : libraryName + '/' + libraryVersion
-                        + '/' + resourceName);
-                resourceVersion = resourceLoader
-                        .getResourceVersion(pathToResource);
+                String pathToLib = localePrefix + '/' + libraryName;
+                libraryVersion = resourceLoader.getLibraryVersion(pathToLib);
+
+                if (null != libraryVersion)
+                {
+                    String pathToResource = localePrefix + '/'
+                            + libraryName + '/' + libraryVersion + '/'
+                            + resourceName;
+                    resourceVersion = resourceLoader
+                            .getResourceVersion(pathToResource);
+                }
+                else
+                {
+                    String pathToResource = localePrefix + '/'
+                            + libraryName + '/' + resourceName;
+                    resourceVersion = resourceLoader
+                            .getResourceVersion(pathToResource);
+                }
+
+                if (!(resourceVersion != null && ResourceLoader.VERSION_INVALID.equals(resourceVersion)))
+                {
+                    resourceId = resourceLoader.createResourceMeta(localePrefix, libraryName,
+                            libraryVersion, resourceName, resourceVersion);
+                }
             }
             else
             {
-                String pathToResource = (prependPrefix ? prefix + '/'
-                        + libraryName + '/' + resourceName : libraryName + '/'
-                        + resourceName);
                 resourceVersion = resourceLoader
-                        .getResourceVersion(pathToResource);
+                        .getResourceVersion(localePrefix + '/'+ resourceName);
+                if (!(resourceVersion != null && ResourceLoader.VERSION_INVALID.equals(resourceVersion)))
+                {               
+                    resourceId = resourceLoader.createResourceMeta(localePrefix, null, null,
+                            resourceName, resourceVersion);
+                }
             }
 
-            resourceId = resourceLoader.createResourceMeta(prefix, libraryName,
-                    libraryVersion, resourceName, resourceVersion);
-        }
-        else
-        {
-            resourceVersion = resourceLoader
-                    .getResourceVersion(prependPrefix ? prefix + '/'
-                            + resourceName : resourceName);
-            resourceId = resourceLoader.createResourceMeta(prefix, null, null,
-                    resourceName, resourceVersion);
-        }
-
-        if (resourceId != null)
-        {
-            URL url = resourceLoader.getResourceURL(resourceId);
-            if (url == null)
+            if (resourceId != null)
             {
-                resourceId = null;
-            }
+                URL url = resourceLoader.getResourceURL(resourceId);
+                if (url == null)
+                {
+                    resourceId = null;
+                }
+            }            
         }
+        
+        //2. Try to localize resource in a non localized path
+        if (resourceId == null)
+        {
+            if (null != libraryName)
+            {
+                libraryVersion = resourceLoader.getLibraryVersion(libraryName);
 
+                if (null != libraryVersion)
+                {
+                    String pathToResource = (libraryName + '/' + libraryVersion
+                            + '/' + resourceName);
+                    resourceVersion = resourceLoader
+                            .getResourceVersion(pathToResource);
+                }
+                else
+                {
+                    String pathToResource = (libraryName + '/'
+                            + resourceName);
+                    resourceVersion = resourceLoader
+                            .getResourceVersion(pathToResource);
+                }
+
+                if (!(resourceVersion != null && ResourceLoader.VERSION_INVALID.equals(resourceVersion)))
+                {               
+                    resourceId = resourceLoader.createResourceMeta(null, libraryName,
+                            libraryVersion, resourceName, resourceVersion);
+                }
+            }
+            else
+            {
+                resourceVersion = resourceLoader
+                        .getResourceVersion(resourceName);
+                
+                if (!(resourceVersion != null && ResourceLoader.VERSION_INVALID.equals(resourceVersion)))
+                {               
+                    resourceId = resourceLoader.createResourceMeta(null, null, null,
+                            resourceName, resourceVersion);
+                }
+            }
+
+            if (resourceId != null)
+            {
+                URL url = resourceLoader.getResourceURL(resourceId);
+                if (url == null)
+                {
+                    resourceId = null;
+                }
+            }            
+        }
+        
         return resourceId;
     }
 
@@ -386,11 +438,43 @@ public class ResourceHandlerImpl extends ResourceHandler
                     .calculateLocale(context);
 
             ResourceBundle bundle = ResourceBundle
-                    .getBundle(bundleName, locale);
+                    .getBundle(bundleName, locale, ClassUtils.getContextClassLoader());
 
-            localePrefix = bundle.getString(ResourceHandler.LOCALE_PREFIX);
+            if (bundle != null)
+            {
+                localePrefix = bundle.getString(ResourceHandler.LOCALE_PREFIX);                
+            }
         }
         return localePrefix;
+    }
+    
+    private static ResourceBundle getBundle(FacesContext facesContext, Locale locale, String bundleName)
+    {
+        try
+        {
+            // First we try the JSF implementation class loader
+            return ResourceBundle.getBundle(bundleName, locale, facesContext.getClass().getClassLoader());
+        }
+        catch (MissingResourceException ignore1)
+        {
+            try
+            {
+                // Next we try the JSF API class loader
+                return ResourceBundle.getBundle(bundleName, locale, ResourceHandlerImpl.class.getClassLoader());
+            }
+            catch (MissingResourceException ignore2)
+            {
+                try
+                {
+                    // Last resort is the context class loader
+                    return ResourceBundle.getBundle(bundleName, locale, ClassUtils.getContextClassLoader());
+                }
+                catch (MissingResourceException damned)
+                {
+                    return null;
+                }
+            }
+        }
     }
 
     protected boolean isResourceIdentifierExcluded(FacesContext context,
@@ -426,23 +510,32 @@ public class ResourceHandlerImpl extends ResourceHandler
         String localePrefix = getLocalePrefixForLocateResource();
 
         String pathToLib = null;
+        
         if (localePrefix != null)
         {
+            //Check with locale
             pathToLib = localePrefix + '/' + libraryName;
-        }
-        else
-        {
-            pathToLib = libraryName;
+            
+            for (ResourceLoader loader : getResourceHandlerSupport()
+                    .getResourceLoaders())
+            {
+                if (loader.libraryExists(pathToLib))
+                {
+                    return true;
+                }
+            }            
         }
 
+        //Check without locale
         for (ResourceLoader loader : getResourceHandlerSupport()
                 .getResourceLoaders())
         {
-            if (loader.libraryExists(pathToLib))
+            if (loader.libraryExists(libraryName))
             {
                 return true;
             }
         }
+
         return false;
     }
 
