@@ -129,7 +129,7 @@ abstract class _UISelectItems extends UIComponentBase
    * @return
    */
   @JSFExclude
-  @JSFProperty(defaultValue = "false")
+  @JSFProperty(defaultValue = "false", deferredValueType="java.lang.Boolean")
   public boolean isItemDisabled() {
       return false;
   }
@@ -142,7 +142,7 @@ abstract class _UISelectItems extends UIComponentBase
    * @return
    */
   @JSFExclude
-  @JSFProperty(defaultValue = "true")
+  @JSFProperty(defaultValue = "true", deferredValueType="java.lang.Boolean")
   public boolean isItemLabelEscaped() {
       return true;
   }
@@ -157,10 +157,10 @@ abstract class _UISelectItems extends UIComponentBase
    * @since 2.0
    * @return
    */
-  @JSFExclude
-  @JSFProperty
-  public Object getNoSelectionValue() {
-      return null;
-  }
+  //@JSFExclude
+  //@JSFProperty
+  //public Object getNoSelectionValue() {
+  //    return null;
+  //}
 
 }

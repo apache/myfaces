@@ -35,8 +35,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidat
  * @since 2.0
  */
 @JSFValidator(name = "f:validateRequired",
-        bodyContent = "empty", 
-        tagClass = "org.apache.myfaces.taglib.core.ValidateRequiredTag")
+        bodyContent = "empty")
 @JSFJspProperty(name = "binding", 
         returnType = "javax.faces.validator.RequiredValidator",
         longDesc = "A ValueExpression that evaluates to a RequiredValidator.")

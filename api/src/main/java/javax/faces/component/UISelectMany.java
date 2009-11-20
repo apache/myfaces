@@ -35,6 +35,9 @@ import javax.faces.model.SelectItem;
 import javax.faces.render.Renderer;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperties;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
  * Base class for the various component classes that allow a user to select zero or more options from a set.
@@ -50,6 +53,12 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
  * </p>
  */
 @JSFComponent(defaultRendererType = "javax.faces.Listbox")
+@JSFJspProperties
+(properties={
+        @JSFJspProperty(name="hideNoSelectionOption", returnType="boolean"),
+        @JSFJspProperty(name="collectionType", returnType="java.lang.String")
+}
+)
 public class UISelectMany extends UIInput
 {
     public static final String COMPONENT_TYPE = "javax.faces.SelectMany";
@@ -67,7 +76,7 @@ public class UISelectMany extends UIInput
     {
         return COMPONENT_FAMILY;
     }
-
+    
     public Object[] getSelectedValues()
     {
         return (Object[]) getValue();

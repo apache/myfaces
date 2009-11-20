@@ -122,7 +122,7 @@ public class LengthValidator
      * The largest value that should be considered valid.
      * 
      */
-    @JSFProperty
+    @JSFProperty(deferredValueType="java.lang.Integer")
     public int getMaximum()
     {
         return _maximum != null ? _maximum.intValue() : 0;
@@ -138,7 +138,7 @@ public class LengthValidator
      * The smallest value that should be considered valid.
      *  
      */
-    @JSFProperty
+    @JSFProperty(deferredValueType="java.lang.Integer")
     public int getMinimum()
     {
         return _minimum != null ? _minimum.intValue() : 0;

@@ -21,6 +21,7 @@ package javax.faces.component.html;
 import javax.faces.component.UIGraphic;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFExclude;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
@@ -82,4 +83,25 @@ abstract class _HtmlGraphicImage extends UIGraphic
   @JSFProperty
   public abstract String getWidth();
 
+  /**
+   * 
+   * @return
+   */
+  @JSFProperty
+  @JSFExclude
+  public String getLibrary()
+  {
+      return null;
+  }
+  
+  /**
+   * 
+   * @return
+   */
+  @JSFProperty
+  @JSFExclude
+  public String getName()
+  {
+      return null;
+  }
 }

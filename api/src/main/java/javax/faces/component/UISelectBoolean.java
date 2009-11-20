@@ -20,7 +20,9 @@ package javax.faces.component;
 
 import javax.el.ValueExpression;
 import javax.faces.el.ValueBinding;
+
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
  * A component that allows the user to select or unselect an object.
@@ -138,5 +140,11 @@ public class UISelectBoolean extends UIInput
         {
             super.setValueExpression(name, binding);
         }
+    }
+
+    @JSFProperty(deferredValueType="java.lang.Boolean")
+    public Object getValue()
+    {
+        return super.getValue();
     }
 }

@@ -149,7 +149,7 @@ public class LongRangeValidator
      * The largest value that should be considered valid.
      * 
      */
-    @JSFProperty
+    @JSFProperty(deferredValueType="java.lang.Long")
     public long getMaximum()
     {
         return _maximum != null ? _maximum.longValue() : Long.MAX_VALUE;
@@ -165,7 +165,7 @@ public class LongRangeValidator
      * The smallest value that should be considered valid.
      *  
      */
-    @JSFProperty
+    @JSFProperty(deferredValueType="java.lang.Long")
     public long getMinimum()
     {
         return _minimum != null ? _minimum.longValue() : Long.MIN_VALUE;

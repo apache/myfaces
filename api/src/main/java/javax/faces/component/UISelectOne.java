@@ -19,7 +19,10 @@
 package javax.faces.component;
 
 import javax.faces.context.FacesContext;
+
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
  * Component for choosing one option out of a set of possibilities.
@@ -33,6 +36,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
  * </p>
  */
 @JSFComponent(defaultRendererType = "javax.faces.Menu")
+@JSFJspProperty(name="hideNoSelectionOption", returnType="boolean")
 public class UISelectOne extends UIInput
 {
     public static final String COMPONENT_TYPE = "javax.faces.SelectOne";
@@ -50,7 +54,7 @@ public class UISelectOne extends UIInput
     {
         return COMPONENT_FAMILY;
     }
-
+    
     /**
      * Verify that the result of converting the newly submitted value is <i>equal</i> to the value property of one of
      * the child SelectItem objects. If this is not true, a validation error is reported.

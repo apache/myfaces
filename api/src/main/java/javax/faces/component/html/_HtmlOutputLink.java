@@ -51,6 +51,6 @@ _TabindexProperty, _LinkProperties
    * 
    * @return
    */
-  @JSFProperty
+  @JSFProperty(tagExcluded=true)
   public abstract String getFragment();
 }

@@ -31,6 +31,8 @@ import javax.faces.render.RenderKitFactory;
 import javax.faces.render.Renderer;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
  * 
@@ -44,7 +46,9 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
  * 
  * @since 2.0
  */
-@JSFComponent(name = "f:viewParam", bodyContent = "JSP")
+@JSFComponent(name = "f:viewParam", bodyContent = "JSP", 
+        tagClass = "org.apache.myfaces.taglib.core.ParamTag")
+@JSFJspProperty(name = "maxlength", returnType = "int", longDesc = "The max number or characters allowed for this param")
 public class UIViewParameter extends UIInput
 {
     public static final String COMPONENT_FAMILY = "javax.faces.ViewParameter";
@@ -77,6 +81,9 @@ public class UIViewParameter extends UIInput
     @Override
     public void encodeAll(FacesContext context) throws IOException
     {
+        if (context == null) {
+            throw new NullPointerException();
+        }
         setSubmittedValue(getStringValue(context));
     }
 
@@ -147,12 +154,20 @@ public class UIViewParameter extends UIInput
         return (String)super.getSubmittedValue();
     }
 
+    @JSFProperty(tagExcluded=true)
     @Override
     public boolean isImmediate()
     {
         return false;
     }
-
+    
+    @JSFProperty(tagExcluded=true)
+    @Override
+    public boolean isRendered()
+    {
+        return super.isRendered();
+    }
+    
     @Override
     public void processValidators(FacesContext context)
     {

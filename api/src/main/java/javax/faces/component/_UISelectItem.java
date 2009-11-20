@@ -59,7 +59,7 @@ abstract class _UISelectItem extends UIComponentBase
      * 
      * @return the new value value
      */
-    @JSFProperty
+    @JSFProperty(deferredValueType="javax.faces.model.SelectItem")
     public abstract Object getValue();
 
     /**
@@ -68,7 +68,7 @@ abstract class _UISelectItem extends UIComponentBase
      * 
      * @return the new itemDisabled value
      */
-    @JSFProperty(defaultValue = "false")
+    @JSFProperty(defaultValue = "false", deferredValueType="java.lang.Boolean")
     public abstract boolean isItemDisabled();
 
     /**
@@ -76,7 +76,7 @@ abstract class _UISelectItem extends UIComponentBase
      * 
      * @return the new itemEscaped value
      */
-    @JSFProperty(defaultValue = "false", jspName = "escape")
+    @JSFProperty(defaultValue = "false", jspName = "escape", deferredValueType="java.lang.String")
     public abstract boolean isItemEscaped();
 
     /**
@@ -111,6 +111,6 @@ abstract class _UISelectItem extends UIComponentBase
      * @return is the component represent no select option
      */
     @JSFProperty
-    (defaultValue="false")
+    (defaultValue="false", deferredValueType="java.lang.Boolean")
     public abstract boolean isNoSelectionOption();
 }

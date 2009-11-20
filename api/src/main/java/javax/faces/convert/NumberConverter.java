@@ -357,7 +357,7 @@ public class NumberConverter
      * Specifies whether output will contain grouping separators.  Default: true.
      * 
      */
-    @JSFProperty
+    @JSFProperty(deferredValueType="java.lang.Boolean")
     public boolean isGroupingUsed()
     {
         return _groupingUsed;
@@ -373,7 +373,7 @@ public class NumberConverter
      * Specifies whether only the integer part of the input will be parsed.  Default: false.
      * 
      */
-    @JSFProperty
+    @JSFProperty(deferredValueType="java.lang.Boolean")
     public boolean isIntegerOnly()
     {
         return _integerOnly;
@@ -390,7 +390,7 @@ public class NumberConverter
      * specified in the faces configuration file.
      * 
      */
-    @JSFProperty
+    @JSFProperty(deferredValueType="java.lang.Object")
     public Locale getLocale()
     {
         if (_locale != null) return _locale;
@@ -408,7 +408,7 @@ public class NumberConverter
      * The maximum number of digits in the fractional portion of the number.
      * 
      */
-    @JSFProperty
+    @JSFProperty(deferredValueType="java.lang.Integer")
     public int getMaxFractionDigits()
     {
         return _maxFractionDigits;
@@ -425,7 +425,7 @@ public class NumberConverter
      * The maximum number of digits in the integer portion of the number.
      * 
      */
-    @JSFProperty
+    @JSFProperty(deferredValueType="java.lang.Integer")
     public int getMaxIntegerDigits()
     {
         return _maxIntegerDigits;
@@ -442,7 +442,7 @@ public class NumberConverter
      * The minimum number of digits in the fractional portion of the number.
      * 
      */
-    @JSFProperty
+    @JSFProperty(deferredValueType="java.lang.Integer")
     public int getMinFractionDigits()
     {
         return _minFractionDigits;
@@ -459,7 +459,7 @@ public class NumberConverter
      * The minimum number of digits in the integer portion of the number.
      * 
      */
-    @JSFProperty
+    @JSFProperty(deferredValueType="java.lang.Integer")
     public int getMinIntegerDigits()
     {
         return _minIntegerDigits;

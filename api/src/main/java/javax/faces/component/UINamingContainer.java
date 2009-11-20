@@ -23,6 +23,7 @@ import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
  * Base class for components that provide a new "namespace" for the ids of their
@@ -110,6 +111,13 @@ public class UINamingContainer extends UIComponentBase implements NamingContaine
         }
     }
     
+    @JSFProperty(deferredValueType="java.lang.Boolean")
+    @Override
+    public boolean isRendered()
+    {
+        return super.isRendered();
+    }
+
     enum PropertyKeys
     {
         uniqueIdCounter
