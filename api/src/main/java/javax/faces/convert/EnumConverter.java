@@ -74,8 +74,11 @@ public class EnumConverter implements Converter, PartialStateHolder
             if (enumConstant == value)
                 return enumConstant.toString();
         }
+        
+        Object[] params =
+            new Object[] { value, firstConstantOfEnum(), _MessageUtils.getLabel(facesContext, uiComponent) };
 
-        return value.toString();
+        throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, ENUM_ID, params));
     }
 
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value)

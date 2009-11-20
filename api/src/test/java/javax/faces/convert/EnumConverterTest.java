@@ -146,8 +146,15 @@ public class EnumConverterTest extends AbstractJsfTestCase
     public void testGetAsStringNoEnum()
     {
         UIInput input = new UIInput();
-        String convertedStr = converter.getAsString(FacesContext.getCurrentInstance(), input, "HALLO");
-        assertEquals(convertedStr, "HALLO");
+        try
+        {
+            String convertedStr = converter.getAsString(FacesContext.getCurrentInstance(), input, "HALLO");
+            fail("Converter exception should be thrown");
+        }
+        catch (ConverterException e)
+        {
+            // should be thrown
+        }
     }
 
     /**
