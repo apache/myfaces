@@ -79,8 +79,14 @@ $baseContent
 #else
 #if ( "$!property.isRtexprvalue()" == "")
 #set ($type = $utils.getClassFromFullClass($property.className))
-#if ($type == "String")
-         <deferred-value></deferred-value>
+#if($property.deferredValueType)
+         <deferred-value>
+             <type>$property.deferredValueType</type>
+         </deferred-value>
+#elseif ($type == "String")
+         <deferred-value>
+            <type>java.lang.String</type>
+         </deferred-value>
 #else
          <deferred-value>
              <type>$property.className</type>
@@ -130,8 +136,16 @@ $baseContent
          <rtexprvalue>false</rtexprvalue>
 #else
 #set ($type = $utils.getClassFromFullClass($property.className))
-#if ($type == "String")
-         <deferred-value></deferred-value>
+#if($property.deferredValueType)
+         <deferred-value>
+             <type>$property.deferredValueType</type>
+         </deferred-value>             
+#elseif ($type == "String")
+         <deferred-value>
+            <type>java.lang.String</type>
+         </deferred-value>
+
+
 #else
          <deferred-value>
              <type>$property.className</type>
@@ -178,8 +192,14 @@ $baseContent
          <rtexprvalue>false</rtexprvalue>
 #else
 #set ($type = $utils.getClassFromFullClass($property.className))
-#if ($type == "String")
-         <deferred-value></deferred-value>
+#if($property.deferredValueType)
+         <deferred-value>
+             <type>$property.deferredValueType</type>
+         </deferred-value>             
+#elseif ($type == "String")
+         <deferred-value>
+             <type>java.lang.String</type>
+         </deferred-value>
 #else
          <deferred-value>
              <type>$property.className</type>

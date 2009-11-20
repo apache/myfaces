@@ -65,7 +65,7 @@ public class LoadBundleTag extends TagSupport
     /**
      * The base name of the resource bundle.
      */
-    @JSFJspAttribute(required = true, className="javax.el.ValueExpression",
+    @JSFJspAttribute(className="javax.el.ValueExpression",
             deferredValueType="java.lang.String")
     public void setBasename(ValueExpression basename)
     {
