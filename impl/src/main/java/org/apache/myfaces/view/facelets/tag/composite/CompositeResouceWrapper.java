@@ -64,7 +64,7 @@ public final class CompositeResouceWrapper extends Resource
     }
 
 
-    public InputStream getInputStream()
+    public InputStream getInputStream() throws IOException
     {
         return getWrapped().getInputStream();
     }

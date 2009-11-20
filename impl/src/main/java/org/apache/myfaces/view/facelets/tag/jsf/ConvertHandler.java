@@ -152,7 +152,7 @@ public class ConvertHandler extends MetaTagHandlerImpl
         return ctx.getFacesContext().getApplication().createConverter(this.converterId);
     }
 
-    protected MetaRuleset createMetaRuleset(Class<?> type)
+    protected MetaRuleset createMetaRuleset(Class type)
     {
         return super.createMetaRuleset(type).ignore("binding");
     }

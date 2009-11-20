@@ -114,7 +114,7 @@ public class ConverterTagHandlerDelegate extends TagHandlerDelegate implements V
     }
 
     @Override
-    public MetaRuleset createMetaRuleset(Class<?> type)
+    public MetaRuleset createMetaRuleset(Class type)
     {
         return new MetaRulesetImpl(_delegate.getTag(), type).ignore("binding");
     }

@@ -186,7 +186,7 @@ public class ResourceHandlerImpl extends ResourceHandler
      *  the one described on the javadoc of ResourceHandler.handleResourceRequest 
      */
     @Override
-    public void handleResourceRequest(FacesContext facesContext)
+    public void handleResourceRequest(FacesContext facesContext) throws IOException
     {
         String resourceBasePath = getResourceHandlerSupport()
                 .calculateResourceBasePath(facesContext);

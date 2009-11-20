@@ -131,7 +131,7 @@ public class ValidateHandler extends MetaTagHandlerImpl
         return ctx.getFacesContext().getApplication().createValidator(this.validatorId);
     }
 
-    protected MetaRuleset createMetaRuleset(Class<?> type)
+    protected MetaRuleset createMetaRuleset(Class type)
     {
         return super.createMetaRuleset(type).ignore("binding");
     }

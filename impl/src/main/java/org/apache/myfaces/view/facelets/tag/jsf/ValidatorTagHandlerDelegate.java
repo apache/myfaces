@@ -97,7 +97,7 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
     }
 
     @Override
-    public MetaRuleset createMetaRuleset(Class<?> type)
+    public MetaRuleset createMetaRuleset(Class type)
     {
         return new MetaRulesetImpl(_delegate.getTag(), type).ignore("binding");
     }

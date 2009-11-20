@@ -104,7 +104,7 @@ public class BehaviorTagHandlerDelegate extends TagHandlerDelegate implements Be
      * "binding" and "event"
      */
     @Override
-    public MetaRuleset createMetaRuleset(Class<?> type)
+    public MetaRuleset createMetaRuleset(Class type)
     {
         MetaRuleset ruleset = new MetaRulesetImpl(_delegate.getTag(), type);
         ruleset.ignore("binding");

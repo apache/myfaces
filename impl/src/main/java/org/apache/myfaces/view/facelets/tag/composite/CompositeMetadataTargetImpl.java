@@ -124,7 +124,7 @@ final class CompositeMetadataTargetImpl extends MetadataTarget
         return null;
     }
 
-    public boolean isTargetInstanceOf(Class<?> type)
+    public boolean isTargetInstanceOf(Class type)
     {
         return _delegate.isTargetInstanceOf(type);
     }

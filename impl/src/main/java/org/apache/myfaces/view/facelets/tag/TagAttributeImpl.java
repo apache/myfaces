@@ -149,7 +149,7 @@ public final class TagAttributeImpl extends TagAttribute
      *            parameter type
      * @return a MethodExpression instance
      */
-    public MethodExpression getMethodExpression(FaceletContext ctx, Class<?> type, Class<?>[] paramTypes)
+    public MethodExpression getMethodExpression(FaceletContext ctx, Class type, Class[] paramTypes)
     {
         try
         {
@@ -238,7 +238,7 @@ public final class TagAttributeImpl extends TagAttribute
      *            expected return type
      * @return Object value of this attribute
      */
-    public Object getObject(FaceletContext ctx, Class<?> type)
+    public Object getObject(FaceletContext ctx, Class type)
     {
         if (this.literal)
         {
@@ -283,7 +283,7 @@ public final class TagAttributeImpl extends TagAttribute
      *            expected return type
      * @return ValueExpression instance
      */
-    public ValueExpression getValueExpression(FaceletContext ctx, Class<?> type)
+    public ValueExpression getValueExpression(FaceletContext ctx, Class type)
     {
         try
         {

@@ -145,7 +145,7 @@ public final class ConvertDateTimeHandler extends ConverterHandler
         }
     }
 
-    protected MetaRuleset createMetaRuleset(Class<?> type)
+    protected MetaRuleset createMetaRuleset(Class type)
     {
         return super.createMetaRuleset(type).ignoreAll();
     }

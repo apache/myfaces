@@ -62,7 +62,7 @@ public final class ValidateDelegateHandler extends ValidatorHandler
         return ctx.getFacesContext().getApplication().createValidator(this.validatorId.getValue(ctx));
     }
 
-    protected MetaRuleset createMetaRuleset(Class<?> type)
+    protected MetaRuleset createMetaRuleset(Class type)
     {
         return super.createMetaRuleset(type).ignoreAll();
     }

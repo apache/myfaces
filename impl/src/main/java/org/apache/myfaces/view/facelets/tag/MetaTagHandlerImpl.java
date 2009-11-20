@@ -43,7 +43,7 @@ public abstract class MetaTagHandlerImpl extends MetaTagHandler
      * @param type
      * @return
      */
-    protected MetaRuleset createMetaRuleset(Class<?> type)
+    protected MetaRuleset createMetaRuleset(Class type)
     {
         ParameterCheck.notNull("type", type);
         

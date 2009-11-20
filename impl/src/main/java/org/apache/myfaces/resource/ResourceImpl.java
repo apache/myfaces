@@ -65,7 +65,7 @@ public class ResourceImpl extends Resource
     }    
     
     @Override
-    public InputStream getInputStream()
+    public InputStream getInputStream() throws IOException
     {
         if (couldResourceContainValueExpressions())
         {

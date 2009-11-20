@@ -67,7 +67,7 @@ public final class ConvertDelegateHandler extends ConverterHandler
         return ctx.getFacesContext().getApplication().createConverter(this.converterId.getValue(ctx));
     }
 
-    protected MetaRuleset createMetaRuleset(Class<?> type)
+    protected MetaRuleset createMetaRuleset(Class type)
     {
         return super.createMetaRuleset(type).ignoreAll();
     }

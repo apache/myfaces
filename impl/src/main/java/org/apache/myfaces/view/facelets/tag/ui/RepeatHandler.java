@@ -48,7 +48,7 @@ public class RepeatHandler extends ComponentHandler
         super(config);
     }
 
-    protected MetaRuleset createMetaRuleset(Class<?> type)
+    protected MetaRuleset createMetaRuleset(Class type)
     {
         MetaRuleset meta = super.createMetaRuleset(type);
 

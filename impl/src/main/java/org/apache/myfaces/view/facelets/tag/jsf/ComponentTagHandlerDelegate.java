@@ -339,7 +339,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
     }
 
     @Override
-    public MetaRuleset createMetaRuleset(Class<?> type)
+    public MetaRuleset createMetaRuleset(Class type)
     {
         MetaRuleset m = new MetaRulesetImpl(_delegate.getTag(), type);
         // ignore standard component attributes

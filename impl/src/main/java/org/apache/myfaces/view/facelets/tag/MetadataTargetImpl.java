@@ -92,7 +92,7 @@ public final class MetadataTargetImpl extends MetadataTarget
         return null;
     }
 
-    public boolean isTargetInstanceOf(Class<?> type)
+    public boolean isTargetInstanceOf(Class type)
     {
         return type.isAssignableFrom(_type);
     }

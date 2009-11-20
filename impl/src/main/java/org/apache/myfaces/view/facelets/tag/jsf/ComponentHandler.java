@@ -253,7 +253,7 @@ public class ComponentHandler extends MetaTagHandler
     }
 
     @Override
-    protected MetaRuleset createMetaRuleset(Class<?> type)
+    protected MetaRuleset createMetaRuleset(Class type)
     {
         /*MetaRuleset m = super.createMetaRuleset(type);
 
