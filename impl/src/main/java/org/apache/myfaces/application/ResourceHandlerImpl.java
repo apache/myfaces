@@ -115,8 +115,6 @@ public class ResourceHandlerImpl extends ResourceHandler
         String libraryVersion = null;
         ResourceMeta resourceId = null;
         
-        log.info("Derive Resource:"+localePrefix+" "+resourceName+" "+libraryName);
-
         //1. Try to locate resource in a localized path
         if (localePrefix != null)
         {
