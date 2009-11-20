@@ -96,6 +96,7 @@ import org.apache.myfaces.el.unified.ResolverBuilderForFaces;
 import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver;
 import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.view.facelets.el.ELText;
 
 /**
  * DOCUMENT ME!
@@ -1225,6 +1226,8 @@ public class ApplicationImpl extends Application
             final Converter converter = converterClass.newInstance();
 
             setConverterProperties(converterClass, converter);
+            
+            _handleAttachedResourceDependencyAnnotations(FacesContext.getCurrentInstance(), converter);
 
             return converter;
         }
@@ -1383,6 +1386,95 @@ public class ApplicationImpl extends Application
             }
         }
     }
+    
+    private void _handleAttachedResourceDependencyAnnotations(FacesContext context, Object inspected)
+    {
+        if (inspected == null) {
+            return;
+        }
+        
+        ResourceDependency annotation = inspected.getClass().getAnnotation(ResourceDependency.class);
+        
+        if (annotation == null)
+        {
+            // If the ResourceDependency annotation is not present, the argument must be inspected for the presence 
+            // of the ResourceDependencies annotation. 
+            ResourceDependencies dependencies = inspected.getClass().getAnnotation(ResourceDependencies.class);
+            if (dependencies != null)
+            {
+                // If the ResourceDependencies annotation is present, the action described in ResourceDependencies 
+                // must be taken.
+                for (ResourceDependency dependency : dependencies.value())
+                {
+                    _handleAttachedResourceDependency(context, dependency);
+                }
+            }
+        }
+        else
+        {
+            // If the ResourceDependency annotation is present, the action described in ResourceDependency must be 
+            // taken. 
+            _handleAttachedResourceDependency(context, annotation);
+        }
+    }
+    
+    private void _handleAttachedResourceDependency(FacesContext context, ResourceDependency annotation)
+    {
+        // If this annotation is not present on the class in question, no action must be taken. 
+        if (annotation != null)
+        {
+            Application application = context.getApplication();
+            
+            // Create a UIOutput instance by passing javax.faces.Output. to 
+            // Application.createComponent(java.lang.String).
+            UIOutput output = (UIOutput) application.createComponent(UIOutput.COMPONENT_TYPE);
+            
+            // Get the annotation instance from the class and obtain the values of the name, library, and 
+            // target attributes.
+            String name = annotation.name();
+            if (name != null && name.length() > 0)
+            {
+                name = ELText.parse(getExpressionFactory(), context.getELContext(), name).toString(context.getELContext());
+            }
+            
+            // Obtain the renderer-type for the resource name by passing name to 
+            // ResourceHandler.getRendererTypeForResourceName(java.lang.String).
+            String rendererType = application.getResourceHandler().getRendererTypeForResourceName(name);
+            
+            // Call setRendererType on the UIOutput instance, passing the renderer-type.
+            output.setRendererType(rendererType);
+            
+            // Obtain the Map of attributes from the UIOutput component by calling UIComponent.getAttributes().
+            Map<String, Object> attributes = output.getAttributes();
+            
+            // Store the name into the attributes Map under the key "name".
+            attributes.put("name", name);
+            
+            // If library is the empty string, let library be null.
+            String library = annotation.library();
+            if (library != null && library.length() > 0)
+            {
+                library = ELText.parse(getExpressionFactory(), context.getELContext(), library).toString(context.getELContext());
+                // If library is non-null, store it under the key "library".
+                attributes.put("library", library);
+            }
+            
+            // If target is the empty string, let target be null.
+            String target = annotation.target();
+            if (target != null && target.length() > 0)
+            {
+                target = ELText.parse(getExpressionFactory(), context.getELContext(), target).toString(context.getELContext());
+                // If target is non-null, store it under the key "target".
+                attributes.put("target", target);
+            }
+            else
+            {
+                // Otherwise, if target is null, call UIViewRoot.addComponentResource(javax.faces.context.FacesContext, 
+                // javax.faces.component.UIComponent), passing the UIOutput instance as the second argument.
+                context.getViewRoot().addComponentResource(context, output);
+            }
+        }
+    }
 
     // Note: this method used to be synchronized in the JSF 1.1 version. Why?
     /**
@@ -1437,7 +1529,11 @@ public class ApplicationImpl extends Application
 
         try
         {
-            return (Validator) validatorClass.newInstance();
+            Validator validator = (Validator) validatorClass.newInstance();
+            
+            _handleAttachedResourceDependencyAnnotations(FacesContext.getCurrentInstance(), validator);
+            
+            return validator;
         }
         catch (Exception e)
         {
@@ -1648,6 +1744,10 @@ public class ApplicationImpl extends Application
             // Get the annotation instance from the class and obtain the values of the name, library, and
             // target attributes.
             String name = annotation.name();
+            if (name != null && name.length() > 0)
+            {
+                name = ELText.parse(getExpressionFactory(), context.getELContext(), name).toString(context.getELContext());
+            }
 
             // Obtain the renderer-type for the resource name by passing name to
             // ResourceHandler.getRendererTypeForResourceName(java.lang.String).
@@ -1666,6 +1766,7 @@ public class ApplicationImpl extends Application
             String library = annotation.library();
             if (library != null && library.length() > 0)
             {
+                library = ELText.parse(getExpressionFactory(), context.getELContext(), library).toString(context.getELContext());
                 // If library is non-null, store it under the key "library".
                 if ("this".equals(library))
                 {
@@ -1686,6 +1787,7 @@ public class ApplicationImpl extends Application
             String target = annotation.target();
             if (target != null && target.length() > 0)
             {
+                target = ELText.parse(getExpressionFactory(), context.getELContext(), target).toString(context.getELContext());
                 // If target is non-null, store it under the key "target".
                 attributes.put("target", target);
                 context.getViewRoot().addComponentResource(context, output, target);
