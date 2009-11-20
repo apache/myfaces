@@ -29,10 +29,12 @@ import javax.faces.component.ValueHolder;
 import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.component.html.HtmlOutputLabel;
+import javax.faces.component.html.HtmlOutputText;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
+import org.apache.myfaces.shared_impl.component.EscapeCapable;
 import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
 import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
 import org.apache.myfaces.shared_impl.renderkit.html.HTML;
@@ -107,7 +109,24 @@ public class HtmlLabelRenderer extends HtmlRenderer
             String text = RendererUtils.getStringValue(facesContext, uiComponent);
             if (text != null)
             {
-                writer.writeText(text, "value");
+                boolean escape;
+                if (uiComponent instanceof HtmlOutputLabel || uiComponent instanceof EscapeCapable)
+                {
+                    escape = ((HtmlOutputLabel)uiComponent).isEscape();
+                }
+                else
+                {
+                    escape = RendererUtils.getBooleanAttribute(uiComponent, org.apache.myfaces.shared_impl.renderkit.JSFAttr.ESCAPE_ATTR,
+                                                               true); //default is to escape
+                }                
+                if (escape)
+                {
+                    writer.writeText(text, org.apache.myfaces.shared_impl.renderkit.JSFAttr.VALUE_ATTR);
+                }
+                else
+                {
+                    writer.write(text);
+                }
             }
         }
 
