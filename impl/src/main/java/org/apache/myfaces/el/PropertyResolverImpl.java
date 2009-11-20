@@ -43,6 +43,14 @@ public final class PropertyResolverImpl extends PropertyResolver
     public Object getValue(final Object base, final Object property) throws EvaluationException,
         PropertyNotFoundException
     {
+        if (base == null)
+        {
+            return null;
+        }
+        if (property == null)
+        {
+            return null;
+        }
         return invokeResolver(new ResolverInvoker<Object>(base, property)
         {
             @Override
