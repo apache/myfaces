@@ -141,6 +141,8 @@ public class BeanValidator implements Validator, PartialStateHolder
         {
             return;
         }
+        
+        // Note that validationGroupsArray was initialized when createValidator was called
         Class[] validationGroupsArray = this.validationGroupsArray;
 
         // Delegate to Bean Validation.
@@ -287,7 +289,7 @@ public class BeanValidator implements Validator, PartialStateHolder
         this.validationGroups = (String) state;
 
         // Only the String is saved, recalculate the Class[] on state restoration.
-        postSetValidationGroups();
+        //postSetValidationGroups();
     }
 
     /**
@@ -308,7 +310,7 @@ public class BeanValidator implements Validator, PartialStateHolder
     public void setValidationGroups(String validationGroups)
     {
         this.validationGroups = validationGroups;
-        postSetValidationGroups();
+        //postSetValidationGroups();
     }
 
     @JSFProperty
