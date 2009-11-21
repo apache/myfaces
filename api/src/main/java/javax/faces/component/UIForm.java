@@ -140,7 +140,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
     {
         // The saveState() method of UIForm must call setSubmitted(false) before calling super.saveState() as an 
         // extra precaution to ensure the submitted state is not persisted across requests.
-        setSubmitted(false);
+        //setSubmitted(false);
 
         return super.saveState(context);
     }
