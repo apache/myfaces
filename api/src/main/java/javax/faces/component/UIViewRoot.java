@@ -1210,7 +1210,12 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      */
     private boolean _process(FacesContext context, PhaseId phaseId, PhaseProcessor processor)
     {
-        if (!notifyListeners(context, phaseId, getBeforePhaseListener(), true))
+        // If context.renderResponse() or context.responseComplete has been called on any listener before phase,
+        // the phase should continue. Note that after the phase has ended this conditions are checked by
+        // the lifecycle, and you can always put that kind of code on after phase listener instead.
+        notifyListeners(context, phaseId, getBeforePhaseListener(), true);
+
+        try
         {
             if (processor != null)
             {
@@ -1219,10 +1224,12 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
 
             broadcastEvents(context, phaseId);
         }
-
-        if (context.getRenderResponse() || context.getResponseComplete())
+        finally
         {
-            clearEvents();
+            if (context.getRenderResponse() || context.getResponseComplete())
+            {
+                clearEvents();
+            }            
         }
 
         return notifyListeners(context, phaseId, getAfterPhaseListener(), false);
