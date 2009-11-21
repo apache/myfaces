@@ -657,7 +657,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             // invoke afterPhase MethodExpression
             // Note: In this phase it is not possible to invoke the beforePhase method, because we
             // first have to restore the view to get its attributes.
-            notifyListeners(context, PhaseId.RESTORE_VIEW, getAfterPhaseListener(), false);
+            //notifyListeners(context, PhaseId.RESTORE_VIEW, getAfterPhaseListener(), false);
             
             visitTree(VisitContext.createVisitContext(context), new RestoreStateCallback());
         }
