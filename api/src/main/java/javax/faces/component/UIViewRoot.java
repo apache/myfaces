@@ -654,12 +654,10 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             // The try block must have a finally block that ensures that no FacesEvents remain in the event queue
             broadcastEvents(context, PhaseId.RESTORE_VIEW);
 
-            // that any PhaseListeners in getPhaseListeners() are invoked as appropriate
-            PhaseEvent event = createEvent(context, PhaseId.RESTORE_VIEW);
-            for (PhaseListener listener: getPhaseListeners())
-            {
-                listener.afterPhase(event);
-            }
+            // invoke afterPhase MethodExpression
+            // Note: In this phase it is not possible to invoke the beforePhase method, because we
+            // first have to restore the view to get its attributes.
+            notifyListeners(context, PhaseId.RESTORE_VIEW, getAfterPhaseListener(), false);
             
             visitTree(VisitContext.createVisitContext(context), new RestoreStateCallback());
         }
