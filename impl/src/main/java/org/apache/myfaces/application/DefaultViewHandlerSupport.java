@@ -66,12 +66,12 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             throw new InvalidViewIdException(viewId);
         }
 
-        if(viewId != null)
-        {
-            return (checkResourceExists(context,viewId) ? viewId : null);
-        }
+        //if(viewId != null)
+        //{
+        //    return (checkResourceExists(context,viewId) ? viewId : null);
+        //}
 
-        return null;    // return null if no physical resource exists
+        return viewId;    // return null if no physical resource exists
     }
 
     public String calculateActionURL(FacesContext context, String viewId)
