@@ -343,6 +343,8 @@ public class NavigationHandlerImpl
     private NavigationCase calcMatchingNavigationCase(FacesContext context, Set<? extends NavigationCase> casesList, String actionRef, 
                                                       String outcome)
     {
+        NavigationCase noConditionCase = null;
+                        
         for (NavigationCase caze : casesList)
         {
             String cazeOutcome = caze.getFromOutcome();
@@ -352,47 +354,62 @@ public class NavigationHandlerImpl
             // JSF 2.0: support conditional navigation via <if>.
             // Use for later cases.
             
-            if(outcome == null && (cazeOutcome != null || cazeIf == null))
+            if(outcome == null && (cazeOutcome != null || cazeIf == null) && actionRef == null)
             {
                 continue;   //To match an outcome value of null, the <from-outcome> must be absent and the <if> element present.
             }
             
-            if (cazeActionRef != null) {
-                if (cazeOutcome != null) {
+            //If there are no conditions on navigation case save it and return as last resort
+            if (cazeOutcome == null && cazeActionRef == null && cazeIf == null && noConditionCase == null && outcome != null)
+            {
+                noConditionCase = caze;
+            }
+            
+            if (cazeActionRef != null)
+            {
+                if (cazeOutcome != null)
+                {
                     if ((actionRef != null) && (outcome != null) && cazeActionRef.equals (actionRef) &&
-                            cazeOutcome.equals (outcome)) {
+                            cazeOutcome.equals (outcome))
+                    {
                         // First case: match if <from-action> matches action and <from-outcome> matches outcome.
                         // Caveat: evaluate <if> if available.
 
-                        if (cazeIf != null) {
-                            if (ifMatches) {
+                        if (cazeIf != null)
+                        {
+                            if (ifMatches)
+                            {
                                 return caze;
                             }
-                            
+
                             continue;
                         }
-
-                        else {
+                        else
+                        {
                             return caze;
                         }
                     }
                 }
-
-                else {
-                    if ((actionRef != null) && cazeActionRef.equals (actionRef)) {
+                else
+                {
+                    if ((actionRef != null) && cazeActionRef.equals (actionRef))
+                    {
                         // Third case: if only <from-action> specified, match against action.
                         // Caveat: if <if> is available, evaluate.  If not, only match if outcome is not null.
 
-                        if (cazeIf != null) {
-                            if (ifMatches) {
+                        if (cazeIf != null)
+                        {
+                            if (ifMatches)
+                            {
                                 return caze;
                             }
                             
                             continue;
                         }
-
-                        else {
-                            if (outcome != null) {
+                        else
+                        {
+                            if (outcome != null)
+                            {
                                 return caze;
                             }
                             
@@ -401,22 +418,26 @@ public class NavigationHandlerImpl
                     }
                 }
             }
-
-            else {
-                if (cazeOutcome != null) {
-                    if ((outcome != null) && cazeOutcome.equals (outcome)) {
+            else
+            {
+                if (cazeOutcome != null)
+                {
+                    if ((outcome != null) && cazeOutcome.equals (outcome))
+                    {
                         // Second case: if only <from-outcome> specified, match against outcome.
                         // Caveat: if <if> is available, evaluate.
 
-                        if (cazeIf != null) {
-                            if (ifMatches) {
+                        if (cazeIf != null)
+                        {
+                            if (ifMatches)
+                            {
                                 return caze;
                             }
                             
                             continue;
                         }
-
-                        else {
+                        else
+                        {
                             return caze;
                         }
                     }
@@ -425,11 +446,13 @@ public class NavigationHandlerImpl
 
             // Fourth case: anything else matches if outcome is not null or <if> is specified.
 
-            if (outcome != null) {
+            if (outcome != null)
+            {
                 // Again, if <if> present, evaluate.
-
-                if (cazeIf != null) {
-                    if (ifMatches) {
+                if (cazeIf != null)
+                {
+                    if (ifMatches)
+                    {
                         return caze;
                     }
                     
@@ -437,12 +460,13 @@ public class NavigationHandlerImpl
                 }
             }
 
-            if ((cazeIf != null) && ifMatches) {
+            if ((cazeIf != null) && ifMatches)
+            {
                 return caze;
             }
         }
-
-        return null;
+        
+        return noConditionCase;
     }
 
     private List<String> getSortedWildcardKeys()

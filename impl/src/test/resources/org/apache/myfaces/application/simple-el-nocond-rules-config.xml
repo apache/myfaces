@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd"
+  version="2.0">
+  <navigation-rule>
+    <from-view-id>/a.jsp</from-view-id>
+    <navigation-case>
+        <from-action>#{rules.go}</from-action>
+        <to-view-id>/b.jsp</to-view-id>
+    </navigation-case>
+    <navigation-case>
+        <to-view-id>/c.jsp</to-view-id>
+    </navigation-case>
+  </navigation-rule>
+</faces-config>
