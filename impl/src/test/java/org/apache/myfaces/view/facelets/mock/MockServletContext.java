@@ -37,7 +37,7 @@ import javax.servlet.RequestDispatcher;
  * @version $Id$
  */
 public class MockServletContext extends
-        org.apache.shale.test.mock.MockServletContext
+        org.apache.myfaces.test.mock.MockServletContext
 {
 
     //private static Log log = LogFactory.getLog(MockServletContext.class);

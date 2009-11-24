@@ -17,7 +17,7 @@ import org.apache.myfaces.config.impl.digester.elements.ManagedBean;
 import org.apache.myfaces.config.impl.digester.elements.ManagedProperty;
 import org.apache.myfaces.config.impl.digester.elements.MapEntries;
 import org.apache.myfaces.config.impl.digester.elements.ListEntries.Entry;
-import org.apache.shale.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 public abstract class AbstractManagedBeanBuilderTestCase extends AbstractJsfTestCase {
 

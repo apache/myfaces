@@ -45,8 +45,8 @@ import org.apache.myfaces.renderkit.html.HtmlButtonRenderer;
 import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.view.ViewMetadataBase;
-import org.apache.shale.test.base.AbstractJsfTestCase;
-import org.apache.shale.test.mock.MockRenderKit;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.mock.MockRenderKit;
 
 public class DefaultFaceletsStateManagementStrategyTest extends
         AbstractJsfTestCase

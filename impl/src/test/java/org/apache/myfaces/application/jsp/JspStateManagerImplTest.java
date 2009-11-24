@@ -26,8 +26,8 @@ import javax.faces.component.UIOutput;
 import javax.faces.component.UIViewRoot;
 import javax.faces.render.RenderKitFactory;
 
-import org.apache.shale.test.base.AbstractJsfTestCase;
-import org.apache.shale.test.mock.MockResponseWriter;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.mock.MockResponseWriter;
 
 public class JspStateManagerImplTest extends AbstractJsfTestCase {
 
@@ -44,7 +44,7 @@ public class JspStateManagerImplTest extends AbstractJsfTestCase {
      */
     public void testWriteAndRestoreState() throws Exception
     {
-        // additional setup not provided automatically by the shale mock stuff
+        // additional setup not provided automatically by the myfaces mock stuff
         facesContext.setResponseWriter(new MockResponseWriter(new BufferedWriter(new CharArrayWriter()), null, null));
 
         UIViewRoot viewRoot = facesContext.getViewRoot();

@@ -38,7 +38,7 @@ import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.Employee;
 import org.apache.myfaces.view.facelets.util.FastWriter;
-import org.apache.shale.test.mock.MockResponseWriter;
+import org.apache.myfaces.test.mock.MockResponseWriter;
 
 public final class JstlCoreTestCase extends FaceletTestCase {
 

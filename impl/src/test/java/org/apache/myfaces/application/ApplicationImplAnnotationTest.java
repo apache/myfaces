@@ -44,21 +44,21 @@ import javax.faces.render.Renderer;
 import junit.framework.TestCase;
 
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.shale.test.el.MockExpressionFactory;
-import org.apache.shale.test.mock.MockExternalContext;
-import org.apache.shale.test.mock.MockFacesContext;
-import org.apache.shale.test.mock.MockFacesContextFactory;
-import org.apache.shale.test.mock.MockHttpServletRequest;
-import org.apache.shale.test.mock.MockHttpServletResponse;
-import org.apache.shale.test.mock.MockHttpSession;
-import org.apache.shale.test.mock.MockPropertyResolver;
-import org.apache.shale.test.mock.MockRenderKit;
-import org.apache.shale.test.mock.MockRenderKitFactory;
-import org.apache.shale.test.mock.MockServletConfig;
-import org.apache.shale.test.mock.MockServletContext;
-import org.apache.shale.test.mock.MockVariableResolver;
-import org.apache.shale.test.mock.lifecycle.MockLifecycle;
-import org.apache.shale.test.mock.lifecycle.MockLifecycleFactory;
+import org.apache.myfaces.test.mock.MockFacesContextFactory;
+import org.apache.myfaces.test.el.MockExpressionFactory;
+import org.apache.myfaces.test.mock.MockExternalContext;
+import org.apache.myfaces.test.mock.MockFacesContext;
+import org.apache.myfaces.test.mock.MockHttpServletRequest;
+import org.apache.myfaces.test.mock.MockHttpServletResponse;
+import org.apache.myfaces.test.mock.MockHttpSession;
+import org.apache.myfaces.test.mock.MockPropertyResolver;
+import org.apache.myfaces.test.mock.MockRenderKit;
+import org.apache.myfaces.test.mock.MockRenderKitFactory;
+import org.apache.myfaces.test.mock.MockServletConfig;
+import org.apache.myfaces.test.mock.MockServletContext;
+import org.apache.myfaces.test.mock.MockVariableResolver;
+import org.apache.myfaces.test.mock.lifecycle.MockLifecycle;
+import org.apache.myfaces.test.mock.lifecycle.MockLifecycleFactory;
 
 public class ApplicationImplAnnotationTest extends TestCase
 {
@@ -116,11 +116,11 @@ public class ApplicationImplAnnotationTest extends TestCase
         FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY,
                 ApplicationFactoryImpl.class.getName());
         FactoryFinder.setFactory(FactoryFinder.FACES_CONTEXT_FACTORY,
-        "org.apache.shale.test.mock.MockFacesContextFactory");
+        "org.apache.myfaces.test.mock.MockFacesContextFactory");
         FactoryFinder.setFactory(FactoryFinder.LIFECYCLE_FACTORY,
-        "org.apache.shale.test.mock.lifecycle.MockLifecycleFactory");
+        "org.apache.myfaces.test.mock.lifecycle.MockLifecycleFactory");
         FactoryFinder.setFactory(FactoryFinder.RENDER_KIT_FACTORY,
-        "org.apache.shale.test.mock.MockRenderKitFactory");
+        "org.apache.myfaces.test.mock.MockRenderKitFactory");
         FactoryFinder.setFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY,
                 "org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl");
 

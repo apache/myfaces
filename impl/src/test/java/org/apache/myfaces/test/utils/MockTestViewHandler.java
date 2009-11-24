@@ -20,7 +20,7 @@ package org.apache.myfaces.test.utils;
 
 import javax.faces.context.FacesContext;
 
-import org.apache.shale.test.mock.MockViewHandler;
+import org.apache.myfaces.test.mock.MockViewHandler;
 
 /**
  * This class is a temporary workaround for test cases

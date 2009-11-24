@@ -36,14 +36,14 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpSession;
 
-import org.apache.shale.test.mock.MockHttpSession;
+import org.apache.myfaces.test.mock.MockHttpSession;
 
 /**
  * 
  * @author Jacob Hookom
  * @version $Id$
  */
-public class MockHttpServletRequest extends org.apache.shale.test.mock.MockHttpServletRequest {
+public class MockHttpServletRequest extends org.apache.myfaces.test.mock.MockHttpServletRequest {
 
     private final ServletContext servletContext;
 

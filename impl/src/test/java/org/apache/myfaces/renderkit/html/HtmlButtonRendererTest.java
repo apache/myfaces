@@ -31,13 +31,13 @@ import junit.framework.TestSuite;
 import org.apache.myfaces.shared_impl.config.MyfacesConfig;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
-import org.apache.shale.test.base.AbstractJsfTestCase;
-import org.apache.shale.test.mock.MockExternalContext;
-import org.apache.shale.test.mock.MockHttpServletRequest;
-import org.apache.shale.test.mock.MockHttpServletResponse;
-import org.apache.shale.test.mock.MockRenderKitFactory;
-import org.apache.shale.test.mock.MockResponseWriter;
-import org.apache.shale.test.mock.MockServletContext;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.mock.MockExternalContext;
+import org.apache.myfaces.test.mock.MockHttpServletRequest;
+import org.apache.myfaces.test.mock.MockHttpServletResponse;
+import org.apache.myfaces.test.mock.MockRenderKitFactory;
+import org.apache.myfaces.test.mock.MockResponseWriter;
+import org.apache.myfaces.test.mock.MockServletContext;
 
 public class HtmlButtonRendererTest extends AbstractJsfTestCase {
 

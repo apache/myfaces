@@ -25,7 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.myfaces.config.FacesConfigurator.Version;
-import org.apache.shale.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 public class FacesConfiguratorTestCase extends AbstractJsfTestCase
 {

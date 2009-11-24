@@ -26,7 +26,7 @@ import javax.faces.component.UIOutput;
 import javax.faces.component.UIViewRoot;
 
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.apache.shale.test.mock.MockResponseWriter;
+import org.apache.myfaces.test.mock.MockResponseWriter;
 
 public class HtmlOutputScriptTestCase extends FaceletTestCase
 {

@@ -22,7 +22,7 @@ import java.util.Enumeration;
 import java.util.Map;
 
 import org.apache.myfaces.context.flash.FlashImpl;
-import org.apache.shale.test.base.AbstractViewControllerTestCase;
+import org.apache.myfaces.test.base.AbstractViewControllerTestCase;
 
 public class FlashImplTest extends AbstractViewControllerTestCase
 {

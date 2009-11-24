@@ -31,9 +31,9 @@ import org.apache.myfaces.shared_impl.renderkit.html.HTML;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.apache.myfaces.test.utils.MockTestViewHandler;
-import org.apache.shale.test.base.AbstractJsfTestCase;
-import org.apache.shale.test.mock.MockRenderKitFactory;
-import org.apache.shale.test.mock.MockResponseWriter;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.mock.MockRenderKitFactory;
+import org.apache.myfaces.test.mock.MockResponseWriter;
 
 public class HtmlFormRendererTest extends AbstractJsfTestCase
 {

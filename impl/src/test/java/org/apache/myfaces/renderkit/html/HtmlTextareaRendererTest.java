@@ -28,9 +28,9 @@ import junit.framework.TestSuite;
 
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
-import org.apache.shale.test.base.AbstractJsfTestCase;
-import org.apache.shale.test.mock.MockRenderKitFactory;
-import org.apache.shale.test.mock.MockResponseWriter;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.mock.MockRenderKitFactory;
+import org.apache.myfaces.test.mock.MockResponseWriter;
 
 /**
  * @author Bruno Aranda (latest modification by $Author: baranda $)

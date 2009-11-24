@@ -9,9 +9,9 @@ import javax.faces.render.RenderKitFactory;
 
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
-import org.apache.shale.test.base.AbstractJsfTestCase;
-import org.apache.shale.test.mock.MockFacesContext12;
-import org.apache.shale.test.mock.MockResponseWriter;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.mock.MockFacesContext12;
+import org.apache.myfaces.test.mock.MockResponseWriter;
 
 /**
  * @author martin.haimberger

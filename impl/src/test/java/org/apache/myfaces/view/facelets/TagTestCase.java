@@ -26,7 +26,7 @@ import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.view.facelets.util.FastWriter;
-import org.apache.shale.test.mock.MockResponseWriter;
+import org.apache.myfaces.test.mock.MockResponseWriter;
 
 public class TagTestCase extends FaceletTestCase {
 

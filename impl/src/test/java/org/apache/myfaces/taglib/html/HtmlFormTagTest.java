@@ -21,7 +21,7 @@ package org.apache.myfaces.taglib.html;
 import javax.faces.component.html.HtmlForm;
 
 import org.apache.myfaces.el.LiteralValueExpression;
-import org.apache.shale.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

@@ -26,7 +26,7 @@ import java.util.Locale;
  * @author Jacob Hookom
  * @version $Id$
  */
-public class MockHttpServletResponse extends org.apache.shale.test.mock.MockHttpServletResponse{
+public class MockHttpServletResponse extends org.apache.myfaces.test.mock.MockHttpServletResponse{
     
     private boolean committed = false;
     private int status;

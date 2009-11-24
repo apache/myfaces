@@ -21,7 +21,7 @@ package org.apache.myfaces.view.facelets;
 import javax.faces.component.UIViewRoot;
 
 import org.apache.myfaces.view.facelets.util.FastWriter;
-import org.apache.shale.test.mock.MockResponseWriter;
+import org.apache.myfaces.test.mock.MockResponseWriter;
 
 public class TemplateClientTestCase extends FaceletTestCase {
 

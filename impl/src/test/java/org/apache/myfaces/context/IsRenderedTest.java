@@ -20,7 +20,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
 
 import org.apache.myfaces.context.servlet.FacesContextImpl;
-import org.apache.shale.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 /**
  * Various tests for the faces context is rendered

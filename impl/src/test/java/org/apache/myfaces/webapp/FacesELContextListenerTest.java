@@ -28,7 +28,7 @@ import javax.faces.context.FacesContext;
 
 import junit.framework.TestCase;
 
-import org.apache.shale.test.mock.MockFacesContext12;
+import org.apache.myfaces.test.mock.MockFacesContext12;
 import org.easymock.IMocksControl;
 import org.easymock.classextension.EasyMock;
 

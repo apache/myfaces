@@ -9,8 +9,8 @@ import javax.faces.application.NavigationCase;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
-import org.apache.shale.test.base.AbstractJsfTestCase;
-import org.apache.shale.test.mock.MockApplication;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.mock.MockApplication;
 import org.xml.sax.SAXException;
 
 public class NavigationHandlerImplTest extends AbstractJsfTestCase

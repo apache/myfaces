@@ -5,7 +5,7 @@ import java.util.Map;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
-import org.apache.shale.test.mock.MockResponseWriter;
+import org.apache.myfaces.test.mock.MockResponseWriter;
 
 /**
  * This is a utility class used in unit test cases to check if

@@ -30,7 +30,7 @@ import org.apache.myfaces.config.impl.digester.elements.FacesConfig;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfigNameSlot;
 import org.apache.myfaces.config.impl.digester.elements.OrderSlot;
 import org.apache.myfaces.config.impl.digester.elements.Ordering;
-import org.apache.shale.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 public class OrderingFacesConfigTest extends AbstractJsfTestCase
 {

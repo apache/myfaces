@@ -19,7 +19,7 @@ package org.apache.myfaces.config.annotation;
 import org.apache.myfaces.config.ManagedBeanBuilder;
 import org.apache.myfaces.config.impl.digester.elements.ManagedBean;
 import org.apache.myfaces.config.impl.digester.elements.ManagedProperty;
-import org.apache.shale.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 /**
  * Test MYFACES-1761 Handling PostConstruct annotations - wrong order 

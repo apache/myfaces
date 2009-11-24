@@ -37,10 +37,10 @@ import junit.framework.TestSuite;
 
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
-import org.apache.shale.test.base.AbstractJsfTestCase;
-import org.apache.shale.test.el.MockValueExpression;
-import org.apache.shale.test.mock.MockRenderKitFactory;
-import org.apache.shale.test.mock.MockResponseWriter;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.el.MockValueExpression;
+import org.apache.myfaces.test.mock.MockRenderKitFactory;
+import org.apache.myfaces.test.mock.MockResponseWriter;
 
 /**
  * @author Bruno Aranda (latest modification by $Author: grantsmith $)
@@ -72,7 +72,7 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
 
         writer = new MockResponseWriter(new StringWriter(), null, null);
         facesContext.setResponseWriter(writer);
-        // TODO remove these two lines once shale-test goes alpha, see MYFACES-1155
+        // TODO remove these two lines once myfaces-test goes alpha, see MYFACES-1155
         facesContext.getViewRoot().setRenderKitId(MockRenderKitFactory.HTML_BASIC_RENDER_KIT);
         facesContext.getRenderKit().addRenderer(
                 outputText.getFamily(),

@@ -27,9 +27,9 @@ import javax.faces.application.ProjectStage;
 import org.apache.myfaces.config.impl.digester.elements.ManagedBean;
 import org.apache.myfaces.config.impl.digester.elements.ManagedProperty;
 import org.apache.myfaces.el.unified.resolver.ManagedBeanResolver;
-import org.apache.shale.test.base.AbstractJsfTestCase;
-import org.apache.shale.test.el.MockValueExpression;
-import org.apache.shale.test.mock.MockApplication20;
+import org.apache.myfaces.test.mock.MockApplication20;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.el.MockValueExpression;
 
 /**
  * Class used to test ManagedBeanBuilder

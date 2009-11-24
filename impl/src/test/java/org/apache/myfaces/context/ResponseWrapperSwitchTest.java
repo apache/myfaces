@@ -29,8 +29,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.ServletResponseWrapper;
 
 import org.apache.myfaces.context.servlet.FacesContextImpl;
-import org.apache.shale.test.base.AbstractJsfTestCase;
-import org.apache.shale.test.mock.MockResponseWriter;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.mock.MockResponseWriter;
 
 /**
  * Testcase for the response switching

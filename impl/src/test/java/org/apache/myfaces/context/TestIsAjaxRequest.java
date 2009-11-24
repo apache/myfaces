@@ -21,7 +21,7 @@ import java.util.Map;
 import javax.faces.FactoryFinder;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.context.servlet.FacesContextImpl;
-import org.apache.shale.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 /**
  * Tests the facesContext isAjaxRequest

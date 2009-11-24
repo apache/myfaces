@@ -26,7 +26,7 @@ import javax.faces.context.FacesContext;
 import org.apache.myfaces.view.facelets.Facelet;
 import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.apache.shale.test.mock.MockResponseWriter;
+import org.apache.myfaces.test.mock.MockResponseWriter;
 
 public class TestNbsp extends FaceletTestCase
 {

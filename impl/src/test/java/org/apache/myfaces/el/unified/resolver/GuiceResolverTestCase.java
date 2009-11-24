@@ -23,7 +23,7 @@ import javax.el.ELResolver;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.impl.digester.elements.ManagedBean;
-import org.apache.shale.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;

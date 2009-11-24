@@ -49,8 +49,8 @@ import junit.framework.TestCase;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.test.TestRunnable;
-import org.apache.shale.test.el.MockELContext;
-import org.apache.shale.test.mock.MockFacesContext12;
+import org.apache.myfaces.test.el.MockELContext;
+import org.apache.myfaces.test.mock.MockFacesContext12;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 
