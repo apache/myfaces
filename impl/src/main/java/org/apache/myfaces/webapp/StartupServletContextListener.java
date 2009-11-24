@@ -18,24 +18,16 @@
  */
 package org.apache.myfaces.webapp;
 
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.FactoryFinder;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletContextAttributeEvent;
-import javax.servlet.ServletContextAttributeListener;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import javax.servlet.ServletRequestAttributeEvent;
-import javax.servlet.ServletRequestAttributeListener;
-import javax.servlet.ServletRequestEvent;
-import javax.servlet.ServletRequestListener;
-import javax.servlet.http.HttpSessionAttributeListener;
-import javax.servlet.http.HttpSessionBindingEvent;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
 
+import org.apache.myfaces.config.ManagedBeanBuilder;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.util.ContainerUtils;
 
@@ -57,10 +49,7 @@ import org.apache.myfaces.util.ContainerUtils;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class StartupServletContextListener implements ServletContextListener,
-        HttpSessionAttributeListener, HttpSessionListener,
-        ServletRequestListener, ServletRequestAttributeListener,
-        ServletContextAttributeListener
+public class StartupServletContextListener extends AbstractMyFacesListener implements ServletContextListener
 {
     static final String FACES_INIT_DONE = StartupServletContextListener.class.getName() + ".FACES_INIT_DONE";
     /*comma delimited list of plugin classes which can be hooked into myfaces*/
@@ -76,7 +65,6 @@ public class StartupServletContextListener implements ServletContextListener,
 
     private FacesInitializer _facesInitializer;
     private ServletContext _servletContext;
-    private ManagedBeanDestroyerListener _detroyerListener = new ManagedBeanDestroyerListener();
 
 
     /**
@@ -103,7 +91,7 @@ public class StartupServletContextListener implements ServletContextListener,
                 //for now the initializers have to be stateless to
                 //so that we do not have to enforce that the initializer
                 //must be serializable
-                Class<?> pluginClass = ClassUtils.getContextClassLoader().loadClass(plugin);
+                Class pluginClass = ClassUtils.getContextClassLoader().loadClass(plugin);
                 StartupListener initializer = (StartupListener) pluginClass.newInstance();
                 
                 switch(operation) {
@@ -155,9 +143,6 @@ public class StartupServletContextListener implements ServletContextListener,
         {
             log.info("MyFaces already initialized");
         }
-        
-        // call contextInitialized on ManagedBeanDestroyerListener
-        _detroyerListener.contextInitialized(event);
     }
 
     protected FacesInitializer getFacesInitializer()
@@ -197,9 +182,7 @@ public class StartupServletContextListener implements ServletContextListener,
 
     public void contextDestroyed(ServletContextEvent event)
     {
-        dispatchInitializationEvent(event, FACES_INIT_PHASE_PREDESTROY);
-        // call contextDestroyed on ManagedBeanDestroyerListener to destroy the attributes
-        _detroyerListener.contextDestroyed(event);
+        doPredestroy(event);
 
         if (_facesInitializer != null && _servletContext != null)
         {
@@ -210,77 +193,20 @@ public class StartupServletContextListener implements ServletContextListener,
 
         _servletContext = null;
     }
-    
-    /* the following methods are needed to serve ManagedBeanDestroyerListener */
-    /* Session related methods */
-    
-    public void attributeAdded(HttpSessionBindingEvent event)
-    {
-        _detroyerListener.attributeAdded(event);
-    }
 
-    public void attributeRemoved(HttpSessionBindingEvent event)
+    @SuppressWarnings("unchecked")
+    private void doPredestroy(ServletContextEvent event)
     {
-        _detroyerListener.attributeRemoved(event);
-    }
+        ServletContext ctx = event.getServletContext();
+        dispatchInitializationEvent(event, FACES_INIT_PHASE_PREDESTROY);
 
-    public void attributeReplaced(HttpSessionBindingEvent event)
-    {
-        _detroyerListener.attributeReplaced(event);
-    }
+        Enumeration<String> attributes = ctx.getAttributeNames();
 
-    public void sessionCreated(HttpSessionEvent event)
-    {
-        _detroyerListener.sessionCreated(event);
+        while (attributes.hasMoreElements())
+        {
+            String name = attributes.nextElement();
+            Object value = ctx.getAttribute(name);
+            doPreDestroy(value, name, ManagedBeanBuilder.APPLICATION);
+        }
     }
-
-    public void sessionDestroyed(HttpSessionEvent event)
-    {
-        _detroyerListener.sessionDestroyed(event);
-    }
-    
-    /* Context related methods */
-    
-    public void attributeAdded(ServletContextAttributeEvent event)
-    {
-        _detroyerListener.attributeAdded(event);
-    }
-
-    public void attributeRemoved(ServletContextAttributeEvent event)
-    {
-        _detroyerListener.attributeRemoved(event);
-    }
-
-    public void attributeReplaced(ServletContextAttributeEvent event)
-    {
-        _detroyerListener.attributeReplaced(event);
-    }
-    
-    /* Request related methods */
-    
-    public void attributeAdded(ServletRequestAttributeEvent event)
-    {
-        _detroyerListener.attributeAdded(event);
-    }
-
-    public void attributeRemoved(ServletRequestAttributeEvent event)
-    {
-        _detroyerListener.attributeRemoved(event);
-    }
-
-    public void attributeReplaced(ServletRequestAttributeEvent event)
-    {
-        _detroyerListener.attributeReplaced(event);
-    }
-
-    public void requestInitialized(ServletRequestEvent event)
-    {
-        _detroyerListener.requestInitialized(event);
-    }
-    
-    public void requestDestroyed(ServletRequestEvent event)
-    {        
-        _detroyerListener.requestDestroyed(event);
-    }
-
 }
