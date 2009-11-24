@@ -114,7 +114,7 @@ public class InvokeOnComponentTest extends AbstractComponentTest
 
     }
 
-// Disabled until Shale test issues are resolved..
+// Disabled until Myfaces test issues are resolved..
 //    public void testInvokeOnCompOnUIDataChildren() throws Exception
 //    {
 //        // column1

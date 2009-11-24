@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.shale.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 public class UISelectManyTest extends AbstractJsfTestCase {
 
@@ -31,7 +31,7 @@ public class UISelectManyTest extends AbstractJsfTestCase {
     super(name);
   }
 
-//Disabled until Shale test issues are resolved..
+//Disabled until Myfaces test issues are resolved..
 //  public void testValidateRequiredNull() {
 //
 //    facesContext.getViewRoot().setLocale(_TEST_LOCALE);

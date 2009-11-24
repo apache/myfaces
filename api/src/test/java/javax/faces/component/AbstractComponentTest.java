@@ -1,6 +1,6 @@
 package javax.faces.component;
 
-import org.apache.shale.test.jmock.AbstractJmockJsfTestCase;
+import org.apache.myfaces.test.jmock.AbstractJmockJsfTestCase;
 
 /**
  * Abstract basis clazz for Apache MyFaces' test kit.

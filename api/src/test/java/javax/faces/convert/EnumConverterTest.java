@@ -22,7 +22,7 @@ package javax.faces.convert;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 
-import org.apache.shale.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 /**
  * This testcase test <code>javax.faces.convert.EnumConverter</code>.

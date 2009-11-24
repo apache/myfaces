@@ -26,7 +26,7 @@ import javax.el.ELContext;
 import javax.el.ValueExpression;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.shale.test.mock.MockFacesContext12;
+import org.apache.myfaces.test.mock.MockFacesContext12;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 import org.testng.annotations.BeforeMethod;

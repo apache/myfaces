@@ -2,7 +2,7 @@ package javax.faces.component;
 
 import javax.faces.component.html.HtmlInputText;
 
-import org.apache.shale.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 public class UIComponentAttributesTest extends AbstractJsfTestCase
 {

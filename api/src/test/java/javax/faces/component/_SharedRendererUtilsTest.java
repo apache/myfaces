@@ -28,8 +28,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 
-import org.apache.shale.test.base.AbstractJsfTestCase;
-import org.apache.shale.test.el.MockValueExpression;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.el.MockValueExpression;
 
 /**
  * @author Jakob Korherr (latest modification by $Author: $)

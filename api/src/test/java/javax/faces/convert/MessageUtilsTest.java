@@ -21,8 +21,8 @@ package javax.faces.convert;
 import javax.el.ValueExpression;
 import javax.faces.component.html.HtmlInputText;
 
-import org.apache.shale.test.base.AbstractJsfTestCase;
-import org.apache.shale.test.el.MockValueExpression;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.el.MockValueExpression;
 
 public class MessageUtilsTest extends AbstractJsfTestCase
 {

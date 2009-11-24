@@ -34,7 +34,7 @@ import javax.faces.render.Renderer;
 
 import org.apache.myfaces.Assert;
 import org.apache.myfaces.TestRunner;
-import org.apache.shale.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 

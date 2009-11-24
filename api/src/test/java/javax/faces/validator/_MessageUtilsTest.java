@@ -30,7 +30,7 @@ import javax.faces.application.Application;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
 
-import org.apache.shale.test.mock.MockFacesContext12;
+import org.apache.myfaces.test.mock.MockFacesContext12;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 import org.testng.annotations.Test;

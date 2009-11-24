@@ -42,9 +42,9 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.shale.test.base.AbstractJsfTestCase;
-import org.apache.shale.test.el.MockMethodExpression;
-import org.apache.shale.test.el.MockValueExpression;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.el.MockMethodExpression;
+import org.apache.myfaces.test.el.MockValueExpression;
 
 public class UIInputTest extends AbstractJsfTestCase
 {
@@ -277,7 +277,7 @@ public class UIInputTest extends AbstractJsfTestCase
         }
     }
 
-    static public class InitParameterMockExternalContext extends org.apache.shale.test.mock.MockExternalContext {
+    static public class InitParameterMockExternalContext extends org.apache.myfaces.test.mock.MockExternalContext {
 
         private Map initParameters = new HashMap();
 

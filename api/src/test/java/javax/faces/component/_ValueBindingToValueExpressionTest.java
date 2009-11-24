@@ -33,7 +33,7 @@ import junit.framework.TestCase;
 
 import org.apache.myfaces.TestRunner;
 import org.apache.myfaces.mock.ExceptionMockRunner;
-import org.apache.shale.test.mock.MockFacesContext12;
+import org.apache.myfaces.test.mock.MockFacesContext12;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 

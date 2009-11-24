@@ -23,8 +23,8 @@ import java.util.List;
 
 import javax.el.ValueExpression;
 
-import org.apache.shale.test.base.AbstractJsfTestCase;
-import org.apache.shale.test.el.MockValueExpression;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.el.MockValueExpression;
 
 /**
  * Tests for UISelectItems.

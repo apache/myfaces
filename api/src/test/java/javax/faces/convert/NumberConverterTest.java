@@ -23,7 +23,7 @@ import java.util.Locale;
 
 import javax.faces.context.FacesContext;
 
-import org.apache.shale.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 public class NumberConverterTest extends AbstractJsfTestCase
 {

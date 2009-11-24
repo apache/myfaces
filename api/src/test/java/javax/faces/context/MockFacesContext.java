@@ -24,7 +24,7 @@ import javax.el.ELContext;
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class MockFacesContext extends org.apache.shale.test.mock.MockFacesContext
+public class MockFacesContext extends org.apache.myfaces.test.mock.MockFacesContext
 {
 
     private ELContext _elContext;

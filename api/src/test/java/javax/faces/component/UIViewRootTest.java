@@ -19,7 +19,7 @@
 package javax.faces.component;
 
 import org.apache.myfaces.TestRunner;
-import org.apache.shale.test.mock.MockFacesContext12;
+import org.apache.myfaces.test.mock.MockFacesContext12;
 import static org.easymock.EasyMock.*;
 import org.easymock.IAnswer;
 import org.easymock.classextension.EasyMock;
@@ -143,7 +143,7 @@ public class UIViewRootTest
         _mocksControl.verify();
     }
 
-// Disabled until Shale test issues are resolved..
+// Disabled until Myfaces test issues are resolved..
 //    /**
 //     * Test method for {@link javax.faces.component.UIViewRoot#processDecodes(javax.faces.context.FacesContext)}.
 //     * 

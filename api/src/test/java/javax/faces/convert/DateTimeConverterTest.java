@@ -27,7 +27,7 @@ import java.util.TimeZone;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 
-import org.apache.shale.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 public class DateTimeConverterTest extends AbstractJsfTestCase
 {

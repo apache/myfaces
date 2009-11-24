@@ -24,7 +24,7 @@ import javax.faces.context.FacesContext;
 
 import junit.framework.TestCase;
 
-import org.apache.shale.test.mock.MockStateManager;
+import org.apache.myfaces.test.mock.MockStateManager;
 import org.easymock.MockControl;
 import org.easymock.classextension.MockClassControl;
 
