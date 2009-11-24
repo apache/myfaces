@@ -62,6 +62,9 @@
               <item name="API"          href="http://myfaces.apache.org/core12/myfaces-api/index.html"/>
               <item name="Impl"         href="http://myfaces.apache.org/core12/myfaces-impl/index.html"/>
             </item>
+            <item name="Core JSF-2.0"   href="http://myfaces.apache.org/core20/index.html" collapse="true">
+              <item name="dummy"        href="dummy"/>
+            </item>
             <item name="Trinidad"       href="http://myfaces.apache.org/trinidad/index.html"/>
             <item name="Tobago"         href="http://myfaces.apache.org/tobago/index.html"/>
             <item name="Tomahawk"       href="http://myfaces.apache.org/tomahawk/index.html"/>
