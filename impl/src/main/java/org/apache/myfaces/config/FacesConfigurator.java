@@ -64,6 +64,8 @@ import javax.faces.el.VariableResolver;
 import javax.faces.event.ActionListener;
 import javax.faces.event.PhaseListener;
 import javax.faces.event.PostConstructApplicationEvent;
+import javax.faces.event.PreDestroyCustomScopeEvent;
+import javax.faces.event.PreDestroyViewMapEvent;
 import javax.faces.event.SystemEvent;
 import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
@@ -1723,6 +1725,11 @@ public class FacesConfigurator
         runtimeConfig.setVariableResolverChainHead(getApplicationObject(VariableResolver.class,
                                                                         dispenser.getVariableResolverIterator(),
                                                                         new VariableResolverImpl()));
+        
+        // configure ManagedBeanDestroyer to listen to PreDestroyCustomScopeEvent and PreDestroyViewMapEvent
+        ManagedBeanDestroyer mbDestroyer = new ManagedBeanDestroyer();
+        application.subscribeToEvent(PreDestroyCustomScopeEvent.class, mbDestroyer);
+        application.subscribeToEvent(PreDestroyViewMapEvent.class, mbDestroyer);
     }
 
     /**
