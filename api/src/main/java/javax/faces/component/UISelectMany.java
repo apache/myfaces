@@ -183,9 +183,9 @@ public class UISelectMany extends UIInput
             {
                 return compareObjectArrays((Object[]) previous, (Object[]) value);
             }
-            else if (previous instanceof List && value instanceof List)
+            else if (previous instanceof Collection && value instanceof Collection)
             {
-                return compareLists((List<?>) previous, (List<?>) value);
+                return compareCollections((Collection<?>) previous, (Collection<?>) value);
             }
             else if (previous.getClass().isArray() && value.getClass().isArray())
             {
@@ -235,7 +235,7 @@ public class UISelectMany extends UIInput
         return false; // arrays are identical
     }
 
-    private boolean compareLists(List<?> previous, List<?> value)
+    private boolean compareCollections(Collection<?> previous, Collection<?> value)
     {
         int length = value.size();
         if (previous.size() != length)
@@ -245,15 +245,16 @@ public class UISelectMany extends UIInput
         }
 
         boolean[] scoreBoard = new boolean[length];
-        for (int i = 0; i < length; i++)
+        for (Iterator<?> itPrevious = previous.iterator(); itPrevious.hasNext();)
         {
-            Object p = previous.get(i);
+            Object p = itPrevious.next();
             boolean found = false;
-            for (int j = 0; j < length; j++)
+            int j = 0;
+            for (Iterator<?> itValue = value.iterator(); itValue.hasNext(); j++)
             {
+                Object v = itValue.next();
                 if (scoreBoard[j] == false)
                 {
-                    Object v = value.get(j);
                     if ((p == null && v == null) || (p != null && v != null && p.equals(v)))
                     {
                         scoreBoard[j] = true;
@@ -264,11 +265,11 @@ public class UISelectMany extends UIInput
             }
             if (!found)
             {
-                return true; // current element of previous List not found in new List
+                return true; // current element of previous Collection not found in new Collection
             }
         }
 
-        return false; // Lists are identical
+        return false; // Collections are identical
     }
 
     private boolean comparePrimitiveArrays(Object previous, Object value)
@@ -462,9 +463,9 @@ public class UISelectMany extends UIInput
                 Object[] values = (Object[]) convertedValue;
                 return Arrays.asList(values).iterator();
             }
-            else if (convertedValue instanceof List)
+            else if (convertedValue instanceof Collection)
             {
-                List<?> values = (List<?>) convertedValue;
+                Collection<?> values = (Collection<?>) convertedValue;
                 return values.iterator();
             }
             else
