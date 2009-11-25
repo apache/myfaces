@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.apache.myfaces.core</groupId>
         <artifactId>myfaces-core-project</artifactId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>2.0.0-alpha</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.myfaces.core</groupId>
@@ -351,7 +351,7 @@
        <dependency>
           <groupId>org.apache.myfaces.core</groupId>
           <artifactId>myfaces-build</artifactId>
-          <version>2.0.0-SNAPSHOT</version>
+          <version>2.0.0-alpha</version>
           <scope>provided</scope>
        </dependency> -->
 
@@ -412,7 +412,7 @@
         <dependency>
             <groupId>org.apache.myfaces.test</groupId>
             <artifactId>myfaces-test20</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0-alpha</version>
             <scope>test</scope>
         </dependency>
         <dependency>
