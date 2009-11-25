@@ -22,7 +22,7 @@ MyFaces Core 2.0 Project
 
 Requirements
 
-  JSF 2.0 requires java 1.6 or later, JSP 2.1, JSTL 1.2 and a Java Servlet 2.5 implementation.
+  JSF 2.0 requires java 1.5 or later, JSP 2.1, JSTL 1.2 and a Java Servlet 2.5 implementation.
 
 Specifications
 
