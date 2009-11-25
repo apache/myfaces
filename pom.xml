@@ -16,7 +16,7 @@
     This project is the home of the MyFaces implementation of the JavaServer Faces 1.2 specification, and
     consists of an API module (javax.faces.* classes) and an implementation module (org.apache.myfaces.* classes).
   </description>
-  <version>1.2.8-SNAPSHOT</version>
+  <version>1.2.9-SNAPSHOT</version>
   <url>http://myfaces.apache.org/core12</url>
   <issueManagement>
     <system>jira</system>
