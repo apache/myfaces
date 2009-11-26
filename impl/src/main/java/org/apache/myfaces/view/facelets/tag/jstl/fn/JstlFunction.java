@@ -21,6 +21,7 @@ package org.apache.myfaces.view.facelets.tag.jstl.fn;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 /**
  * Implementations of JSTL Functions
@@ -68,13 +69,75 @@ public final class JstlFunction
     {
         if (value == null)
         {
-            return null;
+            return "";
+        }
+        if (value.length() == 0)
+        {
+            return "";
         }
         
-        value = value.replaceAll("<", "&lt;");
-        value = value.replaceAll(">", "&gt;");
-                
-        return value;
+        StringBuilder sb = null;    //create later on demand
+        String app;
+        char c;
+        for (int i = 0; i < value.length (); ++i)
+        {
+            app = null;
+            c = value.charAt(i);
+            
+            // All characters before letters
+            if ((int)c < 0x41)
+            {
+                switch (c)
+                {
+                    case '<' : app = "&lt;"; break;      //<
+                    case '>' : app = "&gt;"; break;      //>
+                    case '\'': app = "&#039;"; break;    //'
+                    case '"' : app = "&#034;"; break;    //"
+                    case '&' : //&
+                        if (i+4 < value.length() )
+                        {
+                            if ('a' == value.charAt(i+1) &&
+                                'm' == value.charAt(i+2) &&
+                                'p' == value.charAt(i+3) &&
+                                ';' == value.charAt(i+4))
+                            {
+                                //Skip
+                            }
+                            else
+                            {
+                                app = "&amp;";
+                            }
+                        }
+                        else
+                        {
+                            app = "&amp;";
+                        }
+                        break;
+                }
+            } 
+            if (app != null)
+            {
+                if (sb == null)
+                {
+                    sb = new StringBuilder(value.substring(0, i));
+                }
+                sb.append(app);
+            } else {
+                if (sb != null)
+                {
+                    sb.append(c);
+                }
+            }
+        }
+
+        if (sb == null)
+        {
+            return value;
+        }
+        else
+        {
+            return sb.toString();
+        }
     }
 
     public static int indexOf(String name, String searchString)
@@ -91,7 +154,7 @@ public final class JstlFunction
     {
         if (a == null || delim == null)
         {
-            return null;
+            return "";
         }
         
         if (a.length == 0)
@@ -144,9 +207,25 @@ public final class JstlFunction
 
     public static String replace(String value, String a, String b)
     {
-        if (value == null || a == null || b == null)
+        if (value == null)
         {
-            return null;
+            return "";
+        }
+        if (value.length() == 0)
+        {
+            return "";
+        }
+        if (a == null)
+        {
+            return value;
+        }
+        if (a.length() == 0)
+        {
+            return value;
+        }
+        if (b == null)
+        {
+            b = "";
         }
         
         return value.replaceAll(a, b);
@@ -154,12 +233,36 @@ public final class JstlFunction
 
     public static String[] split(String value, String d)
     {
-        if (value == null || d == null)
+        if (value == null)
         {
-            return null;
+            return new String[]{""};
         }
+        if (value.length() == 0)
+        {
+            return new String[]{""};
+        }
+        if (d == null)
+        {
+            return new String[]{value};
+        }
+        if (d.length() == 0)
+        {
+            return new String[]{value};
+        }        
         
-        return value.split(d);
+        StringTokenizer st = new StringTokenizer(value, d);
+        int numTokens = st.countTokens();
+        if (numTokens == 0)
+        {
+            return new String[]{value};
+        }
+        String[] array = new String[numTokens];
+        int i = 0;
+        while (st.hasMoreTokens()){
+            array[i] = st.nextToken();
+            i++;
+        }
+        return array;
     }
 
     public static boolean startsWith(String value, String p)
@@ -176,7 +279,27 @@ public final class JstlFunction
     {
         if (v == null)
         {
-            return null;
+            return "";
+        }
+        if (v.length() == 0)
+        {
+            return "";
+        }
+        if (s >= v.length())
+        {
+            return "";
+        }
+        if (s < 0)
+        {
+            s = 0;
+        }
+        if (e >= v.length())
+        {
+            e = v.length();
+        }
+        if (e < s)
+        {
+            return ""; 
         }
         
         return v.substring(s, e);
@@ -186,7 +309,11 @@ public final class JstlFunction
     {
         if (v == null)
         {
-            return null;
+            return "";
+        }
+        if (v.length() == 0)
+        {
+            return "";
         }
         
         int i = v.indexOf(p);
@@ -195,14 +322,18 @@ public final class JstlFunction
             return v.substring(i + p.length());
         }
         
-        return null;
+        return "";
     }
 
     public static String substringBefore(String v, String s)
     {
         if (v == null)
         {
-            return null;
+            return "";
+        }
+        if (v.length() == 0)
+        {
+            return "";
         }
         
         int i = v.indexOf(s);
@@ -211,14 +342,18 @@ public final class JstlFunction
             return v.substring(0, i);
         }
         
-        return null;
+        return "";
     }
 
     public static String toLowerCase(String v)
     {
         if (v == null)
         {
-            return null;
+            return "";
+        }
+        if (v.length() == 0)
+        {
+            return "";
         }
         
         return v.toLowerCase();
@@ -228,7 +363,11 @@ public final class JstlFunction
     {
         if (v == null)
         {
-            return null;
+            return "";
+        }
+        if (v.length() == 0)
+        {
+            return "";
         }
         
         return v.toUpperCase();
@@ -238,9 +377,12 @@ public final class JstlFunction
     {
         if (v == null)
         {
-            return null;
+            return "";
         }
-        
+        if (v.length() == 0)
+        {
+            return "";
+        }
         return v.trim();
     }
 
