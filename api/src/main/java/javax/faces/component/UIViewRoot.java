@@ -798,7 +798,11 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         for (FacesEvent event : events)
         {
             UIComponent source = event.getComponent();
-
+            UIComponent compositeParent = UIComponent.getCompositeComponentParent(source);
+            if (compositeParent != null)
+            {
+                pushComponentToEL(context, compositeParent);
+            }
             // Push the source as the current component
             pushComponentToEL(context, source);
 
@@ -816,6 +820,10 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             {
                 // Restore the current component
                 popComponentFromEL(context);
+                if (compositeParent != null)
+                {
+                    popComponentFromEL(context);
+                }
             }
         }
 

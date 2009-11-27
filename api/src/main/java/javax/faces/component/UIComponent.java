@@ -343,10 +343,10 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
         if(component == null) {
             return null;
         }
-        UIComponent parent = null;
+        UIComponent parent = component;
 
         do {
-            parent = component.getParent();
+            parent = parent.getParent();
             if(parent != null && UIComponent.isCompositeComponent(parent)) {
                 return parent;
             }
