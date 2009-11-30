@@ -440,7 +440,14 @@ public class ResourceHandlerImpl extends ResourceHandler
 
             if (bundle != null)
             {
-                localePrefix = bundle.getString(ResourceHandler.LOCALE_PREFIX);                
+                try
+                {
+                    localePrefix = bundle.getString(ResourceHandler.LOCALE_PREFIX);
+                }
+                catch (MissingResourceException e)
+                {
+                    // Ignore it and return null
+                }
             }
         }
         return localePrefix;
