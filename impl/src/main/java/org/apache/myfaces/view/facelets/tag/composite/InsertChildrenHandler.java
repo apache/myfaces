@@ -52,15 +52,15 @@ public class InsertChildrenHandler extends TagHandler
             throws IOException
     {
         UIComponent parentCompositeComponent = ((AbstractFaceletContext)ctx).getCompositeComponentFromStack();
-        
-        parentCompositeComponent.subscribeToEvent(PostAddToViewEvent.class, 
-                new RelocateAllChildrenListener(parent, parentCompositeComponent.getChildCount()));
+
+        parentCompositeComponent.subscribeToEvent(PostAddToViewEvent.class,
+                new RelocateAllChildrenListener(parent, parent.getChildCount()));
         
         if (ctx.getFacesContext().getAttributes().containsKey(
                 FaceletViewDeclarationLanguage.MARK_INITIAL_STATE_KEY))
         {
             parentCompositeComponent.subscribeToEvent(PostBuildComponentTreeOnRestoreViewEvent.class, 
-                    new RelocateAllChildrenListener(parent, parentCompositeComponent.getChildCount()));
+                    new RelocateAllChildrenListener(parent, parent.getChildCount()));
         }
     }
     
