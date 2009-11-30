@@ -19,6 +19,11 @@
 package javax.faces.component.visit;
 
 /**
+ *
+ * <p>An enum that specifies hints that impact
+ * the behavior of a component tree visit.</p>
+ *
+ * @see VisitContext#getHints VisitContext.getHints()
  * @author Simon Lessard (latest modification by $Author: slessard $)
  * @version $Revision: 696523 $ $Date: 2009-03-14 16:46:33 -0400 (mer., 17 sept. 2008) $
  *
@@ -26,7 +31,20 @@ package javax.faces.component.visit;
  */
 public enum VisitHint
 {
-    EXECUTE_LIFECYCLE,
+    /** 
+     * Hint that indicates that only the rendered subtree should be visited.
+     */
+    SKIP_UNRENDERED,
+
+    /** 
+     * Hint that indicates that only non-transient subtrees should be visited.
+     */
     SKIP_TRANSIENT,
-    SKIP_UNRENDERED;
+  
+    /**
+     * Hint that indicates that the visit is being performed as part of
+     * lifecycle phase execution and as such phase-specific actions
+     * (initialization) may be taken.
+     */
+    EXECUTE_LIFECYCLE
 }

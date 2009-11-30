@@ -19,6 +19,13 @@
 package javax.faces.component.visit;
 
 /**
+ *
+ * <p>An enum that specifies the possible 
+ * results of a call to {@link VisitCallback#visit VisitCallback.visit()}.
+ * </p>
+ *
+ * @see VisitCallback#visit VisitCallback.visit()
+ * 
  * @author Simon Lessard (latest modification by $Author: slessard $)
  * @version $Revision: 696523 $ $Date: 2009-03-14 16:46:04 -0400 (mer., 17 sept. 2008) $
  *
@@ -26,7 +33,20 @@ package javax.faces.component.visit;
  */
 public enum VisitResult
 {
+    /**
+     * This result indicates that the tree visit should descend into
+     * current component's subtree.
+     */ 
     ACCEPT,
-    COMPLETE,
-    REJECT;
+
+    /**
+     * This result indicates that the tree visit should continue, but
+     * should skip the current component's subtree.
+     */ 
+    REJECT,
+
+    /**
+     * This result indicates that the tree visit should be terminated.
+     */ 
+    COMPLETE
 }
