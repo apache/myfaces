@@ -267,14 +267,20 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
      */
     protected boolean isVisitable(VisitContext context) {
 
-        Set <VisitHint> visitHints = context.getHints();
-        boolean retVal = !((visitHints.contains(VisitHint.SKIP_UNRENDERED)  && !this.isRendered()) ||
-           (visitHints.contains(VisitHint.SKIP_TRANSIENT) && this.isTransient()));
+        Collection<VisitHint> hints = context.getHints();
+
+        if (hints.contains(VisitHint.SKIP_TRANSIENT) && this.isTransient())
+            return false;
+
+        if (hints.contains(VisitHint.SKIP_UNRENDERED) && !this.isRendered())
+            return false;
+
         //executable cannot be handled here because we do not have any method to determine
         //whether a component is executable or not, this seems to be a hole in the spec!
         //but we can resolve it on ppr context level, where it is needed!
         //maybe in the long run we can move it down here, if it makes sense
-        return retVal;
+
+        return true;
     }
 
     /**
