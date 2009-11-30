@@ -128,7 +128,7 @@ final class UIInstructionHandler extends AbstractUIHandler
                     // UIViewRoot implements UniqueIdVendor, so there is no need to cast to UIViewRoot
                     // and call createUniqueId(). Also, note that UIViewRoot.createUniqueId() javadoc
                     // says we could send as seed the facelet generated id.
-                    String uid = uniqueIdVendor.createUniqueId(ctx.getFacesContext(), id);
+                    String uid = uniqueIdVendor.createUniqueId(ctx.getFacesContext(), null);
                     c.setId(uid);
                 }                
                 c.getAttributes().put(ComponentSupport.MARK_CREATED, id);

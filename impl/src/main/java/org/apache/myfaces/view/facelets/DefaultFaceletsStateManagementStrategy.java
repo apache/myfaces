@@ -459,6 +459,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 String currentClientId = component.getClientId();
                 
                 List<UIComponent> children  = component.getChildren();
+                int pos = 0;
                 for (int i = 0; i < children.size(); i++)
                 {
                     UIComponent child = children.get(i);
@@ -472,7 +473,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                                     new Object[]{
                                         currentClientId,
                                         null,
-                                        i,
+                                        pos,
                                         internalBuildTreeStructureToSave(child),
                                         child.processSaveState(context)});
                         }
@@ -480,6 +481,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                         {
                             saveStateOnMap( context, states, child);
                         }
+                        pos++;
                     }
                 }
             }

@@ -177,7 +177,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 {
                     // UIViewRoot implements UniqueIdVendor, so there is no need to cast to UIViewRoot
                     // and call createUniqueId()
-                    String uid = uniqueIdVendor.createUniqueId(facesContext, id);
+                    String uid = uniqueIdVendor.createUniqueId(facesContext, null);
                     c.setId(uid);
                 }
             }

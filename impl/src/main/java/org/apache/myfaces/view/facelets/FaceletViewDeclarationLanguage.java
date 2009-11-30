@@ -274,14 +274,22 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         // The view is only built on restoreView or renderView, but if
         // we are not using partial state saving, we need to mark the current
         // view as filled, otherwise it will be filled again on renderView.
-        // return context.getAttributes().containsKey(view.toString());
-        return view.getAttributes().containsKey(FILLED_VIEW);
+        return context.getAttributes().containsKey(view);
+        // -= Leonardo Uribe =- save this key on view cause render fail, because the view
+        // is built before render view to "restore" the transient components that has
+        // facelet markup (facelets UIInstructions ...) This effect is only notice when
+        // partial state saving is not used. 
+        //return view.getAttributes().containsKey(FILLED_VIEW);
     }
     
     private void setFilledView(FacesContext context, UIViewRoot view)
     {
-        //context.getAttributes().put(view.toString(), Boolean.TRUE);
-        view.getAttributes().put(FILLED_VIEW, Boolean.TRUE);
+        context.getAttributes().put(view, Boolean.TRUE);
+        // -= Leonardo Uribe =- save this key on view cause render fail, because the view
+        // is built before render view to "restore" the transient components that has
+        // facelet markup (facelets UIInstructions ...) This effect is only notice when
+        // partial state saving is not used. 
+        // view.getAttributes().put(FILLED_VIEW, Boolean.TRUE);
         // Remove this var from faces context because this one prevent AjaxHandler
         // register the standard script library on Post-Redirect-Get pattern or
         // in the next view
