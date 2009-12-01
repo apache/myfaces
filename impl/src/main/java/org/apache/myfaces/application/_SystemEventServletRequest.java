@@ -19,7 +19,6 @@
 package org.apache.myfaces.application;
 
 import javax.servlet.ServletRequest;
-import javax.servlet.ServletRequestWrapper;
 import javax.servlet.ServletInputStream;
 import javax.servlet.RequestDispatcher;
 import javax.naming.OperationNotSupportedException;
@@ -43,12 +42,7 @@ import java.io.BufferedReader;
  */
 
 
-public class _SystemEventServletRequest extends ServletRequestWrapper{
-    public _SystemEventServletRequest(ServletRequest request)
-    {
-        super(request);
-    }
-
+public class _SystemEventServletRequest implements ServletRequest{
     private static final String ERR_OP = "This request class is an empty placeholder";
 
     Map<String, Object> _attributesMap = new HashMap<String, Object>();

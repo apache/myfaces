@@ -33,8 +33,6 @@ import javax.faces.event.PostConstructApplicationEvent;
 import javax.faces.event.PreDestroyApplicationEvent;
 import javax.faces.lifecycle.LifecycleFactory;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 
 import org.apache.myfaces.application.ApplicationImpl;
 import org.apache.myfaces.application._SystemEventServletRequest;
@@ -136,12 +134,10 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
         FacesContext fc = null;
 
         fc = FacesContext.getCurrentInstance();
-        ExternalContext ec = fc.getExternalContext();
-        
         if (fc == null) {
             LifecycleFactory lifeFac = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
             FacesContextFactory facFac = (FacesContextFactory) FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
-            fc = facFac.getFacesContext(servletContext, new _SystemEventServletRequest((ServletRequest)ec.getRequest()), new _SystemEventServletResponse((ServletResponse)ec.getResponse()), lifeFac.getLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE));
+            fc = facFac.getFacesContext(servletContext, new _SystemEventServletRequest(), new _SystemEventServletResponse(), lifeFac.getLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE));
         }
         appFac.getApplication().publishEvent(fc, eventClass, Application.class, appFac.getApplication());
     }
