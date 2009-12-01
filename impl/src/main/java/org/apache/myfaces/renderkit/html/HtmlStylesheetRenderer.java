@@ -28,6 +28,8 @@ import javax.faces.application.FacesMessage;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.Resource;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
+import javax.faces.component.UniqueIdVendor;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.event.ComponentSystemEvent;
@@ -67,8 +69,34 @@ public class HtmlStylesheetRenderer extends Renderer implements
     {
         UIComponent component = event.getComponent();
         FacesContext facesContext = FacesContext.getCurrentInstance();
+        
+        UniqueIdVendor uiv = findParentUniqueIdVendor(component);
+        
+        if (! (uiv instanceof UIViewRoot))
+        {
+            // The id was set using the closest UniqueIdVendor, but since this one
+            // will be relocated, we need to assign an id from the current root.
+            // otherwise a duplicate id exception could happen.
+            component.setId(facesContext.getViewRoot().createUniqueId(facesContext, null));
+        }
+        
         facesContext.getViewRoot().addComponentResource(facesContext,
                     component, "head");
+    }
+    
+    private static UniqueIdVendor findParentUniqueIdVendor(UIComponent component)
+    {
+        UIComponent parent = component.getParent();
+
+        while (parent != null)
+        {
+            if (parent instanceof UniqueIdVendor)
+            {
+                return (UniqueIdVendor) parent;
+            }
+            parent = parent.getParent();
+        }
+        return null;
     }
 
     @Override
