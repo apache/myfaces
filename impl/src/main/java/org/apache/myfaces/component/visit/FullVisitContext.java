@@ -35,7 +35,7 @@ import javax.faces.context.FacesContext;
  * <p>A VisitContext implementation that is
  * used when performing a full component tree visit.</p>
  * 
- * @author Werner Punz, Matthias Wessendorf (latest modification by $Author$)
+ * @author Werner Punz, Blake Sullivan (latest modification by $Author$)
  * @version $Rev$ $Date$
  */
 public class FullVisitContext extends VisitContext
