@@ -19,6 +19,7 @@
 package org.apache.myfaces.application;
 
 import javax.servlet.ServletResponse;
+import javax.servlet.ServletResponseWrapper;
 import javax.servlet.ServletOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -33,7 +34,12 @@ import java.util.Locale;
  * hence we have to provide dummy objects
  */
 
-public class _SystemEventServletResponse implements ServletResponse {
+public class _SystemEventServletResponse extends ServletResponseWrapper {
+    public _SystemEventServletResponse(ServletResponse response)
+    {
+        super(response);
+    }
+
     private static final String ERR_OP = "This response class is an empty placeholder";
 
 
