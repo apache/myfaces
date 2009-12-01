@@ -115,11 +115,6 @@ public class BeanValidator implements Validator, PartialStateHolder
         if (context == null) throw new NullPointerException("context");
         if (component == null) throw new NullPointerException("component");
 
-        if (value == null)
-        {
-            return;
-        }
-
         // Obtain a reference to the to-be-validated object and the property name.
         ValueReferenceWrapper valueReferenceWrapper = getValueReference(component, context);
         if (valueReferenceWrapper == null)
