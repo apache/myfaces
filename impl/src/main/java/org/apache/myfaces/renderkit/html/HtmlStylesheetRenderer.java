@@ -70,14 +70,17 @@ public class HtmlStylesheetRenderer extends Renderer implements
         UIComponent component = event.getComponent();
         FacesContext facesContext = FacesContext.getCurrentInstance();
         
-        UniqueIdVendor uiv = findParentUniqueIdVendor(component);
-        
-        if (! (uiv instanceof UIViewRoot))
+        if (component.getId() != null)
         {
-            // The id was set using the closest UniqueIdVendor, but since this one
-            // will be relocated, we need to assign an id from the current root.
-            // otherwise a duplicate id exception could happen.
-            component.setId(facesContext.getViewRoot().createUniqueId(facesContext, null));
+            UniqueIdVendor uiv = findParentUniqueIdVendor(component);
+            
+            if ( (!(uiv instanceof UIViewRoot)) && component.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX))
+            {
+                // The id was set using the closest UniqueIdVendor, but since this one
+                // will be relocated, we need to assign an id from the current root.
+                // otherwise a duplicate id exception could happen.
+                component.setId(facesContext.getViewRoot().createUniqueId(facesContext, null));
+            }
         }
         
         facesContext.getViewRoot().addComponentResource(facesContext,
