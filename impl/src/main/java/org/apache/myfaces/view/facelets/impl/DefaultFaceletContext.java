@@ -225,15 +225,21 @@ final class DefaultFaceletContext extends AbstractFaceletContext
 
         if (_prefix == null)
         {
-            // TODO: change to StringBuilder when JDK1.5 support is available
-            StringBuffer builder = new StringBuffer(
+            StringBuilder builder = new StringBuilder(
                     _faceletHierarchy.size() * 30);
             for (int i = 0; i < _faceletHierarchy.size(); i++)
             {
                 DefaultFacelet facelet = _faceletHierarchy.get(i);
                 builder.append(facelet.getAlias());
             }
-            Integer prefixInt = new Integer(builder.toString().hashCode());
+
+            // Integer prefixInt = new Integer(builder.toString().hashCode());
+            // -= Leonardo Uribe =- if the previous formula is used, it is possible that
+            // negative values are introduced. The presence of '-' char causes problems
+            // with htmlunit 2.4 or lower, so in order to prevent it it is better to use
+            // only positive values instead.
+            // Take into account CompilationManager.nextTagId() uses Math.abs too.
+            Integer prefixInt = new Integer(Math.abs(builder.toString().hashCode()));
 
             Integer cnt = _prefixes.get(prefixInt);
             if (cnt == null)

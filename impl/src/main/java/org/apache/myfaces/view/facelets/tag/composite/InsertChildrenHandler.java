@@ -91,16 +91,66 @@ public class InsertChildrenHandler extends TagHandler
             // point there is no any call to getClientId() yet. But it is better
             // let this code commented, because some day could be useful.
             //
-            //UIComponent uniqueIdVendor = (UIComponent) ComponentSupport.getClosestUniqueIdVendor(_targetComponent);
-            //
-            //if (uniqueIdVendor != null && !uniqueIdVendor.getClientId().equals(parentCompositeComponent.getClientId()))
-            //{
-                //Reset clientId calling setId()
-                //for (UIComponent child : childList)
-                //{
-                //    child.setId(child.getId());
-                //}
-            //}
+            /*
+            UIComponent uniqueIdVendor = (UIComponent) findParentUniqueIdVendor(_targetComponent);
+            
+            if (uniqueIdVendor != null && !uniqueIdVendor.getClientId().equals(parentCompositeComponent.getClientId()))
+            {
+                FacesContext facesContext = FacesContext.getCurrentInstance();
+                
+                for (UIComponent child : childList)
+                {
+                    regenerateUniqueIds(facesContext, (UniqueIdVendor) uniqueIdVendor, child);
+                }
+            }*/
         }
+        
+        /*
+        private void regenerateUniqueIds(FacesContext facesContext, UniqueIdVendor uniqueIdVendor,  UIComponent comp)
+        {
+            if (comp.getId() != null && comp.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX))
+            {
+                //Assign a new generated id according to the new UniqueIdVendor parent 
+                comp.setId(((UniqueIdVendor)uniqueIdVendor).createUniqueId(facesContext, null));
+            }
+            
+            if (comp instanceof UniqueIdVendor)
+            {
+                uniqueIdVendor = (UniqueIdVendor) comp;
+            }
+
+            if (comp.getChildCount() > 0)
+            {
+                for (UIComponent child : comp.getChildren())
+                {
+                    regenerateUniqueIds(facesContext, uniqueIdVendor, child);
+                }
+            }
+            if (comp.getFacetCount() > 0)
+            {
+                for (UIComponent child : comp.getFacets().values())
+                {
+                    regenerateUniqueIds(facesContext, uniqueIdVendor, child);
+                }
+            }
+        }
+        */
     }
+    
+    /*
+    private static UniqueIdVendor findParentUniqueIdVendor(UIComponent component)
+    {
+        UIComponent parent = component.getParent();
+
+        while (parent != null)
+        {
+            if (parent instanceof UniqueIdVendor)
+            {
+                return (UniqueIdVendor) parent;
+            }
+            parent = parent.getParent();
+        }
+        return null;
+    }
+    */
 }
