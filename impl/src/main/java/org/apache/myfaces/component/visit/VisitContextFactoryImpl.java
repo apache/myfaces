@@ -52,7 +52,7 @@ public class VisitContextFactoryImpl extends VisitContextFactory {
         if (ids == null || ids.isEmpty()) {
             return new FullVisitContext(context, hints);
         } else {
-            return new PartialVisitContext(context, hints, ids);
+            return new PartialVisitContext(context, ids, hints);
         }
     }
 }

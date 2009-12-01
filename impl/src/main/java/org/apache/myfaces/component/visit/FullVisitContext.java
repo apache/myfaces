@@ -19,9 +19,10 @@
 package org.apache.myfaces.component.visit;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.Set;
+
 import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
 import javax.faces.component.visit.VisitCallback;
@@ -31,70 +32,116 @@ import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
 
 /**
- *
- * @author Werner Punz (latest modification by $Author$)
+ * <p>A VisitContext implementation that is
+ * used when performing a full component tree visit.</p>
+ * 
+ * @author Werner Punz, Matthias Wessendorf (latest modification by $Author$)
  * @version $Rev$ $Date$
- * 
- *
- * Another visit context for the full Tree Traversal!
- *
- * This visit context is rather simplistic because full tree
- * traversal means always all components have to be visited!
- * 
  */
-public class FullVisitContext extends VisitContext {
+public class FullVisitContext extends VisitContext
+{
 
-    FacesContext _facesContext;
-    Set<VisitHint> _hints;
-    Set<String> _ids;
-    Set<String> _visited = new HashSet<String>();
+  /**
+   * Creates a FullVisitorContext instance.
+   * @param facesContext the FacesContext for the current request
+   * @throws NullPointerException  if {@code facesContext}
+   *                               is {@code null}
+   */    
+  public FullVisitContext(FacesContext facesContext)
+  {
+    this(facesContext, null);
+  }
 
-    public FullVisitContext(FacesContext context, Set<VisitHint> hints) {
-        _facesContext = context;
-        _hints = (hints != null && hints.size() > 0) ?  EnumSet.copyOf(hints) : EnumSet.noneOf(VisitHint.class);
+  /**
+   * Creates a FullVisitorContext instance with the specified
+   * hints.
+   *
+   * @param facesContext the FacesContext for the current request
+   * @param hints a the VisitHints for this visit
+   * @param phaseId PhaseId, if any that visit is ocurring under
+   * @throws NullPointerException  if {@code facesContext}
+   *                               is {@code null}
+   * @throws IllegalArgumentException if the phaseId is specified and
+   * hints does not contain VisitHint.EXECUTE_LIFECYCLE
+   */    
+  public FullVisitContext(
+    FacesContext facesContext,
+    Set<VisitHint> hints)
+  {
+    if (facesContext == null)
+      throw new NullPointerException();
+
+    _facesContext = facesContext;
+
+    // Copy and store hints - ensure unmodifiable and non-empty
+    EnumSet<VisitHint> hintsEnumSet = ((hints == null) || (hints.isEmpty()))
+                                          ? EnumSet.noneOf(VisitHint.class)
+                                          : EnumSet.copyOf(hints);
+
+    _hints = Collections.unmodifiableSet(hintsEnumSet);
+  }
+
+  /**
+   * @see VisitContext#getFacesContext VisitContext.getFacesContext()
+   */
+  @Override
+  public FacesContext getFacesContext()
+  {
+    return _facesContext;
+  }
+
+  /**
+   * @see VisitContext#getIdsToVisit VisitContext.getIdsToVisit()
+   */
+  @Override
+  public Collection<String> getIdsToVisit()
+  {
+    // We always visits all ids
+    return ALL_IDS;
+  }
+
+  /**
+   * @see VisitContext#getSubtreeIdsToVisit VisitContext.getSubtreeIdsToVisit()
+   */
+  @Override
+  public Collection<String> getSubtreeIdsToVisit(UIComponent component)
+  {
+    // Make sure component is a NamingContainer
+    if (!(component instanceof NamingContainer))
+    {
+      throw new IllegalArgumentException("Component is not a NamingContainer: " + component);
     }
 
-    private void assertNamingContainer(UIComponent component) throws IllegalArgumentException {
-        if (!(component instanceof NamingContainer)) {
-            throw new IllegalArgumentException("Component  " + component.getClientId(_facesContext) + "must be of type NamingContainer");
-        }
-    }
+    // We always visits all ids
+    return ALL_IDS;
+  }
 
+  /**
+   * @see VisitContext#getHints VisitContext.getHints
+   */
+  @Override
+  public Set<VisitHint> getHints()
+  {
+    return _hints;
+  }
 
-    @Override
-    public FacesContext getFacesContext() {
-        return _facesContext;
-    }
+  /**
+   * @see VisitContext#invokeVisitCallback VisitContext.invokeVisitCallback()
+   */
+  @Override
+  public VisitResult invokeVisitCallback(
+    UIComponent component, 
+    VisitCallback callback)
+  {
+    // Nothing interesting here - just invoke the callback.
+    // (PartialVisitContext.invokeVisitCallback() does all of the 
+    // interesting work.)
+    return callback.visit(this, component);
+  }
 
-    @Override
-    public Set<VisitHint> getHints() {
-        return _hints;
-    }
+  // The FacesContext for this request
+  private final FacesContext _facesContext;
 
-    @Override
-    public Collection<String> getIdsToVisit() {
-        return VisitContext.ALL_IDS;
-    }
-
-    @Override
-    public Collection<String> getSubtreeIdsToVisit(UIComponent component) {
-        assertNamingContainer(component);
-
-        return VisitContext.ALL_IDS;
-    }
-
-    @Override
-    public VisitResult invokeVisitCallback(UIComponent component, VisitCallback callback) {
-
-        String clientId = component.getClientId();
-
-        if (_visited.contains(clientId)) {
-            return VisitResult.ACCEPT;
-        } else {
-            _visited.add(clientId);
-            VisitResult retVal = callback.visit(this, component);
-            return retVal;
-        }
-
-    }
+  // Our visit hints
+  private final Set<VisitHint> _hints;
 }
