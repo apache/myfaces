@@ -18,9 +18,10 @@
  */
 package javax.faces.component;
 
-import javax.validation.Validation;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.validation.Validation;
 
 /**
  * <p>
@@ -65,9 +66,9 @@ class _ExternalSpecifications
                 }
             }
         }
-        catch (Throwable t)
+        catch (ClassNotFoundException cnfe)
         {
-            log.log(Level.FINE, "Error loading class (could be normal)", t);
+            log.log(Level.FINE, "Error loading class (could be normal)", cnfe);
             tmp = false;
         }
         isBeanValidationAvailable = tmp;
@@ -88,12 +89,11 @@ class _ExternalSpecifications
             //TODO: Check this class name when Unified EL for Java EE6 is final.
             tmp = (Class.forName("javax.el.ValueReference") != null);
         }
-        catch (Throwable t)
+        catch (ClassNotFoundException cnfe)
         {
-            log.log(Level.FINE, "Error loading class (could be normal)", t);
+            log.log(Level.FINE, "Error loading class (could be normal)", cnfe);
             tmp = false;
         }
         isUnifiedELAvailable = tmp;
     }
-
 }
