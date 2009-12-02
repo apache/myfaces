@@ -21,6 +21,7 @@ package org.apache.myfaces.application;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletInputStream;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletRequestWrapper;
 import javax.naming.OperationNotSupportedException;
 import java.util.Enumeration;
 import java.util.Map;
@@ -29,6 +30,9 @@ import java.util.HashMap;
 import java.io.UnsupportedEncodingException;
 import java.io.IOException;
 import java.io.BufferedReader;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 /**
  * @author Werner Punz (latest modification by $Author$)
@@ -42,82 +46,26 @@ import java.io.BufferedReader;
  */
 
 
-public class _SystemEventServletRequest implements ServletRequest{
-    private static final String ERR_OP = "This request class is an empty placeholder";
+public class _SystemEventServletRequest extends ServletRequestWrapper{
 
     Map<String, Object> _attributesMap = new HashMap<String, Object>();
+    public _SystemEventServletRequest()
+    {
+        super( (ServletRequest) Proxy.newProxyInstance(
+                ServletRequest.class.getClassLoader(),
+                new Class[] { ServletRequest.class },
+                new InvocationHandler()
+                {
+                    public Object invoke(Object proxy, Method m, Object[] args) 
+                    {
+                        throw new UnsupportedOperationException("This request class is an empty placeholder");
+                    }
+                }));
+    }
 
     public Object getAttribute(String s) {
        return  _attributesMap.get(s);
     }
-
-    public Enumeration getAttributeNames() {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public String getCharacterEncoding() {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public void setCharacterEncoding(String s) throws UnsupportedEncodingException {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public int getContentLength() {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public String getContentType() {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public ServletInputStream getInputStream() throws IOException {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public String getParameter(String s) {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public Enumeration getParameterNames() {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public String[] getParameterValues(String s) {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public Map getParameterMap() {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public String getProtocol() {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public String getScheme() {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public String getServerName() {
-        throw new RuntimeException(ERR_OP);
-      }
-
-    public int getServerPort() {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public BufferedReader getReader() throws IOException {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public String getRemoteAddr() {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public String getRemoteHost() {
-        throw new RuntimeException(ERR_OP);
-      }
 
     public void setAttribute(String s, Object o) {
         _attributesMap.put(s, o);
@@ -125,41 +73,5 @@ public class _SystemEventServletRequest implements ServletRequest{
 
     public void removeAttribute(String s) {
         _attributesMap.remove(s);
-    }
-
-    public Locale getLocale() {
-        throw new RuntimeException(ERR_OP);
-      }
-
-    public Enumeration getLocales() {
-        throw new RuntimeException(ERR_OP);
-      }
-
-    public boolean isSecure() {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public RequestDispatcher getRequestDispatcher(String s) {
-        throw new RuntimeException(ERR_OP);
-      }
-
-    public String getRealPath(String s) {
-        throw new RuntimeException(ERR_OP);
-      }
-
-    public int getRemotePort() {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public String getLocalName() {
-        throw new RuntimeException(ERR_OP);
-      }
-
-    public String getLocalAddr() {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public int getLocalPort() {
-        throw new RuntimeException(ERR_OP);
     }
 }

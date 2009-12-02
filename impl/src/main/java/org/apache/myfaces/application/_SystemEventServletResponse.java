@@ -20,8 +20,13 @@ package org.apache.myfaces.application;
 
 import javax.servlet.ServletResponse;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.ServletResponseWrapper;
+
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.Locale;
 
 /**
@@ -33,67 +38,20 @@ import java.util.Locale;
  * hence we have to provide dummy objects
  */
 
-public class _SystemEventServletResponse implements ServletResponse {
-    private static final String ERR_OP = "This response class is an empty placeholder";
+public class _SystemEventServletResponse extends ServletResponseWrapper {
 
-
-    public String getCharacterEncoding() {
-        throw new RuntimeException(ERR_OP);
+    public _SystemEventServletResponse()
+    {
+        super( (ServletResponse) Proxy.newProxyInstance(
+                ServletResponse.class.getClassLoader(),
+                new Class[] { ServletResponse.class },
+                new InvocationHandler()
+                {
+                    public Object invoke(Object proxy, Method m, Object[] args) 
+                    {
+                        throw new UnsupportedOperationException("This response class is an empty placeholder");
+                    }
+                }));
     }
 
-    public String getContentType() {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public ServletOutputStream getOutputStream() throws IOException {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public PrintWriter getWriter() throws IOException {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public void setCharacterEncoding(String s) {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public void setContentLength(int i) {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public void setContentType(String s) {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public void setBufferSize(int i) {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public int getBufferSize() {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public void flushBuffer() throws IOException {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public void resetBuffer() {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public boolean isCommitted() {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public void reset() {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public void setLocale(Locale locale) {
-        throw new RuntimeException(ERR_OP);
-    }
-
-    public Locale getLocale() {
-        throw new RuntimeException(ERR_OP);
-    }
 }
