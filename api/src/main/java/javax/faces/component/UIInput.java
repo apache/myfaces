@@ -329,10 +329,13 @@ public class UIInput extends UIOutput implements EditableValueHolder
 
     protected void validateValue(FacesContext context, Object convertedValue)
     {
-        boolean empty = convertedValue == null
-                || (convertedValue instanceof String && ((String) convertedValue).length() == 0);
+        if (!isValid())
+            return;
 
-        if (isValid() && isRequired() && empty)
+        // If our value is empty, check the required property
+        boolean isEmpty = isEmpty(convertedValue); 
+
+        if (isRequired() && isEmpty)
         {
             if (getRequiredMessage() != null)
             {
@@ -349,7 +352,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
             return;
         }
 
-        if (!empty || shouldValidateEmptyFields(context))
+        if (!isEmpty || shouldValidateEmptyFields(context))
         {
             _ComponentUtils.callValidators(context, this, convertedValue);
         }
@@ -1046,7 +1049,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         }
         else if (value instanceof String)
         {
-            if ( ((String)value).length() <= 0 )
+            if ( ((String)value).trim().length() <= 0 )
             {
                 return true;
             }
