@@ -761,7 +761,7 @@
   </repositories>
 
   <properties>
-    <myfaces-shared.version>3.0.7</myfaces-shared.version>
+    <myfaces-shared.version>3.0.8-SNAPSHOT</myfaces-shared.version>
     <myfaces-builder-plugin.version>1.0.4</myfaces-builder-plugin.version>
   </properties>
 </project>
