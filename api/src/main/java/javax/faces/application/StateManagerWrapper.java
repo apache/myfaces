@@ -100,4 +100,10 @@ public abstract class StateManagerWrapper extends StateManager implements FacesW
         getWrapped().restoreComponentState(context, viewRoot, renderKitId);
     }
 
+    @Override
+    public String getViewState(FacesContext context)
+    {
+        return getWrapped().getViewState(context);
+    }
+
 }

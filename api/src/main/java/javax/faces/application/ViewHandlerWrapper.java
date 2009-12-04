@@ -20,12 +20,15 @@
 package javax.faces.application;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.faces.FacesException;
 import javax.faces.FacesWrapper;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewDeclarationLanguage;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -98,4 +101,32 @@ public abstract class ViewHandlerWrapper extends ViewHandler
         return getWrapped().createView(context, viewId);
     }
 
+    @Override
+    public String deriveViewId(FacesContext context, String input)
+    {
+        return getWrapped().deriveViewId(context, input);
+    }
+
+    @Override
+    public String getBookmarkableURL(FacesContext context, String viewId,
+            Map<String, List<String>> parameters, boolean includeViewParams)
+    {
+        return getWrapped().getBookmarkableURL(context, viewId, parameters, includeViewParams);
+    }
+
+    @Override
+    public String getRedirectURL(FacesContext context, String viewId,
+            Map<String, List<String>> parameters, boolean includeViewParams)
+    {
+        return getWrapped().getRedirectURL(context, viewId, parameters, includeViewParams);
+    }
+
+    @Override
+    public ViewDeclarationLanguage getViewDeclarationLanguage(
+            FacesContext context, String viewId)
+    {
+        return getWrapped().getViewDeclarationLanguage(context, viewId);
+    }
+
+    
 }

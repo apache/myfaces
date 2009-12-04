@@ -144,4 +144,48 @@ public abstract class ResponseWriterWrapper extends ResponseWriter implements Fa
     {
         getWrapped().endCDATA();
     }
+
+    @Override
+    public Writer append(char c) throws IOException
+    {
+        return getWrapped().append(c);
+    }
+
+    @Override
+    public Writer append(CharSequence csq, int start, int end)
+            throws IOException
+    {
+        return getWrapped().append(csq, start, end);
+    }
+
+    @Override
+    public Writer append(CharSequence csq) throws IOException
+    {
+        return getWrapped().append(csq);
+    }
+
+    @Override
+    public void write(char[] cbuf) throws IOException
+    {
+        getWrapped().write(cbuf);
+    }
+
+    @Override
+    public void write(int c) throws IOException
+    {
+        getWrapped().write(c);
+    }
+
+    @Override
+    public void write(String str, int off, int len) throws IOException
+    {
+        getWrapped().write(str, off, len);
+    }
+
+    @Override
+    public void write(String str) throws IOException
+    {
+        getWrapped().write(str);
+    }
+
 }
