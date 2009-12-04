@@ -18,21 +18,16 @@
  */
 package org.apache.myfaces.application;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletInputStream;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletRequestWrapper;
-import javax.naming.OperationNotSupportedException;
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.Locale;
-import java.util.HashMap;
-import java.io.UnsupportedEncodingException;
-import java.io.IOException;
-import java.io.BufferedReader;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpSession;
 
 /**
  * @author Werner Punz (latest modification by $Author$)
@@ -46,14 +41,14 @@ import java.lang.reflect.Proxy;
  */
 
 
-public class _SystemEventServletRequest extends ServletRequestWrapper{
+public class _SystemEventServletRequest extends HttpServletRequestWrapper{
 
     Map<String, Object> _attributesMap = new HashMap<String, Object>();
     public _SystemEventServletRequest()
     {
-        super( (ServletRequest) Proxy.newProxyInstance(
-                ServletRequest.class.getClassLoader(),
-                new Class[] { ServletRequest.class },
+        super( (HttpServletRequest) Proxy.newProxyInstance(
+                HttpServletRequest.class.getClassLoader(),
+                new Class[] { HttpServletRequest.class },
                 new InvocationHandler()
                 {
                     public Object invoke(Object proxy, Method m, Object[] args) 
@@ -74,4 +69,27 @@ public class _SystemEventServletRequest extends ServletRequestWrapper{
     public void removeAttribute(String s) {
         _attributesMap.remove(s);
     }
+
+    public String getServletPath()
+    {
+        return null;
+    }
+
+    public String getPathInfo()
+    {
+        return null;
+    }
+
+    @Override
+    public HttpSession getSession()
+    {
+        return null;
+    }
+
+    @Override
+    public HttpSession getSession(boolean create)
+    {
+        return null;
+    }
+    
 }

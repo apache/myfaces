@@ -18,16 +18,12 @@
  */
 package org.apache.myfaces.application;
 
-import javax.servlet.ServletResponse;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.ServletResponseWrapper;
-
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.Locale;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 
 /**
  * @author Werner Punz (latest modification by $Author$)
@@ -38,13 +34,13 @@ import java.util.Locale;
  * hence we have to provide dummy objects
  */
 
-public class _SystemEventServletResponse extends ServletResponseWrapper {
+public class _SystemEventServletResponse extends HttpServletResponseWrapper {
 
     public _SystemEventServletResponse()
     {
-        super( (ServletResponse) Proxy.newProxyInstance(
-                ServletResponse.class.getClassLoader(),
-                new Class[] { ServletResponse.class },
+        super( (HttpServletResponse) Proxy.newProxyInstance(
+                HttpServletResponse.class.getClassLoader(),
+                new Class[] { HttpServletResponse.class },
                 new InvocationHandler()
                 {
                     public Object invoke(Object proxy, Method m, Object[] args) 
