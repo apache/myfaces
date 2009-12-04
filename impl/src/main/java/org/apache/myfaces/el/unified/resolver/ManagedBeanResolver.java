@@ -34,6 +34,7 @@ import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
 import javax.faces.FacesException;
 import javax.faces.application.ProjectStage;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
@@ -180,9 +181,14 @@ public class ManagedBeanResolver extends ELResolver
         
         if (extContext.getRequestMap().containsKey(property))
             return null;
-        Map<String, Object> viewMap = facesContext.getViewRoot().getViewMap(false);
-        if (viewMap != null && viewMap.containsKey(property))
-            return null;
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        if (root != null)
+        {
+            Map<String, Object> viewMap = root.getViewMap(false);
+            if (viewMap != null && viewMap.containsKey(property))
+                return null;
+        }
         if (extContext.getSessionMap().containsKey(property))
             return null;
         if (extContext.getApplicationMap().containsKey(property))

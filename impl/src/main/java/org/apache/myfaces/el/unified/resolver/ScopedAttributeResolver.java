@@ -29,6 +29,7 @@ import javax.el.ELException;
 import javax.el.ELResolver;
 import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
@@ -192,9 +193,13 @@ public final class ScopedAttributeResolver extends ELResolver
             return scopedMap;
         
         // jsf 2.0 view scope
-        scopedMap = facesContext.getViewRoot().getViewMap(false);
-        if (scopedMap != null && scopedMap.containsKey(property))
-            return scopedMap;
+        UIViewRoot root = facesContext.getViewRoot();
+        if (root != null)
+        {
+            scopedMap = root.getViewMap(false);
+            if (scopedMap != null && scopedMap.containsKey(property))
+                return scopedMap;
+        }
 
         scopedMap = extContext.getSessionMap();
         if (scopedMap.containsKey(property))
