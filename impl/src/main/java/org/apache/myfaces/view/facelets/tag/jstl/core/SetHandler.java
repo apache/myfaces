@@ -22,18 +22,16 @@ import java.io.IOException;
 
 import javax.el.ELException;
 import javax.el.ValueExpression;
+import javax.el.ELContext;
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagHandler;
+import javax.faces.view.facelets.*;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttributes;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTags;
+import org.apache.myfaces.shared_impl.util.StringUtils;
 
 /**
  * Simplified implementation of c:set
@@ -44,22 +42,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
  * @version $Id: SetHandler.java,v 1.2 2008/07/13 19:01:44 rlubke Exp $
  */
 @JSFFaceletTag(name="c:set")
-@JSFFaceletAttributes(attributes={
-    @JSFFaceletAttribute(
-        name="target",
-        className="java.lang.String",
-        longDescription="Target object whose property will be set."+
-        " Must evaluate to a JavaBeans object with setter property"+
-        "property, or to a java.util.Map object."),
-    @JSFFaceletAttribute(
-        name="property",
-        className="java.lang.String",
-        longDescription="Name of the property to be set in the target object."),
-    @JSFFaceletAttribute(
-            name="scope",
-            className="java.lang.String",
-            longDescription="Scope for var.")
-})
 public class SetHandler extends TagHandler
 {
 
@@ -79,18 +61,96 @@ public class SetHandler extends TagHandler
             deferredValueType="java.lang.Object")
     private final TagAttribute value;
 
+    @JSFFaceletAttribute(
+            name="scope",
+            className="java.lang.String",
+            longDescription="Scope for var.")
+    private final TagAttribute scope;
+
+    @JSFFaceletAttribute(
+        name="target",
+        className="java.lang.String",
+        longDescription="Target object whose property will be set."+
+        " Must evaluate to a JavaBeans object with setter property"+
+        "property, or to a java.util.Map object.")
+    private final TagAttribute target;
+
+    @JSFFaceletAttribute(
+        name="property",
+        className="java.lang.String",
+        longDescription="Name of the property to be set in the target object.")
+    private final TagAttribute property;
+
     public SetHandler(TagConfig config)
     {
         super(config);
-        this.value = this.getRequiredAttribute("value");
-        this.var = this.getRequiredAttribute("var");
+        this.value = this.getAttribute("value");
+        this.var = this.getAttribute("var");
+        this.scope = this.getAttribute("scope");
+        this.target = this.getAttribute("target");
+        this.property = this.getAttribute("property");
     }
 
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {
-        String varStr = this.var.getValue(ctx);
         ValueExpression veObj = this.value.getValueExpression(ctx, Object.class);
-        ctx.getVariableMapper().setVariable(varStr, veObj);
+
+        if (this.var != null)
+        {
+            // Get variable name
+            String varStr = this.var.getValue(ctx);
+
+            if (this.scope != null)
+            {
+                String scopeStr = this.scope.getValue(ctx);
+
+                // Check scope string
+                if (scopeStr == null || scopeStr.length() == 0)
+                {
+                    throw new TagException(tag, "scope must not be empty");
+                }
+                if ("page".equals(scopeStr))
+                {
+                    throw new TagException(tag, "page scope is not allowed");
+                }
+
+                // Build value expression string to set variable
+                StringBuilder expStr = new StringBuilder().append("#{").append(scopeStr);
+                if ("request".equals(scopeStr) || "view".equals(scopeStr) || "session".equals(scopeStr)
+                        || "application".equals(scopeStr))
+                {
+                    expStr.append("Scope");
+                }
+                expStr.append(".").append(varStr).append("}");
+                ELContext elCtx = ctx.getFacesContext().getELContext();
+                ValueExpression expr = ctx.getExpressionFactory().createValueExpression(
+                        elCtx, expStr.toString(), Object.class);
+                expr.setValue(elCtx, veObj.getValue(elCtx));
+            } else {
+                ctx.getVariableMapper().setVariable(varStr, veObj);
+            }
+        }
+        else
+        {
+            // Check attributes
+            if (this.target == null || this.property == null || this.value == null)
+            {
+                throw new TagException(
+                        tag, "either attributes var and value or target, property and value must be set");
+            }
+            if (this.target.isLiteral())
+            {
+                throw new TagException(tag, "attribute target must contain a value expression");
+            }
+
+            // Get target object and name of property to set
+            ELContext elCtx = ctx.getFacesContext().getELContext();
+            ValueExpression targetExpr = this.target.getValueExpression(ctx, Object.class);
+            Object targetObj = targetExpr.getValue(elCtx);
+            String propertyName = this.property.getValue(ctx);
+            // Set property on target object
+            ctx.getELResolver().setValue(elCtx, targetObj, propertyName, veObj.getValue(elCtx));
+        }
     }
 }
