@@ -73,6 +73,35 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
 
         return viewId;    // return null if no physical resource exists
     }
+    
+    public String calculateAndCheckViewId(FacesContext context, String viewId)
+    {
+        //If no viewId found, don't try to derive it, just continue.
+        if (viewId == null)
+        {
+            return null;
+        }
+        FacesServletMapping mapping = getFacesServletMapping(context);
+        if (mapping == null || mapping.isExtensionMapping())
+        {
+            viewId = handleSuffixMapping(context, viewId);
+        }
+        else if(mapping.isPrefixMapping())
+        {
+            viewId = handlePrefixMapping(viewId,mapping.getPrefix());
+        }
+        else if (viewId != null && mapping.getUrlPattern().startsWith(viewId))
+        {
+            throw new InvalidViewIdException(viewId);
+        }
+
+        if(viewId != null)
+        {
+            return (checkResourceExists(context,viewId) ? viewId : null);
+        }
+
+        return viewId;    // return null if no physical resource exists
+    }
 
     public String calculateActionURL(FacesContext context, String viewId)
     {

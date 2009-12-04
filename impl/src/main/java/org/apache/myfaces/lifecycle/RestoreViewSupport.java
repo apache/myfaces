@@ -44,6 +44,18 @@ public interface RestoreViewSupport
      * </ul>
      */
     String calculateViewId(FacesContext facesContext);
+    
+    /**
+     *  Derive a view id retrieved from calling calculateViewId(FacesContext), but
+     * do not check if a resource with this name exists. This method is useful
+     * to retrieve a VDL instance, but note there are some cases (TCK test) where
+     * it is expected in Restore View algorithm a null or dummy viewId is passed. 
+     * 
+     * @param context
+     * @param viewId
+     * @return
+     */
+    String deriveViewId(FacesContext context, String viewId);
 
     /**
      * Processes the component tree. For each component (including the given one) in the tree determine if a value

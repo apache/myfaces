@@ -70,7 +70,7 @@ public class ViewHandlerImpl extends ViewHandler
             try
             {
                 //TODO: JSF 2.0 - need to make sure calculateViewId follows the new algorithm from 7.5.2 
-                return getViewHandlerSupport().calculateViewId(context, input);
+                return getViewHandlerSupport().calculateAndCheckViewId(context, input);
             }
             catch (InvalidViewIdException e)
             {

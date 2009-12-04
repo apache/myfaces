@@ -222,6 +222,11 @@ public abstract class FaceletTestCase extends TestCase implements
                 return viewId;
             }
             
+            public String calculateAndCheckViewId(FacesContext context, String viewId)
+            {
+                return viewId;
+            }
+            
         });
         
         facesContext.setViewRoot(facesContext.getApplication().getViewHandler()
