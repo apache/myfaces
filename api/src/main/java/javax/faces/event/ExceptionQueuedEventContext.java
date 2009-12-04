@@ -60,7 +60,7 @@ public class ExceptionQueuedEventContext implements SystemEventListenerHolder
         _context = context;
         _thrown = thrown;
         _component = component;
-        _phase = phaseId;
+        _phase = (phaseId == null ? context.getCurrentPhaseId() : phaseId);
     }
     
     public Map<Object,Object> getAttributes()
