@@ -58,8 +58,12 @@ public class ManagedBeanDestroyer implements SystemEventListener
     {
         if (runtimeConfig == null)
         {
-            ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-            runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            if (facesContext != null)
+            {
+                ExternalContext externalContext = facesContext.getExternalContext();
+                runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
+            }
         }
         return runtimeConfig;
     }
@@ -116,7 +120,13 @@ public class ManagedBeanDestroyer implements SystemEventListener
      */
     public boolean isManagedBean(String name)
     {
-        return getRuntimeConfig().getManagedBean(name) != null;
+        RuntimeConfig config = getRuntimeConfig();
+        if (config != null)
+        {
+            return config.getManagedBean(name) != null;
+        }
+        // we have no RuntimeConfig, thus theres no FacesContext --> no managed bean
+        return false;
     }
     
     /**

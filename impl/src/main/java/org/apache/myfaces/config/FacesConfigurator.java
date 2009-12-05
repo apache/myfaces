@@ -1727,9 +1727,9 @@ public class FacesConfigurator
                                                                         new VariableResolverImpl()));
         
         // configure ManagedBeanDestroyer to listen to PreDestroyCustomScopeEvent and PreDestroyViewMapEvent
-        //ManagedBeanDestroyer mbDestroyer = new ManagedBeanDestroyer();
-        //application.subscribeToEvent(PreDestroyCustomScopeEvent.class, mbDestroyer);
-        //application.subscribeToEvent(PreDestroyViewMapEvent.class, mbDestroyer);
+        ManagedBeanDestroyer mbDestroyer = new ManagedBeanDestroyer();
+        application.subscribeToEvent(PreDestroyCustomScopeEvent.class, mbDestroyer);
+        application.subscribeToEvent(PreDestroyViewMapEvent.class, mbDestroyer);
     }
 
     /**

@@ -127,7 +127,12 @@ public class ManagedBeanDestroyerListener implements
         // set the RuntimeConfig of ManagedBeanDestroyer, because
         // in requestDestroyed, contextDestroyed FacesContext.getCurrentInstance() returns
         // null and so we wouln't get the RuntimeConfig.
-        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext == null)
+        {
+            return;
+        }
+        ExternalContext externalContext = facesContext.getExternalContext();
         RuntimeConfig config = RuntimeConfig.getCurrentInstance(externalContext);
         destroyer.setRuntimeConfig(config);
     }

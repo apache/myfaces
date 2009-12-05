@@ -92,6 +92,10 @@ public abstract class Application
      * original Application impl, and redirect the call to that
      * method instead throwing it, allowing application implementations
      * created before jsf 1.2 continue working.   
+     * 
+     * Note: every method, which uses getMyfacesApplicationInstance() to
+     *       delegate itself to the current ApplicationImpl MUST be
+     *       overriden by the current ApplicationImpl to prevent infinite loops. 
      */
     private Application getMyfacesApplicationInstance()
     {
