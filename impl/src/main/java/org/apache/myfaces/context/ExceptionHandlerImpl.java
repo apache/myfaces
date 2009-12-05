@@ -154,13 +154,13 @@ public class ExceptionHandlerImpl extends ExceptionHandler
                         // Testing mojarra it logs a message and the exception
                         // however, this behaviour is not mentioned in the spec
                         log.log(Level.SEVERE, exception.getClass().getName() + " occured while processing " +
-                        		(context.inBeforePhase() ? "beforePhase() of " : 
-                        		        (context.inAfterPhase() ? "afterPhase() of " : "")) + 
-                        		"phase " + context.getPhaseId() + ": " +
-                        		"UIComponent-ClientId=" + 
-                        		(context.getComponent() != null ? 
-                        		        context.getComponent().getClientId() : "") + ", " +
-                        		"Message=" + exception.getMessage());
+                                (context.inBeforePhase() ? "beforePhase() of " : 
+                                        (context.inAfterPhase() ? "afterPhase() of " : "")) + 
+                                "phase " + context.getPhaseId() + ": " +
+                                "UIComponent-ClientId=" + 
+                                (context.getComponent() != null ? 
+                                        context.getComponent().getClientId() : "") + ", " +
+                                "Message=" + exception.getMessage());
                         
                         log.log(Level.SEVERE, exception.getMessage(), exception);
                         
