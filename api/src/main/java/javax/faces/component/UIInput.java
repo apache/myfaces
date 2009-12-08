@@ -39,6 +39,7 @@ import java.util.*;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFListener;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
 /**
  * UICommand is a base abstraction for components that implement ActionSource.
@@ -58,10 +59,14 @@ public class UIInput extends UIOutput implements EditableValueHolder
     public static final String UPDATE_MESSAGE_ID = "javax.faces.component.UIInput.UPDATE";
     private static final String ERROR_HANDLING_EXCEPTION_LIST = "org.apache.myfaces.errorHandling.exceptionList";
 
-    // -=Leonardo Uribe =- According to http://wiki.java.net/bin/view/Projects/Jsf2MR1ChangeLog 
-    // this constant will be made public on 2.1. For now, since this param is handled in
-    // 2.0, we should do it as well.
+    /** -=Leonardo Uribe =- According to http://wiki.java.net/bin/view/Projects/Jsf2MR1ChangeLog 
+      * this constant will be made public on 2.1. For now, since this param is handled in
+      * 2.0, we should do it as well.
+      **/
+    @JSFWebConfigParam(defaultValue="false", expectedValues="true, false", since="2.0")
     private static final String EMPTY_VALUES_AS_NULL_PARAM_NAME = "javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL";
+    
+    @JSFWebConfigParam(defaultValue="auto", expectedValues="auto, true, false", since="2.0")
     public static final String VALIDATE_EMPTY_FIELDS_PARAM_NAME = "javax.faces.VALIDATE_EMPTY_FIELDS";
 
     private static final Validator[] EMPTY_VALIDATOR_ARRAY = new Validator[0];

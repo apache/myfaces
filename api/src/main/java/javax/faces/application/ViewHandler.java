@@ -83,9 +83,13 @@ public abstract class ViewHandler
     /**
      * Indicate the default suffix to derive the file URI if extension mapping is used. 
      */
-    @JSFWebConfigParam(defaultValue=".jsp", since="1.1")
+    @JSFWebConfigParam(defaultValue=".xhtml .jsp", since="1.1")
     public static final String DEFAULT_SUFFIX_PARAM_NAME = "javax.faces.DEFAULT_SUFFIX";
+    
+    @JSFWebConfigParam(defaultValue=".xhtml", since="2.0")
     public static final String FACELETS_SUFFIX_PARAM_NAME = "javax.faces.FACELETS_SUFFIX";
+    
+    @JSFWebConfigParam(since="2.0")
     public static final String FACELETS_VIEW_MAPPINGS_PARAM_NAME = "javax.faces.FACELETS_VIEW_MAPPINGS";
     // TODO: Notify EG on that last constant. Using the Facelets' param as well for backward compatiblity is 
     //       silly. If an application uses Facelets then they'll be using facelets.jar. Once they chose to 

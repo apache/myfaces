@@ -21,6 +21,7 @@ package javax.faces.validator;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidator;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
 import javax.el.*;
 import javax.faces.FacesException;
@@ -77,6 +78,7 @@ public class BeanValidator implements Validator, PartialStateHolder
      * If this init parameter is present, no Bean Validators should be added to an UIInput by default.
      * Explicitly adding a BeanValidator to an UIInput is possible though.
      */
+    @JSFWebConfigParam(defaultValue="true", expectedValues="true, false", since="2.0")
     public static final String DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME = "javax.faces.validator.DISABLE_DEFAULT_BEAN_VALIDATOR";
 
     /**

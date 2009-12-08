@@ -62,6 +62,7 @@ import javax.faces.render.RenderKitFactory;
 import javax.faces.render.Renderer;
 import javax.faces.validator.FacesValidator;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.FacesConfigDispenser;
 import org.apache.myfaces.config.NamedEventManager;
 import org.apache.myfaces.config.RuntimeConfig;
@@ -104,6 +105,7 @@ public class AnnotationConfigurator
      * <p> Servlet context init parameter which defines which packages to scan
      * for beans, separated by commas.</p>
      */
+    @JSFWebConfigParam(since="2.0")
     public static final String SCAN_PACKAGES = "org.apache.myfaces.annotation.SCAN_PACKAGES";
 
     /**

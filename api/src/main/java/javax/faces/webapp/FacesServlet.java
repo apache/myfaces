@@ -60,6 +60,11 @@ public final class FacesServlet implements Servlet
      */
     @JSFWebConfigParam(since="1.1")
     public static final String CONFIG_FILES_ATTR = "javax.faces.CONFIG_FILES";
+
+    /**
+     * Identify the Lifecycle instance to be used.
+     */
+    @JSFWebConfigParam(since="1.1")
     public static final String LIFECYCLE_ID_ATTR = "javax.faces.LIFECYCLE_ID";
 
     private static final String SERVLET_INFO = "FacesServlet of the MyFaces API implementation";

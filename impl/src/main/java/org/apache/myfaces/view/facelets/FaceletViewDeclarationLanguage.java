@@ -79,6 +79,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.application.DefaultViewHandlerSupport;
 import org.apache.myfaces.application.ViewHandlerSupport;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.shared_impl.util.StringUtils;
@@ -128,37 +129,50 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     
     //public final static String PARAM_BUFFER_SIZE = "javax.faces.FACELETS_BUFFER_SIZE";
     
+    @JSFWebConfigParam(since="2.0")
     public final static String PARAM_BUFFER_SIZE = "javax.faces.FACELETS_BUFFER_SIZE";
     
+    @JSFWebConfigParam(since="2.0")
     private final static String PARAM_BUFFER_SIZE_DEPRECATED = "facelets.BUFFER_SIZE";
 
-    private final static String PARAM_BUILD_BEFORE_RESTORE = "facelets.BUILD_BEFORE_RESTORE";
-    
+    //private final static String PARAM_BUILD_BEFORE_RESTORE = "facelets.BUILD_BEFORE_RESTORE";
+
+    @JSFWebConfigParam(since="2.0")
     public final static String PARAM_DECORATORS = "javax.faces.FACELETS_DECORATORS";
     
+    @JSFWebConfigParam(since="2.0")
     private final static String PARAM_DECORATORS_DEPRECATED = "facelets.DECORATORS";
 
+    @JSFWebConfigParam(since="2.0")
     public final static String PARAM_ENCODING = "facelets.Encoding";
 
+    @JSFWebConfigParam(since="2.0")
     public final static String PARAM_LIBRARIES = "javax.faces.FACELETS_LIBRARIES";
     
+    @JSFWebConfigParam(since="2.0")
     private final static String PARAM_LIBRARIES_DEPRECATED = "facelets.LIBRARIES";
 
+    @JSFWebConfigParam(since="2.0")
     public final static String PARAM_REFRESH_PERIOD = "javax.faces.FACELETS_REFRESH_PERIOD";
     
+    @JSFWebConfigParam(since="2.0")
     private final static String PARAM_REFRESH_PERIOD_DEPRECATED = "facelets.REFRESH_PERIOD";
     
+    @JSFWebConfigParam(since="2.0")
     public final static String PARAM_RESOURCE_RESOLVER = "javax.faces.FACELETS_RESOURCE_RESOLVER";
     
+    @JSFWebConfigParam(since="2.0")
     private final static String PARAM_RESOURCE_RESOLVER_DEPRECATED = "facelets.RESOURCE_RESOLVER";
     
+    @JSFWebConfigParam(since="2.0")
     public final static String PARAM_SKIP_COMMENTS = "javax.faces.FACELETS_SKIP_COMMENTS";
     
+    @JSFWebConfigParam(since="2.0")
     private final static String PARAM_SKIP_COMMENTS_DEPRECATED = "facelets.SKIP_COMMENTS";
     
-    public final static String PARAM_VIEW_MAPPINGS = "javax.faces.FACELETS_VIEW_MAPPINGS";
+    //public final static String PARAM_VIEW_MAPPINGS = "javax.faces.FACELETS_VIEW_MAPPINGS";
     
-    private final static String PARAM_VIEW_MAPPINGS_DEPRECATED = "facelets.VIEW_MAPPINGS";
+    //private final static String PARAM_VIEW_MAPPINGS_DEPRECATED = "facelets.VIEW_MAPPINGS";
     
     public final static String FILLED_VIEW = "org.apache.myfaces.FILLED_VIEW";
     

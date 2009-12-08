@@ -26,6 +26,7 @@ import java.util.Map;
 
 import javax.faces.context.ExternalContext;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationCase;
 import org.apache.myfaces.config.element.NavigationRule;
@@ -34,6 +35,7 @@ import org.apache.myfaces.shared_impl.util.ClassUtils;
 public class FacesConfigValidator
 {
 
+    @JSFWebConfigParam(since="2.0", defaultValue="false", expectedValues="true, false")
     public static final String VALIDATE_CONTEXT_PARAM = "org.apache.myfaces.VALIDATE";
     
     private FacesConfigValidator(){

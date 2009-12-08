@@ -36,6 +36,7 @@ import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.util.ContainerUtils;
 
@@ -63,7 +64,11 @@ public class StartupServletContextListener implements ServletContextListener,
         ServletContextAttributeListener
 {
     static final String FACES_INIT_DONE = StartupServletContextListener.class.getName() + ".FACES_INIT_DONE";
-    /*comma delimited list of plugin classes which can be hooked into myfaces*/
+
+    /**
+     * comma delimited list of plugin classes which can be hooked into myfaces 
+     */
+    @JSFWebConfigParam(since="2.0")
     static final String FACES_INIT_PLUGINS = "org.apache.myfaces.FACES_INIT_PLUGINS";
 
     private static final byte FACES_INIT_PHASE_PREINIT = 0;

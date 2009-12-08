@@ -80,7 +80,11 @@ public abstract class StateManager
     public static final String STATE_SAVING_METHOD_PARAM_NAME = "javax.faces.STATE_SAVING_METHOD";
     public static final String STATE_SAVING_METHOD_CLIENT = "client";
     public static final String STATE_SAVING_METHOD_SERVER = "server";
+    
+    @JSFWebConfigParam(since="2.0")
     public static final String FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME = "javax.faces.FULL_STATE_SAVING_VIEW_IDS";
+    
+    @JSFWebConfigParam(expectedValues="true,false", since="2.0")
     public static final String PARTIAL_STATE_SAVING_PARAM_NAME = "javax.faces.PARTIAL_STATE_SAVING";
     private Boolean _savingStateInClient = null;
 

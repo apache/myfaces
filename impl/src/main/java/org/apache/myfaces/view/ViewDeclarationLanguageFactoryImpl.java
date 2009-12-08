@@ -23,6 +23,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.ViewDeclarationLanguageFactory;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguageStrategy;
 import org.apache.myfaces.view.jsp.JspViewDeclarationLanguageStrategy;
 
@@ -37,6 +38,10 @@ import org.apache.myfaces.view.jsp.JspViewDeclarationLanguageStrategy;
  */
 public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageFactory
 {
+    /**
+     * Disable facelets VDL from the current application project. 
+     */
+    @JSFWebConfigParam(since="2.0", defaultValue="false", expectedValues="true,false")
     public static final String PARAM_DISABLE_JSF_FACELET = "javax.faces.DISABLE_FACELET_JSF_VIEWHANDLER";
     
     private boolean _initialized;

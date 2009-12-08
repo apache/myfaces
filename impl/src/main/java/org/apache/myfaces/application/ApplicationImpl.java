@@ -83,6 +83,7 @@ import javax.naming.NamingException;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.myfaces.application.jsp.JspStateManagerImpl;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.impl.digester.elements.Property;
 import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
@@ -123,8 +124,15 @@ public class ApplicationImpl extends Application
     // MyFaces specific System Property to set the ProjectStage, if not present via the standard way
     public final static String MYFACES_PROJECT_STAGE_SYSTEM_PROPERTY_NAME = "org.apache.myfaces.PROJECT_STAGE";
     
+    @JSFWebConfigParam(defaultValue="false", expectedValues="true, false", since="2.0")
     public final static String DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME 
         = "javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE";
+    
+    @JSFWebConfigParam(defaultValue="Production",
+            expectedValues="Development, Production, SystemTest, UnitTest",
+            since="2.0")
+    private static final String PROJECT_STAGE_PARAM_NAME = "javax.faces.PROJECT_STAGE";
+
 
     // ~ Instance fields
     // --------------------------------------------------------------------------
@@ -803,6 +811,12 @@ public class ApplicationImpl extends Application
         if (log.isLoggable(Level.FINEST))
             log.finest("set ViewHandler = " + viewHandler.getClass().getName());
     }
+    
+    @Override
+    public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener)
+    {
+        subscribeToEvent(systemEventClass, null, listener);
+    }
 
     @Override
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass,
@@ -823,6 +837,12 @@ public class ApplicationImpl extends Application
         }
 
         systemListenerEntry.addListener(listener, sourceClass);
+    }
+    
+    @Override
+    public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener)
+    {
+        unsubscribeFromEvent(systemEventClass, null, listener);
     }
 
     @Override
