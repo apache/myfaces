@@ -75,7 +75,7 @@ public final class CoreLibrary extends AbstractTagLibrary
 
         this.addTagHandler("phaseListener", PhaseListenerHandler.class);
 
-        this.addComponent("selectItem", UISelectItem.COMPONENT_TYPE, null);
+        this.addComponent("selectItem", UISelectItem.COMPONENT_TYPE, null, SelectItemHandler.class);
 
         this.addComponent("selectItems", UISelectItems.COMPONENT_TYPE, null);
 
