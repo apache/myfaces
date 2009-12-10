@@ -398,7 +398,7 @@ public class ManagedBeanBuilder
             // Spec says, that the developer has to take care about the references
             // to and from managed-beans in custom scopes.
             // However, we do check the references, if we are not in Production stage
-            if (facesContext.getApplication().getProjectStage() == ProjectStage.Production)
+            if (facesContext.isProjectStage(ProjectStage.Production))
             {
                 return true;
             }
@@ -567,7 +567,7 @@ public class ManagedBeanBuilder
                 // Spec says, that the developer has to take care about the references
                 // to and from managed-beans in custom scopes.
                 // However, we do check the references, if we are not in Production stage
-                if (facesContext.getApplication().getProjectStage() == ProjectStage.Production)
+                if (facesContext.isProjectStage(ProjectStage.Production))
                 {
                     return null;
                 }
