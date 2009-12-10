@@ -18,6 +18,17 @@
  */
 package javax.faces.webapp;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+
 import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIOutput;
@@ -32,9 +43,6 @@ import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.tagext.BodyTag;
 import javax.servlet.jsp.tagext.JspIdConsumer;
 import javax.servlet.jsp.tagext.Tag;
-import java.io.IOException;
-import java.util.*;
-import java.util.logging.Level;
 
 /**
  * @author Bruno Aranda (latest modification by $Author: baranda $)
@@ -62,6 +70,10 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
     private static final String PREVIOUS_JSP_IDS_SET = "org.apache.myfaces.PREVIOUS_JSP_IDS_SET";
 
     private static final String BOUND_VIEW_ROOT = "org.apache.myfaces.BOUND_VIEW_ROOT";
+    
+    private static final String LOGICAL_PAGE_ID = "org.apache.myfaces.LOGICAL_PAGE_ID";
+    
+    private static final String LOGICAL_PAGE_COUNTER = "org.apache.myfaces.LOGICAL_PAGE_COUNTER";
 
     protected static final String UNIQUE_ID_PREFIX = UIViewRoot.UNIQUE_ID_PREFIX + "_";
 
@@ -163,9 +175,77 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
 
     public void setJspId(String jspId)
     {
-        _jspId = jspId;
+        // -= Leonardo Uribe =- The javadoc says the following about this method:
+        //
+        // 1. This method is called by the container before doStartTag(). 
+        // 2. The argument is guaranteed to be unique within the page.
+        //
+        // Doing some tests it was found that the jspId generated in a
+        // jsp:include are "reset", so if before call it it was id10
+        // the tags inside jsp:include starts from id1 (really I suppose a
+        // different counter is used), so if we assign this one
+        // directly it is possible to cause duplicate id exceptions later.
+        //
+        // One problem is caused by f:view tag. This one is not included when
+        // we check for duplicate id, so it is possible to assign to a component
+        // in a jsp:include the id of the UIViewRoot instance and cause a 
+        // duplicate id exception when the view is saved.
+        //
+        // Checking the javadoc it was found the following note:
+        //
+        // "... IMPLEMENTATION NOTE: This method will detect where we are in an 
+        // include and assign a unique ID for each include in a particular 'logical page'. 
+        // This allows us to avoid possible duplicate ID situations for included pages 
+        // that have components without explicit IDs..."
+        //
+        // So we need to keep a counter per logical page or page context found. 
+        // It is assumed the first one should not be suffixed. The others needs to be
+        // suffixed, so all generated ids of those pages are different. The final result
+        // is that jsp:include works correctly.
+        //
+        // Note this implementation detail takes precedence over c:forEach tag. If a
+        // jsp:include is inside a c:forEach, jsp:include takes precedence and the 
+        // iteration prefix is ignored. If a custom id is provided for a component, 
+        // it will throw duplicate id exception, because this code is "override" 
+        // by the custom id, and the iteration suffix only applies on generated ids.
+        Integer logicalPageId = (Integer) pageContext.getAttribute(LOGICAL_PAGE_ID);
+        
+        if (logicalPageId != null)
+        {
+            if (logicalPageId.intValue() == 1)
+            {
+                //Base case, just pass it unchanged
+                _jspId = jspId;
+            }
+            else
+            {
+                // We are on a different page context, suffix it with the logicalPageId
+                _jspId = jspId + "pc" + logicalPageId;
+            }
+        }
+        else
+        {
+            Map<String,Object> requestMap = getFacesContext().getExternalContext().getRequestMap();
+            AtomicInteger logicalPageCounter = (AtomicInteger) requestMap.get(LOGICAL_PAGE_COUNTER);
+            
+            if (logicalPageCounter == null)
+            {
+                //We are processing the first component tag. 
+                logicalPageCounter = new AtomicInteger(1);
+                logicalPageId = 1;
+                requestMap.put(LOGICAL_PAGE_COUNTER, logicalPageCounter);
+                pageContext.setAttribute(LOGICAL_PAGE_ID, logicalPageId);
+            }
+            else
+            {
+                //We are on a different page context, so we need to assign and set.
+                logicalPageId = logicalPageCounter.incrementAndGet();
+                pageContext.setAttribute(LOGICAL_PAGE_ID, logicalPageId);
+                _jspId = jspId + "pc" + logicalPageId;
+            }
+        }
         _facesJspId = null;
-        checkIfItIsInAnIterator(jspId);
+        checkIfItIsInAnIterator(_jspId);
     }
 
 
@@ -846,10 +926,10 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
         getStack(pageContext).add(this);
     }
 
-    private boolean isIncludedOrForwarded() {
-        return getFacesContext().getExternalContext().getRequestMap().
-                containsKey("javax.servlet.include.request_uri");
-    }
+    //private boolean isIncludedOrForwarded() {
+    //    return getFacesContext().getExternalContext().getRequestMap().
+    //            containsKey("javax.servlet.include.request_uri");
+    //}
 
      /** Generate diagnostic output. */
     private String getPathToComponent(UIComponent component)
@@ -1226,14 +1306,14 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase
 
         getFacesContext().getExternalContext().getRequestMap().put(componentId, new Integer(iCurrentCounter));
 
-        if (isIncludedOrForwarded())
-        {
-            componentId = componentId + "pc" + iCurrentCounter;
-        }
-        else
-        {
-            componentId = componentId + UNIQUE_ID_PREFIX + iCurrentCounter;            
-        }
+        //if (isIncludedOrForwarded())
+        //{
+        //    componentId = componentId + "pc" + iCurrentCounter;
+        //}
+        //else
+        //{
+        componentId = componentId + UNIQUE_ID_PREFIX + iCurrentCounter;            
+        //}
 
         return componentId;
     }
