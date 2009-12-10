@@ -83,7 +83,13 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
 
     public String getScript(ClientBehaviorContext behaviorContext,
                             ClientBehavior behavior) {
-        return makeAjax(behaviorContext, (AjaxBehavior) behavior).toString();
+        AjaxBehavior ajaxBehavior = (AjaxBehavior) behavior;
+        
+        if (ajaxBehavior.isDisabled()) {
+            return null;
+        }
+        
+        return makeAjax(behaviorContext, ajaxBehavior).toString();
     }
 
 
