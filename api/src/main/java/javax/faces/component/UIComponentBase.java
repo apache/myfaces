@@ -322,7 +322,15 @@ public abstract class UIComponentBase extends UIComponent
             throw new NullPointerException("event");
         try
         {
-
+            if (event instanceof BehaviorEvent && event.getComponent() == this)
+            {
+                Behavior behavior = ((BehaviorEvent) event).getBehavior();
+                if (behavior instanceof ClientBehavior)
+                {
+                    behavior.broadcast((BehaviorEvent) event);
+                }
+            }
+            
             if (_facesListeners == null)
                 return;
             for (Iterator<FacesListener> it = _facesListeners.iterator(); it.hasNext();)
@@ -331,14 +339,6 @@ public abstract class UIComponentBase extends UIComponent
                 if (event.isAppropriateListener(facesListener))
                 {
                     event.processListener(facesListener);
-                }
-            }
-            if (event instanceof BehaviorEvent && event.getComponent() == this)
-            {
-                Behavior behavior = ((BehaviorEvent) event).getBehavior();
-                if (behavior instanceof ClientBehavior)
-                {
-                    behavior.broadcast((BehaviorEvent) event);
                 }
             }
         }

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.el.MethodExpression;
+import javax.faces.component.StateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UniqueIdVendor;
 import javax.faces.component.behavior.AjaxBehavior;
@@ -424,16 +425,18 @@ public class AjaxHandler extends TagHandler implements
     }
 
     /**
-     * Wraps a method expression in a AjaxBehaviorListener 
-     * TODO: This instance should be StateHolder or Serializable,
-     * since ClientBehaviorBase implements PartialStateHolder
-     *
+     * Wraps a method expression in a AjaxBehaviorListener
      */
-    private final static class AjaxBehaviorListenerImpl implements
-            AjaxBehaviorListener
+    public final static class AjaxBehaviorListenerImpl implements
+            AjaxBehaviorListener, StateHolder
     {
-        private final MethodExpression _expr;
-
+        private MethodExpression _expr;
+        private boolean _transient;
+        
+        public AjaxBehaviorListenerImpl ()
+        {
+        }
+        
         public AjaxBehaviorListenerImpl(MethodExpression expr)
         {
             _expr = expr;
@@ -444,6 +447,25 @@ public class AjaxHandler extends TagHandler implements
         {
             _expr.invoke(FacesContext.getCurrentInstance().getELContext(),
                     new Object[] { event });
+        }
+
+        public boolean isTransient()
+        {
+            return _transient;
+        }
+
+        public void restoreState(FacesContext context, Object state)
+        {
+            _expr = (MethodExpression) state;
+        }
+
+        public Object saveState(FacesContext context) {
+            return _expr;
+        }
+
+        public void setTransient(boolean newTransientValue)
+        {
+            _transient = newTransientValue;
         }
     }
 }
