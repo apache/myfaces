@@ -152,9 +152,9 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         StringBuilder render = mapToString(context, AJAX_KEY_RENDER, behavior.getRender());
 
         String onError = behavior.getOnerror();
-        onError = (onError != null && onError.trim().equals(EMPTY)) ? AJAX_KEY_ONERROR + COLON + onError : null;
+        onError = (onError != null && !onError.trim().equals(EMPTY)) ? AJAX_KEY_ONERROR + COLON + onError : null;
         String onEvent = behavior.getOnevent();
-        onEvent = (onEvent != null && onEvent.trim().equals(EMPTY)) ? AJAX_KEY_ONEVENT + COLON + onEvent : null;
+        onEvent = (onEvent != null && !onEvent.trim().equals(EMPTY)) ? AJAX_KEY_ONEVENT + COLON + onEvent : null;
 
         String sourceId = (context.getSourceId() == null) ? AJAX_VAL_THIS : '\''+context.getSourceId()+'\'';
         String event = context.getEventName();
@@ -175,6 +175,12 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         }
         if (render != null) {
             parameterList.add(render.toString());
+        }
+        if (onError != null) {
+            parameterList.add (onError);
+        }
+        if (onEvent != null) {
+            parameterList.add (onEvent);
         }
         if (paramSize > 0) {
             /**
