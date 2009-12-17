@@ -22,21 +22,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
 import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.TimeZone;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
-import javax.faces.application.ProjectStage;
 import javax.faces.application.Resource;
 import javax.faces.application.ResourceHandler;
 import javax.faces.context.FacesContext;
@@ -90,9 +83,8 @@ public class ResourceImpl extends Resource
     {
         String contentType = getContentType();
 
-        return ("text/css".equals(contentType)/* || 
-            "text/javascript".equals(contentType) || 
-            "application/x-javascript".equals(contentType)*/ );
+        return ("text/css".equals(contentType) ||
+               ( "jsf.js".equals(getResourceName()) && "javax.faces".equals(getLibraryName())));
     }
 
     private class ValueExpressionFilterInputStream extends InputStream
@@ -205,12 +197,14 @@ public class ResourceImpl extends Resource
         }
  
         String metadata = null;
+        boolean useAmp = false;
         if (getLibraryName() != null)
         {
             metadata = "?ln=" + getLibraryName();
             path = path + metadata;
+            useAmp = true;
         }
-                
+        
         return FacesContext.getCurrentInstance().getApplication().
             getViewHandler().getResourceURL(
                     FacesContext.getCurrentInstance(), path);
