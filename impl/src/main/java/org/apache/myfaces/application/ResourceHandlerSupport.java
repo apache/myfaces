@@ -71,4 +71,18 @@ public interface ResourceHandlerSupport
      */
     String getMapping();
     
+    /**
+     * Return the time when the app started. This is useful to set the
+     * "Last-Modified" header in some specific cases.
+     * 
+     * @return
+     */
+    long getStartupTime();
+    
+    /**
+     * Return the time that should be set on "Expires" header in a resource.
+     * 
+     * @return
+     */
+    long getMaxTimeExpires();
 }

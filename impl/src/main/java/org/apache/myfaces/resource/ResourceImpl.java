@@ -22,13 +22,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
+import javax.faces.application.ProjectStage;
 import javax.faces.application.Resource;
 import javax.faces.application.ResourceHandler;
 import javax.faces.context.FacesContext;
@@ -82,9 +90,9 @@ public class ResourceImpl extends Resource
     {
         String contentType = getContentType();
 
-        return ("text/css".equals(contentType) || 
+        return ("text/css".equals(contentType)/* || 
             "text/javascript".equals(contentType) || 
-            "application/x-javascript".equals(contentType) );
+            "application/x-javascript".equals(contentType)*/ );
     }
 
     private class ValueExpressionFilterInputStream extends InputStream
@@ -211,9 +219,44 @@ public class ResourceImpl extends Resource
     @Override
     public Map<String, String> getResponseHeaders()
     {
-        // TODO: Read the HTTP documentation to see how we can enhance this
-        //part. For now, use always an empty map. 
-        return Collections.emptyMap();
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        
+        if (facesContext.getApplication().getResourceHandler().isResourceRequest(facesContext))
+        {
+            Map<String, String> headers = new HashMap<String, String>();
+            
+            long lastModified;
+            try
+            {
+                lastModified = ResourceUtils.getResourceLastModified(this.getURL());
+            }
+            catch (IOException e)
+            {
+                lastModified = -1;
+            }
+            
+            // Here we have two cases: If the file could contain EL Expressions
+            // the last modified time is the greatest value between application startup and
+            // the value from file.
+            if (this.couldResourceContainValueExpressions() &&
+                    lastModified < _resourceHandlerSupport.getStartupTime())
+            {
+                lastModified = _resourceHandlerSupport.getStartupTime();
+            }
+
+            if (lastModified >= 0)
+            {
+                headers.put("Last-Modified", ResourceUtils.formatDateHeader(lastModified));
+                headers.put("Expires", ResourceUtils.formatDateHeader(System.currentTimeMillis()+_resourceHandlerSupport.getMaxTimeExpires()));
+            }
+            
+            return headers;
+        }
+        else
+        {
+            //No need to return headers 
+            return Collections.emptyMap();
+        }
     }
 
     @Override
@@ -225,8 +268,61 @@ public class ResourceImpl extends Resource
     @Override
     public boolean userAgentNeedsUpdate(FacesContext context)
     {
-        // TODO: When and How we can return safely false?
+        // RFC2616 says related to If-Modified-Since header the following:
+        //
+        // "... The If-Modified-Since request-header field is used with a method to 
+        // make it conditional: if the requested variant has not been modified since 
+        // the time specified in this field, an entity will not be returned from 
+        // the server; instead, a 304 (not modified) response will be returned 
+        // without any message-body..."
+        // 
+        // This method is called from ResourceHandlerImpl.handleResourceRequest and if
+        // returns false send a 304 Not Modified response.
+        
+        String ifModifiedSinceString = context.getExternalContext().getRequestHeaderMap().get("If-Modified-Since");
+        
+        if (ifModifiedSinceString == null)
+        {
+            return true;
+        }
+        
+        Long ifModifiedSince = ResourceUtils.parseDateHeader(ifModifiedSinceString);
+        
+        if (ifModifiedSince == null)
+        {
+            return true;
+        }
+        
+        Long lastModified;
+        try
+        {
+            lastModified = ResourceUtils.getResourceLastModified(this.getURL());
+        }
+        catch (IOException exception)
+        {
+            lastModified = -1L;
+        }
+        
+        if (lastModified >= 0)
+        {
+            if (this.couldResourceContainValueExpressions() &&
+                    lastModified < _resourceHandlerSupport.getStartupTime())
+            {
+                lastModified = _resourceHandlerSupport.getStartupTime();
+            }
+            
+            // If the lastModified date is lower or equal than ifModifiedSince,
+            // the agent does not need to update.
+            // Note the lastModified time is set at milisecond precision, but when 
+            // the date is parsed and sent on ifModifiedSince, the exceding miliseconds
+            // are trimmed. So, we have to compare trimming this from the calculated
+            // lastModified time.
+            if ( (lastModified-(lastModified % 1000)) <= ifModifiedSince)
+            {
+                return false;
+            }
+        }
+        
         return true;
     }
-
 }

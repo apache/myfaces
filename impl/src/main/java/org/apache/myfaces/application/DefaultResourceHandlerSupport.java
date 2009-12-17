@@ -24,6 +24,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.application.DefaultViewHandlerSupport.FacesServletMapping;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.resource.ClassLoaderResourceLoader;
 import org.apache.myfaces.resource.ExternalContextResourceLoader;
 import org.apache.myfaces.resource.ResourceLoader;
@@ -37,7 +38,14 @@ import org.apache.myfaces.resource.ResourceLoader;
  */
 public class DefaultResourceHandlerSupport implements ResourceHandlerSupport
 {
-    
+
+    /**
+     * Set the max time in miliseconds set on the "Expires" header for a resource.
+     * (default to one week in miliseconds or 604800000) 
+     */
+    @JSFWebConfigParam(since="2.0", defaultValue="604800000")
+    public static final String RESOURCE_MAX_TIME_EXPIRES = "org.apache.myfaces.RESOURCE_MAX_TIME_EXPIRES";
+
     /**
      * Identifies the FacesServlet mapping in the current request map.
      */
@@ -45,7 +53,16 @@ public class DefaultResourceHandlerSupport implements ResourceHandlerSupport
         DefaultResourceHandlerSupport.class.getName() + ".CACHED_SERVLET_MAPPING";
     
     private ResourceLoader[] _resourceLoaders;
+    
+    private Long _startupTime;
+    
+    private Long _maxTimeExpires;
         
+    public DefaultResourceHandlerSupport()
+    {
+        _startupTime = System.currentTimeMillis();
+    }
+
     public String calculateResourceBasePath(FacesContext facesContext)
     {        
         FacesServletMapping mapping = getFacesServletMapping(facesContext);
@@ -207,5 +224,34 @@ public class DefaultResourceHandlerSupport implements ResourceHandlerSupport
                 return FacesServletMapping.createPrefixMapping(servletPath);
             }
         }
+    }
+
+    public long getStartupTime()
+    {
+        return _startupTime;
+    }
+    
+    public long getMaxTimeExpires()
+    {
+        if (_maxTimeExpires == null)
+        {
+            String time = FacesContext.getCurrentInstance().getExternalContext().getInitParameter(RESOURCE_MAX_TIME_EXPIRES);
+            if (time != null && time.length() > 0)
+            {
+                try
+                {
+                    _maxTimeExpires = Long.parseLong(time);
+                }
+                catch (NumberFormatException e)
+                {
+                    _maxTimeExpires = 604800000L;
+                }
+            }
+            else
+            {
+                _maxTimeExpires = 604800000L;
+            }
+        }
+        return _maxTimeExpires;
     }
 }
