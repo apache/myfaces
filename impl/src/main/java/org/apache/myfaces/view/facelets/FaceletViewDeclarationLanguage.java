@@ -938,6 +938,17 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             handleRenderException(context, e);
         }
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UIViewRoot createView(FacesContext context, String viewId)
+    {
+        // we have to check for a possible debug request
+        UIDebug.debugRequest(context);
+        return super.createView(context, viewId);
+    }
 
     /**
      * {@inheritDoc}
@@ -945,10 +956,17 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     @Override
     public UIViewRoot restoreView(FacesContext context, String viewId)
     {
-        if (UIDebug.debugRequest(context))
-        {
-            return new UIViewRoot();
-        }
+        // Currently there is no way, in which UIDebug.debugRequest(context)
+        // can create debug information and return true at this point,
+        // because this method is only accessed if the current request
+        // is a postback, which will never be true for a debug page.
+        // The only point where valid debug output can be produced by now
+        // is in createView() -= Jakob Korherr =-
+        //if (UIDebug.debugRequest(context))
+        //{
+        //    return new UIViewRoot();
+        //}
+        
         //else if (!_buildBeforeRestore)
         //{
             return super.restoreView(context, viewId);
