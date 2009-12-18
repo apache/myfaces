@@ -202,7 +202,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
     private FaceletFactory _faceletFactory;
 
-    private StateManagementStrategy stateMgmtStrategy;
+    private StateManagementStrategy _stateMgmtStrategy;
     
     private boolean _partialStateSaving;
     
@@ -278,7 +278,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             // relocated components are not retrieved later on getClientIdsRemoved().
             if (!(context.isPostback() && PhaseId.RESTORE_VIEW.equals(context.getCurrentPhaseId())))
             {
-                ((DefaultFaceletsStateManagementStrategy) stateMgmtStrategy).suscribeListeners(view);
+                ((DefaultFaceletsStateManagementStrategy) getStateManagementStrategy(context, view.getViewId())).suscribeListeners(view);
             }
         }
     }
@@ -789,7 +789,12 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     {
         // Use partial state saving strategy only if javax.faces.PARTIAL_STATE_SAVING is "true" and
         // the current view is not on javax.faces.FULL_STATE_SAVING_VIEW_IDS.
-        return _usePartialStateSavingOnThisView(viewId) ? stateMgmtStrategy : null;
+        if (_partialStateSaving && _stateMgmtStrategy == null)
+        {
+            _stateMgmtStrategy = new DefaultFaceletsStateManagementStrategy(this);
+        }
+        
+        return _usePartialStateSavingOnThisView(viewId) ? _stateMgmtStrategy : null;
     }
 
     /**
@@ -1300,11 +1305,6 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         _initializeBuffer(eContext);
         _initializeMode(eContext);
 
-        if (_partialStateSaving)
-        {
-            stateMgmtStrategy = new DefaultFaceletsStateManagementStrategy(this);
-        }
-        
         log.finest("Initialization Successful");
     }
 
