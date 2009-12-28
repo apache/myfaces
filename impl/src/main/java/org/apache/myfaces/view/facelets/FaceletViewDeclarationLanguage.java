@@ -24,7 +24,6 @@ import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.Writer;
 import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.ArrayList;
@@ -105,7 +104,6 @@ import org.apache.myfaces.view.facelets.tag.jstl.core.JstlCoreLibrary;
 import org.apache.myfaces.view.facelets.tag.jstl.fn.JstlFnLibrary;
 import org.apache.myfaces.view.facelets.tag.ui.UIDebug;
 import org.apache.myfaces.view.facelets.tag.ui.UILibrary;
-import org.apache.myfaces.view.facelets.util.DevTools;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
 /**
@@ -1263,11 +1261,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         }
     }
 
-    protected void handleRenderException(FacesContext context, Exception e) throws IOException, ELException,
-            FacesException
+    protected void handleRenderException(FacesContext context, Exception e) 
+            throws IOException, ELException, FacesException
     {
-        Object resp = context.getExternalContext().getResponse();
-        
         UIViewRoot root = context.getViewRoot();
         StringBuffer sb = new StringBuffer(64);
         sb.append("Error Rendering View");
@@ -1279,22 +1275,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         }
         
         log.log(Level.SEVERE, sb.toString(), e);
-
-        // handle dev response
-        if (_isDevelopmentMode(context) && !context.getResponseComplete() && resp instanceof HttpServletResponse)
-        {
-            HttpServletResponse httpResp = (HttpServletResponse) resp;
-            if (!httpResp.isCommitted())
-            {
-                httpResp.reset();
-                httpResp.setContentType("text/html; charset=UTF-8");
-                Writer w = httpResp.getWriter();
-                DevTools.debugHtml(w, context, e);
-                w.flush();
-                context.responseComplete();
-            }
-        }
-        else if (e instanceof RuntimeException)
+        
+        // rethrow the Exception to be handled by the ExceptionHandler
+        if (e instanceof RuntimeException)
         {
             throw (RuntimeException) e;
         }

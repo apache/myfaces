@@ -52,7 +52,6 @@ import org.apache.myfaces.view.facelets.impl.ResourceResolver;
 import org.apache.myfaces.view.facelets.tag.TagDecorator;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
 import org.apache.myfaces.view.facelets.tag.ui.UIDebug;
-import org.apache.myfaces.view.facelets.util.DevTools;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
 /**
@@ -705,41 +704,23 @@ public class FaceletViewHandler extends ViewHandler
         }
     }
 
-    protected void handleRenderException(FacesContext context, Exception e) throws IOException, ELException,
-            FacesException
+    protected void handleRenderException(FacesContext context, Exception e) 
+            throws IOException, ELException, FacesException
     {
-        Object resp = context.getExternalContext().getResponse();
-
-        // always log
-        if (log.isLoggable(Level.SEVERE))
+        UIViewRoot root = context.getViewRoot();
+        StringBuffer sb = new StringBuffer(64);
+        sb.append("Error Rendering View");
+        if (root != null)
         {
-            UIViewRoot root = context.getViewRoot();
-            StringBuffer sb = new StringBuffer(64);
-            sb.append("Error Rendering View");
-            if (root != null)
-            {
-                sb.append('[');
-                sb.append(root.getViewId());
-                sb.append(']');
-            }
-            log.log(Level.SEVERE, sb.toString(), e);
+            sb.append('[');
+            sb.append(root.getViewId());
+            sb.append(']');
         }
-
-        // handle dev response
-        if (this.developmentMode && !context.getResponseComplete() && resp instanceof HttpServletResponse)
-        {
-            HttpServletResponse httpResp = (HttpServletResponse) resp;
-            if (!httpResp.isCommitted())
-            {
-                httpResp.reset();
-                httpResp.setContentType("text/html; charset=UTF-8");
-                Writer w = httpResp.getWriter();
-                DevTools.debugHtml(w, context, e);
-                w.flush();
-                context.responseComplete();
-            }
-        }
-        else if (e instanceof RuntimeException)
+        
+        log.log(Level.SEVERE, sb.toString(), e);
+        
+        // rethrow the Exception to be handled by the ExceptionHandler
+        if (e instanceof RuntimeException)
         {
             throw (RuntimeException) e;
         }

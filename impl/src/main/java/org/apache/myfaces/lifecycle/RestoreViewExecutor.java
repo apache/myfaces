@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 
 import javax.faces.FacesException;
 import javax.faces.application.Application;
+import javax.faces.application.ProjectStage;
 import javax.faces.application.ViewExpiredException;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewParameter;
@@ -33,6 +34,8 @@ import javax.faces.event.PhaseId;
 import javax.faces.event.PostAddToViewEvent;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.ViewMetadata;
+
+import org.apache.myfaces.renderkit.ErrorPageWriter;
 
 /**
  * Implements the Restore View Phase (JSF Spec 2.2.1)
@@ -88,8 +91,8 @@ class RestoreViewExecutor implements PhaseExecutor
         // servlet container to display an error page.
         // If the request is an error page request, the servlet container
         // is required to set the request parameter "javax.servlet.error.message".
-        boolean errorPageRequest = facesContext.getExternalContext().getRequestMap()
-                                           .get("javax.servlet.error.message") != null;
+        final boolean errorPageRequest = facesContext.getExternalContext().getRequestMap()
+                                                 .get("javax.servlet.error.message") != null;
         
         // Determine if this request is a postback or an initial request.
         // But if it is an error page request, do not treat it as a postback (since 2.0)
@@ -183,6 +186,15 @@ class RestoreViewExecutor implements PhaseExecutor
             }
         }
 
+        // add the ErrorPageBean to the view map to fully support 
+        // facelet error pages, if we are in ProjectStage Development
+        // and currently generating an error page
+        if (errorPageRequest && facesContext.isProjectStage(ProjectStage.Development))
+        {
+            facesContext.getViewRoot().getViewMap()
+                    .put(ErrorPageWriter.ERROR_PAGE_BEAN_KEY, new ErrorPageWriter.ErrorPageBean());
+        }
+        
         return false;
     }
     

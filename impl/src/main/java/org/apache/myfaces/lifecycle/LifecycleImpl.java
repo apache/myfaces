@@ -33,6 +33,7 @@ import javax.faces.event.PhaseListener;
 import javax.faces.lifecycle.Lifecycle;
 
 import org.apache.myfaces.config.FacesConfigurator;
+import org.apache.myfaces.renderkit.ErrorPageWriter;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
 import org.apache.myfaces.util.DebugUtils;
@@ -70,22 +71,30 @@ public class LifecycleImpl extends Lifecycle
     @Override
     public void execute(FacesContext facesContext) throws FacesException
     {
-        // refresh all configuration information if according web-xml parameter is set.
-        // TODO: Performance wise, shouldn't the lifecycle be configured with a local boolean attribute
-        // specifying if the system should look for file modification because this code seems like
-        // a developement facility, but at the cost of scalability. I think a context param like
-        // Trinidad is a better idea -= Simon Lessard =-
-        WebXml.update(facesContext.getExternalContext());
-
-        new FacesConfigurator(facesContext.getExternalContext()).update();
-
-        PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, facesContext, getPhaseListeners());
-        for (PhaseExecutor executor : lifecycleExecutors)
+        try
         {
-            if (executePhase(facesContext, executor, phaseListenerMgr))
+            // refresh all configuration information if according web-xml parameter is set.
+            // TODO: Performance wise, shouldn't the lifecycle be configured with a local boolean attribute
+            // specifying if the system should look for file modification because this code seems like
+            // a developement facility, but at the cost of scalability. I think a context param like
+            // Trinidad is a better idea -= Simon Lessard =-
+            WebXml.update(facesContext.getExternalContext());
+    
+            new FacesConfigurator(facesContext.getExternalContext()).update();
+    
+            PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, facesContext, getPhaseListeners());
+            for (PhaseExecutor executor : lifecycleExecutors)
             {
-                return;
+                if (executePhase(facesContext, executor, phaseListenerMgr))
+                {
+                    return;
+                }
             }
+        }
+        catch (Throwable ex)
+        {
+            // handle the Throwable accordingly. Maybe generate an error page.
+            ErrorPageWriter.handleThrowable(facesContext, ex);
         }
     }
 
@@ -164,55 +173,63 @@ public class LifecycleImpl extends Lifecycle
     @Override
     public void render(FacesContext facesContext) throws FacesException
     {
-        // if the response is complete we should not be invoking the phase listeners
-        if (isResponseComplete(facesContext, renderExecutor.getPhase(), true))
-        {
-            return;
-        }
-        if (log.isLoggable(Level.FINEST))
-            log.finest("entering " + renderExecutor.getPhase() + " in " + LifecycleImpl.class.getName());
-
-        PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, facesContext, getPhaseListeners());
-        Flash flash = facesContext.getExternalContext().getFlash();
-        
         try
         {
-            facesContext.setCurrentPhaseId(renderExecutor.getPhase());
-            
-            flash.doPrePhaseActions(facesContext);
-            boolean renderResponse = phaseListenerMgr.informPhaseListenersBefore(renderExecutor.getPhase());
-            // also possible that one of the listeners completed the response
+            // if the response is complete we should not be invoking the phase listeners
             if (isResponseComplete(facesContext, renderExecutor.getPhase(), true))
             {
                 return;
             }
-            if(renderResponse || facesContext.getExceptionHandler().getClass().equals(ClassUtils.classForName("javax.faces.webapp.PreJsf2ExceptionHandlerFactory$PreJsf2ExceptionHandlerImpl")))
-                renderExecutor.execute(facesContext);
-        }
-        
-        catch (Throwable e) {
-            // JSF 2.0: publish the executor's exception (if any).
+            if (log.isLoggable(Level.FINEST))
+                log.finest("entering " + renderExecutor.getPhase() + " in " + LifecycleImpl.class.getName());
+    
+            PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, facesContext, getPhaseListeners());
+            Flash flash = facesContext.getExternalContext().getFlash();
             
-            publishException (e, renderExecutor.getPhase(), facesContext);
+            try
+            {
+                facesContext.setCurrentPhaseId(renderExecutor.getPhase());
+                
+                flash.doPrePhaseActions(facesContext);
+                boolean renderResponse = phaseListenerMgr.informPhaseListenersBefore(renderExecutor.getPhase());
+                // also possible that one of the listeners completed the response
+                if (isResponseComplete(facesContext, renderExecutor.getPhase(), true))
+                {
+                    return;
+                }
+                if(renderResponse || facesContext.getExceptionHandler().getClass().equals(ClassUtils.classForName("javax.faces.webapp.PreJsf2ExceptionHandlerFactory$PreJsf2ExceptionHandlerImpl")))
+                    renderExecutor.execute(facesContext);
+            }
+            
+            catch (Throwable e) {
+                // JSF 2.0: publish the executor's exception (if any).
+                
+                publishException (e, renderExecutor.getPhase(), facesContext);
+            }
+            
+            finally
+            {
+                phaseListenerMgr.informPhaseListenersAfter(renderExecutor.getPhase());
+                flash.doPostPhaseActions(facesContext);
+            }
+            
+            facesContext.getExceptionHandler().handle();
+            
+            if (log.isLoggable(Level.FINEST))
+            {
+                // Note: DebugUtils Logger must also be in trace level
+                DebugUtils.traceView("View after rendering");
+            }
+    
+            if (log.isLoggable(Level.FINEST))
+            {
+                log.finest("exiting " + renderExecutor.getPhase() + " in " + LifecycleImpl.class.getName());
+            }
         }
-        
-        finally
+        catch (Throwable ex)
         {
-            phaseListenerMgr.informPhaseListenersAfter(renderExecutor.getPhase());
-            flash.doPostPhaseActions(facesContext);
-        }
-        
-        facesContext.getExceptionHandler().handle();
-        
-        if (log.isLoggable(Level.FINEST))
-        {
-            // Note: DebugUtils Logger must also be in trace level
-            DebugUtils.traceView("View after rendering");
-        }
-
-        if (log.isLoggable(Level.FINEST))
-        {
-            log.finest("exiting " + renderExecutor.getPhase() + " in " + LifecycleImpl.class.getName());
+            // handle the Throwable accordingly. Maybe generate an error page.
+            ErrorPageWriter.handleThrowable(facesContext, ex);
         }
     }
 
@@ -296,4 +313,5 @@ public class LifecycleImpl extends Lifecycle
         
         facesContext.getApplication().publishEvent (facesContext, ExceptionQueuedEvent.class, context);
     }
+
 }

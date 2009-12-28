@@ -57,7 +57,6 @@ public class UIInput extends UIOutput implements EditableValueHolder
     public static final String CONVERSION_MESSAGE_ID = "javax.faces.component.UIInput.CONVERSION";
     public static final String REQUIRED_MESSAGE_ID = "javax.faces.component.UIInput.REQUIRED";
     public static final String UPDATE_MESSAGE_ID = "javax.faces.component.UIInput.UPDATE";
-    private static final String ERROR_HANDLING_EXCEPTION_LIST = "org.apache.myfaces.errorHandling.exceptionList";
 
     /** -=Leonardo Uribe =- According to http://wiki.java.net/bin/view/Projects/Jsf2MR1ChangeLog 
       * this constant will be made public on 2.1. For now, since this param is handled in
@@ -300,36 +299,29 @@ public class UIInput extends UIOutput implements EditableValueHolder
         }
         catch (Exception e)
         {
+            // Enqueue an error message
             context.getExternalContext().log(e.getMessage(), e);
-            _MessageUtils.addErrorMessage(context, this, UPDATE_MESSAGE_ID, new Object[] { _MessageUtils.getLabel(
-                context, this) });
+            
+            // Create a FacesMessage with the id UPDATE_MESSAGE_ID
+            FacesMessage facesMessage = _MessageUtils.getMessage(context,
+                    context.getViewRoot().getLocale(), FacesMessage.SEVERITY_ERROR, UPDATE_MESSAGE_ID,
+                    new Object[] { _MessageUtils.getLabel(context, this) });
+            
+            // create an UpdateModelException and enqueue it since 
+            // we are not allowed to throw it directly here
+            // spec javadoc: The exception must not be re-thrown. This enables tree traversal to 
+            // continue for this lifecycle phase, as in all the other lifecycle phases.
+            UpdateModelException updateModelException = new UpdateModelException(facesMessage, e);
+            ExceptionQueuedEventContext exceptionQueuedContext 
+                    = new ExceptionQueuedEventContext (context, updateModelException, this, PhaseId.UPDATE_MODEL_VALUES);
+            
+            // spec javadoc says we should call context.getExceptionHandler().processEvent(exceptionQueuedContext),
+            // which is not just syntactically wrong, but also stupid!!
+            context.getApplication().publishEvent(context, ExceptionQueuedEvent.class, exceptionQueuedContext);
+            
+            // Set the valid property of this UIInput to false
             setValid(false);
-
-            /*
-             * we are not allowed to throw exceptions here - we still need the full stack-trace later on to process it
-             * later in our error-handler
-             */
-            queueExceptionInRequest(context, expression, e);
         }
-    }
-
-    /**
-     * For development and production, we want to offer a single point to which error-handlers can attach. So we queue
-     * up all ocurring exceptions and later pass them to the configured error-handler.
-     */
-    @SuppressWarnings("unchecked")
-    private void queueExceptionInRequest(FacesContext context, ValueExpression expression, Exception e)
-    {
-        Map<String, Object> requestScope = context.getExternalContext().getRequestMap();
-        List<FacesException> li = (List<FacesException>) requestScope.get(ERROR_HANDLING_EXCEPTION_LIST);
-        if (null == li)
-        {
-            li = new ArrayList<FacesException>();
-            context.getExternalContext().getRequestMap().put(ERROR_HANDLING_EXCEPTION_LIST, li);
-        }
-
-        li.add(new FacesException("Exception while setting value for expression : " + expression.getExpressionString()
-                + " of component with path : " + _ComponentUtils.getPathToComponent(this), e));
     }
 
     protected void validateValue(FacesContext context, Object convertedValue)

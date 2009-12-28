@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
-import org.apache.myfaces.view.facelets.util.DevTools;
+import org.apache.myfaces.renderkit.ErrorPageWriter;
 import org.apache.myfaces.view.facelets.util.FastWriter;
 
 /**
@@ -124,7 +124,7 @@ public final class UIDebug extends UIComponentBase
     private static String writeDebugOutput(FacesContext faces) throws IOException
     {
         FastWriter fw = new FastWriter();
-        DevTools.debugHtml(fw, faces);
+        ErrorPageWriter.debugHtml(fw, faces);
 
         Map<String, Object> session = faces.getExternalContext().getSessionMap();
         Map<String, String> debugs = (Map<String, String>) session.get(KEY);

@@ -36,6 +36,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.ServletResponseWrapper;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.myfaces.renderkit.ErrorPageWriter;
 import org.apache.myfaces.resource.ResourceImpl;
 import org.apache.myfaces.resource.ResourceLoader;
 import org.apache.myfaces.resource.ResourceMeta;
@@ -238,134 +239,144 @@ public class ResourceHandlerImpl extends ResourceHandler
     @Override
     public void handleResourceRequest(FacesContext facesContext) throws IOException
     {
-        String resourceBasePath = getResourceHandlerSupport()
-                .calculateResourceBasePath(facesContext);
-
-        if (resourceBasePath == null)
-        {
-            // No base name could be calculated, so no further
-            //advance could be done here. HttpServletResponse.SC_NOT_FOUND
-            //cannot be returned since we cannot extract the 
-            //resource base name
-            return;
-        }
-
-        //We neet to get an instance of HttpServletResponse, but sometimes
-        //the response object is wrapped by several instances of 
-        //ServletResponseWrapper (like ResponseSwitch).
-        //Since we are handling a resource, we can expect to get an 
-        //HttpServletResponse.
-        
-        Object response = facesContext.getExternalContext().getResponse();
-        
-        //It is safe to cast it to ServletResponse
-        ServletResponse servletResponse = (ServletResponse) response;
-        
-        HttpServletResponse httpServletResponse = null;
-        if (response instanceof HttpServletResponse)
-        {
-            httpServletResponse = (HttpServletResponse) response;
-        }
-        else if (response instanceof ServletResponseWrapper)
-        {
-            //iterate until we find a instance that we can cast 
-            while (!(response instanceof HttpServletResponse))
-            {
-                //assume ServletResponseWrapper as wrapper
-                response = ((ServletResponseWrapper)response).getResponse();
-            }
-            //Case where it is an instance of ResponseSwitch
-            //in this case just return the inner response
-            httpServletResponse = (HttpServletResponse) response;
-        }
-
-        if (isResourceIdentifierExcluded(facesContext, resourceBasePath))
-        {
-            httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return;
-        }
-
-        String resourceName = null;
-        if (resourceBasePath.startsWith(ResourceHandler.RESOURCE_IDENTIFIER))
-        {
-            resourceName = resourceBasePath
-                    .substring(ResourceHandler.RESOURCE_IDENTIFIER.length() + 1);
-        }
-        else
-        {
-            //Does not have the conditions for be a resource call
-            httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return;
-        }
-
-        String libraryName = facesContext.getExternalContext()
-                .getRequestParameterMap().get("ln");
-
-        Resource resource = null;
-        if (libraryName != null)
-        {
-            //log.info("libraryName=" + libraryName);
-            resource = createResource(resourceName, libraryName);
-        }
-        else
-        {
-            resource = createResource(resourceName);
-        }
-
-        if (resource == null)
-        {
-            httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return;
-        }
-
-        if (!resource.userAgentNeedsUpdate(facesContext))
-        {
-            httpServletResponse.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-            return;
-        }
-
-        servletResponse.setContentType(resource.getContentType());
-
-        Map<String, String> headers = resource.getResponseHeaders();
-
-        for (Map.Entry<String, String> entry : headers.entrySet())
-        {
-            httpServletResponse.setHeader(entry.getKey(), entry.getValue());
-        }
-
-        //serve up the bytes (taken from trinidad ResourceServlet)
         try
         {
-            InputStream in = resource.getInputStream();
-            OutputStream out = servletResponse.getOutputStream();
-            byte[] buffer = new byte[_BUFFER_SIZE];
-
+            String resourceBasePath = getResourceHandlerSupport()
+                    .calculateResourceBasePath(facesContext);
+    
+            if (resourceBasePath == null)
+            {
+                // No base name could be calculated, so no further
+                //advance could be done here. HttpServletResponse.SC_NOT_FOUND
+                //cannot be returned since we cannot extract the 
+                //resource base name
+                return;
+            }
+    
+            //We neet to get an instance of HttpServletResponse, but sometimes
+            //the response object is wrapped by several instances of 
+            //ServletResponseWrapper (like ResponseSwitch).
+            //Since we are handling a resource, we can expect to get an 
+            //HttpServletResponse.
+            
+            Object response = facesContext.getExternalContext().getResponse();
+            
+            //It is safe to cast it to ServletResponse
+            ServletResponse servletResponse = (ServletResponse) response;
+            
+            HttpServletResponse httpServletResponse = null;
+            if (response instanceof HttpServletResponse)
+            {
+                httpServletResponse = (HttpServletResponse) response;
+            }
+            else if (response instanceof ServletResponseWrapper)
+            {
+                //iterate until we find a instance that we can cast 
+                while (!(response instanceof HttpServletResponse))
+                {
+                    //assume ServletResponseWrapper as wrapper
+                    response = ((ServletResponseWrapper)response).getResponse();
+                }
+                //Case where it is an instance of ResponseSwitch
+                //in this case just return the inner response
+                httpServletResponse = (HttpServletResponse) response;
+            }
+    
+            if (isResourceIdentifierExcluded(facesContext, resourceBasePath))
+            {
+                httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
+    
+            String resourceName = null;
+            if (resourceBasePath.startsWith(ResourceHandler.RESOURCE_IDENTIFIER))
+            {
+                resourceName = resourceBasePath
+                        .substring(ResourceHandler.RESOURCE_IDENTIFIER.length() + 1);
+            }
+            else
+            {
+                //Does not have the conditions for be a resource call
+                httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
+    
+            String libraryName = facesContext.getExternalContext()
+                    .getRequestParameterMap().get("ln");
+    
+            Resource resource = null;
+            if (libraryName != null)
+            {
+                //log.info("libraryName=" + libraryName);
+                resource = createResource(resourceName, libraryName);
+            }
+            else
+            {
+                resource = createResource(resourceName);
+            }
+    
+            if (resource == null)
+            {
+                httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
+    
+            if (!resource.userAgentNeedsUpdate(facesContext))
+            {
+                httpServletResponse.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                return;
+            }
+    
+            servletResponse.setContentType(resource.getContentType());
+    
+            Map<String, String> headers = resource.getResponseHeaders();
+    
+            for (Map.Entry<String, String> entry : headers.entrySet())
+            {
+                httpServletResponse.setHeader(entry.getKey(), entry.getValue());
+            }
+    
+            //serve up the bytes (taken from trinidad ResourceServlet)
             try
             {
-                int count = pipeBytes(in, out, buffer);
-                //set the content lenght
-                servletResponse.setContentLength(count);
-            }
-            finally
-            {
+                InputStream in = resource.getInputStream();
+                OutputStream out = servletResponse.getOutputStream();
+                byte[] buffer = new byte[_BUFFER_SIZE];
+    
                 try
                 {
-                    in.close();
+                    int count = pipeBytes(in, out, buffer);
+                    //set the content lenght
+                    servletResponse.setContentLength(count);
                 }
                 finally
                 {
-                    out.close();
+                    try
+                    {
+                        in.close();
+                    }
+                    finally
+                    {
+                        out.close();
+                    }
                 }
             }
+            catch (IOException e)
+            {
+                //TODO: Log using a localized message (which one?)
+                if (log.isLoggable(Level.SEVERE))
+                    log.severe("Error trying to load resource " + resourceName
+                            + " with library " + libraryName + " :"
+                            + e.getMessage());
+                httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            }
         }
-        catch (IOException e)
+        catch (Throwable ex)
         {
-            //TODO: Log using a localized message (which one?)
-            if (log.isLoggable(Level.SEVERE))
-                log.severe("Error trying to load resource " + resourceName
-                        + " with library " + libraryName + " :"
-                        + e.getMessage());
-            httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            // handle the Throwable accordingly. Maybe generate an error page.
+            // FIXME we are creating a html error page for a non html request here
+            // shouln't we do something better? -=Jakob Korherr=-
+            ErrorPageWriter.handleThrowable(facesContext, ex);
         }
     }
 
