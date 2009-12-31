@@ -503,7 +503,10 @@ public final class ErrorPageWriter
         ExternalContext ctx = faces.getExternalContext();
         _writeVariables(writer, ctx.getRequestParameterMap(), "Request Parameters");
         _writeVariables(writer, ctx.getRequestMap(), "Request Attributes");
-        _writeVariables(writer, view.getViewMap(), "View Attributes");
+        if (view != null)
+        {
+          _writeVariables(writer, view.getViewMap(), "View Attributes");
+        }
         if (ctx.getSession(false) != null)
         {
             _writeVariables(writer, ctx.getSessionMap(), "Session Attributes");
