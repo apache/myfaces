@@ -1096,7 +1096,7 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
         {
             if (!(listener instanceof UIComponent) && listener instanceof PartialStateHolder)
             {
-                ((PartialStateHolder)listener).initialStateMarked();
+                return ((PartialStateHolder)listener).initialStateMarked();
             }
             return false;
         }
