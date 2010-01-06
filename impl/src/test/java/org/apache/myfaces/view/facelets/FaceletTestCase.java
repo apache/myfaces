@@ -42,7 +42,6 @@ import org.apache.myfaces.application.ApplicationFactoryImpl;
 import org.apache.myfaces.application.ApplicationImpl;
 import org.apache.myfaces.application.ResourceHandlerImpl;
 import org.apache.myfaces.application.ViewHandlerImpl;
-import org.apache.myfaces.application.ViewHandlerSupport;
 import org.apache.myfaces.config.FacesConfigDispenser;
 import org.apache.myfaces.config.FacesConfigUnmarshaller;
 import org.apache.myfaces.config.RuntimeConfig;
@@ -52,6 +51,7 @@ import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerIm
 import org.apache.myfaces.config.impl.digester.elements.FacesConfig;
 import org.apache.myfaces.context.PartialViewContextFactoryImpl;
 import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
+import org.apache.myfaces.shared_impl.application.ViewHandlerSupport;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;

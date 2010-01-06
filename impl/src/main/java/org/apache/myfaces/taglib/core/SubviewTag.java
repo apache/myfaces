@@ -24,7 +24,7 @@ import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
 import javax.faces.webapp.UIComponentELTag;
 
-import org.apache.myfaces.application.jsp.ViewResponseWrapper;
+import org.apache.myfaces.application.jsp.ServletViewResponseWrapper;
 
 /**
  * @author Thomas Spiegl (latest modification by $Author$)
@@ -65,9 +65,9 @@ public class SubviewTag extends UIComponentELTag
         Object response = facesContext.getExternalContext().getResponse();
         String wrappedOutput;
 
-        if (response instanceof ViewResponseWrapper)
+        if (response instanceof ServletViewResponseWrapper)
         {
-            ViewResponseWrapper wrappedResponse = (ViewResponseWrapper)response;
+            ServletViewResponseWrapper wrappedResponse = (ServletViewResponseWrapper)response;
             wrappedOutput = wrappedResponse.toString();
             if (wrappedOutput != null && wrappedOutput.length() > 0)
             {

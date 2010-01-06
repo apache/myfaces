@@ -35,7 +35,7 @@ import javax.faces.webapp.UIComponentELTag;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.jstl.core.Config;
 
-import org.apache.myfaces.application.jsp.ViewResponseWrapper;
+import org.apache.myfaces.application.jsp.ServletViewResponseWrapper;
 import org.apache.myfaces.shared_impl.util.LocaleUtils;
 
 /**
@@ -94,12 +94,12 @@ public class ViewTag extends UIComponentELTag
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Object response = facesContext.getExternalContext().getResponse();
-        if (response instanceof ViewResponseWrapper)
+        if (response instanceof ServletViewResponseWrapper)
         {
             try
             {
                 pageContext.getOut().flush();
-                ((ViewResponseWrapper)response).flushToWrappedResponse();
+                ((ServletViewResponseWrapper)response).flushToWrappedResponse();
             }
             catch (IOException e)
             {

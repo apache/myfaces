@@ -34,7 +34,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.PostRestoreStateEvent;
 import javax.faces.render.ResponseStateManager;
 
-import org.apache.myfaces.application.InvalidViewIdException;
+import org.apache.myfaces.shared_impl.application.InvalidViewIdException;
 import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
 import org.apache.myfaces.shared_impl.util.Assert;
 

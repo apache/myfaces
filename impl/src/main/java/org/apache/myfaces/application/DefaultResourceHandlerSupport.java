@@ -23,11 +23,11 @@ import java.util.Map;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
-import org.apache.myfaces.application.DefaultViewHandlerSupport.FacesServletMapping;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.resource.ClassLoaderResourceLoader;
 import org.apache.myfaces.resource.ExternalContextResourceLoader;
 import org.apache.myfaces.resource.ResourceLoader;
+import org.apache.myfaces.shared_impl.application.FacesServletMapping;
 
 /**
  * A ResourceHandlerSupport implementation for use with standard Java Servlet engines,

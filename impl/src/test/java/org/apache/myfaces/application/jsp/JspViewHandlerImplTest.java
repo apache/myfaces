@@ -21,8 +21,9 @@ package org.apache.myfaces.application.jsp;
 import static org.apache.myfaces.Assert.assertException;
 import org.apache.myfaces.FacesTestCase;
 import org.apache.myfaces.TestRunner;
-import org.apache.myfaces.application.InvalidViewIdException;
-import org.apache.myfaces.application.ViewHandlerSupport;
+import org.apache.myfaces.shared_impl.application.InvalidViewIdException;
+import org.apache.myfaces.shared_impl.application.ViewHandlerSupport;
+
 import static org.easymock.EasyMock.*;
 import org.easymock.IAnswer;
 

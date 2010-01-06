@@ -76,13 +76,13 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.myfaces.application.DefaultViewHandlerSupport;
-import org.apache.myfaces.application.ViewHandlerSupport;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.shared_impl.application.DefaultViewHandlerSupport;
+import org.apache.myfaces.shared_impl.application.ViewHandlerSupport;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.shared_impl.util.StringUtils;
-import org.apache.myfaces.view.ViewDeclarationLanguageBase;
+import org.apache.myfaces.shared_impl.view.ViewDeclarationLanguageBase;
 import org.apache.myfaces.view.ViewMetadataBase;
 import org.apache.myfaces.view.facelets.FaceletViewHandler.NullWriter;
 import org.apache.myfaces.view.facelets.compiler.Compiler;

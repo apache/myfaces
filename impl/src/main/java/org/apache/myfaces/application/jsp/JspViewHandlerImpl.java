@@ -45,9 +45,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.jstl.core.Config;
 
-import org.apache.myfaces.application.DefaultViewHandlerSupport;
-import org.apache.myfaces.application.InvalidViewIdException;
-import org.apache.myfaces.application.ViewHandlerSupport;
+import org.apache.myfaces.shared_impl.application.DefaultViewHandlerSupport;
+import org.apache.myfaces.shared_impl.application.InvalidViewIdException;
+import org.apache.myfaces.shared_impl.application.ViewHandlerSupport;
 import org.apache.myfaces.shared_impl.config.MyfacesConfig;
 import org.apache.myfaces.shared_impl.renderkit.html.util.JavascriptUtils;
 
@@ -406,7 +406,7 @@ public class JspViewHandlerImpl extends ViewHandler
 
         // Final step - we output any content in the wrappedResponse response from above to the response,
         // removing the wrappedResponse response from the request, we don't need it anymore
-        ViewResponseWrapper afterViewTagResponse = (ViewResponseWrapper) externalContext.getRequestMap().get(
+        ServletViewResponseWrapper afterViewTagResponse = (ServletViewResponseWrapper) externalContext.getRequestMap().get(
                 AFTER_VIEW_TAG_CONTENT_PARAM);
         externalContext.getRequestMap().remove(AFTER_VIEW_TAG_CONTENT_PARAM);
 
@@ -486,7 +486,7 @@ public class JspViewHandlerImpl extends ViewHandler
      * @throws IOException
      */
     private boolean buildView(ServletResponse response, ExternalContext externalContext, String viewId) throws IOException {
-        ViewResponseWrapper wrappedResponse = new ViewResponseWrapper((HttpServletResponse) response);
+        ServletViewResponseWrapper wrappedResponse = new ServletViewResponseWrapper((HttpServletResponse) response);
 
         externalContext.setResponse(wrappedResponse);
         try
