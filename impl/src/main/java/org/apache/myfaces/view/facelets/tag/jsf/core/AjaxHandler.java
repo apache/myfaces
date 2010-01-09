@@ -237,9 +237,9 @@ public class AjaxHandler extends TagHandler implements
             outputScript.getAttributes().put("name", "jsf.js");
             outputScript.getAttributes().put("library", "javax.faces");
             outputScript.getAttributes().put("target", "head");
-            
-            AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
-            
+
+            //AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+
             // Since this component will be relocated, we need a generated clientId from the
             // viewRoot, so when this one is relocated, its parent will be this UIViewRoot instance
             // and prevent a duplicate id exception.
