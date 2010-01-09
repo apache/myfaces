@@ -169,7 +169,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         Collection<ClientBehaviorContext.Parameter> params = context.getParameters();
         int paramSize = (params != null) ? params.size() : 0;
 
-        List<String> parameterList = new ArrayList(paramSize + 2);
+        List<String> parameterList = new ArrayList<String>(paramSize + 2);
         if (executes != null) {
             parameterList.add(executes.toString());
         }
@@ -234,7 +234,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         StringBuilder retVal = new StringBuilder(20);
 
         if (dataHolder == null) {
-            dataHolder = Collections.EMPTY_LIST;
+            dataHolder = Collections.emptyList();
         }
         int executeSize = dataHolder.size();
         if (executeSize > 0) {
