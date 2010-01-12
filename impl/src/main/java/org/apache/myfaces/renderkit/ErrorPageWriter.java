@@ -192,6 +192,13 @@ public final class ErrorPageWriter
     private static final String REGEX_PATTERN = ".*?\\Q,Id:\\E\\s*(\\S+)\\s*\\].*?";
     
     private final static String[] IGNORE = new String[] { "parent", "rendererType" };
+    
+    /**
+     * Indicate if myfaces is responsible to handle errors. 
+     * See http://wiki.apache.org/myfaces/Handling_Server_Errors for details. 
+     */
+    @JSFWebConfigParam(defaultValue="true",expectedValues="true,false", since="1.2.4")
+    public static final String ERROR_HANDLING_PARAMETER = "org.apache.myfaces.ERROR_HANDLING";
 
     public ErrorPageWriter()
     {
@@ -313,41 +320,50 @@ public final class ErrorPageWriter
         boolean errorPageWritten = false;
         
         // check if an error page is present in web.xml
+        // if so, do not generate an error page
         WebXml webXml = WebXml.getWebXml(facesContext.getExternalContext());
-        if (!webXml.isErrorPagePresent())
-        {
-            // write the error page
-            Object response = facesContext.getExternalContext().getResponse();
-            if (response instanceof HttpServletResponse)
-            {
-                HttpServletResponse httpResp = (HttpServletResponse) response;
-                if (!httpResp.isCommitted())
-                {
-                    httpResp.reset();
-                    httpResp.setContentType("text/html; charset=UTF-8");
-                    try
-                    {
-                        Writer writer = httpResp.getWriter();
-                        debugHtml(writer, facesContext, ex);
-                        log.log(Level.SEVERE, "An exception occurred", ex);
-                        
-                        // mark the response as complete
-                        facesContext.responseComplete();
-                        
-                        errorPageWritten = true;
-                    }
-                    catch(IOException ioe)
-                    {
-                        throw new FacesException("Could not write the error page", ioe);
-                    }
-                }
-            }
-        }
-        else
+        if (webXml.isErrorPagePresent())
         {
             // save current view in the request map to access it on the error page
             facesContext.getExternalContext().getRequestMap().put(VIEW_KEY, facesContext.getViewRoot());
         }
+        else
+        {
+            // check for org.apache.myfaces.ERROR_HANDLING
+            // do not generate an error page if it is false
+            String errorHandling = facesContext.getExternalContext().getInitParameter(ERROR_HANDLING_PARAMETER);
+            boolean errorHandlingDisabled = (errorHandling != null && errorHandling.equalsIgnoreCase("false"));
+            if (!errorHandlingDisabled)
+            {
+                // write the error page
+                Object response = facesContext.getExternalContext().getResponse();
+                if (response instanceof HttpServletResponse)
+                {
+                    HttpServletResponse httpResp = (HttpServletResponse) response;
+                    if (!httpResp.isCommitted())
+                    {
+                        httpResp.reset();
+                        httpResp.setContentType("text/html; charset=UTF-8");
+                        try
+                        {
+                            Writer writer = httpResp.getWriter();
+                            debugHtml(writer, facesContext, ex);
+                            log.log(Level.SEVERE, "An exception occurred", ex);
+                            
+                            // mark the response as complete
+                            facesContext.responseComplete();
+                            
+                            errorPageWritten = true;
+                        }
+                        catch(IOException ioe)
+                        {
+                            throw new FacesException("Could not write the error page", ioe);
+                        }
+                    }
+                }
+            }
+        }
+        
         // rethrow the throwable, if we did not write the error page
         if (!errorPageWritten)
         {
