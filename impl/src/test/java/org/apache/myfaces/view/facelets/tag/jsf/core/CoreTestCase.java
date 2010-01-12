@@ -31,6 +31,7 @@ import javax.faces.component.UIForm;
 import javax.faces.component.UIGraphic;
 import javax.faces.component.UIInput;
 import javax.faces.component.UIOutput;
+import javax.faces.component.UIPanel;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.html.HtmlCommandLink;
 import javax.faces.component.html.HtmlDataTable;
@@ -61,6 +62,8 @@ public class CoreTestCase extends FaceletTestCase
     {
         application.addComponent(UIViewRoot.COMPONENT_TYPE, UIViewRoot.class
                 .getName());
+        application.addComponent(UIPanel.COMPONENT_TYPE,
+                UIPanel.class.getName());
         application.addComponent(HtmlCommandLink.COMPONENT_TYPE,
                 HtmlCommandLink.class.getName());
         application.addComponent(HtmlGraphicImage.COMPONENT_TYPE,

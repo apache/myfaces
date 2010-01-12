@@ -31,6 +31,7 @@ import javax.faces.application.ProjectStage;
 import javax.faces.component.ActionSource;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIPanel;
 import javax.faces.component.UniqueIdVendor;
 import javax.faces.component.ValueHolder;
 import javax.faces.component.behavior.ClientBehaviorHolder;
@@ -67,6 +68,13 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
 {
     //private final static Logger log = Logger.getLogger("facelets.tag.component");
     private final static Logger log = Logger.getLogger(ComponentTagHandlerDelegate.class.getName());
+    
+    /**
+     * The UIPanel components, which are dynamically generated to serve as a container for
+     * facets with multiple non panel children, are marked with this attribute.
+     * This constant is duplicate in javax.faces.webapp.UIComponentClassicTagBase
+     */
+    public final static String FACET_CREATED_UIPANEL_MARKER = "org.apache.myfaces.facet.createdUIPanel";
 
     private final ComponentHandler _delegate;
 
@@ -208,6 +216,18 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             {
                 parent.getChildren().remove(c);
             }
+            else
+            {
+                UIComponent facet = parent.getFacet(facetName);
+                if (Boolean.TRUE.equals(facet.getAttributes().get(FACET_CREATED_UIPANEL_MARKER)))
+                {
+                    facet.getChildren().remove(c);
+                }
+                else
+                {
+                    parent.getFacets().remove(facetName);
+                }
+            }
         }
 
         if (c instanceof ClientBehaviorHolder && !UIComponent.isCompositeComponent(c))
@@ -240,7 +260,59 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         }
         else
         {
-            parent.getFacets().put(facetName, c);
+            // facets now can have multiple children and the direct
+            // child of a facet is always an UIPanel (since 2.0)
+            UIComponent facet = parent.getFacets().get(facetName);
+            boolean facetChanged = false;
+            
+            if (facet == null)
+            {
+                // if our component is an instance of UIPanel, use it
+                if (c instanceof UIPanel)
+                {
+                    facet = c;
+                }
+                else
+                {
+                    // create a new UIPanel and add c as child
+                    facet = createFacetUIPanel(facesContext);
+                    facet.getChildren().add(c);
+                }
+                facetChanged = true;
+            }
+            else if (!(facet instanceof UIPanel))
+            {
+                // there is a facet, but it is not an instance of UIPanel
+                UIComponent child = facet;
+                facet = createFacetUIPanel(facesContext);
+                facet.getChildren().add(child);
+                facet.getChildren().add(c);
+                facetChanged = true;
+            }
+            else
+            {
+                // we have a facet, which is an instance of UIPanel at this point
+                // check if it is a facet marked UIPanel
+                if (Boolean.TRUE.equals(facet.getAttributes().get(FACET_CREATED_UIPANEL_MARKER)))
+                {
+                    facet.getChildren().add(c);
+                }
+                else
+                {
+                    // the facet is an instance of UIPanel, but it is not marked,
+                    // so we have to create a new UIPanel and store this one in it
+                    UIComponent oldPanel = facet;
+                    facet = createFacetUIPanel(facesContext);
+                    facet.getChildren().add(oldPanel);
+                    facet.getChildren().add(c);
+                    facetChanged = true;
+                }
+            }
+            
+            if (facetChanged)
+            {
+                parent.getFacets().put(facetName, facet);
+            }
         }
         
         if (c instanceof UniqueIdVendor)
@@ -434,6 +506,21 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
 
         // By default, all default validators should be added
         return true;
+    }
+    
+    /**
+     * Create a new UIPanel for the use as a dynamically 
+     * created container for multiple children in a facet.
+     * Duplicate in javax.faces.webapp.UIComponentClassicTagBase.
+     * @param facesContext
+     * @return
+     */
+    private UIComponent createFacetUIPanel(FacesContext facesContext)
+    {
+        UIComponent panel = facesContext.getApplication().createComponent(UIPanel.COMPONENT_TYPE);
+        panel.setId(facesContext.getViewRoot().createUniqueId());
+        panel.getAttributes().put(FACET_CREATED_UIPANEL_MARKER, Boolean.TRUE);
+        return panel;
     }
 
 }

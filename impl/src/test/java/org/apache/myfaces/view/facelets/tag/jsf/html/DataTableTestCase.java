@@ -22,6 +22,7 @@ package org.apache.myfaces.view.facelets.tag.jsf.html;
 import javax.faces.component.UIColumn;
 import javax.faces.component.UIData;
 import javax.faces.component.UIOutput;
+import javax.faces.component.UIPanel;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.html.HtmlColumn;
 import javax.faces.component.html.HtmlDataTable;
@@ -42,6 +43,8 @@ public class DataTableTestCase extends FaceletTestCase
     {
         application.addComponent(UIViewRoot.COMPONENT_TYPE, UIViewRoot.class
                 .getName());
+        application.addComponent(UIPanel.COMPONENT_TYPE,
+                UIPanel.class.getName());        
         application.addComponent(HtmlDataTable.COMPONENT_TYPE,
                 HtmlDataTable.class.getName());
         application.addComponent(UIColumn.COMPONENT_TYPE,

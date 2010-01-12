@@ -117,13 +117,37 @@ public final class ComponentSupport
      */
     public static UIComponent findChildByTagId(UIComponent parent, String id)
     {
-        Iterator<UIComponent> itr = parent.getFacetsAndChildren();
+        Iterator<UIComponent> itr = parent.getChildren().iterator();
         while (itr.hasNext())
         {
             UIComponent child = itr.next();
             if (id.equals(child.getAttributes().get(MARK_CREATED)))
             {
                 return child;
+            }
+        }
+        itr = parent.getFacets().values().iterator();
+        while (itr.hasNext())
+        {
+            UIComponent facet = itr.next();
+            // check if this is a dynamically generated UIPanel
+            if (Boolean.TRUE.equals(facet.getAttributes()
+                         .get(ComponentTagHandlerDelegate.FACET_CREATED_UIPANEL_MARKER)))
+            {
+                // only check the children and facets of the panel
+                Iterator<UIComponent> itr2 = facet.getFacetsAndChildren();
+                while (itr2.hasNext())
+                {
+                    UIComponent child = itr2.next();
+                    if (id.equals(child.getAttributes().get(MARK_CREATED)))
+                    {
+                        return child;
+                    }
+                }
+            }
+            else if (id.equals(facet.getAttributes().get(MARK_CREATED)))
+            {
+                return facet;
             }
         }
 
