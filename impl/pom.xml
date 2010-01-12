@@ -395,7 +395,7 @@
                  this execution tasks too. -->
             <groupId>org.apache.myfaces.buildtools</groupId>
             <artifactId>myfaces-builder-plugin</artifactId>
-            <version>1.0.4</version>
+            <version>${myfaces-builder-plugin.version}</version>
             <executions>
               <execution>
                 <id>make_core_facelet_tld</id>
@@ -952,6 +952,6 @@
 
   <properties>
     <myfaces-shared.version>4.0.1-SNAPSHOT</myfaces-shared.version>
-    <myfaces-builder-plugin.version>1.0.4</myfaces-builder-plugin.version>
+    <myfaces-builder-plugin.version>1.0.5-SNAPSHOT</myfaces-builder-plugin.version>
   </properties>
 </project>
