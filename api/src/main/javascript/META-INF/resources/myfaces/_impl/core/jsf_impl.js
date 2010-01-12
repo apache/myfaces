@@ -88,7 +88,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
                 || 'undefined' == typeof(formElement.nodeName)
                 || null == formElement.nodeName
                 || formElement.nodeName.toLowerCase() != "form") {
-            throw Exception("jsf.viewState: param value not of type form!");
+            throw new Error("jsf.viewState: param value not of type form!");
         }
         return this._requestHandler.getViewState(formElement);
     };
@@ -109,15 +109,15 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
          * assert element
          */
         if ('undefined' == typeof( element ) || null == element) {
-            throw new Exception("jsf.ajax, element must be set!");
+            throw new Error("jsf.ajax, element must be set!");
         }
         //        if (!JSF2Utils.isString(element) && !(element instanceof Node)) {
-        //            throw new Exception("jsf.ajax, element either must be a string or a dom node");
+        //            throw new Error("jsf.ajax, element either must be a string or a dom node");
         //        }
 
         element = JSF2Utils.byId(element);
         if ('undefined' == typeof element || null == element) {
-            throw new Exception("Element either must be a string to a or must be a valid dom node");
+            throw new Error("Element either must be a string to a or must be a valid dom node");
         }
 
     };
@@ -127,7 +127,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
             return;
         }
         if (!(func instanceof Function)) {
-            throw new Exception("Functioncall " + func + " is not a function! ");
+            throw new Error("Functioncall " + func + " is not a function! ");
         }
     }
 
