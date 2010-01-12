@@ -89,7 +89,7 @@ public class NavigationHandlerImpl
                 ExternalContext externalContext = facesContext.getExternalContext();
                 ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
                 String toViewId = navigationCase.getToViewId(facesContext);
-                String redirectPath = viewHandler.getActionURL(facesContext, toViewId );
+                String redirectPath = viewHandler.getRedirectURL(facesContext, toViewId, navigationCase.getParameters(), navigationCase.isIncludeViewParams());
                 
                 // JSF 2.0 the javadoc of handleNavigation() says something like this 
                 // "...If the view has changed after an application action, call
@@ -107,7 +107,8 @@ public class NavigationHandlerImpl
                 externalContext.getFlash().setRedirect(true);
                 try
                 {
-                    externalContext.redirect(externalContext.encodeActionURL(redirectPath));
+                    externalContext.redirect(redirectPath);
+                    facesContext.responseComplete();
                 }
                 catch (IOException e)
                 {
@@ -303,10 +304,10 @@ public class NavigationHandlerImpl
             
             // Append queryString to implicitViewId if it exists.
             
-            if (queryString != null)
-            {
-                implicitViewId += "?" + queryString;
-            }
+//            if (queryString != null)
+//            {
+//                implicitViewId += "?" + queryString;
+//            }
             
             // Finally, create the NavigationCase.
             
