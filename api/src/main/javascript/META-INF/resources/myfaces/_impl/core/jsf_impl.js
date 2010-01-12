@@ -297,7 +297,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
         var eventData = {};
         eventData.type = myfaces._impl.core._jsfImpl._MSG_TYPE_ERROR;
 
-        eventData.name = name;
+        eventData.status = name;
         eventData.serverErrorName = serverErrorName;
         eventData.serverErrorMessage = serverErrorMessage;
 
@@ -337,7 +337,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
         var eventData = {};
         eventData.type = myfaces._impl.core._jsfImpl._MSG_TYPE_EVENT;
 
-        eventData.name = name;
+        eventData.status = name;
         eventData.source = context.source;
 
         if (name !== myfaces._impl.core._jsfImpl._AJAX_STAGE_BEGIN) {
