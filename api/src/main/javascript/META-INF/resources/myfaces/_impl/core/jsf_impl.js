@@ -246,7 +246,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
             if (!renderNone && !renderAll) {
                 renderString = renderString.replace(this._OPT_IDENT_FORM, sourceForm.id);
                 renderString = renderString.replace(this._OPT_IDENT_THIS, element.id);
-                passThroughArguments[myfaces._impl.core._jsfImpl._PROP_RENDER] = JSF2Utils.arrayToString(passThroughArguments.render, ' ');
+                passThroughArguments[myfaces._impl.core._jsfImpl._PROP_RENDER] = renderString;
                 passThroughArguments.render = null;
             } else if (renderAll) {
                 passThroughArguments[myfaces._impl.core._jsfImpl._PROP_RENDER] = this._OPT_IDENT_ALL;
