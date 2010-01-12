@@ -380,6 +380,7 @@ public class FlashImpl extends Flash
     
     private static class MessageEntry implements Serializable
     {
+        private static final long serialVersionUID = -690264660230199234L;
         private final Object clientId;
         private final Object message;
 
@@ -424,23 +425,24 @@ public class FlashImpl extends Flash
             }
         }
     }
-    
+
+
     protected void restoreMessages(FacesContext facesContext)
     {
         Map<String,Object> postbackMap = getPostbackRequestMap(facesContext); 
         List<MessageEntry> messageList = (List<MessageEntry>) 
             postbackMap.get(FLASH_KEEP_MESSAGES_LIST);
-        
+
         if (messageList != null)
         {
-            Iterator iterMessages = messageList.iterator();
-    
+            Iterator<MessageEntry> iterMessages = messageList.iterator();
+
             while (iterMessages.hasNext())
             {
                 MessageEntry message = (MessageEntry) iterMessages.next();
                 facesContext.addMessage((String) message.clientId, (FacesMessage) message.message);
             }
-            
+
             postbackMap.remove(FLASH_KEEP_MESSAGES_LIST);
         }
     }
