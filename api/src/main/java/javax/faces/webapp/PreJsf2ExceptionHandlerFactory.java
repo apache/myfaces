@@ -53,9 +53,6 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory
     //private static final Log log = LogFactory.getLog (PreJsf2ExceptionHandlerFactory.class);
     private static final Logger log = Logger.getLogger(PreJsf2ExceptionHandlerFactory.class.getName());
     
-    private static PreJsf2ExceptionHandlerImpl exceptionHandler =
-        new PreJsf2ExceptionHandlerFactory.PreJsf2ExceptionHandlerImpl();
-    
     /**
      * 
      */
@@ -69,7 +66,7 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory
     @Override
     public ExceptionHandler getExceptionHandler()
     {
-        return exceptionHandler;
+        return new PreJsf2ExceptionHandlerImpl();
     }
     
     private static class PreJsf2ExceptionHandlerImpl extends ExceptionHandler
