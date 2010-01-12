@@ -59,9 +59,9 @@ public final class ViewHandler extends TagHandler
 
     private final TagAttribute encoding;
 
-    private final TagAttribute beforePhaseListener;
+    private final TagAttribute beforePhase;
 
-    private final TagAttribute afterPhaseListener;
+    private final TagAttribute afterPhase;
 
     /**
      * @param config
@@ -73,8 +73,8 @@ public final class ViewHandler extends TagHandler
         this.renderKitId = this.getAttribute("renderKitId");
         this.contentType = this.getAttribute("contentType");
         this.encoding = this.getAttribute("encoding");
-        this.beforePhaseListener = this.getAttribute("beforePhaseListener");
-        this.afterPhaseListener = this.getAttribute("afterPhaseListener");
+        this.beforePhase = this.getAttribute("beforePhase");
+        this.afterPhase = this.getAttribute("afterPhase");
     }
 
     /**
@@ -107,14 +107,14 @@ public final class ViewHandler extends TagHandler
                 String v = this.encoding.getValue(ctx);
                 ctx.getFacesContext().getExternalContext().getRequestMap().put("facelets.Encoding", v);
             }
-            if (this.beforePhaseListener != null)
+            if (this.beforePhase != null)
             {
-                MethodExpression m = this.beforePhaseListener.getMethodExpression(ctx, null, LISTENER_SIG);
+                MethodExpression m = this.beforePhase.getMethodExpression(ctx, null, LISTENER_SIG);
                 root.setBeforePhaseListener(m);
             }
-            if (this.afterPhaseListener != null)
+            if (this.afterPhase != null)
             {
-                MethodExpression m = this.afterPhaseListener.getMethodExpression(ctx, null, LISTENER_SIG);
+                MethodExpression m = this.afterPhase.getMethodExpression(ctx, null, LISTENER_SIG);
                 root.setAfterPhaseListener(m);
             }
         }
