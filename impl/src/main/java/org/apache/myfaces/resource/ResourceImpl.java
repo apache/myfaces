@@ -30,6 +30,7 @@ import java.util.Map;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
+import javax.faces.application.ProjectStage;
 import javax.faces.application.Resource;
 import javax.faces.application.ResourceHandler;
 import javax.faces.context.FacesContext;
@@ -83,8 +84,7 @@ public class ResourceImpl extends Resource
     {
         String contentType = getContentType();
 
-        return ("text/css".equals(contentType) ||
-               ( "jsf.js".equals(getResourceName()) && "javax.faces".equals(getLibraryName())));
+        return ("text/css".equals(contentType));
     }
 
     private class ValueExpressionFilterInputStream extends InputStream
@@ -196,6 +196,7 @@ public class ResourceImpl extends Resource
             path = (mapping == null) ? path : mapping + path;
         }
  
+        FacesContext facesContext = FacesContext.getCurrentInstance();
         String metadata = null;
         boolean useAmp = false;
         if (getLibraryName() != null)
@@ -203,11 +204,17 @@ public class ResourceImpl extends Resource
             metadata = "?ln=" + getLibraryName();
             path = path + metadata;
             useAmp = true;
+            
+            if (!facesContext.isProjectStage(ProjectStage.Production)
+                    && "jsf.js".equals(getResourceName()) 
+                    && "javax.faces".equals(getLibraryName()))
+            {
+                // append &stage=?? for all ProjectStages except Production
+                path = path + "&stage=" + facesContext.getApplication().getProjectStage().toString();
+            }
         }
         
-        return FacesContext.getCurrentInstance().getApplication().
-            getViewHandler().getResourceURL(
-                    FacesContext.getCurrentInstance(), path);
+        return facesContext.getApplication().getViewHandler().getResourceURL(facesContext, path);
     }
 
     @Override

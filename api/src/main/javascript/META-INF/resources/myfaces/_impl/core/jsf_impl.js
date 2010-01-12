@@ -378,10 +378,38 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
     /**
      * @return the project stage also emitted by the server:
      * it cannot be cached and must be delivered over the server
-     *
+     * The value for it comes from the request parameter of the jsf.js script called "stage".
      */
     myfaces._impl.core._jsfImpl.prototype.getProjectStage = function() {
-        return "#{facesContext.application.projectStage}";
+    	/* run through all script tags and try to find the one that includes jsf.js */
+        var scriptTags = document.getElementsByTagName("script");
+        for (var i = 0; i < scriptTags.length; i++)
+        {
+            if (scriptTags[i].src.search(/\/javax\.faces\.resource\/jsf\.js.*ln=javax\.faces/) != -1)
+            {
+                /* try to extract stage=XXX */
+                var result = scriptTags[i].src.match(/stage=([^&;]*)/);
+                if (result)
+                {
+                    /* we found stage=XXX */
+                    /* return only valid values of ProjectStage */
+                    if (result[1] == "Production"
+                            || result[1] == "Development"
+                            || result[1] == "SystemTest"
+                            || result[1] == "UnitTest")
+                    {
+                        return result[1];
+                    }
+                }
+                else
+                {
+                    /* we found the script, but there was no stage parameter --> Production */
+                	return "Production";
+                }
+            }
+        }
+        /* we could not find anything valid --> return the default value */
+        return "Production";
     };
 
     /**
