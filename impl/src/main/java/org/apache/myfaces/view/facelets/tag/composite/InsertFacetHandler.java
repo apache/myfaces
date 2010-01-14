@@ -20,7 +20,9 @@ package org.apache.myfaces.view.facelets.tag.composite;
 
 import java.io.IOException;
 
+import javax.faces.component.StateHolder;
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ComponentSystemEventListener;
 import javax.faces.event.PostAddToViewEvent;
@@ -95,7 +97,7 @@ public class InsertFacetHandler extends TagHandler
     }
 
     public static final class RelocateFacetListener 
-        implements ComponentSystemEventListener
+        implements ComponentSystemEventListener, StateHolder
     {
         private final UIComponent _targetComponent;
         
@@ -117,6 +119,26 @@ public class InsertFacetHandler extends TagHandler
             {
                 _targetComponent.getFacets().put(_facetName, facetComponent);
             }
+        }
+
+        public Object saveState(FacesContext context)
+        {
+            return null;
+        }
+
+        public void restoreState(FacesContext context, Object state)
+        {
+            // no-op as listener is transient
+        }
+
+        public boolean isTransient()
+        {
+            return true;
+        }
+
+        public void setTransient(boolean newTransientValue)
+        {
+            // no-op as listener is transient
         }
     }
 }

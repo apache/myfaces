@@ -27,7 +27,9 @@ import javax.el.ELException;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
+import javax.faces.component.StateHolder;
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ComponentSystemEventListener;
 import javax.faces.view.facelets.FaceletContext;
@@ -170,7 +172,7 @@ public final class EventHandler extends TagHandler {
         return (Class<? extends ComponentSystemEvent>) eventClass;
     }
     
-    private class Listener implements ComponentSystemEventListener {
+    private class Listener implements ComponentSystemEventListener, StateHolder {
         private ELContext elContext;
         private MethodExpression methodExp;
         
@@ -184,5 +186,26 @@ public final class EventHandler extends TagHandler {
         {
             this.methodExp.invoke(elContext, new Object[] { event });
         }
+
+        public Object saveState(FacesContext context)
+        {
+            return null;
+        }
+
+        public void restoreState(FacesContext context, Object state)
+        {
+            // no-op as listener is transient
+        }
+
+        public boolean isTransient()
+        {
+            return true;
+        }
+
+        public void setTransient(boolean newTransientValue)
+        {
+            // no-op as listener is transient
+        }
+
     }
 }

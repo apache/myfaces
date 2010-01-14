@@ -22,7 +22,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.faces.component.StateHolder;
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ComponentSystemEventListener;
 import javax.faces.event.PostAddToViewEvent;
@@ -65,7 +67,7 @@ public class InsertChildrenHandler extends TagHandler
     }
     
     public static final class RelocateAllChildrenListener 
-        implements ComponentSystemEventListener
+        implements ComponentSystemEventListener, StateHolder
     {
         private final UIComponent _targetComponent;
         
@@ -104,7 +106,27 @@ public class InsertChildrenHandler extends TagHandler
                 }
             }*/
         }
-        
+
+        public Object saveState(FacesContext context)
+        {
+            return null;
+        }
+
+        public void restoreState(FacesContext context, Object state)
+        {
+            // no-op as listener is transient
+        }
+
+        public boolean isTransient()
+        {
+            return true;
+        }
+
+        public void setTransient(boolean newTransientValue)
+        {
+            // no-op as listener is transient
+        }
+
         /*
         private void regenerateUniqueIds(FacesContext facesContext, UniqueIdVendor uniqueIdVendor,  UIComponent comp)
         {
@@ -136,7 +158,7 @@ public class InsertChildrenHandler extends TagHandler
         }
         */
     }
-    
+
     /*
     private static UniqueIdVendor findParentUniqueIdVendor(UIComponent component)
     {
