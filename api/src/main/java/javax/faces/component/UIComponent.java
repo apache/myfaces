@@ -873,6 +873,10 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
 
     @SuppressWarnings("unchecked")
     public final void pushComponentToEL(FacesContext context, UIComponent component) {
+        if (component == null)
+        {
+            component = this;
+        }
         Map<Object, Object> contextAttributes = context.getAttributes();        
         UIComponent currentComponent = (UIComponent) contextAttributes.get(UIComponent.CURRENT_COMPONENT);
         
