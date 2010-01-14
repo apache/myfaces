@@ -20,18 +20,20 @@ package org.apache.myfaces.view.facelets.tag.jstl.core;
 
 import java.io.IOException;
 
+import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ValueExpression;
-import javax.el.ELContext;
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.*;
+import javax.faces.view.facelets.FaceletContext;
+import javax.faces.view.facelets.FaceletException;
+import javax.faces.view.facelets.TagAttribute;
+import javax.faces.view.facelets.TagConfig;
+import javax.faces.view.facelets.TagException;
+import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttributes;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTags;
-import org.apache.myfaces.shared_impl.util.StringUtils;
 
 /**
  * Simplified implementation of c:set
