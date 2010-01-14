@@ -85,13 +85,13 @@ public class InsertFacetHandler extends TagHandler
         
         parentCompositeComponent.subscribeToEvent(PostAddToViewEvent.class, 
                 new RelocateFacetListener(parent, facetName));
-        
+        /*
         if (ctx.getFacesContext().getAttributes().containsKey(
                 FaceletViewDeclarationLanguage.MARK_INITIAL_STATE_KEY))
         {
             parentCompositeComponent.subscribeToEvent(PostBuildComponentTreeOnRestoreViewEvent.class, 
                     new RelocateFacetListener(parent, facetName));
-        }
+        }*/
     }
 
     public static final class RelocateFacetListener 

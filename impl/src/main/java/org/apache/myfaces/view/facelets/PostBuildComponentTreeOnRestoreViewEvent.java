@@ -24,7 +24,12 @@ import javax.faces.event.FacesListener;
 import javax.faces.event.SystemEventListener;
 
 /**
- *
+ * TODO: Remove it since after MYFACES-2389 this is not necessary anymore.
+ * Now, PostAddToViewEvent can be triggered inclusive on postback and restore view
+ * phase, but note RestoreViewExecutor call facesContext.setProcessingEvents(false)
+ * and cause the same effect than the check on UIComponent.setParent()
+ * (postback and restore view phase).
+ * 
  * @since 2.0
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$

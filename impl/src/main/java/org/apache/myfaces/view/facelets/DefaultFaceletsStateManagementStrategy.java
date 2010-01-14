@@ -145,7 +145,11 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             {
                 context.setProcessingEvents (true);
                 vdl.buildView (context, view);
-                _publishPostBuildComponentTreeOnRestoreViewEvent(context, view);
+                // In the latest code related to PostAddToView, it is
+                // triggered no matter if it is applied on postback. It seems that MYFACES-2389, 
+                // TRINIDAD-1670 and TRINIDAD-1671 are related.
+                // This code is no longer necessary, but better let it here.
+                //_publishPostBuildComponentTreeOnRestoreViewEvent(context, view);
                 suscribeListeners(view);
             }
             finally
@@ -256,6 +260,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         return view;
     }
     
+    /*
     private static void _publishPostBuildComponentTreeOnRestoreViewEvent(FacesContext context, UIComponent component)
     {
         context.getApplication().publishEvent(context, PostBuildComponentTreeOnRestoreViewEvent.class, UIComponent.class, component);
@@ -291,7 +296,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 _publishPostBuildComponentTreeOnRestoreViewEvent(context, child);
             }
         }        
-    }
+    }*/
 
     @Override
     public Object saveView (FacesContext context)

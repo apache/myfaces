@@ -53,10 +53,7 @@ import org.apache.myfaces.view.facelets.PostBuildComponentTreeOnRestoreViewEvent
  * @version $Revision$ $Date$
  */
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Output", type = "javax.faces.resource.Script")
-@ListenersFor(value={
-        @ListenerFor(systemEventClass = PostAddToViewEvent.class),
-        @ListenerFor(systemEventClass = PostBuildComponentTreeOnRestoreViewEvent.class)        
-})
+@ListenerFor(systemEventClass = PostAddToViewEvent.class)
 public class HtmlScriptRenderer extends Renderer implements
         ComponentSystemEventListener
 {
