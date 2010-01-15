@@ -178,7 +178,7 @@ public final class EventHandler extends TagHandler {
         return (Class<? extends ComponentSystemEvent>) eventClass;
     }
     
-    private class Listener implements ComponentSystemEventListener, Serializable {
+    public static class Listener implements ComponentSystemEventListener, Serializable {
 
         private static final long serialVersionUID = 7318240026355007052L;
         
