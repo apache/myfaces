@@ -19,6 +19,7 @@
 package org.apache.myfaces.view.facelets.tag.jsf.core;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -27,11 +28,11 @@ import javax.el.ELException;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
-import javax.faces.component.StateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ComponentSystemEventListener;
+import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.TagAttribute;
@@ -88,13 +89,18 @@ public final class EventHandler extends TagHandler {
     
     public void apply (FaceletContext ctx, UIComponent parent) throws ELException, FacesException, FaceletException, IOException
     {
+        //Apply only if we are creating a new component
+        if (!ComponentHandler.isNew(parent))
+        {
+            return;
+        }
         Class<? extends ComponentSystemEvent> eventClass = getEventClass (ctx);
         MethodExpression methodExp = listener.getMethodExpression(ctx, void.class, new Class<?>[] {
             ComponentSystemEvent.class });
         
         // Simply register the event on the component.
         
-        parent.subscribeToEvent (eventClass, new Listener (ctx.getFacesContext().getELContext(), methodExp));
+        parent.subscribeToEvent (eventClass, new Listener (methodExp));
     }
     
     /**
@@ -172,40 +178,26 @@ public final class EventHandler extends TagHandler {
         return (Class<? extends ComponentSystemEvent>) eventClass;
     }
     
-    private class Listener implements ComponentSystemEventListener, StateHolder {
-        private ELContext elContext;
+    private class Listener implements ComponentSystemEventListener, Serializable {
+
+        private static final long serialVersionUID = 7318240026355007052L;
+        
         private MethodExpression methodExp;
         
-        private Listener (ELContext elContext, MethodExpression methodExp)
+        public Listener()
         {
-            this.elContext = elContext;
+            super();
+        }
+
+        private Listener (MethodExpression methodExp)
+        {
             this.methodExp = methodExp;
         }
         
         public void processEvent (ComponentSystemEvent event)
         {
+            ELContext elContext = FacesContext.getCurrentInstance().getELContext();
             this.methodExp.invoke(elContext, new Object[] { event });
         }
-
-        public Object saveState(FacesContext context)
-        {
-            return null;
-        }
-
-        public void restoreState(FacesContext context, Object state)
-        {
-            // no-op as listener is transient
-        }
-
-        public boolean isTransient()
-        {
-            return true;
-        }
-
-        public void setTransient(boolean newTransientValue)
-        {
-            // no-op as listener is transient
-        }
-
     }
 }
