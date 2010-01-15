@@ -283,6 +283,63 @@ public class _DeltaListTest extends AbstractComponentTest
         }
     }
     
+    public static class TransientStateFacesListener implements FacesListener, StateHolder
+    {
+        String value;
+        
+        public TransientStateFacesListener()
+        {
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (obj instanceof TransientStateFacesListener)
+            {
+                if (value == null)
+                {
+                    if (((TransientStateFacesListener)obj).value == null)
+                    {
+                        return true;
+                    }
+                }
+                else if (value.equals(((TransientStateFacesListener)obj).value))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public boolean isTransient()
+        {
+            return true;
+        }
+
+        public void setTransient(boolean _transient)
+        {
+        }
+
+        public void restoreState(FacesContext context, Object state)
+        {
+        }
+
+        public Object saveState(FacesContext context)
+        {
+            return null;
+        }
+
+        public String getValue()
+        {
+            return value;
+        }
+
+        public void setValue(String value)
+        {
+            this.value = value;
+        }
+    }
+    
     public static class PartialStateFacesListener extends StateFacesListener implements PartialStateHolder
     {
         private boolean initialStateMarked;
@@ -389,7 +446,6 @@ public class _DeltaListTest extends AbstractComponentTest
         a.markInitialState();
         b.markInitialState();
         Object [] savedState1 = (Object[]) a.saveState(facesContext);
-        assertNull(savedState1 == null ? null : savedState1[1]);
         b.restoreState(facesContext, savedState1);        
         assertTrue(a._facesListeners.contains(listener1));
         assertTrue(b._facesListeners.contains(listener1));
@@ -583,6 +639,7 @@ public class _DeltaListTest extends AbstractComponentTest
         b.restoreState(facesContext, a.saveState(facesContext));
         assertTrue(a._facesListeners.contains(listener1));
         assertFalse(b._facesListeners.contains(listener1));
+        assertTrue(b._facesListeners.isEmpty());
     }
     
     public void testSimpleSaveRestoreTransient2()
@@ -641,6 +698,49 @@ public class _DeltaListTest extends AbstractComponentTest
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
         StateFacesListener listener1 = new StateFacesListener();
+        listener1.setTransient(true);
+        listener1.setValue("value");
+        StateFacesListener listener2 = new StateFacesListener();
+        listener2.setValue("value");
+        a.addTestFacesListener(listener1);
+        a.addTestFacesListener(listener2);
+        b.addTestFacesListener(listener1);
+        b.addTestFacesListener(listener2);
+        a.markInitialState();
+        b.markInitialState();
+        listener2.setValue("value2");
+        //Since listener1 is transient
+        Object [] savedState1 = (Object[]) a.saveState(facesContext);
+        b.restoreState(facesContext, savedState1);  
+        assertTrue(a._facesListeners.contains(listener1));
+        assertFalse(b._facesListeners.contains(listener1));
+        assertTrue(a._facesListeners.contains(listener2));
+        assertTrue(b._facesListeners.contains(listener2));
+        assertEquals("value2", ((StateFacesListener)b._facesListeners.get(b._facesListeners.indexOf(listener2))).getValue());
+    }
+    
+    public void testSimpleSaveRestoreTransient6()
+    {
+        UITestComponent a = new UITestComponent();
+        UITestComponent b = new UITestComponent();
+        TransientStateFacesListener listener1 = new TransientStateFacesListener();
+        listener1.setValue("value");
+        a.addTestFacesListener(listener1);
+        b.addTestFacesListener(listener1);
+        a.markInitialState();
+        b.markInitialState();
+        //Since listener1 is transient
+        Object [] savedState1 = (Object[]) a.saveState(facesContext);
+        b.restoreState(facesContext, savedState1);  
+        assertTrue(a._facesListeners.contains(listener1));
+        assertFalse(b._facesListeners.contains(listener1));
+    }
+
+    public void testSimpleSaveRestoreTransient7()
+    {
+        UITestComponent a = new UITestComponent();
+        UITestComponent b = new UITestComponent();
+        TransientStateFacesListener listener1 = new TransientStateFacesListener();
         listener1.setTransient(true);
         listener1.setValue("value");
         StateFacesListener listener2 = new StateFacesListener();

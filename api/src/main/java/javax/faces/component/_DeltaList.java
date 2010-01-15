@@ -18,14 +18,11 @@
  */
 package javax.faces.component;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 
 import javax.faces.context.FacesContext;
 
@@ -49,8 +46,6 @@ class _DeltaList<T> implements List<T>, PartialStateHolder
 {
 
     private List<T> _delegate;
-    //private UIComponent _component;
-    private Map<Object,Boolean> _deltas;
     private boolean _initialStateMarked;
     
     public _DeltaList()
@@ -62,71 +57,33 @@ class _DeltaList<T> implements List<T>, PartialStateHolder
         _delegate = delegate;
     }
     
-    private boolean _createDeltas()
-    {
-        if (initialStateMarked())
-        {
-            if (_deltas == null)
-            {
-                _deltas = new HashMap<Object, Boolean>(4);
-            }
-            return true;
-        }
-
-        return false;
-    }    
-
     public void add(int index, T element)
     {
-        if (_createDeltas())
-        {
-            _deltas.put(element, Boolean.TRUE);
-        }
+        clearInitialState();
         _delegate.add(index, element);
     }
 
     public boolean add(T e)
     {
-        if (_createDeltas())
-        {
-            _deltas.put(e, Boolean.TRUE);
-        }
+        clearInitialState();
         return _delegate.add(e);
     }
 
     public boolean addAll(Collection<? extends T> c)
     {
-        if (_createDeltas())
-        {
-            for (Iterator<? extends T> it = c.iterator(); it.hasNext();)
-            {
-                _deltas.put(it.next(), Boolean.TRUE);
-            }
-        }        
+        clearInitialState();
         return _delegate.addAll(c);
     }
 
     public boolean addAll(int index, Collection<? extends T> c)
     {
-        if (_createDeltas())
-        {
-            for (Iterator<? extends T> it = c.iterator(); it.hasNext();)
-            {
-                _deltas.put(it.next(), Boolean.TRUE);
-            }
-        }        
+        clearInitialState();
         return _delegate.addAll(index, c);
     }
 
     public void clear()
     {
-        if (_createDeltas())
-        {
-            for (Iterator<? extends T> it = _delegate.iterator(); it.hasNext();)
-            {
-                _deltas.put(it.next(), Boolean.FALSE);
-            }
-        }        
+        clearInitialState();
         _delegate.clear();
     }
 
@@ -187,31 +144,19 @@ class _DeltaList<T> implements List<T>, PartialStateHolder
 
     public T remove(int index)
     {
-        if (_createDeltas())
-        {
-            _deltas.put(_delegate.get(index), Boolean.FALSE);
-        }        
+        clearInitialState();
         return _delegate.remove(index);
     }
 
     public boolean remove(Object o)
     {
-        if (_createDeltas())
-        {
-            _deltas.put(o, Boolean.FALSE);
-        }                
+        clearInitialState();
         return _delegate.remove(o);
     }
 
     public boolean removeAll(Collection<?> c)
     {
-        if (_createDeltas())
-        {
-            for (Iterator it = c.iterator(); it.hasNext();)
-            {
-                _deltas.put(it.next(), Boolean.FALSE);
-            }
-        }
+        clearInitialState();
         return _delegate.removeAll(c);
     }
 
@@ -222,11 +167,7 @@ class _DeltaList<T> implements List<T>, PartialStateHolder
 
     public T set(int index, T element)
     {
-        if (_createDeltas())
-        {
-            _deltas.put(_delegate.get(index), Boolean.FALSE);
-            _deltas.put(element, Boolean.TRUE);
-        }
+        clearInitialState();
         return _delegate.set(index, element);
     }
 
@@ -267,48 +208,37 @@ class _DeltaList<T> implements List<T>, PartialStateHolder
             return;
         }
         
-        if (_createDeltas())
+        if (initialStateMarked())
         {            
             //Restore delta
-            Object[] listAsMap = (Object[]) state;
-            for (int cnt = 0; cnt < listAsMap.length; cnt += 2)
-            {   
-                if (listAsMap[cnt] instanceof Boolean)
+            Object[] lst = (Object[]) state;
+            int j = 0;
+            int i = 0;
+            while (i < lst.length)
+            {
+                if (lst[i] instanceof _AttachedDeltaWrapper)
                 {
-                    Boolean value = (Boolean) listAsMap[cnt];
-                    T key = (T) UIComponentBase.
-                        restoreAttachedState(context, listAsMap[cnt+1]);
-                    _deltas.put(key,value);
-                    if (key != null)
-                    {
-                        if (value.booleanValue())
-                        {
-                            _delegate.add(key);
-                        }
-                        else
-                        {
-                            _delegate.remove(key);
-                        }
-                    }
+                    //Delta
+                    ((StateHolder)_delegate.get(j)).restoreState(context, ((_AttachedDeltaWrapper) lst[i]).getWrappedStateObject());
+                    j++;
                 }
-                else if (listAsMap[cnt+1] != null)
+                else if (lst[i] != null)
                 {
-                    if (listAsMap[cnt+1] instanceof _AttachedDeltaWrapper)
-                    {
-                        _AttachedDeltaWrapper wrapper = (_AttachedDeltaWrapper) listAsMap[cnt+1];
-                        //Restore delta state
-                        ((PartialStateHolder)_delegate.get((Integer)listAsMap[cnt])).restoreState(context, wrapper.getWrappedStateObject());
-                    }
-                    else
-                    {
-                        //Replace it
-                        _delegate.set((Integer)listAsMap[cnt], (T) UIComponentBase.restoreAttachedState(context, listAsMap[cnt+1]));
-                    }
+                    //Full
+                    _delegate.set(j, (T) UIComponentBase.restoreAttachedState(context, lst[i]));
+                    j++;
                 }
-                else if (listAsMap[cnt] != null)
+                else
                 {
-                    _delegate.set((Integer)listAsMap[cnt],null);
+                    _delegate.remove(j);
                 }
+                i++;
+            }
+            if (i != j)
+            {
+                // StateHolder transient objects found, next time save and restore it fully
+                //because the size of the list changes.
+                clearInitialState();
             }
         }
         else
@@ -318,7 +248,11 @@ class _DeltaList<T> implements List<T>, PartialStateHolder
             _delegate = new ArrayList<T>(lst.length);
             for (int i = 0; i < lst.length; i++)
             {
-                _delegate.add((T) UIComponentBase.restoreAttachedState(context, lst[i]));
+                T value = (T) UIComponentBase.restoreAttachedState(context, lst[i]);
+                if (value != null)
+                {
+                    _delegate.add(value);
+                }
             }
         }
     }
@@ -327,155 +261,45 @@ class _DeltaList<T> implements List<T>, PartialStateHolder
     {
         if (initialStateMarked())
         {
-            if (_deltas != null)
+            Object [] lst = new Object[_delegate.size()];
+            boolean nullDelta = true;
+            for (int i = 0; i < _delegate.size(); i++)
             {
-                //Count stateHolder instances to keep track
-                int stateHolderKeyCount = 0;
-                for (int i = 0; i < _delegate.size(); i++)
+                Object value = _delegate.get(i);
+                if (value instanceof PartialStateHolder)
                 {
-                    T key = _delegate.get(i);
-                    if (key instanceof StateHolder && !_deltas.containsKey(key))
+                    //Delta
+                    PartialStateHolder holder = (PartialStateHolder) value;
+                    if (!holder.isTransient())
                     {
-                        stateHolderKeyCount+=2;
+                        Object attachedState = holder.saveState(context);
+                        if (attachedState != null)
+                        {
+                            nullDelta = false;
+                        }
+                        lst[i] = new _AttachedDeltaWrapper(value.getClass(),
+                            attachedState);
                     }
                 }
-                
-                int cnt = 0;
-                boolean nullDelta = true;
-                Object[] mapArr = (Object[]) new Object[_deltas.size() * 2+stateHolderKeyCount];
-                for (Map.Entry<Object, Boolean> entry : _deltas.entrySet())
+                else
                 {
-                    mapArr[cnt] = entry.getValue();
-                    Object value = entry.getKey();
-                    if (value instanceof StateHolder ||
-                        value instanceof List ||
-                        !(value instanceof Serializable))
-                    {
-                        mapArr[cnt+1] = UIComponentBase.saveAttachedState(context, value);
-                    }
-                    else
-                    {
-                        mapArr[cnt+1] = value;
-                    }
-                    cnt += 2;
+                    //Full
+                    lst[i] = UIComponentBase.saveAttachedState(context, value);
                     nullDelta = false;
                 }
-    
-                //Deal with StateHolder instances
-                for (int i = 0; i < _delegate.size(); i++)
-                {
-                    T value = _delegate.get(i);
-                    if (value instanceof StateHolder && !_deltas.containsKey(value))
-                    {
-                        mapArr[cnt] = i;
-                        if (value instanceof PartialStateHolder)
-                        {
-                            //Could contain delta, save it as _AttachedDeltaState
-                            PartialStateHolder holder = (PartialStateHolder) value;
-                            if (holder.isTransient())
-                            {                                
-                                mapArr[cnt + 1] = null;
-                                nullDelta = false;
-                            }
-                            else
-                            {
-                                Object savedValue = holder.saveState(context);
-                                if (savedValue != null)
-                                {
-                                    mapArr[cnt+1] = new _AttachedDeltaWrapper(value.getClass(), savedValue);
-                                    nullDelta = false;
-                                }
-                                else
-                                {
-                                    mapArr[cnt] = null;
-                                    mapArr[cnt+1] = null;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            mapArr[cnt+1] = UIComponentBase.saveAttachedState(context, value);
-                            nullDelta = false;
-                        }
-                        cnt+=2;
-                    }
-                }
-                if (nullDelta)
-                {
-                    return null;
-                }
-                return mapArr;
             }
-            else
+            if (nullDelta)
             {
-                //Count stateHolder instances to keep track
-                int stateHolderKeyCount = 0;
-                for (int i = 0; i < _delegate.size(); i++)
-                {
-                    T key = _delegate.get(i);
-                    if (key instanceof StateHolder)
-                    {
-                        stateHolderKeyCount += 2;
-                    }
-                }
-
-                int cnt = 0;
-                Object[] mapArr = (Object[]) new Object[stateHolderKeyCount];
-                boolean nullDelta = true;
-                //Deal with StateHolder instances
-                for (int i = 0; i < _delegate.size(); i++)
-                {
-                    T value = _delegate.get(i);
-                    if (value instanceof StateHolder)
-                    {
-                        mapArr[cnt] = i;
-                        if (value instanceof PartialStateHolder)
-                        {
-                            //Could contain delta, save it as _AttachedDeltaState
-                            PartialStateHolder holder = (PartialStateHolder) value;
-                            if (holder.isTransient())
-                            {                                
-                                mapArr[cnt + 1] = null;
-                                nullDelta = false;
-                            }
-                            else
-                            {
-                                Object savedValue = holder.saveState(context);
-                                if (savedValue != null)
-                                {
-                                    mapArr[cnt+1] = new _AttachedDeltaWrapper(value.getClass(), savedValue);
-                                    nullDelta = false;
-                                }
-                                else
-                                {
-                                    mapArr[cnt] = null;
-                                    mapArr[cnt+1] = null;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            mapArr[cnt+1] = UIComponentBase.saveAttachedState(context, value);
-                            nullDelta = false;
-                        }
-                        cnt+=2;
-                    }
-                }
-                if (nullDelta)
-                {
-                    return null;
-                }
-                return mapArr;                
+                return null;
             }
+            return lst;
         }
         else
         {
-            Object [] lst = new Object[this.size()];
-            int i = 0;
-            for (Iterator it = _delegate.iterator(); it.hasNext();)
+            Object [] lst = new Object[_delegate.size()];
+            for (int i = 0; i < _delegate.size(); i++)
             {
-                lst[i] = UIComponentBase.saveAttachedState(context, it.next());
-                i++;
+                lst[i] = UIComponentBase.saveAttachedState(context, _delegate.get(i));
             }
             return lst;
         }
@@ -484,15 +308,17 @@ class _DeltaList<T> implements List<T>, PartialStateHolder
     public void clearInitialState()
     {
         //Reset delta setting to null
-        _deltas = null;
-        _initialStateMarked = false;
-        if (_delegate != null)
+        if (_initialStateMarked)
         {
-            for (T value : _delegate)
+            _initialStateMarked = false;
+            if (_delegate != null)
             {
-                if (value instanceof PartialStateHolder)
+                for (T value : _delegate)
                 {
-                    ((PartialStateHolder)value).clearInitialState();
+                    if (value instanceof PartialStateHolder)
+                    {
+                        ((PartialStateHolder)value).clearInitialState();
+                    }
                 }
             }
         }
