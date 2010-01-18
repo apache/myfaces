@@ -54,6 +54,8 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.el.MethodBinding;
+import javax.faces.el.ValueBinding;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
@@ -643,7 +645,7 @@ public final class ErrorPageWriter
                     m = pd[i].getReadMethod();
                     try
                     {
-                        v = m.invoke(c, (Object[])null);
+                        v = m.invoke(c, null);
                         if (v != null)
                         {
                             if (v instanceof Collection || v instanceof Map || v instanceof Iterator)
@@ -656,6 +658,18 @@ public final class ErrorPageWriter
                             if (v instanceof Expression)
                             {
                                 str = ((Expression)v).getExpressionString();
+                            }
+                            else if (v instanceof ValueBinding)
+                            {
+                                str = ((ValueBinding) v).getExpressionString();
+                            }
+                            else if (v instanceof MethodBinding)
+                            {
+                                str = ((MethodBinding) v).getExpressionString();
+                            }
+                            else
+                            {
+                                str = v.toString();
                             }
                             writer.write(str.replaceAll("<", TS));
                             writer.write("\"");
