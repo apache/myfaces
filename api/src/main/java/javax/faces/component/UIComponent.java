@@ -743,29 +743,33 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
         try {
             VisitResult res = context.invokeVisitCallback(this, callback);
             switch (res) {
-                //we are done nothing has to be processed anymore
-                case COMPLETE:
-                    return true;
+            //we are done nothing has to be processed anymore
+            case COMPLETE:
+                return true;
 
-                case REJECT:
-                    return false;
+            case REJECT:
+                return false;
 
-                //accept
-                default:
-                    boolean visitResult = false;
-                    List <UIComponent> children = getChildren();
-                    if(children == null || children.isEmpty()) {
-                        return visitResult;
-                    }
-                    for (UIComponent child : children) {
-                        visitResult = child.visitTree(context, callback);
-                        if (visitResult) {
-                            return visitResult;
+            //accept
+            default:
+                if (getFacetCount() > 0) {
+                    for (UIComponent facet : getFacets().values()) {
+                        if (facet.visitTree(context, callback)) {
+                            return true;
                         }
                     }
-                    return visitResult;
+                }
+                if (getChildCount() > 0) {
+                    for (UIComponent child : getChildren()) {
+                        if (child.visitTree(context, callback)) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
             }
-        } finally {
+        }
+        finally {
             //all components must call popComponentFromEl after visiting is finished
             popComponentFromEL(context.getFacesContext());
         }

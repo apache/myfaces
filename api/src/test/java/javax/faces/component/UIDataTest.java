@@ -416,6 +416,8 @@ public class UIDataTest extends AbstractJsfTestCase
         EasyMock.expect(visitContextMock.invokeVisitCallback(headerFacet, callback)).andReturn(VisitResult.ACCEPT);
         EasyMock.expect(visitContextMock.invokeVisitCallback(footerFacet, callback)).andReturn(VisitResult.ACCEPT);
         EasyMock.expect(visitContextMock.invokeVisitCallback(facetOfChild1, callback)).andReturn(VisitResult.ACCEPT);
+        // HACK: Expected twice because of MYFACES-2475
+        EasyMock.expect(visitContextMock.invokeVisitCallback(facetOfChild1, callback)).andReturn(VisitResult.ACCEPT);
         EasyMock.expect(visitContextMock.invokeVisitCallback(child1, callback)).andReturn(VisitResult.ACCEPT);
         EasyMock.expect(visitContextMock.invokeVisitCallback(childOfChild1, callback)).andReturn(VisitResult.ACCEPT).times(3);
         control.replay();
