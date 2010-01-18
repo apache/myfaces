@@ -42,20 +42,40 @@ class RenderResponseExecutor implements PhaseExecutor
     {
         Application application = facesContext.getApplication();
         ViewHandler viewHandler = application.getViewHandler();
-        UIViewRoot root = facesContext.getViewRoot();
-
-        ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(
-                facesContext, root.getViewId());
+        UIViewRoot root;
+        String viewId;
+        String newViewId;
         
         try
         {
-            if (vdl != null)
+            // do-while, because the view might change in PreRenderViewEvent-listeners
+            do
             {
-                vdl.buildView(facesContext, root);
+                root = facesContext.getViewRoot();
+                viewId = root.getViewId();
+                
+                ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(
+                        facesContext, viewId);
+                if (vdl != null)
+                {
+                    vdl.buildView(facesContext, root);
+                }
+                
+                // publish a PreRenderViewEvent: note that the event listeners
+                // of this event can change the view, so we have to perform the algorithm 
+                // until the viewId does not change when publishing this event.
+                application.publishEvent(facesContext, PreRenderViewEvent.class, root);
+                
+                // was the response marked as complete by an event listener?
+                if (facesContext.getResponseComplete())
+                {
+                    return false;
+                }
+                
+                newViewId = facesContext.getViewRoot().getViewId();
             }
-            
-            facesContext.getApplication().publishEvent(
-                    facesContext, PreRenderViewEvent.class, root);
+            while ((newViewId == null && viewId != null) 
+                    || (newViewId != null && !newViewId.equals(viewId)));
             
             // TODO: JSF 2.0 section 2.2.6, it says if the current response
             // is a partial response(ajax), then there must be no content written
