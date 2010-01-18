@@ -56,9 +56,12 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.el.MethodBinding;
 import javax.faces.el.ValueBinding;
+import javax.faces.context.PartialResponseWriter;
+import javax.faces.context.ResponseWriter;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.shared_impl.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
 
 /**
@@ -345,22 +348,54 @@ public final class ErrorPageWriter
                     if (!httpResp.isCommitted())
                     {
                         httpResp.reset();
-                        httpResp.setContentType("text/html; charset=UTF-8");
-                        try
-                        {
-                            Writer writer = httpResp.getWriter();
-                            debugHtml(writer, facesContext, ex);
-                            log.log(Level.SEVERE, "An exception occurred", ex);
-                            
-                            // mark the response as complete
-                            facesContext.responseComplete();
-                            
-                            errorPageWritten = true;
+                        if (facesContext.getPartialViewContext().isAjaxRequest())
+                        {    
+                            // ajax request --> xml error page 
+                            httpResp.setContentType("text/xml; charset=UTF-8");
+                            try
+                            {
+                                Writer writer = httpResp.getWriter();
+                                // can't use facesContext.getResponseWriter(), because it might not have been set
+                                ResponseWriter responseWriter = new HtmlResponseWriterImpl(writer, "text/xml", "utf-8");
+                                PartialResponseWriter partialWriter = new PartialResponseWriter(responseWriter);
+                                partialWriter.startDocument();
+                                partialWriter.startError(ex.getClass().getName());
+                                if (ex.getCause() != null)
+                                {
+                                    partialWriter.write(ex.getCause().toString());
+                                }
+                                else
+                                {
+                                    partialWriter.write(ex.getMessage());
+                                }
+                                partialWriter.endError();
+                                partialWriter.endDocument();
+                            }
+                            catch(IOException ioe)
+                            {
+                                throw new FacesException("Could not write the error page", ioe);
+                            }
                         }
-                        catch(IOException ioe)
-                        {
-                            throw new FacesException("Could not write the error page", ioe);
+                        else
+                        {    
+                            // normal request --> html error page
+                            httpResp.setContentType("text/html; charset=UTF-8");
+                            try
+                            {
+                                Writer writer = httpResp.getWriter();
+                                debugHtml(writer, facesContext, ex);
+                            }
+                            catch(IOException ioe)
+                            {
+                                throw new FacesException("Could not write the error page", ioe);
+                            }
                         }
+                        log.log(Level.SEVERE, "An exception occurred", ex);
+                        
+                        // mark the response as complete
+                        facesContext.responseComplete();
+                        
+                        errorPageWritten = true;
                     }
                 }
             }
