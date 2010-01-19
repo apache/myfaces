@@ -391,25 +391,7 @@ public final class SAXCompiler extends Compiler
 
         public void startDTD(String name, String publicId, String systemId) throws SAXException
         {
-            if (this.inDocument)
-            {
-                StringBuffer sb = new StringBuffer(64);
-                sb.append("<!DOCTYPE ").append(name);
-                if (publicId != null)
-                {
-                    sb.append(" PUBLIC \"").append(publicId).append("\"");
-                    if (systemId != null)
-                    {
-                        sb.append(" \"").append(systemId).append("\"");
-                    }
-                }
-                else if (systemId != null)
-                {
-                    sb.append(" SYSTEM \"").append(systemId).append("\"");
-                }
-                sb.append(" >\n");
-                this.unit.writeInstruction(sb.toString());
-            }
+            // metadata does not require output doctype
             this.inDocument = false;
         }
 
@@ -498,7 +480,7 @@ public final class SAXCompiler extends Compiler
         {
             is = new BufferedInputStream(src.openStream(), 1024);
             mngr = new CompilationManager(alias, this);
-            encoding = writeXmlDecl(is, mngr);
+            encoding = getXmlDecl(is, mngr);
             ViewMetadataHandler handler = new ViewMetadataHandler(mngr, alias);
             SAXParser parser = this.createSAXParser(handler);
             parser.parse(is, handler);
@@ -535,6 +517,34 @@ public final class SAXCompiler extends Compiler
                 if (m.find())
                 {
                     mngr.writeInstruction(m.group(0) + "\n");
+                    if (m.group(3) != null)
+                    {
+                        encoding = m.group(3);
+                    }
+                }
+            }
+        }
+        finally
+        {
+            is.reset();
+        }
+        return encoding;
+    }
+    
+    protected static final String getXmlDecl(InputStream is, CompilationManager mngr) throws IOException
+    {
+        is.mark(128);
+        String encoding = "UTF-8";
+        try
+        {
+            byte[] b = new byte[128];
+            if (is.read(b) > 0)
+            {
+                String r = new String(b);
+                Matcher m = XmlDeclaration.matcher(r);
+                if (m.find())
+                {
+                    //mngr.writeInstruction(m.group(0) + "\n");
                     if (m.group(3) != null)
                     {
                         encoding = m.group(3);
