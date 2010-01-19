@@ -28,8 +28,12 @@ import javax.faces.view.facelets.TagConfig;
  * 
  * @since 2.0
  */
-public class FaceletsCompilerUtils
+public final class FaceletsCompilerUtils
 {
+    
+    private FaceletsCompilerUtils()
+    {
+    }
 
     /**
      * Determines if the Tag with the given TagConfig has children.
