@@ -208,40 +208,43 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             for (String clientId : clientIdsAdded)
             {
                 final AttachedFullStateWrapper wrapper = (AttachedFullStateWrapper) states.get(clientId);
-                final Object[] addedState = (Object[]) wrapper.getWrappedStateObject(); 
-                if (addedState != null)
+                if (wrapper != null)
                 {
-                    final String parentClientId = (String) addedState[0];
-                    view.invokeOnComponent(context, parentClientId, new ContextCallback()
+                    final Object[] addedState = (Object[]) wrapper.getWrappedStateObject(); 
+                    if (addedState != null)
                     {
-                        public void invokeContextCallback(FacesContext context,
-                                UIComponent target)
+                        final String parentClientId = (String) addedState[0];
+                        view.invokeOnComponent(context, parentClientId, new ContextCallback()
                         {
-                            if (addedState[1] != null)
+                            public void invokeContextCallback(FacesContext context,
+                                    UIComponent target)
                             {
-                                String facetName = (String) addedState[1];
-                                UIComponent child = internalRestoreTreeStructure((TreeStructComponent) addedState[3]);
-                                child.processRestoreState(context, addedState[4]);
-                                target.getFacets().put(facetName,child);
-                            }
-                            else
-                            {
-                                Integer childIndex = (Integer) addedState[2];
-                                UIComponent child = internalRestoreTreeStructure((TreeStructComponent) addedState[3]);
-                                child.processRestoreState(context, addedState[4]);
-                                try
+                                if (addedState[1] != null)
                                 {
-                                    target.getChildren().add(childIndex, child);                                    
+                                    String facetName = (String) addedState[1];
+                                    UIComponent child = internalRestoreTreeStructure((TreeStructComponent) addedState[3]);
+                                    child.processRestoreState(context, addedState[4]);
+                                    target.getFacets().put(facetName,child);
                                 }
-                                catch (IndexOutOfBoundsException e)
+                                else
                                 {
-                                    // We can't be sure about where should be this 
-                                    // item, so just add it. 
-                                    target.getChildren().add(child);
+                                    Integer childIndex = (Integer) addedState[2];
+                                    UIComponent child = internalRestoreTreeStructure((TreeStructComponent) addedState[3]);
+                                    child.processRestoreState(context, addedState[4]);
+                                    try
+                                    {
+                                        target.getChildren().add(childIndex, child);                                    
+                                    }
+                                    catch (IndexOutOfBoundsException e)
+                                    {
+                                        // We can't be sure about where should be this 
+                                        // item, so just add it. 
+                                        target.getChildren().add(child);
+                                    }
                                 }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
             }
         }
