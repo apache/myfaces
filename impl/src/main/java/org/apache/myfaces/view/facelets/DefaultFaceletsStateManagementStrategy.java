@@ -683,9 +683,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 setClientsIdsAdded(uiViewRoot, clientIdsAdded);
                 
                 component.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, Boolean.TRUE);
-
-                //Reset initial state, so it can be saved fully later
-                component.clearInitialState();
             }
             else
             {
