@@ -207,8 +207,9 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         {
             for (String clientId : clientIdsAdded)
             {
-                final Object[] addedState = (Object[]) states.get(clientId); 
-                if (addedState != null && addedState.length == 5)
+                final AttachedFullStateWrapper wrapper = (AttachedFullStateWrapper) states.get(clientId);
+                final Object[] addedState = (Object[]) wrapper.getWrappedStateObject(); 
+                if (addedState != null)
                 {
                     final String parentClientId = (String) addedState[0];
                     view.invokeOnComponent(context, parentClientId, new ContextCallback()
@@ -381,7 +382,19 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             Object state = states.get(component.getClientId());
             if (state != null)
             {
-                component.restoreState(context, state);
+                if (state instanceof AttachedFullStateWrapper)
+                {
+                    //Don't restore this one! It will be restored when the algorithm remove and add it.
+                    return;
+                }
+                try
+                {
+                    component.restoreState(context, state);
+                }
+                catch(Exception e)
+                {
+                    throw new IllegalStateException("Error restoring component: "+component.getClientId(), e);
+                }
             }
     
             //Scan children
@@ -474,13 +487,13 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                         {
                             //Save all required info to restore the subtree.
                             //This includes position, structure and state of subtree
-                            states.put(child.getClientId(), 
+                            states.put(child.getClientId(), new AttachedFullStateWrapper( 
                                     new Object[]{
                                         currentClientId,
                                         null,
                                         pos,
                                         internalBuildTreeStructureToSave(child),
-                                        child.processSaveState(context)});
+                                        child.processSaveState(context)}));
                         }
                         else
                         {
@@ -507,12 +520,12 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                         {
                             //Save all required info to restore the subtree.
                             //This includes position, structure and state of subtree
-                            states.put(child.getClientId(), new Object[]{
+                            states.put(child.getClientId(),new AttachedFullStateWrapper(new Object[]{
                                 currentClientId,
                                 facetName,
                                 null,
                                 internalBuildTreeStructureToSave(child),
-                                child.processSaveState(context)});
+                                child.processSaveState(context)}));
                         }
                         else
                         {
@@ -670,6 +683,9 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 setClientsIdsAdded(uiViewRoot, clientIdsAdded);
                 
                 component.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, Boolean.TRUE);
+
+                //Reset initial state, so it can be saved fully later
+                component.clearInitialState();
             }
             else
             {
