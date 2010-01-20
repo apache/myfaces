@@ -822,7 +822,12 @@
       <version>1.0.4</version>
       <scope>provided</scope>
     </dependency>
-
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>1.0.CR3</version>
+            <scope>provided</scope>
+        </dependency>
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
@@ -861,6 +866,7 @@
       <version>2.3</version>
       <scope>test</scope>
     </dependency>
+    
     <dependency>
       <groupId>com.google.code.guice</groupId>
       <artifactId>guice</artifactId>

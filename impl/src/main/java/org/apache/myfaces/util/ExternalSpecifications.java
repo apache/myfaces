@@ -20,6 +20,7 @@ package org.apache.myfaces.util;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.validation.Validation;
 
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 
@@ -55,7 +56,7 @@ public class ExternalSpecifications
 
             // cannot perform this check, because validation-api.jar is not
             // in the classpath of myfaces-impl
-            /*if (tmp)
+            if (tmp)
             {
                 try
                 {
@@ -67,7 +68,7 @@ public class ExternalSpecifications
                     log.log(Level.FINE, "Error initializing Bean Validation (could be normal)", t);
                     tmp = false;
                 }
-            }*/
+            }
         }
         catch (Throwable t)
         {
