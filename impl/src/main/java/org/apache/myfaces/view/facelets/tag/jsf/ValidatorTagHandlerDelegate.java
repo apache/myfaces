@@ -34,6 +34,8 @@ import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandlerDelegate;
 import javax.faces.view.facelets.ValidatorHandler;
 
+import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.compiler.FaceletsCompilerUtils;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
 
@@ -52,46 +54,108 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
 {
     private ValidatorHandler _delegate;
     
+    /**
+     * true - this tag has children
+     * false - this tag is a leave
+     */
+    private final boolean _wrapMode;
+    
     public ValidatorTagHandlerDelegate(ValidatorHandler delegate)
     {
         _delegate = delegate;
+
+        // According to jsf 2.0 spec section 10.4.1.4
+        // this tag can be used as a leave within an EditableValueHolder
+        // or as a container to provide validator information for all 
+        // EditableValueHolder-children (and grandchildren and ...)
+        // (this behavior is analog to <f:ajax>)
+        // --> Determine if we have children:
+        _wrapMode = FaceletsCompilerUtils.hasChildren(_delegate.getValidatorConfig());
     }
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException
     {
+        // Apply only if we are creating a new component
         if (!ComponentHandler.isNew(parent))
         {
             return;
         }
-        if (parent instanceof EditableValueHolder)
+        if (_wrapMode)
         {
-            applyAttachedObject(ctx.getFacesContext(), parent);
-        }
-        else if (UIComponent.isCompositeComponent(parent))
-        {
-            CompositeComponentResourceTagHandler.addAttachedObjectHandler(parent, _delegate);
+            // the tag has children --> provide validator information for all children
+            
+            // FIXME the spec says we should save the validation groups in an attribute
+            // on the parent UIComponent, but this will be a problem in the following scenario:
+            // <h:form>
+            //     <f:validateBean>
+            //         <h:inputText />
+            //     </f:validateBean>
+            //     <h:inputText />
+            // </h:form>
+            // because the validator would also be applied to the second h:inputText,
+            // which it should not, on my opinion. In addition, mojarra also does not
+            // attach the validator to the second h:inputText in this scenario (blackbox test).
+            // So I use the same way as f:ajax for this problem. -=Jakob Korherr=-
+            
+            // we need methods from AbstractFaceletContext
+            AbstractFaceletContext abstractCtx = (AbstractFaceletContext) ctx;
+             
+            boolean disabled = _delegate.isDisabled(ctx);
+            if (disabled)
+            {
+                // the validator is disabled --> add its id to the exclusion stack
+                String validatorId = _delegate.getValidatorConfig().getValidatorId();
+                if (validatorId != null && !"".equals(validatorId))
+                {
+                    abstractCtx.pushExcludedValidatorIdToStack(validatorId);
+                    _delegate.getValidatorConfig().getNextHandler().apply(ctx, parent);
+                    abstractCtx.popExcludedValidatorIdToStack();
+                }
+            }
+            else
+            {
+                // the validator is enabled --> add the validation groups to the stack
+                String groups = getValidationGroups(ctx);
+                // spec: don't save the validation groups string if it is null or empty string
+                if (groups != null && !"".equals(groups))
+                {
+                    abstractCtx.pushValidationGroupsToStack(groups);
+                    _delegate.getValidatorConfig().getNextHandler().apply(ctx, parent);
+                    abstractCtx.popValidationGroupsToStack();
+                }
+            }
         }
         else
         {
-            throw new TagException(_delegate.getTag(), "Parent not composite component or an instance of EditableValueHolder: " + parent);
+            // the tag is a leave --> attach validator to parent
+            if (parent instanceof EditableValueHolder)
+            {
+                applyAttachedObject(ctx.getFacesContext(), parent);
+            }
+            else if (UIComponent.isCompositeComponent(parent))
+            {
+                CompositeComponentResourceTagHandler.addAttachedObjectHandler(parent, _delegate);
+            }
+            else
+            {
+                throw new TagException(_delegate.getTag(), "Parent not composite component or an instance of EditableValueHolder: " + parent);
+            }
         }
     }
 
     /**
      * Template method for creating a Validator instance
      * 
-     * @param ctx
-     *            FaceletContext to use
+     * @param ctx FaceletContext to use
      * @return a new Validator instance
      */
     protected Validator createValidator(FaceletContext ctx)
     {
         if (_delegate.getValidatorId(ctx) == null)
         {
-            throw new TagException(
-                                   _delegate.getTag(),
-                                   "Default behavior invoked of requiring a validator-id passed in the constructor, must override ValidateHandler(ValidatorConfig)");
+            throw new TagException(_delegate.getTag(), "Default behavior invoked of requiring " +
+                    "a validator-id passed in the constructor, must override ValidateHandler(ValidatorConfig)");
         }
         return ctx.getFacesContext().getApplication().createValidator(_delegate.getValidatorId(ctx));
     }
@@ -130,7 +194,7 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
             throw new TagException(_delegate.getTag(), "No Validator was created");
         }
         _delegate.setAttributes(faceletContext, v);
-        evh.addValidator(v);
+        evh.addValidator(v); 
     }
 
     public String getFor()
@@ -144,6 +208,20 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
         else
         {
             return forAttribute.getValue();
+        }
+    }
+    
+    public String getValidationGroups(FaceletContext ctx)
+    {
+        TagAttribute attribute = _delegate.getTagAttribute("validationGroups");
+        
+        if (attribute == null)
+        {
+            return null;
+        }
+        else
+        {
+            return attribute.getValue(ctx);
         }
     }
 

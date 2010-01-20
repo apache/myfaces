@@ -168,4 +168,44 @@ public abstract class AbstractFaceletContext extends FaceletContext
      */
     public abstract void pushAjaxHandlerToStack(AjaxHandler parent);
     
+    /**
+     * Gets all validation groups on the stack.
+     * @return
+     * @since 2.0
+     */
+    public abstract Iterator<String> getValidationGroups();
+    
+    /**
+     * Removes top of stack.
+     * @since 2.0
+     */
+    public abstract void popValidationGroupsToStack();
+    
+    /**
+     * Pushes validationGroups to the stack.
+     * @param validationGroups
+     * @since 2.0
+     */
+    public abstract void pushValidationGroupsToStack(String validationGroups);
+    
+    /**
+     * Gets all validationIds on the stack.
+     * @return
+     * @since 2.0
+     */
+    public abstract Iterator<String> getExcludedValidatorIds();
+    
+    /**
+     * Removes top of stack.
+     * @since 2.0
+     */
+    public abstract void popExcludedValidatorIdToStack();
+    
+    /**
+     * Pushes validatorId to the stack of excluded validatorIds.
+     * @param validatorId
+     * @since 2.0
+     */
+    public abstract void pushExcludedValidatorIdToStack(String validatorId);
+    
 }

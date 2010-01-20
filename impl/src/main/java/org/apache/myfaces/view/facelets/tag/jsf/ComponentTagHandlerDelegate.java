@@ -19,6 +19,7 @@
 package org.apache.myfaces.view.facelets.tag.jsf;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -75,7 +76,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
      * This constant is duplicate in javax.faces.webapp.UIComponentClassicTagBase
      */
     public final static String FACET_CREATED_UIPANEL_MARKER = "org.apache.myfaces.facet.createdUIPanel";
-
+    
     private final ComponentHandler _delegate;
 
     private final String _componentType;
@@ -246,7 +247,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         {
             // add default validators here, because this feature 
             // is only available in facelets (see MYFACES-2362 for details)
-            addDefaultValidators(facesContext, (EditableValueHolder) c);
+            addDefaultValidators(facesContext, actx, (EditableValueHolder) c);
         }
         
         _delegate.onComponentPopulated(ctx, c, parent);
@@ -447,9 +448,11 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
      * Add the default Validators to the component.
      *
      * @param context The FacesContext.
+     * @param actx the AbstractFaceletContext
      * @param component The EditableValueHolder to which the validators should be added
      */
-    private void addDefaultValidators(FacesContext context, EditableValueHolder component)
+    private void addDefaultValidators(FacesContext context, AbstractFaceletContext actx,
+                                      EditableValueHolder component)
     {
         Application application = context.getApplication();
         Map<String, String> defaultValidators = application.getDefaultValidatorInfo();
@@ -460,9 +463,77 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             {
                 String validatorId = entry.getKey();
                 String validatorClassName = entry.getValue();
-                if (shouldAddDefaultValidator(validatorId, validatorClassName, context, component))
+                
+                if (shouldAddDefaultValidator(validatorId, validatorClassName, context, actx, component))
                 {
-                    component.addValidator(application.createValidator(validatorId));
+                    Validator validator = null;
+                    boolean created = false;
+                    // check if the validator is already registered for the given component
+                    for (Validator v : component.getValidators())
+                    {
+                        if (v.getClass().getName().equals(validatorClassName))
+                        {
+                            // found
+                            validator = v;
+                            break;
+                        }
+                    }
+                    if (validator == null)
+                    {
+                        // create it
+                        validator = application.createValidator(validatorId);
+                        created = true;
+                    }
+                    
+                    // special things to do for a BeanValidator
+                    if (validator instanceof BeanValidator)
+                    {
+                        BeanValidator beanValidator = (BeanValidator) validator;
+                        
+                        // add validation groups from stack
+                        Iterator<String> itValidationGroups = actx.getValidationGroups();
+                        if (itValidationGroups != null && itValidationGroups.hasNext())
+                        {
+                            // we use a Set to eliminate duplicates
+                            Set<String> groupsSet = new HashSet<String>();
+                            
+                            // add any existing validationGroups to Set first
+                            String validationGroups =  beanValidator.getValidationGroups();
+                            if (validationGroups != null)
+                            {
+                                addValidationGroups(validationGroups, groupsSet);
+                            }
+                            while (itValidationGroups.hasNext())
+                            {
+                                // note that the validationGroups from the stack are non-null
+                                validationGroups = itValidationGroups.next();
+                                addValidationGroups(validationGroups, groupsSet);
+                            }
+                            
+                            // join validationGroups and add them to beanValidator
+                            StringBuilder sb = new StringBuilder();
+                            boolean first = true;
+                            for (String group : groupsSet)
+                            {
+                                if (first)
+                                {
+                                    first = false;
+                                }
+                                else
+                                {
+                                    sb.append(BeanValidator.VALIDATION_GROUPS_DELIMITER);
+                                }
+                                sb.append(group);
+                            }
+                            beanValidator.setValidationGroups(sb.toString());
+                        }
+                    }
+                    
+                    if (created)
+                    {
+                        // add the validator to the component
+                        component.addValidator(validator);
+                    }
                 }
             }
         }
@@ -474,18 +545,25 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
      * @param validatorId The validatorId.
      * @param validatorClassName The class name of the validator.
      * @param context The FacesContext.
+     * @param actx the AbstractFaceletContext
      * @param component The EditableValueHolder to which the validator should be added.
      * @return true if the Validator should be added, false otherwise.
      */
     private boolean shouldAddDefaultValidator(String validatorId, String validatorClassName,
-                                              FacesContext context, EditableValueHolder component)
+                                              FacesContext context, AbstractFaceletContext actx,
+                                              EditableValueHolder component)
     {
-        // check if the validator is already registered for the given component
-        for (Validator v : component.getValidators())
-        {
-            if (v.getClass().getName().equals(validatorClassName))
+        // check if the validatorId is on the exclusion list
+        Iterator<String> it = actx.getExcludedValidatorIds();
+        if (it != null)
+        {            
+            while (it.hasNext())
             {
-                return false;
+                String excludedId = it.next();
+                if (excludedId.equals(validatorId))
+                {
+                    return false;
+                }
             }
         }
         
@@ -506,6 +584,21 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
 
         // By default, all default validators should be added
         return true;
+    }
+    
+    /**
+     * Splits the validationGroups String with BeanValidator.VALIDATION_GROUPS_DELIMITER
+     * and then trims and adds every String in the resulting array to the Set. 
+     * @param validationGroups
+     * @param set
+     */
+    private void addValidationGroups(String validationGroups, Set<String> set)
+    {
+        String[] sa = validationGroups.split(BeanValidator.VALIDATION_GROUPS_DELIMITER);
+        for (String group : sa)
+        {
+            set.add(group.trim());
+        }
     }
     
     /**

@@ -66,6 +66,10 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     public final static String UNIQUEID_VENDOR_STACK = "org.apache.myfaces.view.facelets.UNIQUEID_VENDOR_STACK";
 
     public final static String AJAX_HANDLER_STACK = "org.apache.myfaces.view.facelets.AJAX_HANDLER_STACK";
+    
+    public final static String VALIDATION_GROUPS_STACK = "org.apache.myfaces.view.facelets.VALIDATION_GROUPS_STACK";
+    
+    public final static String EXCLUDED_VALIDATOR_IDS_STACK = "org.apache.myfaces.view.facelets.EXCLUDED_VALIDATOR_IDS_STACK";
 
     private final FacesContext _faces;
 
@@ -611,5 +615,125 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         }
 
         componentStack.addFirst(parent);
+    }
+    
+    /**
+     * Gets all validation groups on the stack.
+     * @return
+     * @since 2.0
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public Iterator<String> getValidationGroups()
+    {
+        Map<Object, Object> attributes = getFacesContext().getAttributes();
+        
+        LinkedList<String> validationGroupsStack 
+                = (LinkedList<String>) attributes.get(VALIDATION_GROUPS_STACK);
+        if (validationGroupsStack != null && !validationGroupsStack.isEmpty())
+        {
+            return validationGroupsStack.iterator();
+        }
+        return null;
+    }
+    
+    /**
+     * Removes top of stack.
+     * @since 2.0
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public void popValidationGroupsToStack()
+    {
+        Map<Object, Object> contextAttributes = getFacesContext().getAttributes();
+        
+        LinkedList<String> validationGroupsStack 
+                = (LinkedList<String>) contextAttributes.get(VALIDATION_GROUPS_STACK);
+        if (validationGroupsStack != null && !validationGroupsStack.isEmpty())
+        {
+            validationGroupsStack.removeFirst();
+        }
+    }
+    
+    /**
+     * Pushes validationGroups to the stack.
+     * @param validationGroups
+     * @since 2.0
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public void pushValidationGroupsToStack(String validationGroups)
+    {
+        Map<Object, Object> attributes = getFacesContext().getAttributes();
+
+        LinkedList<String> validationGroupsStack 
+                = (LinkedList<String>) attributes.get(VALIDATION_GROUPS_STACK);
+        if (validationGroupsStack == null)
+        {
+            validationGroupsStack = new LinkedList<String>();
+            attributes.put(VALIDATION_GROUPS_STACK, validationGroupsStack);
+        }
+
+        validationGroupsStack.addFirst(validationGroups);
+    }
+    
+    /**
+     * Gets all validationIds on the stack.
+     * @return
+     * @since 2.0
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public Iterator<String> getExcludedValidatorIds()
+    {
+        Map<Object, Object> attributes = getFacesContext().getAttributes();
+        
+        LinkedList<String> excludedValidatorIdsStack 
+                = (LinkedList<String>) attributes.get(EXCLUDED_VALIDATOR_IDS_STACK);
+        if (excludedValidatorIdsStack != null && !excludedValidatorIdsStack.isEmpty())
+        {
+            return excludedValidatorIdsStack.iterator();
+        }
+        return null;
+    }
+    
+    /**
+     * Removes top of stack.
+     * @since 2.0
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public void popExcludedValidatorIdToStack()
+    {
+        Map<Object, Object> contextAttributes = getFacesContext().getAttributes();
+        
+        LinkedList<String> excludedValidatorIdsStack 
+                = (LinkedList<String>) contextAttributes.get(EXCLUDED_VALIDATOR_IDS_STACK);
+        if (excludedValidatorIdsStack != null && !excludedValidatorIdsStack.isEmpty())
+        {
+            excludedValidatorIdsStack.removeFirst();
+        }
+    }
+    
+    /**
+     * Pushes validatorId to the stack of excluded validatorIds.
+     * @param validatorId
+     * @since 2.0
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public void pushExcludedValidatorIdToStack(String validatorId)
+    {
+        Map<Object, Object> attributes = getFacesContext().getAttributes();
+
+        LinkedList<String> excludedValidatorIdsStack 
+                = (LinkedList<String>) attributes.get(EXCLUDED_VALIDATOR_IDS_STACK);
+        if (excludedValidatorIdsStack == null)
+        {
+            excludedValidatorIdsStack = new LinkedList<String>();
+            attributes.put(EXCLUDED_VALIDATOR_IDS_STACK, excludedValidatorIdsStack);
+        }
+
+        excludedValidatorIdsStack.addFirst(validatorId);
     }
 }
