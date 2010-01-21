@@ -32,8 +32,6 @@ import java.util.logging.Logger;
 import javax.faces.application.Resource;
 import javax.faces.application.ResourceHandler;
 import javax.faces.context.FacesContext;
-import javax.servlet.ServletResponse;
-import javax.servlet.ServletResponseWrapper;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.renderkit.ErrorPageWriter;
@@ -42,6 +40,7 @@ import org.apache.myfaces.resource.ResourceLoader;
 import org.apache.myfaces.resource.ResourceMeta;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.shared_impl.util.StringUtils;
+import org.apache.myfaces.util.ExternalContextUtils;
 
 /**
  * DOCUMENT ME!
@@ -253,33 +252,16 @@ public class ResourceHandlerImpl extends ResourceHandler
                 return;
             }
     
-            //We neet to get an instance of HttpServletResponse, but sometimes
-            //the response object is wrapped by several instances of 
-            //ServletResponseWrapper (like ResponseSwitch).
-            //Since we are handling a resource, we can expect to get an 
-            //HttpServletResponse.
-            
+            // We neet to get an instance of HttpServletResponse, but sometimes
+            // the response object is wrapped by several instances of 
+            // ServletResponseWrapper (like ResponseSwitch).
+            // Since we are handling a resource, we can expect to get an 
+            // HttpServletResponse.
             Object response = facesContext.getExternalContext().getResponse();
-            
-            //It is safe to cast it to ServletResponse
-            ServletResponse servletResponse = (ServletResponse) response;
-            
-            HttpServletResponse httpServletResponse = null;
-            if (response instanceof HttpServletResponse)
+            HttpServletResponse httpServletResponse = ExternalContextUtils.getHttpServletResponse(response);
+            if (httpServletResponse == null)
             {
-                httpServletResponse = (HttpServletResponse) response;
-            }
-            else if (response instanceof ServletResponseWrapper)
-            {
-                //iterate until we find a instance that we can cast 
-                while (!(response instanceof HttpServletResponse))
-                {
-                    //assume ServletResponseWrapper as wrapper
-                    response = ((ServletResponseWrapper)response).getResponse();
-                }
-                //Case where it is an instance of ResponseSwitch
-                //in this case just return the inner response
-                httpServletResponse = (HttpServletResponse) response;
+                throw new IllegalStateException("Could not obtain an instance of HttpServletResponse.");
             }
     
             if (isResourceIdentifierExcluded(facesContext, resourceBasePath))
@@ -327,7 +309,7 @@ public class ResourceHandlerImpl extends ResourceHandler
                 return;
             }
     
-            servletResponse.setContentType(resource.getContentType());
+            httpServletResponse.setContentType(resource.getContentType());
     
             Map<String, String> headers = resource.getResponseHeaders();
     
@@ -340,14 +322,14 @@ public class ResourceHandlerImpl extends ResourceHandler
             try
             {
                 InputStream in = resource.getInputStream();
-                OutputStream out = servletResponse.getOutputStream();
+                OutputStream out = httpServletResponse.getOutputStream();
                 byte[] buffer = new byte[_BUFFER_SIZE];
     
                 try
                 {
                     int count = pipeBytes(in, out, buffer);
                     //set the content lenght
-                    servletResponse.setContentLength(count);
+                    httpServletResponse.setContentLength(count);
                 }
                 finally
                 {

@@ -35,7 +35,6 @@ import javax.faces.application.ApplicationFactory;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExceptionHandler;
-import javax.faces.context.ExceptionHandlerFactory;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
@@ -81,7 +80,6 @@ public class FacesContextImpl extends FacesContext
     private boolean _released = false;
     private ELContext _elContext;
     private Map<Object, Object> _attributes = null;
-    //private ResponseSwitch _responseWrapper = null;
     private boolean _validationFailed = false;
     private boolean _processingEvents = true;
     private ExceptionHandler _exceptionHandler = null;
@@ -93,18 +91,6 @@ public class FacesContextImpl extends FacesContext
                             final ServletResponse servletResponse)
     {
         init(new ServletExternalContextImpl(servletContext, servletRequest, servletResponse));
-        /*
-        try
-        {
-            // we wrap the servlet response to get our switching behavior!
-            _responseWrapper = new ResponseSwitch(servletResponse);
-            init(new ServletExternalContextImpl(servletContext, servletRequest, _responseWrapper));
-        }
-        catch (IOException ex)
-        {
-            Log log = LogFactory.getLog(this.getClass());
-            log.fatal("Could not obtain the response writers! Detail:" + ex.toString());
-        }*/
     }
     
     public FacesContextImpl(final ExternalContext externalContext,

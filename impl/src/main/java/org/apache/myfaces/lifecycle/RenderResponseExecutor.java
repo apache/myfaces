@@ -29,6 +29,9 @@ import javax.faces.event.PhaseId;
 import javax.faces.event.PreRenderViewEvent;
 import javax.faces.view.ViewDeclarationLanguage;
 
+import org.apache.myfaces.context.servlet.ResponseSwitch;
+import org.apache.myfaces.util.ExternalContextUtils;
+
 /**
  * Implements the lifecycle as described in Spec. 1.0 PFD Chapter 2
  * 
@@ -45,6 +48,30 @@ class RenderResponseExecutor implements PhaseExecutor
         UIViewRoot root;
         String viewId;
         String newViewId;
+        
+        // JSF 2.0 section 2.2.6: if the current response
+        // is a partial response, then there must be 
+        // no content written outside of the f:view
+        if (facesContext.getPartialViewContext().isPartialRequest())
+        {
+            // try to get (or create) a ResponseSwitch and turn off the output
+            Object response = facesContext.getExternalContext().getResponse();
+            ResponseSwitch responseSwitch = ExternalContextUtils.getResponseSwitch(response);
+            if (responseSwitch == null)
+            {
+                // no ResponseSwitch installed yet - create one 
+                responseSwitch = ExternalContextUtils.createResponseSwitch(response);
+                if (responseSwitch != null)
+                {
+                    // install the ResponseSwitch
+                    facesContext.getExternalContext().setResponse(responseSwitch);
+                }
+            }
+            if (responseSwitch != null)
+            {
+                responseSwitch.setEnabled(false);
+            }
+        }
         
         try
         {
@@ -76,19 +103,6 @@ class RenderResponseExecutor implements PhaseExecutor
             }
             while ((newViewId == null && viewId != null) 
                     || (newViewId != null && !newViewId.equals(viewId)));
-            
-            // TODO: JSF 2.0 section 2.2.6, it says if the current response
-            // is a partial response(ajax), then there must be no content written
-            // outside of the f:view. This has sense only on jsp case, because            
-            // we don't control jsp rendering and in this way we prevent unwanted
-            // rendering. But note f:ajax only works on facelets, and f:view
-            // tag handler only set properties for the current view root. It's
-            // more, in facelets, every thing that render is a UIComponent instance,
-            // so it is inside view root.
-            // Anyway, we should put the expected behavior (take a look at 
-            // context.servlet.ResponseSwitch) here and enable rendering when
-            // PartialViewContextImpl.processPartialRendering(UIComponent, PhaseId)
-            // do its own work, but for now it is 
             
             viewHandler.renderView(facesContext, root);
         }

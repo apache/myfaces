@@ -38,6 +38,8 @@ import javax.faces.event.PhaseId;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.myfaces.util.ExternalContextUtils;
+
 
 /**
  * Implementation of Flash object
@@ -457,7 +459,8 @@ public class FlashImpl extends Flash
     {
         String token = null;
         Object response = externalContext.getResponse();
-        if (response instanceof HttpServletResponse)
+        HttpServletResponse httpResponse = ExternalContextUtils.getHttpServletResponse(response);
+        if (httpResponse != null)
         {
             //Use a cookie
             Cookie cookie = (Cookie) externalContext.getRequestCookieMap().get(FLASH_POSTBACK_MAP_KEY);
@@ -482,13 +485,14 @@ public class FlashImpl extends Flash
      */
     private void _addPostbackMapKey(ExternalContext externalContext)
     {
-        Object response = externalContext.getResponse();
         String token = (String) externalContext.getRequestMap().get(FLASH_CURRENT_MAP_KEY);
-        if (response instanceof HttpServletResponse)
+        Object response = externalContext.getResponse();
+        HttpServletResponse httpResponse = ExternalContextUtils.getHttpServletResponse(response);
+        if (httpResponse != null)
         {
             Cookie cookie = new Cookie(FLASH_POSTBACK_MAP_KEY,token);
             cookie.setMaxAge(-1);
-            ((HttpServletResponse)response).addCookie(cookie);
+            httpResponse.addCookie(cookie);
         }
         else
         {
@@ -518,7 +522,8 @@ public class FlashImpl extends Flash
         if (redirect == null)
         {
             Object response = externalContext.getResponse();
-            if (response instanceof HttpServletResponse)
+            HttpServletResponse httpResponse = ExternalContextUtils.getHttpServletResponse(response);
+            if (httpResponse != null)
             {
                 // Request values are lost after a redirect. We can create a 
                 // temporal cookie to pass the params between redirect calls.
@@ -529,7 +534,6 @@ public class FlashImpl extends Flash
                 if (cookie != null)
                 {
                     redirect = Boolean.TRUE;
-                    HttpServletResponse httpResponse = (HttpServletResponse) response;
                     // A redirect happened, so it is safe to remove the cookie, setting
                     // the maxAge to 0 seconds. The effect is we passed FLASH_REDIRECT param 
                     // to this request object
@@ -632,7 +636,8 @@ public class FlashImpl extends Flash
         if (keepMessages == null)
         {
             Object response = externalContext.getResponse();
-            if (response instanceof HttpServletResponse)
+            HttpServletResponse httpResponse = ExternalContextUtils.getHttpServletResponse(response);
+            if (httpResponse != null)
             {
                 // Request values are lost after a redirect. We can create a 
                 // temporal cookie to pass the params between redirect calls.
@@ -643,7 +648,6 @@ public class FlashImpl extends Flash
                 if (cookie != null)
                 {
                     keepMessages = Boolean.TRUE;
-                    HttpServletResponse httpResponse = (HttpServletResponse) response;
                     // It is safe to remove the cookie, setting
                     // the maxAge to 0 seconds. The effect is we passed FLASH_KEEP_MESSAGES param 
                     // to this request object
