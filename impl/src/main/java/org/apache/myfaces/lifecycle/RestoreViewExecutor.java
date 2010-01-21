@@ -153,37 +153,40 @@ class RestoreViewExecutor implements PhaseExecutor
                     }
                 }
     
-                // call ViewHandler.createView(), passing the FacesContext instance for the current request and 
-                // the view identifier
-                if (viewRoot == null)
-                {
-                    viewRoot = viewHandler.createView(facesContext, viewId);
-                }
-                
-                // Subscribe the newly created UIViewRoot instance to the AfterAddToParent event, passing the 
-                // UIViewRoot instance itself as the listener.
-                // -= Leonardo Uribe =- This line it is not necessary because it was
-                // removed from jsf 2.0 section 2.2.1 when pass from EDR2 to Public Review 
-                // viewRoot.subscribeToEvent(PostAddToViewEvent.class, viewRoot);
-                
-                // Store the new UIViewRoot instance in the FacesContext.
-                facesContext.setViewRoot(viewRoot);
-    
                 // If viewParameters is not an empty collection DO NOT call renderResponse
                 if ( !(viewParameters != null && !viewParameters.isEmpty()) )
                 {
                     // Call renderResponse() on the FacesContext.
                     facesContext.renderResponse();
                 }
-                
-                // Publish an AfterAddToParent event with the created UIViewRoot as the event source.
-                application.publishEvent(facesContext, PostAddToViewEvent.class, viewRoot);
             }
             else
             {
-                //Call renderResponse but do not publish event because no viewRoot is created
+                // Call renderResponse
                 facesContext.renderResponse();
             }
+            
+            // viewRoot can be null here, if ...
+            //   - we don't have a ViewDeclarationLanguage (e.g. when using facelets-1.x)
+            //   - there is no view metadata or metadata.createMetadataView() returned null
+            if (viewRoot == null)
+            {
+                // call ViewHandler.createView(), passing the FacesContext instance for the current request and 
+                // the view identifier
+                viewRoot = viewHandler.createView(facesContext, viewId);
+            }
+            
+            // Subscribe the newly created UIViewRoot instance to the AfterAddToParent event, passing the 
+            // UIViewRoot instance itself as the listener.
+            // -= Leonardo Uribe =- This line it is not necessary because it was
+            // removed from jsf 2.0 section 2.2.1 when pass from EDR2 to Public Review 
+            // viewRoot.subscribeToEvent(PostAddToViewEvent.class, viewRoot);
+            
+            // Store the new UIViewRoot instance in the FacesContext.
+            facesContext.setViewRoot(viewRoot);
+            
+            // Publish an AfterAddToParent event with the created UIViewRoot as the event source.
+            application.publishEvent(facesContext, PostAddToViewEvent.class, viewRoot);
         }
 
         // add the ErrorPageBean to the view map to fully support 

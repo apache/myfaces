@@ -51,6 +51,11 @@ import org.apache.myfaces.shared_impl.config.MyfacesConfig;
 import org.apache.myfaces.shared_impl.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.view.facelets.StateWriter;
 
+/**
+ * JSF 2.0 ViewHandler implementation 
+ *
+ * @since 2.0
+ */
 public class ViewHandlerImpl extends ViewHandler
 {
     //private static final Log log = LogFactory.getLog(ViewHandlerImpl.class);
@@ -127,6 +132,7 @@ public class ViewHandlerImpl extends ViewHandler
     public ViewDeclarationLanguage getViewDeclarationLanguage(
             FacesContext context, String viewId)
     {
+        // return a suitable ViewDeclarationLanguage implementation for the given viewId
         return _vdlFactory.getViewDeclarationLanguage(viewId);
     }
 
