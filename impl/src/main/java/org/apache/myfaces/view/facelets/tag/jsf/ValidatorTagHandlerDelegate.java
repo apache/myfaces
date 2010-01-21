@@ -19,6 +19,8 @@
 package org.apache.myfaces.view.facelets.tag.jsf;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.el.ValueExpression;
 import javax.faces.component.EditableValueHolder;
@@ -52,6 +54,14 @@ import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResource
  */
 public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements EditableValueHolderAttachedObjectHandler
 {
+    
+    /**
+     * if <f:validateBean> has no children and its disabled attribute is true,
+     * its validatorId will be added to the exclusion list stored under
+     * this key on the parent UIComponent.
+     */
+    public final static String VALIDATOR_ID_EXCLUSION_LIST_KEY = "org.apache.myfaces.validator.VALIDATOR_ID_EXCLUSION_LIST";
+    
     private ValidatorHandler _delegate;
     
     /**
@@ -166,35 +176,81 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
         return new MetaRulesetImpl(_delegate.getTag(), type).ignore("binding");
     }
 
+    @SuppressWarnings("unchecked")
     public void applyAttachedObject(FacesContext context, UIComponent parent)
     {
         // Retrieve the current FaceletContext from FacesContext object
         FaceletContext faceletContext = (FaceletContext) context.getAttributes().get(
                 FaceletContext.FACELET_CONTEXT_KEY);
         
-        // cast to a ValueHolder
-        EditableValueHolder evh = (EditableValueHolder) parent;
-        ValueExpression ve = null;
-        Validator v = null;
-        if (_delegate.getBinding() != null)
+        String validatorId = _delegate.getValidatorConfig().getValidatorId();
+        
+        // check if the parent's exclusion list already contains the validatorId
+        List<String> exclusionList 
+                = (List<String>) parent.getAttributes().get(VALIDATOR_ID_EXCLUSION_LIST_KEY);
+        if (exclusionList != null && exclusionList.contains(validatorId))
         {
-            ve = _delegate.getBinding().getValueExpression(faceletContext, Validator.class);
-            v = (Validator) ve.getValue(faceletContext);
+            // FIXME Mojarra does not do this at the moment, but the spec says:
+            // "[...] (the validatorId) should be added to an exclusion
+            // list on the parent component to prevent a default validator with the same
+            // id from beeing registered on the component."
+            // 
+            // You can test this with the following scenario:
+            // <h:inputText>
+            //     <f:validateBean disabled="true"/>
+            //     <f:validateBean />
+            // </h:inputText>
+            // --> the second <f:validateBean /> shouldn't be registered! -=Jakob Korherr=-
+            
+            // do not add the validator
+            return;
         }
-        if (v == null)
+        
+        // spec: if the disabled attribute is true, the validator should not be added.
+        // in addition, the validatorId, if present, should be added to an exclusion
+        // list on the parent component to prevent a default validator with the same
+        // id from beeing registered on the component.
+        if (_delegate.isDisabled(faceletContext))
         {
-            v = this.createValidator(faceletContext);
-            if (ve != null)
+            // tag is disabled --> add its validatorId to the parent's exclusion list
+            if (validatorId != null && !"".equals(validatorId))
             {
-                ve.setValue(faceletContext, v);
+                if (exclusionList == null)
+                {
+                    exclusionList = new ArrayList<String>();
+                    parent.getAttributes().put(VALIDATOR_ID_EXCLUSION_LIST_KEY, exclusionList);
+                }
+                exclusionList.add(validatorId);
             }
         }
-        if (v == null)
+        else
         {
-            throw new TagException(_delegate.getTag(), "No Validator was created");
+            // tag is enabled --> create the validator and attach it
+            
+            // cast to a ValueHolder
+            EditableValueHolder evh = (EditableValueHolder) parent;
+            ValueExpression ve = null;
+            Validator v = null;
+            if (_delegate.getBinding() != null)
+            {
+                ve = _delegate.getBinding().getValueExpression(faceletContext, Validator.class);
+                v = (Validator) ve.getValue(faceletContext);
+            }
+            if (v == null)
+            {
+                v = this.createValidator(faceletContext);
+                if (ve != null)
+                {
+                    ve.setValue(faceletContext, v);
+                }
+            }
+            if (v == null)
+            {
+                throw new TagException(_delegate.getTag(), "No Validator was created");
+            }
+            _delegate.setAttributes(faceletContext, v);
+            evh.addValidator(v); 
         }
-        _delegate.setAttributes(faceletContext, v);
-        evh.addValidator(v); 
     }
 
     public String getFor()

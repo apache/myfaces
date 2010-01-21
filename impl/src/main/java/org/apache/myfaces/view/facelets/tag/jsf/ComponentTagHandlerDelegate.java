@@ -21,6 +21,7 @@ package org.apache.myfaces.view.facelets.tag.jsf;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -549,11 +550,27 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
      * @param component The EditableValueHolder to which the validator should be added.
      * @return true if the Validator should be added, false otherwise.
      */
+    @SuppressWarnings("unchecked")
     private boolean shouldAddDefaultValidator(String validatorId, String validatorClassName,
                                               FacesContext context, AbstractFaceletContext actx,
                                               EditableValueHolder component)
     {
-        // check if the validatorId is on the exclusion list
+        // check if the validatorId is on the exclusion list on the component
+        List<String> exclusionList 
+                = (List<String>) ((UIComponent) component).getAttributes()
+                        .get(ValidatorTagHandlerDelegate.VALIDATOR_ID_EXCLUSION_LIST_KEY);
+        if (exclusionList != null)
+        {
+            for (String excludedId : exclusionList)
+            {
+                if (excludedId.equals(validatorId))
+                {
+                    return false;
+                }
+            }
+        }
+        
+        // check if the validatorId is on the exclusion list on the stack
         Iterator<String> it = actx.getExcludedValidatorIds();
         if (it != null)
         {            
