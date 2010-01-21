@@ -20,6 +20,7 @@ package javax.faces.component;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,7 +48,6 @@ import javax.faces.event.PhaseListener;
 import javax.faces.event.PostConstructViewMapEvent;
 import javax.faces.event.PostRestoreStateEvent;
 import javax.faces.event.PreDestroyViewMapEvent;
-import javax.faces.event.PreRenderViewEvent;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 import javax.faces.lifecycle.Lifecycle;
@@ -109,6 +109,11 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     private transient Lifecycle _lifecycle = null;
     
     private HashMap<Class<? extends SystemEvent>, List<SystemEventListener>> _systemEventListeners;
+    
+    // Tracks success in the beforePhase. Listeners that threw an exception
+    // in beforePhase or were never called, because a previous listener threw
+    // an exception, should not have their afterPhase method called
+    private transient Map<PhaseId, boolean[]> listenerSuccessMap = new HashMap<PhaseId, boolean[]>();
     
     /**
      * Construct an instance of the UIViewRoot.
@@ -705,59 +710,137 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      * invoked.
      * <p>
      * Note that the global PhaseListeners are invoked via the Lifecycle implementation, not from this method here.
+     * <p>
+     * These PhaseListeners are processed with the same rules as the globally defined PhaseListeners, except
+     * that any Exceptions, which may occur during the execution of the PhaseListeners, will only be logged
+     * and not published to the ExceptionHandler.
      */
     private boolean notifyListeners(FacesContext context, PhaseId phaseId, MethodExpression listener,
                                     boolean beforePhase)
     {
-        /*
-         * Initialize a state flag to false.
-         *
-         * If getBeforePhaseListener() returns non-null, invoke the listener, passing in the correct corresponding
-         * PhaseId for this phase.
-         *
-         * Upon return from the listener, call FacesContext.getResponseComplete() and FacesContext.getRenderResponse().
-         * If either return true set the internal state flag to true.
-         *
-         * If or one or more listeners have been added by a call to addPhaseListener(javax.faces.event.PhaseListener),
-         * invoke the beforePhase method on each one whose PhaseListener.getPhaseId() matches the current phaseId,
-         * passing in the same PhaseId as in the previous step.
-         *
-         * Upon return from each listener, call FacesContext.getResponseComplete() and FacesContext.getRenderResponse().
-         * If either return true set the internal state flag to true.
-         *
-         * Execute any processing for this phase if the internal state flag was not set.
-         *
-         * If getAfterPhaseListener() returns non-null, invoke the listener, passing in the correct corresponding
-         * PhaseId for this phase.
-         *
-         * If or one or more listeners have been added by a call to addPhaseListener(javax.faces.event.PhaseListener),
-         * invoke the afterPhase method on each one whose PhaseListener.getPhaseId() matches the current phaseId,
-         * passing in the same PhaseId as in the previous step.
-         */
         List<PhaseListener> phaseListeners = (List<PhaseListener>) getStateHelper().get(PropertyKeys.phaseListeners);
         if (listener != null || (phaseListeners != null && !phaseListeners.isEmpty()))
         {
+            // how many listeners do we have? (the MethodExpression listener is counted in either way)
+            // NOTE: beforePhaseSuccess[0] always refers to the MethodExpression listener
+            int listenerCount = (phaseListeners != null ? phaseListeners.size() + 1 : 1);
+            
+            boolean[] beforePhaseSuccess;
+            if (beforePhase)
+            {
+                beforePhaseSuccess = new boolean[listenerCount];
+                listenerSuccessMap.put(phaseId, beforePhaseSuccess);
+            }
+            else {
+                // afterPhase - get beforePhaseSuccess from the Map
+                beforePhaseSuccess = listenerSuccessMap.get(phaseId);
+                if (beforePhaseSuccess == null)
+                {
+                    // no Map available - assume that everything went well
+                    beforePhaseSuccess = new boolean[listenerCount];
+                    Arrays.fill(beforePhaseSuccess, true);
+                }
+            }
+            
             PhaseEvent event = createEvent(context, phaseId);
 
-            if (listener != null)
+            // only invoke the listener if we are in beforePhase
+            // or if the related before PhaseListener finished without an Exception
+            if (listener != null && (beforePhase || beforePhaseSuccess[0]))
             {
-                listener.invoke(context.getELContext(), new Object[] { event });
+                try
+                {
+                    listener.invoke(context.getELContext(), new Object[] { event });
+                    beforePhaseSuccess[0] = true;
+                }
+                catch (Throwable t) 
+                {
+                    beforePhaseSuccess[0] = false; // redundant - for clarity
+                    logger.log(Level.SEVERE, "An Exception occured while processing " +
+                                             listener.getExpressionString() + 
+                                             " in Phase " + phaseId, t);
+                    if (beforePhase)
+                    {
+                        return context.getResponseComplete() || context.getRenderResponse();
+                    }
+                }
+            }
+            else if (beforePhase)
+            {
+                // there is no beforePhase MethodExpression listener
+                beforePhaseSuccess[0] = true;
             }
 
             if (phaseListeners != null && !phaseListeners.isEmpty())
             {
-                for (PhaseListener phaseListener : phaseListeners)
+                if (beforePhase)
                 {
-                    PhaseId listenerPhaseId = phaseListener.getPhaseId();
-                    if (phaseId.equals(listenerPhaseId) || PhaseId.ANY_PHASE.equals(listenerPhaseId))
+                    // process listeners in ascending order
+                    for (int i = 0; i < beforePhaseSuccess.length - 1; i++)
                     {
-                        if (beforePhase)
+                        PhaseListener phaseListener;
+                        try 
                         {
-                            phaseListener.beforePhase(event);
+                            phaseListener = phaseListeners.get(i);
                         }
-                        else
+                        catch (IndexOutOfBoundsException e)
                         {
-                            phaseListener.afterPhase(event);
+                            // happens when a PhaseListener removes another PhaseListener 
+                            // from UIViewRoot in its beforePhase method
+                            throw new IllegalStateException("A PhaseListener must not remove " +
+                                    "PhaseListeners from UIViewRoot.");
+                        }
+                        PhaseId listenerPhaseId = phaseListener.getPhaseId();
+                        if (phaseId.equals(listenerPhaseId) || PhaseId.ANY_PHASE.equals(listenerPhaseId))
+                        {
+                            try
+                            {
+                                phaseListener.beforePhase(event);
+                                beforePhaseSuccess[i + 1] = true;
+                            }
+                            catch (Throwable t) 
+                            {
+                                beforePhaseSuccess[i + 1] = false; // redundant - for clarity
+                                logger.log(Level.SEVERE, "An Exception occured while processing the " +
+                                                         "beforePhase method of PhaseListener " + phaseListener +
+                                                         " in Phase " + phaseId, t);
+                                return context.getResponseComplete() || context.getRenderResponse();
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // afterPhase
+                    // process listeners in descending order
+                    for (int i = beforePhaseSuccess.length - 1; i > 0; i--)
+                    {
+                        PhaseListener phaseListener;
+                        try 
+                        {
+                            phaseListener = phaseListeners.get(i - 1);
+                        }
+                        catch (IndexOutOfBoundsException e)
+                        {
+                            // happens when a PhaseListener removes another PhaseListener 
+                            // from UIViewRoot in its beforePhase or afterPhase method
+                            throw new IllegalStateException("A PhaseListener must not remove " +
+                                    "PhaseListeners from UIViewRoot.");
+                        }
+                        PhaseId listenerPhaseId = phaseListener.getPhaseId();
+                        if ((phaseId.equals(listenerPhaseId) || PhaseId.ANY_PHASE.equals(listenerPhaseId))
+                                && beforePhaseSuccess[i])
+                        {
+                            try
+                            {
+                                phaseListener.afterPhase(event);
+                            }
+                            catch (Throwable t) 
+                            {
+                                logger.log(Level.SEVERE, "An Exception occured while processing the " +
+                                                         "afterPhase method of PhaseListener " + phaseListener +
+                                                         " in Phase " + phaseId, t);
+                            }
                         }
                     }
                 }
@@ -1216,16 +1299,26 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      */
     private boolean _process(FacesContext context, PhaseId phaseId, PhaseProcessor processor)
     {
+        RuntimeException processingException = null;
         try
         {
             if (!notifyListeners(context, phaseId, getBeforePhaseListener(), true))
             {
-                if (processor != null)
+                try
                 {
-                    processor.process(context, this);
+                    if (processor != null)
+                    {
+                        processor.process(context, this);
+                    }
+        
+                    broadcastEvents(context, phaseId);
                 }
-    
-                broadcastEvents(context, phaseId);
+                catch (RuntimeException re)
+                {
+                    // catch any Exception that occures while processing the phase
+                    // to ensure invocation of the afterPhase methods
+                    processingException = re;
+                }
             }
         }
         finally
@@ -1236,7 +1329,15 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             }            
         }
 
-        return notifyListeners(context, phaseId, getAfterPhaseListener(), false);
+        boolean retVal = notifyListeners(context, phaseId, getAfterPhaseListener(), false);
+        if (processingException == null) 
+        {
+            return retVal;   
+        }
+        else
+        {
+            throw processingException;
+        }
     }
 
     private void _processDecodesDefault(FacesContext context)
