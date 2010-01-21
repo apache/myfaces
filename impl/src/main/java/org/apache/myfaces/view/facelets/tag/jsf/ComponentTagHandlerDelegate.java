@@ -19,7 +19,6 @@
 package org.apache.myfaces.view.facelets.tag.jsf;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -491,42 +490,25 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                     {
                         BeanValidator beanValidator = (BeanValidator) validator;
                         
-                        // add validation groups from stack
-                        Iterator<String> itValidationGroups = actx.getValidationGroups();
-                        if (itValidationGroups != null && itValidationGroups.hasNext())
+                        // check the validationGroups
+                        String validationGroups =  beanValidator.getValidationGroups();
+                        if (validationGroups == null 
+                                || validationGroups.matches(BeanValidator.EMPTY_VALIDATION_GROUPS_PATTERN))
                         {
-                            // we use a Set to eliminate duplicates
-                            Set<String> groupsSet = new HashSet<String>();
-                            
-                            // add any existing validationGroups to Set first
-                            String validationGroups =  beanValidator.getValidationGroups();
-                            if (validationGroups != null)
+                            // no validationGroups available
+                            // --> get the validationGroups from the stack
+                            Iterator<String> itValidationGroups = actx.getValidationGroups();
+                            if (itValidationGroups != null && itValidationGroups.hasNext())
                             {
-                                addValidationGroups(validationGroups, groupsSet);
-                            }
-                            while (itValidationGroups.hasNext())
-                            {
-                                // note that the validationGroups from the stack are non-null
                                 validationGroups = itValidationGroups.next();
-                                addValidationGroups(validationGroups, groupsSet);
                             }
-                            
-                            // join validationGroups and add them to beanValidator
-                            StringBuilder sb = new StringBuilder();
-                            boolean first = true;
-                            for (String group : groupsSet)
+                            else
                             {
-                                if (first)
-                                {
-                                    first = false;
-                                }
-                                else
-                                {
-                                    sb.append(BeanValidator.VALIDATION_GROUPS_DELIMITER);
-                                }
-                                sb.append(group);
+                                // no validationGroups on the stack
+                                // --> set the default validationGroup
+                                validationGroups = javax.validation.groups.Default.class.getName();
                             }
-                            beanValidator.setValidationGroups(sb.toString());
+                            beanValidator.setValidationGroups(validationGroups);
                         }
                     }
                     
@@ -601,21 +583,6 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
 
         // By default, all default validators should be added
         return true;
-    }
-    
-    /**
-     * Splits the validationGroups String with BeanValidator.VALIDATION_GROUPS_DELIMITER
-     * and then trims and adds every String in the resulting array to the Set. 
-     * @param validationGroups
-     * @param set
-     */
-    private void addValidationGroups(String validationGroups, Set<String> set)
-    {
-        String[] sa = validationGroups.split(BeanValidator.VALIDATION_GROUPS_DELIMITER);
-        for (String group : sa)
-        {
-            set.add(group.trim());
-        }
     }
     
     /**

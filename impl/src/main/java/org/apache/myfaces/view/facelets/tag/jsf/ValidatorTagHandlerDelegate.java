@@ -26,6 +26,7 @@ import javax.el.ValueExpression;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.validator.BeanValidator;
 import javax.faces.validator.Validator;
 import javax.faces.view.EditableValueHolderAttachedObjectHandler;
 import javax.faces.view.facelets.ComponentHandler;
@@ -128,7 +129,8 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
                 // the validator is enabled --> add the validation groups to the stack
                 String groups = getValidationGroups(ctx);
                 // spec: don't save the validation groups string if it is null or empty string
-                if (groups != null && !"".equals(groups))
+                if (groups != null 
+                        && !groups.matches(BeanValidator.EMPTY_VALIDATION_GROUPS_PATTERN))
                 {
                     abstractCtx.pushValidationGroupsToStack(groups);
                     _delegate.getValidatorConfig().getNextHandler().apply(ctx, parent);
