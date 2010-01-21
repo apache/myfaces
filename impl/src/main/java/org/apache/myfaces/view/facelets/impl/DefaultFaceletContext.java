@@ -618,13 +618,13 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     }
     
     /**
-     * Gets all validation groups on the stack.
+     * Gets the top of the validationGroups stack.
      * @return
      * @since 2.0
      */
     @Override
     @SuppressWarnings("unchecked")
-    public Iterator<String> getValidationGroups()
+    public String getFirstValidationGroupFromStack()
     {
         Map<Object, Object> attributes = getFacesContext().getAttributes();
         
@@ -632,7 +632,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
                 = (LinkedList<String>) attributes.get(VALIDATION_GROUPS_STACK);
         if (validationGroupsStack != null && !validationGroupsStack.isEmpty())
         {
-            return validationGroupsStack.iterator();
+            return validationGroupsStack.getFirst(); // top-of-stack
         }
         return null;
     }

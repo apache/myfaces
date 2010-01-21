@@ -169,11 +169,11 @@ public abstract class AbstractFaceletContext extends FaceletContext
     public abstract void pushAjaxHandlerToStack(AjaxHandler parent);
     
     /**
-     * Gets all validation groups on the stack.
+     * Gets the top of the validationGroups stack.
      * @return
      * @since 2.0
      */
-    public abstract Iterator<String> getValidationGroups();
+    public abstract String getFirstValidationGroupFromStack();
     
     /**
      * Removes top of stack.

@@ -497,10 +497,10 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                         {
                             // no validationGroups available
                             // --> get the validationGroups from the stack
-                            Iterator<String> itValidationGroups = actx.getValidationGroups();
-                            if (itValidationGroups != null && itValidationGroups.hasNext())
+                            String stackGroup = actx.getFirstValidationGroupFromStack();
+                            if (stackGroup != null)
                             {
-                                validationGroups = itValidationGroups.next();
+                                validationGroups = stackGroup;
                             }
                             else
                             {
