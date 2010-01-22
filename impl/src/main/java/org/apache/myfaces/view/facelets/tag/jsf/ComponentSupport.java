@@ -26,6 +26,7 @@ import java.util.Map;
 
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIPanel;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletContext;
@@ -42,6 +43,13 @@ public final class ComponentSupport
 
     private final static String MARK_DELETED = "org.apache.myfaces.view.facelets.MARK_DELETED";
     public final static String MARK_CREATED = "org.apache.myfaces.view.facelets.MARK_ID";
+    
+    /**
+     * The UIPanel components, which are dynamically generated to serve as a container for
+     * facets with multiple non panel children, are marked with this attribute.
+     * This constant is duplicate in javax.faces.webapp.UIComponentClassicTagBase
+     */
+    public final static String FACET_CREATED_UIPANEL_MARKER = "org.apache.myfaces.facet.createdUIPanel";
 
     /**
      * Used in conjunction with markForDeletion where any UIComponent marked will be removed.
@@ -132,7 +140,7 @@ public final class ComponentSupport
             UIComponent facet = itr.next();
             // check if this is a dynamically generated UIPanel
             if (Boolean.TRUE.equals(facet.getAttributes()
-                         .get(ComponentTagHandlerDelegate.FACET_CREATED_UIPANEL_MARKER)))
+                         .get(FACET_CREATED_UIPANEL_MARKER)))
             {
                 // only check the children and facets of the panel
                 Iterator<UIComponent> itr2 = facet.getFacetsAndChildren();
@@ -321,5 +329,90 @@ public final class ComponentSupport
     public static boolean isNew(UIComponent component)
     {
         return component != null && component.getParent() == null;
+    }
+    
+    /**
+     * Create a new UIPanel for the use as a dynamically 
+     * created container for multiple children in a facet.
+     * Duplicate in javax.faces.webapp.UIComponentClassicTagBase.
+     * @param facesContext
+     * @return
+     */
+    private static UIComponent createFacetUIPanel(FacesContext facesContext)
+    {
+        UIComponent panel = facesContext.getApplication().createComponent(UIPanel.COMPONENT_TYPE);
+        panel.setId(facesContext.getViewRoot().createUniqueId());
+        panel.getAttributes().put(FACET_CREATED_UIPANEL_MARKER, Boolean.TRUE);
+        return panel;
+    }
+    
+    public static void addFacet(FaceletContext ctx, UIComponent parent, UIComponent c, String facetName)
+    {
+        // facets now can have multiple children and the direct
+        // child of a facet is always an UIPanel (since 2.0)
+        UIComponent facet = parent.getFacets().get(facetName);
+        boolean facetChanged = false;
+        
+        if (facet == null)
+        {
+            // if our component is an instance of UIPanel, use it
+            if (c instanceof UIPanel)
+            {
+                facet = c;
+            }
+            else
+            {
+                // create a new UIPanel and add c as child
+                facet = createFacetUIPanel(ctx.getFacesContext());
+                facet.getChildren().add(c);
+            }
+            facetChanged = true;
+        }
+        else if (!(facet instanceof UIPanel))
+        {
+            // there is a facet, but it is not an instance of UIPanel
+            UIComponent child = facet;
+            facet = createFacetUIPanel(ctx.getFacesContext());
+            facet.getChildren().add(child);
+            facet.getChildren().add(c);
+            facetChanged = true;
+        }
+        else
+        {
+            // we have a facet, which is an instance of UIPanel at this point
+            // check if it is a facet marked UIPanel
+            if (Boolean.TRUE.equals(facet.getAttributes().get(FACET_CREATED_UIPANEL_MARKER)))
+            {
+                facet.getChildren().add(c);
+            }
+            else
+            {
+                // the facet is an instance of UIPanel, but it is not marked,
+                // so we have to create a new UIPanel and store this one in it
+                UIComponent oldPanel = facet;
+                facet = createFacetUIPanel(ctx.getFacesContext());
+                facet.getChildren().add(oldPanel);
+                facet.getChildren().add(c);
+                facetChanged = true;
+            }
+        }
+        
+        if (facetChanged)
+        {
+            parent.getFacets().put(facetName, facet);
+        }        
+    }
+    
+    public static void removeFacet(FaceletContext ctx, UIComponent parent, UIComponent c, String facetName)
+    {
+        UIComponent facet = parent.getFacet(facetName);
+        if (Boolean.TRUE.equals(facet.getAttributes().get(FACET_CREATED_UIPANEL_MARKER)))
+        {
+            facet.getChildren().remove(c);
+        }
+        else
+        {
+            parent.getFacets().remove(facetName);
+        }
     }
 }

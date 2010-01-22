@@ -23,6 +23,7 @@ import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletHandler;
 import javax.faces.view.facelets.TextHandler;
 
+import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler;
 
 public abstract class AbstractUIHandler implements FaceletHandler, TextHandler
@@ -38,7 +39,7 @@ public abstract class AbstractUIHandler implements FaceletHandler, TextHandler
         }
         else
         {
-            parent.getFacets().put(facetName, c);
+            ComponentSupport.addFacet(ctx, parent, c, facetName);
         }
     }
 
