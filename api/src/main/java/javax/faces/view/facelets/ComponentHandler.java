@@ -56,12 +56,50 @@ public class ComponentHandler extends DelegatingMetaTagHandler
         // has been moved to this location.
         // Originally this method was called from all tags that generate any kind of listeners
         // (f:actionListener, f:phaseListener, f:setPropertyActionListener, f:valueChangeListener).
-        // This method prevent add listener when a facelet is applied twice. But at this moment we don't have
-        // a valid use case that reproduce this behavior, and tracking down the original code from facelets
-        // cvs log, there is no information or bug related to.
-        // TODO: Only partially done... how do we determine that the component is "new to the tree"?
-        // pending update it when composite components are created. (Aparently it is not necessary)
-        return component != null && component.getParent() == null;
+        // This method prevent add listener when a facelet is applied twice. 
+        // On MYFACES-2502 there is an explanation about where this is useful (partial state saving disabled).
+        // return component != null && component.getParent() == null; 
+        if (component != null)
+        {
+            UIComponent parent = component.getParent();
+            if (parent == null)
+            {
+                return true;
+            }
+            else
+            {
+                // When a composite component is used, we could have tags attaching
+                // objects or doing some operation on composite:implementation body 
+                // like this:
+                // <composite:implementation>
+                //   <f:event ...../>
+                // </composite:implementation>
+                // This case is valid, but the parent is the UIPanel inside 
+                // UIComponent.COMPOSITE_FACET_NAME facet key of the composite component.
+                // So in this case we have to check if the component is a composite component
+                // or not and if so, try to get the parent again.
+                if (UIComponent.isCompositeComponent(parent))
+                {
+                    parent = parent.getParent();
+                    if (parent == null)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public void onComponentCreated(FaceletContext ctx, UIComponent c, UIComponent parent)
