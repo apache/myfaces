@@ -71,7 +71,7 @@ public final class PropertyResolverImpl extends PropertyResolver
     public void setValue(final Object base, final Object property, final Object newValue) throws EvaluationException,
         PropertyNotFoundException
     {
-        if (base == null || property == null)
+        if (base == null || property == null || isReadOnly (base, property))
             throw new PropertyNotFoundException();
 
         invokeResolver(new ResolverInvoker<Object>(base, property)
