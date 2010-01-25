@@ -66,6 +66,7 @@ public class FacesContextImpl extends FacesContext
     // ~ Instance fields ----------------------------------------------------------------------------
 
     private Map<String, List<FacesMessage>> _messages = null;
+    private List<FacesMessage> _orderedMessages = null;
     private Application _application;
     private PhaseId _currentPhaseId;
     private ExternalContext _externalContext;
@@ -149,13 +150,7 @@ public class FacesContextImpl extends FacesContext
             return Collections.unmodifiableList(Collections.<FacesMessage>emptyList());
         }
         
-        List<FacesMessage> lst = new ArrayList<FacesMessage>();
-        for(List<FacesMessage> curLst : _messages.values())
-        {
-            lst.addAll(curLst);       
-        }
-        
-        return Collections.unmodifiableList(lst);
+        return Collections.unmodifiableList(_orderedMessages);
     }
 
     @Override
@@ -180,13 +175,8 @@ public class FacesContextImpl extends FacesContext
         {
             return NullIterator.instance();
         }
-
-        List<FacesMessage> lst = new ArrayList<FacesMessage>();
-        for(List<FacesMessage> curLst : _messages.values())
-        {
-            lst.addAll(curLst);       
-        }
-        return lst.iterator();
+        
+        return _orderedMessages.iterator();
     }
 
     @Override
@@ -367,6 +357,7 @@ public class FacesContextImpl extends FacesContext
         if (_messages == null)
         {
             _messages = new HashMap<String, List<FacesMessage>>();
+            _orderedMessages = new ArrayList<FacesMessage>();
         }
         
         List<FacesMessage> lst = _messages.get(clientId); 
@@ -377,6 +368,7 @@ public class FacesContextImpl extends FacesContext
         }
         
         lst.add(message);
+        _orderedMessages.add (message);
         
         FacesMessage.Severity serSeverity = message.getSeverity();
         if (serSeverity != null)
