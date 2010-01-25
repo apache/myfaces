@@ -816,32 +816,59 @@ public class AnnotationConfigurator
             if (appScoped != null)
             {
                 mbc.setScope("application");
-            }            
-            NoneScoped noneScoped = (NoneScoped) clazz.getAnnotation(NoneScoped.class);
-            if (noneScoped != null)
-            {
-                mbc.setScope("none");
-            }            
-            RequestScoped requestScoped = (RequestScoped) clazz.getAnnotation(RequestScoped.class);
-            if (requestScoped != null)
-            {
-                mbc.setScope("request");
-            }            
-            SessionScoped sessionScoped = (SessionScoped) clazz.getAnnotation(SessionScoped.class);
-            if (sessionScoped != null)
-            {
-                mbc.setScope("session");
-            }            
-            ViewScoped viewScoped = (ViewScoped) clazz.getAnnotation(ViewScoped.class);
-            if (viewScoped != null)
-            {
-                mbc.setScope("view");
-            }            
-            CustomScoped customScoped = (CustomScoped) clazz.getAnnotation(CustomScoped.class);
-            if (customScoped != null)
-            {
-                mbc.setScope(customScoped.value());
             }
+            
+            else
+            {
+                NoneScoped noneScoped = (NoneScoped) clazz.getAnnotation(NoneScoped.class);
+                if (noneScoped != null)
+                {
+                    mbc.setScope("none");
+                }
+                
+                else
+                {
+                    RequestScoped requestScoped = (RequestScoped) clazz.getAnnotation(RequestScoped.class);
+                    if (requestScoped != null)
+                    {
+                        mbc.setScope("request");
+                    }
+                    
+                    else
+                    {
+                        SessionScoped sessionScoped = (SessionScoped) clazz.getAnnotation(SessionScoped.class);
+                        if (sessionScoped != null)
+                        {
+                            mbc.setScope("session");
+                        }
+                        
+                        else
+                        {
+                            ViewScoped viewScoped = (ViewScoped) clazz.getAnnotation(ViewScoped.class);
+                            if (viewScoped != null)
+                            {
+                                mbc.setScope("view");
+                            }
+                            
+                            else {
+                                CustomScoped customScoped = (CustomScoped) clazz.getAnnotation(CustomScoped.class);
+                                if (customScoped != null)
+                                {
+                                    mbc.setScope(customScoped.value());
+                                }
+                                
+                                else
+                                {
+                                    // No scope annotation means default of "request".
+                                    
+                                    mbc.setScope ("request");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
             Field[] fields = fields(clazz);
             for (Field field : fields)
             {
