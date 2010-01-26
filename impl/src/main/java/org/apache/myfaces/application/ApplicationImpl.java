@@ -58,6 +58,7 @@ import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.behavior.Behavior;
+import javax.faces.component.behavior.ClientBehaviorBase;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.DateTimeConverter;
@@ -74,6 +75,7 @@ import javax.faces.event.ListenersFor;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 import javax.faces.event.SystemEventListenerHolder;
+import javax.faces.render.ClientBehaviorRenderer;
 import javax.faces.render.Renderer;
 import javax.faces.validator.Validator;
 import javax.faces.view.ViewDeclarationLanguage;
@@ -997,6 +999,18 @@ public class ApplicationImpl extends Application
             Behavior behavior = behaviorClass.newInstance();
 
             _handleAttachedResourceDependencyAnnotations(FacesContext.getCurrentInstance(), behavior);
+
+            if (behavior instanceof ClientBehaviorBase)
+            {
+              ClientBehaviorBase clientBehavior = (ClientBehaviorBase) behavior;
+              String renderType = clientBehavior.getRendererType();
+              if (renderType != null)
+              {
+                FacesContext ctx = FacesContext.getCurrentInstance();
+                ClientBehaviorRenderer cbr = ctx.getRenderKit().getClientBehaviorRenderer(renderType);
+                _handleAttachedResourceDependencyAnnotations(FacesContext.getCurrentInstance(), cbr);
+              }
+            }
 
             return behavior;
         }
