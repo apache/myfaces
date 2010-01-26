@@ -994,7 +994,10 @@ public class ApplicationImpl extends Application
 
         try
         {
-            final Behavior behavior = behaviorClass.newInstance();
+            Behavior behavior = behaviorClass.newInstance();
+
+            _handleAttachedResourceDependencyAnnotations(FacesContext.getCurrentInstance(), behavior);
+
             return behavior;
         }
         catch (Exception e)
