@@ -14,9 +14,9 @@
   </description>
   <url>http://myfaces.apache.org/core20/myfaces-impl</url>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk/impl</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk/impl</developerConnection>
-    <url>http://svn.apache.org/repos/asf/myfaces/core/trunk/impl</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/tags/2_0_0_beta/impl</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/tags/2_0_0_beta/impl</developerConnection>
+    <url>http://svn.apache.org/repos/asf/myfaces/core/tags/2_0_0_beta/impl</url>
   </scm>
   <build>
     <resources>

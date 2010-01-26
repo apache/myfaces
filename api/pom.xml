@@ -14,9 +14,9 @@
     </description>
     <url>http://myfaces.apache.org/core20/myfaces-api</url>
     <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk/api</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk/api</developerConnection>
-        <url>http://svn.apache.org/repos/asf/myfaces/core/trunk/api</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/tags/2_0_0_beta/api</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/tags/2_0_0_beta/api</developerConnection>
+        <url>http://svn.apache.org/repos/asf/myfaces/core/tags/2_0_0_beta/api</url>
     </scm>
     <build>
 
