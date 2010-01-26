@@ -117,10 +117,14 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
             {
                 // the validator is disabled --> add its id to the exclusion stack
                 String validatorId = _delegate.getValidatorConfig().getValidatorId();
-                if (validatorId != null && !"".equals(validatorId))
+                boolean validatorIdAvailable = validatorId != null && !"".equals(validatorId);
+                if (validatorIdAvailable)
                 {
                     abstractCtx.pushExcludedValidatorIdToStack(validatorId);
-                    _delegate.getValidatorConfig().getNextHandler().apply(ctx, parent);
+                }
+                _delegate.getValidatorConfig().getNextHandler().apply(ctx, parent);
+                if (validatorIdAvailable)
+                {
                     abstractCtx.popExcludedValidatorIdToStack();
                 }
             }
@@ -129,11 +133,15 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
                 // the validator is enabled --> add the validation groups to the stack
                 String groups = getValidationGroups(ctx);
                 // spec: don't save the validation groups string if it is null or empty string
-                if (groups != null 
-                        && !groups.matches(BeanValidator.EMPTY_VALIDATION_GROUPS_PATTERN))
+                boolean groupsAvailable = groups != null 
+                        && !groups.matches(BeanValidator.EMPTY_VALIDATION_GROUPS_PATTERN);
+                if (groupsAvailable)
                 {
                     abstractCtx.pushValidationGroupsToStack(groups);
-                    _delegate.getValidatorConfig().getNextHandler().apply(ctx, parent);
+                }
+                _delegate.getValidatorConfig().getNextHandler().apply(ctx, parent);
+                if (groupsAvailable)
+                {
                     abstractCtx.popValidationGroupsToStack();
                 }
             }
