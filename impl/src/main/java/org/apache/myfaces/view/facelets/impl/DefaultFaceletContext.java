@@ -70,6 +70,8 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     public final static String VALIDATION_GROUPS_STACK = "org.apache.myfaces.view.facelets.VALIDATION_GROUPS_STACK";
     
     public final static String EXCLUDED_VALIDATOR_IDS_STACK = "org.apache.myfaces.view.facelets.EXCLUDED_VALIDATOR_IDS_STACK";
+    
+    public final static String ENCLOSING_VALIDATOR_IDS_STACK = "org.apache.myfaces.view.facelets.ENCLOSING_VALIDATOR_IDS_STACK";
 
     private final FacesContext _faces;
 
@@ -735,5 +737,65 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         }
 
         excludedValidatorIdsStack.addFirst(validatorId);
+    }
+    
+    /**
+     * Gets all validationIds on the stack.
+     * @return
+     * @since 2.0
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public Iterator<String> getEnclosingValidatorIds()
+    {
+        Map<Object, Object> attributes = getFacesContext().getAttributes();
+        
+        LinkedList<String> enclosingValidatorIdsStack 
+                = (LinkedList<String>) attributes.get(ENCLOSING_VALIDATOR_IDS_STACK);
+        if (enclosingValidatorIdsStack != null && !enclosingValidatorIdsStack.isEmpty())
+        {
+            return enclosingValidatorIdsStack.iterator(); 
+        }
+        return null;
+    }
+    
+    /**
+     * Removes top of stack.
+     * @since 2.0
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public void popEnclosingValidatorIdToStack()
+    {
+        Map<Object, Object> contextAttributes = getFacesContext().getAttributes();
+        
+        LinkedList<String> enclosingValidatorIdsStack 
+                = (LinkedList<String>) contextAttributes.get(ENCLOSING_VALIDATOR_IDS_STACK);
+        if (enclosingValidatorIdsStack != null && !enclosingValidatorIdsStack.isEmpty())
+        {
+            enclosingValidatorIdsStack.removeFirst();
+        }
+    }
+    
+    /**
+     * Pushes validatorId to the stack of all enclosing validatorIds.
+     * @param validatorId
+     * @since 2.0
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public void pushEnclosingValidatorIdToStack(String validatorId)
+    {
+        Map<Object, Object> attributes = getFacesContext().getAttributes();
+
+        LinkedList<String> enclosingValidatorIdsStack 
+                = (LinkedList<String>) attributes.get(ENCLOSING_VALIDATOR_IDS_STACK);
+        if (enclosingValidatorIdsStack == null)
+        {
+            enclosingValidatorIdsStack = new LinkedList<String>();
+            attributes.put(ENCLOSING_VALIDATOR_IDS_STACK, enclosingValidatorIdsStack);
+        }
+
+        enclosingValidatorIdsStack.addFirst(validatorId);
     }
 }

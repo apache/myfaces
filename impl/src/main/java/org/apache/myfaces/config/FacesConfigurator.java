@@ -71,6 +71,7 @@ import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
+import javax.faces.validator.BeanValidator;
 import javax.faces.webapp.FacesServlet;
 
 import org.apache.myfaces.application.ApplicationFactoryImpl;
@@ -1707,8 +1708,15 @@ public class FacesConfigurator
             application.addValidator(validatorId, dispenser.getValidatorClass(validatorId));
         }
 
+        String disabled = _externalContext.getInitParameter(BeanValidator.DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME);
+        boolean defaultBeanValidatorDisabled = (disabled != null && disabled.toLowerCase().equals("true"));
         for (String validatorId : dispenser.getDefaultValidatorIds())
         {
+            if (defaultBeanValidatorDisabled && validatorId.equals(BeanValidator.VALIDATOR_ID))
+            {
+                // do not add it as a default validator
+                continue;
+            }
             application.addDefaultValidatorId(validatorId);
         }
 

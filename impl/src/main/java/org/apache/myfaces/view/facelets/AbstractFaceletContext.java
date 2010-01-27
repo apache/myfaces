@@ -208,4 +208,24 @@ public abstract class AbstractFaceletContext extends FaceletContext
      */
     public abstract void pushExcludedValidatorIdToStack(String validatorId);
     
+    /**
+     * Gets all validationIds on the stack.
+     * @return
+     * @since 2.0
+     */
+    public abstract Iterator<String> getEnclosingValidatorIds();
+    
+    /**
+     * Removes top of stack.
+     * @since 2.0
+     */
+    public abstract void popEnclosingValidatorIdToStack();
+    
+    /**
+     * Pushes validatorId to the stack of all enclosing validatorIds.
+     * @param validatorId
+     * @since 2.0
+     */
+    public abstract void pushEnclosingValidatorIdToStack(String validatorId);
+    
 }

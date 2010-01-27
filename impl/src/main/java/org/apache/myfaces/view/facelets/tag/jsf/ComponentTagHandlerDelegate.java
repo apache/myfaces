@@ -19,6 +19,7 @@
 package org.apache.myfaces.view.facelets.tag.jsf;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,6 @@ import javax.faces.application.ProjectStage;
 import javax.faces.component.ActionSource;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIPanel;
 import javax.faces.component.UniqueIdVendor;
 import javax.faces.component.ValueHolder;
 import javax.faces.component.behavior.ClientBehaviorHolder;
@@ -54,6 +54,8 @@ import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
 import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler;
+
+import com.sun.beans.ObjectHandler;
 
 /**
  *  
@@ -379,6 +381,8 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
     
     /**
      * Add the default Validators to the component.
+     * Also adds all validators specified by enclosing <f:validateBean> tags
+     * (e.g. the BeanValidator if it is not a default validator).
      *
      * @param context The FacesContext.
      * @param actx the AbstractFaceletContext
@@ -388,67 +392,108 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                                       EditableValueHolder component)
     {
         Application application = context.getApplication();
+        Map<String, String> validators = new HashMap<String, String>();
+        
+        // add all defaultValidators
         Map<String, String> defaultValidators = application.getDefaultValidatorInfo();
         if (defaultValidators != null && defaultValidators.size() != 0)
         {
-            Set<Map.Entry<String, String>> defaultValidatorInfoSet = defaultValidators.entrySet();
-            for (Map.Entry<String, String> entry : defaultValidatorInfoSet)
+            validators.putAll(defaultValidators);
+        }
+        // add all enclosing validators
+        Iterator<String> enclosingValidatorIds = actx.getEnclosingValidatorIds();
+        if (enclosingValidatorIds != null && enclosingValidatorIds.hasNext())
+        {
+            while (enclosingValidatorIds.hasNext())
+            {
+                String validatorId = enclosingValidatorIds.next();
+                if (!validators.containsKey(validatorId))
+                {
+                    validators.put(validatorId, null);
+                }
+            }
+        }
+        
+        if (!validators.isEmpty())
+        {
+            // we have validators to add
+            Set<Map.Entry<String, String>> validatorInfoSet = validators.entrySet();
+            for (Map.Entry<String, String> entry : validatorInfoSet)
             {
                 String validatorId = entry.getKey();
                 String validatorClassName = entry.getValue();
+                Validator enclosingValidator = null;
                 
-                if (shouldAddDefaultValidator(validatorId, validatorClassName, context, actx, component))
+                if (validatorClassName == null)
                 {
-                    Validator validator = null;
-                    boolean created = false;
-                    // check if the validator is already registered for the given component
-                    for (Validator v : component.getValidators())
+                    // we have no class name for validators of enclosing <f:validateBean> tags
+                    // --> we have to create it to get the class name
+                    // note that normally we can use this instance later anyway!
+                    enclosingValidator = application.createValidator(validatorId);
+                    validatorClassName = enclosingValidator.getClass().getName();
+                }
+                
+                // check if the validator is already registered for the given component
+                // this happens if <f:validateBean /> is nested inside the component on the view
+                Validator validator = null;
+                for (Validator v : component.getValidators())
+                {
+                    if (v.getClass().getName().equals(validatorClassName))
                     {
-                        if (v.getClass().getName().equals(validatorClassName))
+                        // found
+                        validator = v;
+                        break;
+                    }
+                }
+                
+                if (validator == null)
+                {
+                    if (shouldAddDefaultValidator(validatorId, context, actx, component))
+                    {
+                        if (enclosingValidator != null)
                         {
-                            // found
-                            validator = v;
-                            break;
+                            // we can use the instance from before
+                            validator = enclosingValidator;
                         }
-                    }
-                    if (validator == null)
-                    {
-                        // create it
-                        validator = application.createValidator(validatorId);
-                        created = true;
-                    }
-                    
-                    // special things to do for a BeanValidator
-                    if (validator instanceof BeanValidator)
-                    {
-                        BeanValidator beanValidator = (BeanValidator) validator;
-                        
-                        // check the validationGroups
-                        String validationGroups =  beanValidator.getValidationGroups();
-                        if (validationGroups == null 
-                                || validationGroups.matches(BeanValidator.EMPTY_VALIDATION_GROUPS_PATTERN))
+                        else
                         {
-                            // no validationGroups available
-                            // --> get the validationGroups from the stack
-                            String stackGroup = actx.getFirstValidationGroupFromStack();
-                            if (stackGroup != null)
-                            {
-                                validationGroups = stackGroup;
-                            }
-                            else
-                            {
-                                // no validationGroups on the stack
-                                // --> set the default validationGroup
-                                validationGroups = javax.validation.groups.Default.class.getName();
-                            }
-                            beanValidator.setValidationGroups(validationGroups);
+                            // create it
+                            validator = application.createValidator(validatorId);
                         }
-                    }
-                    
-                    if (created)
-                    {
                         // add the validator to the component
                         component.addValidator(validator);
+                    }
+                    else
+                    {
+                        // no validator instance
+                        continue;
+                    }
+                }
+                
+                // special things to configure for a BeanValidator
+                if (validator instanceof BeanValidator)
+                {
+                    BeanValidator beanValidator = (BeanValidator) validator;
+                    
+                    // check the validationGroups
+                    String validationGroups =  beanValidator.getValidationGroups();
+                    if (validationGroups == null 
+                            || validationGroups.matches(BeanValidator.EMPTY_VALIDATION_GROUPS_PATTERN))
+                    {
+                        // no validationGroups available
+                        // --> get the validationGroups from the stack
+                        String stackGroup = actx.getFirstValidationGroupFromStack();
+                        if (stackGroup != null)
+                        {
+                            validationGroups = stackGroup;
+                        }
+                        else
+                        {
+                            // no validationGroups on the stack
+                            // --> set the default validationGroup
+                            validationGroups = javax.validation.groups.Default.class.getName();
+                        }
+                        beanValidator.setValidationGroups(validationGroups);
                     }
                 }
             }
@@ -459,15 +504,14 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
      * Determine if the default Validator with the given validatorId should be added.
      *
      * @param validatorId The validatorId.
-     * @param validatorClassName The class name of the validator.
      * @param context The FacesContext.
      * @param actx the AbstractFaceletContext
      * @param component The EditableValueHolder to which the validator should be added.
      * @return true if the Validator should be added, false otherwise.
      */
     @SuppressWarnings("unchecked")
-    private boolean shouldAddDefaultValidator(String validatorId, String validatorClassName,
-                                              FacesContext context, AbstractFaceletContext actx,
+    private boolean shouldAddDefaultValidator(String validatorId, FacesContext context, 
+                                              AbstractFaceletContext actx,
                                               EditableValueHolder component)
     {
         // check if the validatorId is on the exclusion list on the component
@@ -510,6 +554,21 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             String disabled = externalContext.getInitParameter(BeanValidator.DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME);
             if (disabled != null && disabled.toLowerCase().equals("true"))
             {
+                // check if there are any enclosing <f:validateBean> tags with the validatorId of the BeanValidator
+                Iterator<String> itEnclosingIds = actx.getEnclosingValidatorIds();
+                if (itEnclosingIds != null)
+                {
+                    while (itEnclosingIds.hasNext())
+                    {
+                        if (validatorId.equals(itEnclosingIds.next()))
+                        {
+                            // the component is enclosed by <f:validateBean>
+                            return true;
+                        }
+                    }
+                }
+                
+                // no enclosing <f:validateBean> found --> do not attach BeanValidator
                 return false;
             }
         }

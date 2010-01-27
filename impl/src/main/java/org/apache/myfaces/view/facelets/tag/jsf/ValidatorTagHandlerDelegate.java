@@ -112,11 +112,12 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
             // we need methods from AbstractFaceletContext
             AbstractFaceletContext abstractCtx = (AbstractFaceletContext) ctx;
              
+            String validatorId = _delegate.getValidatorConfig().getValidatorId();
+            
             boolean disabled = _delegate.isDisabled(ctx);
             if (disabled)
             {
                 // the validator is disabled --> add its id to the exclusion stack
-                String validatorId = _delegate.getValidatorConfig().getValidatorId();
                 boolean validatorIdAvailable = validatorId != null && !"".equals(validatorId);
                 if (validatorIdAvailable)
                 {
@@ -130,7 +131,8 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
             }
             else
             {
-                // the validator is enabled --> add the validation groups to the stack
+                // the validator is enabled 
+                // --> add the validation groups and the validatorId to the stack
                 String groups = getValidationGroups(ctx);
                 // spec: don't save the validation groups string if it is null or empty string
                 boolean groupsAvailable = groups != null 
@@ -139,7 +141,9 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
                 {
                     abstractCtx.pushValidationGroupsToStack(groups);
                 }
+                abstractCtx.pushEnclosingValidatorIdToStack(validatorId);
                 _delegate.getValidatorConfig().getNextHandler().apply(ctx, parent);
+                abstractCtx.popEnclosingValidatorIdToStack();
                 if (groupsAvailable)
                 {
                     abstractCtx.popValidationGroupsToStack();
