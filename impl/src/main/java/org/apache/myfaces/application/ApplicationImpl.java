@@ -18,22 +18,23 @@
  */
 package org.apache.myfaces.application;
 
-import java.beans.BeanDescriptor;
-import java.beans.BeanInfo;
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.TimeZone;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.myfaces.application.jsp.JspStateManagerImpl;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.config.impl.digester.elements.Property;
+import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
+import org.apache.myfaces.el.PropertyResolverImpl;
+import org.apache.myfaces.el.VariableResolverToApplicationELResolverAdapter;
+import org.apache.myfaces.el.convert.MethodExpressionToMethodBinding;
+import org.apache.myfaces.el.convert.ValueBindingToValueExpression;
+import org.apache.myfaces.el.convert.ValueExpressionToValueBinding;
+import org.apache.myfaces.el.unified.ELResolverBuilder;
+import org.apache.myfaces.el.unified.ResolverBuilderForFaces;
+import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver;
+import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.view.facelets.el.ELText;
 
 import javax.el.CompositeELResolver;
 import javax.el.ELContext;
@@ -82,24 +83,22 @@ import javax.faces.view.ViewDeclarationLanguage;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.myfaces.application.jsp.JspStateManagerImpl;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.config.impl.digester.elements.Property;
-import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
-import org.apache.myfaces.el.PropertyResolverImpl;
-import org.apache.myfaces.el.VariableResolverToApplicationELResolverAdapter;
-import org.apache.myfaces.el.convert.MethodExpressionToMethodBinding;
-import org.apache.myfaces.el.convert.ValueBindingToValueExpression;
-import org.apache.myfaces.el.convert.ValueExpressionToValueBinding;
-import org.apache.myfaces.el.unified.ELResolverBuilder;
-import org.apache.myfaces.el.unified.ResolverBuilderForFaces;
-import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver;
-import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
-import org.apache.myfaces.view.facelets.el.ELText;
+import java.beans.BeanDescriptor;
+import java.beans.BeanInfo;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.TimeZone;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * DOCUMENT ME!
@@ -1503,6 +1502,7 @@ public class ApplicationImpl extends Application
                 target = ELText.parse(getExpressionFactory(), context.getELContext(), target).toString(context.getELContext());
                 // If target is non-null, store it under the key "target".
                 attributes.put("target", target);
+                context.getViewRoot().addComponentResource(context, output, target);
             }
             else
             {
