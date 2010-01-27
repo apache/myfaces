@@ -55,8 +55,6 @@ import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
 import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler;
 
-import com.sun.beans.ObjectHandler;
-
 /**
  *  
  * Implementation of the tag logic used in the JSF specification. 
