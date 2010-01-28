@@ -1577,10 +1577,10 @@ public abstract class UIComponentBase extends UIComponent
         if (state == null)
         {
             //Only happens if initialStateMarked return true
-            //return;
             
-            // Commenting the above out because Javadocs say that we need to
-            // throw an NPE here.
+            if (initialStateMarked()) {
+                return;
+            }
             
             throw new NullPointerException ("state");
         }

@@ -231,7 +231,7 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
         _setupGetTests();
 
         //save stating does not need a facesContext for now!
-        Object retVal = _instance.saveState(null);
+        Object retVal = _instance.saveState(facesContext);
 
         assertTrue("retVal must be an array", retVal instanceof Object[]);
         assertTrue("arraylength must be given", ((Object[]) retVal).length > 0);
@@ -257,19 +257,19 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
     {
         _setupGetTests();
         _instance.setInitialStateMarked(false);
-        Object serializedState = _instance.saveState(null);
+        Object serializedState = _instance.saveState(facesContext);
         _instance.restoreState(facesContext, serializedState);
         assertStructure();
 
         _setupGetTests();
         _instance.setInitialStateMarked(true);
-        serializedState = _instance.saveState(null);
+        serializedState = _instance.saveState(facesContext);
         _instance.restoreState(facesContext, serializedState);
         assertStructure();
 
         _instance.setInitialStateMarked(true);
         _setupGetTests();
-        serializedState = _instance.saveState(null);
+        serializedState = _instance.saveState(facesContext);
         _instance.restoreState(facesContext, serializedState);
         assertStructure();
     }
