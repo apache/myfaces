@@ -42,6 +42,7 @@ public class Application
     private final List<String> elResolver = new ArrayList<String>();
     private final List<ResourceBundle> resourceBundle = new ArrayList<ResourceBundle>();
     private final List<SystemEventListener> systemEventListeners = new ArrayList<SystemEventListener>();
+    private boolean defaultValidatorsPresent = false;
     
     public void addActionListener(String listener)
     {
@@ -192,4 +193,15 @@ public class Application
     {
         return resourceBundle;
     }
+
+    public boolean isDefaultValidatorsPresent()
+    {
+        return defaultValidatorsPresent;
+    }
+
+    public void setDefaultValidatorsPresent()
+    {
+        defaultValidatorsPresent = true;
+    }
+    
 }

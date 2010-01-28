@@ -915,6 +915,20 @@ public class FacesConfigurator
         if(webAppConfig != null)    //add null check for apps which don't have a faces-config.xml (e.g. tomahawk examples for 1.1/1.2)
         {
             getDispenser().feed(webAppConfig);
+            
+            // check if there is an empty <default-validators> entry
+            // if so, clear all currently installed default validators.
+            // note that this applys only for the faces-config with the 
+            // highest precendence (not for standard-faces-config files).
+            for (org.apache.myfaces.config.impl.digester.elements.Application app : webAppConfig.getApplications())
+            {
+                if (app.isDefaultValidatorsPresent() && app.getDefaultValidatorIds().isEmpty())
+                {
+                    // clear all default validator from standard-config-files
+                    getDispenser().getDefaultValidatorIds().clear();
+                    break;
+                }
+            }
         }
     }
 
