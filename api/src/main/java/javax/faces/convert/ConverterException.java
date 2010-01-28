@@ -42,7 +42,7 @@ public class ConverterException
 
     public ConverterException(FacesMessage facesMessage)
     {
-        super(facesMessage.getSummary());
+        super((facesMessage == null) ? null : facesMessage.getSummary());
         _facesMessage = facesMessage;
     }
 
