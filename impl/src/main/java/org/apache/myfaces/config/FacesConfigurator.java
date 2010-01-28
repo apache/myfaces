@@ -106,6 +106,7 @@ import org.apache.myfaces.shared_impl.util.LocaleUtils;
 import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
 import org.apache.myfaces.shared_impl.util.serial.SerialFactory;
+import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl;
 import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
 import org.apache.myfaces.view.facelets.util.Classpath;
@@ -1726,7 +1727,9 @@ public class FacesConfigurator
         boolean defaultBeanValidatorDisabled = (disabled != null && disabled.toLowerCase().equals("true"));
         for (String validatorId : dispenser.getDefaultValidatorIds())
         {
-            if (defaultBeanValidatorDisabled && validatorId.equals(BeanValidator.VALIDATOR_ID))
+            if (validatorId.equals(BeanValidator.VALIDATOR_ID)
+                    && (defaultBeanValidatorDisabled
+                            || !ExternalSpecifications.isBeanValidationAvailable))
             {
                 // do not add it as a default validator
                 continue;
