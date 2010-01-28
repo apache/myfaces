@@ -1416,6 +1416,11 @@ public abstract class UIComponentBase extends UIComponent
      */
     public static Object saveAttachedState(FacesContext context, Object attachedObject)
     {
+        if (context == null)
+        {
+            throw new NullPointerException ("context");
+        }
+        
         if (attachedObject == null)
             return null;
         // StateHolder interface should take precedence over
@@ -1506,6 +1511,11 @@ public abstract class UIComponentBase extends UIComponent
      */
     public Object saveState(FacesContext context)
     {
+        if (context == null)
+        {
+            throw new NullPointerException ("context");
+        }
+        
         if (initialStateMarked())
         {
             //Delta
@@ -1559,10 +1569,20 @@ public abstract class UIComponentBase extends UIComponent
     @SuppressWarnings("unchecked")
     public void restoreState(FacesContext context, Object state)
     {
+        if (context == null)
+        {
+            throw new NullPointerException ("context");
+        }
+        
         if (state == null)
         {
             //Only happens if initialStateMarked return true
-            return;
+            //return;
+            
+            // Commenting the above out because Javadocs say that we need to
+            // throw an NPE here.
+            
+            throw new NullPointerException ("state");
         }
         
         Object values[] = (Object[]) state;
