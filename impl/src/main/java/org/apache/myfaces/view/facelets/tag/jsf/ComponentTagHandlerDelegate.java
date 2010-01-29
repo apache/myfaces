@@ -20,6 +20,7 @@ package org.apache.myfaces.view.facelets.tag.jsf;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,8 @@ import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
+import org.apache.myfaces.view.facelets.tag.composite.InsertChildrenHandler;
+import org.apache.myfaces.view.facelets.tag.composite.InsertFacetHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler;
 
@@ -111,6 +114,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
      * @throws TagException
      *             if the UIComponent parent is null
      */
+    @SuppressWarnings("unchecked")
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException
     {
@@ -133,6 +137,48 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 
         // grab our component
         UIComponent c = ComponentSupport.findChildByTagId(parent, id);
+
+        // Check if the component was relocated using
+        // composite:insertChildren or composite:insertFacet
+        boolean componentFoundInserted = false;
+
+        if (c == null && UIComponent.isCompositeComponent(parent))
+        {
+            if (facetName == null)
+            {
+                String targetClientId = (String) parent.getAttributes().get(InsertChildrenHandler.INSERT_CHILDREN_TARGET_ID);
+                if (targetClientId != null)
+                {
+                    UIComponent targetComponent = parent.findComponent(targetClientId.substring(parent.getClientId().length()+1));
+                    if (targetComponent != null)
+                    {
+                        c = ComponentSupport.findChildByTagId(targetComponent, id);
+                    }
+                }
+                if (c != null)
+                {
+                    c.getAttributes().put(InsertChildrenHandler.USES_INSERT_CHILDREN, Boolean.TRUE);
+                    componentFoundInserted = true;
+                }
+            }
+            else
+            {
+                String targetClientId = (String) parent.getAttributes().get(InsertFacetHandler.INSERT_FACET_TARGET_ID+facetName);
+                if (targetClientId != null)
+                {
+                    UIComponent targetComponent = parent.findComponent(targetClientId.substring(parent.getClientId().length()+1));
+                    if (targetComponent != null)
+                    {
+                        c = ComponentSupport.findChildByTagId(targetComponent, id);
+                        if (c != null)
+                        {
+                            c.getAttributes().put(InsertFacetHandler.USES_INSERT_FACET, Boolean.TRUE);
+                            componentFoundInserted = true;
+                        }
+                    }
+                }
+            }
+        }
         boolean componentFound = false;
         if (c != null)
         {
@@ -206,13 +252,54 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         {
             ComponentSupport.finalizeForDeletion(c);
 
-            if (facetName == null)
+            if (!componentFoundInserted)
             {
-                parent.getChildren().remove(c);
+                if (facetName == null)
+                {
+                    parent.getChildren().remove(c);
+                }
+                else
+                {
+                    ComponentSupport.removeFacet(ctx, parent, c, facetName);
+                }
+            }
+        }
+        
+        if (actx.isRefreshingTransientBuild() && 
+                UIComponent.isCompositeComponent(parent))
+        {
+            // Save the child structure behind this component, so it can be
+            // used later by InsertChildrenHandler and InsertFacetHandler
+            // to update components correctly.
+            if (facetName != null)
+            {
+                if (parent.getAttributes().containsKey(InsertFacetHandler.INSERT_FACET_TARGET_ID+facetName))
+                {
+                    List<String> ordering = (List<String>) parent.getAttributes().get(
+                            InsertFacetHandler.INSERT_FACET_ORDERING+facetName);
+                    if (ordering == null)
+                    {
+                        ordering = new ArrayList<String>();
+                        parent.getAttributes().put(InsertFacetHandler.INSERT_FACET_ORDERING+facetName, ordering);
+                    }
+                    ordering.remove(id);
+                    ordering.add(id);
+                }
             }
             else
             {
-                ComponentSupport.removeFacet(ctx, parent, c, facetName);
+                if (parent.getAttributes().containsKey(InsertChildrenHandler.INSERT_CHILDREN_TARGET_ID))
+                {
+                    List<String> ordering = (List<String>) parent.getAttributes().get(
+                            InsertChildrenHandler.INSERT_CHILDREN_ORDERING);
+                    if (ordering == null)
+                    {
+                        ordering = new ArrayList<String>();
+                        parent.getAttributes().put(InsertChildrenHandler.INSERT_CHILDREN_ORDERING, ordering);
+                    }
+                    ordering.remove(id);
+                    ordering.add(id);
+                }
             }
         }
 
@@ -237,17 +324,35 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         
         _delegate.onComponentPopulated(ctx, c, parent);
 
-        // add to the tree afterwards
-        // this allows children to determine if it's
-        // been part of the tree or not yet
-        if (facetName == null)
+        if (!componentFoundInserted)
         {
-            parent.getChildren().add(c);
+            // add to the tree afterwards
+            // this allows children to determine if it's
+            // been part of the tree or not yet
+            if (facetName == null)
+            {
+                parent.getChildren().add(c);
+            }
+            else
+            {
+                ComponentSupport.addFacet(ctx, parent, c, facetName);
+            }
         }
+        /*
         else
         {
-            ComponentSupport.addFacet(ctx, parent, c, facetName);
-        }
+            if (facetName != null)
+            {
+                if (UIComponent.isCompositeComponent(parent))
+                {
+                    UIComponent facet = parent.getFacet(facetName);
+                    if (Boolean.TRUE.equals(facet.getAttributes().get(ComponentSupport.FACET_CREATED_UIPANEL_MARKER)))
+                    {
+                        facet.getAttributes().put(InsertFacetHandler.USES_INSERT_FACET, Boolean.TRUE);
+                    }
+                }
+            }
+        }*/
         
         if (c instanceof UniqueIdVendor)
         {
@@ -256,8 +361,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
 
         c.popComponentFromEL(facesContext);
         
-        if (facesContext.getAttributes().containsKey(
-                FaceletViewDeclarationLanguage.MARK_INITIAL_STATE_KEY))
+        if (actx.isMarkInitialState())
         {
             //Call it only if we are using partial state saving
             c.markInitialState();

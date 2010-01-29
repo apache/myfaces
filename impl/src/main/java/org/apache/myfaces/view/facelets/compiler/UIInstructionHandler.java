@@ -20,6 +20,8 @@ package org.apache.myfaces.view.facelets.compiler;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
@@ -30,6 +32,8 @@ import javax.faces.view.facelets.FaceletException;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.el.ELText;
+import org.apache.myfaces.view.facelets.tag.composite.InsertChildrenHandler;
+import org.apache.myfaces.view.facelets.tag.composite.InsertFacetHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.util.FastWriter;
 
@@ -138,6 +142,44 @@ final class UIInstructionHandler extends AbstractUIHandler
             {
                 ComponentSupport.finalizeForDeletion(c);
                 parent.getChildren().remove(c);
+            }
+            if ( ((AbstractFaceletContext)ctx).isRefreshingTransientBuild() 
+                    && UIComponent.isCompositeComponent(parent))
+            {
+                // Save the child structure behind this component, so it can be
+                // used later by InsertChildrenHandler and InsertFacetHandler
+                // to update components correctly.
+                String facetName = this.getFacetName(ctx, parent);
+                if (facetName != null)
+                {
+                    if (parent.getAttributes().containsKey(InsertFacetHandler.INSERT_FACET_TARGET_ID+facetName))
+                    {
+                        List<String> ordering = (List<String>) parent.getAttributes().get(
+                                InsertFacetHandler.INSERT_FACET_ORDERING+facetName);
+                        if (ordering == null)
+                        {
+                            ordering = new ArrayList<String>();
+                            parent.getAttributes().put(InsertFacetHandler.INSERT_FACET_ORDERING+facetName, ordering);
+                        }
+                        ordering.remove(id);
+                        ordering.add(id);
+                    }
+                }
+                else
+                {
+                    if (parent.getAttributes().containsKey(InsertChildrenHandler.INSERT_CHILDREN_TARGET_ID))
+                    {
+                        List<String> ordering = (List<String>) parent.getAttributes().get(
+                                InsertChildrenHandler.INSERT_CHILDREN_ORDERING);
+                        if (ordering == null)
+                        {
+                            ordering = new ArrayList<String>();
+                            parent.getAttributes().put(InsertChildrenHandler.INSERT_CHILDREN_ORDERING, ordering);
+                        }
+                        ordering.remove(id);
+                        ordering.add(id);
+                    }
+                }
             }
             this.addComponent(ctx, parent, c);
         }

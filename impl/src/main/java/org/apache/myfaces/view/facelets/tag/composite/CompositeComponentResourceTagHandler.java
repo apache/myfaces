@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.el.ValueExpression;
 import javax.el.VariableMapper;
@@ -146,58 +148,64 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         super.applyNextHandler(ctx, c);
         
         applyCompositeComponentFacelet(ctx,c);
-        
-        FacesContext facesContext = ctx.getFacesContext();
-        
-        ViewDeclarationLanguage vdl = facesContext.getApplication().getViewHandler().
-            getViewDeclarationLanguage(facesContext, facesContext.getViewRoot().getViewId());
-        
-        List<AttachedObjectHandler> handlers = (List<AttachedObjectHandler>) 
-            c.getAttributes().get(ATTACHED_OBJECT_HANDLERS_KEY);
-        
-        if (handlers != null)
+
+        if (ComponentHandler.isNew(c))
         {
-            vdl.retargetAttachedObjects(facesContext, c, handlers);
+            FacesContext facesContext = ctx.getFacesContext();
             
-            // Since handlers list is not serializable and it is not necessary to
-            // keep them anymore on attribute map, it is better to remove it from
-            // component attribute map
-            c.getAttributes().remove(ATTACHED_OBJECT_HANDLERS_KEY);
-        }
-        
-        vdl.retargetMethodExpressions(facesContext, c);
-        
-        if (ctx.getFacesContext().getAttributes().containsKey(
-                FaceletViewDeclarationLanguage.MARK_INITIAL_STATE_KEY))
-        {
-            // Call it only if we are using partial state saving
-            c.markInitialState();
-            // Call it to other components created not bound by a tag handler
-            c.getFacet(UIComponent.COMPOSITE_FACET_NAME).markInitialState();
+            ViewDeclarationLanguage vdl = facesContext.getApplication().getViewHandler().
+                getViewDeclarationLanguage(facesContext, facesContext.getViewRoot().getViewId());
+            
+            List<AttachedObjectHandler> handlers = (List<AttachedObjectHandler>) 
+                c.getAttributes().get(ATTACHED_OBJECT_HANDLERS_KEY);
+            
+            if (handlers != null)
+            {
+                vdl.retargetAttachedObjects(facesContext, c, handlers);
+                
+                // Since handlers list is not serializable and it is not necessary to
+                // keep them anymore on attribute map, it is better to remove it from
+                // component attribute map
+                c.getAttributes().remove(ATTACHED_OBJECT_HANDLERS_KEY);
+            }
+            
+            vdl.retargetMethodExpressions(facesContext, c);
+            
+            if ( ((AbstractFaceletContext)ctx).isMarkInitialState())
+            {
+                // Call it only if we are using partial state saving
+                c.markInitialState();
+                // Call it to other components created not bound by a tag handler
+                c.getFacet(UIComponent.COMPOSITE_FACET_NAME).markInitialState();
+            }            
         }
     }
     
     protected void applyCompositeComponentFacelet(FaceletContext faceletContext, UIComponent compositeComponentBase) 
         throws IOException
     {
-        UIPanel compositeFacetPanel = (UIPanel)
-            faceletContext.getFacesContext().getApplication().createComponent(UIPanel.COMPONENT_TYPE);
-        compositeComponentBase.getFacets().put(UIComponent.COMPOSITE_FACET_NAME, compositeFacetPanel);
-        
-        // Set an id to the created facet component, to prevent id generation and make
-        // partial state saving work without problem.
         AbstractFaceletContext actx = (AbstractFaceletContext) faceletContext;
-        UniqueIdVendor uniqueIdVendor = actx.getUniqueIdVendorFromStack();
-        if (uniqueIdVendor == null)
+        UIPanel compositeFacetPanel = (UIPanel) compositeComponentBase.getFacets().get(UIComponent.COMPOSITE_FACET_NAME);
+        if (compositeFacetPanel == null)
         {
-            uniqueIdVendor = ComponentSupport.getViewRoot(faceletContext, compositeComponentBase);
-        }
-        if (uniqueIdVendor != null)
-        {
-            // UIViewRoot implements UniqueIdVendor, so there is no need to cast to UIViewRoot
-            // and call createUniqueId()
-            String uid = uniqueIdVendor.createUniqueId(faceletContext.getFacesContext(),null);
-            compositeFacetPanel.setId(uid);
+            compositeFacetPanel = (UIPanel)
+                faceletContext.getFacesContext().getApplication().createComponent(UIPanel.COMPONENT_TYPE);
+            compositeComponentBase.getFacets().put(UIComponent.COMPOSITE_FACET_NAME, compositeFacetPanel);
+            
+            // Set an id to the created facet component, to prevent id generation and make
+            // partial state saving work without problem.
+            UniqueIdVendor uniqueIdVendor = actx.getUniqueIdVendorFromStack();
+            if (uniqueIdVendor == null)
+            {
+                uniqueIdVendor = ComponentSupport.getViewRoot(faceletContext, compositeComponentBase);
+            }
+            if (uniqueIdVendor != null)
+            {
+                // UIViewRoot implements UniqueIdVendor, so there is no need to cast to UIViewRoot
+                // and call createUniqueId()
+                String uid = uniqueIdVendor.createUniqueId(faceletContext.getFacesContext(),null);
+                compositeFacetPanel.setId(uid);
+            }            
         }
         
         // Before call applyCompositeComponent we need to add ajax behaviors

@@ -32,6 +32,7 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
 
@@ -157,8 +158,7 @@ public class InterfaceHandler extends TagHandler
     {
         // Only apply if we are building composite component metadata,
         // in other words we are calling ViewDeclarationLanguage.getComponentMetadata
-        if (FaceletViewDeclarationLanguage.
-                isBuildingCompositeComponentMetadata(ctx.getFacesContext()))
+        if ( ((AbstractFaceletContext)ctx).isBuildingCompositeComponentMetadata())
         {
             UIComponent compositeBaseParent = _getCompositeBaseParent(parent);
             

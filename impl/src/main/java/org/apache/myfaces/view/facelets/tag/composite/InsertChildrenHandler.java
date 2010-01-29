@@ -21,6 +21,7 @@ package org.apache.myfaces.view.facelets.tag.composite;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.component.StateHolder;
 import javax.faces.component.UIComponent;
@@ -28,14 +29,15 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ComponentSystemEventListener;
 import javax.faces.event.PostAddToViewEvent;
+import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
-import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.PostBuildComponentTreeOnRestoreViewEvent;
+import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)
@@ -44,6 +46,9 @@ import org.apache.myfaces.view.facelets.PostBuildComponentTreeOnRestoreViewEvent
 @JSFFaceletTag(name="composite:insertChildren")
 public class InsertChildrenHandler extends TagHandler
 {
+    public static String USES_INSERT_CHILDREN = "org.apache.myfaces.USES_INSERT_CHILDREN";
+    public static String INSERT_CHILDREN_TARGET_ID = "org.apache.myfaces.INSERT_CHILDREN_TARGET_ID";
+    public static String INSERT_CHILDREN_ORDERING = "org.apache.myfaces.INSERT_CHILDREN_ORDERING";
 
     public InsertChildrenHandler(TagConfig config)
     {
@@ -54,6 +59,23 @@ public class InsertChildrenHandler extends TagHandler
             throws IOException
     {
         UIComponent parentCompositeComponent = ((AbstractFaceletContext)ctx).getCompositeComponentFromStack();
+
+        if (!ComponentHandler.isNew(parentCompositeComponent))
+        {
+            //Prevent deletion of components present on parentCompositeComponent. This components will not be changed.
+            List<UIComponent> childList = new ArrayList<UIComponent>(parent.getChildren());
+            
+            for (UIComponent tcChild : childList)
+            {
+                if (tcChild.getAttributes().remove(USES_INSERT_CHILDREN) != null)
+                {
+                    ComponentSupport.finalizeForDeletion(tcChild);
+                    parent.getChildren().remove(tcChild);
+                    parent.getChildren().add(tcChild);
+                }
+            }
+            return;
+        }
 
         parentCompositeComponent.subscribeToEvent(PostAddToViewEvent.class,
                 new RelocateAllChildrenListener(parent, parent.getChildCount()));
@@ -69,10 +91,15 @@ public class InsertChildrenHandler extends TagHandler
     public static final class RelocateAllChildrenListener 
         implements ComponentSystemEventListener, StateHolder
     {
-        private final UIComponent _targetComponent;
-        
-        private final int _childIndex;
+        private UIComponent _targetComponent;
+        private String _targetClientId;
+        private int _childIndex;
 
+         
+        public RelocateAllChildrenListener()
+        {
+        }
+        
         public RelocateAllChildrenListener(UIComponent targetComponent, int childIndex)
         {
             _targetComponent = targetComponent;
@@ -82,12 +109,71 @@ public class InsertChildrenHandler extends TagHandler
         public void processEvent(ComponentSystemEvent event)
         {
             UIComponent parentCompositeComponent = event.getComponent();
-
+            
+            if (_targetComponent == null)
+            {
+                //All composite components are NamingContainer and the target is inside it, so we can remove the prefix.
+                _targetComponent = parentCompositeComponent.findComponent(_targetClientId.substring(parentCompositeComponent.getClientId().length()+1));
+            }
+            
+            if (parentCompositeComponent.getChildCount() <= 0)
+            {
+                return;
+            }
+            
             List<UIComponent> childList = new ArrayList<UIComponent>(parentCompositeComponent.getChildren());
             
             List<UIComponent> targetChildrenList = _targetComponent.getChildren(); 
             
-            targetChildrenList.addAll(_childIndex, childList);
+            Map<String, Object> ccAttributes = parentCompositeComponent.getAttributes();
+            if (!ccAttributes.containsKey(INSERT_CHILDREN_TARGET_ID))
+            {
+                //Save the target and the ordering of ids inserted
+                ccAttributes.put(INSERT_CHILDREN_TARGET_ID, _targetComponent.getClientId());
+                
+                targetChildrenList.addAll(_childIndex, childList);
+            }
+            else
+            {
+                //Add one to one based on the ordering set at first time
+                List<String> ids = (List<String>) ccAttributes.get(INSERT_CHILDREN_ORDERING);
+                if (ids != null && _childIndex < targetChildrenList.size())
+                {
+                    int i = 0;
+                    int j = _childIndex;
+                    int k = 0;
+                    while (i < ids.size() && j < targetChildrenList.size() && k < childList.size())
+                    {
+                        if (ids.get(i) != null)
+                        {
+                            if (ids.get(i).equals(childList.get(k).getAttributes().get(ComponentSupport.MARK_CREATED)))
+                            {
+                                if (!ids.get(i).equals(targetChildrenList.get(j).getAttributes().get(ComponentSupport.MARK_CREATED)))
+                                {
+                                    targetChildrenList.add(j, childList.get(k));
+                                    k++;
+                                }
+                                j++;
+                            }
+                            else if (ids.get(i).equals(targetChildrenList.get(j).getAttributes().get(ComponentSupport.MARK_CREATED)))
+                            {
+                                j++;
+                            }
+                        }
+                        i++;
+                    }
+                    while (k < childList.size())
+                    {
+                        targetChildrenList.add(j, childList.get(k));
+                        k++;
+                        j++;
+                    }
+                }
+                else
+                {
+                    targetChildrenList.addAll(_childIndex, childList);
+                }
+            }
             
             // After check, the commented code is not necessary because at this 
             // point there is no any call to getClientId() yet. But it is better
@@ -109,17 +195,19 @@ public class InsertChildrenHandler extends TagHandler
 
         public Object saveState(FacesContext context)
         {
-            return null;
+            return new Object[]{_targetComponent != null ? _targetComponent.getClientId() : _targetClientId , _childIndex};
         }
 
         public void restoreState(FacesContext context, Object state)
         {
-            // no-op as listener is transient
+            Object[] values = (Object[])state;
+            _targetClientId = (String) values[0];
+            _childIndex = (Integer) values[1];
         }
 
         public boolean isTransient()
         {
-            return true;
+            return false;
         }
 
         public void setTransient(boolean newTransientValue)

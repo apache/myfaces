@@ -228,4 +228,29 @@ public abstract class AbstractFaceletContext extends FaceletContext
      */
     public abstract void pushEnclosingValidatorIdToStack(String validatorId);
     
+    /**
+     * Check if this build is being refreshed, adding transient components
+     * and adding/removing components under c:if or c:forEach or not.
+     * 
+     * @return
+     * @since 2.0
+     */
+    public abstract boolean isRefreshingTransientBuild();
+    
+    /**
+     * Check if this build should be marked as initial state. In other words,
+     * all components must call UIComponent.markInitialState.
+     * 
+     * @return
+     * @since 2.0
+     */
+    public abstract boolean isMarkInitialState();
+    
+    /**
+     * Check if this build is for build composite component metadata
+     * 
+     * @return
+     * @since 2.0
+     */
+    public abstract boolean isBuildingCompositeComponentMetadata();
 }

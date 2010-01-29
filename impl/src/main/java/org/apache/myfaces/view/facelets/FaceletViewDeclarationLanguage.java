@@ -56,6 +56,8 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.event.MethodExpressionActionListener;
 import javax.faces.event.MethodExpressionValueChangeListener;
 import javax.faces.event.PhaseId;
+import javax.faces.event.PostAddToViewEvent;
+import javax.faces.event.PreRemoveFromViewEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.render.RenderKit;
 import javax.faces.validator.MethodExpressionValidator;
@@ -178,6 +180,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     
     public final static String BUILDING_VIEW_METADATA = "org.apache.myfaces.BUILDING_VIEW_METADATA";
     
+    public final static String REFRESHING_TRANSIENT_BUILD = "org.apache.myfaces.REFRESHING_TRANSIENT_BUILD";
+    
     /**
      * Marker to indicate tag handlers the view currently being built is using
      * partial state saving and it is necessary to call UIComponent.markInitialState
@@ -234,6 +238,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         }
 
         boolean usePartialStateSavingOnThisView = _usePartialStateSavingOnThisView(renderedViewId);
+        boolean refreshTransientBuild = (view.getChildCount() > 0);
         
         if (usePartialStateSavingOnThisView)
         {
@@ -248,11 +253,44 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             
             //Add a key to indicate ComponentTagHandlerDelegate to 
             //call UIComponent.markInitialState after it is populated
-            context.getAttributes().put(MARK_INITIAL_STATE_KEY, Boolean.TRUE);
+            if (!refreshTransientBuild)
+            {
+                context.getAttributes().put(MARK_INITIAL_STATE_KEY, Boolean.TRUE);
+            }
         }
 
-        // populate UIViewRoot
-        _getFacelet(renderedViewId).apply(context, view);
+        try
+        {
+            if (refreshTransientBuild)
+            {
+                context.getAttributes().put(REFRESHING_TRANSIENT_BUILD, Boolean.TRUE);
+                
+                context.setProcessingEvents(false);
+            }
+            // populate UIViewRoot
+            _getFacelet(renderedViewId).apply(context, view);
+        }
+        finally
+        {
+            if (refreshTransientBuild)
+            {
+                context.setProcessingEvents(true);
+                
+                context.getAttributes().remove(REFRESHING_TRANSIENT_BUILD);
+
+                if (!usePartialStateSavingOnThisView)
+                {
+                    // When the facelet is applied, all components are removed and added from view,
+                    // but the difference resides in the ordering. Since the view is
+                    // being refreshed, if we don't do this manually, some tags like
+                    // cc:insertChildren or cc:insertFacet will not work correctly, because
+                    // we expect PostAddToViewEvent will be propagated from parent to child, and
+                    // facelets refreshing algorithm do the opposite.
+                    FaceletViewDeclarationLanguage._publishPreRemoveFromViewEvent(context, view);
+                    FaceletViewDeclarationLanguage._publishPostAddToViewEvent(context, view);
+                }
+            }
+        }
         
         // set this view as filled
         setFilledView(context, view);
@@ -274,9 +312,66 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             // DefaultFaceletsStateManagement.restoreView after calling 
             // _publishPostBuildComponentTreeOnRestoreViewEvent(), to ensure 
             // relocated components are not retrieved later on getClientIdsRemoved().
-            if (!(context.isPostback() && PhaseId.RESTORE_VIEW.equals(context.getCurrentPhaseId())))
+            if (!(refreshTransientBuild && PhaseId.RESTORE_VIEW.equals(context.getCurrentPhaseId())))
             {
                 ((DefaultFaceletsStateManagementStrategy) getStateManagementStrategy(context, view.getViewId())).suscribeListeners(view);
+            }
+        }
+    }
+    
+    private static void _publishPreRemoveFromViewEvent(FacesContext context, UIComponent component)
+    {
+        context.getApplication().publishEvent(context, PreRemoveFromViewEvent.class, UIComponent.class, component);
+        
+        if (component.getChildCount() > 0)
+        {
+            for (UIComponent child : component.getChildren())
+            {
+                _publishPreRemoveFromViewEvent(context, child);
+            }
+        }
+        if (component.getFacetCount() > 0)
+        {
+            for (UIComponent child : component.getFacets().values())
+            {
+                _publishPreRemoveFromViewEvent(context, child);
+            }
+        }        
+    }  
+    
+    public static void _publishPostAddToViewEvent(FacesContext context, UIComponent component)
+    {
+        context.getApplication().publishEvent(context, PostAddToViewEvent.class, UIComponent.class, component);
+        
+        if (component.getChildCount() > 0)
+        {
+            // PostAddToViewEvent could cause component relocation
+            // (h:outputScript, h:outputStylesheet, composite:insertChildren, composite:insertFacet)
+            // so we need to check if the component was relocated or not
+            List<UIComponent> children = component.getChildren();
+            UIComponent child = null;
+            UIComponent currentChild = null;
+            int i = 0;
+            while (i < children.size())
+            {
+                child = children.get(i);
+                // Iterate over the same index if the component was removed
+                // This prevents skip components when processing
+                do 
+                {
+                    _publishPostAddToViewEvent(context, child);
+                    currentChild = child;
+                }
+                while ((i < children.size()) &&
+                       ((child = children.get(i)) != currentChild) );
+                i++;
+            }
+        }
+        if (component.getFacetCount() > 0)
+        {
+            for (UIComponent child : component.getFacets().values())
+            {
+                _publishPostAddToViewEvent(context, child);
             }
         }
     }
@@ -393,6 +488,16 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     public static boolean isBuildingViewMetadata(FacesContext context)
     {
         return context.getAttributes().containsKey(BUILDING_VIEW_METADATA);
+    }
+    
+    public static boolean isRefreshingTransientBuild(FacesContext context)
+    {
+        return context.getAttributes().containsKey(REFRESHING_TRANSIENT_BUILD);
+    }
+    
+    public static boolean isMarkInitialState(FacesContext context)
+    {
+        return context.getAttributes().containsKey(MARK_INITIAL_STATE_KEY);
     }
     
     /**

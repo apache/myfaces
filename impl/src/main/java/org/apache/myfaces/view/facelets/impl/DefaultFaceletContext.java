@@ -45,6 +45,7 @@ import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.TemplateClient;
 import org.apache.myfaces.view.facelets.el.DefaultVariableMapper;
 import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
@@ -91,6 +92,12 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     private final StringBuilder _uniqueIdBuilder = new StringBuilder(30);
 
     private final List<TemplateManager> _clients;
+    
+    private final boolean _isRefreshingTransientBuild;
+    
+    private final boolean _isMarkInitialState;
+    
+    private final boolean _isBuildingCompositeComponentMetadata;
 
     public DefaultFaceletContext(DefaultFaceletContext ctx,
             DefaultFacelet facelet)
@@ -107,6 +114,9 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         _faceletHierarchy.addAll(ctx._faceletHierarchy);
         _faceletHierarchy.add(facelet);
         _facelet = facelet;
+        _isRefreshingTransientBuild = ctx._isRefreshingTransientBuild;
+        _isMarkInitialState = ctx._isMarkInitialState;
+        _isBuildingCompositeComponentMetadata = ctx._isBuildingCompositeComponentMetadata; 
 
         //Update FACELET_CONTEXT_KEY on FacesContext attribute map, to 
         //reflect the current facelet context instance
@@ -130,6 +140,12 @@ final class DefaultFaceletContext extends AbstractFaceletContext
             _varMapper = new DefaultVariableMapper();
         }
         _fnMapper = _ctx.getFunctionMapper();
+        _isRefreshingTransientBuild = FaceletViewDeclarationLanguage.
+            isRefreshingTransientBuild(faces);
+        _isMarkInitialState = FaceletViewDeclarationLanguage.
+            isMarkInitialState(faces);
+        _isBuildingCompositeComponentMetadata = FaceletViewDeclarationLanguage.
+            isBuildingCompositeComponentMetadata(faces);
         
         //Set FACELET_CONTEXT_KEY on FacesContext attribute map, to 
         //reflect the current facelet context instance
@@ -797,5 +813,23 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         }
 
         enclosingValidatorIdsStack.addFirst(validatorId);
+    }
+
+    @Override
+    public boolean isRefreshingTransientBuild()
+    {
+        return _isRefreshingTransientBuild;
+    }
+
+    @Override
+    public boolean isMarkInitialState()
+    {
+        return _isMarkInitialState;
+    }
+
+    @Override
+    public boolean isBuildingCompositeComponentMetadata()
+    {
+        return _isBuildingCompositeComponentMetadata;
     }
 }
