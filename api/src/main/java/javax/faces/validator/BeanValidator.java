@@ -184,7 +184,7 @@ public class BeanValidator implements Validator, PartialStateHolder
      */
     private ValueReferenceWrapper getValueReference(UIComponent component, FacesContext context)
     {
-        if (_ExternalSpecifications.isUnifiedELAvailable)
+        if (_ExternalSpecifications.isUnifiedELAvailable())
         {
             //TODO: Implement when Unified EL for Java EE6 is available.
             throw new FacesException("Unified EL for Java EE6 support is not yet implemented");
@@ -221,7 +221,7 @@ public class BeanValidator implements Validator, PartialStateHolder
             }
             else
             {
-                if (_ExternalSpecifications.isBeanValidationAvailable)
+                if (_ExternalSpecifications.isBeanValidationAvailable())
                 {
                     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
                     servletCtx.setAttribute(VALIDATOR_FACTORY_KEY, attr);

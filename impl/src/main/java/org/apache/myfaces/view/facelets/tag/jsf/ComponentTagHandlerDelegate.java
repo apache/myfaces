@@ -648,7 +648,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         // Some extra rules are required for Bean Validation.
         if (validatorId.equals(BeanValidator.VALIDATOR_ID))
         {
-            if (!ExternalSpecifications.isBeanValidationAvailable)
+            if (!ExternalSpecifications.isBeanValidationAvailable())
             {
                 return false;
             }

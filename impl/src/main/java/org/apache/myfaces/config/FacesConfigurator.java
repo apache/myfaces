@@ -1729,7 +1729,7 @@ public class FacesConfigurator
             {
                 if (validatorId.equals(BeanValidator.VALIDATOR_ID))
                 {
-                    if (!ExternalSpecifications.isBeanValidationAvailable)
+                    if (!ExternalSpecifications.isBeanValidationAvailable())
                     {
                         // do not add it as a default validator
                         continue;
@@ -1743,7 +1743,7 @@ public class FacesConfigurator
             }
         
             // add the bean validator if it is available, not already added and not disabled
-            if (!beanValidatorAdded && ExternalSpecifications.isBeanValidationAvailable)
+            if (!beanValidatorAdded && ExternalSpecifications.isBeanValidationAvailable())
             {
                 String disabled = _externalContext.getInitParameter(BeanValidator.DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME);
                 boolean defaultBeanValidatorDisabled = (disabled != null && disabled.toLowerCase().equals("true"));

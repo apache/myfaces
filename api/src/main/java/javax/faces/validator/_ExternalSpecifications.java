@@ -18,9 +18,10 @@
  */
 package javax.faces.validator;
 
-import javax.validation.Validation;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.validation.Validation;
 
 /**
  * <p>
@@ -29,71 +30,85 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author Jan-Kees van Andel
+ * @author Jakob Korherr (latest modification by $Author$)
+ * @version $Revision$ $Date$
  * @since 2.0
  */
-class _ExternalSpecifications
+final class _ExternalSpecifications
 {
 
     //private static final Log log = LogFactory.getLog(BeanValidator.class);
     private static final Logger log = Logger.getLogger(_ExternalSpecifications.class.getName());
 
+    private static Boolean beanValidationAvailable;
+    private static Boolean unifiedELAvailable;
+
     /**
-     * This boolean indicates if Bean Validation is present.
+     * This method determines if Bean Validation is present.
      *
      * Eager initialization is used for performance. This means Bean Validation binaries
      * should not be added at runtime after this variable has been set.
      */
-    static final boolean isBeanValidationAvailable;
-    static
+    public static boolean isBeanValidationAvailable()
     {
-        boolean tmp = false;
-        try
+        if (beanValidationAvailable == null)
         {
-            tmp = (Class.forName("javax.validation.Validation") != null);
-
-            if (tmp)
+            try
             {
-                try
+                beanValidationAvailable = (Class.forName("javax.validation.Validation") != null);
+    
+                if (beanValidationAvailable)
                 {
-                    // Trial-error approach to check for Bean Validation impl existence.
-                    Validation.buildDefaultValidatorFactory().getValidator();
-                }
-                catch (Throwable t)
-                {
-                    log.log(Level.FINE, "Error initializing Bean Validation (could be normal)", t);
-                    tmp = false;
+                    try
+                    {
+                        // Trial-error approach to check for Bean Validation impl existence.
+                        Validation.buildDefaultValidatorFactory().getValidator();
+                    }
+                    catch (Throwable t)
+                    {
+                        log.log(Level.FINE, "Error initializing Bean Validation (could be normal)", t);
+                        beanValidationAvailable = false;
+                    }
                 }
             }
+            catch (Throwable t)
+            {
+                log.log(Level.FINE, "Error loading class (could be normal)", t);
+                beanValidationAvailable = false;
+            }
         }
-        catch (Throwable t)
-        {
-            log.log(Level.FINE, "Error loading class (could be normal)", t);
-            tmp = false;
-        }
-        isBeanValidationAvailable = tmp;
+        return beanValidationAvailable; 
     }
 
     /**
-     * This boolean indicates if Unified EL is present.
+     * This method determines if Unified EL is present.
      *
      * Eager initialization is used for performance. This means Unified EL binaries
      * should not be added at runtime after this variable has been set.
      */
-    static final boolean isUnifiedELAvailable;
-    static
+    public static boolean isUnifiedELAvailable()
     {
-        boolean tmp = false;
-        try
+        if (unifiedELAvailable == null)
         {
-            //TODO: Check this class name when Unified EL for Java EE6 is final.
-            tmp = (Class.forName("javax.el.ValueReference") != null);
+            try
+            {
+                //TODO: Check this class name when Unified EL for Java EE6 is final.
+                unifiedELAvailable = (Class.forName("javax.el.ValueReference") != null);
+            }
+            catch (Throwable t)
+            {
+                log.log(Level.FINE, "Error loading class (could be normal)", t);
+                unifiedELAvailable = false;
+            }
         }
-        catch (Throwable t)
-        {
-            log.log(Level.FINE, "Error loading class (could be normal)", t);
-            tmp = false;
-        }
-        isUnifiedELAvailable = tmp;
+        return unifiedELAvailable;
+    }
+    
+    /**
+     * this class should not be instantiable.
+     */
+    private _ExternalSpecifications()
+    {
     }
 
 }
