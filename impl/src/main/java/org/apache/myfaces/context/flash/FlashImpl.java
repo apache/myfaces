@@ -322,15 +322,12 @@ public class FlashImpl extends Flash
             String currentToken = _getNextToken();
             requestMap.put(FLASH_CURRENT_MAP_KEY, currentToken);
             
-            if (facesContext.isPostback())
+            // Restore token
+            String previousToken = _getPostbackMapKey(facesContext.getExternalContext());
+            
+            if (previousToken != null)
             {
-                //Retore token
-                String previousToken = _getPostbackMapKey(facesContext.getExternalContext());
-                
-                if (previousToken != null)
-                {
-                    requestMap.put(FLASH_POSTBACK_MAP_KEY, previousToken);
-                }
+                requestMap.put(FLASH_POSTBACK_MAP_KEY, previousToken);
             }
             
             if (isKeepMessages())
