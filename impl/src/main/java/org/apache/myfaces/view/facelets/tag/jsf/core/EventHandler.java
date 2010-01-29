@@ -47,6 +47,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.config.NamedEventManager;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
 /**
@@ -109,7 +110,7 @@ public final class EventHandler extends TagHandler {
         if (eventClass == PreRenderViewEvent.class)
         {
             // ensure ViewRoot for PreRenderViewEvent
-            UIViewRoot viewRoot = ctx.getFacesContext().getViewRoot();
+            UIViewRoot viewRoot = ComponentSupport.getViewRoot(ctx, parent);
             viewRoot.subscribeToEvent (eventClass, new Listener (methodExp));
         }
         else
