@@ -53,6 +53,6 @@ public class Location implements Serializable
     
     public String toString()
     {
-        return path + "at line " + line + " and column " + column;
+        return path + " at line " + line + " and column " + column;
     }
 }
