@@ -30,6 +30,8 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
+import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
+
 /**
  * Defines the view metadata. It is expected that this tag contains only
  * one or many f:viewParam tags.
@@ -63,18 +65,20 @@ public final class ViewMetadataHandler extends TagHandler
             UIComponent metadataFacet = parent.getFacet(UIViewRoot.METADATA_FACET_NAME);
             if (metadataFacet == null)
             {
-                metadataFacet = ctx.getFacesContext().
-                    getApplication().createComponent(UIPanel.COMPONENT_TYPE);
+                metadataFacet = ctx.getFacesContext().getApplication().createComponent(UIPanel.COMPONENT_TYPE);
                 metadataFacet.setId(UIViewRoot.METADATA_FACET_NAME);
-                this.nextHandler.apply(ctx, metadataFacet);
-                // ensure ComponentHandler.isNew() is true
+                metadataFacet.getAttributes().put(ComponentSupport.FACET_CREATED_UIPANEL_MARKER, true);
                 parent.getFacets().put(UIViewRoot.METADATA_FACET_NAME, metadataFacet);
             }
-            else
+            parent.getAttributes().put(FacetHandler.KEY, UIViewRoot.METADATA_FACET_NAME);
+            try
             {
-                this.nextHandler.apply(ctx, metadataFacet);
+                this.nextHandler.apply(ctx, parent);
             }
-
+            finally
+            {
+                parent.getAttributes().remove(FacetHandler.KEY);
+            }
         }
     }
 }
