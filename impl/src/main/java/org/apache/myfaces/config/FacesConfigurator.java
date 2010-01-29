@@ -917,16 +917,14 @@ public class FacesConfigurator
         {
             getDispenser().feed(webAppConfig);
             
-            // check if there is an empty <default-validators> entry
-            // if so, clear all currently installed default validators.
+            // check if there is an empty <default-validators> entry.
             // note that this applys only for the faces-config with the 
             // highest precendence (not for standard-faces-config files).
             for (org.apache.myfaces.config.impl.digester.elements.Application app : webAppConfig.getApplications())
             {
                 if (app.isDefaultValidatorsPresent() && app.getDefaultValidatorIds().isEmpty())
                 {
-                    // clear all default validator from standard-config-files
-                    getDispenser().getDefaultValidatorIds().clear();
+                    getDispenser().setEmptyDefaultValidators(true);
                     break;
                 }
             }
@@ -1723,18 +1721,37 @@ public class FacesConfigurator
             application.addValidator(validatorId, dispenser.getValidatorClass(validatorId));
         }
 
-        String disabled = _externalContext.getInitParameter(BeanValidator.DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME);
-        boolean defaultBeanValidatorDisabled = (disabled != null && disabled.toLowerCase().equals("true"));
-        for (String validatorId : dispenser.getDefaultValidatorIds())
+        // only add default validators if there is no empty <default-validators> in faces-config.xml
+        if (!dispenser.isEmptyDefaultValidators())
         {
-            if (validatorId.equals(BeanValidator.VALIDATOR_ID)
-                    && (defaultBeanValidatorDisabled
-                            || !ExternalSpecifications.isBeanValidationAvailable))
+            boolean beanValidatorAdded = false;
+            for (String validatorId : dispenser.getDefaultValidatorIds())
             {
-                // do not add it as a default validator
-                continue;
+                if (validatorId.equals(BeanValidator.VALIDATOR_ID))
+                {
+                    if (!ExternalSpecifications.isBeanValidationAvailable)
+                    {
+                        // do not add it as a default validator
+                        continue;
+                    }
+                    else
+                    {
+                        beanValidatorAdded = true;
+                    }
+                }
+                application.addDefaultValidatorId(validatorId);
             }
-            application.addDefaultValidatorId(validatorId);
+        
+            // add the bean validator if it is available, not already added and not disabled
+            if (!beanValidatorAdded && ExternalSpecifications.isBeanValidationAvailable)
+            {
+                String disabled = _externalContext.getInitParameter(BeanValidator.DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME);
+                boolean defaultBeanValidatorDisabled = (disabled != null && disabled.toLowerCase().equals("true"));
+                if (!defaultBeanValidatorDisabled)
+                {
+                    application.addDefaultValidatorId(BeanValidator.VALIDATOR_ID);
+                }
+            }
         }
 
         for (Behavior behavior : dispenser.getBehaviors()) {

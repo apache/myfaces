@@ -266,6 +266,16 @@ public interface FacesConfigDispenser<C>
     public Collection<String> getDefaultValidatorIds ();
     
     /**
+     * @return true if an empty <default-validators> exists in the config file with the highest precendence
+     */
+    public boolean isEmptyDefaultValidators();
+    
+    /**
+     * @param disable true if an empty <default-validators> exists in the config file with the highest precendence
+     */
+    public void setEmptyDefaultValidators(boolean disable);
+    
+    /**
      * @return the partial traversal class name
      */
     public String getPartialTraversal ();

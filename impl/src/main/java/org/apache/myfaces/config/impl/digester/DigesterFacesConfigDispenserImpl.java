@@ -65,6 +65,8 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
     private String partialTraversal;
     private String facesVersion;
     
+    private boolean emptyDefaultValidator = false;
+    
     private LocaleConfig localeConfig;
 
     private Map<String, String> components = new HashMap<String, String>();
@@ -511,6 +513,22 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
     public Collection<String> getDefaultValidatorIds ()
     {
         return defaultValidatorIds;
+    }
+    
+    /**
+     * @return true if an empty <default-validators> exists in the config file with the highest precendence
+     */
+    public boolean isEmptyDefaultValidators()
+    {
+        return emptyDefaultValidator;
+    }
+    
+    /**
+     * true if an empty <default-validators> exists in the config file with the highest precendence
+     */
+    public void setEmptyDefaultValidators(boolean disableDefaultValidator)
+    {
+        this.emptyDefaultValidator = disableDefaultValidator;
     }
     
     /**

@@ -32,9 +32,6 @@
       <state-manager>org.apache.myfaces.application.jsp.JspStateManagerImpl</state-manager>
       <navigation-handler>org.apache.myfaces.application.NavigationHandlerImpl</navigation-handler>
       <resource-handler>org.apache.myfaces.application.ResourceHandlerImpl</resource-handler>
-      <default-validators>
-         <validator-id>javax.faces.Bean</validator-id>
-      </default-validators>
    </application>
    <factory>
       <application-factory>org.apache.myfaces.application.ApplicationFactoryImpl</application-factory>
