@@ -66,9 +66,15 @@ public final class ViewMetadataHandler extends TagHandler
                 metadataFacet = ctx.getFacesContext().
                     getApplication().createComponent(UIPanel.COMPONENT_TYPE);
                 metadataFacet.setId(UIViewRoot.METADATA_FACET_NAME);
+                this.nextHandler.apply(ctx, metadataFacet);
+                // ensure ComponentHandler.isNew() is true
                 parent.getFacets().put(UIViewRoot.METADATA_FACET_NAME, metadataFacet);
             }
-            this.nextHandler.apply(ctx, metadataFacet);
+            else
+            {
+                this.nextHandler.apply(ctx, metadataFacet);
+            }
+
         }
     }
 }

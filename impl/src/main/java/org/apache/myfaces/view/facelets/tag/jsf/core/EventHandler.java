@@ -33,6 +33,7 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ComponentSystemEventListener;
+import javax.faces.event.PreRenderViewEvent;
 import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
@@ -105,9 +106,18 @@ public final class EventHandler extends TagHandler {
         MethodExpression methodExp = listener.getMethodExpression(ctx, void.class, new Class<?>[] {
             ComponentSystemEvent.class });
         
-        // Simply register the event on the component.
-        
-        parent.subscribeToEvent (eventClass, new Listener (methodExp));
+        if (eventClass == PreRenderViewEvent.class)
+        {
+            // ensure ViewRoot for PreRenderViewEvent
+            UIViewRoot viewRoot = ctx.getFacesContext().getViewRoot();
+            viewRoot.subscribeToEvent (eventClass, new Listener (methodExp));
+        }
+        else
+        {
+            // Simply register the event on the component.
+
+            parent.subscribeToEvent (eventClass, new Listener (methodExp));
+        }
     }
     
     /**
