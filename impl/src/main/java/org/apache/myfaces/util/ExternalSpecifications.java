@@ -54,8 +54,6 @@ public class ExternalSpecifications
         {
             tmp = (ClassUtils.classForName("javax.validation.Validation") != null);
 
-            // cannot perform this check, because validation-api.jar is not
-            // in the classpath of myfaces-impl
             if (tmp)
             {
                 try
