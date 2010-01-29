@@ -29,6 +29,7 @@ import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ComponentSystemEventListener;
@@ -44,6 +45,7 @@ import javax.faces.view.facelets.TagHandler;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.config.NamedEventManager;
+import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
 /**
@@ -94,6 +96,11 @@ public final class EventHandler extends TagHandler {
         {
             return;
         }
+        if (parent instanceof UIViewRoot && ((AbstractFaceletContext)ctx).isRefreshingTransientBuild())
+        {
+            return;
+        }
+        
         Class<? extends ComponentSystemEvent> eventClass = getEventClass (ctx);
         MethodExpression methodExp = listener.getMethodExpression(ctx, void.class, new Class<?>[] {
             ComponentSystemEvent.class });
