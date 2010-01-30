@@ -250,6 +250,12 @@ public class AjaxHandler extends TagHandler implements
             outputScript.setId(uid);
             
             parent.getChildren().add(outputScript);
+            
+            if (((AbstractFaceletContext)ctx).isMarkInitialState())
+            {
+                //Call it only if we are using partial state saving
+                outputScript.markInitialState();
+            }            
             facesContext.getAttributes().put(STANDARD_JSF_AJAX_LIBRARY_LOADED, Boolean.TRUE);
         }
     }

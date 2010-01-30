@@ -1711,7 +1711,7 @@ public abstract class UIComponentBase extends UIComponent
             if (initialStateMarked())
             {
                 HashMap<String, Object> stateMap = new HashMap<String, Object>(_behaviorsMap.size(), 1);
-                
+                boolean nullDelta = true;
                 for (Map.Entry<String, List<ClientBehavior> > entry : _behaviorsMap.entrySet())
                 {
                     // The list is always an instance of _DeltaList so we can cast to
@@ -1724,12 +1724,18 @@ public abstract class UIComponentBase extends UIComponent
                         {
                             stateMap.put(entry.getKey(), new _AttachedDeltaWrapper(_behaviorsMap.getClass(),
                                     attachedState));
+                            nullDelta = false;
                         }
                     }
                     else
                     {
                         stateMap.put(entry.getKey(), saveAttachedState(facesContext, holder));
+                        nullDelta = false;
                     }
+                }
+                if (nullDelta)
+                {
+                    return null;
                 }
                 return stateMap;
             }
@@ -1804,7 +1810,7 @@ public abstract class UIComponentBase extends UIComponent
             if (initialStateMarked())
             {
                 HashMap<Class<? extends SystemEvent>, Object> stateMap = new HashMap<Class<? extends SystemEvent>, Object>(_systemEventListenerClassMap.size(), 1);
-                
+                boolean nullDelta = true;
                 for (Map.Entry<Class<? extends SystemEvent>, List<SystemEventListener> > entry : _systemEventListenerClassMap.entrySet())
                 {
                     // The list is always an instance of _DeltaList so we can cast to
@@ -1817,12 +1823,18 @@ public abstract class UIComponentBase extends UIComponent
                         {
                             stateMap.put(entry.getKey(), new _AttachedDeltaWrapper(_systemEventListenerClassMap.getClass(),
                                     attachedState));
+                            nullDelta = false;
                         }
                     }
                     else
                     {
                         stateMap.put(entry.getKey(), saveAttachedState(facesContext, holder));
+                        nullDelta = false;
                     }
+                }
+                if (nullDelta)
+                {
+                    return null;
                 }
                 return stateMap;
             }

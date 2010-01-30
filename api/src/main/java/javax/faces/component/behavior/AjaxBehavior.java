@@ -18,7 +18,14 @@
  */
 package javax.faces.component.behavior;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.el.ValueExpression;
 import javax.faces.context.FacesContext;
@@ -240,7 +247,12 @@ public class AjaxBehavior extends ClientBehaviorBase {
 
 
     @Override
-    public void restoreState(FacesContext facesContext, Object o) {
+    public void restoreState(FacesContext facesContext, Object o)
+    {
+        if (o == null)
+        {
+            return;
+        }
         Object[] values = (Object[]) o;
 
         if (values[0] != null) {
@@ -250,11 +262,27 @@ public class AjaxBehavior extends ClientBehaviorBase {
     }
 
     @Override
-    public Object saveState(FacesContext facesContext) {
-        Object[] values = new Object[2];
-        values[0] = super.saveState(facesContext);
-        values[1] = deltaStateHelper.saveState(facesContext);
-        return values;
+    public Object saveState(FacesContext facesContext)
+    {
+        if (initialStateMarked())
+        {
+            Object parentSaved = super.saveState(facesContext);
+            Object deltaStateHelperSaved = deltaStateHelper.saveState(facesContext);
+            
+            if (parentSaved == null && deltaStateHelperSaved == null)
+            {
+                //No values
+                return null;
+            }   
+            return new Object[]{parentSaved, deltaStateHelperSaved};
+        }
+        else
+        {
+            Object[] values = new Object[2];
+            values[0] = super.saveState(facesContext);
+            values[1] = deltaStateHelper.saveState(facesContext);
+            return values;
+        }
     }
 
     private void assertNull(Object item) {
