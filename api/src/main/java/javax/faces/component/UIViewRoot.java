@@ -95,9 +95,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     // todo: is it right to save the state of _events and _phaseListeners?
     private List<FacesEvent> _events;
 
-    private MethodExpression _beforePhaseListener;
-    private MethodExpression _afterPhaseListener;
-
     /**
      * Map containing view scope objects. 
      * 
@@ -380,37 +377,16 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         }
     }
 
-    private boolean _isSetAfterPhaseListener()
-    {
-        Boolean value = (Boolean) getStateHelper().get(PropertyKeys.afterPhaseListenerSet);
-        return value == null ? false : value;
-    }
-
     /**
      * MethodBinding pointing to a method that takes a javax.faces.event.PhaseEvent and returns void, called after every
      * phase except for restore view.
      *
      * @return the new afterPhaseListener value
      */
-    @JSFProperty(stateHolder = true, returnSignature = "void", methodSignature = "javax.faces.event.PhaseEvent", jspName = "afterPhase")
+    @JSFProperty(returnSignature = "void", methodSignature = "javax.faces.event.PhaseEvent", jspName = "afterPhase")
     public MethodExpression getAfterPhaseListener()
     {
-        if (_afterPhaseListener != null)
-        {
-            return _afterPhaseListener;
-        }
-        ValueExpression expression = getValueExpression("afterPhaseListener");
-        if (expression != null)
-        {
-            return (MethodExpression)expression.getValue(getFacesContext().getELContext());
-        }
-        return null;
-    }
-
-    private boolean _isSetBeforePhaseListener()
-    {
-        Boolean value = (Boolean) getStateHelper().get(PropertyKeys.beforePhaseListenerSet);
-        return value == null ? false : value;
+        return (MethodExpression) getStateHelper().eval(PropertyKeys.afterPhaseListener);
     }
 
     /**
@@ -419,19 +395,10 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      *
      * @return the new beforePhaseListener value
      */
-    @JSFProperty(stateHolder = true, returnSignature = "void", methodSignature = "javax.faces.event.PhaseEvent", jspName = "beforePhase")
+    @JSFProperty(returnSignature = "void", methodSignature = "javax.faces.event.PhaseEvent", jspName = "beforePhase")
     public MethodExpression getBeforePhaseListener()
     {
-        if (_beforePhaseListener != null)
-        {
-            return _beforePhaseListener;
-        }
-        ValueExpression expression = getValueExpression("beforePhaseListener");
-        if (expression != null)
-        {
-            return (MethodExpression)expression.getValue(getFacesContext().getELContext());
-        }
-        return null;
+        return (MethodExpression) getStateHelper().eval(PropertyKeys.beforePhaseListener);
     }
 
     /**
@@ -1067,11 +1034,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      */
     public void setBeforePhaseListener(MethodExpression beforePhaseListener)
     {
-        this._beforePhaseListener = beforePhaseListener;
-        if (initialStateMarked())
-        {
-            getStateHelper().put(PropertyKeys.beforePhaseListenerSet,Boolean.TRUE);
-        }
+        getStateHelper().put(PropertyKeys.beforePhaseListener, beforePhaseListener);
     }
 
     /**
@@ -1082,17 +1045,13 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      */
     public void setAfterPhaseListener(MethodExpression afterPhaseListener)
     {
-        this._afterPhaseListener = afterPhaseListener;
-        if (initialStateMarked())
-        {
-            getStateHelper().put(PropertyKeys.afterPhaseListenerSet,Boolean.TRUE);
-        }
+        getStateHelper().put(PropertyKeys.afterPhaseListener, afterPhaseListener);
     }
     
     enum PropertyKeys
     {
-         afterPhaseListenerSet
-        , beforePhaseListenerSet
+         afterPhaseListener
+        , beforePhaseListener
         , phaseListeners
         , locale
         , renderKitId
@@ -1100,112 +1059,28 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         , uniqueIdCounter
     }
     
-    public void markInitialState()
-    {
-        super.markInitialState();
-        if (_afterPhaseListener != null && 
-            _afterPhaseListener instanceof PartialStateHolder)
-        {
-            ((PartialStateHolder)_afterPhaseListener).markInitialState();
-        }
-        if (_beforePhaseListener != null && 
-            _beforePhaseListener instanceof PartialStateHolder)
-        {
-            ((PartialStateHolder)_beforePhaseListener).markInitialState();
-        }
-    }
-    
-    public void clearInitialState()
-    {
-        if (initialStateMarked())
-        {
-            super.clearInitialState();
-            if (_afterPhaseListener != null && 
-                _afterPhaseListener instanceof PartialStateHolder)
-            {
-                ((PartialStateHolder)_afterPhaseListener).clearInitialState();
-            }
-            if (_beforePhaseListener != null && 
-                _beforePhaseListener instanceof PartialStateHolder)
-            {
-                ((PartialStateHolder)_beforePhaseListener).clearInitialState();
-            }
-        }
-    }
-
     @Override
     public Object saveState(FacesContext facesContext)
     {
         if (initialStateMarked())
         {
-            boolean nullDelta = true;
             Object parentSaved = super.saveState(facesContext);
-            Object afterPhaseListenerSaved = null;
-            if (!_isSetAfterPhaseListener() &&
-                _afterPhaseListener != null && _afterPhaseListener instanceof PartialStateHolder)
-            {
-                //Delta
-                StateHolder holder = (StateHolder) _afterPhaseListener;
-                if (!holder.isTransient())
-                {
-                    Object attachedState = holder.saveState(facesContext);
-                    if (attachedState != null)
-                    {
-                        nullDelta = false;
-                    }
-                    afterPhaseListenerSaved = new _AttachedDeltaWrapper(_afterPhaseListener.getClass(),
-                        attachedState);
-                }
-            }
-            else if (_isSetAfterPhaseListener() || _afterPhaseListener != null)
-            {
-                //Full
-                afterPhaseListenerSaved = saveAttachedState(facesContext,_afterPhaseListener);
-                nullDelta = false;
-            }        
-            Object beforePhaseListenerSaved = null;
-            if (!_isSetBeforePhaseListener() &&
-                _beforePhaseListener != null && _beforePhaseListener instanceof PartialStateHolder)
-            {
-                //Delta
-                StateHolder holder = (StateHolder) _beforePhaseListener;
-                if (!holder.isTransient())
-                {
-                    Object attachedState = holder.saveState(facesContext);
-                    if (attachedState != null)
-                    {
-                        nullDelta = false;
-                    }
-                    beforePhaseListenerSaved = new _AttachedDeltaWrapper(_beforePhaseListener.getClass(),
-                        attachedState);
-                }
-            }
-            else if (_isSetBeforePhaseListener() || _beforePhaseListener != null)
-            {
-                //Full
-                beforePhaseListenerSaved = saveAttachedState(facesContext,_beforePhaseListener);
-                nullDelta = false;
-            }        
-            if (parentSaved == null && _viewScope == null && nullDelta)
+            if (parentSaved == null && _viewScope == null)
             {
                 //No values
                 return null;
             }
             
-            Object[] values = new Object[4];
+            Object[] values = new Object[2];
             values[0] = parentSaved;
-            values[1] = afterPhaseListenerSaved;
-            values[2] = beforePhaseListenerSaved;
-            values[3] = saveAttachedState(facesContext,_viewScope);
+            values[1] = saveAttachedState(facesContext,_viewScope);
             return values;
         }
         else
         {
-            Object[] values = new Object[4];
+            Object[] values = new Object[2];
             values[0] = super.saveState(facesContext);
-            values[1] = saveAttachedState(facesContext,_afterPhaseListener);
-            values[2] = saveAttachedState(facesContext,_beforePhaseListener);
-            values[3] = saveAttachedState(facesContext,_viewScope);
+            values[1] = saveAttachedState(facesContext,_viewScope);
             return values;
         }
     }
@@ -1221,27 +1096,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         
         Object[] values = (Object[])state;
         super.restoreState(facesContext,values[0]);
-        if (values[1] instanceof _AttachedDeltaWrapper)
-        {
-            //Delta
-            ((StateHolder)_afterPhaseListener).restoreState(facesContext, ((_AttachedDeltaWrapper) values[1]).getWrappedStateObject());
-        }
-        else
-        {
-            //Full
-            _afterPhaseListener = (javax.el.MethodExpression) restoreAttachedState(facesContext,values[1]);
-        }         
-        if (values[2] instanceof _AttachedDeltaWrapper)
-        {
-            //Delta
-            ((StateHolder)_beforePhaseListener).restoreState(facesContext, ((_AttachedDeltaWrapper) values[2]).getWrappedStateObject());
-        }
-        else
-        {
-            //Full
-            _beforePhaseListener = (javax.el.MethodExpression) restoreAttachedState(facesContext,values[2]);
-        }
-        _viewScope = (Map<String, Object>) restoreAttachedState(facesContext, values[3]);
+        _viewScope = (Map<String, Object>) restoreAttachedState(facesContext, values[1]);
     }
     
     public List<SystemEventListener> getViewListenersForEventClass(Class<? extends SystemEvent> systemEvent)
