@@ -100,6 +100,8 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     private final boolean _isBuildingCompositeComponentMetadata;
     
     private final boolean _refreshTransientBuildOnPSS;
+    
+    private final boolean _usingPSSOnThisView;
 
     public DefaultFaceletContext(DefaultFaceletContext ctx,
             DefaultFacelet facelet)
@@ -120,6 +122,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         _isMarkInitialState = ctx._isMarkInitialState;
         _isBuildingCompositeComponentMetadata = ctx._isBuildingCompositeComponentMetadata;
         _refreshTransientBuildOnPSS = ctx._refreshTransientBuildOnPSS;
+        _usingPSSOnThisView = ctx._usingPSSOnThisView;
 
         //Update FACELET_CONTEXT_KEY on FacesContext attribute map, to 
         //reflect the current facelet context instance
@@ -151,6 +154,8 @@ final class DefaultFaceletContext extends AbstractFaceletContext
             isBuildingCompositeComponentMetadata(faces);
         _refreshTransientBuildOnPSS = FaceletViewDeclarationLanguage.
             isRefreshTransientBuildOnPSS(faces);
+        _usingPSSOnThisView = FaceletViewDeclarationLanguage.
+            isUsingPSSOnThisView(faces);
 
         //Set FACELET_CONTEXT_KEY on FacesContext attribute map, to 
         //reflect the current facelet context instance
@@ -842,5 +847,11 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     public boolean isRefreshTransientBuildOnPSS()
     {
         return _refreshTransientBuildOnPSS;
+    }
+
+    @Override
+    public boolean isUsingPSSOnThisView()
+    {
+        return _usingPSSOnThisView;
     }
 }

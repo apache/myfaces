@@ -29,6 +29,8 @@ import javax.faces.view.facelets.Metadata;
 import javax.faces.view.facelets.MetadataTarget;
 import javax.faces.view.facelets.TagAttribute;
 
+import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+
 /**
  * 
  * @author Jacob Hookom
@@ -68,7 +70,14 @@ public final class ActionSourceRule extends MetaRule
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
             MethodExpression expr = _attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_LISTENER_SIG);
-            ((ActionSource2) instance).addActionListener(new MethodExpressionActionListener(expr));
+            if (((AbstractFaceletContext)ctx).isUsingPSSOnThisView())
+            {
+                ((ActionSource2) instance).addActionListener(new PartialMethodExpressionActionListener(expr));
+            }
+            else
+            {
+                ((ActionSource2) instance).addActionListener(new MethodExpressionActionListener(expr));
+            }
         }
     }
 

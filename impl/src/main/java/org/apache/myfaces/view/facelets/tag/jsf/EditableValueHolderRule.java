@@ -30,6 +30,8 @@ import javax.faces.view.facelets.Metadata;
 import javax.faces.view.facelets.MetadataTarget;
 import javax.faces.view.facelets.TagAttribute;
 
+import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+
 /**
  * 
  * @author Jacob Hookom
@@ -66,8 +68,16 @@ public final class EditableValueHolderRule extends MetaRule
 
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
-            ((EditableValueHolder) instance).addValueChangeListener(new MethodExpressionValueChangeListener(this.attr
-                    .getMethodExpression(ctx, null, VALUECHANGE_SIG)));
+            if (((AbstractFaceletContext)ctx).isUsingPSSOnThisView())
+            {
+                ((EditableValueHolder) instance).addValueChangeListener(new PartialMethodExpressionValueChangeListener(this.attr
+                        .getMethodExpression(ctx, null, VALUECHANGE_SIG)));
+            }
+            else
+            {
+                ((EditableValueHolder) instance).addValueChangeListener(new MethodExpressionValueChangeListener(this.attr
+                        .getMethodExpression(ctx, null, VALUECHANGE_SIG)));
+            }
         }
     }
 
@@ -82,8 +92,16 @@ public final class EditableValueHolderRule extends MetaRule
 
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
-            ((EditableValueHolder) instance).addValidator(new MethodExpressionValidator(this.attr
-                    .getMethodExpression(ctx, null, VALIDATOR_SIG)));
+            if (((AbstractFaceletContext)ctx).isUsingPSSOnThisView())
+            {
+                ((EditableValueHolder) instance).addValidator(new PartialMethodExpressionValidator(this.attr
+                        .getMethodExpression(ctx, null, VALIDATOR_SIG)));
+            }
+            else
+            {
+                ((EditableValueHolder) instance).addValidator(new MethodExpressionValidator(this.attr
+                        .getMethodExpression(ctx, null, VALIDATOR_SIG)));
+            }
         }
     }
 

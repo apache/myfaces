@@ -269,4 +269,11 @@ public abstract class AbstractFaceletContext extends FaceletContext
      */
     public abstract boolean isRefreshTransientBuildOnPSS();
     
+    /**
+     * Check if we are using partial state saving on this view
+     * 
+     * @return
+     * @since 2.0
+     */
+    public abstract boolean isUsingPSSOnThisView();
 }

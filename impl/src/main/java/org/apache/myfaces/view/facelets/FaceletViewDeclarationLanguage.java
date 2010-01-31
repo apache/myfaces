@@ -179,6 +179,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     
     public final static String FILLED_VIEW = "org.apache.myfaces.FILLED_VIEW";
     
+    //BEGIN CONSTANTS SET ON BUILD VIEW
     public final static String BUILDING_COMPOSITE_COMPONENT_METADATA = "org.apache.myfaces.BUILDING_COMPOSITE_COMPONENT_METADATA";
     
     public final static String BUILDING_VIEW_METADATA = "org.apache.myfaces.BUILDING_VIEW_METADATA";
@@ -186,6 +187,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     public final static String REFRESHING_TRANSIENT_BUILD = "org.apache.myfaces.REFRESHING_TRANSIENT_BUILD";
     
     public final static String REFRESH_TRANSIENT_BUILD_ON_PSS = "org.apache.myfaces.REFRESH_TRANSIENT_BUILD_ON_PSS";
+    
+    public final static String USING_PSS_ON_THIS_VIEW = "org.apache.myfaces.USING_PSS_ON_THIS_VIEW";
+    //END CONSTANTS SET ON BUILD VIEW
     
     /**
      * Marker to indicate tag handlers the view currently being built is using
@@ -262,7 +266,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             {
                 view.setId(view.createUniqueId(context,null));
             }
-            
+         
+            context.getAttributes().put(USING_PSS_ON_THIS_VIEW, Boolean.TRUE);
             //Add a key to indicate ComponentTagHandlerDelegate to 
             //call UIComponent.markInitialState after it is populated
             if (!refreshTransientBuild)
@@ -366,6 +371,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             {
                 ((DefaultFaceletsStateManagementStrategy) getStateManagementStrategy(context, view.getViewId())).suscribeListeners(view);
             }
+            
+            context.getAttributes().remove(USING_PSS_ON_THIS_VIEW);
         }
     }
     
@@ -569,6 +576,11 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     public static void cleanTransientBuildOnRestore(FacesContext context)
     {
         context.getAttributes().put(CLEAN_TRANSIENT_BUILD_ON_RESTORE, Boolean.TRUE);
+    }
+    
+    public static boolean isUsingPSSOnThisView(FacesContext context)
+    {
+        return context.getAttributes().containsKey(USING_PSS_ON_THIS_VIEW);
     }
     
     /**
