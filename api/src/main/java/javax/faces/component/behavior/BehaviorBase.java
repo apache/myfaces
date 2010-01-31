@@ -37,7 +37,7 @@ import javax.faces.event.BehaviorListener;
  */
 public class BehaviorBase implements Behavior, PartialStateHolder
 {
-    private List<BehaviorListener> _behaviorListeners;
+    private _DeltaList<BehaviorListener> _behaviorListeners;
     
     private boolean _initialState;
     
@@ -79,6 +79,10 @@ public class BehaviorBase implements Behavior, PartialStateHolder
     public void clearInitialState()
     {
         _initialState = false;
+        if (_behaviorListeners != null)
+        {
+            _behaviorListeners.clearInitialState();
+        }
     }
 
     public boolean initialStateMarked()
@@ -94,6 +98,10 @@ public class BehaviorBase implements Behavior, PartialStateHolder
     public void markInitialState()
     {
         _initialState = true;
+        if (_behaviorListeners != null)
+        {
+            _behaviorListeners.markInitialState();
+        }
     }
 
     public void restoreState(FacesContext context, Object state)
