@@ -33,6 +33,9 @@ import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagAttributeException;
 
+import org.apache.myfaces.view.facelets.DefaultFaceletsStateManagementStrategy;
+import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
+
 /**
  * 
  * @author Jacob Hookom
@@ -413,6 +416,16 @@ public final class ComponentSupport
         else
         {
             parent.getFacets().remove(facetName);
+        }
+    }
+
+    public static void markComponentToRestoreFully(FacesContext context, UIComponent component)
+    {
+        component.getAttributes().put(DefaultFaceletsStateManagementStrategy.COMPONENT_ADDED_AFTER_BUILD_VIEW, Boolean.FALSE);
+        //component.subscribeToEvent(PostAddToViewEvent.class, new RestoreComponentFullyListener());
+        if (FaceletViewDeclarationLanguage.isRefreshTransientBuildOnPSSAuto(context))
+        {
+            FaceletViewDeclarationLanguage.cleanTransientBuildOnRestore(context);
         }
     }
 }

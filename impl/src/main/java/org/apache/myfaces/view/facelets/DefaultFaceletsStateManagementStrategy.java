@@ -38,6 +38,7 @@ import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.PostAddToViewEvent;
 import javax.faces.event.PostRestoreStateEvent;
 import javax.faces.event.PreRemoveFromViewEvent;
@@ -86,11 +87,22 @@ import org.apache.myfaces.shared_impl.util.ClassUtils;
  */
 public class DefaultFaceletsStateManagementStrategy extends StateManagementStrategy
 {
-    private static final String CLIENTIDS_ADDED = "CLIENTIDS_ADDED";
+    public static final String CLIENTIDS_ADDED = "oam.CLIENTIDS_ADDED";
     
-    private static final String CLIENTIDS_REMOVED = "CLIENTIDS_REMOVED";
+    public static final String CLIENTIDS_REMOVED = "oam.CLIENTIDS_REMOVED";
     
-    private static final String COMPONENT_ADDED_AFTER_BUILD_VIEW = "COMPONENT_ADDED_AFTER_BUILD_VIEW"; 
+    /**
+     * Key used on component attribute map to indicate if a component was added
+     * after build view, so itself and all descendants should not use partial
+     * state saving. There are two possible values:
+     * 
+     * Key not present: The component uses pss.
+     * Boolean.TRUE: The component was added to the view after build view.
+     * Boolean.FALSE: The component was removed/added to the view. Itself and all
+     * descendants should be saved and restored, but we have to unregister/register
+     * from CLIENTIDS_ADDED and CLIENTIDS_REMOVED lists.
+     */
+    public  static final String COMPONENT_ADDED_AFTER_BUILD_VIEW = "oam.COMPONENT_ADDED_AFTER_BUILD_VIEW"; 
     
     private ViewDeclarationLanguage vdl;
     
@@ -111,56 +123,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         Map<String, Object> states;
         
         UIViewRoot view = null;
-        
-        // Per the spec: build the view.
-        
-        try {
-            ViewMetadata metadata = vdl.getViewMetadata (context, viewId);
-            
-            Collection<UIViewParameter> viewParameters = null;
-            
-            if (metadata != null)
-            {
-                view = metadata.createMetadataView(context);
-                
-                if (view != null)
-                {
-                    viewParameters = metadata.getViewParameters(view);
-                }
-            }
-            if (view == null)
-            {
-                view = vdl.createView(context, viewId);
-            }
-            
-            context.setViewRoot (view); 
-            
-            // TODO: Why is necessary enable event processing?
-            // ANS: On RestoreViewExecutor, setProcessingEvents is called first to false
-            // and then to true when postback. Since we need listeners registered to PostAddToViewEvent
-            // event to be handled, we should enable it again. We are waiting a response from EG about
-            // the behavior of those listeners, because for partial state saving we need this listeners
-            // be called from here and relocate components properly, but for now we have to let this code as is.
-            try 
-            {
-                context.setProcessingEvents (true);
-                vdl.buildView (context, view);
-                // In the latest code related to PostAddToView, it is
-                // triggered no matter if it is applied on postback. It seems that MYFACES-2389, 
-                // TRINIDAD-1670 and TRINIDAD-1671 are related.
-                // This code is no longer necessary, but better let it here.
-                //_publishPostBuildComponentTreeOnRestoreViewEvent(context, view);
-                suscribeListeners(view);
-            }
-            finally
-            {
-                context.setProcessingEvents (false);
-            }
-        }
-        catch (Throwable e) {
-            throw new FacesException ("unable to create view \"" + viewId + "\"", e);
-        }
-        
+
         // Get previous state from ResponseStateManager.
         manager = RendererUtils.getResponseStateManager (context, renderKitId);
 
@@ -174,76 +137,150 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
 
             state = (Object[]) helper.getSerializedViewFromServletSession(context, viewId, serverStateId);
         }
-                
-        states = (Map<String, Object>) state[1];
         
-        // Visit the children and restore their state.
-        
-        //view.visitTree (VisitContext.createVisitContext (context), new RestoreStateVisitor (states));
-        
-        //Restore state of current components
-        restoreStateFromMap(context, states, view);
-        
-        // TODO: handle dynamic add/removes as mandated by the spec.  Not sure how to do handle this yet.
-        List<String> clientIdsRemoved = getClientIdsRemoved(view);
-        
-        if (clientIdsRemoved != null)
+        if (state[1] instanceof Object[])
         {
-            for (String clientId : clientIdsRemoved)
-            {
-                view.invokeOnComponent(context, clientId, new ContextCallback()
-                    {
-                        public void invokeContextCallback(FacesContext context,
-                                UIComponent target)
-                        {
-                            target.getParent().getChildren().remove(target);
-                        }
-                    });
+            Object[] fullState = (Object[]) state[1]; 
+            view = (UIViewRoot) internalRestoreTreeStructure((TreeStructComponent)fullState[0]);
+
+            if (view != null) {
+                context.setViewRoot (view);
+                view.processRestoreState(context, fullState[1]);
             }
         }
-        
-        List<String> clientIdsAdded = getClientIdsAdded(view);        
-        if (clientIdsAdded != null)
+        else
         {
-            for (String clientId : clientIdsAdded)
-            {
-                final AttachedFullStateWrapper wrapper = (AttachedFullStateWrapper) states.get(clientId);
-                if (wrapper != null)
+            // Per the spec: build the view.
+            
+            try {
+                ViewMetadata metadata = vdl.getViewMetadata (context, viewId);
+                
+                Collection<UIViewParameter> viewParameters = null;
+                
+                if (metadata != null)
                 {
-                    final Object[] addedState = (Object[]) wrapper.getWrappedStateObject(); 
-                    if (addedState != null)
+                    view = metadata.createMetadataView(context);
+                    
+                    if (view != null)
                     {
-                        final String parentClientId = (String) addedState[0];
-                        view.invokeOnComponent(context, parentClientId, new ContextCallback()
+                        viewParameters = metadata.getViewParameters(view);
+                    }
+                }
+                if (view == null)
+                {
+                    view = vdl.createView(context, viewId);
+                }
+                
+                context.setViewRoot (view); 
+                
+                // TODO: Why is necessary enable event processing?
+                // ANS: On RestoreViewExecutor, setProcessingEvents is called first to false
+                // and then to true when postback. Since we need listeners registered to PostAddToViewEvent
+                // event to be handled, we should enable it again. We are waiting a response from EG about
+                // the behavior of those listeners, because for partial state saving we need this listeners
+                // be called from here and relocate components properly, but for now we have to let this code as is.
+                try 
+                {
+                    context.setProcessingEvents (true);
+                    vdl.buildView (context, view);
+                    // In the latest code related to PostAddToView, it is
+                    // triggered no matter if it is applied on postback. It seems that MYFACES-2389, 
+                    // TRINIDAD-1670 and TRINIDAD-1671 are related.
+                    // This code is no longer necessary, but better let it here.
+                    //_publishPostBuildComponentTreeOnRestoreViewEvent(context, view);
+                    suscribeListeners(view);
+                }
+                finally
+                {
+                    context.setProcessingEvents (false);
+                }
+            }
+            catch (Throwable e) {
+                throw new FacesException ("unable to create view \"" + viewId + "\"", e);
+            }
+
+            states = (Map<String, Object>) state[1];
+            
+            // Visit the children and restore their state.
+            
+            //view.visitTree (VisitContext.createVisitContext (context), new RestoreStateVisitor (states));
+            
+            //Restore state of current components
+            restoreStateFromMap(context, states, view);
+            
+            // TODO: handle dynamic add/removes as mandated by the spec.  Not sure how to do handle this yet.
+            List<String> clientIdsRemoved = getClientIdsRemoved(view);
+            
+            if (clientIdsRemoved != null)
+            {
+                for (String clientId : clientIdsRemoved)
+                {
+                    view.invokeOnComponent(context, clientId, new ContextCallback()
                         {
                             public void invokeContextCallback(FacesContext context,
                                     UIComponent target)
                             {
-                                if (addedState[1] != null)
+                                if (target.getParent() != null)
                                 {
-                                    String facetName = (String) addedState[1];
-                                    UIComponent child = internalRestoreTreeStructure((TreeStructComponent) addedState[3]);
-                                    child.processRestoreState(context, addedState[4]);
-                                    target.getFacets().put(facetName,child);
-                                }
-                                else
-                                {
-                                    Integer childIndex = (Integer) addedState[2];
-                                    UIComponent child = internalRestoreTreeStructure((TreeStructComponent) addedState[3]);
-                                    child.processRestoreState(context, addedState[4]);
-                                    try
-                                    {
-                                        target.getChildren().add(childIndex, child);                                    
-                                    }
-                                    catch (IndexOutOfBoundsException e)
-                                    {
-                                        // We can't be sure about where should be this 
-                                        // item, so just add it. 
-                                        target.getChildren().add(child);
-                                    }
+                                    target.getParent().getChildren().remove(target);
                                 }
                             }
                         });
+                }
+            }
+            
+            List<String> clientIdsAdded = getClientIdsAdded(view);
+            if (clientIdsAdded != null)
+            {
+                for (String clientId : clientIdsAdded)
+                {
+                    final AttachedFullStateWrapper wrapper = (AttachedFullStateWrapper) states.get(clientId);
+                    if (wrapper != null)
+                    {
+                        final Object[] addedState = (Object[]) wrapper.getWrappedStateObject(); 
+                        if (addedState != null)
+                        {
+                            if (addedState.length == 2)
+                            {
+                                view = (UIViewRoot) internalRestoreTreeStructure((TreeStructComponent) addedState[0]);
+                                view.processRestoreState(context, addedState[1]);
+                                break;
+                            }
+                            else
+                            {
+                                final String parentClientId = (String) addedState[0];
+                                view.invokeOnComponent(context, parentClientId, new ContextCallback()
+                                {
+                                    public void invokeContextCallback(FacesContext context,
+                                            UIComponent target)
+                                    {
+                                        if (addedState[1] != null)
+                                        {
+                                            String facetName = (String) addedState[1];
+                                            UIComponent child = internalRestoreTreeStructure((TreeStructComponent) addedState[3]);
+                                            child.processRestoreState(context, addedState[4]);
+                                            target.getFacets().put(facetName,child);
+                                        }
+                                        else
+                                        {
+                                            Integer childIndex = (Integer) addedState[2];
+                                            UIComponent child = internalRestoreTreeStructure((TreeStructComponent) addedState[3]);
+                                            child.processRestoreState(context, addedState[4]);
+                                            try
+                                            {
+                                                target.getChildren().add(childIndex, child);
+                                            }
+                                            catch (IndexOutOfBoundsException e)
+                                            {
+                                                // We can't be sure about where should be this 
+                                                // item, so just add it. 
+                                                target.getChildren().add(child);
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        }
                     }
                 }
             }
@@ -306,7 +343,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     public Object saveView (FacesContext context)
     {
         UIViewRoot view = context.getViewRoot();
-        HashMap<String, Object> states;
+        Object states;
         
         if (view == null) {
             // Not much that can be done.
@@ -336,10 +373,21 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             
             // Create save state objects for every component.
             
-            states = new HashMap<String, Object>();
-            
             //view.visitTree (VisitContext.createVisitContext (context), new SaveStateVisitor (states));
-            saveStateOnMap(context, states, view);
+            
+            if (view.getAttributes().containsKey(COMPONENT_ADDED_AFTER_BUILD_VIEW))
+            {
+                ensureClearInitialState(view);
+                states = new Object[]{
+                            internalBuildTreeStructureToSave(view),
+                            view.processSaveState(context)};
+            }
+            else
+            {
+                states = new HashMap<String, Object>();
+
+                saveStateOnMap(context,(Map<String,Object>) states, view);
+            }
             
             // TODO: not sure the best way to handle dynamic adds/removes as mandated by the spec.
             
@@ -458,21 +506,41 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     {
         root.getAttributes().put(CLIENTIDS_REMOVED, clientIdsList);
     }
+    
+    @SuppressWarnings("unchecked")
+    private void registerOnAddRemoveList(String clientId)
+    {
+        UIViewRoot uiViewRoot = FacesContext.getCurrentInstance().getViewRoot();
+
+        List<String> clientIdsAdded = (List<String>) getClientIdsAdded(uiViewRoot);
+        if (clientIdsAdded == null)
+        {
+            //Create a set that preserve insertion order
+            clientIdsAdded = new ArrayList<String>();
+        }
+        clientIdsAdded.add(clientId);
+
+        setClientsIdsAdded(uiViewRoot, clientIdsAdded);
+
+        List<String> clientIdsRemoved = (List<String>) getClientIdsRemoved(uiViewRoot);
+        if (clientIdsRemoved == null)
+        {
+            //Create a set that preserve insertion order
+            clientIdsRemoved = new ArrayList<String>();
+        }
+
+        clientIdsRemoved.add(clientId);
+
+        setClientsIdsRemoved(uiViewRoot, clientIdsRemoved);
+    }
             
     private void saveStateOnMap(final FacesContext context, final Map<String,Object> states,
             final UIComponent component)
     {
+        Boolean componentAddedAfterBuildView = null;
         try
         {
             component.pushComponentToEL(context, component);
-            //Save state        
-            Object savedState = component.saveState(context);
-            
-            //Only save if the value returned is null
-            if (savedState != null)
-            {
-                states.put(component.getClientId(), savedState);            
-            }
             
             //Scan children
             if (component.getChildCount() > 0)
@@ -480,21 +548,27 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 String currentClientId = component.getClientId();
                 
                 List<UIComponent> children  = component.getChildren();
-                int pos = 0;
                 for (int i = 0; i < children.size(); i++)
                 {
                     UIComponent child = children.get(i);
                     if (child != null && !child.isTransient())
                     {
-                        if (child.getAttributes().containsKey(COMPONENT_ADDED_AFTER_BUILD_VIEW))
+                        componentAddedAfterBuildView = (Boolean) child.getAttributes().get(COMPONENT_ADDED_AFTER_BUILD_VIEW);
+                        if (componentAddedAfterBuildView != null)
                         {
+                            if (Boolean.FALSE.equals(componentAddedAfterBuildView))
+                            {
+                                registerOnAddRemoveList(child.getClientId());
+                                child.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, Boolean.TRUE);
+                            }
+                            ensureClearInitialState(child);
                             //Save all required info to restore the subtree.
                             //This includes position, structure and state of subtree
                             states.put(child.getClientId(), new AttachedFullStateWrapper( 
                                     new Object[]{
                                         currentClientId,
                                         null,
-                                        pos,
+                                        i,
                                         internalBuildTreeStructureToSave(child),
                                         child.processSaveState(context)}));
                         }
@@ -502,7 +576,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                         {
                             saveStateOnMap( context, states, child);
                         }
-                        pos++;
                     }
                 }
             }
@@ -519,10 +592,17 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     if (child != null && !child.isTransient())
                     {
                         String facetName = entry.getKey();
-                        if (child.getAttributes().containsKey(COMPONENT_ADDED_AFTER_BUILD_VIEW))
+                        componentAddedAfterBuildView = (Boolean) child.getAttributes().get(COMPONENT_ADDED_AFTER_BUILD_VIEW);
+                        if (componentAddedAfterBuildView != null)
                         {
+                            if (Boolean.FALSE.equals(componentAddedAfterBuildView))
+                            {
+                                registerOnAddRemoveList(child.getClientId());
+                                child.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, Boolean.TRUE);
+                            }
                             //Save all required info to restore the subtree.
                             //This includes position, structure and state of subtree
+                            ensureClearInitialState(child);
                             states.put(child.getClientId(),new AttachedFullStateWrapper(new Object[]{
                                 currentClientId,
                                 facetName,
@@ -537,10 +617,38 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     }
                 }
             }
+            
+            //Save state        
+            Object savedState = component.saveState(context);
+            
+            //Only save if the value returned is null
+            if (savedState != null)
+            {
+                states.put(component.getClientId(), savedState);            
+            }
         }
         finally
         {
             component.popComponentFromEL(context);
+        }
+    }
+    
+    protected void ensureClearInitialState(UIComponent c)
+    {
+        c.clearInitialState();
+        if (c.getChildCount() > 0)
+        {
+            for (UIComponent child : c.getChildren())
+            {
+                ensureClearInitialState(child);
+            }
+        }
+        if (c.getFacetCount() > 0)
+        {
+            for (UIComponent child : c.getFacets().values())
+            {
+                ensureClearInitialState(child);
+            }
         }
     }
     
@@ -671,10 +779,16 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         {
             UIComponent component = (UIComponent) event.getSource();
             
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            if (FaceletViewDeclarationLanguage.isRefreshingTransientBuild(facesContext))
+            {
+                return;
+            }
+            
             if (event instanceof PostAddToViewEvent)
             {
                 //PostAddToViewEvent
-                UIViewRoot uiViewRoot = FacesContext.getCurrentInstance().getViewRoot();
+                UIViewRoot uiViewRoot = facesContext.getViewRoot();
                 
                 List<String> clientIdsAdded = getClientIdsAdded(uiViewRoot);
                 if (clientIdsAdded == null)
@@ -690,7 +804,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             else
             {
                 //PreRemoveFromViewEvent
-                UIViewRoot uiViewRoot = FacesContext.getCurrentInstance().getViewRoot();
+                UIViewRoot uiViewRoot = facesContext.getViewRoot();
                 
                 List<String> clientIdsRemoved = getClientIdsRemoved(uiViewRoot);
                 if (clientIdsRemoved == null)

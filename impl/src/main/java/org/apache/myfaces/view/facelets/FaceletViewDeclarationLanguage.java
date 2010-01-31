@@ -169,7 +169,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     
     @JSFWebConfigParam(since="2.0")
     private final static String PARAM_SKIP_COMMENTS_DEPRECATED = "facelets.SKIP_COMMENTS";
-    
+
+    @JSFWebConfigParam(since="2.0")
+    public final static String PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS = "org.apache.myfaces.PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS"; 
+
     //public final static String PARAM_VIEW_MAPPINGS = "javax.faces.FACELETS_VIEW_MAPPINGS";
     
     //private final static String PARAM_VIEW_MAPPINGS_DEPRECATED = "facelets.VIEW_MAPPINGS";
@@ -182,12 +185,16 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     
     public final static String REFRESHING_TRANSIENT_BUILD = "org.apache.myfaces.REFRESHING_TRANSIENT_BUILD";
     
+    public final static String REFRESH_TRANSIENT_BUILD_ON_PSS = "org.apache.myfaces.REFRESH_TRANSIENT_BUILD_ON_PSS";
+    
     /**
      * Marker to indicate tag handlers the view currently being built is using
      * partial state saving and it is necessary to call UIComponent.markInitialState
      * after component instances are populated. 
      */
     public final static String MARK_INITIAL_STATE_KEY = "org.apache.myfaces.MARK_INITIAL_STATE";
+    
+    public final static String CLEAN_TRANSIENT_BUILD_ON_RESTORE = "org.apache.myfaces.CLEAN_TRANSIENT_BUILD_ON_RESTORE";
 
     private final static String STATE_KEY = "<!--@@JSF_FORM_STATE_MARKER@@-->";
 
@@ -207,6 +214,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     private StateManagementStrategy _stateMgmtStrategy;
     
     private boolean _partialStateSaving;
+    
+    private boolean _refreshTransientBuildOnPSS;
+    
+    private boolean _refreshTransientBuildOnPSSAuto;
     
     private Set<String> _viewIds;
 
@@ -239,6 +250,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
         boolean usePartialStateSavingOnThisView = _usePartialStateSavingOnThisView(renderedViewId);
         boolean refreshTransientBuild = (view.getChildCount() > 0);
+        boolean refreshTransientBuildOnPSS = (usePartialStateSavingOnThisView && _refreshTransientBuildOnPSS);
         
         if (usePartialStateSavingOnThisView)
         {
@@ -257,6 +269,11 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             {
                 context.getAttributes().put(MARK_INITIAL_STATE_KEY, Boolean.TRUE);
             }
+            if (refreshTransientBuildOnPSS)
+            {
+                //This value is only set when _refreshTransientBuildOnPSSMode is "auto" or "true" 
+                context.getAttributes().put(REFRESH_TRANSIENT_BUILD_ON_PSS, _refreshTransientBuildOnPSSAuto ? "auto" : "true");
+            }
         }
 
         try
@@ -272,13 +289,15 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         }
         finally
         {
+            if (refreshTransientBuildOnPSS)
+            {
+                context.getAttributes().remove(REFRESH_TRANSIENT_BUILD_ON_PSS);
+            }
             if (refreshTransientBuild)
             {
                 context.setProcessingEvents(true);
                 
-                context.getAttributes().remove(REFRESHING_TRANSIENT_BUILD);
-
-                if (!usePartialStateSavingOnThisView)
+                if (!usePartialStateSavingOnThisView || refreshTransientBuildOnPSS)
                 {
                     // When the facelet is applied, all components are removed and added from view,
                     // but the difference resides in the ordering. Since the view is
@@ -289,11 +308,30 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                     FaceletViewDeclarationLanguage._publishPreRemoveFromViewEvent(context, view);
                     FaceletViewDeclarationLanguage._publishPostAddToViewEvent(context, view);
                 }
+                
+                context.getAttributes().remove(REFRESHING_TRANSIENT_BUILD);
             }
-        }
+       }
         
         // set this view as filled
-        setFilledView(context, view);
+        if (refreshTransientBuild)
+        {
+            //This option will be true on this cases:
+            //- pss is false, but we are refreshing
+            //- pss is true, and we are refreshing a view already filled
+            setFilledView(context, view);
+        }
+        else if (!refreshTransientBuildOnPSS)
+        {
+            // This option will be true on this cases:
+            // -pss is true and refresh is not active
+            setFilledView(context, view);
+        }
+        //At this point refreshTransientBuild = false && refreshTransientBuildOnPSS is true
+        else if (_refreshTransientBuildOnPSSAuto && !context.getAttributes().containsKey(CLEAN_TRANSIENT_BUILD_ON_RESTORE))
+        {
+            setFilledView(context, view);
+        }
         
         // Suscribe listeners if we are using partialStateSaving
         if (usePartialStateSavingOnThisView)
@@ -301,11 +339,23 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             // UIViewRoot.markInitialState() is not called because it does
             // not have a facelet tag handler class that create it, instead
             // new instances are created programatically.
-            view.markInitialState();
-            
-            //Remove the key that indicate we need to call UIComponent.markInitialState
-            //on the current tree
-            context.getAttributes().remove(MARK_INITIAL_STATE_KEY);
+            if (!refreshTransientBuild)
+            {
+                if (!refreshTransientBuildOnPSS || 
+                    !view.getAttributes().containsKey(DefaultFaceletsStateManagementStrategy.COMPONENT_ADDED_AFTER_BUILD_VIEW))
+                {
+                    view.markInitialState();
+                    UIComponent headFacet = view.getFacet("head");
+                    if (headFacet != null)
+                    {
+                        headFacet.markInitialState();
+                    }
+                }
+                
+                //Remove the key that indicate we need to call UIComponent.markInitialState
+                //on the current tree
+                context.getAttributes().remove(MARK_INITIAL_STATE_KEY);
+            }
             
             // We need to suscribe the listeners of changes in the component tree
             // only the first time here. Later we suscribe this listeners on
@@ -498,6 +548,27 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     public static boolean isMarkInitialState(FacesContext context)
     {
         return context.getAttributes().containsKey(MARK_INITIAL_STATE_KEY);
+    }
+    
+    public static boolean isRefreshTransientBuildOnPSS(FacesContext context)
+    {
+        //this include both "true" and "auto"
+        return context.getAttributes().containsKey(REFRESH_TRANSIENT_BUILD_ON_PSS);
+    }
+    
+    public static boolean isRefreshTransientBuildOnPSSAuto(FacesContext context)
+    {
+        return "auto".equalsIgnoreCase((String) context.getAttributes().get(REFRESH_TRANSIENT_BUILD_ON_PSS));
+    }
+    
+    public static boolean isCleanTransientBuildOnRestore(FacesContext context)
+    {
+        return context.getAttributes().containsKey(CLEAN_TRANSIENT_BUILD_ON_RESTORE);
+    }
+
+    public static void cleanTransientBuildOnRestore(FacesContext context)
+    {
+        context.getAttributes().put(CLEAN_TRANSIENT_BUILD_ON_RESTORE, Boolean.TRUE);
     }
     
     /**
@@ -1782,6 +1853,15 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         else
         {
             _viewIds = null;
+        }
+        
+        if (_partialStateSaving)
+        {
+            String refreshTransientBuildOnPSSAuto = _getStringParameter(context,
+                PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS, null);
+            _refreshTransientBuildOnPSS = ("true".equalsIgnoreCase(refreshTransientBuildOnPSSAuto) || 
+                    "auto".equalsIgnoreCase(refreshTransientBuildOnPSSAuto));
+            _refreshTransientBuildOnPSSAuto = "auto".equalsIgnoreCase(refreshTransientBuildOnPSSAuto);
         }
     }
     

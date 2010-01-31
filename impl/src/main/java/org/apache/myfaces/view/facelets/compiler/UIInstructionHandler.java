@@ -90,6 +90,46 @@ final class UIInstructionHandler extends AbstractUIHandler
 
             // grab our component
             UIComponent c = ComponentSupport.findChildByTagId(parent, id);
+            boolean componentFoundInserted = false;
+            if (c == null && ((AbstractFaceletContext)ctx).isRefreshTransientBuildOnPSS() && 
+                ((AbstractFaceletContext)ctx).isRefreshingTransientBuild() && UIComponent.isCompositeComponent(parent))
+            {
+                String facetName = this.getFacetName(ctx, parent);
+                if (facetName == null)
+                {
+                    String targetClientId = (String) parent.getAttributes().get(InsertChildrenHandler.INSERT_CHILDREN_TARGET_ID);
+                    if (targetClientId != null)
+                    {
+                        UIComponent targetComponent = parent.findComponent(targetClientId.substring(parent.getClientId().length()+1));
+                        if (targetComponent != null)
+                        {
+                            c = ComponentSupport.findChildByTagId(targetComponent, id);
+                        }
+                    }
+                    if (c != null)
+                    {
+                        c.getAttributes().put(InsertChildrenHandler.USES_INSERT_CHILDREN, Boolean.TRUE);
+                        componentFoundInserted = true;
+                    }
+                }
+                else
+                {
+                    String targetClientId = (String) parent.getAttributes().get(InsertFacetHandler.INSERT_FACET_TARGET_ID+facetName);
+                    if (targetClientId != null)
+                    {
+                        UIComponent targetComponent = parent.findComponent(targetClientId.substring(parent.getClientId().length()+1));
+                        if (targetComponent != null)
+                        {
+                            c = ComponentSupport.findChildByTagId(targetComponent, id);
+                            if (c != null)
+                            {
+                                c.getAttributes().put(InsertFacetHandler.USES_INSERT_FACET, Boolean.TRUE);
+                                componentFoundInserted = true;
+                            }
+                        }
+                    }
+                }
+            }
             boolean componentFound = false;
             if (c != null)
             {
@@ -141,7 +181,10 @@ final class UIInstructionHandler extends AbstractUIHandler
             if (componentFound)
             {
                 ComponentSupport.finalizeForDeletion(c);
-                parent.getChildren().remove(c);
+                if (!componentFoundInserted)
+                {
+                    parent.getChildren().remove(c);
+                }
             }
             if ( ((AbstractFaceletContext)ctx).isRefreshingTransientBuild() 
                     && UIComponent.isCompositeComponent(parent))
@@ -181,7 +224,10 @@ final class UIInstructionHandler extends AbstractUIHandler
                     }
                 }
             }
-            this.addComponent(ctx, parent, c);
+            if (!componentFoundInserted)
+            {
+                this.addComponent(ctx, parent, c);
+            }
         }
     }
 

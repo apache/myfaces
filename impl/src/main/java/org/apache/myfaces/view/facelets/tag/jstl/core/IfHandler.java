@@ -30,6 +30,8 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
  * Simple conditional tag, which evalutes its body if the
@@ -82,6 +84,12 @@ public final class IfHandler extends TagHandler
         if (b)
         {
             this.nextHandler.apply(ctx, parent);
+        }
+        AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+        if (actx.isMarkInitialState() && actx.isRefreshTransientBuildOnPSS())
+        {
+            //Mark the parent component to be saved and restored fully.
+            ComponentSupport.markComponentToRestoreFully(ctx.getFacesContext(), parent);
         }
     }
 

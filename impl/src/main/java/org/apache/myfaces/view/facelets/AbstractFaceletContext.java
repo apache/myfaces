@@ -253,4 +253,20 @@ public abstract class AbstractFaceletContext extends FaceletContext
      * @since 2.0
      */
     public abstract boolean isBuildingCompositeComponentMetadata();
+    
+    /**
+     * Check if the current view will be refreshed with partial state saving.
+     * 
+     * This param is used in two posible events:
+     * 
+     * 1. To notify UIInstruction instances to look for instances moved by
+     *    cc:insertChildren or cc:insertFacet.
+     * 2. To do proper actions when a tag that could change tree structure is applied
+     *    (c:if, c:forEach...)
+     * 
+     * @return
+     * @since 2.0
+     */
+    public abstract boolean isRefreshTransientBuildOnPSS();
+    
 }
