@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.Resource;
+import javax.faces.component.PartialStateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.UniqueIdVendor;
@@ -55,7 +56,7 @@ import org.apache.myfaces.view.facelets.PostBuildComponentTreeOnRestoreViewEvent
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Output", type = "javax.faces.resource.Stylesheet")
 @ListenerFor(systemEventClass = PostAddToViewEvent.class)
 public class HtmlStylesheetRenderer extends Renderer implements
-    ComponentSystemEventListener
+    ComponentSystemEventListener, PartialStateHolder
 {
     //private static final Log log = LogFactory.getLog(HtmlStylesheetRenderer.class);
     private static final Logger log = Logger.getLogger(HtmlStylesheetRenderer.class.getName());
@@ -238,5 +239,40 @@ public class HtmlStylesheetRenderer extends Renderer implements
             writer.writeURIAttribute(HTML.HREF_ATTR, resource.getRequestPath(), null);
             writer.endElement(HTML.LINK_ELEM);
         }
+    }
+    
+    private boolean _initialStateMarked;
+    
+    public void clearInitialState()
+    {
+        _initialStateMarked = false;
+    }
+
+    public boolean initialStateMarked()
+    {
+        return _initialStateMarked;
+    }
+
+    public void markInitialState()
+    {
+        _initialStateMarked = true;
+    }
+
+    public boolean isTransient()
+    {
+        return false;
+    }
+
+    public void restoreState(FacesContext context, Object state)
+    {
+    }
+
+    public Object saveState(FacesContext context)
+    {
+        return null;
+    }
+
+    public void setTransient(boolean newTransientValue)
+    {
     }
 }

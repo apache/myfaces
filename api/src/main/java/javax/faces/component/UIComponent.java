@@ -1128,24 +1128,45 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
 
         public void restoreState(FacesContext context, Object state)
         {
-            //TODO: Delta
+            if (state == null)
+            {
+                return;
+            }
             Object[] values = (Object[]) state;
             componentClass = (Class) values[0];
-            listener = values[1] == null ? 
-                    UIComponent.getCurrentComponent(context) : 
-                        (ComponentSystemEventListener) UIComponentBase.restoreAttachedState(context, values[1]);
+            if (values[1] instanceof _AttachedDeltaWrapper)
+            {
+                ((StateHolder)listener).restoreState(context, ((_AttachedDeltaWrapper)values[1]).getWrappedStateObject());
+            }
+            else
+            {
+                listener = values[1] == null ? 
+                        UIComponent.getCurrentComponent(context) : 
+                            (ComponentSystemEventListener) UIComponentBase.restoreAttachedState(context, values[1]);
+            }
         }
 
         public Object saveState(FacesContext context)
         {
-            //TODO: Delta
-            Object[] state = new Object[2];
-            state[0] = componentClass;
-            if (!(listener instanceof UIComponent))
+            if (!initialStateMarked())
             {
-                state[1] = UIComponentBase.saveAttachedState(context, listener);
+                Object[] state = new Object[2];
+                state[0] = componentClass;
+                if (!(listener instanceof UIComponent))
+                {
+                    state[1] = UIComponentBase.saveAttachedState(context, listener);
+                }
+                return state;
             }
-            return state;                
+            else
+            {
+                Object listenerSaved = ((StateHolder) listener).saveState(context);
+                if (listenerSaved == null)
+                {
+                    return null;
+                }
+                return new Object[]{componentClass, new _AttachedDeltaWrapper(listener.getClass(), listenerSaved)};
+            }
         }
 
         public void setTransient(boolean newTransientValue)
