@@ -138,7 +138,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             state = (Object[]) helper.getSerializedViewFromServletSession(context, viewId, serverStateId);
         }
         
-        if (state[1] instanceof Object[])
+        if (state != null && state[1] instanceof Object[])
         {
             Object[] fullState = (Object[]) state[1]; 
             view = (UIViewRoot) internalRestoreTreeStructure((TreeStructComponent)fullState[0]);
@@ -199,86 +199,89 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 throw new FacesException ("unable to create view \"" + viewId + "\"", e);
             }
 
-            states = (Map<String, Object>) state[1];
-            
-            // Visit the children and restore their state.
-            
-            //view.visitTree (VisitContext.createVisitContext (context), new RestoreStateVisitor (states));
-            
-            //Restore state of current components
-            restoreStateFromMap(context, states, view);
-            
-            // TODO: handle dynamic add/removes as mandated by the spec.  Not sure how to do handle this yet.
-            List<String> clientIdsRemoved = getClientIdsRemoved(view);
-            
-            if (clientIdsRemoved != null)
+            if (state != null && state[1] != null)
             {
-                for (String clientId : clientIdsRemoved)
+                states = (Map<String, Object>) state[1];
+                
+                // Visit the children and restore their state.
+                
+                //view.visitTree (VisitContext.createVisitContext (context), new RestoreStateVisitor (states));
+                
+                //Restore state of current components
+                restoreStateFromMap(context, states, view);
+                
+                // TODO: handle dynamic add/removes as mandated by the spec.  Not sure how to do handle this yet.
+                List<String> clientIdsRemoved = getClientIdsRemoved(view);
+                
+                if (clientIdsRemoved != null)
                 {
-                    view.invokeOnComponent(context, clientId, new ContextCallback()
-                        {
-                            public void invokeContextCallback(FacesContext context,
-                                    UIComponent target)
-                            {
-                                if (target.getParent() != null)
-                                {
-                                    target.getParent().getChildren().remove(target);
-                                }
-                            }
-                        });
-                }
-            }
-            
-            List<String> clientIdsAdded = getClientIdsAdded(view);
-            if (clientIdsAdded != null)
-            {
-                for (String clientId : clientIdsAdded)
-                {
-                    final AttachedFullStateWrapper wrapper = (AttachedFullStateWrapper) states.get(clientId);
-                    if (wrapper != null)
+                    for (String clientId : clientIdsRemoved)
                     {
-                        final Object[] addedState = (Object[]) wrapper.getWrappedStateObject(); 
-                        if (addedState != null)
-                        {
-                            if (addedState.length == 2)
+                        view.invokeOnComponent(context, clientId, new ContextCallback()
                             {
-                                view = (UIViewRoot) internalRestoreTreeStructure((TreeStructComponent) addedState[0]);
-                                view.processRestoreState(context, addedState[1]);
-                                break;
-                            }
-                            else
-                            {
-                                final String parentClientId = (String) addedState[0];
-                                view.invokeOnComponent(context, parentClientId, new ContextCallback()
+                                public void invokeContextCallback(FacesContext context,
+                                        UIComponent target)
                                 {
-                                    public void invokeContextCallback(FacesContext context,
-                                            UIComponent target)
+                                    if (target.getParent() != null)
                                     {
-                                        if (addedState[1] != null)
-                                        {
-                                            String facetName = (String) addedState[1];
-                                            UIComponent child = internalRestoreTreeStructure((TreeStructComponent) addedState[3]);
-                                            child.processRestoreState(context, addedState[4]);
-                                            target.getFacets().put(facetName,child);
-                                        }
-                                        else
-                                        {
-                                            Integer childIndex = (Integer) addedState[2];
-                                            UIComponent child = internalRestoreTreeStructure((TreeStructComponent) addedState[3]);
-                                            child.processRestoreState(context, addedState[4]);
-                                            try
-                                            {
-                                                target.getChildren().add(childIndex, child);
-                                            }
-                                            catch (IndexOutOfBoundsException e)
-                                            {
-                                                // We can't be sure about where should be this 
-                                                // item, so just add it. 
-                                                target.getChildren().add(child);
-                                            }
-                                        }
+                                        target.getParent().getChildren().remove(target);
                                     }
-                                });
+                                }
+                            });
+                    }
+                }
+                
+                List<String> clientIdsAdded = getClientIdsAdded(view);
+                if (clientIdsAdded != null)
+                {
+                    for (String clientId : clientIdsAdded)
+                    {
+                        final AttachedFullStateWrapper wrapper = (AttachedFullStateWrapper) states.get(clientId);
+                        if (wrapper != null)
+                        {
+                            final Object[] addedState = (Object[]) wrapper.getWrappedStateObject(); 
+                            if (addedState != null)
+                            {
+                                if (addedState.length == 2)
+                                {
+                                    view = (UIViewRoot) internalRestoreTreeStructure((TreeStructComponent) addedState[0]);
+                                    view.processRestoreState(context, addedState[1]);
+                                    break;
+                                }
+                                else
+                                {
+                                    final String parentClientId = (String) addedState[0];
+                                    view.invokeOnComponent(context, parentClientId, new ContextCallback()
+                                    {
+                                        public void invokeContextCallback(FacesContext context,
+                                                UIComponent target)
+                                        {
+                                            if (addedState[1] != null)
+                                            {
+                                                String facetName = (String) addedState[1];
+                                                UIComponent child = internalRestoreTreeStructure((TreeStructComponent) addedState[3]);
+                                                child.processRestoreState(context, addedState[4]);
+                                                target.getFacets().put(facetName,child);
+                                            }
+                                            else
+                                            {
+                                                Integer childIndex = (Integer) addedState[2];
+                                                UIComponent child = internalRestoreTreeStructure((TreeStructComponent) addedState[3]);
+                                                child.processRestoreState(context, addedState[4]);
+                                                try
+                                                {
+                                                    target.getChildren().add(childIndex, child);
+                                                }
+                                                catch (IndexOutOfBoundsException e)
+                                                {
+                                                    // We can't be sure about where should be this 
+                                                    // item, so just add it. 
+                                                    target.getChildren().add(child);
+                                                }
+                                            }
+                                        }
+                                    });
+                                }
                             }
                         }
                     }
@@ -387,6 +390,11 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 states = new HashMap<String, Object>();
 
                 saveStateOnMap(context,(Map<String,Object>) states, view);
+                
+                if ( ((Map<String,Object>)states).isEmpty())
+                {
+                    states = null;
+                }
             }
             
             // TODO: not sure the best way to handle dynamic adds/removes as mandated by the spec.
