@@ -19,7 +19,6 @@
 package javax.faces.component;
 
 import javax.el.MethodExpression;
-import javax.el.ValueExpression;
 import javax.faces.context.FacesContext;
 import javax.faces.el.MethodBinding;
 import javax.faces.event.AbortProcessingException;
@@ -42,9 +41,6 @@ public class UICommand extends UIComponentBase implements ActionSource2
 {
     public static final String COMPONENT_TYPE = "javax.faces.Command";
     public static final String COMPONENT_FAMILY = "javax.faces.Command";
-
-    private MethodExpression _actionExpression;
-    private MethodBinding _actionListener;
 
     /**
      * Construct an instance of the UICommand.
@@ -177,12 +173,6 @@ public class UICommand extends UIComponentBase implements ActionSource2
         getStateHelper().put(PropertyKeys.value, value );
     }
 
-    private boolean _isSetActionExpression()
-    {
-        Boolean value = (Boolean) getStateHelper().get(PropertyKeys.actionExpressionSet);
-        return value == null ? false : value;
-    }
-
     /**
      * The action to take when this command is invoked.
      * <p>
@@ -196,35 +186,15 @@ public class UICommand extends UIComponentBase implements ActionSource2
      * is functionally equivalent to a reference to an action method that returns the string literal.
      * </p>
      */
-    @JSFProperty(stateHolder = true, returnSignature = "java.lang.Object", jspName = "action", clientEvent="action")
+    @JSFProperty(returnSignature = "java.lang.Object", jspName = "action", clientEvent="action")
     public MethodExpression getActionExpression()
     {
-        if (_actionExpression != null)
-        {
-            return _actionExpression;
-        }
-        ValueExpression expression = getValueExpression("actionExpression");
-        if (expression != null)
-        {
-            return (MethodExpression) expression.getValue(getFacesContext()
-                    .getELContext());
-        }
-        return null;
+        return (MethodExpression) getStateHelper().eval(PropertyKeys.actionExpression);
     }
 
     public void setActionExpression(MethodExpression actionExpression)
     {
-        this._actionExpression = actionExpression;
-        if (initialStateMarked())
-        {
-            getStateHelper().put(PropertyKeys.actionExpressionSet,Boolean.TRUE);
-        }
-    }
-    
-    private boolean _isSetActionListener()
-    {
-        Boolean value = (Boolean) getStateHelper().get(PropertyKeys.actionListenerSet);
-        return value == null ? false : value;
+        getStateHelper().put(PropertyKeys.actionExpression, actionExpression);
     }
 
     /**
@@ -236,20 +206,10 @@ public class UICommand extends UIComponentBase implements ActionSource2
      * 
      * @deprecated
      */
-    @JSFProperty(stateHolder = true, returnSignature = "void", methodSignature = "javax.faces.event.ActionEvent")
+    @JSFProperty(returnSignature = "void", methodSignature = "javax.faces.event.ActionEvent")
     public MethodBinding getActionListener()
     {
-        if (_actionListener != null)
-        {
-            return _actionListener;
-        }
-        ValueExpression expression = getValueExpression("actionListener");
-        if (expression != null)
-        {
-            return (MethodBinding) expression.getValue(getFacesContext()
-                    .getELContext());
-        }
-        return null;
+        return (MethodBinding) getStateHelper().eval(PropertyKeys.actionListener);
     }
 
     /**
@@ -258,11 +218,7 @@ public class UICommand extends UIComponentBase implements ActionSource2
     @JSFProperty(returnSignature="void",methodSignature="javax.faces.event.ActionEvent")
     public void setActionListener(MethodBinding actionListener)
     {
-        this._actionListener = actionListener;
-        if (initialStateMarked())
-        {
-            getStateHelper().put(PropertyKeys.actionListenerSet,Boolean.TRUE);
-        }
+        getStateHelper().put(PropertyKeys.actionListener, actionListener);
     }
 
     public void addActionListener(ActionListener listener)
@@ -291,148 +247,8 @@ public class UICommand extends UIComponentBase implements ActionSource2
     {
          immediate
         , value
-        , actionExpressionSet
-        , actionListenerSet
-    }
-
-    public void markInitialState()
-    {
-        super.markInitialState();
-        if (_actionListener != null && 
-            _actionListener instanceof PartialStateHolder)
-        {
-            ((PartialStateHolder)_actionListener).markInitialState();
-        }
-        if (_actionExpression != null && 
-            _actionExpression instanceof PartialStateHolder)
-        {
-            ((PartialStateHolder)_actionExpression).markInitialState();
-        }
-    }
-    
-    public void clearInitialState()
-    {
-        if (initialStateMarked())
-        {
-            super.clearInitialState();
-            if (_actionListener != null && 
-                _actionListener instanceof PartialStateHolder)
-            {
-                ((PartialStateHolder)_actionListener).clearInitialState();
-            }
-            if (_actionExpression != null && 
-                _actionExpression instanceof PartialStateHolder)
-            {
-                ((PartialStateHolder)_actionExpression).clearInitialState();
-            }
-        }
-    }
-
-    @Override
-    public Object saveState(FacesContext facesContext)
-    {
-        if (initialStateMarked())
-        {
-            boolean nullDelta = true;
-            Object parentSaved = super.saveState(facesContext);
-            Object actionListenerSaved = null;
-            if (!_isSetActionListener() &&
-                _actionListener != null && _actionListener instanceof PartialStateHolder)
-            {
-                //Delta
-                StateHolder holder = (StateHolder) _actionListener;
-                if (!holder.isTransient())
-                {
-                    Object attachedState = holder.saveState(facesContext);
-                    if (attachedState != null)
-                    {
-                        nullDelta = false;
-                    }
-                    actionListenerSaved = new _AttachedDeltaWrapper(_actionListener.getClass(),
-                        attachedState);
-                }
-            }
-            else  if (_isSetActionListener() || _actionListener != null)
-            {
-                //Full
-                actionListenerSaved = saveAttachedState(facesContext,_actionListener);
-                nullDelta = false;
-            }        
-            Object actionExpressionSaved = null;
-            if (!_isSetActionExpression() &&
-                _actionExpression != null && _actionExpression instanceof PartialStateHolder)
-            {
-                //Delta
-                StateHolder holder = (StateHolder) _actionExpression;
-                if (!holder.isTransient())
-                {
-                    Object attachedState = holder.saveState(facesContext);
-                    if (attachedState != null)
-                    {
-                        nullDelta = false;
-                    }
-                    actionExpressionSaved = new _AttachedDeltaWrapper(_actionExpression.getClass(),
-                        attachedState);
-                }
-            }
-            else  if (_isSetActionExpression() || _actionExpression != null)
-            {
-                //Full
-                actionExpressionSaved = saveAttachedState(facesContext,_actionExpression);
-                nullDelta = false;
-            }        
-            if (parentSaved == null && nullDelta)
-            {
-                //No values
-                return null;
-            }
-            
-            Object[] values = new Object[3];
-            values[0] = parentSaved;
-            values[1] = actionListenerSaved;
-            values[2] = actionExpressionSaved;
-            return values;
-        }
-        else
-        {
-            Object[] values = new Object[3];
-            values[0] = super.saveState(facesContext);
-            values[1] = saveAttachedState(facesContext,_actionListener);
-            values[2] = saveAttachedState(facesContext,_actionExpression);
-            return values;
-        }
-    }
-
-    @Override
-    public void restoreState(FacesContext facesContext, Object state)
-    {
-        if (state == null)
-        {
-            return;
-        }
-        
-        Object[] values = (Object[])state;
-        super.restoreState(facesContext,values[0]);
-        if (values[1] instanceof _AttachedDeltaWrapper)
-        {
-            //Delta
-            ((StateHolder)_actionListener).restoreState(facesContext, ((_AttachedDeltaWrapper) values[1]).getWrappedStateObject());
-        }
-        else
-        {
-            //Full
-            _actionListener = (javax.faces.el.MethodBinding) restoreAttachedState(facesContext,values[1]);
-        }         
-        if (values[2] instanceof _AttachedDeltaWrapper)
-        {
-            //Delta
-            ((StateHolder)_actionExpression).restoreState(facesContext, ((_AttachedDeltaWrapper) values[2]).getWrappedStateObject());
-        }
-        else
-        {
-            //Full
-            _actionExpression = (javax.el.MethodExpression) restoreAttachedState(facesContext,values[2]);
-        }         
+        , actionExpression
+        , actionListener
     }
 
     @Override

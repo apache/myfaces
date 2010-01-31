@@ -18,12 +18,12 @@
  */
 package javax.faces.component;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
-import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -31,11 +31,18 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.el.EvaluationException;
 import javax.faces.el.MethodBinding;
-import javax.faces.event.*;
+import javax.faces.event.AbortProcessingException;
+import javax.faces.event.ExceptionQueuedEvent;
+import javax.faces.event.ExceptionQueuedEventContext;
+import javax.faces.event.FacesEvent;
+import javax.faces.event.PhaseId;
+import javax.faces.event.PostValidateEvent;
+import javax.faces.event.PreValidateEvent;
+import javax.faces.event.ValueChangeEvent;
+import javax.faces.event.ValueChangeListener;
 import javax.faces.render.Renderer;
-import javax.faces.validator.BeanValidator;
 import javax.faces.validator.Validator;
-import java.util.*;
+
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFListener;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
@@ -70,10 +77,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
 
     private static final Validator[] EMPTY_VALIDATOR_ARRAY = new Validator[0];
 
-    private MethodBinding _validator;
     private _DeltaList<Validator> _validatorList;
-
-    private MethodBinding _valueChangeListener;
 
     /**
      * Construct an instance of the UIInput.
@@ -606,12 +610,6 @@ public class UIInput extends UIOutput implements EditableValueHolder
         getStateHelper().put(PropertyKeys.requiredMessage, requiredMessage );
     }
 
-    private boolean _isSetValidator()
-    {
-        Boolean value = (Boolean) getStateHelper().get(PropertyKeys.validatorSet);
-        return value == null ? false : value;
-    }
-
     /**
      * A method-binding EL expression which is invoked during the validation phase for this component.
      * <p>
@@ -626,19 +624,10 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * @deprecated
      */
     @SuppressWarnings("dep-ann")
-    @JSFProperty(stateHolder = true, returnSignature = "void", methodSignature = "javax.faces.context.FacesContext,javax.faces.component.UIComponent,java.lang.Object")
+    @JSFProperty(returnSignature = "void", methodSignature = "javax.faces.context.FacesContext,javax.faces.component.UIComponent,java.lang.Object")
     public MethodBinding getValidator()
     {
-        if (_validator != null)
-        {
-            return _validator;
-        }
-        ValueExpression expression = getValueExpression("validator");
-        if (expression != null)
-        {
-            return (MethodBinding) expression.getValue(getFacesContext().getELContext());
-        }
-        return null;
+        return (MethodBinding) getStateHelper().eval(PropertyKeys.validator);
     }
 
     /** See getValidator.
@@ -647,11 +636,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
      */
     public void setValidator(MethodBinding validator)
     {
-        this._validator = validator;
-        if (initialStateMarked())
-        {
-            getStateHelper().put(PropertyKeys.validatorSet,Boolean.TRUE);
-        }
+        getStateHelper().put(PropertyKeys.validator, validator);
     }
 
     /** See getValidator. */
@@ -703,12 +688,6 @@ public class UIInput extends UIOutput implements EditableValueHolder
         getStateHelper().put(PropertyKeys.validatorMessage, validatorMessage );
     }
 
-    private boolean _isSetValueChangeListener()
-    {
-        Boolean value = (Boolean) getStateHelper().get(PropertyKeys.valueChangeListenerSet);
-        return value == null ? false : value;
-    }
-
     /**
      * A method which is invoked during postback processing for the current view if the submitted value for this
      * component is not equal to the value which the "value" expression for this component returns.
@@ -718,19 +697,10 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * 
      * @deprecated
      */
-    @JSFProperty(stateHolder = true, returnSignature = "void", methodSignature = "javax.faces.event.ValueChangeEvent", clientEvent="valueChange")
+    @JSFProperty(returnSignature = "void", methodSignature = "javax.faces.event.ValueChangeEvent", clientEvent="valueChange")
     public MethodBinding getValueChangeListener()
     {
-        if (_valueChangeListener != null)
-        {
-            return _valueChangeListener;
-        }
-        ValueExpression expression = getValueExpression("valueChangeListener");
-        if (expression != null)
-        {
-            return (MethodBinding) expression.getValue(getFacesContext().getELContext());
-        }
-        return null;
+        return (MethodBinding) getStateHelper().eval(PropertyKeys.valueChangeListener);
     }
 
     /**
@@ -740,11 +710,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
      */
     public void setValueChangeListener(MethodBinding valueChangeListener)
     {
-        this._valueChangeListener = valueChangeListener;
-        if (initialStateMarked())
-        {
-            getStateHelper().put(PropertyKeys.valueChangeListenerSet,Boolean.TRUE);
-        }
+        getStateHelper().put(PropertyKeys.valueChangeListener, valueChangeListener);
     }
 
     /**
@@ -831,10 +797,10 @@ public class UIInput extends UIOutput implements EditableValueHolder
         , required
         , converterMessage
         , requiredMessage
-        , validatorSet
+        , validator
         , validatorListSet
         , validatorMessage
-        , valueChangeListenerSet
+        , valueChangeListener
         , valid
         , localValueSet
         , submittedValue
@@ -843,20 +809,10 @@ public class UIInput extends UIOutput implements EditableValueHolder
     public void markInitialState()
     {
         super.markInitialState();
-        if (_validator != null && 
-            _validator instanceof PartialStateHolder)
-        {
-            ((PartialStateHolder)_validator).markInitialState();
-        }
         if (_validatorList != null && 
             _validatorList instanceof PartialStateHolder)
         {
             ((PartialStateHolder)_validatorList).markInitialState();
-        }
-        if (_valueChangeListener != null && 
-            _valueChangeListener instanceof PartialStateHolder)
-        {
-            ((PartialStateHolder)_valueChangeListener).markInitialState();
         }
     }
     
@@ -865,20 +821,10 @@ public class UIInput extends UIOutput implements EditableValueHolder
         if (initialStateMarked())
         {
             super.clearInitialState();
-            if (_validator != null && 
-                _validator instanceof PartialStateHolder)
-            {
-                ((PartialStateHolder)_validator).clearInitialState();
-            }
             if (_validatorList != null && 
                 _validatorList instanceof PartialStateHolder)
             {
                 ((PartialStateHolder)_validatorList).clearInitialState();
-            }
-            if (_valueChangeListener != null && 
-                _valueChangeListener instanceof PartialStateHolder)
-            {
-                ((PartialStateHolder)_valueChangeListener).clearInitialState();
             }
         }
     }    
@@ -888,76 +834,24 @@ public class UIInput extends UIOutput implements EditableValueHolder
     {
         if (initialStateMarked())
         {
-            boolean nullDelta = true;
             Object parentSaved = super.saveState(facesContext);
-            Object validatorSaved = null;
-            if (!_isSetValidator() &&
-                _validator != null && _validator instanceof PartialStateHolder)
-            {
-                //Delta
-                StateHolder holder = (StateHolder) _validator;
-                if (!holder.isTransient())
-                {
-                    Object attachedState = holder.saveState(facesContext);
-                    if (attachedState != null)
-                    {
-                        nullDelta = false;
-                    }
-                    validatorSaved = new _AttachedDeltaWrapper(_validator.getClass(),
-                        attachedState);
-                }
-            }
-            else if (_isSetValidator() || _validator != null)
-            {
-                //Full
-                validatorSaved = saveAttachedState(facesContext,_validator);
-                nullDelta = false;
-            }        
-            Object valueChangeListenerSaved = null;
-            if (!_isSetValueChangeListener() &&
-                _valueChangeListener != null && _valueChangeListener instanceof PartialStateHolder)
-            {
-                //Delta
-                StateHolder holder = (StateHolder) _valueChangeListener;
-                if (!holder.isTransient())
-                {
-                    Object attachedState = holder.saveState(facesContext);
-                    if (attachedState != null)
-                    {
-                        nullDelta = false;
-                    }
-                    valueChangeListenerSaved = new _AttachedDeltaWrapper(_valueChangeListener.getClass(),
-                        attachedState);
-                }
-            }
-            else  if (_isSetValueChangeListener() || _valueChangeListener != null)
-            {
-                //Full
-                valueChangeListenerSaved = saveAttachedState(facesContext,_valueChangeListener);
-                nullDelta = false;
-            }        
-            
             Object validatorListSaved = saveValidatorList(facesContext);
-            if (parentSaved == null && validatorListSaved == null && nullDelta)
+            if (parentSaved == null && validatorListSaved == null)
             {
                 //No values
                 return null;
             }
             
-            Object[] values = new Object[4];
+            Object[] values = new Object[2];
             values[0] = parentSaved;
-            values[1] = validatorSaved;
-            values[2] = valueChangeListenerSaved;
-            values[3] = validatorListSaved;
+            values[1] = validatorListSaved;
             return values;
         }
         else
         {
-            Object[] values = new Object[4];
+            Object[] values = new Object[2];
             values[0] = super.saveState(facesContext);
-            values[1] = saveAttachedState(facesContext,_validator);
-            values[2] = saveAttachedState(facesContext,_valueChangeListener);
-            values[3] = saveValidatorList(facesContext);
+            values[1] = saveValidatorList(facesContext);
             return values;
         }
     }
@@ -976,37 +870,17 @@ public class UIInput extends UIOutput implements EditableValueHolder
         if (values[1] instanceof _AttachedDeltaWrapper)
         {
             //Delta
-            ((StateHolder)_validator).restoreState(facesContext, ((_AttachedDeltaWrapper) values[1]).getWrappedStateObject());
-        }
-        else
-        {
-            //Full
-            _validator = (javax.faces.el.MethodBinding) restoreAttachedState(facesContext,values[1]);
-        }         
-        if (values[2] instanceof _AttachedDeltaWrapper)
-        {
-            //Delta
-            ((StateHolder)_valueChangeListener).restoreState(facesContext, ((_AttachedDeltaWrapper) values[2]).getWrappedStateObject());
-        }
-        else
-        {
-            //Full
-            _valueChangeListener = (javax.faces.el.MethodBinding) restoreAttachedState(facesContext,values[2]);
-        }
-        if (values[3] instanceof _AttachedDeltaWrapper)
-        {
-            //Delta
             if (_validatorList != null)
             {
                 ((StateHolder)_validatorList).restoreState(facesContext,
-                        ((_AttachedDeltaWrapper) values[3]).getWrappedStateObject());
+                        ((_AttachedDeltaWrapper) values[1]).getWrappedStateObject());
             }
         }
-        else if (values[3] != null || !initialStateMarked())
+        else if (values[1] != null || !initialStateMarked())
         {
             //Full
             _validatorList = (_DeltaList<Validator>)
-                restoreAttachedState(facesContext,values[3]);
+                restoreAttachedState(facesContext,values[1]);
         }
     }
     

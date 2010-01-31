@@ -285,7 +285,10 @@ class _DeltaList<T> implements List<T>, PartialStateHolder
                 {
                     //Full
                     lst[i] = UIComponentBase.saveAttachedState(context, value);
-                    nullDelta = false;
+                    if (value instanceof StateHolder || value instanceof List)
+                    {
+                        nullDelta = false;
+                    }
                 }
             }
             if (nullDelta)

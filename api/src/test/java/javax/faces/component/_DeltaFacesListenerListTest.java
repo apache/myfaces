@@ -486,4 +486,31 @@ public class _DeltaFacesListenerListTest extends AbstractComponentTest
         assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
         assertFalse(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
     }
+    
+    
+    public void testComplexSaveRestore1()
+    {
+        UITestComponent a = new UITestComponent();
+        UITestComponent b = new UITestComponent();
+        FacesListener listener1 = new NoStateFacesListener();
+        StateFacesListener listener2 = new PartialStateFacesListener();
+        StateFacesListener listener3 = new StateFacesListener();
+        a.addFacesListener(listener1);
+        a.addFacesListener(listener2);
+        a.addFacesListener(listener3);
+        b.addFacesListener(listener1);
+        b.addFacesListener(listener2);
+        b.addFacesListener(listener3);
+        a.markInitialState();
+        b.markInitialState();
+        //Since listener1 is transient
+        Object [] savedState1 = (Object[]) a.saveState(facesContext);
+        b.restoreState(facesContext, savedState1);  
+        assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener2));
+        assertTrue(Arrays.asList(a.getFacesListeners(FacesListener.class)).contains(listener3));
+        assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener1));
+        assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener2));
+        assertTrue(Arrays.asList(b.getFacesListeners(FacesListener.class)).contains(listener3));
+    }
 }
