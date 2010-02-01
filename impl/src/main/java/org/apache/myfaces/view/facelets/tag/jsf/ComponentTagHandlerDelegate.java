@@ -142,7 +142,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         // composite:insertChildren or composite:insertFacet
         boolean componentFoundInserted = false;
 
-        if (c == null && UIComponent.isCompositeComponent(parent))
+        if (c == null && actx.isRefreshingTransientBuild() && UIComponent.isCompositeComponent(parent))
         {
             if (facetName == null)
             {

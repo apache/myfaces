@@ -82,6 +82,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.shared_impl.application.DefaultViewHandlerSupport;
 import org.apache.myfaces.shared_impl.application.ViewHandlerSupport;
+import org.apache.myfaces.shared_impl.config.MyfacesConfig;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.shared_impl.util.StringUtils;
 import org.apache.myfaces.shared_impl.view.ViewDeclarationLanguageBase;
@@ -170,9 +171,6 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     @JSFWebConfigParam(since="2.0")
     private final static String PARAM_SKIP_COMMENTS_DEPRECATED = "facelets.SKIP_COMMENTS";
 
-    @JSFWebConfigParam(since="2.0")
-    public final static String PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS = "org.apache.myfaces.PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS"; 
-
     //public final static String PARAM_VIEW_MAPPINGS = "javax.faces.FACELETS_VIEW_MAPPINGS";
     
     //private final static String PARAM_VIEW_MAPPINGS_DEPRECATED = "facelets.VIEW_MAPPINGS";
@@ -222,7 +220,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     private boolean _refreshTransientBuildOnPSS;
     
     private boolean _refreshTransientBuildOnPSSAuto;
-    
+        
     private Set<String> _viewIds;
 
     /**
@@ -1869,11 +1867,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         
         if (_partialStateSaving)
         {
-            String refreshTransientBuildOnPSSAuto = _getStringParameter(context,
-                PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS, null);
-            _refreshTransientBuildOnPSS = ("true".equalsIgnoreCase(refreshTransientBuildOnPSSAuto) || 
-                    "auto".equalsIgnoreCase(refreshTransientBuildOnPSSAuto));
-            _refreshTransientBuildOnPSSAuto = "auto".equalsIgnoreCase(refreshTransientBuildOnPSSAuto);
+            _refreshTransientBuildOnPSS = MyfacesConfig.getCurrentInstance(context).isRefreshTransientBuildOnPSS();
+            _refreshTransientBuildOnPSSAuto = MyfacesConfig.getCurrentInstance(context).isRefreshTransientBuildOnPSSAuto();
         }
     }
     
