@@ -42,7 +42,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
  * <p>
  * This tag is used inside composite:interface tag. All facets
  * should be saved under the key UIComponent.FACETS_KEY on the
- * bean descriptor map as a Map<String, PropertyDescriptor>
+ * bean descriptor map as a Map&lt;String, PropertyDescriptor&gt;
  * </p>
  * 
  * @author Leonardo Uribe (latest modification by $Author$)
