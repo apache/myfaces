@@ -37,7 +37,6 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
-import org.apache.myfaces.shared_impl.config.MyfacesConfig;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
@@ -138,10 +137,7 @@ public final class IncludeHandler extends TagHandler
         }
         AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
         if ( !src.isLiteral() && actx.isMarkInitialState() && 
-              actx.isRefreshTransientBuildOnPSS() && 
-              MyfacesConfig.getCurrentInstance(
-                      ctx.getFacesContext().getExternalContext()).
-                      isRefreshTransientBuildOnPSSPreserveState())
+              actx.isRefreshTransientBuildOnPSS())
         {
             //Mark the parent component to be saved and restored fully.
             ComponentSupport.markComponentToRestoreFully(ctx.getFacesContext(), parent);
