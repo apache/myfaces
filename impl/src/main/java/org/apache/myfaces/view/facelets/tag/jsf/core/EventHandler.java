@@ -127,59 +127,60 @@ public final class EventHandler extends TagHandler {
                 getValue (context.getFacesContext().getELContext());
         }
         
-        if (type != null) {
-            Collection<Class<? extends ComponentSystemEvent>> events;
-            
-            // We can look up the event class by name in the NamedEventManager.
-            
-            events = NamedEventManager.getInstance().getNamedEvent (value);
-            
-            if (events.size() > 1) {
-                StringBuilder classNames = new StringBuilder ("[");
-                Iterator<Class<? extends ComponentSystemEvent>> eventIterator = events.iterator();
-                
-                // TODO: The spec is somewhat vague, but I think we're supposed to throw an exception
-                // here.  The @NamedEvent javadocs say that if a short name is registered to more than one
-                // event class that we must throw an exception listing the short name and the classes in
-                // the list _when the application makes reference to it_.  I believe processing this tag
-                // qualifies as the application "making reference" to the short name.  Why the exception
-                // isn't thrown when processing the @NamedEvent annotation, I don't know.  Perhaps follow
-                // up with the EG to see if this is correct.
-                
-                while (eventIterator.hasNext()) {
-                    classNames.append (eventIterator.next().getName());
-                    
-                    if (eventIterator.hasNext()) {
-                        classNames.append (", ");
-                    }
-                    
-                    else {
-                        classNames.append ("]");
-                    }
-                }
-                
-                throw new FacesException ("The event name '" + value + "' is mapped to more than one " +
-                    " event class: " + classNames.toString());
-            }
-            
-            else {
-                eventClass = events.iterator().next();
-            }
-        }
+        Collection<Class<? extends ComponentSystemEvent>> events;
         
-        else {
-            // Must have been defined via the "type" attribute, so instantiate the class.
-            
-            try {
+        // We can look up the event class by name in the NamedEventManager.
+        
+        events = NamedEventManager.getInstance().getNamedEvent (value);
+        
+        if (events == null)
+        {
+            try
+            {
                 eventClass = ReflectionUtil.forName (value);
             }
-        
-            catch (Throwable e) {
+            catch (Throwable e)
+            {
                 throw new TagAttributeException (type, "Couldn't create event class", e);
             }
         }
+        else if (events.size() > 1)
+        {
+            StringBuilder classNames = new StringBuilder ("[");
+            Iterator<Class<? extends ComponentSystemEvent>> eventIterator = events.iterator();
+            
+            // TODO: The spec is somewhat vague, but I think we're supposed to throw an exception
+            // here.  The @NamedEvent javadocs say that if a short name is registered to more than one
+            // event class that we must throw an exception listing the short name and the classes in
+            // the list _when the application makes reference to it_.  I believe processing this tag
+            // qualifies as the application "making reference" to the short name.  Why the exception
+            // isn't thrown when processing the @NamedEvent annotation, I don't know.  Perhaps follow
+            // up with the EG to see if this is correct.
+            
+            while (eventIterator.hasNext())
+            {
+                classNames.append (eventIterator.next().getName());
+                
+                if (eventIterator.hasNext())
+                {
+                    classNames.append (", ");
+                }
+                else
+                {
+                    classNames.append ("]");
+                }
+            }
+            
+            throw new FacesException ("The event name '" + value + "' is mapped to more than one " +
+                " event class: " + classNames.toString());
+        }
+        else
+        {
+            eventClass = events.iterator().next();
+        }
         
-        if (!ComponentSystemEvent.class.isAssignableFrom (eventClass)) {
+        if (!ComponentSystemEvent.class.isAssignableFrom (eventClass))
+        {
             throw new TagAttributeException (type, "Event class " + eventClass.getName() +
                 " is not of type javax.faces.event.ComponentSystemEvent");
         }
