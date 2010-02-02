@@ -26,7 +26,6 @@ import java.util.Iterator;
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.MethodExpression;
-import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
@@ -40,7 +39,6 @@ import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagAttributeException;
 import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
@@ -64,11 +62,9 @@ public final class EventHandler extends TagHandler {
             "public void listener(javax.faces.event.ComponentSystemEvent evt) throws javax.faces.event.AbortProcessingException")
     private TagAttribute listener;
     
-    @JSFFaceletAttribute(name="name",
+    @JSFFaceletAttribute(name="type",
             className="javax.el.ValueExpression",
             deferredValueType="java.lang.String")
-    private TagAttribute name;
-    
     private TagAttribute type;
     
     public EventHandler (TagConfig tagConfig)
@@ -76,19 +72,7 @@ public final class EventHandler extends TagHandler {
         super (tagConfig);
         
         listener = getRequiredAttribute ("listener");
-        name = getAttribute ("name");
-        type = getAttribute ("type");
-        
-        // TODO: is this right?  The spec isn't entirely clear, but it seems to me that one or the other
-        // attribute must be defined, despite the fact that the docs say "name" is required.
-        
-        if ((name == null) && (type == null)) {
-            throw new TagException (this.tag, "One of the 'name' or 'type' attributes must be defined");
-        }
-        
-        else if ((name != null) && (type != null)) {
-            throw new TagException (this.tag, "Both the 'name' and 'type' attributes cannot be defined");
-        }
+        type = getRequiredAttribute("type");
     }
     
     public void apply (FaceletContext ctx, UIComponent parent) throws ELException, FacesException, FaceletException, IOException
@@ -132,11 +116,18 @@ public final class EventHandler extends TagHandler {
     private Class<? extends ComponentSystemEvent> getEventClass (FaceletContext context)
     {
         Class<?> eventClass = null;
-        ValueExpression valueExp = ((name != null) ? name.getValueExpression (context, String.class) :
-            type.getValueExpression (context, String.class));
-        String value = (String) valueExp.getValue (context.getFacesContext().getELContext());
+        String value = null;
+        if (type.isLiteral())
+        {
+            value = type.getValue();
+        }
+        else
+        {
+            value = (String) type.getValueExpression (context, String.class).
+                getValue (context.getFacesContext().getELContext());
+        }
         
-        if (name != null) {
+        if (type != null) {
             Collection<Class<? extends ComponentSystemEvent>> events;
             
             // We can look up the event class by name in the NamedEventManager.
@@ -184,12 +175,12 @@ public final class EventHandler extends TagHandler {
             }
         
             catch (Throwable e) {
-                throw new TagAttributeException ((name != null) ? name : type, "Couldn't create event class", e);
+                throw new TagAttributeException (type, "Couldn't create event class", e);
             }
         }
         
         if (!ComponentSystemEvent.class.isAssignableFrom (eventClass)) {
-            throw new TagAttributeException ((name != null) ? name : type, "Event class " + eventClass.getName() +
+            throw new TagAttributeException (type, "Event class " + eventClass.getName() +
                 " is not of type javax.faces.event.ComponentSystemEvent");
         }
         
