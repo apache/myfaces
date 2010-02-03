@@ -56,7 +56,6 @@ import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
 import org.apache.myfaces.test.mock.MockFacesContextFactory;
-import org.apache.myfaces.view.facelets.impl.ResourceResolver;
 import org.apache.myfaces.view.facelets.mock.MockHttpServletRequest;
 import org.apache.myfaces.view.facelets.mock.MockHttpServletResponse;
 import org.apache.myfaces.view.facelets.mock.MockResourceHandlerSupport;
@@ -72,8 +71,7 @@ import org.apache.myfaces.test.mock.MockVariableResolver;
 import org.apache.myfaces.test.mock.lifecycle.MockLifecycle;
 import org.apache.myfaces.test.mock.lifecycle.MockLifecycleFactory;
 
-public abstract class FaceletTestCase extends TestCase implements
-        ResourceResolver
+public abstract class FaceletTestCase extends TestCase
 {
     private final String filePath = this.getDirectory();    
     protected MockServletContext servletContext;
