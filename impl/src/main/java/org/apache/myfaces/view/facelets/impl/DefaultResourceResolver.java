@@ -23,10 +23,11 @@ import java.net.URL;
 
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
+import javax.faces.view.facelets.ResourceResolver;
 
 import org.apache.myfaces.view.facelets.util.Resource;
 
-public class DefaultResourceResolver implements ResourceResolver
+public class DefaultResourceResolver extends ResourceResolver
 {
 
     public DefaultResourceResolver()

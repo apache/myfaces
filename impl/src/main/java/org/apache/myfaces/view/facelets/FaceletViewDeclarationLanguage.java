@@ -25,8 +25,11 @@ import java.beans.PropertyDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -74,11 +77,13 @@ import javax.faces.view.ValueHolderAttachedObjectHandler;
 import javax.faces.view.ValueHolderAttachedObjectTarget;
 import javax.faces.view.ViewMetadata;
 import javax.faces.view.facelets.FaceletContext;
+import javax.faces.view.facelets.ResourceResolver;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.shared_impl.application.DefaultViewHandlerSupport;
 import org.apache.myfaces.shared_impl.application.ViewHandlerSupport;
@@ -94,7 +99,6 @@ import org.apache.myfaces.view.facelets.compiler.TagLibraryConfig;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
 import org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory;
 import org.apache.myfaces.view.facelets.impl.DefaultResourceResolver;
-import org.apache.myfaces.view.facelets.impl.ResourceResolver;
 import org.apache.myfaces.view.facelets.tag.TagDecorator;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
@@ -1238,13 +1242,74 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         long refreshPeriod = _getLongParameter(eContext, PARAM_REFRESH_PERIOD, PARAM_REFRESH_PERIOD_DEPRECATED, DEFAULT_REFRESH_PERIOD);
 
         // resource resolver
-        ResourceResolver resolver = _getInstanceParameter(eContext, PARAM_RESOURCE_RESOLVER, PARAM_RESOURCE_RESOLVER_DEPRECATED, null);
-        if (resolver == null)
+        ResourceResolver resolver = new DefaultResourceResolver();
+        String faceletsResourceResolverClassName = _getStringParameter(eContext, PARAM_RESOURCE_RESOLVER, PARAM_RESOURCE_RESOLVER_DEPRECATED);
+        if (faceletsResourceResolverClassName != null)
         {
-            resolver = new DefaultResourceResolver();
+            ArrayList<String> classNames = new ArrayList<String>(1);
+            classNames.add(faceletsResourceResolverClassName);
+            resolver = getApplicationObject(ResourceResolver.class, classNames, resolver);
         }
 
         return new DefaultFaceletFactory(compiler, resolver, refreshPeriod);
+    }
+    
+    private <T> T getApplicationObject(Class<T> interfaceClass, Collection<String> classNamesIterator, T defaultObject)
+    {
+        T current = defaultObject;
+
+        for (String implClassName : classNamesIterator)
+        {
+            Class<? extends T> implClass = ClassUtils.simpleClassForName(implClassName);
+
+            // check, if class is of expected interface type
+            if (!interfaceClass.isAssignableFrom(implClass))
+            {
+                throw new IllegalArgumentException("Class " + implClassName + " is no " + interfaceClass.getName());
+            }
+
+            if (current == null)
+            {
+                // nothing to decorate
+                current = (T) ClassUtils.newInstance(implClass);
+            }
+            else
+            {
+                // let's check if class supports the decorator pattern
+                try
+                {
+                    Constructor<? extends T> delegationConstructor = 
+                        implClass.getConstructor(new Class[] {interfaceClass});
+                    // impl class supports decorator pattern,
+                    try
+                    {
+                        // create new decorator wrapping current
+                        current = delegationConstructor.newInstance(new Object[] { current });
+                    }
+                    catch (InstantiationException e)
+                    {
+                        log.log(Level.SEVERE, e.getMessage(), e);
+                        throw new FacesException(e);
+                    }
+                    catch (IllegalAccessException e)
+                    {
+                        log.log(Level.SEVERE, e.getMessage(), e);
+                        throw new FacesException(e);
+                    }
+                    catch (InvocationTargetException e)
+                    {
+                        log.log(Level.SEVERE, e.getMessage(), e);
+                        throw new FacesException(e);
+                    }
+                }
+                catch (NoSuchMethodException e)
+                {
+                    // no decorator pattern support
+                    current = (T) ClassUtils.newInstance(implClass);
+                }
+            }
+        }
+        return current;
     }
 
     protected ResponseWriter createResponseWriter(FacesContext context) throws IOException, FacesException

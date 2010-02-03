@@ -32,6 +32,7 @@ import javax.el.ELException;
 import javax.faces.FacesException;
 import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.FaceletHandler;
+import javax.faces.view.facelets.ResourceResolver;
 
 import org.apache.myfaces.view.facelets.Facelet;
 import org.apache.myfaces.view.facelets.FaceletFactory;
@@ -64,7 +65,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
 
     private Map<String, URL> _relativeLocations;
 
-    private ResourceResolver _resolver;
+    private javax.faces.view.facelets.ResourceResolver _resolver;
 
     public DefaultFaceletFactory(Compiler compiler, ResourceResolver resolver) throws IOException
     {
