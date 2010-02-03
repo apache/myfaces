@@ -574,9 +574,9 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
     /**
      * @return renderkit class name for given renderkit id
      */
-    public String getRenderKitClass(String renderKitId)
+    public Collection<String> getRenderKitClasses(String renderKitId)
     {
-        return renderKits.get(renderKitId).getRenderKitClass();
+        return renderKits.get(renderKitId).getRenderKitClasses();
     }
 
     /**

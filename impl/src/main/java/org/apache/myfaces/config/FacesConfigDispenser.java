@@ -222,7 +222,7 @@ public interface FacesConfigDispenser<C>
     public Collection<String> getRenderKitIds();
 
     /** @return renderkit class name for given renderkit id */
-    public String getRenderKitClass(String renderKitId);
+    public Collection<String> getRenderKitClasses(String renderKitId);
 
     /**
      * @return Iterator over {@link org.apache.myfaces.config.element.ClientBehaviorRenderer ClientBehaviorRenderer}s for the given renderKitId

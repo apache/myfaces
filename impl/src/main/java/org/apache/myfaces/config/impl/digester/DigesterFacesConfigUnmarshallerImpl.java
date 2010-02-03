@@ -235,7 +235,8 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addObjectCreate("faces-config/render-kit", RenderKit.class);
         digester.addSetNext("faces-config/render-kit", "addRenderKit");
         digester.addCallMethod("faces-config/render-kit/render-kit-id", "setId", 0);
-        digester.addCallMethod("faces-config/render-kit/render-kit-class", "setRenderKitClass", 0);
+        //digester.addCallMethod("faces-config/render-kit/render-kit-class", "setRenderKitClass", 0);
+        digester.addCallMethod("faces-config/render-kit/render-kit-class", "addRenderKitClass", 0);
         digester.addObjectCreate("faces-config/render-kit/renderer", Renderer.class);
         digester.addSetNext("faces-config/render-kit/renderer", "addRenderer");
         digester.addCallMethod("faces-config/render-kit/renderer/component-family", "setComponentFamily", 0);

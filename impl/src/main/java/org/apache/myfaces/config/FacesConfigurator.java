@@ -1942,14 +1942,16 @@ public class FacesConfigurator
         FacesConfigDispenser<FacesConfig> dispenser = getDispenser();
         for (String renderKitId : dispenser.getRenderKitIds())
         {
-            String renderKitClass = dispenser.getRenderKitClass(renderKitId);
+            Collection<String> renderKitClass = dispenser.getRenderKitClasses(renderKitId);
 
-            if (renderKitClass == null)
+            if (renderKitClass.isEmpty())
             {
-                renderKitClass = DEFAULT_RENDER_KIT_CLASS;
+                renderKitClass = new ArrayList<String>(1);
+                renderKitClass.add(DEFAULT_RENDER_KIT_CLASS);
             }
 
-            RenderKit renderKit = (RenderKit) ClassUtils.newInstance(renderKitClass);
+            //RenderKit renderKit = (RenderKit) ClassUtils.newInstance(renderKitClass);
+            RenderKit renderKit = (RenderKit) getApplicationObject(RenderKit.class, renderKitClass, null);
 
             for (Renderer element : dispenser.getRenderers(renderKitId))
             {
