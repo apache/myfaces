@@ -44,6 +44,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRendere
 import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
 import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
 import org.apache.myfaces.shared_impl.renderkit.html.HTML;
+import org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.view.facelets.PostBuildComponentTreeOnRestoreViewEvent;
 
 /**
@@ -60,8 +61,6 @@ public class HtmlScriptRenderer extends Renderer implements
 {
     //private static final Log log = LogFactory.getLog(HtmlScriptRenderer.class);
     private static final Logger log = Logger.getLogger(HtmlScriptRenderer.class.getName());
-    
-    private final static String RENDERED_RESOURCES_SET = HtmlScriptRenderer.class+".RENDERED_RESOURCES_SET"; 
 
     public void processEvent(ComponentSystemEvent event)
     {
@@ -110,24 +109,6 @@ public class HtmlScriptRenderer extends Renderer implements
         return true;
     }
 
-    /**
-     * Return a set of already rendered resources by this renderer on the current
-     * request. 
-     * 
-     * @param facesContext
-     * @return
-     */
-    protected Set<String> getRenderedResources(FacesContext facesContext)
-    {
-        Set<String> map = (Set<String>) facesContext.getAttributes().get(RENDERED_RESOURCES_SET);
-        if (map == null)
-        {
-            map = new HashSet<String>();
-            facesContext.getAttributes().put(RENDERED_RESOURCES_SET,map);
-        }
-        return map;
-    }
-    
     @Override
     public void encodeChildren(FacesContext facesContext, UIComponent component)
             throws IOException
@@ -197,14 +178,10 @@ public class HtmlScriptRenderer extends Renderer implements
             return;
         }
         
-        Set<String> renderedResources = getRenderedResources(facesContext);
-                
-        String resourceKey;
         Resource resource;
         if (libraryName == null)
         {
-            resourceKey = resourceName;
-            if (renderedResources.contains(resourceKey))
+            if (ResourceUtils.isRenderedScript(facesContext, libraryName, resourceName))
             {
                 //Resource already founded
                 return;
@@ -214,8 +191,7 @@ public class HtmlScriptRenderer extends Renderer implements
         }
         else
         {
-            resourceKey = libraryName+'/'+resourceName;
-            if (renderedResources.contains(resourceKey))
+            if (ResourceUtils.isRenderedScript(facesContext, libraryName, resourceName))
             {
                 //Resource already founded
                 return;
@@ -237,7 +213,7 @@ public class HtmlScriptRenderer extends Renderer implements
         else
         {
             // Rendering resource
-            renderedResources.add(resourceKey);
+            ResourceUtils.markScriptAsRendered(facesContext,  libraryName, resourceName);
             ResponseWriter writer = facesContext.getResponseWriter();
             writer.startElement(HTML.SCRIPT_ELEM, component);
             // We can't render the content type, because usually it returns "application/x-javascript"
