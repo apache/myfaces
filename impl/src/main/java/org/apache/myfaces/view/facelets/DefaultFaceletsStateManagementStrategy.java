@@ -38,7 +38,6 @@ import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.PostAddToViewEvent;
 import javax.faces.event.PostRestoreStateEvent;
 import javax.faces.event.PreRemoveFromViewEvent;
@@ -541,11 +540,27 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
 
         setClientsIdsRemoved(uiViewRoot, clientIdsRemoved);
     }
+    
+    @SuppressWarnings("unchecked")
+    private void registerOnAddList(String clientId)
+    {
+        UIViewRoot uiViewRoot = FacesContext.getCurrentInstance().getViewRoot();
+
+        List<String> clientIdsAdded = (List<String>) getClientIdsAdded(uiViewRoot);
+        if (clientIdsAdded == null)
+        {
+            //Create a set that preserve insertion order
+            clientIdsAdded = new ArrayList<String>();
+        }
+        clientIdsAdded.add(clientId);
+
+        setClientsIdsAdded(uiViewRoot, clientIdsAdded);
+    }
             
     private void saveStateOnMap(final FacesContext context, final Map<String,Object> states,
             final UIComponent component)
     {
-        Boolean componentAddedAfterBuildView = null;
+        ComponentState componentAddedAfterBuildView = null;
         try
         {
             component.pushComponentToEL(context, component);
@@ -561,13 +576,18 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     UIComponent child = children.get(i);
                     if (child != null && !child.isTransient())
                     {
-                        componentAddedAfterBuildView = (Boolean) child.getAttributes().get(COMPONENT_ADDED_AFTER_BUILD_VIEW);
+                        componentAddedAfterBuildView = (ComponentState) child.getAttributes().get(COMPONENT_ADDED_AFTER_BUILD_VIEW);
                         if (componentAddedAfterBuildView != null)
                         {
-                            if (Boolean.FALSE.equals(componentAddedAfterBuildView))
+                            if (ComponentState.REMOVE_ADD.equals(componentAddedAfterBuildView))
                             {
                                 registerOnAddRemoveList(child.getClientId());
-                                child.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, Boolean.TRUE);
+                                child.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
+                            }
+                            else if (ComponentState.ADD.equals(componentAddedAfterBuildView))
+                            {
+                                registerOnAddList(child.getClientId());
+                                child.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
                             }
                             ensureClearInitialState(child);
                             //Save all required info to restore the subtree.
@@ -600,13 +620,18 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     if (child != null && !child.isTransient())
                     {
                         String facetName = entry.getKey();
-                        componentAddedAfterBuildView = (Boolean) child.getAttributes().get(COMPONENT_ADDED_AFTER_BUILD_VIEW);
+                        componentAddedAfterBuildView = (ComponentState) child.getAttributes().get(COMPONENT_ADDED_AFTER_BUILD_VIEW);
                         if (componentAddedAfterBuildView != null)
                         {
-                            if (Boolean.FALSE.equals(componentAddedAfterBuildView))
+                            if (ComponentState.REMOVE_ADD.equals(componentAddedAfterBuildView))
                             {
                                 registerOnAddRemoveList(child.getClientId());
-                                child.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, Boolean.TRUE);
+                                child.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
+                            }
+                            else if (ComponentState.ADD.equals(componentAddedAfterBuildView))
+                            {
+                                registerOnAddList(child.getClientId());
+                                child.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
                             }
                             //Save all required info to restore the subtree.
                             //This includes position, structure and state of subtree
@@ -787,6 +812,11 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         {
             UIComponent component = (UIComponent) event.getSource();
             
+            if (component.isTransient())
+            {
+                return;
+            }
+            
             FacesContext facesContext = FacesContext.getCurrentInstance();
             if (FaceletViewDeclarationLanguage.isRefreshingTransientBuild(facesContext))
             {
@@ -796,18 +826,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             if (event instanceof PostAddToViewEvent)
             {
                 //PostAddToViewEvent
-                UIViewRoot uiViewRoot = facesContext.getViewRoot();
-                
-                List<String> clientIdsAdded = getClientIdsAdded(uiViewRoot);
-                if (clientIdsAdded == null)
-                {
-                    //Create a set that preserve insertion order
-                    clientIdsAdded = new ArrayList<String>();
-                }
-                clientIdsAdded.add(component.getClientId());
-                setClientsIdsAdded(uiViewRoot, clientIdsAdded);
-                
-                component.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, Boolean.TRUE);
+                component.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADD);
             }
             else
             {
