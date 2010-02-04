@@ -356,22 +356,10 @@ public final class ComponentSupport
         // facets now can have multiple children and the direct
         // child of a facet is always an UIPanel (since 2.0)
         UIComponent facet = parent.getFacets().get(facetName);
-        boolean facetChanged = false;
-        
         if (facet == null)
         {
-            // if our component is an instance of UIPanel, use it
-            if (c instanceof UIPanel)
-            {
-                facet = c;
-            }
-            else
-            {
-                // create a new UIPanel and add c as child
-                facet = createFacetUIPanel(ctx.getFacesContext());
-                facet.getChildren().add(c);
-            }
-            facetChanged = true;
+            //Just set it directly like  before
+            parent.getFacets().put(facetName, c);
         }
         else if (!(facet instanceof UIPanel))
         {
@@ -380,7 +368,7 @@ public final class ComponentSupport
             facet = createFacetUIPanel(ctx.getFacesContext());
             facet.getChildren().add(child);
             facet.getChildren().add(c);
-            facetChanged = true;
+            parent.getFacets().put(facetName, facet);
         }
         else
         {
@@ -398,14 +386,9 @@ public final class ComponentSupport
                 facet = createFacetUIPanel(ctx.getFacesContext());
                 facet.getChildren().add(oldPanel);
                 facet.getChildren().add(c);
-                facetChanged = true;
+                parent.getFacets().put(facetName, facet);
             }
         }
-        
-        if (facetChanged)
-        {
-            parent.getFacets().put(facetName, facet);
-        }        
     }
     
     public static void removeFacet(FaceletContext ctx, UIComponent parent, UIComponent c, String facetName)
