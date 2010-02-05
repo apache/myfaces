@@ -902,9 +902,11 @@ public class FacesConfigurator
                 }
             }
             
-            List<FacesConfig> postOrderedList = getPostOrderedList(appConfigResources);
+            //List<FacesConfig> postOrderedList = getPostOrderedList(appConfigResources);
             
-            List<FacesConfig> sortedList = sortRelativeOrderingList(postOrderedList);
+            //List<FacesConfig> sortedList = sortRelativeOrderingList(postOrderedList);
+            
+            List<FacesConfig> sortedList = applySortingAlgorithm(appConfigResources);
             
             for (FacesConfig resource : sortedList)
             {
@@ -931,6 +933,218 @@ public class FacesConfigurator
         }
     }
 
+    /**
+     * Sort using topological ordering algorithm.
+     * 
+     * @param appConfigResources
+     * @return
+     * @throws FacesException
+     */
+    protected List<FacesConfig> applySortingAlgorithm(List<FacesConfig> appConfigResources) throws FacesException
+    {
+        
+        //0. Convert the references into a graph
+        List<Vertex<FacesConfig>> vertexList = new ArrayList<Vertex<FacesConfig>>();
+        for (FacesConfig config : appConfigResources)
+        {
+            Vertex<FacesConfig> v = null;
+            if (config.getName() != null)
+            {
+                v = new Vertex<FacesConfig>(config.getName(), config);
+            }
+            else
+            {
+                v = new Vertex<FacesConfig>(config);
+            }
+            vertexList.add(v);
+        }
+        
+        //1. Resolve dependencies (before-after rules) and mark referenced vertex
+        boolean[] referencedVertex = new boolean[vertexList.size()];
+        
+        for (int i = 0; i < vertexList.size(); i++)
+        {
+            Vertex<FacesConfig> v = vertexList.get(i);
+            FacesConfig f = (FacesConfig) v.getNode();
+            
+            if (f.getOrdering() != null)
+            {
+                for (OrderSlot slot : f.getOrdering().getBeforeList())
+                {
+                    if (slot instanceof FacesConfigNameSlot)
+                    {
+                        String name = ((FacesConfigNameSlot) slot).getName();
+                        int j = DirectedAcyclicGraphVerifier.findVertex(vertexList, name);
+                        Vertex<FacesConfig> v1 = vertexList.get(j);
+                        if (v1 != null)
+                        {
+                            referencedVertex[i] = true;
+                            referencedVertex[j] = true;
+                            v1.addDependency(v);
+                        }
+                    }
+                }
+                for (OrderSlot slot : f.getOrdering().getAfterList())
+                {
+                    if (slot instanceof FacesConfigNameSlot)
+                    {
+                        String name = ((FacesConfigNameSlot) slot).getName();
+                        int j = DirectedAcyclicGraphVerifier.findVertex(vertexList, name);
+                        Vertex<FacesConfig> v1 = vertexList.get(j);
+                        if (v1 != null)
+                        {
+                            referencedVertex[i] = true;
+                            referencedVertex[j] = true;
+                            v.addDependency(v1);
+                        }
+                    }
+                }
+            }
+        }
+        
+        //2. Classify into categories
+        List<Vertex<FacesConfig>> beforeAfterOthersList = new ArrayList<Vertex<FacesConfig>>();
+        List<Vertex<FacesConfig>> othersList = new ArrayList<Vertex<FacesConfig>>();
+        List<Vertex<FacesConfig>> referencedList = new ArrayList<Vertex<FacesConfig>>();
+        
+        for (int i = 0; i < vertexList.size(); i++)
+        {
+            if (!referencedVertex[i])
+            {
+                Vertex<FacesConfig> v = vertexList.get(i);
+                FacesConfig f = (FacesConfig) v.getNode();
+                boolean added = false;
+                if (f.getOrdering() != null)
+                {
+                    if (!f.getOrdering().getBeforeList().isEmpty())
+                    {
+                        added = true;
+                        beforeAfterOthersList.add(v);
+                    }
+                    else if (!f.getOrdering().getAfterList().isEmpty())
+                    {
+                        added = true;
+                        beforeAfterOthersList.add(v);
+                    }
+                }
+                if (!added)
+                {
+                    othersList.add(v);
+                }
+            }
+            else
+            {
+                referencedList.add(vertexList.get(i));
+            }
+        }
+        
+        //3. Sort all referenced nodes
+        try
+        {
+            DirectedAcyclicGraphVerifier.topologicalSort(referencedList);
+        }
+        catch (CyclicDependencyException e)
+        {
+            e.printStackTrace();
+        }
+        
+        //4. Add referenced nodes
+        List<FacesConfig> sortedList = new ArrayList<FacesConfig>();
+        for (Vertex<FacesConfig> v : referencedList)
+        {
+            sortedList.add((FacesConfig)v.getNode());
+        }
+        
+        //5. add nodes without instructions at the end
+        for (Vertex<FacesConfig> v : othersList)
+        {
+            sortedList.add((FacesConfig)v.getNode());
+        }
+        
+        //6. add before/after nodes
+        for (Vertex<FacesConfig> v : beforeAfterOthersList)
+        {
+            FacesConfig f = (FacesConfig) v.getNode();
+            boolean added = false;
+            if (f.getOrdering() != null)
+            {
+                if (!f.getOrdering().getBeforeList().isEmpty())
+                {
+                    added = true;
+                    sortedList.add(0,f);
+                }
+            }
+            if (!added)
+            {
+                sortedList.add(f);
+            }            
+        }
+        
+        //Check
+        for (int i = 0; i < sortedList.size(); i++)
+        {
+            FacesConfig resource = sortedList.get(i);
+            
+            if (resource.getOrdering() != null)
+            {
+                for (OrderSlot slot : resource.getOrdering().getBeforeList())
+                {
+                    if (slot instanceof FacesConfigNameSlot)
+                    {
+                        String name = ((FacesConfigNameSlot) slot).getName();
+                        if (name != null && !"".equals(name))
+                        {
+                            boolean founded = false;
+                            for (int j = i-1; j >= 0; j--)
+                            {
+                                if (name.equals(sortedList.get(j).getName()))
+                                {
+                                    founded=true;
+                                    break;
+                                }
+                            }
+                            if (founded)
+                            {
+                                log.severe("Circular references detected when sorting " +
+                                          "application config resources. Use absolute ordering instead.");
+                                throw new FacesException("Circular references detected when sorting " +
+                                        "application config resources. Use absolute ordering instead.");
+                            }
+                        }
+                    }
+                }
+                for (OrderSlot slot : resource.getOrdering().getAfterList())
+                {
+                    if (slot instanceof FacesConfigNameSlot)
+                    {
+                        String name = ((FacesConfigNameSlot) slot).getName();
+                        if (name != null && !"".equals(name))
+                        {
+                            boolean founded = false;
+                            for (int j = i+1; j < sortedList.size(); j++)
+                            {
+                                if (name.equals(sortedList.get(j).getName()))
+                                {
+                                    founded=true;
+                                    break;
+                                }
+                            }
+                            if (founded)
+                            {
+                                log.severe("Circular references detected when sorting " +
+                                    "application config resources. Use absolute ordering instead.");
+                                throw new FacesException("Circular references detected when sorting " +
+                                    "application config resources. Use absolute ordering instead.");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        return sortedList;
+    }
+    
     /**
      * Sort a list of pre ordered elements. It scans one by one the elements
      * and apply the conditions mentioned by Ordering object if it is available.

@@ -17,10 +17,8 @@ package org.apache.myfaces.config;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.faces.FacesException;
 
@@ -34,7 +32,8 @@ import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 public class OrderingFacesConfigTest extends AbstractJsfTestCase
 {
-
+    private static final Logger log = Logger.getLogger(OrderingFacesConfigTest.class.getName());
+    
     private DigesterFacesConfigUnmarshallerImpl _impl;
     
     public OrderingFacesConfigTest(String name)
@@ -48,6 +47,36 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
         _impl = new DigesterFacesConfigUnmarshallerImpl(null);
     }
     
+    public void printFacesConfigList(String label, List<FacesConfig> appConfigResources)
+    {
+        System.out.println("");
+        System.out.print(""+label+": [");
+        for (int i = 0; i < appConfigResources.size();i++)
+        {
+            if (appConfigResources.get(i).getName() == null)
+            {
+                System.out.print("No_id,");
+            }
+            else
+            {
+                System.out.print(appConfigResources.get(i).getName()+",");
+            }
+        }
+        System.out.println("]");
+
+    }
+    
+    /**
+     * A before others
+     * B after C
+     * C after others
+     * 
+     * preferred result:
+     * 
+     * A C B No_id No_id 
+     * 
+     * @throws Exception
+     */
     public void testSimpleOrdering() throws Exception
     {
         FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
@@ -75,6 +104,22 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
         }
     }
     
+    /**
+     * A before B
+     * A before E
+     * C after A
+     * C after B
+     * C before D
+     * C before E
+     * E after D
+     * D before others
+     * 
+     * preferred results:
+     * 
+     * A B C D E No_id
+     * 
+     * @throws Exception
+     */
     public void testMiddleOrdering() throws Exception
     {
         FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
@@ -137,6 +182,20 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
         }
     }
     
+    /**
+     * A before B
+     * A before C
+     * B after A
+     * B before C
+     * C after A
+     * C after B
+     * 
+     * preferred result
+     * 
+     * A B C
+     * 
+     * @throws Exception
+     */
     public void testMaxConditionsOrdering() throws Exception
     {
         FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
@@ -317,12 +376,264 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
             applyAlgorithm(appConfigResources);
         }
     }
+    
+    public void testEx4() throws Exception
+    {
+        FacesConfig cfgA = _impl.getFacesConfig(getClass().getResourceAsStream(
+            "transitive-a-config.xml"), "transitive-a-config.xml");
+        FacesConfig cfgB = _impl.getFacesConfig(getClass().getResourceAsStream(
+            "transitive-b-config.xml"), "transitive-b-config.xml");
+        FacesConfig cfgC = _impl.getFacesConfig(getClass().getResourceAsStream(
+            "transitive-c-config.xml"), "transitive-c-config.xml");
         
+        List<FacesConfig> appConfigResources = new ArrayList<FacesConfig>();
+        appConfigResources.add(cfgA);
+        appConfigResources.add(cfgB);
+        appConfigResources.add(cfgC);
+        
+        //Brute force       
+        for (int i = 0; i < 30; i++)
+        {
+            Collections.shuffle(appConfigResources);
+            applyAlgorithm(appConfigResources);
+        }
+    }
+
     public void applyAlgorithm(List<FacesConfig> appConfigResources) throws FacesException
     {
         FacesConfigurator configurator = new FacesConfigurator(externalContext);
         
-        /*
+        //printFacesConfigList("Start List", appConfigResources);
+        
+        List<FacesConfig> sortedList = configurator.applySortingAlgorithm(appConfigResources);
+        
+        //printFacesConfigList("Sorted List", sortedList);
+    }
+
+    /*
+    public void applyAlgorithm(List<FacesConfig> appConfigResources) throws FacesException
+    {
+        printFacesConfigList("Start List", appConfigResources);
+        
+        //0. Convert the references into a graph
+        List<Vertex> vertexList = new ArrayList<Vertex>();
+        for (FacesConfig config : appConfigResources)
+        {
+            Vertex v = null;
+            if (config.getName() != null)
+            {
+                v = new Vertex(config.getName(), config);
+            }
+            else
+            {
+                v = new Vertex(config);
+            }
+            vertexList.add(v);
+        }
+        
+        //1. Resolve dependencies (before-after rules) and mark referenced vertex
+        boolean[] referencedVertex = new boolean[vertexList.size()];
+
+        for (int i = 0; i < vertexList.size(); i++)
+        {
+            Vertex v = vertexList.get(i);
+            FacesConfig f = (FacesConfig) v.getNode();
+            
+            if (f.getOrdering() != null)
+            {
+                for (OrderSlot slot : f.getOrdering().getBeforeList())
+                {
+                    if (slot instanceof FacesConfigNameSlot)
+                    {
+                        String name = ((FacesConfigNameSlot) slot).getName();
+                        int j = findVertex(vertexList, name);
+                        Vertex v1 = vertexList.get(j);
+                        if (v1 != null)
+                        {
+                            referencedVertex[i] = true;
+                            referencedVertex[j] = true;
+                            v1.addDependency(v);
+                        }
+                    }
+                }
+                for (OrderSlot slot : f.getOrdering().getAfterList())
+                {
+                    if (slot instanceof FacesConfigNameSlot)
+                    {
+                        String name = ((FacesConfigNameSlot) slot).getName();
+                        int j = findVertex(vertexList, name);
+                        Vertex v1 = vertexList.get(j);
+                        if (v1 != null)
+                        {
+                            referencedVertex[i] = true;
+                            referencedVertex[j] = true;
+                            v.addDependency(v1);
+                        }
+                    }
+                }
+            }
+        }
+
+        //2. Classify into categories
+        List<Vertex> beforeAfterOthersList = new ArrayList<Vertex>();
+        List<Vertex> othersList = new ArrayList<Vertex>();
+        List<Vertex> referencedList = new ArrayList<Vertex>();
+        
+        for (int i = 0; i < vertexList.size(); i++)
+        {
+            if (!referencedVertex[i])
+            {
+                Vertex v = vertexList.get(i);
+                FacesConfig f = (FacesConfig) v.getNode();
+                boolean added = false;
+                if (f.getOrdering() != null)
+                {
+                    if (!f.getOrdering().getBeforeList().isEmpty())
+                    {
+                        added = true;
+                        beforeAfterOthersList.add(v);                        
+                    }
+                    else if (!f.getOrdering().getAfterList().isEmpty())
+                    {
+                        added = true;
+                        beforeAfterOthersList.add(v);
+                    }
+                }
+                if (!added)
+                {
+                    othersList.add(v);
+                }
+            }
+            else
+            {
+                referencedList.add(vertexList.get(i));
+            }
+        }
+        
+        //3. Sort all referenced nodes
+        try
+        {
+            DirectedAcyclicGraphVerifier.topologicalSort(referencedList);
+        }
+        catch (CyclicDependencyException e)
+        {
+            e.printStackTrace();
+        }
+
+        //4. Add referenced nodes
+        List<FacesConfig> sortedList = new ArrayList<FacesConfig>();
+        for (Vertex v : referencedList)
+        {
+            sortedList.add((FacesConfig)v.getNode());
+        }
+        
+        //5. add nodes without instructions at the end
+        for (Vertex v : othersList)
+        {
+            sortedList.add((FacesConfig)v.getNode());
+        }
+        
+        //6. add before/after nodes
+        for (Vertex v : beforeAfterOthersList)
+        {
+            FacesConfig f = (FacesConfig) v.getNode();
+            boolean added = false;
+            if (f.getOrdering() != null)
+            {
+                if (!f.getOrdering().getBeforeList().isEmpty())
+                {
+                    added = true;
+                    sortedList.add(0,f);                        
+                }
+            }
+            if (!added)
+            {
+                sortedList.add(f);
+            }            
+        }
+        
+        printFacesConfigList("Sorted List", sortedList);
+        
+        //Check
+        for (int i = 0; i < sortedList.size(); i++)
+        {
+            FacesConfig resource = sortedList.get(i);
+            
+            if (resource.getOrdering() != null)
+            {
+                for (OrderSlot slot : resource.getOrdering().getBeforeList())
+                {
+                    if (slot instanceof FacesConfigNameSlot)
+                    {
+                        String name = ((FacesConfigNameSlot) slot).getName();
+                        if (name != null && !"".equals(name))
+                        {
+                            boolean founded = false;                                
+                            for (int j = i-1; j >= 0; j--)
+                            {
+                                if (name.equals(sortedList.get(j).getName()))
+                                {
+                                    founded=true;
+                                    break;
+                                }
+                            }
+                            if (founded)
+                            {
+                                log.severe("Circular references detected when sorting " +
+                                          "application config resources. Use absolute ordering instead.");
+                                throw new FacesException("Circular references detected when sorting " +
+                                        "application config resources. Use absolute ordering instead.");
+                            }
+                        }
+                    }
+                }
+                for (OrderSlot slot : resource.getOrdering().getAfterList())
+                {
+                    if (slot instanceof FacesConfigNameSlot)
+                    {
+                        String name = ((FacesConfigNameSlot) slot).getName();
+                        if (name != null && !"".equals(name))
+                        {
+                            boolean founded = false;                                
+                            for (int j = i+1; j < sortedList.size(); j++)
+                            {
+                                if (name.equals(sortedList.get(j).getName()))
+                                {
+                                    founded=true;
+                                    break;
+                                }
+                            }
+                            if (founded)
+                            {
+                                log.severe("Circular references detected when sorting " +
+                                    "application config resources. Use absolute ordering instead.");
+                                throw new FacesException("Circular references detected when sorting " +
+                                    "application config resources. Use absolute ordering instead.");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    public int findVertex(List<Vertex> vertexList, String name)
+    {
+        for (int i = 0; i < vertexList.size(); i++)
+        {
+            Vertex v = vertexList.get(i);
+            if (name.equals(v.getName()))
+            {
+                return i;
+            }
+        }
+        return -1;
+    }*/
+
+    public void applyAlgorithm2(List<FacesConfig> appConfigResources) throws FacesException
+    {
+        FacesConfigurator configurator = new FacesConfigurator(externalContext);
+        
         System.out.println("");
         System.out.print("Start List: [");
         for (int i = 0; i < appConfigResources.size();i++)
@@ -337,11 +648,9 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
             }
         }
         System.out.println("]");
-        */
         
         List<FacesConfig> postOrderedList = configurator.getPostOrderedList(appConfigResources);
         
-        /*
         System.out.print("Pre-Ordered-List: [");
         for (int i = 0; i < postOrderedList.size();i++)
         {
@@ -355,11 +664,9 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
             }
         }
         System.out.println("]");
-        */
         
         List<FacesConfig> sortedList = configurator.sortRelativeOrderingList(postOrderedList);
         
-        /*
         System.out.print("Sorted-List: [");
         for (int i = 0; i < sortedList.size();i++)
         {
@@ -373,9 +680,8 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
             }
         }
         System.out.println("]");
-        */
     }
-    
+
     /**
      * Sort a list of pre ordered elements. It scans one by one the elements
      * and apply the conditions mentioned by Ordering object if it is available.
