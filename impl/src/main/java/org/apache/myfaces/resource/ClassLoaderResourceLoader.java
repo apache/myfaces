@@ -45,15 +45,16 @@ public class ClassLoaderResourceLoader extends ResourceLoader
      * 
      * Used on getLibraryVersion to filter resource directories
      **/
-    protected static Pattern VERSION_CHECKER = Pattern.compile("\\p{Digit}+(_\\p{Digit}*)*");
+    //protected static Pattern VERSION_CHECKER = Pattern.compile("\\p{Digit}+(_\\p{Digit}*)*");
 
     /**
      * It checks version like this: /1.js, /1_0.js, /1_0_0.js, /100_100.js
      * 
      * Used on getResourceVersion to filter resources
      **/
-    protected static Pattern RESOURCE_VERSION_CHECKER = Pattern.compile("/\\p{Digit}+(_\\p{Digit}*)*\\..*");
+    //protected static Pattern RESOURCE_VERSION_CHECKER = Pattern.compile("/\\p{Digit}+(_\\p{Digit}*)*\\..*");
 
+    /*
     private FileFilter _libraryFileFilter = new FileFilter()
     {
         public boolean accept(File pathname)
@@ -64,8 +65,9 @@ public class ClassLoaderResourceLoader extends ResourceLoader
             }
             return false;
         }
-    };
+    };*/
 
+    /*
     private FileFilter _resourceFileFilter = new FileFilter()
     {
         public boolean accept(File pathname)
@@ -76,7 +78,7 @@ public class ClassLoaderResourceLoader extends ResourceLoader
             }
             return false;
         }
-    };
+    };*/
 
     public ClassLoaderResourceLoader(String prefix)
     {
@@ -86,6 +88,8 @@ public class ClassLoaderResourceLoader extends ResourceLoader
     @Override
     public String getLibraryVersion(String path)
     {
+        return null;
+        /*
         String libraryVersion = null;
         if (getPrefix() != null)
             path = getPrefix() + '/' + path;
@@ -237,6 +241,7 @@ public class ClassLoaderResourceLoader extends ResourceLoader
             }
         }
         return libraryVersion;
+        */
     }
 
     @Override
@@ -268,6 +273,8 @@ public class ClassLoaderResourceLoader extends ResourceLoader
     @Override
     public String getResourceVersion(String path)
     {
+        return null;
+        /*
         String resourceVersion = null;
 
         if (getPrefix() != null)
@@ -400,6 +407,7 @@ public class ClassLoaderResourceLoader extends ResourceLoader
             }
         }
         return resourceVersion;
+        */
     }
 
     @Override
@@ -453,10 +461,11 @@ public class ClassLoaderResourceLoader extends ResourceLoader
      * @return <code>true</code> if the given URL resource protocol refers to a JAR file,
      *          <code>false</code> otherwise
      */
+    /*
     private static boolean isJarResourceProtocol(String protocol)
     {
         // Websphere uses the protocol "wsjar://" and Weblogic uses the protocol "zip://".
         return "jar".equals(protocol) || "wsjar".equals(protocol) || "zip".equals(protocol); 
-    }
+    }*/
 
 }
