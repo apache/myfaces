@@ -405,7 +405,15 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
         
         //printFacesConfigList("Start List", appConfigResources);
         
-        List<FacesConfig> sortedList = configurator.applySortingAlgorithm(appConfigResources);
+        List<FacesConfig> postOrderedList = configurator.getPostOrderedList(appConfigResources);
+        
+        List<FacesConfig> sortedList = configurator.sortRelativeOrderingList(postOrderedList);
+        
+        if (sortedList == null)
+        {
+            //The previous algorithm can't sort correctly, try this one
+            sortedList = configurator.applySortingAlgorithm(appConfigResources);
+        }
         
         //printFacesConfigList("Sorted List", sortedList);
     }

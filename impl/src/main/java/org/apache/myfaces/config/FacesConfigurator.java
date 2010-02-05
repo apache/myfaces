@@ -889,7 +889,7 @@ public class FacesConfigurator
                 }
             }
         }
-        else
+        else if (!appConfigResources.isEmpty())
         {
             //Relative ordering
             for (FacesConfig resource : appConfigResources)
@@ -906,11 +906,15 @@ public class FacesConfigurator
                 }
             }
             
-            //List<FacesConfig> postOrderedList = getPostOrderedList(appConfigResources);
+            List<FacesConfig> postOrderedList = getPostOrderedList(appConfigResources);
             
-            //List<FacesConfig> sortedList = sortRelativeOrderingList(postOrderedList);
+            List<FacesConfig> sortedList = sortRelativeOrderingList(postOrderedList);
             
-            List<FacesConfig> sortedList = applySortingAlgorithm(appConfigResources);
+            if (sortedList == null)
+            {
+                //The previous algorithm can't sort correctly, try this one
+                sortedList = applySortingAlgorithm(appConfigResources);
+            }
             
             for (FacesConfig resource : sortedList)
             {
@@ -1159,7 +1163,7 @@ public class FacesConfigurator
      * @param preOrderedList
      * @return
      */
-    protected List<FacesConfig> sortRelativeOrderingList(List<FacesConfig> preOrderedList) throws FacesException
+    protected List<FacesConfig> sortRelativeOrderingList(List<FacesConfig> preOrderedList)
     {
         List<FacesConfig> sortedList = new ArrayList<FacesConfig>();
         
@@ -1294,10 +1298,8 @@ public class FacesConfigurator
                             }
                             if (founded)
                             {
-                                log.severe("Circular references detected when sorting " +
-                                          "application config resources. Use absolute ordering instead.");
-                                throw new FacesException("Circular references detected when sorting " +
-                                        "application config resources. Use absolute ordering instead.");
+                                //Cyclic reference
+                                return null;
                             }
                         }
                     }
@@ -1320,10 +1322,8 @@ public class FacesConfigurator
                             }
                             if (founded)
                             {
-                                log.severe("Circular references detected when sorting " +
-                                    "application config resources. Use absolute ordering instead.");
-                                throw new FacesException("Circular references detected when sorting " +
-                                    "application config resources. Use absolute ordering instead.");
+                                //Cyclic reference
+                                return null;
                             }
                         }
                     }
@@ -1480,7 +1480,7 @@ public class FacesConfigurator
         for (FacesConfig resource : appConfigResources)
         {
             String name = resource.getName();
-            if (name != null && "".equals(name))
+            if (name != null && !"".equals(name))
             {
                 availableReferences.add(name);
             }
