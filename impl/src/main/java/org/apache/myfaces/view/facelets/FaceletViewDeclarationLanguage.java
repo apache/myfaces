@@ -24,6 +24,7 @@ import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Writer;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -1030,7 +1031,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             // setup writer and assign it to the context
             ResponseWriter origWriter = createResponseWriter(context);
 
-            StateWriter stateWriter = new StateWriter(origWriter, 1024);
+            ExternalContext extContext = context.getExternalContext();
+            Writer outputWriter = extContext.getResponseOutputWriter();
+
+            StateWriter stateWriter = new StateWriter(outputWriter, 1024);
             try
             {
                 ResponseWriter writer = origWriter.cloneWithWriter(stateWriter);
@@ -1042,7 +1046,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                     StateManager stateMgr = context.getApplication().getStateManager();
                     if (!stateMgr.isSavingStateInClient(context))
                     {
-                        context.getExternalContext().getSession(true);
+                        extContext.getSession(true);
                     }
                     
                     // render the view to the response

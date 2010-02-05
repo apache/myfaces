@@ -612,10 +612,14 @@ public class FaceletViewHandler extends ViewHandler
 
             // setup writer and assign it to the context
             ResponseWriter origWriter = this.createResponseWriter(context);
+
+            ExternalContext extContext = context.getExternalContext();
+            Writer outputWriter = extContext.getResponseOutputWriter();
+
             // QUESTION: should we use bufferSize? Or, since the
             // StateWriter usually only needs a small bit at the end,
             // should we always use a much smaller size?
-            stateWriter = new StateWriter(origWriter, this.bufferSize != -1 ? this.bufferSize : 1024);
+            stateWriter = new StateWriter(outputWriter, this.bufferSize != -1 ? this.bufferSize : 1024);
 
             ResponseWriter writer = origWriter.cloneWithWriter(stateWriter);
             context.setResponseWriter(writer);
@@ -624,7 +628,7 @@ public class FaceletViewHandler extends ViewHandler
             StateManager stateMgr = context.getApplication().getStateManager();
             if (!stateMgr.isSavingStateInClient(context))
             {
-                context.getExternalContext().getSession(true);
+                extContext.getSession(true);
             }
 
             long time = System.currentTimeMillis();
