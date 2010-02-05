@@ -89,6 +89,7 @@ import org.apache.myfaces.config.impl.digester.elements.ConfigOthersSlot;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfig;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfigNameSlot;
 import org.apache.myfaces.config.impl.digester.elements.OrderSlot;
+import org.apache.myfaces.config.impl.digester.elements.Ordering;
 import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
 import org.apache.myfaces.config.impl.digester.elements.SystemEventListener;
 import org.apache.myfaces.config.util.CyclicDependencyException;
@@ -1473,12 +1474,10 @@ public class FacesConfigurator
     protected List<FacesConfig> getPostOrderedList(final List<FacesConfig> appConfigResources) throws FacesException
     {
         
-        List<FacesConfig> appFilteredConfigResources = new ArrayList<FacesConfig>(); 
-        
         //0. Clean up: remove all not found resource references from the ordering 
         //descriptions.
         List<String> availableReferences = new ArrayList<String>();
-        for (FacesConfig resource : appFilteredConfigResources)
+        for (FacesConfig resource : appConfigResources)
         {
             String name = resource.getName();
             if (name != null && "".equals(name))
@@ -1487,34 +1486,40 @@ public class FacesConfigurator
             }
         }
         
-        for (FacesConfig resource : appFilteredConfigResources)
+        for (FacesConfig resource : appConfigResources)
         {
-            for (Iterator<OrderSlot> it =  resource.getOrdering().getBeforeList().iterator();it.hasNext();)
+            Ordering ordering = resource.getOrdering();
+            if (ordering != null)
             {
-                OrderSlot slot = it.next();
-                if (slot instanceof FacesConfigNameSlot)
+                for (Iterator<OrderSlot> it =  resource.getOrdering().getBeforeList().iterator();it.hasNext();)
                 {
-                    String name = ((FacesConfigNameSlot) slot).getName();
-                    if (!availableReferences.contains(name))
+                    OrderSlot slot = it.next();
+                    if (slot instanceof FacesConfigNameSlot)
                     {
-                        it.remove();
+                        String name = ((FacesConfigNameSlot) slot).getName();
+                        if (!availableReferences.contains(name))
+                        {
+                            it.remove();
+                        }
                     }
                 }
-            }
-            for (Iterator<OrderSlot> it =  resource.getOrdering().getAfterList().iterator();it.hasNext();)
-            {
-                OrderSlot slot = it.next();
-                if (slot instanceof FacesConfigNameSlot)
+                for (Iterator<OrderSlot> it =  resource.getOrdering().getAfterList().iterator();it.hasNext();)
                 {
-                    String name = ((FacesConfigNameSlot) slot).getName();
-                    if (!availableReferences.contains(name))
+                    OrderSlot slot = it.next();
+                    if (slot instanceof FacesConfigNameSlot)
                     {
-                        it.remove();
+                        String name = ((FacesConfigNameSlot) slot).getName();
+                        if (!availableReferences.contains(name))
+                        {
+                            it.remove();
+                        }
                     }
                 }
             }
         }
-        
+
+        List<FacesConfig> appFilteredConfigResources = null; 
+
         //1. Pre filtering: Sort nodes according to its weight. The weight is the number of named
         //nodes containing in both before and after lists. The sort is done from the more complex
         //to the most simple
