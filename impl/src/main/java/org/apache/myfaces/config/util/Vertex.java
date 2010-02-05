@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.myfaces.config;
+package org.apache.myfaces.config.util;
 
 import java.util.ArrayList;
 import java.util.List;

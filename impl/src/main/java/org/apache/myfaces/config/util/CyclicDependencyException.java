@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.myfaces.config;
+package org.apache.myfaces.config.util;
 
 /**
  * CyclicDependencyException is thrown any time the DAG verifier finds a cycle.
