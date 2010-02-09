@@ -213,12 +213,12 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
             if(null != sourceForm) {
                 /*we check for an element and include a namesearch, but only within the bounds of the committing form*/
                 var element = myfaces._impl._util._Utils.getElementFromForm(request, context, "javax.faces.ViewState", sourceForm,  true, true);
-                //if(null == element) {//no element found we have to append a hidden field
+                if(null == element) {//no element found we have to append a hidden field
                     element = document.createElement("input");
                     myfaces._impl._util._Utils.setAttribute(element,"type", "hidden");
                     myfaces._impl._util._Utils.setAttribute(element,"name","javax.faces.ViewState");
                     sourceForm.appendChild(element);
-                //}
+                }
                 myfaces._impl._util._Utils.setAttribute(element,"value", node.firstChild.nodeValue);
 
             }
