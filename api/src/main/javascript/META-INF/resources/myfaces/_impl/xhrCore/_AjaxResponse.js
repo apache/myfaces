@@ -202,21 +202,23 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
 
             }*/
             //update the submitting forms viewstate to the new value
-
-            var sourceForm = myfaces._impl._util._Utils.getParent(null, context, context.source, "form");
+            // The source form has to be pulled out of the CURRENT document first because the context object
+            // may refer to an invalid document if an update of the entire body has occurred before this point.
+            sourceForm = document.forms.length > 0 ? document.forms[0]:null;
 
             if ('undefined' == typeof sourceForm || null == sourceForm) {
-                sourceForm = document.forms.length > 0 ? document.forms[0]:null;
+                var sourceForm = myfaces._impl._util._Utils.getParent(null, context, context.source, "form");
             }
+
             if(null != sourceForm) {
                 /*we check for an element and include a namesearch, but only within the bounds of the committing form*/
                 var element = myfaces._impl._util._Utils.getElementFromForm(request, context, "javax.faces.ViewState", sourceForm,  true, true);
-                if(null == element) {//no element found we have to append a hidden field
+                //if(null == element) {//no element found we have to append a hidden field
                     element = document.createElement("input");
                     myfaces._impl._util._Utils.setAttribute(element,"type", "hidden");
                     myfaces._impl._util._Utils.setAttribute(element,"name","javax.faces.ViewState");
                     sourceForm.appendChild(element);
-                }
+                //}
                 myfaces._impl._util._Utils.setAttribute(element,"value", node.firstChild.nodeValue);
 
             }

@@ -47,6 +47,7 @@ public class PartialViewContextImpl extends PartialViewContext {
     private static final String FACES_REQUEST = "Faces-Request";
     private static final String PARTIAL_AJAX = "partial/ajax";
     private static final String PARTIAL_PROCESS = "partial/process";
+    private static final String SOURCE_PARAM_NAME = "javax.faces.source";
     private FacesContext _facesContext = null;
     private boolean _released = false;
     // Cached values, since their parent methods could be called
@@ -162,6 +163,23 @@ public class PartialViewContextImpl extends PartialViewContext {
                         tempList.add(clientId);
                     }
                 }
+                // The "javax.faces.source" parameter needs to be added to the list of
+                // execute ids if missing (otherwise, we'd never execute an action associated
+                // with, e.g., a button).
+                
+                String source = _facesContext.getExternalContext().getRequestParameterMap().get
+                    (PartialViewContextImpl.SOURCE_PARAM_NAME);
+                
+                if (source != null)
+                {
+                    source = source.trim();
+                    
+                    if (!tempList.contains (source))
+                    {
+                        tempList.add (source);
+                    }
+                }
+                
                 _executeClientIds = tempList;
             } else {
                 _executeClientIds = new ArrayList<String>();
@@ -215,6 +233,11 @@ public class PartialViewContextImpl extends PartialViewContext {
                 _renderClientIds = tempList;
             } else {
                 _renderClientIds = new ArrayList<String>();
+                
+                if (PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals (renderMode))
+                {
+                    _renderClientIds.add ("javax.faces.ViewRoot");
+                }
             }
         }
         return _renderClientIds;
@@ -343,9 +366,32 @@ public class PartialViewContextImpl extends PartialViewContext {
                 Set<VisitHint> hints = new HashSet<VisitHint>();
                 /*unrendered have to be skipped, transient definitely must be added to our list!*/
                 hints.add(VisitHint.SKIP_UNRENDERED);
-    
-                VisitContext visitCtx = VisitContext.createVisitContext(_facesContext, renderIds, hints);
-                viewRoot.visitTree(visitCtx, new PhaseAwareVisitCallback(_facesContext, phaseId));
+                
+                // render=@all, so output the body.
+                
+                if (renderIds.contains ("javax.faces.ViewRoot"))
+                {
+                    java.util.Iterator<UIComponent> iter = viewRoot.getFacetsAndChildren();
+                    
+                    writer.startUpdate ("javax.faces.ViewRoot");
+                    
+                    while (iter.hasNext()) { 
+                        UIComponent comp = iter.next();
+                        
+                        if (comp instanceof javax.faces.component.html.HtmlBody)
+                        {
+                            comp.encodeAll (_facesContext);
+                        }
+                    }
+                    
+                    writer.endUpdate();
+                }
+                
+                else
+                {
+                    VisitContext visitCtx = VisitContext.createVisitContext(_facesContext, renderIds, hints);
+                    viewRoot.visitTree(visitCtx, new PhaseAwareVisitCallback(_facesContext, phaseId));
+                }
             }
             
             //Retrieve the state and apply it if it is not null.
