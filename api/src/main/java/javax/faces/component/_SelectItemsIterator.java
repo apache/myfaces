@@ -24,8 +24,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.el.ValueExpression;
+import javax.faces.application.ProjectStage;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
@@ -40,6 +43,8 @@ import javax.faces.model.SelectItem;
  */
 class _SelectItemsIterator implements Iterator<SelectItem>
 {
+    
+    private static final Logger log = Logger.getLogger(_SelectItemsIterator.class.getName());
     
     // org.apache.myfaces.shared.util.SelectItemsIterator uses JSFAttr
     private static final String VAR_ATTR = "var";
@@ -173,14 +178,24 @@ class _SelectItemsIterator implements Iterator<SelectItem>
                 }
                 else
                 {
-                    ValueExpression expression = _currentUISelectItems.getValueExpression("value");
-                    throw new IllegalArgumentException(
-                            "ValueExpression '"
-                            + (expression == null ? null : expression.getExpressionString())
-                            + "'of UISelectItems with component-path "
-                            + getPathToComponent(child)
-                            + " does not reference an Object of type SelectItem, array, Iterable or Map, but of type : "
-                            + ((value == null) ? null : value.getClass().getName()));
+                    Level level = Level.FINE;
+                    if (!FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Production))
+                    {
+                        level = Level.WARNING;
+                    }
+
+                    if (log.isLoggable(level))
+                    {
+                        ValueExpression expression = _currentUISelectItems.getValueExpression("value");
+                        log.log(level, "ValueExpression {0} of UISelectItems with component-path {1}"
+                                + " does not reference an Object of type SelectItem,"
+                                + " array, Iterable or Map, but of type: {2}",
+                                new Object[] {
+                                    (expression == null ? null : expression.getExpressionString()),
+                                    getPathToComponent(child),
+                                    (value == null ? null : value.getClass().getName()) 
+                                });
+                    }
                 }
             }
         }
