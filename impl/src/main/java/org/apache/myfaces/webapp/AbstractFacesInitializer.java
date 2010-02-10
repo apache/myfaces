@@ -26,6 +26,7 @@ import javax.el.ExpressionFactory;
 import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
 import javax.faces.application.ApplicationFactory;
+import javax.faces.application.ProjectStage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextFactory;
@@ -107,6 +108,37 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
             }
 
             dispatchInitDestroyEvent(servletContext, PostConstructApplicationEvent.class);
+            
+            // print out a very prominent log message if the project stage is != Production
+            if (!FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Production))
+            {
+                ProjectStage projectStage = FacesContext.getCurrentInstance().getApplication().getProjectStage();
+                StringBuilder message = new StringBuilder("\n\n");
+                message.append("*******************************************************************\n");
+                message.append("*** WARNING: JavaServer Faces is running in ");
+                message.append(projectStage.name().toUpperCase());        
+                message.append(" mode.");
+                int length = projectStage.name().length();
+                for (int i = 0; i < 11 - length; i++)
+                {
+                    message.append(" ");
+                }
+                message.append("   ***\n");
+                message.append("***                                         ");
+                for (int i = 0; i < length; i++)
+                {
+                    message.append("^");
+                }
+                for (int i = 0; i < 20 - length; i++)
+                {
+                    message.append(" ");
+                }
+                message.append("***\n");
+                message.append("*** Do NOT deploy to your live server(s) without changing this. ***\n");
+                message.append("*** See Application#getProjectStage() for more information.     ***\n");
+                message.append("*******************************************************************\n");
+                log.log(Level.WARNING, message.toString());
+            }
         } catch (Exception ex) {
             log.log(Level.SEVERE, "An error occured while initializing MyFaces: "
                       + ex.getMessage(), ex);

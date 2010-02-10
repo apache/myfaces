@@ -122,7 +122,11 @@ public class ApplicationImpl extends Application
     // recives the runtime config instance during initializing
     private final static ThreadLocal<RuntimeConfig> initializingRuntimeConfig = new ThreadLocal<RuntimeConfig>();
 
+    // the name for the system property which specifies the current ProjectStage (see MYFACES-2545 for details)
+    public final static String PROJECT_STAGE_SYSTEM_PROPERTY_NAME = "faces.PROJECT_STAGE";
+    
     // MyFaces specific System Property to set the ProjectStage, if not present via the standard way
+    @Deprecated
     public final static String MYFACES_PROJECT_STAGE_SYSTEM_PROPERTY_NAME = "org.apache.myfaces.PROJECT_STAGE";
     
     @JSFWebConfigParam(defaultValue="false", expectedValues="true, false", since="2.0")
@@ -647,30 +651,51 @@ public class ApplicationImpl extends Application
         if (_projectStage == null)
         {
             String stageName = null;
-            // Look for a JNDI environment entry under the key given by the
-            // value of
-            // ProjectStage.PROJECT_STAGE_JNDI_NAME (return type of
-            // java.lang.String).
-            try
+            
+            // try to obtain the ProjectStage from the system property
+            // faces.PROJECT_STAGE as proposed by Ed Burns
+            stageName = System.getProperty(PROJECT_STAGE_SYSTEM_PROPERTY_NAME);
+            
+            if (stageName == null)
             {
-                Context ctx = new InitialContext();
-                Object temp = ctx.lookup(ProjectStage.PROJECT_STAGE_JNDI_NAME);
-                if (temp != null)
+                // if not found check for the "old" System Property
+                // and print a warning message to the log (just to be 
+                // sure that everyone recognizes the change in the name).
+                stageName = System.getProperty(MYFACES_PROJECT_STAGE_SYSTEM_PROPERTY_NAME);
+                if (stageName != null)
                 {
-                    if (temp instanceof String)
-                    {
-                        stageName = (String) temp;
-                    }
-                    else
-                    {
-                        log.severe("JNDI lookup for key " + ProjectStage.PROJECT_STAGE_JNDI_NAME
-                                + " should return a java.lang.String value");
-                    }
+                    log.log(Level.WARNING, "The system property " + MYFACES_PROJECT_STAGE_SYSTEM_PROPERTY_NAME
+                            + " has been replaced by " + PROJECT_STAGE_SYSTEM_PROPERTY_NAME + "!"
+                            + " Please change your settings.");
                 }
             }
-            catch (NamingException e)
+            
+            if (stageName == null)
             {
-                // no-op
+                // Look for a JNDI environment entry under the key given by the
+                // value of ProjectStage.PROJECT_STAGE_JNDI_NAME (return type of
+                // java.lang.String).
+                try
+                {
+                    Context ctx = new InitialContext();
+                    Object temp = ctx.lookup(ProjectStage.PROJECT_STAGE_JNDI_NAME);
+                    if (temp != null)
+                    {
+                        if (temp instanceof String)
+                        {
+                            stageName = (String) temp;
+                        }
+                        else
+                        {
+                            log.severe("JNDI lookup for key " + ProjectStage.PROJECT_STAGE_JNDI_NAME
+                                    + " should return a java.lang.String value");
+                        }
+                    }
+                }
+                catch (NamingException e)
+                {
+                    // no-op
+                }
             }
 
             /*
@@ -683,15 +708,7 @@ public class ApplicationImpl extends Application
                 stageName = context.getExternalContext().getInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME);
             }
 
-            /*
-             * If not found so far, let's try the Apache MyFaces extension (see MYFACES-2235)
-             */
-            if (stageName == null)
-            {
-                stageName = System.getProperty(MYFACES_PROJECT_STAGE_SYSTEM_PROPERTY_NAME);
-            }
-
-            // If a value is found found
+            // If a value is found
             if (stageName != null)
             {
                 /*
@@ -720,7 +737,7 @@ public class ApplicationImpl extends Application
              * If not found, or any of the previous attempts to discover the enum constant value have failed, log a
              * descriptive error message, assign the value as ProjectStage.Production and return it.
              */
-
+            
             _projectStage = ProjectStage.Production;
         }
 
