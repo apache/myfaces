@@ -18,11 +18,13 @@ package org.apache.myfaces.config;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.FacesException;
 
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
+import org.apache.myfaces.config.impl.digester.elements.AbsoluteOrdering;
 import org.apache.myfaces.config.impl.digester.elements.ConfigOthersSlot;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfig;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfigNameSlot;
@@ -688,6 +690,136 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
             }
         }
         System.out.println("]");
+    }
+    
+    public void testAbsoluteOrdering1() throws Exception
+    {
+        FacesConfig cfgAbs = new FacesConfig();
+        FacesConfig cfgMK = new FacesConfig();
+        FacesConfig cfgOWB = new FacesConfig();
+
+        cfgMK.setName("cz_markoc_faces");
+        
+        AbsoluteOrdering ao = new AbsoluteOrdering();
+        FacesConfigNameSlot temp = new FacesConfigNameSlot();
+        temp.setName("cz_markoc_faces");
+        ao.addOrderSlot(temp);
+        ao.addOrderSlot(new ConfigOthersSlot());
+        
+        cfgAbs.setAbsoluteOrdering(ao);
+
+        List<FacesConfig> appConfigResources = new ArrayList<FacesConfig>();
+        appConfigResources.add(cfgMK);
+        appConfigResources.add(cfgOWB);
+        
+        //printFacesConfigList("Start List: [", appConfigResources);
+        
+        List<FacesConfig> sortedResources = orderAndFeedArtifactsAbsolute(appConfigResources, cfgAbs);
+        
+        //printFacesConfigList("Sorted-List: [", sortedResources);
+        
+        assertTrue(sortedResources.containsAll(appConfigResources));
+
+        appConfigResources = new ArrayList<FacesConfig>();
+        appConfigResources.add(cfgOWB);
+        appConfigResources.add(cfgMK);
+        
+        //printFacesConfigList("Start List: [", appConfigResources);
+        
+        sortedResources = orderAndFeedArtifactsAbsolute(appConfigResources, cfgAbs);
+        
+        //printFacesConfigList("Sorted-List: [", sortedResources);
+        
+        assertTrue(sortedResources.containsAll(appConfigResources));
+
+    }
+    
+    public List<FacesConfig> orderAndFeedArtifactsAbsolute(List<FacesConfig> appConfigResources, FacesConfig webAppConfig)
+    {
+        FacesConfigurator configurator = new FacesConfigurator(externalContext);
+
+        if (webAppConfig != null && webAppConfig.getAbsoluteOrdering() != null)
+        {
+            if (webAppConfig.getOrdering() != null)
+            {
+                if (log.isLoggable(Level.WARNING))
+                {
+                    log.warning("<ordering> element found in application faces config. " +
+                            "This description will be ignored and the actions described " +
+                            "in <absolute-ordering> element will be taken into account instead.");
+                }                
+            }
+            //Absolute ordering
+            
+            //1. Scan all appConfigResources and create a list
+            //containing all resources not mentioned directly, preserving the
+            //order founded
+            List<FacesConfig> othersResources = new ArrayList<FacesConfig>();
+            List<OrderSlot> slots = webAppConfig.getAbsoluteOrdering().getOrderList();
+            for (FacesConfig resource : appConfigResources)
+            {
+                // First condition: if faces-config.xml does not have name it is 1) pre-JSF-2.0 or 2) has no <name> element,
+                // -> in both cases cannot be ordered
+                // Second condition : faces-config.xml has a name but <ordering> element does not have slot with that name
+                //  -> resource can be ordered, but will fit into <others /> element
+                if ((resource.getName() == null) || (resource.getName() != null && !containsResourceInSlot(slots, resource.getName())))
+                {
+                    othersResources.add(resource);
+                }
+            }
+
+            List<FacesConfig> sortedResources = new ArrayList<FacesConfig>();
+            //2. Scan slot by slot and merge information according
+            for (OrderSlot slot : webAppConfig.getAbsoluteOrdering().getOrderList())
+            {
+                if (slot instanceof ConfigOthersSlot)
+                {
+                    //Add all mentioned in othersResources
+                    for (FacesConfig resource : othersResources)
+                    {
+                        sortedResources.add(resource);
+                    }
+                }
+                else
+                {
+                    //Add it to the sorted list
+                    FacesConfigNameSlot nameSlot = (FacesConfigNameSlot) slot;
+                    sortedResources.add(getFacesConfig(appConfigResources, nameSlot.getName()));
+                }
+            }
+            
+            return sortedResources;
+        }
+        
+        return null;
+    }
+
+    private FacesConfig getFacesConfig(List<FacesConfig> appConfigResources, String name)
+    {
+        for (FacesConfig cfg: appConfigResources)
+        {
+            if (cfg.getName() != null && name.equals(cfg.getName()))
+            {
+                return cfg;
+            }
+        }
+        return null;
+    }
+    
+    private boolean containsResourceInSlot(List<OrderSlot> slots, String name)
+    {
+        for (OrderSlot slot: slots)
+        {
+            if (slot instanceof FacesConfigNameSlot)
+            {
+                FacesConfigNameSlot nameSlot = (FacesConfigNameSlot) slot;
+                if (name.equals(nameSlot.getName()))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**

@@ -864,7 +864,11 @@ public class FacesConfigurator
             List<OrderSlot> slots = webAppConfig.getAbsoluteOrdering().getOrderList();
             for (FacesConfig resource : appConfigResources)
             {
-                if (resource.getName() != null && containsResourceInSlot(slots, resource.getName()))
+                // First condition: if faces-config.xml does not have name it is 1) pre-JSF-2.0 or 2) has no <name> element,
+                // -> in both cases cannot be ordered
+                // Second condition : faces-config.xml has a name but <ordering> element does not have slot with that name
+                //  -> resource can be ordered, but will fit into <others /> element
+                if ((resource.getName() == null) || (resource.getName() != null && !containsResourceInSlot(slots, resource.getName())))
                 {
                     othersResources.add(resource);
                 }
@@ -1765,7 +1769,7 @@ public class FacesConfigurator
     {
         for (FacesConfig cfg: appConfigResources)
         {
-            if (cfg.getName() != null && name.equals(cfg.getName()));
+            if (cfg.getName() != null && name.equals(cfg.getName()))
             {
                 return cfg;
             }
