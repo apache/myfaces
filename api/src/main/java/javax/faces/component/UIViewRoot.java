@@ -272,11 +272,9 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     {
         checkNull(context, "context");
 
-        boolean skipPhase = false;
-
         try
         {
-            skipPhase = notifyListeners(context, PhaseId.RENDER_RESPONSE, getBeforePhaseListener(), true);
+            notifyListeners(context, PhaseId.RENDER_RESPONSE, getBeforePhaseListener(), true);
         }
         catch (Exception e)
         {
@@ -284,8 +282,16 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             logger.log(Level.SEVERE, "Exception while processing phase listener: " + e.getMessage(), e);
         }
 
-        if (!skipPhase)
+        if (!context.getResponseComplete())
         {
+            // FIXME: this path was not executed for a long time, because
+            // it was also checked for context.getRenderResponse() which
+            // was true at all times here. 
+            // The only difference here is that in super.encodeBegin(context)
+            // a PreRenderComponentEvent is published in addition to pushComponentToEL.
+            // We should check if this is ok with the spec (it seems like this should
+            // be changed) -=Jakob Korherr=-
+            
             //prerendering happens, we now publish the prerender view event
             //the specs states that the viewroot as source is about to be rendered
             //hence we issue the event immediately before publish, if the phase is not skipped
