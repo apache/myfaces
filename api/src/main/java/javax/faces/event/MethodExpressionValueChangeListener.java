@@ -16,76 +16,101 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package javax.faces.event;
 
 import javax.el.ELContext;
-import javax.el.ELException;
+import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
+import javax.el.MethodNotFoundException;
 import javax.faces.component.StateHolder;
 import javax.faces.context.FacesContext;
 
 /**
- * See Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
+ * See Javadoc of <a href="https://javaserverfaces.dev.java.net/nonav/docs/2.0/javadocs/javax/faces/event/MethodExpressionValueChangeListener.html">JSF Specification</a>
  * 
  * @author Stan Silvert
+ * @author Jakob Korherr
  */
 public class MethodExpressionValueChangeListener implements ValueChangeListener, StateHolder
 {
 
-    private MethodExpression methodExpression;
-
+    private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
+    private static final Object[] EMPTY_PARAMS = new Object[0];
+    
+    private MethodExpression methodExpressionOneArg;
+    private MethodExpression methodExpressionZeroArg;
     private boolean isTransient = false;
 
     /** Creates a new instance of MethodExpressionValueChangeListener */
     public MethodExpressionValueChangeListener()
     {
+        // constructor for state-saving 
     }
 
-    public MethodExpressionValueChangeListener(MethodExpression methodExpression)
+    public MethodExpressionValueChangeListener(MethodExpression methodExpressionOneArg)
     {
-        this.methodExpression = methodExpression;
+        this.methodExpressionOneArg = methodExpressionOneArg;
+        
+        _createZeroArgsMethodExpression(methodExpressionOneArg); 
     }
 
-    public MethodExpressionValueChangeListener(MethodExpression methodExpression1, MethodExpression methodExpression2)
+    public MethodExpressionValueChangeListener(MethodExpression methodExpressionOneArg, MethodExpression methodExpressionZeroArg)
     {
-        //TODO: Implement this!
+        this.methodExpressionOneArg = methodExpressionOneArg;
+        if (methodExpressionZeroArg != null) 
+        {
+            this.methodExpressionZeroArg = methodExpressionZeroArg;
+        }
+        else
+        {
+            _createZeroArgsMethodExpression(methodExpressionOneArg);
+        }
     }
 
     public void processValueChange(ValueChangeEvent event) throws AbortProcessingException
     {
         try
         {
-            Object[] params = new Object[] { event };
-            methodExpression.invoke(elContext(), params);
-        }
-        catch (ELException e)
-        {
-            Throwable cause = e.getCause();
-            if (cause != null && cause instanceof AbortProcessingException)
+            try
             {
-                throw (AbortProcessingException)cause;
+                // call to the one argument MethodExpression
+                Object[] params = new Object[] { event };
+                methodExpressionOneArg.invoke(getElContext(), params);
+            }
+            catch (MethodNotFoundException mnfe)
+            {
+                // call to the zero argument MethodExpression
+                methodExpressionZeroArg.invoke(getElContext(), EMPTY_PARAMS);
+            }
+        }
+        catch (Exception e)
+        {
+            // If that fails for any reason, throw an AbortProcessingException, including the cause of the failure
+            Throwable cause = e.getCause();
+            if (cause == null)
+            {
+                cause = e;
+            }
+            if (cause instanceof AbortProcessingException)
+            {
+                throw (AbortProcessingException) cause;
             }
             else
             {
-                throw e;
+                throw new AbortProcessingException(cause);
             }
         }
-    }
-
-    private ELContext elContext()
-    {
-        return FacesContext.getCurrentInstance().getELContext();
     }
 
     public void restoreState(FacesContext context, Object state)
     {
-        methodExpression = (MethodExpression) state;
+        methodExpressionOneArg = (MethodExpression) ((Object[]) state)[0];
+        methodExpressionZeroArg = (MethodExpression) ((Object[]) state)[1];
     }
 
     public Object saveState(FacesContext context)
     {
-        return methodExpression;
+        return new Object[] {methodExpressionOneArg, methodExpressionZeroArg};
     }
 
     public void setTransient(boolean newTransientValue)
@@ -96,6 +121,31 @@ public class MethodExpressionValueChangeListener implements ValueChangeListener,
     public boolean isTransient()
     {
         return isTransient;
+    }
+    
+    private ELContext getElContext()
+    {
+        return getFacesContext().getELContext();
+    }
+    
+    private FacesContext getFacesContext()
+    {
+        return FacesContext.getCurrentInstance();
+    }
+    
+    /**
+     * Creates a {@link MethodExpression} with no params and with the same Expression as 
+     * param <code>methodExpression</code>
+     * <b>WARNING!</b> This method creates new {@link MethodExpression} with expressionFactory.createMethodExpression.
+     * That means is not decorating MethodExpression passed as parameter - support for EL VariableMapper will not be available!
+     * This is a problem when using facelets and <ui:decorate/> with EL params (see MYFACES-2541 for details).
+     */
+    private void _createZeroArgsMethodExpression(MethodExpression methodExpression)
+    {
+        ExpressionFactory expressionFactory = getFacesContext().getApplication().getExpressionFactory();
+
+        this.methodExpressionZeroArg = expressionFactory.createMethodExpression(getElContext(), 
+                  methodExpression.getExpressionString(), Void.class, EMPTY_CLASS_ARRAY);
     }
 
 }
