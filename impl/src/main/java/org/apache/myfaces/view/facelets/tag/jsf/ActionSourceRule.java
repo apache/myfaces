@@ -102,14 +102,23 @@ public final class ActionSourceRule extends MetaRule
 
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
-            MethodExpression expr = _attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_LISTENER_SIG);
+            // From JSF 2.0 it is possible to have actionListener method without ActionEvent parameter. 
+            // It seems that MethodExpressionActionListener from API contains support for it but there is one big
+            // problem - one-arg constructor will not preserve the current VariableMapper.
+            // This is a problem when using facelets and <ui:decorate/> with EL params (see MYFACES-2541 for details).
+            // So we must create two MethodExpressions here - both are created from the current 
+            // facelets context and thus varibale mapping will work.
+            final MethodExpression methodExpressionOneArg = _attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_LISTENER_SIG);
+            final MethodExpression methodExpressionZeroArg = _attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_SIG);
             if (((AbstractFaceletContext)ctx).isUsingPSSOnThisView())
             {
-                ((ActionSource2) instance).addActionListener(new PartialMethodExpressionActionListener(expr));
+                ((ActionSource2) instance).addActionListener(
+                        new PartialMethodExpressionActionListener(methodExpressionOneArg, methodExpressionZeroArg));
             }
             else
             {
-                ((ActionSource2) instance).addActionListener(new MethodExpressionActionListener(expr));
+                ((ActionSource2) instance).addActionListener(
+                        new MethodExpressionActionListener(methodExpressionOneArg, methodExpressionZeroArg));
             }
         }
     }

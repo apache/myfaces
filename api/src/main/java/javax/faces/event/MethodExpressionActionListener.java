@@ -136,6 +136,9 @@ public class MethodExpressionActionListener implements ActionListener, StateHold
     /**
      * Creates a {@link MethodExpression} with no params and with the same Expression as 
      * param <code>methodExpression</code>
+     * <b>WARNING!</b> This method creates new {@link MethodExpression} with expressionFactory.createMethodExpression.
+     * That means is not decorating MethodExpression passed as parameter - support for EL VariableMapper will not be available!
+     * This is a problem when using facelets and <ui:decorate/> with EL params (see MYFACES-2541 for details).
      */
     private void _createZeroArgsMethodExpression(MethodExpression methodExpression)
     {
