@@ -1063,6 +1063,11 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                     // flush to origWriter
                     if (writtenState)
                     {
+                        // =-= markoc: STATE_KEY is in output ONLY if 
+                        // stateManager.isSavingStateInClient(context)is true - see
+                        // org.apache.myfaces.application.ViewHandlerImpl.writeState(FacesContext)
+                        // TODO this class and ViewHandlerImpl contain same constant <!--@@JSF_FORM_STATE_MARKER@@-->
+                        Object stateObj = stateMgr.saveView(context);
                         String content = stateWriter.getAndResetBuffer();
                         int end = content.indexOf(STATE_KEY);
                         // See if we can find any trace of the saved state.
@@ -1070,7 +1075,6 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         if (end >= 0)
                         {
                             // save state
-                            Object stateObj = stateMgr.saveView(context);
                             String stateStr;
                             if (stateObj == null)
                             {
