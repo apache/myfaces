@@ -20,72 +20,97 @@
 package javax.faces.event;
 
 import javax.el.ELContext;
-import javax.el.ELException;
+import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
+import javax.el.MethodNotFoundException;
 import javax.faces.component.StateHolder;
 import javax.faces.context.FacesContext;
 
 /**
- * See Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
+ * See Javadoc of <a href="https://javaserverfaces.dev.java.net/nonav/docs/2.0/javadocs/javax/faces/event/MethodExpressionActionListener.html">JSF Specification</a>
  * 
  * @author Stan Silvert
  */
 public class MethodExpressionActionListener implements ActionListener, StateHolder
 {
-
-    private MethodExpression methodExpression;
-
+    
+    private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
+    private static final Object[] EMPTY_PARAMS = new Object[0];
+    
+    private MethodExpression methodExpressionOneArg;
+    private MethodExpression methodExpressionZeroArg;
     private boolean isTransient = false;
 
     /** Creates a new instance of MethodExpressionActionListener */
     public MethodExpressionActionListener()
     {
+        // constructor for state-saving 
     }
 
-    public MethodExpressionActionListener(MethodExpression methodExpression)
+    public MethodExpressionActionListener(MethodExpression methodExpressionOneArg)
     {
-        this.methodExpression = methodExpression;
+        this.methodExpressionOneArg = methodExpressionOneArg;
+        
+        _createZeroArgsMethodExpression(methodExpressionOneArg); 
     }
-    
-    public MethodExpressionActionListener(MethodExpression methodExpression1, MethodExpression methodExpression2)
+
+    public MethodExpressionActionListener(MethodExpression methodExpressionOneArg, MethodExpression methodExpressionZeroArg)
     {
-        //TODO: Implement this!
+        this.methodExpressionOneArg = methodExpressionOneArg;
+        if (methodExpressionZeroArg != null) 
+        {
+            this.methodExpressionZeroArg = methodExpressionZeroArg;
+        }
+        else
+        {
+            _createZeroArgsMethodExpression(methodExpressionOneArg);
+        }
     }
 
     public void processAction(ActionEvent actionEvent) throws AbortProcessingException
     {
         try
         {
-            Object[] params = new Object[] { actionEvent };
-            methodExpression.invoke(elContext(), params);
-        }
-        catch (ELException e)
-        {
-            Throwable cause = e.getCause();
-            if (cause != null && cause instanceof AbortProcessingException)
+            try
             {
-                throw (AbortProcessingException)cause;
+                // call to the one argument MethodExpression
+                Object[] params = new Object[] { actionEvent };
+                methodExpressionOneArg.invoke(getElContext(), params);
+            }
+            catch (MethodNotFoundException mnfe)
+            {
+                // call to the zero argument MethodExpression
+                methodExpressionZeroArg.invoke(getElContext(), EMPTY_PARAMS);
+            }
+        }
+        catch (Exception e)
+        {
+            // If that fails for any reason, throw an AbortProcessingException, including the cause of the failure
+            Throwable cause = e.getCause();
+            if (cause == null)
+            {
+                cause = e;
+            }
+            if (cause instanceof AbortProcessingException)
+            {
+                throw (AbortProcessingException) cause;
             }
             else
             {
-                throw e;
+                throw new AbortProcessingException(cause);
             }
         }
     }
-
-    private ELContext elContext()
-    {
-        return FacesContext.getCurrentInstance().getELContext();
-    }
-
+    
     public void restoreState(FacesContext context, Object state)
     {
-        methodExpression = (MethodExpression) state;
+        methodExpressionOneArg = (MethodExpression) ((Object[]) state)[0];
+        methodExpressionZeroArg = (MethodExpression) ((Object[]) state)[1];
     }
 
     public Object saveState(FacesContext context)
     {
-        return methodExpression;
+        return new Object[] {methodExpressionOneArg, methodExpressionZeroArg};
     }
 
     public void setTransient(boolean newTransientValue)
@@ -96,6 +121,28 @@ public class MethodExpressionActionListener implements ActionListener, StateHold
     public boolean isTransient()
     {
         return isTransient;
+    }
+    
+    private ELContext getElContext()
+    {
+        return getFacesContext().getELContext();
+    }
+    
+    private FacesContext getFacesContext()
+    {
+        return FacesContext.getCurrentInstance();
+    }
+    
+    /**
+     * Creates a {@link MethodExpression} with no params and with the same Expression as 
+     * param <code>methodExpression</code>
+     */
+    private void _createZeroArgsMethodExpression(MethodExpression methodExpression)
+    {
+        ExpressionFactory expressionFactory = getFacesContext().getApplication().getExpressionFactory();
+
+        this.methodExpressionZeroArg = expressionFactory.createMethodExpression(getElContext(), 
+                  methodExpression.getExpressionString(), Void.class, EMPTY_CLASS_ARRAY);
     }
 
 }
