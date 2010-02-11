@@ -29,9 +29,6 @@ import java.io.Serializable;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,6 +59,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlResponseWriterImpl;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
 
 /**
@@ -452,35 +450,17 @@ public final class ErrorPageWriter
 
     private static String[] _splitTemplate(String rsc) throws IOException
     {
-        InputStream is = null;
-
-        if (System.getSecurityManager()!=null)
+        InputStream is = ClassUtils.getContextClassLoader().getResourceAsStream(rsc);            
+        if (is == null)
         {
-            try
-            {
-                ClassLoader cl = AccessController.<ClassLoader>doPrivileged(new PrivilegedExceptionAction<ClassLoader>() {
-                    public ClassLoader run() throws PrivilegedActionException 
-                    {
-                        return Thread.currentThread().getContextClassLoader();
-                    }
-                });
-                is = cl.getResourceAsStream(rsc);
-            }
-            catch (PrivilegedActionException pae)
-            {
-                throw new FacesException(pae);
-            }
-        }
-        else
-        {
-            is = Thread.currentThread().getContextClassLoader().getResourceAsStream(rsc);
-            
+            // try to get the resource from ExternalContext
+            is = FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream(rsc);
             if (is == null)
             {
-                // try to get the resource from ExternalContext
-                is = FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream(rsc);
+                // fallback
+                is = ErrorPageWriter.class.getClassLoader().getResourceAsStream(rsc);
             }
-        }
+        }        
 
         if (is == null)
         {
@@ -500,7 +480,7 @@ public final class ErrorPageWriter
         String str = baos.toString();
         return str.split("@@");
     }
-
+    
     private static List<String> _getErrorId(Throwable e)
     {
         String message = e.getMessage();

@@ -20,9 +20,6 @@ package org.apache.myfaces.view.facelets.tag.ui;
 
 import java.io.IOException;
 import java.net.URL;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 
 import javax.el.ELException;
 import javax.el.VariableMapper;
@@ -37,6 +34,7 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
@@ -102,27 +100,11 @@ public final class IncludeHandler extends TagHandler
             if (ctx.getFacesContext().isProjectStage(ProjectStage.Development) 
                     && ERROR_PAGE_INCLUDE_PATH.equals(path))
             {
-                URL url;
-                if (System.getSecurityManager()!=null)
+                URL url = ClassUtils.getContextClassLoader().getResource(ERROR_FACELET);
+                if (url == null) 
                 {
-                    try
-                    {
-                        ClassLoader cl = AccessController.<ClassLoader>doPrivileged(new PrivilegedExceptionAction<ClassLoader>() {
-                            public ClassLoader run() throws PrivilegedActionException
-                            {
-                                return Thread.currentThread().getContextClassLoader();
-                            }
-                        });
-                        url = cl.getResource(ERROR_FACELET);
-                    }
-                    catch (PrivilegedActionException pae)
-                    {
-                        throw new FacesException(pae);
-                    }
-                }
-                else
-                {
-                    url = Thread.currentThread().getContextClassLoader().getResource(ERROR_FACELET);
+                    // fallback
+                    url = getClass().getClassLoader().getResource(ERROR_FACELET);
                 }
                 ctx.includeFacelet(parent, url);
             }
@@ -143,4 +125,5 @@ public final class IncludeHandler extends TagHandler
             ComponentSupport.markComponentToRestoreFully(ctx.getFacesContext(), parent);
         }
     }
+
 }
