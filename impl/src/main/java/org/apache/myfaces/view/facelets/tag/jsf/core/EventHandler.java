@@ -26,6 +26,7 @@ import java.util.Iterator;
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.MethodExpression;
+import javax.el.MethodNotFoundException;
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
@@ -56,6 +57,9 @@ import org.apache.myfaces.view.facelets.util.ReflectionUtil;
         bodyContent = "empty")
 public final class EventHandler extends TagHandler {
     
+    private static final Class<?>[] COMPONENT_SYSTEM_EVENT_PARAMETER = new Class<?>[] { ComponentSystemEvent.class };
+    private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
+    
     @JSFFaceletAttribute(name="listener",
             className="javax.el.MethodExpression",
             deferredMethodSignature=
@@ -71,7 +75,7 @@ public final class EventHandler extends TagHandler {
     {
         super (tagConfig);
         
-        listener = getRequiredAttribute ("listener");
+        listener = getRequiredAttribute("listener");
         type = getRequiredAttribute("type");
     }
     
@@ -87,21 +91,25 @@ public final class EventHandler extends TagHandler {
             return;
         }
         
-        Class<? extends ComponentSystemEvent> eventClass = getEventClass (ctx);
-        MethodExpression methodExp = listener.getMethodExpression(ctx, void.class, new Class<?>[] {
-            ComponentSystemEvent.class });
+        Class<? extends ComponentSystemEvent> eventClass = getEventClass(ctx);
+        
+        // Note: The listener attribute can now also take a zero-argument MethodExpression,
+        // thus we need two different MethodExpressions (see MYFACES-2503 for details).
+        MethodExpression methodExpOneArg 
+                = listener.getMethodExpression(ctx, void.class, COMPONENT_SYSTEM_EVENT_PARAMETER);
+        MethodExpression methodExpZeroArg
+                = listener.getMethodExpression(ctx, void.class, EMPTY_CLASS_ARRAY);
         
         if (eventClass == PreRenderViewEvent.class)
         {
             // ensure ViewRoot for PreRenderViewEvent
             UIViewRoot viewRoot = ComponentSupport.getViewRoot(ctx, parent);
-            viewRoot.subscribeToEvent (eventClass, new Listener (methodExp));
+            viewRoot.subscribeToEvent(eventClass, new Listener(methodExpOneArg, methodExpZeroArg));
         }
         else
         {
             // Simply register the event on the component.
-
-            parent.subscribeToEvent (eventClass, new Listener (methodExp));
+            parent.subscribeToEvent(eventClass, new Listener(methodExpOneArg, methodExpZeroArg));
         }
     }
     
@@ -188,26 +196,52 @@ public final class EventHandler extends TagHandler {
         return (Class<? extends ComponentSystemEvent>) eventClass;
     }
     
-    public static class Listener implements ComponentSystemEventListener, Serializable {
+    public static class Listener implements ComponentSystemEventListener, Serializable 
+    {
 
         private static final long serialVersionUID = 7318240026355007052L;
         
-        private MethodExpression methodExp;
+        private MethodExpression methodExpOneArg;
+        private MethodExpression methodExpZeroArg;
         
         public Listener()
         {
             super();
         }
 
-        private Listener (MethodExpression methodExp)
+        /**
+         * Note: The listener attribute can now also take a zero-argument MethodExpression,
+         * thus we need two different MethodExpressions (see MYFACES-2503 for details).
+         * @param methodExpOneArg
+         * @param methodExpZeroArg
+         */
+        private Listener(MethodExpression methodExpOneArg, MethodExpression methodExpZeroArg)
         {
-            this.methodExp = methodExp;
+            this.methodExpOneArg = methodExpOneArg;
+            this.methodExpZeroArg = methodExpZeroArg;
         }
         
-        public void processEvent (ComponentSystemEvent event)
+        public void processEvent(ComponentSystemEvent event)
         {
             ELContext elContext = FacesContext.getCurrentInstance().getELContext();
-            this.methodExp.invoke(elContext, new Object[] { event });
+            try
+            {
+                // first try to invoke the MethodExpression with one argument
+                this.methodExpOneArg.invoke(elContext, new Object[] { event });
+            }
+            catch (MethodNotFoundException mnfeOneArg)
+            {
+                try
+                {
+                    // if that fails try to invoke the MethodExpression with zero arguments
+                    this.methodExpZeroArg.invoke(elContext, new Object[0]);
+                }
+                catch (MethodNotFoundException mnfeZeroArg)
+                {
+                    // if that fails too rethrow the original MethodNotFoundException
+                    throw mnfeOneArg;
+                }
+            }
         }
     }
 }
