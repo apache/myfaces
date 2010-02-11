@@ -305,6 +305,10 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     @Override
     public void encodeChildren(FacesContext context) throws IOException
     {
+        if (context.getResponseComplete())
+        {
+            return;
+        }
         PartialViewContext pContext = context.getPartialViewContext();
         
         // If PartialViewContext.isAjaxRequest() returns true
@@ -327,43 +331,46 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     {
         checkNull(context, "context");
 
-        super.encodeEnd(context);
-        
-        ViewDeclarationLanguage vdl = context.getApplication().getViewHandler().getViewDeclarationLanguage(context, getViewId());
-        if (vdl != null)
+        if (!context.getResponseComplete())
         {
-            // If the current view has view parameters, as indicated by a non-empty and non-UnsupportedOperationException throwing 
-            // return from ViewDeclarationLanguage.getViewMetadata(javax.faces.context.FacesContext, String)
-            ViewMetadata metadata = null;
-            try
-            {
-                metadata = vdl.getViewMetadata(context, getViewId());    
-            }
-            catch(UnsupportedOperationException e)
-            {
-                logger.log(Level.SEVERE, "Exception while obtaining the view metadata: " + e.getMessage(), e);
-            }
+            super.encodeEnd(context);
             
-            if (metadata != null)
+            ViewDeclarationLanguage vdl = context.getApplication().getViewHandler().getViewDeclarationLanguage(context, getViewId());
+            if (vdl != null)
             {
+                // If the current view has view parameters, as indicated by a non-empty and non-UnsupportedOperationException throwing 
+                // return from ViewDeclarationLanguage.getViewMetadata(javax.faces.context.FacesContext, String)
+                ViewMetadata metadata = null;
                 try
                 {
-                    Collection<UIViewParameter> viewParams = ViewMetadata.getViewParameters(this);    
-                    if(!viewParams.isEmpty())
-                    {
-                        // call UIViewParameter.encodeAll(javax.faces.context.FacesContext) on each parameter.
-                        for(UIViewParameter param : viewParams)
-                        {
-                            param.encodeAll(context);
-                        }
-                    }
+                    metadata = vdl.getViewMetadata(context, getViewId());    
                 }
                 catch(UnsupportedOperationException e)
                 {
-                    // If calling getViewParameters() causes UnsupportedOperationException to be thrown, the exception must be silently swallowed.
+                    logger.log(Level.SEVERE, "Exception while obtaining the view metadata: " + e.getMessage(), e);
                 }
+                
+                if (metadata != null)
+                {
+                    try
+                    {
+                        Collection<UIViewParameter> viewParams = ViewMetadata.getViewParameters(this);    
+                        if(!viewParams.isEmpty())
+                        {
+                            // call UIViewParameter.encodeAll(javax.faces.context.FacesContext) on each parameter.
+                            for(UIViewParameter param : viewParams)
+                            {
+                                param.encodeAll(context);
+                            }
+                        }
+                    }
+                    catch(UnsupportedOperationException e)
+                    {
+                        // If calling getViewParameters() causes UnsupportedOperationException to be thrown, the exception must be silently swallowed.
+                    }
+                }
+    
             }
-
         }
         
         try
@@ -728,7 +735,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                                              " in Phase " + phaseId, t);
                     if (beforePhase)
                     {
-                        return context.getResponseComplete() || context.getRenderResponse();
+                        return context.getResponseComplete() || (context.getRenderResponse() && !PhaseId.RENDER_RESPONSE.equals(phaseId));
                     }
                 }
             }
@@ -771,7 +778,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                                 logger.log(Level.SEVERE, "An Exception occured while processing the " +
                                                          "beforePhase method of PhaseListener " + phaseListener +
                                                          " in Phase " + phaseId, t);
-                                return context.getResponseComplete() || context.getRenderResponse();
+                                return context.getResponseComplete() || (context.getRenderResponse() && !PhaseId.RENDER_RESPONSE.equals(phaseId));
                             }
                         }
                     }
@@ -814,7 +821,14 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             }
         }
 
-        return context.getResponseComplete() || context.getRenderResponse();
+        if (beforePhase)
+        {
+            return context.getResponseComplete() || (context.getRenderResponse() && !PhaseId.RENDER_RESPONSE.equals(phaseId));
+        }
+        else
+        {
+            return context.getResponseComplete() || context.getRenderResponse();
+        }
     }
 
     private PhaseEvent createEvent(FacesContext context, PhaseId phaseId)
