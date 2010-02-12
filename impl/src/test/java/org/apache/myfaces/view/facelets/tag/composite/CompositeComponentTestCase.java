@@ -153,7 +153,8 @@ public class CompositeComponentTestCase extends FaceletTestCase
         UICommand button = (UICommand) compositeComponent.findComponent("button");
         assertNotNull(button);
         assertEquals("#{helloWorldBean.send}", button.getActionExpression().getExpressionString());
-        assertEquals("#{helloWorldBean.send}", ((MethodExpression)button.getAttributes().get("metodo")).getExpressionString());
+        assertEquals("#{helloWorldBean.send}", ((MethodExpression)compositeComponent.getAttributes().get("metodo")).getExpressionString());
+        assertNull(button.getAttributes().get("metodo"));
         
         UICommand link = (UICommand) compositeComponent.findComponent("link");
         assertNotNull(link);

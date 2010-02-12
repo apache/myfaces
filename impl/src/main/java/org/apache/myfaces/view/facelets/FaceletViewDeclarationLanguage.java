@@ -778,78 +778,97 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         attributeNameValueExpression = (ValueExpression) propertyDescriptor.getValue("default");
                         if (attributeNameValueExpression == null)
                         {
-                            if (log.isLoggable(Level.SEVERE))
-                                log.severe("attributeValueExpression not found under the key \""+attributeName+
-                                        "\". Looking for the next attribute");
+                            // It is only valid to log an error if the attribute is required
+                            ValueExpression ve = (ValueExpression) propertyDescriptor.getValue("required");
+                            if (ve != null)
+                            {
+                                // QUESTION: Almost positive that the value expression is supposed to evaluate to a boolean, but originally
+                                // the code assumed it to be a string.  Can someone verify what the right type is?
+                                // ANS: -= Leonardo Uribe =- Take a look at AttributeHandler. The correct type is Boolean, so we can cast safe 
+                                Boolean required = (Boolean) ve.getValue (context.getELContext());
+                                
+                                if (required != null && required.booleanValue())
+                                {
+                                    if (log.isLoggable(Level.SEVERE))
+                                        log.severe("attributeValueExpression not found under the key \""+attributeName+
+                                                "\". Looking for the next attribute");
+                                }
+                            }
                             continue;
                         }
                     }
                     
                     String attributeExpressionString = attributeNameValueExpression.getExpressionString();
                     MethodExpression methodExpression = null;
-                                        
-                    for (String target : targetsArray)
+                    
+                    if ("action".equals(attributeName) || "actionListener".equals(attributeName) || 
+                        "validator".equals(attributeName) || "valueChangeListener".equals(attributeName))
                     {
-                        UIComponent innerComponent = topLevelComponent.findComponent(target);
-                        
-                        if (innerComponent == null)
+                        for (String target : targetsArray)
                         {
-                            if (log.isLoggable(Level.SEVERE))
-                                log.severe("Inner component "+target+"not found when retargetMethodExpressions");
-                            continue;
-                        }
+                            UIComponent innerComponent = topLevelComponent.findComponent(target);
+                            
+                            if (innerComponent == null)
+                            {
+                                if (log.isLoggable(Level.SEVERE))
+                                    log.severe("Inner component "+target+"not found when retargetMethodExpressions");
+                                continue;
+                            }
 
-                        if ("action".equals(attributeName))
-                        {
-                            // target is ActionSource2
-                            methodExpression = context.getApplication().getExpressionFactory().
+                            if ("action".equals(attributeName))
+                            {
+                                // target is ActionSource2
+                                methodExpression = context.getApplication().getExpressionFactory().
+                                    createMethodExpression(context.getELContext(),
+                                            attributeExpressionString, Object.class, new Class[]{});
+                                
+                                ((ActionSource2)innerComponent).setActionExpression(methodExpression);
+                            }
+                            else if ("actionListener".equals(attributeName))
+                            {
+                               // target is ActionSource2
+                                methodExpression = context.getApplication().getExpressionFactory().
                                 createMethodExpression(context.getELContext(),
-                                        attributeExpressionString, Object.class, new Class[]{});
-                            
-                            ((ActionSource2)innerComponent).setActionExpression(methodExpression);
-                        }
-                        else if ("actionListener".equals(attributeName))
-                        {
-                           // target is ActionSource2
-                            methodExpression = context.getApplication().getExpressionFactory().
-                            createMethodExpression(context.getELContext(),
-                                    attributeExpressionString, Void.TYPE, new Class[]{ActionEvent.class});
-                            
-                            ((ActionSource)innerComponent).addActionListener(
-                                    new MethodExpressionActionListener(methodExpression));
-                        }
-                        else if ("validator".equals(attributeName))
-                        {
-                            // target is EditableValueHolder
-                            methodExpression = context.getApplication().getExpressionFactory().
-                            createMethodExpression(context.getELContext(),
-                                    attributeExpressionString, Void.TYPE, 
-                                    new Class[]{FacesContext.class, UIComponent.class, Object.class});
+                                        attributeExpressionString, Void.TYPE, new Class[]{ActionEvent.class});
+                                
+                                ((ActionSource)innerComponent).addActionListener(
+                                        new MethodExpressionActionListener(methodExpression));
+                            }
+                            else if ("validator".equals(attributeName))
+                            {
+                                // target is EditableValueHolder
+                                methodExpression = context.getApplication().getExpressionFactory().
+                                createMethodExpression(context.getELContext(),
+                                        attributeExpressionString, Void.TYPE, 
+                                        new Class[]{FacesContext.class, UIComponent.class, Object.class});
 
-                            ((EditableValueHolder)innerComponent).addValidator(
-                                    new MethodExpressionValidator(methodExpression));
-                        }
-                        else if ("valueChangeListener".equals(attributeName))
-                        {
-                            // target is EditableValueHolder
-                            methodExpression = context.getApplication().getExpressionFactory().
-                            createMethodExpression(context.getELContext(),
-                                    attributeExpressionString, Void.TYPE, 
-                                    new Class[]{ValueChangeEvent.class});
+                                ((EditableValueHolder)innerComponent).addValidator(
+                                        new MethodExpressionValidator(methodExpression));
+                            }
+                            else if ("valueChangeListener".equals(attributeName))
+                            {
+                                // target is EditableValueHolder
+                                methodExpression = context.getApplication().getExpressionFactory().
+                                createMethodExpression(context.getELContext(),
+                                        attributeExpressionString, Void.TYPE, 
+                                        new Class[]{ValueChangeEvent.class});
 
-                            ((EditableValueHolder)innerComponent).addValueChangeListener(
-                                    new MethodExpressionValueChangeListener(methodExpression));
+                                ((EditableValueHolder)innerComponent).addValueChangeListener(
+                                        new MethodExpressionValueChangeListener(methodExpression));
+                            }
                         }
-                        else
-                        {
-                            methodSignature = methodSignature.trim();
-                            methodExpression = context.getApplication().getExpressionFactory().
-                            createMethodExpression(context.getELContext(),
-                                    attributeExpressionString, _getReturnType(methodSignature), 
-                                    _getParameters(methodSignature));
-                            
-                            innerComponent.getAttributes().put(attributeName, methodExpression);
-                        }
+                    }
+                    else
+                    {
+                        // composite:attribute targets property only has sense for action, actionListener,
+                        // validator or valueChangeListener. This means we have to retarget the method expression
+                        // to the topLevelComponent.
+                        methodSignature = methodSignature.trim();
+                        methodExpression = context.getApplication().getExpressionFactory().
+                        createMethodExpression(context.getELContext(),
+                                attributeExpressionString, _getReturnType(methodSignature), 
+                                _getParameters(methodSignature));
+                        topLevelComponent.getAttributes().put(attributeName, methodExpression);
                     }
                 }
             }

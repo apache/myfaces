@@ -26,7 +26,8 @@
     <composite:attribute name="actionListener" targets="link" method-signature="void someAction(javax.faces.event.ActionEvent)"/>
     <composite:attribute name="validator" targets="input" method-signature="void validateSomething(javax.faces.context.FacesContext,javax.faces.component.UIComponent,Object)"/>
     <composite:attribute name="valueChangeListener" targets="input" method-signature="void afterSomeChange(javax.faces.event.ValueChangeEvent)"/>
-    <composite:attribute name="metodo" targets="button" method-signature="String someAction()"/>    
+    <!-- Here targets should be ignored, because it is only valid for the previous four attributes -->
+    <composite:attribute name="metodo" targets="button" method-signature="String someAction()"/>
 </composite:interface>
 <composite:implementation>
     <h:commandButton id="button" action="#{cc.attrs.action}" value="Press Me" />
