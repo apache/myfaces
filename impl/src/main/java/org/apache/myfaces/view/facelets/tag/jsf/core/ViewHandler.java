@@ -97,15 +97,43 @@ public final class ViewHandler extends TagHandler
                 String v = this.renderKitId.getValue(ctx);
                 root.setRenderKitId(v);
             }
+            String encodingValue = null;
             if (this.contentType != null)
             {
+                // This value is read as rfc2616 section 3.7 Media Types.
+                // We should check and extract the param "charset" and assing
+                // it as encoding for this page.
                 String v = this.contentType.getValue(ctx);
+                if (v != null)
+                {
+                    int j = v.indexOf(';');
+                    if (j >= 0)
+                    {
+                        int i = v.indexOf("charset",j);
+                        if (i >= 0)
+                        {
+                            i = v.indexOf('=',i)+1;
+                            if (v.length() > i)
+                            {
+                                encodingValue = v.substring(i);
+                            }
+                            // Substract charset from encoding, it will be added 
+                            // later on FaceletViewDeclarationLanguage.createResponseWriter
+                            // by calling response.setContentType
+                            v = v.substring(0 , j);
+                        }
+                    }
+                }
                 ctx.getFacesContext().getExternalContext().getRequestMap().put("facelets.ContentType", v);
             }
             if (this.encoding != null)
             {
                 String v = this.encoding.getValue(ctx);
                 ctx.getFacesContext().getExternalContext().getRequestMap().put("facelets.Encoding", v);
+            }
+            else if (encodingValue != null)
+            {
+                ctx.getFacesContext().getExternalContext().getRequestMap().put("facelets.Encoding", encodingValue);
             }
             if (this.beforePhase != null)
             {
