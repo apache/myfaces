@@ -438,7 +438,7 @@ public final class SAXCompiler extends Compiler
     {
         CompilationManager mngr = null;
         InputStream is = null;
-        String encoding = "UTF-8";
+        String encoding = null;
         try
         {
             is = new BufferedInputStream(src.openStream(), 1024);
@@ -475,7 +475,7 @@ public final class SAXCompiler extends Compiler
     {
         CompilationManager mngr = null;
         InputStream is = null;
-        String encoding = "UTF-8";
+        String encoding = null;
         try
         {
             is = new BufferedInputStream(src.openStream(), 1024);
@@ -506,7 +506,7 @@ public final class SAXCompiler extends Compiler
     protected static final String writeXmlDecl(InputStream is, CompilationManager mngr) throws IOException
     {
         is.mark(128);
-        String encoding = "UTF-8";
+        String encoding = null;
         try
         {
             byte[] b = new byte[128];
@@ -534,7 +534,7 @@ public final class SAXCompiler extends Compiler
     protected static final String getXmlDecl(InputStream is, CompilationManager mngr) throws IOException
     {
         is.mark(128);
-        String encoding = "UTF-8";
+        String encoding = null;
         try
         {
             byte[] b = new byte[128];

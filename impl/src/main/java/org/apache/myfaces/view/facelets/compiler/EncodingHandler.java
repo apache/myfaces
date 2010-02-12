@@ -43,7 +43,18 @@ public class EncodingHandler implements FaceletHandler
             ELException
     {
         this.next.apply(ctx, parent);
-        ctx.getFacesContext().getExternalContext().getRequestMap().put("facelets.Encoding", this.encoding);
+        if (this.encoding == null)
+        {
+            if (!ctx.getFacesContext().getExternalContext().getRequestMap().containsKey("facelets.Encoding"))
+            {
+                ctx.getFacesContext().getExternalContext().getRequestMap().put("facelets.Encoding", "UTF-8");
+            }
+        }
+        else
+        {
+            //Encoding of document takes precedence over f:view contentType
+            ctx.getFacesContext().getExternalContext().getRequestMap().put("facelets.Encoding", this.encoding);
+        }
     }
 
 }
