@@ -105,7 +105,12 @@ class _SharedRendererUtils
         {
             Class<?> modelType = expression
                     .getType(facesContext.getELContext());
-            if (modelType.isArray())
+            if (modelType == null)
+            {
+                // FIXME temporal workaround for MYFACES-2552
+                return submittedValue;
+            }
+            else if (modelType.isArray())
             {
                 // the target should be an array
                 Class<?> componentType = modelType.getComponentType();
