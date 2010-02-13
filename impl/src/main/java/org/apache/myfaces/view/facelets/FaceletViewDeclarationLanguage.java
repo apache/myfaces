@@ -870,6 +870,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                                 _getParameters(methodSignature));
                         topLevelComponent.getAttributes().put(attributeName, methodExpression);
                     }
+                    
+                    // We need to remove the previous ValueExpression, to prevent some possible
+                    // confusion when the same value is retrieved from the attribute map.
+                    topLevelComponent.setValueExpression(attributeName, null);
                 }
             }
         }
