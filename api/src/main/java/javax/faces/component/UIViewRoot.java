@@ -41,6 +41,8 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
 import javax.faces.event.AbortProcessingException;
+import javax.faces.event.ExceptionQueuedEvent;
+import javax.faces.event.ExceptionQueuedEventContext;
 import javax.faces.event.FacesEvent;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
@@ -877,6 +879,11 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             }
             catch (AbortProcessingException e)
             {
+                // publish the Exception to be handled by the ExceptionHandler
+                ExceptionQueuedEventContext exceptionContext 
+                        = new ExceptionQueuedEventContext(context, e, source, context.getCurrentPhaseId());
+                context.getApplication().publishEvent(context, ExceptionQueuedEvent.class, exceptionContext);
+                
                 // Abortion
                 return false;
             }
