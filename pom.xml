@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.apache.myfaces</groupId>
     <artifactId>myfaces</artifactId>
-    <version>6</version>
+    <version>7</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
