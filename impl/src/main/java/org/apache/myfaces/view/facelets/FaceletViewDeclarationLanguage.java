@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.view.facelets;
 
-import java.awt.event.ActionEvent;
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;
@@ -57,6 +56,7 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
+import javax.faces.event.ActionEvent;
 import javax.faces.event.MethodExpressionActionListener;
 import javax.faces.event.MethodExpressionValueChangeListener;
 import javax.faces.event.PhaseId;
@@ -84,7 +84,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.shared_impl.application.DefaultViewHandlerSupport;
 import org.apache.myfaces.shared_impl.application.ViewHandlerSupport;
