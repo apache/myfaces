@@ -72,6 +72,9 @@ if ('undefined' == typeof jsf.ajax || null == jsf.ajax) {
      * @param {Map||} options : map of options being pushed into the ajax cycle
      */
     jsf.ajax.request = function(element, event, options) {
+	if (!options) {
+		options = {};
+	}
         /*we are not allowed to add the impl on a global scope so we have to inline the code*/
         var impl = myfaces._impl._util._Utils.getGlobalConfig("jsfAjaxImpl", myfaces.ajax);
         return impl.request(element, event, options);
