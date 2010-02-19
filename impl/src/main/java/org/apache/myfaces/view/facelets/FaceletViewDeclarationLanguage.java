@@ -57,12 +57,14 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.ActionListener;
 import javax.faces.event.MethodExpressionActionListener;
 import javax.faces.event.MethodExpressionValueChangeListener;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PostAddToViewEvent;
 import javax.faces.event.PreRemoveFromViewEvent;
 import javax.faces.event.ValueChangeEvent;
+import javax.faces.event.ValueChangeListener;
 import javax.faces.render.RenderKit;
 import javax.faces.validator.MethodExpressionValidator;
 import javax.faces.view.ActionSource2AttachedObjectHandler;
@@ -96,6 +98,8 @@ import org.apache.myfaces.view.facelets.FaceletViewHandler.NullWriter;
 import org.apache.myfaces.view.facelets.compiler.Compiler;
 import org.apache.myfaces.view.facelets.compiler.SAXCompiler;
 import org.apache.myfaces.view.facelets.compiler.TagLibraryConfig;
+import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
+import org.apache.myfaces.view.facelets.el.ValueExpressionMethodExpression;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
 import org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory;
 import org.apache.myfaces.view.facelets.impl.DefaultResourceResolver;
@@ -804,6 +808,15 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                 String attributeExpressionString = attributeNameValueExpression.getExpressionString();
                 MethodExpression methodExpression = null;
                 
+                // if the expression String contains a reference to the current composite
+                // component #{cc}, the MethodExpression has to be invoked indirectly (via
+                // a ValueExpression that points to the real MethodExpression). This happens
+                // when other composite components are nested in composite components' implementations.
+                if (CompositeComponentELUtils.isCompositeComponentExpression(attributeExpressionString))
+                {
+                    methodExpression = new ValueExpressionMethodExpression(attributeNameValueExpression);
+                }
+                
                 if (isKnownMethod)
                 {
                     for (String target : targetsArray)
@@ -816,33 +829,50 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                                 log.severe("Inner component " + target + " not found when retargetMethodExpressions");
                             continue;
                         }
-
+                        
                         if ("action".equals(attributeName))
                         {
                             // target is ActionSource2
-                            methodExpression = context.getApplication().getExpressionFactory().
-                                    createMethodExpression(context.getELContext(),
-                                            attributeExpressionString, Object.class, new Class[]{});
+                            if (methodExpression == null)
+                            {
+                                methodExpression = context.getApplication().getExpressionFactory().
+                                        createMethodExpression(context.getELContext(),
+                                                attributeExpressionString, Object.class, new Class[]{});
+                            }
                             
                             ((ActionSource2)innerComponent).setActionExpression(methodExpression);
                         }
                         else if ("actionListener".equals(attributeName))
                         {
                            // target is ActionSource2
-                            methodExpression = context.getApplication().getExpressionFactory().
-                                    createMethodExpression(context.getELContext(),
-                                            attributeExpressionString, Void.TYPE, new Class[]{ActionEvent.class});
+                            ActionListener actionListener = null;
+                            if (methodExpression == null)
+                            {
+                                methodExpression = context.getApplication().getExpressionFactory().
+                                        createMethodExpression(context.getELContext(),
+                                                attributeExpressionString, Void.TYPE, new Class[]{ActionEvent.class});
+                                actionListener = new MethodExpressionActionListener(methodExpression);
+                            }
+                            else
+                            {
+                                // FIXME this will maybe need changes, because the second methodExpression
+                                // is supposed to have zero args, but the underlying MethodExpression 
+                                // won't fulfill this requirement. -=Jakob Korherr=-
+                                actionListener = new MethodExpressionActionListener(methodExpression, methodExpression);
+                            }
                             
-                            ((ActionSource)innerComponent).addActionListener(
-                                    new MethodExpressionActionListener(methodExpression));
+                            ((ActionSource)innerComponent).addActionListener(actionListener);
                         }
                         else if ("validator".equals(attributeName))
                         {
                             // target is EditableValueHolder
-                            methodExpression = context.getApplication().getExpressionFactory().
-                                    createMethodExpression(context.getELContext(),
-                                        attributeExpressionString, Void.TYPE, 
-                                        new Class[]{FacesContext.class, UIComponent.class, Object.class});
+                            if (methodExpression == null)
+                            {
+                                methodExpression = context.getApplication().getExpressionFactory().
+                                        createMethodExpression(context.getELContext(),
+                                            attributeExpressionString, Void.TYPE, 
+                                            new Class[]{FacesContext.class, UIComponent.class, Object.class});
+                            }
 
                             ((EditableValueHolder)innerComponent).addValidator(
                                     new MethodExpressionValidator(methodExpression));
@@ -850,13 +880,24 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         else if ("valueChangeListener".equals(attributeName))
                         {
                             // target is EditableValueHolder
-                            methodExpression = context.getApplication().getExpressionFactory().
-                                    createMethodExpression(context.getELContext(),
-                                            attributeExpressionString, Void.TYPE, 
-                                            new Class[]{ValueChangeEvent.class});
+                            ValueChangeListener valueChangeListener = null;
+                            if (methodExpression == null)
+                            {
+                                methodExpression = context.getApplication().getExpressionFactory().
+                                        createMethodExpression(context.getELContext(),
+                                                attributeExpressionString, Void.TYPE, 
+                                                new Class[]{ValueChangeEvent.class});
+                                valueChangeListener = new MethodExpressionValueChangeListener(methodExpression);
+                            }
+                            else
+                            {
+                                // FIXME this will maybe need changes, because the second methodExpression
+                                // is supposed to have zero args, but the underlying MethodExpression 
+                                // won't fulfill this requirement. -=Jakob Korherr=-
+                                valueChangeListener = new MethodExpressionValueChangeListener(methodExpression, methodExpression);
+                            }
 
-                            ((EditableValueHolder)innerComponent).addValueChangeListener(
-                                    new MethodExpressionValueChangeListener(methodExpression));
+                            ((EditableValueHolder)innerComponent).addValueChangeListener(valueChangeListener);
                         }
                     }
                 }
@@ -865,11 +906,14 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                     // composite:attribute targets property only has sense for action, actionListener,
                     // validator or valueChangeListener. This means we have to retarget the method expression
                     // to the topLevelComponent.
-                    methodSignature = methodSignature.trim();
-                    methodExpression = context.getApplication().getExpressionFactory().
-                    createMethodExpression(context.getELContext(),
-                            attributeExpressionString, _getReturnType(methodSignature), 
-                            _getParameters(methodSignature));
+                    if (methodExpression == null)
+                    {
+                        methodSignature = methodSignature.trim();
+                        methodExpression = context.getApplication().getExpressionFactory().
+                        createMethodExpression(context.getELContext(),
+                                attributeExpressionString, _getReturnType(methodSignature), 
+                                _getParameters(methodSignature));
+                    }
                     topLevelComponent.getAttributes().put(attributeName, methodExpression);
                 }
                 

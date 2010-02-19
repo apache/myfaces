@@ -22,14 +22,18 @@ import javax.el.ELException;
 import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
-import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.Location;
+import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagAttributeException;
 
+import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 import org.apache.myfaces.view.facelets.el.ELText;
+import org.apache.myfaces.view.facelets.el.LocationMethodExpression;
+import org.apache.myfaces.view.facelets.el.LocationValueExpression;
 import org.apache.myfaces.view.facelets.el.TagMethodExpression;
 import org.apache.myfaces.view.facelets.el.TagValueExpression;
+import org.apache.myfaces.view.facelets.el.ValueExpressionMethodExpression;
 
 /**
  * Representation of a Tag's attribute in a Facelet File
@@ -153,6 +157,8 @@ public final class TagAttributeImpl extends TagAttribute
     {
         try
         {
+            MethodExpression methodExpression = null;
+            
             // From this point we can suppose this attribute contains a ELExpression
             // Now we have to check if the expression points to a composite component attribute map
             // and if so deal with it as an indirection.
@@ -162,13 +168,25 @@ public final class TagAttributeImpl extends TagAttribute
                 // create a pointer that are referred to the real one that is created in other side
                 // (see VDL.retargetMethodExpressions for details)
                 ValueExpression valueExpr = this.getValueExpression(ctx, MethodExpression.class);
-                return new TagValueExpressionMethodExpression(this, valueExpr);
+                methodExpression = new ValueExpressionMethodExpression(valueExpr);
             }
             else
             {
                 ExpressionFactory f = ctx.getExpressionFactory();
-                return new TagMethodExpression(this, f.createMethodExpression(ctx, this.value, type, paramTypes));
+                methodExpression = f.createMethodExpression(ctx, this.value, type, paramTypes);
+                    
+                // if the MethodExpression contains a reference to the current composite
+                // component, the Location also has to be stored in the MethodExpression 
+                // to be able to resolve the right composite component (the one that was
+                // created from the file the Location is pointing to) later.
+                // (see MYFACES-2561 for details)
+                if (CompositeComponentELUtils.isCompositeComponentExpression(this.value))
+                {
+                    methodExpression = new LocationMethodExpression(getLocation(), methodExpression);
+                }
             }
+            
+            return new TagMethodExpression(this, methodExpression);
         }
         catch (Exception e)
         {
@@ -196,7 +214,7 @@ public final class TagAttributeImpl extends TagAttribute
         }
         return false;
     }
-
+    
     /**
      * The resolved Namespace for this attribute
      * 
@@ -323,7 +341,19 @@ public final class TagAttributeImpl extends TagAttribute
         try
         {
             ExpressionFactory f = ctx.getExpressionFactory();
-            return new TagValueExpression(this, f.createValueExpression(ctx, this.value, type));
+            ValueExpression valueExpression = f.createValueExpression(ctx, this.value, type);
+            
+            // if the ValueExpression contains a reference to the current composite
+            // component, the Location also has to be stored in the ValueExpression 
+            // to be able to resolve the right composite component (the one that was
+            // created from the file the Location is pointing to) later.
+            // (see MYFACES-2561 for details)
+            if (CompositeComponentELUtils.isCompositeComponentExpression(this.value))
+            {
+                valueExpression = new LocationValueExpression(getLocation(), valueExpression);
+            }
+            
+            return new TagValueExpression(this, valueExpression);
         }
         catch (Exception e)
         {

@@ -128,7 +128,13 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
      * where the definition of this component is.
      */
     public static final String VIEW_LOCATION_KEY = "javax.faces.component.VIEW_LOCATION_KEY";
+    
+    /**
+     * The key under which the component stack is stored in the FacesContext.
+     * ATTENTION: this constant is duplicate in CompositeComponentExpressionUtils.
+     */
     private static final String _COMPONENT_STACK = "componentStack:" + UIComponent.class.getName();
+    
     Map<Class<? extends SystemEvent>, List<SystemEventListener>> _systemEventListenerClassMap;
     
     /**

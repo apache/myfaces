@@ -22,6 +22,9 @@ import java.beans.FeatureDescriptor;
 
 import javax.el.ELContext;
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+
+import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 
 /**
  * Encapsulates information needed by the ImplicitObjectResolver
@@ -42,7 +45,18 @@ public class CompositeComponentImplicitObject extends ImplicitObject
     @Override
     public Object getValue(ELContext context)
     {
-        return UIComponent.getCurrentCompositeComponent(facesContext(context));
+        FacesContext facesContext = facesContext(context);
+        
+        // Look for the attribute set by LocationValueExpression
+        // or LocationMethodExpression on the FacesContext
+        UIComponent cc = (UIComponent) facesContext.getAttributes()
+                .get(CompositeComponentELUtils.CURRENT_COMPOSITE_COMPONENT_KEY);
+        if (cc == null)
+        {
+            // take the composite component from the stack
+            cc = UIComponent.getCurrentCompositeComponent(facesContext(context));
+        }
+        return cc;
     }
 
     @Override

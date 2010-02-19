@@ -34,6 +34,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
+import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
 
 /**
@@ -156,6 +157,11 @@ public class InterfaceHandler extends TagHandler
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {
+        // Store the current Location on the parent (the location is needed
+        // to resolve the related composite component via #{cc} properly).
+        _getCompositeBaseParent(parent).getAttributes()
+                .put(CompositeComponentELUtils.LOCATION_KEY, this.tag.getLocation());
+        
         // Only apply if we are building composite component metadata,
         // in other words we are calling ViewDeclarationLanguage.getComponentMetadata
         if ( ((AbstractFaceletContext)ctx).isBuildingCompositeComponentMetadata())
