@@ -472,6 +472,11 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
 
             // Set the id of the facet to be target
             facet.setId(target);
+            
+            // From jsr-314-open list it was made clear this facet is transient,
+            // because all component resources does not change its inner state between
+            // requests
+            facet.setTransient(true);
 
             // Add the facet to the facets Map using target as the key
             getFacets().put(target, facet);
