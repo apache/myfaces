@@ -48,12 +48,15 @@ public class LifecycleImpl extends Lifecycle
 {
     //private static final Log log = LogFactory.getLog(LifecycleImpl.class);
     private static final Logger log = Logger.getLogger(LifecycleImpl.class.getName());
-
+    
+    private static final String FIRST_REQUEST_EXECUTED_PARAM = "org.apache.myfaces.lifecycle.first.request.processed";
+    
     private PhaseExecutor[] lifecycleExecutors;
     private PhaseExecutor renderExecutor;
 
     private final List<PhaseListener> _phaseListenerList = new ArrayList<PhaseListener>();
 
+    private boolean _firstRequestExecuted = false;
     /**
      * Lazy cache for returning _phaseListenerList as an Array.
      */
@@ -81,7 +84,9 @@ public class LifecycleImpl extends Lifecycle
             WebXml.update(facesContext.getExternalContext());
     
             new FacesConfigurator(facesContext.getExternalContext()).update();
-    
+
+            requestStarted(facesContext);
+            
             PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, facesContext, getPhaseListeners());
             for (PhaseExecutor executor : lifecycleExecutors)
             {
@@ -152,6 +157,7 @@ public class LifecycleImpl extends Lifecycle
             phaseListenerMgr.informPhaseListenersAfter(currentPhaseId);
             
             flash.doPostPhaseActions(context);
+            
         }
         
         context.getExceptionHandler().handle();
@@ -312,6 +318,20 @@ public class LifecycleImpl extends Lifecycle
         ExceptionQueuedEventContext context = new ExceptionQueuedEventContext (facesContext, e, null, phaseId);
         
         facesContext.getApplication().publishEvent (facesContext, ExceptionQueuedEvent.class, context);
+    }
+    
+    /*
+     * this method places an attribiuet on the application map to indicate that the first request has been processed. This
+     * attribute is used by several methods in ApplicationImpl to determine whether or not to throw an illegalStateException
+     */
+    private void requestStarted(FacesContext facesContext)
+    {
+        if(!_firstRequestExecuted)
+        {
+            _firstRequestExecuted = true;
+
+            facesContext.getExternalContext().getApplicationMap().put(FIRST_REQUEST_EXECUTED_PARAM, Boolean.TRUE);
+        }        
     }
 
 }

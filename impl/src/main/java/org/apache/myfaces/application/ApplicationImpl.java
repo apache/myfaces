@@ -138,6 +138,7 @@ public class ApplicationImpl extends Application
             since="2.0")
     private static final String PROJECT_STAGE_PARAM_NAME = "javax.faces.PROJECT_STAGE";
 
+    private static final String FIRST_REQUEST_EXECUTED_PARAM = "org.apache.myfaces.lifecycle.first.request.processed";
 
     // ~ Instance fields
     // --------------------------------------------------------------------------
@@ -182,6 +183,8 @@ public class ApplicationImpl extends Application
 
     private ProjectStage _projectStage;
 
+    private boolean _firstRequestProcessed = false;
+    
     // ~ Constructors
     // --------------------------------------------------------------------------
     // -----
@@ -759,6 +762,10 @@ public class ApplicationImpl extends Application
     {
         checkNull(resourceHandler, "resourceHandler");
 
+        if(isFirstRequestProcessed())
+        {
+            throw new IllegalStateException("setResourceHandler may not be executed after a lifecycle request has been completed");
+        }
         _resourceHandler = resourceHandler;
     }
 
@@ -825,6 +832,10 @@ public class ApplicationImpl extends Application
     {
         checkNull(viewHandler, "viewHandler");
 
+        if(isFirstRequestProcessed())
+        {
+            throw new IllegalStateException("setViewHandler may not be executed after a lifecycle request has been completed");
+        }
         _viewHandler = viewHandler;
         if (log.isLoggable(Level.FINEST))
             log.finest("set ViewHandler = " + viewHandler.getClass().getName());
@@ -1648,6 +1659,11 @@ public class ApplicationImpl extends Application
     {
         checkNull(stateManager, "stateManager");
 
+        if(isFirstRequestProcessed())
+        {
+            throw new IllegalStateException("setStateManager may not be executed after a lifecycle request has been completed");
+        }
+        
         _stateManager = stateManager;
     }
 
@@ -1915,6 +1931,24 @@ public class ApplicationImpl extends Application
         return event;
     }
 
+    /**
+     * Method to handle determining if the first request has been handled by the associated lifecycleImpl
+     * @return true if the first request has already been processed, false otherwise
+     */
+    private boolean isFirstRequestProcessed()
+    {
+        FacesContext context = FacesContext.getCurrentInstance();
+        
+        //if firstRequestProcessed is not set, check the application map
+        if(!_firstRequestProcessed && context != null && context.getExternalContext().getApplicationMap().containsKey(FIRST_REQUEST_EXECUTED_PARAM))
+        {
+            _firstRequestProcessed = true;
+        }
+        return _firstRequestProcessed;
+
+        
+    }
+    
     private static class SystemListenerEntry
     {
         private List<SystemEventListener> _lstSystemEventListener;
