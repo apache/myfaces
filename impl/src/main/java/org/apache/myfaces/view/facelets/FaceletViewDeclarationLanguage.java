@@ -47,7 +47,6 @@ import javax.faces.application.ProjectStage;
 import javax.faces.application.Resource;
 import javax.faces.application.StateManager;
 import javax.faces.application.ViewHandler;
-import javax.faces.component.ActionSource;
 import javax.faces.component.ActionSource2;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
@@ -861,7 +860,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                                 actionListener = new MethodExpressionActionListener(methodExpression, methodExpression);
                             }
                             
-                            ((ActionSource)innerComponent).addActionListener(actionListener);
+                            ((ActionSource2)innerComponent).addActionListener(actionListener);
                         }
                         else if ("validator".equals(attributeName))
                         {
