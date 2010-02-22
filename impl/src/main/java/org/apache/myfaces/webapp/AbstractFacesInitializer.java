@@ -139,6 +139,9 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
                 message.append("*******************************************************************\n");
                 log.log(Level.WARNING, message.toString());
             }
+            
+            releaseFacesContext();
+
         } catch (Exception ex) {
             log.log(Level.SEVERE, "An error occured while initializing MyFaces: "
                       + ex.getMessage(), ex);
@@ -179,7 +182,24 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
      */
     public void destroyFaces(ServletContext servletContext) {
         dispatchInitDestroyEvent(servletContext, PreDestroyApplicationEvent.class);
+        releaseFacesContext();
+
         // TODO is it possible to make a real cleanup?
+    }
+    
+    /**
+     * ensures faces context with dummy request/response objects is released so it doesn't get reused
+     */
+    
+    private void releaseFacesContext()
+    {        
+        //make sure that the facesContext gets released.  This is important in an OSGi environment 
+        FacesContext fc = null;
+        fc = FacesContext.getCurrentInstance();        
+        if(fc != null)
+        {
+            fc.release();
+        }        
     }
 
     /**
