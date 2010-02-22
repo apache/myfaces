@@ -159,6 +159,11 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
             }
             else if (UIComponent.isCompositeComponent(parent))
             {
+                if (getFor() == null)
+                {
+                    throw new TagException(_delegate.getTag(), "is nested inside a composite component"
+                            + " but does not have a for attribute.");
+                }
                 CompositeComponentResourceTagHandler.addAttachedObjectHandler(parent, _delegate);
             }
             else

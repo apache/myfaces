@@ -42,6 +42,7 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
@@ -168,6 +169,11 @@ public final class ActionListenerHandler extends TagHandler
         }
         else if (UIComponent.isCompositeComponent(parent))
         {
+            if (getAttribute(JSFAttr.FOR_ATTR) == null)
+            {
+                throw new TagException(tag, "is nested inside a composite component"
+                        + " but does not have a for attribute.");
+            }
             CompositeComponentResourceTagHandler.addAttachedObjectHandler(parent, this);
         }
         else
