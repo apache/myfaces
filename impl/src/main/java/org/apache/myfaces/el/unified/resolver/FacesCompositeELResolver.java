@@ -71,7 +71,7 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.Compos
         {
             return null;
         }
-        final Map<String, Object> requestMap = facesContext.getExternalContext().getRequestMap();
+        final Map<Object, Object> requestMap = facesContext.getAttributes();
         try
         {
             setScope(requestMap);
@@ -92,7 +92,7 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.Compos
         {
             return null;
         }
-        final Map<String, Object> requestMap = facesContext.getExternalContext().getRequestMap();
+        final Map<Object, Object> requestMap = facesContext.getAttributes();
         try
         {
             setScope(requestMap);
@@ -113,7 +113,7 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.Compos
         {
             return null;
         }
-        final Map<String, Object> requestMap = facesContext.getExternalContext().getRequestMap();
+        final Map<Object, Object> requestMap = facesContext.getAttributes();
         try
         {
             setScope(requestMap);
@@ -133,7 +133,7 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.Compos
         {
             return null;
         }
-        final Map<String, Object> requestMap = facesContext.getExternalContext().getRequestMap();
+        final Map<Object, Object> requestMap = facesContext.getAttributes();
         try
         {
             setScope(requestMap);
@@ -153,7 +153,7 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.Compos
         {
             return false;
         }
-        final Map<String, Object> requestMap = facesContext.getExternalContext().getRequestMap();
+        final Map<Object, Object> requestMap = facesContext.getAttributes();
         try
         {
             setScope(requestMap);
@@ -173,7 +173,7 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.Compos
         {
             return;
         }
-        final Map<String, Object> requestMap = facesContext.getExternalContext().getRequestMap();
+        final Map<Object, Object> requestMap = facesContext.getAttributes();
         try
         {
             setScope(requestMap);
@@ -186,13 +186,13 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.Compos
         }
     }
 
-    private void setScope(final Map<String, Object> requestMap)
+    private void setScope(final Map<Object, Object> attributes)
     {
-        requestMap.put(Scope.class.getName(), _scope);
+        attributes.put(Scope.class.getName(), _scope);
     }
 
-    private static void unsetScope(final Map<String, Object> requestMap)
+    private static void unsetScope(final Map<Object, Object> attributes)
     {
-        requestMap.remove(Scope.class.getName());
+        attributes.remove(Scope.class.getName());
     }
 }

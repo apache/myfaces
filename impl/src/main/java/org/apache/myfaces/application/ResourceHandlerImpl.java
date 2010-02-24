@@ -386,13 +386,12 @@ public class ResourceHandlerImpl extends ResourceHandler
         // Since this method could be called many times we save it
         //on request map so the first time is calculated it remains
         //alive until the end of the request
-        Boolean value = (Boolean) facesContext.getExternalContext()
-                .getRequestMap().get(IS_RESOURCE_REQUEST);
+        Boolean value = (Boolean) facesContext.getAttributes().get(IS_RESOURCE_REQUEST);
 
-        if (value != null && value.booleanValue())
+        if (value != null && value)
         {
             //return the saved value
-            return value.booleanValue();
+            return value;
         }
         else
         {
@@ -400,17 +399,14 @@ public class ResourceHandlerImpl extends ResourceHandler
                     .calculateResourceBasePath(facesContext);
 
             if (resourceBasePath != null
-                    && resourceBasePath
-                            .startsWith(ResourceHandler.RESOURCE_IDENTIFIER))
+                    && resourceBasePath.startsWith(ResourceHandler.RESOURCE_IDENTIFIER))
             {
-                facesContext.getExternalContext().getRequestMap().put(
-                        IS_RESOURCE_REQUEST, Boolean.TRUE);
+                facesContext.getAttributes().put(IS_RESOURCE_REQUEST, Boolean.TRUE);
                 return true;
             }
             else
             {
-                facesContext.getExternalContext().getRequestMap().put(
-                        IS_RESOURCE_REQUEST, Boolean.FALSE);
+                facesContext.getAttributes().put(IS_RESOURCE_REQUEST, Boolean.FALSE);
                 return false;
             }
         }

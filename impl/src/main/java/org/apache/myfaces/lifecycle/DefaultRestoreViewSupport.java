@@ -380,21 +380,19 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
      */
     protected FacesServletMapping getFacesServletMapping(FacesContext context)
     {
-        Map<String, Object> requestMap = context.getExternalContext().getRequestMap();
+        Map<Object, Object> attributes = context.getAttributes();
 
         // Has the mapping already been determined during this request?
-        if (!requestMap.containsKey(CACHED_SERVLET_MAPPING))
+        FacesServletMapping mapping = (FacesServletMapping) attributes.get(CACHED_SERVLET_MAPPING);
+        if (mapping == null)
         {
             ExternalContext externalContext = context.getExternalContext();
-            FacesServletMapping mapping =
-                calculateFacesServletMapping(
-                    externalContext.getRequestServletPath(),
+            mapping = calculateFacesServletMapping(externalContext.getRequestServletPath(),
                     externalContext.getRequestPathInfo());
 
-            requestMap.put(CACHED_SERVLET_MAPPING, mapping);
+            attributes.put(CACHED_SERVLET_MAPPING, mapping);
         }
-
-        return (FacesServletMapping) requestMap.get(CACHED_SERVLET_MAPPING);
+        return mapping;
     }
 
     /**

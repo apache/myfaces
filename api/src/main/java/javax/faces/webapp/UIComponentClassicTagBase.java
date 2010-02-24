@@ -223,15 +223,15 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         }
         else
         {
-            Map<String,Object> requestMap = getFacesContext().getExternalContext().getRequestMap();
-            AtomicInteger logicalPageCounter = (AtomicInteger) requestMap.get(LOGICAL_PAGE_COUNTER);
+            Map<Object, Object> attributeMap = getFacesContext().getAttributes();
+            AtomicInteger logicalPageCounter = (AtomicInteger) attributeMap.get(LOGICAL_PAGE_COUNTER);
             
             if (logicalPageCounter == null)
             {
                 //We are processing the first component tag. 
                 logicalPageCounter = new AtomicInteger(1);
                 logicalPageId = 1;
-                requestMap.put(LOGICAL_PAGE_COUNTER, logicalPageCounter);
+                attributeMap.put(LOGICAL_PAGE_COUNTER, logicalPageCounter);
                 pageContext.setAttribute(LOGICAL_PAGE_ID, logicalPageId);
             }
             else
@@ -861,25 +861,25 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
     @SuppressWarnings("unchecked")
     private Map<String, Object> getViewComponentIds()
     {
-        Map<String, Object> requestMap = _facesContext.getExternalContext().getRequestMap();
+        Map<Object, Object> attributes = _facesContext.getAttributes();
         Map<String, Object> viewComponentIds;
 
         if (_parent == null)
         {
             // top level _componentInstance
             viewComponentIds = new HashMap<String, Object>();
-            requestMap.put(VIEW_IDS, viewComponentIds);
+            attributes.put(VIEW_IDS, viewComponentIds);
         }
         else
         {
-            viewComponentIds = (Map<String, Object>)requestMap.get(VIEW_IDS);
+            viewComponentIds = (Map<String, Object>) attributes.get(VIEW_IDS);
             
             // Check if null, this can happen if someone programatically tries to do an include of a 
             // JSP fragment. This code will prevent NullPointerException from happening in such cases.
             if (viewComponentIds == null)
             {
                 viewComponentIds = new HashMap<String, Object>();
-                requestMap.put(VIEW_IDS, viewComponentIds);
+                attributes.put(VIEW_IDS, viewComponentIds);
             }
         }
 
@@ -1279,17 +1279,17 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
 
     private String createNextId(String componentId)
     {
-        Integer currentCounter = (Integer)getFacesContext().getExternalContext().getRequestMap().get(componentId);
+        Integer currentCounter = (Integer) getFacesContext().getAttributes().get(componentId);
 
         int iCurrentCounter = 1;
 
         if (currentCounter != null)
         {
-            iCurrentCounter = currentCounter.intValue();
+            iCurrentCounter = currentCounter;
             iCurrentCounter++;
         }
 
-        getFacesContext().getExternalContext().getRequestMap().put(componentId, new Integer(iCurrentCounter));
+        getFacesContext().getAttributes().put(componentId, iCurrentCounter);
 
         //if (isIncludedOrForwarded())
         //{
@@ -1322,14 +1322,14 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
     private Set<String> getPreviousJspIdsSet()
     {
         Set<String> previousJspIdsSet =
-                (Set<String>)getFacesContext().getExternalContext().getRequestMap().get(PREVIOUS_JSP_IDS_SET);
+                (Set<String>)getFacesContext().getAttributes().get(PREVIOUS_JSP_IDS_SET);
 
         if (previousJspIdsSet == null)
         {
             previousJspIdsSet = new HashSet<String>();
             // Add it to the context! The next time is called
             // this method it takes the ref from the RequestContext
-            getFacesContext().getExternalContext().getRequestMap().put(PREVIOUS_JSP_IDS_SET, previousJspIdsSet);
+            getFacesContext().getAttributes().put(PREVIOUS_JSP_IDS_SET, previousJspIdsSet);
         }
 
         return previousJspIdsSet;

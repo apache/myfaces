@@ -82,6 +82,6 @@ public final class VariableResolverImpl extends VariableResolver
 
     protected Scope getScope(final FacesContext context)
     {
-        return (Scope) context.getExternalContext().getRequestMap().get(Scope.class.getName());
+        return (Scope) context.getAttributes().get(Scope.class.getName());
     }
 }
