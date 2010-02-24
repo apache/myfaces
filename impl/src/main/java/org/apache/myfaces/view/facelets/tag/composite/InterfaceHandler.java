@@ -33,7 +33,6 @@ import javax.faces.view.facelets.TagHandler;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
-import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
 
@@ -239,7 +238,7 @@ public class InterfaceHandler extends TagHandler
             // to instantiate the base component for this composite component. It should be
             // as family javax.faces.NamingContainer .
             descriptor.setValue(UIComponent.COMPOSITE_COMPONENT_TYPE_KEY, 
-                    _componentType.getValue(ctx));
+                    _componentType.getValueExpression(ctx, String.class));
         }
         if (_displayName != null)
         {
