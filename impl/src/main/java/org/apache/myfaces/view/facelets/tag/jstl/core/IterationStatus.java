@@ -43,11 +43,13 @@ public final class IterationStatus implements Serializable
     private final Integer end;
 
     private final Integer step;
-
+    
+    private final Object value;
+    
     /**
      * 
      */
-    public IterationStatus(boolean first, boolean last, int index, Integer begin, Integer end, Integer step)
+    public IterationStatus(boolean first, boolean last, int index, Integer begin, Integer end, Integer step, Object value)
     {
         this.index = index;
         this.begin = begin;
@@ -55,6 +57,7 @@ public final class IterationStatus implements Serializable
         this.step = step;
         this.first = first;
         this.last = last;
+        this.value = value;
     }
 
     public boolean isFirst()
@@ -71,7 +74,21 @@ public final class IterationStatus implements Serializable
     {
         return begin;
     }
-
+    
+    public Integer getCount()
+    {
+        if ((step == null) || (step == 1)) {
+            return (index + 1);
+        }
+        
+        return ((index / step) + 1);
+    }
+    
+    public Object getCurrent()
+    {
+        return value;
+    }
+    
     public Integer getEnd()
     {
         return end;
