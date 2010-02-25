@@ -24,7 +24,6 @@ import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.ViewDeclarationLanguageFactory;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguageStrategy;
 import org.apache.myfaces.view.jsp.JspViewDeclarationLanguageStrategy;
 
@@ -44,8 +43,6 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
      */
     @JSFWebConfigParam(since="2.0", defaultValue="false", expectedValues="true,false")
     public static final String PARAM_DISABLE_JSF_FACELET = "javax.faces.DISABLE_FACELET_JSF_VIEWHANDLER";
-    
-    private static final String FACELETS_1_VIEW_HANDLER = "com.sun.facelets.FaceletViewHandler";
     
     private boolean _initialized;
     private ViewDeclarationLanguageStrategy[] _supportedLanguages;
@@ -112,7 +109,6 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
     /**
      * Determines if the current application uses Facelets-2.
      * To accomplish that it looks at the init param javax.faces.DISABLE_FACELET_JSF_VIEWHANDLER,
-     * at the version attribute of the faces-config
      * and it also looks if the Facelets-1 ViewHandler com.sun.facelets.FaceletViewHandler is present. 
      * 
      * @return <code>true</code> if the current application uses the built in Facelets-2,
@@ -123,10 +119,7 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
         FacesContext context = FacesContext.getCurrentInstance();
         String param = context.getExternalContext().getInitParameter(PARAM_DISABLE_JSF_FACELET);
         boolean facelets2ParamDisabled = (param != null && Boolean.parseBoolean(param.toLowerCase()));
-        boolean jsf20 = "2.0".equals(RuntimeConfig.getCurrentInstance(context.getExternalContext()).getFacesVersion());
-        boolean facelets1ViewHandlerPresent  = context.getApplication().getViewHandler()
-                                                   .getClass().getName().equals(FACELETS_1_VIEW_HANDLER);
         
-        return !facelets2ParamDisabled && jsf20 && !facelets1ViewHandlerPresent;
+        return !facelets2ParamDisabled;
     }
 }
