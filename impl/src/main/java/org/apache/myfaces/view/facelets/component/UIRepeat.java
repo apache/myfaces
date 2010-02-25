@@ -658,7 +658,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
 
         public void populate(EditableValueHolder evh)
         {
-            _value = evh.getValue();
+            _value = evh.getLocalValue();
             _valid = evh.isValid();
             _submittedValue = evh.getSubmittedValue();
             _localValueSet = evh.isLocalValueSet();
