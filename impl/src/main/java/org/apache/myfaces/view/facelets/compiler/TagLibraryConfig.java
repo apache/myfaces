@@ -26,7 +26,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.FacesException;
-import javax.faces.application.ProjectStage;
 import javax.faces.application.Resource;
 import javax.faces.application.ResourceHandler;
 import javax.faces.context.FacesContext;
@@ -253,7 +252,7 @@ public final class TagLibraryConfig
      * a pre-2.0 document.  If it is, we really need to construct a DTD validating, non-namespace
      * aware parser. Otherwise, we have to construct a schema validating, namespace-aware parser.
      */
-    private static class VersionCheckHandler extends DefaultHandler
+    /*private static class VersionCheckHandler extends DefaultHandler
     {
         private boolean version20OrLater;
         
@@ -287,7 +286,7 @@ public final class TagLibraryConfig
                 //throw new SAXException();
             }
         }
-    }
+    }*/
     
     private static class LibraryHandler extends DefaultHandler
     {
@@ -321,8 +320,6 @@ public final class TagLibraryConfig
         
         private String compositeLibraryName;
         
-        private boolean version20OrLater;
-
         public LibraryHandler(URL source)
         {
             this.source = source;
@@ -331,11 +328,7 @@ public final class TagLibraryConfig
 
         public TagLibrary getLibrary()
         {
-            if (this.version20OrLater)
-            {
-                return this.library;
-            }
-            return null;
+            return this.library;
         }
 
         public void endElement(String uri, String localName, String qName) throws SAXException
@@ -346,10 +339,6 @@ public final class TagLibraryConfig
                 {
                     ; // Nothing to do
                 }                
-                else if (!version20OrLater)
-                {
-                    return;
-                }
                 else if ("library-class".equals(qName))
                 {
                     this.processLibraryClass();
@@ -602,25 +591,6 @@ public final class TagLibraryConfig
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
         {
             this.buffer.setLength(0);
-            if ("facelet-taglib".equals(qName))
-            {
-                int length = attributes.getLength();
-                
-                for (int i = 0; i < length; ++i)
-                {
-                    if (attributes.getLocalName (i).equals ("version"))
-                    {
-                        // This document has a "version" attribute in the <facelet-taglib> element, so
-                        // it must be a 2.0 or later document as this attribute was never required before.
-
-                        this.version20OrLater = true;
-                    }
-                }
-            }
-            else if (!version20OrLater)
-            {
-                return;
-            }
             if ("tag".equals(qName))
             {
                 this.handlerClass = null;
