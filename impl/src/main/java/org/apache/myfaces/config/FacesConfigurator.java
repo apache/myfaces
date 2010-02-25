@@ -53,6 +53,7 @@ import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
 import javax.faces.application.ApplicationFactory;
+import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.NavigationHandler;
 import javax.faces.application.ResourceHandler;
 import javax.faces.application.StateManager;
@@ -76,6 +77,7 @@ import javax.faces.webapp.FacesServlet;
 
 import org.apache.myfaces.application.ApplicationFactoryImpl;
 import org.apache.myfaces.application.ApplicationImpl;
+import org.apache.myfaces.application.BackwardsCompatibleNavigationHandlerWrapper;
 import org.apache.myfaces.component.visit.VisitContextFactoryImpl;
 import org.apache.myfaces.config.annotation.AnnotationConfigurator;
 import org.apache.myfaces.config.element.Behavior;
@@ -1869,6 +1871,8 @@ public class FacesConfigurator
         }
 
         application.setNavigationHandler(getApplicationObject(NavigationHandler.class,
+                                                              ConfigurableNavigationHandler.class,
+                                                              BackwardsCompatibleNavigationHandlerWrapper.class,
                                                               dispenser.getNavigationHandlerIterator(),
                                                               application.getNavigationHandler()));
 
@@ -2039,10 +2043,34 @@ public class FacesConfigurator
     {
         _runtimeConfig = runtimeConfig;
     }
-
+    
     private <T> T getApplicationObject(Class<T> interfaceClass, Collection<String> classNamesIterator, T defaultObject)
     {
+        return getApplicationObject(interfaceClass, null, null, classNamesIterator, defaultObject);
+    }
+
+    /**
+     * Creates ApplicationObjects like NavigationHandler or StateManager and creates 
+     * the right wrapping chain of the ApplicationObjects known as the decorator pattern. 
+     * @param <T>
+     * @param interfaceClass The class from which the implementation has to inherit from.
+     * @param extendedInterfaceClass A subclass of interfaceClass which specifies a more
+     *                               detailed implementation.
+     * @param extendedInterfaceWrapperClass A wrapper class for the case that you have an ApplicationObject
+     *                                      which only implements the interfaceClass but not the 
+     *                                      extendedInterfaceClass.
+     * @param classNamesIterator All the class names of the actual ApplicationObject implementations
+     *                           from the faces-config.xml.
+     * @param defaultObject The default implementation for the given ApplicationObject.
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    private <T> T getApplicationObject(Class<T> interfaceClass, Class<? extends T> extendedInterfaceClass,
+            Class<? extends T> extendedInterfaceWrapperClass,
+            Collection<String> classNamesIterator, T defaultObject)
+    {
         T current = defaultObject;
+        
 
         for (String implClassName : classNamesIterator)
         {
@@ -2062,15 +2090,37 @@ public class FacesConfigurator
             else
             {
                 // let's check if class supports the decorator pattern
+                T newCurrent = null;
                 try
                 {
-                    Constructor<? extends T> delegationConstructor = 
-                        implClass.getConstructor(new Class[] {interfaceClass});
-                    // impl class supports decorator pattern,
+                    Constructor<? extends T> delegationConstructor = null;
+                    
+                    // first, if there is a extendedInterfaceClass,
+                    // try to find a constructor that uses that
+                    if (extendedInterfaceClass != null 
+                            && extendedInterfaceClass.isAssignableFrom(current.getClass()))
+                    {
+                        try
+                        {
+                            delegationConstructor = 
+                                    implClass.getConstructor(new Class[] {extendedInterfaceClass});
+                        }
+                        catch (NoSuchMethodException mnfe)
+                        {
+                            // just eat it
+                        }
+                    }
+                    if (delegationConstructor == null)
+                    {
+                        // try to find the constructor with the "normal" interfaceClass
+                        delegationConstructor = 
+                                implClass.getConstructor(new Class[] {interfaceClass});
+                    }
+                    // impl class supports decorator pattern at this point
                     try
                     {
                         // create new decorator wrapping current
-                        current = delegationConstructor.newInstance(new Object[] { current });
+                        newCurrent = delegationConstructor.newInstance(new Object[] { current });
                     }
                     catch (InstantiationException e)
                     {
@@ -2091,8 +2141,45 @@ public class FacesConfigurator
                 catch (NoSuchMethodException e)
                 {
                     // no decorator pattern support
-                    current = (T) ClassUtils.newInstance(implClass);
+                    newCurrent = (T) ClassUtils.newInstance(implClass);
                 }
+                
+                // now we have a new current object (newCurrent)
+                // --> find out if it is assignable from extendedInterfaceClass
+                // and if not, wrap it in a backwards compatible wrapper (if available)
+                if (extendedInterfaceWrapperClass != null
+                        && !extendedInterfaceClass.isAssignableFrom(newCurrent.getClass()))
+                {
+                    try
+                    {
+                        Constructor<? extends T> wrapperConstructor
+                                = extendedInterfaceWrapperClass.getConstructor(
+                                        new Class[] {interfaceClass, extendedInterfaceClass});
+                        newCurrent = wrapperConstructor.newInstance(new Object[] {newCurrent, current});
+                    }
+                    catch (NoSuchMethodException e)
+                    {
+                        log.log(Level.SEVERE, e.getMessage(), e);
+                        throw new FacesException(e);
+                    }
+                    catch (InstantiationException e)
+                    {
+                        log.log(Level.SEVERE, e.getMessage(), e);
+                        throw new FacesException(e);
+                    }
+                    catch (IllegalAccessException e)
+                    {
+                        log.log(Level.SEVERE, e.getMessage(), e);
+                        throw new FacesException(e);
+                    }
+                    catch (InvocationTargetException e)
+                    {
+                        log.log(Level.SEVERE, e.getMessage(), e);
+                        throw new FacesException(e);
+                    }
+                }
+                
+                current = newCurrent;
             }
         }
 
