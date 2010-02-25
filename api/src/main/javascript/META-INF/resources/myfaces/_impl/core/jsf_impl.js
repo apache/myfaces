@@ -363,7 +363,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
 
         /*now we serve the queue as well*/
         this._eventListenerQueue.broadcastEvent(eventData);
-    }
+    };
 
     /**
      * processes the ajax response if the ajax request completes successfully
@@ -498,10 +498,14 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
             }
             //now if one function returns false in between we stop the execution of the cycle
             //here
-            if ('undefined' != typeof retVal && retVal === false) return;
-        }
+            if ('undefined' != typeof retVal && retVal === false) {
+                return false;
+            }
 
-    }
+        }
+        return true;
+
+    };
 
     // singleton
     myfaces.ajax = new myfaces._impl.core._jsfImpl();
