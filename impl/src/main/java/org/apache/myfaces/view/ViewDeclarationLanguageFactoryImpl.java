@@ -96,11 +96,12 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
     {
         if (!_initialized)
         {
-        	FacesContext context = FacesContext.getCurrentInstance();
+            FacesContext context = FacesContext.getCurrentInstance();
+
             if (isFacelets2Enabled(context))
             {
-            	logWarningIfLegacyFaceletViewHandlerIsPresent(context);
-            	
+                logWarningIfLegacyFaceletViewHandlerIsPresent(context);
+
                 _supportedLanguages = new ViewDeclarationLanguageStrategy[2];
                 _supportedLanguages[0] = new FaceletViewDeclarationLanguageStrategy();
                 _supportedLanguages[1] = new JspViewDeclarationLanguageStrategy();
