@@ -115,7 +115,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
                 ProjectStage projectStage = FacesContext.getCurrentInstance().getApplication().getProjectStage();
                 StringBuilder message = new StringBuilder("\n\n");
                 message.append("*******************************************************************\n");
-                message.append("*** WARNING: JavaServer Faces is running in ");
+                message.append("*** WARNING: Apache MyFaces-2 is running in ");
                 message.append(projectStage.name().toUpperCase());        
                 message.append(" mode.");
                 int length = projectStage.name().length();
