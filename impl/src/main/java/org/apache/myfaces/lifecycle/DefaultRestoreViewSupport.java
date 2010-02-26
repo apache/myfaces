@@ -260,9 +260,12 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
          */
         String uri = viewId;
         prefix = prefix + '/';  //need to make sure its really /faces/* and not /facesPage.xhtml
-        while (uri.startsWith(prefix)) 
+        while (uri.startsWith(prefix) || uri.startsWith("//")) 
         {
-            uri = uri.substring(prefix.length() - 1);    //cut off only /faces, leave the trailing '/' char for the next iteration
+            if(uri.startsWith(prefix))
+                    uri = uri.substring(prefix.length() - 1);    //cut off only /faces, leave the trailing '/' char for the next iteration
+            else //uri starts with '//'
+                uri = uri.substring(1); //cut off the leading slash, leaving the second slash to compare for the next iteration
         }
         //now delete any remaining leading '/'
         // TODO: CJH: I don't think this is correct, considering that getActionURL() expects everything to
