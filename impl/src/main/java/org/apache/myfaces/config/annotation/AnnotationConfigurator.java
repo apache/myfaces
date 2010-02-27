@@ -52,8 +52,7 @@ import javax.faces.component.behavior.Behavior;
 import javax.faces.component.behavior.FacesBehavior;
 import javax.faces.context.ExternalContext;
 import javax.faces.convert.FacesConverter;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.NamedEvent;
+import javax.faces.event.*;
 import javax.faces.render.ClientBehaviorRenderer;
 import javax.faces.render.FacesBehaviorRenderer;
 import javax.faces.render.FacesRenderer;
@@ -152,6 +151,8 @@ public class AnnotationConfigurator
         bcan.add("Ljavax/faces/render/FacesRenderer;");
         bcan.add("Ljavax/faces/bean/ManagedBean;");
         bcan.add("Ljavax/faces/event/NamedEvent;");
+        bcan.add("Ljavax/faces/event/ListenerFor;");
+        bcan.add("Ljavax/faces/event/ListenersFor;");
         bcan.add("Ljavax/faces/render/FacesBehaviorRenderer;");
 
         byteCodeAnnotationsNames = Collections.unmodifiableSet(bcan);
@@ -972,10 +973,53 @@ public class AnnotationConfigurator
                 throw new FacesException (e);
             }
         }
-        
+
+        ListenerFor listenerFor = (ListenerFor) clazz.getAnnotation(ListenerFor.class);
+        if (listenerFor != null)
+        {
+            processListenerFor(application, clazz, listenerFor);
+        }
+
+        ListenersFor listenersFor = (ListenersFor) clazz.getAnnotation(ListenersFor.class);
+        if (listenersFor != null)
+        {
+            for (ListenerFor item : listenersFor.value())
+            {
+                processListenerFor(application, clazz, item);
+            }
+        }
+
         // TODO: All annotations scanned at startup must be configured here!
     }
-    
+
+    private void processListenerFor(Application application, Class clazz, ListenerFor listenerFor)
+    {
+        try
+        {
+            if (SystemEventListener.class.isAssignableFrom(clazz))
+            {
+                Class sourceClass = listenerFor.sourceClass();
+                Class<? extends SystemEvent> systemEventClass = listenerFor.systemEventClass();
+                if (Void.class.equals(sourceClass))
+                {
+                    application.subscribeToEvent(systemEventClass, (SystemEventListener) clazz.newInstance());
+                }
+                else
+                {
+                    application.subscribeToEvent(systemEventClass, sourceClass, (SystemEventListener) clazz.newInstance());
+                }
+            }
+        }
+        catch (InstantiationException e)
+        {
+            throw new FacesException(e);
+        }
+        catch (IllegalAccessException e)
+        {
+            throw new FacesException(e);
+        }
+    }
+
     /**
      * <p>Return an array of all <code>Field</code>s reflecting declared
      * fields in this class, or in any superclass other than
