@@ -379,7 +379,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
             validateEmptyFields = validateEmptyFields.toLowerCase();
         }
 
-        if (validateEmptyFields.equals("auto") && _ExternalSpecifications.isBeanValidationAvailable)
+        if (validateEmptyFields.equals("auto") && _ExternalSpecifications.isBeanValidationAvailable())
         {
             return true;
         }

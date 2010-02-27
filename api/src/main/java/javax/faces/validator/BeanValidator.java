@@ -37,8 +37,9 @@ import javax.validation.ValidatorFactory;
 import javax.validation.groups.Default;
 import javax.validation.metadata.BeanDescriptor;
 import java.beans.FeatureDescriptor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
-import java.util.logging.Logger;
 
 /**
  * <p>
@@ -61,8 +62,7 @@ import java.util.logging.Logger;
 public class BeanValidator implements Validator, PartialStateHolder
 {
 
-    //private static final Log log = LogFactory.getLog(BeanValidator.class);
-    private static final Logger log = Logger.getLogger(BeanValidator.class.getName());
+//    private static final Logger log = Logger.getLogger(BeanValidator.class.getName());
 
     /**
      * Converter ID, as defined by the JSF 2.0 specification.
@@ -112,54 +112,59 @@ public class BeanValidator implements Validator, PartialStateHolder
     /**
      * {@inheritDoc}
      */
-    public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException
+    public void validate(final FacesContext context, final UIComponent component, final Object value) throws ValidatorException
     {
         if (context == null) throw new NullPointerException("context");
         if (component == null) throw new NullPointerException("component");
 
         // Obtain a reference to the to-be-validated object and the property name.
-        ValueReferenceWrapper valueReferenceWrapper = getValueReference(component, context);
-        if (valueReferenceWrapper == null)
+        final ValueReferenceWrapper reference = getValueReference(component, context);
+        if (reference == null)
         {
             return;
         }
-        Class<?> valueBaseClass = valueReferenceWrapper.getBase().getClass();
-        String valueProperty = (String) valueReferenceWrapper.getProp();
+        final Object base = reference.getBase();
+        if (base == null)
+        {
+            return;
+        }
+        final Class<?> valueBaseClass = base.getClass();
+        final String valueProperty = (String) reference.getProperty();
         if (valueBaseClass == null || valueProperty == null)
         {
             return;
         }
 
         // Initialize Bean Validation.
-        ValidatorFactory validatorFactory = createValidatorFactory(context);
-        javax.validation.Validator validator = createValidator(validatorFactory);
-        BeanDescriptor beanDescriptor = validator.getConstraintsForClass(valueBaseClass);
+        final ValidatorFactory validatorFactory = createValidatorFactory(context);
+        final javax.validation.Validator validator = createValidator(validatorFactory);
+        final BeanDescriptor beanDescriptor = validator.getConstraintsForClass(valueBaseClass);
         if (!beanDescriptor.isBeanConstrained())
         {
             return;
         }
         
         // Note that validationGroupsArray was initialized when createValidator was called
-        Class[] validationGroupsArray = this.validationGroupsArray;
+        final Class[] validationGroupsArray = this.validationGroupsArray;
 
         // Delegate to Bean Validation.
-        Set constraintViolations = validator.validateValue(valueBaseClass, valueProperty, value, validationGroupsArray);
+        final Set constraintViolations = validator.validateValue(valueBaseClass, valueProperty, value, validationGroupsArray);
         if (!constraintViolations.isEmpty())
         {
-            Set<FacesMessage> messages = new LinkedHashSet<FacesMessage>(constraintViolations.size());
+            final Set<FacesMessage> messages = new LinkedHashSet<FacesMessage>(constraintViolations.size());
             for (Object violation: constraintViolations)
             {
-                ConstraintViolation constraintViolation = (ConstraintViolation) violation;
-                String message = constraintViolation.getMessage();
-                String[] args = new String[]{ message, _MessageUtils.getLabel(context, component) };
-                FacesMessage msg = _MessageUtils.getErrorMessage(context, MESSAGE_ID, args);
+                final ConstraintViolation constraintViolation = (ConstraintViolation) violation;
+                final String message = constraintViolation.getMessage();
+                final String[] args = new String[]{ message, _MessageUtils.getLabel(context, component) };
+                final FacesMessage msg = _MessageUtils.getErrorMessage(context, MESSAGE_ID, args);
                 messages.add(msg);
             }
             throw new ValidatorException(messages);
         }
     }
 
-    private javax.validation.Validator createValidator(ValidatorFactory validatorFactory)
+    private javax.validation.Validator createValidator(final ValidatorFactory validatorFactory)
     {
         // Set default validation group when setValidationGroups has not been called.
         // The null check is there to prevent it from happening twice.
@@ -182,18 +187,58 @@ public class BeanValidator implements Validator, PartialStateHolder
      * @param context The FacesContext.
      * @return A ValueReferenceWrapper with the necessary information about the ValueReference.
      */
-    private ValueReferenceWrapper getValueReference(UIComponent component, FacesContext context)
+    private ValueReferenceWrapper getValueReference(final UIComponent component, final FacesContext context)
     {
+        final ValueExpression valueExpression = component.getValueExpression("value");
+        final ELContext elCtx = context.getELContext();
         if (_ExternalSpecifications.isUnifiedELAvailable())
         {
-            //TODO: Implement when Unified EL for Java EE6 is available.
-            throw new FacesException("Unified EL for Java EE6 support is not yet implemented");
+            final ValueReference valueReference = getUELValueReference(valueExpression, elCtx);
+            if (valueReference == null)
+            {
+                return null;
+            }
+            return new ValueReferenceWrapper(valueReference.getBase(), valueReference.getProperty());
         }
         else
         {
-            ValueExpression valueExpression = component.getValueExpression("value");
-            ELContext elCtx = context.getELContext();
             return ValueReferenceResolver.resolve(valueExpression, elCtx);
+        }
+    }
+
+    private ValueReference getUELValueReference(final ValueExpression valueExpression, final ELContext elCtx)
+    {
+        final String methodName = "getValueReference";
+        final String methodSignature = valueExpression.getClass().getName() +
+                "." + methodName +
+                "(" + ELContext.class + ")";
+        try
+        {
+            final Method method = valueExpression.getClass().getMethod(methodName, ELContext.class);
+            if (!ValueReference.class.equals(method.getReturnType())
+             && !ValueReference.class.isAssignableFrom(method.getReturnType()))
+            {
+                throw new NoSuchMethodException(
+                        methodSignature +
+                        "doesn't return " + ValueReference.class +
+                        ", but " + method.getReturnType());
+            }
+            return (ValueReference) method.invoke(valueExpression, elCtx);
+        }
+        catch (NoSuchMethodException e)
+        {
+            throw new FacesException(
+                    "MyFaces indicates Unified EL is available, but method: " +
+                    methodSignature +
+                    " is not available", e);
+        }
+        catch (InvocationTargetException e)
+        {
+            throw new FacesException("Exception invoking " + methodSignature, e);
+        }
+        catch (IllegalAccessException e)
+        {
+            throw new FacesException("Exception invoking " + methodSignature, e);
         }
     }
 
@@ -210,11 +255,11 @@ public class BeanValidator implements Validator, PartialStateHolder
      */
     private synchronized ValidatorFactory createValidatorFactory(FacesContext context)
     {
-        Object ctx = context.getExternalContext().getContext();
+        final Object ctx = context.getExternalContext().getContext();
         if (ctx instanceof ServletContext)
         {
-            ServletContext servletCtx = (ServletContext) ctx;
-            Object attr = servletCtx.getAttribute(VALIDATOR_FACTORY_KEY);
+            final ServletContext servletCtx = (ServletContext) ctx;
+            final Object attr = servletCtx.getAttribute(VALIDATOR_FACTORY_KEY);
             if (attr != null)
             {
                 return (ValidatorFactory) attr;
@@ -223,7 +268,7 @@ public class BeanValidator implements Validator, PartialStateHolder
             {
                 if (_ExternalSpecifications.isBeanValidationAvailable())
                 {
-                    ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+                    final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
                     servletCtx.setAttribute(VALIDATOR_FACTORY_KEY, attr);
                     return factory;
                 }
@@ -251,8 +296,8 @@ public class BeanValidator implements Validator, PartialStateHolder
         }
         else
         {
-            String[] classes = this.validationGroups.split(VALIDATION_GROUPS_DELIMITER);
-            List<Class<?>> validationGroupsList = new ArrayList<Class<?>>(classes.length);
+            final String[] classes = this.validationGroups.split(VALIDATION_GROUPS_DELIMITER);
+            final List<Class<?>> validationGroupsList = new ArrayList<Class<?>>(classes.length);
 
             for (String clazz : classes)
             {
@@ -261,7 +306,7 @@ public class BeanValidator implements Validator, PartialStateHolder
                 {
                     try
                     {
-                        Class<?> theClass = Class.forName(clazz);
+                        final Class<?> theClass = Class.forName(clazz);
                         validationGroupsList.add(theClass);
                     }
                     catch (ClassNotFoundException e)
@@ -275,13 +320,13 @@ public class BeanValidator implements Validator, PartialStateHolder
     }
 
     /** {@inheritDoc} */
-    public Object saveState(FacesContext context)
+    public Object saveState(final FacesContext context)
     {
         return this.validationGroups;
     }
 
     /** {@inheritDoc} */
-    public void restoreState(FacesContext context, Object state)
+    public void restoreState(final FacesContext context, final Object state)
     {
         this.validationGroups = (String) state;
 
@@ -304,7 +349,7 @@ public class BeanValidator implements Validator, PartialStateHolder
      * @param validationGroups The validation groups String, separated by
      *                         {@link BeanValidator#VALIDATION_GROUPS_DELIMITER}.
      */
-    public void setValidationGroups(String validationGroups)
+    public void setValidationGroups(final String validationGroups)
     {
         this.validationGroups = validationGroups;
         //postSetValidationGroups();
@@ -329,7 +374,7 @@ public class BeanValidator implements Validator, PartialStateHolder
     }
 
     /** {@inheritDoc} */
-    public void setTransient(boolean isTransient)
+    public void setTransient(final boolean isTransient)
     {
         this.isTransient = isTransient;
     }
@@ -360,7 +405,7 @@ public class BeanValidator implements Validator, PartialStateHolder
  * used, it will not be loaded, parsed and initialized. The BeanValidator class is used always,
  * so the MessageInterpolator references need to be in this separate class.
  */
-class FacesMessageInterpolatorHolder
+final class FacesMessageInterpolatorHolder
 {
     // Needs to be volatile.
     private static volatile FacesMessageInterpolator instance;
@@ -371,13 +416,14 @@ class FacesMessageInterpolatorHolder
      * It uses the "Single Check Idiom" as described in Joshua Bloch's Effective Java 2nd Edition.
      *
      * @param validatorFactory Used to obtain the MessageInterpolator.
+     * @return The instantiated MessageInterpolator for BeanValidator.
      */
-    static MessageInterpolator get(ValidatorFactory validatorFactory)
+    static MessageInterpolator get(final ValidatorFactory validatorFactory)
     {
         FacesMessageInterpolatorHolder.FacesMessageInterpolator ret = instance;
         if (ret == null)
         {
-            MessageInterpolator interpolator = validatorFactory.getMessageInterpolator();
+            final MessageInterpolator interpolator = validatorFactory.getMessageInterpolator();
             instance = ret = new FacesMessageInterpolator(interpolator);
         }
         return ret;
@@ -390,18 +436,18 @@ class FacesMessageInterpolatorHolder
     {
         private final MessageInterpolator interpolator;
 
-        FacesMessageInterpolator(MessageInterpolator interpolator)
+        FacesMessageInterpolator(final MessageInterpolator interpolator)
         {
             this.interpolator = interpolator;
         }
 
-        public String interpolate(String s, Context context)
+        public String interpolate(final String s, final Context context)
         {
-            Locale locale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
+            final Locale locale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
             return interpolator.interpolate(s, context, locale);
         }
 
-        public String interpolate(String s, Context context, Locale locale)
+        public String interpolate(final String s, final Context context, final Locale locale)
         {
             return interpolator.interpolate(s, context, locale);
         }
@@ -413,24 +459,38 @@ class FacesMessageInterpolatorHolder
  *
  * It makes the BeanValidator work when Unified EL is not available.
  */
-class ValueReferenceWrapper
+final class ValueReferenceWrapper
 {
-    private final Object base, prop;
+    private final Object base, property;
 
-    public ValueReferenceWrapper(Object base, Object prop)
+    /**
+     * Full constructor.
+     *
+     * @param base The object the reference points to.
+     * @param property The property the reference points to.
+     */
+    public ValueReferenceWrapper(final Object base, final Object property)
     {
         this.base = base;
-        this.prop = prop;
+        this.property = property;
     }
 
-    public Object getBase()
+    /**
+     * The object the reference points to.
+     * @return base.
+     */
+    public final Object getBase()
     {
         return base;
     }
 
-    public Object getProp()
+    /**
+     * The property the reference points to.
+     * @return property.
+     */
+    public final Object getProperty()
     {
-        return prop;
+        return property;
     }
 }
 
@@ -438,7 +498,7 @@ class ValueReferenceWrapper
  * This class inspects the EL expression and returns a ValueReferenceWrapper
  * when Unified EL is not available.
  */
-class ValueReferenceResolver extends ELResolver
+final class ValueReferenceResolver extends ELResolver
 {
     private final ELResolver resolver;
 
@@ -455,9 +515,9 @@ class ValueReferenceResolver extends ELResolver
 
     /**
      * Constructor is only used internally.
-     * @param elResolver
+     * @param elResolver An ELResolver from the current ELContext.
      */
-    ValueReferenceResolver(ELResolver elResolver)
+    ValueReferenceResolver(final ELResolver elResolver)
     {
         this.resolver = elResolver;
     }
@@ -469,10 +529,10 @@ class ValueReferenceResolver extends ELResolver
      * @param elCtx The ELContext, needed to parse and execute the expression.
      * @return The ValueReferenceWrapper.
      */
-    public static ValueReferenceWrapper resolve(ValueExpression valueExpression, ELContext elCtx)
+    public static ValueReferenceWrapper resolve(final ValueExpression valueExpression, final ELContext elCtx)
     {
-        ValueReferenceResolver resolver = new ValueReferenceResolver(elCtx.getELResolver());
-        valueExpression.getValue(new MyELContext(elCtx, resolver));
+        final ValueReferenceResolver resolver = new ValueReferenceResolver(elCtx.getELResolver());
+        valueExpression.getValue(new ELContextDecorator(elCtx, resolver));
         return resolver.lastObject;
     }
 
@@ -487,18 +547,18 @@ class ValueReferenceResolver extends ELResolver
      * @return The resolved value
      */
     @Override
-    public Object getValue(ELContext context, Object base, Object property)
+    public Object getValue(final ELContext context, final Object base, final Object property)
     {
         lastObject = new ValueReferenceWrapper(base, property);
         return resolver.getValue(context, base, property);
     }
 
     // ############################ Standard delegating implementations ############################
-    public Class<?> getType(ELContext ctx, Object base, Object property){return resolver.getType(ctx, base, property);}
-    public void setValue(ELContext ctx, Object base, Object property, Object value){resolver.setValue(ctx, base, property, value);}
-    public boolean isReadOnly(ELContext ctx, Object base, Object property){return resolver.isReadOnly(ctx, base, property);}
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext ctx, Object base){return resolver.getFeatureDescriptors(ctx, base);}
-    public Class<?> getCommonPropertyType(ELContext ctx, Object base){return resolver.getCommonPropertyType(ctx, base);}
+    public final Class<?> getType(final ELContext ctx, final Object base, final Object property){return resolver.getType(ctx, base, property);}
+    public final void setValue(final ELContext ctx, final Object base, final Object property, final Object value){resolver.setValue(ctx, base, property, value);}
+    public final boolean isReadOnly(final ELContext ctx, final Object base, final Object property){return resolver.isReadOnly(ctx, base, property);}
+    public final Iterator<FeatureDescriptor> getFeatureDescriptors(final ELContext ctx, final Object base){return resolver.getFeatureDescriptors(ctx, base);}
+    public final Class<?> getCommonPropertyType(final ELContext ctx, final Object base){return resolver.getCommonPropertyType(ctx, base);}
 
 }
 
@@ -506,7 +566,7 @@ class ValueReferenceResolver extends ELResolver
  * This ELContext is used to hook into the EL handling, by decorating the
  * ELResolver chain with a custom ELResolver.
  */
-class MyELContext extends ELContext
+final class ELContextDecorator extends ELContext
 {
     private final ELContext ctx;
     private final ELResolver interceptingResolver;
@@ -517,7 +577,7 @@ class MyELContext extends ELContext
      * @param elContext The standard ELContext. All method calls, except getELResolver, are delegated to it.
      * @param interceptingResolver The ELResolver to be returned by getELResolver.
      */
-    MyELContext(ELContext elContext, ELResolver interceptingResolver)
+    ELContextDecorator(final ELContext elContext, final ELResolver interceptingResolver)
     {
         this.ctx = elContext;
         this.interceptingResolver = interceptingResolver;
@@ -528,18 +588,18 @@ class MyELContext extends ELContext
      * @return The ELResolver passed into the constructor.
      */
     @Override
-    public ELResolver getELResolver()
+    public final ELResolver getELResolver()
     {
         return interceptingResolver;
     }
 
     // ############################ Standard delegating implementations ############################
-    public FunctionMapper getFunctionMapper(){return ctx.getFunctionMapper();}
-    public VariableMapper getVariableMapper(){return ctx.getVariableMapper();}
-    public void setPropertyResolved(boolean resolved){ctx.setPropertyResolved(resolved);}
-    public boolean isPropertyResolved(){return ctx.isPropertyResolved();}
-    public void putContext(Class key, Object contextObject){ctx.putContext(key, contextObject);}
-    public Object getContext(Class key){return ctx.getContext(key);}
-    public Locale getLocale(){return ctx.getLocale();}
-    public void setLocale(Locale locale){ctx.setLocale(locale);}
+    public final FunctionMapper getFunctionMapper(){return ctx.getFunctionMapper();}
+    public final VariableMapper getVariableMapper(){return ctx.getVariableMapper();}
+    public final void setPropertyResolved(final boolean resolved){ctx.setPropertyResolved(resolved);}
+    public final boolean isPropertyResolved(){return ctx.isPropertyResolved();}
+    public final void putContext(final Class key, Object contextObject){ctx.putContext(key, contextObject);}
+    public final Object getContext(final Class key){return ctx.getContext(key);}
+    public final Locale getLocale(){return ctx.getLocale();}
+    public final void setLocale(final Locale locale){ctx.setLocale(locale);}
 }

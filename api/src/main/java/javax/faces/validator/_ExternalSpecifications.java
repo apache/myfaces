@@ -21,6 +21,7 @@ package javax.faces.validator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.el.ELContext;
 import javax.validation.Validation;
 
 /**
@@ -48,8 +49,9 @@ final class _ExternalSpecifications
      *
      * Eager initialization is used for performance. This means Bean Validation binaries
      * should not be added at runtime after this variable has been set.
+     * @return true if Bean Validation is available, false otherwise.
      */
-    public static boolean isBeanValidationAvailable()
+    public static synchronized boolean isBeanValidationAvailable()
     {
         if (beanValidationAvailable == null)
         {
@@ -62,6 +64,8 @@ final class _ExternalSpecifications
                     try
                     {
                         // Trial-error approach to check for Bean Validation impl existence.
+                        // If any Exception occurs here, we assume that Bean Validation is not available.
+                        // The cause may be anything, i.e. NoClassDef, config error...
                         Validation.buildDefaultValidatorFactory().getValidator();
                     }
                     catch (Throwable t)
@@ -76,6 +80,8 @@ final class _ExternalSpecifications
                 log.log(Level.FINE, "Error loading class (could be normal)", t);
                 beanValidationAvailable = false;
             }
+
+            log.info("MyFaces Bean Validation support " + (beanValidationAvailable ? "enabled" : "disabled"));
         }
         return beanValidationAvailable; 
     }
@@ -85,21 +91,30 @@ final class _ExternalSpecifications
      *
      * Eager initialization is used for performance. This means Unified EL binaries
      * should not be added at runtime after this variable has been set.
+     * @return true if UEL is available, false otherwise.
      */
-    public static boolean isUnifiedELAvailable()
+    public static synchronized boolean isUnifiedELAvailable()
     {
         if (unifiedELAvailable == null)
         {
             try
             {
-                //TODO: Check this class name when Unified EL for Java EE6 is final.
-                unifiedELAvailable = (Class.forName("javax.el.ValueReference") != null);
+                // Check if the UEL classes are available.
+                // If the JSP EL classes are loaded first, UEL will not work
+                // properly, hence it will be disabled.
+                unifiedELAvailable = (
+                        Class.forName("javax.el.ValueReference") != null
+                     && Class.forName("javax.el.ValueExpression")
+                                .getMethod("getValueReference", ELContext.class) != null
+                );
             }
             catch (Throwable t)
             {
                 log.log(Level.FINE, "Error loading class (could be normal)", t);
                 unifiedELAvailable = false;
             }
+
+            log.info("MyFaces Unified EL support " + (unifiedELAvailable ? "enabled" : "disabled"));
         }
         return unifiedELAvailable;
     }

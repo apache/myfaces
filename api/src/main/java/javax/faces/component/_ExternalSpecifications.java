@@ -32,68 +32,96 @@ import javax.validation.Validation;
  * @author Jan-Kees van Andel
  * @since 2.0
  */
-class _ExternalSpecifications
+final class _ExternalSpecifications
 {
 
     //private static final Log log = LogFactory.getLog(BeanValidator.class);
     private static final Logger log = Logger.getLogger(_ExternalSpecifications.class.getName());
 
+    private static Boolean beanValidationAvailable;
+    //private static Boolean unifiedELAvailable;
+
     /**
-     * This boolean indicates if Bean Validation is present.
+     * This method determines if Bean Validation is present.
      *
      * Eager initialization is used for performance. This means Bean Validation binaries
      * should not be added at runtime after this variable has been set.
+     * @return true if Bean Validation is available, false otherwise.
      */
-    static final boolean isBeanValidationAvailable;
-    static
+    public static synchronized boolean isBeanValidationAvailable()
     {
-        boolean tmp = false;
-        try
+        if (beanValidationAvailable == null)
         {
-            tmp = (Class.forName("javax.validation.Validation") != null);
-
-            if (tmp)
+            try
             {
-                try
+                beanValidationAvailable = (Class.forName("javax.validation.Validation") != null);
+
+                if (beanValidationAvailable)
                 {
-                    // Trial-error approach to check for Bean Validation impl existence.
-                    Validation.buildDefaultValidatorFactory().getValidator();
-                }
-                catch (Throwable t)
-                {
-                    log.log(Level.FINE, "Error initializing Bean Validation (could be normal)", t);
-                    tmp = false;
+                    try
+                    {
+                        // Trial-error approach to check for Bean Validation impl existence.
+                        // If any Exception occurs here, we assume that Bean Validation is not available.
+                        // The cause may be anything, i.e. NoClassDef, config error...
+                        Validation.buildDefaultValidatorFactory().getValidator();
+                    }
+                    catch (Throwable t)
+                    {
+                        log.log(Level.FINE, "Error initializing Bean Validation (could be normal)", t);
+                        beanValidationAvailable = false;
+                    }
                 }
             }
+            catch (Throwable t)
+            {
+                log.log(Level.FINE, "Error loading class (could be normal)", t);
+                beanValidationAvailable = false;
+            }
+
+            log.info("MyFaces Bean Validation support " + (beanValidationAvailable ? "enabled" : "disabled"));
         }
-        catch (ClassNotFoundException cnfe)
-        {
-            log.log(Level.FINE, "Error loading class (could be normal)", cnfe);
-            tmp = false;
-        }
-        isBeanValidationAvailable = tmp;
+        return beanValidationAvailable;
     }
 
     /**
-     * This boolean indicates if Unified EL is present.
+     * This method determines if Unified EL is present.
      *
      * Eager initialization is used for performance. This means Unified EL binaries
      * should not be added at runtime after this variable has been set.
+     * @return true if UEL is available, false otherwise.
      */
-    static final boolean isUnifiedELAvailable;
-    static
+    /*
+    public static synchronized boolean isUnifiedELAvailable()
     {
-        boolean tmp = false;
-        try
+        if (unifiedELAvailable == null)
         {
-            //TODO: Check this class name when Unified EL for Java EE6 is final.
-            tmp = (Class.forName("javax.el.ValueReference") != null);
+            try
+            {
+                // Check if the UEL classes are available.
+                // If the JSP EL classes are loaded first, UEL will not work
+                // properly, hence it will be disabled.
+                unifiedELAvailable = (
+                        Class.forName("javax.el.ValueReference") != null
+                     && Class.forName("javax.el.ValueExpression")
+                                .getMethod("getValueReference", ELContext.class) != null
+                );
+            }
+            catch (Throwable t)
+            {
+                log.log(Level.FINE, "Error loading class (could be normal)", t);
+                unifiedELAvailable = false;
+            }
+
+            log.info("MyFaces Unified EL support " + (unifiedELAvailable ? "enabled" : "disabled"));
         }
-        catch (ClassNotFoundException cnfe)
-        {
-            log.log(Level.FINE, "Error loading class (could be normal)", cnfe);
-            tmp = false;
-        }
-        isUnifiedELAvailable = tmp;
+        return unifiedELAvailable;
+    }*/
+
+    /**
+     * this class should not be instantiable.
+     */
+    private _ExternalSpecifications()
+    {
     }
+
 }

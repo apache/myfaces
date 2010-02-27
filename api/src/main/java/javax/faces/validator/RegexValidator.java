@@ -18,17 +18,15 @@
  */
 package javax.faces.validator;
 
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
-
-import javax.el.ELContext;
-import javax.faces.component.PartialStateHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidator;
+
+import javax.faces.component.PartialStateHolder;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * <p>
@@ -55,11 +53,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidat
  *     If no pattern has been set, or pattern resolves to <code>null</code> or an
  *     empty String, throw a {@link javax.faces.validator.ValidatorException}
  *     with a {@link #PATTERN_NOT_SET_MESSAGE_ID} message.
- *   </li>
- *   <li>
- *     If pattern is set, but is not of type String, throw a
- *     {@link javax.faces.validator.ValidatorException} with a
- *     {@link #NOT_STRING_MESSAGE_ID} message.
  *   </li>
  *   <li>
  *     If pattern is not a valid regular expression, according to the rules as defined
@@ -92,12 +85,6 @@ public class RegexValidator implements Validator, PartialStateHolder
      * Converter ID, as defined by the JSF 2.0 specification.
      */
     public static final String VALIDATOR_ID = "javax.faces.RegularExpression";
-
-    /**
-     * This message ID is used when the pattern does not resolve to a String.
-     */
-    //TODO: Remove it
-    //private static final String NOT_STRING_MESSAGE_ID = "javax.faces.validator.RegexValidator.NOT_STRING";
 
     /**
      * This message ID is used when the pattern is <code>null</code>, or an empty String.
@@ -144,16 +131,12 @@ public class RegexValidator implements Validator, PartialStateHolder
         String string = (String) value;
 
         Pattern thePattern;
-        ELContext elCtx = context.getELContext();
-        if (pattern == null)
+        if (pattern == null
+         || pattern.equals(EMPTY_STRING))
         {
             throw new ValidatorException(_MessageUtils.getErrorMessage(context, PATTERN_NOT_SET_MESSAGE_ID, null));
         }
 
-        if (pattern.equals(EMPTY_STRING))
-        {
-            throw new ValidatorException(_MessageUtils.getErrorMessage(context, PATTERN_NOT_SET_MESSAGE_ID, null));
-        }
         try
         {
             thePattern = Pattern.compile(pattern);
