@@ -20,6 +20,7 @@ package org.apache.myfaces.util;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.el.ELContext;
 import javax.validation.Validation;
 
 import org.apache.myfaces.shared_impl.util.ClassUtils;
@@ -35,12 +36,12 @@ import org.apache.myfaces.shared_impl.util.ClassUtils;
  * @version $Revision$ $Date$
  * @since 2.0
  */
-public final class ExternalSpecifications
+final class _ExternalSpecifications
 {
 
     //private static final Log log = LogFactory.getLog(BeanValidator.class);
-    private static final Logger log = Logger.getLogger(ExternalSpecifications.class.getName());
-    
+    private static final Logger log = Logger.getLogger(_ExternalSpecifications.class.getName());
+
     private static Boolean beanValidationAvailable;
     private static Boolean unifiedELAvailable;
 
@@ -49,20 +50,23 @@ public final class ExternalSpecifications
      *
      * Eager initialization is used for performance. This means Bean Validation binaries
      * should not be added at runtime after this variable has been set.
+     * @return true if Bean Validation is available, false otherwise.
      */
-    public static boolean isBeanValidationAvailable()
+    public static synchronized boolean isBeanValidationAvailable()
     {
         if (beanValidationAvailable == null)
         {
             try
             {
-                beanValidationAvailable = (ClassUtils.classForName("javax.validation.Validation") != null);
-    
+                beanValidationAvailable = (Class.forName("javax.validation.Validation") != null);
+
                 if (beanValidationAvailable)
                 {
                     try
                     {
                         // Trial-error approach to check for Bean Validation impl existence.
+                        // If any Exception occurs here, we assume that Bean Validation is not available.
+                        // The cause may be anything, i.e. NoClassDef, config error...
                         Validation.buildDefaultValidatorFactory().getValidator();
                     }
                     catch (Throwable t)
@@ -77,8 +81,10 @@ public final class ExternalSpecifications
                 log.log(Level.FINE, "Error loading class (could be normal)", t);
                 beanValidationAvailable = false;
             }
+
+            log.info("MyFaces Bean Validation support " + (beanValidationAvailable ? "enabled" : "disabled"));
         }
-        return beanValidationAvailable; 
+        return beanValidationAvailable;
     }
 
     /**
@@ -86,29 +92,38 @@ public final class ExternalSpecifications
      *
      * Eager initialization is used for performance. This means Unified EL binaries
      * should not be added at runtime after this variable has been set.
+     * @return true if UEL is available, false otherwise.
      */
-    public static boolean isUnifiedELAvailable()
+    public static synchronized boolean isUnifiedELAvailable()
     {
         if (unifiedELAvailable == null)
         {
             try
             {
-                //TODO: Check this class name when Unified EL for Java EE6 is final.
-                unifiedELAvailable = (ClassUtils.classForName("javax.el.ValueReference") != null);
+                // Check if the UEL classes are available.
+                // If the JSP EL classes are loaded first, UEL will not work
+                // properly, hence it will be disabled.
+                unifiedELAvailable = (
+                        Class.forName("javax.el.ValueReference") != null
+                     && Class.forName("javax.el.ValueExpression")
+                                .getMethod("getValueReference", ELContext.class) != null
+                );
             }
             catch (Throwable t)
             {
                 log.log(Level.FINE, "Error loading class (could be normal)", t);
                 unifiedELAvailable = false;
             }
+
+            log.info("MyFaces Unified EL support " + (unifiedELAvailable ? "enabled" : "disabled"));
         }
         return unifiedELAvailable;
     }
-    
+
     /**
-     * this class should not be instantiable.
+     * this class should not be instantiated.
      */
-    private ExternalSpecifications()
+    private _ExternalSpecifications()
     {
     }
 

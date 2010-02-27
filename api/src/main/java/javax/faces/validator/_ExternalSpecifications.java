@@ -120,7 +120,7 @@ final class _ExternalSpecifications
     }
     
     /**
-     * this class should not be instantiable.
+     * this class should not be instantiated.
      */
     private _ExternalSpecifications()
     {
