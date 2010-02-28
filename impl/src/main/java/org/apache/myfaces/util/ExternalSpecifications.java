@@ -23,8 +23,6 @@ import java.util.logging.Logger;
 import javax.el.ELContext;
 import javax.validation.Validation;
 
-import org.apache.myfaces.shared_impl.util.ClassUtils;
-
 /**
  * <p>
  * Utility class for determining which specifications are available
