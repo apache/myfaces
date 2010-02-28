@@ -36,11 +36,11 @@ import org.apache.myfaces.shared_impl.util.ClassUtils;
  * @version $Revision$ $Date$
  * @since 2.0
  */
-final class _ExternalSpecifications
+public final class ExternalSpecifications
 {
 
     //private static final Log log = LogFactory.getLog(BeanValidator.class);
-    private static final Logger log = Logger.getLogger(_ExternalSpecifications.class.getName());
+    private static final Logger log = Logger.getLogger(ExternalSpecifications.class.getName());
 
     private static Boolean beanValidationAvailable;
     private static Boolean unifiedELAvailable;
@@ -123,7 +123,7 @@ final class _ExternalSpecifications
     /**
      * this class should not be instantiated.
      */
-    private _ExternalSpecifications()
+    private ExternalSpecifications()
     {
     }
 
