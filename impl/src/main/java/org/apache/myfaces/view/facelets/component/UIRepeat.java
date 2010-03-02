@@ -71,9 +71,11 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
 
     // variables
     private String _var;
-
-    //FIXME: varStatus isn't used, should support be added? private String _varStatus;
-
+    
+    private int _end = -1;
+    
+    private int _count;
+    
     private int _index = -1;
 
     // scoping
@@ -119,6 +121,12 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     public void setOffset(int offset)
     {
         _offset = offset;
+    }
+    
+    protected RepeatStatus getStatus ()
+    {
+        return new RepeatStatus (_count == 0, _index + getStep() >= getDataModel().getRowCount(),
+            _count, _index, getOffset(), _end, getStep());
     }
     
     @JSFProperty
@@ -441,13 +449,62 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         // restore child state
         _restoreChildState();
     }
-
+    
+    private void _validateAttributes () throws FacesException {
+        int begin = getOffset();
+        int end = getDataModel().getRowCount();
+        int size = getSize();
+        int step = getStep();
+        
+        if (size == -1) {
+            size = end;
+        }
+        
+        if (end >= 0) {
+            if (size < 0) {
+                throw new FacesException ("iteration size cannot be less " +
+                    "than zero");
+            }
+            
+            else if (size > end) {
+                throw new FacesException ("iteration size cannot be greater " +
+                    "than collection size");
+            }
+        }
+        
+        if ((size > -1) && (begin > size)) {
+            throw new FacesException ("iteration offset cannot be greater " +
+                "than collection size");
+        }
+        
+        if (step == -1) {
+            step = 1;
+        }
+        
+        if (step < 0) {
+            throw new FacesException ("iteration step size cannot be less " +
+                "than zero");
+        }
+        
+        else if (step == 0) {
+            throw new FacesException ("iteration step size cannot be equal " +
+                "to zero");
+        }
+        
+        _end = size;
+        _step = step;
+    }
+    
     public void process(FacesContext faces, PhaseId phase)
     {
         // stop if not rendered
         if (!isRendered())
             return;
-
+        
+        // validate attributes
+        
+        _validateAttributes();
+        
         // clear datamodel
         _resetDataModel();
 
@@ -462,8 +519,9 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             {
                 int i = getOffset();
                 int end = getSize();
+                int step = getStep();
                 end = (end >= 0) ? i + end : Integer.MAX_VALUE - 1;
-
+                
                 // grab renderer
                 String rendererType = getRendererType();
                 Renderer renderer = null;
@@ -471,7 +529,9 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                 {
                     renderer = getRenderer(faces);
                 }
-
+                
+                _count = 0;
+                
                 _setIndex(i);
                 while (i <= end && _isIndexAvailable())
                 {
@@ -503,7 +563,9 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                         }
                     }
                     
-                    i++;
+                    ++_count;
+                    
+                    i += step;
                     
                     _setIndex(i);
                 }
