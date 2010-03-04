@@ -241,21 +241,29 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
             }
 
             if (newTag != "") {
+                var evalNode = null;
                 if (typeof window.Range != 'undefined'
                         && typeof Range.prototype.createContextualFragment == 'function') {
                     var range = document.createRange();
                     range.setStartBefore(item);
                     var fragment = range.createContextualFragment(newTag);
-                    item.parentNode.insertBefore(fragment, item);
+                    evalNode = item.parentNode.replaceChild(fragment, item);
                 } else {
                     item.insertAdjacentHTML('beforeBegin', newTag);
+                    evalNode = item.previousSibling;
+                    item.parentNode.removeChild(item);
                 }
+
+                // and remove the old item
+                //first we have to save the node newly insert for easier access in our eval part
                 if (myfaces._impl._util._Utils.isManualScriptEval()) {
-                    myfaces._impl._util._Utils.runScripts(request, context, item.previousSibling);
+                    myfaces._impl._util._Utils.runScripts(request, context, evalNode);
                 }
+                return;
             }
-            // and remove the old item
+            // and remove the old item, in case of an empty newtag and do nothing else
             item.parentNode.removeChild(item);
+
 
         } catch (e) {
             myfaces._impl.xhrCore._Exception.throwNewError(request, context, "Utils", "replaceHTMLItem", e);
