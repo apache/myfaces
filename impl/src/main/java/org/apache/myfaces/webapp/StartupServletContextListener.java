@@ -152,7 +152,7 @@ public class StartupServletContextListener implements ServletContextListener,
         if (b == null || b.booleanValue() == false)
         {
             dispatchInitializationEvent(event, FACES_INIT_PHASE_PREINIT);
-            getFacesInitializer().initFaces(_servletContext);
+            initFaces(_servletContext);
             dispatchInitializationEvent(event, FACES_INIT_PHASE_POSTINIT);
             _servletContext.setAttribute(FACES_INIT_DONE, Boolean.TRUE);
         }
@@ -165,21 +165,21 @@ public class StartupServletContextListener implements ServletContextListener,
         _detroyerListener.contextInitialized(event);
     }
 
-    protected FacesInitializer getFacesInitializer()
+    protected void initFaces(ServletContext context)
     {
         if (_facesInitializer == null)
         {
-            if (ContainerUtils.isJsp21())
+            if (ContainerUtils.isJsp21(context)) 
             {
                 _facesInitializer = new Jsp21FacesInitializer();
-            }
-            else
+            } 
+            else 
             {
                 _facesInitializer = new Jsp20FacesInitializer();
             }
         }
 
-        return _facesInitializer;
+        _facesInitializer.initFaces(_servletContext);
     }
 
     /**

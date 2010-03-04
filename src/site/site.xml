@@ -76,6 +76,7 @@
         <menu name="Documentation" inherit="top">
             <item name="Getting Started" href="http://myfaces.apache.org/core20/gettingstarted.html"/>
             <item name="MyFaces and RI"  href="http://myfaces.apache.org/core20/risamples.html"/>
+            <item name="MyFaces and Google App Engine"  href="http://myfaces.apache.org/core20/googleappenginesupport.html"/>
             <item name="Tomcat Config"   href="http://myfaces.apache.org/core20/tomcat.html"/>
             <item name="Javadocs"        href="http://myfaces.apache.org/core20/javadoc.html"/>
             <item name="FAQ"             href="http://myfaces.apache.org/core20/faq.html"/>

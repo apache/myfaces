@@ -699,6 +699,15 @@ public class ApplicationImpl extends Application
                 {
                     // no-op
                 }
+                catch (NoClassDefFoundError er)
+                {
+                    //On Google App Engine, javax.naming.Context is a restricted class.
+                    //In that case, NoClassDefFoundError is thrown. stageName needs to be configured
+                    //below by context parameter.
+                    //It can be done with changing the order to look first at context param, but it is defined in the spec.
+                    //http://java.sun.com/javaee/6/docs/api/javax/faces/application/Application.html#getProjectStage()
+                    //no-op
+                }
             }
 
             /*

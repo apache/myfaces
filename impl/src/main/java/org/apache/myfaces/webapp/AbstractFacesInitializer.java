@@ -42,6 +42,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
 import org.apache.myfaces.config.FacesConfigValidator;
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.config.annotation.DefaultLifecycleProviderFactory;
 import org.apache.myfaces.context.servlet.ServletExternalContextImpl;
 import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
@@ -108,6 +109,12 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
             }
 
             dispatchInitDestroyEvent(servletContext, PostConstructApplicationEvent.class);
+            
+            //initialize LifecycleProvider. 
+            //if not set here, first call of getLifecycleProvider is invoked with null external context
+            //and org.apache.myfaces.config.annotation.LifecycleProvider context parameter is ignored.
+            //see MYFACES-2555
+            DefaultLifecycleProviderFactory.getLifecycleProviderFactory().getLifecycleProvider(externalContext);
             
             // print out a very prominent log message if the project stage is != Production
             if (!FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Production))

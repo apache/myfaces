@@ -49,11 +49,11 @@ public class MyFacesServlet implements Servlet, DelegatedFacesServlet
     
     private FacesInitializer _facesInitializer;
     
-    protected FacesInitializer getFacesInitializer()
+    protected void initFaces(ServletContext context)
     {
         if (_facesInitializer == null)
         {
-            if (ContainerUtils.isJsp21()) 
+            if (ContainerUtils.isJsp21(context)) 
             {
                 _facesInitializer = new Jsp21FacesInitializer();
             } 
@@ -63,7 +63,7 @@ public class MyFacesServlet implements Servlet, DelegatedFacesServlet
             }
         }
         
-        return _facesInitializer;
+        _facesInitializer.initFaces(context);
     }
     
     public void setFacesInitializer(FacesInitializer facesInitializer)
@@ -96,7 +96,7 @@ public class MyFacesServlet implements Servlet, DelegatedFacesServlet
         {
             if(log.isLoggable(Level.WARNING))
                 log.warning("ServletContextListener not yet called");
-            getFacesInitializer().initFaces(servletConfig.getServletContext());
+            initFaces(servletConfig.getServletContext());
         }
         delegate.init(servletConfig);
         log.info("MyFacesServlet for context '" + servletConfig.getServletContext().getRealPath("/") + "' initialized.");
