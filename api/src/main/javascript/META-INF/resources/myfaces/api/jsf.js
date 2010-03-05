@@ -40,12 +40,12 @@ if ('undefined' == typeof jsf || null == jsf) {
      */
     jsf.specversion = 200000;
     /**
-     * specified by the spec symbols/jsf.html#.specversion
+     * specified by the spec symbols/jsf.html#.implversion
      * a number increased with every implementation version
      * and reset by moving to a new spec release number
      *
      * Due to the constraints that we cannot put
-     * non jsf.<namespace> references outside of functions in the api
+     * non jsf.&lt;namespace&gt; references outside of functions in the api
      * we have to set the version here instead of the impl.
      */
     jsf.implversion = 0;
