@@ -31,16 +31,33 @@ if ('undefined' != typeof OpenAjax && ('undefined' == typeof jsf || null == type
 //under normal circumstances this should not happen
 if ('undefined' == typeof jsf || null == jsf) {
     jsf = new Object();
-}
 
-/**
- * just to make sure no questions arise, I simply prefer here a weak
- * typeless comparison just in case some frameworks try to interfere
- * by overriding null or fiddeling around with undefined or typeof in some ways
- * it is safer in this case than the standard way of doing a strong comparison
- **/
-if ('undefined' == typeof jsf.ajax || null == jsf.ajax) {
-    jsf.ajax = new Object();
+    /*
+     * specified by the spec symbols/jsf.html#.specversion
+     * as specified left two digits major release number
+     * middle two digits minor spec release number
+     * right two digits bug release number
+     */
+    jsf.specversion = 200000;
+    /**
+     * specified by the spec symbols/jsf.html#.specversion
+     * a number increased with every implementation version
+     * and reset by moving to a new spec release number
+     *
+     * Due to the constraints that we cannot put
+     * non jsf.<namespace> references outside of functions in the api
+     * we have to set the version here instead of the impl.
+     */
+    jsf.implversion = 0;
+    
+    /**
+     * @return the current project state emitted by the server side method:
+     * javax.faces.application.Application.getProjectStage()
+     */
+    jsf.getProjectStage = function() {
+        var impl = myfaces._impl._util._Utils.getGlobalConfig("jsfAjaxImpl", myfaces.ajax);
+        return impl.getProjectStage();
+    };
 
     /**
      * collect and encode data for a given form element (must be of type form)
@@ -55,6 +72,17 @@ if ('undefined' == typeof jsf.ajax || null == jsf.ajax) {
         var impl = myfaces._impl._util._Utils.getGlobalConfig("jsfAjaxImpl", myfaces.ajax);
         return impl.getViewState(formElement);
     };
+}
+
+/**
+ * just to make sure no questions arise, I simply prefer here a weak
+ * typeless comparison just in case some frameworks try to interfere
+ * by overriding null or fiddeling around with undefined or typeof in some ways
+ * it is safer in this case than the standard way of doing a strong comparison
+ **/
+if ('undefined' == typeof jsf.ajax || null == jsf.ajax) {
+    jsf.ajax = new Object();
+
 
     /**
      * this function has to send the ajax requests
@@ -98,14 +126,6 @@ if ('undefined' == typeof jsf.ajax || null == jsf.ajax) {
     jsf.ajax.response = function(/*xhr request object*/request, context) {
         var impl = myfaces._impl._util._Utils.getGlobalConfig("jsfAjaxImpl", myfaces.ajax);
         return impl.response(request, context);
-    };
-    /**
-     * @return the current project state emitted by the server side method:
-     * javax.faces.application.Application.getProjectStage()
-     */
-    jsf.getProjectStage = function() {
-        var impl = myfaces._impl._util._Utils.getGlobalConfig("jsfAjaxImpl", myfaces.ajax);
-        return impl.getProjectStage();
     };
 }
 
