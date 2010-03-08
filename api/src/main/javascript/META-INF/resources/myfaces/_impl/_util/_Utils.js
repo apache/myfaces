@@ -591,7 +591,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
            cDataBlock.push( node.childNodes[i].data);
        }
        return cDataBlock.join('');
-    }
+    };
 
     myfaces._impl._util._Utils.browserDetection();
 }
