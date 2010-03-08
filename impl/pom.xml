@@ -347,7 +347,7 @@
                 <version>1.0</version>
                 <executions>
                   <execution>
-                    <id>add-source</id>
+                    <id>add-source-shared</id>
                     <phase>process-sources</phase>
                     <goals>
                       <goal>add-source</goal>
@@ -355,6 +355,94 @@
                     <configuration>
                       <sources>
                         <source>${project.build.directory}/shared_sources</source>
+                      </sources>
+                    </configuration>
+                  </execution>
+                </executions>
+              </plugin>
+            </plugins>
+        </build>
+    </profile>
+    <profile>
+        <id>unpack-impl-ee6</id>
+        <activation>
+            <property>
+                <name>!dev</name>
+            </property>
+        </activation>
+        <build>
+            <plugins>
+              <plugin>
+                <!--
+                  - The implee6 project contains classes which need Java EE 6 dependencies. 
+                  - The result is a jar that we can merge into the jar for this project.
+                  -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.1</version>
+                <executions>
+                  <execution>
+                    <id>unpack-impl-ee6</id>
+                    <phase>prepare-package</phase>
+                    <goals>
+                      <goal>unpack</goal>
+                    </goals>
+                    <configuration>
+                      <artifactItems>
+                        <artifactItem>
+                          <groupId>org.apache.myfaces.core</groupId>
+                          <artifactId>myfaces-impl-ee6</artifactId>
+                          <version>${project.version}</version>
+                        </artifactItem>
+                      </artifactItems>
+                      <!-- Just include the .class files in org/** and the META-INF/services directory -->
+                      <includes>org/**,META-INF/services/**</includes>
+                      <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                    </configuration>
+                  </execution>
+                  <execution>
+                    <id>unpack-impl-ee6-sources</id>
+                    <phase>prepare-package</phase>
+                    <goals>
+                        <goal>unpack</goal>
+                    </goals>
+                    <configuration>
+                        <artifactItems>
+                            <artifactItem>
+                                <groupId>org.apache.myfaces.core</groupId>
+                                <artifactId>myfaces-impl-ee6</artifactId>
+                                <version>${project.version}</version>
+                                <classifier>sources</classifier>
+                            </artifactItem>
+                        </artifactItems>
+                        <!-- Just include the .java files in org/** and the META-INF/services directory -->
+                        <includes>org/**,META-INF/services/**</includes> 
+                        <outputDirectory>${project.build.directory}/implee6_sources</outputDirectory>
+                    </configuration>
+                  </execution>
+                </executions>
+              </plugin>
+              <plugin>
+                <!--  
+                  - Add the unpacked implee6 sources directory as source directory into the pom datastructure,
+                  - so that the -source jar includes them too; every .class file in the jar should have its
+                  - source in the -source jar.
+                  - This has to happen after the "real" sources have been compiled, otherwise the compilation
+                  - would fail because of wrong dependencies.
+                -->  
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                  <execution>
+                    <id>add-source-implee6</id>
+                    <phase>prepare-package</phase>
+                    <goals>
+                      <goal>add-source</goal>
+                    </goals>
+                    <configuration>
+                      <sources>
+                        <source>${project.build.directory}/implee6_sources</source>
                       </sources>
                     </configuration>
                   </execution>
