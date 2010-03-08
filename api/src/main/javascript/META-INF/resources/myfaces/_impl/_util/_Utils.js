@@ -586,7 +586,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
      */
     myfaces._impl._util._Utils.concatCDATABlocks = function(/*Node*/ node) {
        var cDataBlock = [];
-       // response may contain sevaral blocks
+       // response may contain several blocks
        for (var i = 0; i < node.childNodes.length; i++) {
            cDataBlock.push( node.childNodes[i].data);
        }
