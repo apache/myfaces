@@ -217,26 +217,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
         item.parentNode.removeChild(item);
     }
 
-   /**
-    * MyFaces specific data post processing
-    * which tries to overcome a limitation
-    * of the used xml format, which embeds the data into CDATA blocks
-    * we map every ]]&gt; into &MYFACES_MAPPED_ENDCDATA; on the server side
-    * and then remap it back into ]]&gt; before posting the cdata stripped
-    * content back into our dom tree
-    * 
-    * @param {String} str
-    */
-    myfaces._impl._util._Utils._cdataPostProcessing = function(str) {
-        var finalCDATAResult = null;
-        if(str.indexOf("&MYFACES_MAPPED_ENDCDATA;") != -1) {
-            finalCDATAResult = String.fromCharCode(myfaces._impl._util._LangUtils.cdataEndDecode(str));
-        } else {
-            finalCDATAResult = str;
-        }
-        return finalCDATAResult;
-    }
-
+  
     /**
      * [STATIC]
      * Replaces HTML elements through others
