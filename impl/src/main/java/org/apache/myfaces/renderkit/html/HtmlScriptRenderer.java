@@ -19,9 +19,7 @@
 package org.apache.myfaces.renderkit.html;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.faces.FacesException;
@@ -30,8 +28,6 @@ import javax.faces.application.ProjectStage;
 import javax.faces.application.Resource;
 import javax.faces.component.PartialStateHolder;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.UniqueIdVendor;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.event.*;
@@ -42,7 +38,6 @@ import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
 import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
 import org.apache.myfaces.shared_impl.renderkit.html.HTML;
 import org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils;
-import org.apache.myfaces.view.facelets.PostBuildComponentTreeOnRestoreViewEvent;
 
 /**
  * Renderer used by h:outputScript component
@@ -57,7 +52,6 @@ public class HtmlScriptRenderer extends Renderer implements PartialStateHolder, 
     //private static final Log log = LogFactory.getLog(HtmlScriptRenderer.class);
     private static final Logger log = Logger.getLogger(HtmlScriptRenderer.class.getName());
 
-    @Override
     public void processEvent(ComponentSystemEvent event) {
         if (event instanceof PostAddToViewEvent) {
             UIComponent component = event.getComponent();
