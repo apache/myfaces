@@ -56,6 +56,13 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
      */
     //private static final Log log = LogFactory.getLog(AbstractFacesInitializer.class);
     private static final Logger log = Logger.getLogger(AbstractFacesInitializer.class.getName());
+    
+    /**
+     * If the servlet mapping for the FacesServlet is added dynamically, Boolean.TRUE 
+     * is stored under this key in the ServletContext.
+     * ATTENTION: this constant is duplicate in MyFacesContainerInitializer.
+     */
+    private static final String FACES_SERVLET_ADDED_ATTRIBUTE = "org.apache.myfaces.DYNAMICALLY_ADDED_FACES_SERVLET";
 
     /**
      * This parameter specifies the ExpressionFactory implementation to use.
@@ -90,11 +97,17 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
 
                 return;
             } else if (webXml.getFacesServletMappings().isEmpty()) {
-                if (log.isLoggable(Level.WARNING)) {
-                    log.warning("No mappings of FacesServlet found. Abort initializing MyFaces.");
+                // check if the FacesServlet has been added dynamically
+                // in a Servlet 3.0 environment by MyFacesContainerInitializer
+                Boolean mappingAdded = (Boolean) servletContext.getAttribute(FACES_SERVLET_ADDED_ATTRIBUTE);
+                if (mappingAdded == null || !mappingAdded)
+                {
+                    if (log.isLoggable(Level.WARNING))
+                    {
+                        log.warning("No mappings of FacesServlet found. Abort initializing MyFaces.");
+                    }
+                    return;
                 }
-
-                return;
             }
 
             initContainerIntegration(servletContext, externalContext);
