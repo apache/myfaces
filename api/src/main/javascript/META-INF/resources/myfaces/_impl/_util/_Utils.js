@@ -217,6 +217,26 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
         item.parentNode.removeChild(item);
     }
 
+   /**
+    * MyFaces specific data post processing
+    * which tries to overcome a limitation
+    * of the used xml format, which embeds the data into CDATA blocks
+    * we map every ]]&gt; into &MYFACES_MAPPED_ENDCDATA; on the server side
+    * and then remap it back into ]]&gt; before posting the cdata stripped
+    * content back into our dom tree
+    * 
+    * @param {String} str
+    */
+    myfaces._impl._util._Utils._cdataPostProcessing = function(str) {
+        var finalCDATAResult = null;
+        if(str.indexOf("&MYFACES_MAPPED_ENDCDATA;") != -1) {
+            finalCDATAResult = String.fromCharCode(myfaces._impl._util._LangUtils.cdataEndDecode(str));
+        } else {
+            finalCDATAResult = str;
+        }
+        return finalCDATAResult;
+    }
+
     /**
      * [STATIC]
      * Replaces HTML elements through others
@@ -230,6 +250,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
         try {
             //for webkit we have to trim otherwise he does not add the adjancent elements correctly
             newTag = myfaces._impl._util._LangUtils.trim(newTag);
+
             // (itemIdToReplace instanceof Node) is NOT compatible with IE8
             var item = (typeof itemIdToReplace == "object") ? itemIdToReplace :
                        myfaces._impl._util._Utils.getElementFromForm(request, context, itemIdToReplace, form);
@@ -576,6 +597,20 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
         }
         return localOptions.myfaces[configName];
     };
+
+    /**
+     * concatenation routine which concats all childnodes of a node which
+     * contains a set of CDATA blocks to one big string
+     * @param {Node} node the node to concat its blocks for
+     */
+    myfaces._impl._util._Utils.concatCDATABlocks = function(/*Node*/ node) {
+       var cDataBlock = [];
+       // response may contain sevaral blocks
+       for (var i = 0; i < node.childNodes.length; i++) {
+           cDataBlock.push( node.childNodes[i].data);
+       }
+       return cDataBlock.join('');
+    }
 
     myfaces._impl._util._Utils.browserDetection();
 }

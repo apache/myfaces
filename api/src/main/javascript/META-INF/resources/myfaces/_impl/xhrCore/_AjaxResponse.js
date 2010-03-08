@@ -174,6 +174,8 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
                 if (!this.processUpdate(request, context, changes[i])) return false;
             } else if (changes[i].tagName == this._PCMD_EVAL) {
                 //eval is always in CDATA blocks
+                //TODO split eval handling
+
                 myfaces._impl._util._Utils.globalEval(changes[i].firstChild.data);
             } else if (changes[i].tagName == this._PCMD_INSERT) {
                 if (!this.processInsert(request, context, changes[i])) return false;
@@ -219,19 +221,15 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
                     myfaces._impl._util._Utils.setAttribute(element,"name","javax.faces.ViewState");
                     sourceForm.appendChild(element);
                 }
+                //viewstate cannot have split cdata blocks so we can skip the costlier operation
                 myfaces._impl._util._Utils.setAttribute(element,"value", node.firstChild.nodeValue);
 
             }
             //else??? the latest spec has this omitted we have to wait for the RI which probably covers this
 
         } else {
-            var cDataBlock = [];
-            // response may contain sevaral blocks
-            for (var i = 0; i < node.childNodes.length; i++) {
-                cDataBlock.push( node.childNodes[i].data);
-            }
-            //a join is more efficient that normal string ops!
-            cDataBlock = cDataBlock.join("");
+            // response may contain several blocks
+            var cDataBlock = myfaces._impl._util._Utils.concatCDATABlocks(node);
 
             switch(node.getAttribute('id')) {
                 case "javax.faces.ViewRoot":
@@ -333,6 +331,9 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
         //either before or after but not two at the same time
         var nodeHolder = null;
         var parentNode = null;
+
+        var cDataBlock = myfaces._impl._util._Utils.concatCDATABlocks(node);
+
         if(beforeSet) {
             beforeId = myfaces._impl._util._LangUtils.trim(beforeId);
             var beforeNode = document.getElementById(beforeId);
@@ -350,8 +351,9 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
             parentNode = beforeNode.parentNode;
             parentNode.insertBefore(nodeHolder, beforeNode);
 
+
             myfaces._impl._util._Utils.replaceHtmlItem(request, context,
-                nodeHolder, node.firstChild.data, null);
+                nodeHolder, cDataBlock, null);
 
         } else {
             afterId = myfaces._impl._util._LangUtils.trim(afterId);
@@ -364,7 +366,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
             parentNode = afterNode.parentNode;
             parentNode.insertBefore(nodeHolder, afterNode.nextSibling);
             myfaces._impl._util._Utils.replaceHtmlItem(request, context,
-                nodeHolder, node.firstChild.data, null);
+                nodeHolder, cDataBlock, null);
         }
         return true;
     }

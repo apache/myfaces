@@ -20,7 +20,7 @@ if(!myfaces._impl._util._LangUtils.exists(myfaces, "_ListenerQueue")) {
 
     myfaces._impl._util._ListenerQueue.prototype._assertListener = function(/*function*/listener) {
         if("function" != typeof (listener)) {
-            throw new Exception("Error: myfaces._impl._util._ListenerQueue." + arguments.caller.toString() + "Parameter must be of type function");
+            throw Error("Error: myfaces._impl._util._ListenerQueue." + arguments.caller.toString() + "Parameter must be of type function");
         }
     }
 

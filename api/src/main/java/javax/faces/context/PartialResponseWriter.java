@@ -36,7 +36,8 @@ public class PartialResponseWriter extends ResponseWriterWrapper
     private ResponseWriter _wrapped;
     private boolean hasChanges;
     private String insertType;
-    
+
+   
     /**
      * 
      */
@@ -62,7 +63,7 @@ public class PartialResponseWriter extends ResponseWriterWrapper
     {
         if (hasChanges) {
             // Close the <insert> element, if any.
-            
+            //error close the last op if any
             endInsert();
             
             _wrapped.endElement ("changes");
@@ -154,9 +155,19 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         _wrapped.endElement ("error-name");
         
         _wrapped.startElement ("error-message", null);
-        _wrapped.startCDATA();
+        startCDATA();
         
         // Leave open; caller will write message.
+    }
+
+    @Override
+    public void startCDATA() throws IOException {
+        _wrapped.startCDATA();
+    }
+
+    @Override
+    public void endCDATA() throws IOException {
+        _wrapped.endCDATA();    
     }
 
     public void startEval() throws IOException
@@ -164,7 +175,7 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         startChanges();
         
         _wrapped.startElement ("eval", null);
-        _wrapped.startCDATA();
+        startCDATA();
         
         // Leave open; caller will write statements.
     }
@@ -207,7 +218,7 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         
         _wrapped.startElement ("update", null);
         _wrapped.writeAttribute ("id", targetId, null);
-        _wrapped.startCDATA();
+        startCDATA();
         
         // Leave open; caller will write content.
     }
@@ -257,7 +268,7 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         _wrapped.startElement ("insert", null);
         _wrapped.startElement (insertType, null);
         _wrapped.writeAttribute ("id", targetId, null);
-        _wrapped.startCDATA();
+        startCDATA();
         
         // Leave open; caller will write content.
     }

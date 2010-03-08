@@ -141,7 +141,7 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
         //		Return true if it is a String
 
         if(!myfaces._impl._util._LangUtils.isString(it)) {
-            throw new Exception("myfaces._impl._util._LangUtils.strToArray param not of type string")
+            throw Error("myfaces._impl._util._LangUtils.strToArray param not of type string");
         }
         var resultArr = it.split(splitter);
         for(var cnt = 0; cnt < resultArr.length; cnt++) {
@@ -358,5 +358,5 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
         }
         return resultArr.join(finalDelimiter);
     };
-   
+
 }

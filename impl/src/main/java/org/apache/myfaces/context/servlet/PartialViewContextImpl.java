@@ -39,6 +39,7 @@ import javax.faces.context.PartialViewContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.event.PhaseId;
 
+import org.apache.myfaces.context.PartialResponseWriterImpl;
 import org.apache.myfaces.shared_impl.util.StringUtils;
 import org.apache.myfaces.util.ExternalContextUtils;
 
@@ -274,7 +275,7 @@ public class PartialViewContextImpl extends PartialViewContext {
             }
             else
             {
-                _partialResponseWriter = new PartialResponseWriter(responseWriter);
+                _partialResponseWriter = new PartialResponseWriterImpl(responseWriter);
             }
         }
         return _partialResponseWriter;
