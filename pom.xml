@@ -30,6 +30,7 @@
   <modules>
     <!-- module>build</module -->
     <module>api</module>
+    <module>implee6</module>
     <module>impl</module>
   </modules>
   <repositories>
