@@ -282,7 +282,7 @@ public class ViewHandlerImpl extends ViewHandler
         Map<String, List<String>> viewParameters;
         UIViewRoot viewRoot = context.getViewRoot();
         String currentViewId = viewRoot.getViewId();
-        Collection<UIViewParameter> toViewParams;
+        Collection<UIViewParameter> toViewParams = null;
         Collection<UIViewParameter> currentViewParams = ViewMetadata.getViewParameters(viewRoot);
 
         if (currentViewId.equals(viewId))
@@ -294,11 +294,15 @@ public class ViewHandlerImpl extends ViewHandler
             String calculatedViewId = getViewHandlerSupport().calculateViewId(context, viewId);            
             ViewDeclarationLanguage vdl = getViewDeclarationLanguage(context,calculatedViewId);
             ViewMetadata viewMetadata = vdl.getViewMetadata(context, viewId);
-            UIViewRoot viewFromMetaData = viewMetadata.createMetadataView(context);
-            toViewParams = ViewMetadata.getViewParameters(viewFromMetaData);
+            // getViewMetadata() returns null on JSP
+            if (viewMetadata != null)
+            {
+                UIViewRoot viewFromMetaData = viewMetadata.createMetadataView(context);
+                toViewParams = ViewMetadata.getViewParameters(viewFromMetaData);
+            }
         }
 
-        if (toViewParams.isEmpty())
+        if (toViewParams == null || toViewParams.isEmpty())
         {
             return parametersFromArg;
         }
