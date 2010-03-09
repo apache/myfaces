@@ -75,7 +75,14 @@ public class UIViewParameter extends UIInput
     {
         // Override behavior from superclass to pull a value from the incoming request parameter map under the 
         // name given by getName() and store it with a call to UIInput.setSubmittedValue(java.lang.Object).
-        setSubmittedValue(context.getExternalContext().getRequestParameterMap().get(getName()));
+        String value = context.getExternalContext().getRequestParameterMap().get(getName());
+        
+        // only apply the value if it is non-null (otherwise postbacks 
+        // to a view with view parameters would not work correctly)
+        if (value != null)
+        {
+            setSubmittedValue(value);
+        }
     }
 
     @Override
