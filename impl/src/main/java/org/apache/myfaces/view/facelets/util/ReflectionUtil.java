@@ -21,6 +21,7 @@ package org.apache.myfaces.view.facelets.util;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
+import org.apache.myfaces.shared_impl.util.ClassLoaderUtils;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 public class ReflectionUtil
@@ -55,12 +56,17 @@ public class ReflectionUtil
             if (name.endsWith("[]"))
             {
                 String nc = name.substring(0, name.length() - 2);
-                c = Class.forName(nc, false, ClassUtils.getContextClassLoader());
+                //we should route through our shared forName, due to plugins and due to bette4r classloader resolution
+                c  = ClassUtils.classForName(nc);
+                //old code left for double checking
+                //c = Class.forName(nc, false, ClassUtils.getContextClassLoader());
                 c = Array.newInstance(c, 0).getClass();
             }
             else
             {
-                c = Class.forName(name, false, ClassUtils.getContextClassLoader());
+                c  = ClassUtils.classForName(name);
+                //old code left for double checking
+                //c = Class.forName(name, false, ClassUtils.getContextClassLoader());
             }
         }
         
