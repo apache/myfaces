@@ -39,6 +39,7 @@ import javax.el.ExpressionFactory;
 import javax.faces.FacesException;
 import javax.faces.application.Resource;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UniqueIdVendor;
 import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
@@ -98,11 +99,23 @@ final class DefaultFacelet extends Facelet
             FaceletException, ELException
     {
         DefaultFaceletContext ctx = new DefaultFaceletContext(facesContext, this);
+        // push the parent as a UniqueIdVendor to the stack here
+        if (parent instanceof UniqueIdVendor)
+        {
+            ctx.pushUniqueIdVendorToStack((UniqueIdVendor) parent);
+        }
+        
         this.refresh(parent);
         ComponentSupport.markForDeletion(parent);
         _root.apply(ctx, parent);
         ComponentSupport.finalizeForDeletion(parent);
         this.markApplied(parent);
+        
+        // remove the UIViewRoot from the UniqueIdVendor stack
+        if (parent instanceof UniqueIdVendor)
+        {
+            ctx.popUniqueIdVendorToStack();
+        }
     }
 
     private final void refresh(UIComponent c)
