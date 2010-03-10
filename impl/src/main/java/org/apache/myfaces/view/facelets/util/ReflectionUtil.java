@@ -56,7 +56,7 @@ public class ReflectionUtil
             if (name.endsWith("[]"))
             {
                 String nc = name.substring(0, name.length() - 2);
-                //we should route through our shared forName, due to plugins and due to bette4r classloader resolution
+                //we should route through our shared forName, due to plugins and due to better classloader resolution
                 c  = ClassUtils.classForName(nc);
                 //old code left for double checking
                 //c = Class.forName(nc, false, ClassUtils.getContextClassLoader());
