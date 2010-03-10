@@ -44,7 +44,7 @@ public class Jsp20FacesInitializer extends AbstractFacesInitializer
     /**
      * The ExpressionFactory implementation of the EL-RI.
      */
-    private static final String EL_RI_EXPRESSION_FACTORY_IMPL = "com.sun.facelets.el.ExpressionFactoryImpl";
+    private static final String EL_RI_EXPRESSION_FACTORY_IMPL = "com.sun.el.ExpressionFactoryImpl";
 
     /**
      * Jasper's ExpressionFactory implementation.
@@ -69,7 +69,7 @@ public class Jsp20FacesInitializer extends AbstractFacesInitializer
         // the ExpressionFactory implementation to use as there is no JspApplicationContext
         // we could ask for. Having said that, though, the user only has to provide it, if
         // there is no known ExpressionFactory available (i.e. if neither
-        // "com.sun.facelets.el.ExpressionFactoryImpl" nor "org.apache.el.ExpressionFactoryImpl"
+        // "com.sun.el.ExpressionFactoryImpl" nor "org.apache.el.ExpressionFactoryImpl"
         // are available).
         ExpressionFactory expressionFactory = getUserDefinedExpressionFactory(externalContext);
 
