@@ -151,8 +151,8 @@ public class AnnotationConfigurator
         bcan.add("Ljavax/faces/render/FacesRenderer;");
         bcan.add("Ljavax/faces/bean/ManagedBean;");
         bcan.add("Ljavax/faces/event/NamedEvent;");
-        bcan.add("Ljavax/faces/event/ListenerFor;");
-        bcan.add("Ljavax/faces/event/ListenersFor;");
+        //bcan.add("Ljavax/faces/event/ListenerFor;");
+        //bcan.add("Ljavax/faces/event/ListenersFor;");
         bcan.add("Ljavax/faces/render/FacesBehaviorRenderer;");
 
         byteCodeAnnotationsNames = Collections.unmodifiableSet(bcan);
@@ -974,6 +974,7 @@ public class AnnotationConfigurator
             }
         }
 
+        /*
         ListenerFor listenerFor = (ListenerFor) clazz.getAnnotation(ListenerFor.class);
         if (listenerFor != null)
         {
@@ -987,11 +988,12 @@ public class AnnotationConfigurator
             {
                 processListenerFor(application, clazz, item);
             }
-        }
+        }*/
 
         // TODO: All annotations scanned at startup must be configured here!
     }
 
+    /*
     private void processListenerFor(Application application, Class clazz, ListenerFor listenerFor)
     {
         try
@@ -1018,7 +1020,7 @@ public class AnnotationConfigurator
         {
             throw new FacesException(e);
         }
-    }
+    }*/
 
     /**
      * <p>Return an array of all <code>Field</code>s reflecting declared
