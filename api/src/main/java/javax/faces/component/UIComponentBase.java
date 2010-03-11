@@ -690,7 +690,7 @@ public abstract class UIComponentBase extends UIComponent
         if (_clientId != null)
             return _clientId;
 
-        boolean idWasNull = false;
+        //boolean idWasNull = false;
         String id = getId();
         if (id == null)
         {
@@ -724,7 +724,7 @@ public abstract class UIComponentBase extends UIComponent
             }
             setId(id);
             // We remember that the id was null and log a warning down below
-            idWasNull = true;
+            // idWasNull = true;
         }
 
         UIComponent namingContainer = _ComponentUtils.findParentNamingContainer(this, false);
@@ -752,15 +752,18 @@ public abstract class UIComponentBase extends UIComponent
             _clientId = renderer.convertClientId(context, _clientId);
         }
 
-        if (idWasNull && log.isLoggable(Level.WARNING))
-        {
-            log.warning("WARNING: Component " + _clientId
-                    + " just got an automatic id, because there was no id assigned yet. "
-                    + "If this component was created dynamically (i.e. not by a JSP tag) you should assign it an "
-                    + "explicit static id or assign it the id you get from "
-                    + "the createUniqueId from the current UIViewRoot "
-                    + "component right after creation! Path to Component: " + getPathToComponent(this));
-        }
+        // -=Leonardo Uribe=- In jsf 1.1 and 1.2 this warning has sense, but in jsf 2.0 it is common to have
+        // components without any explicit id (UIViewParameter components and UIOuput resource components) instances.
+        // So, this warning is becoming obsolete in this new context and should be removed.
+        //if (idWasNull && log.isLoggable(Level.WARNING))
+        //{
+        //    log.warning("WARNING: Component " + _clientId
+        //            + " just got an automatic id, because there was no id assigned yet. "
+        //            + "If this component was created dynamically (i.e. not by a JSP tag) you should assign it an "
+        //            + "explicit static id or assign it the id you get from "
+        //            + "the createUniqueId from the current UIViewRoot "
+        //            + "component right after creation! Path to Component: " + getPathToComponent(this));
+        //}
 
         return _clientId;
     }

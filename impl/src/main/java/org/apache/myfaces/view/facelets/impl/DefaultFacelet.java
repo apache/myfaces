@@ -99,23 +99,11 @@ final class DefaultFacelet extends Facelet
             FaceletException, ELException
     {
         DefaultFaceletContext ctx = new DefaultFaceletContext(facesContext, this);
-        // push the parent as a UniqueIdVendor to the stack here
-        if (parent instanceof UniqueIdVendor)
-        {
-            ctx.pushUniqueIdVendorToStack((UniqueIdVendor) parent);
-        }
-        
         this.refresh(parent);
         ComponentSupport.markForDeletion(parent);
         _root.apply(ctx, parent);
         ComponentSupport.finalizeForDeletion(parent);
         this.markApplied(parent);
-        
-        // remove the UIViewRoot from the UniqueIdVendor stack
-        if (parent instanceof UniqueIdVendor)
-        {
-            ctx.popUniqueIdVendorToStack();
-        }
     }
 
     private final void refresh(UIComponent c)
