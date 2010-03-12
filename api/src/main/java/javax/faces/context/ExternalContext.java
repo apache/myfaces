@@ -41,22 +41,6 @@ public abstract class ExternalContext
     public static final String FORM_AUTH = "FORM";
     
     /**
-     * This variable holds the firstInstance where all ExternalContext
-     * objects should call when new jsf 2.0 methods are called.
-     * 
-     * This variable is an implementation detail and should be 
-     * initialized and released on FacesContextFactoryImpl (because
-     * this is the place where ExternalContextFactory.getExternalContext()
-     * is called).
-     * 
-     * The objective of this is keep compatibility of libraries that wrap 
-     * ExternalContext objects before 2.0. It is similar as FacesContext._firstInstace,
-     * but since we don't have any place to init and release this variable properly
-     * we should do it using reflection.
-     */
-    private static ThreadLocal<ExternalContext> _firstInstance = new ThreadLocal<ExternalContext>();
-
-    /**
      *
      * @param name
      * @param value
@@ -66,7 +50,7 @@ public abstract class ExternalContext
      */
     public void addResponseCookie(String name, String value, Map<String, Object> properties)
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -85,7 +69,7 @@ public abstract class ExternalContext
      */
     public void addResponseHeader(String name, String value)
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -108,7 +92,7 @@ public abstract class ExternalContext
      */
     public String encodeBookmarkableURL(String baseUrl, Map<String,List<String>> parameters)
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -127,7 +111,7 @@ public abstract class ExternalContext
     public String encodePartialActionURL(String url)
     {
         // TODO: IMPLEMENT IMPL
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -146,7 +130,7 @@ public abstract class ExternalContext
      */
     public String encodeRedirectURL(String baseUrl, Map<String,List<String>> parameters)
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -173,7 +157,7 @@ public abstract class ExternalContext
      */
     public String getContextName()
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -188,7 +172,7 @@ public abstract class ExternalContext
      */
     public Flash getFlash()
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -208,7 +192,7 @@ public abstract class ExternalContext
      */
     public String getMimeType(String file)
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -223,7 +207,7 @@ public abstract class ExternalContext
      */
     public String getRealPath(String path)
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -239,7 +223,7 @@ public abstract class ExternalContext
 
     public String getRequestCharacterEncoding()
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -257,7 +241,7 @@ public abstract class ExternalContext
      */
     public int getRequestContentLength()
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -269,7 +253,7 @@ public abstract class ExternalContext
 
     public String getRequestContentType()
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -306,7 +290,7 @@ public abstract class ExternalContext
      */
     public String getRequestScheme()
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -321,7 +305,7 @@ public abstract class ExternalContext
      */
     public String getRequestServerName()
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -336,7 +320,7 @@ public abstract class ExternalContext
      */
     public int getRequestServerPort()
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -364,7 +348,7 @@ public abstract class ExternalContext
      */
     public int getResponseBufferSize()
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -376,7 +360,7 @@ public abstract class ExternalContext
 
     public String getResponseCharacterEncoding()
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -393,7 +377,7 @@ public abstract class ExternalContext
      */
     public String getResponseContentType()
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -408,7 +392,7 @@ public abstract class ExternalContext
      */
     public OutputStream getResponseOutputStream() throws IOException
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -423,7 +407,7 @@ public abstract class ExternalContext
      */
     public Writer getResponseOutputWriter() throws IOException
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -444,7 +428,7 @@ public abstract class ExternalContext
      */
     public void invalidateSession()
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -459,7 +443,7 @@ public abstract class ExternalContext
      */
     public boolean isResponseCommitted()
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -491,7 +475,7 @@ public abstract class ExternalContext
      */
     public void responseFlushBuffer() throws IOException
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -507,7 +491,7 @@ public abstract class ExternalContext
      */
     public void responseReset()
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -527,7 +511,7 @@ public abstract class ExternalContext
      */
     public void responseSendError(int statusCode, String message) throws IOException
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -545,7 +529,7 @@ public abstract class ExternalContext
      */
     public void setRequest(Object request)
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -565,7 +549,7 @@ public abstract class ExternalContext
     public void setRequestCharacterEncoding(java.lang.String encoding)
             throws java.io.UnsupportedEncodingException
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -583,7 +567,7 @@ public abstract class ExternalContext
      */
     public void setResponse(Object response)
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -601,7 +585,7 @@ public abstract class ExternalContext
      */
     public void setResponseBufferSize(int size)
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -619,7 +603,7 @@ public abstract class ExternalContext
      */
     public void setResponseCharacterEncoding(String encoding)
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -637,7 +621,7 @@ public abstract class ExternalContext
      */
     public void setResponseContentLength(int length)
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -655,7 +639,7 @@ public abstract class ExternalContext
      */
     public void setResponseContentType(String contentType)
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -674,7 +658,7 @@ public abstract class ExternalContext
      */
     public void setResponseHeader(String name, String value)
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {
@@ -692,7 +676,7 @@ public abstract class ExternalContext
      */
     public void setResponseStatus(int statusCode)
     {
-        ExternalContext ctx = _firstInstance.get();
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
         
         if (ctx == null)
         {

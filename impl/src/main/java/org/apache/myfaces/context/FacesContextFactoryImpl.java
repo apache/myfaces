@@ -33,6 +33,7 @@ import javax.faces.lifecycle.Lifecycle;
 import javax.servlet.ServletContext;
 
 import org.apache.myfaces.context.servlet.FacesContextImpl;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 /**
  * DOCUMENT ME!
@@ -71,7 +72,8 @@ public class FacesContextFactoryImpl extends FacesContextFactory
         ThreadLocal<ExternalContext> firstExternalContextInstance = null;
         try
         {
-            Field externalContextFirstInstance = ExternalContext.class.getDeclaredField("_firstInstance");
+            Class clazz = ClassUtils.classForName("javax.faces.context._MyFacesExternalContextHelper");
+            Field externalContextFirstInstance = clazz.getDeclaredField("_firstInstance");
             externalContextFirstInstance.setAccessible(true);
             
             if (externalContextFirstInstance != null)
@@ -87,13 +89,14 @@ public class FacesContextFactoryImpl extends FacesContextFactory
         {
             // It could happen, but we can ignore it.
             if (log.isLoggable(Level.FINE))
-                log.log(Level.FINE, "Cannot access private field _firstInstance from ExternalContext ",e);
+                log.log(Level.FINE, "Cannot access field _firstInstance"
+                        + "from _MyFacesExternalContextHelper ", e);
         }
         catch (Exception e)
         {
-            //It should not happen if we have only myfaces on classpath
             if (log.isLoggable(Level.SEVERE))
-                log.log(Level.SEVERE, "Cannot found private field _firstInstance from ExternalContext ",e);
+                log.log(Level.SEVERE, "Cannot find field _firstInstance"
+                        + "from _MyFacesExternalContextHelper ", e);
         }
         
         _firstExternalContextInstance = firstExternalContextInstance;
