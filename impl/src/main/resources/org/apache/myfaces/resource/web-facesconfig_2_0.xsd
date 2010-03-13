@@ -65,7 +65,7 @@
             <xsd:element name="render-kit" type="javaee:faces-config-render-kitType"/>
             <xsd:element name="lifecycle" type="javaee:faces-config-lifecycleType"/>
             <xsd:element name="validator" type="javaee:faces-config-validatorType"/>
-            <xsd:element name="behavior" type="faces-config-behaviorType"/>
+            <xsd:element name="behavior" type="javaee:faces-config-behaviorType"/>
             <xsd:element maxOccurs="unbounded" minOccurs="0" name="faces-config-extension"
                 type="javaee:faces-config-extensionType"/>
         </xsd:choice>
@@ -110,6 +110,7 @@
             <xsd:element name="after" type="javaee:faces-config-ordering-orderingType" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="before" type="javaee:faces-config-ordering-orderingType" minOccurs="0" maxOccurs="1"/>
         </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID"/>
     </xsd:complexType>
     
     <xsd:complexType name="faces-config-ordering-orderingType">
@@ -128,6 +129,7 @@
             <xsd:element name="name" type="javaee:java-identifierType" minOccurs="0" maxOccurs="unbounded"/>
             <xsd:element name="others" type="javaee:faces-config-ordering-othersType" minOccurs="0" maxOccurs="1" />
         </xsd:choice>
+        <xsd:attribute name="id" type="xsd:ID"/>
     </xsd:complexType>
 
     <xsd:complexType name="faces-config-application-resource-bundleType">
@@ -343,6 +345,7 @@
                 type="javaee:faces-config-managed-bean-extensionType"/>
         </xsd:sequence>
         <xsd:attribute name="id" type="xsd:ID"/>
+        <xsd:attribute name="eager" type="xsd:boolean" use="optional"/>
     </xsd:complexType>
 
     <xsd:complexType name="faces-config-managed-bean-extensionType">
@@ -406,10 +409,19 @@
             <xsd:element minOccurs="0" name="from-action"
                 type="javaee:faces-config-from-actionType"/>
             <xsd:element minOccurs="0" name="from-outcome" type="javaee:string"/>
-            <xsd:element name="to-view-id" type="javaee:string"/>
+            <xsd:element name="if" type="javaee:faces-config-ifType" minOccurs="0" />
+            <xsd:element name="to-view-id" type="javaee:string" />
             <xsd:element minOccurs="0" name="redirect" type="javaee:faces-config-redirectType"/>
         </xsd:sequence>
         <xsd:attribute name="id" type="xsd:ID"/>
+    </xsd:complexType>
+    
+     <xsd:complexType name="faces-config-ifType">
+        <xsd:simpleContent>
+            <xsd:extension base="javaee:faces-config-el-expressionType">
+                <xsd:attribute name="id" type="xsd:ID" />
+            </xsd:extension>
+        </xsd:simpleContent>
     </xsd:complexType>
 
     <xsd:complexType name="faces-config-navigation-ruleType">
@@ -630,9 +642,10 @@
                 minOccurs="0" maxOccurs="unbounded"/>
             <xsd:element name="property" type="javaee:faces-config-propertyType" 
                 minOccurs="0" maxOccurs="unbounded"/>
-            <xsd:element name="extension" type="javaee:faces-config-behavior-extensionType" 
+            <xsd:element name="behavior-extension" type="javaee:faces-config-behavior-extensionType" 
                 minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID"/>
     </xsd:complexType>
 
     <xsd:complexType name="faces-config-behavior-extensionType">
@@ -648,6 +661,7 @@
             <xsd:element name="client-behavior-renderer-type" type="javaee:string"/>
             <xsd:element name="client-behavior-renderer-class" type="javaee:fully-qualified-classType"/>
         </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID"/>
     </xsd:complexType>
 
     <xsd:simpleType name="faces-config-versionType">
