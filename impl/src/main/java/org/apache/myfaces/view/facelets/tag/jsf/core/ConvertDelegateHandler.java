@@ -53,7 +53,7 @@ public final class ConvertDelegateHandler extends ConverterHandler
     public ConvertDelegateHandler(ConverterConfig config)
     {
         super(config);
-        this.converterId = this.getRequiredAttribute("converterId");
+        this.converterId = this.getAttribute("converterId");
     }
 
     /**
@@ -64,7 +64,7 @@ public final class ConvertDelegateHandler extends ConverterHandler
      */
     protected Converter createConverter(FaceletContext ctx) throws FacesException, ELException, FaceletException
     {
-        return ctx.getFacesContext().getApplication().createConverter(this.converterId.getValue(ctx));
+        return ctx.getFacesContext().getApplication().createConverter(this.getConverterId(ctx));
     }
 
     protected MetaRuleset createMetaRuleset(Class type)
@@ -75,6 +75,10 @@ public final class ConvertDelegateHandler extends ConverterHandler
     @Override
     public String getConverterId(FaceletContext ctx)
     {
+        if (converterId == null)
+        {
+            return null;
+        }
         return converterId.getValue(ctx);
     }
 }

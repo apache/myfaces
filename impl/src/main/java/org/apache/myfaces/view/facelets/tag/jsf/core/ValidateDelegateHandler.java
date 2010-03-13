@@ -48,7 +48,7 @@ public final class ValidateDelegateHandler extends ValidatorHandler
     public ValidateDelegateHandler(ValidatorConfig config)
     {
         super(config);
-        this.validatorId = this.getRequiredAttribute("validatorId");
+        this.validatorId = this.getAttribute("validatorId");
     }
 
     /**
@@ -59,7 +59,7 @@ public final class ValidateDelegateHandler extends ValidatorHandler
      */
     protected Validator createValidator(FaceletContext ctx)
     {
-        return ctx.getFacesContext().getApplication().createValidator(this.validatorId.getValue(ctx));
+        return ctx.getFacesContext().getApplication().createValidator(this.getValidatorId(ctx));
     }
 
     protected MetaRuleset createMetaRuleset(Class type)
@@ -70,6 +70,10 @@ public final class ValidateDelegateHandler extends ValidatorHandler
     @Override
     public String getValidatorId(FaceletContext ctx)
     {
+        if (validatorId == null)
+        {
+            return null;
+        }
         return validatorId.getValue(ctx);
     }
 

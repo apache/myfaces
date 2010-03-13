@@ -126,6 +126,12 @@ public class ConverterTag extends ConverterELTag
                 throw new JspException("Exception creating converter with converterId: " + _converterId, e);
             }
         }
+        
+        if (converter == null)
+        {
+            throw new JspException("Could not create converter. Please specify a valid converterId" +
+                    " or a non-null binding.");
+        }
 
         return converter;
     }

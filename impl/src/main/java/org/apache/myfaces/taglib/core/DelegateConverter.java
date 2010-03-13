@@ -157,6 +157,12 @@ public class DelegateConverter implements Converter, StateHolder
                 throw new ConverterException("Exception creating converter with converterId: " + _converterId, e);
             }
         }
+        
+        if (converter == null)
+        {
+            throw new IllegalStateException("Could not create converter. Please specify a valid converterId" +
+                    " or a non-null binding.");
+        }
 
         return converter;
     }
