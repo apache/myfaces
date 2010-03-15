@@ -553,6 +553,9 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
                 foundForm = parentItem;
                 formCnt++;
             }
+            if(formCnt == 1) {
+                return foundForm;
+            }
             if(formCnt > 1) return null;
         }
 
