@@ -153,6 +153,12 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
          *all the time
          **/
         var JSF2Utils = myfaces._impl._util._LangUtils;
+        var elementId = null;
+        if(JSF2Utils.isString(element)) {
+            elementId = element;
+        } else if ('undefined' != typeof element && null != element) {
+            elementId = element.id;
+        }
 
         /**
          * we cross reference statically hence the mapping here
@@ -161,7 +167,9 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
         element = JSF2Utils.byId(element);
 
         /*assert a valid structure of a given element*/
-        this._assertElement(element);
+        //element can be mapped out by the time of passing the request by some underlying framework
+        //this._assertElement(element);
+
         /*assert if the onerror is set and once if it is set it must be of type function*/
         this._assertFunction(options.onerror);
         /*assert if the onevent is set and once if it is set it must be of type function*/
@@ -197,16 +205,19 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
         /**
          * fetch the parent form
          */
-        var sourceForm = myfaces._impl._util._Utils.getParent(null, ajaxContext, element, "form");
+        var sourceForm = ('undefined' != typeof element && null != element) ? myfaces._impl._util._Utils.getParent(null, ajaxContext, element, "form") : null;
 
         if ('undefined' == typeof sourceForm || null == sourceForm) {
-            sourceForm = document.forms[0];
+            //in case of a detached element we have to try to determine fuzzily over the name/id attribute
+            //  which form we have to use
+            //this should get in 90% of all usecases with multiple forms the form right
+            sourceForm = myfaces._impl._util._Utils.fuzzyFormDetection(null, ajaxContext, element);
         }
 
         /**
          * binding contract the javax.faces.source must be set
          */
-        passThroughArguments[myfaces._impl.core._jsfImpl._PROP_PARTIAL_SOURCE] = element.id;
+        passThroughArguments[myfaces._impl.core._jsfImpl._PROP_PARTIAL_SOURCE] = elementId;
 
         /**
          * javax.faces.partial.ajax must be set to true
@@ -225,7 +236,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
             var execAll = execString.indexOf(this._OPT_IDENT_ALL) != -1;
             if (!execNone && !execAll) {
                 execString = execString.replace(this._OPT_IDENT_FORM, sourceForm.id);
-                execString = execString.replace(this._OPT_IDENT_THIS, element.id);
+                execString = execString.replace(this._OPT_IDENT_THIS, elementId);
 
                 passThroughArguments[myfaces._impl.core._jsfImpl._PROP_EXECUTE] = execString;
             } else if (execAll) {
@@ -236,7 +247,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
             /*remap just in case we have a valid pointer to an existing object*/
             delete passThroughArguments.execute;
         } else {
-            passThroughArguments[myfaces._impl.core._jsfImpl._PROP_EXECUTE] = element.id;
+            passThroughArguments[myfaces._impl.core._jsfImpl._PROP_EXECUTE] = elementId;
         }
 
         if (JSF2Utils.exists(passThroughArguments, "render")) {
@@ -245,7 +256,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
             var renderAll = renderString.indexOf(this._OPT_IDENT_ALL) != -1;
             if (!renderNone && !renderAll) {
                 renderString = renderString.replace(this._OPT_IDENT_FORM, sourceForm.id);
-                renderString = renderString.replace(this._OPT_IDENT_THIS, element.id);
+                renderString = renderString.replace(this._OPT_IDENT_THIS, elementId);
                 passThroughArguments[myfaces._impl.core._jsfImpl._PROP_RENDER] = renderString;
                 passThroughArguments.render = null;
             } else if (renderAll) {

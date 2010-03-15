@@ -12,48 +12,51 @@
  *  limitations under the License.
  *  under the License.
  */
-
-var myfaces = null;
-/**
- * A simple provide function
- * fixing the namespaces
- */
-function _reserveMyfacesNamespaces() {
-    /**
-     *
-     * reserve the namespaces used by the myfaces core
-     */
-    //we have not registered the namespace with openajax so we dont do it for now
-
-    //if ('undefined' != typeof OpenAjax && ( 'undefined' == typeof myfaces || null == myfaces)) {
-    //    OpenAjax.hub.registerLibrary("myfaces", "myfaces.apache.org", "1.0", null);
-    //}
-
-    /*originally we had it at org.apache.myfaces, but we are now down to myfaces since the openajax seems to have problems registering more than a root domain and org is not only apache specific*/
-    if('undefined' == typeof myfaces || null == myfaces) {
-        myfaces = new Object();
-    }
-
-    if('undefined' == typeof(myfaces._impl) || null == myfaces._impl) {
-        myfaces._impl = new Object();
-    }
-
-    if('undefined' == typeof(myfaces._impl._util) || null == myfaces._impl._util) {
-        myfaces._impl._util = new Object();
-    }
-    if('undefined' == typeof(myfaces._impl.core) || null == myfaces._impl.core) {
-        myfaces._impl.core = new Object();
-    }
-    if('undefined' == typeof(myfaces._impl.xhrCore) || null == myfaces._impl.xhrCore) {
-        myfaces._impl.xhrCore = new Object();
-    }
-    if('undefined' == typeof(myfaces.config) || null == myfaces.config) {
-        myfaces.config = new Object();
-    }
-
+if ('undefined' == typeof myfaces || null == myfaces) {
+    var myfaces = null;
 }
 
-_reserveMyfacesNamespaces();
+if ('undefined' == typeof _reserveMyfacesNamespaces || _reserveMyfacesNamespaces == null) {
+    /**
+     * A simple provide function
+     * fixing the namespaces
+     */
+    var _reserveMyfacesNamespaces = function() {
+        /**
+         *
+         * reserve the namespaces used by the myfaces core
+         */
+        //we have not registered the namespace with openajax so we dont do it for now
+
+        //if ('undefined' != typeof OpenAjax && ( 'undefined' == typeof myfaces || null == myfaces)) {
+        //    OpenAjax.hub.registerLibrary("myfaces", "myfaces.apache.org", "1.0", null);
+        //}
+
+        /*originally we had it at org.apache.myfaces, but we are now down to myfaces since the openajax seems to have problems registering more than a root domain and org is not only apache specific*/
+        if ('undefined' == typeof myfaces || null == myfaces) {
+            myfaces = new Object();
+        }
+
+        if ('undefined' == typeof(myfaces._impl) || null == myfaces._impl) {
+            myfaces._impl = new Object();
+        }
+
+        if ('undefined' == typeof(myfaces._impl._util) || null == myfaces._impl._util) {
+            myfaces._impl._util = new Object();
+        }
+        if ('undefined' == typeof(myfaces._impl.core) || null == myfaces._impl.core) {
+            myfaces._impl.core = new Object();
+        }
+        if ('undefined' == typeof(myfaces._impl.xhrCore) || null == myfaces._impl.xhrCore) {
+            myfaces._impl.xhrCore = new Object();
+        }
+        if ('undefined' == typeof(myfaces.config) || null == myfaces.config) {
+            myfaces.config = new Object();
+        }
+
+    };
+    _reserveMyfacesNamespaces();
+};
 
 /**
  * Central internal JSF2 LangUtils with code used
@@ -65,7 +68,7 @@ _reserveMyfacesNamespaces();
  */
 if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._impl._util._LangUtils) {
     myfaces._impl._util._LangUtils = function() {
-        }
+    }
 
     myfaces._impl._util._LangUtils.global = this;
 
@@ -76,9 +79,8 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
         return this._underTest;
     };
 
-
     myfaces._impl._util._LangUtils.byId = function(/*object*/ reference) {
-        if(myfaces._impl._util._LangUtils.isString(reference)) {
+        if (myfaces._impl._util._LangUtils.isString(reference)) {
             return document.getElementById(reference);
         }
         return reference;
@@ -97,7 +99,7 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
      properties in obj are appended at the end of startWith and
      startWith is the returned array.
      */
-    myfaces._impl._util._LangUtils._toArray = function(obj, offset,  startWith) {
+    myfaces._impl._util._LangUtils._toArray = function(obj, offset, startWith) {
         //	summary:
         //		Converts an array-like object (i.e. arguments, DOMCollection) to an
         //		array. Returns a new Array with the elements of obj.
@@ -136,15 +138,15 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
      * @param {RegExp} splitter our splitter reglar expression
      * @return an array of the splitted string
      */
-    myfaces._impl._util._LangUtils.strToArray = function(/*string*/ it,/*regexp*/ splitter) {
+    myfaces._impl._util._LangUtils.strToArray = function(/*string*/ it, /*regexp*/ splitter) {
         //	summary:
         //		Return true if it is a String
 
-        if(!myfaces._impl._util._LangUtils.isString(it)) {
+        if (!myfaces._impl._util._LangUtils.isString(it)) {
             throw Error("myfaces._impl._util._LangUtils.strToArray param not of type string");
         }
         var resultArr = it.split(splitter);
-        for(var cnt = 0; cnt < resultArr.length; cnt++) {
+        for (var cnt = 0; cnt < resultArr.length; cnt++) {
             resultArr[cnt] = myfaces._impl._util._LangUtils.trim(resultArr[cnt]);
         }
         return resultArr;
@@ -158,8 +160,8 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
     myfaces._impl._util._LangUtils.trim = function(/*string*/ str) {
 
         str = str.replace(/^\s\s*/, ''),
-        ws = /\s/,
-        i = str.length;
+                ws = /\s/,
+                i = str.length;
         while (ws.test(str.charAt(--i)));
         return str.slice(0, i + 1);
     };
@@ -174,8 +176,6 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
         var arr = theString.split(delimiter);
         return arr[arr.length - 1];
     };
-
-    
 
     /**
      * Backported from dojo
@@ -249,12 +249,11 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
      * @deprecated will be removed soon
      */
     myfaces._impl._util._LangUtils._getLogger = function() {
-        if(null ==  myfaces._impl._util._LangUtils._logger) {
+        if (null == myfaces._impl._util._LangUtils._logger) {
             myfaces._impl._util._LangUtils._logger = myfaces._impl._util._Logger.getInstance();
         }
         return myfaces._impl._util._LangUtils._logger;
     };
-
 
     myfaces._impl._util._LangUtils._hitchArgs = function(scope, method /*,...*/) {
         var pre = this._toArray(arguments, 2);
@@ -268,7 +267,6 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
             return f && f.apply(scope || this, pre.concat(args)); // mixed
         } // Function
     };
-
 
     /**
      * Helper function to merge two maps
@@ -285,27 +283,27 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
         var result = {};
         var keyIdx = {};
         var key = null;
-        for(key in source) {
+        for (key in source) {
             /**
-           *we always overwrite dest with source
-           *unless overWrite is not set or source does not exist
-           *but also only if dest exists otherwise source still is taken
-           */
-            if(!overwriteDest) {
+             *we always overwrite dest with source
+             *unless overWrite is not set or source does not exist
+             *but also only if dest exists otherwise source still is taken
+             */
+            if (!overwriteDest) {
                 /**
                  *we use exists instead of booleans because we cannot reloy
                  *on all values being non boolean, we would need an elvis
                  *operator in javascript to shorten this :-(
                  */
-                result[key] = _JSF2Utils.exists(dest,key) ? dest[key] : source[key];
+                result[key] = _JSF2Utils.exists(dest, key) ? dest[key] : source[key];
             } else {
-                result[key] = _JSF2Utils.exists(source,key) ? source[key] : dest[key];
+                result[key] = _JSF2Utils.exists(source, key) ? source[key] : dest[key];
             }
             keyIdx[key] = true;
         }
-        for(key in destination) {
+        for (key in destination) {
             /*if result.key does not exist we push in dest.key*/
-            result[key] = _JSF2Utils.exists(result,key) ? result[key] : destination[key];
+            result[key] = _JSF2Utils.exists(result, key) ? result[key] : destination[key];
         }
         return result;
     };
@@ -314,9 +312,8 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
      * check if an element exists in the root
      */
     myfaces._impl._util._LangUtils.exists = function(root, element) {
-        return ('undefined' != typeof root && null != root &&  'undefined' != typeof root[element] && null != root[element]);
+        return ('undefined' != typeof root && null != root && 'undefined' != typeof root[element] && null != root[element]);
     }
-
 
     /**
      * checks if an array contains an element
@@ -324,7 +321,7 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
      * @param {String} string_name string to check for
      */
     myfaces._impl._util._LangUtils.arrayContains = function(arr, string_name) {
-        for ( var loop = 0; loop < arr.length; loop++) {
+        for (var loop = 0; loop < arr.length; loop++) {
             if (arr[loop] == string_name) {
                 return true;
             }
@@ -343,14 +340,14 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
      * and functionalitywise dirty
      */
     myfaces._impl._util._LangUtils.arrayToString = function(/*String or array*/ arr, /*string*/ delimiter) {
-        if( myfaces._impl._util._LangUtils.isString(arr) ) {
+        if (myfaces._impl._util._LangUtils.isString(arr)) {
             return arr;
         }
         var finalDelimiter = (null == delimiter) ? "\n" : delimiter;
 
         var resultArr = [];
-        for(var cnt = 0; cnt < arr.length; cnt ++) {
-            if(myfaces._impl._util._LangUtils.isString(arr[cnt])) {
+        for (var cnt = 0; cnt < arr.length; cnt ++) {
+            if (myfaces._impl._util._LangUtils.isString(arr[cnt])) {
                 resultArr.push(((delimiter == null) ? ("[" + cnt + "] ") : "") + arr[cnt]);
             } else {
                 resultArr.push(((delimiter == null) ? ("[" + cnt + "] ") : "") + arr[cnt].toString());

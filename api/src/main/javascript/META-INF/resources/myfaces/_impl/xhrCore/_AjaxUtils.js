@@ -65,7 +65,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxUtils"))
             }
 
             // if triggered by a Button send it along
-            if (item.type != null && item.type.toLowerCase() == "submit") {
+            if ('undefined' != typeof item && null != item && item.type != null && item.type.toLowerCase() == "submit") {
                 stringBuffer[stringBuffer.length] = encodeURIComponent(item.name);
                 stringBuffer[stringBuffer.length] = "=";
                 stringBuffer[stringBuffer.length] = encodeURIComponent(item.value);

@@ -217,7 +217,6 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
         item.parentNode.removeChild(item);
     }
 
-  
     /**
      * [STATIC]
      * Replaces HTML elements through others
@@ -265,7 +264,6 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
             }
             // and remove the old item, in case of an empty newtag and do nothing else
             item.parentNode.removeChild(item);
-
 
         } catch (e) {
             myfaces._impl.xhrCore._Exception.throwNewError(request, context, "Utils", "replaceHTMLItem", e);
@@ -341,12 +339,12 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
             for (var loop = 0; loop < styleEntries.length; loop++) {
                 var keyVal = styleEntries[loop].split(":");
                 if (keyVal[0] != "" && keyVal[0] == "opacity") {
-                  //special ie quirks handling for opacity
-                    
-                  var opacityVal = Math.max(100, Math.round(parseFloat( keyVal[1] ) * 10)); 
-                  domNode.style.setAttribute("filter","alpha(opacity="+opacityVal+")");
-                  //if you need more hacks I would recommend
-                  //to use the class attribute and conditional ie includes!
+                    //special ie quirks handling for opacity
+
+                    var opacityVal = Math.max(100, Math.round(parseFloat(keyVal[1]) * 10));
+                    domNode.style.setAttribute("filter", "alpha(opacity=" + opacityVal + ")");
+                    //if you need more hacks I would recommend
+                    //to use the class attribute and conditional ie includes!
                 } else if (keyVal[0] != "") {
                     domNode.style.setAttribute(keyVal[0], keyVal[1]);
                 }
@@ -462,6 +460,103 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
     };
 
     /**
+     * fuzzy form detection which tries to determine the form
+     * an item has been detached.
+     *
+     * The problem is some Javascript libraries simply try to
+     * detach controls and controls others by reusing the names
+     * of the detached input controls. The thing is most of the times,
+     * the name is unique in a jsf scenario due to the inherent form mappig
+     * one way or the other, we will try to fix that by
+     * identifying the proper form over the name
+     *
+     * We do it three way, in case of no form null is returned
+     * in case of a single form no further detection is needed
+     * in case of multiple forms we check all elements with a given name (which we determine
+     * out of a name or id of the detached element) and then iterate over them
+     * to find whether they are in a form or not.
+     *
+     * We cannot do much further because in case of two identical named elements
+     * all checks must fail and the first elements form is served.
+     *
+     * Note, this method is only triggered in case of the issuer or an ajax request
+     * is a detached element, otherwise already existing code has served the correct form.
+     *
+     * This method was added because of
+     * https://issues.apache.org/jira/browse/MYFACES-2599
+     * to support the integration of existing ajax libraries which do heavy dom manipulation on the
+     * controls side (Dojos Dijit library for instance).
+     *
+     * @param {XMLHTTPRequest} request
+     * @param {Map} context
+     * @param {HtmlElement} item - child element
+     *
+     * @return either null or a form node if it could be determined
+     */
+    myfaces._impl._util._Utils.fuzzyFormDetection = function(request, context, item) {
+        if (0 == document.forms.length) {
+            return null;
+        } else if (1 == document.forms.length) {
+            return document.forms[0];
+        }
+
+        //else
+        var name = item.name;
+        var id = item.id;
+
+        var submitIdentifier = ('undefined' == typeof name || null == name) ? id : name;
+        if ('undefined' == typeof submitIdentifier || null == submitIdentifier) {
+            //no identifier found we give it a shot with the first form
+            return document.forms[0];
+        }
+
+        /**
+         * highest chance is to find an element with an identifier
+         */
+        var elementById = document.getElementById(submitIdentifier);
+        var foundElements = new Array();
+        if (null != elementById) {
+            if ('undefined' == typeof element.name || null == element.name || submitIdentifier == element.name) {
+                foundElements.push(elementById);
+            }
+        }
+
+        /**
+         * the lesser chance is the elements which have the same name
+         * (which is the more likely case in case of a brute dom replacement)
+         */
+        var namedFoundElements = document.getElementsByName(submitIdentifier);
+        if (null != namedFoundElements) {
+            for (var cnt = 0; cnt < namedFoundElements.length; cnt++) {
+                //concat() does not work out here due to array not directly equals to [] in some browsers
+                foundElements.push(namedFoundElements[cnt]);
+            }
+        }
+
+        if (null == foundElements || 0 == foundElements.length) {
+            return null;
+        }
+
+        //we now iterate over all possible elements with the identifier element being the first if present
+        //however if the identifier element has no parent form we must rely on our found named elements
+        //to have at least one parent form
+        for (var cnt = 0; cnt < foundElements.length; cnt++) {
+            var foundElement = foundElements[cnt];
+            var parentItem = ('undefined' != typeof foundElement && null != foundElement) ? foundElement.parentNode : null;
+            while (parentItem != null
+                    && parentItem.tagName.toLowerCase() != "form") {
+                parentItem = parentItem.parentNode;
+            }
+            if (parentItem != null) {
+                return parentItem;
+            }
+        }
+
+        //nothing found, fallback, first form in the system, which was the original behavior
+        return document.forms[0];
+    };
+
+    /**
      * [STATIC]
      * gets a parent of an item with a given tagname
      * @param {XMLHTTPRequest} request
@@ -470,9 +565,20 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
      * @param {String} parentName - TagName of parent element
      */
     myfaces._impl._util._Utils.getParent = function(request, context, item, parentName) {
-        try {
-            // parent tag parentName suchen
-            var parentItem = item.parentNode;
+
+		try {
+            if('undefined' == typeof item || null == item) {
+			    throw Error("myfaces._impl._util._Utils.getParen: item is null or undefined,this not allowed");
+		    }
+
+            //search parent tag parentName
+            var parentItem = ('undefined' != typeof item.parentNode) ? item.parentNode: null;
+
+
+            if ('undefined' != typeof item.tagName && null != item.tagName && item.tagName.toLowerCase() == parentName) {
+                return item;
+            }
+
             while (parentItem != null
                     && parentItem.tagName.toLowerCase() != parentName) {
                 parentItem = parentItem.parentNode;
@@ -480,8 +586,9 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
             if (parentItem != null) {
                 return parentItem;
             } else {
+                //we issue a warning but proceed with a fuzzy search in case of a form later
                 myfaces._impl.xhrCore._Exception.throwNewWarning
-                        (request, context, "Utils", "getParent", "The item has no parent with type <" + parentName + ">");
+                        (request, context, "Utils", "getParent", "The item has no parent with type <" + parentName + "> it might be outside of the parent or generally detached. ");
                 return null;
             }
         } catch (e) {
@@ -491,7 +598,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
 
     /**
      * [STATIC]
-     * gets the child of an item with a given tagname
+     * gets the child of an item with a given tag name
      * @param {HtmlElement} item - parent element
      * @param {String} childName - TagName of child element
      * @param {String} itemName - name-Attribut the child can have (can be null)
@@ -541,9 +648,9 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
             return;
         } else if (undefined != typeof (window.eval) && null != window.eval) {
 
-            //fixup for a mozilla bug, a bug in mozilla prevents, that the window is properly applied
+            //fix for a Mozilla bug, a bug, Mozilla prevents, that the window is properly applied
             //the former approach was to scope an outer anonymouse function but the scoping is not necessary
-            //mozilla behaves correctly if you just add an outer function, then the window scope is again
+            //Mozilla behaves correctly if you just add an outer function, then the window scope is again
             //accepted as the real scope
             var func = function () {
                 window.eval.call(window, code);
@@ -585,12 +692,12 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
      * @param {Node} node the node to concat its blocks for
      */
     myfaces._impl._util._Utils.concatCDATABlocks = function(/*Node*/ node) {
-       var cDataBlock = [];
-       // response may contain several blocks
-       for (var i = 0; i < node.childNodes.length; i++) {
-           cDataBlock.push( node.childNodes[i].data);
-       }
-       return cDataBlock.join('');
+        var cDataBlock = [];
+        // response may contain several blocks
+        for (var i = 0; i < node.childNodes.length; i++) {
+            cDataBlock.push(node.childNodes[i].data);
+        }
+        return cDataBlock.join('');
     };
 
     myfaces._impl._util._Utils.browserDetection();
