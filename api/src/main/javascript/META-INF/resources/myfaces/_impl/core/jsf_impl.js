@@ -157,6 +157,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
         if(JSF2Utils.isString(element)) {
             elementId = element;
         } else if ('undefined' != typeof element && null != element) {
+            //inputs do not have names defined per spec so we can rely on the proper id being set
             elementId = element.id;
         }
 
