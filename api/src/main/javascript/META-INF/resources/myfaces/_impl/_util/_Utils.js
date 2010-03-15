@@ -470,11 +470,13 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
      * one way or the other, we will try to fix that by
      * identifying the proper form over the name
      *
-     * We do it three way, in case of no form null is returned
-     * in case of a single form no further detection is needed
+     * We do it in several ways, in case of no form null is returned
      * in case of multiple forms we check all elements with a given name (which we determine
      * out of a name or id of the detached element) and then iterate over them
      * to find whether they are in a form or not.
+     *
+     * If only one element within a form and a given identifier found then we can pull out
+     * and move on
      *
      * We cannot do much further because in case of two identical named elements
      * all checks must fail and the first elements form is served.
@@ -489,22 +491,15 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
      *
      * @param {XMLHTTPRequest} request
      * @param {Map} context
-     * @param {HtmlElement} item - child element
+     * @param {String} submitIdentifier - child elements name identifier
      *
      * @return either null or a form node if it could be determined
      */
-    myfaces._impl._util._Utils.fuzzyFormDetection = function(request, context, item) {
+    myfaces._impl._util._Utils.fuzzyFormDetection = function(request, context, submitIdentifier) {
         if (0 == document.forms.length) {
             return null;
-        } else if (1 == document.forms.length) {
-            return document.forms[0];
         }
 
-        //else
-        var name = item.name;
-        var id = item.id;
-
-        var submitIdentifier = ('undefined' == typeof name || null == name) ? id : name;
         if ('undefined' == typeof submitIdentifier || null == submitIdentifier) {
             //no identifier found we give it a shot with the first form
             return document.forms[0];
@@ -528,8 +523,13 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
         var namedFoundElements = document.getElementsByName(submitIdentifier);
         if (null != namedFoundElements) {
             for (var cnt = 0; cnt < namedFoundElements.length; cnt++) {
-                //concat() does not work out here due to array not directly equals to [] in some browsers
-                foundElements.push(namedFoundElements[cnt]);
+                // we already have covered the identifier case hence we only can deal with names,
+                // since identifiers are unique
+                // we have to filter that element out for the rest of the stack, to have a clean handling
+                // of the number of referenced forms
+                if('undefined' == typeof namedFoundElements[cnt].id || null == namedFoundElements[cnt].id || namedFoundElements[cnt].id != submitIdentifier) {
+                    foundElements.push(namedFoundElements[cnt]);
+                }
             }
         }
 
@@ -540,6 +540,8 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
         //we now iterate over all possible elements with the identifier element being the first if present
         //however if the identifier element has no parent form we must rely on our found named elements
         //to have at least one parent form
+        var foundForm = null;
+        var formCnt = 0;
         for (var cnt = 0; cnt < foundElements.length; cnt++) {
             var foundElement = foundElements[cnt];
             var parentItem = ('undefined' != typeof foundElement && null != foundElement) ? foundElement.parentNode : null;
@@ -548,12 +550,13 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
                 parentItem = parentItem.parentNode;
             }
             if (parentItem != null) {
-                return parentItem;
+                foundForm = parentItem;
+                formCnt++;
             }
+            if(formCnt > 1) return null;
         }
 
-        //nothing found, fallback, first form in the system, which was the original behavior
-        return document.forms[0];
+        return null;
     };
 
     /**
@@ -562,9 +565,9 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
      * @param {XMLHTTPRequest} request
      * @param {Map} context
      * @param {HtmlElement} item - child element
-     * @param {String} parentName - TagName of parent element
+     * @param {String} tagNameToSearchFor - TagName of parent element
      */
-    myfaces._impl._util._Utils.getParent = function(request, context, item, parentName) {
+    myfaces._impl._util._Utils.getParent = function(request, context, item, tagNameToSearchFor) {
 
 		try {
             if('undefined' == typeof item || null == item) {
@@ -575,12 +578,12 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
             var parentItem = ('undefined' != typeof item.parentNode) ? item.parentNode: null;
 
 
-            if ('undefined' != typeof item.tagName && null != item.tagName && item.tagName.toLowerCase() == parentName) {
+            if ('undefined' != typeof item.tagName && null != item.tagName && item.tagName.toLowerCase() == tagNameToSearchFor) {
                 return item;
             }
 
             while (parentItem != null
-                    && parentItem.tagName.toLowerCase() != parentName) {
+                    && parentItem.tagName.toLowerCase() != tagNameToSearchFor) {
                 parentItem = parentItem.parentNode;
             }
             if (parentItem != null) {
@@ -588,7 +591,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
             } else {
                 //we issue a warning but proceed with a fuzzy search in case of a form later
                 myfaces._impl.xhrCore._Exception.throwNewWarning
-                        (request, context, "Utils", "getParent", "The item has no parent with type <" + parentName + "> it might be outside of the parent or generally detached. ");
+                        (request, context, "Utils", "getParent", "The item has no parent with type <" + tagNameToSearchFor + "> it might be outside of the parent or generally detached. ");
                 return null;
             }
         } catch (e) {

@@ -212,7 +212,13 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
             //in case of a detached element we have to try to determine fuzzily over the name/id attribute
             //  which form we have to use
             //this should get in 90% of all usecases with multiple forms the form right
-            sourceForm = myfaces._impl._util._Utils.fuzzyFormDetection(null, ajaxContext, element);
+            sourceForm = myfaces._impl._util._Utils.fuzzyFormDetection(null, ajaxContext, elementId);
+            //the identifier must be unique within the scope of the page (aka only one form can have it, name or id
+            // (in a detachment case we have only name, because the identifier is lost)
+            // because the spec clearly states, if the dom element could not be determined, throw an error we we have here
+            if(null == sourceForm) {
+                throw Error("Sourcform could not be determined, either because "+ elementId+ " is not in a form or we have multiple forms with named elements of name "+elementId+", stopping the ajax processing");
+            }
         }
 
         /**
