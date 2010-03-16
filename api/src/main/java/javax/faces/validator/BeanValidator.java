@@ -18,12 +18,19 @@
  */
 package javax.faces.validator;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidator;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import java.beans.FeatureDescriptor;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
-import javax.el.*;
+import javax.el.ELContext;
+import javax.el.ELResolver;
+import javax.el.FunctionMapper;
+import javax.el.ValueExpression;
+import javax.el.VariableMapper;
 import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.PartialStateHolder;
@@ -36,10 +43,11 @@ import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 import javax.validation.groups.Default;
 import javax.validation.metadata.BeanDescriptor;
-import java.beans.FeatureDescriptor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.*;
+
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidator;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
 /**
  * <p>
@@ -187,58 +195,18 @@ public class BeanValidator implements Validator, PartialStateHolder
      * @param context The FacesContext.
      * @return A ValueReferenceWrapper with the necessary information about the ValueReference.
      */
+
     private ValueReferenceWrapper getValueReference(final UIComponent component, final FacesContext context)
     {
         final ValueExpression valueExpression = component.getValueExpression("value");
         final ELContext elCtx = context.getELContext();
         if (_ExternalSpecifications.isUnifiedELAvailable())
         {
-            final ValueReference valueReference = getUELValueReference(valueExpression, elCtx);
-            if (valueReference == null)
-            {
-                return null;
-            }
-            return new ValueReferenceWrapper(valueReference.getBase(), valueReference.getProperty());
+            return _BeanValidatorUELUtils.getUELValueReferenceWrapper(valueExpression, elCtx);
         }
         else
         {
             return ValueReferenceResolver.resolve(valueExpression, elCtx);
-        }
-    }
-
-    private ValueReference getUELValueReference(final ValueExpression valueExpression, final ELContext elCtx)
-    {
-        final String methodName = "getValueReference";
-        final String methodSignature = valueExpression.getClass().getName() +
-                "." + methodName +
-                "(" + ELContext.class + ")";
-        try
-        {
-            final Method method = valueExpression.getClass().getMethod(methodName, ELContext.class);
-            if (!ValueReference.class.equals(method.getReturnType())
-             && !ValueReference.class.isAssignableFrom(method.getReturnType()))
-            {
-                throw new NoSuchMethodException(
-                        methodSignature +
-                        "doesn't return " + ValueReference.class +
-                        ", but " + method.getReturnType());
-            }
-            return (ValueReference) method.invoke(valueExpression, elCtx);
-        }
-        catch (NoSuchMethodException e)
-        {
-            throw new FacesException(
-                    "MyFaces indicates Unified EL is available, but method: " +
-                    methodSignature +
-                    " is not available", e);
-        }
-        catch (InvocationTargetException e)
-        {
-            throw new FacesException("Exception invoking " + methodSignature, e);
-        }
-        catch (IllegalAccessException e)
-        {
-            throw new FacesException("Exception invoking " + methodSignature, e);
         }
     }
 
