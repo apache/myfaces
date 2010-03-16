@@ -26,6 +26,7 @@ import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.PostAddToViewEvent;
 import javax.faces.event.PostValidateEvent;
 import javax.faces.event.PreRenderComponentEvent;
+import javax.faces.event.PreRenderViewEvent;
 import javax.faces.event.PreValidateEvent;
 
 /**
@@ -45,6 +46,7 @@ public class NamedEventManager {
         // Special spec-defined values.
         
         addNamedEvent ("postAddToView", PostAddToViewEvent.class);
+        addNamedEvent ("preRenderView", PreRenderViewEvent.class);
         addNamedEvent ("preRenderComponent", PreRenderComponentEvent.class);
         addNamedEvent ("preValidate", PreValidateEvent.class);
         addNamedEvent ("postValidate", PostValidateEvent.class);
