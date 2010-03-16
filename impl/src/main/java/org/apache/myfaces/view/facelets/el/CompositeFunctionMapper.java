@@ -42,7 +42,7 @@ public final class CompositeFunctionMapper extends FunctionMapper
     public CompositeFunctionMapper(FunctionMapper fn0, FunctionMapper fn1)
     {
         this.fn0 = fn0;
-        this.fn1 = fn1;
+        this.fn1 = fn1; // this one can be null
     }
 
     /**
