@@ -50,4 +50,31 @@ public class _SystemEventServletResponse extends HttpServletResponseWrapper {
                 }));
     }
 
+    @Override
+    public String getCharacterEncoding()
+    {
+        return null;
+    }
+
+    @Override
+    public String getContentType()
+    {
+        return null;
+    }
+
+    @Override
+    public void setCharacterEncoding(String charset)
+    {
+    }
+
+    @Override
+    public void setContentLength(int len)
+    {
+    }
+
+    @Override
+    public void setContentType(String type)
+    {
+    }
+
 }
