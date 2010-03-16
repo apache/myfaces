@@ -51,7 +51,7 @@ public final class CompositeFunctionMapper extends FunctionMapper
     public Method resolveFunction(String prefix, String name)
     {
         Method m = this.fn0.resolveFunction(prefix, name);
-        if (m == null)
+        if (m == null && this.fn1 != null)
         {
             return this.fn1.resolveFunction(prefix, name);
         }
