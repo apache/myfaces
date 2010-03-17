@@ -820,38 +820,33 @@ public abstract class UIComponentBase extends UIComponent
     @Override
     public Iterator<UIComponent> getFacetsAndChildren()
     {
-        if (_facetMap == null)
+        // we can't use _facetMap and _childrenList here directly,
+        // because some component implementation could keep their 
+        // own properties for facets and children and just override
+        // getFacets() and getChildren() (e.g. seen in PrimeFaces).
+        // See MYFACES-2611 for details.
+        Map<String, UIComponent> facets = getFacets();
+        List<UIComponent> children = getChildren();
+        
+        if (facets == null || facets.isEmpty())
         {
-            if (_childrenList == null)
+            if (children == null || children.isEmpty())
+            {
+                // we don't have children or facets
                 return _EMPTY_UICOMPONENT_ITERATOR;
-
-            if (_childrenList.isEmpty())
-                return _EMPTY_UICOMPONENT_ITERATOR;
-
-            return _childrenList.iterator();
+            }
+            // we only have children
+            return children.iterator();
         }
         else
         {
-            if (_facetMap.isEmpty())
+            if (children == null || children.isEmpty())
             {
-                if (_childrenList == null)
-                    return _EMPTY_UICOMPONENT_ITERATOR;
-
-                if (_childrenList.isEmpty())
-                    return _EMPTY_UICOMPONENT_ITERATOR;
-
-                return _childrenList.iterator();
+                // we only have facets
+                return facets.values().iterator();
             }
-            else
-            {
-                if (_childrenList == null)
-                    return _facetMap.values().iterator();
-
-                if (_childrenList.isEmpty())
-                    return _facetMap.values().iterator();
-
-                return new _FacetsAndChildrenIterator(_facetMap, _childrenList);
-            }
+            // we have facets and children
+            return new _FacetsAndChildrenIterator(facets, children);
         }
     }
 
