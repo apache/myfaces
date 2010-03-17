@@ -20,8 +20,8 @@ package org.apache.myfaces.util;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.el.ELContext;
-import javax.validation.Validation;
 
 /**
  * <p>
@@ -65,7 +65,7 @@ public final class ExternalSpecifications
                         // Trial-error approach to check for Bean Validation impl existence.
                         // If any Exception occurs here, we assume that Bean Validation is not available.
                         // The cause may be anything, i.e. NoClassDef, config error...
-                        Validation.buildDefaultValidatorFactory().getValidator();
+                        _ValidationUtils.tryBuildDefaultValidatorFactory();
                     }
                     catch (Throwable t)
                     {
