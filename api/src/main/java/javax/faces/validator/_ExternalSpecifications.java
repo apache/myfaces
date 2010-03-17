@@ -56,7 +56,14 @@ final class _ExternalSpecifications
         {
             try
             {
-                beanValidationAvailable = (Class.forName("javax.validation.Validation") != null);
+                try
+                {
+                    beanValidationAvailable = (Class.forName("javax.validation.Validation") != null);
+                }
+                catch(ClassNotFoundException e)
+                {
+                    beanValidationAvailable = Boolean.FALSE;
+                }
     
                 if (beanValidationAvailable)
                 {
