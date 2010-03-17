@@ -130,7 +130,7 @@
                   org.apache.commons.logging;version="[1.1.1, 2.0.0)",
                   javax.faces.*;version="${project.version}"
                 </Import-Package>
-                <Require-Bundle>org.apache.myfaces.core.impl</Require-Bundle>
+                <Require-Bundle>org.apache.myfaces.core.impl;bundle-version="${project.version}"</Require-Bundle>
               </instructions>
             </configuration>
           </execution>
