@@ -825,28 +825,19 @@ public abstract class UIComponentBase extends UIComponent
         // own properties for facets and children and just override
         // getFacets() and getChildren() (e.g. seen in PrimeFaces).
         // See MYFACES-2611 for details.
-        Map<String, UIComponent> facets = getFacets();
-        List<UIComponent> children = getChildren();
-        
-        if (facets == null || facets.isEmpty())
+        if (getFacetCount() == 0)
         {
-            if (children == null || children.isEmpty())
-            {
-                // we don't have children or facets
+            if (getChildCount() == 0)
                 return _EMPTY_UICOMPONENT_ITERATOR;
-            }
-            // we only have children
-            return children.iterator();
+
+            return getChildren().iterator();
         }
         else
         {
-            if (children == null || children.isEmpty())
-            {
-                // we only have facets
-                return facets.values().iterator();
-            }
-            // we have facets and children
-            return new _FacetsAndChildrenIterator(facets, children);
+            if (getChildCount() == 0)
+                return getFacets().values().iterator();
+
+            return new _FacetsAndChildrenIterator(getFacets(), getChildren());
         }
     }
 
