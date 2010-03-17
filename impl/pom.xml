@@ -242,6 +242,8 @@
                   org.xml.sax,
                   org.xml.sax.helpers,
                   org.apache.jasper.compiler;resolution:=optional,
+                  org.apache.jasper.el;resolution:=optional,
+                  org.apache.el;resolution:=optional,
                   javax.faces.*;version="${project.version}",
                   *
                 </Import-Package>

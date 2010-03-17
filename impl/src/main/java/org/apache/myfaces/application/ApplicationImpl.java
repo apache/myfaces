@@ -260,7 +260,14 @@ public class ApplicationImpl extends Application
         }
         catch (MissingResourceException e)
         {
-            throw new FacesException("Could not load resource bundle for name '" + name + "': " + e.getMessage(), e);
+            try
+            {
+                return getResourceBundle(bundleName, locale, this.getClass().getClassLoader());
+            }
+            catch (MissingResourceException e1)
+            {            
+                throw new FacesException("Could not load resource bundle for name '" + name + "': " + e.getMessage(), e1);
+            }
         }
     }
 

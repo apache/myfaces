@@ -115,6 +115,10 @@ final class _ErrorPageWriter {
 
     private static String[] splitTemplate(String rsc) throws IOException {
         InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(rsc);
+        if (is == null)
+        {
+            is = _ErrorPageWriter.class.getClassLoader().getResourceAsStream(rsc);
+        }
         if (is == null) {
             throw new FileNotFoundException(rsc);
         }
