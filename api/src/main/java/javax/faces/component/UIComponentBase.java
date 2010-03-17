@@ -481,38 +481,24 @@ public abstract class UIComponentBase
 
     public Iterator<UIComponent> getFacetsAndChildren()
     {
-        if (_facetMap == null)
+        // we can't use _facetMap and _childrenList here directly,
+        // because some component implementation could keep their 
+        // own properties for facets and children and just override
+        // getFacets() and getChildren() (e.g. seen in PrimeFaces).
+        // See MYFACES-2611 for details.
+        if (getFacetCount() == 0)
         {
-            if (_childrenList == null)
+            if (getChildCount() == 0)
                 return _EMPTY_UICOMPONENT_ITERATOR;
 
-            if (_childrenList.size() == 0)
-                return _EMPTY_UICOMPONENT_ITERATOR;
-            
-            return _childrenList.iterator();
+            return getChildren().iterator();
         }
         else
         {
-            if (_facetMap.size() == 0)
-            {
-                if (_childrenList == null)
-                    return _EMPTY_UICOMPONENT_ITERATOR;
-              
-                if (_childrenList.size() == 0)
-                    return _EMPTY_UICOMPONENT_ITERATOR;
-            
-                return _childrenList.iterator();  
-            }
-            else
-            {
-                if (_childrenList == null)
-                    return _facetMap.values().iterator();
-              
-                if (_childrenList.size() == 0)
-                    return _facetMap.values().iterator();
-              
-                return new _FacetsAndChildrenIterator<UIComponent>(_facetMap, _childrenList);                            
-            }
+            if (getChildCount() == 0)
+                return getFacets().values().iterator();
+
+            return new _FacetsAndChildrenIterator(getFacets(), getChildren());
         }
     }
 
