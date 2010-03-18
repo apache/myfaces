@@ -21,8 +21,6 @@ package javax.faces.component;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.validation.Validation;
-
 /**
  * <p>
  * Package-private utility class for determining which specifications are available
@@ -54,8 +52,15 @@ final class _ExternalSpecifications
         {
             try
             {
-                beanValidationAvailable = (Class.forName("javax.validation.Validation") != null);
-
+                try
+                {
+                    beanValidationAvailable = (Class.forName("javax.validation.Validation") != null);
+                }
+                catch (ClassNotFoundException e)
+                {
+                    beanValidationAvailable = Boolean.FALSE;
+                }
+                
                 if (beanValidationAvailable)
                 {
                     try
@@ -63,7 +68,7 @@ final class _ExternalSpecifications
                         // Trial-error approach to check for Bean Validation impl existence.
                         // If any Exception occurs here, we assume that Bean Validation is not available.
                         // The cause may be anything, i.e. NoClassDef, config error...
-                        Validation.buildDefaultValidatorFactory().getValidator();
+                        _ValidationUtils.tryBuildDefaultValidatorFactory();
                     }
                     catch (Throwable t)
                     {
