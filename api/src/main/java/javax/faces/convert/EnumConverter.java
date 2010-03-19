@@ -56,8 +56,12 @@ public class EnumConverter implements Converter, StateHolder {
         if (value == null) return "";
         checkTargetClass(facesContext, uiComponent, value);
         
-        for (Object enumConstant : targetClass.getEnumConstants()) {
-            if (enumConstant == value) return enumConstant.toString();
+        for (Object enumConstant : targetClass.getEnumConstants())
+        {
+            if (enumConstant == value)
+            {
+                return ((Enum<?>) enumConstant).name();
+            }
         }
 
         return value.toString();
