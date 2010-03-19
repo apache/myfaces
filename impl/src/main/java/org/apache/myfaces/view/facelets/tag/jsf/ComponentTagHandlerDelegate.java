@@ -51,7 +51,6 @@ import javax.faces.view.facelets.TagHandlerDelegate;
 
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
-import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
 import org.apache.myfaces.view.facelets.tag.composite.InsertChildrenHandler;
 import org.apache.myfaces.view.facelets.tag.composite.InsertFacetHandler;
@@ -220,6 +219,14 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 if (uniqueIdVendor == null)
                 {
                     uniqueIdVendor = facesContext.getViewRoot();
+                    
+                    if (uniqueIdVendor == null)
+                    {
+                        // facesContext.getViewRoot() returns null here if we are in
+                        // phase restore view, so we have to try to get the view root
+                        // via the method in ComponentSupport and our parent
+                        uniqueIdVendor = ComponentSupport.getViewRoot(ctx, parent);
+                    }
                 }
                 if (uniqueIdVendor != null)
                 {
