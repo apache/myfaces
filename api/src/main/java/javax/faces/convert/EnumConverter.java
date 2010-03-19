@@ -20,7 +20,6 @@
 package javax.faces.convert;
 
 import javax.faces.component.PartialStateHolder;
-import javax.faces.component.StateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
@@ -72,7 +71,9 @@ public class EnumConverter implements Converter, PartialStateHolder
         for (Object enumConstant : targetClass.getEnumConstants())
         {
             if (enumConstant == value)
-                return enumConstant.toString();
+            {
+                return ((Enum<?>) enumConstant).name();
+            }
         }
         
         Object[] params =

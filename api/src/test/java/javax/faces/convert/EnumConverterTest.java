@@ -34,7 +34,16 @@ public class EnumConverterTest extends AbstractJsfTestCase
 {
     private enum testEnum
     {
-        ITEM1, ITEM2
+        ITEM1, ITEM2;
+        
+        @Override
+        public String toString()
+        {
+            // overriding toString() to check if converter uses
+            // name() instead of toString() to create the String value.
+            return "enum value";
+        }
+        
     };
 
     private EnumConverter converter;
@@ -125,7 +134,7 @@ public class EnumConverterTest extends AbstractJsfTestCase
     {
         UIInput input = new UIInput();
         String convertedStr = converter.getAsString(FacesContext.getCurrentInstance(), input, testEnum.ITEM1);
-        assertEquals(convertedStr, testEnum.ITEM1.toString());
+        assertEquals(convertedStr, testEnum.ITEM1.name());
     }
 
     /**
