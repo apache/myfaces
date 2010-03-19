@@ -355,11 +355,6 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                     !view.getAttributes().containsKey(DefaultFaceletsStateManagementStrategy.COMPONENT_ADDED_AFTER_BUILD_VIEW))
                 {
                     view.markInitialState();
-                    UIComponent headFacet = view.getFacet("head");
-                    if (headFacet != null)
-                    {
-                        headFacet.markInitialState();
-                    }
                 }
                 
                 //Remove the key that indicate we need to call UIComponent.markInitialState
