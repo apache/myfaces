@@ -18,19 +18,34 @@
  */
 package org.apache.myfaces.config;
 
-import org.apache.myfaces.config.element.*;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
-import org.apache.commons.beanutils.PropertyUtils;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import javax.faces.FacesException;
 import javax.faces.application.Application;
-import javax.faces.context.FacesContext;
 import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.faces.el.PropertyResolver;
 import javax.faces.el.ValueBinding;
 import javax.faces.webapp.UIComponentTag;
-import java.util.*;
-import java.lang.reflect.Array;
+import javax.servlet.jsp.el.ELException;
+
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.el.Coercions;
+import org.apache.commons.el.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.config.element.ListEntries;
+import org.apache.myfaces.config.element.ListEntry;
+import org.apache.myfaces.config.element.ManagedBean;
+import org.apache.myfaces.config.element.ManagedProperty;
+import org.apache.myfaces.config.element.MapEntries;
+import org.apache.myfaces.config.element.MapEntry;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 
 /**
@@ -42,7 +57,8 @@ import java.lang.reflect.Array;
 public class ManagedBeanBuilder
 {
     private RuntimeConfig _runtimeConfig;
-
+    private static final Logger COERCION_LOGGER   = new Logger(System.out);
+    private static final Log log                  = LogFactory.getLog(ManagedBeanBuilder.class);
 
     public Object buildManagedBean(FacesContext facesContext, ManagedBean beanConfiguration) throws FacesException
     {
@@ -185,7 +201,20 @@ public class ManagedBeanBuilder
             if(null == propertyClass) {
               throw new IllegalArgumentException("unable to find the type of property " + property.getPropertyName());
             }
-            Object coercedValue = ClassUtils.convertToType(value, propertyClass);
+            Object coercedValue = null;
+            try
+            {
+                coercedValue = (value == null) ? null : Coercions
+                        .coerce(value, propertyClass, COERCION_LOGGER);
+            }
+            catch (ELException e)
+            {
+                String message = "Cannot coerce "
+                        + value.getClass().getName() + " to "
+                        + propertyClass.getName();
+                log.error(message, e);
+                throw new FacesException(message, e);
+            }              
             propertyResolver.setValue(
                 bean, property.getPropertyName(), coercedValue);
         }
@@ -386,7 +415,21 @@ public class ManagedBeanBuilder
 
             if (entry.isNullValue())
             {
-                map.put(ClassUtils.convertToType(key, keyClass), null);
+                Object coercedKey = null;
+                try
+                {
+                    coercedKey = (key == null) ? null : Coercions
+                            .coerce(key, keyClass, COERCION_LOGGER);
+                }
+                catch (ELException e)
+                {
+                    String message = "Cannot coerce "
+                            + key.getClass().getName() + " to "
+                            + keyClass.getName();
+                    log.error(message, e);
+                    throw new FacesException(message, e);
+                }              
+                map.put(coercedKey, null);
             }
             else
             {
@@ -396,7 +439,35 @@ public class ManagedBeanBuilder
                     valueBinding = application.createValueBinding((String) value);
                     value = valueBinding.getValue(facesContext);
                 }
-                map.put(ClassUtils.convertToType(key, keyClass), ClassUtils.convertToType(value, valueClass));
+                Object coercedKey = null;
+                try
+                {
+                    coercedKey = (key == null) ? null : Coercions
+                            .coerce(key, keyClass, COERCION_LOGGER);
+                }
+                catch (ELException e)
+                {
+                    String message = "Cannot coerce "
+                            + key.getClass().getName() + " to "
+                            + keyClass.getName();
+                    log.error(message, e);
+                    throw new FacesException(message, e);
+                }              
+                Object coercedValue = null;
+                try
+                {
+                    coercedValue = (value == null) ? null : Coercions
+                            .coerce(value, valueClass, COERCION_LOGGER);
+                }
+                catch (ELException e)
+                {
+                    String message = "Cannot coerce "
+                            + value.getClass().getName() + " to "
+                            + valueClass.getName();
+                    log.error(message, e);
+                    throw new FacesException(message, e);
+                }                 
+                map.put(coercedKey, coercedValue);
             }
         }
     }
@@ -423,7 +494,21 @@ public class ManagedBeanBuilder
                     valueBinding = application.createValueBinding((String) value);
                     value = valueBinding.getValue(facesContext);
                 }
-                list.add(ClassUtils.convertToType(value, valueClass));
+                Object coercedValue = null;
+                try
+                {
+                    coercedValue = (value == null) ? null : Coercions
+                            .coerce(value, valueClass, COERCION_LOGGER);
+                }
+                catch (ELException e)
+                {
+                    String message = "Cannot coerce "
+                            + value.getClass().getName() + " to "
+                            + valueClass.getName();
+                    log.error(message, e);
+                    throw new FacesException(message, e);
+                }                 
+                list.add(coercedValue);
             }
         }
     }
