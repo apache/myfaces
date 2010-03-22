@@ -36,6 +36,7 @@ import javax.faces.convert.ConverterException;
 import javax.faces.el.MethodBinding;
 import javax.faces.event.PhaseId;
 import javax.faces.event.ValueChangeEvent;
+import javax.faces.validator.LengthValidator;
 import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 import javax.servlet.ServletContext;
@@ -275,6 +276,23 @@ public class UIInputTest extends AbstractJsfTestCase
         {
             facesContext.setExternalContext(externalContext);
         }
+    }
+    
+    /**
+     * Tests if UIInput.processValidators() correctly calls FacesContext.validationFailed()
+     * if a validation error occurs.
+     */
+    public void testValidationErrorTriggersFacesContextValidationFailed()
+    {
+        LengthValidator validator = new LengthValidator();
+        validator.setMinimum(5);
+        input.addValidator(validator);
+        
+        input.setSubmittedValue("123");
+        
+        assertFalse(facesContext.isValidationFailed());
+        input.processValidators(facesContext);
+        assertTrue(facesContext.isValidationFailed());
     }
 
     static public class InitParameterMockExternalContext extends org.apache.myfaces.test.mock.MockExternalContext {

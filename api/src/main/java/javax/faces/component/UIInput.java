@@ -204,6 +204,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
             }
             if (!isValid())
             {
+                context.validationFailed();
                 context.renderResponse();
             }
         }
