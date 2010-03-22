@@ -88,7 +88,8 @@ public class UIViewParameter extends UIInput
     @Override
     public void encodeAll(FacesContext context) throws IOException
     {
-        if (context == null) {
+        if (context == null) 
+        {
             throw new NullPointerException();
         }
         setSubmittedValue(getStringValue(context));
@@ -101,7 +102,8 @@ public class UIViewParameter extends UIInput
 
     public String getStringValue(FacesContext context)
     {
-        if (getValueExpression ("value") != null) {
+        if (getValueExpression ("value") != null) 
+        {
             // Value specified as an expression, so do the conversion.
             
             return getStringValueFromModel (context);
@@ -118,26 +120,27 @@ public class UIViewParameter extends UIInput
         Converter converter;
         Object value;
         
-        if (ve == null) {
+        if (ve == null) 
+        {
             // No value expression, return null.
-            
             return null;
         }
         
         value = ve.getValue (context.getELContext());
         
-        if (value instanceof String) {
+        if (value instanceof String) 
+        {
             // No need to convert.
-            
             return ((String) value);
         }
         
         converter = getConverter();
         
-        if (converter == null) {
-            if (value == null) {
+        if (converter == null) 
+        {
+            if (value == null) 
+            {
                 // No converter, no value, return null.
-                
                 return null;
             }
             
@@ -145,7 +148,8 @@ public class UIViewParameter extends UIInput
             
             converter = context.getApplication().createConverter (value.getClass());
             
-            if (converter == null) {
+            if (converter == null) 
+            {
                 // Only option is to call toString().
                 
                 return value.toString();
@@ -178,21 +182,24 @@ public class UIViewParameter extends UIInput
     @Override
     public void processValidators(FacesContext context)
     {
-        if (context == null) {
+        if (context == null) 
+        {
             throw new NullPointerException ("context");
         }
         
         // If value is null and required is set, validation fails.
         
-        if ((getSubmittedValue() == null) && isRequired()) {
+        if ((getSubmittedValue() == null) && isRequired()) 
+        {
             FacesMessage message;
             String required = getRequiredMessage();
             
-            if (required != null) {
+            if (required != null) 
+            {
                 message = new FacesMessage (FacesMessage.SEVERITY_ERROR, required, required);
             }
-            
-            else {
+            else 
+            {
                 String label = _MessageUtils.getLabel (context, this);
                 
                 message = _MessageUtils.getMessage (context, context.getViewRoot().getLocale(),
@@ -229,7 +236,8 @@ public class UIViewParameter extends UIInput
         // Put name in request map if value is not a value expression, is valid, and local
         // value was set.
         
-        if ((getValueExpression ("value") == null) && isValid() && isLocalValueSet()) {
+        if ((getValueExpression ("value") == null) && isValid() && isLocalValueSet()) 
+        {
             context.getExternalContext().getRequestMap().put (getName(), getLocalValue());
         }
     }
