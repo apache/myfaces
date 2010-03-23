@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.el.ValueExpression;
 import javax.faces.application.FacesMessage;
@@ -37,7 +36,6 @@ import javax.faces.render.Renderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperties;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
  * Base class for the various component classes that allow a user to select zero or more options from a set.
@@ -410,37 +408,20 @@ public class UISelectMany extends UIInput
     }
 
     @Override
-    protected Object getConvertedValue(FacesContext context, Object submittedValue)
+    protected Object getConvertedValue(FacesContext context, Object submittedValue) throws ConverterException
     {
-        try
+        Renderer renderer = getRenderer(context);
+        if (renderer != null)
         {
-            Renderer renderer = getRenderer(context);
-            if (renderer != null)
-            {
-                return renderer.getConvertedValue(context, this, submittedValue);
-            }
-            else if (submittedValue == null)
-            {
-                return null;
-            }
-            else if (submittedValue instanceof String[])
-            {
-                return _SharedRendererUtils.getConvertedUISelectManyValue(context, this, (String[]) submittedValue);
-            }
+            return renderer.getConvertedValue(context, this, submittedValue);
         }
-        catch (ConverterException e)
+        else if (submittedValue == null)
         {
-            FacesMessage facesMessage = e.getFacesMessage();
-            if (facesMessage != null)
-            {
-                context.addMessage(getClientId(context), facesMessage);
-            }
-            else
-            {
-                _MessageUtils.addErrorMessage(context, this, CONVERSION_MESSAGE_ID,
-                    new Object[] { _MessageUtils.getLabel(context, this) });
-            }
-            setValid(false);
+            return null;
+        }
+        else if (submittedValue instanceof String[])
+        {
+            return _SharedRendererUtils.getConvertedUISelectManyValue(context, this, (String[]) submittedValue);
         }
         return submittedValue;
     }

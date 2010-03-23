@@ -438,10 +438,35 @@ public class UIInput extends UIOutput implements EditableValueHolder
             }
             // End new JSF 2.0 requirement (INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL)
 
-            Object convertedValue = getConvertedValue(context, submittedValue);
-
-            if (!isValid())
+            Object convertedValue;
+            try
+            {
+                convertedValue = getConvertedValue(context, submittedValue);
+            }
+            catch (ConverterException e)
+            {
+                String converterMessage = getConverterMessage();
+                if (converterMessage != null)
+                {
+                    context.addMessage(getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        converterMessage, converterMessage));
+                }
+                else
+                {
+                    FacesMessage facesMessage = e.getFacesMessage();
+                    if (facesMessage != null)
+                    {
+                        context.addMessage(getClientId(context), facesMessage);
+                    }
+                    else
+                    {
+                        _MessageUtils.addErrorMessage(context, this, CONVERSION_MESSAGE_ID,
+                            new Object[] { _MessageUtils.getLabel(context, this) });
+                    }
+                }
+                setValid(false);
                 return;
+            }
 
             validateValue(context, convertedValue);
 
@@ -479,46 +504,20 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * converter to the submittedValue and return the result.
      * </ul>
      */
-    protected Object getConvertedValue(FacesContext context, Object submittedValue)
+    protected Object getConvertedValue(FacesContext context, Object submittedValue) throws ConverterException
     {
-        try
+        Renderer renderer = getRenderer(context);
+        if (renderer != null)
         {
-            Renderer renderer = getRenderer(context);
-            if (renderer != null)
-            {
-                return renderer.getConvertedValue(context, this, submittedValue);
-            }
-            else if (submittedValue instanceof String)
-            {
-                Converter converter = _SharedRendererUtils.findUIOutputConverter(context, this);
-                if (converter != null)
-                {
-                    return converter.getAsObject(context, this, (String) submittedValue);
-                }
-            }
+            return renderer.getConvertedValue(context, this, submittedValue);
         }
-        catch (ConverterException e)
+        else if (submittedValue instanceof String)
         {
-            String converterMessage = getConverterMessage();
-            if (converterMessage != null)
+            Converter converter = _SharedRendererUtils.findUIOutputConverter(context, this);
+            if (converter != null)
             {
-                context.addMessage(getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    converterMessage, converterMessage));
+                return converter.getAsObject(context, this, (String) submittedValue);
             }
-            else
-            {
-                FacesMessage facesMessage = e.getFacesMessage();
-                if (facesMessage != null)
-                {
-                    context.addMessage(getClientId(context), facesMessage);
-                }
-                else
-                {
-                    _MessageUtils.addErrorMessage(context, this, CONVERSION_MESSAGE_ID,
-                        new Object[] { _MessageUtils.getLabel(context, this) });
-                }
-            }
-            setValid(false);
         }
         return submittedValue;
     }

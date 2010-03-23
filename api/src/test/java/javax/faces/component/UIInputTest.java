@@ -154,7 +154,9 @@ public class UIInputTest extends AbstractJsfTestCase
         expect(mockConverter.getAsObject(facesContext, input, "xxx")).andThrow(new ConverterException());
         replay(mockConverter);
 
-        input.getConvertedValue(facesContext, "xxx");
+        input.setSubmittedValue("xxx");
+        
+        input.validate(facesContext);
         verify(mockConverter);
 
         assertFalse(input.isValid());
