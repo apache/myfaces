@@ -175,18 +175,6 @@
         <artifactId>geronimo-annotation_1.0_spec</artifactId>
         <version>1.0</version>
       </dependency>
-      <dependency>
-        <groupId>javax.validation</groupId>
-        <artifactId>validation-api</artifactId>
-        <version>1.0.CR3</version>
-        <optional>true</optional>
-      </dependency>
-      <dependency>
-        <groupId>javax.el</groupId>
-        <artifactId>el-api</artifactId>
-        <version>2.1.2-b05</version>
-        <optional>true</optional>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 
