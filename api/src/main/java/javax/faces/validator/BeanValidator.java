@@ -56,7 +56,9 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
  * Bean Validation.
  * </p>
  *
- * @author Jan-Kees van Andel
+ * @author Jan-Kees van Andel (latest modification by $Author$)
+ * @version $Revision$ $Date$
+ * 
  * @since 2.0
  */
 @JSFValidator(
@@ -202,12 +204,22 @@ public class BeanValidator implements Validator, PartialStateHolder
         final ELContext elCtx = context.getELContext();
         if (_ExternalSpecifications.isUnifiedELAvailable())
         {
-            return _BeanValidatorUELUtils.getUELValueReferenceWrapper(valueExpression, elCtx);
+            // unified el 2.2 is available --> we can use ValueExpression.getValueReference()
+            
+            // TODO handle wrapped ValueExpressions
+            
+            // we can't access ValueExpression.getValueReference() directly here, because
+            // Class loading would fail in applications with el-api versions prior to 2.2
+            ValueReferenceWrapper valueReference 
+                    = _BeanValidatorUELUtils.getUELValueReferenceWrapper(valueExpression, elCtx);
+            if (valueReference != null)
+            {
+                return valueReference;
+            }
         }
-        else
-        {
-            return ValueReferenceResolver.resolve(valueExpression, elCtx);
-        }
+        
+        // get base object and property name the "old-fashioned" way
+        return ValueReferenceResolver.resolve(valueExpression, elCtx);
     }
 
     /**

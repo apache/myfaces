@@ -18,13 +18,9 @@
  */
 package javax.faces.validator;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import javax.el.ELContext;
 import javax.el.ValueExpression;
 import javax.el.ValueReference;
-import javax.faces.FacesException;
 
 /**
  * Utility class that isolates UEL calls, to prevent ClassNotFoundException
@@ -32,8 +28,8 @@ import javax.faces.FacesException;
  * used in portlet case.
  * 
  * @since 2.0
- * @author Leonardo Uribe (latest modification by $Author: slessard $)
- * @version $Revision: 696523 $ $Date: 2008-09-24 18:31:37 -0400 (mer., 17 sept. 2008) $
+ * @author Leonardo Uribe (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 final class _BeanValidatorUELUtils
 {
@@ -47,7 +43,7 @@ final class _BeanValidatorUELUtils
      */
     public static ValueReferenceWrapper getUELValueReferenceWrapper(final ValueExpression valueExpression, final ELContext elCtx)
     {
-        final ValueReference valueReference = getUELValueReference(valueExpression, elCtx);
+        final ValueReference valueReference = valueExpression.getValueReference(elCtx);
         if (valueReference == null)
         {
             return null;
@@ -55,39 +51,4 @@ final class _BeanValidatorUELUtils
         return new ValueReferenceWrapper(valueReference.getBase(), valueReference.getProperty());
     }
 
-    private static ValueReference getUELValueReference(final ValueExpression valueExpression, final ELContext elCtx)
-    {
-        final String methodName = "getValueReference";
-        final String methodSignature = valueExpression.getClass().getName() +
-                "." + methodName +
-                "(" + ELContext.class + ")";
-        try
-        {
-            final Method method = valueExpression.getClass().getMethod(methodName, ELContext.class);
-            if (!ValueReference.class.equals(method.getReturnType())
-             && !ValueReference.class.isAssignableFrom(method.getReturnType()))
-            {
-                throw new NoSuchMethodException(
-                        methodSignature +
-                        "doesn't return " + ValueReference.class +
-                        ", but " + method.getReturnType());
-            }
-            return (ValueReference) method.invoke(valueExpression, elCtx);
-        }
-        catch (NoSuchMethodException e)
-        {
-            throw new FacesException(
-                    "MyFaces indicates Unified EL is available, but method: " +
-                    methodSignature +
-                    " is not available", e);
-        }
-        catch (InvocationTargetException e)
-        {
-            throw new FacesException("Exception invoking " + methodSignature, e);
-        }
-        catch (IllegalAccessException e)
-        {
-            throw new FacesException("Exception invoking " + methodSignature, e);
-        }
-    }   
 }
