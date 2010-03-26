@@ -1128,7 +1128,9 @@ public class ApplicationImpl extends Application
                  * re-throw it. If any other exception is thrown, log the exception and continue to the next step.
                  */
 
-                fqcn = componentResource.getLibraryName() + "." + componentResource.getResourceName();
+                String name = componentResource.getResourceName();
+                String className = name.substring(0, name.lastIndexOf('.'));
+                fqcn = componentResource.getLibraryName() + "." + className;
 
                 try
                 {
