@@ -91,8 +91,11 @@ public final class TagLibraryConfig
                 Resource compositeComponentResource = resourceHandler.createResource(
                         localName +".xhtml", _compositeLibraryName);
                 
-                URL url = compositeComponentResource.getURL();
-                return (url != null);
+                if (compositeComponentResource != null)
+                {
+                    URL url = compositeComponentResource.getURL();
+                    return (url != null);
+                }
             }
             return result;
         }
