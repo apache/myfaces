@@ -36,6 +36,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.component.PartialStateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.el.CompositeComponentExpressionHolder;
 import javax.servlet.ServletContext;
 import javax.validation.ConstraintViolation;
 import javax.validation.MessageInterpolator;
@@ -509,10 +510,20 @@ final class ValueReferenceResolver extends ELResolver
      * @param elCtx The ELContext, needed to parse and execute the expression.
      * @return The ValueReferenceWrapper.
      */
-    public static ValueReferenceWrapper resolve(final ValueExpression valueExpression, final ELContext elCtx)
+    public static ValueReferenceWrapper resolve(ValueExpression valueExpression, final ELContext elCtx)
     {
         final ValueReferenceResolver resolver = new ValueReferenceResolver(elCtx.getELResolver());
-        valueExpression.getValue(new ELContextDecorator(elCtx, resolver));
+        final ELContext elCtxDecorator = new ELContextDecorator(elCtx, resolver);
+        
+        valueExpression.getValue(elCtxDecorator);
+        
+        while (resolver.lastObject.getBase() instanceof CompositeComponentExpressionHolder)
+        {
+            valueExpression = ((CompositeComponentExpressionHolder) resolver.lastObject.getBase())
+                                  .getExpression((String) resolver.lastObject.getProperty());
+            valueExpression.getValue(elCtxDecorator);
+        }
+
         return resolver.lastObject;
     }
 
