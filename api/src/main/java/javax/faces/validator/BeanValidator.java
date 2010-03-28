@@ -129,7 +129,7 @@ public class BeanValidator implements Validator, PartialStateHolder
         if (component == null) throw new NullPointerException("component");
 
         // Obtain a reference to the to-be-validated object and the property name.
-        final ValueReferenceWrapper reference = getValueReference(component, context);
+        final _ValueReferenceWrapper reference = getValueReference(component, context);
         if (reference == null)
         {
             return;
@@ -186,7 +186,7 @@ public class BeanValidator implements Validator, PartialStateHolder
 
         return validatorFactory //
                 .usingContext() //
-                .messageInterpolator(FacesMessageInterpolatorHolder.get(validatorFactory)) //
+                .messageInterpolator(_FacesMessageInterpolatorHolder.get(validatorFactory)) //
                 .getValidator();
 
     }
@@ -199,7 +199,7 @@ public class BeanValidator implements Validator, PartialStateHolder
      * @return A ValueReferenceWrapper with the necessary information about the ValueReference.
      */
 
-    private ValueReferenceWrapper getValueReference(final UIComponent component, final FacesContext context)
+    private _ValueReferenceWrapper getValueReference(final UIComponent component, final FacesContext context)
     {
         final ValueExpression valueExpression = component.getValueExpression("value");
         final ELContext elCtx = context.getELContext();
@@ -211,7 +211,7 @@ public class BeanValidator implements Validator, PartialStateHolder
             
             // we can't access ValueExpression.getValueReference() directly here, because
             // Class loading would fail in applications with el-api versions prior to 2.2
-            ValueReferenceWrapper valueReference 
+            _ValueReferenceWrapper valueReference 
                     = _BeanValidatorUELUtils.getUELValueReferenceWrapper(valueExpression, elCtx);
             if (valueReference != null)
             {
@@ -220,7 +220,7 @@ public class BeanValidator implements Validator, PartialStateHolder
         }
         
         // get base object and property name the "old-fashioned" way
-        return ValueReferenceResolver.resolve(valueExpression, elCtx);
+        return _ValueReferenceResolver.resolve(valueExpression, elCtx);
     }
 
     /**
@@ -386,7 +386,7 @@ public class BeanValidator implements Validator, PartialStateHolder
  * used, it will not be loaded, parsed and initialized. The BeanValidator class is used always,
  * so the MessageInterpolator references need to be in this separate class.
  */
-final class FacesMessageInterpolatorHolder
+final class _FacesMessageInterpolatorHolder
 {
     // Needs to be volatile.
     private static volatile FacesMessageInterpolator instance;
@@ -401,7 +401,7 @@ final class FacesMessageInterpolatorHolder
      */
     static MessageInterpolator get(final ValidatorFactory validatorFactory)
     {
-        FacesMessageInterpolatorHolder.FacesMessageInterpolator ret = instance;
+        _FacesMessageInterpolatorHolder.FacesMessageInterpolator ret = instance;
         if (ret == null)
         {
             final MessageInterpolator interpolator = validatorFactory.getMessageInterpolator();
@@ -440,7 +440,7 @@ final class FacesMessageInterpolatorHolder
  *
  * It makes the BeanValidator work when Unified EL is not available.
  */
-final class ValueReferenceWrapper
+final class _ValueReferenceWrapper
 {
     private final Object base, property;
 
@@ -450,7 +450,7 @@ final class ValueReferenceWrapper
      * @param base The object the reference points to.
      * @param property The property the reference points to.
      */
-    public ValueReferenceWrapper(final Object base, final Object property)
+    public _ValueReferenceWrapper(final Object base, final Object property)
     {
         this.base = base;
         this.property = property;
@@ -479,7 +479,7 @@ final class ValueReferenceWrapper
  * This class inspects the EL expression and returns a ValueReferenceWrapper
  * when Unified EL is not available.
  */
-final class ValueReferenceResolver extends ELResolver
+final class _ValueReferenceResolver extends ELResolver
 {
     private final ELResolver resolver;
 
@@ -492,13 +492,13 @@ final class ValueReferenceResolver extends ELResolver
      *
      * This solution also deals with nested objects (like: #{myBean.prop.prop.prop}.
      */
-    private ValueReferenceWrapper lastObject;
+    private _ValueReferenceWrapper lastObject;
 
     /**
      * Constructor is only used internally.
      * @param elResolver An ELResolver from the current ELContext.
      */
-    ValueReferenceResolver(final ELResolver elResolver)
+    _ValueReferenceResolver(final ELResolver elResolver)
     {
         this.resolver = elResolver;
     }
@@ -510,10 +510,10 @@ final class ValueReferenceResolver extends ELResolver
      * @param elCtx The ELContext, needed to parse and execute the expression.
      * @return The ValueReferenceWrapper.
      */
-    public static ValueReferenceWrapper resolve(ValueExpression valueExpression, final ELContext elCtx)
+    public static _ValueReferenceWrapper resolve(ValueExpression valueExpression, final ELContext elCtx)
     {
-        final ValueReferenceResolver resolver = new ValueReferenceResolver(elCtx.getELResolver());
-        final ELContext elCtxDecorator = new ELContextDecorator(elCtx, resolver);
+        final _ValueReferenceResolver resolver = new _ValueReferenceResolver(elCtx.getELResolver());
+        final ELContext elCtxDecorator = new _ELContextDecorator(elCtx, resolver);
         
         valueExpression.getValue(elCtxDecorator);
         
@@ -540,7 +540,7 @@ final class ValueReferenceResolver extends ELResolver
     @Override
     public Object getValue(final ELContext context, final Object base, final Object property)
     {
-        lastObject = new ValueReferenceWrapper(base, property);
+        lastObject = new _ValueReferenceWrapper(base, property);
         return resolver.getValue(context, base, property);
     }
 
@@ -557,7 +557,7 @@ final class ValueReferenceResolver extends ELResolver
  * This ELContext is used to hook into the EL handling, by decorating the
  * ELResolver chain with a custom ELResolver.
  */
-final class ELContextDecorator extends ELContext
+final class _ELContextDecorator extends ELContext
 {
     private final ELContext ctx;
     private final ELResolver interceptingResolver;
@@ -568,7 +568,7 @@ final class ELContextDecorator extends ELContext
      * @param elContext The standard ELContext. All method calls, except getELResolver, are delegated to it.
      * @param interceptingResolver The ELResolver to be returned by getELResolver.
      */
-    ELContextDecorator(final ELContext elContext, final ELResolver interceptingResolver)
+    _ELContextDecorator(final ELContext elContext, final ELResolver interceptingResolver)
     {
         this.ctx = elContext;
         this.interceptingResolver = interceptingResolver;

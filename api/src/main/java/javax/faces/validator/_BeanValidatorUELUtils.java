@@ -41,14 +41,14 @@ final class _BeanValidatorUELUtils
      * @param context The FacesContext.
      * @return A ValueReferenceWrapper with the necessary information about the ValueReference.
      */
-    public static ValueReferenceWrapper getUELValueReferenceWrapper(final ValueExpression valueExpression, final ELContext elCtx)
+    public static _ValueReferenceWrapper getUELValueReferenceWrapper(final ValueExpression valueExpression, final ELContext elCtx)
     {
         final ValueReference valueReference = valueExpression.getValueReference(elCtx);
         if (valueReference == null)
         {
             return null;
         }
-        return new ValueReferenceWrapper(valueReference.getBase(), valueReference.getProperty());
+        return new _ValueReferenceWrapper(valueReference.getBase(), valueReference.getProperty());
     }
 
 }
