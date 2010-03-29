@@ -21,6 +21,7 @@ package javax.faces.validator;
 import javax.el.ELContext;
 import javax.el.ValueExpression;
 import javax.el.ValueReference;
+import javax.faces.el.CompositeComponentExpressionHolder;
 
 /**
  * Utility class that isolates UEL calls, to prevent ClassNotFoundException
@@ -41,9 +42,18 @@ final class _BeanValidatorUELUtils
      * @param context The FacesContext.
      * @return A ValueReferenceWrapper with the necessary information about the ValueReference.
      */
-    public static _ValueReferenceWrapper getUELValueReferenceWrapper(final ValueExpression valueExpression, final ELContext elCtx)
+    public static _ValueReferenceWrapper getUELValueReferenceWrapper(ValueExpression valueExpression, final ELContext elCtx)
     {
-        final ValueReference valueReference = valueExpression.getValueReference(elCtx);
+        ValueReference valueReference = valueExpression.getValueReference(elCtx);
+        
+        while (valueReference != null 
+                && valueReference.getBase() instanceof CompositeComponentExpressionHolder)
+        {
+            valueExpression = ((CompositeComponentExpressionHolder) valueReference.getBase())
+                                  .getExpression((String) valueReference.getProperty());
+            valueReference = valueExpression.getValueReference(elCtx);
+        }
+        
         if (valueReference == null)
         {
             return null;

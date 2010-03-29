@@ -207,8 +207,6 @@ public class BeanValidator implements Validator, PartialStateHolder
         {
             // unified el 2.2 is available --> we can use ValueExpression.getValueReference()
             
-            // TODO handle wrapped ValueExpressions
-            
             // we can't access ValueExpression.getValueReference() directly here, because
             // Class loading would fail in applications with el-api versions prior to 2.2
             _ValueReferenceWrapper valueReference 

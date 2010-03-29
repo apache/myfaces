@@ -36,14 +36,14 @@ import javax.faces.view.facelets.TagAttribute;
  * @author Jacob Hookom
  * @version $Id: TagValueExpression.java,v 1.7 2008/07/13 19:01:42 rlubke Exp $
  */
-public final class TagValueExpression extends ValueExpression implements Externalizable
+public class TagValueExpression extends ValueExpression implements Externalizable
 {
 
     private static final long serialVersionUID = 1L;
 
-    private ValueExpression orig;
-
-    private String attr;
+    // orig and attr need to be available in TagValueExpressionUEL
+    ValueExpression orig; 
+    String attr; 
 
     public TagValueExpression()
     {
@@ -128,7 +128,7 @@ public final class TagValueExpression extends ValueExpression implements Externa
             throw new ELException(this.attr + ": " + e.getMessage(), e.getCause());
         }
     }
-
+    
     public boolean equals(Object obj)
     {
         return this.orig.equals(obj);

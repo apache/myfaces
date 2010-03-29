@@ -27,12 +27,15 @@ import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagAttributeException;
 
+import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 import org.apache.myfaces.view.facelets.el.ELText;
 import org.apache.myfaces.view.facelets.el.LocationMethodExpression;
 import org.apache.myfaces.view.facelets.el.LocationValueExpression;
+import org.apache.myfaces.view.facelets.el.LocationValueExpressionUEL;
 import org.apache.myfaces.view.facelets.el.TagMethodExpression;
 import org.apache.myfaces.view.facelets.el.TagValueExpression;
+import org.apache.myfaces.view.facelets.el.TagValueExpressionUEL;
 import org.apache.myfaces.view.facelets.el.ValueExpressionMethodExpression;
 
 /**
@@ -350,10 +353,24 @@ public final class TagAttributeImpl extends TagAttribute
             // (see MYFACES-2561 for details)
             if (CompositeComponentELUtils.isCompositeComponentExpression(this.value))
             {
-                valueExpression = new LocationValueExpression(getLocation(), valueExpression);
+                if (ExternalSpecifications.isUnifiedELAvailable())
+                {
+                    valueExpression = new LocationValueExpressionUEL(getLocation(), valueExpression);
+                }
+                else
+                {
+                    valueExpression = new LocationValueExpression(getLocation(), valueExpression);
+                }
             }
             
-            return new TagValueExpression(this, valueExpression);
+            if (ExternalSpecifications.isUnifiedELAvailable())
+            {
+                return new TagValueExpressionUEL(this, valueExpression);
+            }
+            else
+            {
+                return new TagValueExpression(this, valueExpression);
+            }
         }
         catch (Exception e)
         {

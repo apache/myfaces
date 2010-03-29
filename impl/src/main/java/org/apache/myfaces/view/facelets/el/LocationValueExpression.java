@@ -43,8 +43,9 @@ public class LocationValueExpression extends ValueExpression
     
     private static final long serialVersionUID = -5636849184764526288L;
     
-    private Location location;
-    private ValueExpression delegate;
+    // location and delegate need to be available in LocationValueExpressionUEL
+    Location location;
+    ValueExpression delegate;
     
     public LocationValueExpression(Location location, ValueExpression delegate)
     {
