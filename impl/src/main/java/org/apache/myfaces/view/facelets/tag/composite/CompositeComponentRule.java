@@ -80,8 +80,8 @@ final class CompositeComponentRule extends MetaRule
             // prevents it and does not cause any side effects.
             // Maybe we should call setValueExpression when the getter and 
             // setter exists on the component class.
-            ((UIComponent) instance).getAttributes().put(_name, _attr.getValueExpression(ctx, _type));
-            //((UIComponent) instance).setValueExpression(_name, _attr.getValueExpression(ctx, _type));
+            //((UIComponent) instance).getAttributes().put(_name, _attr.getValueExpression(ctx, _type));
+            ((UIComponent) instance).setValueExpression(_name, _attr.getValueExpression(ctx, _type));
             //((UIComponent) instance).setValueExpression(_name, 
             //        ctx.getFacesContext().getApplication().
             //        getExpressionFactory().createValueExpression(
