@@ -44,6 +44,11 @@ final class _BeanValidatorUELUtils
      */
     public static _ValueReferenceWrapper getUELValueReferenceWrapper(ValueExpression valueExpression, final ELContext elCtx)
     {
+        if(valueExpression == null)
+        {
+            return null;
+        }
+                
         ValueReference valueReference = valueExpression.getValueReference(elCtx);
         
         while (valueReference != null 

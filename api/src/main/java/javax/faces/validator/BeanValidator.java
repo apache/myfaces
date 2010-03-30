@@ -510,6 +510,11 @@ final class _ValueReferenceResolver extends ELResolver
      */
     public static _ValueReferenceWrapper resolve(ValueExpression valueExpression, final ELContext elCtx)
     {
+        if(valueExpression == null)
+        {
+            return null;
+        }
+        
         final _ValueReferenceResolver resolver = new _ValueReferenceResolver(elCtx.getELResolver());
         final ELContext elCtxDecorator = new _ELContextDecorator(elCtx, resolver);
         
