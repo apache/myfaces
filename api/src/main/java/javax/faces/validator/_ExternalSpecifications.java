@@ -40,8 +40,8 @@ final class _ExternalSpecifications
     //private static final Log log = LogFactory.getLog(BeanValidator.class);
     private static final Logger log = Logger.getLogger(_ExternalSpecifications.class.getName());
 
-    private static Boolean beanValidationAvailable;
-    private static Boolean unifiedELAvailable;
+    private static volatile Boolean beanValidationAvailable;
+    private static volatile Boolean unifiedELAvailable;
 
     /**
      * This method determines if Bean Validation is present.

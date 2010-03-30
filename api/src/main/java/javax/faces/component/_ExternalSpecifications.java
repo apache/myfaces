@@ -36,8 +36,8 @@ final class _ExternalSpecifications
     //private static final Log log = LogFactory.getLog(BeanValidator.class);
     private static final Logger log = Logger.getLogger(_ExternalSpecifications.class.getName());
 
-    private static Boolean beanValidationAvailable;
-    //private static Boolean unifiedELAvailable;
+    private static volatile Boolean beanValidationAvailable;
+    //private static volatile Boolean unifiedELAvailable;
 
     /**
      * This method determines if Bean Validation is present.
@@ -96,7 +96,7 @@ final class _ExternalSpecifications
      * @return true if UEL is available, false otherwise.
      */
     /*
-    public static synchronized boolean isUnifiedELAvailable()
+    public static boolean isUnifiedELAvailable()
     {
         if (unifiedELAvailable == null)
         {
