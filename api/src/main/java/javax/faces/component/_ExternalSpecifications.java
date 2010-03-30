@@ -46,7 +46,7 @@ final class _ExternalSpecifications
      * should not be added at runtime after this variable has been set.
      * @return true if Bean Validation is available, false otherwise.
      */
-    public static synchronized boolean isBeanValidationAvailable()
+    public static boolean isBeanValidationAvailable()
     {
         if (beanValidationAvailable == null)
         {
