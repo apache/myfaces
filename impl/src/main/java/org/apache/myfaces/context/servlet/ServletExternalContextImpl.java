@@ -53,7 +53,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.myfaces.context.ReleaseableExternalContext;
-import org.apache.myfaces.context.flash.FlashImpl;
+import org.apache.myfaces.shared_impl.context.flash.FlashImpl;
 import org.apache.myfaces.util.EnumerationIterator;
 
 /**
