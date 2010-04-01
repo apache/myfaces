@@ -19,9 +19,12 @@
 package org.apache.myfaces.lifecycle;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.FacesException;
 import javax.faces.application.Application;
+import javax.faces.application.FacesMessage;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
@@ -41,6 +44,9 @@ import org.apache.myfaces.util.ExternalContextUtils;
  */
 class RenderResponseExecutor implements PhaseExecutor
 {
+    
+    private static final Logger log = Logger.getLogger(RenderResponseExecutor.class.getName());
+    
     public boolean execute(FacesContext facesContext)
     {
         Application application = facesContext.getApplication();
@@ -105,6 +111,29 @@ class RenderResponseExecutor implements PhaseExecutor
                     || (newViewId != null && !newViewId.equals(viewId)));
             
             viewHandler.renderView(facesContext, root);
+            
+            // log all unhandled FacesMessages, don't swallow them
+            if (!facesContext.getMessageList().isEmpty())
+            {
+                StringBuilder builder = new StringBuilder();
+                boolean shouldLog = false;
+                for (FacesMessage message : facesContext.getMessageList())
+                {
+                    if (!message.isRendered())
+                    {
+                        builder.append("\n- ");
+                        builder.append(message.getDetail());
+                        
+                        shouldLog = true;
+                    }
+                }
+                if (shouldLog)
+                {
+                    log.log(Level.WARNING, "There are some unhandled FacesMessages, " +
+                            "this means not every FacesMessage had a chance to be rendered.\n" +
+                            "These unhandled FacesMessages are: " + builder.toString());
+                }
+            }
         }
         catch (IOException e)
         {
