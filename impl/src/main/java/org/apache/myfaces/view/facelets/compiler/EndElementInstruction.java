@@ -22,7 +22,11 @@ import java.io.IOException;
 
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
+import javax.faces.application.ProjectStage;
 import javax.faces.context.FacesContext;
+
+import org.apache.myfaces.shared_impl.renderkit.html.HTML;
+import org.apache.myfaces.shared_impl.renderkit.html.HtmlRendererUtils;
 
 final class EndElementInstruction implements Instruction
 {
@@ -35,6 +39,15 @@ final class EndElementInstruction implements Instruction
 
     public void write(FacesContext context) throws IOException
     {
+        if (HTML.BODY_ELEM.equalsIgnoreCase(this.element))
+        {
+            // render all unhandled FacesMessages when ProjectStage is Development
+            if (context.isProjectStage(ProjectStage.Development))
+            {
+                HtmlRendererUtils.renderUnhandledFacesMessages(context);
+            }
+        }
+        
         context.getResponseWriter().endElement(this.element);
     }
 
