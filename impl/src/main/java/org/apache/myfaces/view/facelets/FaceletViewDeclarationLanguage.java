@@ -2062,8 +2062,11 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                 
                 context.getAttributes().put(BUILDING_VIEW_METADATA, Boolean.TRUE);
 
-                String viewId = getViewId();
-                UIViewRoot view = createView(context, viewId);
+                // we have to invoke createView() on the application's ViewHandler
+                // here instead of invoking it directly in FaceletVDL, because
+                // the ViewHandler might be wrapped and wants to do some work
+                // in createView() (e.g. in Trinidad - see MYFACES-2641)
+                UIViewRoot view = context.getApplication().getViewHandler().createView(context, getViewId());
                 // inside createView(context,viewId), calculateViewId() is called and
                 // the result is stored inside created UIViewRoot, so we can safely take the derived
                 // viewId from there.
