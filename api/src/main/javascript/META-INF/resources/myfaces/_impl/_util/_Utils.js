@@ -507,6 +507,10 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
 
         var submitIdentifier = ('undefined' != element.id) ? element.id : null;
         var submitName = ('undefined' != element.name) ? element.name : null;
+        //a framework in a detachment case also can replace an existing identifier element
+        // with a name element
+        submitName = (null == submitName) ? submitIdentifier: submitName;
+
 
         if ('undefined' != typeof submitIdentifier && null != submitIdentifier && '' != submitIdentifier) {
             //we have to assert that the element passed down is detached
