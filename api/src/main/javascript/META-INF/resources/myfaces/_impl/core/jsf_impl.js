@@ -154,22 +154,21 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
          **/
         var JSF2Utils = myfaces._impl._util._LangUtils;
         var elementId = null;
-        if(JSF2Utils.isString(element)) {
-            elementId = element;
-        } else if ('undefined' != typeof element && null != element) {
-            //inputs do not have names defined per spec so we can rely on the proper id being set
-            elementId = element.id;
-        }
-
         /**
          * we cross reference statically hence the mapping here
          * the entire mapping between the functions is stateless
          */
         element = JSF2Utils.byId(element);
-
-        /*assert a valid structure of a given element*/
-        //element can be mapped out by the time of passing the request by some underlying framework
-        //this._assertElement(element);
+        if ('undefined' != typeof element && null != element) {
+            //detached element handling, we also store the element name
+            //to get a fallback option in case the identifier is not determinable
+            // anymore, in case of a framework induced detachment the element.name should
+            // be shared if the identifier is not determinable anymore
+            elementId = ('undefined' != typeof element.id)? element.id: null;
+            if((elementId == null || elementId == '') && 'undefined' != typeof element.name) {
+                elementId = element.name;
+            }
+        }
 
         /*assert if the onerror is set and once if it is set it must be of type function*/
         this._assertFunction(options.onerror);
@@ -206,19 +205,10 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
         /**
          * fetch the parent form
          */
-        var sourceForm = ('undefined' != typeof element && null != element) ? myfaces._impl._util._Utils.getParent(null, ajaxContext, element, "form") : null;
 
-        if ('undefined' == typeof sourceForm || null == sourceForm) {
-            //in case of a detached element we have to try to determine fuzzily over the name/id attribute
-            //  which form we have to use
-            //this should get in 90% of all usecases with multiple forms the form right
-            sourceForm = myfaces._impl._util._Utils.fuzzyFormDetection(null, ajaxContext, elementId);
-            //the identifier must be unique within the scope of the page (aka only one form can have it, name or id
-            // (in a detachment case we have only name, because the identifier is lost)
-            // because the spec clearly states, if the dom element could not be determined, throw an error we we have here
-            if(null == sourceForm) {
-                throw Error("Sourcform could not be determined, either because "+ elementId+ " is not in a form or we have multiple forms with named elements of name "+elementId+", stopping the ajax processing");
-            }
+        var sourceForm = myfaces._impl._util._Utils.fuzzyFormDetection(null, ajaxContext, element);
+        if (null == sourceForm) {
+            throw Error("Sourcform could not be determined, either because element is not attached to a form or we have multiple forms with named elements of the same identifier or name, stopping the ajax processing");
         }
 
         /**
@@ -399,7 +389,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
      * The value for it comes from the request parameter of the jsf.js script called "stage".
      */
     myfaces._impl.core._jsfImpl.prototype.getProjectStage = function() {
-    	/* run through all script tags and try to find the one that includes jsf.js */
+        /* run through all script tags and try to find the one that includes jsf.js */
         var scriptTags = document.getElementsByTagName("script");
         for (var i = 0; i < scriptTags.length; i++)
         {
@@ -422,7 +412,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
                 else
                 {
                     /* we found the script, but there was no stage parameter --> Production */
-                	return "Production";
+                    return "Production";
                 }
             }
         }
@@ -460,10 +450,11 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
 
         if ('undefined' == typeof source) {
             throw new Error(" source must be defined");
-        //allowed chain datatypes
+            //allowed chain datatypes
         } else if ('function' == typeof source) {
             throw new Error(" source cannot be a function (probably source and event were not defined or set to null");
-        } if (myfaces._impl._util._LangUtils.isString(source)) {
+        }
+        if (myfaces._impl._util._LangUtils.isString(source)) {
             throw new Error(" source cannot be a string ");
         }
 
@@ -472,7 +463,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
         } else if ('function' == typeof event) {
             throw new Error(" event cannot be a function (probably source and event were not defined or set to null");
         } else if (myfaces._impl._util._LangUtils.isString(event)) {
-                throw new Error(" event cannot be a string ");
+            throw new Error(" event cannot be a string ");
         }
 
         var thisVal = source;

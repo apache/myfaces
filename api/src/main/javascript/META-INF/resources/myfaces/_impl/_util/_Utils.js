@@ -305,26 +305,26 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
         }
 
         /*
-            Now to the broken browsers IE6+.... ie7 and ie8 quirks mode
+         Now to the broken browsers IE6+.... ie7 and ie8 quirks mode
 
-            we deal mainly with three problems here
-            class and for are not handled correctly
-            styles are arrays and cannot be set directly
-            and javascript events cannot be set via setAttribute as well!
+         we deal mainly with three problems here
+         class and for are not handled correctly
+         styles are arrays and cannot be set directly
+         and javascript events cannot be set via setAttribute as well!
 
-            or in original words of quirksmode.org ... this is a mess!
+         or in original words of quirksmode.org ... this is a mess!
 
-            Btw. thank you Microsoft for providing all necessary tools for free
-            for being able to debug this entire mess in the ie rendering engine out
-            (which is the Microsoft ie vms, developers toolbar, Visual Web Developer 2008 express
-            and the ie8 8 developers toolset!)
+         Btw. thank you Microsoft for providing all necessary tools for free
+         for being able to debug this entire mess in the ie rendering engine out
+         (which is the Microsoft ie vms, developers toolbar, Visual Web Developer 2008 express
+         and the ie8 8 developers toolset!)
 
-            also thank you http://www.quirksmode.org/
-            dojotoolkit.org and   //http://delete.me.uk/2004/09/ieproto.html
-            for additional information on this mess!
+         also thank you http://www.quirksmode.org/
+         dojotoolkit.org and   //http://delete.me.uk/2004/09/ieproto.html
+         for additional information on this mess!
 
-            The lowest common denominator tested within this code
-            is IE6, older browsers for now are legacy!
+         The lowest common denominator tested within this code
+         is IE6, older browsers for now are legacy!
          */
         attribute = attribute.toLowerCase();
 
@@ -491,75 +491,58 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
      *
      * @param {XMLHTTPRequest} request
      * @param {Map} context
-     * @param {String} submitIdentifier - child elements name identifier
+     * @param {Node} element - element as source, can be detached, undefined or null
      *
      * @return either null or a form node if it could be determined
      */
-    myfaces._impl._util._Utils.fuzzyFormDetection = function(request, context, submitIdentifier) {
+    myfaces._impl._util._Utils.fuzzyFormDetection = function(request, context, element) {
         if (0 == document.forms.length) {
+            return null;
+        } else if (1 == document.forms.length) {
+            return document.forms[0];
+        }
+        if ('undefined' == typeof element || null == element) {
             return null;
         }
 
-        if ('undefined' == typeof submitIdentifier || null == submitIdentifier) {
-            //no identifier found we give it a shot with the first form
-            return document.forms[0];
+        var submitIdentifier = ('undefined' != element.id) ? element.id : null;
+        var submitName = ('undefined' != element.name) ? element.name : null;
+
+        if ('undefined' != typeof submitIdentifier && null != submitIdentifier && '' != submitIdentifier) {
+            //we have to assert that the element passed down is detached
+            var domElement = myfaces._impl._util._LangUtils.byId(submitIdentifier);
+            if ('undefined' != typeof domElement && null != domElement) {
+                var foundForm = myfaces._impl._util._Utils.getParent(null, context, domElement, "form");
+                if (null != foundForm) return foundForm;
+            }
         }
 
         /**
-         * highest chance is to find an element with an identifier
+         * name check
          */
-        var elementById = document.getElementById(submitIdentifier);
         var foundElements = new Array();
-        if (null != elementById) {
-            if ('undefined' == typeof element.name || null == element.name || submitIdentifier == element.name) {
-                foundElements.push(elementById);
-            }
-        }
 
         /**
          * the lesser chance is the elements which have the same name
          * (which is the more likely case in case of a brute dom replacement)
          */
-        var namedFoundElements = document.getElementsByName(submitIdentifier);
+        var namedFoundElements = document.getElementsByName(submitName);
         if (null != namedFoundElements) {
             for (var cnt = 0; cnt < namedFoundElements.length; cnt++) {
                 // we already have covered the identifier case hence we only can deal with names,
-                // since identifiers are unique
-                // we have to filter that element out for the rest of the stack, to have a clean handling
-                // of the number of referenced forms
-                if('undefined' == typeof namedFoundElements[cnt].id || null == namedFoundElements[cnt].id || namedFoundElements[cnt].id != submitIdentifier) {
-                    foundElements.push(namedFoundElements[cnt]);
+                var foundForm = myfaces._impl._util._Utils.getParent(null, context, namedFoundElements[cnt], "form");
+                if (null != foundForm) {
+                    foundElements.push(foundForm);
                 }
             }
         }
 
-        if (null == foundElements || 0 == foundElements.length) {
+        if (null == foundElements || 0 == foundElements.length || foundElements.length > 1) {
             return null;
         }
 
-        //we now iterate over all possible elements with the identifier element being the first if present
-        //however if the identifier element has no parent form we must rely on our found named elements
-        //to have at least one parent form
-        var foundForm = null;
-        var formCnt = 0;
-        for (var cnt = 0; cnt < foundElements.length; cnt++) {
-            var foundElement = foundElements[cnt];
-            var parentItem = ('undefined' != typeof foundElement && null != foundElement) ? foundElement.parentNode : null;
-            while (parentItem != null
-                    && parentItem.tagName.toLowerCase() != "form") {
-                parentItem = parentItem.parentNode;
-            }
-            if (parentItem != null) {
-                foundForm = parentItem;
-                formCnt++;
-            }
-            if(formCnt == 1) {
-                return foundForm;
-            }
-            if(formCnt > 1) return null;
-        }
 
-        return null;
+        return foundElements[0];
     };
 
     /**
@@ -572,14 +555,13 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
      */
     myfaces._impl._util._Utils.getParent = function(request, context, item, tagNameToSearchFor) {
 
-		try {
-            if('undefined' == typeof item || null == item) {
-			    throw Error("myfaces._impl._util._Utils.getParen: item is null or undefined,this not allowed");
-		    }
+        try {
+            if ('undefined' == typeof item || null == item) {
+                throw Error("myfaces._impl._util._Utils.getParen: item is null or undefined,this not allowed");
+            }
 
             //search parent tag parentName
-            var parentItem = ('undefined' != typeof item.parentNode) ? item.parentNode: null;
-
+            var parentItem = ('undefined' != typeof item.parentNode) ? item.parentNode : null;
 
             if ('undefined' != typeof item.tagName && null != item.tagName && item.tagName.toLowerCase() == tagNameToSearchFor) {
                 return item;
