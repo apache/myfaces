@@ -22,8 +22,6 @@ import javax.faces.view.facelets.ComponentConfig;
 import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.MetaRuleset;
 
-import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
-
 public class SelectItemHandler extends ComponentHandler
 {
 
@@ -35,8 +33,9 @@ public class SelectItemHandler extends ComponentHandler
     @Override
     protected MetaRuleset createMetaRuleset(Class type)
     {
-        return super.createMetaRuleset(type).alias(JSFAttr.ESCAPE_ATTR,
-                JSFAttr.ITEM_ESCAPED_ATTR);
+        //return super.createMetaRuleset(type).alias(JSFAttr.ESCAPE_ATTR,
+        //        JSFAttr.ITEM_ESCAPED_ATTR);
+        return super.createMetaRuleset(type);
     }
     
     
