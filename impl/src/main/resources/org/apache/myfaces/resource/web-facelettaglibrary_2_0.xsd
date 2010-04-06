@@ -32,7 +32,7 @@
     targetNamespace="http://java.sun.com/xml/ns/javaee"
     version="2.0">
 
-    <xsd:include schemaLocation="http://java.sun.com/xml/ns/javaee/javaee_5.xsd"/>
+    <xsd:include schemaLocation="javaee_5.xsd"/>
     
     <xsd:element name="facelet-taglib" type="javaee:facelet-taglibType">
         <xsd:unique name="facelet-taglib-tagname-uniqueness">
@@ -177,14 +177,11 @@
     <xsd:complexType name="facelet-taglib-tag-attributeType">
         <xsd:sequence>
             <xsd:group ref="javaee:descriptionGroup"/>
-            <xsd:element name="name" type="javaee:java-identifierType"/>
+            <xsd:element name="name" type="javaee:xsdNMTOKENType"/>
             <xsd:element name="required" minOccurs="0" type="javaee:generic-booleanType"/>
             <xsd:choice>
-                <xsd:sequence>
-                    <xsd:sequence minOccurs="0">
-                        <xsd:element name="type" minOccurs="0" type="javaee:fully-qualified-classType"/>
-                    </xsd:sequence>
-                </xsd:sequence>
+              <xsd:element name="type" minOccurs="0" type="javaee:fully-qualified-classType"/>
+              <xsd:element name="method-signature" minOccurs="0" type="javaee:string"/>
             </xsd:choice>
         </xsd:sequence>
         <xsd:attribute name="id" type="xsd:ID"/>
