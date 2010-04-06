@@ -7,7 +7,7 @@ Myfaces Core 2.0 on Google App Engine
   In order to run Myfaces on Google App Engine, you need to complete the steps below. Configuration explained in this document is tested with
   Google App Engine 1.3.0.
 
-   * Download Myfaces Core 2.0.0(OR THE VERSION THE PATCH WILL BE RELEASED) or later. Google App Engine support is not available for older versions.
+   * Download a Myfaces Core <<<2.0.0-beta-3>>> or a version released <<later>> than <<<2.0.0-beta-3>>>. Google App Engine support is not available for older versions.
      Extract and put following files into war/WEB-INF/lib:
        
        * myfaces-api-2.0.x.jar
@@ -26,26 +26,12 @@ Myfaces Core 2.0 on Google App Engine
        
        * commons-logging-1.x.x.jar
         
-      ~~ or the version this change will be accepted
-      ~~ or should we reference snapshots?
 
-   * We need Facelets to run Myfaces on Google App Engine. So, download Facelets from {{{https://facelets.dev.java.net/}here}} 
-     and put jsf-facelets.jar into war/WEB-INF/lib.
-   
    * Add following lines into your web.xml.
 
 +------------------------------------------------------------------------+
       <web-app>
         ...
-        <!-- 
-           Since Google App Engine is treated as a JSP 2.0 environment, we need to provide EL implementation ourselves.
-           (I assume that you put EL RI jars into your WEb-INF/lib folder. You can use any implementation, but you have to 
-           set this context parameter to your implementation's ExpressionFactory)
-        -->
-        <context-param>
-            <param-name>org.apache.myfaces.EXPRESSION_FACTORY</param-name>
-            <param-value>com.sun.el.ExpressionFactoryImpl</param-value>
-        </context-param>
                 
         <!-- 
            We need to set annotation lifecycyle provider manually as org.apache.myfaces.config.annotation.NoInjectionAnnotationLifecycleProvider.
@@ -54,6 +40,16 @@ Myfaces Core 2.0 on Google App Engine
         <context-param>
             <param-name>org.apache.myfaces.config.annotation.LifecycleProvider</param-name>
             <param-value>org.apache.myfaces.config.annotation.NoInjectionAnnotationLifecycleProvider</param-value>
+        </context-param>
+        
+        <!--
+            Need to set a secret to avoid javax.crypto.BadPaddingException.
+            "param-value" must be Base64 encoded.
+            More details: http://wiki.apache.org/myfaces/Secure_Your_Application
+         -->
+        <context-param>
+            <param-name>org.apache.myfaces.SECRET</param-name>
+            <param-value>NzY1NDMyMTA=</param-value>
         </context-param>
         
         <!--
@@ -89,7 +85,21 @@ Myfaces Core 2.0 on Google App Engine
      implementation jars. You can find them {{{https://uel.dev.java.net/}here}}.
      Put el-api-1.x.jar and el-impl-1.x.jar into war/WEB-INF/lib.  
 
-   * Here is the sample directory structure:
+   * If you have a faces-config.xml, please check that you use the header for JSF2:
+
++------------------------------------------------------------------------+
+	<?xml version="1.0" encoding="UTF-8"?>
+	<faces-config
+	    xmlns="http://java.sun.com/xml/ns/javaee"
+	    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd"
+	    version="2.0">
+	    ...
+	</faces-config>
++------------------------------------------------------------------------+
+
+
+   * Here is the <<sample>> directory structure:
    
 +------------------------------------------------------------------------+
    +<Your Google App Engine Project Folder>
@@ -120,11 +130,6 @@ Myfaces Core 2.0 on Google App Engine
            - geronimo-jpa_3.0_spec-1.1.1.jar
            - geronimo-jta_1.1_spec-1.1.1.jar
            - jdo2-api-2.3-eb.jar
-           - jsf-facelets.jar
-           - myfaces-api-2.0.0.jar 
-           ~~ or some other version
-           - myfaces-impl-2.0.0.jar 
-           ~~ or some other version
+           - myfaces-api-2.0.0-beta-3.jar 
+           - myfaces-impl-2.0.0-beta-3.jar 
 +------------------------------------------------------------------------+
-
-  ~~ put the link of the kickstart zip file including structure above!! 
