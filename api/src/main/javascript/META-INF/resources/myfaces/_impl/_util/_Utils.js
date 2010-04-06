@@ -293,10 +293,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
     myfaces._impl._util._Utils.findHtmlItemFromFragment = function(fragment, itemId) {
         if (fragment.childNodes == null)
             return null;
-        //just one element, we are clear to replace (in case of the body replacement we replace only the body)
-        if (fragment.childNodes.length == 1) {
-            return fragment.childNodes[0];    
-        }
+        
         for (var i = 0; i < fragment.childNodes.length; i++) {
             var c = fragment.childNodes[i];
             if (c.id == itemId)
