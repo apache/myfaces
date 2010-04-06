@@ -266,6 +266,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
         var oldBody = document.getElementsByTagName("body")[0];
         var newBody = document.createElement("body");
         var placeHolder = document.createElement("div");
+        placeHolder.id = "myfaces_bodyplaceholder";
         var bodyParent = oldBody.parentNode;
 
         newBody.appendChild(placeHolder);

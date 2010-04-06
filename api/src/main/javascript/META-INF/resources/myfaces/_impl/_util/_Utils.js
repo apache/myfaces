@@ -248,11 +248,31 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
                     var range = document.createRange();
                     range.setStartBefore(item);
                     var fragment = range.createContextualFragment(newTag);
-                    evalNode = item.parentNode.replaceChild(fragment, item);
+                    //special case update body, we have to replace the placeholder
+                    //with the first element (the place holder is the the only child)
+                    //and then append additional elements as additional childs
+                    //the body itself then is the root for the eval part!
+                    if(item.id == 'myfaces_bodyplaceholder') {
+                        var parentNode = item.parentNode;
+                        parentNode.appendChild(fragment);
+                        evalNode = parentNode;
+                    } else {
+                        //normal dom node case we replace only the client id fragment!
+                        var replaceItem = myfaces._impl._util._Utils.findHtmlItemFromFragment(fragment, item.id);
+                        if(replaceItem == null)replaceItem = fragment;
+                        evalNode = item.parentNode.replaceChild(replaceItem, item);
+                    }
                 } else {
                     item.insertAdjacentHTML('beforeBegin', newTag);
                     evalNode = item.previousSibling;
                     item.parentNode.removeChild(item);
+                    if(item.id != 'myfaces_bodyplaceholder' && ('undefined' == typeof evalNode.id  || null == evalNode.id || evalNode.id != item.id)) {
+                        //to get the same behavior (as in other browsers we have to cherry pick the element differently here)
+                        //black box testing on Mojarra reveals, it does nothing here, and breaks the page this way
+                        var subNode = document.getElementById(item.id);
+                        subNode.parentNode.removeChild(subNode);
+                        evalNode.parentNode.replaceChild(subNode, evalNode);
+                    }
                 }
 
                 // and remove the old item
@@ -268,6 +288,27 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
         } catch (e) {
             myfaces._impl.xhrCore._Exception.throwNewError(request, context, "Utils", "replaceHTMLItem", e);
         }
+    };
+
+    myfaces._impl._util._Utils.findHtmlItemFromFragment = function(fragment, itemId) {
+        if (fragment.childNodes == null)
+            return null;
+        //just one element, we are clear to replace (in case of the body replacement we replace only the body)
+        if (fragment.childNodes.length == 1) {
+            return fragment.childNodes[0];    
+        }
+        for (var i = 0; i < fragment.childNodes.length; i++) {
+            var c = fragment.childNodes[i];
+            if (c.id == itemId)
+                return c;
+        }
+        for (var i = 0; i < fragment.childNodes.length; i++) {
+            var c = fragment.childNodes[i];
+            var item = myfaces._impl._util._Utils.findHtmlItemFromFragment(c, itemId);
+            if (item != null)
+                return item;
+        }
+        return null;
     };
 
     myfaces._impl._util._Utils.ieQuircksEvents = {
