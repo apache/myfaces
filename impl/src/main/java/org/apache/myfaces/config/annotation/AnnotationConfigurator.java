@@ -273,6 +273,10 @@ public class AnnotationConfigurator
     private JarFile getMyfacesImplJarFile() throws IOException
     {
         URL url = getClassLoader().getResource(STANDARD_FACES_CONFIG_RESOURCE);
+        if (url == null)
+        {
+            url = getClass().getClassLoader().getResource(STANDARD_FACES_CONFIG_RESOURCE);
+        }
         return getJarFile(url);
     }
     
