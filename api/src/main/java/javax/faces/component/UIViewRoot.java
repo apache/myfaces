@@ -337,41 +337,48 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         {
             super.encodeEnd(context);
             
-            ViewDeclarationLanguage vdl = context.getApplication().getViewHandler().getViewDeclarationLanguage(context, getViewId());
-            if (vdl != null)
+            // the call to encodeAll() on every UIViewParameter here is only necessary
+            // if the current request is _not_ an AJAX request, because if it was an
+            // AJAX request, the call would already have happened in PartialViewContextImpl and
+            // would anyway be too late here, because the state would already have been generated
+            PartialViewContext partialContext = context.getPartialViewContext();
+            if (!partialContext.isAjaxRequest())
             {
-                // If the current view has view parameters, as indicated by a non-empty and non-UnsupportedOperationException throwing 
-                // return from ViewDeclarationLanguage.getViewMetadata(javax.faces.context.FacesContext, String)
-                ViewMetadata metadata = null;
-                try
+                ViewDeclarationLanguage vdl = context.getApplication().getViewHandler().getViewDeclarationLanguage(context, getViewId());
+                if (vdl != null)
                 {
-                    metadata = vdl.getViewMetadata(context, getViewId());    
-                }
-                catch(UnsupportedOperationException e)
-                {
-                    logger.log(Level.SEVERE, "Exception while obtaining the view metadata: " + e.getMessage(), e);
-                }
-                
-                if (metadata != null)
-                {
+                    // If the current view has view parameters, as indicated by a non-empty and non-UnsupportedOperationException throwing 
+                    // return from ViewDeclarationLanguage.getViewMetadata(javax.faces.context.FacesContext, String)
+                    ViewMetadata metadata = null;
                     try
                     {
-                        Collection<UIViewParameter> viewParams = ViewMetadata.getViewParameters(this);    
-                        if(!viewParams.isEmpty())
-                        {
-                            // call UIViewParameter.encodeAll(javax.faces.context.FacesContext) on each parameter.
-                            for(UIViewParameter param : viewParams)
-                            {
-                                param.encodeAll(context);
-                            }
-                        }
+                        metadata = vdl.getViewMetadata(context, getViewId());    
                     }
                     catch(UnsupportedOperationException e)
                     {
-                        // If calling getViewParameters() causes UnsupportedOperationException to be thrown, the exception must be silently swallowed.
+                        logger.log(Level.SEVERE, "Exception while obtaining the view metadata: " + e.getMessage(), e);
+                    }
+                    
+                    if (metadata != null)
+                    {
+                        try
+                        {
+                            Collection<UIViewParameter> viewParams = ViewMetadata.getViewParameters(this);    
+                            if(!viewParams.isEmpty())
+                            {
+                                // call UIViewParameter.encodeAll(javax.faces.context.FacesContext) on each parameter.
+                                for(UIViewParameter param : viewParams)
+                                {
+                                    param.encodeAll(context);
+                                }
+                            }
+                        }
+                        catch(UnsupportedOperationException e)
+                        {
+                            // If calling getViewParameters() causes UnsupportedOperationException to be thrown, the exception must be silently swallowed.
+                        }
                     }
                 }
-    
             }
         }
         

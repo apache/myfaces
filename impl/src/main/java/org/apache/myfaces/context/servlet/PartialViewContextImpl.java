@@ -28,6 +28,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewParameter;
+import javax.faces.component.UIViewRoot;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitHint;
@@ -38,6 +40,7 @@ import javax.faces.context.PartialResponseWriter;
 import javax.faces.context.PartialViewContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.event.PhaseId;
+import javax.faces.view.ViewMetadata;
 
 import org.apache.myfaces.context.PartialResponseWriterImpl;
 import org.apache.myfaces.shared_impl.util.StringUtils;
@@ -291,23 +294,25 @@ public class PartialViewContextImpl extends PartialViewContext {
     public void processPartial(PhaseId phaseId) {
         assertNotReleased();
 
-        UIComponent viewRoot = _facesContext.getViewRoot();
+        UIViewRoot viewRoot = _facesContext.getViewRoot();
 
-
-
-        if (phaseId == PhaseId.APPLY_REQUEST_VALUES || phaseId == PhaseId.PROCESS_VALIDATIONS || phaseId == PhaseId.UPDATE_MODEL_VALUES) {
+        if (phaseId == PhaseId.APPLY_REQUEST_VALUES 
+                || phaseId == PhaseId.PROCESS_VALIDATIONS 
+                || phaseId == PhaseId.UPDATE_MODEL_VALUES) 
+        {
             processPartialExecute(viewRoot, phaseId);
-        } else if (phaseId == PhaseId.RENDER_RESPONSE) {
-
+        } 
+        else if (phaseId == PhaseId.RENDER_RESPONSE) 
+        {
             processPartialRendering(viewRoot, phaseId);
         }
-
-
     }
 
-    private void processPartialExecute(UIComponent viewRoot, PhaseId phaseId) {
+    private void processPartialExecute(UIViewRoot viewRoot, PhaseId phaseId) 
+    {
         Collection<String> executeIds = getExecuteIds();
-        if (executeIds == null || executeIds.isEmpty()) {
+        if (executeIds == null || executeIds.isEmpty()) 
+        {
             return;
         }
         Set<VisitHint> hints = new HashSet<VisitHint>();
@@ -317,7 +322,8 @@ public class PartialViewContextImpl extends PartialViewContext {
         viewRoot.visitTree(visitCtx, new PhaseAwareVisitCallback(_facesContext, phaseId));
     }
 
-    private void processPartialRendering(UIComponent viewRoot, PhaseId phaseId) {
+    private void processPartialRendering(UIViewRoot viewRoot, PhaseId phaseId) 
+    {
         // try to enable the ResponseSwitch again (disabled in RenderResponseExecutor)
         Object response = _facesContext.getExternalContext().getResponse();
         ResponseSwitch responseSwitch = ExternalContextUtils.getResponseSwitch(response);
@@ -338,8 +344,6 @@ public class PartialViewContextImpl extends PartialViewContext {
         //    return;
         //}
 
-
-
         PartialResponseWriter writer = getPartialResponseWriter();
         ResponseWriter oldWriter = _facesContext.getResponseWriter();
         boolean inDocument = false;
@@ -355,8 +359,8 @@ public class PartialViewContextImpl extends PartialViewContext {
         //http://support.microsoft.com/kb/234067
         externalContext.addResponseHeader("Expires", "-1");
 
-        try {
-
+        try 
+        {
             writer.startDocument();
             inDocument = true;
             _facesContext.setResponseWriter(writer);
@@ -365,18 +369,16 @@ public class PartialViewContextImpl extends PartialViewContext {
             if (renderIds != null && !renderIds.isEmpty())
             {
                 Set<VisitHint> hints = new HashSet<VisitHint>();
-                /*unrendered have to be skipped, transient definitely must be added to our list!*/
+                // unrendered have to be skipped, transient definitely must be added to our list!
                 hints.add(VisitHint.SKIP_UNRENDERED);
                 
                 // render=@all, so output the body.
-                
                 if (renderIds.contains ("javax.faces.ViewRoot"))
                 {
                     java.util.Iterator<UIComponent> iter = viewRoot.getFacetsAndChildren();
-                    
                     writer.startUpdate ("javax.faces.ViewRoot");
-                    
-                    while (iter.hasNext()) { 
+                    while (iter.hasNext()) 
+                    { 
                         UIComponent comp = iter.next();
                         
                         if (comp instanceof javax.faces.component.html.HtmlBody)
@@ -384,14 +386,25 @@ public class PartialViewContextImpl extends PartialViewContext {
                             comp.encodeAll (_facesContext);
                         }
                     }
-                    
                     writer.endUpdate();
                 }
-                
                 else
                 {
                     VisitContext visitCtx = VisitContext.createVisitContext(_facesContext, renderIds, hints);
                     viewRoot.visitTree(visitCtx, new PhaseAwareVisitCallback(_facesContext, phaseId));
+                }
+            }
+            
+            // invoke encodeAll() on every UIViewParameter in the view to 
+            // enable every UIViewParameter to save its value in the state
+            // just like UIViewRoot.encodeEnd() does on a normal request
+            // (see MYFACES-2645 for details)
+            Collection<UIViewParameter> viewParams = ViewMetadata.getViewParameters(viewRoot);    
+            if (!viewParams.isEmpty())
+            {
+                for (UIViewParameter param : viewParams)
+                {
+                    param.encodeAll(_facesContext);
                 }
             }
             
