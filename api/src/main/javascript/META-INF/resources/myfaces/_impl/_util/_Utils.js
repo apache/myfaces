@@ -293,7 +293,14 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
     myfaces._impl._util._Utils.findHtmlItemFromFragment = function(fragment, itemId) {
         if (fragment.childNodes == null)
             return null;
-        
+        //normal usecase, some browsers behave saner in complex situations if we work directly
+        //on the fragment, since the recommended path from the eg is to use an outer element
+        //having the id, this is the normal usecase
+        if(fragment.childNodes.length == 1 && fragment.childNodes[0].id == itemId) {
+            return fragment;
+        }
+
+        //subfragment usecases
         for (var i = 0; i < fragment.childNodes.length; i++) {
             var c = fragment.childNodes[i];
             if (c.id == itemId)
