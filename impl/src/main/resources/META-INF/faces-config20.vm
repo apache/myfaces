@@ -36,6 +36,15 @@ $baseContent
 #end    
     <component-type>$component.type</component-type>
     <component-class>$component.className</component-class>
+#set ($facetList = ${component.facetList})
+#foreach( $facet in $facetList )
+    <facet>
+#if ($facet.longDescription)
+        <description><![CDATA[$facet.longDescription]]></description>
+#end
+        <facet-name>$facet.name</facet-name>
+    </facet>
+#end
 #set ($propertyList = ${component.propertyList})
 #foreach( $property in $propertyList )
 ## Theorically, it should only add properties visible on tld or transient
@@ -58,15 +67,6 @@ $baseContent
 #end
     </property>
 #end
-#end
-#set ($facetList = ${component.facetList})
-#foreach( $facet in $facetList )
-    <facet>
-#if ($facet.longDescription)
-        <description><![CDATA[$facet.longDescription]]></description>
-#end
-        <facet-name>$facet.name</facet-name>
-    </facet>
 #end
     <component-extension>
       <component-family>$component.family</component-family>
@@ -112,11 +112,6 @@ $baseContent
 #if ($renderKit.className)
     <render-kit-class>$renderKit.className</render-kit-class>
 #end
-## TODO: Create a myfaces builder annotation and add through this class
-    <client-behavior-renderer>
-        <client-behavior-renderer-type>javax.faces.behavior.Ajax</client-behavior-renderer-type>
-        <client-behavior-renderer-class>org.apache.myfaces.renderkit.html.HtmlAjaxBehaviorRenderer</client-behavior-renderer-class>
-    </client-behavior-renderer>
 #set ($rendererList = ${renderKit.getRenderers()})
 #foreach( $renderer in $rendererList )
       <renderer>
@@ -125,6 +120,11 @@ $baseContent
         <renderer-class>$renderer.className</renderer-class>
       </renderer>
 #end
+## TODO: Create a myfaces builder annotation and add through this class
+    <client-behavior-renderer>
+        <client-behavior-renderer-type>javax.faces.behavior.Ajax</client-behavior-renderer-type>
+        <client-behavior-renderer-class>org.apache.myfaces.renderkit.html.HtmlAjaxBehaviorRenderer</client-behavior-renderer-class>
+    </client-behavior-renderer>
   </render-kit>
 #end
 </faces-config>

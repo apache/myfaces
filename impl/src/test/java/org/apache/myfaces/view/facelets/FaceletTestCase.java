@@ -19,6 +19,7 @@
 
 package org.apache.myfaces.view.facelets;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -55,21 +56,21 @@ import org.apache.myfaces.shared_impl.application.ViewHandlerSupport;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
-import org.apache.myfaces.test.mock.MockFacesContextFactory;
-import org.apache.myfaces.view.facelets.mock.MockHttpServletRequest;
-import org.apache.myfaces.view.facelets.mock.MockHttpServletResponse;
-import org.apache.myfaces.view.facelets.mock.MockResourceHandlerSupport;
-import org.apache.myfaces.view.facelets.mock.MockServletContext;
-import org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory;
-import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
 import org.apache.myfaces.test.el.MockExpressionFactory;
 import org.apache.myfaces.test.mock.MockExternalContext;
 import org.apache.myfaces.test.mock.MockFacesContext;
+import org.apache.myfaces.test.mock.MockFacesContextFactory;
 import org.apache.myfaces.test.mock.MockPropertyResolver;
 import org.apache.myfaces.test.mock.MockRenderKit;
+import org.apache.myfaces.test.mock.MockServletContext;
 import org.apache.myfaces.test.mock.MockVariableResolver;
 import org.apache.myfaces.test.mock.lifecycle.MockLifecycle;
 import org.apache.myfaces.test.mock.lifecycle.MockLifecycleFactory;
+import org.apache.myfaces.view.facelets.mock.MockHttpServletRequest;
+import org.apache.myfaces.view.facelets.mock.MockHttpServletResponse;
+import org.apache.myfaces.view.facelets.mock.MockResourceHandlerSupport;
+import org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory;
+import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
 
 public abstract class FaceletTestCase extends TestCase
 {
@@ -134,13 +135,15 @@ public abstract class FaceletTestCase extends TestCase
         super.setUp();
         URI context = this.getContext();
 
-        this.servletContext = new MockServletContext(context);
+        this.servletContext = new MockServletContext();
         this.servletRequest = new MockHttpServletRequest(this.servletContext,
                 context);
         this.servletResponse = new MockHttpServletResponse();
 
         externalContext = new MockExternalContext(servletContext,
                 servletRequest, servletResponse);
+
+        this.servletContext.setDocumentRoot(new File(context));
 
         // Set up JSF API Objects
         FactoryFinder.releaseFactories();

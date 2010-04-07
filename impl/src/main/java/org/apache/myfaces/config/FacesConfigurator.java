@@ -540,6 +540,18 @@ public class FacesConfigurator
 
     private void feedStandardConfig() throws IOException, SAXException
     {
+        if (MyfacesConfig.getCurrentInstance(_externalContext).isValidateXML())
+        {
+            URL url = ClassUtils.getContextClassLoader().getResource(STANDARD_FACES_CONFIG_RESOURCE);
+            if (url == null)
+            {
+                url = this.getClass().getResource(STANDARD_FACES_CONFIG_RESOURCE);
+            }
+            if (url != null)
+            {
+                validateFacesConfig(url);
+            }
+        }
         InputStream stream = ClassUtils.getResourceAsStream(STANDARD_FACES_CONFIG_RESOURCE);
         if (stream == null)
             throw new FacesException("Standard faces config " + STANDARD_FACES_CONFIG_RESOURCE + " not found");
@@ -757,6 +769,10 @@ public class FacesConfigurator
 
             for (Map.Entry<String, URL> entry : facesConfigs.entrySet())
             {
+                if (MyfacesConfig.getCurrentInstance(_externalContext).isValidateXML())
+                {
+                    validateFacesConfig(entry.getValue());
+                }
                 InputStream stream = null;
                 try
                 {
@@ -787,6 +803,14 @@ public class FacesConfigurator
     {
         for (String systemId : getConfigFilesList())
         {
+            if (MyfacesConfig.getCurrentInstance(_externalContext).isValidateXML())
+            {
+                URL url = _externalContext.getResource(systemId);
+                if (url != null)
+                {
+                    validateFacesConfig(url);
+                }
+            }            
             InputStream stream = _externalContext.getResourceAsStream(systemId);
             if (stream == null)
             {
@@ -837,6 +861,14 @@ public class FacesConfigurator
     {
         FacesConfig webAppConfig = null;
         // web application config
+        if (MyfacesConfig.getCurrentInstance(_externalContext).isValidateXML())
+        {
+            URL url = _externalContext.getResource(DEFAULT_FACES_CONFIG);
+            if (url != null)
+            {
+                validateFacesConfig(url);
+            }
+        }
         InputStream stream = _externalContext.getResourceAsStream(DEFAULT_FACES_CONFIG);
         if (stream != null)
         {
@@ -847,6 +879,15 @@ public class FacesConfigurator
             stream.close();
         }
         return webAppConfig;
+    }
+    
+    private void validateFacesConfig(URL url) throws IOException, SAXException
+    {
+        String version = ConfigFilesXmlValidationUtils.getFacesConfigVersion(url);
+        if ("1.2".equals(version) || "2.0".equals(version))
+        {
+            ConfigFilesXmlValidationUtils.validateFacesConfigFile(url, _externalContext, version);                
+        }
     }
     
     protected void orderAndFeedArtifacts(List<FacesConfig> appConfigResources, FacesConfig webAppConfig)
