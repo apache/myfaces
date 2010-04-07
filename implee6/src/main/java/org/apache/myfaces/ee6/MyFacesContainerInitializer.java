@@ -152,6 +152,12 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
      */
     private boolean isDelegatedFacesServlet(String className)
     {
+        if (className == null) {
+            // The class name can be null if this is e.g., a JSP mapped to
+            // a servlet.
+
+            return false;
+        }
         try
         {
             Class<?> clazz = Class.forName(className);
