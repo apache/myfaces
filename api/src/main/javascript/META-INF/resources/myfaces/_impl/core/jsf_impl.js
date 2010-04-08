@@ -425,28 +425,30 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
      * moved into the impl
      *
      *  @param {Object} source the source which also becomes
-     * the scope for the calling function (unspecified sidebehavior)
+     * the scope for the calling function (unspecified side behavior)
      * the spec states here that the source can be any arbitrary code block.
-     * Which means it either is a javascript function directly passed or a codeblock
+     * Which means it either is a javascript function directly passed or a code block
      * which has to be evaluated separately.
      *
-     * Aftert revisiting the code additional testing against components showed that
-     * the this parameter is only targetted at the component triggering the eval
-     * (event) if a string codeblock is passed. This is behavior we have to resemble
+     * After revisiting the code additional testing against components showed that
+     * the this parameter is only targeted at the component triggering the eval
+     * (event) if a string code block is passed. This is behavior we have to resemble
      * in our function here as well, I guess.
      *
      * @param {Event} event the event object being passed down into the the chain as event origin
      */
     myfaces._impl.core._jsfImpl.prototype.chain = function(source, event) {
         var len = arguments.length;
-        if (len < 3) return;
+        //the spec is contradicting here, it on one hand defines event, and on the other
+        //it says it is optional, I will go with the the second statement here and will leave
+        //event as optional
+
+        if (len < 2) return;
         //now we fetch from what is given from the parameter list
         //we cannot work with splice here in any performant way so we do it the hard way
         //arguments only are give if not set to undefined even null values!
 
         //assertions source either null or set as dom element:
-        //assertion 2 event either null or cannot be a function or string
-        //assertion 3 source and ev
 
         if ('undefined' == typeof source) {
             throw new Error(" source must be defined");
@@ -458,24 +460,30 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
             throw new Error(" source cannot be a string ");
         }
 
-        if ('undefined' == typeof event) {
-            throw new Error(" event must be defined or null");
-        } else if ('function' == typeof event) {
-            throw new Error(" event cannot be a function (probably source and event were not defined or set to null");
-        } else if (myfaces._impl._util._LangUtils.isString(event)) {
-            throw new Error(" event cannot be a string ");
-        }
-
+        var varArgsStart = 2;
         var thisVal = source;
         var eventParam = event;
 
-        for (var loop = 2; loop < len; loop++) {
+        //assertion if event is a function or a string we already are in our function elements
+        //since event either is undefined, null or a valid event object
+        
+        if ('function' == typeof event || myfaces._impl._util._LangUtils.isString(event)) {
+            //in this case event is omitted for a function or string list only
+            //we then can start at parameter 1 with our function check
+            varArgsStart = 1;
+            //We undefine the event param so that it is treated equally to a call
+            //chain(node, undefined, function, function, function)
+            eventParam = undefined;
+        }
+
+
+        for (var loop = varArgsStart; loop < len; loop++) {
             //we do not change the scope of the incoming functions
             //but we reuse the argument array capabilities of apply
-            var retVal = false;
+            var retVal;
 
             /*
-             * Ok I have revisted this part again, the blackboxed ri test reveals:
+             * Ok I have revisited this part again, the black boxed ri test reveals:
              *
              <h:outputScript name = "jsf.js" library = "javax.faces" target = "head" />
              <script type="text/javascript">
@@ -500,13 +508,13 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
              * and evaled strings
              */
             if ('function' == typeof arguments[loop]) {
-                retVal = arguments[loop].call(thisVal, eventParam);
+                 retVal = arguments[loop].call(thisVal, eventParam);
             } else {
-                //either a function or a string can be passed in case of a string we have to wrap it into another functon
-                retVal = new Function("event", arguments[loop]).call(thisVal, eventParam);
+                //either a function or a string can be passed in case of a string we have to wrap it into another function
+                 retVal = new Function("event", arguments[loop]).call(thisVal, eventParam);
             }
             //now if one function returns false in between we stop the execution of the cycle
-            //here
+            //here, note we do a strong comparison here to avoid constructs like 'false' or null triggering
             if ('undefined' != typeof retVal && retVal === false) {
                 return false;
             }
