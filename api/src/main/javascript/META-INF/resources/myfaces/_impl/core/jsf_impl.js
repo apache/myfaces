@@ -436,14 +436,24 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
      * in our function here as well, I guess.
      *
      * @param {Event} event the event object being passed down into the the chain as event origin
+     *   the spec is contradicting here, it on one hand defines event, and on the other
+     *   it says it is optional, after asking, it meant that event must be passed down
+     *   but can be undefined
      */
     myfaces._impl.core._jsfImpl.prototype.chain = function(source, event) {
         var len = arguments.length;
         //the spec is contradicting here, it on one hand defines event, and on the other
-        //it says it is optional, I will go with the the second statement here and will leave
-        //event as optional
-
-        if (len < 2) return;
+        //it says it is optional, I have cleared this up now
+        //the spec meant the param must be passed down, but can be 'undefined'
+        if (len < 2) {
+            throw new Error(" an event object or unknown must be passed as second parameter ");    
+        } else if (len < 3) {
+            if ('function' == typeof event || myfaces._impl._util._LangUtils.isString(event)) {
+                throw new Error(" an event must be passed down (either a an event object null or undefined) ");
+            }
+            //nothing to be done here, move along
+            return true;
+        }
         //now we fetch from what is given from the parameter list
         //we cannot work with splice here in any performant way so we do it the hard way
         //arguments only are give if not set to undefined even null values!
@@ -460,24 +470,17 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
             throw new Error(" source cannot be a string ");
         }
 
-        var varArgsStart = 2;
         var thisVal = source;
-        var eventParam = event;
 
         //assertion if event is a function or a string we already are in our function elements
         //since event either is undefined, null or a valid event object
         
         if ('function' == typeof event || myfaces._impl._util._LangUtils.isString(event)) {
-            //in this case event is omitted for a function or string list only
-            //we then can start at parameter 1 with our function check
-            varArgsStart = 1;
-            //We undefine the event param so that it is treated equally to a call
-            //chain(node, undefined, function, function, function)
-            eventParam = undefined;
+            throw new Error(" an event must be passed down (either a an event object null or undefined) ");
         }
 
 
-        for (var loop = varArgsStart; loop < len; loop++) {
+        for (var loop = 2; loop < len; loop++) {
             //we do not change the scope of the incoming functions
             //but we reuse the argument array capabilities of apply
             var retVal;
@@ -508,10 +511,10 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
              * and evaled strings
              */
             if ('function' == typeof arguments[loop]) {
-                 retVal = arguments[loop].call(thisVal, eventParam);
+                 retVal = arguments[loop].call(thisVal, event);
             } else {
                 //either a function or a string can be passed in case of a string we have to wrap it into another function
-                 retVal = new Function("event", arguments[loop]).call(thisVal, eventParam);
+                 retVal = new Function("event", arguments[loop]).call(thisVal, event);
             }
             //now if one function returns false in between we stop the execution of the cycle
             //here, note we do a strong comparison here to avoid constructs like 'false' or null triggering
