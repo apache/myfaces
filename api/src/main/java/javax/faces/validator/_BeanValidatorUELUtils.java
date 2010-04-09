@@ -56,6 +56,10 @@ final class _BeanValidatorUELUtils
         {
             valueExpression = ((CompositeComponentExpressionHolder) valueReference.getBase())
                                   .getExpression((String) valueReference.getProperty());
+            if(valueExpression == null)
+            {
+                break;
+            }
             valueReference = valueExpression.getValueReference(elCtx);
         }
         
