@@ -29,6 +29,4 @@ Specifications
   MyFaces implements {{{http://www.jcp.org/en/jsr/detail?id=314}Java Specification Request 314}}
   Each major release of MyFaces is certified against the Sun TCK to ensure compliance.
   
-  At the time this was written (October 2009) there is still no TCK or any official release of 
-  jsf 2.0, but we are working hard to keep the code in sync with JSR 314 spec. You can check the 
-  nightly builds {{{http://people.apache.org/repo/m2-snapshot-repository/org/apache/myfaces/core}here}}. 
+  Check the download page or you can check the nightly builds {{{http://people.apache.org/repo/m2-snapshot-repository/org/apache/myfaces/core}here}}.

@@ -7,7 +7,4 @@ MyFaces Core 2.0: Impl Project
   The Impl submodule implements all of the "invisible" classes that are needed for a functioning
   JSF implementation but which are not part of the public api.
 
-  At the time this was written (October 2009) there is still no TCK or any official release of 
-  jsf 2.0, but we are working hard to keep the code in sync with JSR 314 spec. You can check the 
-  nightly builds {{{http://people.apache.org/repo/m2-snapshot-repository/org/apache/myfaces/core}here}}. 
-  
+  Check the download page or you can check the nightly builds {{{http://people.apache.org/repo/m2-snapshot-repository/org/apache/myfaces/core}here}}.  
