@@ -119,6 +119,141 @@
                 <goal>make-config</goal>
             </goals>
           </execution>
+           <!-- To generate facelet taglib doc we need to create alternate facelets files
+           so taglibdoc goal can extract the required information and create html files.
+           We put this one here temporally but generate-assembly profile should trigger
+           this execution tasks too. -->
+          <execution>
+            <id>make_core_facelet_tld</id>
+            <configuration>
+                <outputDirectory>${project.build.directory}/tlddoc-facelets</outputDirectory>
+                <xmlFile>myfaces_facelets_core.tld</xmlFile>
+                <xmlBaseFile>src/main/conf/META-INF/myfaces_core-base.tld</xmlBaseFile>
+                <templateFile>myfaces_facelet_core20.vm</templateFile>
+                <modelIds>
+                    <modelId>myfaces-api</modelId>
+                    <modelId>myfaces-impl</modelId>
+                </modelIds>
+                <params>
+                    <shortname>f</shortname>
+                    <uri>http://java.sun.com/jsf/core</uri>
+                    <displayname>JSF Core Facelets Tag Library.</displayname>
+                    <description>This tag library implements the standard JSF core tags for Facelets.</description>
+                </params>
+            </configuration>
+            <goals>
+                <goal>make-config</goal>
+            </goals>
+          </execution>          
+          <execution>
+            <id>make_html_facelet_tld</id>
+            <configuration>
+                <outputDirectory>${project.build.directory}/tlddoc-facelets</outputDirectory>
+                <xmlFile>myfaces_facelets_html.tld</xmlFile>
+                <xmlBaseFile>src/main/conf/META-INF/myfaces_html-base.tld</xmlBaseFile>
+                <templateFile>myfaces_facelet_html20.vm</templateFile>
+                <modelIds>
+                    <modelId>myfaces-api</modelId>
+                    <modelId>myfaces-impl</modelId>
+                </modelIds>
+                <params>
+                   <shortname>h</shortname>
+                   <uri>http://java.sun.com/jsf/html</uri>
+                   <displayname>JSF HTML Facelets Tag Library.</displayname>
+                   <description>This tag library implements the standard JSF HTML tags for Facelets.</description>
+                </params>
+            </configuration>
+            <goals>
+                <goal>make-config</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>make_c_facelet_tld</id>
+            <configuration>
+                <outputDirectory>${project.build.directory}/tlddoc-facelets</outputDirectory>
+                <xmlFile>myfaces_facelets_c.tld</xmlFile>
+                <xmlBaseFile>src/main/conf/META-INF/myfaces_html-base.tld</xmlBaseFile>
+                <templateFile>myfaces_facelet_html20.vm</templateFile>
+                <modelIds>
+                    <modelId>myfaces-api</modelId>
+                    <modelId>myfaces-impl</modelId>
+                </modelIds>
+                <params>
+                   <shortname>c</shortname>
+                   <uri>http://java.sun.com/jsp/jstl/core</uri>
+                   <displayname>JSTL core Facelets Tag Library.</displayname>
+                   <description>JSTL core Facelets Tag Library.</description>
+                </params>
+            </configuration>
+            <goals>
+                <goal>make-config</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>make_ui_facelet_tld</id>
+            <configuration>
+                <outputDirectory>${project.build.directory}/tlddoc-facelets</outputDirectory>
+                <xmlFile>myfaces_facelets_ui.tld</xmlFile>
+                <xmlBaseFile>src/main/conf/META-INF/myfaces_ui-base.tld</xmlBaseFile>
+                <templateFile>myfaces_facelet_html20.vm</templateFile>
+                <modelIds>
+                    <modelId>myfaces-api</modelId>
+                    <modelId>myfaces-impl</modelId>
+                </modelIds>
+                <params>
+                   <shortname>ui</shortname>
+                   <uri>http://java.sun.com/jsf/facelets</uri>
+                   <displayname>JSF UI Facelets Tag Library.</displayname>
+                   <description>JSF UI Facelets Tag Library.</description>
+                </params>
+            </configuration>
+            <goals>
+                <goal>make-config</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>make_composite_facelet_tld</id>
+            <configuration>
+                <outputDirectory>${project.build.directory}/tlddoc-facelets</outputDirectory>
+                <xmlFile>myfaces_facelets_composite.tld</xmlFile>
+                <xmlBaseFile>src/main/conf/META-INF/myfaces_html-base.tld</xmlBaseFile>
+                <templateFile>myfaces_facelet_html20.vm</templateFile>
+                <modelIds>
+                    <modelId>myfaces-api</modelId>
+                    <modelId>myfaces-impl</modelId>
+                </modelIds>
+                <params>
+                   <shortname>composite</shortname>
+                   <uri>http://java.sun.com/jsf/composite</uri>
+                   <displayname>JSF Composite Facelets Tag Library.</displayname>
+                   <description>JSF Composite Facelets Tag Library.</description>
+                </params>
+            </configuration>
+            <goals>
+                <goal>make-config</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+            <execution>
+                <id>copy_fn_tld</id>
+                <phase>process-resources</phase>
+                <configuration>
+                    <tasks>
+                        <copy todir="${project.build.directory}/tlddoc-facelets" flatten="true" overwrite="true" 
+                              verbose="true" failonerror="true">
+                            <fileset dir="${basedir}/src/main/conf/META-INF"  
+                                     includes="myfaces_facelet_fn.tld"/>
+                        </copy>
+                    </tasks>
+                </configuration>
+                <goals>
+                    <goal>run</goal>
+                </goals>
+            </execution>
         </executions>
       </plugin>
       <plugin>
@@ -145,44 +280,6 @@
           </excludes>
         </configuration>
       </plugin>
-
-      <!--
-      <plugin> -->
-        <!--
-          - Using the metadata from the "build" module, generate the JSP "h" taglib.
-          -
-          - The "f" taglib currently appears to instead be hand-coded; not sure why.
-          - Maybe because the maven-faces-plugin only supports generating one taglib?
-          - Or because people just haven't got around to defining the metadata and
-          - templates for it in the build module?
-          -->
-          <!--
-        <groupId>org.apache.myfaces.buildtools</groupId>
-        <artifactId>myfaces-faces-plugin</artifactId>
-        <configuration>
-          <taglibs>
-            <myfaces-html>http://java.sun.com/jsf/html</myfaces-html>
-          </taglibs>
-          <targetPath>META-INF/standard-faces-config.xml</targetPath>
-          <packageContains>org.apache</packageContains>
-          <converterPackageContains>javax.faces</converterPackageContains>
-          <validatorPackageContains>javax.faces</validatorPackageContains>
-          <skipApiOrBaseClasses>false</skipApiOrBaseClasses>
-          <jsfVersion>1.2</jsfVersion>
-          <force>true</force>
-          <templateSourceDirectory>src/main/java-templates</templateSourceDirectory>
-          <disableIdExpressions>true</disableIdExpressions>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>generate-faces-config</goal>
-              <goal>generate-jsp-taglibs</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-               -->
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <version>2.2</version>
@@ -281,7 +378,7 @@
         </dependencies>
     </profile>
     <profile>
-        <id>unpack-shared</id>
+        <id>unpack-shared-implee6</id>
         <activation>
             <property>
                 <name>!dev</name>
@@ -295,9 +392,13 @@
                   - source and classes. The result is a jar full of files in the "shared_impl"
                   - package that we can merge into the jar for this project.
                   -->
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>dependency-maven-plugin</artifactId>
-                <version>1.0</version>
+                <!--
+                  - The implee6 project contains classes which need Java EE 6 dependencies. 
+                  - The result is a jar that we can merge into the jar for this project.
+                  -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.0</version>
                 <executions>
                   <execution>
                     <id>unpack-shared-impl</id>
@@ -311,6 +412,7 @@
                           <groupId>org.apache.myfaces.shared</groupId>
                           <artifactId>myfaces-shared-impl</artifactId>
                           <version>${myfaces-shared.version}</version>
+                          <excludes>META-INF/**</excludes>
                         </artifactItem>
                       </artifactItems>
                       <outputDirectory>${project.build.directory}/classes</outputDirectory>
@@ -329,61 +431,15 @@
                                 <artifactId>myfaces-shared-impl</artifactId>
                                 <version>${myfaces-shared.version}</version>
                                 <classifier>sources</classifier>
+                                <excludes>META-INF/**</excludes>
                             </artifactItem>
                         </artifactItems>
                         <outputDirectory>${project.build.directory}/shared_sources</outputDirectory>
                     </configuration>
                   </execution>
-                </executions>
-              </plugin>
-              <plugin>
-                <!--
-                  - Add the unpacked shared sources directory as source directory into the pom datastructure,
-                  - so that the -source jar includes them too; every .class file in the jar should have its
-                  - source in the -source jar.
-                  -->
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.0</version>
-                <executions>
-                  <execution>
-                    <id>add-source-shared</id>
-                    <phase>process-sources</phase>
-                    <goals>
-                      <goal>add-source</goal>
-                    </goals>
-                    <configuration>
-                      <sources>
-                        <source>${project.build.directory}/shared_sources</source>
-                      </sources>
-                    </configuration>
-                  </execution>
-                </executions>
-              </plugin>
-            </plugins>
-        </build>
-    </profile>
-    <profile>
-        <id>unpack-impl-ee6</id>
-        <activation>
-            <property>
-                <name>!dev</name>
-            </property>
-        </activation>
-        <build>
-            <plugins>
-              <plugin>
-                <!--
-                  - The implee6 project contains classes which need Java EE 6 dependencies. 
-                  - The result is a jar that we can merge into the jar for this project.
-                  -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.1</version>
-                <executions>
                   <execution>
                     <id>unpack-impl-ee6</id>
-                    <phase>prepare-package</phase>
+                    <phase>process-resources</phase>
                     <goals>
                       <goal>unpack</goal>
                     </goals>
@@ -402,7 +458,7 @@
                   </execution>
                   <execution>
                     <id>unpack-impl-ee6-sources</id>
-                    <phase>prepare-package</phase>
+                    <phase>process-resources</phase>
                     <goals>
                         <goal>unpack</goal>
                     </goals>
@@ -423,6 +479,11 @@
                 </executions>
               </plugin>
               <plugin>
+                <!--
+                  - Add the unpacked shared sources directory as source directory into the pom datastructure,
+                  - so that the -source jar includes them too; every .class file in the jar should have its
+                  - source in the -source jar.
+                  -->
                 <!--  
                   - Add the unpacked implee6 sources directory as source directory into the pom datastructure,
                   - so that the -source jar includes them too; every .class file in the jar should have its
@@ -435,13 +496,14 @@
                 <version>1.0</version>
                 <executions>
                   <execution>
-                    <id>add-source-implee6</id>
-                    <phase>prepare-package</phase>
+                    <id>add-source-shared</id>
+                    <phase>process-sources</phase>
                     <goals>
                       <goal>add-source</goal>
                     </goals>
                     <configuration>
                       <sources>
+                        <source>${project.build.directory}/shared_sources</source>
                         <source>${project.build.directory}/implee6_sources</source>
                       </sources>
                     </configuration>
@@ -452,196 +514,9 @@
         </build>
     </profile>
     <profile>
-      <id>generate-tlddoc</id>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <executions>
-                <execution>
-                    <id>copy_fn_tld</id>
-                    <phase>install</phase>
-                    <configuration>
-                        <tasks>
-                            <copy todir="${project.build.directory}/tlddoc-facelets" flatten="true" overwrite="true" 
-                                  verbose="true" failonerror="true">
-                                <fileset dir="${basedir}/src/main/conf/META-INF"  
-                                         includes="myfaces_facelet_fn.tld"/>
-                            </copy>
-                        </tasks>
-                    </configuration>
-                    <goals>
-                        <goal>run</goal>
-                    </goals>
-                </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <!-- To generate facelet taglib doc we need to create alternate facelets files
-                 so taglibdoc goal can extract the required information and create html files.
-                 We put this one here temporally but generate-assembly profile should trigger
-                 this execution tasks too. -->
-            <groupId>org.apache.myfaces.buildtools</groupId>
-            <artifactId>myfaces-builder-plugin</artifactId>
-            <version>${myfaces-builder-plugin.version}</version>
-            <executions>
-              <execution>
-                <id>make_core_facelet_tld</id>
-                <configuration>
-                    <outputDirectory>${project.build.directory}/tlddoc-facelets</outputDirectory>
-                    <xmlFile>myfaces_facelets_core.tld</xmlFile>
-                    <xmlBaseFile>src/main/conf/META-INF/myfaces_core-base.tld</xmlBaseFile>
-                    <templateFile>myfaces_facelet_core20.vm</templateFile>
-                    <modelIds>
-                        <modelId>myfaces-api</modelId>
-                        <modelId>myfaces-impl</modelId>
-                    </modelIds>
-                    <params>
-                        <shortname>f</shortname>
-                        <uri>http://java.sun.com/jsf/core</uri>
-                        <displayname>JSF Core Facelets Tag Library.</displayname>
-                        <description>This tag library implements the standard JSF core tags for Facelets.</description>
-                    </params>
-                </configuration>
-                <goals>
-                    <goal>make-config</goal>
-                </goals>
-              </execution>          
-              <execution>
-                <id>make_html_facelet_tld</id>
-                <configuration>
-                    <outputDirectory>${project.build.directory}/tlddoc-facelets</outputDirectory>
-                    <xmlFile>myfaces_facelets_html.tld</xmlFile>
-                    <xmlBaseFile>src/main/conf/META-INF/myfaces_html-base.tld</xmlBaseFile>
-                    <templateFile>myfaces_facelet_html20.vm</templateFile>
-                    <modelIds>
-                        <modelId>myfaces-api</modelId>
-                        <modelId>myfaces-impl</modelId>
-                    </modelIds>
-                    <params>
-                       <shortname>h</shortname>
-                       <uri>http://java.sun.com/jsf/html</uri>
-                       <displayname>JSF HTML Facelets Tag Library.</displayname>
-                       <description>This tag library implements the standard JSF HTML tags for Facelets.</description>
-                    </params>
-                </configuration>
-                <goals>
-                    <goal>make-config</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>make_c_facelet_tld</id>
-                <configuration>
-                    <outputDirectory>${project.build.directory}/tlddoc-facelets</outputDirectory>
-                    <xmlFile>myfaces_facelets_c.tld</xmlFile>
-                    <xmlBaseFile>src/main/conf/META-INF/myfaces_html-base.tld</xmlBaseFile>
-                    <templateFile>myfaces_facelet_html20.vm</templateFile>
-                    <modelIds>
-                        <modelId>myfaces-api</modelId>
-                        <modelId>myfaces-impl</modelId>
-                    </modelIds>
-                    <params>
-                       <shortname>c</shortname>
-                       <uri>http://java.sun.com/jsp/jstl/core</uri>
-                       <displayname>JSTL core Facelets Tag Library.</displayname>
-                       <description>JSTL core Facelets Tag Library.</description>
-                    </params>
-                </configuration>
-                <goals>
-                    <goal>make-config</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>make_ui_facelet_tld</id>
-                <configuration>
-                    <outputDirectory>${project.build.directory}/tlddoc-facelets</outputDirectory>
-                    <xmlFile>myfaces_facelets_ui.tld</xmlFile>
-                    <xmlBaseFile>src/main/conf/META-INF/myfaces_ui-base.tld</xmlBaseFile>
-                    <templateFile>myfaces_facelet_html20.vm</templateFile>
-                    <modelIds>
-                        <modelId>myfaces-api</modelId>
-                        <modelId>myfaces-impl</modelId>
-                    </modelIds>
-                    <params>
-                       <shortname>ui</shortname>
-                       <uri>http://java.sun.com/jsf/facelets</uri>
-                       <displayname>JSF UI Facelets Tag Library.</displayname>
-                       <description>JSF UI Facelets Tag Library.</description>
-                    </params>
-                </configuration>
-                <goals>
-                    <goal>make-config</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>make_composite_facelet_tld</id>
-                <configuration>
-                    <outputDirectory>${project.build.directory}/tlddoc-facelets</outputDirectory>
-                    <xmlFile>myfaces_facelets_composite.tld</xmlFile>
-                    <xmlBaseFile>src/main/conf/META-INF/myfaces_html-base.tld</xmlBaseFile>
-                    <templateFile>myfaces_facelet_html20.vm</templateFile>
-                    <modelIds>
-                        <modelId>myfaces-api</modelId>
-                        <modelId>myfaces-impl</modelId>
-                    </modelIds>
-                    <params>
-                       <shortname>composite</shortname>
-                       <uri>http://java.sun.com/jsf/composite</uri>
-                       <displayname>JSF Composite Facelets Tag Library.</displayname>
-                       <description>JSF Composite Facelets Tag Library.</description>
-                    </params>
-                </configuration>
-                <goals>
-                    <goal>make-config</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>        
-          <plugin>
-            <!-- Unfortunately we can't execute the same report twice, so
-                 we have to generate this files outside report generation. -->
-            <groupId>net.sourceforge.maven-taglib</groupId>
-            <artifactId>maven-taglib-plugin</artifactId>
-            <version>2.3.1</version>
-            <executions>
-                <execution>
-                    <id>tlddoc-facelets</id>
-                    <!-- TODO: The phase value should be "site", but since we are not released yet
-                         and this documentation is used to implement jsf 2.0, we put this one
-                         on site so just doing mvn -Pgenerate-site install we can create this
-                         javadoc -->
-                    <phase>install</phase>
-                    <goals>
-                      <goal>taglibdoc</goal>
-                    </goals>
-                    <inherited>false</inherited>
-                    <configuration>
-                      <title>${project.name} Tag library documentation for Facelets</title>
-                      <srcDir>${basedir}/target/tlddoc-facelets</srcDir>
-                      <tldDocDir>${basedir}/target/site/tlddoc-facelets</tldDocDir>
-                    </configuration>
-                </execution>
-                <execution>
-                    <id>tlddoc-jsp</id>
-                    <phase>install</phase>
-                    <goals>
-                      <goal>taglibdoc</goal>
-                    </goals>
-                    <inherited>false</inherited>
-                    <configuration>
-                      <taglib.src.dir>${basedir}/target/classes/META-INF</taglib.src.dir>
-                      <tldDocDir>${basedir}/target/site/tlddoc</tldDocDir>            
-                    </configuration>
-                </execution>                
-            </executions>
-          </plugin>        
-        </plugins>
-      </build>        
-    </profile>
-    <profile>
       <!--
         - Whenever the full website is generated, the command
-        -   mvn -Pgenerate-site site
+        -   mvn -Pgenerate-site -Pgenerate-tlddoc site
         - should be used. This will create the "tlddoc" directory containing
         - nicely-formatted versions of the docs in the jsp taglib file, ie
         - docs on all the available tags and their properties.
@@ -686,6 +561,40 @@
               </execution>
             </executions>
           </plugin>
+          <plugin>
+            <!-- Unfortunately we can't execute the same report twice, so
+                 we have to generate this files outside report generation. -->
+            <groupId>net.sourceforge.maven-taglib</groupId>
+            <artifactId>maven-taglib-plugin</artifactId>
+            <version>2.4</version>
+            <executions>
+               <execution>
+                    <id>tlddoc-facelets</id>
+                    <phase>site</phase>
+                    <goals>
+                      <goal>taglibdoc</goal>
+                    </goals>
+                    <inherited>false</inherited>
+                    <configuration>
+                      <title>${project.name} Tag library documentation for Facelets</title>
+                      <srcDir>${basedir}/target/tlddoc-facelets</srcDir>
+                      <tldDocDir>${basedir}/target/site/tlddoc-facelets</tldDocDir>
+                    </configuration>
+                </execution>
+                <execution>
+                    <id>tlddoc-jsp</id>
+                    <phase>site</phase>
+                    <goals>
+                      <goal>taglibdoc</goal>
+                    </goals>
+                    <inherited>false</inherited>
+                    <configuration>
+                      <taglib.src.dir>${basedir}/target/classes/META-INF</taglib.src.dir>
+                      <tldDocDir>${basedir}/target/site/tlddoc</tldDocDir>            
+                    </configuration>
+                </execution>
+            </executions>
+          </plugin>
         </plugins>
       </build>
       <reporting>
@@ -693,7 +602,7 @@
           <plugin>
             <groupId>net.sourceforge.maven-taglib</groupId>
             <artifactId>maven-taglib-plugin</artifactId>
-            <version>2.3.1</version>
+            <version>2.4</version>
             <configuration>
               <taglib.src.dir>${basedir}/target/classes/META-INF</taglib.src.dir>
               <tldDocDir>${basedir}/target/site/tlddoc</tldDocDir>
@@ -726,7 +635,7 @@
     <profile>
       <!--
         - Whenever files are deployed to a snapshot or release repository,
-        -   mvn -Pgenerate-assembly deploy
+        -   mvn -Pgenerate-assembly -Pgenerate-tlddoc deploy
         - should be used. This will create additional artifacts that are
         - useful but too time-consuming to create when just doing a local
         - "mvn install" operation.
@@ -737,6 +646,9 @@
           <plugin>
             <artifactId>maven-javadoc-plugin</artifactId>
             <version>2.3</version>
+            <configuration>
+                <excludePackageNames>org.apache.myfaces.ee6</excludePackageNames>
+            </configuration>
             <executions>
               <execution>
                 <id>attach-javadoc</id>
@@ -749,19 +661,81 @@
           <plugin>
             <groupId>net.sourceforge.maven-taglib</groupId>
             <artifactId>maven-taglib-plugin</artifactId>
-            <version>2.3.1</version>
+            <version>2.4</version>
             <executions>
+              <execution>
+                  <id>tlddoc-facelets</id>
+                  <!-- TODO: The phase value should be "site", but since we are not released yet
+                       and this documentation is used to implement jsf 2.0, we put this one
+                       on site so just doing mvn -Pgenerate-site install we can create this
+                       javadoc -->
+                  <phase>process-resources</phase>
+                  <goals>
+                    <goal>taglibdoc</goal>
+                  </goals>
+                  <inherited>false</inherited>
+                  <configuration>
+                    <title>${project.name} Tag library documentation for Facelets</title>
+                    <srcDir>${basedir}/target/tlddoc-facelets</srcDir>
+                    <tldDocDir>${basedir}/target/site/tlddoc-facelets</tldDocDir>
+                  </configuration>
+              </execution>
+              <execution>
+                  <id>tlddoc-jsp</id>
+                  <phase>process-resources</phase>
+                  <goals>
+                    <goal>taglibdoc</goal>
+                  </goals>
+                  <inherited>false</inherited>
+                  <configuration>
+                    <taglib.src.dir>${basedir}/target/classes/META-INF</taglib.src.dir>
+                    <tldDocDir>${basedir}/target/site/tlddoc</tldDocDir>            
+                  </configuration>
+              </execution>
               <execution>
                 <id>attach-tlddoc</id>
                 <goals>
                   <goal>taglibdocjar</goal>
                 </goals>
+                <configuration>
+                  <tldDocDir>${basedir}/target/site/tlddoc</tldDocDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>attach-tlddoc-facelets</id>
+                <goals>
+                  <goal>taglibdocjar</goal>
+                </goals>
+                <configuration>
+                  <attach>false</attach>
+                  <tldDocDir>${basedir}/target/site/tlddoc-facelets</tldDocDir>
+                  <tlddocJar>${basedir}/target/${artifactId}-${version}-facelets-tlddoc.jar</tlddocJar>
+                </configuration>
               </execution>
             </executions>
-            <configuration>
-              <taglib.src.dir>${basedir}/target/classes/META-INF</taglib.src.dir>
-              <tldDocDir>${basedir}/target/tlddoc</tldDocDir>
-            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <version>1.5</version>
+            <executions>
+              <execution>
+                <id>attach-artifacts</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>attach-artifact</goal>
+                </goals>
+                <configuration>
+                  <artifacts>
+                    <artifact>
+                      <file>${basedir}/target/${artifactId}-${version}-facelets-tlddoc.jar</file>
+                      <type>jar</type>
+                      <classifier>facelets-tlddoc</classifier>
+                    </artifact>
+                  </artifacts>
+                </configuration>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>
@@ -974,6 +948,9 @@
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>2.3</version>
+        <configuration>
+            <excludePackageNames>org.apache.myfaces.ee6</excludePackageNames>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
