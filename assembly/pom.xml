@@ -48,15 +48,6 @@
                   <version>${project.version}</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>
-                <!--
-                TODO/CHECK: o.a.m.shared_impl.* javadoc automatically included?
-                <artifactItem>
-                  <groupId>org.apache.myfaces.shared</groupId>
-                  <artifactId>myfaces-shared-impl</artifactId>
-                  <version>1.1.2-SNAPSHOT</version>
-                  <classifier>javadoc</classifier>
-                </artifactItem>
-                -->
               </artifactItems>
               <outputDirectory>${project.build.directory}/javadoc</outputDirectory>
             </configuration>
@@ -75,6 +66,12 @@
                   <artifactId>myfaces-impl</artifactId>
                   <version>${project.version}</version>
                   <classifier>tlddoc</classifier>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.myfaces.core</groupId>
+                  <artifactId>myfaces-impl</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>facelets-tlddoc</classifier>
                 </artifactItem>
 
                </artifactItems>
