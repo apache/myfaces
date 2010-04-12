@@ -1114,7 +1114,6 @@ public class ApplicationImpl extends Application
                 String className = name.substring(0, name.lastIndexOf('.'));
 
                 component = (UIComponent)ClassUtils.newInstance(className);
-                component.getAttributes().put(Resource.COMPONENT_RESOURCE_KEY, componentResource);
             }
             else
             {

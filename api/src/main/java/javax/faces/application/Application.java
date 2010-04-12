@@ -308,7 +308,6 @@ public abstract class Application
      */
     public UIComponent createComponent(FacesContext context, Resource componentResource)
     {
-        // TODO: IMPLEMENT IMPL JSF 2.0 #60
         Application application = getMyfacesApplicationInstance(context);
         if (application != null)
         {

@@ -19,41 +19,43 @@
 package org.apache.myfaces.view.facelets;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
+import javax.faces.application.Resource;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
-import org.apache.myfaces.view.facelets.Facelet;
-import org.apache.myfaces.view.facelets.FaceletFactory;
-import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.compiler.Compiler;
 
 /**
  * Expose protected api of FaceletViewDeclarationLanguage to 
  * junit tests.
  * 
- * @author Leonardo
- *
+ * @author Leonardo Uribe (latest modification by $Author$)
+ * @version $Revisio$ $Date$
  */
 public class MockFaceletViewDeclarationLanguage extends
         FaceletViewDeclarationLanguage
 {
 
+    private String _renderedViewId;
+    private Map<Resource, Resource> _scriptComponentResources;
+    
     public MockFaceletViewDeclarationLanguage(FacesContext context)
     {
         super(context);
     }
-    
-    private String _renderedViewId;
     
     public void buildView(FacesContext context, UIViewRoot view, String xmlFile) throws IOException
     {
         _renderedViewId = xmlFile;
         buildView(context, view);
     }
+    
     @Override
     public String getRenderedViewId(FacesContext context, String actionId)
     {
@@ -155,6 +157,38 @@ public class MockFaceletViewDeclarationLanguage extends
         super.sendSourceNotFound(context, message);
     }
 
+    @Override
+    public Resource getScriptComponentResource(FacesContext context,
+            Resource componentResource)
+    {
+        if (_scriptComponentResources != null)
+        {
+            Resource installedResource = _scriptComponentResources.get(componentResource);
+            if (installedResource != null)
+            {
+                // if we have a Resource installed for this componentResource, return it
+                return installedResource;
+            }
+        }
+        return super.getScriptComponentResource(context, componentResource);
+    }
+    
+    /**
+     * This method sets the scriptResource for a given componentResource so that
+     * a call to getScriptComponentResource() with the given componentResource
+     * will return the installed scriptResource.
+     * @param componentResource
+     * @param scriptResource
+     */
+    public void setScriptComponentResource(Resource componentResource, Resource scriptResource)
+    {
+        if (_scriptComponentResources == null)
+        {
+            _scriptComponentResources = new HashMap<Resource, Resource>();
+        }
+        _scriptComponentResources.put(componentResource, scriptResource);
+    }
+    
     //public Facelet getFacelet(String viewId) throws IOException
     //{
     //    return super._getFacelet(viewId);
