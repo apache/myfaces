@@ -1,14 +1,5 @@
 package javax.faces.component;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-
-import org.easymock.EasyMock;
-import static org.easymock.EasyMock.*;
-import static org.testng.Assert.*;
-import org.testng.annotations.Test;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,13 +8,44 @@ import org.testng.annotations.Test;
  * Time: 01:19:19
  * To change this template use File | Settings | File Templates.
  */
-public class UIComponentFindComponentTest extends AbstractUIComponentBaseTest
+public class UIComponentFindComponentTest extends AbstractComponentTest
 {
-    @Test(expectedExceptions = {NullPointerException.class})
+    public UIComponentFindComponentTest(String arg0)
+    {
+        super(arg0);
+    }
+    
+    protected UIComponentBase _testImpl;
+    
+    @Override
+    protected void setUp() throws Exception
+    {
+        super.setUp();
+        _testImpl = new UIOutput();
+    }
+
+    @Override
+    protected void tearDown() throws Exception
+    {
+        super.tearDown();
+    }
+
     public void testWithNullExperession() throws Exception
     {
-        _testImpl.findComponent(null);
-        assertNull(_testImpl.findComponent(""));
+        try
+        {
+            _testImpl.findComponent(null);
+            assertNull(_testImpl.findComponent(""));
+            fail();
+        }
+        catch(NullPointerException e)
+        {
+            //Success
+        }
+        catch(Exception e)
+        {
+            fail();
+        }
     }
 
     public void testWithEmptyExperession() throws Exception
@@ -31,95 +53,67 @@ public class UIComponentFindComponentTest extends AbstractUIComponentBaseTest
         assertNull(_testImpl.findComponent(""));
     }
 
-    @Test
     public void testRootExpression() throws Exception
     {
         String expression = ":parent";
-        UIComponent root = _mocksControl.createMock(UIComponent.class);
-        UIComponent parent = _mocksControl.createMock(UIComponent.class);
+        UIComponent root = new UIViewRoot();
+        UIComponent parent = new UIPanel();
+        
+        root.setId("root");
+        root.getChildren().add(parent);
+        parent.setId("parent");
+        parent.getChildren().add(_testImpl);        
         _testImpl.setId("testimpl");
-        expect(_testImpl.getParent()).andReturn(parent).anyTimes();
-        expect(parent.getParent()).andReturn(root).anyTimes();
-        expect(root.getParent()).andReturn(null).anyTimes();
-        expect(parent.getId()).andReturn("parent").anyTimes();
-        expect(root.getId()).andReturn("root").anyTimes();
-        expect(root.getFacetsAndChildren()).andReturn(Collections.singletonList(parent).iterator());
-
-        _mocksControl.replay();
 
         assertEquals(parent, _testImpl.findComponent(expression));
     }
 
-    @Test
     public void testRelativeExpression() throws Exception
     {
         String expression = "testimpl";
-        UIComponent namingContainer = _mocksControl.createMock(TestNamingContainerComponent.class);
-        UIComponent parent = _mocksControl.createMock(UIComponent.class);
+        
+        UIComponent namingContainer = new UINamingContainer();
+        UIComponent parent = new UIPanel();
+        
+        namingContainer.setId("namingContainer");
+        namingContainer.getChildren().add(parent);
+        parent.setId("parent");
+        parent.getChildren().add(_testImpl);
         _testImpl.setId("testimpl");
-        expect(_testImpl.getParent()).andReturn(parent).anyTimes();
-        expect(parent.getParent()).andReturn(namingContainer).anyTimes();
-        expect(parent.getId()).andReturn("parent").anyTimes();
-        expect(namingContainer.getId()).andReturn("namingContainer").anyTimes();
-        expect(namingContainer.getFacetsAndChildren()).andReturn(Collections.singletonList(parent).iterator());
-        expect(parent.getFacetsAndChildren()).andReturn(Arrays.asList(new UIComponent[]{_testImpl}).iterator());
-
-        _mocksControl.replay();
-
+        
         assertEquals(_testImpl, _testImpl.findComponent(expression));
     }
 
-    @Test
     public void testComplexRelativeExpression() throws Exception
     {
         String expression = "child1_1:testimpl";
-        Collection<Method> mockedMethods = getMockedMethods();
-        mockedMethods.add(UIComponentBase.class.getDeclaredMethod("getFacetsAndChildren", (Class<?>[])null));
-        mockedMethods.add(UIComponentBase.class.getDeclaredMethod("getId", (Class<?>[])null));
-        UIComponent namingContainer = _mocksControl.createMock(TestNamingContainerBaseComponent.class,
-                mockedMethods.toArray(new Method[mockedMethods.size()]));
+        
+        UIComponent namingContainer = new UINamingContainer();
+        UIComponent child1_1 = new UINamingContainer();
 
-        expect(namingContainer.getId()).andReturn("namingContainer").anyTimes();
+        namingContainer.setId("namingContainer");
+        namingContainer.getChildren().add(child1_1);
+        child1_1.setId("child1_1");
+        child1_1.getChildren().add(_testImpl);
         _testImpl.setId("testimpl");
-        UIComponent child1_1 = _mocksControl.createMock(TestNamingContainerComponent.class);
-        expect(child1_1.getId()).andReturn("child1_1").anyTimes();
-        expect(namingContainer.getFacetsAndChildren()).andReturn(Collections.singletonList(child1_1).iterator());
-
-        expect(child1_1.findComponent(EasyMock.eq("testimpl"))).andReturn(_testImpl);
-
-        _mocksControl.replay();
 
         assertEquals(_testImpl, namingContainer.findComponent(expression));
     }
 
-    @Test
     public void testWithRelativeExpressionNamingContainer() throws Exception
     {
         String expression = "testimpl";
-        Collection<Method> mockedMethods = getMockedMethods();
-        mockedMethods.add(UIComponentBase.class.getDeclaredMethod("getFacetsAndChildren", (Class<?>[])null));
-        mockedMethods.add(UIComponentBase.class.getDeclaredMethod("getId", (Class<?>[])null));
-        UIComponent namingContainer = _mocksControl.createMock(TestNamingContainerBaseComponent.class,
-                mockedMethods.toArray(new Method[mockedMethods.size()]));
-        UIComponent parent = _mocksControl.createMock(UIComponent.class);
-        _testImpl.setId("testimpl");
-        expect(_testImpl.getParent()).andReturn(parent).anyTimes();
-        expect(parent.getParent()).andReturn(namingContainer).anyTimes();
-        expect(parent.getId()).andReturn("parent").anyTimes();
-        expect(namingContainer.getId()).andReturn("namingContainer").anyTimes();
-        expect(namingContainer.getFacetsAndChildren()).andReturn(Collections.singletonList(parent).iterator());
-        expect(parent.getFacetsAndChildren()).andReturn(Arrays.asList(new UIComponent[]{_testImpl}).iterator());
+        
+        UIComponent namingContainer = new UINamingContainer();
+        UIComponent parent = new UIPanel();
 
-        _mocksControl.replay();
+        namingContainer.setId("namingContainer");
+        namingContainer.getChildren().add(parent);
+        parent.setId("parent");
+        parent.getChildren().add(_testImpl);
+        _testImpl.setId("testimpl");
 
         assertEquals(_testImpl, namingContainer.findComponent(expression));
     }
 
-    public abstract static class TestNamingContainerComponent extends UIComponent implements NamingContainer
-    {
-    }
-
-    public abstract static class TestNamingContainerBaseComponent extends UIComponentBase implements NamingContainer
-    {
-    }
 }

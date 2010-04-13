@@ -1,11 +1,8 @@
 package javax.faces.component;
 
 import javax.faces.FacesException;
-
-import org.easymock.EasyMock;
-import static org.easymock.EasyMock.*;
-import static org.testng.Assert.*;
-import org.testng.annotations.Test;
+import javax.faces.context.FacesContext;
+import javax.faces.render.Renderer;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,116 +11,150 @@ import org.testng.annotations.Test;
  * Time: 01:42:55
  * To change this template use File | Settings | File Templates.
  */
-public class UIComponentBaseGetClientIdTest extends AbstractUIComponentBaseTest
+public class UIComponentBaseGetClientIdTest extends AbstractComponentTest
 {
-    @Test(expectedExceptions = {NullPointerException.class})
-    public void testNullFacesContext() throws Exception
+    public UIComponentBaseGetClientIdTest(String arg0)
     {
-        _testImpl.getClientId(null);
+        super(arg0);
     }
 
-    @Test
+    protected UIComponentBase _testImpl;
+    
+    @Override
+    protected void setUp() throws Exception
+    {
+        super.setUp();
+        _testImpl = new UIOutput();
+    }
+
+    @Override
+    protected void tearDown() throws Exception
+    {
+        super.tearDown();
+    }
+
+      public void testNullFacesContext() throws Exception
+    {
+        try
+        {
+            _testImpl.getClientId(null);
+            fail();
+        }
+        catch(NullPointerException e)
+        {
+            
+        }
+        catch(Exception e)
+        {
+            fail();
+        }
+    }
+
     public void testWithoutParentAndNoRenderer() throws Exception
     {
         String expectedClientId = "testId";
         _testImpl.setId(expectedClientId);
-        expect(_testImpl.getParent()).andReturn(null);
-        expect(_testImpl.getRenderer(EasyMock.same(_facesContext))).andReturn(null);
-        _mocksControl.replay();
-        assertEquals(expectedClientId, _testImpl.getClientId(_facesContext));
-        _mocksControl.verify();
-        assertEquals(expectedClientId, _testImpl.getClientId(_facesContext));
+        
+        assertEquals(expectedClientId, _testImpl.getClientId(facesContext));
+        assertEquals(expectedClientId, _testImpl.getClientId(facesContext));
     }
 
-    @Test
     public void testWithRenderer() throws Exception
     {
-        String id = "testId";
-        String expectedClientId = "convertedClientId";
+        final String id = "testId";
+        final String expectedClientId = "convertedClientId";
+        _testImpl = new UIOutput()
+        {
+            protected Renderer getRenderer(FacesContext facesContext)
+            {
+                return new Renderer()
+                {
+                    public String convertClientId(FacesContext context, String clientId)
+                    {
+                        return expectedClientId;
+                    }
+                };
+            }
+        };
         _testImpl.setId(id);
-        expect(_testImpl.getParent()).andReturn(null);
-        expect(_testImpl.getRenderer(EasyMock.same(_facesContext))).andReturn(_renderer);
-        expect(_renderer.convertClientId(EasyMock.same(_facesContext), EasyMock.eq(id))).andReturn(expectedClientId);
-        _mocksControl.replay();
-        assertEquals(expectedClientId, _testImpl.getClientId(_facesContext));
-        _mocksControl.verify();
-        assertEquals(expectedClientId, _testImpl.getClientId(_facesContext));
+        assertEquals(expectedClientId, _testImpl.getClientId(facesContext));
+        assertEquals(expectedClientId, _testImpl.getClientId(facesContext));
     }
 
-    @Test
     public void testWithParentNamingContainer() throws Exception
     {
-        String id = "testId";
-        String containerClientId = "containerClientId";
+        final String id = "testId";
+        final String containerClientId = "containerClientId";
         String expectedClientId = containerClientId + NamingContainer.SEPARATOR_CHAR + id;
-        UIComponent parent = _mocksControl.createMock(UIComponent.class);
-        UIComponent namingContainer = _mocksControl.createMock(TestNamingContainerComponent.class);
+        
+        UIComponent namingContainer = new UINamingContainer();
+        UIComponent parent = new UIPanel();
+        
+        namingContainer.setId(containerClientId);
+        namingContainer.getChildren().add(parent);
+        parent.setId("parent");
+        parent.getChildren().add(_testImpl);
         _testImpl.setId(id);
-        expect(_testImpl.getParent()).andReturn(parent);
-        expect(parent.getParent()).andReturn(namingContainer);
-        expect(namingContainer.getContainerClientId(EasyMock.same(_facesContext))).andReturn(containerClientId);
 
-        expect(_testImpl.getRenderer(EasyMock.same(_facesContext))).andReturn(_renderer);
-        expect(_renderer.convertClientId(EasyMock.same(_facesContext), EasyMock.eq(expectedClientId))).andReturn(expectedClientId);
-        _mocksControl.replay();
-        assertEquals(expectedClientId, _testImpl.getClientId(_facesContext));
-        _mocksControl.verify();
-        assertEquals(expectedClientId, _testImpl.getClientId(_facesContext));
+        assertEquals(expectedClientId, _testImpl.getClientId(facesContext));
+        assertEquals(expectedClientId, _testImpl.getClientId(facesContext));
     }
 
-    @Test
     public void testWithParentNamingContainerChanging() throws Exception
     {
         String id = "testId";
         String containerClientId = "containerClientId";
-        UIComponent parent = _mocksControl.createMock(UIComponent.class);
-        UIComponent namingContainer = _mocksControl.createMock(TestNamingContainerComponent.class);
+        
         for (int i = 0; i < 10; i++)
         {
+            final int j = i;
+            UIComponent namingContainer = new UINamingContainer()
+            {
+                @Override
+                public String getContainerClientId(FacesContext ctx)
+                {
+                    return super.getContainerClientId(ctx) + j;
+                }
+                
+            };
+            UIComponent parent = new UIPanel();
             _testImpl.setId(id);
             String expectedClientId = containerClientId + i + NamingContainer.SEPARATOR_CHAR + id;
-            expect(_testImpl.getParent()).andReturn(parent);
-            expect(parent.getParent()).andReturn(namingContainer);
-            expect(namingContainer.getContainerClientId(EasyMock.same(_facesContext))).andReturn(containerClientId + i);
+            
+            namingContainer.setId(containerClientId);
+            namingContainer.getChildren().add(parent);
+            parent.setId("parent");
+            parent.getChildren().add(_testImpl);
 
-            expect(_testImpl.getRenderer(EasyMock.same(_facesContext))).andReturn(_renderer);
-            expect(_renderer.convertClientId(EasyMock.same(_facesContext), EasyMock.eq(expectedClientId)))
-                    .andReturn(expectedClientId);
-            _mocksControl.replay();
-            assertEquals(expectedClientId, _testImpl.getClientId(_facesContext));
-            _mocksControl.verify();
-            assertEquals(expectedClientId, _testImpl.getClientId(_facesContext));
-            _mocksControl.reset();
+            assertEquals(expectedClientId, _testImpl.getClientId(facesContext));
+            assertEquals(expectedClientId, _testImpl.getClientId(facesContext));
+            parent.getChildren().remove(_testImpl);
         }
     }
 
-    @Test
     public void testWithoutId() throws Exception
     {
-        UIViewRoot viewRoot = _mocksControl.createMock(UIViewRoot.class);
-        expect(_facesContext.getViewRoot()).andReturn(viewRoot);
-        String expectedId = "uniqueId";
-        expect(viewRoot.createUniqueId()).andReturn(expectedId);
-        expect(_testImpl.getParent()).andReturn(null).anyTimes();
-        expect(_testImpl.getRenderer(EasyMock.same(_facesContext))).andReturn(null);
-        _mocksControl.replay();
-        assertEquals(expectedId, _testImpl.getClientId(_facesContext));
-        assertEquals(expectedId, _testImpl.getId());
-        _mocksControl.verify();
-        assertEquals(expectedId, _testImpl.getClientId(_facesContext));
+        UIViewRoot viewRoot = facesContext.getViewRoot();
+        assertNotNull(viewRoot.createUniqueId());
+        assertNotNull(_testImpl.getClientId());
+        assertNotNull(_testImpl.getId());
     }
 
-    @Test(expectedExceptions = {FacesException.class})
     public void testWithoutIdAndNoUIViewRoot() throws Exception
     {
-        expect(_testImpl.getParent()).andReturn(null).anyTimes();
-        expect(_facesContext.getViewRoot()).andReturn(null);
-        _mocksControl.replay();
-        _testImpl.getClientId(_facesContext);
+        facesContext.setViewRoot(null);
+        try
+        {
+            _testImpl.getClientId(facesContext);
+            fail();
+        }
+        catch(FacesException e)
+        {
+            
+        }
+        catch(Exception e)
+        {
+            fail();
+        }
     }
-
-    public abstract static class TestNamingContainerComponent extends UIComponent implements NamingContainer
-    {
-    }
-
 }
