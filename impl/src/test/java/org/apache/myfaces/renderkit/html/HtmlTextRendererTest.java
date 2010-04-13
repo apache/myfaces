@@ -43,8 +43,8 @@ import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 
 /**
- * @author Bruno Aranda (latest modification by $Author: grantsmith $)
- * @version $Revision: 472618 $ $Date: 2006-11-09 04:06:54 +0800 (Thu, 09 Nov 2006) $
+ * @author Bruno Aranda (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public class HtmlTextRendererTest extends AbstractJsfTestCase
 {
@@ -213,6 +213,28 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
             // onchange="jsf.util.chain(document.getElementById(&apos;j_id0&apos;), event,
             //                          &apos;alert(\&apos;test\&apos;)&apos;);"
             assertTrue(output.contains("&apos;alert(\\&apos;test\\&apos;)&apos;"));
+        }
+        catch (Exception e)
+        {
+            fail(e.getMessage());
+        }
+    }
+    
+    /**
+     * Tests if a JavaScript user code that already contains ' is correctly escaped.
+     * e.g. test = 'a\'b'; has to become test = \'a\\\'b\';
+     */
+    public void testClientBehaviorUserCodeJavaScriptDoubleEscaping()
+    {
+        inputText.getAttributes().put("onchange", "var test = \'a\\\'b\'; alert(test);");
+        inputText.addClientBehavior("change", new AjaxBehavior());
+        try 
+        {
+            inputText.encodeAll(facesContext);
+            String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
+            // onchange="jsf.util.chain(document.getElementById(&apos;j_id0&apos;), event,
+            //               &apos;var test = \&apos;a\\\&apos;b\&apos;; alert(test);&apos;);"
+            assertTrue(output.contains("&apos;var test = \\&apos;a\\\\\\&apos;b\\&apos;; alert(test);&apos;"));
         }
         catch (Exception e)
         {
