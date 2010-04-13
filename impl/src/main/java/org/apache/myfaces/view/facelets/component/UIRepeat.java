@@ -35,6 +35,7 @@ import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIComponentBase;
 import javax.faces.component.UIData;
+import javax.faces.component.UINamingContainer;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.FacesEvent;
@@ -260,7 +261,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         String id = super.getClientId(faces);
         if (_index >= 0)
         {
-            id = _getBuffer().append(id).append(NamingContainer.SEPARATOR_CHAR).append(_index).toString();
+            id = _getBuffer().append(id).append(UINamingContainer.getSeparatorChar(faces)).append(_index).toString();
         }
         return id;
     }

@@ -526,8 +526,9 @@ public abstract class UIComponentBase extends UIComponent
         if (expr.length() == 0)
             return null;
 
+        final char separatorChar = UINamingContainer.getSeparatorChar(FacesContext.getCurrentInstance());
         UIComponent findBase;
-        if (expr.charAt(0) == NamingContainer.SEPARATOR_CHAR)
+        if (expr.charAt(0) == separatorChar)
         {
             findBase = _ComponentUtils.getRootComponent(this);
             expr = expr.substring(1);
@@ -544,14 +545,14 @@ public abstract class UIComponentBase extends UIComponent
             }
         }
 
-        int separator = expr.indexOf(NamingContainer.SEPARATOR_CHAR);
+        int separator = expr.indexOf(separatorChar);
         if (separator == -1)
         {
-            return _ComponentUtils.findComponent(findBase, expr);
+            return _ComponentUtils.findComponent(findBase, expr, separatorChar);
         }
 
         String id = expr.substring(0, separator);
-        findBase = _ComponentUtils.findComponent(findBase, id);
+        findBase = _ComponentUtils.findComponent(findBase, id, separatorChar);
         if (findBase == null)
         {
             return null;
@@ -734,7 +735,7 @@ public abstract class UIComponentBase extends UIComponent
             if (containerClientId != null)
             {
                 StringBuilder bld = __getSharedStringBuilder();
-                _clientId = bld.append(containerClientId).append(NamingContainer.SEPARATOR_CHAR).append(id).toString();
+                _clientId = bld.append(containerClientId).append(UINamingContainer.getSeparatorChar(context)).append(id).toString();
             }
             else
             {
