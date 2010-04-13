@@ -329,7 +329,7 @@ public class PartialViewContextImpl extends PartialViewContext {
         ResponseSwitch responseSwitch = ExternalContextUtils.getResponseSwitch(response);
         if (responseSwitch != null)
         {
-            responseSwitch.setEnabled(true);
+            responseSwitch.setEnabled(_facesContext, true);
         }
         
         //TODO process partial rendering

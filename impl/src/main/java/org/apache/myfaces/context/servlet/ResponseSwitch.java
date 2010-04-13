@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.context.servlet;
 
+import javax.faces.context.FacesContext;
+
 /**
  * Responses which can be enabled or disabled implement this interface.
  * 
@@ -26,11 +28,19 @@ package org.apache.myfaces.context.servlet;
  */
 public interface ResponseSwitch
 {
+    /**
+     * If the current ResponseSwitch is disabled, Boolean.FALSE will be stored in the
+     * FacesContext under this key, otherwise Boolean.TRUE will be stored
+     * ATTENTION: this constant is duplicate in UIViewRoot.
+     */
+    public static final String RESPONSE_SWITCH_ENABLED = "org.apache.myfaces.RESPONSE_SWITCH_ENABLED";
 
     /**
      * Enables or disables the Response's Writer and OutputStream.
      * @param enabled
      */
+    public void setEnabled(FacesContext facesContext, boolean enabled);
+    
     public void setEnabled(boolean enabled);
 
     /**
@@ -38,5 +48,7 @@ public interface ResponseSwitch
      * @return
      */
     public boolean isEnabled();
+    
+    public boolean isEnabled(FacesContext facesContext);
     
 }

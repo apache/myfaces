@@ -58,6 +58,14 @@ class RenderResponseExecutor implements PhaseExecutor
         // JSF 2.0 section 2.2.6: if the current response
         // is a partial response, then there must be 
         // no content written outside of the f:view
+        // -= Leonardo Uribe =- This section was commented because it
+        // causes problems when a library try to override the default
+        // PartialViewContext implementation like trinidad. Since ajax
+        // stuff is only for facelets, there is no reason to keep this
+        // code here. Instead, this code was moved to 
+        // JspViewDeclarationLanguage.buildView, because it has more sense
+        // in that place.
+        /*
         if (facesContext.getPartialViewContext().isPartialRequest())
         {
             // try to get (or create) a ResponseSwitch and turn off the output
@@ -78,6 +86,7 @@ class RenderResponseExecutor implements PhaseExecutor
                 responseSwitch.setEnabled(false);
             }
         }
+        */
         
         try
         {

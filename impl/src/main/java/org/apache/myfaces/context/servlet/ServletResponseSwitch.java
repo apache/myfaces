@@ -21,6 +21,7 @@ package org.apache.myfaces.context.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.faces.context.FacesContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletResponse;
 import javax.servlet.ServletResponseWrapper;
@@ -39,7 +40,6 @@ import javax.servlet.ServletResponseWrapper;
 public class ServletResponseSwitch extends ServletResponseWrapper implements ResponseSwitch
 {
 
-    private boolean _enabled = true;
     private PrintWriter _switchableWriter;
     private SwitchableOutputStream _switchableOutputStream;
 
@@ -54,7 +54,12 @@ public class ServletResponseSwitch extends ServletResponseWrapper implements Res
      */
     public void setEnabled(boolean enabled)
     {
-        _enabled = enabled;
+        FacesContext.getCurrentInstance().getAttributes().put(ResponseSwitch.RESPONSE_SWITCH_ENABLED, enabled);
+    }
+    
+    public void setEnabled(FacesContext context, boolean enabled)
+    {
+        context.getAttributes().put(ResponseSwitch.RESPONSE_SWITCH_ENABLED, enabled);
     }
 
     /**
@@ -63,13 +68,22 @@ public class ServletResponseSwitch extends ServletResponseWrapper implements Res
      */
     public boolean isEnabled()
     {
-        return _enabled;
+        Boolean enabled = (Boolean) FacesContext.getCurrentInstance().getAttributes()
+                              .get(ResponseSwitch.RESPONSE_SWITCH_ENABLED);
+        return enabled == null ? true : enabled;
+    }
+    
+    public boolean isEnabled(FacesContext facesContext)
+    {
+        Boolean enabled = (Boolean) facesContext.getAttributes()
+            .get(ResponseSwitch.RESPONSE_SWITCH_ENABLED);
+        return enabled == null ? true : enabled;
     }
 
     @Override
     public int getBufferSize()
     {
-        if (_enabled)
+        if (isEnabled())
         {
             return super.getBufferSize();
         }
@@ -79,7 +93,7 @@ public class ServletResponseSwitch extends ServletResponseWrapper implements Res
     @Override
     public boolean isCommitted()
     {
-        if (_enabled)
+        if (isEnabled())
         {
             return super.isCommitted();
         }
@@ -89,7 +103,7 @@ public class ServletResponseSwitch extends ServletResponseWrapper implements Res
     @Override
     public void reset()
     {
-        if (_enabled)
+        if (isEnabled())
         {
             super.reset();
         }
@@ -98,7 +112,7 @@ public class ServletResponseSwitch extends ServletResponseWrapper implements Res
     @Override
     public void resetBuffer()
     {
-        if (_enabled)
+        if (isEnabled())
         {
             super.resetBuffer();
         }
@@ -107,7 +121,7 @@ public class ServletResponseSwitch extends ServletResponseWrapper implements Res
     @Override
     public void flushBuffer() throws IOException
     {
-        if (_enabled)
+        if (isEnabled())
         {
             super.flushBuffer();
         }
