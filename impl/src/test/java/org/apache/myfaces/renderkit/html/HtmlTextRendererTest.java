@@ -197,5 +197,27 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
         }
         
     }
-
+    
+    /**
+     * Tests if a JavaScript user code is correctly escaped.
+     * e.g. alert('test') has to become alert(\'test\')
+     */
+    public void testClientBehaviorUserCodeJavaScriptEscaping()
+    {
+        inputText.getAttributes().put("onchange", "alert('test')");
+        inputText.addClientBehavior("change", new AjaxBehavior());
+        try 
+        {
+            inputText.encodeAll(facesContext);
+            String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
+            // onchange="jsf.util.chain(document.getElementById(&apos;j_id0&apos;), event,
+            //                          &apos;alert(\&apos;test\&apos;)&apos;);"
+            assertTrue(output.contains("&apos;alert(\\&apos;test\\&apos;)&apos;"));
+        }
+        catch (Exception e)
+        {
+            fail(e.getMessage());
+        }
+    }
+    
 }
