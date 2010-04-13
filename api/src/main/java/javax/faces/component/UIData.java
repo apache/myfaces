@@ -1193,26 +1193,24 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                             return true;
                         }
                     }
-                    // process the component's children's facets
-                    for (UIComponent child : getChildren())
-                    {
-                        // visit the children's facets
-                        for (UIComponent facet : child.getFacets().values())
-                        {
-                            if (facet.visitTree(context, callback))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                    // visit the columns
+                    // visit every column directly without visiting its children 
+                    // (the children of every UIColumn will be visited later for 
+                    // every row) and also visit the column's facets
                     for (UIComponent child : getChildren())
                     {
                         if (child instanceof UIColumn)
                         {
-                            if (child.visitTree(context, callback))
+                            VisitResult columnResult = context.invokeVisitCallback(child, callback);
+                            if (columnResult == VisitResult.COMPLETE)
                             {
                                 return true;
+                            }
+                            for (UIComponent facet : child.getFacets().values())
+                            {
+                                if (facet.visitTree(context, callback))
+                                {
+                                    return true;
+                                }
                             }
                         }
                     }
