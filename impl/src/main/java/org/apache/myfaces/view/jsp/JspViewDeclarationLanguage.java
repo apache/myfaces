@@ -36,10 +36,14 @@ import org.apache.myfaces.application.jsp.ServletViewResponseWrapper;
 import org.apache.myfaces.context.servlet.ResponseSwitch;
 import org.apache.myfaces.shared_impl.view.JspViewDeclarationLanguageBase;
 import org.apache.myfaces.util.ExternalContextUtils;
+import org.apache.myfaces.view.facelets.tag.composite.CompositeLibrary;
+import org.apache.myfaces.view.facelets.tag.jsf.core.CoreLibrary;
+import org.apache.myfaces.view.facelets.tag.jsf.html.HtmlLibrary;
+import org.apache.myfaces.view.facelets.tag.ui.UILibrary;
 
 /**
- * @author Simon Lessard (latest modification by $Author: slessard $)
- * @version $Revision: 696523 $ $Date: 2009-03-22 13:55:12 -0400 (mer., 17 sept. 2008) $
+ * @author Simon Lessard (latest modification by $Author$)
+ * @version $Revision$ $Date$
  * 
  * @since 2.0
  */
@@ -47,6 +51,16 @@ public class JspViewDeclarationLanguage extends JspViewDeclarationLanguageBase
 {
     //private static final Log log = LogFactory.getLog(JspViewDeclarationLanguage.class);
     public static final Logger log = Logger.getLogger(JspViewDeclarationLanguage.class.getName());
+    
+    /**
+     * Tags that are only available on facelets and not on JSP.
+     * If a user uses one of these tags on a JSP, we will provide
+     * a more informative error message than the standard one.
+     */
+    public static final String[] FACELETS_ONLY_F_TAGS = {"ajax", "event", "metadata"};
+    public static final String[] FACELETS_ONLY_H_TAGS = {"outputScript", "outputStylesheet",
+                                                         "head", "body", "button", "link"};
+    
     /**
      * 
      */
@@ -99,6 +113,75 @@ public class JspViewDeclarationLanguage extends JspViewDeclarationLanguageBase
         try
         {
             externalContext.dispatch(viewId);
+        }
+        catch (FacesException e)
+        {
+            // try to extract the most likely exceptions here
+            // and provide a better error message for them
+            
+            String message = e.getMessage(); 
+            
+            // errors related to using facelets-only tags on a JSP page
+            if (message != null)
+            {
+                // does the message contain "f" (prefix f of tags)
+                // or the related uri http://java.sun.com/jsf/core
+                if (message.contains("\"f\"") 
+                        || message.contains("\"" + CoreLibrary.Namespace + "\""))
+                {
+                    // check facelets-only f tags
+                    for (String tag : FACELETS_ONLY_F_TAGS)
+                    {
+                        if (message.contains("\"" + tag + "\""))
+                        {
+                            String exceptionMessage = "The tag f:" + tag + 
+                                    " is only available on facelets.";
+                            throw new FacesException(exceptionMessage, 
+                                    new FaceletsOnlyException(exceptionMessage, e.getCause()));
+                        }
+                    }
+                }  
+                else if (message.contains("\"h\"") 
+                        || message.contains("\"" + HtmlLibrary.Namespace + "\""))
+                {
+                    // check facelets-only h tags
+                    for (String tag : FACELETS_ONLY_H_TAGS)
+                    {
+                        if (message.contains("\"" + tag + "\""))
+                        {
+                            String exceptionMessage = "The tag h:" + tag + 
+                                    " is only available on facelets.";
+                            throw new FacesException(exceptionMessage, 
+                                    new FaceletsOnlyException(exceptionMessage, e.getCause()));
+                        }
+                    }
+                }
+                else 
+                {
+                    // check facelets-only namespaces
+                    String namespace = null;
+                    if (message.contains(UILibrary.Namespace))
+                    {
+                        namespace = UILibrary.Namespace;
+                    }
+                    else if (message.contains(CompositeLibrary.NAMESPACE))
+                    {
+                        namespace = CompositeLibrary.NAMESPACE;
+                    }
+                    
+                    if (namespace != null)
+                    {
+                        // the message contains a facelets-only namespace
+                        String exceptionMessage = "All tags with namespace " +
+                                namespace + " are only available on facelets.";
+                        throw new FacesException(exceptionMessage, 
+                                new FaceletsOnlyException(exceptionMessage, e.getCause()));
+                    }
+                }
+            }
+            
+            // no rule applied to this Exception - rethrow it
+            throw e;
         }
         finally
         {
