@@ -1,9 +1,8 @@
-<project xmlns = "http://maven.apache.org/POM/4.0.0" xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation = "http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <groupId>org.apache.myfaces.core</groupId>
         <artifactId>myfaces-core-project</artifactId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>2.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.myfaces.core</groupId>
@@ -14,9 +13,9 @@
     </description>
     <url>http://myfaces.apache.org/core20/myfaces-api</url>
     <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk/api</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk/api</developerConnection>
-        <url>http://svn.apache.org/repos/asf/myfaces/core/trunk/api</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/tags/2_0_0</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/tags/2_0_0</developerConnection>
+        <url>http://svn.apache.org/repos/asf/myfaces/core/tags/2_0_0</url>
     </scm>
     <build>
 
@@ -27,11 +26,12 @@
            please do not delete this it is just disabled for now
            -->
 
-
+<!--
             <plugin>
                 <artifactId>javascript-maven-plugin</artifactId>
-                <groupId>org.codehaus.mojo.javascript</groupId>
+                <groupId>org.codehaus.mojo.javascript</groupId> -->
                 <!-- we have to enforce a version for now which works due to the alpha stage of the plugin -->
+                <!--
                 <version>1.0-alpha-1-20090530.211438-7</version>
                 <extensions>true</extensions>
                 <executions>
@@ -64,6 +64,7 @@
                     <outputDirectory>${basedir}/target/classes/META-INF/resources/javax.faces/</outputDirectory>
                 </configuration>
             </plugin>
+            -->
         
 
             <plugin>
@@ -107,24 +108,28 @@
                 but for the core apis this should be sufficient
                 
             -->
+            <!--
             <plugin>
                 <groupId>de.berlios.jsunit</groupId>
                 <artifactId>jsunit-maven2-plugin</artifactId>
-                <executions>
+                <executions> -->
                     <!--execution>
                         <id>test</id>
                         <goals>
                             <goal>jsunit-test</goal>
                         </goals>
                     </execution-->
+                    <!--
                 </executions>
                 <configuration>
                     <sourceDirectory>src/main/javascript/META-INF/resources</sourceDirectory>
                     <sources>
                         <source>../../../../test/javascript/org/apache/myfaces/mockups/BrowserMockups.js</source>
+                        -->
                         <!--
                         <source>javax/faces/_util/OpenAjax.js</source>
                         -->
+                        <!--
                         <source>javax/faces/_util/_JSF2Utils.js</source>
                         <source>javax/faces/ajax/Ajax.js</source>
                         <source>../../../../test/javascript/org/apache/myfaces/test/_TestScenario.js</source>
@@ -145,7 +150,7 @@
                         </testSuite>
                     </testSuites>
                 </configuration>
-            </plugin>
+            </plugin>-->
 
             <!--
            <plugin>
@@ -421,7 +426,7 @@
         <dependency>
             <groupId>org.apache.myfaces.test</groupId>
             <artifactId>myfaces-test20</artifactId>
-            <version>1.0.0-beta</version>
+            <version>1.0.0-beta-3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
