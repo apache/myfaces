@@ -28,10 +28,10 @@ import javax.faces.view.facelets.FaceletHandler;
 import javax.faces.view.facelets.Tag;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagAttributeException;
+import javax.faces.view.facelets.TagDecorator;
 import javax.faces.view.facelets.TagException;
 
 import org.apache.myfaces.view.facelets.tag.TagAttributesImpl;
-import org.apache.myfaces.view.facelets.tag.TagDecorator;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeLibrary;
 import org.apache.myfaces.view.facelets.tag.composite.ImplementationHandler;

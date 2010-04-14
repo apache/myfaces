@@ -19,6 +19,7 @@
 package org.apache.myfaces.view.facelets.tag;
 
 import javax.faces.view.facelets.Tag;
+import javax.faces.view.facelets.TagDecorator;
 
 import org.apache.myfaces.view.facelets.util.ParameterCheck;
 
