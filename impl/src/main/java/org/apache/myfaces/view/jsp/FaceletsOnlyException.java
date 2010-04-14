@@ -22,6 +22,10 @@ package org.apache.myfaces.view.jsp;
  * An Exception that indicates that the user uses a
  * facelets-only feature on a JSP.
  * 
+ * NOTE: this class must not extend FacesException, because
+ * otherwise its message won't be displayed by the ExceptionHandler.
+ * Thus it directly extends Exception.
+ * 
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revision$ $Date$
  * 
