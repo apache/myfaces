@@ -59,7 +59,7 @@
   </dependencies>
   
   <properties>
-    <myfaces-shared.version>4.0.1-SNAPSHOT</myfaces-shared.version>
+    <myfaces-shared.version>4.0.1</myfaces-shared.version>
   </properties>
   
 </project>
