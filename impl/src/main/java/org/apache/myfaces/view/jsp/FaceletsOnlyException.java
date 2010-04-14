@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.view.jsp;
 
+import javax.faces.FacesException;
+
 /**
  * An Exception that indicates that the user uses a
  * facelets-only feature on a JSP.
@@ -27,7 +29,7 @@ package org.apache.myfaces.view.jsp;
  * 
  * @since 2.0
  */
-public class FaceletsOnlyException extends Exception
+public class FaceletsOnlyException extends FacesException
 {
 
     private static final long serialVersionUID = 4268633427284543647L;
