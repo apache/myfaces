@@ -47,6 +47,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
         bodyContent = "empty", 
         tagClass="org.apache.myfaces.taglib.core.AttributeTag")
 public final class AttributeHandler extends TagHandler
+    implements javax.faces.view.facelets.AttributeHandler
 {
     private final TagAttribute _name;
 
@@ -91,5 +92,10 @@ public final class AttributeHandler extends TagHandler
                 }
             }
         }
+    }
+
+    public String getAttributeName(FaceletContext ctx)
+    {
+        return _name.getValue(ctx);
     }
 }
