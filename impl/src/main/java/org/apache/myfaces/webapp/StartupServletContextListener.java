@@ -109,6 +109,10 @@ public class StartupServletContextListener implements ServletContextListener,
                 //so that we do not have to enforce that the initializer
                 //must be serializable
                 Class<?> pluginClass = ClassUtils.getContextClassLoader().loadClass(plugin);
+                if (pluginClass == null)
+                {
+                    pluginClass = this.getClass().getClassLoader().loadClass(plugin);
+                }
                 StartupListener initializer = (StartupListener) pluginClass.newInstance();
                 
                 switch(operation) {

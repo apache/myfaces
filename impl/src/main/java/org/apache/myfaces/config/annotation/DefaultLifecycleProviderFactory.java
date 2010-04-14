@@ -127,6 +127,7 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
         ClassLoader classLoader = ClassUtils.getContextClassLoader();
         ClassLoaders loaders = new ClassLoaders();
         loaders.put(classLoader);
+        loaders.put(this.getClass().getClassLoader());
         DiscoverServiceNames dsn = new DiscoverServiceNames(loaders);
         ResourceNameIterator iter = dsn.findResourceNames(LIFECYCLE_PROVIDER);
         while (iter.hasNext()) {
