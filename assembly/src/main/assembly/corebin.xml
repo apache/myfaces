@@ -8,6 +8,9 @@
     <dependencySet>
       <outputDirectory>lib</outputDirectory>
       <scope>runtime</scope>
+      <excludes>
+        <exclude>org.apache.myfaces.core:myfaces-core-assembly</exclude>
+      </excludes>
     </dependencySet>
   </dependencySets>
   <fileSets>
