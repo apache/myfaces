@@ -390,7 +390,7 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     @Override
     public String encodeBookmarkableURL(String baseUrl, Map<String,List<String>> parameters)
     {
-        return _httpServletResponse.encodeURL(encodeURL(baseUrl, parameters));
+        return encodeURL(baseUrl, parameters);
     }
 
     @Override
@@ -410,8 +410,9 @@ public final class ServletExternalContextImpl extends ExternalContext implements
     @Override
     public String encodePartialActionURL(String url)
     {
-        // TODO: IMPLEMENT HERE
-        return null;
+        checkNull(url, "url");
+        checkHttpServletRequest();
+        return ((HttpServletResponse) _servletResponse).encodeURL(url);
     }
 
     @Override
