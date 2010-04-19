@@ -19,6 +19,7 @@
 package org.apache.myfaces.webapp;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,6 +28,7 @@ import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
 import javax.faces.application.ApplicationFactory;
 import javax.faces.application.ProjectStage;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextFactory;
@@ -194,6 +196,13 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
             FacesContextFactory facFac = (FacesContextFactory) FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
             fc = facFac.getFacesContext(servletContext, new _SystemEventServletRequest(), new _SystemEventServletResponse(), lifeFac.getLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE));
         }
+        
+        // in order to allow FacesContext.getViewRoot calls during startup/shutdown listeners, 
+        // we need to initialize a new ViewRoot with locale set to Locale.getDefault().
+        UIViewRoot root = new UIViewRoot();
+        root.setLocale(Locale.getDefault());
+        fc.setViewRoot(root);
+        
         appFac.getApplication().publishEvent(fc, eventClass, Application.class, appFac.getApplication());
     }
 
