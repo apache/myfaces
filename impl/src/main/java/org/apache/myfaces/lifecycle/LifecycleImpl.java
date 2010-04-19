@@ -41,22 +41,27 @@ import org.apache.myfaces.util.DebugUtils;
 /**
  * Implements the lifecycle as described in Spec. 1.0 PFD Chapter 2
  * 
- * @author Manfred Geiler
+ * @author Manfred Geiler (latest modification by $Author$)
  * @author Nikolay Petrov
+ * @version $Revision$ $Date$
  */
 public class LifecycleImpl extends Lifecycle
 {
     //private static final Log log = LogFactory.getLog(LifecycleImpl.class);
     private static final Logger log = Logger.getLogger(LifecycleImpl.class.getName());
     
-    private static final String FIRST_REQUEST_EXECUTED_PARAM = "org.apache.myfaces.lifecycle.first.request.processed";
+    /**
+     * Boolean.TRUE is stored under this key in the application map if
+     * the first request has been processed.
+     */
+    public static final String FIRST_REQUEST_PROCESSED_PARAM = "org.apache.myfaces.lifecycle.first.request.processed";
     
     private PhaseExecutor[] lifecycleExecutors;
     private PhaseExecutor renderExecutor;
 
     private final List<PhaseListener> _phaseListenerList = new ArrayList<PhaseListener>();
 
-    private boolean _firstRequestExecuted = false;
+    private boolean _firstRequestProcessed = false;
     /**
      * Lazy cache for returning _phaseListenerList as an Array.
      */
@@ -85,8 +90,6 @@ public class LifecycleImpl extends Lifecycle
     
             new FacesConfigurator(facesContext.getExternalContext()).update();
 
-            requestStarted(facesContext);
-            
             PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, facesContext, getPhaseListeners());
             for (PhaseExecutor executor : lifecycleExecutors)
             {
@@ -217,6 +220,10 @@ public class LifecycleImpl extends Lifecycle
             {
                 phaseListenerMgr.informPhaseListenersAfter(renderExecutor.getPhase());
                 flash.doPostPhaseActions(facesContext);
+                
+                // publish a field in the application map to indicate
+                // that the first request has been processed
+                requestProcessed(facesContext);
             }
             
             facesContext.getExceptionHandler().handle();
@@ -320,17 +327,21 @@ public class LifecycleImpl extends Lifecycle
         facesContext.getApplication().publishEvent (facesContext, ExceptionQueuedEvent.class, context);
     }
     
-    /*
-     * this method places an attribiuet on the application map to indicate that the first request has been processed. This
-     * attribute is used by several methods in ApplicationImpl to determine whether or not to throw an illegalStateException
+    /**
+     * This method places an attribute on the application map to 
+     * indicate that the first request has been processed. This
+     * attribute is used by several methods in ApplicationImpl 
+     * to determine whether or not to throw an IllegalStateException
+     * @param facesContext
      */
-    private void requestStarted(FacesContext facesContext)
+    private void requestProcessed(FacesContext facesContext)
     {
-        if(!_firstRequestExecuted)
+        if(!_firstRequestProcessed)
         {
-            _firstRequestExecuted = true;
+            _firstRequestProcessed = true;
 
-            facesContext.getExternalContext().getApplicationMap().put(FIRST_REQUEST_EXECUTED_PARAM, Boolean.TRUE);
+            facesContext.getExternalContext().getApplicationMap()
+                    .put(FIRST_REQUEST_PROCESSED_PARAM, Boolean.TRUE);
         }        
     }
 
