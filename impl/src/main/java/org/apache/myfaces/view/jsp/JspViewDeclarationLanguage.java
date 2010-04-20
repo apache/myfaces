@@ -76,6 +76,9 @@ public class JspViewDeclarationLanguage extends JspViewDeclarationLanguageBase
     @Override
     public void buildView(FacesContext context, UIViewRoot view) throws IOException
     {
+        // call buildView() from JspViewDeclarationLanguageBase to do some startup work
+        super.buildView(context, view);
+        
         ExternalContext externalContext = context.getExternalContext();
 
         if (context.getPartialViewContext().isPartialRequest())
