@@ -35,6 +35,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRendere
 import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
 import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlRenderer;
+import org.apache.myfaces.shared_impl.renderkit.html.HtmlRendererUtils;
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlTextRendererBase;
 
 /**
@@ -90,18 +91,12 @@ public class HtmlFormatRenderer extends HtmlRenderer
         else
         {
             List<Object> argsList = new ArrayList<Object>();
-            for (UIComponent child : htmlOutputFormat.getChildren())
+            
+            List<UIParameter> validParams = HtmlRendererUtils.getValidUIParameterChildren(
+                    facesContext, htmlOutputFormat.getChildren(), false, false, false);
+            for (UIParameter param : validParams)
             {
-                if (child instanceof UIParameter)
-                {
-                    // check for the disable attribute (since 2.0)
-                    if (((UIParameter) child).isDisable())
-                    {
-                        // ignore this UIParameter and continue
-                        continue;
-                    }
-                    argsList.add(((UIParameter)child).getValue());
-                }
+                argsList.add(param.getValue());
             }
             
             args = argsList.toArray(new Object[argsList.size()]);
