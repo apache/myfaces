@@ -51,10 +51,10 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.el.MethodBinding;
-import javax.faces.el.ValueBinding;
 import javax.faces.context.PartialResponseWriter;
 import javax.faces.context.ResponseWriter;
+import javax.faces.el.MethodBinding;
+import javax.faces.el.ValueBinding;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
@@ -652,6 +652,7 @@ public final class ErrorPageWriter
             PropertyDescriptor[] pd = info.getPropertyDescriptors();
             Method m = null;
             Object v = null;
+            ValueExpression valueExpression = null;
             String str = null;
             for (int i = 0; i < pd.length; i++)
             {
@@ -660,34 +661,39 @@ public final class ErrorPageWriter
                     m = pd[i].getReadMethod();
                     try
                     {
-                        v = m.invoke(c, null);
-                        if (v != null)
+                        // first check if the property is a ValueExpression
+                        valueExpression = c.getValueExpression(pd[i].getName());
+                        if (valueExpression != null)
                         {
-                            if (v instanceof Collection || v instanceof Map || v instanceof Iterator)
+                            _writeAttribute(writer, pd[i].getName(), valueExpression.getExpressionString());
+                        }
+                        else
+                        {
+                            v = m.invoke(c, null);
+                            if (v != null)
                             {
-                                continue;
+                                if (v instanceof Collection || v instanceof Map || v instanceof Iterator)
+                                {
+                                    continue;
+                                }
+                                if (v instanceof Expression)
+                                {
+                                    str = ((Expression)v).getExpressionString();
+                                }
+                                else if (v instanceof ValueBinding)
+                                {
+                                    str = ((ValueBinding) v).getExpressionString();
+                                }
+                                else if (v instanceof MethodBinding)
+                                {
+                                    str = ((MethodBinding) v).getExpressionString();
+                                }
+                                else
+                                {
+                                    str = v.toString();
+                                }
+                                _writeAttribute(writer, pd[i].getName(), str);
                             }
-                            writer.write(" ");
-                            writer.write(pd[i].getName());
-                            writer.write("=\"");
-                            if (v instanceof Expression)
-                            {
-                                str = ((Expression)v).getExpressionString();
-                            }
-                            else if (v instanceof ValueBinding)
-                            {
-                                str = ((ValueBinding) v).getExpressionString();
-                            }
-                            else if (v instanceof MethodBinding)
-                            {
-                                str = ((MethodBinding) v).getExpressionString();
-                            }
-                            else
-                            {
-                                str = v.toString();
-                            }
-                            writer.write(str.replaceAll("<", TS));
-                            writer.write("\"");
                         }
                     }
                     catch (Exception e)
@@ -700,15 +706,22 @@ public final class ErrorPageWriter
             ValueExpression binding = c.getValueExpression("binding");
             if (binding != null)
             {
-                writer.write(" binding=\"");
-                writer.write(binding.getExpressionString().replaceAll("<", TS));
-                writer.write("\"");
+                _writeAttribute(writer, "binding", binding.getExpressionString());
             }
         }
         catch (Exception e)
         {
             // do nothing
         }
+    }
+    
+    private static void _writeAttribute(Writer writer, String name, String value) throws IOException
+    {
+        writer.write(" ");
+        writer.write(name);
+        writer.write("=\"");
+        writer.write(value.replaceAll("<", TS));
+        writer.write("\"");
     }
 
     private static void _writeStart(Writer writer, UIComponent c, boolean children) throws IOException
