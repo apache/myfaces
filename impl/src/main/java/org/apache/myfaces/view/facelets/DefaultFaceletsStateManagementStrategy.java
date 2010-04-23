@@ -50,6 +50,7 @@ import javax.faces.view.ViewMetadata;
 
 import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
  * This class implements partial state saving feature when facelets
@@ -223,7 +224,22 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                                 {
                                     if (target.getParent() != null)
                                     {
-                                        target.getParent().getChildren().remove(target);
+                                        if (!target.getParent().getChildren().remove(target))
+                                        {
+                                            String key = null;
+                                            for (Map.Entry<String, UIComponent> entry : target.getParent().getFacets().entrySet())
+                                            {
+                                                if (entry.getValue()==target)
+                                                {
+                                                    key = entry.getKey();
+                                                    break;
+                                                }
+                                            }
+                                            if (key != null)
+                                            {
+                                                target.getParent().getFacets().remove(key);
+                                            }
+                                        }
                                     }
                                 }
                             });
