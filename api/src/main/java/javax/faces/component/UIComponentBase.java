@@ -107,6 +107,7 @@ public abstract class UIComponentBase extends UIComponent
      *  
      */
     private Map<String, List<ClientBehavior>> _behaviorsMap = null;
+    private transient Map<String, List<ClientBehavior>> _unmodifiableBehaviorsMap = null;
     
     public UIComponentBase()
     {
@@ -1656,6 +1657,7 @@ public abstract class UIComponentBase extends UIComponent
             Map<String, Object> stateMap = (Map<String, Object>) stateObj;
             int initCapacity = (stateMap.size() * 4 + 3) / 3;
             _behaviorsMap = new HashMap<String,  List<ClientBehavior> >(initCapacity);
+            _unmodifiableBehaviorsMap = null;
             for (Map.Entry<String, Object> entry : stateMap.entrySet())
             {
                 _behaviorsMap.put(entry.getKey(), (List<ClientBehavior>) restoreAttachedState(facesContext, entry.getValue()));
@@ -1664,6 +1666,7 @@ public abstract class UIComponentBase extends UIComponent
         else
         {
             _behaviorsMap = null;
+            _unmodifiableBehaviorsMap = null;
         }        
     }
     
@@ -1672,6 +1675,7 @@ public abstract class UIComponentBase extends UIComponent
     {
         if (stateObj != null)
         {
+            _unmodifiableBehaviorsMap = null;
             Map<String, Object> stateMap = (Map<String, Object>) stateObj;
             int initCapacity = (stateMap.size() * 4 + 3) / 3;
             if (_behaviorsMap == null)
@@ -2011,6 +2015,10 @@ public abstract class UIComponentBase extends UIComponent
 
     private Map<String, List<ClientBehavior>> wrapBehaviorsMap()
     {
-        return Collections.unmodifiableMap(_behaviorsMap);
+        if (_unmodifiableBehaviorsMap == null)
+        {
+            _unmodifiableBehaviorsMap = Collections.unmodifiableMap(_behaviorsMap); 
+        }
+        return _unmodifiableBehaviorsMap; 
     }
 }
