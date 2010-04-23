@@ -27,7 +27,7 @@
     <composite:attribute name="customMethod" method-signature="String doSomething(String)"/>
 </composite:interface>
 <composite:implementation>
-    <h:outputText id="text" value="Hello World" style="#{cc.attrs.style}" styleClass="#{cc.attrs.styleClass}"/>
+    <h:outputText id="text" value="#{cc.javaProperty}" style="#{cc.attrs.style}" styleClass="#{cc.attrs.styleClass}"/>
     <h:commandButton id="button" action="#{cc.attrs.customMethod}"/>
 </composite:implementation>
 </body>

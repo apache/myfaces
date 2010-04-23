@@ -76,6 +76,9 @@ public class CompositeComponentAttributeTestCase extends FaceletTestCase
         assertEquals(bean.getStyleClass(), text1.getStyleClass());
         //set as default
         assertEquals(bean.getStyle(), text1.getStyle());
+        
+        assertEquals(bean.getJavaProperty(), text1.getValue());
+        
         text1.popComponentFromEL(facesContext);
         button1.pushComponentToEL(facesContext,  button1);
         MethodExpression method = button1.getActionExpression();

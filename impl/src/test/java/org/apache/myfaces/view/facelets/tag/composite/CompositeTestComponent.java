@@ -23,4 +23,18 @@ import javax.faces.component.UINamingContainer;
 public class CompositeTestComponent extends UINamingContainer
 {
 
+    public String getJavaProperty()
+    {
+        return (String) getStateHelper().eval(PropertyKeys.javaProperty);
+    }
+
+    public void setJavaProperty(String javaProperty)
+    {
+        getStateHelper().put(PropertyKeys.javaProperty, javaProperty);
+    }
+    
+    protected enum PropertyKeys
+    {
+        javaProperty
+    }
 }

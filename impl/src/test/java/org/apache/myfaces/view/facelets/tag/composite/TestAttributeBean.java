@@ -31,6 +31,11 @@ public class TestAttributeBean
         return "styleclass1";
     }
     
+    public String getJavaProperty()
+    {
+        return "javaproperty1";
+    }
+    
     public String doSomethingFunny(String a)
     {
         return "somethingFunny"+a;
