@@ -18,9 +18,13 @@
  */
 package org.apache.myfaces.config.annotation;
 
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+
 import org.apache.commons.discovery.tools.DiscoverSingleton;
 
 
+import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
 
 
@@ -32,10 +36,36 @@ public abstract class LifecycleProviderFactory {
     public static LifecycleProviderFactory getLifecycleProviderFactory()
     {
         LifecycleProviderFactory instance = INSTANCE;
-        if (instance != null) {
+        if (instance != null)
+        {
             return instance;
         }
-        return (LifecycleProviderFactory) DiscoverSingleton.find(LifecycleProviderFactory.class, FACTORY_DEFAULT);
+        LifecycleProviderFactory lpf = null;
+        try
+        {
+
+            if (System.getSecurityManager() != null)
+            {
+                lpf = (LifecycleProviderFactory) AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Object>()
+                        {
+                            public Object run() throws PrivilegedActionException
+                            {
+                                return DiscoverSingleton.find(
+                                        LifecycleProviderFactory.class,
+                                        FACTORY_DEFAULT);
+                            }
+                        });
+            }
+            else
+            {
+                lpf = (LifecycleProviderFactory) DiscoverSingleton.find(LifecycleProviderFactory.class, FACTORY_DEFAULT);
+            }
+        }
+        catch (PrivilegedActionException pae)
+        {
+            throw new FacesException(pae);
+        }
+        return lpf;
     }
 
 

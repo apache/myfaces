@@ -20,6 +20,9 @@ package org.apache.myfaces.config.annotation;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.discovery.resource.ClassLoaders;
@@ -28,6 +31,7 @@ import org.apache.commons.discovery.ResourceNameIterator;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 
+import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -123,49 +127,97 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
     }
 
 
-    private boolean resolveLifecycleProviderFromService(ExternalContext externalContext) {
-        ClassLoader classLoader = ClassUtils.getContextClassLoader();
-        ClassLoaders loaders = new ClassLoaders();
-        loaders.put(classLoader);
-        loaders.put(this.getClass().getClassLoader());
-        DiscoverServiceNames dsn = new DiscoverServiceNames(loaders);
-        ResourceNameIterator iter = dsn.findResourceNames(LIFECYCLE_PROVIDER);
-        while (iter.hasNext()) {
-            String className = iter.nextResourceName();
-            try
+    private boolean resolveLifecycleProviderFromService(
+            ExternalContext externalContext)
+    {
+        boolean returnValue = false;
+        final ExternalContext extContext = externalContext;
+        try
+        {
+            if (System.getSecurityManager() != null)
             {
-                Object obj = createClass(className, externalContext);
-                if (DiscoverableLifecycleProvider.class.isAssignableFrom(obj.getClass())) {
-                    DiscoverableLifecycleProvider discoverableLifecycleProvider =
-                            (DiscoverableLifecycleProvider) obj;
-                    if (discoverableLifecycleProvider.isAvailable()) {
-                        LIFECYCLE_PROVIDER_INSTANCE = discoverableLifecycleProvider;
-                        return true;
+                returnValue = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>()
+                        {
+                            public Boolean run() throws ClassNotFoundException,
+                                    NoClassDefFoundError,
+                                    InstantiationException,
+                                    IllegalAccessException,
+                                    InvocationTargetException,
+                                    PrivilegedActionException
+                            {
+                                ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+                                ClassLoaders loaders = new ClassLoaders();
+                                loaders.put(classLoader);
+                                loaders.put(this.getClass().getClassLoader());
+                                DiscoverServiceNames dsn = new DiscoverServiceNames(loaders);
+                                ResourceNameIterator iter = dsn.findResourceNames(LIFECYCLE_PROVIDER);
+                                while (iter.hasNext())
+                                {
+                                    String className = iter.nextResourceName();
+                                    Object obj = createClass(className,extContext);
+                                    if (DiscoverableLifecycleProvider.class.isAssignableFrom(obj.getClass()))
+                                    {
+                                        DiscoverableLifecycleProvider discoverableLifecycleProvider = (DiscoverableLifecycleProvider) obj;
+                                        if (discoverableLifecycleProvider.isAvailable())
+                                        {
+                                            LIFECYCLE_PROVIDER_INSTANCE = discoverableLifecycleProvider;
+                                            return (Boolean) true;
+                                        }
+                                    }
+                                }
+                                return (Boolean) false;
+                            }
+                        });
+            }
+            else
+            {
+                ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+                ClassLoaders loaders = new ClassLoaders();
+                loaders.put(classLoader);
+                loaders.put(this.getClass().getClassLoader());
+                DiscoverServiceNames dsn = new DiscoverServiceNames(loaders);
+                ResourceNameIterator iter = dsn.findResourceNames(LIFECYCLE_PROVIDER);
+                while (iter.hasNext())
+                {
+                    String className = iter.nextResourceName();
+                    Object obj = createClass(className, externalContext);
+                    if (DiscoverableLifecycleProvider.class.isAssignableFrom(obj.getClass()))
+                    {
+                        DiscoverableLifecycleProvider discoverableLifecycleProvider = (DiscoverableLifecycleProvider) obj;
+                        if (discoverableLifecycleProvider.isAvailable())
+                        {
+                            LIFECYCLE_PROVIDER_INSTANCE = discoverableLifecycleProvider;
+                            return true;
+                        }
                     }
                 }
             }
-            catch (ClassNotFoundException e)
-            {
-                // ignore
-            }
-            catch (NoClassDefFoundError e)
-            {
-                // ignore
-            }
-            catch (InstantiationException e)
-            {
-                log.log(Level.SEVERE, "", e);
-            }
-            catch (IllegalAccessException e)
-            {
-                log.log(Level.SEVERE, "", e);
-            }
-            catch (InvocationTargetException e)
-            {
-                log.log(Level.SEVERE, "", e);
-            }
         }
-        return false;
+        catch (ClassNotFoundException e)
+        {
+            // ignore
+        }
+        catch (NoClassDefFoundError e)
+        {
+            // ignore
+        }
+        catch (InstantiationException e)
+        {
+            log.log(Level.SEVERE, "", e);
+        }
+        catch (IllegalAccessException e)
+        {
+            log.log(Level.SEVERE, "", e);
+        }
+        catch (InvocationTargetException e)
+        {
+            log.log(Level.SEVERE, "", e);
+        }
+        catch (PrivilegedActionException e)
+        {
+            throw new FacesException(e);
+        }
+        return returnValue;
     }
 
     private Object createClass(String className, ExternalContext externalContext)
