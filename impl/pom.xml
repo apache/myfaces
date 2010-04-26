@@ -506,9 +506,7 @@
                     <configuration>
                       <sources>
                         <source>${project.build.directory}/shared_sources</source>
-                        <!-- 
                         <source>${project.build.directory}/implee6_sources</source>
-                         -->
                       </sources>
                     </configuration>
                   </execution>
