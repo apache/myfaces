@@ -1,6 +1,13 @@
 package org.apache.myfaces.application;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.faces.FactoryFinder;
 import javax.faces.application.ApplicationFactory;
@@ -307,5 +314,159 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
         NavigationCase nc = nh.getNavigationCase(facesContext, "#{rules.go}", null);
 
         assertNull(nc);
+    }
+    
+    public void testActionOutcomePrecendeceMachRule() throws Exception
+    {
+        loadTextFacesConfig("simple-action-outcome-precedence-config.xml");
+
+        for (int i = 0; i < 2; i++)
+        {
+            final int j = i;
+            facesContext.getViewRoot().setViewId("/a.jsp");
+            
+            NavigationHandlerImpl nh = new NavigationHandlerImpl(){
+    
+                @Override
+                public Map<String, Set<NavigationCase>> getNavigationCases()
+                {
+                    // We have two conditions, this code is for rotate the ordering so we
+                    // test all possible outputs
+                    Map<String, Set<NavigationCase>> map = super.getNavigationCases();
+                    Map<String, Set<NavigationCase>> map2 = new HashMap<String, Set<NavigationCase>>();
+                    
+                    for (Map.Entry<String, Set<NavigationCase>> entry : map.entrySet())
+                    {
+                        LinkedHashSet<NavigationCase> set = new LinkedHashSet<NavigationCase>();
+                        List<NavigationCase> list = new ArrayList<NavigationCase>();
+                        list.addAll(entry.getValue());
+                        Collections.rotate(list, j);
+                        set.addAll(list);
+                        map2.put(entry.getKey(), set);
+                    }
+                    return map2; 
+                }
+            };
+    
+            NavigationCase nc = nh.getNavigationCase(facesContext, "#{rules.go}", "go");
+    
+            assertEquals("/b.jsp", nc.getToViewId(facesContext));
+        }
+    }
+    
+    public void testActionOutcomePrecendeceAlternateOutcomeMachRule() throws Exception
+    {
+        loadTextFacesConfig("simple-action-outcome-precedence-config.xml");
+
+        for (int i = 0; i < 2; i++)
+        {
+            final int j = i;
+            facesContext.getViewRoot().setViewId("/a.jsp");
+            
+            NavigationHandlerImpl nh = new NavigationHandlerImpl(){
+    
+                @Override
+                public Map<String, Set<NavigationCase>> getNavigationCases()
+                {
+                    // We have two conditions, this code is for rotate the ordering so we
+                    // test all possible outputs
+                    Map<String, Set<NavigationCase>> map = super.getNavigationCases();
+                    Map<String, Set<NavigationCase>> map2 = new HashMap<String, Set<NavigationCase>>();
+                    
+                    for (Map.Entry<String, Set<NavigationCase>> entry : map.entrySet())
+                    {
+                        LinkedHashSet<NavigationCase> set = new LinkedHashSet<NavigationCase>();
+                        List<NavigationCase> list = new ArrayList<NavigationCase>();
+                        list.addAll(entry.getValue());
+                        Collections.rotate(list, j);
+                        set.addAll(list);
+                        map2.put(entry.getKey(), set);
+                    }
+                    return map2; 
+                }
+            };
+    
+            NavigationCase nc = nh.getNavigationCase(facesContext, "#{rules.go}", "nogo");
+    
+            assertEquals("/c.jsp", nc.getToViewId(facesContext));
+        }
+    }
+
+    public void testActionOutcomePrecendeceNoOutcomeMachRule() throws Exception
+    {
+        loadTextFacesConfig("simple-action-outcome-precedence-config.xml");
+
+        for (int i = 0; i < 2; i++)
+        {
+            final int j = i;
+            facesContext.getViewRoot().setViewId("/a.jsp");
+            
+            NavigationHandlerImpl nh = new NavigationHandlerImpl(){
+    
+                @Override
+                public Map<String, Set<NavigationCase>> getNavigationCases()
+                {
+                    // We have two conditions, this code is for rotate the ordering so we
+                    // test all possible outputs
+                    Map<String, Set<NavigationCase>> map = super.getNavigationCases();
+                    Map<String, Set<NavigationCase>> map2 = new HashMap<String, Set<NavigationCase>>();
+                    
+                    for (Map.Entry<String, Set<NavigationCase>> entry : map.entrySet())
+                    {
+                        LinkedHashSet<NavigationCase> set = new LinkedHashSet<NavigationCase>();
+                        List<NavigationCase> list = new ArrayList<NavigationCase>();
+                        list.addAll(entry.getValue());
+                        Collections.rotate(list, j);
+                        set.addAll(list);
+                        map2.put(entry.getKey(), set);
+                    }
+                    return map2; 
+                }
+            };
+    
+            NavigationCase nc = nh.getNavigationCase(facesContext, "#{rules.go}", null);
+    
+            //If the <if> element is absent, only match a non-null outcome
+            assertNull(nc);
+        }
+    }
+
+    
+    public void testActionOutcomePrecendece2MachRule() throws Exception
+    {
+        loadTextFacesConfig("simple-action-outcome-precedence-2-config.xml");
+
+        for (int i = 0; i < 2; i++)
+        {
+            final int j = i;
+            facesContext.getViewRoot().setViewId("/a.jsp");
+            
+            NavigationHandlerImpl nh = new NavigationHandlerImpl(){
+    
+                @Override
+                public Map<String, Set<NavigationCase>> getNavigationCases()
+                {
+                    // We have two conditions, this code is for rotate the ordering so we
+                    // test all possible outputs
+                    Map<String, Set<NavigationCase>> map = super.getNavigationCases();
+                    Map<String, Set<NavigationCase>> map2 = new HashMap<String, Set<NavigationCase>>();
+                    
+                    for (Map.Entry<String, Set<NavigationCase>> entry : map.entrySet())
+                    {
+                        LinkedHashSet<NavigationCase> set = new LinkedHashSet<NavigationCase>();
+                        List<NavigationCase> list = new ArrayList<NavigationCase>();
+                        list.addAll(entry.getValue());
+                        Collections.rotate(list, j);
+                        set.addAll(list);
+                        map2.put(entry.getKey(), set);
+                    }
+                    return map2; 
+                }
+            };
+    
+            NavigationCase nc = nh.getNavigationCase(facesContext, "#{rules.go}", "go");
+    
+            assertEquals("/b.jsp", nc.getToViewId(facesContext));
+        }
     }
 }

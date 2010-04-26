@@ -345,6 +345,10 @@ public class NavigationHandlerImpl
                                                       String outcome)
     {
         NavigationCase noConditionCase = null;
+        NavigationCase firstCase = null;
+        NavigationCase secondCase = null;
+        NavigationCase thirdCase = null;
+        NavigationCase fourthCase = null;
                         
         for (NavigationCase caze : casesList)
         {
@@ -380,14 +384,16 @@ public class NavigationHandlerImpl
                         {
                             if (ifMatches)
                             {
-                                return caze;
+                                firstCase = caze;
+                                //return caze;
                             }
 
                             continue;
                         }
                         else
                         {
-                            return caze;
+                            firstCase = caze;
+                            //return caze;
                         }
                     }
                 }
@@ -402,7 +408,8 @@ public class NavigationHandlerImpl
                         {
                             if (ifMatches)
                             {
-                                return caze;
+                                thirdCase = caze;
+                                //return caze;
                             }
                             
                             continue;
@@ -411,7 +418,8 @@ public class NavigationHandlerImpl
                         {
                             if (outcome != null)
                             {
-                                return caze;
+                                thirdCase = caze;
+                                //return caze;
                             }
                             
                             continue;
@@ -432,14 +440,16 @@ public class NavigationHandlerImpl
                         {
                             if (ifMatches)
                             {
-                                return caze;
+                                secondCase = caze;
+                                //return caze;
                             }
                             
                             continue;
                         }
                         else
                         {
-                            return caze;
+                            secondCase = caze;
+                            //return caze;
                         }
                     }
                 }
@@ -454,7 +464,8 @@ public class NavigationHandlerImpl
                 {
                     if (ifMatches)
                     {
-                        return caze;
+                        fourthCase = caze;
+                        //return caze;
                     }
                     
                     continue;
@@ -463,8 +474,26 @@ public class NavigationHandlerImpl
 
             if ((cazeIf != null) && ifMatches)
             {
-                return caze;
+                fourthCase = caze;
+                //return caze;
             }
+        }
+        
+        if (firstCase != null)
+        {
+            return firstCase;
+        }
+        else if (secondCase != null)
+        {
+            return secondCase;
+        }
+        else if (thirdCase != null)
+        {
+            return thirdCase;
+        }
+        else if (fourthCase != null)
+        {
+            return fourthCase;
         }
         
         return noConditionCase;
