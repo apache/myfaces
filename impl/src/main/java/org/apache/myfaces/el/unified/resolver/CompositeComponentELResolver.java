@@ -143,7 +143,7 @@ public final class CompositeComponentELResolver extends ELResolver
             {
                 //create a wrapper map
                 attributesMap = new CompositeComponentAttributesMapWrapper(
-                        baseComponent.getAttributes(), elContext);
+                        baseComponent, elContext);
                 compositeComponentAttributesMaps.put(baseComponent,
                         new WeakReference<Map<String, Object>>(attributesMap));
             }
@@ -152,7 +152,7 @@ public final class CompositeComponentELResolver extends ELResolver
         {
             //Create both required maps
             attributesMap = new CompositeComponentAttributesMapWrapper(
-                    baseComponent.getAttributes(), elContext);
+                    baseComponent, elContext);
             compositeComponentAttributesMaps = new WeakHashMap<UIComponent, WeakReference<Map<String, Object>>>();
             compositeComponentAttributesMaps.put(baseComponent,
                     new WeakReference<Map<String, Object>>(attributesMap));
@@ -189,14 +189,16 @@ public final class CompositeComponentELResolver extends ELResolver
             Map<String, Object>
     {
 
+        private final UIComponent _component;
         private final BeanInfo _beanInfo;
         private final Map<String, Object> _originalMap;
         private final ELContext _elContext;
         private final PropertyDescriptor [] _propertyDescriptors;
 
-        private CompositeComponentAttributesMapWrapper(Map<String, Object> _originalMap, ELContext context)
+        private CompositeComponentAttributesMapWrapper(UIComponent component, ELContext context)
         {
-            this._originalMap =_originalMap;
+            this._component = component;
+            this._originalMap = component.getAttributes();
             this._beanInfo = (BeanInfo) _originalMap.get(UIComponent.BEANINFO_KEY);
             this._elContext = context;
             this._propertyDescriptors = _beanInfo.getPropertyDescriptors();
@@ -204,9 +206,7 @@ public final class CompositeComponentELResolver extends ELResolver
 
         public ValueExpression getExpression(String name)
         {
-            Object valueExpr = getAsValueExpression (name);
-
-            // TODO: spec's not clear, I guess this is what we're supposed to do...
+            ValueExpression valueExpr = _component.getValueExpression(name);
 
             return ((valueExpr instanceof ValueExpression) ? (ValueExpression) valueExpr
                     : null);
