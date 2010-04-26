@@ -295,6 +295,7 @@ public abstract class UIComponentBase extends UIComponent
             }
             
             behaviorsForEvent.add(behavior);
+            _unmodifiableBehaviorsMap = null;
         }
     }
 
