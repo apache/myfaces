@@ -1027,9 +1027,8 @@ public abstract class UIComponentBase extends UIComponent
         String rendererType = getRendererType();
         if (rendererType == null)
             return null;
-        String renderKitId = context.getViewRoot().getRenderKitId();
-        RenderKitFactory rkf = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
-        RenderKit renderKit = rkf.getRenderKit(context, renderKitId);
+        
+        RenderKit renderKit = context.getRenderKit();
         Renderer renderer = renderKit.getRenderer(getFamily(), rendererType);
         if (renderer == null)
         {
