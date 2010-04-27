@@ -77,6 +77,10 @@ public class FacesContextImpl
     private boolean                     _released = false;
     private ELContext                   _elContext;
     private ReleaseableFacesContextFactory _facesContextFactory = null;
+    
+    // Variables used to cache values
+    private RenderKit _cachedRenderKit = null;
+    private String _cachedRenderKitId = null;
 
     //~ Constructors -------------------------------------------------------------------------------
 
@@ -204,8 +208,14 @@ public class FacesContextImpl
         {
             return null;
         }
-
-        return _renderKitFactory.getRenderKit(this, renderKitId);
+        
+        if (_cachedRenderKitId == null || !renderKitId.equals(_cachedRenderKitId))
+        {
+            _cachedRenderKitId = renderKitId;
+            _cachedRenderKit = _renderKitFactory.getRenderKit(this, renderKitId);
+        }
+        
+        return _cachedRenderKit;
     }
 
     public final boolean getRenderResponse()
@@ -336,6 +346,8 @@ public class FacesContextImpl
         _responseStream       = null;
         _responseWriter       = null;
         _viewRoot             = null;
+        _cachedRenderKit = null;
+        _cachedRenderKitId = null;
 
         _released             = true;
         FacesContext.setCurrentInstance(null);
