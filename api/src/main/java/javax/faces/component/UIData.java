@@ -329,10 +329,13 @@ public class UIData extends UIComponentBase
         {
             // Check if the clientId for the component, which we 
             // are looking for, has a rowIndex attached
-            if (clientId.matches(baseClientId + ":[0-9]+:.*"))
+            String subId = clientId.substring(baseClientId.length() + 1);
+            //If the char next to baseClientId is the separator one and
+            //the subId matches the regular expression
+            if (clientId.charAt(baseClientId.length()) == NamingContainer.SEPARATOR_CHAR && 
+                    subId.matches("[0-9]+"+NamingContainer.SEPARATOR_CHAR+".*"))
             {
-                String subId = clientId.substring(baseClientId.length() + 1);
-                String clientRow = subId.substring(0, subId.indexOf(':'));
+                String clientRow = subId.substring(0, subId.indexOf(NamingContainer.SEPARATOR_CHAR));
     
                 //Now we save the current position
                 int oldRow = this.getRowIndex();
