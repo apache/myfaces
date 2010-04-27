@@ -184,9 +184,8 @@ public final class CompositeComponentELResolver extends ELResolver
     }
 
     // Wrapper map for composite component attributes.  Follows spec, section 5.6.2.2, table 5-11.
-    //
-    private final class CompositeComponentAttributesMapWrapper implements CompositeComponentExpressionHolder,
-            Map<String, Object>
+    private final class CompositeComponentAttributesMapWrapper 
+            implements CompositeComponentExpressionHolder, Map<String, Object>
     {
 
         private final UIComponent _component;
@@ -208,8 +207,8 @@ public final class CompositeComponentELResolver extends ELResolver
         {
             ValueExpression valueExpr = _component.getValueExpression(name);
 
-            return ((valueExpr instanceof ValueExpression) ? (ValueExpression) valueExpr
-                    : null);
+            return ((valueExpr instanceof ValueExpression) 
+                    ? (ValueExpression) valueExpr : null);
         }
 
         public void clear()
@@ -234,20 +233,17 @@ public final class CompositeComponentELResolver extends ELResolver
 
         public Object get(Object key)
         {
-            Object obj = getAsValueExpression (key);
-
-            // Per the spec, if the result is a ValueExpression, evaluate it and return the value.
-
+            Object obj = _originalMap.get(key);
             if (obj != null)
             {
-                if (obj instanceof ValueExpression)
-                {
-                    return ((ValueExpression) obj).getValue(_elContext);
-                }
-                else
-                {
-                    return obj;                    
-                }
+                // _originalMap is a _ComponentAttributesMap and thus any
+                // ValueExpressions will be evaluated by the call to
+                // _originalMap.get(). The only case in which we really will
+                // get a ValueExpression here is when a ValueExpression itself
+                // is stored as an attribute. But in this case we really want to 
+                // get the ValueExpression. So we don't have to evaluate possible
+                // ValueExpressions here, but can return obj directly.
+                return obj;
             }
             else
             {
@@ -259,6 +255,9 @@ public final class CompositeComponentELResolver extends ELResolver
                         break;
                     }
                 }
+                // We have to check for a ValueExpression and also evaluate it
+                // here, because in the PropertyDescriptor the default values are
+                // always stored as (Tag-)ValueExpressions.
                 if (obj != null && obj instanceof ValueExpression)
                 {
                     return ((ValueExpression) obj).getValue(_elContext);
@@ -268,28 +267,6 @@ public final class CompositeComponentELResolver extends ELResolver
                     return obj;                    
                 }
             }
-        }
-        
-        private Object getAsValueExpression (Object key)
-        {
-            Object obj;
-            
-            // FIXME: this is a hack, but I think it's necessary.  The component attributes map
-            // that this class wraps requires that all ValueExpressions be evaluated before they're
-            // returned, but the get() and put() methods defined in this class rely on ValueExpressions
-            // being returned so the underlying beans (if specified) can be updated with new values.
-            // This may be something to notify the EG about.
-            
-            // The presence of this attribute will tell the component attributes map not to evaluate
-            // ValueExpressions.
-            
-            //_originalMap.put (COMPOSITE_COMPONENT_GET_VALUE_EXPRESSION, Boolean.TRUE);
-            
-            obj = _originalMap.get (key);
-            
-            //_originalMap.remove (COMPOSITE_COMPONENT_GET_VALUE_EXPRESSION);
-            
-            return obj;
         }
         
         public boolean isEmpty()
@@ -304,20 +281,18 @@ public final class CompositeComponentELResolver extends ELResolver
 
         public Object put(String key, Object value)
         {
-            Object obj = getAsValueExpression (key);
-
+            ValueExpression valueExpression = _component.getValueExpression(key);
+            
             // Per the spec, if the result is a ValueExpression, call setValue().
-
-            if ((obj != null) && (obj instanceof ValueExpression))
+            if (valueExpression != null)
             {
-                ((ValueExpression) obj).setValue(_elContext, value);
+                valueExpression.setValue(_elContext, value);
 
                 return null;
             }
 
-            // TODO: spec doesn't say.  I assume we just delegate instead of returning null...
-            // -= Leonardo Uribe =- Really this map is used to resolve ValueExpressions 
-            // like #{cc.attrs.somekey}, so the value returned is not expected to be used, 
+            // Really this map is used to resolve ValueExpressions like 
+            // #{cc.attrs.somekey}, so the value returned is not expected to be used, 
             // but is better to delegate to keep the semantic of this method.
             return _originalMap.put(key, value);
         }

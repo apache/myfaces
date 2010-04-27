@@ -33,7 +33,6 @@ import java.util.WeakHashMap;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
-import javax.faces.application.Resource;
 import javax.faces.context.FacesContext;
 
 /**
@@ -244,17 +243,6 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                 ValueExpression ve = _component.getValueExpression((String) key);
                 if (ve != null)
                 {
-                    //if (getUnderlyingMap().get ("org.apache.myfaces.COMPOSITE_COMPONENT_GET_VALUE_EXPRESSION") != null)
-                    //{
-                        // FIXME: this is "technically" a hack for the composite component attribute
-                        // EL resolver.  #{cc.attrs} is supposed to wrap this map and call getValue()
-                        // and setValue() on the ValueExpressions it returns... but the spec says that
-                        // this method always needs to evaluate ValueExpressions, and therefore the EL
-                        // resolver never even gets to see ValuExpressions.
-                        
-                    //    return ve;
-                    //}
-                    
                     value = ve.getValue(FacesContext.getCurrentInstance().getELContext());
                 }
                 else
@@ -264,15 +252,6 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                 }
             }
         }
-        
-        // The get() method of the Map must take the following additional action if this component instance is a 
-        // composite component instance (indicated by the presence of a component attribute under the key given 
-        // by the value of Resource.COMPONENT_RESOURCE_KEY)
-        // if (value instanceof ValueExpression && getUnderlyingMap().containsKey(Resource.COMPONENT_RESOURCE_KEY))
-        //{
-            // call the ValueExpression.getValue(javax.el.ELContext) method and return the result from get().
-        //    value = ((ValueExpression)value).getValue(FacesContext.getCurrentInstance().getELContext());
-        //}
         
         // Otherwise, return the actual value from the get() method. 
         return value;
