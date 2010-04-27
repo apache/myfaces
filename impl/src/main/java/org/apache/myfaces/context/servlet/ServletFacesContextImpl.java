@@ -64,6 +64,10 @@ public class ServletFacesContextImpl
     private boolean                     _responseComplete = false;
     private RenderKitFactory            _renderKitFactory;
     private boolean                     _released = false;
+    
+    // Variables used to cache values
+    private RenderKit                   _cachedRenderKit = null;
+    private String                      _cachedRenderKitId = null;
 
     //~ Constructors -------------------------------------------------------------------------------
 
@@ -184,7 +188,13 @@ public class ServletFacesContextImpl
             return null;
         }
 
-        return _renderKitFactory.getRenderKit(this, renderKitId);
+        if (_cachedRenderKitId == null || !renderKitId.equals(_cachedRenderKitId))
+        {
+            _cachedRenderKitId = renderKitId;
+            _cachedRenderKit = _renderKitFactory.getRenderKit(this, renderKitId);
+        }
+        
+        return _cachedRenderKit;
     }
 
     public boolean getRenderResponse()
@@ -316,7 +326,9 @@ public class ServletFacesContextImpl
         _responseWriter       = null;
         _viewRoot             = null;
         _maximumSeverity      = null;
-
+        _cachedRenderKit      = null;
+        _cachedRenderKitId    = null;
+        
         _released             = true;
         FacesContext.setCurrentInstance(null);
     }
