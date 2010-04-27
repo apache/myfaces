@@ -338,9 +338,12 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             // Check if the clientId for the component, which we 
             // are looking for, has a rowIndex attached
             char separator = UINamingContainer.getSeparatorChar(context);
-            if (clientId.matches(baseClientId + separator+"[0-9]+"+separator+".*"))
+            String subId = clientId.substring(baseClientId.length() + 1);
+            //If the char next to baseClientId is the separator one and
+            //the subId matches the regular expression
+            if (clientId.charAt(baseClientId.length()) == separator && 
+                    subId.matches("[0-9]+"+separator+".*"))
             {
-                String subId = clientId.substring(baseClientId.length() + 1);
                 String clientRow = subId.substring(0, subId.indexOf(separator));
     
                 //Now we save the current position
