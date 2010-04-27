@@ -53,7 +53,9 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.Compos
     {
         Faces, JSP
     }
-
+    
+    public static final String SCOPE = "org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope";
+    
     public FacesCompositeELResolver(final Scope scope)
     {
         if (scope == null)
@@ -188,11 +190,11 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.Compos
 
     private void setScope(final Map<Object, Object> attributes)
     {
-        attributes.put(Scope.class.getName(), _scope);
+        attributes.put(SCOPE, _scope);
     }
 
     private static void unsetScope(final Map<Object, Object> attributes)
     {
-        attributes.remove(Scope.class.getName());
+        attributes.remove(SCOPE);
     }
 }

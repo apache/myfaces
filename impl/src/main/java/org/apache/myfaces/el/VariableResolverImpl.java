@@ -18,8 +18,6 @@
  */
 package org.apache.myfaces.el;
 
-import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
-
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ValueExpression;
@@ -27,6 +25,9 @@ import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
 import javax.faces.el.EvaluationException;
 import javax.faces.el.VariableResolver;
+
+import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver;
+import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
 
 /**
  * This variable resolver will be used for legacy variable resolvers which are registered through the faces config. If
@@ -82,6 +83,6 @@ public final class VariableResolverImpl extends VariableResolver
 
     protected Scope getScope(final FacesContext context)
     {
-        return (Scope) context.getAttributes().get(Scope.class.getName());
+        return (Scope) context.getAttributes().get(FacesCompositeELResolver.SCOPE);
     }
 }
