@@ -341,7 +341,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             if (clientId.matches(baseClientId + separator+"[0-9]+"+separator+".*"))
             {
                 String subId = clientId.substring(baseClientId.length() + 1);
-                String clientRow = subId.substring(0, subId.indexOf(':'));
+                String clientRow = subId.substring(0, subId.indexOf(separator));
     
                 //Now we save the current position
                 int oldRow = this.getRowIndex();
