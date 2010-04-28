@@ -33,9 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.jstl.core.Config;
 
 import org.apache.myfaces.application.jsp.ServletViewResponseWrapper;
-import org.apache.myfaces.context.servlet.ResponseSwitch;
 import org.apache.myfaces.shared_impl.view.JspViewDeclarationLanguageBase;
-import org.apache.myfaces.util.ExternalContextUtils;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeLibrary;
 import org.apache.myfaces.view.facelets.tag.jsf.core.CoreLibrary;
 import org.apache.myfaces.view.facelets.tag.jsf.html.HtmlLibrary;
@@ -80,28 +78,6 @@ public class JspViewDeclarationLanguage extends JspViewDeclarationLanguageBase
         super.buildView(context, view);
         
         ExternalContext externalContext = context.getExternalContext();
-
-        if (context.getPartialViewContext().isPartialRequest())
-        {
-            // try to get (or create) a ResponseSwitch and turn off the output
-            Object origResponse = context.getExternalContext().getResponse();
-            ResponseSwitch responseSwitch = ExternalContextUtils.getResponseSwitch(origResponse);
-            if (responseSwitch == null)
-            {
-                // no ResponseSwitch installed yet - create one 
-                responseSwitch = ExternalContextUtils.createResponseSwitch(origResponse);
-                if (responseSwitch != null)
-                {
-                    // install the ResponseSwitch
-                    context.getExternalContext().setResponse(responseSwitch);
-                }
-            }
-            if (responseSwitch != null)
-            {
-                responseSwitch.setEnabled(context, false);
-            }
-        }
-        
         ServletResponse response = (ServletResponse) externalContext.getResponse();
         ServletRequest request = (ServletRequest) externalContext.getRequest();
         
@@ -198,8 +174,10 @@ public class JspViewDeclarationLanguage extends JspViewDeclarationLanguageBase
             return;
         }
 
-        //Skip this step if we are rendering an ajax request, because no content outside
-        //f:view tag should be output.
+        // Skip this step if we are rendering an ajax request, because no content outside
+        // f:view tag should be output.
+        // Note that the ResponseSwitch would prevent this output from beeing written
+        // in renderView(), but not providing the information at all makes it faster!
         if (!context.getPartialViewContext().isPartialRequest())
         {
             // store the wrapped response in the request, so it is thread-safe

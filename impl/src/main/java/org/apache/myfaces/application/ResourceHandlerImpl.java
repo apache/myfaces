@@ -39,8 +39,8 @@ import org.apache.myfaces.resource.ResourceImpl;
 import org.apache.myfaces.resource.ResourceLoader;
 import org.apache.myfaces.resource.ResourceMeta;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.shared_impl.util.ExternalContextUtils;
 import org.apache.myfaces.shared_impl.util.StringUtils;
-import org.apache.myfaces.util.ExternalContextUtils;
 
 /**
  * DOCUMENT ME!

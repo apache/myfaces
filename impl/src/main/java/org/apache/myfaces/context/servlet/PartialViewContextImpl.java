@@ -44,7 +44,6 @@ import javax.faces.view.ViewMetadata;
 
 import org.apache.myfaces.context.PartialResponseWriterImpl;
 import org.apache.myfaces.shared_impl.util.StringUtils;
-import org.apache.myfaces.util.ExternalContextUtils;
 
 public class PartialViewContextImpl extends PartialViewContext {
 
@@ -324,14 +323,6 @@ public class PartialViewContextImpl extends PartialViewContext {
 
     private void processPartialRendering(UIViewRoot viewRoot, PhaseId phaseId) 
     {
-        // try to enable the ResponseSwitch again (disabled in RenderResponseExecutor)
-        Object response = _facesContext.getExternalContext().getResponse();
-        ResponseSwitch responseSwitch = ExternalContextUtils.getResponseSwitch(response);
-        if (responseSwitch != null)
-        {
-            responseSwitch.setEnabled(_facesContext, true);
-        }
-        
         //TODO process partial rendering
         //https://issues.apache.org/jira/browse/MYFACES-2118
         Collection<String> renderIds = getRenderIds();
