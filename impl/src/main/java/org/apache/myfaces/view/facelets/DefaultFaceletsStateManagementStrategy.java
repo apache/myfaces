@@ -123,7 +123,10 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         Map<String, Object> states;
         
         UIViewRoot view = null;
-
+        
+        // The value returned here is expected to be false (set by RestoreViewExecutor), but
+        //we don't know if some ViewHandler wrapper could change it, so it is better to save the value.
+        final boolean oldContextEventState = context.isProcessingEvents();
         // Get previous state from ResponseStateManager.
         manager = RendererUtils.getResponseStateManager (context, renderKitId);
 
@@ -192,7 +195,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 }
                 finally
                 {
-                    context.setProcessingEvents (false);
+                    context.setProcessingEvents (oldContextEventState);
                 }
             }
             catch (Throwable e) {
@@ -305,17 +308,24 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         }
         
         // Restore binding, because UIViewRoot.processRestoreState() is never called
-        //boolean oldContextEventState = context.isProcessingEvents();
         //the event processing has to be enabled because of the restore view event triggers
         //TODO ask the EG the this is a spec violation if we do it that way
-        //see Section 2.2.1 
-
-        //context.setProcessingEvents(true);
-        //try {
+        //see Section 2.2.1
+        // TODO: Why is necessary enable event processing?
+        // ANS: On RestoreViewExecutor, setProcessingEvents is called first to false
+        // and then to true when postback. Since we need listeners registered to PostAddToViewEvent
+        // event to be handled, we should enable it again. We are waiting a response from EG about
+        // the behavior of those listeners (see comment on vdl.buildView). 
+        // -= Leonardo Uribe =- I think enable event processing in this point does not have any
+        // side effect. Enable it allows programatically add components when binding is set with 
+        // pss enabled. That feature works without pss, so we should preserve backward behavior.
+        // Tomahawk t:aliasBean example creating components on binding requires this to work.
+        context.setProcessingEvents(true);
+        try {
             view.visitTree(VisitContext.createVisitContext(context), new RestoreStateCallback());
-        //} finally {
-        //    context.setProcessingEvents(oldContextEventState);
-        //}
+        } finally {
+            context.setProcessingEvents(oldContextEventState);
+        }
         return view;
     }
     
