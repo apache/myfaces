@@ -290,11 +290,11 @@ public class ResourceHandlerImpl extends ResourceHandler
             if (libraryName != null)
             {
                 //log.info("libraryName=" + libraryName);
-                resource = createResource(resourceName, libraryName);
+                resource = facesContext.getApplication().getResourceHandler().createResource(resourceName, libraryName);
             }
             else
             {
-                resource = createResource(resourceName);
+                resource = facesContext.getApplication().getResourceHandler().createResource(resourceName);
             }
     
             if (resource == null)
