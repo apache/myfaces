@@ -1431,7 +1431,11 @@ public abstract class UIComponentBase extends UIComponent
             List<Object> lst = new ArrayList<Object>(((List<?>) attachedObject).size());
             for (Object item : (List<?>) attachedObject)
             {
-                lst.add(saveAttachedState(context, item));
+                Object value = it.next();
+                if (value != null)
+                {
+                    lst.add(saveAttachedState(context, value));
+                }
             }
 
             return new _AttachedListStateWrapper(lst);
