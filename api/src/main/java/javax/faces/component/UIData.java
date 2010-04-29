@@ -386,8 +386,18 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 for (Iterator<UIComponent> itChildren = this.getChildren().iterator();
                         !returnValue && itChildren.hasNext();)
                 {
+                    UIComponent child = itChildren.next();
+                    if (child instanceof UIColumn && clientId.equals(child.getClientId(context)))
+                    {
+                        try {
+                            callback.invokeContextCallback(context, child);
+                        } catch (Exception e) {
+                            throw new FacesException(e);
+                        }
+                        returnValue = true;
+                    }
                     // process the child's facets
-                    for (Iterator<UIComponent> itChildFacets = itChildren.next().getFacets().values().iterator(); 
+                    for (Iterator<UIComponent> itChildFacets = child.getFacets().values().iterator(); 
                             !returnValue && itChildFacets.hasNext();)
                     {
                         //recursive call to find the component
