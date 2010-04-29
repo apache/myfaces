@@ -55,7 +55,7 @@ public class HtmlScriptRenderer extends Renderer implements PartialStateHolder, 
     public void processEvent(ComponentSystemEvent event) {
         if (event instanceof PostAddToViewEvent) {
             UIComponent component = event.getComponent();
-            String target = (String) component.getAttributes().get("target");
+            String target = (String) component.getAttributes().get(JSFAttr.TARGET_ATTR);
             if (target != null) {
                 FacesContext facesContext = FacesContext.getCurrentInstance();
 
@@ -82,7 +82,7 @@ public class HtmlScriptRenderer extends Renderer implements PartialStateHolder, 
         {
             //TODO target check here
             UIComponent component = event.getComponent();
-            String target = (String) component.getAttributes().get("target");
+            String target = (String) component.getAttributes().get(JSFAttr.TARGET_ATTR);
             if (target != null) {
                 FacesContext facesContext = FacesContext.getCurrentInstance();
                 UIComponent uiTarget = facesContext.getViewRoot().getFacet(target);

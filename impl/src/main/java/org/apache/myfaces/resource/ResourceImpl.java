@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.resource;
 
+import static org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils.JAVAX_FACES_LIBRARY_NAME;
+import static org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils.JSF_JS_RESOURCE_NAME;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
@@ -206,8 +209,8 @@ public class ResourceImpl extends Resource
             useAmp = true;
             
             if (!facesContext.isProjectStage(ProjectStage.Production)
-                    && "jsf.js".equals(getResourceName()) 
-                    && "javax.faces".equals(getLibraryName()))
+                    && JSF_JS_RESOURCE_NAME.equals(getResourceName()) 
+                    && JAVAX_FACES_LIBRARY_NAME.equals(getLibraryName()))
             {
                 // append &stage=?? for all ProjectStages except Production
                 path = path + "&stage=" + facesContext.getApplication().getProjectStage().toString();
