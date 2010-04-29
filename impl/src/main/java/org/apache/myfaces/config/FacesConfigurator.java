@@ -1183,27 +1183,30 @@ public class FacesConfigurator
     
     static class Version implements Comparable<Version>
     {
-        private Integer[] parts;
+        // we have to use Long here, because the version number
+        // could be something like 20060714150240 and this value
+        // exceeds an Integer (see MYFACES-2686)
+        private Long[] parts;
         
         private boolean snapshot;
         
         public Version(String major, String minor, String maintenance,
                        String extra, String snapshot)
         {
-            parts = new Integer[4];
-            parts[0] = Integer.valueOf(major);
+            parts = new Long[4];
+            parts[0] = Long.valueOf(major);
             
             if (minor != null)
             {
-                parts[1] = Integer.valueOf(minor);
+                parts[1] = Long.valueOf(minor);
                 
                 if (maintenance != null)
                 {
-                    parts[2] = Integer.valueOf(maintenance);
+                    parts[2] = Long.valueOf(maintenance);
                     
                     if (extra != null)
                     {
-                        parts[3] = Integer.valueOf(extra);
+                        parts[3] = Long.valueOf(extra);
                     }
                 }
             }
@@ -1215,8 +1218,8 @@ public class FacesConfigurator
         {
             for (int i = 0; i < parts.length; i++)
             {
-                Integer left = parts[i];
-                Integer right = v.parts[i];
+                Long left = parts[i];
+                Long right = v.parts[i];
                 if (left == null)
                 {
                     if (right == null)
@@ -1272,8 +1275,8 @@ public class FacesConfigurator
                 
                 for (int i = 0; i < parts.length; i++)
                 {
-                    Integer thisPart = parts[i];
-                    Integer otherPart = other.parts[i];
+                    Long thisPart = parts[i];
+                    Long otherPart = other.parts[i];
                     if (thisPart == null ? otherPart != null : !thisPart.equals(otherPart))
                     {
                         return false;
@@ -1312,7 +1315,7 @@ public class FacesConfigurator
             builder.append(parts[0]);
             for (int i = 1; i < parts.length; i++)
             {
-                Integer val = parts[i];
+                Long val = parts[i];
                 if (val != null)
                 {
                     builder.append('.').append(val);
