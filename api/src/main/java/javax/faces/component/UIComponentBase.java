@@ -1097,7 +1097,11 @@ public abstract class UIComponentBase
             List lst = new ArrayList(((List)attachedObject).size());
             for (Iterator it = ((List)attachedObject).iterator(); it.hasNext(); )
             {
-                lst.add(saveAttachedState(context, it.next()));
+                Object value = it.next();
+                if (value != null)
+                {
+                    lst.add(saveAttachedState(context, value));
+                }
             }
             return new _AttachedListStateWrapper(lst);
         }
