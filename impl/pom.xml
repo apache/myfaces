@@ -516,6 +516,39 @@
         </build>
     </profile>
     <profile>
+        <!-- USAGE: mvn eclipse:eclipse -Ddev=eclipse -->
+        <id>eclipse-with-unpacked-shared</id>
+        <activation>
+            <property>
+                <name>dev</name>
+                <value>eclipse</value>
+            </property>
+        </activation>
+        <build>
+          <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                  <execution>
+                    <id>add-source-shared</id>
+                    <phase>process-sources</phase>
+                    <goals>
+                      <goal>add-source</goal>
+                    </goals>
+                    <configuration>
+                      <sources>
+                        <source>${project.build.directory}/shared_sources</source>
+                      </sources>
+                    </configuration>
+                  </execution>
+                </executions>
+            </plugin>
+          </plugins>
+        </build>
+    </profile>
+    <profile>
       <!--
         - Whenever the full website is generated, the command
         -   mvn -Pgenerate-site -Pgenerate-tlddoc site
