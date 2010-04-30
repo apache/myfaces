@@ -884,7 +884,7 @@
     <dependency>
       <groupId>org.apache.myfaces.buildtools</groupId>
       <artifactId>myfaces-builder-annotations</artifactId>
-      <version>1.0.4</version>
+      <version>1.0.5-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -1026,6 +1026,6 @@
 
   <properties>
     <myfaces-shared.version>4.0.2-SNAPSHOT</myfaces-shared.version>
-    <myfaces-builder-plugin.version>1.0.5</myfaces-builder-plugin.version>
+    <myfaces-builder-plugin.version>1.0.6-SNAPSHOT</myfaces-builder-plugin.version>
   </properties>
 </project>
