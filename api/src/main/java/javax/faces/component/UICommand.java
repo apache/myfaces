@@ -186,7 +186,7 @@ public class UICommand extends UIComponentBase implements ActionSource2
      * is functionally equivalent to a reference to an action method that returns the string literal.
      * </p>
      */
-    @JSFProperty(returnSignature = "java.lang.Object", jspName = "action", clientEvent="action")
+    @JSFProperty(stateHolder=true, returnSignature = "java.lang.Object", jspName = "action", clientEvent="action")
     public MethodExpression getActionExpression()
     {
         return (MethodExpression) getStateHelper().eval(PropertyKeys.actionExpression);
@@ -206,7 +206,7 @@ public class UICommand extends UIComponentBase implements ActionSource2
      * 
      * @deprecated
      */
-    @JSFProperty(returnSignature = "void", methodSignature = "javax.faces.event.ActionEvent")
+    @JSFProperty(stateHolder=true, returnSignature = "void", methodSignature = "javax.faces.event.ActionEvent")
     public MethodBinding getActionListener()
     {
         return (MethodBinding) getStateHelper().eval(PropertyKeys.actionListener);
