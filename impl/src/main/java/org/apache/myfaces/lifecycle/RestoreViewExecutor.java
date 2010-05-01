@@ -151,6 +151,12 @@ class RestoreViewExecutor implements PhaseExecutor
                     {
                         viewParameters = metadata.getViewParameters(viewRoot);
                     }
+                    else if(facesContext.getResponseComplete())
+                    {
+                        // this can happen if the current request is a debug request,
+                        // in this case no further processing is necessary
+                        return true;
+                    }
                 }
     
                 // If viewParameters is not an empty collection DO NOT call renderResponse

@@ -79,8 +79,8 @@ import javax.faces.view.ValueHolderAttachedObjectHandler;
 import javax.faces.view.ValueHolderAttachedObjectTarget;
 import javax.faces.view.ViewMetadata;
 import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagDecorator;
 import javax.faces.view.facelets.ResourceResolver;
+import javax.faces.view.facelets.TagDecorator;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
@@ -1199,8 +1199,18 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     public UIViewRoot createView(FacesContext context, String viewId)
     {
         // we have to check for a possible debug request
-        UIDebug.debugRequest(context);
-        return super.createView(context, viewId);
+        if (UIDebug.debugRequest(context))
+        {
+            // the current request is a debug request, so we don't need
+            // to create a view, since the output has already been written
+            // in UIDebug.debugRequest() and facesContext.responseComplete()
+            // has been called.
+            return null;
+        }
+        else
+        {
+            return super.createView(context, viewId);
+        }
     }
 
     /**
@@ -2067,11 +2077,15 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                 // the ViewHandler might be wrapped and wants to do some work
                 // in createView() (e.g. in Trinidad - see MYFACES-2641)
                 UIViewRoot view = context.getApplication().getViewHandler().createView(context, getViewId());
-                // inside createView(context,viewId), calculateViewId() is called and
-                // the result is stored inside created UIViewRoot, so we can safely take the derived
-                // viewId from there.
-                Facelet facelet = _getViewMetadataFacelet(view.getViewId());
-                facelet.apply(context, view);
+                
+                if (view != null)
+                {
+                    // inside createView(context,viewId), calculateViewId() is called and
+                    // the result is stored inside created UIViewRoot, so we can safely take the derived
+                    // viewId from there.
+                    Facelet facelet = _getViewMetadataFacelet(view.getViewId());
+                    facelet.apply(context, view);
+                }
 
                 return view;
             }
