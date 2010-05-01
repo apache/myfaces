@@ -92,7 +92,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder
      * implements the Converter interface.
      * </p>
      */
-    @JSFProperty
+    @JSFProperty(stateHolder=true)
     public Converter getConverter()
     {
         if (_converter != null)
