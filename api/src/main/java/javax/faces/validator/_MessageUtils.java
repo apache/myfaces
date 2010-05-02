@@ -18,12 +18,12 @@
  */
 package javax.faces.validator;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
@@ -96,22 +96,12 @@ class _MessageUtils
 
         if (args != null && args.length > 0)
         {
-            MessageFormat format;
-
-            if (summary != null)
-            {
-                format = new MessageFormat(summary, locale);
-                summary = format.format(args);
-            }
-
-            if (detail != null)
-            {
-                format = new MessageFormat(detail, locale);
-                detail = format.format(args);
-            }
+            return new _ParametrizableFacesMessage(severity, summary, detail, args, locale);
         }
-
-        return new FacesMessage(severity, summary, detail);
+        else
+        {
+            return new FacesMessage(severity, summary, detail);
+        }
     }
 
 
