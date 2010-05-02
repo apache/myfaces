@@ -21,7 +21,6 @@ package org.apache.myfaces.renderkit.html;
 import java.io.IOException;
 
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
@@ -46,9 +45,7 @@ import org.apache.myfaces.shared_impl.renderkit.html.util.JavascriptUtils;
     type="javax.faces.Form")
 public class HtmlFormRenderer
         extends HtmlFormRendererBase
-{
-    private static final String FORM_TARGET = HTML.FORM_ELEM;
-    
+{    
     //private static final Log log = LogFactory.getLog(HtmlFormRenderer.class);
     
     @Override
@@ -58,12 +55,6 @@ public class HtmlFormRenderer
         
         ResponseWriter writer = facesContext.getResponseWriter();
         ExternalContext extContext = facesContext.getExternalContext();
-        UIViewRoot root = facesContext.getViewRoot();
-        
-        for (UIComponent child : root.getComponentResources(facesContext,
-             FORM_TARGET)) {
-            child.encodeAll (facesContext);
-        }
         
         // If javascript viewstate is enabled write empty hidden input in forms 
         if (JavascriptUtils.isJavascriptAllowed(extContext) && MyfacesConfig.getCurrentInstance(extContext).isViewStateJavascript()) {
