@@ -167,7 +167,7 @@ public class BeanValidator implements Validator, PartialStateHolder
             {
                 final ConstraintViolation constraintViolation = (ConstraintViolation) violation;
                 final String message = constraintViolation.getMessage();
-                final String[] args = new String[]{ message, _MessageUtils.getLabel(context, component) };
+                final Object[] args = new Object[]{ message, _MessageUtils.getLabel(context, component) };
                 final FacesMessage msg = _MessageUtils.getErrorMessage(context, MESSAGE_ID, args);
                 messages.add(msg);
             }

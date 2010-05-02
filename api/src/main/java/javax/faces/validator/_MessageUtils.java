@@ -85,10 +85,18 @@ class _MessageUtils
             {
                 //Try to find detail alone
                 detail = getBundleString(appBundle, messageId + DETAIL_SUFFIX);
-                if (detail == null)
+                if (detail != null)
+                {
+                    summary = null;
+                }
+                else
                 {
                     detail = getBundleString(defBundle, messageId + DETAIL_SUFFIX);
-                    if (detail == null)
+                    if (detail != null)
+                    {
+                        summary = null;
+                    }
+                    else
                     {
                         //Neither detail nor summary found
                         facesContext.getExternalContext().log("No message with id " + messageId + " found in any bundle");
@@ -100,24 +108,13 @@ class _MessageUtils
 
         if (args != null && args.length > 0)
         {
-            MessageFormat format;
-
-            if (summary != null)
-            {
-                format = new MessageFormat(summary, locale);
-                summary = format.format(args);
-            }
-
-            if (detail != null)
-            {
-                format = new MessageFormat(detail, locale);
-                detail = format.format(args);
-            }
+            return new _ParametrizableFacesMessage(severity, summary, detail, args, locale);
         }
-
-        return new _LabeledFacesMessage(severity, summary, detail);
+        else
+        {
+            return new FacesMessage(severity, summary, detail);
+        }
     }
-
 
     private static String getBundleString(ResourceBundle bundle, String key)
     {
@@ -135,7 +132,6 @@ class _MessageUtils
     private static ResourceBundle getApplicationBundle(FacesContext facesContext, Locale locale)
     {
         String bundleName = facesContext.getApplication().getMessageBundle();
-        
         return bundleName != null ? getBundle(facesContext, locale, bundleName) : null;
     }
 
@@ -146,15 +142,15 @@ class _MessageUtils
     }
 
     private static ResourceBundle getBundle(FacesContext facesContext,
-            Locale locale,
-            String bundleName)
+                                            Locale locale,
+                                            String bundleName)
     {
         try
         {
             //First we try the JSF implementation class loader
             return ResourceBundle.getBundle(bundleName,
-                    locale,
-                    facesContext.getClass().getClassLoader());
+                                            locale,
+                                            facesContext.getClass().getClassLoader());
         }
         catch (MissingResourceException ignore1)
         {
@@ -162,8 +158,8 @@ class _MessageUtils
             {
                 //Next we try the JSF API class loader
                 return ResourceBundle.getBundle(bundleName,
-                        locale,
-                        _MessageUtils.class.getClassLoader());
+                                                locale,
+                                                _MessageUtils.class.getClassLoader());
             }
             catch (MissingResourceException ignore2)
             {
@@ -191,18 +187,16 @@ class _MessageUtils
         }
     }
     
-    static String getLabel(FacesContext facesContext, UIComponent component) {
+    static Object getLabel(FacesContext facesContext, UIComponent component) {
         Object label = component.getAttributes().get("label");
         if(label != null)
-            return label.toString();
+            return label;
         
         ValueExpression expression = component.getValueExpression("label");
         if(expression != null)
-            return expression.getExpressionString();
-            //return (String)expression.getValue(facesContext.getELContext());
+            return expression;
         
         //If no label is not specified, use clientId
         return component.getClientId( facesContext );
     }
-
 }

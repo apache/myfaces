@@ -48,7 +48,7 @@ public class MessageUtilsTest extends AbstractJsfTestCase
     {
         HtmlInputText inputText = new HtmlInputText();
         inputText.getAttributes().put("label", "testLabel");
-        String label = _MessageUtils.getLabel(facesContext, inputText);
+        Object label = _MessageUtils.getLabel(facesContext, inputText);
         assertEquals("testLabel", label);
     }
 
@@ -59,7 +59,7 @@ public class MessageUtilsTest extends AbstractJsfTestCase
         ValueExpression expression = new MockValueExpression("#{requestScope.lbl}", String.class);
         inputText.setValueExpression("label", expression);
 
-        String label = _MessageUtils.getLabel(facesContext, inputText);
+        Object label = _MessageUtils.getLabel(facesContext, inputText);
         assertEquals("testLabel", label);
     }
 
@@ -67,7 +67,7 @@ public class MessageUtilsTest extends AbstractJsfTestCase
     {
         HtmlInputText inputText = new HtmlInputText();
         inputText.setId("testId");
-        String label = _MessageUtils.getLabel(facesContext, inputText);
+        Object label = _MessageUtils.getLabel(facesContext, inputText);
         assertEquals("testId", label);
     }
 }

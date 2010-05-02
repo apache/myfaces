@@ -200,7 +200,7 @@ public class UIViewParameter extends UIInput
             }
             else 
             {
-                String label = _MessageUtils.getLabel (context, this);
+                Object label = _MessageUtils.getLabel (context, this);
                 
                 message = _MessageUtils.getMessage (context, context.getViewRoot().getLocale(),
                      FacesMessage.SEVERITY_ERROR, REQUIRED_MESSAGE_ID, new Object[] { label });
