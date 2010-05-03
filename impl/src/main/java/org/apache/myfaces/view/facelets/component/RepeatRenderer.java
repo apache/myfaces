@@ -21,7 +21,6 @@ package org.apache.myfaces.view.facelets.component;
 import java.io.IOException;
 import java.util.Map;
 
-import javax.el.ELContext;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
@@ -53,8 +52,6 @@ public class RepeatRenderer extends Renderer
         {
             Map<String, Object> a = component.getAttributes();
             String tag = (String) a.get("alias.element");
-            ELContext elContext = context.getELContext();
-            UIRepeat repeat = (UIRepeat) component;
             if (tag != null)
             {
                 ResponseWriter out = context.getResponseWriter();
@@ -75,12 +72,6 @@ public class RepeatRenderer extends Renderer
                 }
             }
             
-            if (repeat.getVarStatus() != null)
-            {
-                elContext.getELResolver().setValue (elContext, null,
-                    repeat.getVarStatus(), repeat.getStatus());
-            }
-            
             for (UIComponent child : component.getChildren())
             {
                 child.encodeAll(context);
@@ -96,14 +87,7 @@ public class RepeatRenderer extends Renderer
     @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException
     {
-        ELContext elContext = context.getELContext();
-        UIRepeat repeat = (UIRepeat) component;
         
-        if (repeat.getVarStatus() != null)
-        {
-            elContext.getELResolver().setValue (elContext, null,
-                repeat.getVarStatus(), null);
-        }
     }
 
     @Override

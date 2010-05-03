@@ -21,14 +21,16 @@ package org.apache.myfaces.view.facelets.component;
 import java.io.Serializable;
 
 /**
- * @version $Id$
+ * This class is used as the bean that contains all the status
+ * information of UIRepeat during iteration. It is stored in the 
+ * RequestScope under the key specified in varStatus of UIRepeat.
+ * 
+ * @author Curtiss Howard (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public final class RepeatStatus implements Serializable
 {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
     
     private final int count;
@@ -45,7 +47,8 @@ public final class RepeatStatus implements Serializable
 
     private final Integer step;
     
-    public RepeatStatus(boolean first, boolean last, int count, int index, Integer begin, Integer end, Integer step)
+    public RepeatStatus(boolean first, boolean last, int count, int index, 
+            Integer begin, Integer end, Integer step)
     {
         this.count = count;
         this.index = index;

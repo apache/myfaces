@@ -21,6 +21,7 @@ package org.apache.myfaces.view.facelets.component;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.ResultSet;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,12 +31,16 @@ import java.util.Map;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.ContextCallback;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIComponentBase;
 import javax.faces.component.UIData;
 import javax.faces.component.UINamingContainer;
+import javax.faces.component.visit.VisitCallback;
+import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.FacesEvent;
@@ -91,6 +96,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     private transient StringBuffer _buffer;
     private transient DataModel<?> _model;
     private transient Object _origValue;
+    private transient Object _origVarStatus;
 
     public UIRepeat()
     {
@@ -122,12 +128,6 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     public void setOffset(int offset)
     {
         _offset = offset;
-    }
-    
-    protected RepeatStatus getStatus ()
-    {
-        return new RepeatStatus (_count == 0, _index + getStep() >= getDataModel().getRowCount(),
-            _count, _index, getOffset(), _end, getStep());
     }
     
     @JSFProperty
@@ -166,7 +166,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             return ((Integer)ve.getValue(getFacesContext().getELContext())).intValue();
         }
         
-        return -1;
+        return 1;
     }
 
     public void setStep(int step)
@@ -265,15 +265,25 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         }
         return id;
     }
+    
+    private RepeatStatus _getRepeatStatus()
+    {
+        return new RepeatStatus(_count == 0, _index + getStep() >= getDataModel().getRowCount(),
+            _count, _index, getOffset(), _end, getStep());
+    }
 
-    private void _captureOrigValue()
+    private void _captureScopeValues()
     {
         if (_var != null)
         {
             _origValue = getFacesContext().getExternalContext().getRequestMap().get(_var);
         }
+        if (_varStatus != null)
+        {
+            _origVarStatus = getFacesContext().getExternalContext().getRequestMap().get(_varStatus);
+        }
     }
-
+    
     private StringBuffer _getBuffer()
     {
         if (_buffer == null)
@@ -339,7 +349,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         }
     }
 
-    private void _restoreOrigValue()
+    private void _restoreScopeValues()
     {
         if (_var != null)
         {
@@ -353,8 +363,20 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                 attrs.remove(_var);
             }
         }
+        if (_varStatus != null)
+        {
+            Map<String, Object> attrs = getFacesContext().getExternalContext().getRequestMap();
+            if (_origVarStatus != null)
+            {
+                attrs.put(_varStatus, _origVarStatus);
+            }
+            else
+            {
+                attrs.remove(_varStatus);
+            }
+        }
     }
-
+    
     private void _restoreChildState()
     {
         if (getChildCount() > 0)
@@ -442,9 +464,18 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         DataModel<?> localModel = getDataModel();
         localModel.setRowIndex(index);
 
-        if (_index != -1 && _var != null && localModel.isRowAvailable())
+        if (_index != -1)
         {
-            getFacesContext().getExternalContext().getRequestMap().put(_var, localModel.getRowData());
+            if (_var != null && localModel.isRowAvailable())
+            {
+                getFacesContext().getExternalContext().getRequestMap()
+                        .put(_var, localModel.getRowData());
+            }
+            if (_varStatus != null)
+            {
+                getFacesContext().getExternalContext().getRequestMap()
+                        .put(_varStatus, _getRepeatStatus());
+            }
         }
 
         // restore child state
@@ -503,14 +534,13 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             return;
         
         // validate attributes
-        
         _validateAttributes();
         
         // clear datamodel
         _resetDataModel();
 
         // reset index
-        _captureOrigValue();
+        _captureScopeValues();
         _setIndex(-1);
 
         try
@@ -579,47 +609,184 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         finally
         {
             _setIndex(-1);
-            _restoreOrigValue();
+            _restoreScopeValues();
         }
     }
 
-    // public boolean invokeOnComponent(FacesContext faces, String clientId,
-    // ContextCallback callback) throws FacesException {
-    // String id = super.getClientId(faces);
-    // if (clientId.equals(id)) {
-    // callback.invokeContextCallback(faces, this);
-    // return true;
-    // } else if (clientId.startsWith(id)) {
-    // int prevIndex = this.index;
-    // int idxStart = clientId.indexOf(NamingContainer.SEPARATOR_CHAR, id
-    // .length());
-    // if (idxStart != -1
-    // && Character.isDigit(clientId.charAt(idxStart + 1))) {
-    // int idxEnd = clientId.indexOf(NamingContainer.SEPARATOR_CHAR,
-    // idxStart);
-    // if (idxEnd != -1) {
-    // int newIndex = Integer.parseInt(clientId.substring(
-    // idxStart, idxEnd));
-    // boolean found = false;
-    // try {
-    // this.captureOrigValue();
-    // this.setIndex(newIndex);
-    // if (this.isIndexAvailable()) {
-    // found = super.invokeOnComponent(faces, clientId,
-    // callback);
-    // }
-    // } finally {
-    // this.setIndex(prevIndex);
-    // this.restoreOrigValue();
-    // }
-    // return found;
-    // }
-    // } else {
-    // return super.invokeOnComponent(faces, clientId, callback);
-    // }
-    // }
-    // return false;
-    // }
+    @Override
+    public boolean invokeOnComponent(FacesContext faces, String clientId,
+            ContextCallback callback) throws FacesException
+    {
+        // get the index-less clientId
+        String indexLessId = super.getClientId(faces);
+        if (clientId.startsWith(indexLessId))
+        {
+            // the index for which the component should be invoked
+            int invokeIndex = -1;
+            
+            // try to get the invokeIndex out of the given clientId.
+            // Note that the clientId of UIRepeat contains the current index,
+            // if the index is >= 0 (see getClientId()).
+            int idxStart = clientId.indexOf(UINamingContainer.getSeparatorChar(faces),
+                    indexLessId.length());
+            if (idxStart != -1 && Character.isDigit(clientId.charAt(idxStart + 1)))
+            {
+                int idxEnd = clientId.indexOf(UINamingContainer.getSeparatorChar(faces), idxStart + 1);
+                if (idxEnd != -1)
+                {
+                    invokeIndex = Integer.parseInt(clientId.substring(idxStart + 1, idxEnd));
+                }
+            }
+            
+            // safe the current index, count aside
+            final int prevIndex = _index;
+            final int prevCount = _count;
+            
+            try
+            {
+                // save the current scope values and set the right index
+                _captureScopeValues();
+                if (invokeIndex != -1)
+                {
+                    // calculate count for RepeatStatus
+                    _count = (invokeIndex - getOffset()) / getStep();
+                }
+                _setIndex(invokeIndex);
+                
+                if (_isIndexAvailable())
+                {
+                    return super.invokeOnComponent(faces, clientId, callback);
+                }
+                else if (clientId.equals(indexLessId))
+                {
+                    // the only proper case for invokeIndex == -1 (Note that for 
+                    // a invokeIndex of -1 we must not invoke our children or facets)
+                    callback.invokeContextCallback(faces, this);
+                    return true;
+                }
+                else
+                {
+                    // most likely no valid clientId
+                    return false;
+                }
+            }
+            finally
+            {
+                // restore the previous count, index and scope values
+                _count = prevCount;
+                _setIndex(prevIndex);
+                _restoreScopeValues();
+            }
+        }
+        else
+        {
+            // the clientId does not match to this component or one of its children
+            return false;
+        }
+    }
+    
+    @Override
+    public boolean visitTree(VisitContext context, VisitCallback callback)
+    {
+        // override the behavior from UIComponent to visit
+        // all children once per "row"
+        
+        if (!isVisitable(context)) 
+        {
+            return false;
+        }
+        
+        // save the current index, count aside
+        final int prevIndex = _index;
+        final int prevCount = _count;
+        
+        // validate attributes
+        _validateAttributes();
+        
+        // clear datamodel
+        _resetDataModel();
+
+        // reset index and save scope values
+        _captureScopeValues();
+        _setIndex(-1);
+        
+        // push the Component to EL
+        pushComponentToEL(context.getFacesContext(), this);
+        try 
+        {
+            VisitResult res = context.invokeVisitCallback(this, callback);
+            switch (res) 
+            {
+            // we are done, nothing has to be processed anymore
+            case COMPLETE:
+                return true;
+
+            case REJECT:
+                return false;
+
+            //accept
+            default:
+                // determine if we need to visit our children
+                // Note that we need to do this check because we are a NamingContainer
+                Collection<String> subtreeIdsToVisit = context
+                        .getSubtreeIdsToVisit(this);
+                boolean doVisitChildren = subtreeIdsToVisit != null
+                        && !subtreeIdsToVisit.isEmpty();
+                if (doVisitChildren)
+                {
+                    // visit the facets of the component
+                    if (getFacetCount() > 0) 
+                    {
+                        for (UIComponent facet : getFacets().values()) 
+                        {
+                            if (facet.visitTree(context, callback)) 
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                    
+                    // visit the children once per "row"
+                    if (getChildCount() > 0) 
+                    {
+                        int i = getOffset();
+                        int end = getSize();
+                        int step = getStep();
+                        end = (end >= 0) ? i + end : Integer.MAX_VALUE - 1;
+                        _count = 0;
+                        
+                        _setIndex(i);
+                        while (i <= end && _isIndexAvailable())
+                        {
+                            for (UIComponent child : getChildren()) 
+                            {
+                                if (child.visitTree(context, callback)) 
+                                {
+                                    return true;
+                                }
+                            }
+                            
+                            _count++;
+                            i += step;
+                            
+                            _setIndex(i);
+                        }
+                    }
+                }
+                return false;
+            }
+        }
+        finally 
+        {
+            // pop the component from EL
+            popComponentFromEL(context.getFacesContext());
+            
+            // restore the previous count, index and scope values
+            _count = prevCount;
+            _setIndex(prevIndex);
+            _restoreScopeValues();
+        }
+    }
 
     @Override
     public void processDecodes(FacesContext faces)
