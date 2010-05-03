@@ -35,6 +35,9 @@ import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 
+// NOTE: The tests of this class are currently disabled
+// see MYFACES-2692 and MYFACESTEST-9 for details.
+
 public class HtmlFormRendererTest extends AbstractJsfTestCase
 {
     private MockResponseWriter writer ;
@@ -74,7 +77,7 @@ public class HtmlFormRendererTest extends AbstractJsfTestCase
         writer = null;
     }
 
-    public void testHtmlPropertyPassTru() throws Exception 
+    /*public void testHtmlPropertyPassTru() throws Exception 
     { 
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicReadOnlyAttrs();
 
@@ -117,12 +120,12 @@ public class HtmlFormRendererTest extends AbstractJsfTestCase
             }
         }
         return buffer.toString();
-    }
+    }*/
     
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
-    public void testClientBehaviorHolderRendersIdAndName() 
+    /*public void testClientBehaviorHolderRendersIdAndName() 
     {
         form.addClientBehavior("focus", new AjaxBehavior());
         try 
@@ -137,5 +140,5 @@ public class HtmlFormRendererTest extends AbstractJsfTestCase
             fail(e.getMessage());
         }
         
-    }
+    }*/
 }
