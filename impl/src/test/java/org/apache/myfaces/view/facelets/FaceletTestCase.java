@@ -66,6 +66,7 @@ import org.apache.myfaces.test.mock.MockServletContext;
 import org.apache.myfaces.test.mock.MockVariableResolver;
 import org.apache.myfaces.test.mock.lifecycle.MockLifecycle;
 import org.apache.myfaces.test.mock.lifecycle.MockLifecycleFactory;
+import org.apache.myfaces.test.mock.visit.MockVisitContextFactory;
 import org.apache.myfaces.view.facelets.mock.MockHttpServletRequest;
 import org.apache.myfaces.view.facelets.mock.MockHttpServletResponse;
 import org.apache.myfaces.view.facelets.mock.MockResourceHandlerSupport;
@@ -282,6 +283,8 @@ public abstract class FaceletTestCase extends TestCase
                 TagHandlerDelegateFactoryImpl.class.getName());
         FactoryFinder.setFactory(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY,
                 PartialViewContextFactoryImpl.class.getName());
+        FactoryFinder.setFactory(FactoryFinder.VISIT_CONTEXT_FACTORY, 
+                MockVisitContextFactory.class.getName());
     }
     
     protected void loadStandardFacesConfig() throws Exception
