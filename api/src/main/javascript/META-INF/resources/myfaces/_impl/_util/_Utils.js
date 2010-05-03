@@ -258,9 +258,12 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
                         evalNode = parentNode;
                     } else {
                         //normal dom node case we replace only the client id fragment!
-                        var replaceItem = myfaces._impl._util._Utils.findHtmlItemFromFragment(fragment, item.id);
-                        if(replaceItem == null)replaceItem = fragment;
-                        evalNode = item.parentNode.replaceChild(replaceItem, item);
+                        //TODO this code is heavily under discussion, probably invalid in the long run
+                        //I am reverting the findHtmlItemFromFragment back to fragment
+                        //var replaceItem = myfaces._impl._util._Utils.findHtmlItemFromFragment(fragment, item.id);
+                        //if(replaceItem == null)replaceItem = fragment;
+                        // replaceItem = fragment;
+                        evalNode = item.parentNode.replaceChild(fragment, item);
                     }
                 } else {
                     item.insertAdjacentHTML('beforeBegin', newTag);
