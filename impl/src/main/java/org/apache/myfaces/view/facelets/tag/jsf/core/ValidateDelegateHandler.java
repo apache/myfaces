@@ -25,6 +25,7 @@ import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.ValidatorConfig;
 import javax.faces.view.facelets.ValidatorHandler;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 
 
@@ -40,6 +41,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
         name = "f:validator",
         bodyContent = "empty", 
         tagClass="org.apache.myfaces.taglib.core.ValidatorImplTag")
+@JSFFaceletAttribute(name="for",desc="no description",longDescription="no description")
 public final class ValidateDelegateHandler extends ValidatorHandler
 {
 

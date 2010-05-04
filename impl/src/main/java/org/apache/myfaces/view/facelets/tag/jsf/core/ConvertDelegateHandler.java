@@ -28,6 +28,7 @@ import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.MetaRuleset;
 import javax.faces.view.facelets.TagAttribute;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 
 /**
@@ -42,6 +43,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
         name = "f:converter",
         bodyContent = "empty", 
         tagClass="org.apache.myfaces.taglib.core.ConverterImplTag")
+@JSFFaceletAttribute(name="for",desc="no description",longDescription="no description")
 public final class ConvertDelegateHandler extends ConverterHandler
 {
 

@@ -40,6 +40,7 @@ import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandler;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
@@ -186,6 +187,10 @@ public final class ValueChangeListenerHandler extends TagHandler
         evh.addValueChangeListener(listener);
     }
 
+    /**
+     * TODO: Document me!
+     */
+    @JSFFaceletAttribute
     public String getFor()
     {
         TagAttribute forAttribute = getAttribute("for");
