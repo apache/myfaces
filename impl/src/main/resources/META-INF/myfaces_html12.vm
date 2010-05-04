@@ -49,7 +49,7 @@ $baseContent
       
 #set ($propertyList = ${component.propertyList})
 #foreach( $property in $propertyList )
-#if (!$property.isTagExcluded())
+#if (!$property.isTagExcluded() && !$property.isFaceletsOnly())
       <attribute>
 #if ($property.longDescription)
          <description><![CDATA[$property.longDescription]]></description>
@@ -121,7 +121,7 @@ $baseContent
       
 #set ($propertyList = ${component.propertyList})
 #foreach( $property in $propertyList )
-#if (!$property.isTagExcluded())
+#if (!$property.isTagExcluded() && !$property.isFaceletsOnly())
       <attribute>
 #if ($property.longDescription)
          <description><![CDATA[$property.longDescription]]></description>
@@ -177,7 +177,7 @@ $baseContent
       
 #set ($propertyList = ${component.propertyList})
 #foreach( $property in $propertyList )
-#if (!$property.isTagExcluded())
+#if (!$property.isTagExcluded() && !$property.isFaceletsOnly())
       <attribute>
 #if ($property.longDescription)
          <description><![CDATA[$property.longDescription]]></description>
@@ -225,6 +225,7 @@ $baseContent
       <body-content>$tag.bodyContent</body-content>
 #set ($attributeList = ${tag.attributeList})
 #foreach( $attribute in $attributeList )
+#if (!$attribute.isFaceletsOnly())
       <attribute>
 #if ($attribute.longDescription)
          <description><![CDATA[$attribute.longDescription]]></description>
@@ -253,6 +254,7 @@ $baseContent
 #end
 #end
       </attribute>
+#end
 #end
    </tag>
 #end

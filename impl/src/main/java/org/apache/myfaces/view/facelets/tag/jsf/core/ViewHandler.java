@@ -32,6 +32,7 @@ import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
@@ -51,16 +52,22 @@ public final class ViewHandler extends TagHandler
 
     private final static Class<?>[] LISTENER_SIG = new Class<?>[] { PhaseEvent.class };
 
+    @JSFFaceletAttribute
     private final TagAttribute locale;
 
+    @JSFFaceletAttribute
     private final TagAttribute renderKitId;
 
+    @JSFFaceletAttribute
     private final TagAttribute contentType;
 
+    @JSFFaceletAttribute
     private final TagAttribute encoding;
 
+    @JSFFaceletAttribute
     private final TagAttribute beforePhase;
 
+    @JSFFaceletAttribute
     private final TagAttribute afterPhase;
 
     /**
