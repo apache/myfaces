@@ -24,6 +24,7 @@ import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidator;
 
 /**
@@ -82,5 +83,17 @@ public class RequiredValidator implements Validator
                     new Object[] { _MessageUtils.getLabel(facesContext,
                             uiComponent) }));
         }
+    }
+    
+    @JSFProperty(faceletsOnly=true)
+    private Boolean isDisabled()
+    {
+        return null;
+    }
+    
+    @JSFProperty(faceletsOnly=true)
+    private String getFor()
+    {
+        return null;
     }
 }

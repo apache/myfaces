@@ -215,4 +215,16 @@ public class LengthValidator
     {
         _initialStateMarked = true;
     }
+    
+    @JSFProperty(faceletsOnly=true)
+    private Boolean isDisabled()
+    {
+        return null;
+    }
+    
+    @JSFProperty(faceletsOnly=true)
+    private String getFor()
+    {
+        return null;
+    }
 }
