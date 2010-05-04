@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.el.ELContext;
+import javax.el.ELException;
 import javax.el.ValueExpression;
 import javax.faces.component.ContextCallback;
 import javax.faces.component.UIComponent;
@@ -35,7 +37,6 @@ import javax.faces.context.ResponseWriter;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.Company;
 import org.apache.myfaces.view.facelets.bean.Example;
-import org.apache.myfaces.view.facelets.component.RepeatStatus;
 import org.apache.myfaces.view.facelets.component.UIRepeat;
 import org.apache.myfaces.view.facelets.util.FastWriter;
 
@@ -99,39 +100,38 @@ public class RepeatTestCase extends FaceletTestCase
         String invokeId = "form:repeat";
         assertTrue(root.invokeOnComponent(facesContext, invokeId, callback));
         assertEquals(repeat, callback._lastTarget);
-        assertEquals(varValue, callback._rowValue);
-        assertEquals(null, callback._repeatStatus);
-        assertEquals(statusValue, callback._repeatStatusObject);
+        assertEquals(varValue, callback._rowValue); // previous set varValue
+        assertEquals(statusValue, callback._repeatStatus); // previous set statusValue
         
         // invokeOnComponent on a child of UIRepeat in the first row
         invokeId = "form:repeat:0:outputText";
         assertTrue(root.invokeOnComponent(facesContext, invokeId, callback));
         assertEquals(outputText, callback._lastTarget);
         assertEquals(repeatValues[0], callback._rowValue);
-        assertEquals(0, callback._repeatStatus.getIndex());
-        assertEquals(true, callback._repeatStatus.isFirst());
-        assertEquals(false, callback._repeatStatus.isLast());
-        assertEquals(true, callback._repeatStatus.isEven());
+        assertEquals(0, callback._index);
+        assertEquals(true, callback._first);
+        assertEquals(false, callback._last);
+        assertEquals(true, callback._even);
         
         // invokeOnComponent on a child of UIRepeat in the second row
         invokeId = "form:repeat:1:outputText";
         assertTrue(root.invokeOnComponent(facesContext, invokeId, callback));
         assertEquals(outputText, callback._lastTarget);
         assertEquals(repeatValues[1], callback._rowValue);
-        assertEquals(1, callback._repeatStatus.getIndex());
-        assertEquals(false, callback._repeatStatus.isFirst());
-        assertEquals(false, callback._repeatStatus.isLast());
-        assertEquals(false, callback._repeatStatus.isEven());
+        assertEquals(1, callback._index);
+        assertEquals(false, callback._first);
+        assertEquals(false, callback._last);
+        assertEquals(false, callback._even);
         
         // invokeOnComponent on a child of UIRepeat in the third row
         invokeId = "form:repeat:2:outputText";
         assertTrue(root.invokeOnComponent(facesContext, invokeId, callback));
         assertEquals(outputText, callback._lastTarget);
         assertEquals(repeatValues[2], callback._rowValue);
-        assertEquals(2, callback._repeatStatus.getIndex());
-        assertEquals(false, callback._repeatStatus.isFirst());
-        assertEquals(true, callback._repeatStatus.isLast());
-        assertEquals(true, callback._repeatStatus.isEven());
+        assertEquals(2, callback._index);
+        assertEquals(false, callback._first);
+        assertEquals(true, callback._last);
+        assertEquals(true, callback._even);
         
         // invokeOnComponent on a child of UIRepeat with invalid row (-1)
         invokeId = "form:repeat:outputText";
@@ -157,10 +157,15 @@ public class RepeatTestCase extends FaceletTestCase
         
         private UIComponent _lastTarget;
         private Object _rowValue;
-        private RepeatStatus _repeatStatus;
-        private Object _repeatStatusObject;
+        private Object _repeatStatus;
+        private Object _index;
+        private Object _first, _last, _even;
         private ValueExpression _rowValueExpression;
         private ValueExpression _statusValueExpression;
+        private ValueExpression _indexValueExpression;
+        private ValueExpression _firstValueExpression;
+        private ValueExpression _lastValueExpression;
+        private ValueExpression _evenValueExpression;
 
         public TestContextCallback(FacesContext context)
         {
@@ -168,20 +173,35 @@ public class RepeatTestCase extends FaceletTestCase
                     .createValueExpression(context.getELContext(), "#{row}", Object.class);
             _statusValueExpression = context.getApplication().getExpressionFactory()
                     .createValueExpression(context.getELContext(), "#{status}", Object.class);
+            _indexValueExpression = context.getApplication().getExpressionFactory()
+                    .createValueExpression(context.getELContext(), "#{status.index}", Object.class);
+            _firstValueExpression = context.getApplication().getExpressionFactory()
+                    .createValueExpression(context.getELContext(), "#{status.first}", Object.class);
+            _lastValueExpression = context.getApplication().getExpressionFactory()
+                    .createValueExpression(context.getELContext(), "#{status.last}", Object.class);
+            _evenValueExpression = context.getApplication().getExpressionFactory()
+                    .createValueExpression(context.getELContext(), "#{status.even}", Object.class);
         }
         
         public void invokeContextCallback(FacesContext context, UIComponent target)
         {
             _lastTarget = target;
-            _rowValue = _rowValueExpression.getValue(context.getELContext());
-            _repeatStatusObject = _statusValueExpression.getValue(context.getELContext());
-            if (_repeatStatusObject instanceof RepeatStatus)
+            
+            // evaluate ValueExpressions
+            ELContext elCtx = context.getELContext();
+            _rowValue = _rowValueExpression.getValue(elCtx);
+            _repeatStatus = _statusValueExpression.getValue(elCtx);
+            try
             {
-                _repeatStatus = (RepeatStatus) _repeatStatusObject;
+                _index = _indexValueExpression.getValue(elCtx);
+                _first = _firstValueExpression.getValue(elCtx);
+                _last = _lastValueExpression.getValue(elCtx);
+                _even = _evenValueExpression.getValue(elCtx);
             }
-            else
+            catch (ELException ele)
             {
-                _repeatStatus = null;
+                // repeatStatus is some other object, so these values are all null
+                _index = _first = _last = _even = null;
             }
         }
         
@@ -250,7 +270,7 @@ public class RepeatTestCase extends FaceletTestCase
         
         private List<String> _visitedClientIds;
         private ValueExpression _rowValueExpression;
-        private ValueExpression _statusValueExpression;
+        private ValueExpression _indexValueExpression;
         private String[] _repeatValues;
         
         public TestVisitCallback(FacesContext context, String[] repeatValues)
@@ -259,8 +279,8 @@ public class RepeatTestCase extends FaceletTestCase
             _visitedClientIds = new ArrayList<String>();
             _rowValueExpression = context.getApplication().getExpressionFactory()
                     .createValueExpression(context.getELContext(), "#{row}", Object.class);
-            _statusValueExpression = context.getApplication().getExpressionFactory()
-                    .createValueExpression(context.getELContext(), "#{status}", Object.class);
+            _indexValueExpression = context.getApplication().getExpressionFactory()
+                    .createValueExpression(context.getELContext(), "#{status.index}", Object.class);
         }
 
         public VisitResult visit(VisitContext context, UIComponent target)
@@ -276,21 +296,20 @@ public class RepeatTestCase extends FaceletTestCase
                 
                 if (!(target instanceof UIRepeat))
                 {
-                    // test #{row} and #{status}
+                    // test #{row} and #{status.index}
+                    ELContext elCtx = context.getFacesContext().getELContext();
                     
-                    Object repeatStatusObject = _statusValueExpression.getValue(
-                            context.getFacesContext().getELContext());
-                    // #{status} has to be of type RepeatStatus
-                    assertTrue(repeatStatusObject instanceof RepeatStatus);
-                    RepeatStatus repeatStatus = (RepeatStatus) repeatStatusObject;
+                    Object indexObject = _indexValueExpression.getValue(elCtx);
+                    // indexObject has to be an Integer
+                    assertTrue(indexObject instanceof Integer);
+                    Integer index = (Integer) indexObject;
                     
-                    // the index from the repeatStatus has to be part of the clientId
-                    assertTrue(clientId.contains("" + repeatStatus.getIndex()));
+                    // the index has to be part of the clientId
+                    assertTrue(clientId.contains("" + index));
                     
-                    Object rowValue = _rowValueExpression.getValue(
-                            context.getFacesContext().getELContext());
+                    Object rowValue = _rowValueExpression.getValue(elCtx);
                     // #{row} has to be the repeatValue for the current index
-                    assertEquals(_repeatValues[repeatStatus.getIndex()], rowValue);
+                    assertEquals(_repeatValues[index], rowValue);
                 }
             }
             
