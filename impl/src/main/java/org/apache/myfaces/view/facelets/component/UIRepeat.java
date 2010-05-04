@@ -357,6 +357,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             if (_origValue != null)
             {
                 attrs.put(_var, _origValue);
+                _origValue = null;
             }
             else
             {
@@ -369,6 +370,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             if (_origVarStatus != null)
             {
                 attrs.put(_varStatus, _origVarStatus);
+                _origVarStatus = null;
             }
             else
             {
@@ -453,7 +455,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             _saveChildState(faces, itr.next());
         }
     }
-
+    
     private void _setIndex(int index)
     {
         // save child state
@@ -480,6 +482,16 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
 
         // restore child state
         _restoreChildState();
+    }
+    
+    /**
+     * Calculates the count value for the given index.
+     * @param index
+     * @return
+     */
+    private int _calculateCountForIndex(int index)
+    {
+        return (index - getOffset()) / getStep();
     }
     
     private void _validateAttributes () throws FacesException {
@@ -649,7 +661,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                 if (invokeIndex != -1)
                 {
                     // calculate count for RepeatStatus
-                    _count = (invokeIndex - getOffset()) / getStep();
+                    _count = _calculateCountForIndex(invokeIndex);
                 }
                 _setIndex(invokeIndex);
                 
@@ -936,10 +948,20 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         public void processListener(FacesListener listener)
         {
             UIRepeat owner = (UIRepeat) getComponent();
-            int prevIndex = owner._index;
+            
+            // safe the current index, count aside
+            final int prevIndex = owner._index;
+            final int prevCount = owner._count;
+            
             try
             {
-                owner._setIndex(_index);
+                owner._captureScopeValues();
+                if (this._index != -1)
+                {
+                    // calculate count for RepeatStatus
+                    _count = _calculateCountForIndex(this._index);
+                }
+                owner._setIndex(this._index);
                 if (owner._isIndexAvailable())
                 {
                     _target.processListener(listener);
@@ -947,7 +969,10 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             }
             finally
             {
+                // restore the previous count, index and scope values
+                owner._count = prevCount;
                 owner._setIndex(prevIndex);
+                owner._restoreScopeValues();
             }
         }
 
@@ -970,9 +995,19 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         {
             IndexedEvent idxEvent = (IndexedEvent) event;
             _resetDataModel();
-            int prevIndex = _index;
+            
+            // safe the current index, count aside
+            final int prevIndex = _index;
+            final int prevCount = _count;
+            
             try
             {
+                _captureScopeValues();
+                if (idxEvent.getIndex() != -1)
+                {
+                    // calculate count for RepeatStatus
+                    _count = _calculateCountForIndex(idxEvent.getIndex());
+                }
                 _setIndex(idxEvent.getIndex());
                 if (_isIndexAvailable())
                 {
@@ -982,7 +1017,10 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             }
             finally
             {
+                // restore the previous count, index and scope values
+                _count = prevCount;
                 _setIndex(prevIndex);
+                _restoreScopeValues();
             }
         }
         else
