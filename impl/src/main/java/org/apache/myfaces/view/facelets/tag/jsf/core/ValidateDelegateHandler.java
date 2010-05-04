@@ -41,7 +41,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
         name = "f:validator",
         bodyContent = "empty", 
         tagClass="org.apache.myfaces.taglib.core.ValidatorImplTag")
-@JSFFaceletAttribute(name="for",desc="no description",longDescription="no description")
 public final class ValidateDelegateHandler extends ValidatorHandler
 {
 

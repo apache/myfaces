@@ -20,6 +20,8 @@ package javax.faces.view.facelets;
 
 import javax.faces.view.ValueHolderAttachedObjectHandler;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+
 /**
  * Handles setting a Converter instance on a ValueHolder. Will wire all attributes set to the Converter instance
  * created/fetched. Uses the "binding" attribute for grabbing instances to apply attributes to. <p/> Will only
@@ -32,6 +34,7 @@ import javax.faces.view.ValueHolderAttachedObjectHandler;
  * @author Jacob Hookom
  * @version $Id: ConvertHandler.java,v 1.4 2008/07/13 19:01:46 rlubke Exp $
  */
+@JSFFaceletTag
 public class ConverterHandler extends FaceletsAttachedObjectHandler implements ValueHolderAttachedObjectHandler
 {
     private String converterId;

@@ -22,12 +22,16 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.view.AttachedObjectHandler;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+
 /**
  * @author Simon Lessard (latest modification by $Author: slessard $)
  * @version $Revision: 696523 $ $Date: 2009-03-15 17:17:48 -0400 (mer., 17 sept. 2008) $
  * 
  * @since 2.0
  */
+@JSFFaceletTag
 public abstract class FaceletsAttachedObjectHandler extends DelegatingMetaTagHandler implements AttachedObjectHandler
 {
     /**
@@ -62,6 +66,7 @@ public abstract class FaceletsAttachedObjectHandler extends DelegatingMetaTagHan
     /**
      * {@inheritDoc}
      */
+    @JSFFaceletAttribute
     public final String getFor()
     {
         //Just redirect to delegate handler

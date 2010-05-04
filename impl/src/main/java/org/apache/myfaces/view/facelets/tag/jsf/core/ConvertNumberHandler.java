@@ -45,7 +45,6 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
         name = "f:convertNumber",
         bodyContent = "empty", 
         converterClass="javax.faces.convert.NumberConverter")
-@JSFFaceletAttribute(name="for",desc="no description",longDescription="no description")
 public final class ConvertNumberHandler extends ConverterHandler
 {
 

@@ -20,12 +20,15 @@ package javax.faces.view.facelets;
 
 import javax.faces.view.BehaviorHolderAttachedObjectHandler;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+
 /**
  * @author Simon Lessard (latest modification by $Author: slessard $)
  * @version $Revision: 696523 $ $Date: 2009-03-15 17:28:58 -0400 (mer., 17 sept. 2008) $
  *
  * @since 2.0
  */
+@JSFFaceletTag
 public class BehaviorHandler extends FaceletsAttachedObjectHandler implements BehaviorHolderAttachedObjectHandler
 {
     private String behaviorId;

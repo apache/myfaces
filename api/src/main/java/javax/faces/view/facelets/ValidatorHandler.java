@@ -21,6 +21,8 @@ package javax.faces.view.facelets;
 import javax.faces.view.EditableValueHolderAttachedObjectHandler;
 import javax.faces.view.facelets.FaceletContext;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+
 /**
  * Handles setting a Validator instance on a EditableValueHolder. Will wire all attributes set to the Validator instance
  * created/fetched. Uses the "binding" attribute for grabbing instances to apply attributes to. <p/> Will only
@@ -30,6 +32,7 @@ import javax.faces.view.facelets.FaceletContext;
  * @author Jacob Hookom
  * @version $Id: ValidateHandler.java,v 1.4 2008/07/13 19:01:46 rlubke Exp $
  */
+@JSFFaceletTag
 public class ValidatorHandler extends FaceletsAttachedObjectHandler implements EditableValueHolderAttachedObjectHandler
 {
     private ValidatorConfig config;

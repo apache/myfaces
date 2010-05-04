@@ -43,7 +43,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
         name = "f:converter",
         bodyContent = "empty", 
         tagClass="org.apache.myfaces.taglib.core.ConverterImplTag")
-@JSFFaceletAttribute(name="for",desc="no description",longDescription="no description")
 public final class ConvertDelegateHandler extends ConverterHandler
 {
 
