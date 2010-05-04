@@ -64,6 +64,7 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.el.MethodBinding;
 import javax.faces.el.ValueBinding;
 import javax.faces.render.Renderer;
+import javax.faces.view.Location;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
@@ -1020,6 +1021,13 @@ public final class ErrorPageWriter
             {
                 _writeAttribute(writer, "binding", binding.getExpressionString());
             }
+            
+            // write the location
+            String location = _getComponentLocation(c);
+            if (location != null)
+            {
+                _writeAttribute(writer, "location", location);
+            }
         }
         catch (Exception e)
         {
@@ -1115,5 +1123,21 @@ public final class ErrorPageWriter
         {
             return false;
         }
+    }
+    
+    /**
+     * Gets the Location of the given UIComponent from its attribute map.
+     * @param component
+     * @return
+     */
+    private static String _getComponentLocation(UIComponent component)
+    {
+        Location location = (Location) component.getAttributes()
+                .get(UIComponent.VIEW_LOCATION_KEY);
+        if (location != null)
+        {
+            return location.toString();
+        }
+        return null;
     }
 }

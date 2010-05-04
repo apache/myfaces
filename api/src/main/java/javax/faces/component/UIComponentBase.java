@@ -33,7 +33,6 @@ import java.util.logging.Logger;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
 import javax.faces.component.behavior.Behavior;
 import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.context.FacesContext;
@@ -48,8 +47,8 @@ import javax.faces.event.PreRenderComponentEvent;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
 import javax.faces.render.Renderer;
+import javax.faces.view.Location;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
@@ -350,7 +349,10 @@ public abstract class UIComponentBase extends UIComponent
             {
                 throw (AbortProcessingException) ex;
             }
-            throw new FacesException("Exception while calling broadcast on component : " + getPathToComponent(this), ex);
+            String location = getComponentLocation(this);
+            throw new FacesException("Exception while calling broadcast on component : " 
+                    + getPathToComponent(this) 
+                    + (location != null ? " created from: " + location : ""), ex);
         }
     }
     
@@ -397,7 +399,10 @@ public abstract class UIComponentBase extends UIComponent
         }
         catch (Exception ex)
         {
-            throw new FacesException("Exception while decoding component : " + getPathToComponent(this), ex);
+            String location = getComponentLocation(this);
+            throw new FacesException("Exception while decoding component : " 
+                    + getPathToComponent(this) 
+                    + (location != null ? " created from: " + location : ""), ex);
         }
     }
 
@@ -716,9 +721,11 @@ public abstract class UIComponentBase extends UIComponent
                 else
                 {
                     // The RI throws a NPE
-                    throw new FacesException(
-                                             "Cannot create clientId. No id is assigned for component to create an id and UIViewRoot is not defined: "
-                                                     + getPathToComponent(this));
+                    String location = getComponentLocation(this);
+                    throw new FacesException("Cannot create clientId. No id is assigned for component"
+                            + " to create an id and UIViewRoot is not defined: "
+                            + getPathToComponent(this)
+                            + (location != null ? " created from: " + location : ""));
                 }
             }
             else
@@ -1032,12 +1039,14 @@ public abstract class UIComponentBase extends UIComponent
         Renderer renderer = renderKit.getRenderer(getFamily(), rendererType);
         if (renderer == null)
         {
-            getFacesContext().getExternalContext().log(
-                                                       "No Renderer found for component " + getPathToComponent(this)
-                                                               + " (component-family=" + getFamily()
-                                                               + ", renderer-type=" + rendererType + ")");
-            log.warning("No Renderer found for component " + getPathToComponent(this) + " (component-family="
-                    + getFamily() + ", renderer-type=" + rendererType + ")");
+            String location = getComponentLocation(this);
+            String logStr = "No Renderer found for component " + getPathToComponent(this)
+                    + " (component-family=" + getFamily()
+                    + ", renderer-type=" + rendererType + ")"
+                    + (location != null ? " created from: " + location : "");
+            
+            getFacesContext().getExternalContext().log(logStr);
+            log.warning(logStr);
         }
         return renderer;
     }
@@ -1335,6 +1344,22 @@ public abstract class UIComponentBase extends UIComponent
         {
             popComponentFromEL(context);
         }
+    }
+    
+    /**
+     * Gets the Location of the given UIComponent from its attribute map.
+     * @param component
+     * @return
+     */
+    private String getComponentLocation(UIComponent component)
+    {
+        Location location = (Location) component.getAttributes()
+                .get(UIComponent.VIEW_LOCATION_KEY);
+        if (location != null)
+        {
+            return location.toString();
+        }
+        return null;
     }
 
     private String getPathToComponent(UIComponent component)
