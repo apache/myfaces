@@ -69,7 +69,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
         name = "binding",
         returnType = "javax.faces.validator.BeanValidator",
         longDesc = "A ValueExpression that evaluates to a BeanValidator.")
-@FacesValidator(value = BeanValidator.VALIDATOR_ID, isDefault = true)
 public class BeanValidator implements Validator, PartialStateHolder
 {
 
