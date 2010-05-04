@@ -55,6 +55,7 @@ import javax.faces.application.Application;
 import javax.faces.application.ApplicationFactory;
 import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.NavigationHandler;
+import javax.faces.application.ProjectStage;
 import javax.faces.application.ResourceHandler;
 import javax.faces.application.StateManager;
 import javax.faces.application.ViewHandler;
@@ -116,6 +117,7 @@ import org.apache.myfaces.util.ContainerUtils;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl;
 import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
+import org.apache.myfaces.view.facelets.tag.ui.DebugPhaseListener;
 import org.apache.myfaces.view.facelets.util.Classpath;
 import org.xml.sax.SAXException;
 
@@ -2373,6 +2375,15 @@ public class FacesConfigurator
             {
                 log.severe("Class " + listenerClassName + " does not implement PhaseListener");
             }
+        }
+        
+        // if ProjectStage is Development, install the DebugPhaseListener
+        // Note that FacesContext.getCurrentInstance() will be null for the very first
+        // initialisation here. In that case the PhaseListener is installed in AbstractFacesInitializer.
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext != null && facesContext.isProjectStage(ProjectStage.Development))
+        {
+            lifecycle.addPhaseListener(new DebugPhaseListener());
         }
     }
 
