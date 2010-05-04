@@ -981,7 +981,7 @@ public class FacesConfigurator
         if(webAppConfig != null)    //add null check for apps which don't have a faces-config.xml (e.g. tomahawk examples for 1.1/1.2)
         {
             getDispenser().feed(webAppConfig);
-            
+            /*
             // check if there is an empty <default-validators> entry.
             // note that this applys only for the faces-config with the 
             // highest precendence (not for standard-faces-config files).
@@ -993,6 +993,7 @@ public class FacesConfigurator
                     break;
                 }
             }
+            */
         }
     }
 
@@ -2000,7 +2001,23 @@ public class FacesConfigurator
             application.addValidator(validatorId, dispenser.getValidatorClass(validatorId));
         }
 
+        if (ExternalSpecifications.isBeanValidationAvailable())
+        {
+            String disabled = _externalContext.getInitParameter(BeanValidator.DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME);
+            boolean defaultBeanValidatorDisabled = (disabled != null && disabled.toLowerCase().equals("true"));
+            if (!defaultBeanValidatorDisabled)
+            {
+                application.addDefaultValidatorId(BeanValidator.VALIDATOR_ID);
+            }
+        }
+
+        for (String validatorId : dispenser.getDefaultValidatorIds())
+        {
+            application.addDefaultValidatorId(validatorId);
+        }
+
         // only add default validators if there is no empty <default-validators> in faces-config.xml
+        /*
         if (!dispenser.isEmptyDefaultValidators())
         {
             boolean beanValidatorAdded = false;
@@ -2031,7 +2048,7 @@ public class FacesConfigurator
                     application.addDefaultValidatorId(BeanValidator.VALIDATOR_ID);
                 }
             }
-        }
+        }*/
 
         for (Behavior behavior : dispenser.getBehaviors()) {
             application.addBehavior(behavior.getBehaviorId(), behavior.getBehaviorClass());
