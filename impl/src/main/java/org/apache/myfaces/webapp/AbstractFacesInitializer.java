@@ -34,7 +34,9 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextFactory;
 import javax.faces.event.PostConstructApplicationEvent;
 import javax.faces.event.PreDestroyApplicationEvent;
+import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
+import javax.faces.webapp.FacesServlet;
 import javax.servlet.ServletContext;
 
 import org.apache.myfaces.application.ApplicationImpl;
@@ -48,6 +50,7 @@ import org.apache.myfaces.config.annotation.DefaultLifecycleProviderFactory;
 import org.apache.myfaces.context.servlet.ServletExternalContextImpl;
 import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
+import org.apache.myfaces.view.facelets.tag.ui.DebugPhaseListener;
 
 /**
  * Performs common initialization tasks.
@@ -160,6 +163,15 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
                 message.append("*** See Application#getProjectStage() for more information.     ***\n");
                 message.append("*******************************************************************\n");
                 log.log(Level.WARNING, message.toString());
+                
+                // if ProjectStage is Development, install the DebugPhaseListener
+                if (FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Development))
+                {
+                    LifecycleFactory lifeFac = (LifecycleFactory) FactoryFinder
+                            .getFactory(FactoryFinder.LIFECYCLE_FACTORY);
+                    Lifecycle lifecycle = lifeFac.getLifecycle(getLifecycleId(servletContext));
+                    lifecycle.addPhaseListener(new DebugPhaseListener());
+                }
             }
             
             releaseFacesContext();
@@ -186,7 +198,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
      * @param eventClass     the class to be passed down into the dispatching
      *                       code
      */
-    private void dispatchInitDestroyEvent(Object servletContext, Class eventClass) {
+    private void dispatchInitDestroyEvent(ServletContext servletContext, Class eventClass) {
         ApplicationFactory appFac = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
         FacesContext fc = null;
 
@@ -194,7 +206,10 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
         if (fc == null) {
             LifecycleFactory lifeFac = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
             FacesContextFactory facFac = (FacesContextFactory) FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
-            fc = facFac.getFacesContext(servletContext, new _SystemEventServletRequest(), new _SystemEventServletResponse(), lifeFac.getLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE));
+            fc = facFac.getFacesContext(servletContext, 
+                    new _SystemEventServletRequest(), 
+                    new _SystemEventServletResponse(), 
+                    lifeFac.getLifecycle(getLifecycleId(servletContext)));
         }
         
         // in order to allow FacesContext.getViewRoot calls during startup/shutdown listeners, 
@@ -204,6 +219,23 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
         fc.setViewRoot(root);
         
         appFac.getApplication().publishEvent(fc, eventClass, Application.class, appFac.getApplication());
+    }
+    
+    /**
+     * Gets the LifecycleId from the ServletContext init param.
+     * If this is null, it returns LifecycleFactory.DEFAULT_LIFECYCLE.
+     * @param servletContext
+     * @return
+     */
+    private String getLifecycleId(ServletContext servletContext)
+    {
+        String id = servletContext.getInitParameter(FacesServlet.LIFECYCLE_ID_ATTR);
+
+        if (id != null)
+        {
+            return id;
+        }
+        return LifecycleFactory.DEFAULT_LIFECYCLE;
     }
 
     /**

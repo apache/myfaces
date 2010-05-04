@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -47,20 +48,29 @@ import java.util.regex.Pattern;
 import javax.el.Expression;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
+import javax.faces.component.UIColumn;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIData;
+import javax.faces.component.UIInput;
 import javax.faces.component.UIViewRoot;
+import javax.faces.component.visit.VisitCallback;
+import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitHint;
+import javax.faces.component.visit.VisitResult;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialResponseWriter;
 import javax.faces.context.ResponseWriter;
 import javax.faces.el.MethodBinding;
 import javax.faces.el.ValueBinding;
+import javax.faces.render.Renderer;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
+import org.apache.myfaces.view.facelets.component.UIRepeat;
 
 /**
  * This class provides utility methods to generate the
@@ -197,6 +207,20 @@ public final class ErrorPageWriter
     private final static String[] IGNORE = new String[] { "parent", "rendererType" };
     
     /**
+     * Extended debug info is stored under this key in the request
+     * map for every UIInput component when in Development mode.
+     * ATTENTION: this constant is duplicate in javax.faces.component.UIInput
+     */
+    public static final String DEBUG_INFO_KEY = "org.apache.myfaces.debug.DEBUG_INFO";
+    
+    /**
+     * The number of facets of this component which have already been visited while
+     * creating the extended component tree is saved under this key in the component's
+     * attribute map.
+     */
+    private static final String VISITED_FACET_COUNT_KEY = "org.apache.myfaces.debug.VISITED_FACET_COUNT";
+    
+    /**
      * Indicate if myfaces is responsible to handle errors. 
      * See http://wiki.apache.org/myfaces/Handling_Server_Errors for details. 
      */
@@ -293,6 +317,10 @@ public final class ErrorPageWriter
             else if ("tree".equals(DEBUG_PARTS[i]))
             {
                 _writeComponent(writer, faces.getViewRoot(), null);
+            }
+            else if ("extendedtree".equals(DEBUG_PARTS[i]))
+            {
+                _writeExtendedComponentTree(writer, faces);
             }
             else if ("vars".equals(DEBUG_PARTS[i]))
             {
@@ -601,7 +629,7 @@ public final class ErrorPageWriter
 
         boolean hasChildren = c.getChildCount() > 0 || c.getFacets().size() > 0;
 
-        _writeStart(writer, c, hasChildren);
+        _writeStart(writer, c, hasChildren, true);
         writer.write("</dt>");
         if (hasChildren)
         {
@@ -632,6 +660,289 @@ public final class ErrorPageWriter
         }
         writer.write("</dl>");
     }
+    
+    /**
+     * Creates the Extended Component Tree via UIViewRoot.visitTree()
+     * and ExtendedComponentTreeVisitCallback as VisitCallback.
+     * 
+     * @param writer
+     * @param facesContext
+     * @throws IOException
+     */
+    private static void _writeExtendedComponentTree(Writer writer, 
+            FacesContext facesContext) throws IOException
+    {
+        VisitContext visitContext = VisitContext.createVisitContext(
+                facesContext, null, EnumSet.of(VisitHint.SKIP_UNRENDERED));
+        facesContext.getViewRoot().visitTree(visitContext, new ExtendedComponentTreeVisitCallback(writer));
+    }
+    
+    /**
+     * The VisitCallback that is used to create the Extended Component Tree.
+     * 
+     * @author Jakob Korherr
+     */
+    private static class ExtendedComponentTreeVisitCallback implements VisitCallback
+    {
+
+        private Writer _writer;
+        
+        public ExtendedComponentTreeVisitCallback(Writer writer)
+        {
+            _writer = writer;
+        }
+        
+        @SuppressWarnings("unchecked")
+        public VisitResult visit(VisitContext context, UIComponent target)
+        {
+            final Map<String, Object> requestMap = context.getFacesContext()
+                    .getExternalContext().getRequestMap();
+            
+            try
+            {
+                if (!(target instanceof UIViewRoot))
+                {
+                    _writer.write("<dd>");
+                }
+                
+                UIComponent parent = target.getParent();
+                boolean hasChildren = (target.getChildCount() > 0 || target.getFacets().size() > 0);
+                String facetName = _getFacetName(target);
+                
+                if (!(target instanceof UIColumn))
+                {
+                    if (parent instanceof UIColumn
+                            && (parent.getChildren().get(0) == target
+                                    ||  (facetName != null &&_getVisitedFacetCount(parent) == 0)))
+                    {
+                        if (parent.getParent() instanceof UIData
+                                && _isFirstUIColumn(parent.getParent(), (UIColumn) parent))
+                        {
+                            _writer.write("<span>Row: ");
+                            int rowIndex = ((UIData) parent.getParent()).getRowIndex();
+                            _writer.write("" + rowIndex);
+                            if (rowIndex == -1)
+                            {
+                                // tell the user that rowIndex == -1 stands for visiting column-facets
+                                _writer.write(" (all column facets)");
+                            }
+                            _writer.write("</span>");
+                        }
+                        _writer.write("<dl><dt>");
+                        _writeStart(_writer, parent, true, false);
+                        _writer.write("</dt><dd>");
+                    }
+                    
+                    if (facetName != null)
+                    {
+                        _writer.write("<span>" + facetName + "</span>"); 
+                        _incrementVisitedFacetCount(parent);
+                    }
+                    _writer.write("<dl><dt");
+                    if (_isText(target))
+                    {
+                        _writer.write(" class=\"uicText\"");
+                    }
+                    _writer.write(">");
+                    
+                    Map<String, List<String>> debugInfo = null;
+                    // is the target a UIInput component?
+                    if (target instanceof UIInput)
+                    {
+                        // get the debug info
+                        debugInfo = (Map<String, List<String>>) requestMap
+                                .get(DEBUG_INFO_KEY + target.getClientId());
+                    }
+                    
+                    // Get the component's renderer.
+                    // Note that getRenderer(FacesContext context) is definded in UIComponent,
+                    // but it is protected, so we have to use reflection!
+                    Renderer renderer = null;
+                    try
+                    {
+                        Method getRenderer = UIComponent.class.getDeclaredMethod(
+                                "getRenderer", FacesContext.class);
+                        // make it accessible for us!
+                        getRenderer.setAccessible(true);
+                        renderer = (Renderer) getRenderer.invoke(target, context.getFacesContext());
+                    }
+                    catch (Exception e)
+                    {
+                        // nothing - do not output renderer information
+                    }
+                    
+                    // write the component start
+                    _writeStart(_writer, target, (hasChildren || debugInfo != null || renderer != null), false);
+                    _writer.write("</dt>");
+                    
+                    if (renderer != null)
+                    {
+                        // write renderer info
+                        _writer.write("<div class=\"renderer\">Rendered by ");
+                        _writer.write(renderer.getClass().getCanonicalName());
+                        _writer.write("</div>");
+                        
+                        if (!hasChildren && debugInfo == null)
+                        {
+                            // close the component
+                            _writer.write("<dt>");
+                            _writeEnd(_writer, target);
+                            _writer.write("</dt>");
+                        }
+                    }
+                        
+                    if (debugInfo != null)
+                    {
+                        final String fieldid = target.getClientId() + "_lifecycle";
+                        _writer.write("<div class=\"lifecycle_values_wrapper\">");
+                        _writer.write("<a href=\"#\" onclick=\"toggle('");
+                        _writer.write(fieldid);
+                        _writer.write("'); return false;\"><span id=\"");
+                        _writer.write(fieldid);
+                        _writer.write("Off\">+</span><span id=\"");
+                        _writer.write(fieldid);
+                        _writer.write("On\" style=\"display: none;\">-</span> Value Lifecycle</a>");
+                        _writer.write("<div id=\"");
+                        _writer.write(fieldid);
+                        _writer.write("\" class=\"lifecycle_values\">");
+                        
+                        // process any available debug info
+                        for (Map.Entry<String, List<String>> entry : debugInfo.entrySet())
+                        {
+                            _writer.write("<span>");
+                            _writer.write(entry.getKey());
+                            _writer.write("</span><ol>");
+                            for (String change : entry.getValue())
+                            {
+                                _writer.write("<li>");
+                                _writer.write(change);
+                                _writer.write("</li>");
+                            }
+                            _writer.write("</ol>");
+                        }
+                        
+                        _writer.write("</div></div>");
+                        
+                        // now remove the debug info from the request map, 
+                        // so that it does not appear in the scope values of the debug page 
+                        requestMap.remove(DEBUG_INFO_KEY + target.getClientId());
+                        
+                        if (!hasChildren)
+                        {
+                            // close the component
+                            _writer.write("<dt>");
+                            _writeEnd(_writer, target);
+                            _writer.write("</dt>");
+                        }
+                    }
+                }
+                
+                if (!hasChildren)
+                {
+                    _writer.write("</dl>");
+                    
+                    while (parent != null 
+                            && (parent.getChildren().get(parent.getChildCount() - 1) == target
+                                    || (parent.getFacetCount() != 0 
+                                            && _getVisitedFacetCount(parent) == parent.getFacetCount())))
+                    {
+                        // target is last child of parent or the "last" facet
+                        
+                        // remove the visited facet count from the attribute map
+                        _removeVisitedFacetCount(parent);
+                        
+                        // check for componentes that visit their children multiple times
+                        if (parent instanceof UIData)
+                        {
+                            UIData uidata = (UIData) parent;
+                            if (uidata.getRowIndex() != uidata.getRowCount() - 1)
+                            {
+                                // only continue if we're in the last row
+                                break;
+                            }
+                        }
+                        else if (parent instanceof UIRepeat)
+                        {
+                            UIRepeat uirepeat = (UIRepeat) parent;
+                            if (uirepeat.getIndex() + uirepeat.getStep() < uirepeat.getRowCount())
+                            {
+                                // only continue if we're in the last row
+                                break;
+                            }
+                        }
+                        
+                        _writer.write("</dd><dt>");
+                        _writeEnd(_writer, parent);
+                        _writer.write("</dt></dl>");
+                        
+                        if (!(parent instanceof UIViewRoot))
+                        {
+                            _writer.write("</dd>");
+                        }
+                        
+                        target = parent;
+                        parent = target.getParent(); 
+                    }
+                }
+            }
+            catch (IOException ioe)
+            {
+                throw new FacesException(ioe);
+            }
+            
+            return VisitResult.ACCEPT;
+        }
+        
+    }
+    
+    private static boolean _isFirstUIColumn(UIComponent uidata, UIColumn uicolumn)
+    {
+        for (UIComponent child : uidata.getChildren())
+        {
+            if (child instanceof UIColumn)
+            {
+                return (child == uicolumn);
+            }
+        }
+        return false;
+    }
+    
+    private static String _getFacetName(UIComponent component)
+    {
+        UIComponent parent = component.getParent();
+        if (parent != null)
+        {
+            for (Map.Entry<String, UIComponent> entry : parent.getFacets().entrySet())
+            {
+                if (entry.getValue() == component)
+                {
+                    return entry.getKey();
+                }
+            }
+        }
+        return null;
+    }
+    
+    private static int _getVisitedFacetCount(UIComponent component)
+    {
+        Integer count = (Integer) component.getAttributes().get(VISITED_FACET_COUNT_KEY);
+        if (count != null)
+        {
+            return count;
+        }
+        return 0;
+    }
+    
+    private static void _incrementVisitedFacetCount(UIComponent component)
+    {
+        component.getAttributes().put(VISITED_FACET_COUNT_KEY, 
+                _getVisitedFacetCount(component) + 1);
+    }
+    
+    private static void _removeVisitedFacetCount(UIComponent component)
+    {
+        component.getAttributes().remove(VISITED_FACET_COUNT_KEY);
+    }
 
     private static void _writeEnd(Writer writer, UIComponent c) throws IOException
     {
@@ -644,7 +955,7 @@ public final class ErrorPageWriter
         }
     }
 
-    private static void _writeAttributes(Writer writer, UIComponent c)
+    private static void _writeAttributes(Writer writer, UIComponent c, boolean valueExpressionValues)
     {
         try
         {
@@ -663,7 +974,7 @@ public final class ErrorPageWriter
                     {
                         // first check if the property is a ValueExpression
                         valueExpression = c.getValueExpression(pd[i].getName());
-                        if (valueExpression != null)
+                        if (valueExpressionValues && valueExpression != null)
                         {
                             _writeAttribute(writer, pd[i].getName(), valueExpression.getExpressionString());
                         }
@@ -692,6 +1003,7 @@ public final class ErrorPageWriter
                                 {
                                     str = v.toString();
                                 }
+                                
                                 _writeAttribute(writer, pd[i].getName(), str);
                             }
                         }
@@ -724,7 +1036,8 @@ public final class ErrorPageWriter
         writer.write("\"");
     }
 
-    private static void _writeStart(Writer writer, UIComponent c, boolean children) throws IOException
+    private static void _writeStart(Writer writer, UIComponent c, 
+            boolean children, boolean valueExpressionValues) throws IOException
     {
         if (_isText(c))
         {
@@ -735,7 +1048,7 @@ public final class ErrorPageWriter
         {
             writer.write(TS);
             writer.write(_getName(c));
-            _writeAttributes(writer, c);
+            _writeAttributes(writer, c, valueExpressionValues);
             if (children)
             {
                 writer.write('>');

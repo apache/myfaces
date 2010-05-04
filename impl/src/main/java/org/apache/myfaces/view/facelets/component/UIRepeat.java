@@ -456,6 +456,23 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         }
     }
     
+    /**
+     * Returns the rowCount of the underlying DataModel.
+     * @return
+     */
+    public int getRowCount()
+    {
+        return getDataModel().getRowCount();
+    }
+    
+    /**
+     * Returns the current index.
+     */
+    public int getIndex()
+    {
+        return _index;
+    }
+    
     private void _setIndex(int index)
     {
         // save child state

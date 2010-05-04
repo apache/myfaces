@@ -19,12 +19,17 @@
 package javax.faces.component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import javax.el.ELContext;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
+import javax.faces.application.ProjectStage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -42,6 +47,7 @@ import javax.faces.event.ValueChangeEvent;
 import javax.faces.event.ValueChangeListener;
 import javax.faces.render.Renderer;
 import javax.faces.validator.Validator;
+import javax.faces.webapp.FacesServlet;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFListener;
@@ -74,9 +80,16 @@ public class UIInput extends UIOutput implements EditableValueHolder
     
     @JSFWebConfigParam(defaultValue="auto", expectedValues="auto, true, false", since="2.0")
     public static final String VALIDATE_EMPTY_FIELDS_PARAM_NAME = "javax.faces.VALIDATE_EMPTY_FIELDS";
+    
+    /**
+     * Extended debug info is stored under this key in the request
+     * map for every UIInput component when in Development mode.
+     * ATTENTION: this constant is duplicate in org.apache.myfaces.renderkit.ErrorPageWriter
+     */
+    private static final String DEBUG_INFO_KEY = "org.apache.myfaces.debug.DEBUG_INFO";
 
     private static final Validator[] EMPTY_VALIDATOR_ARRAY = new Validator[0];
-
+    
     private _DeltaList<Validator> _validatorList;
 
     /**
@@ -102,6 +115,12 @@ public class UIInput extends UIOutput implements EditableValueHolder
     @Override
     public void setValue(Object value)
     {
+        if (FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Development))
+        {
+            // extended debug-info when in Development mode
+            _createFieldDebugInfo(FacesContext.getCurrentInstance(), "localValue",
+                    getLocalValue(), value, 1);
+        }
         setLocalValueSet(true);
         super.setValue(value);
     }
@@ -537,6 +556,21 @@ public class UIInput extends UIOutput implements EditableValueHolder
         setLocalValueSet(false);
         setValid(true);
     }
+    
+    @Override
+    public ValueExpression getValueExpression(String name) 
+    {
+        // override this method to be able to install a _DebugValueExpressionWrapper
+        
+        ValueExpression valueExpression = super.getValueExpression(name);
+        if (FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Development)
+                && "value".equals(name))
+        {
+            // use a _DebugValueExpressionWrapper for debugging of the value-ValueExpression
+            valueExpression = new _DebugValueExpressionWrapper(valueExpression);
+        }
+        return valueExpression;
+    }
 
     /**
      * A boolean value that identifies the phase during which action events should fire.
@@ -768,6 +802,12 @@ public class UIInput extends UIOutput implements EditableValueHolder
 
     public void setSubmittedValue(Object submittedValue)
     {
+        if (FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Development))
+        {
+            // extended debug-info when in Development mode
+            _createFieldDebugInfo(FacesContext.getCurrentInstance(), "submittedValue",
+                    getSubmittedValue(), submittedValue, 1);
+        }
         getStateHelper().put(PropertyKeys.submittedValue, submittedValue );
     }
 
@@ -903,6 +943,110 @@ public class UIInput extends UIOutput implements EditableValueHolder
             return saveAttachedState(facesContext,_validatorList);
         }            
     }
+    
+    /**
+     * Returns the debug-info Map for this component.
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    private Map<String, List<String>> _getDebugInfoMap()
+    {
+        final Map<String, Object> requestMap = FacesContext.getCurrentInstance()
+                .getExternalContext().getRequestMap();
+        Map<String, List<String>> debugInfo = (Map<String, List<String>>) 
+                requestMap.get(DEBUG_INFO_KEY + getClientId());
+        if (debugInfo == null)
+        {
+            // no debug info available yet, create one and put it on the attributes map
+            debugInfo = new HashMap<String, List<String>>();
+            requestMap.put(DEBUG_INFO_KEY + getClientId(), debugInfo);
+        }
+        return debugInfo;
+    }
+    
+    /**
+     * Returns the field's debug-infos from the component's debug-info Map.
+     * @param field
+     * @return
+     */
+    private List<String> _getFieldDebugInfos(final String field)
+    {
+        Map<String, List<String>> debugInfo = _getDebugInfoMap();
+        List<String> fieldDebugInfo = debugInfo.get(field);
+        if (fieldDebugInfo == null)
+        {
+            // no field debug-infos yet, create them and store it in the Map
+            fieldDebugInfo = new ArrayList<String>();
+            debugInfo.put(field, fieldDebugInfo);
+        }
+        return fieldDebugInfo;
+    }
+    
+    /**
+     * Creates the field debug-info for the given field, which changed
+     * from oldValue to newValue.
+     * 
+     * @param facesContext
+     * @param field
+     * @param oldValue
+     * @param newValue
+     * @param skipStackTaceElements How many StackTraceElements should be skipped
+     *                              when the calling function will be determined.
+     */
+    private void _createFieldDebugInfo(FacesContext facesContext,
+            final String field, Object oldValue, 
+            Object newValue, final int skipStackTaceElements)
+    {
+        if (oldValue == null && newValue == null)
+        {
+            // both values are null, not interesting and can
+            // happen a lot in UIData with saving and restoring state
+            return;
+        }
+        
+        // convert Array values into a more readable format
+        if (oldValue != null && oldValue.getClass().isArray())
+        {
+            oldValue = Arrays.deepToString((Object[]) oldValue);
+        }
+        if (newValue != null && newValue.getClass().isArray())
+        {
+            newValue = Arrays.deepToString((Object[]) newValue);
+        }
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("<b>");
+        sb.append(field);
+        sb.append("</b> set from <b>");
+        sb.append(oldValue);
+        sb.append("</b> to <b>");
+        sb.append(newValue);
+        sb.append("</b> in Phase ");
+        sb.append(facesContext.getCurrentPhaseId());
+        sb.append(" with call from:<ul>");
+        
+        // use Throwable to get the current call stack
+        Throwable throwableHelper = new Throwable();
+        StackTraceElement[] stackTraceElements = throwableHelper.getStackTrace();
+        // + 1 because this method should also be skipped
+        for (int i = skipStackTaceElements + 1; i < stackTraceElements.length; i++)
+        {
+            sb.append("<li>");
+            sb.append(stackTraceElements[i].toString());
+            sb.append("</li>");
+            
+            if (FacesServlet.class.getCanonicalName()
+                    .equals(stackTraceElements[i].getClassName()))
+            {
+                // stop after the FacesServlet
+                break;
+            }
+        }
+        sb.append("</ul>");
+        
+        // add the debug info
+        _getFieldDebugInfos(field).add(sb.toString());
+    }
 
     /**
      * Check if a value is empty or not. Since we don't know the class of
@@ -947,5 +1091,84 @@ public class UIInput extends UIOutput implements EditableValueHolder
             }
         }
         return false;
+    }
+    
+    /**
+     * This ValueExpression wrapper is installed for debugging reasons when
+     * in Development mode. Every call to setValue() will be forwarded
+     * to _createFieldDebugInfo() in order to create debugging infos.
+     *
+     * @author Jakob Korherr
+     */
+    private class _DebugValueExpressionWrapper extends ValueExpression
+    {
+        
+        private static final long serialVersionUID = -7114362926319263354L;
+        
+        private ValueExpression _wrapped;
+        
+        _DebugValueExpressionWrapper(ValueExpression wrapped)
+        {
+            _wrapped = wrapped;
+        }
+        
+        @Override
+        public Class<?> getExpectedType()
+        {
+            return _wrapped.getExpectedType();
+        }
+
+        @Override
+        public Class<?> getType(ELContext ctx)
+        {
+            return _wrapped.getType(ctx);
+        }
+
+        @Override
+        public Object getValue(ELContext ctx)
+        {
+            return _wrapped.getValue(ctx);
+        }
+
+        @Override
+        public boolean isReadOnly(ELContext ctx)
+        {
+            return _wrapped.isReadOnly(ctx);
+        }
+
+        @Override
+        public void setValue(ELContext ctx, Object value)
+        {
+            // create debug info for this call to setValue
+            _createFieldDebugInfo((FacesContext) ctx.getContext(FacesContext.class),
+                    "value", _wrapped.getValue(ctx), value, 2);
+            
+            _wrapped.setValue(ctx, value);
+        }
+
+        @Override
+        public boolean equals(Object o)
+        {
+            return _wrapped.equals(o);
+        }
+
+        @Override
+        public String getExpressionString()
+        {
+            return _wrapped.getExpressionString();
+        }
+
+        @Override
+        public int hashCode()
+        {
+            return _wrapped.hashCode();
+        }
+
+        @Override
+        public boolean isLiteralText()
+        {
+            return _wrapped.isLiteralText();
+        }
+
     }
 }
