@@ -55,7 +55,6 @@ import javax.faces.application.Application;
 import javax.faces.application.ApplicationFactory;
 import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.NavigationHandler;
-import javax.faces.application.ProjectStage;
 import javax.faces.application.ResourceHandler;
 import javax.faces.application.StateManager;
 import javax.faces.application.ViewHandler;
@@ -117,7 +116,6 @@ import org.apache.myfaces.util.ContainerUtils;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl;
 import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
-import org.apache.myfaces.view.facelets.tag.ui.DebugPhaseListener;
 import org.apache.myfaces.view.facelets.util.Classpath;
 import org.xml.sax.SAXException;
 
@@ -2000,23 +1998,36 @@ public class FacesConfigurator
             application.addValidator(validatorId, dispenser.getValidatorClass(validatorId));
         }
 
-        //
-        if (ExternalSpecifications.isBeanValidationAvailable())
-        {
-            String disabled = _externalContext.getInitParameter(BeanValidator.DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME);
-            boolean defaultBeanValidatorDisabled = (disabled != null && disabled.toLowerCase().equals("true"));
-            if (!defaultBeanValidatorDisabled)
-            {
-                application.addDefaultValidatorId(BeanValidator.VALIDATOR_ID);
-            }
-        }
-        
         // only add default validators if there is no empty <default-validators> in faces-config.xml
         if (!dispenser.isEmptyDefaultValidators())
         {
+            boolean beanValidatorAdded = false;
             for (String validatorId : dispenser.getDefaultValidatorIds())
             {
+                if (validatorId.equals(BeanValidator.VALIDATOR_ID))
+                {
+                    if (!ExternalSpecifications.isBeanValidationAvailable())
+                    {
+                        // do not add it as a default validator
+                        continue;
+                    }
+                    else
+                    {
+                        beanValidatorAdded = true;
+                    }
+                }
                 application.addDefaultValidatorId(validatorId);
+            }
+        
+            // add the bean validator if it is available, not already added and not disabled
+            if (!beanValidatorAdded && ExternalSpecifications.isBeanValidationAvailable())
+            {
+                String disabled = _externalContext.getInitParameter(BeanValidator.DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME);
+                boolean defaultBeanValidatorDisabled = (disabled != null && disabled.toLowerCase().equals("true"));
+                if (!defaultBeanValidatorDisabled)
+                {
+                    application.addDefaultValidatorId(BeanValidator.VALIDATOR_ID);
+                }
             }
         }
 
@@ -2362,15 +2373,6 @@ public class FacesConfigurator
             {
                 log.severe("Class " + listenerClassName + " does not implement PhaseListener");
             }
-        }
-        
-        // if ProjectStage is Development, install the DebugPhaseListener
-        // Note that FacesContext.getCurrentInstance() will be null for the very first
-        // initialisation here. In that case the PhaseListener is installed in AbstractFacesInitializer.
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        if (facesContext != null && facesContext.isProjectStage(ProjectStage.Development))
-        {
-            lifecycle.addPhaseListener(new DebugPhaseListener());
         }
     }
 
