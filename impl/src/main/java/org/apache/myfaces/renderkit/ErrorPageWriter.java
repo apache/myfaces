@@ -18,41 +18,16 @@
  */
 package org.apache.myfaces.renderkit;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.Serializable;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.lang.reflect.Method;
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.shared_impl.renderkit.html.HtmlResponseWriterImpl;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
+import org.apache.myfaces.view.facelets.component.UIRepeat;
 
 import javax.el.Expression;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
-import javax.faces.component.UIColumn;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIData;
-import javax.faces.component.UIInput;
-import javax.faces.component.UIViewRoot;
+import javax.faces.component.*;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitHint;
@@ -66,12 +41,17 @@ import javax.faces.el.ValueBinding;
 import javax.faces.render.Renderer;
 import javax.faces.view.Location;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.shared_impl.renderkit.html.HtmlResponseWriterImpl;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
-import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
-import org.apache.myfaces.view.facelets.component.UIRepeat;
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.io.*;
+import java.lang.reflect.Method;
+import java.text.DateFormat;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This class provides utility methods to generate the
@@ -843,7 +823,7 @@ public final class ErrorPageWriter
                     _writer.write("</dl>");
                     
                     while (parent != null 
-                            && (parent.getChildren().get(parent.getChildCount() - 1) == target
+                            && ((parent.getChildCount()>0 && parent.getChildren().get(parent.getChildCount() - 1) == target)
                                     || (parent.getFacetCount() != 0 
                                             && _getVisitedFacetCount(parent) == parent.getFacetCount())))
                     {
