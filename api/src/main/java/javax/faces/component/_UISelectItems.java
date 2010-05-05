@@ -157,10 +157,10 @@ abstract class _UISelectItems extends UIComponentBase
    * @since 2.0
    * @return
    */
-  //@JSFExclude
-  //@JSFProperty
-  //public Object getNoSelectionValue() {
-  //    return null;
-  //}
+  @JSFExclude
+  @JSFProperty
+  public Object getNoSelectionValue() {
+      return null;
+  }
 
 }
