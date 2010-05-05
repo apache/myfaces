@@ -326,10 +326,7 @@ public abstract class UIComponentBase extends UIComponent
             if (event instanceof BehaviorEvent && event.getComponent() == this)
             {
                 Behavior behavior = ((BehaviorEvent) event).getBehavior();
-                if (behavior instanceof ClientBehavior)
-                {
-                    behavior.broadcast((BehaviorEvent) event);
-                }
+                behavior.broadcast((BehaviorEvent) event);
             }
             
             if (_facesListeners == null)
