@@ -28,17 +28,6 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_Ajax")) {
      */
     myfaces._impl.xhrCore._Ajax = function() {}
 
-    /**
-     * Spec. 13.3.1
-     * Collect and encode input elements.
-     * Additinoaly the hidden element javax.faces.ViewState
-     * @param {String} FORM_ELEMENT - Client-Id of Form-Element
-     * @return {String} - Concatenated String of the encoded input elements
-     * 			and javax.faces.ViewState element
-     */
-    myfaces._impl.xhrCore._Ajax.prototype.getViewState = function(FORM_ELEMENT) {
-        return myfaces._impl.xhrCore._AjaxRequestQueue.queue.m_request.getViewState();
-    }
 
 
     /**

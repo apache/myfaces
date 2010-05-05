@@ -82,6 +82,9 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
          *  typecheck assert!, we opt for strong typing here
          *  because it makes it easier to detect bugs
          */
+        if('undefined' != typeof formElement && null != formElement) {
+            formElement =  myfaces._impl._util._LangUtils.byId(formElement);
+        }
 
         if ('undefined' == typeof(formElement)
                 || null == formElement
@@ -90,7 +93,10 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
                 || formElement.nodeName.toLowerCase() != "form") {
             throw new Error("jsf.viewState: param value not of type form!");
         }
-        return this._requestHandler.getViewState(formElement);
+
+        var ajaxUtils = new myfaces._impl.xhrCore._AjaxUtils(0);
+        return ajaxUtils.processUserEntries(null, null, null,formElement, null);
+
     };
 
     /**
