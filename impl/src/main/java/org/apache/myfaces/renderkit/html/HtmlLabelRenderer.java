@@ -56,6 +56,15 @@ public class HtmlLabelRenderer extends HtmlRenderer
     private static final Logger log = Logger.getLogger(HtmlLabelRenderer.class.getName());
 
     @Override
+    public void decode(FacesContext context, UIComponent component)
+    {
+        // Check for npe
+        super.decode(context, component);
+        
+        HtmlRendererUtils.decodeClientBehaviors(context, component);
+    }
+
+    @Override
     public void encodeBegin(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
         super.encodeBegin(facesContext, uiComponent); // check for NP
