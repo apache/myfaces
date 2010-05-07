@@ -70,9 +70,8 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
 
     public void decode(FacesContext context, UIComponent component,
                        ClientBehavior behavior) {
-
-        AjaxBehavior ajaxBehavior = (AjaxBehavior) behavior;
         assertBehavior(behavior);
+        AjaxBehavior ajaxBehavior = (AjaxBehavior) behavior;
         if (ajaxBehavior.isDisabled() || !component.isRendered()) {
             return;
         }
@@ -83,6 +82,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
 
     public String getScript(ClientBehaviorContext behaviorContext,
                             ClientBehavior behavior) {
+        assertBehavior(behavior);
         AjaxBehavior ajaxBehavior = (AjaxBehavior) behavior;
         
         if (ajaxBehavior.isDisabled()) {
