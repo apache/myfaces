@@ -115,10 +115,10 @@ public class UIInput extends UIOutput implements EditableValueHolder
     @Override
     public void setValue(Object value)
     {
-        if (FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Development))
+        if (getFacesContext().isProjectStage(ProjectStage.Development))
         {
             // extended debug-info when in Development mode
-            _createFieldDebugInfo(FacesContext.getCurrentInstance(), "localValue",
+            _createFieldDebugInfo(getFacesContext(), "localValue",
                     getLocalValue(), value, 1);
         }
         setLocalValueSet(true);
@@ -563,7 +563,8 @@ public class UIInput extends UIOutput implements EditableValueHolder
         // override this method to be able to install a _DebugValueExpressionWrapper
         
         ValueExpression valueExpression = super.getValueExpression(name);
-        if (FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Development)
+        if (valueExpression != null 
+                && getFacesContext().isProjectStage(ProjectStage.Development)
                 && "value".equals(name))
         {
             // use a _DebugValueExpressionWrapper for debugging of the value-ValueExpression
@@ -571,7 +572,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         }
         return valueExpression;
     }
-
+    
     /**
      * A boolean value that identifies the phase during which action events should fire.
      * <p>
@@ -802,10 +803,10 @@ public class UIInput extends UIOutput implements EditableValueHolder
 
     public void setSubmittedValue(Object submittedValue)
     {
-        if (FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Development))
+        if (getFacesContext().isProjectStage(ProjectStage.Development))
         {
             // extended debug-info when in Development mode
-            _createFieldDebugInfo(FacesContext.getCurrentInstance(), "submittedValue",
+            _createFieldDebugInfo(getFacesContext(), "submittedValue",
                     getSubmittedValue(), submittedValue, 1);
         }
         getStateHelper().put(PropertyKeys.submittedValue, submittedValue );
@@ -951,7 +952,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
     @SuppressWarnings("unchecked")
     private Map<String, List<String>> _getDebugInfoMap()
     {
-        final Map<String, Object> requestMap = FacesContext.getCurrentInstance()
+        final Map<String, Object> requestMap = getFacesContext()
                 .getExternalContext().getRequestMap();
         Map<String, List<String>> debugInfo = (Map<String, List<String>>) 
                 requestMap.get(DEBUG_INFO_KEY + getClientId());
@@ -1171,4 +1172,5 @@ public class UIInput extends UIOutput implements EditableValueHolder
         }
 
     }
+
 }
