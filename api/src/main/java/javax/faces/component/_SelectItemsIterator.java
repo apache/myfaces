@@ -246,7 +246,7 @@ class _SelectItemsIterator implements Iterator
         }
         intBuf.append("]");
 
-        buf.insert(0,intBuf);
+        buf.insert(0,intBuf.toString());
 
         if(component!=null)
         {
