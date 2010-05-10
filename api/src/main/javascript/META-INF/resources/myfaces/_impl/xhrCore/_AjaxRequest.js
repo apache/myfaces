@@ -82,6 +82,8 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxRequest"
      */
     myfaces._impl.xhrCore._AjaxRequest.prototype.send = function() {
         try {
+            var ajaxRequestQueue =  myfaces._impl.xhrCore._AjaxRequestQueue.queue;
+
             this.m_xhr = myfaces._impl._util._Utils.getXHRObject();
             
             this.m_xhr.open("POST", this.m_sourceForm.action, true);
@@ -95,9 +97,9 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxRequest"
 	            var timeoutId = window.setTimeout(
 	            	function() {
 	            		try {
-		            		if ( myfaces._impl.xhrCore._AjaxRequestQueue.queue.m_request.m_xhr.readyState > 0 
-		            		&& myfaces._impl.xhrCore._AjaxRequestQueue.queue.m_request.m_xhr.readyState < 4) {
-		            			myfaces._impl.xhrCore._AjaxRequestQueue.queue.m_request.m_xhr.abort();
+		            		if ( ajaxRequestQueue.m_request.m_xhr.readyState > 0
+		            		&& ajaxRequestQueue.queue.m_request.m_xhr.readyState < 4) {
+		            			ajaxRequestQueue.queue.m_request.m_xhr.abort();
 		            		}
 	            		} catch (e) {
 	            			// don't care about exceptions here
@@ -117,15 +119,17 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxRequest"
     myfaces._impl.xhrCore._AjaxRequest.prototype.requestCallback = function() {
         var READY_STATE_DONE = 4;
         try {
+            //local namespace remapping
+            var jsfAjaxImpl = myfaces.ajax;
 
             if (this.m_xhr.readyState == READY_STATE_DONE) {
                 if (this.m_xhr.status >= 200 && this.m_xhr.status < 300) {
-                	myfaces.ajax.sendEvent(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl._AJAX_STAGE_COMPLETE);
-                	myfaces.ajax.response(this.m_xhr, this.m_context);
-                	myfaces.ajax.sendEvent(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl._AJAX_STAGE_SUCCESS);
+                	jsfAjaxImpl.sendEvent(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl._AJAX_STAGE_COMPLETE);
+                	jsfAjaxImpl.response(this.m_xhr, this.m_context);
+                	jsfAjaxImpl.sendEvent(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl._AJAX_STAGE_SUCCESS);
                     myfaces._impl.xhrCore._AjaxRequestQueue.queue.processQueue();
                 } else {
-                	myfaces.ajax.sendEvent(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl._AJAX_STAGE_COMPLETE);
+                	jsfAjaxImpl.sendEvent(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl._AJAX_STAGE_COMPLETE);
             		var errorText;
                 	try {
                 		errorText = "Request failed";
@@ -138,7 +142,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxRequest"
                 	} catch (e) {
                 		errorText = "Request failed with unknown status";
                 	}
-                	myfaces.ajax.sendError(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl._ERROR_HTTPERROR,
+                	jsfAjaxImpl.sendError(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl._ERROR_HTTPERROR,
                         myfaces._impl.core._jsfImpl._ERROR_HTTPERROR, errorText);
                 }
             }

@@ -56,7 +56,7 @@ if ('undefined' == typeof _reserveMyfacesNamespaces || _reserveMyfacesNamespaces
 
     };
     _reserveMyfacesNamespaces();
-};
+}
 
 /**
  * Central internal JSF2 LangUtils with code used
@@ -68,7 +68,7 @@ if ('undefined' == typeof _reserveMyfacesNamespaces || _reserveMyfacesNamespaces
  */
 if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._impl._util._LangUtils) {
     myfaces._impl._util._LangUtils = function() {
-    }
+    };
 
     myfaces._impl._util._LangUtils.global = this;
 
@@ -123,8 +123,8 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
 
     /**
      * Helper function to provide a trim with a given splitter regular expression
-     * @param {string} it the string to be trimmed
-     * @param {regexp} splitter the splitter regular expressiion
+     * @param {|String|} it the string to be trimmed
+     * @param {|RegExp|} splitter the splitter regular expressiion
      *
      * FIXME is this still used?
      */
@@ -181,7 +181,7 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
      * Backported from dojo
      * a failsafe string determination method
      * (since in javascript String != "" typeof alone fails!)
-     * @param it {anything} the object to be checked for being a string
+     * @param it {|anything|} the object to be checked for being a string
      * @return true in case of being a string false otherwise 
      */
     myfaces._impl._util._LangUtils.isString = function(/*anything*/ it) {
@@ -231,7 +231,9 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
             scope = null;
         }
         if (this.isString(method)) {
-            scope = scope || window || function() {};/*since we do not have dojo global*/
+            scope = scope || window || function() {
+            };
+            /*since we do not have dojo global*/
             if (!scope[method]) {
                 throw(['myfaces._impl._util._LangUtils: scope["', method, '"] is null (scope="', scope, '")'].join(''));
             }
@@ -243,41 +245,30 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
             return method.apply(scope, arguments || []);
         }; // Function
     };
-    /**
-     * used internally to lazy init the logger
-     * Lazy init for the logging subsystem
-     * @deprecated will be removed soon
-     */
-    myfaces._impl._util._LangUtils._getLogger = function() {
-        if (null == myfaces._impl._util._LangUtils._logger) {
-            myfaces._impl._util._LangUtils._logger = myfaces._impl._util._Logger.getInstance();
-        }
-        return myfaces._impl._util._LangUtils._logger;
-    };
 
     myfaces._impl._util._LangUtils._hitchArgs = function(scope, method /*,...*/) {
         var pre = this._toArray(arguments, 2);
         var named = this.isString(method);
         return function() {
-            // arrayify arguments
+            // array-fy arguments
             var args = this._toArray(arguments);
             // locate our method
             var f = named ? (scope || myfaces._impl._util._LangUtils.global)[method] : method;
             // invoke with collected args
             return f && f.apply(scope || this, pre.concat(args)); // mixed
-        } // Function
+        }; // Function
     };
 
     /**
      * Helper function to merge two maps
      * into one
-     * @param {Map} destination the destination map
-     * @param {Map} source the source map
-     * @param {boolean} overwriteDest if set to true the destination is overwritten if the keys exist in both maps
+     * @param {|Object|} destination the destination map
+     * @param {|Object|} source the source map
+     * @param {|boolean|} overwriteDest if set to true the destination is overwritten if the keys exist in both maps
      **/
     myfaces._impl._util._LangUtils.mixMaps = function(destination, source, overwriteDest) {
         /**
-         * mixin code depending on the state of dest and the overwrite param
+         * mixing code depending on the state of dest and the overwrite param
          */
         var _JSF2Utils = myfaces._impl._util._LangUtils;
         var result = {};
@@ -313,7 +304,7 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
      */
     myfaces._impl._util._LangUtils.exists = function(root, element) {
         return ('undefined' != typeof root && null != root && 'undefined' != typeof root[element] && null != root[element]);
-    }
+    };
 
     /**
      * checks if an array contains an element
@@ -332,12 +323,12 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
     /**
      * Concatenates an array to a string
      * @param {Array} arr the array to be concatenated
-     * @param {String} delimiter, the concateation delimiter if none is set \n is used
+     * @param {String} delimiter the concatenation delimiter if none is set \n is used
      *
      * @return the concatenated array, one special behavior to enable j4fry compatibility has been added
      * if no delimiter is used the [entryNumber]+entry is generated for a single entry
      * TODO check if this is still needed it is somewhat outside of the scope of the function
-     * and functionalitywise dirty
+     * and functionality wise dirty
      */
     myfaces._impl._util._LangUtils.arrayToString = function(/*String or array*/ arr, /*string*/ delimiter) {
         if (myfaces._impl._util._LangUtils.isString(arr)) {
@@ -356,4 +347,149 @@ if ('undefined' == typeof(myfaces._impl._util._LangUtils) || null == myfaces._im
         return resultArr.join(finalDelimiter);
     };
 
+
+    /**
+     * reserves a namespace in the specific scope
+     *
+     * usage:
+     * if(myfaces._impl._util._Lang.reserve("org.apache.myfaces.MyUtils")) {
+     *      org.apache.myfaces.MyUtils = function() {
+     *      }
+     * }
+     *
+     * reserves a namespace and if the namespace is new the function itself is reserved
+     *
+     *
+     *
+     * or:
+     * myfaces._impl._util._Lang.reserve("org.apache.myfaces.MyUtils", function() { ... });
+     *
+     * reserves a namespace and if not already registered directly applies the function the namespace
+     *
+     * @param {|String|} nameSpace
+     * @returns true if it was not provided
+     * false otherwise for further action
+     */
+
+    myfaces._impl._util._LangUtils.fetchNamespace = function(nameSpace) {
+        try {
+            return myfaces._impl._util._Utils.globalEval("window." + nameSpace);
+        } catch (e) {/*wanted*/
+        }
+        return null;
+    };
+
+    myfaces._impl._util._LangUtils.reserveNamespace = function(nameSpace, reservationFunction) {
+        var _Lang = myfaces._impl._util._LangUtils;
+        if (!_Lang.isString(nameSpace)) {
+            throw Error("Namespace must be a string with . as delimiter");
+        }
+        if (null != _Lang.fetchNamespace(nameSpace)) {
+            return false;
+        }
+
+        var namespaceEntries = nameSpace.split(/\./);
+        var currentNamespace = window;
+        for (var cnt = 0; cnt < namespaceEntries.length; cnt++) {
+            var subNamespace = namespaceEntries[cnt];
+            if ('undefined' == typeof currentNamespace[subNamespace]) {
+                currentNamespace[subNamespace] = {};
+            }
+            if (cnt == namespaceEntries.length - 1 && 'undefined' != typeof reservationFunction && null != reservationFunction) {
+                currentNamespace[subNamespace] = reservationFunction;
+            }
+            currentNamespace = currentNamespace[subNamespace];
+        }
+
+        return true;
+    };
+
+    /**
+     * prototype based delegation inheritance
+     *
+     * implements prototype delegaton inheritance dest <- a
+     *
+     * usage var newClass = myfaces._impl._util._LangUtils.extends(
+     * function (var1, var2) {
+     *  this.callSuper("constructor", var1,var2);
+     * };
+     * ,origClass);
+     * newClass.prototype.myMethod = function(arg1) {
+     *      this.callSuper("myMethod", arg1,"hello world");
+
+     other option
+     myfaces._impl._util._LangUtils.extends("myNamespace.newClass", parent, {
+        init: function() {constructor...},
+        method1: function(f1, f2) {},
+        method2: function(f1, f2,f3)
+
+     });
+
+
+     * I omit the dojo way here of passing entire function maps
+     * because in my experience they are hard to swallow for ides
+     * a simple extends should do it for now
+     * };
+     */
+
+    myfaces._impl._util._LangUtils.extendClass = function(newClass, extendsClass, functionMap) {
+        var _Lang = myfaces._impl._util._LangUtils;
+
+        if ('function' != typeof newClass) {
+
+
+            var constructor = null;
+            if ('undefined' != typeof functionMap && null != functionMap) {
+                constructor = ('undefined' != typeof null != functionMap['init'] && null != functionMap['init']) ? functionMap['init'] : function() {
+                };
+            } else {
+                constructor = function() {
+                };
+            }
+            if (!_Lang.reserveNamespace(newClass, constructor)) {
+                return null;
+            }
+            newClass = _Lang.fetchNamespace(newClass);
+        }
+
+        if (null != extendsClass) {
+            newClass.prototype = new extendsClass;
+            newClass.prototype.constructor = newClass;
+            newClass.prototype.parent = extendsClass.prototype;
+
+            newClass.prototype._callSuper = function(methodName) {
+                var passThrough = (arguments.length == 1) ? [] : Array.prototype.slice.call(arguments, 1);
+                this.parent[methodName].apply(this, passThrough);
+            };
+        }
+
+        //we now map the function map in
+        if ('undefined' != typeof functionMap && null != functionMap) {
+            for (var key in functionMap) {
+                newClass.prototype[key] = functionMap[key];
+                //we also can apply a direct _inherited method if the method overwrites an existing one
+                //http://ejohn.org/blog/simple-javascript-inheritance/ i don not eliminate it multiple calls to super
+                //can happen, this is the way dojo does it
+                
+                if (null != extendsClass && 'function' == typeof newClass.prototype.parent[key]) {
+                    //we now aop a decorator function on top of everything,
+                    //to make sure we have super set while it is executing
+                    var assignedFunction = newClass.prototype[key];
+                    var superFunction = newClass.prototype.parent[key];
+                    newClass.prototype[key] = function() {
+                        var oldSuper = newClass.prototype["_inherited"];
+                        newClass.prototype["_inherited"] = function() {
+                            this.parent[key].apply(this, arguments);
+                        }
+                        try {
+                            return assignedFunction.apply(this, arguments);
+                        } finally {
+                            newClass.prototype["_inherited"] = oldSuper;
+                        }
+                    }
+                }
+            }
+        }
+        return newClass;
+    };
 }

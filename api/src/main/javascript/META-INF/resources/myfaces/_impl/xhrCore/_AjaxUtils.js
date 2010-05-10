@@ -74,7 +74,6 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxUtils"))
 
             return stringBuffer.join("");
         } catch (e) {
-            alert(e);
             this.m_exception.throwError(request, context, "processUserEntries", e);
         }
     };

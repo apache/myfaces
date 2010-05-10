@@ -74,7 +74,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
      * find the javax.faces.ViewState element and encode its value as well!
      * return a concatenated string of the encoded values!
      *
-     * @throws an exception in case of the given element not being of type form!
+     * @throws exception in case of the given element not being of type form!
      * https://issues.apache.org/jira/browse/MYFACES-2110
      */
     myfaces._impl.core._jsfImpl.prototype.getViewState = function(formElement) {
@@ -135,7 +135,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
         if (!(func instanceof Function)) {
             throw new Error("Functioncall " + func + " is not a function! ");
         }
-    }
+    };
 
     /**
      * this function has to send the ajax requests
@@ -282,18 +282,18 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
     myfaces._impl.core._jsfImpl.prototype.addOnError = function(/*function*/errorListener) {
         /*error handling already done in the assert of the queue*/
         this._errorListenerQueue.add(errorListener);
-    }
+    };
 
     myfaces._impl.core._jsfImpl.prototype.addOnEvent = function(/*function*/eventListener) {
         /*error handling already done in the assert of the queue*/
         this._eventListenerQueue.add(eventListener);
-    }
+    };
 
     /**
      * implementation triggering the error chain
      *
      * @param {Object} request the request object which comes from the xhr cycle
-     * @param {Map} context the context object being pushed over the xhr cycle keeping additional metadata �
+     * @param {Map} context the context object being pushed over the xhr cycle keeping additional metadata
      * @param {String} name, the error name
      * @param {String} serverErrorName the server error name in case of a server error
      * @param {String} serverErrorMessage the server error message in case of a server error
@@ -302,7 +302,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
      *  the registered error handlers in the queue receiv an error message to be dealt with
      *  and if the projectStage is at development an alert box is displayed
      *
-     *  note: we have additonal functionality here, via the global config myfaces.config.defaultErrorOutput a function can be provieded
+     *  note: we have additional functionality here, via the global config myfaces.config.defaultErrorOutput a function can be provided
      *  which changes the default output behavior from alert to something else
      *
      *
@@ -361,7 +361,8 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
                 eventData.responseText = request.responseText;
                 eventData.responseCode = request.status;
             } catch (e) {
-                myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_CLIENT_ERROR, "ErrorRetrievingResponse",
+                var impl = myfaces._impl._util._Utils.getGlobalConfig("jsfAjaxImpl", myfaces.ajax);
+                impl.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_CLIENT_ERROR, "ErrorRetrievingResponse",
                         "Parts of the response couldn't be retrieved when constructing the event data: " + e);
                 //client errors are not swallowed 
                 throw e;
@@ -491,31 +492,6 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.core, "_jsfImpl")) {
             //but we reuse the argument array capabilities of apply
             var retVal;
 
-            /*
-             * Ok I have revisited this part again, the black boxed ri test reveals:
-             *
-             <h:outputScript name = "jsf.js" library = "javax.faces" target = "head" />
-             <script type="text/javascript">
-             function pressMe(event) {
-             alert(this);
-             return true;
-             }
-             function chainMe(origin, event) {
-             jsf.util.chain(origin, event, "alert('hello world'); return true;", pressMe);
-             }
-
-             </script>
-
-             <div onclick="chainMe(this, event);">
-             press me
-             </div>
-
-             that the RI can only handle stringed scripts we can handle functions and scripts
-             I will contact the members of the EG on what the correct behavior is
-             *
-             * Arbitrary code block in my opinon means that we have to deal with both functions
-             * and evaled strings
-             */
             if ('function' == typeof arguments[loop]) {
                  retVal = arguments[loop].call(thisVal, event);
             } else {

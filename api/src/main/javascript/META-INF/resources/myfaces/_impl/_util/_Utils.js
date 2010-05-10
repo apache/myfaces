@@ -20,12 +20,19 @@
 
 _reserveMyfacesNamespaces();
 
+/**
+ * TODO rename this utils class
+ * into DomUtils
+ * and move the functions not fitting here
+ * into LangUtils
+ *
+ */
 if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
     /**
      * Constructor
      */
     myfaces._impl._util._Utils = function() {
-    }
+    };
 
     myfaces._impl._util._Utils.browserDetection = function() {
         /**
@@ -36,7 +43,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
          * hence we port it over it allows a very fine grained detection of
          * browsers including the version number
          * this however only can work out if the user
-         * does not alter the user agend, which they normally dont!
+         * does not alter the user agent, which they normally dont!
          *
          * the exception is the ie detection which relies on specific quirks in ie
          */
@@ -94,7 +101,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
 
     /**
      * encapsulated xhr object which tracks down various implementations
-     * of the xhr object in a browser independend fashion
+     * of the xhr object in a browser independent fashion
      * (ie pre 7 used to have non standard implementations because
      * the xhr object standard came after IE had implemented it first
      * newer ie versions adhere to the standard and all other new browsers do anyway)
@@ -110,7 +117,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
 
         }
         return new ActiveXObject('Microsoft.XMLHTTP');
-    }
+    };
 
     /**
      * [STATIC]
@@ -149,7 +156,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
         } else {
             throw Error("Loading of script " + src + " failed ");
         }
-    }
+    };
 
     /**
      * [STATIC]
@@ -160,8 +167,8 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
      * @param {HtmlElement} item
      */
     myfaces._impl._util._Utils.runScripts = function(request, context, item) {
-        if (item.nodeType == 1) { // only if it's an element node
-            if (item.tagName.toLowerCase() == 'script') {
+        if (item.nodeType == 1) { // only if it's an element node or document fragment
+            if ('undefined' != typeof item.tagName && item.tagName.toLowerCase() == 'script') {
                 try {
                     if (typeof item.getAttribute('src') != 'undefined'
                             && item.getAttribute('src') != null
@@ -201,7 +208,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
                 }
             }
         }
-    }
+    };
 
     /**
      * Simple delete on an existing item
@@ -215,7 +222,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
         }
 
         item.parentNode.removeChild(item);
-    }
+    };
 
     /**
      * [STATIC]
@@ -228,21 +235,26 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
      */
     myfaces._impl._util._Utils.replaceHtmlItem = function(request, context, itemIdToReplace, newTag, form) {
         try {
+
+            //TODO handle multiple eval nodes here
+
             //for webkit we have to trim otherwise he does not add the adjancent elements correctly
             newTag = myfaces._impl._util._LangUtils.trim(newTag);
 
             // (itemIdToReplace instanceof Node) is NOT compatible with IE8
             var item = (typeof itemIdToReplace == "object") ? itemIdToReplace :
-                       myfaces._impl._util._Utils.getElementFromForm(request, context, itemIdToReplace, form);
+                    myfaces._impl._util._Utils.getElementFromForm(request, context, itemIdToReplace, form);
 
             if (item == null) {
                 myfaces._impl.xhrCore._Exception.throwNewWarning
                         (request, context, "Utils", "replaceHTMLItem", "Unknown Html-Component-ID: " + itemIdToReplace);
-                return;
+                return null;
             }
 
             if (newTag != "") {
                 var evalNode = null;
+
+                //w3c compliant browsers with proper contextual fragments
                 if (typeof window.Range != 'undefined'
                         && typeof Range.prototype.createContextualFragment == 'function') {
                     var range = document.createRange();
@@ -252,30 +264,36 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
                     //with the first element (the place holder is the the only child)
                     //and then append additional elements as additional childs
                     //the body itself then is the root for the eval part!
-                    if(item.id == 'myfaces_bodyplaceholder') {
+                    if (item.id == 'myfaces_bodyplaceholder') {
                         var parentNode = item.parentNode;
                         parentNode.appendChild(fragment);
                         evalNode = parentNode;
                     } else {
                         //normal dom node case we replace only the client id fragment!
-                        //TODO this code is heavily under discussion, probably invalid in the long run
-                        //I am reverting the findHtmlItemFromFragment back to fragment
-                        //var replaceItem = myfaces._impl._util._Utils.findHtmlItemFromFragment(fragment, item.id);
-                        //if(replaceItem == null)replaceItem = fragment;
-                        // replaceItem = fragment;
-                        evalNode = item.parentNode.replaceChild(fragment, item);
+
+                        var parentNode = item.parentNode;
+
+                        evalNode = fragment.childNodes[0];
+                        parentNode.replaceChild(fragment, item);
                     }
                 } else {
-                    item.insertAdjacentHTML('beforeBegin', newTag);
-                    evalNode = item.previousSibling;
-                    item.parentNode.removeChild(item);
-                    if(item.id != 'myfaces_bodyplaceholder' && ('undefined' == typeof evalNode.id  || null == evalNode.id || evalNode.id != item.id)) {
-                        //to get the same behavior (as in other browsers we have to cherry pick the element differently here)
-                        //black box testing on Mojarra reveals, it does nothing here, and breaks the page this way
-                        var subNode = document.getElementById(item.id);
-                        subNode.parentNode.removeChild(subNode);
-                        evalNode.parentNode.replaceChild(subNode, evalNode);
-                    }
+
+                    //now to the non w3c compliant browsers
+                    //http://blogs.perl.org/users/clinton_gormley/2010/02/forcing-ie-to-accept-script-tags-in-innerhtml.html
+                    var dummyPlaceHolder = document.createElement("div");
+
+                    //fortunately a table element also works which is less critical than form elements regarding
+                    //the inner content
+                    dummyPlaceHolder.innerHTML = "<table>" + newTag + "</table>";
+                    evalNode = dummyPlaceHolder.childNodes[0].childNodes[0].childNodes[0];
+                    var parentNode = item.parentNode;
+                    item.parentNode.replaceChild(evalNode, item);
+
+                    //if this as well will fail in the future, we can let ie parse a proper xml
+                    //extract the script elements and then create the script elements manually
+                    //but for now we will not need it, and this solution is faster
+                    //the downside of that solution would be that the fragment itself
+                    //must resolve to a valid xml
                 }
 
                 // and remove the old item
@@ -283,7 +301,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
                 if (myfaces._impl._util._Utils.isManualScriptEval()) {
                     myfaces._impl._util._Utils.runScripts(request, context, evalNode);
                 }
-                return;
+                return evalNode;
             }
             // and remove the old item, in case of an empty newtag and do nothing else
             item.parentNode.removeChild(item);
@@ -291,34 +309,104 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
         } catch (e) {
             myfaces._impl.xhrCore._Exception.throwNewError(request, context, "Utils", "replaceHTMLItem", e);
         }
+        return null;
     };
 
+    /**
+     * finds a corresponding html item from a given identifier and
+     * dom fragment
+     * @param fragment the dom fragment to find the item for
+     * @param itemId the identifier of the item
+     */
     myfaces._impl._util._Utils.findHtmlItemFromFragment = function(fragment, itemId) {
-        if (fragment.childNodes == null)
-            return null;
-        //normal usecase, some browsers behave saner in complex situations if we work directly
-        //on the fragment, since the recommended path from the eg is to use an outer element
-        //having the id, this is the normal usecase
-        if(fragment.childNodes.length == 1 && fragment.childNodes[0].id == itemId) {
+        //TODO add iterator handlers here for browsers which allow dom filters and iterators
+
+        if ('undefined' != typeof fragment.id && fragment.id === itemId) {
             return fragment;
         }
 
-        //subfragment usecases
-        for (var i = 0; i < fragment.childNodes.length; i++) {
-            var c = fragment.childNodes[i];
-            if (c.id == itemId)
-                return c;
+        if (fragment.childNodes == null)
+            return null;
+
+        //sub-fragment usecases
+        var child;
+        var cnt;
+        for (cnt = 0; cnt < fragment.childNodes.length; cnt++) {
+            child = fragment.childNodes[cnt];
+            if ('undefined' != typeof fragment.id && child.id === itemId)
+                return child;
         }
-        for (var i = 0; i < fragment.childNodes.length; i++) {
-            var c = fragment.childNodes[i];
-            var item = myfaces._impl._util._Utils.findHtmlItemFromFragment(c, itemId);
+        for (cnt = 0; cnt < fragment.childNodes.length; cnt++) {
+            child = fragment.childNodes[cnt];
+            var item = myfaces._impl._util._Utils.findHtmlItemFromFragment(child, itemId);
             if (item != null)
                 return item;
         }
         return null;
     };
 
-    myfaces._impl._util._Utils.ieQuircksEvents = {
+    /**
+     * determines the number of nodes according to their tagType
+     *
+     * @param {NodeFragment} fragment the fragment to be investigated
+     * @param {String}ÊtagName the tag name (lowercase)
+     * @param {Boolean}ÊdeepScan if set to true a found element does not prevent to scan deeper
+     * (the normal usecase is false, which means if the element is found only its
+     * adjacent elements will be scanned, due to the recursive descension
+     * this should work out with elements with different nesting depths but not being
+     * parent and child to each other
+     */
+    myfaces._impl._util._Utils.findHtmlTypeFromFragment = function(fragment, tagName, deepScan) {
+        var retVal = [];
+        //TODO add iterator handlers here for browsers which allow dom filters and iterators
+
+        if ('undefined' != typeof fragment.tagName && fragment.tagName.toLowerCase() === tagName) {
+            retVal.push(fragment);
+            if (!deepScan) return retVal;
+        }
+
+        if ('undefined' == typeof fragment.childNodes || fragment.childNodes == null)
+            return retVal;
+
+        //subfragment usecases
+        var cnt;
+        var childNode;
+        for (cnt = 0; cnt < fragment.childNodes.length; cnt++) {
+            childNode = fragment.childNodes[cnt];
+            if ('undefined' != typeof childNode.tagName && childNode.tagName.toLowerCase() === tagName)
+                retVal.push(childNode);
+        }
+
+        for (cnt = 0; (deepScan || retVal.length == 0) && cnt < fragment.childNodes.length; cnt++) {
+            childNode = fragment.childNodes[cnt];
+            var subRetVals = myfaces._impl._util._Utils.findHtmlTypeFromFragment(childNode, tagName);
+            retVal = retVal.concat(subRetVals);
+        }
+        return retVal;
+
+    };
+
+    /**
+     *
+     * @param {Node} form
+     * @param {String}ÊnameOrIdenitifier
+     *
+     * checks for a a element with the name or identifier of nameOrIdentifier
+     * @returns the found node or null otherwise
+     */
+    myfaces._impl._util._Utils.findFormElement = function(form, nameOrIdenitifier) {
+        var eLen = form.elements.length;
+        //TODO add iterator handlers here for browsers which allow dom filters and iterators
+
+        for (var e = 0; e < eLen; e++) {
+            var elem = form.elements[e];
+            if ('undefined' != typeof elem.name && elem.name === nameOrIdenitifier) return elem;
+            if ('undefined' != typeof elem.id && elem.id === nameOrIdenitifier) return elem;
+        } // end of for (formElements)
+        return null;
+    };
+
+    myfaces._impl._util._Utils._ieQuircksEvents = {
         "onabort": true,
         "onload":true,
         "onunload":true,
@@ -401,10 +489,10 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
             //check if the attribute is an event, since this applies only
             //to quirks mode of ie anyway we can live with the standard html4/xhtml
             //ie supported events
-            if (myfaces._impl._util._Utils.ieQuircksEvents[attribute]) {
+            if (myfaces._impl._util._Utils._ieQuircksEvents[attribute]) {
                 if (myfaces._impl._util._LangUtils.isString(attribute)) {
                     domNode.setAttribute(attribute, function(event) {
-                        myfaces._impl._util._Utils.globalEval(attribute);
+                        return eval(value);
                     });
                 }
             } else {
@@ -427,20 +515,20 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
         //
         //tested currently safari, ie, firefox, opera
         var retVal = (_LangUtils.exists(myfaces._impl._util._Utils.browser, "isIE") &&
-                      ( myfaces._impl._util._Utils.browser.isIE > 5.5)) ||
-                     (_LangUtils.exists(myfaces._impl._util._Utils.browser, "isKhtml") &&
-                      (myfaces._impl._util._Utils.browser.isKhtml > 0)) ||
-                     (_LangUtils.exists(myfaces._impl._util._Utils.browser, "isWebKit") &&
-                      (myfaces._impl._util._Utils.browser.isWebKit > 0)) ||
-                     (_LangUtils.exists(myfaces._impl._util._Utils.browser, "isSafari") &&
-                      (myfaces._impl._util._Utils.browser.isSafari > 0));
+                ( myfaces._impl._util._Utils.browser.isIE > 5.5)) ||
+                (_LangUtils.exists(myfaces._impl._util._Utils.browser, "isKhtml") &&
+                        (myfaces._impl._util._Utils.browser.isKhtml > 0)) ||
+                (_LangUtils.exists(myfaces._impl._util._Utils.browser, "isWebKit") &&
+                        (myfaces._impl._util._Utils.browser.isWebKit > 0)) ||
+                (_LangUtils.exists(myfaces._impl._util._Utils.browser, "isSafari") &&
+                        (myfaces._impl._util._Utils.browser.isSafari > 0));
 
         return retVal;
 
         //another way to determine this without direct user agent parsing probably could
         //be to add an embedded script tag programmatically and check for the script variable
         //set by the script if existing, the add went through an eval if not then we
-        //have to deal with it outselves, this might be dangerous in case of the ie however
+        //have to deal with it ourselves, this might be dangerous in case of the ie however
         //so in case of ie we have to parse for all other browsers we can make a dynamic
         //check if the browser does auto eval
         //TODO discuss those things
@@ -557,8 +645,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
         var submitName = ('undefined' != element.name) ? element.name : null;
         //a framework in a detachment case also can replace an existing identifier element
         // with a name element
-        submitName = (null == submitName) ? submitIdentifier: submitName;
-
+        submitName = (null == submitName) ? submitIdentifier : submitName;
 
         if ('undefined' != typeof submitIdentifier && null != submitIdentifier && '' != submitIdentifier) {
             //we have to assert that the element passed down is detached
@@ -592,7 +679,6 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
         if (null == foundElements || 0 == foundElements.length || foundElements.length > 1) {
             return null;
         }
-
 
         return foundElements[0];
     };
@@ -654,7 +740,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
             }
         }
         return null;
-    }
+    };
 
     /**
      * fetches a global config entry
@@ -684,24 +770,22 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
         if (myfaces._impl._util._Utils.browser.isIE && window.execScript) {
             //execScript definitely only for IE otherwise we might have a custom
             //window extension with undefined behavior on our necks
-            window.execScript(code);
-            return;
+            return window.execScript(code);
+
         } else if (undefined != typeof (window.eval) && null != window.eval) {
 
-            //fix for a Mozilla bug, a bug, Mozilla prevents, that the window is properly applied
-            //the former approach was to scope an outer anonymouse function but the scoping is not necessary
+            //fix for a Mozilla bug, Mozilla prevents, that the window is properly applied
+            //the former approach was to scope an outer anonymous function but the scoping is not necessary
             //Mozilla behaves correctly if you just add an outer function, then the window scope is again
             //accepted as the real scope
             var func = function () {
-                window.eval.call(window, code);
+                return window.eval.call(window, code);
             };
-            func();
-
-            return;
+            return func();
         }
         //we probably have covered all browsers, but this is a safety net which might be triggered
         //by some foreign browser which is not covered by the above cases
-        eval.call(window, code);
+        return eval.call(window, code);
     };
 
     /**
@@ -724,6 +808,15 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_Utils")) {
             return globalOption;
         }
         return localOptions.myfaces[configName];
+    };
+
+    /**
+     * Convenience method
+     * to fetch the implementation from
+     * our lazily binding configuration system
+     */
+    myfaces._impl._util._Utils.getImpl = function() {
+        myfaces._impl._util._Utils.getGlobalConfig("jsfAjaxImpl", myfaces.ajax);
     };
 
     /**

@@ -43,6 +43,9 @@
  * for instance comments with embedded head and body sections
  * or javascripts with head and body in strings..
  *
+ * Also we do not rely on the response being xhtml due to
+ * the fact that we might still have to cover jsp over html 4.0.1
+ *
  * We tried to solve that that way in the first place but due to
  * the nature of things a minimal semantic understanding in the parsing
  * process is needed to strip everything out correctly which is not entirely

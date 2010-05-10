@@ -30,12 +30,16 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
     myfaces._impl.xhrCore._AjaxResponse = function(alarmThreshold) {
         this.alarmThreshold = alarmThreshold;
         this.m_exception = new myfaces._impl.xhrCore._Exception("myfaces._impl.xhrCore._AjaxResponse", this.alarmThreshold);
+        //change tracer for post changes operations
+        this.changeTrace = [];
+        this.appliedViewState = null;
     };
 
     /*partial response types*/
     myfaces._impl.xhrCore._AjaxResponse.prototype._RESPONSE_PARTIAL = "partial-response";
     myfaces._impl.xhrCore._AjaxResponse.prototype._RESPONSETYPE_ERROR = "error";
     /*TODO: -=Leonardo Uribe=- Does this response type really exists? really from server comes a partial-response with redirect command*/
+    /*This really exists, it is for cases where a button issues a command and the server wants to redirect after processing the ajax request*/
     myfaces._impl.xhrCore._AjaxResponse.prototype._RESPONSETYPE_REDIRECT = "redirect";
     myfaces._impl.xhrCore._AjaxResponse.prototype._RESPONSETYPE_REDIRECT = "changes";
 
@@ -48,7 +52,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
     myfaces._impl.xhrCore._AjaxResponse.prototype._PCMD_ERROR = "error";
     myfaces._impl.xhrCore._AjaxResponse.prototype._PCMD_ATTRIBUTES = "attributes";
     myfaces._impl.xhrCore._AjaxResponse.prototype._PCMD_EXTENSION = "extension";
-    myfaces._impl.xhrCore._AjaxResponse.prototype._PCMD_REDIRECT = "redirect"
+    myfaces._impl.xhrCore._AjaxResponse.prototype._PCMD_REDIRECT = "redirect";
     /**
      * uses response to start Html element replacement
      *
@@ -124,8 +128,40 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
                     if (!this.processChanges(request, context, childNode)) return;
                 }
             }
+            
+            //fixup missing viewStates due to spec deficiencies
+            this.fixViewStates();
         } catch (e) {
             this.m_exception.throwError(request, context, "processResponse", e);
+        }
+    };
+
+    myfaces._impl.xhrCore._AjaxResponse.prototype.fixViewStates = function() {
+        if(null == this.appliedViewState) {
+            return;
+        }
+        /*namespace remapping*/
+        var _Utils = myfaces._impl._util._Utils;
+
+        //note the spec here says clearly it is done, but mojarra not and there is a corner case
+        //regarding cross form submits, hence we should check all processed items for embedded forms
+        for (var cnt = 0; cnt < this.changeTrace.length; cnt ++) {
+            var replacementElem = this.changeTrace[cnt];
+            var replacedForms = myfaces._impl._util._Utils.findHtmlTypeFromFragment(replacementElem, "form", false);
+            for (var formCnt = 0; formCnt < replacedForms.length; formCnt++) {
+                //we first have to fetch the real form element because the fragment
+                //might be detached in some browser implementations
+                var appliedReplacedFrom = document.getElementById(replacedForms[formCnt].id);
+                var viewStateField = myfaces._impl._util._Utils.findFormElement(appliedReplacedFrom, "javax.faces.ViewState");
+                if (null == viewStateField) {
+                    var element = document.createElement("input");
+                    _Utils.setAttribute(element, "type", "hidden");
+                    _Utils.setAttribute(element, "name", "javax.faces.ViewState");
+                    appliedReplacedFrom.appendChild(element);
+
+                    _Utils.setAttribute(element, "value", this.appliedViewState);
+                }
+            }
         }
     };
 
@@ -146,7 +182,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
             errorMessage = "";
         }
         myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_SERVER_ERROR, errorName, errorMessage);
-    }
+    };
 
     myfaces._impl.xhrCore._AjaxResponse.prototype.processRedirect = function(request, context, node) {
         /**
@@ -163,19 +199,24 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
         }
         window.location = redirectUrl;
         return true;
-    }
+    };
 
     myfaces._impl.xhrCore._AjaxResponse.prototype.processChanges = function(request, context, node) {
+        
+        var _Utils = myfaces._impl._util._Utils;
+        
         var changes = node.childNodes;
+
+        //note we need to trace the changes which could affect our insert update or delete
+        //se that we can realign our ViewStates afterwards
+        //the realignment must happen post change processing
 
         for (var i = 0; i < changes.length; i++) {
             if (changes[i].tagName == "update") {
                 if (!this.processUpdate(request, context, changes[i])) return false;
             } else if (changes[i].tagName == this._PCMD_EVAL) {
                 //eval is always in CDATA blocks
-                //TODO split eval handling
-
-                myfaces._impl._util._Utils.globalEval(changes[i].firstChild.data);
+                _Utils.globalEval(changes[i].firstChild.data);
             } else if (changes[i].tagName == this._PCMD_INSERT) {
                 if (!this.processInsert(request, context, changes[i])) return false;
             } else if (changes[i].tagName == this._PCMD_DELETE) {
@@ -192,16 +233,21 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
                 return false;
             }
         }
+        //second step we step over all updates which have identifiers to check whether there are lost
+        // viewStates
+
         return true;
-    }
+    };
 
     myfaces._impl.xhrCore._AjaxResponse.prototype.processUpdate = function(request, context, node) {
-        if (node.getAttribute('id') == "javax.faces.ViewState") {
+        /*local namespace remapping*/
+        var _Utils = myfaces._impl._util._Utils;
 
+        if (node.getAttribute('id') == "javax.faces.ViewState") {
             //update the submitting forms viewstate to the new value
             // The source form has to be pulled out of the CURRENT document first because the context object
             // may refer to an invalid document if an update of the entire body has occurred before this point.
-
+            var viewStateValue = node.firstChild.nodeValue;
             var sourceForm = myfaces._impl._util._Utils.fuzzyFormDetection(null, context, context.source);
 
             //the source form could be determined absolutely by either the form, the identifier of the node, or the name
@@ -211,16 +257,15 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
                 var element = myfaces._impl._util._Utils.getElementFromForm(request, context, "javax.faces.ViewState", sourceForm, true, true);
                 if (null == element) {//no element found we have to append a hidden field
                     element = document.createElement("input");
-                    myfaces._impl._util._Utils.setAttribute(element, "type", "hidden");
-                    myfaces._impl._util._Utils.setAttribute(element, "name", "javax.faces.ViewState");
+                    _Utils.setAttribute(element, "type", "hidden");
+                    _Utils.setAttribute(element, "name", "javax.faces.ViewState");
                     sourceForm.appendChild(element);
                 }
                 //viewstate cannot have split cdata blocks so we can skip the costlier operation
-                myfaces._impl._util._Utils.setAttribute(element, "value", node.firstChild.nodeValue);
 
+                _Utils.setAttribute(element, "value", viewStateValue);
             }
-            //else??? the latest spec has this omitted we have to wait for the RI which probably covers this
-
+            this.appliedViewState = viewStateValue;
         } else {
             // response may contain several blocks
             var cDataBlock = myfaces._impl._util._Utils.concatCDATABlocks(node);
@@ -242,8 +287,10 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
                     break;
 
                 default:
-                    this._replaceElement(request, context, node.getAttribute('id'), cDataBlock);
-
+                    var resultNode = this._replaceElement(request, context, node.getAttribute('id'), cDataBlock);
+                    if ('undefined' != typeof resultNode && null != resultNode) {
+                        this.changeTrace.push(resultNode);
+                    }
                     break;
             }
         }
@@ -261,6 +308,9 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
      * @param {String} newData the markup which replaces the old dom node!
      */
     myfaces._impl.xhrCore._AjaxResponse.prototype._replaceBody = function(request, context, newData) {
+
+        var _Utils = myfaces._impl._util._Utils;
+
         var parser = myfaces.ajax._impl = new (myfaces._impl._util._Utils.getGlobalConfig("updateParser", myfaces._impl._util._HtmlStripper))();
 
         var oldBody = document.getElementsByTagName("body")[0];
@@ -273,13 +323,16 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
 
         //the contextualFragment trick does not work on the body tag instead we have to generate a manual body
         //element and then add a child which then is the replacement holder for our fragment!
+
+        //TODO we probably should try to offload this to the browser first via the integrated xml parsing
+        //and if it fails revert to our internal parser
         var bodyData = parser.parse(newData, "body");
         bodyParent.replaceChild(newBody, oldBody);
         this._replaceElement(request, context, placeHolder, bodyData);
 
         for (var key in parser.tagAttributes) {
             var value = parser.tagAttributes[key];
-            myfaces._impl._util._Utils.setAttribute(newBody, key, value);
+            _Utils.setAttribute(newBody, key, value);
         }
     };
 
@@ -287,11 +340,11 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
      * Helper method to avoid duplicate code
      * @param {Object} request our request object
      * @param {Map} context the response context
-     * @param {DomNode} oldElement the element to be replaced
+     * @param {DomNode} oldElement the element to be replaced
      * @param {String} newData the markup which replaces the old dom node!
      */
     myfaces._impl.xhrCore._AjaxResponse.prototype._replaceElement = function(request, context, oldElement, newData) {
-        myfaces._impl._util._Utils.replaceHtmlItem(request, context,
+        return myfaces._impl._util._Utils.replaceHtmlItem(request, context,
                 oldElement, newData, this.m_htmlFormElement);
     };
 
@@ -305,33 +358,40 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
      * the after is the id if set which the component has to be inserted after
      **/
     myfaces._impl.xhrCore._AjaxResponse.prototype.processInsert = function(request, context, node) {
+
+        /*remapping global namespaces for speed and readability reasons*/
+        var _LangUtils = myfaces._impl._util._LangUtils;
+        var _Utils = myfaces._impl._util._Utils;
+        var _JSFImpl = myfaces._impl.core._jsfImpl;
+        
+        
         var insertId = node.getAttribute('id');
         var beforeId = node.getAttribute('before');
         var afterId = node.getAttribute('after');
 
-        var insertSet = 'undefined' != typeof insertId && null != insertId && myfaces._impl._util._LangUtils.trim(insertId) != "";
-        var beforeSet = 'undefined' != typeof beforeId && null != beforeId && myfaces._impl._util._LangUtils.trim(beforeId) != "";
-        var afterSet = 'undefined' != typeof afterId && null != afterId && myfaces._impl._util._LangUtils.trim(afterId) != "";
+        var insertSet = 'undefined' != typeof insertId && null != insertId && _LangUtils.trim(insertId) != "";
+        var beforeSet = 'undefined' != typeof beforeId && null != beforeId && _LangUtils.trim(beforeId) != "";
+        var afterSet = 'undefined' != typeof afterId && null != afterId &&_LangUtils.trim(afterId) != "";
 
         if (!insertSet) {
-            myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML, "Error in PPR Insert, id must be present");
+            myfaces.ajax.sendError(request, context, _JSFImpl._ERROR_MALFORMEDXML, _JSFImpl._ERROR_MALFORMEDXML, "Error in PPR Insert, id must be present");
             return false;
         }
         if (!(beforeSet || afterSet)) {
-            myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML, "Error in PPR Insert, before id or after id must be present");
+            myfaces.ajax.sendError(request, context, _JSFImpl._ERROR_MALFORMEDXML, _JSFImpl._ERROR_MALFORMEDXML, "Error in PPR Insert, before id or after id must be present");
             return false;
         }
         //either before or after but not two at the same time
         var nodeHolder = null;
         var parentNode = null;
 
-        var cDataBlock = myfaces._impl._util._Utils.concatCDATABlocks(node);
+        var cDataBlock = _Utils.concatCDATABlocks(node);
 
         if (beforeSet) {
-            beforeId = myfaces._impl._util._LangUtils.trim(beforeId);
+            beforeId =_LangUtils.trim(beforeId);
             var beforeNode = document.getElementById(beforeId);
             if ('undefined' == typeof beforeNode || null == beforeNode) {
-                myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML, "Error in PPR Insert, before  node of id " + beforeId + " does not exist in document");
+                myfaces.ajax.sendError(request, context, _JSFImpl._ERROR_MALFORMEDXML, _JSFImpl._ERROR_MALFORMEDXML, "Error in PPR Insert, before  node of id " + beforeId + " does not exist in document");
                 return false;
             }
             /**
@@ -344,36 +404,49 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
             parentNode = beforeNode.parentNode;
             parentNode.insertBefore(nodeHolder, beforeNode);
 
-            myfaces._impl._util._Utils.replaceHtmlItem(request, context,
+            var replacementFragment = _Utils.replaceHtmlItem(request, context,
                     nodeHolder, cDataBlock, null);
 
+            if ('undefined' != typeof replacementFragment && null != replacementFragment) {
+                this.changeTrace.push(replacementFragment);
+            }
+
         } else {
-            afterId = myfaces._impl._util._LangUtils.trim(afterId);
+            afterId =_LangUtils.trim(afterId);
             var afterNode = document.getElementById(afterId);
             if ('undefined' == typeof afterNode || null == afterNode) {
-                myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML, "Error in PPR Insert, after  node of id " + after + " does not exist in document");
+                myfaces.ajax.sendError(request, context, _JSFImpl._ERROR_MALFORMEDXML, _JSFImpl._ERROR_MALFORMEDXML, "Error in PPR Insert, after  node of id " + after + " does not exist in document");
                 return false;
             }
+
             nodeHolder = document.createElement("div");
             parentNode = afterNode.parentNode;
             parentNode.insertBefore(nodeHolder, afterNode.nextSibling);
-            myfaces._impl._util._Utils.replaceHtmlItem(request, context,
+
+            var replacementFragment = _Utils.replaceHtmlItem(request, context,
                     nodeHolder, cDataBlock, null);
+
+            if ('undefined' != typeof replacementFragment && null != replacementFragment) {
+                this.changeTrace.push(replacementFragment);
+            }
+
         }
         return true;
-    }
+    };
 
     myfaces._impl.xhrCore._AjaxResponse.prototype.processDelete = function(request, context, node) {
+        var _JSFImpl =  myfaces._impl.core._jsfImpl;
+
         var deleteId = node.getAttribute('id');
         if ('undefined' == typeof deleteId || null == deleteId) {
-            myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML,
-                    myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML, "Error in delete, id not in xml markup");
+            myfaces.ajax.sendError(request, context, _JSFImpl._ERROR_MALFORMEDXML,
+                    _JSFImpl._ERROR_MALFORMEDXML, "Error in delete, id not in xml markup");
             return false;
         }
 
         myfaces._impl._util._Utils.deleteItem(request, context, deleteId, "", "");
         return true;
-    }
+    };
 
     myfaces._impl.xhrCore._AjaxResponse.prototype.processAttributes = function(request, context, node) {
         //we now route into our attributes function to bypass
@@ -382,12 +455,15 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
         //behaves as usual not like the official standard
         //myfaces._impl._util._Utils.setAttribute(domNode, attribute, value;
 
+        var _Utils = myfaces._impl._util._Utils;
+        var _JSFImpl = myfaces._impl.core._jsfImpl;
+
         //<attributes id="id of element"> <attribute name="attribute name" value="attribute value" />* </attributes>
         var attributesRoot = node;
         var elementId = attributesRoot.getAttribute('id');
         if ('undefined' == typeof elementId || null == elementId) {
-            myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML
-                    , myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML, "Error in attributes, id not in xml markup");
+            myfaces.ajax.sendError(request, context, _JSFImpl._ERROR_MALFORMEDXML
+                    , _JSFImpl._ERROR_MALFORMEDXML, "Error in attributes, id not in xml markup");
             return false;
         }
         var childs = attributesRoot.childNodes;
@@ -422,16 +498,16 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
 
                 case "javax.faces.ViewHead":
                     var element = document.getElementsByTagName("body")[0];
-                    myfaces._impl._util._Utils.setAttribute(element, attributeName, attributeValue);
+                    _Utils.setAttribute(element, attributeName, attributeValue);
                     break;
 
                 default:
-                    myfaces._impl._util._Utils.setAttribute(document.getElementById(elementId), attributeName, attributeValue);
+                    _Utils.setAttribute(document.getElementById(elementId), attributeName, attributeValue);
                     break;
             }
 
         }
         return true;
-    }
+    };
 
 }
