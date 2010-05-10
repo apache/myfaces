@@ -53,6 +53,8 @@ public abstract class AttachedObjectTargetHandler<T extends AttachedObjectTarget
     private static final Logger log = Logger.getLogger(AttachedObjectTargetHandler.class.getName());
     
     /**
+     * Indicate the name of the attribute that the component should expose
+     * to page authors.
      * 
      */
     @JSFFaceletAttribute(name="name",

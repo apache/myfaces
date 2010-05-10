@@ -46,6 +46,8 @@ import org.apache.myfaces.application.ViewHandlerImpl;
 import org.apache.myfaces.config.FacesConfigDispenser;
 import org.apache.myfaces.config.FacesConfigUnmarshaller;
 import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.config.element.Behavior;
+import org.apache.myfaces.config.element.ClientBehaviorRenderer;
 import org.apache.myfaces.config.element.Renderer;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigDispenserImpl;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
@@ -199,6 +201,7 @@ public abstract class FaceletTestCase extends TestCase
 
         setupComponents();
         setupConvertersAndValidators();
+        setupBehaviors();
         setupRenderers();
         
         // Redirect resource request to the directory where the test class is,
@@ -315,6 +318,15 @@ public abstract class FaceletTestCase extends TestCase
         }
     }
     
+    protected void setupBehaviors() throws Exception
+    {
+        loadStandardFacesConfig();
+        for (Behavior behavior : dispenser.getBehaviors())
+        {
+            application.addBehavior(behavior.getBehaviorId(), behavior.getBehaviorClass());
+        }
+    }
+    
     /**
      * Override this methods and add just what it is necessary
      * reduce execution time.
@@ -339,7 +351,25 @@ public abstract class FaceletTestCase extends TestCase
 
             renderKit.addRenderer(element.getComponentFamily(), element
                     .getRendererType(), renderer);
-        }        
+        }
+        
+        for (ClientBehaviorRenderer element : dispenser.getClientBehaviorRenderers(RenderKitFactory.HTML_BASIC_RENDER_KIT))
+        {
+            javax.faces.render.ClientBehaviorRenderer renderer;
+            
+            try
+            {
+                renderer = (javax.faces.render.ClientBehaviorRenderer) ClassUtils
+                        .newInstance(element.getRendererClass());
+            }
+            catch (Throwable e)
+            {
+                // ignore the failure so that the render kit is configured
+                continue;
+            }
+
+            renderKit.addClientBehaviorRenderer(element.getRendererType(), renderer);
+        }
     }
     
     /**

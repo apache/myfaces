@@ -104,6 +104,9 @@ import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
 import org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory;
 import org.apache.myfaces.view.facelets.impl.DefaultResourceResolver;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
+import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorAttachedObjectTarget;
+import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper;
+import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorRedirectEventComponentWrapper;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeLibrary;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeResourceLibrary;
@@ -681,7 +684,17 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                             // its tag handler is applied.
                             if (UIComponent.isCompositeComponent(component))
                             {
-                                CompositeComponentResourceTagHandler.addAttachedObjectHandler(component, currentHandler);
+                                if (currentTarget instanceof ClientBehaviorAttachedObjectTarget)
+                                {
+                                    CompositeComponentResourceTagHandler.addAttachedObjectHandler(component, 
+                                            new ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper(
+                                                    (BehaviorHolderAttachedObjectHandler) currentHandler,
+                                                    ((ClientBehaviorAttachedObjectTarget) currentTarget).getEvent()));
+                                }
+                                else
+                                {
+                                    CompositeComponentResourceTagHandler.addAttachedObjectHandler(component, currentHandler);
+                                }
                                 
                                 List<AttachedObjectHandler> handlers = (List<AttachedObjectHandler>) 
                                     component.getAttributes().get(CompositeComponentResourceTagHandler.ATTACHED_OBJECT_HANDLERS_KEY);
@@ -690,7 +703,15 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                             }
                             else
                             {
-                                currentHandler.applyAttachedObject(context, component);                            
+                                if (currentHandler instanceof ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper)
+                                {
+                                    currentHandler.applyAttachedObject(context, new ClientBehaviorRedirectEventComponentWrapper(component, 
+                                            ((ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper) currentHandler).getWrappedEventName(), eventName));
+                                }
+                                else
+                                {
+                                    currentHandler.applyAttachedObject(context, component);
+                                }
                             }
                         }
                     }
