@@ -222,6 +222,11 @@ public class AjaxHandler extends TagHandler implements
             }
         }
         
+        registerJsfAjaxDefaultResource(ctx, parent);
+    }
+    
+    public static void registerJsfAjaxDefaultResource(FaceletContext ctx, UIComponent parent)
+    {
         // Register the standard ajax library on the current page in this way:
         //
         // <h:outputScript name="jsf.js" library="javax.faces" target="head"/>

@@ -32,11 +32,13 @@ import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.MetaRuleset;
 import javax.faces.view.facelets.TagAttribute;
+import javax.faces.view.facelets.TagAttributeException;
 import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandlerDelegate;
 
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
+import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)
@@ -158,7 +160,20 @@ public class BehaviorTagHandlerDelegate extends TagHandlerDelegate implements Be
             {
                 eventName = cvh.getDefaultEventName();
             }
-            cvh.addClientBehavior(eventName, (ClientBehavior) behavior);
+            if (eventName == null)
+            {
+                throw new TagAttributeException(_delegate.getEvent(), "eventName could not be defined for client behavior "+ behavior.toString());
+            }
+            else if (!cvh.getEventNames().contains(eventName))
+            {
+                throw new TagAttributeException(_delegate.getEvent(), "eventName "+eventName+" not found on component instance");
+            }
+            else
+            {
+                cvh.addClientBehavior(eventName, (ClientBehavior) behavior);
+            }
+            
+            AjaxHandler.registerJsfAjaxDefaultResource(faceletContext, parent);
         }
     }
 
