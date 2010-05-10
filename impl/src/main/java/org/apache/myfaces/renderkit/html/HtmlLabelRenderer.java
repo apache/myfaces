@@ -29,7 +29,6 @@ import javax.faces.component.ValueHolder;
 import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.component.html.HtmlOutputLabel;
-import javax.faces.component.html.HtmlOutputText;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
@@ -41,6 +40,7 @@ import org.apache.myfaces.shared_impl.renderkit.html.HTML;
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlRenderer;
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlRendererUtils;
 import org.apache.myfaces.shared_impl.renderkit.html.util.JavascriptUtils;
+import org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils;
 
 /**
  * 
@@ -71,13 +71,21 @@ public class HtmlLabelRenderer extends HtmlRenderer
 
         ResponseWriter writer = facesContext.getResponseWriter();
 
+        Map<String, List<ClientBehavior>> behaviors = null;
+        if (uiComponent instanceof ClientBehaviorHolder)
+        {
+            behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
+            if (!behaviors.isEmpty())
+            {
+                ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, writer);
+            }
+        }
+        
         encodeBefore(facesContext, writer, uiComponent);
 
         writer.startElement(HTML.LABEL_ELEM, uiComponent);
-        Map<String, List<ClientBehavior>> behaviors = null;
         if (uiComponent instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
         {
-            behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
             if (!behaviors.isEmpty())
             {
                 HtmlRendererUtils.writeIdAndName(writer, uiComponent, facesContext);

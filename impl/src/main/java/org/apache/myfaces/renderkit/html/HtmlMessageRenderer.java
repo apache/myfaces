@@ -19,12 +19,17 @@
 package org.apache.myfaces.renderkit.html;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
+import javax.faces.component.behavior.ClientBehavior;
+import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
+import org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlMessageRendererBase;
 
 /**
@@ -42,6 +47,17 @@ public class HtmlMessageRenderer extends HtmlMessageRendererBase
     public void encodeEnd(FacesContext facesContext, UIComponent component) throws IOException
     {
         super.encodeEnd(facesContext, component); // check for NP
+        
+        Map<String, List<ClientBehavior>> behaviors = null;
+        if (component instanceof ClientBehaviorHolder)
+        {
+            behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
+            if (!behaviors.isEmpty())
+            {
+                ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, facesContext.getResponseWriter());
+            }
+        }
+        
         renderMessage(facesContext, component);
     }
 
