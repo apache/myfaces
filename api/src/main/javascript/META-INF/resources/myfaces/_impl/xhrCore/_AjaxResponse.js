@@ -492,11 +492,11 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxResponse
                     throw new Error("Changing of viewRoot attributes is not supported");
                     break;
 
-                case "javax.faces.ViewBody":
+                case "javax.faces.ViewHead":
                     throw new Error("Changing of head attributes is not supported");
                     break;
 
-                case "javax.faces.ViewHead":
+                case "javax.faces.ViewBody":                
                     var element = document.getElementsByTagName("body")[0];
                     _Utils.setAttribute(element, attributeName, attributeValue);
                     break;
