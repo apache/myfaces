@@ -28,11 +28,11 @@ import javax.faces.component.html.HtmlSelectManyCheckbox;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
-import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
+import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
+import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)
@@ -73,6 +73,7 @@ public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
                 selectBooleanCheckbox.getRendererType(),
                 new HtmlCheckboxRenderer());
 
+        facesContext.getAttributes().put("org.apache.myfaces.RENDERED_JSF_JS", Boolean.TRUE);
     }
 
     public void tearDown() throws Exception

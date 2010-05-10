@@ -67,7 +67,8 @@ public class HtmlFormRendererTest extends AbstractJsfTestCase
                 form.getFamily(),
                 form.getRendererType(),
                 new HtmlFormRenderer());
-
+        
+        facesContext.getAttributes().put("org.apache.myfaces.RENDERED_JSF_JS", Boolean.TRUE);
     }
 
     public void tearDown() throws Exception

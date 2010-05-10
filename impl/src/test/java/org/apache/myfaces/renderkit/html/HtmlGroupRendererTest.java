@@ -74,7 +74,8 @@ public class HtmlGroupRendererTest extends AbstractJsfTestCase
                 panelChildOutputText.getFamily(),
                 panelChildOutputText.getRendererType(),
                 new HtmlTextRenderer());
-
+        
+        facesContext.getAttributes().put("org.apache.myfaces.RENDERED_JSF_JS", Boolean.TRUE);
     }
 
     public void tearDown()throws Exception

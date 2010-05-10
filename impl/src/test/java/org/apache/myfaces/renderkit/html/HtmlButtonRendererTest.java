@@ -74,6 +74,8 @@ public class HtmlButtonRendererTest extends AbstractJsfTestCase {
                 "javax.faces.Input",
                 "javax.faces.Hidden",
                 new HtmlHiddenRenderer());
+        
+        facesContext.getAttributes().put("org.apache.myfaces.RENDERED_JSF_JS", Boolean.TRUE);
     }
     
     public void tearDown() throws Exception {

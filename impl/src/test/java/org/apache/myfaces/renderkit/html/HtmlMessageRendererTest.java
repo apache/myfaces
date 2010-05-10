@@ -92,6 +92,8 @@ public class HtmlMessageRendererTest extends AbstractJsfTestCase
         
         facesContext.addMessage(inputText.getClientId(facesContext), 
                 new FacesMessage("Validation message here."));
+        
+        facesContext.getAttributes().put("org.apache.myfaces.RENDERED_JSF_JS", Boolean.TRUE);
     }
 
     public void tearDown() throws Exception

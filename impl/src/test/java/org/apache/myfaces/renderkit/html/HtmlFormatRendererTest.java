@@ -57,6 +57,8 @@ public class HtmlFormatRendererTest extends AbstractJsfTestCase
                 outputFormat.getFamily(),
                 outputFormat.getRendererType(),
                 new HtmlFormatRenderer());
+        
+        facesContext.getAttributes().put("org.apache.myfaces.RENDERED_JSF_JS", Boolean.TRUE);
     }
     
     public void tearDown() throws Exception {

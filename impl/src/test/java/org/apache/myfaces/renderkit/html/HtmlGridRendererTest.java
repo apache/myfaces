@@ -75,7 +75,8 @@ public class HtmlGridRendererTest extends AbstractJsfTestCase
                 colText.getFamily(),
                 colText.getRendererType(),
                 new HtmlTextRenderer());
-
+        
+        facesContext.getAttributes().put("org.apache.myfaces.RENDERED_JSF_JS", Boolean.TRUE);
     }
 
     public void tearDown() throws Exception

@@ -98,6 +98,8 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
                 outcomeTargetLink.getFamily(),
                 outcomeTargetLink.getRendererType(),
                 new HtmlLinkRenderer());
+        
+        facesContext.getAttributes().put("org.apache.myfaces.RENDERED_JSF_JS", Boolean.TRUE);
     }
 
     public void tearDown() throws Exception

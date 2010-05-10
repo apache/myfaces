@@ -69,7 +69,8 @@ public class HtmlRadioRendererTest extends AbstractJsfTestCase
                 selectOneRadio.getFamily(),
                 selectOneRadio.getRendererType(),
                 new HtmlRadioRenderer());
-
+        
+        facesContext.getAttributes().put("org.apache.myfaces.RENDERED_JSF_JS", Boolean.TRUE);
     }
 
     public void tearDown() throws Exception
