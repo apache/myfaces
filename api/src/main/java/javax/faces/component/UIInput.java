@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.el.ELContext;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
@@ -557,22 +556,6 @@ public class UIInput extends UIOutput implements EditableValueHolder
         setValid(true);
     }
     
-    @Override
-    public ValueExpression getValueExpression(String name) 
-    {
-        // override this method to be able to install a _DebugValueExpressionWrapper
-        
-        ValueExpression valueExpression = super.getValueExpression(name);
-        if (valueExpression != null 
-                && getFacesContext().isProjectStage(ProjectStage.Development)
-                && "value".equals(name))
-        {
-            // use a _DebugValueExpressionWrapper for debugging of the value-ValueExpression
-            valueExpression = new _DebugValueExpressionWrapper(valueExpression);
-        }
-        return valueExpression;
-    }
-    
     /**
      * A boolean value that identifies the phase during which action events should fire.
      * <p>
@@ -1092,85 +1075,6 @@ public class UIInput extends UIOutput implements EditableValueHolder
             }
         }
         return false;
-    }
-    
-    /**
-     * This ValueExpression wrapper is installed for debugging reasons when
-     * in Development mode. Every call to setValue() will be forwarded
-     * to _createFieldDebugInfo() in order to create debugging infos.
-     *
-     * @author Jakob Korherr
-     */
-    private class _DebugValueExpressionWrapper extends ValueExpression
-    {
-        
-        private static final long serialVersionUID = -7114362926319263354L;
-        
-        private ValueExpression _wrapped;
-        
-        _DebugValueExpressionWrapper(ValueExpression wrapped)
-        {
-            _wrapped = wrapped;
-        }
-        
-        @Override
-        public Class<?> getExpectedType()
-        {
-            return _wrapped.getExpectedType();
-        }
-
-        @Override
-        public Class<?> getType(ELContext ctx)
-        {
-            return _wrapped.getType(ctx);
-        }
-
-        @Override
-        public Object getValue(ELContext ctx)
-        {
-            return _wrapped.getValue(ctx);
-        }
-
-        @Override
-        public boolean isReadOnly(ELContext ctx)
-        {
-            return _wrapped.isReadOnly(ctx);
-        }
-
-        @Override
-        public void setValue(ELContext ctx, Object value)
-        {
-            // create debug info for this call to setValue
-            _createFieldDebugInfo((FacesContext) ctx.getContext(FacesContext.class),
-                    "value", _wrapped.getValue(ctx), value, 2);
-            
-            _wrapped.setValue(ctx, value);
-        }
-
-        @Override
-        public boolean equals(Object o)
-        {
-            return _wrapped.equals(o);
-        }
-
-        @Override
-        public String getExpressionString()
-        {
-            return _wrapped.getExpressionString();
-        }
-
-        @Override
-        public int hashCode()
-        {
-            return _wrapped.hashCode();
-        }
-
-        @Override
-        public boolean isLiteralText()
-        {
-            return _wrapped.isLiteralText();
-        }
-
     }
 
 }
