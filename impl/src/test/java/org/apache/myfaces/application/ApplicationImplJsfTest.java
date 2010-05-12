@@ -23,8 +23,11 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import javax.el.ExpressionFactory;
 import javax.el.VariableMapper;
 import javax.faces.FactoryFinder;
+import javax.faces.application.Application;
+import javax.faces.application.ApplicationWrapper;
 import javax.faces.application.Resource;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UINamingContainer;
@@ -35,6 +38,7 @@ import javax.faces.view.facelets.FaceletContext;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.el.MockExpressionFactory;
 import org.apache.myfaces.test.el.MockVariableMapper;
 import org.apache.myfaces.test.mock.MockServletContext;
 import org.apache.myfaces.test.mock.resource.MockResource;
@@ -63,6 +67,39 @@ public class ApplicationImplJsfTest extends AbstractJsfTestCase
     private static final String TEST_COMPONENT_TYPE = "org.apache.myfaces.MyCustomComponentType";
     
     /**
+     * Application wrapper to test all the methods from ApplicationImpl,
+     * but to be able to override getExpressionFactory() to get the 
+     * MockExpressionFactory.
+     * 
+     * @author Jakob Korherr
+     */
+    private class TestApplicationWrapper extends ApplicationWrapper
+    {
+        
+        private ApplicationImpl _applicationImpl;
+        private MockExpressionFactory _expressionFactory;
+        
+        public TestApplicationWrapper(ApplicationImpl applicationImpl)
+        {
+            _applicationImpl = applicationImpl;
+            _expressionFactory = new MockExpressionFactory();
+        }
+
+        @Override
+        public Application getWrapped()
+        {
+            return _applicationImpl;
+        }
+        
+        @Override
+        public ExpressionFactory getExpressionFactory() 
+        {
+            return _expressionFactory;
+        }
+        
+    }
+    
+    /**
      * Helper method to assert the RendererType, the Resource and the BeanInfo.
      * @param component
      * @param resource
@@ -75,7 +112,7 @@ public class ApplicationImplJsfTest extends AbstractJsfTestCase
         assertEquals(BEANINFO_MSG, metadata, component.getAttributes().get(UIComponent.BEANINFO_KEY));
     }
 
-    private ApplicationImpl _testApplication;
+    private TestApplicationWrapper _testApplication;
     private IMocksControl _mocksControl;
     private FaceletContext _faceletContext;
     
@@ -99,7 +136,7 @@ public class ApplicationImplJsfTest extends AbstractJsfTestCase
         FactoryFinder.setFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY,
                 MockViewDeclarationLanguageFactory.class.getName());
         RuntimeConfig runtimeConfig = new RuntimeConfig();
-        _testApplication = new ApplicationImpl(runtimeConfig);
+        _testApplication = new TestApplicationWrapper(new ApplicationImpl(runtimeConfig));
         facesContext.setApplication(_testApplication);
     }
 
@@ -221,17 +258,17 @@ public class ApplicationImplJsfTest extends AbstractJsfTestCase
         // this can be changed in the next release of MyFaces test (1.0.0-beta.NEXT)
         
         // register the new component type
-        //_testApplication.addComponent(TEST_COMPONENT_TYPE, UIOutput.class.getName());
+        _testApplication.addComponent(TEST_COMPONENT_TYPE, UIOutput.class.getName());
         
         // get the BeanInfo metadata
-        //metadata = vdl.getComponentMetadata(facesContext, resource);
+        metadata = vdl.getComponentMetadata(facesContext, resource);
         
         // create the component
-        //component = _testApplication.createComponent(facesContext, resource);
+        component = _testApplication.createComponent(facesContext, resource);
         
         // asserts for the fourth component
-        //assertTrue("The component has to be an instance of UIOutput", component instanceof UIOutput);
-        //assertRendererTypeResourceBeanInfo(component, resource, metadata);
+        assertTrue("The component has to be an instance of UIOutput", component instanceof UIOutput);
+        assertRendererTypeResourceBeanInfo(component, resource, metadata);
     }
     
 }
