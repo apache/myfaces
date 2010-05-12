@@ -1193,6 +1193,8 @@ public abstract class UIComponentBase extends UIComponent
         Map<String, Object> facetMap;
 
         List<Object> childrenList;
+        
+        Object savedState;
         try
         {
             facetMap = null;
@@ -1251,13 +1253,14 @@ public abstract class UIComponentBase extends UIComponent
                     }
                 }
             }
+            
+            // Call the saveState() method of this component.
+            savedState = saveState(context);
         }
         finally
         {
             popComponentFromEL(context);
         }
-        // Call the saveState() method of this component.
-        Object savedState = saveState(context);
 
         // Encapsulate the child state and your state into a Serializable Object and return it.
         return new Object[] { savedState, facetMap, childrenList };
@@ -1274,14 +1277,14 @@ public abstract class UIComponentBase extends UIComponent
 
         Object[] stateValues = (Object[]) state;
 
-        // Call the restoreState() method of this component.
-        restoreState(context, stateValues[0]);
-
-        // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
-        pushComponentToEL(context, this);
-
         try
         {
+            // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
+            pushComponentToEL(context, this);
+
+            // Call the restoreState() method of this component.
+            restoreState(context, stateValues[0]);
+            
             Map<String, Object> facetMap = (Map<String, Object>) stateValues[1];
             if (facetMap != null && getFacetCount() > 0)
             {
