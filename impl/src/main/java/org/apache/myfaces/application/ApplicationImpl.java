@@ -1081,7 +1081,8 @@ public class ApplicationImpl extends Application
          * viewId found by calling UIViewRoot.getViewId() on the UIViewRoot in the argument FacesContext.
          */
         UIViewRoot view = context.getViewRoot();
-        ViewDeclarationLanguage vdl = getViewHandler().getViewDeclarationLanguage(context, view.getViewId());
+        Application application = context.getApplication();
+        ViewDeclarationLanguage vdl = application.getViewHandler().getViewDeclarationLanguage(context, view.getViewId());
 
         /*
          * Obtain a reference to the composite component metadata for this composite component by calling
@@ -1100,10 +1101,11 @@ public class ApplicationImpl extends Application
          */
         BeanDescriptor descriptor = metadata.getBeanDescriptor();
         ValueExpression componentType = (ValueExpression) descriptor.getValue(UIComponent.COMPOSITE_COMPONENT_TYPE_KEY);
-
+        boolean annotationsApplied = false;
         if (componentType != null)
         {
-            component = createComponent((String) componentType.getValue(context.getELContext()));
+            component = application.createComponent((String) componentType.getValue(context.getELContext()));
+            annotationsApplied = true;
         }
         else
         {
@@ -1174,7 +1176,8 @@ public class ApplicationImpl extends Application
                  */
                 if (component == null)
                 {
-                    component = createComponent(UINamingContainer.COMPONENT_TYPE);
+                    component = application.createComponent(UINamingContainer.COMPONENT_TYPE);
+                    annotationsApplied = true;
                 }
             }
         }
@@ -1202,7 +1205,10 @@ public class ApplicationImpl extends Application
          * If this annotation is present, the action listed in ListenerFor must be taken on the component, before it is
          * returned from this method.
          */
-        _handleAnnotations(context, component, component);
+        if (!annotationsApplied)
+        {
+            _handleAnnotations(context, component, component);
+        }
 
         return component;
     }
