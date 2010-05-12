@@ -24,6 +24,7 @@ tbody tr td { padding: 10px 6px; }
 table caption { text-align: left; padding: 10px 0; font-size: large; }
 .lifecycle_values { display:none; margin: 5px 5px 5px 20px; }
 .lifecycle_values_wrapper, .renderer { margin: 5px 0px 5px 40px; }
+.stacktrace_values { display:none; }
 </style>
 <style type="text/css" media="print">
 #trace, #tree, #vars { display: block; }

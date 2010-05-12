@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -933,16 +934,16 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * @return
      */
     @SuppressWarnings("unchecked")
-    private Map<String, List<String>> _getDebugInfoMap()
+    private Map<String, List<Object[]>> _getDebugInfoMap()
     {
         final Map<String, Object> requestMap = getFacesContext()
                 .getExternalContext().getRequestMap();
-        Map<String, List<String>> debugInfo = (Map<String, List<String>>) 
+        Map<String, List<Object[]>> debugInfo = (Map<String, List<Object[]>>) 
                 requestMap.get(DEBUG_INFO_KEY + getClientId());
         if (debugInfo == null)
         {
             // no debug info available yet, create one and put it on the attributes map
-            debugInfo = new HashMap<String, List<String>>();
+            debugInfo = new HashMap<String, List<Object[]>>();
             requestMap.put(DEBUG_INFO_KEY + getClientId(), debugInfo);
         }
         return debugInfo;
@@ -953,14 +954,14 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * @param field
      * @return
      */
-    private List<String> _getFieldDebugInfos(final String field)
+    private List<Object[]> _getFieldDebugInfos(final String field)
     {
-        Map<String, List<String>> debugInfo = _getDebugInfoMap();
-        List<String> fieldDebugInfo = debugInfo.get(field);
+        Map<String, List<Object[]>> debugInfo = _getDebugInfoMap();
+        List<Object[]> fieldDebugInfo = debugInfo.get(field);
         if (fieldDebugInfo == null)
         {
             // no field debug-infos yet, create them and store it in the Map
-            fieldDebugInfo = new ArrayList<String>();
+            fieldDebugInfo = new ArrayList<Object[]>();
             debugInfo.put(field, fieldDebugInfo);
         }
         return fieldDebugInfo;
@@ -998,26 +999,15 @@ public class UIInput extends UIOutput implements EditableValueHolder
             newValue = Arrays.deepToString((Object[]) newValue);
         }
         
-        StringBuilder sb = new StringBuilder();
-        sb.append("<b>");
-        sb.append(field);
-        sb.append("</b> set from <b>");
-        sb.append(oldValue);
-        sb.append("</b> to <b>");
-        sb.append(newValue);
-        sb.append("</b> in Phase ");
-        sb.append(facesContext.getCurrentPhaseId());
-        sb.append(" with call from:<ul>");
-        
         // use Throwable to get the current call stack
         Throwable throwableHelper = new Throwable();
         StackTraceElement[] stackTraceElements = throwableHelper.getStackTrace();
+        List<StackTraceElement> debugStackTraceElements = new LinkedList<StackTraceElement>();
+        
         // + 1 because this method should also be skipped
         for (int i = skipStackTaceElements + 1; i < stackTraceElements.length; i++)
         {
-            sb.append("<li>");
-            sb.append(stackTraceElements[i].toString());
-            sb.append("</li>");
+            debugStackTraceElements.add(stackTraceElements[i]);
             
             if (FacesServlet.class.getCanonicalName()
                     .equals(stackTraceElements[i].getClassName()))
@@ -1026,12 +1016,25 @@ public class UIInput extends UIOutput implements EditableValueHolder
                 break;
             }
         }
-        sb.append("</ul>");
+        
+        // create the debug-info array
+        // structure:
+        //     - 0: phase
+        //     - 1: old value
+        //     - 2: new value
+        //     - 3: StackTraceElement List
+        // NOTE that we cannot create a class here to encapsulate this data,
+        // because this is not on the spec and the class would not be available in impl.
+        Object[] debugInfo = new Object[4];
+        debugInfo[0] = facesContext.getCurrentPhaseId();
+        debugInfo[1] = oldValue;
+        debugInfo[2] = newValue;
+        debugInfo[3] = debugStackTraceElements;
         
         // add the debug info
-        _getFieldDebugInfos(field).add(sb.toString());
+        _getFieldDebugInfos(field).add(debugInfo);
     }
-
+    
     /**
      * Check if a value is empty or not. Since we don't know the class of
      * value we have to check and deal with it properly.
