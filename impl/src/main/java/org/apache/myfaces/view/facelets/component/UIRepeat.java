@@ -1028,8 +1028,37 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                 _setIndex(idxEvent.getIndex());
                 if (_isIndexAvailable())
                 {
+                    // get the target FacesEvent
                     FacesEvent target = idxEvent.getTarget();
-                    target.getComponent().broadcast(target);
+                    FacesContext facesContext = getFacesContext();
+                    
+                    // get the component associated with the target event and push
+                    // it and its composite component parent, if available, to the
+                    // component stack to have them available while processing the 
+                    // event (see also UIViewRoot._broadcastAll()).
+                    UIComponent targetComponent = target.getComponent();
+                    UIComponent compositeParent = UIComponent
+                            .getCompositeComponentParent(targetComponent);
+                    if (compositeParent != null)
+                    {
+                        pushComponentToEL(facesContext, compositeParent);
+                    }
+                    pushComponentToEL(facesContext, targetComponent);
+                    
+                    try
+                    {
+                        // actual event broadcasting
+                        targetComponent.broadcast(target);
+                    }
+                    finally
+                    {
+                        // remove the components from the stack again
+                        popComponentFromEL(facesContext);
+                        if (compositeParent != null)
+                        {
+                            popComponentFromEL(facesContext);
+                        }
+                    }
                 }
             }
             finally
