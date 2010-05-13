@@ -77,22 +77,19 @@ public final class CompositeComponentELUtils
     {
         // look on the component stack
         LinkedList<UIComponent> componentStack = getComponentStack(facesContext);
-        if (componentStack == null || componentStack.isEmpty())
+        if (componentStack != null && !componentStack.isEmpty())
         {
-            // no components on the stack
-            return null;
-        }
-        
-        // try to find the right composite component
-        for (UIComponent component : componentStack)
-        {
-            if (UIComponent.isCompositeComponent(component))
+            // try to find the right composite component
+            for (UIComponent component : componentStack)
             {
-                Location componentLocation = (Location) component.getAttributes().get(LOCATION_KEY);
-                if (componentLocation != null 
-                        && componentLocation.getPath().equals(location.getPath()))
+                if (UIComponent.isCompositeComponent(component))
                 {
-                    return component;
+                    Location componentLocation = (Location) component.getAttributes().get(LOCATION_KEY);
+                    if (componentLocation != null 
+                            && componentLocation.getPath().equals(location.getPath()))
+                    {
+                        return component;
+                    }
                 }
             }
         }
