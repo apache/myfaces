@@ -478,7 +478,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                 if (_Lang.isString(attribute)) {
                     domNode.setAttribute(attribute, function(event) {
                         //event implicitly used
-                        return eval(value);
+                        return _Lang.globalEval(value);
                     });
                 }
             } else {
