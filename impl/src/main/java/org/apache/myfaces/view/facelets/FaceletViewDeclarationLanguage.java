@@ -377,6 +377,11 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             
             context.getAttributes().remove(USING_PSS_ON_THIS_VIEW);
         }
+        
+        // Remove this var from faces context because this one prevent AjaxHandler
+        // register the standard script library on Post-Redirect-Get pattern or
+        // in the next view
+        context.getAttributes().remove(AjaxHandler.STANDARD_JSF_AJAX_LIBRARY_LOADED);
     }
     
     private static void _publishPreRemoveFromViewEvent(FacesContext context, UIComponent component)
@@ -457,10 +462,6 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         // facelet markup (facelets UIInstructions ...) This effect is only notice when
         // partial state saving is not used. 
         // view.getAttributes().put(FILLED_VIEW, Boolean.TRUE);
-        // Remove this var from faces context because this one prevent AjaxHandler
-        // register the standard script library on Post-Redirect-Get pattern or
-        // in the next view
-        context.getAttributes().remove(AjaxHandler.STANDARD_JSF_AJAX_LIBRARY_LOADED);
     }
     
     /**
