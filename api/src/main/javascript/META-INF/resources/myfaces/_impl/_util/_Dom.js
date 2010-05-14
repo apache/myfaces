@@ -215,7 +215,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     findFirst : function(fragment, filter) {
         myfaces._impl._util._Lang._assertType(filter, "function");
 
-        if (document.createTreeWalker && NodeFilter) {
+        /*if (document.createTreeWalker && NodeFilter) {
             //we have a tree walker in place this allows for an optimized deep scan
             var lastElementFound = null;
             var treeWalkerfilter = function (node) {
@@ -227,7 +227,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                 return treeWalker.currentNode;
             }
             return null;
-        }
+        }*/
 
         if (filter(fragment)) {
             return fragment;
