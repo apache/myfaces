@@ -658,9 +658,11 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     }
     ,
     /**
+     * A parent walker which uses
+     * a filter closure for filtering
      *
-     * @param item
-     * @param filter
+     * @param {Node} item the root item to ascend from
+     * @param {function}Êfilter the filter closure
      */
     getFilteredParent : function(item, filter) {
         if ('undefined' == typeof item || null == item) {
@@ -682,9 +684,12 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
 
     /**
-     * @Deprecated
-     * @param item
-     * @param filter
+     * a closure based child filtering routine
+     * which steps one level down the tree and
+     * applies the filter closure
+     *
+     * @param item the node which has to be investigates
+     * @param filter the filter closure
      */
     getFilteredChild: function(item, filter) {
         var childItems = item.childNodes;
