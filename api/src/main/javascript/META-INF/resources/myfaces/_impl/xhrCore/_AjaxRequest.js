@@ -18,18 +18,16 @@
  *
  */
 
-_reserveMyfacesNamespaces();
+/**
+ * Constructor
+ * @param {Node} source - Item that triggered the request
+ * @param {Node} sourceForm (form) - Form containing source
+ * @param {Object} context (Map) - AJAX context
+ * @param {Object} passThrough (Map) - parameters to pass through to the server (execute/render)
+ */
+myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", Object, {
 
-if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxRequest")) {
-
-    /**
-     * Constructor
-     * @param {HtmlElement} source - Item that triggered the request
-     * @param {Html Form} sourceForm - Form containing source
-     * @param {Map} context - AJAX context
-     * @param {Map} passThrough - parameters to pass through to the server (execute/render)
-     */
-    myfaces._impl.xhrCore._AjaxRequest = function(source, sourceForm, context, passThrough) {
+    constructor_: function(source, sourceForm, context, passThrough) {
         this.m_exception = new myfaces._impl.xhrCore._Exception("myfaces._impl.xhrCore._AjaxRequest", this.alarmThreshold);
         try {
             this.m_contentType = "application/x-www-form-urlencoded";
@@ -41,25 +39,25 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxRequest"
             this.m_queuesize = -1;
 
             /*namespace remapping for readability*/
-            var _Utils = myfaces._impl._util._Utils;
-            var _LangUtils = myfaces._impl._util._LangUtils;
+            var _Runtime = myfaces._impl.core._Runtime;
+            var _Lang = myfaces._impl._util._Lang;
 
-            if (_Utils.getLocalOrGlobalConfig(context,"errorlevel", null) != null) {
+            if (_Runtime.getLocalOrGlobalConfig(context, "errorlevel", null) != null) {
                 errorlevel = context.myfaces.errorlevel;
             }
-            if (_Utils.getLocalOrGlobalConfig(context,"queuesize", null) != null) {
+            if (_Runtime.getLocalOrGlobalConfig(context, "queuesize", null) != null) {
                 this.m_queuesize = context.myfaces.queuesize;
             }
-            if (_Utils.getLocalOrGlobalConfig(context,"pps", null) != null
-                &&  _LangUtils.exists(passThrough,myfaces._impl.core._jsfImpl._PROP_EXECUTE)
-                && passThrough[myfaces._impl.core._jsfImpl._PROP_EXECUTE].length > 0) {
-                this.m_partialIdsArray = passThrough[myfaces._impl.core._jsfImpl._PROP_EXECUTE].split(" ");
+            if (_Runtime.getLocalOrGlobalConfig(context, "pps", null) != null
+                    && _Lang.exists(passThrough, myfaces._impl.core._jsfImpl.prototype._PROP_EXECUTE)
+                    && passThrough[myfaces._impl.core._jsfImpl.prototype._PROP_EXECUTE].length > 0) {
+                this.m_partialIdsArray = passThrough[myfaces._impl.core._jsfImpl.prototype._PROP_EXECUTE].split(" ");
             }
-            if (_Utils.getLocalOrGlobalConfig(context,"timeout", null) != null) {
-            	this.m_timeout = context.myfaces.timeout;
+            if (_Runtime.getLocalOrGlobalConfig(context, "timeout", null) != null) {
+                this.m_timeout = context.myfaces.timeout;
             }
-            if (_Utils.getLocalOrGlobalConfig(context,"delay", null) != null) {
-            	this.m_delay = context.myfaces.delay;
+            if (_Runtime.getLocalOrGlobalConfig(context, "delay", null) != null) {
+                this.m_delay = context.myfaces.delay;
             }
             this.m_context = context;
             this.m_response = new myfaces._impl.xhrCore._AjaxResponse(errorlevel);
@@ -69,54 +67,54 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxRequest"
             this.m_requestParameters = this.getViewState();
             for (var key in this.m_passThrough) {
                 this.m_requestParameters = this.m_requestParameters +
-                "&" + encodeURIComponent(key) +
-                "=" + encodeURIComponent(this.m_passThrough[key]);
+                        "&" + encodeURIComponent(key) +
+                        "=" + encodeURIComponent(this.m_passThrough[key]);
             }
         } catch (e) {
             this.m_exception.throwError(null, context, "Ctor", e);
         }
-    };
+    },
 
     /**
      * Sends an Ajax request
      */
-    myfaces._impl.xhrCore._AjaxRequest.prototype.send = function() {
+    send : function() {
         try {
-            var ajaxRequestQueue =  myfaces._impl.xhrCore._AjaxRequestQueue.queue;
+            var ajaxRequestQueue = myfaces._impl.xhrCore._AjaxRequestQueue.queue;
 
-            this.m_xhr = myfaces._impl._util._Utils.getXHRObject();
-            
+            this.m_xhr = myfaces._impl.core._Runtime.getXHRObject();
+
             this.m_xhr.open("POST", this.m_sourceForm.action, true);
             this.m_xhr.setRequestHeader("Content-Type", this.m_contentType);
             this.m_xhr.setRequestHeader("Faces-Request", "partial/ajax");
             this.m_xhr.onreadystatechange = myfaces._impl.xhrCore._AjaxRequestQueue.handleCallback;
 
-            myfaces.ajax.sendEvent(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl._AJAX_STAGE_BEGIN);
+            myfaces.ajax.sendEvent(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl.prototype._AJAX_STAGE_BEGIN);
             this.m_xhr.send(this.m_requestParameters);
             if ('undefined' != typeof this.m_timeout) {
-	            var timeoutId = window.setTimeout(
-	            	function() {
-	            		try {
-		            		if ( ajaxRequestQueue.m_request.m_xhr.readyState > 0
-		            		&& ajaxRequestQueue.queue.m_request.m_xhr.readyState < 4) {
-		            			ajaxRequestQueue.queue.m_request.m_xhr.abort();
-		            		}
-	            		} catch (e) {
-	            			// don't care about exceptions here
-	            		}
-	            	}, this.m_timeout);
+                var timeoutId = window.setTimeout(
+                        function() {
+                            try {
+                                if (ajaxRequestQueue.m_request.m_xhr.readyState > 0
+                                        && ajaxRequestQueue.queue.m_request.m_xhr.readyState < 4) {
+                                    ajaxRequestQueue.queue.m_request.m_xhr.abort();
+                                }
+                            } catch (e) {
+                                // don't care about exceptions here
+                            }
+                        }, this.m_timeout);
             }
         } catch (e) {
             this.m_exception.throwError(this.m_xhr, this.m_context, "send", e);
-           
+
         }
-    };
+    },
 
     /**
      * Callback method to process the Ajax response
      * triggered by RequestQueue
      */
-    myfaces._impl.xhrCore._AjaxRequest.prototype.requestCallback = function() {
+    requestCallback : function() {
         var READY_STATE_DONE = 4;
         try {
             //local namespace remapping
@@ -124,42 +122,44 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxRequest"
 
             if (this.m_xhr.readyState == READY_STATE_DONE) {
                 if (this.m_xhr.status >= 200 && this.m_xhr.status < 300) {
-                	jsfAjaxImpl.sendEvent(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl._AJAX_STAGE_COMPLETE);
-                	jsfAjaxImpl.response(this.m_xhr, this.m_context);
-                	jsfAjaxImpl.sendEvent(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl._AJAX_STAGE_SUCCESS);
+                    jsfAjaxImpl.sendEvent(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl.prototype._AJAX_STAGE_COMPLETE);
+                    jsfAjaxImpl.response(this.m_xhr, this.m_context);
+                    jsfAjaxImpl.sendEvent(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl.prototype._AJAX_STAGE_SUCCESS);
                     myfaces._impl.xhrCore._AjaxRequestQueue.queue.processQueue();
                 } else {
-                	jsfAjaxImpl.sendEvent(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl._AJAX_STAGE_COMPLETE);
-            		var errorText;
-                	try {
-                		errorText = "Request failed";
-                		if (this.m_xhr.status) {
-                			errorText += "with status " + this.m_xhr.status;
-                			if (this.m_xhr.statusText) {
-                				errorText += " and reason " + this.m_xhr.statusText;
-                			}
-                		}
-                	} catch (e) {
-                		errorText = "Request failed with unknown status";
-                	}
-                	jsfAjaxImpl.sendError(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl._ERROR_HTTPERROR,
-                        myfaces._impl.core._jsfImpl._ERROR_HTTPERROR, errorText);
+                    jsfAjaxImpl.sendEvent(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl.prototype._AJAX_STAGE_COMPLETE);
+                    var errorText;
+                    try {
+                        errorText = "Request failed";
+                        if (this.m_xhr.status) {
+                            errorText += "with status " + this.m_xhr.status;
+                            if (this.m_xhr.statusText) {
+                                errorText += " and reason " + this.m_xhr.statusText;
+                            }
+                        }
+                    } catch (e) {
+                        errorText = "Request failed with unknown status";
+                    }
+                    jsfAjaxImpl.sendError(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl.prototype._ERROR_HTTPERROR,
+                            myfaces._impl.core._jsfImpl.prototype._ERROR_HTTPERROR, errorText);
                 }
             }
         } catch (e) {
             this.m_exception.throwError(this.m_xhr, this.m_context, "requestCallback", e);
         }
-    }
+    },
 
     /**
      * Spec. 13.3.1
      * Collect and encode input elements.
      * Additionally the hidden element javax.faces.ViewState
      * @return {String} - Concatenated String of the encoded input elements
-     * 			and javax.faces.ViewState element
+     *             and javax.faces.ViewState element
      */
-    myfaces._impl.xhrCore._AjaxRequest.prototype.getViewState = function() {
+    getViewState : function() {
         return this.m_ajaxUtil.processUserEntries(this.m_xhr, this.m_context, this.m_source,
-            this.m_sourceForm, this.m_partialIdsArray);
+                this.m_sourceForm, this.m_partialIdsArray);
     }
-}
+
+});
+

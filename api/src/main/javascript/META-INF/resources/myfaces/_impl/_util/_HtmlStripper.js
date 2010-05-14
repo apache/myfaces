@@ -55,15 +55,10 @@
  * </p>
  */
 
-_reserveMyfacesNamespaces();
+myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._HtmlStripper", Object, {
+    BEGIN_TAG: "html",
+    END_TAG: "lmth",
 
-if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")) {
-
-    myfaces._impl._util._HtmlStripper = function() {
-    };
-
-    myfaces._impl._util._HtmlStripper.prototype.BEGIN_TAG = "html";
-    myfaces._impl._util._HtmlStripper.prototype.END_TAG = "lmth";
 
     /**
      * parses the token array
@@ -75,7 +70,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
      * note in the subroutines the tokenPos must be at the last char of the operation
      * so that the
      */
-    myfaces._impl._util._HtmlStripper.prototype.parse = function(theString, tagNameStart, tagNameEnd) {
+    parse : function(theString, tagNameStart, tagNameEnd) {
         this.tokens = theString.split("");
         this.tagAttributes = {};
 
@@ -88,10 +83,8 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
 
         this._tokenForward = 1;
 
-
-
         if ('undefined' == typeof tagNameStart || null == tagNameStart) {
-            this.tagNameStart = myfaces._impl._util._HtmlStripper.prototype.BEGIN_TAG;
+            this.tagNameStart = this.prototype.BEGIN_TAG;
         } else {
             this.tagNameStart = tagNameStart;
         }
@@ -119,33 +112,33 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
         }
         return this.tokens.slice(this._contentStart, this._contentEnd + 1).join("");
 
-    };
+    },
 
     /**
      * fetches the content block which has been parsed
      */
-    myfaces._impl._util._HtmlStripper.prototype.getContentBlock = function() {
+    getContentBlock : function() {
         return this.tokens.slice(this._contentStart, this._contentEnd + 1).join("");
     },
 
     /**
      * fetches the content tag block including the tag code
      */
-    myfaces._impl._util._HtmlStripper.prototype.getContentTagBlock = function() {
+    getContentTagBlock : function() {
         return this.tokens.slice(this._tagStart, this._tagEnd + 1).join("");
     },
 
     /**
      * fetches the block before the tag begin
      */
-    myfaces._impl._util._HtmlStripper.prototype.getPreTagBlock = function() {
+    getPreTagBlock : function() {
         return this.tokens.slice(0, this._tagStart).join("");
     },
 
     /**
      * fetches the block after the tag end
      */
-    myfaces._impl._util._HtmlStripper.prototype.getPostTagBlock = function() {
+    getPostTagBlock : function() {
         return this.tokens.slice(this._tagEnd, this.tokens.length).join("");
     },
 
@@ -155,7 +148,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
      * a ... normal chars should not occur here, but
      * in the long run for deeper parsing they might happen!
      */
-    myfaces._impl._util._HtmlStripper.prototype.handleInstructionBlock = function() {
+    handleInstructionBlock : function() {
         var len = this.tokens.length;
         for (; this._contentStart < 0 && this._tokenPos < len && this._tokenPos >= 0; this._tokenPos += this._tokenForward) {
             this._skipBlank();
@@ -164,12 +157,12 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
                 this.handleDocument();
             }
         }
-    };
+    },
 
     /**
      * it is either a datablock or a content tag from which we can start parsing
      */
-    myfaces._impl._util._HtmlStripper.prototype.handleDocument = function() {
+    handleDocument : function() {
 
         this._tagStart = this.tokenPos;
         this._skipBlank(1);
@@ -185,7 +178,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
 
             default: this.handleContentTag();
         }
-    };
+    },
 
     /**
      * we can skip definitions or comments!
@@ -197,7 +190,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
      * and definitions followed by nothing else
      *
      */
-    myfaces._impl._util._HtmlStripper.prototype.handleDataBlock = function() {
+    handleDataBlock : function() {
         this._skipBlank(1);
 
         if (this._tokenPos >= this.tokens.length || this._tokenPos < 0) {
@@ -215,13 +208,13 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
                 break;
         }
 
-    };
+    },
 
     /**
      * doc definition ==
      * <! [^>] >
      */
-    myfaces._impl._util._HtmlStripper.prototype.handleDocDefinition = function() {
+    handleDocDefinition : function() {
         this._skipBlank();
 
         if (this._tokenPos >= this.tokens.length || this._tokenPos < 0) {
@@ -240,7 +233,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
             this._tokenPos += this._tokenForward;
         }
 
-    };
+    },
 
     /**
      * General tag andling section
@@ -252,7 +245,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
      * on head and body sections and within head (which is skipped)
      * we neither can have code or pre segments!
      */
-    myfaces._impl._util._HtmlStripper.prototype.handleContentTag = function() {
+    handleContentTag : function() {
         //lookahead head, body, html which means a lookahead of 4;
         this._currentSection = null;
         this._skipBlank();
@@ -264,7 +257,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
             this.handleIdentifiedContent();
             //after the html tag is processed we can break from the first parsing stage
             this.tokenPos = this.tokens.length;
-        } else    if (tagName == "scri" || tagName == "styl") {
+        } else if (tagName == "scri" || tagName == "styl") {
             //script must be handled separately since we can have embedded tags which must be ignored
             this.handleScriptStyle();
         } else {
@@ -272,7 +265,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
             //and then be done with it!
             this.skipToTagEnd();
         }
-    };
+    },
 
     /**
      * script skipping routine...
@@ -283,7 +276,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
      *
      *
      */
-    myfaces._impl._util._HtmlStripper.prototype.handleScriptStyle = function() {
+    handleScriptStyle : function() {
         this.skipToTagEnd();
         //singleToken??
         if (this.tokens[this._tokenPos - 1] == "/" && this.tokens[this._tokenPos] == ">") {
@@ -305,7 +298,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
         } while (this.tokens[this._tokenPos] != "<");
         //now we should be at the end of the script tag at any circumstances!
         this.skipToTagEnd();
-    };
+    },
 
     /**
      * javascript comment handler
@@ -317,7 +310,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
      * then oh well, syntax error on the javascript side
      * we cannot do anything about it
      */
-    myfaces._impl._util._HtmlStripper.prototype.handleJSComment = function() {
+    handleJSComment : function() {
         var token = this._getCurrentToken();
         var prefetchToken = this.tokens[this._tokenPos + 1];
         var backtrackToken = this.tokens[this._tokenPos - 1];
@@ -348,7 +341,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
                 }
             }
         }
-    };
+    },
 
     /*----------------- reverse parsing --------*/
 
@@ -356,7 +349,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
      * the end block tos a bottom up resolution of the parsing process
      * via an inverted tag name to look for
      */
-    myfaces._impl._util._HtmlStripper.prototype.handleEndBlock = function() {
+    handleEndBlock : function() {
         for (; this._tokenPos >= 0; this._tokenPos += this._tokenForward) {
             this._skipBlank(0);
             var token = this._getCurrentToken();
@@ -364,9 +357,9 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
                 this.handleEndTagPart();
             }
         }
-    };
+    },
 
-    myfaces._impl._util._HtmlStripper.prototype.handleEndTagPart = function() {
+    handleEndTagPart : function() {
         this._tagEnd = this._tokenPos;
         this._skipBlank(1);
 
@@ -386,9 +379,9 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
             default: this.handleContentEnd();
         }
 
-    };
+    },
 
-    myfaces._impl._util._HtmlStripper.prototype.handleContentEnd = function() {
+    handleContentEnd : function() {
         var tagFound = false;
         var first = true;
         for (; this._tokenPos >= 0; this._skipBlank(1)) {
@@ -408,7 +401,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
             }
 
         }
-    };
+    },
 
     /*----------------- helpers ----------------*/
     /**
@@ -418,7 +411,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
      * a map of determined key value pairs which we then can further process
      * otherwise the key value pair determination is ignored!
      */
-    myfaces._impl._util._HtmlStripper.prototype.skipToTagEnd = function(analyzeAttributes) {
+    skipToTagEnd : function(analyzeAttributes) {
 
         var token = this._getCurrentToken();
         //faster shortcut for tags which have to be nont analyzed
@@ -455,13 +448,13 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
             this._tokenPos += this._tokenForward;
         }
         return keyValuePairs;
-    };
+    },
 
     /**
      * fetches a word which either can be a string or
      * a sequence of non string characters until either = or > or blank is reached!
      */
-    myfaces._impl._util._HtmlStripper.prototype._fetchWord = function() {
+    _fetchWord : function() {
         this._skipBlank(0);
         var result = [];
 
@@ -471,25 +464,25 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
                 this._tokenPos += this._tokenForward;
                 return this.handleString(token)
             }
-            
+
             result.push(token);
             this._tokenPos += this._tokenForward;
             token = this._getCurrentToken();
         }
         return result.join("");
-    };
+    },
 
-    myfaces._impl._util._HtmlStripper.prototype._isBlank = function() {
+    _isBlank : function() {
         var token = this._getCurrentToken();
         return token == " " && token == "\t" && token == "\n";
-    };
+    },
 
     /**
      * we can make speedup shorcut assumptions here
      * becase we only try to either identfy head
      * html or body!
      */
-    myfaces._impl._util._HtmlStripper.prototype.handleIdentifiedContent = function() {
+    handleIdentifiedContent : function() {
 
         this.tagAttributes = this.skipToTagEnd(true);
         //TODO trace down the attributes and store them
@@ -502,16 +495,16 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
         } else {
             this._contentStart = this._tokenPos + 1;
         }
-    };
+    },
 
     /**
      * returns true if the current token is a string start!
      */
-    myfaces._impl._util._HtmlStripper.prototype._isStringStart = function() {
+    _isStringStart : function() {
         var backTrack = (this._tokenPos > 0) ? this.tokens[this._tokenPos - 1] : null;
         var token = this.tokens[this._tokenPos];
         return (token == "'" || token == '"') && backTrack != "\\";
-    };
+    },
 
     /**
      * skips a string section cintentwise no matter how many other strings
@@ -520,7 +513,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
      * @param  {String} stringToken the string token to skip!
      * @return the string value without the enclosing hypenations to be processed later on
      */
-    myfaces._impl._util._HtmlStripper.prototype.handleString = function(stringToken) {
+    handleString : function(stringToken) {
         var backTrack = null;
         var resultString = [];
         while (this.tokens[this._tokenPos] != stringToken || backTrack == "\\") {
@@ -533,17 +526,17 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
         }
         this._getCurrentToken();
         return resultString.join("");
-    };
+    },
 
-    myfaces._impl._util._HtmlStripper.prototype._assertValues = function(assertValues) {
+    _assertValues : function(assertValues) {
 
         for (var loop = 0; loop < assertValues.length; loop++) {
             this._assertValue(assertValues[loop]);
             this._skipBlank(1);
         }
-    };
+    },
 
-    myfaces._impl._util._HtmlStripper.prototype._assertValue = function(expectedToken) {
+    _assertValue : function(expectedToken) {
         var token = this._getCurrentToken();
         this._assertLength();
         if (token != expectedToken) {
@@ -551,20 +544,20 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
         }
 
         return token;
-    };
+    },
 
-    myfaces._impl._util._HtmlStripper.prototype._assertLength = function() {
+    _assertLength : function() {
         if (this._tokenPos >= this.tokens.length) {
             throw Error("Invalid html comment opened but not closed");
         }
-    };
+    },
 
     /**
      * nested comments are not allowed hence we
      * skip them!
      * comment == "&lt;!--" [--&gt;] "--&gt;"
      */
-    myfaces._impl._util._HtmlStripper.prototype.handleComment = function(reverse) {
+    handleComment : function(reverse) {
         this._assertValues(["-","-"]);
         if ('undefined' == typeof reverse || null == reverse) {
             reverse = false;
@@ -600,14 +593,14 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
                 this._skipBlank(1);
             }
         }
-    };
+    },
 
     /**
      * fetches and stores the current token
      */
-    myfaces._impl._util._HtmlStripper.prototype._getCurrentToken = function() {
+    _getCurrentToken : function() {
         return this.tokens[this._tokenPos];
-    };
+    },
 
     /**
      * skip blank until the next token is found
@@ -615,7 +608,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
      * 1 means it skips 1 no matter if the current token is a blank or not!
      *
      */
-    myfaces._impl._util._HtmlStripper.prototype._skipBlank = function(skipVal) {
+    _skipBlank : function(skipVal) {
         var len = this.tokens.length;
         if ('undefined' == typeof  skipVal || null == skipVal) {
             skipVal = 0;
@@ -627,9 +620,9 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
                 return;
             }
         }
-    };
+    },
 
-    myfaces._impl._util._HtmlStripper.prototype._fetchTagname = function() {
+    _fetchTagname : function() {
         var tagName = [];
 
         //TODO make the tagname prefetch more generic
@@ -645,5 +638,9 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl._util, "_HtmlStripper")
 
         tagName = tagName.join("").toLowerCase();
         return tagName;
-    };
-}
+    }
+
+});
+
+
+

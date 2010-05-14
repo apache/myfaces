@@ -18,36 +18,31 @@
  *
  */
 
-_reserveMyfacesNamespaces();
-
-if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxUtils")) {
-
+myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Object, {
     /**
      * Constructor
      * @param {String} alarmThreshold - Error Level
      */
-    myfaces._impl.xhrCore._AjaxUtils = function(alarmThreshold) {
+    constructor_ : function(alarmThreshold) {
         // Exception Objekt
         this.alarmThreshold = alarmThreshold;
         this.m_exception = new myfaces._impl.xhrCore._Exception("myfaces._impl.xhrCore._AjaxUtils", this.alarmThreshold);
-    };
+    },
 
     /**
      * determines fields to submit
      * @param {Object} request the xhr request object
-     * @param {Map} context
-     * @param {HtmlElement} item - item that triggered the event
-     * @param {HtmlElement} parentItem - form element item is nested in
+     * @param {Object} context (Map)
+     * @param {Node} item - item that triggered the event
+     * @param {Node} parentItem - form element item is nested in
      * @param {Array} partialIds - ids fo PPS
      */
-    myfaces._impl.xhrCore._AjaxUtils.prototype.processUserEntries = function(request, context, item,
-        parentItem,	partialIds) {
+    processUserEntries : function(request, context, item,
+                                  parentItem, partialIds) {
         try {
-            var form = parentItem;
-
-            if (form == null) {
+            if (parentItem == null) {
                 this.m_exception.throwWarning(request, context, "processUserEntries",
-                    "Html-Component is not nested in a Form-Tag");
+                        "Html-Component is not nested in a Form-Tag");
                 return null;
             }
 
@@ -55,12 +50,12 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxUtils"))
 
             if (partialIds != null && partialIds.length > 0) {
                 // recursivly check items
-                this.addNodes(form, false, partialIds, stringBuffer);
+                this.addNodes(parentItem, false, partialIds, stringBuffer);
             } else {
                 // add all nodes
-                var eLen = form.elements.length;
-                for ( var e = 0; e < eLen; e++) {
-                    this.addField(form.elements[e], stringBuffer);
+                var eLen = parentItem.elements.length;
+                for (var e = 0; e < eLen; e++) {
+                    this.addField(parentItem.elements[e], stringBuffer);
                 } // end of for (formElements)
             }
 
@@ -76,7 +71,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxUtils"))
         } catch (e) {
             this.m_exception.throwError(request, context, "processUserEntries", e);
         }
-    };
+    },
 
     /**
      * checks recursively if contained in PPS
@@ -85,21 +80,21 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxUtils"))
      * @param {} partialIds -
      * @param {} stringBuffer -
      */
-    myfaces._impl.xhrCore._AjaxUtils.prototype.addNodes = function(node, insideSubmittedPart,
-        partialIds, stringBuffer) {
+    addNodes : function(node, insideSubmittedPart,
+                        partialIds, stringBuffer) {
         if (node != null && node.childNodes != null) {
             var nLen = node.childNodes.length;
-            for ( var i = 0; i < nLen; i++) {
+            for (var i = 0; i < nLen; i++) {
                 var child = node.childNodes[i];
                 var id = child.id;
                 var elementName = child.name;
                 if (child.nodeType == 1) {
                     var isPartialSubmitContainer = ((id != null)
-                        && myfaces._impl._util._LangUtils.arrayContains(partialIds, id));
+                            && myfaces._impl._util._Lang.arrayContains(partialIds, id));
                     if (insideSubmittedPart
-                        || isPartialSubmitContainer
-                        || (elementName != null
-                            && elementName == myfaces._impl.core._jsfImpl._PROP_VIEWSTATE)) {
+                            || isPartialSubmitContainer
+                            || (elementName != null
+                            && elementName == myfaces._impl.core._jsfImpl.prototype._PROP_VIEWSTATE)) {
                         // node required for PPS
                         this.addField(child, stringBuffer);
                         if (insideSubmittedPart || isPartialSubmitContainer) {
@@ -113,14 +108,14 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxUtils"))
                 }
             }
         }
-    }
+    },
 
     /**
      * add a single field to stringbuffer for param submission
-     * @param {HtmlElement} element -
+     * @param {Node} element -
      * @param {} stringBuffer -
      */
-    myfaces._impl.xhrCore._AjaxUtils.prototype.addField = function(element, stringBuffer) {
+    addField : function(element, stringBuffer) {
         var elementName = element.name;
         var elementTagName = element.tagName.toLowerCase();
         var elementType = element.type;
@@ -134,7 +129,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxUtils"))
         // - elements muest have attribute "name"
         // - elements must not be disabled
         if (((elementTagName == "input" || elementTagName == "textarea" || elementTagName == "select") &&
-            (elementName != null && elementName != "")) && element.disabled == false) {
+                (elementName != null && elementName != "")) && !element.disabled) {
 
             // routine for select elements
             // rules:
@@ -148,9 +143,9 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxUtils"))
                 // selectedIndex must be >= 0 sein to be submittet
                 if (element.selectedIndex >= 0) {
                     var uLen = element.options.length;
-                    for ( var u = 0; u < uLen; u++) {
+                    for (var u = 0; u < uLen; u++) {
                         // find all selected options
-                        if (element.options[u].selected == true) {
+                        if (element.options[u].selected) {
                             var elementOption = element.options[u];
                             stringBuffer[stringBuffer.length] = encodeURIComponent(elementName);
                             stringBuffer[stringBuffer.length] = "=";
@@ -170,8 +165,8 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxUtils"))
             // - don't submit no selects (processed above), buttons, reset buttons, submit buttons,
             // - submit checkboxes and radio inputs only if checked
             if ((elementTagName != "select" && elementType != "button"
-                && elementType != "reset" && elementType != "submit" && elementType != "image")
-            && ((elementType != "checkbox" && elementType != "radio") || element.checked)) {
+                    && elementType != "reset" && elementType != "submit" && elementType != "image")
+                    && ((elementType != "checkbox" && elementType != "radio") || element.checked)) {
                 stringBuffer[stringBuffer.length] = encodeURIComponent(elementName);
                 stringBuffer[stringBuffer.length] = "=";
                 stringBuffer[stringBuffer.length] = encodeURIComponent(element.value);
@@ -180,4 +175,4 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxUtils"))
 
         }
     }
-}
+});

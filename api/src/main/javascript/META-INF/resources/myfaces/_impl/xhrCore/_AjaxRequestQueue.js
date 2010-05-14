@@ -1,12 +1,12 @@
 /*
  * Copyright 2009 Ganesh Jung
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,10 +17,8 @@
  * Version: $Revision: 1.3 $ $Date: 2009/05/31 09:16:44 $
  *
  */
-
-_reserveMyfacesNamespaces();
-
-if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxRequestQueue")) {
+if (myfaces._impl.core._Runtime.reserveNamespace("myfaces._impl.xhrCore._AjaxRequestQueue")) {
+    //TODO this class needs namespace cleanups
 
     /**
      * Constructor
@@ -76,7 +74,7 @@ if (!myfaces._impl._util._LangUtils.exists(myfaces._impl.xhrCore, "_AjaxRequestQ
 			// already timed out
 		}
     }
-    
+
     /**
      * send a request or keep it in a queue
      * @param {myfaces._impl.xhrCore._AjaxRequest} request - request to send

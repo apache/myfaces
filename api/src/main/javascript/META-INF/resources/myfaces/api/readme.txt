@@ -6,7 +6,7 @@ if you want to include the files manually follow following order:
 <script type="text/javascript" src="./_impl/_util/_LangUtils.js"></script>
 <script type="text/javascript" src="./_impl/_util/_ListenerQueue.js"></script>
 <script type="text/javascript" src="./_impl/_util/_Logger.js"></script>
-<script type="text/javascript" src="./_impl/_util/_Utils.js"></script>
+<script type="text/javascript" src="./_impl/_util/_Dom.js"></script>
 <script type="text/javascript" src="./_impl/xhrCore/_Exception.js"></script>
 <script type="text/javascript" src="./_impl/xhrCore/_AjaxUtils.js"></script>
 <script type="text/javascript" src="./_impl/xhrCore/_AjaxRequestQueue.js"></script>
