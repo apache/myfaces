@@ -662,7 +662,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * a filter closure for filtering
      *
      * @param {Node} item the root item to ascend from
-     * @param {function}Êfilter the filter closure
+     * @param {function} filter the filter closure
      */
     getFilteredParent : function(item, filter) {
         if ('undefined' == typeof item || null == item) {
