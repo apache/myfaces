@@ -84,7 +84,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._HtmlStripper", Obj
         this._tokenForward = 1;
 
         if ('undefined' == typeof tagNameStart || null == tagNameStart) {
-            this.tagNameStart = this.prototype.BEGIN_TAG;
+            this.tagNameStart = this.BEGIN_TAG;
         } else {
             this.tagNameStart = tagNameStart;
         }

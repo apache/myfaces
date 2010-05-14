@@ -29,7 +29,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Exception", Obje
      */
     throwError : function(request, context, func, exception) {
         if (this.m_threshold == "ERROR") {
-            myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl.prototype._ERROR_CLIENT_ERROR, exception.name,
+            var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
+            _Impl.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_CLIENT_ERROR, exception.name,
                     "MyFaces ERROR\n"
                             + "Affected Class: " + this.m_class + "\n"
                             + "Affected Method: " + func + "\n"
@@ -50,7 +51,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Exception", Obje
      */
     throwWarning : function(request, context, func, message) {
         if (this.m_threshold == "WARNING" || this.m_threshold == "ERROR") {
-            myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl.prototype._ERROR_CLIENT_ERROR, exception.name,
+            var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
+            _Impl.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_CLIENT_ERROR, exception.name,
                     "MyFaces WARNING\n[" + this.m_class + "::" + func + "]\n\n"
                             + message);
         }

@@ -49,9 +49,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", Ob
                 this.m_queuesize = context.myfaces.queuesize;
             }
             if (_Runtime.getLocalOrGlobalConfig(context, "pps", null) != null
-                    && _Lang.exists(passThrough, myfaces._impl.core._jsfImpl.prototype._PROP_EXECUTE)
-                    && passThrough[myfaces._impl.core._jsfImpl.prototype._PROP_EXECUTE].length > 0) {
-                this.m_partialIdsArray = passThrough[myfaces._impl.core._jsfImpl.prototype._PROP_EXECUTE].split(" ");
+                    && _Lang.exists(passThrough, myfaces._impl.core._jsfImpl._PROP_EXECUTE)
+                    && passThrough[myfaces._impl.core._jsfImpl._PROP_EXECUTE].length > 0) {
+                this.m_partialIdsArray = passThrough[myfaces._impl.core._jsfImpl._PROP_EXECUTE].split(" ");
             }
             if (_Runtime.getLocalOrGlobalConfig(context, "timeout", null) != null) {
                 this.m_timeout = context.myfaces.timeout;
@@ -88,8 +88,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", Ob
             this.m_xhr.setRequestHeader("Content-Type", this.m_contentType);
             this.m_xhr.setRequestHeader("Faces-Request", "partial/ajax");
             this.m_xhr.onreadystatechange = myfaces._impl.xhrCore._AjaxRequestQueue.handleCallback;
-
-            myfaces.ajax.sendEvent(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl.prototype._AJAX_STAGE_BEGIN);
+            var _Impl =  myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
+            _Impl.sendEvent(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl._AJAX_STAGE_BEGIN);
             this.m_xhr.send(this.m_requestParameters);
             if ('undefined' != typeof this.m_timeout) {
                 var timeoutId = window.setTimeout(
@@ -118,16 +118,16 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", Ob
         var READY_STATE_DONE = 4;
         try {
             //local namespace remapping
-            var jsfAjaxImpl = myfaces.ajax;
+            var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
 
             if (this.m_xhr.readyState == READY_STATE_DONE) {
                 if (this.m_xhr.status >= 200 && this.m_xhr.status < 300) {
-                    jsfAjaxImpl.sendEvent(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl.prototype._AJAX_STAGE_COMPLETE);
-                    jsfAjaxImpl.response(this.m_xhr, this.m_context);
-                    jsfAjaxImpl.sendEvent(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl.prototype._AJAX_STAGE_SUCCESS);
+                    _Impl.sendEvent(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl._AJAX_STAGE_COMPLETE);
+                    _Impl.response(this.m_xhr, this.m_context);
+                    _Impl.sendEvent(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl._AJAX_STAGE_SUCCESS);
                     myfaces._impl.xhrCore._AjaxRequestQueue.queue.processQueue();
                 } else {
-                    jsfAjaxImpl.sendEvent(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl.prototype._AJAX_STAGE_COMPLETE);
+                    _Impl.sendEvent(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl._AJAX_STAGE_COMPLETE);
                     var errorText;
                     try {
                         errorText = "Request failed";
@@ -140,8 +140,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", Ob
                     } catch (e) {
                         errorText = "Request failed with unknown status";
                     }
-                    jsfAjaxImpl.sendError(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl.prototype._ERROR_HTTPERROR,
-                            myfaces._impl.core._jsfImpl.prototype._ERROR_HTTPERROR, errorText);
+                    _Impl.sendError(this.m_xhr, this.m_context, myfaces._impl.core._jsfImpl._ERROR_HTTPERROR,
+                            myfaces._impl.core._jsfImpl._ERROR_HTTPERROR, errorText);
                 }
             }
         } catch (e) {

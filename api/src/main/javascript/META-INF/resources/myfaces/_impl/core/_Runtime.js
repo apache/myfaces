@@ -297,27 +297,6 @@ if ('undefined' == typeof  myfaces._impl.core._Runtime || myfaces._impl.core._Ru
         return true; // Boolean
     };
 
-    /**
-     * gets the local or global options with local ones having higher priority
-     * if no local or global one was found then the default value is given back
-     *
-     * @param {String} configName the name of the configuration entry
-     * @param {String} localOptions the local options root for the configuration myfaces as default marker is added implicitely
-     *
-     * @param {Object} defaultValue the default init value
-     *
-     * @return either the config entry or if none is given the default value
-     */
-    myfaces._impl.core._Runtime.getLocalOrGlobalConfig = function(localOptions, configName, defaultValue) {
-        /*use(myfaces._impl._util)*/
-        var _RT = myfaces._impl._util._Core;
-
-        var globalOption = myfaces._impl._util._Dom.getGlobalConfig(configName, defaultValue);
-        if (!_RT.exists(localOptions, "myfaces") || !_RT.exists(localOptions.myfaces, configName)) {
-            return globalOption;
-        }
-        return localOptions.myfaces[configName];
-    };
 
     /**
      * Convenience method
@@ -325,7 +304,7 @@ if ('undefined' == typeof  myfaces._impl.core._Runtime || myfaces._impl.core._Ru
      * our lazily binding configuration system
      */
     myfaces._impl.core._Runtime.getImpl = function() {
-        myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces.ajax);
+        myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
     };
 
     /**

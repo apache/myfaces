@@ -66,17 +66,20 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
     processResponse : function(request, context) {
         try {
             var _Lang = myfaces._impl._util._Lang;
+            var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
+
             // TODO:
             // Solution from
             // http://www.codingforums.com/archive/index.php/t-47018.html
             // to solve IE error 1072896658 when a Java server sends iso88591
             // istead of ISO-8859-1
+
             if ('undefined' == typeof(request) || null == request) {
                 throw Exception("jsf.ajaxResponse: The response cannot be null or empty!");
             }
 
             if (!_Lang.exists(request, "responseXML")) {
-                myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl.prototype._ERROR_EMPTY_RESPONSE);
+                _Impl.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_EMPTY_RESPONSE);
                 return;
             }
 
@@ -89,19 +92,19 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
             if ((_Lang.exists(xmlContent,"parseError.errorCode") && xmlContent.parseError.errorCode != 0) || _Lang.equalsIgnoreCase(xmlContent.firstChild.tagName, "parsererror")) {
                 //TODO improve error name and message sending here
 
-                myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl.prototype._ERROR_MALFORMEDXML);
+                _Impl.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML);
                 return;
             }
             var partials = xmlContent.childNodes[0];
             if ('undefined' == typeof partials || partials == null) {
-                myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl.prototype._ERROR_MALFORMEDXML);
+                _Impl.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML);
                 return;
             } else {
                 if (partials.tagName != this._RESPONSE_PARTIAL) {
                     // IE 8 sees XML Header as first sibling ...
                     partials = partials.nextSibling;
                     if ('undefined' == typeof partials || partials == null || partials.tagName != this._RESPONSE_PARTIAL) {
-                        myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl.prototype._ERROR_MALFORMEDXML);
+                        _Impl.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML);
                         return;
                     }
                 }
@@ -187,7 +190,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
         if ('undefined' == typeof errorMessage || null == errorMessage) {
             errorMessage = "";
         }
-        myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl.prototype._ERROR_SERVER_ERROR, errorName, errorMessage);
+        var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
+
+        _Impl.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_SERVER_ERROR, errorName, errorMessage);
     },
 
     processRedirect : function(request, context, node) {
@@ -196,7 +201,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
          */
         var redirectUrl = node.getAttribute("url");
         if ('undefined' == typeof redirectUrl || null == redirectUrl) {
-            myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl.prototype._ERROR_MALFORMEDXML, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML, "Redirect without url");
+            var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
+
+            _Impl.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML, "Redirect without url");
             return false;
         }
         redirectUrl = myfaces._impl._util._Lang.trim(redirectUrl);
@@ -244,7 +251,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
                 //you have to insert it here
                 //  this._responseHandler.doExtension(childNode);
             } else {
-                myfaces.ajax.sendError(request, context, myfaces._impl.core._jsfImpl.prototype._ERROR_MALFORMEDXML);
+                var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
+
+                _Impl.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML);
                 return false;
             }
         }
@@ -326,7 +335,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
 
         var _Dom = myfaces._impl._util._Dom;
 
-        var parser = myfaces.ajax._impl = new (myfaces._impl.core._Runtime.getGlobalConfig("updateParser", myfaces._impl._util._HtmlStripper))();
+        var parser = new (myfaces._impl.core._Runtime.getGlobalConfig("updateParser", myfaces._impl._util._HtmlStripper))();
 
         var oldBody = document.getElementsByTagName("body")[0];
         var newBody = document.createElement("body");
@@ -404,7 +413,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
         /*remapping global namespaces for speed and readability reasons*/
         var _Lang = myfaces._impl._util._Lang;
         var _Dom = myfaces._impl._util._Dom;
-        var _JSFImpl = myfaces._impl.core._jsfImpl;
+        var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
         
         
         var insertId = node.getAttribute('id');
@@ -416,11 +425,11 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
         var afterSet = 'undefined' != typeof afterId && null != afterId &&_Lang.trim(afterId) != "";
 
         if (!insertSet) {
-            myfaces.ajax.sendError(request, context, _JSFImpl.prototype._ERROR_MALFORMEDXML, _JSFImpl.prototype._ERROR_MALFORMEDXML, "Error in PPR Insert, id must be present");
+            _Impl.sendError(request, context, _Impl._ERROR_MALFORMEDXML, _Impl._ERROR_MALFORMEDXML, "Error in PPR Insert, id must be present");
             return false;
         }
         if (!(beforeSet || afterSet)) {
-            myfaces.ajax.sendError(request, context, _JSFImpl.prototype._ERROR_MALFORMEDXML, _JSFImpl.prototype._ERROR_MALFORMEDXML, "Error in PPR Insert, before id or after id must be present");
+            _Impl.sendError(request, context, _Impl._ERROR_MALFORMEDXML, _Impl._ERROR_MALFORMEDXML, "Error in PPR Insert, before id or after id must be present");
             return false;
         }
         //either before or after but not two at the same time
@@ -433,7 +442,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
             beforeId =_Lang.trim(beforeId);
             var beforeNode = document.getElementById(beforeId);
             if ('undefined' == typeof beforeNode || null == beforeNode) {
-                myfaces.ajax.sendError(request, context, _JSFImpl.prototype._ERROR_MALFORMEDXML, _JSFImpl.prototype._ERROR_MALFORMEDXML, "Error in PPR Insert, before  node of id " + beforeId + " does not exist in document");
+                _Impl.sendError(request, context, _Impl._ERROR_MALFORMEDXML, _Impl._ERROR_MALFORMEDXML, "Error in PPR Insert, before  node of id " + beforeId + " does not exist in document");
                 return false;
             }
             /**
@@ -457,7 +466,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
             afterId =_Lang.trim(afterId);
             var afterNode = document.getElementById(afterId);
             if ('undefined' == typeof afterNode || null == afterNode) {
-                myfaces.ajax.sendError(request, context, _JSFImpl.prototype._ERROR_MALFORMEDXML, _JSFImpl.prototype._ERROR_MALFORMEDXML, "Error in PPR Insert, after  node of id " + after + " does not exist in document");
+                _Impl.sendError(request, context, _Impl._ERROR_MALFORMEDXML, _Impl._ERROR_MALFORMEDXML, "Error in PPR Insert, after  node of id " + after + " does not exist in document");
                 return false;
             }
 
@@ -477,13 +486,13 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
     },
 
     processDelete : function(request, context, node) {
-        var _JSFImpl =  myfaces._impl.core._jsfImpl;
+        var _Impl =  myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
         var _Dom = myfaces._impl._util._Dom;
 
         var deleteId = node.getAttribute('id');
         if ('undefined' == typeof deleteId || null == deleteId) {
-            myfaces.ajax.sendError(request, context, _JSFImpl.prototype._ERROR_MALFORMEDXML,
-                    _JSFImpl.prototype._ERROR_MALFORMEDXML, "Error in delete, id not in xml markup");
+            _Impl.sendError(request, context, _Impl._ERROR_MALFORMEDXML,
+                    _Impl._ERROR_MALFORMEDXML, "Error in delete, id not in xml markup");
             return false;
         }
 
@@ -499,13 +508,13 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
         //myfaces._impl._util._Dom.setAttribute(domNode, attribute, value;
 
         var _Dom = myfaces._impl._util._Dom;
-        var _JSFImpl = myfaces._impl.core._jsfImpl;
+        var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
 
         //<attributes id="id of element"> <attribute name="attribute name" value="attribute value" />* </attributes>
         var elementId = node.getAttribute('id');
         if ('undefined' == typeof elementId || null == elementId) {
-            myfaces.ajax.sendError(request, context, _JSFImpl.prototype._ERROR_MALFORMEDXML
-                    , _JSFImpl.prototype._ERROR_MALFORMEDXML, "Error in attributes, id not in xml markup");
+            _Impl.sendError(request, context, _Impl._ERROR_MALFORMEDXML
+                    , _Impl._ERROR_MALFORMEDXML, "Error in attributes, id not in xml markup");
             return false;
         }
         var childNodes = node.childNodes;

@@ -94,7 +94,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
                     if (insideSubmittedPart
                             || isPartialSubmitContainer
                             || (elementName != null
-                            && elementName == myfaces._impl.core._jsfImpl.prototype._PROP_VIEWSTATE)) {
+                            && elementName == myfaces._impl.core._jsfImpl._PROP_VIEWSTATE)) {
                         // node required for PPS
                         this.addField(child, stringBuffer);
                         if (insideSubmittedPart || isPartialSubmitContainer) {
