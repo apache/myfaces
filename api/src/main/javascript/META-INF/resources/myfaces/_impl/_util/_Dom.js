@@ -1,3 +1,32 @@
+/*
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *  under the License.
+ */
+
+
+
+/**
+ * A collection of dom helper routines
+ * (which in later incarnations will
+ * get browser specific speed optimizations)
+ *
+ * Since we have to be as tight as possible
+ * we will focus with our dom routines to only
+ * the parts which our impl uses.
+ * A jquery like query API would be nice
+ * but this would blow up our codebase significantly
+ * 
+ */
 myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Object, {
     _ieQuircksEvents : {
         "onabort": true,
