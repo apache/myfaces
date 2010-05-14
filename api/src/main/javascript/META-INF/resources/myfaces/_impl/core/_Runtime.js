@@ -85,28 +85,15 @@ if ('undefined' == typeof  myfaces._impl.core._Runtime || myfaces._impl.core._Ru
     };
 
     /**
-     * reserves a namespace in the specific scope
+     * applies an object to a namespace
+     * basically does what bla.my.name.space = obj does
+     * note we cannot use var myNameSpace = fetchNamespace("my.name.space")
+     * myNameSpace = obj because the result of fetch is already the object
+     * which the namespace points to, hence this function
      *
-     * usage:
-     * if(myfaces._impl.core._Runtime.reserve("org.apache.myfaces.MyUtils")) {
-     *      org.apache.myfaces.MyUtils = function() {
-     *      }
-     * }
-     *
-     * reserves a namespace and if the namespace is new the function itself is reserved
-     *
-     *
-     *
-     * or:
-     * myfaces._impl.core._Runtime.reserve("org.apache.myfaces.MyUtils", function() { .. });
-     *
-     * reserves a namespace and if not already registered directly applies the function the namespace
-     *
-     * @param {|String|} nameSpace
-     * @returns true if it was not provided
-     * false otherwise for further action
+     * @param nameSpace the namespace to be assigned to
+     * @param obj the  object to be assigned
      */
-
     myfaces._impl.core._Runtime.applyToGlobalNamespace = function(nameSpace, obj) {
         var splittedNamespace = nameSpace.split(/\./);
         if (splittedNamespace.length == 1) {
@@ -119,6 +106,11 @@ if ('undefined' == typeof  myfaces._impl.core._Runtime || myfaces._impl.core._Ru
         parentNamespace[child] = obj;
     };
 
+    /**
+     * fetches the object the namespace points to
+     * @param nameSpace the namespace which has to be fetched
+     * @return the object the namespace points to or null if nothing is found
+     */
     myfaces._impl.core._Runtime.fetchNamespace = function(nameSpace) {
         try {
             var origNamespace = nameSpace;
@@ -157,6 +149,28 @@ if ('undefined' == typeof  myfaces._impl.core._Runtime || myfaces._impl.core._Ru
         return !!arguments.length && it != null && (typeof it == "string" || it instanceof String); // Boolean
     };
 
+    /**
+     * reserves a namespace in the specific scope
+     *
+     * usage:
+     * if(myfaces._impl.core._Runtime.reserve("org.apache.myfaces.MyUtils")) {
+     *      org.apache.myfaces.MyUtils = function() {
+     *      }
+     * }
+     *
+     * reserves a namespace and if the namespace is new the function itself is reserved
+     *
+     *
+     *
+     * or:
+     * myfaces._impl.core._Runtime.reserve("org.apache.myfaces.MyUtils", function() { .. });
+     *
+     * reserves a namespace and if not already registered directly applies the function the namespace
+     *
+     * @param {|String|} nameSpace
+     * @returns true if it was not provided
+     * false otherwise for further action
+     */
     myfaces._impl.core._Runtime.reserveNamespace = function(nameSpace, reservationFunction) {
         var _Core = myfaces._impl.core._Runtime;
         if (!_Core.isString(nameSpace)) {
@@ -263,32 +277,30 @@ if ('undefined' == typeof  myfaces._impl.core._Runtime || myfaces._impl.core._Ru
         return defaultValue;
     };
 
-
-
     /**
      * check if an element exists in the root
      */
     myfaces._impl.core._Runtime.exists = function(root, name) {
-        if('undefined' == typeof root || null == root ) {
+        if ('undefined' == typeof root || null == root) {
             return false;
         }
 
         //initial condition root set element not set or null
         //equals to element exists
-        if('undefined' == typeof name || null == name) {
+        if ('undefined' == typeof name || null == name) {
             return true;
         }
         //crossported from the dojo toolkit
         // summary: determine if an object supports a given method
         // description: useful for longer api chains where you have to test each object in the chain
         var p = name.split(".");
-        var len =  p.length;
+        var len = p.length;
         for (var i = 0; i < len; i++) {
             //the original dojo code here was false because
             //they were testing against ! which bombs out on exists
             //which has a value set to false
             // (TODO send in a bugreport to the Dojo people)
-            
+
             if ('undefined' == typeof root[p[i]]) {
                 return false;
             } // Boolean
@@ -296,7 +308,6 @@ if ('undefined' == typeof  myfaces._impl.core._Runtime || myfaces._impl.core._Ru
         }
         return true; // Boolean
     };
-
 
     /**
      * Convenience method
@@ -394,8 +405,8 @@ if ('undefined' == typeof  myfaces._impl.core._Runtime || myfaces._impl.core._Ru
      *
      * @param {function|String} newClass either a unnamed function which can be assigned later or a namespace
      * @param {function} extendsClass the function class to be extended
-     * @param {Object} prototypeFunctions {Map} an optional map of prototype functions which in case of overwriting a base function get an inherited method
-     * @param {Object} prototypeFunctions {Map} an optional map of normal namespace functions which are attached directly to the function of newClass instead of its prototype object
+     * @param {Object} prototypeFunctions (Map) an optional map of prototype functions which in case of overwriting a base function get an inherited method
+     * @param {Object} prototypeFunctions (Map) an optional map of normal namespace functions which are attached directly to the function of newClass instead of its prototype object
      */
     myfaces._impl.core._Runtime.singletonExtendClass = function(newClass, extendsClass, prototypeFunctions, namespaceFunctions) {
 
@@ -437,8 +448,8 @@ if ('undefined' == typeof  myfaces._impl.core._Runtime || myfaces._impl.core._Ru
      *
      * @param {function|String} newClass either a unnamed function which can be assigned later or a namespace
      * @param {function} extendsClass the function class to be extended
-     * @param {Object} prototypeFunctions {Map} an optional map of prototype functions which in case of overwriting a base function get an inherited method
-     * @param {Object} prototypeFunctions {Map} an optional map of normal namespace functions which are attached directly to the function of newClass instead of its prototype object
+     * @param {Object} prototypeFunctions (Map) an optional map of prototype functions which in case of overwriting a base function get an inherited method
+     * @param {Object} prototypeFunctions (Map) an optional map of normal namespace functions which are attached directly to the function of newClass instead of its prototype object
      *
      * To explain further
      * prototype functions:
