@@ -307,8 +307,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             if (fragment.nodeType == 1 && filter(fragment)) {
                 result = (result == null) ? [] : _Lang.objToArray(result);
                 result.push(fragment);
-                return result;
             }
+            return result;
         }
         //if we are not in a html 5 environment which supports node selectors
         //we use the usual recursive fallback.
@@ -330,8 +330,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             if (fragment.nodeType == 1 && filter(fragment)) {
                 result = (result == null) ? [] : _Lang.objToArray(result);
                 result.push(fragment);
-                return result;
             }
+            return result;
         }
 
         return this.findAll(fragment, filter, deepScan);
@@ -371,7 +371,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                 result = (result == null) ? [] : result;
                 result = _Lang.objToArrayl(result);
                 result.push(fragment);
-                return result;
             }
             return result;
         }
