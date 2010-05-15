@@ -1,5 +1,10 @@
 /**
  * This class is for http based unit tests
+ *
+ * note this class is only for testing pages
+ * and is not added to the final build
+ * we use it internally for testing pages
+ * which test the various functions of the framework
  */
 myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._UnitTest", Object, {
 

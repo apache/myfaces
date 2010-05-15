@@ -172,11 +172,11 @@ if ('undefined' == typeof  myfaces._impl.core._Runtime || myfaces._impl.core._Ru
      * false otherwise for further action
      */
     myfaces._impl.core._Runtime.reserveNamespace = function(nameSpace, reservationFunction) {
-        var _Core = myfaces._impl.core._Runtime;
-        if (!_Core.isString(nameSpace)) {
+        var _RT = myfaces._impl.core._Runtime;
+        if (!_RT.isString(nameSpace)) {
             throw Error("Namespace must be a string with . as delimiter");
         }
-        if (null != _Core.fetchNamespace(nameSpace)) {
+        if (null != _RT.fetchNamespace(nameSpace)) {
             return false;
         }
         var namespaceEntries = nameSpace.split(/\./);
@@ -410,18 +410,18 @@ if ('undefined' == typeof  myfaces._impl.core._Runtime || myfaces._impl.core._Ru
      */
     myfaces._impl.core._Runtime.singletonExtendClass = function(newClass, extendsClass, prototypeFunctions, namespaceFunctions) {
 
-        var _Runtime = myfaces._impl.core._Runtime;
-        if (!_Runtime.isString(newClass)) {
+        var _RT = myfaces._impl.core._Runtime;
+        if (!_RT.isString(newClass)) {
             throw Error("New class namespace must be of type string for static initialisation");
         }
         //namespace already declared we do not do anything further
-        if (_Runtime.fetchNamespace(newClass)) {
+        if (_RT.fetchNamespace(newClass)) {
             return null;
         }
 
         var initializer = myfaces._impl.core._Runtime.extendClass(newClass, extendsClass, prototypeFunctions, namespaceFunctions);
         if (initializer != null) {
-            _Runtime.applyToGlobalNamespace(newClass, new initializer());
+            _RT.applyToGlobalNamespace(newClass, new initializer());
         }
     };
 
@@ -459,7 +459,7 @@ if ('undefined' == typeof  myfaces._impl.core._Runtime || myfaces._impl.core._Ru
      */
 
     myfaces._impl.core._Runtime.extendClass = function(newClass, extendsClass, prototypeFunctions) {
-        var _Runtime = myfaces._impl.core._Runtime;
+        var _RT = myfaces._impl.core._Runtime;
 
         if ('function' != typeof newClass) {
 
@@ -471,10 +471,10 @@ if ('undefined' == typeof  myfaces._impl.core._Runtime || myfaces._impl.core._Ru
                 constructor = function() {
                 };
             }
-            if (!_Runtime.reserveNamespace(newClass, constructor)) {
+            if (!_RT.reserveNamespace(newClass, constructor)) {
                 return null;
             }
-            newClass = _Runtime.fetchNamespace(newClass);
+            newClass = _RT.fetchNamespace(newClass);
         }
 
         if (null != extendsClass) {
@@ -522,7 +522,7 @@ if ('undefined' == typeof  myfaces._impl.core._Runtime || myfaces._impl.core._Ru
         }
         return newClass;
     };
-
+    
     /**
      * determines if the embedded scripts have to be evaled manually
      * @return true if a browser combination is given which has to

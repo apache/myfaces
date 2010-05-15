@@ -44,7 +44,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Lang", Ob
      * cross port from the dojo lib
      * browser save event resolution
      * @param event the event object
-     * (with a fallback for ie events if none is present) 
+     * (with a fallback for ie events if none is present)
      */
     getEventTarget: function(event) {
         if (!event) {
@@ -437,23 +437,43 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Lang", Ob
         }
     },
 
+    objToArray: function(obj) {
+
+        try {
+            return Array.prototype.slice.call(obj, 0);
+        } catch (e) {
+            //ie8 (again as only browser) delivers for css 3 selectors a non convertible object
+            //we have to do it the hard way
+            //ie8 seems generally a little bit strange in its behavior some
+            //objects break the function is everything methodology of javascript
+            //and do not implement apply call, or are pseudo arrays which cannot
+            //be sliced
+            var retVal = [];
+            for (var cnt = 0; cnt < obj.length; cnt++) {
+                retVal.push(obj[cnt]);
+            }
+            return retVal;
+        }
+
+    },
+
     logLog: function(/*varargs*/) {
-        var argumentStr = Array.prototype.slice.call(arguments, 0).join(" ");
+        var argumentStr = this.objToArray(arguments).join(" ");
         if (window.console && window.console.log) {
             window.console.log(argumentStr);
         }
         this._logToContainer("logLog", ["Log:"].concat([argumentStr]));
     },
     logDebug: function(/*varargs*/) {
-        var argumentStr = Array.prototype.slice.call(arguments, 0).join(" ");
+        var argumentStr = this.objToArray(arguments).join(" ");
 
-        if (window.console && window.console.log) {
+        if (window.console && window.console.debug) {
             window.console.debug(argumentStr);
         }
         this._logToContainer("logDebug", ["Debug:"].concat([argumentStr]));
     },
     logError: function(/*varargs*/) {
-        var argumentStr = Array.prototype.slice.call(arguments, 0).join(" ");
+        var argumentStr = this.objToArray(arguments).join(" ");
 
         if (window.console && window.console.error) {
             window.console.error(argumentStr);
@@ -462,7 +482,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Lang", Ob
 
     },
     logInfo: function(/*varargs*/) {
-        var argumentStr = Array.prototype.slice.call(arguments, 0).join(" ");
+        var argumentStr = this.objToArray(arguments).join(" ");
 
         if (window.console && window.console.info) {
             window.console.info(argumentStr);
@@ -470,7 +490,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Lang", Ob
         this._logToContainer("logInfo", ["Info:"].concat([argumentStr]));
     },
     logWarn: function(/*varargs*/) {
-        var argumentStr = Array.prototype.slice.call(arguments, 0).join(" ");
+        var argumentStr = this.objToArray(arguments).join(" ");
         if (window.console && window.console.warn) {
             window.console.warn(argumentStr);
         }

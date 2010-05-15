@@ -25,10 +25,12 @@
  * the parts which our impl uses.
  * A jquery like query API would be nice
  * but this would blow up our codebase significantly
- * 
+ *
+ * TODO selector shortcuts bei chrome abdrehen da knallt es
+ *
  */
 myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Object, {
-    _ieQuircksEvents : {
+    IE_QUIRKS_EVENTS : {
         "onabort": true,
         "onload":true,
         "onunload":true,
@@ -56,15 +58,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param {|Node|} item
      */
     runScripts: function(item) {
-        var childIteration = myfaces._impl._util._Lang.hitch(this, function(item) {
-            var child = item.firstChild;
-            while (child) {
-                this.runScripts(child);
-                child = child.nextSibling;
-            }
-        });
 
-        if (item.nodeType == 1) { // only if it's an element node or document fragment
+        var executeScriptTag = myfaces._impl._util._Lang.hitch(this, function(item) {
             if ('undefined' != typeof item.tagName && item.tagName.toLowerCase() == 'script') {
 
                 if (typeof item.getAttribute('src') != 'undefined'
@@ -94,11 +89,13 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                     // we have to run the script under a global context
                     myfaces._impl.core._Runtime.globalEval(test); // run the script
                 }
-            } else {
-                childIteration(item);
             }
-        } else {
-            childIteration(item);
+        });
+
+        var scriptElements = this.findByTagName(item, "script", true);
+        if (scriptElements == null) return;
+        for (var cnt = 0; cnt < scriptElements.length; cnt++) {
+            executeScriptTag(scriptElements[cnt]);
         }
     },
 
@@ -198,10 +195,15 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      */
     findById : function(fragment, itemId) {
 
+        if (fragment.nodeType == 1 && fragment.querySelector) {
+            //we can use the query selector here
+            if (fragment.id && fragment.id === itemId) return fragment;
+            return fragment.querySelector("#" + itemId);
+        }
+
         var filter = function(node) {
             return 'undefined' != typeof node.id && node.id === itemId;
         };
-
         return this.findFirst(fragment, filter);
     },
 
@@ -215,20 +217,22 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     findFirst : function(fragment, filter) {
         myfaces._impl._util._Lang._assertType(filter, "function");
 
-        /*if (document.createTreeWalker && NodeFilter) {
-            //we have a tree walker in place this allows for an optimized deep scan
-            var lastElementFound = null;
-            var treeWalkerfilter = function (node) {
-                return ((filter(node)) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP);
-            };
+        if (document.createTreeWalker && NodeFilter) {
+            return this._iteratorBasedFindFirst(fragment, filter);
+        } else {
+            return this._recursionBasedFindFirst(fragment, filter);
+        }
+    },
 
-            var treeWalker = document.createTreeWalker(fragment, NodeFilter.SHOW_ELEMENT, treeWalkerfilter, false);
-            if (treeWalker.nextNode()) {
-                return treeWalker.currentNode;
-            }
-            return null;
-        }*/
-
+    /**
+     * a simple recusion based find first which iterates over the
+     * dom tree the classical way which is also the slowest one
+     * but that one will work back to ie6+
+     *
+     * @param fragment the starting fragment
+     * @param filter the filter to be applied to
+     */
+    _recursionBasedFindFirst: function(fragment, filter) {
         if (filter(fragment)) {
             return fragment;
         }
@@ -242,9 +246,32 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         var childLen = fragment.childNodes.length;
         for (cnt = 0; cnt < childLen; cnt++) {
             child = fragment.childNodes[cnt];
-            var item = this.findFirst(child, filter);
+            var item = this._recursionBasedFindFirst(child, filter);
             if (item != null)
                 return item;
+        }
+        return null;
+    },
+
+    /**
+     * the faster based iterator findFirst which will work
+     * on all html5 compliant browsers and a bunch of older ones
+     *
+     * @param fragment the fragment to be started from
+     * @param filter the filter which has to be used
+     */
+    _iteratorBasedFindFirst:function(fragment, filter) {
+        if (filter(fragment)) {
+            return fragment;
+        }
+        //we have a tree walker in place this allows for an optimized deep scan
+        var lastElementFound = null;
+        var treeWalkerfilter = function (node) {
+            return ((filter(node)) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP);
+        };
+        var treeWalker = document.createTreeWalker(fragment, NodeFilter.SHOW_ELEMENT, treeWalkerfilter, false);
+        if (treeWalker.nextNode()) {
+            return treeWalker.currentNode;
         }
         return null;
     },
@@ -265,14 +292,26 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      */
     findByTagName : function(fragment, tagName, deepScan) {
         var _Lang = myfaces._impl._util._Lang;
-        var filter = function(node) {
-            return _Lang.exists(node, "tagName") && _Lang.equalsIgnoreCase(node.tagName, tagName);
-        };
 
         if ('undefined' == typeof deepScan) {
             deepScan = false;
         }
 
+        var filter = function(node) {
+            return _Lang.exists(node, "tagName") && _Lang.equalsIgnoreCase(node.tagName, tagName);
+        };
+
+        //html 5 selector
+        if (deepScan && fragment.querySelectorAll) {
+            var result = fragment.querySelectorAll(tagName);
+            if (fragment.nodeType == 1 && filter(fragment)) {
+                result = (result == null) ? [] : _Lang.objToArray(result);
+                result.push(fragment);
+                return result;
+            }
+        }
+        //if we are not in a html 5 environment which supports node selectors
+        //we use the usual recursive fallback.
         return this.findAll(fragment, filter, deepScan);
 
     },
@@ -284,6 +323,15 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         };
         if ('undefined' == typeof deepScan) {
             deepScan = false;
+        }
+
+        if (deepScan && fragment.querySelectorAll) {
+            var result = fragment.querySelectorAll("[name=" + name + "]");
+            if (fragment.nodeType == 1 && filter(fragment)) {
+                result = (result == null) ? [] : _Lang.objToArray(result);
+                result.push(fragment);
+                return result;
+            }
         }
 
         return this.findAll(fragment, filter, deepScan);
@@ -314,6 +362,22 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             deepScan = false;
         }
 
+        //html5 speed optimization, but only for deep scan and normal parent nodes
+        if (fragment.querySelectorAll && deepScan) {
+            var selector = "." + styleClass;
+            var result = fragment.querySelectorAll(selector);
+
+            if (fragment.nodeType == 1 && filter(fragment)) {
+                result = (result == null) ? [] : result;
+                result = _Lang.objToArrayl(result);
+                result.push(fragment);
+                return result;
+            }
+            return result;
+        }
+
+        //fallback to the classical filter methods if we cannot use the
+        //html 5 selectors for whatever reason
         return this.findAll(fragment, filter, deepScan);
     },
 
@@ -326,46 +390,28 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param deepScan if set to true or not set at all a deep scan is performed (for form scans it does not make much sense to deeply scan)
      */
     findAll : function(rootNode, filter, deepScan) {
-        var retVal = [];
         var _Lang = myfaces._impl._util._Lang;
-
         _Lang._assertType(filter, "function");
 
-        /*
-         one of my unit tests causing the treewalker to hang, have to fix that
-         before issuing that code
-         if (document.createTreeWalker && NodeFilter) {
-         //Works on firefox and webkit, opera and ie have to use the slower fallback mechanis
-         //we have a tree walker in place this allows for an optimized deep scan
-         var lastElementFound = null;
-         if (filter(rootNode)) {
-         lastElementFound = rootNode;
-         retVal.push(rootNode);
-         }
+        if (document.createTreeWalker && NodeFilter) {
+            return this._iteratorBasedSearchAll(rootNode, filter, deepScan);
+        } else {
+            return this._recursionBasedSearchAll(rootNode, filter, deepScan);
+        }
 
-         var treeWalkerfilter = function (node) {
-         _Lang.logInfo(node.className, "-", deepScan);
-         if (!deepScan && lastElementFound != null && node.parentNode == lastElementFound) {
-         return NodeFilter.FILTER_REJECT;
-         }
+    },
 
-         var retVal = (filter(node)) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
-         if (retVal == NodeFilter.FILTER_ACCEPT) {
-         lastElementFound = node;
-         }
-         return retVal;
-         };
-
-         var treeWalker = document.createTreeWalker(rootNode, NodeFilter.SHOW_ELEMENT, treeWalkerfilter, false);
-         int cnt = 0;
-         while (treeWalker.nextNode()) {
-
-         retVal.push(treeWalker.currentNode);
-
-         }
-         return retVal;
-         } */
-
+    /**
+     * classical recursive way which definitely will work on all browsers
+     * including the IE6
+     *
+     * @param rootNode the root node
+     * @param filter the filter to be applied to
+     * @param deepScan if set to true a deep scan is performed
+     */
+    _recursionBasedSearchAll: function(rootNode, filter, deepScan) {
+        var _Lang = myfaces._impl._util._Lang;
+        var retVal = [];
         //fix the value to prevent undefined errors
         if ('undefined' == typeof deepScan) {
             deepScan = true;
@@ -386,9 +432,48 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         var childLen = rootNode.childNodes.length;
         for (var cnt = 0; (deepScan || retValLen == 0) && cnt < childLen; cnt++) {
             var childNode = rootNode.childNodes[cnt];
-            var subRetVals = this.findAll(childNode, filter, deepScan);
+            var subRetVals = this._recursionBasedSearchAll(childNode, filter, deepScan);
             retVal = retVal.concat(subRetVals);
         }
+        return retVal;
+    },
+
+    /**
+     * the faster dom iterator based search, works on all newer browsers
+     * except ie8 which already have implemented the dom iterator functions
+     * of html 5 (which is pretty all standard compliant browsers)
+     *
+     * The advantage of this method is a faster tree iteration compared
+     * to the normal recursive tree walking.
+     *
+     * @param rootNode the root node to be iterated over
+     * @param filter the iteration filter
+     * @param deepScan if set to true a deep scan is performed
+     */
+    _iteratorBasedSearchAll: function(rootNode, filter, deepScan) {
+        var retVal = [];
+        //Works on firefox and webkit, opera and ie have to use the slower fallback mechanis
+        //we have a tree walker in place this allows for an optimized deep scan
+        var lastElementFound = null;
+        if (filter(rootNode)) {
+            lastElementFound = rootNode;
+            retVal.push(rootNode);
+            if (!deepScan) {
+                return retVal;
+            }
+        }
+        //we use the reject mechanism to prevent a deep scan reject means any
+        //child elements will be omitted from the scan
+        var treeWalkerfilter = function (node) {
+            var retCode = (filter(node)) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
+            retCode = (!deepScan && retCode == NodeFilter.FILTER_ACCEPT) ? NodeFilter.FILTER_REJECT : retCode;
+            if (retCode == NodeFilter.FILTER_ACCEPT || retCode == NodeFilter.FILTER_REJECT) {
+                retVal.push(node);
+            }
+            return retCode;
+        };
+        var treeWalker = document.createTreeWalker(rootNode, NodeFilter.SHOW_ELEMENT, treeWalkerfilter, false);
+        while (treeWalker.nextNode());
         return retVal;
     },
 
@@ -410,7 +495,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             if ('undefined' != typeof elem.id && elem.id === nameOrIdenitifier) return elem;
         } // end of for (formElements)
         return null;
-    },
+    }
+    ,
 
     /**
      * bugfixing for ie6 which does not cope properly with setAttribute
@@ -474,7 +560,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             //check if the attribute is an event, since this applies only
             //to quirks mode of ie anyway we can live with the standard html4/xhtml
             //ie supported events
-            if (this._ieQuircksEvents[attribute]) {
+            if (this.IE_QUIRKS_EVENTS[attribute]) {
                 if (_Lang.isString(attribute)) {
                     domNode.setAttribute(attribute, function(event) {
                         //event implicitly used
@@ -486,7 +572,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                 domNode.setAttribute(attribute, value);
             }
         }
-    },
+    }
+    ,
 
     /**
      * gets an element from a form with its id -> sometimes two elements have got
@@ -520,7 +607,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
             //we first check for a name entry!
 
-
             //'undefined' != typeof form.elements[itemIdOrName] && null != form.elements[itemIdOrName]
             if (nameSearch && _Lang.exists(form, "elements." + itemIdOrName)) {
                 return form.elements[itemIdOrName];
@@ -541,7 +627,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             _Lang.throwNewError(request, context, "Utils", "getElementFromForm", e);
         }
         return null;
-    },
+    }
+    ,
 
     /**
      * fuzzy form detection which tries to determine the form
@@ -634,7 +721,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         }
 
         return foundElements[0];
-    },
+    }
+    ,
 
     /**
      * [STATIC]
@@ -680,7 +768,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         } else {
             return null;
         }
-    },
+    }
+    ,
 
 
     /**
@@ -702,11 +791,11 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             }
         }
         return null;
-    },
+    }
+    ,
 
 
     /**
-     * [STATIC]
      * gets the child of an item with a given tag name
      * @param {Node} item - parent element
      * @param {String} childName - TagName of child element
@@ -723,7 +812,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         }
 
         return this.getFilteredChild(item, filter);
-    },
+    }
+    ,
 
 
 
@@ -768,7 +858,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             return node.getAttribute(ta.toLowerCase());	//	string
         }
         return null;	//	string
-    },
+    }
+    ,
 
     /**
      * checks whether the given node has an attribute attached
@@ -781,7 +872,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         //	summary
         //	Determines whether or not the specified node carries a value for the attribute in question.
         return this.getAttribute(node, attr) ? true : false;	//	boolean
-    },
+    }
+    ,
 
     /**
      * fetches the style class for the node
@@ -803,16 +895,18 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             }
         }
         return cs.replace(/^\s+|\s+$/g, "");
-    },
+    }
+    ,
     /**
-     * fdtches the class for the node,
+     * fetches the class for the node,
      * cross ported from the dojo toolkit
      * @param {String|Object}node the node to search
      */
     getClasses : function(node) {
         var c = this.getClass(node);
         return (c == "") ? [] : c.split(/\s+/g);
-    },
+    }
+    ,
 
     /**
      * concatenation routine which concats all childnodes of a node which
@@ -834,5 +928,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     byId: function(identifier) {
         return myfaces._impl._util._Lang.byId(identifier);
     }
-});
+})
+        ;
     
