@@ -173,6 +173,8 @@ public class ApplicationImpl extends Application
 
     private Map<String, String> _defaultValidatorsIds = new ConcurrentHashMap<String, String>();
     
+    private Map<String, String> _cachedDefaultValidatorsIds = null;
+    
     private final Map<String, Class<? extends Behavior>> _behaviorClassMap = new ConcurrentHashMap<String, Class<? extends Behavior>>();
 
     private final RuntimeConfig _runtimeConfig;
@@ -274,13 +276,18 @@ public class ApplicationImpl extends Application
         if (_validatorClassMap.containsKey(validatorId))
         {
             _defaultValidatorsIds.put(validatorId, _validatorClassMap.get(validatorId).getName());
+            _cachedDefaultValidatorsIds = null;
         }
     }
 
     @Override
     public Map<String, String> getDefaultValidatorInfo()
     {
-        return Collections.unmodifiableMap(_defaultValidatorsIds);
+        if (_cachedDefaultValidatorsIds == null)
+        {
+            _cachedDefaultValidatorsIds = Collections.unmodifiableMap(_defaultValidatorsIds); 
+        }
+        return _cachedDefaultValidatorsIds;
     }
 
     @Override
