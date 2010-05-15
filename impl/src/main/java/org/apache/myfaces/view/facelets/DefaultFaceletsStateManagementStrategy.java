@@ -50,7 +50,6 @@ import javax.faces.view.ViewMetadata;
 
 import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
-import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
  * This class implements partial state saving feature when facelets
@@ -484,7 +483,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             //Scan children
             if (component.getChildCount() > 0)
             {
-                String currentClientId = component.getClientId();
+                //String currentClientId = component.getClientId();
                 
                 List<UIComponent> children  = component.getChildren();
                 for (int i = 0; i < children.size(); i++)
@@ -501,14 +500,14 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             Map<String, UIComponent> facetMap = component.getFacets();
             if (!facetMap.isEmpty())
             {
-                String currentClientId = component.getClientId();
+                //String currentClientId = component.getClientId();
                 
                 for (Map.Entry<String, UIComponent> entry : facetMap.entrySet())
                 {
                     UIComponent child = entry.getValue();
                     if (child != null && !child.isTransient())
                     {
-                        String facetName = entry.getKey();
+                        //String facetName = entry.getKey();
                         restoreStateFromMap( context, states, child);
                     }
                 }
