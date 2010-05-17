@@ -315,7 +315,7 @@ if ('undefined' == typeof  myfaces._impl.core._Runtime || myfaces._impl.core._Ru
      * our lazily binding configuration system
      */
     myfaces._impl.core._Runtime.getImpl = function() {
-        myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
+        myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
     };
 
     /**
@@ -489,29 +489,10 @@ if ('undefined' == typeof  myfaces._impl.core._Runtime || myfaces._impl.core._Ru
         }
 
         //we now map the function map in
-        if ('undefined' != typeof prototypeFunctions && null != prototypeFunctions) {
+        if ('undefined' != typeof prototypeFunctions  && null != prototypeFunctions) {
             for (var key in prototypeFunctions) {
-                newClass.prototype[key] = prototypeFunctions[key];
-                //we also can apply a direct _inherited method if the method overwrites an existing one
-                //http://ejohn.org/blog/simple-javascript-inheritance/ i don not eliminate it multiple calls to super
-                //can happen, this is the way dojo does it
-
-                if (null != extendsClass && 'function' == typeof newClass.prototype.parent[key]) {
-                    //we now aop a decorator function on top of everything,
-                    //to make sure we have super set while it is executing
-                    var assignedFunction = newClass.prototype[key];
-
-                    newClass.prototype[key] = function() {
-                        var oldSuper = newClass.prototype["_inherited"];
-                        newClass.prototype["_inherited"] = function() {
-                            this.parent[key].apply(this, arguments);
-                        };
-                        try {
-                            return assignedFunction.apply(this, arguments);
-                        } finally {
-                            newClass.prototype["_inherited"] = oldSuper;
-                        }
-                    }
+                if( key != "_callSuper") {
+                    newClass.prototype[key] = prototypeFunctions[key];
                 }
             }
         }

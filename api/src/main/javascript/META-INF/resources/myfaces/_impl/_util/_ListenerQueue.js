@@ -12,13 +12,10 @@
  * idea:
  * var queue = new myfaces._impl._util._ListenerQueue();
  */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._ListenerQueue", Object, {
-    constructor_: function() {
-        this._queue = [];
-    },
+myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._ListenerQueue", myfaces._impl._util._Queue, {
 
-    length: function() {
-      return this._queue.length;  
+    constructor_: function() {
+        this._callSuper("constructor");
     },
 
     /**
@@ -37,9 +34,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._ListenerQueue", Ob
      *
      * @param listener the listener to be added
      */
-    add : function(/*function*/listener) {
+    enqueue : function(/*function*/listener) {
         this._assertListener(listener);
-        this._queue.push(listener);
+        this._inherited();
     },
 
     /**
@@ -49,21 +46,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._ListenerQueue", Ob
      */
     remove : function(/*function*/listener) {
         this._assertListener(listener);
-        /*find element in queue*/
-        var cnt = 0;
-        var len = this._queue.length;
-        while (cnt < len && this._queue[cnt] != listener) {
-            cnt += 1;
-        }
-        /*found*/
-        if (cnt < len) {
-            this._queue[cnt] = null;
-            /*we remove the element now as fast as possible*/
-            this._queue.splice(cnt, 1);
-        }
-
+        this._inherited();
     },
-    
+
     /**
      * generic broadcast with a number of arguments being passed down
      * @param scope the execution scope for the event callback
@@ -71,34 +56,25 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._ListenerQueue", Ob
      *                  down the queue function
      */
     broadcastScopedEvent : function(scope, /*any*/argument) {
-        for (var cnt = 0; cnt < this._queue.length; cnt ++) {
-            /**
-             * we call the original method under its original scope
-             * use hitch to keep the original scope in place
-             * because there is no way that I can keep it from here
-             **/
-            var varArgs = [];
-            var len = arguments.length;
-            for (var argsCnt = 1; argsCnt < len; argsCnt++) {
-                varArgs.push(arguments[argsCnt]);
-            }
-            this._queue[cnt].apply(scope, varArgs);
-        }
+        var _Lang = myfaces._impl._util._Lang;
+        var _args = _Lang.objToArray(arguments);
+
+        var broadCastFunc = function(element) {
+            element.apply(scope, Array.prototype.slice(_args, 1));
+        };
+        this.each(broadCastFunc);
     },
 
     /**
      * generic broadcast with a number of arguments being passed down
      */
     broadcastEvent : function(/*any*/argument) {
-        var len = this._queue.length;
-        for (var cnt = 0; cnt < len; cnt ++) {
-            /**
-             * we call the original method under its original scope
-             * use hitch to keep the original scope in place
-             * because there is no way that I can keep it from here
-             **/
+        var _Lang = myfaces._impl._util._Lang;
+        var _args = _Lang.objToArray(arguments);
 
-            this._queue[cnt].apply(null, arguments);
-        }
+        var broadCastFunc = function(element) {
+            element.apply(null, _args);
+        };
+        this.each(broadCastFunc);
     }
 });

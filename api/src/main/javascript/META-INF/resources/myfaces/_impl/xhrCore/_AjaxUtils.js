@@ -26,7 +26,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
     constructor_ : function(alarmThreshold) {
         // Exception Objekt
         this.alarmThreshold = alarmThreshold;
-        this.m_exception = new myfaces._impl.xhrCore._Exception("myfaces._impl.xhrCore._AjaxUtils", this.alarmThreshold);
+        this._exception = new myfaces._impl.xhrCore._Exception("myfaces._impl.xhrCore._AjaxUtils", this.alarmThreshold);
     },
 
     /**
@@ -37,39 +37,77 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
      * @param {Node} parentItem - form element item is nested in
      * @param {Array} partialIds - ids fo PPS
      */
-    processUserEntries : function(request, context, item,
-                                  parentItem, partialIds) {
+    encodeSubmittableFields : function(request, context, item,
+                                       parentItem, partialIds) {
         try {
             if (parentItem == null) {
-                this.m_exception.throwWarning(request, context, "processUserEntries",
+                this._exception.throwWarning(request, context, "encodeSubmittableFields",
                         "Html-Component is not nested in a Form-Tag");
                 return null;
             }
 
-            var stringBuffer = new Array();
+            var strBuf = [];
 
             if (partialIds != null && partialIds.length > 0) {
                 // recursivly check items
-                this.addNodes(parentItem, false, partialIds, stringBuffer);
+                this.encodePartialSubmit(parentItem, false, partialIds, strBuf);
             } else {
                 // add all nodes
                 var eLen = parentItem.elements.length;
                 for (var e = 0; e < eLen; e++) {
-                    this.addField(parentItem.elements[e], stringBuffer);
+                    this.encodeElement(parentItem.elements[e], strBuf);
                 } // end of for (formElements)
             }
 
             // if triggered by a Button send it along
             if ('undefined' != typeof item && null != item && item.type != null && item.type.toLowerCase() == "submit") {
-                stringBuffer[stringBuffer.length] = encodeURIComponent(item.name);
-                stringBuffer[stringBuffer.length] = "=";
-                stringBuffer[stringBuffer.length] = encodeURIComponent(item.value);
-                stringBuffer[stringBuffer.length] = "&";
+                strBuf.push(encodeURIComponent(item.name));
+                strBuf.push("=");
+                strBuf.push(encodeURIComponent(item.value));
+                strBuf.push("&");
             }
 
-            return stringBuffer.join("");
+            return strBuf.join("");
         } catch (e) {
-            this.m_exception.throwError(request, context, "processUserEntries", e);
+            this._exception.throwError(request, context, "encodeSubmittableFields", e);
+        }
+    },
+
+    /**
+     * checks recursively if contained in PPS
+     * @param {Node} node - the root node of the partial page submit
+     * @param {boolean} submitAll - if set to true, all elements within this node will
+     * be added to the partial page submit
+     * @param {Array} partialIds - an array of partial ids which should be used for the submit
+     * @param {Array} strBuf a target string buffer which receives the encoded elements
+     */
+    encodePartialSubmit : function(node, submitAll,
+                                   partialIds, strBuf) {
+        var _Lang = myfaces._impl._util._Lang;
+        var _Impl = myfaces._impl.core.Impl;
+        var _Dom = myfaces._impl._util._Dom;
+        
+        var nodeFilter = function(curNode) {
+            //TODO bomb out if the element is not one of the input types
+            //((elementTagName == "input" || elementTagName == "textarea" || elementTagName == "select") &&
+            //    (elementName != null && elementName != "")) && !element.disabled
+            //
+            if (child.nodeType != 1) return false;
+            if (submitAll && node != curNode) return true;
+
+            var id = curNode.id;
+            var name = curNode.name;
+
+            var ppsElement = id && _Lang.arrayContains(partialIds, id);
+            return  ppsElement || (name != null && name == _Impl._PROP_VIEWSTATE);
+        };
+
+        var nodes = _Dom.findAll(node, nodeFilter, true);
+
+        if (nodes) {
+            for (cnt = 0; cnt < nodes.length; cnt++) {
+                this.encodeElement(nodes[cnt], strBuf);
+            }
         }
     },
 
@@ -80,43 +118,43 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
      * @param {} partialIds -
      * @param {} stringBuffer -
      */
-    addNodes : function(node, insideSubmittedPart,
-                        partialIds, stringBuffer) {
-        if (node != null && node.childNodes != null) {
-            var nLen = node.childNodes.length;
-            for (var i = 0; i < nLen; i++) {
-                var child = node.childNodes[i];
-                var id = child.id;
-                var elementName = child.name;
-                if (child.nodeType == 1) {
-                    var isPartialSubmitContainer = ((id != null)
-                            && myfaces._impl._util._Lang.arrayContains(partialIds, id));
-                    if (insideSubmittedPart
-                            || isPartialSubmitContainer
-                            || (elementName != null
-                            && elementName == myfaces._impl.core._jsfImpl._PROP_VIEWSTATE)) {
-                        // node required for PPS
-                        this.addField(child, stringBuffer);
-                        if (insideSubmittedPart || isPartialSubmitContainer) {
-                            // check for further children
-                            this.addNodes(child, true, partialIds, stringBuffer);
-                        }
-                    } else {
-                        // check for further children
-                        this.addNodes(child, false, partialIds, stringBuffer);
-                    }
-                }
-            }
-        }
-    },
+    /* addNodes : function(node, insideSubmittedPart,
+     partialIds, stringBuffer) {
+     if (node != null && node.childNodes != null) {
+     var nLen = node.childNodes.length;
+     for (var i = 0; i < nLen; i++) {
+     var child = node.childNodes[i];
+     var id = child.id;
+     var elementName = child.name;
+     if (child.nodeType == 1) {
+     var isPartialSubmitContainer = ((id != null)
+     && myfaces._impl._util._Lang.arrayContains(partialIds, id));
+     if (insideSubmittedPart
+     || isPartialSubmitContainer
+     || (elementName != null
+     && elementName == myfaces._impl.core.Impl._PROP_VIEWSTATE)) {
+     // node required for PPS
+     this.addField(child, stringBuffer);
+     if (insideSubmittedPart || isPartialSubmitContainer) {
+     // check for further children
+     this.addNodes(child, true, partialIds, stringBuffer);
+     }
+     } else {
+     // check for further children
+     this.addNodes(child, false, partialIds, stringBuffer);
+     }
+     }
+     }
+     }
+     }, */
 
     /**
      * add a single field to stringbuffer for param submission
      * @param {Node} element -
-     * @param {} stringBuffer -
+     * @param {} strBuf -
      */
-    addField : function(element, stringBuffer) {
-        var elementName = element.name;
+    encodeElement : function(element, strBuf) {
+        var elementName = (null != element.name || 'undefined' != typeof element.name) ? element.name: element.id;
         var elementTagName = element.tagName.toLowerCase();
         var elementType = element.type;
         if (elementType != null) {
@@ -147,14 +185,14 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
                         // find all selected options
                         if (element.options[u].selected) {
                             var elementOption = element.options[u];
-                            stringBuffer[stringBuffer.length] = encodeURIComponent(elementName);
-                            stringBuffer[stringBuffer.length] = "=";
+                            strBuf.push(encodeURIComponent(elementName));
+                            strBuf.push("=");
                             if (elementOption.getAttribute("value") != null) {
-                                stringBuffer[stringBuffer.length] = encodeURIComponent(elementOption.value);
+                                strBuf.push(encodeURIComponent(elementOption.value));
                             } else {
-                                stringBuffer[stringBuffer.length] = encodeURIComponent(elementOption.text);
+                                strBuf.push(encodeURIComponent(elementOption.text));
                             }
-                            stringBuffer[stringBuffer.length] = "&";
+                            strBuf.push("&");
                         }
                     }
                 }
@@ -167,10 +205,10 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
             if ((elementTagName != "select" && elementType != "button"
                     && elementType != "reset" && elementType != "submit" && elementType != "image")
                     && ((elementType != "checkbox" && elementType != "radio") || element.checked)) {
-                stringBuffer[stringBuffer.length] = encodeURIComponent(elementName);
-                stringBuffer[stringBuffer.length] = "=";
-                stringBuffer[stringBuffer.length] = encodeURIComponent(element.value);
-                stringBuffer[stringBuffer.length] = "&";
+                strBuf.push(encodeURIComponent(elementName));
+                strBuf.push("=");
+                strBuf.push(encodeURIComponent(element.value));
+                strBuf.push("&");
             }
 
         }

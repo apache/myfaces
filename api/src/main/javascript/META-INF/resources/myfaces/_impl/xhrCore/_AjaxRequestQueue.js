@@ -17,102 +17,109 @@
  * Version: $Revision: 1.3 $ $Date: 2009/05/31 09:16:44 $
  *
  */
-if (myfaces._impl.core._Runtime.reserveNamespace("myfaces._impl.xhrCore._AjaxRequestQueue")) {
-    //TODO this class needs namespace cleanups
+myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequestQueue", myfaces._impl._util._Queue, {
+
+    _curReq : null,
+
+    constructor_: function(){
+        this._callSuper("constructor");
+
+        var _this = this;
+
+        var _handleCallback = this.handleCallback;
+        //we have to scope this because the xhr request will change the
+        //callback scope to window from outside, hence we have to enforce a scope here
+        this.handleCallback = myfaces._impl._util._Lang.hitch(_this, _handleCallback);
+    },
 
     /**
-     * Constructor
-     */
-    myfaces._impl.xhrCore._AjaxRequestQueue = function() {
-        this.m_request = null;
-        this.m_queuedRequests = [];
-        this.m_exception = new myfaces._impl.xhrCore._Exception("myfaces._impl.xhrCore._AjaxRequestQueue", "NONE");
-    };
-
-    /**
-     * [STATIC PROPERTIES]
-     */
-    myfaces._impl.xhrCore._AjaxRequestQueue.queue = new myfaces._impl.xhrCore._AjaxRequestQueue();
-
-    /**
-     * [STATIC]
+     *
      * provides api callback
+     *
+     * we have to hitch this function since
+     * the xhr request changes scopes
+     * in the asynchronous case, the callback always
+     * has to reference this
      */
-    myfaces._impl.xhrCore._AjaxRequestQueue.handleCallback = function() {
-        if (myfaces._impl.xhrCore._AjaxRequestQueue.queue.m_request != null) {
-            myfaces._impl.xhrCore._AjaxRequestQueue.queue.m_request.requestCallback();
-        } else {
-            myfaces._impl.xhrCore._AjaxRequestQueue.queue.m_exception.throwWarning
-            (null, null, "doRequestCallback", "No request object available");
+    handleCallback : function() {
+
+        if (this._curReq != null) {
+            this._curReq.requestCallback();
+            //this.processQueue();
         }
-    };
+    },
 
     /**
      * delay request, then call queueNow
-     * @param {myfaces._impl.xhrCore._AjaxRequest} request - request to send
+     * @param {Object} request (myfaces._impl.xhrCore._AjaxRequest) request to send
      */
-    myfaces._impl.xhrCore._AjaxRequestQueue.prototype.queueRequest = function(request) {
-        if (typeof request.m_delay == "number") {
-        	this.clearDelayTimeout();
+    queueRequest : function(request) {
+        if (typeof request._delay == "number") {
+            this.clearDelayTimeout();
+            var _Lang = myfaces._impl._util._Lang;
             this.delayTimeoutId = window.setTimeout(
-            	function() {
-            		myfaces._impl.xhrCore._AjaxRequestQueue.queue.clearDelayTimeout();
-                	myfaces._impl.xhrCore._AjaxRequestQueue.queue.queueNow(request);
-            	}, request.m_delay);
+                    _Lang.hitch(this, function() {
+                        this.clearDelayTimeout();
+                        this.queueNow(request);
+                    }), request._delay);
         } else {
-        	this.queueNow(request);
+            this.enqueue(request);
         }
-    };
+    },
 
-    myfaces._impl.xhrCore._AjaxRequestQueue.prototype.clearDelayTimeout = function() {
-		try {
-			if (typeof this.delayTimeoutId == "number") {
-				window.clearTimeout(this.delayTimeoutId);
-				delete this.delayTimeoutId;
-			}
-		} catch (e) {
-			// already timed out
-		}
-    }
+    /**
+     * timeout clearing routine
+     * for timeout requests
+     */
+    clearDelayTimeout : function() {
+        try {
+            if (typeof this.delayTimeoutId == "number") {
+                window.clearTimeout(this.delayTimeoutId);
+                delete this.delayTimeoutId;
+            }
+        } catch (e) {
+            // already timed out
+        }
+    },
 
     /**
      * send a request or keep it in a queue
      * @param {myfaces._impl.xhrCore._AjaxRequest} request - request to send
      */
-    myfaces._impl.xhrCore._AjaxRequestQueue.prototype.queueNow = function(request) {
-        if (this.m_request == null) {
-            this.m_request = request;
-            this.m_request.send();
+    enqueue : function(request) {
+        if (this._curReq == null) {
+            this._curReq = request;
+            this._curReq.send();
         } else {
-            this.m_queuedRequests.push(request);
-            if (request.m_queuesize > -1 && request.m_queuesize < this.m_queuedRequests.length)
-                this.m_queuedRequests.shift();
+
+            this._callSuper("enqueue",request);
+            if (request._queueSize != this._queueSize) {
+                this.setQueueSize(request._queueSize);
+            }
         }
-    };
+    },
 
     /**
      * process queue, send request, if exists
      */
-    myfaces._impl.xhrCore._AjaxRequestQueue.prototype.processQueue = function() {
-        if (this.m_queuedRequests.length > 0) {
-            // Using Javascripts build-in queue capabilities here!
-            // JSF RI is using Delayed Shift Queue (DSQ), which starts to outperform the build-in queue
-            // when queue size exceeds ~10 requests (http://safalra.com/web-design/javascript/queues/).
-            // With JSF Ajax the queue will hardly ever reach this size.
-            this.m_request = this.m_queuedRequests.shift();
-            this.m_request.send();
-        } else {
-            this.m_request = null;
+    processQueue: function() {
+        this._curReq = this.dequeue();
+        if (null != this._curReq) {
+            this._curReq.send();
         }
-    };
+    },
 
     /**
      * cleanup queue
      */
-    myfaces._impl.xhrCore._AjaxRequestQueue.prototype.clearQueue = function() {
-        this.m_request = null;
-        this.m_queuedRequest = null;
-        this.m_requestPending = false;
-    };
+    cleanup: function() {
+        this._curReq = null;
+        this._callSuper("cleanup");
+    }
+});
 
+//TODO replace this with a singleton hooked to the direct xhr object
+//instead of one hooked to the qeue
+if (myfaces._impl.core._Runtime.reserveNamespace("myfaces._impl.xhrCore._RQInstance")) {
+    myfaces._impl.xhrCore._RQInstance = new myfaces._impl.xhrCore._AjaxRequestQueue();
 }

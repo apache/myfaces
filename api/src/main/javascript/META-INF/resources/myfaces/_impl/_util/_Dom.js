@@ -66,7 +66,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                         && item.getAttribute('src') != null
                         && item.getAttribute('src').length > 0) {
                     // external script auto eval
-                    myfaces._impl.core._Runtime.loadScript(item.getAttribute('src'), item.getAttribute('type'), false, "ISO-8859-1");
+                    //TODO fix the encoding here, we have to assume the src is the same encoding as the document
+                    //or enforce auto
+                    myfaces._impl.core._Runtime.loadScript(item.getAttribute('src'), item.getAttribute('type'), false, "UTF-8");
                 } else {
                     // embedded script auto eval
                     var test = item.text;
@@ -91,23 +93,29 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                 }
             }
         });
-
-        var scriptElements = this.findByTagName(item, "script", true);
-        if (scriptElements == null) return;
-        for (var cnt = 0; cnt < scriptElements.length; cnt++) {
-            executeScriptTag(scriptElements[cnt]);
+        try {
+            var scriptElements = this.findByTagName(item, "script", true);
+            if (scriptElements == null) return;
+            for (var cnt = 0; cnt < scriptElements.length; cnt++) {
+                executeScriptTag(scriptElements[cnt]);
+            }
+        } finally {
+            //the usual ie6 fix code
+            //the IE6 garbage collector is broken
+            //nulling closures helps somewhat to reduce
+            //mem leaks, which are impossible to avoid
+            //at this browser
+            executeScriptTag = null;
         }
     },
 
     /**
      * Simple delete on an existing item
      */
-    deleteItem: function(request, context, itemIdToReplace) {
-        var item = document.getElementById(itemIdToReplace);
+    deleteItem: function(itemIdToReplace) {
+        var item = this.byId(itemIdToReplace);
         if (item == null) {
-            myfaces._impl._util._Lang.throwNewWarning
-                    (request, context, "Utils", "deleteItem", "Unknown Html-Component-ID: " + itemIdToReplace);
-            return;
+            throw Error("_Dom.deleteItem  Unknown Html-Component-ID: " + itemIdToReplace);
         }
 
         item.parentNode.removeChild(item);
@@ -195,6 +203,10 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      */
     findById : function(fragment, itemId) {
 
+        if(fragment === document) {
+            return document.getElementById(itemId);
+        }
+
         if (fragment.nodeType == 1 && fragment.querySelector) {
             //we can use the query selector here
             if (fragment.id && fragment.id === itemId) return fragment;
@@ -204,7 +216,12 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         var filter = function(node) {
             return 'undefined' != typeof node.id && node.id === itemId;
         };
-        return this.findFirst(fragment, filter);
+        try {
+            return this.findFirst(fragment, filter);
+        } finally {
+            //ie6 fix code
+            filter = null;
+        }
     },
 
     /**
@@ -300,19 +317,25 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         var filter = function(node) {
             return _Lang.exists(node, "tagName") && _Lang.equalsIgnoreCase(node.tagName, tagName);
         };
+        try {
 
-        //html 5 selector
-        if (deepScan && fragment.querySelectorAll) {
-            var result = fragment.querySelectorAll(tagName);
-            if (fragment.nodeType == 1 && filter(fragment)) {
-                result = (result == null) ? [] : _Lang.objToArray(result);
-                result.push(fragment);
+            //html 5 selector
+            if (deepScan && fragment.querySelectorAll) {
+                var result = fragment.querySelectorAll(tagName);
+                if (fragment.nodeType == 1 && filter(fragment)) {
+                    result = (result == null) ? [] : _Lang.objToArray(result);
+                    result.push(fragment);
+                }
+                return result;
             }
-            return result;
+            //if we are not in a html 5 environment which supports node selectors
+            //we use the usual recursive fallback.
+            return this.findAll(fragment, filter, deepScan);
+        } finally {
+            //the usual IE6 is broken, fix code
+            filter = null;
+            _Lang = null;
         }
-        //if we are not in a html 5 environment which supports node selectors
-        //we use the usual recursive fallback.
-        return this.findAll(fragment, filter, deepScan);
 
     },
 
@@ -321,21 +344,28 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         var filter = function(node) {
             return  _Lang.exists(node, "name") && _Lang.equalsIgnoreCase(node.name, name);
         };
-        if ('undefined' == typeof deepScan) {
-            deepScan = false;
-        }
-
-        if (deepScan && fragment.querySelectorAll) {
-            var result = fragment.querySelectorAll("[name=" + name + "]");
-            if (fragment.nodeType == 1 && filter(fragment)) {
-                result = (result == null) ? [] : _Lang.objToArray(result);
-                result.push(fragment);
+        try {
+            if ('undefined' == typeof deepScan) {
+                deepScan = false;
             }
-            return result;
-        }
 
-        return this.findAll(fragment, filter, deepScan);
-    },
+            if (deepScan && fragment.querySelectorAll) {
+                var result = fragment.querySelectorAll("[name=" + name + "]");
+                if (fragment.nodeType == 1 && filter(fragment)) {
+                    result = (result == null) ? [] : _Lang.objToArray(result);
+                    result.push(fragment);
+                }
+                return result;
+            }
+
+            return this.findAll(fragment, filter, deepScan);
+        } finally {
+            //the usual IE6 is broken, fix code
+            filter = null;
+            _Lang = null;
+        }
+    }
+    ,
 
     /**
      * finds the elements by an attached style class
@@ -357,28 +387,41 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             }
             return false;
         });
-
-        if ('undefined' == typeof deepScan) {
-            deepScan = false;
-        }
-
-        //html5 speed optimization, but only for deep scan and normal parent nodes
-        if (fragment.querySelectorAll && deepScan) {
-            var selector = "." + styleClass;
-            var result = fragment.querySelectorAll(selector);
-
-            if (fragment.nodeType == 1 && filter(fragment)) {
-                result = (result == null) ? [] : result;
-                result = _Lang.objToArrayl(result);
-                result.push(fragment);
+        try {
+            if ('undefined' == typeof deepScan) {
+                deepScan = false;
             }
-            return result;
-        }
 
-        //fallback to the classical filter methods if we cannot use the
-        //html 5 selectors for whatever reason
-        return this.findAll(fragment, filter, deepScan);
-    },
+            //html5 getElementsByClassname
+            if (fragment.getElementsByClassName && deepScan) {
+                return fragment.getElementsByClassName(styleClass);
+            }
+            //html5 speed optimization for browsers which do not ,
+            //have the getElementsByClassName implemented
+            //but only for deep scan and normal parent nodes
+            else if (fragment.querySelectorAll && deepScan) {
+                var selector = "." + styleClass;
+                var result = fragment.querySelectorAll(selector);
+
+                if (fragment.nodeType == 1 && filter(fragment)) {
+                    result = (result == null) ? [] : result;
+                    result = _Lang.objToArrayl(result);
+                    result.push(fragment);
+                }
+                return result;
+            } else {
+                //fallback to the classical filter methods if we cannot use the
+                //html 5 selectors for whatever reason
+                return this.findAll(fragment, filter, deepScan);
+            }
+
+        } finally {
+            //the usual IE6 is broken, fix code
+            filter = null;
+            _Lang = null;
+        }
+    }
+    ,
 
     /**
      * a filtered findAll for subdom treewalking
@@ -398,7 +441,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             return this._recursionBasedSearchAll(rootNode, filter, deepScan);
         }
 
-    },
+    }
+    ,
 
     /**
      * classical recursive way which definitely will work on all browsers
@@ -435,7 +479,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             retVal = retVal.concat(subRetVals);
         }
         return retVal;
-    },
+    }
+    ,
 
     /**
      * the faster dom iterator based search, works on all newer browsers
@@ -474,7 +519,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         var treeWalker = document.createTreeWalker(rootNode, NodeFilter.SHOW_ELEMENT, treeWalkerfilter, false);
         while (treeWalker.nextNode());
         return retVal;
-    },
+    }
+    ,
 
     /**
      *
@@ -487,11 +533,12 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     findFormElement : function(form, nameOrIdenitifier) {
         var eLen = form.elements.length;
         //TODO add iterator handlers here for browsers which allow dom filters and iterators
+        var _RT = myfaces._impl._util._Runtime;
 
         for (var e = 0; e < eLen; e++) {
             var elem = form.elements[e];
-            if ('undefined' != typeof elem.name && elem.name === nameOrIdenitifier) return elem;
-            if ('undefined' != typeof elem.id && elem.id === nameOrIdenitifier) return elem;
+            if (_RT.exists(elem,"name") && elem.name === nameOrIdenitifier) return elem;
+            if (_RT.exists(elem,"id") && elem.id === nameOrIdenitifier) return elem;
         } // end of for (formElements)
         return null;
     }
@@ -579,8 +626,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * the same id but are located in different forms -> MyFaces 1.1.4 two forms ->
      * 2 inputHidden fields with ID jsf_tree_64 & jsf_state_64 ->
      * http://www.arcknowledge.com/gmane.comp.jakarta.myfaces.devel/2005-09/msg01269.html
-     * @param {Object} request
-     * @param {Object} context (Map)
+     *
      * @param {String} itemIdOrName - ID of the HTML element located inside the form
      * @param {Node} form - form element containing the element
      * @param {boolean} nameSearch if set to true a search for name is also done
@@ -588,43 +634,36 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @return {Object}   the element if found else null
      *
      */
-    getElementFromForm : function(request, context, itemIdOrName, form, nameSearch, localSearchOnly) {
+    getElementFromForm : function(itemIdOrName, form, nameSearch, localSearchOnly) {
         var _Lang = myfaces._impl._util._Lang;
-        try {
 
-            if ('undefined' == typeof form || form == null) {
-                return document.getElementById(itemIdOrName);
-            }
-            if ('undefined' == typeof nameSearch || nameSearch == null) {
-                nameSearch = false;
-            }
-            if ('undefined' == typeof localSearchOnly || localSearchOnly == null) {
-                localSearchOnly = false;
-            }
-
-            var fLen = form.elements.length;
-
-            //we first check for a name entry!
-
-            //'undefined' != typeof form.elements[itemIdOrName] && null != form.elements[itemIdOrName]
-            if (nameSearch && _Lang.exists(form, "elements." + itemIdOrName)) {
-                return form.elements[itemIdOrName];
-            }
-            //if no name entry is found we check for an Id
-            for (var f = 0; f < fLen; f++) {
-                var element = form.elements[f];
-                if (_Lang.exists(element, "id") && element.id == itemIdOrName) {
-                    return element;
-                }
-            }
-            // element not found inside the form -> try document.getElementById
-            // (kann be null if element doesn't exist)
-            if (!localSearchOnly) {
-                return document.getElementById(itemIdOrName);
-            }
-        } catch (e) {
-            _Lang.throwNewError(request, context, "Utils", "getElementFromForm", e);
+        if ('undefined' == typeof form || form == null) {
+            return this.findById(document, itemIdOrName);
         }
+
+
+        var isNameSearch = ('undefined' == typeof nameSearch || nameSearch == null)? false: nameSearch;
+        var isLocalSearchOnly = ('undefined' == typeof localSearchOnly || localSearchOnly == null)? false: localSearchOnly;
+
+
+        var fLen = form.elements.length;
+
+        //we first check for a name entry!
+        if (isNameSearch && _Lang.exists(form, "elements." + itemIdOrName)) {
+            return form.elements[itemIdOrName];
+        }
+        //if no name entry is found we check for an Id
+        var element = this.findById(form, itemIdOrName);
+        if(element != null)  {
+            return element;
+        }
+
+        // element not found inside the form -> try document.getElementById
+        // (kann be null if element doesn't exist)
+        if (!isLocalSearchOnly) {
+            return this.findById(document, itemIdOrName);
+        }
+
         return null;
     }
     ,
@@ -724,7 +763,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     ,
 
     /**
-     * [STATIC]
      * gets a parent of an item with a given tagname
      * @param {Node} item - child element
      * @param {String} tagNameToSearchFor - TagName of parent element
@@ -744,6 +782,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         return this.getFilteredParent(item, searchClosure);
     }
     ,
+
     /**
      * A parent walker which uses
      * a filter closure for filtering
@@ -770,7 +809,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     }
     ,
 
-
     /**
      * a closure based child filtering routine
      * which steps one level down the tree and
@@ -793,7 +831,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     }
     ,
 
-
     /**
      * gets the child of an item with a given tag name
      * @param {Node} item - parent element
@@ -813,8 +850,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         return this.getFilteredChild(item, filter);
     }
     ,
-
-
 
     /**
      * cross ported from dojo

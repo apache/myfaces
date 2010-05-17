@@ -457,6 +457,75 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Lang", Ob
 
     },
 
+    //not yet used
+    /**
+     * attaches a standard iterator if
+     * the collection does not have one already
+     * 
+     * @param inColl
+     */
+  /*  attachIterators : function (inColl ) {
+        var _coll = inColl;
+
+        if(_coll instanceof Array) {
+            if(!_coll.each) {
+                _coll.each = function(closure) {
+                    for(var cnt = 0; cnt < _coll.length; cnt++) {
+                        closure(_coll[cnt]);
+                    }
+                }
+            }
+            if(!_coll.filter) {
+                _coll.filter = function(closure) {
+                    var retVal = [];
+                    for(var cnt = 0; cnt < _coll.length; cnt++) {
+                        var elem = closure(_coll[cnt]);
+                        if(closure(elem)) {
+                            retVal.push(elem)
+                        }
+                    }
+                }
+            }
+
+        } else {
+            if(!_coll.each) {
+                _coll.each = function(closure) {
+                    for(var key in _coll.length) {
+                        closure(key, _coll[key]);
+                    }
+                }
+            }
+            if(!_coll.filter) {
+                _coll.filter = function(closure) {
+                    var retVal = [];
+                    for(var key in _coll.length) {
+                        var elem = closure(_coll[key]);
+                        if(closure(key, elem)) {
+                            retVal.push(elem)
+                        }
+                    }
+                }
+            }
+
+        }
+    },  */
+
+    /**
+     * helper to automatically apply a delivered arguments map
+     * to its destination which has a field "_"<key>
+     *
+     * @param destination the destination object
+     * @param args the arguments array
+     * @param argNames the argument names to be transferred
+     */
+    applyArguments: function(destination, args, argNames) {
+        for(var cnt = 0; cnt < args.length ; cnt++) {
+            if('undefined' != typeof destination["_"+argNames[cnt]]) {
+                destination["_"+argNames[cnt]] = args[cnt];
+            }
+        }
+    },
+
     logLog: function(/*varargs*/) {
         var argumentStr = this.objToArray(arguments).join(" ");
         if (window.console && window.console.log) {

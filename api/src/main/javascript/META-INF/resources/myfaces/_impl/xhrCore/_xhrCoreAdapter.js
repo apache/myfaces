@@ -17,32 +17,44 @@
  * Version: $Revision: 1.1 $ $Date: 2009/05/26 21:24:42 $
  *
  */
-if (myfaces._impl.core._Runtime.reserveNamespace("myfaces._impl.xhrCore._Ajax")) {
 
-    myfaces._impl.xhrCore._Ajax = myfaces._impl.core._Runtime.extendClass(function() {
-    }, Object, {
+myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Ajax"
+        , Object, {
+    /**
+     * a singleton queue
+     */
+    _xhrQueue: myfaces._impl.xhrCore._RQInstance,
+    _exception: new myfaces._impl.xhrCore._Exception("myfaces._impl.xhrCore._AjaxRequest", "ERROR"),
 
-        /**
-         * mapped options already have the exec and view properly in place
-         * myfaces specifics can be found under mappedOptions.myFaces
-         * @param {DomNode} source the source of this call
-         * @param {HTMLForm} sourceForm the html form which is the source of this call
-         * @param {Map} context the internal pass through context
-         * @param {Map} passThroughValues values to be passed through
-         **/
-        _ajaxRequest : function(source, sourceForm, context, passThroughValues) {
-            myfaces._impl.xhrCore._AjaxRequestQueue.queue.queueRequest(
-                    new myfaces._impl.xhrCore._AjaxRequest(source, sourceForm, context, passThroughValues));
-        },
+    /**
+     * mapped options already have the exec and view properly in place
+     * myfaces specifics can be found under mappedOptions.myFaces
+     * @param {DomNode} source the source of this call
+     * @param {HTMLForm} sourceForm the html form which is the source of this call
+     * @param {Map} context the internal pass through context
+     * @param {Map} passThroughValues values to be passed through
+     **/
+    xhrQueuedPost : function(source, sourceForm, context, passThroughValues) {
+        this._xhrQueue.enqueue(
+                new myfaces._impl.xhrCore._AjaxRequest(source, sourceForm, context, passThroughValues,this._xhrQueue));
+    },
+    /*
+    _stdErrorHandler: function(request, context,sourceClass, func, exception) {
+        this._exception.throwError(request, context, func, exception);
+    },
 
-        /**
-         * Spec. 13.3.3
-         * Examining the response markup and updating the DOM tree
-         * @param {XmlHttpRequest} request - the ajax request
-         * @param {XmlHttpRequest} context - the ajax context
-         */
-        _ajaxResponse : function(request, context) {
-            myfaces._impl.xhrCore._AjaxRequestQueue.queue.m_request.m_response.processResponse(request, context);
-        }
-    });
-}
+    _stdWarningsHandler: function(request, context, sourceClass, func, exception) {
+        this._exception.throwWarning(request, context, func, exception);
+    },
+      */
+
+    /**
+     * Spec. 13.3.3
+     * Examining the response markup and updating the DOM tree
+     * @param {XmlHttpRequest} request - the ajax request
+     * @param {XmlHttpRequest} context - the ajax context
+     */
+    response : function(request, context) {
+        this._xhrQueue._curReq.response.processResponse(request, context);
+    }
+});

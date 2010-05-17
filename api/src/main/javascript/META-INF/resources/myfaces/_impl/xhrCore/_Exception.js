@@ -29,8 +29,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Exception", Obje
      */
     throwError : function(request, context, func, exception) {
         if (this.m_threshold == "ERROR") {
-            var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
-            _Impl.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_CLIENT_ERROR, exception.name,
+            var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
+            _Impl.sendError(request, context, myfaces._impl.core.Impl._ERROR_CLIENT_ERROR, exception.name,
                     "MyFaces ERROR\n"
                             + "Affected Class: " + this.m_class + "\n"
                             + "Affected Method: " + func + "\n"
@@ -51,8 +51,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Exception", Obje
      */
     throwWarning : function(request, context, func, message) {
         if (this.m_threshold == "WARNING" || this.m_threshold == "ERROR") {
-            var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
-            _Impl.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_CLIENT_ERROR, exception.name,
+            var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
+            _Impl.sendError(request, context, myfaces._impl.core.Impl._ERROR_CLIENT_ERROR, exception.name,
                     "MyFaces WARNING\n[" + this.m_class + "::" + func + "]\n\n"
                             + message);
         }
@@ -63,10 +63,10 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Exception", Obje
      * cleanup activities if an error occurs
      */
     destroy : function() {
-        if (myfaces._impl.xhrCore._AjaxRequestQueue.queue &&
-                myfaces._impl.xhrCore._AjaxRequestQueue.queue != null) {
+        if (myfaces._impl.xhrCore._RQInstance &&
+                myfaces._impl.xhrCore._RQInstance != null) {
             // clear RequestQueue when an exception occurs
-            myfaces._impl.xhrCore._AjaxRequestQueue.queue.clearQueue();
+           myfaces._impl.xhrCore._RQInstance.cleanup();
         }
     }
 

@@ -18,7 +18,7 @@
  *
  */
 
-myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Object, {
+myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", Object, {
 
 
     /**
@@ -27,7 +27,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
      */
     constructor_: function(alarmThreshold) {
         this.alarmThreshold = alarmThreshold;
-        this.m_exception = new myfaces._impl.xhrCore._Exception("myfaces._impl.xhrCore._AjaxResponse", this.alarmThreshold);
+        this._exception = new myfaces._impl.xhrCore._Exception("myfaces._impl.xhrCore._AjaxResponse", this.alarmThreshold);
         //change tracer for post changes operations
         this.changeTrace = [];
         this.appliedViewState = null;
@@ -51,6 +51,12 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
     _PCMD_ATTRIBUTES : "attributes",
     _PCMD_EXTENSION : "extension",
     _PCMD_REDIRECT : "redirect",
+
+    /*other constants*/
+    _PROP_VIEWSTATE: "javax.faces.ViewState",
+    _PROP_VIEWROOT: "javax.faces.ViewRoot",
+    _PROP_VIEWHEAD: "javax.faces.ViewHead",
+    _PROP_VIEWBODY: "javax.faces.ViewBody",
     /**
      * uses response to start Html element replacement
      *
@@ -66,7 +72,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
     processResponse : function(request, context) {
         try {
             var _Lang = myfaces._impl._util._Lang;
-            var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
+            var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
 
             // TODO:
             // Solution from
@@ -79,7 +85,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
             }
 
             if (!_Lang.exists(request, "responseXML")) {
-                _Impl.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_EMPTY_RESPONSE);
+                _Impl.sendError(request, context, myfaces._impl.core.Impl._ERROR_EMPTY_RESPONSE);
                 return;
             }
 
@@ -88,23 +94,22 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
             //while the rest of the world keeps it as element under the first node
             var parseError
 
-
-            if ((_Lang.exists(xmlContent,"parseError.errorCode") && xmlContent.parseError.errorCode != 0) || _Lang.equalsIgnoreCase(xmlContent.firstChild.tagName, "parsererror")) {
+            if ((_Lang.exists(xmlContent, "parseError.errorCode") && xmlContent.parseError.errorCode != 0) || _Lang.equalsIgnoreCase(xmlContent.firstChild.tagName, "parsererror")) {
                 //TODO improve error name and message sending here
 
-                _Impl.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML);
+                _Impl.sendError(request, context, myfaces._impl.core.Impl._ERROR_MALFORMEDXML);
                 return;
             }
             var partials = xmlContent.childNodes[0];
             if ('undefined' == typeof partials || partials == null) {
-                _Impl.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML);
+                _Impl.sendError(request, context, myfaces._impl.core.Impl._ERROR_MALFORMEDXML);
                 return;
             } else {
                 if (partials.tagName != this._RESPONSE_PARTIAL) {
                     // IE 8 sees XML Header as first sibling ...
                     partials = partials.nextSibling;
                     if ('undefined' == typeof partials || partials == null || partials.tagName != this._RESPONSE_PARTIAL) {
-                        _Impl.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML);
+                        _Impl.sendError(request, context, myfaces._impl.core.Impl._ERROR_MALFORMEDXML);
                         return;
                     }
                 }
@@ -137,16 +142,16 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
                     if (!this.processChanges(request, context, childNode)) return;
                 }
             }
-            
+
             //fixup missing viewStates due to spec deficiencies
             this.fixViewStates();
         } catch (e) {
-            this.m_exception.throwError(request, context, "processResponse", e);
+            this._exception.throwError(request, context, "processResponse", e);
         }
     },
 
     fixViewStates : function() {
-        if(null == this.appliedViewState) {
+        if (null == this.appliedViewState) {
             return;
         }
         /*namespace remapping*/
@@ -161,11 +166,11 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
                 //we first have to fetch the real form element because the fragment
                 //might be detached in some browser implementations
                 var appliedReplacedFrom = document.getElementById(replacedForms[formCnt].id);
-                var viewStateField = myfaces._impl._util._Dom.findFormElement(appliedReplacedFrom, "javax.faces.ViewState");
+                var viewStateField = myfaces._impl._util._Dom.findFormElement(appliedReplacedFrom, this._PROP_VIEWSTATE);
                 if (null == viewStateField) {
                     var element = document.createElement("input");
                     _Dom.setAttribute(element, "type", "hidden");
-                    _Dom.setAttribute(element, "name", "javax.faces.ViewState");
+                    _Dom.setAttribute(element, "name", this._PROP_VIEWSTATE);
                     appliedReplacedFrom.appendChild(element);
 
                     _Dom.setAttribute(element, "value", this.appliedViewState);
@@ -190,9 +195,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
         if ('undefined' == typeof errorMessage || null == errorMessage) {
             errorMessage = "";
         }
-        var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
+        var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
 
-        _Impl.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_SERVER_ERROR, errorName, errorMessage);
+        _Impl.sendError(request, context, myfaces._impl.core.Impl._ERROR_SERVER_ERROR, errorName, errorMessage);
     },
 
     processRedirect : function(request, context, node) {
@@ -201,9 +206,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
          */
         var redirectUrl = node.getAttribute("url");
         if ('undefined' == typeof redirectUrl || null == redirectUrl) {
-            var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
+            var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
 
-            _Impl.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML, "Redirect without url");
+            _Impl.sendError(request, context, myfaces._impl.core.Impl._ERROR_MALFORMEDXML, myfaces._impl.core.Impl._ERROR_MALFORMEDXML, "Redirect without url");
             return false;
         }
         redirectUrl = myfaces._impl._util._Lang.trim(redirectUrl);
@@ -224,9 +229,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
      * @param node the changes node to be processed
      */
     processChanges : function(request, context, node) {
-        
+
         var _Lang = myfaces._impl._util._Lang;
-        
+
         var changes = node.childNodes;
 
         //note we need to trace the changes which could affect our insert update or delete
@@ -251,9 +256,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
                 //you have to insert it here
                 //  this._responseHandler.doExtension(childNode);
             } else {
-                var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
+                var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
 
-                _Impl.sendError(request, context, myfaces._impl.core._jsfImpl._ERROR_MALFORMEDXML);
+                _Impl.sendError(request, context, myfaces._impl.core.Impl._ERROR_MALFORMEDXML);
                 return false;
             }
         }
@@ -266,8 +271,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
     processUpdate : function(request, context, node) {
         /*local namespace remapping*/
         var _Dom = myfaces._impl._util._Dom;
+        var _Lang = myfaces._impl._util._Lang;
 
-        if (node.getAttribute('id') == "javax.faces.ViewState") {
+        if (node.getAttribute('id') == this._PROP_VIEWSTATE) {
             //update the submitting forms viewstate to the new value
             // The source form has to be pulled out of the CURRENT document first because the context object
             // may refer to an invalid document if an update of the entire body has occurred before this point.
@@ -278,40 +284,53 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
             //if only one element is given
             if (null != sourceForm) {
                 /*we check for an element and include a namesearch, but only within the bounds of the committing form*/
-                var element = _Dom.getElementFromForm(request, context, "javax.faces.ViewState", sourceForm, true, true);
+                var element = null;
+                try {
+                    element = _Dom.getElementFromForm(this._PROP_VIEWSTATE, sourceForm, true, true);
+                } catch (e) {
+                    //in case of an error here we try an early recovery but throw an error to our error handler
+                    _Lang.throwNewError(request, context, "_AjaxResponse", "processUpdate('javax.faces.ViewState')", e);
+                }
+
                 if (null == element) {//no element found we have to append a hidden field
                     element = document.createElement("input");
                     _Dom.setAttribute(element, "type", "hidden");
-                    _Dom.setAttribute(element, "name", "javax.faces.ViewState");
+                    _Dom.setAttribute(element, "name", this._PROP_VIEWSTATE);
                     sourceForm.appendChild(element);
                 }
                 //viewstate cannot have split cdata blocks so we can skip the costlier operation
 
                 _Dom.setAttribute(element, "value", viewStateValue);
             }
+            //note due to a missing spec we have to apply the viewstate as well
+            //to any form which might be rerendered within the render cycle
+            //hence we store the viewstate element for later refererence
+            //to fix up all elements effected by the cycle
             this.appliedViewState = viewStateValue;
-        } else {
+        }
+        else
+        {
             // response may contain several blocks
             var cDataBlock = myfaces._impl._util._Dom.concatCDATABlocks(node);
 
             switch (node.getAttribute('id')) {
-                case "javax.faces.ViewRoot":
+                case this._PROP_VIEWROOT:
                     this._replaceBody(request, context, cDataBlock);
 
                     break;
-                case "javax.faces.ViewHead":
+                case this._PROP_VIEWHEAD:
                     //we cannot replace the head, almost no browser allows this, some of them throw errors
                     //others simply ignore it or replace it and destroy the dom that way!
                     throw new Error("Head cannot be replaced, due to browser deficiencies!");
 
                     break;
-                case "javax.faces.ViewBody":
+                case this._PROP_VIEWBODY:
                     //we assume the cdata block is our body including the tag
                     this._replaceBody(request, context, cDataBlock);
                     break;
 
                 default:
-                   var resultNode = this._replaceElement(request, context, node.getAttribute('id'), cDataBlock);
+                    var resultNode = this._replaceElement(request, context, node.getAttribute('id'), cDataBlock);
                     if ('undefined' != typeof resultNode && null != resultNode) {
                         this.changeTrace.push(resultNode);
                     }
@@ -358,7 +377,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
             var value = parser.tagAttributes[key];
             _Dom.setAttribute(newBody, key, value);
         }
-    },
+    }
+    ,
 
     /**
      * Helper method to avoid duplicate code
@@ -370,12 +390,13 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
     _replaceElement : function(request, context, oldElement, newData) {
         return this.replaceHtmlItem(request, context,
                 oldElement, newData, this.m_htmlFormElement);
-    },
+    }
+    ,
 
 
     /**
      * Replaces HTML elements through others and handle errors if the occur in the replacement part
-     * 
+     *
      * @param {Object} request (xhrRequest)
      * @param {Object} context (Map)
      * @param {Object} itemIdToReplace (String|Node) - ID of the element to replace
@@ -384,11 +405,11 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
      */
     replaceHtmlItem : function(request, context, itemIdToReplace, markup, form) {
         try {
-
+            var _Lang = myfaces._impl._util._Lang;
             // (itemIdToReplace instanceof Node) is NOT compatible with IE8
-            var item = (typeof itemIdToReplace == "object") ? itemIdToReplace :
-                    myfaces._impl._util._Dom.getElementFromForm(request, context, itemIdToReplace, form);
-            if('undefined' == typeof item || null == item)  {
+            var item = (!_Lang.isString(itemIdToReplace)) ? itemIdToReplace :
+                    myfaces._impl._util._Dom.getElementFromForm(itemIdToReplace, form);
+            if ('undefined' == typeof item || null == item) {
                 throw Error("myfaces._impl.xhrCore._AjaxResponse.prototype.replaceHtmlItem: item could not be found");
             }
             return myfaces._impl._util._Dom.outerHTML(item, markup);
@@ -397,7 +418,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
             myfaces._impl._util._Lang.throwNewError(request, context, "Utils", "replaceHTMLItem", e);
         }
         return null;
-    },
+    }
+    ,
 
     /*insert, three attributes can be present
      * id = insert id
@@ -413,16 +435,15 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
         /*remapping global namespaces for speed and readability reasons*/
         var _Lang = myfaces._impl._util._Lang;
         var _Dom = myfaces._impl._util._Dom;
-        var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
-        
-        
+        var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
+
         var insertId = node.getAttribute('id');
         var beforeId = node.getAttribute('before');
         var afterId = node.getAttribute('after');
 
         var insertSet = 'undefined' != typeof insertId && null != insertId && _Lang.trim(insertId) != "";
         var beforeSet = 'undefined' != typeof beforeId && null != beforeId && _Lang.trim(beforeId) != "";
-        var afterSet = 'undefined' != typeof afterId && null != afterId &&_Lang.trim(afterId) != "";
+        var afterSet = 'undefined' != typeof afterId && null != afterId && _Lang.trim(afterId) != "";
 
         if (!insertSet) {
             _Impl.sendError(request, context, _Impl._ERROR_MALFORMEDXML, _Impl._ERROR_MALFORMEDXML, "Error in PPR Insert, id must be present");
@@ -439,7 +460,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
         var cDataBlock = _Dom.concatCDATABlocks(node);
         var replacementFragment;
         if (beforeSet) {
-            beforeId =_Lang.trim(beforeId);
+            beforeId = _Lang.trim(beforeId);
             var beforeNode = document.getElementById(beforeId);
             if ('undefined' == typeof beforeNode || null == beforeNode) {
                 _Impl.sendError(request, context, _Impl._ERROR_MALFORMEDXML, _Impl._ERROR_MALFORMEDXML, "Error in PPR Insert, before  node of id " + beforeId + " does not exist in document");
@@ -463,7 +484,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
             }
 
         } else {
-            afterId =_Lang.trim(afterId);
+            afterId = _Lang.trim(afterId);
             var afterNode = document.getElementById(afterId);
             if ('undefined' == typeof afterNode || null == afterNode) {
                 _Impl.sendError(request, context, _Impl._ERROR_MALFORMEDXML, _Impl._ERROR_MALFORMEDXML, "Error in PPR Insert, after  node of id " + after + " does not exist in document");
@@ -483,10 +504,11 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
 
         }
         return true;
-    },
+    }
+    ,
 
     processDelete : function(request, context, node) {
-        var _Impl =  myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
+        var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
         var _Dom = myfaces._impl._util._Dom;
 
         var deleteId = node.getAttribute('id');
@@ -496,9 +518,11 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
             return false;
         }
 
-        _Dom.deleteItem(request, context, deleteId, "", "");
+        _Dom.deleteItem(deleteId);
+
         return true;
-    },
+    }
+    ,
 
     processAttributes : function(request, context, node) {
         //we now route into our attributes function to bypass
@@ -508,7 +532,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
         //myfaces._impl._util._Dom.setAttribute(domNode, attribute, value;
 
         var _Dom = myfaces._impl._util._Dom;
-        var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
+        var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
 
         //<attributes id="id of element"> <attribute name="attribute name" value="attribute value" />* </attributes>
         var elementId = node.getAttribute('id');
@@ -539,15 +563,15 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
             }
 
             switch (elementId) {
-                case "javax.faces.ViewRoot":
+                case this._PROP_VIEWROOT:
                     throw new Error("Changing of viewRoot attributes is not supported");
                     break;
 
-                 case "javax.faces.ViewHead":
+                case this._PROP_VIEWHEAD:
                     throw new Error("Changing of head attributes is not supported");
                     break;
-               
-                case "javax.faces.ViewBody":
+
+                case this._PROP_VIEWBODY:
                     var element = document.getElementsByTagName("body")[0];
                     _Dom.setAttribute(element, attributeName, attributeValue);
                     break;
@@ -561,4 +585,5 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse",Ob
         return true;
     }
 
-});
+})
+        ;
