@@ -36,7 +36,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._ListenerQueue", my
      */
     enqueue : function(/*function*/listener) {
         this._assertListener(listener);
-        this._callSuper("enqueue");
+        this._callSuper("enqueue", listener);
     },
 
     /**
