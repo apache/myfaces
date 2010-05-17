@@ -86,7 +86,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
         var _Lang = myfaces._impl._util._Lang;
         var _Impl = myfaces._impl.core.Impl;
         var _Dom = myfaces._impl._util._Dom;
-        
+
         var nodeFilter = function(curNode) {
             //TODO bomb out if the element is not one of the input types
             //((elementTagName == "input" || elementTagName == "textarea" || elementTagName == "select") &&
@@ -118,35 +118,35 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
      * @param {} partialIds -
      * @param {} stringBuffer -
      */
-    /* addNodes : function(node, insideSubmittedPart,
-     partialIds, stringBuffer) {
-     if (node != null && node.childNodes != null) {
-     var nLen = node.childNodes.length;
-     for (var i = 0; i < nLen; i++) {
-     var child = node.childNodes[i];
-     var id = child.id;
-     var elementName = child.name;
-     if (child.nodeType == 1) {
-     var isPartialSubmitContainer = ((id != null)
-     && myfaces._impl._util._Lang.arrayContains(partialIds, id));
-     if (insideSubmittedPart
-     || isPartialSubmitContainer
-     || (elementName != null
-     && elementName == myfaces._impl.core.Impl._PROP_VIEWSTATE)) {
-     // node required for PPS
-     this.addField(child, stringBuffer);
-     if (insideSubmittedPart || isPartialSubmitContainer) {
-     // check for further children
-     this.addNodes(child, true, partialIds, stringBuffer);
-     }
-     } else {
-     // check for further children
-     this.addNodes(child, false, partialIds, stringBuffer);
-     }
-     }
-     }
-     }
-     }, */
+    /*addNodes : function(node, insideSubmittedPart,
+                        partialIds, stringBuffer) {
+        if (node != null && node.childNodes != null) {
+            var nLen = node.childNodes.length;
+            for (var i = 0; i < nLen; i++) {
+                var child = node.childNodes[i];
+                var id = child.id;
+                var elementName = child.name;
+                if (child.nodeType == 1) {
+                    var isPartialSubmitContainer = ((id != null)
+                            && myfaces._impl._util._Lang.arrayContains(partialIds, id));
+                    if (insideSubmittedPart
+                            || isPartialSubmitContainer
+                            || (elementName != null
+                            && elementName == myfaces._impl.core.Impl._PROP_VIEWSTATE)) {
+                        // node required for PPS
+                        this.addField(child, stringBuffer);
+                        if (insideSubmittedPart || isPartialSubmitContainer) {
+                            // check for further children
+                            this.addNodes(child, true, partialIds, stringBuffer);
+                        }
+                    } else {
+                        // check for further children
+                        this.addNodes(child, false, partialIds, stringBuffer);
+                    }
+                }
+            }
+        }
+    },*/
 
     /**
      * add a single field to stringbuffer for param submission
@@ -154,7 +154,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
      * @param {} strBuf -
      */
     encodeElement : function(element, strBuf) {
-        var elementName = (null != element.name || 'undefined' != typeof element.name) ? element.name: element.id;
+        var elementName = (null != element.name || 'undefined' != typeof element.name) ? element.name : element.id;
         var elementTagName = element.tagName.toLowerCase();
         var elementType = element.type;
         if (elementType != null) {

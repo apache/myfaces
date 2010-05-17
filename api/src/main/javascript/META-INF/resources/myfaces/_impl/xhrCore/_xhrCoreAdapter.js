@@ -23,7 +23,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Ajax"
     /**
      * a singleton queue
      */
-    _xhrQueue: myfaces._impl.xhrCore._RQInstance,
+    _queue: myfaces._impl.xhrCore._RQInstance,
     _exception: new myfaces._impl.xhrCore._Exception("myfaces._impl.xhrCore._AjaxRequest", "ERROR"),
 
     /**
@@ -35,8 +35,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Ajax"
      * @param {Map} passThroughValues values to be passed through
      **/
     xhrQueuedPost : function(source, sourceForm, context, passThroughValues) {
-        this._xhrQueue.enqueue(
-                new myfaces._impl.xhrCore._AjaxRequest(source, sourceForm, context, passThroughValues,this._xhrQueue));
+        this._queue.enqueue(
+                new myfaces._impl.xhrCore._AjaxRequest(source, sourceForm, context, passThroughValues,this._queue));
     },
     /*
     _stdErrorHandler: function(request, context,sourceClass, func, exception) {
@@ -55,6 +55,6 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Ajax"
      * @param {XmlHttpRequest} context - the ajax context
      */
     response : function(request, context) {
-        this._xhrQueue._curReq.response.processResponse(request, context);
+        this._queue._curReq.response.processResponse(request, context);
     }
 });

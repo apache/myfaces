@@ -533,7 +533,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     findFormElement : function(form, nameOrIdenitifier) {
         var eLen = form.elements.length;
         //TODO add iterator handlers here for browsers which allow dom filters and iterators
-        var _RT = myfaces._impl._util._Runtime;
+        var _RT = myfaces._impl.core._Runtime;
 
         for (var e = 0; e < eLen; e++) {
             var elem = form.elements[e];
