@@ -55,7 +55,7 @@ if ('undefined' == typeof jsf || null == jsf) {
      * javax.faces.application.Application.getProjectStage()
      */
     jsf.getProjectStage = function() {
-        var impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
+        var impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
         return impl.getProjectStage();
     };
 
@@ -69,7 +69,7 @@ if ('undefined' == typeof jsf || null == jsf) {
      */
     jsf.getViewState = function(formElement) {
         /*we are not allowed to add the impl on a global scope so we have to inline the code*/
-        var impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
+        var impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
         return impl.getViewState(formElement);
     };
 }
@@ -104,17 +104,17 @@ if ('undefined' == typeof jsf.ajax || null == jsf.ajax) {
 		options = {};
 	}
         /*we are not allowed to add the impl on a global scope so we have to inline the code*/
-        var impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
+        var impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
         return impl.request(element, event, options);
     };
 
     jsf.ajax.addOnError = function(/*function*/errorListener) {
-        var impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
+        var impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
         return impl.addOnError(errorListener);
     }
 
     jsf.ajax.addOnEvent = function(/*function*/eventListener) {
-        var impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
+        var impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
         return impl.addOnEvent(eventListener);
     }
 
@@ -124,7 +124,7 @@ if ('undefined' == typeof jsf.ajax || null == jsf.ajax) {
      * @param context the ajax context!
      */
     jsf.ajax.response = function(/*xhr request object*/request, context) {
-        var impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
+        var impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
         return impl.response(request, context);
     };
 }
@@ -143,7 +143,7 @@ if ('undefined' == typeof jsf.util || null == jsf.util) {
      *
      */
     jsf.util.chain = function(source, event) {
-        var impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core._jsfImpl);
+        var impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
         return impl.chain.apply(jsf.ajax._impl, arguments);
     }
 }
