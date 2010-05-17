@@ -19,6 +19,9 @@
 package javax.faces.validator;
 
 import java.beans.FeatureDescriptor;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -282,17 +285,52 @@ public class BeanValidator implements Validator, PartialStateHolder
                 clazz = clazz.trim();
                 if (!clazz.equals(""))
                 {
+                    Class<?> theClass = null;
+                    ClassLoader cl = null;
+                    if (System.getSecurityManager() != null) 
+                    {
+                        try 
+                        {
+                            cl = AccessController.doPrivileged(new PrivilegedExceptionAction<ClassLoader>()
+                                    {
+                                        public ClassLoader run() throws PrivilegedActionException
+                                        {
+                                            return Thread.currentThread().getContextClassLoader();
+                                        }
+                                    });
+                        }
+                        catch (PrivilegedActionException pae)
+                        {
+                            throw new FacesException(pae);
+                        }
+                    }
+                    else
+                    {
+                        cl = Thread.currentThread().getContextClassLoader();
+                    }
+                    
                     try
-                    {
-                        final Class<?> theClass = Class.forName(clazz);
-                        validationGroupsList.add(theClass);
+                    {                        
+                        // Try WebApp ClassLoader first
+                        theClass = Class.forName(clazz,false,cl);
                     }
-                    catch (ClassNotFoundException e)
+                    catch (ClassNotFoundException ignore)
                     {
-                        throw new RuntimeException("Could not load validation group", e);
+                        try
+                        {
+                            // fallback: Try ClassLoader for BeanValidator (i.e. the myfaces.jar lib)
+                            theClass = Class.forName(clazz,false, BeanValidator.class.getClassLoader());
+                        }
+                        catch (ClassNotFoundException e)
+                        {
+                            throw new RuntimeException("Could not load validation group", e);
+                        }                        
                     }
+                    // the class was found
+                    validationGroupsList.add(theClass);
                 }
             }
+                    
             this.validationGroupsArray = validationGroupsList.toArray(new Class[validationGroupsList.size()]);
         }
     }
