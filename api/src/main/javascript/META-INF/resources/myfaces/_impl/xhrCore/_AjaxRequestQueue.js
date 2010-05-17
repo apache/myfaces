@@ -23,30 +23,6 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequestQueue
 
     constructor_: function(){
         this._callSuper("constructor");
-
-        var _this = this;
-
-        var _handleCallback = this.handleCallback;
-        //we have to scope this because the xhr request will change the
-        //callback scope to window from outside, hence we have to enforce a scope here
-        this.handleCallback = myfaces._impl._util._Lang.hitch(_this, _handleCallback);
-    },
-
-    /**
-     *
-     * provides api callback
-     *
-     * we have to hitch this function since
-     * the xhr request changes scopes
-     * in the asynchronous case, the callback always
-     * has to reference this
-     */
-    handleCallback : function() {
-
-        if (this._curReq != null) {
-            this._curReq.requestCallback();
-            //this.processQueue();
-        }
     },
 
     /**
@@ -118,8 +94,3 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequestQueue
     }
 });
 
-//TODO replace this with a singleton hooked to the direct xhr object
-//instead of one hooked to the qeue
-if (myfaces._impl.core._Runtime.reserveNamespace("myfaces._impl.xhrCore._RQInstance")) {
-    myfaces._impl.xhrCore._RQInstance = new myfaces._impl.xhrCore._AjaxRequestQueue();
-}

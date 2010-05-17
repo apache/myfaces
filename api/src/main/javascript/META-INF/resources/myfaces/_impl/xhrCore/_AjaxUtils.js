@@ -23,10 +23,10 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
      * Constructor
      * @param {String} alarmThreshold - Error Level
      */
-    constructor_ : function(alarmThreshold) {
-        // Exception Objekt
-        this.alarmThreshold = alarmThreshold;
-        this._exception = new myfaces._impl.xhrCore._Exception("myfaces._impl.xhrCore._AjaxUtils", this.alarmThreshold);
+    constructor_ : function(onException, onWarning) {
+
+        this._onException = onException;
+        this._onWarning = onWarning;
     },
 
     /**
@@ -41,8 +41,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
                                        parentItem, partialIds) {
         try {
             if (parentItem == null) {
-                this._exception.throwWarning(request, context, "encodeSubmittableFields",
-                        "Html-Component is not nested in a Form-Tag");
+                this._onWarning(request, context,"myfaces._impl.xhrCore._AjaxUtils" ,"encodeSubmittableFields "+"Html-Component is not nested in a Form-Tag");
                 return null;
             }
 
@@ -69,7 +68,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
 
             return strBuf.join("");
         } catch (e) {
-            this._exception.throwError(request, context, "encodeSubmittableFields", e);
+            this._onException(request, context,"myfaces._impl.xhrCore._AjaxUtils" ,"encodeSubmittableFields", e);
         }
     },
 
@@ -119,34 +118,34 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
      * @param {} stringBuffer -
      */
     /*addNodes : function(node, insideSubmittedPart,
-                        partialIds, stringBuffer) {
-        if (node != null && node.childNodes != null) {
-            var nLen = node.childNodes.length;
-            for (var i = 0; i < nLen; i++) {
-                var child = node.childNodes[i];
-                var id = child.id;
-                var elementName = child.name;
-                if (child.nodeType == 1) {
-                    var isPartialSubmitContainer = ((id != null)
-                            && myfaces._impl._util._Lang.arrayContains(partialIds, id));
-                    if (insideSubmittedPart
-                            || isPartialSubmitContainer
-                            || (elementName != null
-                            && elementName == myfaces._impl.core.Impl._PROP_VIEWSTATE)) {
-                        // node required for PPS
-                        this.addField(child, stringBuffer);
-                        if (insideSubmittedPart || isPartialSubmitContainer) {
-                            // check for further children
-                            this.addNodes(child, true, partialIds, stringBuffer);
-                        }
-                    } else {
-                        // check for further children
-                        this.addNodes(child, false, partialIds, stringBuffer);
-                    }
-                }
-            }
-        }
-    },*/
+     partialIds, stringBuffer) {
+     if (node != null && node.childNodes != null) {
+     var nLen = node.childNodes.length;
+     for (var i = 0; i < nLen; i++) {
+     var child = node.childNodes[i];
+     var id = child.id;
+     var elementName = child.name;
+     if (child.nodeType == 1) {
+     var isPartialSubmitContainer = ((id != null)
+     && myfaces._impl._util._Lang.arrayContains(partialIds, id));
+     if (insideSubmittedPart
+     || isPartialSubmitContainer
+     || (elementName != null
+     && elementName == myfaces._impl.core.Impl._PROP_VIEWSTATE)) {
+     // node required for PPS
+     this.addField(child, stringBuffer);
+     if (insideSubmittedPart || isPartialSubmitContainer) {
+     // check for further children
+     this.addNodes(child, true, partialIds, stringBuffer);
+     }
+     } else {
+     // check for further children
+     this.addNodes(child, false, partialIds, stringBuffer);
+     }
+     }
+     }
+     }
+     },*/
 
     /**
      * add a single field to stringbuffer for param submission

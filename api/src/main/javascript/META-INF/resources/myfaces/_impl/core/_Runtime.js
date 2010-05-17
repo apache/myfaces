@@ -489,9 +489,9 @@ if ('undefined' == typeof  myfaces._impl.core._Runtime || myfaces._impl.core._Ru
         }
 
         //we now map the function map in
-        if ('undefined' != typeof prototypeFunctions  && null != prototypeFunctions) {
+        if ('undefined' != typeof prototypeFunctions && null != prototypeFunctions) {
             for (var key in prototypeFunctions) {
-                if( key != "_callSuper") {
+                if (key != "_callSuper") {
                     newClass.prototype[key] = prototypeFunctions[key];
                 }
             }
@@ -503,7 +503,7 @@ if ('undefined' == typeof  myfaces._impl.core._Runtime || myfaces._impl.core._Ru
         }
         return newClass;
     };
-    
+
     /**
      * determines if the embedded scripts have to be evaled manually
      * @return true if a browser combination is given which has to

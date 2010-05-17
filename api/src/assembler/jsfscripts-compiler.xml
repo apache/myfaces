@@ -12,13 +12,11 @@
             <script type = "text/javascript" src = "./myfaces/_impl/_util/_ListenerQueue.js"></script>
             <script type = "text/javascript" src = "./myfaces/_impl/_util/_Dom.js"></script>
             <script type = "text/javascript" src = "./myfaces/_impl/_util/_HtmlStripper.js"></script>
-
-            <script type = "text/javascript" src = "./myfaces/_impl/xhrCore/_Exception.js"></script>
             <script type = "text/javascript" src = "./myfaces/_impl/xhrCore/_AjaxUtils.js"></script>
             <script type = "text/javascript" src = "./myfaces/_impl/xhrCore/_AjaxRequestQueue.js"></script>
             <script type = "text/javascript" src = "./myfaces/_impl/xhrCore/_AjaxRequest.js"></script>
             <script type = "text/javascript" src = "./myfaces/_impl/xhrCore/_AjaxResponse.js"></script>
-            <script type = "text/javascript" src = "./myfaces/_impl/xhrCore/_xhrCoreAdapter.js"></script>
+            <script type = "text/javascript" src = "./myfaces/_impl/xhrCore/_Transport.js"></script>
             <script type = "text/javascript" src = "./myfaces/_impl/core/Impl.js"></script>
             <script type = "text/javascript" src = "./myfaces/api/jsf.js"></script>
         -->
@@ -32,12 +30,11 @@
                 <include>**/_impl/_util/_ListenerQueue.js</include>
                 <include>**/_impl/_util/_Dom.js</include>
                 <include>**/_impl/_util/_HtmlStripper.js</include>
-                <include>**/_impl/xhrCore/_Exception.js</include>
                 <include>**/_impl/xhrCore/_AjaxUtils.js</include>
                 <include>**/_impl/xhrCore/_AjaxRequestQueue.js</include>
                 <include>**/_impl/xhrCore/_AjaxRequest.js</include>
                 <include>**/_impl/xhrCore/_AjaxResponse.js</include>
-                <include>**/_impl/xhrCore/_xhrCoreAdapter.js</include>
+                <include>**/_impl/xhrCore/_Transports.js</include>
                 <include>**/_impl/core/Impl.js</include>
                 <include>**/api/jsf.js</include>
             </includes>

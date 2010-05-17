@@ -78,7 +78,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Lang", Ob
      *
      * @param source
      * @param destination
-     * @param strongCompare
      */
     equalsIgnoreCase: function(source, destination) {
         //either both are not set or null
@@ -387,24 +386,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Lang", Ob
     },
 
     /**
-     * [STATIC]
-     * static method used by static methods that throw errors
-     */
-    throwNewError : function(request, context, sourceClass, func, exception) {
-        var newException = new myfaces._impl.xhrCore._Exception(request, context, sourceClass, "ERROR");
-        newException.throwError(request, context, func, exception);
-    },
-
-    /**
-     * [STATIC]
-     * static method used by static methods that throw warnings
-     */
-    throwNewWarning: function(request, context, sourceClass, func, message) {
-        var newException = new myfaces._impl.xhrCore._Exception(request, context, sourceClass, "WARNING");
-        newException.throwWarning(request, context, func, message);
-    },
-
-    /**
      * onload wrapper for chaining the onload cleanly
      * @param func the function which should be added to the load
      * chain (note we cannot rely on return values here, hence jsf.util.chain will fail)
@@ -461,70 +442,118 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Lang", Ob
     /**
      * attaches a standard iterator if
      * the collection does not have one already
-     * 
+     *
      * @param inColl
      */
-  /*  attachIterators : function (inColl ) {
-        var _coll = inColl;
+    /*  attachIterators : function (inColl ) {
+     var _coll = inColl;
 
-        if(_coll instanceof Array) {
-            if(!_coll.each) {
-                _coll.each = function(closure) {
-                    for(var cnt = 0; cnt < _coll.length; cnt++) {
-                        closure(_coll[cnt]);
-                    }
-                }
-            }
-            if(!_coll.filter) {
-                _coll.filter = function(closure) {
-                    var retVal = [];
-                    for(var cnt = 0; cnt < _coll.length; cnt++) {
-                        var elem = closure(_coll[cnt]);
-                        if(closure(elem)) {
-                            retVal.push(elem)
-                        }
-                    }
-                }
-            }
+     if(_coll instanceof Array) {
+     if(!_coll.each) {
+     _coll.each = function(closure) {
+     for(var cnt = 0; cnt < _coll.length; cnt++) {
+     closure(_coll[cnt]);
+     }
+     }
+     }
+     if(!_coll.filter) {
+     _coll.filter = function(closure) {
+     var retVal = [];
+     for(var cnt = 0; cnt < _coll.length; cnt++) {
+     var elem = closure(_coll[cnt]);
+     if(closure(elem)) {
+     retVal.push(elem)
+     }
+     }
+     }
+     }
 
-        } else {
-            if(!_coll.each) {
-                _coll.each = function(closure) {
-                    for(var key in _coll.length) {
-                        closure(key, _coll[key]);
-                    }
-                }
-            }
-            if(!_coll.filter) {
-                _coll.filter = function(closure) {
-                    var retVal = [];
-                    for(var key in _coll.length) {
-                        var elem = closure(_coll[key]);
-                        if(closure(key, elem)) {
-                            retVal.push(elem)
-                        }
-                    }
-                }
-            }
+     } else {
+     if(!_coll.each) {
+     _coll.each = function(closure) {
+     for(var key in _coll.length) {
+     closure(key, _coll[key]);
+     }
+     }
+     }
+     if(!_coll.filter) {
+     _coll.filter = function(closure) {
+     var retVal = [];
+     for(var key in _coll.length) {
+     var elem = closure(_coll[key]);
+     if(closure(key, elem)) {
+     retVal.push(elem)
+     }
+     }
+     }
+     }
 
-        }
-    },  */
+     }
+     },  */
 
     /**
-     * helper to automatically apply a delivered arguments map
+     * helper to automatically apply a delivered arguments map or array
      * to its destination which has a field "_"<key>
      *
      * @param destination the destination object
-     * @param args the arguments array
+     * @param args the arguments array or map
      * @param argNames the argument names to be transferred
      */
     applyArguments: function(destination, args, argNames) {
-        for(var cnt = 0; cnt < args.length ; cnt++) {
-            if('undefined' != typeof destination["_"+argNames[cnt]]) {
-                destination["_"+argNames[cnt]] = args[cnt];
+        if (argNames) {
+            for (var cnt = 0; cnt < args.length; cnt++) {
+                if ('undefined' != typeof destination["_" + argNames[cnt]]) {
+                    destination["_" + argNames[cnt]] = args[cnt];
+                }
+            }
+        } else {
+            for (var key in args) {
+                if ('undefined' != typeof destination["_" +key]) {
+                    destination["_" + key] = args[key];
+                }
             }
         }
     },
+    /**
+     * creates a standardized error message which can be reused by the system
+     *
+     * @param sourceClass the source class issuing the exception
+     * @param func the function issuing the exception
+     * @param error the error object itself (optional)
+     */
+    createErrorMessage: function(sourceClass, func, error) {
+        var retVal = [];
+
+        retVal.push(this.keyValToStr("Affected Class: ", sourceClass));
+        retVal.push(this.keyValToStr("Affected Method: ", func));
+
+        if (error) {
+            retVal.push(this.keyValToStr("Error name: ", error.name ? error.name : "undefined"));
+            retVal.push(this.keyValToStr("Error message: ", error.message ? error.message : "undefined"));
+            retVal.push(this.keyValToStr("Error description: ", error.description ? error.description : "undefined"));
+            retVal.push(this.keyValToStr("Error number: ", 'undefined' != typeof error.number ? error.number : "undefined"));
+            retVal.push(this.keyValToStr("Error line number: ", 'undefined' != typeof error.lineNumber ? error.lineNumber : "undefined"));
+        }
+        return retVal.join("");
+    },
+
+    /**
+     * transforms a key value pair into a string
+     * @param key the key
+     * @param val the value
+     * @param delimiter the delimiter
+     */
+    keyValToStr: function(key, val, delimiter) {
+        var retVal = [];
+        retVal.push(key);
+        retVal.push(val);
+        if ('undefined' == typeof delimiter) {
+            delimiter = "\n";
+        }
+        retVal.push(delimiter);
+        return retVal.join("");
+    },
+
 
     logLog: function(/*varargs*/) {
         var argumentStr = this.objToArray(arguments).join(" ");

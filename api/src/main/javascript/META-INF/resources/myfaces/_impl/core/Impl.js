@@ -15,7 +15,7 @@
 myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Object, {
 
     //third option myfaces._impl.xhrCoreAjax which will be the new core impl for now
-    _transport : new (myfaces._impl.core._Runtime.getGlobalConfig("transport", myfaces._impl.xhrCore._Ajax))(),
+    _transport : new (myfaces._impl.core._Runtime.getGlobalConfig("transport", myfaces._impl.xhrCore._Transports))(),
 
     /**
      * external event listener queue!

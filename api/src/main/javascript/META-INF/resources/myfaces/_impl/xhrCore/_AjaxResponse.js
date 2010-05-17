@@ -21,17 +21,7 @@
 myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", Object, {
 
 
-    /**
-     * Constructor
-     * @param {String} alarmThreshold
-     */
-    constructor_: function(alarmThreshold) {
-        this.alarmThreshold = alarmThreshold;
-        this._exception = new myfaces._impl.xhrCore._Exception("myfaces._impl.xhrCore._AjaxResponse", this.alarmThreshold);
-        //change tracer for post changes operations
-        this.changeTrace = [];
-        this.appliedViewState = null;
-    },
+
 
     /*partial response types*/
     _RESPONSE_PARTIAL : "partial-response",
@@ -57,6 +47,19 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
     _PROP_VIEWROOT: "javax.faces.ViewRoot",
     _PROP_VIEWHEAD: "javax.faces.ViewHead",
     _PROP_VIEWBODY: "javax.faces.ViewBody",
+
+    /**
+     * Constructor
+     * @param {String} alarmThreshold
+     */
+    constructor_: function(onException, onWarning) {
+
+        this.changeTrace = [];
+        this._onException = onException;
+        this._onWarning = onWarning;
+
+        this.appliedViewState = null;
+    },
     /**
      * uses response to start Html element replacement
      *
@@ -146,7 +149,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
             //fixup missing viewStates due to spec deficiencies
             this.fixViewStates();
         } catch (e) {
-            this._exception.throwError(request, context, "processResponse", e);
+            this._onException(request, context, "myfaces._impl.xhrCore._AjaxResponse", "processResponse", e);
         }
     },
 
@@ -289,7 +292,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
                     element = _Dom.getElementFromForm(this._PROP_VIEWSTATE, sourceForm, true, true);
                 } catch (e) {
                     //in case of an error here we try an early recovery but throw an error to our error handler
-                    _Lang.throwNewError(request, context, "_AjaxResponse", "processUpdate('javax.faces.ViewState')", e);
+                    this._onException(request, context, "_AjaxResponse", "processUpdate('javax.faces.ViewState')", e);
                 }
 
                 if (null == element) {//no element found we have to append a hidden field
@@ -410,12 +413,12 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
             var item = (!_Lang.isString(itemIdToReplace)) ? itemIdToReplace :
                     myfaces._impl._util._Dom.getElementFromForm(itemIdToReplace, form);
             if ('undefined' == typeof item || null == item) {
-                throw Error("myfaces._impl.xhrCore._AjaxResponse.prototype.replaceHtmlItem: item could not be found");
+                throw Error("myfaces._impl.xhrCore._AjaxResponse.replaceHtmlItem: item with identifier "+itemIdToReplace.toString()+" could not be found");
             }
             return myfaces._impl._util._Dom.outerHTML(item, markup);
 
         } catch (e) {
-            myfaces._impl._util._Lang.throwNewError(request, context, "Utils", "replaceHTMLItem", e);
+            this._onException(request, context, "myfaces._impl.xhrCore._AjaxResponse", "replaceHTMLItem", e);
         }
         return null;
     }

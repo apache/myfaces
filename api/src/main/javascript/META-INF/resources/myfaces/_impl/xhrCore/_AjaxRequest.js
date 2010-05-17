@@ -13,22 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: Ganesh Jung (latest modification by $Author: ganeshpuri $)
- * Version: $Revision: 1.4 $ $Date: 2009/05/31 09:16:44 $
  *
  */
+
 /**
- * an implementation of a queued
- * asynchronoues request 
+ * An implementation of an xhr request object
+ * with partial page submit functionality, and jsf
+ * ppr request and timeout handling capabilities
+ *
+ * TODO there is still some jsf related logic in here
+ * which has to be moved one level up in the call chain,
+ * to get a clear separation of concerns
+ *
+ * Author: Ganesh Jung (latest modification by $Author: ganeshpuri $)
+ * Version: $Revision: 1.4 $ $Date: 2009/05/31 09:16:44 $
  */
 myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", Object, {
+
+    /*all instance vars can be set from the outside
+     * via a parameter map*/
     _contentType: "application/x-www-form-urlencoded",
     _source: null,
     _xhr: null,
-    _partialIdsArray: null,
-    _queueSize: -1,
+    _encoding:null ,
+
     _context:null,
-    response: null,
     _ajaxUtil: null,
     _sourceForm: null,
     _passThrough: null,
@@ -36,59 +45,54 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", Ob
     _exception: null,
     _timeout: null,
     _delay:null,
+
+
     _partialIdsArray : null,
-    _alarmThreshold : "ERROR",
-    _xhrQueue: null,
+    _ajaxType: "POST",
 
 
-    _PAR_ERRORLEVEL:"errorlevel",
-    _PAR_QUEUESIZE:"queuesize",
-    _PAR_PPS:"pps",
-    _PAR_TIMEOUT:"timeout",
-    _PAR_DELAY:"delay",
+    //callbacks for onDone... done issues
+    //onSuccess everything has passed through
+    //onError server side error
 
-    _HEAD_POST: "POST",
-    _HEAD_TYPE:"Content-Type",
+    //onException exception thrown by the client
+    //onWarning warning issued by the client
+    _onDone : null,
+    _onSuccess: null,
+    _onError: null,
+    _onException: null,
+    _onWarning: null,
+
+    /*response object which is exposed to the queue*/
+    _response: null,
+
+
+    /*
+     * constants used internally 
+     */
+    _CONTENT_TYPE:"Content-Type",
     _HEAD_FACES_REQ:"Faces-Request",
-
     _VAL_AJAX: "partial/ajax",
 
     /**
      * Constructor
-     * @param {Node} source - Item that triggered the request
-     * @param {Node} sourceForm (form) - Form containing source
-     * @param {Object} context (Map) - AJAX context
-     * @param {Object} passThrough (Map) - parameters to pass through to the server (execute/render)
+     * @arguments  an arguments map which an override any of the given protected
+     * instance variables, by a simple name value pair combination
+     *
      */
-    constructor_: function(source, sourceForm, context, passThrough, queue) {
-        this._exception = new myfaces._impl.xhrCore._Exception("myfaces._impl.xhrCore._AjaxRequest", this._alarmThreshold);
+    constructor_: function(arguments) {
         try {
 
             /*namespace remapping for readability*/
-            var _Runtime = myfaces._impl.core._Runtime;
             var _Lang = myfaces._impl._util._Lang;
-            var _getConfig = _Runtime.getLocalOrGlobalConfig;
+            //we fetch in the standard arguments
+            _Lang.applyArguments(this, arguments);
 
-            _Lang.applyArguments(this, arguments, ["source", "sourceForm", "context", "passThrough", "xhrQueue"]);
-
-            //this._source = source;
-            // myfaces parameters
-            //this._partialIdsArray = null;
-            //this._queueSize = -1;
-
-            this._applyConfig("_alarmThreshold", this._PAR_ERRORLEVEL);
-            this._applyConfig("_queueSize", this._PAR_QUEUESIZE);
-            this._applyConfig("_timeout", this._PAR_TIMEOUT);
-            this._applyConfig("_delay", this._PAR_DELAY);
-
-            if (_getConfig(context, this._PAR_PPS, null) != null
-                    && _Lang.exists(passThrough, myfaces._impl.core.Impl._PROP_EXECUTE)
-                    && passThrough[myfaces._impl.core.Impl._PROP_EXECUTE].length > 0) {
-                this._partialIdsArray = passThrough[myfaces._impl.core.Impl._PROP_EXECUTE].split(" ");
+            //if our response handler is not set
+            if (!this._response) {
+                this._response = new myfaces._impl.xhrCore._AjaxResponse(this._onException, this._onWarning);
             }
-
-            this.response = new myfaces._impl.xhrCore._AjaxResponse(this._alarmThreshold);
-            this._ajaxUtil = new myfaces._impl.xhrCore._AjaxUtils(this._alarmThreshold);
+            this._ajaxUtil = new myfaces._impl.xhrCore._AjaxUtils(this._onException, this._onWarning);
 
             this._requestParameters = this.getViewState();
 
@@ -97,18 +101,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", Ob
                         "&" + encodeURIComponent(key) +
                         "=" + encodeURIComponent(this._passThrough[key]);
             }
-
         } catch (e) {
             //_onError
-            this._exception.throwError(null, context, "Ctor", e);
-        }
-    },
-
-    _applyConfig: function(destParm, srcParm) {
-        var _Runtime = myfaces._impl.core._Runtime;
-        var _getConfig = _Runtime.getLocalOrGlobalConfig;
-        if (_getConfig(this._context, srcParm, null) != null) {
-            this[destParm] = _getConfig(this._context, srcParm, null);
+            this._onException(null, this._context, "myfaces._impl.xhrCore._AjaxRequest", "constructor", e);
         }
     },
 
@@ -116,36 +111,44 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", Ob
      * Sends an Ajax request
      */
     send : function() {
+        var _Lang = myfaces._impl._util._Lang;
         try {
 
             this._xhr = myfaces._impl.core._Runtime.getXHRObject();
 
-            this._xhr.open(this._HEAD_POST, this._sourceForm.action, true);
-            this._xhr.setRequestHeader(this._HEAD_TYPE, this._contentType);
+            this._xhr.open(this._ajaxType, this._sourceForm.action, true);
+
+            var contentType = this._contentType;
+            if (this._encoding) {
+                contentType = contentType + "; charset:" + this._encoding;
+            }
+
+            this._xhr.setRequestHeader(this._CONTENT_TYPE, this._contentType);
             this._xhr.setRequestHeader(this._HEAD_FACES_REQ, this._VAL_AJAX);
 
-            this._xhr.onreadystatechange = this._xhrQueue.handleCallback;
+            this._xhr.onreadystatechange = _Lang.hitch(this, this.requestCallback);
             var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
             _Impl.sendEvent(this._xhr, this._context, myfaces._impl.core.Impl._AJAX_STAGE_BEGIN);
             this._xhr.send(this._requestParameters);
-            if ('undefined' != typeof this._timeout) {
-                var timeoutId = window.setTimeout(
-                        function() {
-                            try {
-                                if (this._xhrQueue._curReq._xhr.readyState > 0
-                                        && this._xhrQueue._curReq._xhr.readyState < 4) {
-                                    this._xhrQueue._curReq._xhr.abort();
-                                }
-                            } catch (e) {
-                                // don't care about exceptions here
-                            }
-                        }, this._timeout);
+            if (this._timeout && this._onTimeout) {
+                var timeoutId = window.setTimeout(this._onTimeout, this._timeout);
             }
         } catch (e) {
             //_onError//_onError
-            this._exception.throwError(this._xhr, this._context, "send", e);
+            this._onException(this._xhr, this._context, "myfaces._impl.xhrCore._AjaxRequest", "send", e);
         }
     },
+
+    abort: function() {
+        try {
+            if (this._xhr.readyState > 0
+                    && this._xhr.readyState < 4) {
+                this._xhr.abort();
+            }
+        } catch (e) {
+        }
+    },
+
 
     /**
      * Callback method to process the Ajax response
@@ -154,40 +157,18 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", Ob
     requestCallback : function() {
         var READY_STATE_DONE = 4;
         try {
-            //local namespace remapping
             var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
 
             if (this._xhr.readyState == READY_STATE_DONE) {
-                //_onDone
-                _Impl.sendEvent(this._xhr, this._context, myfaces._impl.core.Impl._AJAX_STAGE_COMPLETE);
-
+                this._onDone(this._xhr, this._context);
                 if (this._xhr.status >= 200 && this._xhr.status < 300) {
-                     //_onSuccess
-                    _Impl.response(this._xhr, this._context);
-                    _Impl.sendEvent(this._xhr, this._context, myfaces._impl.core.Impl._AJAX_STAGE_SUCCESS);
-                    this._xhrQueue.processQueue();
+                    this._onSuccess(this._xhr, this._context);
                 } else {
-                    //_onError
-                    var errorText;
-                    try {
-                        errorText = "Request failed";
-                        if (this._xhr.status) {
-                            errorText += "with status " + this._xhr.status;
-                            if (this._xhr.statusText) {
-                                errorText += " and reason " + this._xhr.statusText;
-                            }
-                        }
-                    } catch (e) {
-                        errorText = "Request failed with unknown status";
-                    }
-                    //_onError
-                    _Impl.sendError(this._xhr, this._context, myfaces._impl.core.Impl._ERROR_HTTPERROR,
-                            myfaces._impl.core.Impl._ERROR_HTTPERROR, errorText);
+                    this._onError(this._xhr, this._context);
                 }
             }
         } catch (e) {
-            //_onError
-            this._exception.throwError(this._xhr, this._context, "requestCallback", e);
+            this._onException(this._xhr, this._context, "myfaces._impl.xhrCore._AjaxRequest", "requestCallback", e);
         }
     },
 
