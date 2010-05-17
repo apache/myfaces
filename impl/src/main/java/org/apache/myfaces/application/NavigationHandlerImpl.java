@@ -43,6 +43,7 @@ import javax.faces.context.PartialViewContext;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.shared_impl.util.HashMapUtils;
+import org.apache.myfaces.shared_impl.util.StringUtils;
 
 /**
  * @author Thomas Spiegl (latest modification by $Author$)
@@ -212,7 +213,6 @@ public class NavigationHandlerImpl
      * 
      * TODO: cache results?
      */
-    
     private NavigationCase getOutcomeNavigationCase (FacesContext facesContext, String fromAction, String outcome)
     {
         String implicitViewId = null;
@@ -234,14 +234,12 @@ public class NavigationHandlerImpl
             viewIdToTest = viewIdToTest.substring (0, index);
             
             // If queryString contains "faces-redirect=true", set isRedirect to true.
-            
             if (queryString.indexOf ("faces-redirect=true") != -1)
             {
                 isRedirect = true;
             }
             
             // If queryString contains "includeViewParams=true", set includeViewParams to true.
-            
             if (queryString.indexOf ("includeViewParams=true") != -1)
             {
                 includeViewParams = true;
@@ -300,22 +298,45 @@ public class NavigationHandlerImpl
         
         if (implicitViewId != null)
         {
+            // Append all params from the queryString
+            // (excluding faces-redirect and includeViewParams)
             Map<String, List<String>> params = new HashMap<String, List<String>>();
-            
-            // Append queryString to implicitViewId if it exists.
-            
-//            if (queryString != null)
-//            {
-//                implicitViewId += "?" + queryString;
-//            }
+            if (queryString != null && !"".equals(queryString))
+            {
+                String[] splitQueryParams = queryString.split("&(amp;)?"); // "&" or "&amp;"
+                for (String queryParam : splitQueryParams)
+                {
+                    String[] splitParam = StringUtils.splitShortString(queryParam, '=');
+                    if (splitParam.length == 2)
+                    {
+                        // valid parameter - add it to params
+                        if ("includeViewParams".equals(splitParam[0])
+                                || "faces-redirect".equals(splitParam[0]))
+                        {
+                            // ignore includeViewParams and faces-redirect
+                            continue;
+                        }
+                        List<String> paramValues = params.get(splitParam[0]);
+                        if (paramValues == null)
+                        {
+                            // no value for the given parameter yet
+                            paramValues = new ArrayList<String>();
+                            params.put(splitParam[0], paramValues);
+                        }
+                        paramValues.add(splitParam[1]);
+                    }
+                    else
+                    {
+                        // invalid parameter
+                        throw new FacesException("Invalid parameter \"" + 
+                                queryParam + "\" in outcome " + outcome);
+                    }
+                }
+            }
             
             // Finally, create the NavigationCase.
-            
-            // FIXME: the spec doesn't really say how the redirect parameters are supposed to be
-            // populated.  Assuming for now that they should stay empty...
-            
-            result = new NavigationCase (viewId, fromAction, outcome, null, implicitViewId, params,
-                isRedirect, includeViewParams);
+            result = new NavigationCase (viewId, fromAction, outcome, null, 
+                    implicitViewId, params, isRedirect, includeViewParams);
         }
         
         return result;
