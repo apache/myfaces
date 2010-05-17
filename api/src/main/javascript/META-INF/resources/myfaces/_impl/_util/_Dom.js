@@ -618,8 +618,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                 domNode.setAttribute(attribute, value);
             }
         }
-    }
-    ,
+    },
 
     /**
      * gets an element from a form with its id -> sometimes two elements have got

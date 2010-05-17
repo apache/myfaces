@@ -44,8 +44,19 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
 
     /**
      * a singleton queue
+     * note the structure of our inheritance
+     * is that that _queue is attached to prototype
+     * and hence the pointer to the request qeue
+     * is shared over all instances
+     *
+     * if you need to have it per instance for complex objects
+     * you have to initialize in the constructor
+     *
+     * (This is the same limitation dojo class inheritance
+     * where our inheritance pattern is derived from has)
      */
     _queue: new myfaces._impl.xhrCore._AjaxRequestQueue(),
+
     _threshold: "ERROR",
 
     _Lang :  myfaces._impl._util._Lang,
@@ -60,7 +71,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
      * @param {Object} passThroughValues (Map) values to be passed through
      **/
     xhrQueuedPost : function(source, sourceForm, context, passThroughValues) {
-        this._queue.enqueue(
+        this._queue.queueRequest(
                 new myfaces._impl.xhrCore._AjaxRequest(this._getArguments(source, sourceForm, context, passThroughValues)));
     },
 
@@ -150,9 +161,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
      * @param context the context holding all values for further processing
      */
     _stdOnDone: function(request, context) {
-        var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
+        this._loadImpl();
 
-        _Impl.sendEvent(request, context, _Impl._AJAX_STAGE_COMPLETE);
+        this._Impl.sendEvent(request, context, this._Impl._AJAX_STAGE_COMPLETE);
     },
 
     /**
@@ -163,10 +174,10 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
      */
     _stdOnSuccess: function(request, context) {
         //_onSuccess
-        var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
+        this._loadImpl();
 
-        _Impl.response(request, context);
-        _Impl.sendEvent(request, context, _Impl._AJAX_STAGE_SUCCESS);
+        this._Impl.response(request, context);
+        this._Impl.sendEvent(request, context, this._Impl._AJAX_STAGE_SUCCESS);
         this._queue.processQueue();
 
     },
@@ -179,8 +190,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
      * @param context the context holding all values for further processing
      */
     _stdOnError: function(request, context) {
-        var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
-        
+        this._loadImpl();
+
         //_onError
         var errorText;
         try {
@@ -195,7 +206,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
             errorText = "Request failed with unknown status";
         }
         //_onError
-        _Impl.sendError(request, context, myfaces._impl.core.Impl._ERROR_HTTPERROR,
+        this._Impl.sendError(request, context, myfaces._impl.core.Impl._ERROR_HTTPERROR,
                 myfaces._impl.core.Impl._ERROR_HTTPERROR, errorText);
     },
 
@@ -226,9 +237,10 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
      * @param exception the embedded exception
      */
     _stdErrorHandler: function(request, context, sourceClass, func, exception) {
-        var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
+        this._loadImpl();
+        
         if (this._threshold == "ERROR") {
-            _Impl.sendError(request, context, _Impl._ERROR_CLIENT_ERROR, exception.name,
+            this._Impl.sendError(request, context, this._Impl._ERROR_CLIENT_ERROR, exception.name,
                     "MyFaces ERROR:" + this._Lang.createErrorMessage(sourceClass, func, exception));
         }
         this._queue.clear();
@@ -247,13 +259,20 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
      * @param exception the embedded exception
      */
     _stdWarningsHandler: function(request, context, sourceClass, func, exception) {
-        var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
+        this._loadImpl();
 
         if (this._threshold == "WARNING" || this._threshold == "ERROR") {
-            _Impl.sendError(request, context, _Impl._ERROR_CLIENT_ERROR, exception.name,
+            this._Impl.sendError(request, context, this._Impl._ERROR_CLIENT_ERROR, exception.name,
                     "MyFaces WARNING:" + this._Lang.createErrorMessage(sourceClass, func, exception));
         }
         this.destroy();
+    },
+
+    _loadImpl: function() {
+        if(!this._Impl) {
+            this._Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
+        }
+        return this._Impl;
     }
 
 });

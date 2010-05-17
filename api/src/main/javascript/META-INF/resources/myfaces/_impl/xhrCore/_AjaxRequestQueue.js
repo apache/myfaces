@@ -19,14 +19,21 @@
  */
 myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequestQueue", myfaces._impl._util._Queue, {
 
+    /**
+     * a pointer towards the currently processed
+     * request in our queue
+     */
     _curReq : null,
 
+    /**
+     * the standard constructur of our class
+     */
     constructor_: function(){
         this._callSuper("constructor");
     },
 
     /**
-     * delay request, then call queueNow
+     * delay request, then call enqueue
      * @param {Object} request (myfaces._impl.xhrCore._AjaxRequest) request to send
      */
     queueRequest : function(request) {
@@ -36,7 +43,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequestQueue
             this.delayTimeoutId = window.setTimeout(
                     _Lang.hitch(this, function() {
                         this.clearDelayTimeout();
-                        this.queueNow(request);
+                        this.enqueue(request);
                     }), request._delay);
         } else {
             this.enqueue(request);
