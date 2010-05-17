@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.ee6;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -44,6 +46,7 @@ import javax.faces.render.FacesBehaviorRenderer;
 import javax.faces.render.FacesRenderer;
 import javax.faces.validator.FacesValidator;
 import javax.faces.webapp.FacesServlet;
+import javax.servlet.Servlet;
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -97,7 +100,11 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
     
     private static final String FACES_CONFIG_RESOURCE = "/WEB-INF/faces-config.xml";
     private static final Logger log = Logger.getLogger(MyFacesContainerInitializer.class.getName());
-    
+    private static final String[] FACES_SERVLET_MAPPINGS = { "/faces/*", "*.jsf", "*.faces" };
+    private static final String FACES_SERVLET_NAME = "FacesServlet";
+    private static final Class<? extends Servlet> FACES_SERVLET_CLASS = FacesServlet.class;
+    private static final Class<?> DELEGATED_FACES_SERVLET_CLASS = DelegatedFacesServlet.class;
+
     public void onStartup(Set<Class<?>> clazzes, ServletContext servletContext) throws ServletException
     {
         if ((clazzes != null && !clazzes.isEmpty()) || isFacesConfigPresent(servletContext))
@@ -107,28 +114,45 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
             for (Map.Entry<String, ? extends ServletRegistration> servletEntry : servlets.entrySet())
             {
                 String className = servletEntry.getValue().getClassName();
-                if (FacesServlet.class.getName().equals(className)
+                if (FACES_SERVLET_CLASS.getName().equals(className)
                         || isDelegatedFacesServlet(className))
                 {
                     // we found a FacesServlet, so we have nothing to do!
                     return;
                 }
             }
-            
+
             // the FacesServlet is not installed yet - install it
-            ServletRegistration.Dynamic servlet = servletContext.addServlet("FacesServlet", FacesServlet.class);
-            servlet.addMapping("/faces/*", "*.jsf", "*.faces");
-            
-            // now we have to set a field in the ServletContext to indicate that we have
-            // added the mapping dynamically, because MyFaces just parsed the web.xml to
-            // find mappings and thus it would abort initializing
-            servletContext.setAttribute(FACES_SERVLET_ADDED_ATTRIBUTE, Boolean.TRUE);
-            
-            // add a log message
-            log.log(Level.INFO, "Added FacesServlet with mappings /faces/*, *.jsf and *.faces");
+            ServletRegistration.Dynamic servlet = servletContext.addServlet(FACES_SERVLET_NAME, FACES_SERVLET_CLASS);
+
+            //try to add typical JSF mappings
+            String[] mappings = FACES_SERVLET_MAPPINGS;
+            Set<String> conflictMappings = servlet.addMapping(mappings);
+            if (conflictMappings != null && !conflictMappings.isEmpty())
+            {
+                //at least one of the attempted mappings is in use, remove and try again
+                Set<String> newMappings = new HashSet<String>(Arrays.asList(mappings));
+                newMappings.removeAll(conflictMappings);
+                mappings = newMappings.toArray(new String[0]);
+                servlet.addMapping(mappings);
+            }
+
+            if (mappings != null && mappings.length > 0)
+            {
+                // at least one mapping was added 
+                // now we have to set a field in the ServletContext to indicate that we have
+                // added the mapping dynamically, because MyFaces just parsed the web.xml to
+                // find mappings and thus it would abort initializing
+                servletContext.setAttribute(FACES_SERVLET_ADDED_ATTRIBUTE, Boolean.TRUE);
+
+                // add a log message
+                log.log(Level.INFO, "Added FacesServlet with mappings="
+                        + Arrays.toString(mappings));
+            }
+
         }
     }
-    
+
     /**
      * Checks if /WEB-INF/faces-config.xml is present.
      * @return
@@ -137,14 +161,29 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
     {
         try
         {
-            return servletContext.getResource(FACES_CONFIG_RESOURCE) != null;
+            if (servletContext.getResource(FACES_CONFIG_RESOURCE) != null)
+                return true;
+
+            // check for alternate faces-config files specified by javax.faces.CONFIG_FILES
+            String configFilesAttrValue = servletContext.getInitParameter(FacesServlet.CONFIG_FILES_ATTR);
+            if (configFilesAttrValue != null)
+            {
+                String[] configFiles = configFilesAttrValue.split(",");
+                for (String file : configFiles)
+                {
+                    if (servletContext.getResource(file.trim()) != null)
+                        return true;
+                }
+            }
+
+            return false;
         }
         catch (Exception e)
         {
             return false;
         }
     }
-    
+
     /**
      * Checks if the class represented by className implements DelegatedFacesServlet.
      * @param className
@@ -152,7 +191,8 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
      */
     private boolean isDelegatedFacesServlet(String className)
     {
-        if (className == null) {
+        if (className == null)
+        {
             // The class name can be null if this is e.g., a JSP mapped to
             // a servlet.
 
@@ -161,12 +201,11 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
         try
         {
             Class<?> clazz = Class.forName(className);
-            return DelegatedFacesServlet.class.isAssignableFrom(clazz);
-        } 
+            return DELEGATED_FACES_SERVLET_CLASS.isAssignableFrom(clazz);
+        }
         catch (ClassNotFoundException cnfe)
         {
             return false;
         }
     }
-
 }
