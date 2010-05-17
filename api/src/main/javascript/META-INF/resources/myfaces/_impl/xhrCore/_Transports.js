@@ -243,7 +243,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
             this._Impl.sendError(request, context, this._Impl._ERROR_CLIENT_ERROR, exception.name,
                     "MyFaces ERROR:" + this._Lang.createErrorMessage(sourceClass, func, exception));
         }
-        this._queue.clear();
+        this._queue.cleanup();
         //we forward the exception, just in case so that the client
         //will receive it in any way
         throw exception;
