@@ -36,7 +36,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._ListenerQueue", my
      */
     enqueue : function(/*function*/listener) {
         this._assertListener(listener);
-        this._inherited();
+        this._callSuper("enqueue");
     },
 
     /**
@@ -46,7 +46,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._ListenerQueue", my
      */
     remove : function(/*function*/listener) {
         this._assertListener(listener);
-        this._inherited();
+        this._callSuper("remove");
     },
 
     /**
