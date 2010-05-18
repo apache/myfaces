@@ -19,8 +19,8 @@
 package org.apache.myfaces.view.facelets.tag.jsf;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +51,7 @@ import javax.faces.view.facelets.TagHandlerDelegate;
 
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
 import org.apache.myfaces.view.facelets.tag.composite.InsertChildrenHandler;
 import org.apache.myfaces.view.facelets.tag.composite.InsertFacetHandler;
@@ -97,7 +98,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
      * <li>If found, {@link #markForDeletion(UIComponent) mark} its children for deletion.</li>
      * <li>If <i>not</i> found, call {@link #createComponent(FaceletContext) createComponent}.
      * <ol>
-     * <li>Only here do we apply {@link ObjectHandler#setAttributes(FaceletContext, Object) attributes}</li>
+     * <li>Only here do we apply {@link TagHandler#setAttributes(FaceletContext, Object) attributes}</li>
      * <li>Set the UIComponent's id</li>
      * <li>Set the RendererType of this instance</li>
      * </ol>
@@ -132,7 +133,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         String id = ctx.generateUniqueId(_delegate.getTagId());
 
         // Cast to use UniqueIdVendor stuff
-        AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+        FaceletCompositionContext mctx = (FaceletCompositionContext) FaceletCompositionContext.getCurrentInstance(ctx);
                 
         // grab our component
         UIComponent c = ComponentSupport.findChildByTagId(parent, id);
@@ -141,7 +142,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         // composite:insertChildren or composite:insertFacet
         boolean componentFoundInserted = false;
 
-        if (c == null && actx.isRefreshingTransientBuild() && UIComponent.isCompositeComponent(parent))
+        if (c == null && mctx.isRefreshingTransientBuild() && UIComponent.isCompositeComponent(parent))
         {
             if (facetName == null)
             {
@@ -215,7 +216,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             }
             else
             {
-                UniqueIdVendor uniqueIdVendor = actx.getUniqueIdVendorFromStack();
+                UniqueIdVendor uniqueIdVendor = mctx.getUniqueIdVendorFromStack();
                 if (uniqueIdVendor == null)
                 {
                     uniqueIdVendor = facesContext.getViewRoot();
@@ -249,7 +250,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
 
         if (c instanceof UniqueIdVendor)
         {
-            actx.pushUniqueIdVendorToStack((UniqueIdVendor)c);
+            mctx.pushUniqueIdVendorToStack((UniqueIdVendor)c);
         }
         // first allow c to get populated
         _delegate.applyNextHandler(ctx, c);
@@ -272,7 +273,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             }
         }
         
-        if (actx.isRefreshingTransientBuild() && 
+        if (mctx.isRefreshingTransientBuild() && 
                 UIComponent.isCompositeComponent(parent))
         {
             // Save the child structure behind this component, so it can be
@@ -312,7 +313,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
 
         if (c instanceof ClientBehaviorHolder && !UIComponent.isCompositeComponent(c))
         {
-            Iterator<AjaxHandler> it = actx.getAjaxHandlers();
+            Iterator<AjaxHandler> it = ((AbstractFaceletContext) ctx).getAjaxHandlers();
             if (it != null)
             {
                 while(it.hasNext())
@@ -326,7 +327,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         {
             // add default validators here, because this feature 
             // is only available in facelets (see MYFACES-2362 for details)
-            addDefaultValidators(facesContext, actx, (EditableValueHolder) c);
+            addDefaultValidators(facesContext, mctx, (EditableValueHolder) c);
         }
         
         _delegate.onComponentPopulated(ctx, c, parent);
@@ -363,12 +364,12 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         
         if (c instanceof UniqueIdVendor)
         {
-            actx.popUniqueIdVendorToStack();
+            mctx.popUniqueIdVendorToStack();
         }
 
         c.popComponentFromEL(facesContext);
         
-        if (actx.isMarkInitialState())
+        if (mctx.isMarkInitialState())
         {
             //Call it only if we are using partial state saving
             c.markInitialState();
@@ -494,10 +495,10 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
      * (e.g. the BeanValidator if it is not a default validator).
      *
      * @param context The FacesContext.
-     * @param actx the AbstractFaceletContext
+     * @param mctx the AbstractFaceletContext
      * @param component The EditableValueHolder to which the validators should be added
      */
-    private void addDefaultValidators(FacesContext context, AbstractFaceletContext actx,
+    private void addDefaultValidators(FacesContext context, FaceletCompositionContext mctx,
                                       EditableValueHolder component)
     {
         Application application = context.getApplication();
@@ -510,7 +511,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             validators.putAll(defaultValidators);
         }
         // add all enclosing validators
-        Iterator<String> enclosingValidatorIds = actx.getEnclosingValidatorIds();
+        Iterator<String> enclosingValidatorIds = mctx.getEnclosingValidatorIds();
         if (enclosingValidatorIds != null && enclosingValidatorIds.hasNext())
         {
             while (enclosingValidatorIds.hasNext())
@@ -557,7 +558,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 
                 if (validator == null)
                 {
-                    if (shouldAddDefaultValidator(validatorId, context, actx, component))
+                    if (shouldAddDefaultValidator(validatorId, context, mctx, component))
                     {
                         if (enclosingValidator != null)
                         {
@@ -591,7 +592,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                     {
                         // no validationGroups available
                         // --> get the validationGroups from the stack
-                        String stackGroup = actx.getFirstValidationGroupFromStack();
+                        String stackGroup = mctx.getFirstValidationGroupFromStack();
                         if (stackGroup != null)
                         {
                             validationGroups = stackGroup;
@@ -614,13 +615,13 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
      *
      * @param validatorId The validatorId.
      * @param context The FacesContext.
-     * @param actx the AbstractFaceletContext
+     * @param mctx the AbstractFaceletContext
      * @param component The EditableValueHolder to which the validator should be added.
      * @return true if the Validator should be added, false otherwise.
      */
     @SuppressWarnings("unchecked")
     private boolean shouldAddDefaultValidator(String validatorId, FacesContext context, 
-                                              AbstractFaceletContext actx,
+                                              FaceletCompositionContext mctx,
                                               EditableValueHolder component)
     {
         // check if the validatorId is on the exclusion list on the component
@@ -639,7 +640,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         }
         
         // check if the validatorId is on the exclusion list on the stack
-        Iterator<String> it = actx.getExcludedValidatorIds();
+        Iterator<String> it = mctx.getExcludedValidatorIds();
         if (it != null)
         {            
             while (it.hasNext())
@@ -664,7 +665,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             if (disabled != null && disabled.toLowerCase().equals("true"))
             {
                 // check if there are any enclosing <f:validateBean> tags with the validatorId of the BeanValidator
-                Iterator<String> itEnclosingIds = actx.getEnclosingValidatorIds();
+                Iterator<String> itEnclosingIds = mctx.getEnclosingValidatorIds();
                 if (itEnclosingIds != null)
                 {
                     while (itEnclosingIds.hasNext())

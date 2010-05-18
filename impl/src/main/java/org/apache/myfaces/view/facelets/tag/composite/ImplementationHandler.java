@@ -36,6 +36,7 @@ import javax.faces.view.facelets.TagHandler;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)
@@ -57,19 +58,20 @@ public class ImplementationHandler extends TagHandler
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {
-        AbstractFaceletContext actx = ((AbstractFaceletContext)ctx); 
-        if (!actx.isBuildingCompositeComponentMetadata())
+        FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(ctx); 
+        if (!FaceletViewDeclarationLanguage.
+                isBuildingCompositeComponentMetadata(ctx.getFacesContext()))
         {
             // If this tag is found in a facelet, the compiler has trimmed all
             // tags outside this one excluding composite:interface, so "parent"
             // is a component used as value for the facet key
             // UIComponent.COMPOSITE_FACET_NAME in a composite component. 
             
-            actx.pushCompositeComponentToStack(parent.getParent());
+            mctx.pushCompositeComponentToStack(parent.getParent());
             
             nextHandler.apply(ctx, parent);
             
-            actx.popCompositeComponentToStack();
+            mctx.popCompositeComponentToStack();
         }
         else
         {

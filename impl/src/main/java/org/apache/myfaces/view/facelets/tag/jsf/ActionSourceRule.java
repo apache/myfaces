@@ -30,6 +30,7 @@ import javax.faces.view.facelets.MetadataTarget;
 import javax.faces.view.facelets.TagAttribute;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.el.LegacyMethodBinding;
 
 /**
@@ -110,7 +111,7 @@ public final class ActionSourceRule extends MetaRule
             // facelets context and thus varibale mapping will work.
             final MethodExpression methodExpressionOneArg = _attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_LISTENER_SIG);
             final MethodExpression methodExpressionZeroArg = _attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_SIG);
-            if (((AbstractFaceletContext)ctx).isUsingPSSOnThisView())
+            if (FaceletCompositionContext.getCurrentInstance(ctx).isUsingPSSOnThisView())
             {
                 ((ActionSource2) instance).addActionListener(
                         new PartialMethodExpressionActionListener(methodExpressionOneArg, methodExpressionZeroArg));

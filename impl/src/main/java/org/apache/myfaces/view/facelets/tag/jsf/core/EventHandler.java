@@ -45,7 +45,7 @@ import javax.faces.view.facelets.TagHandler;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.config.NamedEventManager;
-import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
@@ -86,7 +86,7 @@ public final class EventHandler extends TagHandler {
         {
             return;
         }
-        if (parent instanceof UIViewRoot && ((AbstractFaceletContext)ctx).isRefreshingTransientBuild())
+        if (parent instanceof UIViewRoot && FaceletCompositionContext.getCurrentInstance(ctx).isRefreshingTransientBuild())
         {
             return;
         }

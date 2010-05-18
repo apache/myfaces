@@ -39,7 +39,7 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
-import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
@@ -277,8 +277,9 @@ public final class ForEachHandler extends TagHandler
                 }
             }
         }
-        AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
-        if (actx.isMarkInitialState() && actx.isRefreshTransientBuildOnPSS())
+
+        if (FaceletCompositionContext.getCurrentInstance(ctx).
+                isMarkInitialStateAndIsRefreshTransientBuildOnPSS())
         {
             //Mark the parent component to be saved and restored fully.
             ComponentSupport.markComponentToRestoreFully(ctx.getFacesContext(), parent);

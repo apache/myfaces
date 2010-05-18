@@ -32,6 +32,7 @@ import javax.faces.view.facelets.MetadataTarget;
 import javax.faces.view.facelets.TagAttribute;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 
 /**
  * 
@@ -77,7 +78,7 @@ public final class EditableValueHolderRule extends MetaRule
             // facelets context and thus variable mapping will work.
             final MethodExpression methodExpressionOneArg = attr.getMethodExpression(ctx, null, VALUECHANGE_SIG);
             final MethodExpression methodExpressionZeroArg = attr.getMethodExpression(ctx, null, EMPTY_CLASS_ARRAY);
-            if (((AbstractFaceletContext)ctx).isUsingPSSOnThisView())
+            if (FaceletCompositionContext.getCurrentInstance(ctx).isUsingPSSOnThisView())
             {
                 ((EditableValueHolder) instance).addValueChangeListener(
                         new PartialMethodExpressionValueChangeListener(methodExpressionOneArg, methodExpressionZeroArg));
@@ -101,7 +102,7 @@ public final class EditableValueHolderRule extends MetaRule
 
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
-            if (((AbstractFaceletContext)ctx).isUsingPSSOnThisView())
+            if (FaceletCompositionContext.getCurrentInstance(ctx).isUsingPSSOnThisView())
             {
                 ((EditableValueHolder) instance).addValidator(new PartialMethodExpressionValidator(this.attr
                         .getMethodExpression(ctx, null, VALIDATOR_SIG)));

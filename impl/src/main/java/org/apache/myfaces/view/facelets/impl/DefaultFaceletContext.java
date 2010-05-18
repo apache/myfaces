@@ -39,12 +39,12 @@ import javax.el.VariableMapper;
 import javax.faces.FacesException;
 import javax.faces.application.Resource;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UniqueIdVendor;
 import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.TemplateClient;
 import org.apache.myfaces.view.facelets.el.DefaultVariableMapper;
@@ -62,18 +62,6 @@ import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
  */
 final class DefaultFaceletContext extends AbstractFaceletContext
 {
-    public final static String COMPOSITE_COMPONENT_STACK = "org.apache.myfaces.view.facelets.COMPOSITE_COMPONENT_STACK";
-
-    public final static String UNIQUEID_VENDOR_STACK = "org.apache.myfaces.view.facelets.UNIQUEID_VENDOR_STACK";
-
-    public final static String AJAX_HANDLER_STACK = "org.apache.myfaces.view.facelets.AJAX_HANDLER_STACK";
-    
-    public final static String VALIDATION_GROUPS_STACK = "org.apache.myfaces.view.facelets.VALIDATION_GROUPS_STACK";
-    
-    public final static String EXCLUDED_VALIDATOR_IDS_STACK = "org.apache.myfaces.view.facelets.EXCLUDED_VALIDATOR_IDS_STACK";
-    
-    public final static String ENCLOSING_VALIDATOR_IDS_STACK = "org.apache.myfaces.view.facelets.ENCLOSING_VALIDATOR_IDS_STACK";
-
     private final FacesContext _faces;
 
     private final ELContext _ctx;
@@ -92,37 +80,44 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     private final StringBuilder _uniqueIdBuilder = new StringBuilder(30);
 
     private final List<TemplateManager> _clients;
-    
-    private final boolean _isRefreshingTransientBuild;
-    
-    private final boolean _isMarkInitialState;
-    
+
     private final boolean _isBuildingCompositeComponentMetadata;
     
-    private final boolean _refreshTransientBuildOnPSS;
+    private final FaceletCompositionContext _mctx;
     
-    private final boolean _usingPSSOnThisView;
+    private LinkedList<AjaxHandler> _ajaxHandlerStack;
 
     public DefaultFaceletContext(DefaultFaceletContext ctx,
-            DefaultFacelet facelet)
+            DefaultFacelet facelet, boolean ccWrap)
     {
         _ctx = ctx._ctx;
+        _ids = ctx._ids;
+        _prefixes = ctx._prefixes;
         _clients = ctx._clients;
         _faces = ctx._faces;
         _fnMapper = ctx._fnMapper;
-        _ids = ctx._ids;
-        _prefixes = ctx._prefixes;
         _varMapper = ctx._varMapper;
         _faceletHierarchy = new ArrayList<DefaultFacelet>(ctx._faceletHierarchy
                 .size() + 1);
         _faceletHierarchy.addAll(ctx._faceletHierarchy);
         _faceletHierarchy.add(facelet);
         _facelet = facelet;
-        _isRefreshingTransientBuild = ctx._isRefreshingTransientBuild;
-        _isMarkInitialState = ctx._isMarkInitialState;
         _isBuildingCompositeComponentMetadata = ctx._isBuildingCompositeComponentMetadata;
-        _refreshTransientBuildOnPSS = ctx._refreshTransientBuildOnPSS;
-        _usingPSSOnThisView = ctx._usingPSSOnThisView;
+        _mctx = ctx._mctx;
+        
+        if (ccWrap)
+        {
+            // Each time a composite component is being applied, a new
+            // ajax stack should be created, and f:ajax tags outside the
+            // composite component should be ignored.
+            _ajaxHandlerStack = null;
+        }
+        else
+        {
+            // It is a template include, the current ajax stack should be
+            // preserved.
+            _ajaxHandlerStack = ctx._ajaxHandlerStack;
+        }
 
         //Update FACELET_CONTEXT_KEY on FacesContext attribute map, to 
         //reflect the current facelet context instance
@@ -130,32 +125,25 @@ final class DefaultFaceletContext extends AbstractFaceletContext
                 FaceletContext.FACELET_CONTEXT_KEY, this);
     }
 
-    public DefaultFaceletContext(FacesContext faces, DefaultFacelet facelet)
+    public DefaultFaceletContext(FacesContext faces, DefaultFacelet facelet, FaceletCompositionContext mctx)
     {
         _ctx = faces.getELContext();
         _ids = new HashMap<String, Integer>();
         _prefixes = new HashMap<Integer, Integer>();
         _clients = new ArrayList<TemplateManager>(5);
         _faces = faces;
-        _faceletHierarchy = new ArrayList<DefaultFacelet>(1);
-        _faceletHierarchy.add(facelet);
-        _facelet = facelet;
+        _fnMapper = _ctx.getFunctionMapper();
         _varMapper = _ctx.getVariableMapper();
         if (_varMapper == null)
         {
             _varMapper = new DefaultVariableMapper();
-        }
-        _fnMapper = _ctx.getFunctionMapper();
-        _isRefreshingTransientBuild = FaceletViewDeclarationLanguage.
-            isRefreshingTransientBuild(faces);
-        _isMarkInitialState = FaceletViewDeclarationLanguage.
-            isMarkInitialState(faces);
+        }        
+        _faceletHierarchy = new ArrayList<DefaultFacelet>(1);
+        _faceletHierarchy.add(facelet);
+        _facelet = facelet;
         _isBuildingCompositeComponentMetadata = FaceletViewDeclarationLanguage.
             isBuildingCompositeComponentMetadata(faces);
-        _refreshTransientBuildOnPSS = FaceletViewDeclarationLanguage.
-            isRefreshTransientBuildOnPSS(faces);
-        _usingPSSOnThisView = FaceletViewDeclarationLanguage.
-            isUsingPSSOnThisView(faces);
+        _mctx = mctx;
 
         //Set FACELET_CONTEXT_KEY on FacesContext attribute map, to 
         //reflect the current facelet context instance
@@ -450,7 +438,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
                 boolean found = false;
                 found = this._target
                         .apply(new DefaultFaceletContext(
-                                (DefaultFaceletContext) ctx, this._owner),
+                                (DefaultFaceletContext) ctx, this._owner, false),
                                 parent, name);
                 this._names.remove(testName);
                 return found;
@@ -494,347 +482,38 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     public void applyCompositeComponent(UIComponent parent, Resource resource)
             throws IOException, FaceletException, FacesException, ELException
     {
-        Map<Object, Object> attributes = getFacesContext().getAttributes();
-
-        //
-        LinkedList<AjaxHandler> componentStack = (LinkedList<AjaxHandler>) attributes
-                .remove(AJAX_HANDLER_STACK);
         _facelet.applyCompositeComponent(this, parent, resource);
-        attributes.put(AJAX_HANDLER_STACK, componentStack);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public UIComponent getCompositeComponentFromStack()
-    {
-        Map<Object, Object> attributes = getFacesContext().getAttributes();
-
-        LinkedList<UIComponent> componentStack = (LinkedList<UIComponent>) attributes
-                .get(COMPOSITE_COMPONENT_STACK);
-        if (componentStack != null && !componentStack.isEmpty())
-        {
-            return componentStack.peek();
-        }
-        return null;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public void pushCompositeComponentToStack(UIComponent parent)
-    {
-        Map<Object, Object> attributes = getFacesContext().getAttributes();
-
-        LinkedList<UIComponent> componentStack = (LinkedList<UIComponent>) attributes
-                .get(COMPOSITE_COMPONENT_STACK);
-        if (componentStack == null)
-        {
-            componentStack = new LinkedList<UIComponent>();
-            attributes.put(COMPOSITE_COMPONENT_STACK, componentStack);
-        }
-
-        componentStack.addFirst(parent);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public void popCompositeComponentToStack()
-    {
-        Map<Object, Object> contextAttributes = getFacesContext()
-                .getAttributes();
-
-        LinkedList<UIComponent> componentStack = (LinkedList<UIComponent>) contextAttributes
-                .get(COMPOSITE_COMPONENT_STACK);
-        if (componentStack != null && !componentStack.isEmpty())
-        {
-            componentStack.removeFirst();
-        }
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public UniqueIdVendor getUniqueIdVendorFromStack()
-    {
-        Map<Object, Object> attributes = getFacesContext().getAttributes();
-
-        LinkedList<UniqueIdVendor> componentStack = (LinkedList<UniqueIdVendor>) attributes
-                .get(UNIQUEID_VENDOR_STACK);
-        if (componentStack != null && !componentStack.isEmpty())
-        {
-            return componentStack.peek();
-        }
-        return null;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public void popUniqueIdVendorToStack()
-    {
-        Map<Object, Object> contextAttributes = getFacesContext()
-                .getAttributes();
-
-        LinkedList<UniqueIdVendor> uniqueIdVendorStack = (LinkedList<UniqueIdVendor>) contextAttributes
-                .get(UNIQUEID_VENDOR_STACK);
-        if (uniqueIdVendorStack != null && !uniqueIdVendorStack.isEmpty())
-        {
-            uniqueIdVendorStack.removeFirst();
-        }
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public void pushUniqueIdVendorToStack(UniqueIdVendor parent)
-    {
-        Map<Object, Object> attributes = getFacesContext().getAttributes();
-
-        LinkedList<UniqueIdVendor> componentStack = (LinkedList<UniqueIdVendor>) attributes
-                .get(UNIQUEID_VENDOR_STACK);
-        if (componentStack == null)
-        {
-            componentStack = new LinkedList<UniqueIdVendor>();
-            attributes.put(UNIQUEID_VENDOR_STACK, componentStack);
-        }
-
-        componentStack.addFirst(parent);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
     public Iterator<AjaxHandler> getAjaxHandlers()
     {
-        Map<Object, Object> attributes = getFacesContext().getAttributes();
-
-        LinkedList<AjaxHandler> componentStack = (LinkedList<AjaxHandler>) attributes
-                .get(AJAX_HANDLER_STACK);
-        if (componentStack != null && !componentStack.isEmpty())
+        if (_ajaxHandlerStack != null && !_ajaxHandlerStack.isEmpty())
         {
-            return componentStack.iterator();
+            return _ajaxHandlerStack.iterator();
         }
         return null;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void popAjaxHandlerToStack()
     {
-        Map<Object, Object> contextAttributes = getFacesContext()
-                .getAttributes();
-
-        LinkedList<AjaxHandler> uniqueIdVendorStack = (LinkedList<AjaxHandler>) contextAttributes
-                .get(AJAX_HANDLER_STACK);
-        if (uniqueIdVendorStack != null && !uniqueIdVendorStack.isEmpty())
+        if (_ajaxHandlerStack != null && !_ajaxHandlerStack.isEmpty())
         {
-            uniqueIdVendorStack.removeFirst();
+            _ajaxHandlerStack.removeFirst();
         }
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void pushAjaxHandlerToStack(
             AjaxHandler parent)
     {
-        Map<Object, Object> attributes = getFacesContext().getAttributes();
-
-        LinkedList<AjaxHandler> componentStack = (LinkedList<AjaxHandler>) attributes
-                .get(AJAX_HANDLER_STACK);
-        if (componentStack == null)
+        if (_ajaxHandlerStack == null)
         {
-            componentStack = new LinkedList<AjaxHandler>();
-            attributes.put(AJAX_HANDLER_STACK, componentStack);
+            _ajaxHandlerStack = new LinkedList<AjaxHandler>();
         }
 
-        componentStack.addFirst(parent);
-    }
-    
-    /**
-     * Gets the top of the validationGroups stack.
-     * @return
-     * @since 2.0
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public String getFirstValidationGroupFromStack()
-    {
-        Map<Object, Object> attributes = getFacesContext().getAttributes();
-        
-        LinkedList<String> validationGroupsStack 
-                = (LinkedList<String>) attributes.get(VALIDATION_GROUPS_STACK);
-        if (validationGroupsStack != null && !validationGroupsStack.isEmpty())
-        {
-            return validationGroupsStack.getFirst(); // top-of-stack
-        }
-        return null;
-    }
-    
-    /**
-     * Removes top of stack.
-     * @since 2.0
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public void popValidationGroupsToStack()
-    {
-        Map<Object, Object> contextAttributes = getFacesContext().getAttributes();
-        
-        LinkedList<String> validationGroupsStack 
-                = (LinkedList<String>) contextAttributes.get(VALIDATION_GROUPS_STACK);
-        if (validationGroupsStack != null && !validationGroupsStack.isEmpty())
-        {
-            validationGroupsStack.removeFirst();
-        }
-    }
-    
-    /**
-     * Pushes validationGroups to the stack.
-     * @param validationGroups
-     * @since 2.0
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public void pushValidationGroupsToStack(String validationGroups)
-    {
-        Map<Object, Object> attributes = getFacesContext().getAttributes();
-
-        LinkedList<String> validationGroupsStack 
-                = (LinkedList<String>) attributes.get(VALIDATION_GROUPS_STACK);
-        if (validationGroupsStack == null)
-        {
-            validationGroupsStack = new LinkedList<String>();
-            attributes.put(VALIDATION_GROUPS_STACK, validationGroupsStack);
-        }
-
-        validationGroupsStack.addFirst(validationGroups);
-    }
-    
-    /**
-     * Gets all validationIds on the stack.
-     * @return
-     * @since 2.0
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public Iterator<String> getExcludedValidatorIds()
-    {
-        Map<Object, Object> attributes = getFacesContext().getAttributes();
-        
-        LinkedList<String> excludedValidatorIdsStack 
-                = (LinkedList<String>) attributes.get(EXCLUDED_VALIDATOR_IDS_STACK);
-        if (excludedValidatorIdsStack != null && !excludedValidatorIdsStack.isEmpty())
-        {
-            return excludedValidatorIdsStack.iterator();
-        }
-        return null;
-    }
-    
-    /**
-     * Removes top of stack.
-     * @since 2.0
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public void popExcludedValidatorIdToStack()
-    {
-        Map<Object, Object> contextAttributes = getFacesContext().getAttributes();
-        
-        LinkedList<String> excludedValidatorIdsStack 
-                = (LinkedList<String>) contextAttributes.get(EXCLUDED_VALIDATOR_IDS_STACK);
-        if (excludedValidatorIdsStack != null && !excludedValidatorIdsStack.isEmpty())
-        {
-            excludedValidatorIdsStack.removeFirst();
-        }
-    }
-    
-    /**
-     * Pushes validatorId to the stack of excluded validatorIds.
-     * @param validatorId
-     * @since 2.0
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public void pushExcludedValidatorIdToStack(String validatorId)
-    {
-        Map<Object, Object> attributes = getFacesContext().getAttributes();
-
-        LinkedList<String> excludedValidatorIdsStack 
-                = (LinkedList<String>) attributes.get(EXCLUDED_VALIDATOR_IDS_STACK);
-        if (excludedValidatorIdsStack == null)
-        {
-            excludedValidatorIdsStack = new LinkedList<String>();
-            attributes.put(EXCLUDED_VALIDATOR_IDS_STACK, excludedValidatorIdsStack);
-        }
-
-        excludedValidatorIdsStack.addFirst(validatorId);
-    }
-    
-    /**
-     * Gets all validationIds on the stack.
-     * @return
-     * @since 2.0
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public Iterator<String> getEnclosingValidatorIds()
-    {
-        Map<Object, Object> attributes = getFacesContext().getAttributes();
-        
-        LinkedList<String> enclosingValidatorIdsStack 
-                = (LinkedList<String>) attributes.get(ENCLOSING_VALIDATOR_IDS_STACK);
-        if (enclosingValidatorIdsStack != null && !enclosingValidatorIdsStack.isEmpty())
-        {
-            return enclosingValidatorIdsStack.iterator(); 
-        }
-        return null;
-    }
-    
-    /**
-     * Removes top of stack.
-     * @since 2.0
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public void popEnclosingValidatorIdToStack()
-    {
-        Map<Object, Object> contextAttributes = getFacesContext().getAttributes();
-        
-        LinkedList<String> enclosingValidatorIdsStack 
-                = (LinkedList<String>) contextAttributes.get(ENCLOSING_VALIDATOR_IDS_STACK);
-        if (enclosingValidatorIdsStack != null && !enclosingValidatorIdsStack.isEmpty())
-        {
-            enclosingValidatorIdsStack.removeFirst();
-        }
-    }
-    
-    /**
-     * Pushes validatorId to the stack of all enclosing validatorIds.
-     * @param validatorId
-     * @since 2.0
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public void pushEnclosingValidatorIdToStack(String validatorId)
-    {
-        Map<Object, Object> attributes = getFacesContext().getAttributes();
-
-        LinkedList<String> enclosingValidatorIdsStack 
-                = (LinkedList<String>) attributes.get(ENCLOSING_VALIDATOR_IDS_STACK);
-        if (enclosingValidatorIdsStack == null)
-        {
-            enclosingValidatorIdsStack = new LinkedList<String>();
-            attributes.put(ENCLOSING_VALIDATOR_IDS_STACK, enclosingValidatorIdsStack);
-        }
-
-        enclosingValidatorIdsStack.addFirst(validatorId);
-    }
-
-    @Override
-    public boolean isRefreshingTransientBuild()
-    {
-        return _isRefreshingTransientBuild;
-    }
-
-    @Override
-    public boolean isMarkInitialState()
-    {
-        return _isMarkInitialState;
+        _ajaxHandlerStack.addFirst(parent);
     }
 
     @Override
@@ -842,16 +521,9 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     {
         return _isBuildingCompositeComponentMetadata;
     }
-
-    @Override
-    public boolean isRefreshTransientBuildOnPSS()
+    
+    public FaceletCompositionContext getFaceletCompositionContext()
     {
-        return _refreshTransientBuildOnPSS;
-    }
-
-    @Override
-    public boolean isUsingPSSOnThisView()
-    {
-        return _usingPSSOnThisView;
+        return _mctx;
     }
 }

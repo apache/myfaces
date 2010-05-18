@@ -46,6 +46,7 @@ import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.FaceletHandler;
 
 import org.apache.myfaces.view.facelets.Facelet;
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 
@@ -98,29 +99,46 @@ final class DefaultFacelet extends Facelet
     public void apply(FacesContext facesContext, UIComponent parent) throws IOException, FacesException,
             FaceletException, ELException
     {
-        DefaultFaceletContext ctx = new DefaultFaceletContext(facesContext, this);
-        
-        // push the parent as a UniqueIdVendor to the stack here,
-        // if there is no UniqueIdVendor on the stack yet
-        boolean pushedUniqueIdVendor = false;
-        if (parent instanceof UniqueIdVendor && ctx.getUniqueIdVendorFromStack() == null)
+        FaceletCompositionContext myFaceletContext = null;
+        boolean faceletCompositionContextInitialized = false;
+        if ( (myFaceletContext = FaceletCompositionContext.getCurrentInstance(facesContext)) == null)
         {
-            ctx.pushUniqueIdVendorToStack((UniqueIdVendor) parent);
-            pushedUniqueIdVendor = true;
+            myFaceletContext = new FaceletCompositionContextImpl(_factory, facesContext);
+            myFaceletContext.init(facesContext);
+            faceletCompositionContextInitialized = true;
         }
+        DefaultFaceletContext ctx = new DefaultFaceletContext(facesContext, this, myFaceletContext);
         
-        this.refresh(parent);
-        ComponentSupport.markForDeletion(parent);
-        _root.apply(ctx, parent);
-        ComponentSupport.finalizeForDeletion(parent);
-        this.markApplied(parent);
-        
-        // remove the UniqueIdVendor from the stack again
-        if (pushedUniqueIdVendor)
+        try
         {
-            ctx.popUniqueIdVendorToStack();
+            // push the parent as a UniqueIdVendor to the stack here,
+            // if there is no UniqueIdVendor on the stack yet
+            boolean pushedUniqueIdVendor = false;
+            if (parent instanceof UniqueIdVendor && ctx.getFaceletCompositionContext().getUniqueIdVendorFromStack() == null)
+            {
+                ctx.getFaceletCompositionContext().pushUniqueIdVendorToStack((UniqueIdVendor) parent);
+                pushedUniqueIdVendor = true;
+            }
+            
+            this.refresh(parent);
+            ComponentSupport.markForDeletion(parent);
+            _root.apply(ctx, parent);
+            ComponentSupport.finalizeForDeletion(parent);
+            this.markApplied(parent);
+            
+            // remove the UniqueIdVendor from the stack again
+            if (pushedUniqueIdVendor)
+            {
+                ctx.getFaceletCompositionContext().popUniqueIdVendorToStack();
+            }
         }
-
+        finally
+        {
+            if (faceletCompositionContextInitialized)
+            {
+                myFaceletContext.release(facesContext);
+            }
+        }
     }
 
     private final void refresh(UIComponent c)
@@ -283,7 +301,7 @@ final class DefaultFacelet extends Facelet
             FaceletException, ELException
     {
         this.refresh(parent);
-        _root.apply(new DefaultFaceletContext(ctx, this), parent);
+        _root.apply(new DefaultFaceletContext(ctx, this, false), parent);
         this.markApplied(parent);
     }
 
@@ -340,8 +358,30 @@ final class DefaultFacelet extends Facelet
         // It works, but the Resource API provides getInputStream() for that. But the default
         // implementation wraps everything that could contain ValueExpression and decode so
         // we can't use it here.
+        //DefaultFacelet f = (DefaultFacelet) _factory.getFacelet(resource.getURL());
+        //f.apply(ctx.getFacesContext(), parent);
         DefaultFacelet f = (DefaultFacelet) _factory.getFacelet(resource.getURL());
-        f.apply(ctx.getFacesContext(), parent);
+        
+        // push the parent as a UniqueIdVendor to the stack here,
+        // if there is no UniqueIdVendor on the stack yet
+        boolean pushedUniqueIdVendor = false;
+        if (parent instanceof UniqueIdVendor && ctx.getFaceletCompositionContext().getUniqueIdVendorFromStack() == null)
+        {
+            ctx.getFaceletCompositionContext().pushUniqueIdVendorToStack((UniqueIdVendor) parent);
+            pushedUniqueIdVendor = true;
+        }
+        
+        this.refresh(parent);
+        ComponentSupport.markForDeletion(parent);
+        f._root.apply(new DefaultFaceletContext(ctx, f, true), parent);
+        ComponentSupport.finalizeForDeletion(parent);
+        this.markApplied(parent);
+        
+        // remove the UniqueIdVendor from the stack again
+        if (pushedUniqueIdVendor)
+        {
+            ctx.getFaceletCompositionContext().popUniqueIdVendorToStack();
+        }
     }
 
     private static class ApplyToken implements Externalizable

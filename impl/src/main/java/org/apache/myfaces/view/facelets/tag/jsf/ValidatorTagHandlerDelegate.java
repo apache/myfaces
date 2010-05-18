@@ -38,6 +38,7 @@ import javax.faces.view.facelets.TagHandlerDelegate;
 import javax.faces.view.facelets.ValidatorHandler;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.compiler.FaceletsCompilerUtils;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
@@ -110,7 +111,7 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
             // So I use the same way as f:ajax for this problem. -=Jakob Korherr=-
             
             // we need methods from AbstractFaceletContext
-            AbstractFaceletContext abstractCtx = (AbstractFaceletContext) ctx;
+            FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(ctx);
              
             String validatorId = _delegate.getValidatorConfig().getValidatorId();
             
@@ -121,12 +122,12 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
                 boolean validatorIdAvailable = validatorId != null && !"".equals(validatorId);
                 if (validatorIdAvailable)
                 {
-                    abstractCtx.pushExcludedValidatorIdToStack(validatorId);
+                    mctx.pushExcludedValidatorIdToStack(validatorId);
                 }
                 _delegate.getValidatorConfig().getNextHandler().apply(ctx, parent);
                 if (validatorIdAvailable)
                 {
-                    abstractCtx.popExcludedValidatorIdToStack();
+                    mctx.popExcludedValidatorIdToStack();
                 }
             }
             else
@@ -139,14 +140,14 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
                         && !groups.matches(BeanValidator.EMPTY_VALIDATION_GROUPS_PATTERN);
                 if (groupsAvailable)
                 {
-                    abstractCtx.pushValidationGroupsToStack(groups);
+                    mctx.pushValidationGroupsToStack(groups);
                 }
-                abstractCtx.pushEnclosingValidatorIdToStack(validatorId);
+                mctx.pushEnclosingValidatorIdToStack(validatorId);
                 _delegate.getValidatorConfig().getNextHandler().apply(ctx, parent);
-                abstractCtx.popEnclosingValidatorIdToStack();
+                mctx.popEnclosingValidatorIdToStack();
                 if (groupsAvailable)
                 {
-                    abstractCtx.popValidationGroupsToStack();
+                    mctx.popValidationGroupsToStack();
                 }
             }
         }

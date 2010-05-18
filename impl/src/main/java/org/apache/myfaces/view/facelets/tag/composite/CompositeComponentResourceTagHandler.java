@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.el.ValueExpression;
 import javax.el.VariableMapper;
@@ -35,7 +33,6 @@ import javax.faces.component.ActionSource;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIPanel;
-import javax.faces.component.UIViewRoot;
 import javax.faces.component.UniqueIdVendor;
 import javax.faces.component.ValueHolder;
 import javax.faces.context.FacesContext;
@@ -49,7 +46,7 @@ import javax.faces.view.facelets.Metadata;
 import javax.faces.view.facelets.TagException;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
-import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
 import org.apache.myfaces.view.facelets.tag.jsf.ActionSourceRule;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentBuilderHandler;
@@ -160,7 +157,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
             
             vdl.retargetMethodExpressions(facesContext, c);
             
-            if ( ((AbstractFaceletContext)ctx).isMarkInitialState())
+            if ( FaceletCompositionContext.getCurrentInstance(ctx).isMarkInitialState())
             {
                 // Call it only if we are using partial state saving
                 c.markInitialState();
@@ -173,7 +170,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
     protected void applyCompositeComponentFacelet(FaceletContext faceletContext, UIComponent compositeComponentBase) 
         throws IOException
     {
-        AbstractFaceletContext actx = (AbstractFaceletContext) faceletContext;
+        FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(faceletContext);
         UIPanel compositeFacetPanel = (UIPanel) compositeComponentBase.getFacets().get(UIComponent.COMPOSITE_FACET_NAME);
         if (compositeFacetPanel == null)
         {
@@ -183,7 +180,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
             
             // Set an id to the created facet component, to prevent id generation and make
             // partial state saving work without problem.
-            UniqueIdVendor uniqueIdVendor = actx.getUniqueIdVendorFromStack();
+            UniqueIdVendor uniqueIdVendor = mctx.getUniqueIdVendorFromStack();
             if (uniqueIdVendor == null)
             {
                 uniqueIdVendor = ComponentSupport.getViewRoot(faceletContext, compositeComponentBase);
@@ -202,7 +199,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         // has already been called, but this point is before vdl.retargetAttachedObjects,
         // so we can't but this on ComponentTagHandlerDelegate, if we want this to be
         // applied correctly.
-        Iterator<AjaxHandler> it = actx.getAjaxHandlers();
+        Iterator<AjaxHandler> it = ((AbstractFaceletContext) faceletContext).getAjaxHandlers();
         if (it != null)
         {
             while(it.hasNext())
@@ -217,7 +214,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         {
             faceletContext.setVariableMapper(new VariableMapperWrapper(orig));
             
-            actx.applyCompositeComponent(compositeFacetPanel, _resource);
+            ((AbstractFaceletContext)faceletContext).applyCompositeComponent(compositeFacetPanel, _resource);
         }
         finally
         {

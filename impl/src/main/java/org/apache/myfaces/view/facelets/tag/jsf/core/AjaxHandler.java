@@ -45,6 +45,7 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
 import org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
@@ -258,7 +259,7 @@ public class AjaxHandler extends TagHandler implements
             
             parent.getChildren().add(outputScript);
             
-            if (((AbstractFaceletContext)ctx).isMarkInitialState())
+            if (FaceletCompositionContext.getCurrentInstance(ctx).isMarkInitialState())
             {
                 //Call it only if we are using partial state saving
                 outputScript.markInitialState();

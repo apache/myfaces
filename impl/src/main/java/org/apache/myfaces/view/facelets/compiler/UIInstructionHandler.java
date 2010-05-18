@@ -31,6 +31,7 @@ import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.el.ELText;
 import org.apache.myfaces.view.facelets.tag.composite.InsertChildrenHandler;
 import org.apache.myfaces.view.facelets.tag.composite.InsertFacetHandler;
@@ -91,8 +92,9 @@ final class UIInstructionHandler extends AbstractUIHandler
             // grab our component
             UIComponent c = ComponentSupport.findChildByTagId(parent, id);
             boolean componentFoundInserted = false;
-            if (c == null && ((AbstractFaceletContext)ctx).isRefreshTransientBuildOnPSS() && 
-                ((AbstractFaceletContext)ctx).isRefreshingTransientBuild() && UIComponent.isCompositeComponent(parent))
+            FaceletCompositionContext mctx= FaceletCompositionContext.getCurrentInstance(ctx);
+            if (c == null && mctx.isRefreshTransientBuildOnPSS() && 
+                    mctx.isRefreshingTransientBuild() && UIComponent.isCompositeComponent(parent))
             {
                 String facetName = this.getFacetName(ctx, parent);
                 if (facetName == null)
@@ -161,8 +163,8 @@ final class UIInstructionHandler extends AbstractUIHandler
                 c = new UIInstructions(txt, applied);
                 // mark it owned by a facelet instance
                 //c.setId(ComponentSupport.getViewRoot(ctx, parent).createUniqueId());
-                AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
-                UniqueIdVendor uniqueIdVendor = actx.getUniqueIdVendorFromStack();
+
+                UniqueIdVendor uniqueIdVendor = FaceletCompositionContext.getCurrentInstance(ctx).getUniqueIdVendorFromStack();
                 if (uniqueIdVendor == null)
                 {
                     uniqueIdVendor = ComponentSupport.getViewRoot(ctx, parent);
@@ -186,7 +188,7 @@ final class UIInstructionHandler extends AbstractUIHandler
                     parent.getChildren().remove(c);
                 }
             }
-            if ( ((AbstractFaceletContext)ctx).isRefreshingTransientBuild() 
+            if ( mctx.isRefreshingTransientBuild() 
                     && UIComponent.isCompositeComponent(parent))
             {
                 // Save the child structure behind this component, so it can be
