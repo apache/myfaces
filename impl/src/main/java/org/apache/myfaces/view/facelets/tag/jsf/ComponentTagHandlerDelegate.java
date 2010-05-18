@@ -501,14 +501,14 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
     private void addDefaultValidators(FacesContext context, FaceletCompositionContext mctx,
                                       EditableValueHolder component)
     {
-        Application application = context.getApplication();
-        Map<String, String> validators = new HashMap<String, String>();
-        
         // add all defaultValidators
-        Map<String, String> defaultValidators = application.getDefaultValidatorInfo();
+        Map<String, String> defaultValidators = context.getApplication().getDefaultValidatorInfo();
         if (defaultValidators != null && defaultValidators.size() != 0)
         {
-            validators.putAll(defaultValidators);
+            for (Map.Entry<String, String> entry : defaultValidators.entrySet())
+            {
+                addDefaultValidator(context, mctx, component, entry.getKey(), entry.getValue());
+            }
         }
         // add all enclosing validators
         Iterator<String> enclosingValidatorIds = mctx.getEnclosingValidatorIds();
@@ -517,95 +517,89 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             while (enclosingValidatorIds.hasNext())
             {
                 String validatorId = enclosingValidatorIds.next();
-                if (!validators.containsKey(validatorId))
+                if (!defaultValidators.containsKey(validatorId))
                 {
-                    validators.put(validatorId, null);
+                    addDefaultValidator(context, mctx, component, validatorId, null);
                 }
             }
         }
+    }
+    
+    private void addDefaultValidator(FacesContext context, FaceletCompositionContext mctx,
+            EditableValueHolder component, String validatorId, String validatorClassName)
+    {
+        Validator enclosingValidator = null;
         
-        if (!validators.isEmpty())
+        if (validatorClassName == null)
         {
-            // we have validators to add
-            Set<Map.Entry<String, String>> validatorInfoSet = validators.entrySet();
-            for (Map.Entry<String, String> entry : validatorInfoSet)
+            // we have no class name for validators of enclosing <f:validateBean> tags
+            // --> we have to create it to get the class name
+            // note that normally we can use this instance later anyway!
+            enclosingValidator = context.getApplication().createValidator(validatorId);
+            validatorClassName = enclosingValidator.getClass().getName();
+        }
+        
+        // check if the validator is already registered for the given component
+        // this happens if <f:validateBean /> is nested inside the component on the view
+        Validator validator = null;
+        for (Validator v : component.getValidators())
+        {
+            if (v.getClass().getName().equals(validatorClassName))
             {
-                String validatorId = entry.getKey();
-                String validatorClassName = entry.getValue();
-                Validator enclosingValidator = null;
-                
-                if (validatorClassName == null)
+                // found
+                validator = v;
+                break;
+            }
+        }
+        
+        if (validator == null)
+        {
+            if (shouldAddDefaultValidator(validatorId, context, mctx, component))
+            {
+                if (enclosingValidator != null)
                 {
-                    // we have no class name for validators of enclosing <f:validateBean> tags
-                    // --> we have to create it to get the class name
-                    // note that normally we can use this instance later anyway!
-                    enclosingValidator = application.createValidator(validatorId);
-                    validatorClassName = enclosingValidator.getClass().getName();
+                    // we can use the instance from before
+                    validator = enclosingValidator;
                 }
-                
-                // check if the validator is already registered for the given component
-                // this happens if <f:validateBean /> is nested inside the component on the view
-                Validator validator = null;
-                for (Validator v : component.getValidators())
+                else
                 {
-                    if (v.getClass().getName().equals(validatorClassName))
-                    {
-                        // found
-                        validator = v;
-                        break;
-                    }
+                    // create it
+                    validator = context.getApplication().createValidator(validatorId);
                 }
-                
-                if (validator == null)
+                // add the validator to the component
+                component.addValidator(validator);
+            }
+            else
+            {
+                // no validator instance
+                return;
+            }
+        }
+        
+        // special things to configure for a BeanValidator
+        if (validator instanceof BeanValidator)
+        {
+            BeanValidator beanValidator = (BeanValidator) validator;
+            
+            // check the validationGroups
+            String validationGroups =  beanValidator.getValidationGroups();
+            if (validationGroups == null 
+                    || validationGroups.matches(BeanValidator.EMPTY_VALIDATION_GROUPS_PATTERN))
+            {
+                // no validationGroups available
+                // --> get the validationGroups from the stack
+                String stackGroup = mctx.getFirstValidationGroupFromStack();
+                if (stackGroup != null)
                 {
-                    if (shouldAddDefaultValidator(validatorId, context, mctx, component))
-                    {
-                        if (enclosingValidator != null)
-                        {
-                            // we can use the instance from before
-                            validator = enclosingValidator;
-                        }
-                        else
-                        {
-                            // create it
-                            validator = application.createValidator(validatorId);
-                        }
-                        // add the validator to the component
-                        component.addValidator(validator);
-                    }
-                    else
-                    {
-                        // no validator instance
-                        continue;
-                    }
+                    validationGroups = stackGroup;
                 }
-                
-                // special things to configure for a BeanValidator
-                if (validator instanceof BeanValidator)
+                else
                 {
-                    BeanValidator beanValidator = (BeanValidator) validator;
-                    
-                    // check the validationGroups
-                    String validationGroups =  beanValidator.getValidationGroups();
-                    if (validationGroups == null 
-                            || validationGroups.matches(BeanValidator.EMPTY_VALIDATION_GROUPS_PATTERN))
-                    {
-                        // no validationGroups available
-                        // --> get the validationGroups from the stack
-                        String stackGroup = mctx.getFirstValidationGroupFromStack();
-                        if (stackGroup != null)
-                        {
-                            validationGroups = stackGroup;
-                        }
-                        else
-                        {
-                            // no validationGroups on the stack
-                            // --> set the default validationGroup
-                            validationGroups = javax.validation.groups.Default.class.getName();
-                        }
-                        beanValidator.setValidationGroups(validationGroups);
-                    }
+                    // no validationGroups on the stack
+                    // --> set the default validationGroup
+                    validationGroups = javax.validation.groups.Default.class.getName();
                 }
+                beanValidator.setValidationGroups(validationGroups);
             }
         }
     }
