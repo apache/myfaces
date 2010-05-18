@@ -327,7 +327,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         {
             // add default validators here, because this feature 
             // is only available in facelets (see MYFACES-2362 for details)
-            addDefaultValidators(facesContext, mctx, (EditableValueHolder) c);
+            addDefaultValidators(mctx, facesContext, (EditableValueHolder) c);
         }
         
         _delegate.onComponentPopulated(ctx, c, parent);
@@ -498,7 +498,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
      * @param mctx the AbstractFaceletContext
      * @param component The EditableValueHolder to which the validators should be added
      */
-    private void addDefaultValidators(FacesContext context, FaceletCompositionContext mctx,
+    private void addDefaultValidators(FaceletCompositionContext mctx, FacesContext context, 
                                       EditableValueHolder component)
     {
         // add all defaultValidators
@@ -507,7 +507,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         {
             for (Map.Entry<String, String> entry : defaultValidators.entrySet())
             {
-                addDefaultValidator(context, mctx, component, entry.getKey(), entry.getValue());
+                addDefaultValidator( mctx, context, component, entry.getKey(), entry.getValue());
             }
         }
         // add all enclosing validators
@@ -519,13 +519,13 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 String validatorId = enclosingValidatorIds.next();
                 if (!defaultValidators.containsKey(validatorId))
                 {
-                    addDefaultValidator(context, mctx, component, validatorId, null);
+                    addDefaultValidator(mctx, context, component, validatorId, null);
                 }
             }
         }
     }
     
-    private void addDefaultValidator(FacesContext context, FaceletCompositionContext mctx,
+    private void addDefaultValidator(FaceletCompositionContext mctx, FacesContext context, 
             EditableValueHolder component, String validatorId, String validatorClassName)
     {
         Validator enclosingValidator = null;
@@ -554,7 +554,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         
         if (validator == null)
         {
-            if (shouldAddDefaultValidator(validatorId, context, mctx, component))
+            if (shouldAddDefaultValidator(mctx, context, component, validatorId))
             {
                 if (enclosingValidator != null)
                 {
@@ -614,9 +614,10 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
      * @return true if the Validator should be added, false otherwise.
      */
     @SuppressWarnings("unchecked")
-    private boolean shouldAddDefaultValidator(String validatorId, FacesContext context, 
-                                              FaceletCompositionContext mctx,
-                                              EditableValueHolder component)
+    private boolean shouldAddDefaultValidator(FaceletCompositionContext mctx,
+                                              FacesContext facesContext,
+                                              EditableValueHolder component, 
+                                              String validatorId)
     {
         // check if the validatorId is on the exclusion list on the component
         List<String> exclusionList 
@@ -654,8 +655,8 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             {
                 return false;
             }
-            ExternalContext externalContext = context.getExternalContext();
-            String disabled = externalContext.getInitParameter(BeanValidator.DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME);
+            
+            String disabled = facesContext.getExternalContext().getInitParameter(BeanValidator.DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME);
             if (disabled != null && disabled.toLowerCase().equals("true"))
             {
                 // check if there are any enclosing <f:validateBean> tags with the validatorId of the BeanValidator
