@@ -1,7 +1,26 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.apache.myfaces.application;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -468,5 +487,29 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
     
             assertEquals("/b.jsp", nc.getToViewId(facesContext));
         }
+    }
+    
+    /**
+     * Tests if the URL parameters of an outcome are correctly
+     * added to the NavigationCase.
+     */
+    public void testFacesRedirectAddsUrlParameters()
+    {
+        NavigationHandlerImpl nh = new NavigationHandlerImpl();
+        
+        // get the NavigationCase
+        // note that the URL parameters can be separated via & or &amp;
+        NavigationCase navigationCase = nh.getNavigationCase(facesContext, null, 
+                "test.xhtml?faces-redirect=true&a=b&amp;includeViewParams=true&amp;c=d&e=f");
+        
+        // created the expected parameter map
+        Map<String, List<String>> expected = new HashMap<String, List<String>>();
+        expected.put("a", Arrays.asList("b"));
+        expected.put("c", Arrays.asList("d"));
+        expected.put("e", Arrays.asList("f"));
+        // note that faces-redirect and includeViewParams
+        // should not be added as a parameter
+        
+        assertEquals(expected, navigationCase.getParameters());
     }
 }
