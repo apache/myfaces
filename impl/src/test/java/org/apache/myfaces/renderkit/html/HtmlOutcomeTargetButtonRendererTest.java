@@ -32,21 +32,25 @@ import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 
-public class HtmlOutcomeTargetButtonRendererTest extends AbstractJsfTestCase {
+public class HtmlOutcomeTargetButtonRendererTest extends AbstractJsfTestCase 
+{
 
     private MockResponseWriter writer;
     private HtmlOutcomeTargetButton outcomeTargetButton;
     private HtmlForm form;
     
-    public HtmlOutcomeTargetButtonRendererTest(String name) {
+    public HtmlOutcomeTargetButtonRendererTest(String name) 
+    {
         super(name);
     }
     
-    public static Test suite() {
+    public static Test suite() 
+    {
         return new TestSuite(HtmlOutcomeTargetButtonRendererTest.class);
     }
     
-    public void setUp() throws Exception {
+    public void setUp() throws Exception 
+    {
         super.setUp();
         writer = new MockResponseWriter(new StringWriter(), null, null);
         facesContext.setResponseWriter(writer);
@@ -68,9 +72,12 @@ public class HtmlOutcomeTargetButtonRendererTest extends AbstractJsfTestCase {
         facesContext.getAttributes().put("org.apache.myfaces.RENDERED_JSF_JS", Boolean.TRUE);
     }
     
-    public void tearDown() throws Exception {
+    public void tearDown() throws Exception 
+    {
         super.tearDown();
         writer = null;
+        form = null;
+        outcomeTargetButton = null;
     }
     
     /**
@@ -91,6 +98,28 @@ public class HtmlOutcomeTargetButtonRendererTest extends AbstractJsfTestCase {
             fail(e.getMessage());
         }
         
+    }
+    
+    /**
+     * Tests if h:button correctly includes all parameters of the implicit
+     * navigation case created from the outcome.
+     * 
+     * @throws Exception
+     */
+    public void testOutcomeTargetRendersNavigationCaseParameters() throws Exception
+    {
+        // configure the button
+        outcomeTargetButton.getAttributes().put("includeViewParams", false);
+        outcomeTargetButton.getAttributes().put("outcome", 
+                "test.xhtml?param1=value1&param2=value2");
+        
+        // render the button
+        outcomeTargetButton.encodeAll(facesContext);
+        String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
+        
+        // make sure the parameters are rendered
+        assertTrue(output.contains("param1=value1"));
+        assertTrue(output.contains("param2=value2"));
     }
     
 }

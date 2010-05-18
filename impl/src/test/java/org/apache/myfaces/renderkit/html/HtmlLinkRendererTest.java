@@ -32,8 +32,6 @@ import junit.framework.TestSuite;
 
 import org.apache.myfaces.application.NavigationHandlerImpl;
 import org.apache.myfaces.shared_impl.config.MyfacesConfig;
-import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
-import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockExternalContext;
 import org.apache.myfaces.test.mock.MockHttpServletRequest;
@@ -41,7 +39,8 @@ import org.apache.myfaces.test.mock.MockHttpServletResponse;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.mock.MockServletContext;
-import org.easymock.EasyMock;
+import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
+import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)
@@ -291,6 +290,28 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
             fail(e.getMessage());
         }
         
+    }
+    
+    /**
+     * Tests if h:link correctly includes all parameters of the implicit
+     * navigation case created from the outcome.
+     * 
+     * @throws Exception
+     */
+    public void testOutcomeTargetRendersNavigationCaseParameters() throws Exception
+    {
+        // configure the link
+        outcomeTargetLink.getAttributes().put("includeViewParams", false);
+        outcomeTargetLink.getAttributes().put("outcome", 
+                "test.xhtml?param1=value1&param2=value2");
+        
+        // render the link
+        outcomeTargetLink.encodeAll(facesContext);
+        String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
+        
+        // make sure the parameters are rendered
+        assertTrue(output.contains("param1=value1"));
+        assertTrue(output.contains("param2=value2"));
     }
     
     /**
