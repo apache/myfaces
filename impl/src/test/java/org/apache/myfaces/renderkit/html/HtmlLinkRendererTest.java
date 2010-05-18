@@ -315,6 +315,26 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
     }
     
     /**
+     * Tests if the fragment attribute is correctly rendered.
+     * @throws Exception
+     */
+    public void testOutcomeTargetLinkFragment() throws Exception
+    {
+        // configure the link
+        final String fragment = "end";
+        outcomeTargetLink.getAttributes().put("fragment", fragment);
+        outcomeTargetLink.getAttributes().put("outcome", 
+                "test.xhtml?param1=value1");
+        
+        // render the link
+        outcomeTargetLink.encodeAll(facesContext);
+        String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
+        
+        // make sure the fragment is rendered
+        assertTrue(output.contains("param1=value1#" + fragment));
+    }
+    
+    /**
      * Test for the right use of the fragment attribute.
      * The value of the fragment attribute is appended to the end of target URL following a hash (#) mark.
      * @throws Exception

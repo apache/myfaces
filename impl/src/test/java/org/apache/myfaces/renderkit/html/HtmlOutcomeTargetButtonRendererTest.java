@@ -122,4 +122,24 @@ public class HtmlOutcomeTargetButtonRendererTest extends AbstractJsfTestCase
         assertTrue(output.contains("param2=value2"));
     }
     
+    /**
+     * Tests if the fragment attribute is correctly rendered.
+     * @throws Exception
+     */
+    public void testFragment() throws Exception
+    {
+        // configure the button
+        final String fragment = "end";
+        outcomeTargetButton.getAttributes().put("fragment", fragment);
+        outcomeTargetButton.getAttributes().put("outcome", 
+                "test.xhtml?param1=value1");
+        
+        // render the button
+        outcomeTargetButton.encodeAll(facesContext);
+        String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
+        
+        // make sure the fragment is rendered
+        assertTrue(output.contains("param1=value1#" + fragment));
+    }
+    
 }
