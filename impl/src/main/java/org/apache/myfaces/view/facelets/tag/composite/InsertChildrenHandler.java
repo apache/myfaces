@@ -80,6 +80,8 @@ public class InsertChildrenHandler extends TagHandler
 
         parentCompositeComponent.subscribeToEvent(PostAddToViewEvent.class,
                 new RelocateAllChildrenListener(parent, parent.getChildCount()));
+        parentCompositeComponent.subscribeToEvent(PostBuildComponentTreeOnRestoreViewEvent.class,
+                new RelocateAllChildrenListener(parent, parent.getChildCount()));
         /*
         if (ctx.getFacesContext().getAttributes().containsKey(
                 FaceletViewDeclarationLanguage.MARK_INITIAL_STATE_KEY))

@@ -318,8 +318,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                     // cc:insertChildren or cc:insertFacet will not work correctly, because
                     // we expect PostAddToViewEvent will be propagated from parent to child, and
                     // facelets refreshing algorithm do the opposite.
-                    FaceletViewDeclarationLanguage._publishPreRemoveFromViewEvent(context, view);
-                    FaceletViewDeclarationLanguage._publishPostAddToViewEvent(context, view);
+                    //FaceletViewDeclarationLanguage._publishPreRemoveFromViewEvent(context, view);
+                    //FaceletViewDeclarationLanguage._publishPostAddToViewEvent(context, view);
+                    FaceletViewDeclarationLanguage._publishPostBuildComponentTreeOnRestoreViewEvent(context, view);
                 }
                 
                 context.getAttributes().remove(REFRESHING_TRANSIENT_BUILD);
@@ -404,9 +405,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         }        
     }  
     
-    public static void _publishPostAddToViewEvent(FacesContext context, UIComponent component)
+    public static void _publishPostBuildComponentTreeOnRestoreViewEvent(FacesContext context, UIComponent component)
     {
-        context.getApplication().publishEvent(context, PostAddToViewEvent.class, UIComponent.class, component);
+        context.getApplication().publishEvent(context, PostBuildComponentTreeOnRestoreViewEvent.class, UIComponent.class, component);
         
         if (component.getChildCount() > 0)
         {
@@ -424,7 +425,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                 // This prevents skip components when processing
                 do 
                 {
-                    _publishPostAddToViewEvent(context, child);
+                    _publishPostBuildComponentTreeOnRestoreViewEvent(context, child);
                     currentChild = child;
                 }
                 while ((i < children.size()) &&
@@ -436,7 +437,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         {
             for (UIComponent child : component.getFacets().values())
             {
-                _publishPostAddToViewEvent(context, child);
+                _publishPostBuildComponentTreeOnRestoreViewEvent(context, child);
             }
         }
     }

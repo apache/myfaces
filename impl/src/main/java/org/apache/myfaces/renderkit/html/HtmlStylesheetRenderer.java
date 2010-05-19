@@ -55,7 +55,10 @@ import org.apache.myfaces.view.facelets.PostBuildComponentTreeOnRestoreViewEvent
  * @version $Revision$ $Date$
  */
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Output", type = "javax.faces.resource.Stylesheet")
-@ListenerFor(systemEventClass = PostAddToViewEvent.class)
+@ListenersFor({
+@ListenerFor(systemEventClass = PostAddToViewEvent.class),
+@ListenerFor(systemEventClass = PostBuildComponentTreeOnRestoreViewEvent.class)
+})
 public class HtmlStylesheetRenderer extends Renderer implements
     ComponentSystemEventListener, PartialStateHolder
 {

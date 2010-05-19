@@ -40,6 +40,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
+import org.apache.myfaces.view.facelets.PostBuildComponentTreeOnRestoreViewEvent;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
@@ -115,6 +116,8 @@ public class InsertFacetHandler extends TagHandler
         }
         
         parentCompositeComponent.subscribeToEvent(PostAddToViewEvent.class, 
+                new RelocateFacetListener(parent, facetName));
+        parentCompositeComponent.subscribeToEvent(PostBuildComponentTreeOnRestoreViewEvent.class, 
                 new RelocateFacetListener(parent, facetName));
         /*
         if (ctx.getFacesContext().getAttributes().containsKey(

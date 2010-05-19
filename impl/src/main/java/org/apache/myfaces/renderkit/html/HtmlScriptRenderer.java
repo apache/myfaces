@@ -38,6 +38,7 @@ import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
 import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
 import org.apache.myfaces.shared_impl.renderkit.html.HTML;
 import org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils;
+import org.apache.myfaces.view.facelets.PostBuildComponentTreeOnRestoreViewEvent;
 
 /**
  * Renderer used by h:outputScript component
@@ -47,7 +48,10 @@ import org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils;
  * @since 2.0
  */
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Output", type = "javax.faces.resource.Script")
-@ListenerFor(systemEventClass = PostAddToViewEvent.class)
+@ListenersFor({
+@ListenerFor(systemEventClass = PostAddToViewEvent.class),
+@ListenerFor(systemEventClass = PostBuildComponentTreeOnRestoreViewEvent.class)
+})
 public class HtmlScriptRenderer extends Renderer implements PartialStateHolder, ComponentSystemEventListener {
     //private static final Log log = LogFactory.getLog(HtmlScriptRenderer.class);
     private static final Logger log = Logger.getLogger(HtmlScriptRenderer.class.getName());
