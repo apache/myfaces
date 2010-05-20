@@ -172,7 +172,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 }
                 if (view == null)
                 {
-                    view = vdl.createView(context, viewId);
+                    view = context.getApplication().getViewHandler().createView(context, viewId);
                 }
                 
                 context.setViewRoot (view); 
