@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.faces.FacesException;
+import javax.faces.FactoryFinder;
 import javax.faces.component.ContextCallback;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewParameter;
@@ -46,6 +47,7 @@ import javax.faces.event.SystemEventListener;
 import javax.faces.render.ResponseStateManager;
 import javax.faces.view.StateManagementStrategy;
 import javax.faces.view.ViewDeclarationLanguage;
+import javax.faces.view.ViewDeclarationLanguageFactory;
 import javax.faces.view.ViewMetadata;
 
 import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
@@ -103,13 +105,13 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
      */
     public  static final String COMPONENT_ADDED_AFTER_BUILD_VIEW = "oam.COMPONENT_ADDED_AFTER_BUILD_VIEW"; 
     
-    private ViewDeclarationLanguage vdl;
+    private ViewDeclarationLanguageFactory _vdlFactory;
     
     private DefaultFaceletsStateManagementHelper helper;
     
-    public DefaultFaceletsStateManagementStrategy (ViewDeclarationLanguage vdl)
+    public DefaultFaceletsStateManagementStrategy ()
     {
-        this.vdl = vdl;
+        _vdlFactory = (ViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);
         this.helper = new DefaultFaceletsStateManagementHelper();
     }
     
@@ -153,7 +155,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         else
         {
             // Per the spec: build the view.
-            
+            ViewDeclarationLanguage vdl = _vdlFactory.getViewDeclarationLanguage(viewId);
             try {
                 ViewMetadata metadata = vdl.getViewMetadata (context, viewId);
                 

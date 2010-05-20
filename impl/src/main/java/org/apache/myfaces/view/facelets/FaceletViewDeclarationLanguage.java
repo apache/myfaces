@@ -1065,7 +1065,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         // the current view is not on javax.faces.FULL_STATE_SAVING_VIEW_IDS.
         if (_partialStateSaving && _stateMgmtStrategy == null)
         {
-            _stateMgmtStrategy = new DefaultFaceletsStateManagementStrategy(this);
+            _stateMgmtStrategy = new DefaultFaceletsStateManagementStrategy();
         }
         
         return _usePartialStateSavingOnThisView(viewId) ? _stateMgmtStrategy : null;
