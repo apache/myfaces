@@ -300,10 +300,11 @@ public class NavigationHandlerImpl
         {
             // Append all params from the queryString
             // (excluding faces-redirect and includeViewParams)
-            Map<String, List<String>> params = new HashMap<String, List<String>>();
+            Map<String, List<String>> params = null;
             if (queryString != null && !"".equals(queryString))
             {
                 String[] splitQueryParams = queryString.split("&(amp;)?"); // "&" or "&amp;"
+                params = new HashMap<String, List<String>>();
                 for (String queryParam : splitQueryParams)
                 {
                     String[] splitParam = StringUtils.splitShortString(queryParam, '=');
