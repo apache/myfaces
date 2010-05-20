@@ -981,19 +981,6 @@ public class FacesConfigurator
         if(webAppConfig != null)    //add null check for apps which don't have a faces-config.xml (e.g. tomahawk examples for 1.1/1.2)
         {
             getDispenser().feed(webAppConfig);
-            /*
-            // check if there is an empty <default-validators> entry.
-            // note that this applys only for the faces-config with the 
-            // highest precendence (not for standard-faces-config files).
-            for (org.apache.myfaces.config.impl.digester.elements.Application app : webAppConfig.getApplications())
-            {
-                if (app.isDefaultValidatorsPresent() && app.getDefaultValidatorIds().isEmpty())
-                {
-                    getDispenser().setEmptyDefaultValidators(true);
-                    break;
-                }
-            }
-            */
         }
     }
 
@@ -2001,54 +1988,56 @@ public class FacesConfigurator
             application.addValidator(validatorId, dispenser.getValidatorClass(validatorId));
         }
 
-        if (ExternalSpecifications.isBeanValidationAvailable())
+        // programmatically add the BeanValidator if the following requirements are met:
+        //     - bean validation has not been disabled
+        //     - bean validation is available in the classpath
+        String beanValidatorDisabled = _externalContext.getInitParameter(
+                BeanValidator.DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME);
+        final boolean defaultBeanValidatorDisabled = (beanValidatorDisabled != null 
+                && beanValidatorDisabled.toLowerCase().equals("true"));
+        boolean beanValidatorInstalledProgrammatically = false;
+        if (!defaultBeanValidatorDisabled
+                && ExternalSpecifications.isBeanValidationAvailable())
         {
-            String disabled = _externalContext.getInitParameter(BeanValidator.DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME);
-            boolean defaultBeanValidatorDisabled = (disabled != null && disabled.toLowerCase().equals("true"));
-            if (!defaultBeanValidatorDisabled)
-            {
-                application.addDefaultValidatorId(BeanValidator.VALIDATOR_ID);
-            }
+            // add the BeanValidator as default validator
+            application.addDefaultValidatorId(BeanValidator.VALIDATOR_ID);
+            beanValidatorInstalledProgrammatically = true;
         }
 
+        // add the default-validators from the config files
         for (String validatorId : dispenser.getDefaultValidatorIds())
         {
             application.addDefaultValidatorId(validatorId);
         }
-
-        // only add default validators if there is no empty <default-validators> in faces-config.xml
-        /*
-        if (!dispenser.isEmptyDefaultValidators())
-        {
-            boolean beanValidatorAdded = false;
-            for (String validatorId : dispenser.getDefaultValidatorIds())
-            {
-                if (validatorId.equals(BeanValidator.VALIDATOR_ID))
-                {
-                    if (!ExternalSpecifications.isBeanValidationAvailable())
-                    {
-                        // do not add it as a default validator
-                        continue;
-                    }
-                    else
-                    {
-                        beanValidatorAdded = true;
-                    }
-                }
-                application.addDefaultValidatorId(validatorId);
-            }
         
-            // add the bean validator if it is available, not already added and not disabled
-            if (!beanValidatorAdded && ExternalSpecifications.isBeanValidationAvailable())
+        // do some checks if the BeanValidator was not installed as a
+        // default-validator programmatically, but via a config file.
+        if (!beanValidatorInstalledProgrammatically 
+                && application.getDefaultValidatorInfo()
+                        .containsKey(BeanValidator.VALIDATOR_ID))
+        {
+            if (!ExternalSpecifications.isBeanValidationAvailable())
             {
-                String disabled = _externalContext.getInitParameter(BeanValidator.DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME);
-                boolean defaultBeanValidatorDisabled = (disabled != null && disabled.toLowerCase().equals("true"));
-                if (!defaultBeanValidatorDisabled)
-                {
-                    application.addDefaultValidatorId(BeanValidator.VALIDATOR_ID);
-                }
+                // the BeanValidator was installed via a config file,
+                // but bean validation is not available
+                log.log(Level.WARNING, "The BeanValidator was installed as a " +
+                        "default-validator from a faces-config file, but bean " +
+                        "validation is not available on the classpath, " +
+                        "thus it will not work!");
             }
-        }*/
+            else if (defaultBeanValidatorDisabled)
+            {
+                // the user disabled the default bean validator in web.xml,
+                // but a config file added it, which is ok with the spec
+                // (section 11.1.3: "though manual installation is still possible")
+                // --> inform the user about this scenario
+                log.log(Level.INFO, "The BeanValidator was disabled as a " +
+                        "default-validator via the config parameter " + 
+                        BeanValidator.DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME +
+                        " in web.xml, but a faces-config file added it, " +
+                        "thus it actually was installed as a default-validator.");
+            }
+        }
 
         for (Behavior behavior : dispenser.getBehaviors()) {
             application.addBehavior(behavior.getBehaviorId(), behavior.getBehaviorClass());

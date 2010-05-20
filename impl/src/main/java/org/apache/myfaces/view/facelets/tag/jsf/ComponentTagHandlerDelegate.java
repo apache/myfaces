@@ -20,11 +20,9 @@ package org.apache.myfaces.view.facelets.tag.jsf;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,7 +35,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UniqueIdVendor;
 import javax.faces.component.ValueHolder;
 import javax.faces.component.behavior.ClientBehaviorHolder;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.BeanValidator;
 import javax.faces.validator.Validator;
@@ -47,6 +44,7 @@ import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.MetaRuleset;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagException;
+import javax.faces.view.facelets.TagHandler;
 import javax.faces.view.facelets.TagHandlerDelegate;
 
 import org.apache.myfaces.util.ExternalSpecifications;
@@ -520,7 +518,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         }
         // add all enclosing validators
         Iterator<String> enclosingValidatorIds = mctx.getEnclosingValidatorIds();
-        if (enclosingValidatorIds != null && enclosingValidatorIds.hasNext())
+        if (enclosingValidatorIds != null)
         {
             while (enclosingValidatorIds.hasNext())
             {
@@ -579,7 +577,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             }
             else
             {
-                // no validator instance
+                // we should not add the validator
                 return;
             }
         }
@@ -661,27 +659,12 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         {
             if (!ExternalSpecifications.isBeanValidationAvailable())
             {
-                return false;
-            }
-            
-            String disabled = facesContext.getExternalContext().getInitParameter(BeanValidator.DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME);
-            if (disabled != null && disabled.toLowerCase().equals("true"))
-            {
-                // check if there are any enclosing <f:validateBean> tags with the validatorId of the BeanValidator
-                Iterator<String> itEnclosingIds = mctx.getEnclosingValidatorIds();
-                if (itEnclosingIds != null)
-                {
-                    while (itEnclosingIds.hasNext())
-                    {
-                        if (validatorId.equals(itEnclosingIds.next()))
-                        {
-                            // the component is enclosed by <f:validateBean>
-                            return true;
-                        }
-                    }
-                }
-                
-                // no enclosing <f:validateBean> found --> do not attach BeanValidator
+                // the BeanValidator was added as a default-validator, but
+                // bean validation is not available on the classpath.
+                // --> log a warning about this scenario.
+                log.log(Level.WARNING, "Bean validation is not available on the " +
+                        "classpath, thus the BeanValidator will not be added for " +
+                        "the component " + component);
                 return false;
             }
         }

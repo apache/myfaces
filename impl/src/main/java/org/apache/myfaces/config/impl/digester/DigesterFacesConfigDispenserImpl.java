@@ -65,8 +65,6 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
     private String partialTraversal;
     private String facesVersion;
     
-    private boolean emptyDefaultValidator = false;
-    
     private LocaleConfig localeConfig;
 
     private Map<String, String> components = new HashMap<String, String>();
@@ -156,27 +154,20 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
             resourceBundles.addAll(application.getResourceBundle());
             elResolvers.addAll(application.getElResolver());
 
-            // check if there is an empty <default-validators> entry.
-            // note that this applys only for the faces-config with the 
-            // highest precendence (not for standard-faces-config files).
-            // -= Leonardo Uribe =- According to jsf 2.0 spec section 3.5.3
-            // This apply to all configuration resources. The text says this: 
-            // ".... Any configuration resource that declares a list of default validators overrides any list provided in a previously processed
-            // configuration resource. If an empty <default-validators/> element is found in a configuration resource, the list
+            // Jsf 2.0 spec section 3.5.3 says this: 
+            // ".... Any configuration resource that declares a list of default 
+            // validators overrides any list provided in a previously processed
+            // configuration resource. If an empty <default-validators/> element 
+            // is found in a configuration resource, the list
             // of default validators must be cleared....."
-            if (application.isDefaultValidatorsPresent() && application.getDefaultValidatorIds().isEmpty() )
+            if (application.isDefaultValidatorsPresent())
             {
+                // we have a <default-validators> element, so any existing
+                // default validators should be removed
                 defaultValidatorIds.clear();
-            }
-            else if (!application.getDefaultValidatorIds().isEmpty())
-            {
-                // "... Any configuration resource that declares a list of default validators overrides any list provided ..."
-                defaultValidatorIds.clear();
-                defaultValidatorIds.addAll (application.getDefaultValidatorIds());
-            }
-            else
-            {
-                //No need to add anything
+                
+                // now add all default-validator entries (could be zero)
+                defaultValidatorIds.addAll(application.getDefaultValidatorIds());
             }
             
             systemEventListeners.addAll(application.getSystemEventListeners());
@@ -536,22 +527,6 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
     public Collection<String> getDefaultValidatorIds ()
     {
         return defaultValidatorIds;
-    }
-    
-    /**
-     * @return true if an empty <default-validators> exists in the config file with the highest precendence
-     */
-    public boolean isEmptyDefaultValidators()
-    {
-        return emptyDefaultValidator;
-    }
-    
-    /**
-     * true if an empty <default-validators> exists in the config file with the highest precendence
-     */
-    public void setEmptyDefaultValidators(boolean disableDefaultValidator)
-    {
-        this.emptyDefaultValidator = disableDefaultValidator;
     }
     
     /**
