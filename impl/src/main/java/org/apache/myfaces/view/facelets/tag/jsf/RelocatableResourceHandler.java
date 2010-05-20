@@ -16,30 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.view.facelets.tag.jsf.html;
+package org.apache.myfaces.view.facelets.tag.jsf;
 
-import javax.faces.view.facelets.ComponentConfig;
-import javax.faces.view.facelets.ComponentHandler;
-import javax.faces.view.facelets.MetaRuleset;
+import javax.faces.component.UIComponent;
+import javax.faces.view.facelets.FaceletContext;
 
 /**
- * @author Jacob Hookom
- * @version $Id: HtmlComponentHandler.java,v 1.3 2008/07/13 19:01:50 rlubke Exp $
+ * Interface used to indicate the component that needs to be found was relocated,
+ * so it is necessary to provide a proper algorithm to find it. 
+ * 
+ * @since 2.0
+ * @author Leonardo Uribe (latest modification by $Author: lu4242 $)
+ * @version $Revision: 931412 $ $Date: 2010-04-06 21:56:36 -0500 (Mar, 06 Abr 2010) $
  */
-public class HtmlComponentHandler extends ComponentHandler
+public interface RelocatableResourceHandler
 {
-
-    /**
-     * @param config
-     */
-    public HtmlComponentHandler(ComponentConfig config)
-    {
-        super(config);
-    }
-
-    protected MetaRuleset createMetaRuleset(Class type)
-    {
-        return super.createMetaRuleset(type).alias("class", "styleClass");
-    }
-
+    public UIComponent findChildByTagId(FaceletContext ctx, UIComponent parent, String id);
 }

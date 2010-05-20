@@ -136,7 +136,15 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         FaceletCompositionContext mctx = (FaceletCompositionContext) FaceletCompositionContext.getCurrentInstance(ctx);
                 
         // grab our component
-        UIComponent c = ComponentSupport.findChildByTagId(parent, id);
+        UIComponent c = null;
+        if (_delegate instanceof RelocatableResourceHandler)
+        {
+            c = ((RelocatableResourceHandler)_delegate).findChildByTagId(ctx, parent, id);
+        }
+        else
+        {
+            c = ComponentSupport.findChildByTagId(parent, id); 
+        }
 
         // Check if the component was relocated using
         // composite:insertChildren or composite:insertFacet
