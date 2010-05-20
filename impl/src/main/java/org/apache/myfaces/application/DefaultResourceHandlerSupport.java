@@ -20,12 +20,14 @@ package org.apache.myfaces.application;
 
 import java.util.Map;
 
+import javax.faces.application.ProjectStage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.resource.ClassLoaderResourceLoader;
 import org.apache.myfaces.resource.ExternalContextResourceLoader;
+import org.apache.myfaces.resource.InternalClassLoaderResourceLoader;
 import org.apache.myfaces.resource.ResourceLoader;
 import org.apache.myfaces.shared_impl.application.FacesServletMapping;
 
@@ -118,10 +120,21 @@ public class DefaultResourceHandlerSupport implements ResourceHandlerSupport
         {
             //The ExternalContextResourceLoader has precedence over
             //ClassLoaderResourceLoader, so it goes first.
-            _resourceLoaders = new ResourceLoader[] {
-                    new ExternalContextResourceLoader("/resources"),
-                    new ClassLoaderResourceLoader("META-INF/resources")
-            };
+            if (FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Development))
+            {
+                _resourceLoaders = new ResourceLoader[] {
+                        new ExternalContextResourceLoader("/resources"),
+                        new ClassLoaderResourceLoader("META-INF/resources"),
+                        new InternalClassLoaderResourceLoader("META-INF/internal-resources")
+                };
+            }
+            else
+            {
+                _resourceLoaders = new ResourceLoader[] {
+                        new ExternalContextResourceLoader("/resources"),
+                        new ClassLoaderResourceLoader("META-INF/resources")
+                };
+            }
         }
         return _resourceLoaders;
     }

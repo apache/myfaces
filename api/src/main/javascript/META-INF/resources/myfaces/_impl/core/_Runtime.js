@@ -399,6 +399,20 @@ if ('undefined' == typeof  myfaces._impl.core._Runtime || myfaces._impl.core._Ru
         }
     };
 
+    myfaces._impl.core._Runtime.loadScriptOnHeadElement = function(src, type, defer, charSet) {
+          var head = document.getElementsByTagName("head")[0];
+          if ('undefined' == typeof head || null == head)
+          {
+              head = document.createElement("head");
+              var html = document.getElementsByTagName("html");
+              html.appendChild(head);
+          }
+          var script = document.createElement("script");
+          script.type = "text/javascript";
+          script.src = src;
+          head.appendChild(script);
+    };
+
     /**
      * Extends a class and puts a singleton instance at the reserved namespace instead
      * of its original class

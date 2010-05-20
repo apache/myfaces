@@ -19,8 +19,27 @@
         <url>http://svn.apache.org/repos/asf/myfaces/core/trunk/api</url>
     </scm>
     <build>
-
-
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>src/main/javascript/META-INF/resources/myfaces/_impl/_util</directory>
+                <targetPath>META-INF/internal-resources/org.apache.myfaces.core.impl.util</targetPath>
+            </resource>
+            <resource>
+                <directory>src/main/javascript/META-INF/resources/myfaces/_impl/core</directory>
+                <targetPath>META-INF/internal-resources/org.apache.myfaces.core.impl.core</targetPath>
+            </resource>
+            <resource>
+                <directory>src/main/javascript/META-INF/resources/myfaces/_impl/xhrCore</directory>
+                <targetPath>META-INF/internal-resources/org.apache.myfaces.core.impl.xhrCore</targetPath>
+            </resource>
+            <resource>
+                <directory>src/main/javascript/META-INF/resources/myfaces/api</directory>
+                <targetPath>META-INF/internal-resources/org.apache.myfaces.core.api</targetPath>
+            </resource>
+        </resources>
         <plugins>
            <!--
            javascript plugin adjusted to our build process
@@ -29,10 +48,17 @@
 
 
             <plugin>
+                <!-- we have to enforce a version for now which works due to the alpha stage of the plugin -->
+                <!-- 
+                <artifactId>myfaces-javascript-plugin</artifactId>
+                <groupId>org.apache.myfaces.buildtools</groupId>
+                <version>1.0.1-SNAPSHOT</version>
+                 -->
                 <artifactId>javascript-maven-plugin</artifactId>
                 <groupId>org.codehaus.mojo.javascript</groupId>
-                <!-- we have to enforce a version for now which works due to the alpha stage of the plugin -->
                 <version>1.0-alpha-1-20090530.211438-7</version>
+                <!-- version>1.0-alpha-1-SNAPSHOT</version -->
+                                
                 <extensions>true</extensions>
                 <executions>
                      <execution>
@@ -43,6 +69,27 @@
                         <phase>process-resources</phase>
                         <configuration>
                             <descriptor>${basedir}/src/assembler/jsfscripts-compiler.xml</descriptor>
+                            <excludes>
+                                <exclude>**/myfaces/_impl/core/jsf-uncompressed.js</exclude>
+                                <exclude>**/myfaces/_impl/_util/_UnitTest.js</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                     <execution>
+                        <id>compile-uncompressed</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <descriptor>${basedir}/src/assembler/jsfscripts-uncompressed-compiler.xml</descriptor>
+                            <outputDirectory>${basedir}/target/classes/META-INF/internal-resources/javax.faces/</outputDirectory>
+                            <excludes>
+                                <exclude>**/myfaces/_impl/core/jsf_impl.js</exclude>
+                                <exclude>**/myfaces/_impl/_util/*</exclude>
+                                <exclude>**/myfaces/_impl/xhrCore/*</exclude>
+                                <exclude>**/myfaces/api/*</exclude>
+                            </excludes>
                         </configuration>
                     </execution>
                     <execution>
@@ -54,11 +101,13 @@
 
                         <configuration>
                             <scripts>target/classes/META-INF/resources/javax.faces/</scripts>
+                            <excludes><exclude>jsf-uncompressed.js</exclude></excludes>
                             <compressor>yahooUI</compressor>
                         </configuration>
                     </execution>
                 </executions>
                 <configuration>
+                    <optimizationLevel>4</optimizationLevel>
                     <sourceDirectory>src/main/javascript</sourceDirectory>
                     <webappDirectory>${basedir}</webappDirectory>
                     <outputDirectory>${basedir}/target/classes/META-INF/resources/javax.faces/</outputDirectory>

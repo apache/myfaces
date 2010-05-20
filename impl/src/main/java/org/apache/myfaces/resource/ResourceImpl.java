@@ -30,13 +30,18 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.el.ELContext;
+import javax.el.ELException;
 import javax.el.ValueExpression;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.Resource;
 import javax.faces.application.ResourceHandler;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ExceptionQueuedEvent;
+import javax.faces.event.ExceptionQueuedEventContext;
 
 import org.apache.myfaces.application.ResourceHandlerSupport;
 
@@ -85,9 +90,17 @@ public class ResourceImpl extends Resource
     
     private boolean couldResourceContainValueExpressions()
     {
-        String contentType = getContentType();
-
-        return ("text/css".equals(contentType));
+        if (_resourceMeta.couldResourceContainValueExpressions())
+        {
+            return true;
+        }
+        else
+        {
+            //By default only css resource contain value expressions
+            String contentType = getContentType();
+    
+            return ("text/css".equals(contentType));
+        }
     }
 
     private class ValueExpressionFilterInputStream extends InputStream
@@ -142,18 +155,38 @@ public class ResourceImpl extends Resource
                         //the result into the stream
                         FacesContext context = FacesContext.getCurrentInstance();
                         ELContext elContext = context.getELContext();
-                        ValueExpression ve = context.getApplication().
-                            getExpressionFactory().createValueExpression(
-                                    elContext,
-                                    "#{"+convertToExpression(expressionList)+"}",
-                                    String.class);
-                        
-                        String value = (String) ve.getValue(elContext);
-                        
-                        for (int i = value.length()-1; i >= 0 ; i--)
+                        try
                         {
-                            delegate.unread((int) value.charAt(i));
+                            ValueExpression ve = context.getApplication().
+                                getExpressionFactory().createValueExpression(
+                                        elContext,
+                                        "#{"+convertToExpression(expressionList)+"}",
+                                        String.class);
+                            String value = (String) ve.getValue(elContext);
+                            
+                            for (int i = value.length()-1; i >= 0 ; i--)
+                            {
+                                delegate.unread((int) value.charAt(i));
+                            }
                         }
+                        catch(ELException e)
+                        {
+                            ExceptionQueuedEventContext equecontext = new ExceptionQueuedEventContext (context, e, null);
+                            context.getApplication().publishEvent (context, ExceptionQueuedEvent.class, equecontext);
+                            
+                            Logger log = Logger.getLogger(ResourceImpl.class.getName());
+                            if (log.isLoggable(Level.SEVERE))
+                                log.severe("Cannot evaluate EL expression "+convertToExpression(expressionList)+ " in resource " + getLibraryName()+":"+getResourceName());
+                            
+                            delegate.unread(c3);
+                            for (int i = expressionList.size()-1; i >= 0; i--)
+                            {
+                                delegate.unread(expressionList.get(i));
+                            }
+                            delegate.unread(c2);
+                            return c1;
+                        }
+                        
                         //read again
                         return delegate.read();
                     }
@@ -245,6 +278,13 @@ public class ResourceImpl extends Resource
             if (this.couldResourceContainValueExpressions() &&
                     lastModified < _resourceHandlerSupport.getStartupTime())
             {
+                lastModified = _resourceHandlerSupport.getStartupTime();
+            }            
+            else if (_resourceMeta instanceof AliasResourceMetaImpl &&
+                lastModified < _resourceHandlerSupport.getStartupTime())
+            {
+                // If the resource meta is aliased, the last modified time is the greatest 
+                // value between application startup and the value from file.
                 lastModified = _resourceHandlerSupport.getStartupTime();
             }
 

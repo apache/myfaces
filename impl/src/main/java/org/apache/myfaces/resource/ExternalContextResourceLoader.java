@@ -142,7 +142,7 @@ public class ExternalContextResourceLoader extends ResourceLoader
         try
         {
             return FacesContext.getCurrentInstance().getExternalContext().getResource(
-                getPrefix() + '/' + resourceMeta.toString());
+                getPrefix() + '/' + resourceMeta.getResourceIdentifier());
         }
         catch (MalformedURLException e)
         {
@@ -154,14 +154,14 @@ public class ExternalContextResourceLoader extends ResourceLoader
     public InputStream getResourceInputStream(ResourceMeta resourceMeta)
     {
         return FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream(
-            getPrefix() + '/' + resourceMeta.toString());
+            getPrefix() + '/' + resourceMeta.getResourceIdentifier());
     }
 
     @Override
     public ResourceMeta createResourceMeta(String prefix, String libraryName, String libraryVersion,
                                            String resourceName, String resourceVersion)
     {
-        return new ResourceMeta(prefix, libraryName, libraryVersion, resourceName, resourceVersion);
+        return new ResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion);
     }
 
     @Override

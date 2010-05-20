@@ -18,19 +18,11 @@
  */
 package org.apache.myfaces.resource;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.JarURLConnection;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Enumeration;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.Pattern;
+
+import javax.faces.application.ProjectStage;
+import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 
@@ -79,10 +71,13 @@ public class ClassLoaderResourceLoader extends ResourceLoader
             return false;
         }
     };*/
+    
+    private final boolean _developmentStage;
 
     public ClassLoaderResourceLoader(String prefix)
     {
         super(prefix);
+        _developmentStage = FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Development);
     }
 
     @Override
@@ -249,11 +244,11 @@ public class ClassLoaderResourceLoader extends ResourceLoader
     {
         if (getPrefix() != null && !"".equals(getPrefix()))
         {
-            return getClassLoader().getResourceAsStream(getPrefix() + '/' + resourceMeta.toString());
+            return getClassLoader().getResourceAsStream(getPrefix() + '/' + resourceMeta.getResourceIdentifier());
         }
         else
         {
-            return getClassLoader().getResourceAsStream(resourceMeta.toString());
+            return getClassLoader().getResourceAsStream(resourceMeta.getResourceIdentifier());
         }
     }
 
@@ -262,11 +257,11 @@ public class ClassLoaderResourceLoader extends ResourceLoader
     {
         if (getPrefix() != null && !"".equals(getPrefix()))
         {
-            return getClassLoader().getResource(getPrefix() + '/' + resourceMeta.toString());
+            return getClassLoader().getResource(getPrefix() + '/' + resourceMeta.getResourceIdentifier());
         }
         else
         {
-            return getClassLoader().getResource(resourceMeta.toString());
+            return getClassLoader().getResource(resourceMeta.getResourceIdentifier());
         }
     }
 
@@ -414,7 +409,17 @@ public class ClassLoaderResourceLoader extends ResourceLoader
     public ResourceMeta createResourceMeta(String prefix, String libraryName, String libraryVersion,
                                            String resourceName, String resourceVersion)
     {
-        return new ResourceMeta(prefix, libraryName, libraryVersion, resourceName, resourceVersion);
+        if (_developmentStage && libraryName != null && 
+                org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils.JAVAX_FACES_LIBRARY_NAME.equals(libraryName) &&
+                org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils.JSF_JS_RESOURCE_NAME.equals(resourceName))
+        {
+            // InternalClassLoaderResourceLoader will serve it, so return null in this case.
+            return null;
+        }
+        else
+        {
+            return new ResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion);
+        }
     }
 
     /**
