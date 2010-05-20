@@ -18,7 +18,10 @@
  */
 package org.apache.myfaces.view.facelets.tag.jsf.html;
 
+import java.util.Iterator;
+
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
 import javax.faces.view.facelets.ComponentConfig;
 import javax.faces.view.facelets.FaceletContext;
 
@@ -46,7 +49,15 @@ public class HtmlOutputStylesheetHandler extends HtmlComponentHandler implements
     public UIComponent findChildByTagId(FaceletContext ctx, UIComponent parent,
             String id)
     {
-        return ComponentSupport.findChildByTagId(ComponentSupport.getViewRoot(ctx, parent), id);
+        UIComponent c = null;
+        UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
+        Iterator<UIComponent> itr = root.getFacets().values().iterator();
+        while (itr.hasNext() && c == null)
+        {
+            UIComponent facet = itr.next();
+            c = ComponentSupport.findChildByTagId(facet, id);
+        }
+        return c;
     }
 
 }

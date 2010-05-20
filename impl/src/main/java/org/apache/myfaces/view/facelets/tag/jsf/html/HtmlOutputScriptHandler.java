@@ -18,7 +18,10 @@
  */
 package org.apache.myfaces.view.facelets.tag.jsf.html;
 
+import java.util.Iterator;
+
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
 import javax.faces.view.facelets.ComponentConfig;
 import javax.faces.view.facelets.FaceletContext;
 
@@ -50,7 +53,14 @@ public class HtmlOutputScriptHandler extends HtmlComponentHandler implements Rel
         UIComponent c = ComponentSupport.findChildByTagId(parent, id);
         if (c == null)
         {
-            return ComponentSupport.findChildByTagId(ComponentSupport.getViewRoot(ctx, parent), id);
+            UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
+            Iterator<UIComponent> itr = root.getFacets().values().iterator();
+            while (itr.hasNext() && c == null)
+            {
+                UIComponent facet = itr.next();
+                c = ComponentSupport.findChildByTagId(facet, id);
+            }
+            return c;
         }
         else
         {
