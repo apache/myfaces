@@ -38,6 +38,7 @@ import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
 import javax.faces.view.StateManagementStrategy;
 import javax.faces.view.ViewDeclarationLanguage;
+import javax.faces.view.ViewDeclarationLanguageFactory;
 import javax.faces.view.ViewMetadata;
 
 import org.apache.myfaces.component.visit.VisitContextFactoryImpl;
@@ -114,10 +115,24 @@ public class DefaultFaceletsStateManagementStrategyTest extends
         super.tearDown();
     }
 
+    public static class MockViewDeclarationLanguageFactory extends ViewDeclarationLanguageFactory
+    {
+
+        public ViewDeclarationLanguage vdl = new MockViewDeclarationLanguage();
+        
+        @Override
+        public ViewDeclarationLanguage getViewDeclarationLanguage(String viewId)
+        {
+            return vdl;
+        }
+        
+    }
+    
     public void testSimpleSaveRestore() throws Exception
     {
-        ViewDeclarationLanguage vdl = new MockViewDeclarationLanguage();
-        DefaultFaceletsStateManagementStrategy stateManagement = new DefaultFaceletsStateManagementStrategy(vdl);
+        FactoryFinder.setFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY, MockViewDeclarationLanguageFactory.class.getName());
+        ViewDeclarationLanguage vdl =((MockViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)).vdl;
+        DefaultFaceletsStateManagementStrategy stateManagement = new DefaultFaceletsStateManagementStrategy();
         
         servletContext.addInitParameter("javax.faces.STATE_SAVING_METHOD", "client");
         
@@ -137,8 +152,9 @@ public class DefaultFaceletsStateManagementStrategyTest extends
     
     public void testSaveRestoreAddComponent() throws Exception
     {
-        ViewDeclarationLanguage vdl = new MockViewDeclarationLanguage();
-        DefaultFaceletsStateManagementStrategy stateManagement = new DefaultFaceletsStateManagementStrategy(vdl);
+        FactoryFinder.setFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY, MockViewDeclarationLanguageFactory.class.getName());
+        ViewDeclarationLanguage vdl =((MockViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)).vdl;
+        DefaultFaceletsStateManagementStrategy stateManagement = new DefaultFaceletsStateManagementStrategy();
         
         servletContext.addInitParameter("javax.faces.STATE_SAVING_METHOD", "client");
         
