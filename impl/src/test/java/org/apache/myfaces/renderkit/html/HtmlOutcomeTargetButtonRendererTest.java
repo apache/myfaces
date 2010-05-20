@@ -20,6 +20,7 @@ package org.apache.myfaces.renderkit.html;
 
 import java.io.StringWriter;
 
+import javax.faces.component.UIParameter;
 import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.html.HtmlForm;
 import javax.faces.component.html.HtmlOutcomeTargetButton;
@@ -32,6 +33,12 @@ import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 
+/**
+ * Tests for HtmlOutcomeTargetButtonRenderer.
+ * 
+ * @author Jakob Korherr (latest modification by $Author$)
+ * @version $Revision$ $Date$
+ */
 public class HtmlOutcomeTargetButtonRendererTest extends AbstractJsfTestCase 
 {
 
@@ -140,6 +147,54 @@ public class HtmlOutcomeTargetButtonRendererTest extends AbstractJsfTestCase
         
         // make sure the fragment is rendered
         assertTrue(output.contains("param1=value1#" + fragment));
+    }
+    
+    /**
+     * Tests if the h:button correctly includes an UIParameter
+     * with a non-null-name when creating the URL.
+     */
+    public void testIncludesUIParameterInURL()
+    {
+        // create the UIParameter and attach it
+        UIParameter param = new UIParameter();
+        param.setName("myParameter");
+        param.setValue("myValue");
+        outcomeTargetButton.getChildren().add(param);
+        
+        try
+        {
+            outcomeTargetButton.encodeAll(facesContext);
+            String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
+            assertTrue(output.contains("myParameter=myValue"));
+        }
+        catch (Exception e)
+        {
+            fail(e.getMessage());
+        }
+    }
+    
+    /**
+     * Tests if the h:button correctly skips an UIParameter
+     * with a null-name when creating the URL.
+     */
+    public void testSkipsNullValueOfUIParameterInURL()
+    {
+        // create the UIParameter with value = null and attach it
+        UIParameter param = new UIParameter();
+        param.setName("myNullParameter");
+        param.setValue(null);
+        outcomeTargetButton.getChildren().add(param);
+        
+        try
+        {
+            outcomeTargetButton.encodeAll(facesContext);
+            String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
+            assertFalse(output.contains("myNullParameter"));
+        }
+        catch (Exception e)
+        {
+            fail(e.getMessage());
+        }
     }
     
 }

@@ -397,4 +397,53 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
         assertTrue(output.contains("param2"));
         assertTrue(output.contains("value2"));
     }
+    
+    /**
+     * Tests if the h:link correctly includes an UIParameter
+     * with a non-null-name when creating the URL.
+     */
+    public void testOutcomeTargetLinkIncludesUIParameterInURL()
+    {
+        // create the UIParameter and attach it
+        UIParameter param = new UIParameter();
+        param.setName("myParameter");
+        param.setValue("myValue");
+        outcomeTargetLink.getChildren().add(param);
+        
+        try
+        {
+            outcomeTargetLink.encodeAll(facesContext);
+            String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
+            assertTrue(output.contains("myParameter=myValue"));
+        }
+        catch (Exception e)
+        {
+            fail(e.getMessage());
+        }
+    }
+    
+    /**
+     * Tests if the h:link correctly skips an UIParameter
+     * with a null-name when creating the URL.
+     */
+    public void testOutcomeTargetLinkSkipsNullValueOfUIParameterInURL()
+    {
+        // create the UIParameter with value = null and attach it
+        UIParameter param = new UIParameter();
+        param.setName("myNullParameter");
+        param.setValue(null);
+        outcomeTargetLink.getChildren().add(param);
+        
+        try
+        {
+            outcomeTargetLink.encodeAll(facesContext);
+            String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
+            assertFalse(output.contains("myNullParameter"));
+        }
+        catch (Exception e)
+        {
+            fail(e.getMessage());
+        }
+    }
+    
 }
