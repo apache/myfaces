@@ -135,51 +135,53 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 
         // grab our component
         UIComponent c = null;
-        if (_delegate instanceof RelocatableResourceHandler)
-        {
-            c = ((RelocatableResourceHandler)_delegate).findChildByTagId(ctx, parent, id);
-        }
-        else
-        {
-            c = ComponentSupport.findChildByTagId(parent, id); 
-        }
-
-        // Check if the component was relocated using
-        // composite:insertChildren or composite:insertFacet
         boolean componentFoundInserted = false;
-
-        if (c == null && mctx.isRefreshingTransientBuild() && UIComponent.isCompositeComponent(parent))
+        if (mctx.isRefreshingTransientBuild())
         {
-            if (facetName == null)
+            if (_delegate instanceof RelocatableResourceHandler)
             {
-                String targetClientId = (String) parent.getAttributes().get(InsertChildrenHandler.INSERT_CHILDREN_TARGET_ID);
-                if (targetClientId != null)
-                {
-                    UIComponent targetComponent = parent.findComponent(targetClientId.substring(parent.getClientId().length()+1));
-                    if (targetComponent != null)
-                    {
-                        c = ComponentSupport.findChildByTagId(targetComponent, id);
-                    }
-                }
-                if (c != null)
-                {
-                    c.getAttributes().put(InsertChildrenHandler.USES_INSERT_CHILDREN, Boolean.TRUE);
-                    componentFoundInserted = true;
-                }
+                c = ((RelocatableResourceHandler)_delegate).findChildByTagId(ctx, parent, id);
             }
             else
             {
-                String targetClientId = (String) parent.getAttributes().get(InsertFacetHandler.INSERT_FACET_TARGET_ID+facetName);
-                if (targetClientId != null)
+                c = ComponentSupport.findChildByTagId(parent, id); 
+            }
+    
+            // Check if the component was relocated using
+            // composite:insertChildren or composite:insertFacet
+            if (c == null && UIComponent.isCompositeComponent(parent))
+            {
+                if (facetName == null)
                 {
-                    UIComponent targetComponent = parent.findComponent(targetClientId.substring(parent.getClientId().length()+1));
-                    if (targetComponent != null)
+                    String targetClientId = (String) parent.getAttributes().get(InsertChildrenHandler.INSERT_CHILDREN_TARGET_ID);
+                    if (targetClientId != null)
                     {
-                        c = ComponentSupport.findChildByTagId(targetComponent, id);
-                        if (c != null)
+                        UIComponent targetComponent = parent.findComponent(targetClientId.substring(parent.getClientId().length()+1));
+                        if (targetComponent != null)
                         {
-                            c.getAttributes().put(InsertFacetHandler.USES_INSERT_FACET, Boolean.TRUE);
-                            componentFoundInserted = true;
+                            c = ComponentSupport.findChildByTagId(targetComponent, id);
+                        }
+                    }
+                    if (c != null)
+                    {
+                        c.getAttributes().put(InsertChildrenHandler.USES_INSERT_CHILDREN, Boolean.TRUE);
+                        componentFoundInserted = true;
+                    }
+                }
+                else
+                {
+                    String targetClientId = (String) parent.getAttributes().get(InsertFacetHandler.INSERT_FACET_TARGET_ID+facetName);
+                    if (targetClientId != null)
+                    {
+                        UIComponent targetComponent = parent.findComponent(targetClientId.substring(parent.getClientId().length()+1));
+                        if (targetComponent != null)
+                        {
+                            c = ComponentSupport.findChildByTagId(targetComponent, id);
+                            if (c != null)
+                            {
+                                c.getAttributes().put(InsertFacetHandler.USES_INSERT_FACET, Boolean.TRUE);
+                                componentFoundInserted = true;
+                            }
                         }
                     }
                 }

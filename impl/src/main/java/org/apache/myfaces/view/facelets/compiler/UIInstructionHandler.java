@@ -30,7 +30,6 @@ import javax.faces.component.UniqueIdVendor;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 
-import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.el.ELText;
 import org.apache.myfaces.view.facelets.tag.composite.InsertChildrenHandler;
@@ -90,43 +89,47 @@ final class UIInstructionHandler extends AbstractUIHandler
             String id = ctx.generateUniqueId(this.id);
 
             // grab our component
-            UIComponent c = ComponentSupport.findChildByTagId(parent, id);
-            boolean componentFoundInserted = false;
+            UIComponent c = null;
             FaceletCompositionContext mctx= FaceletCompositionContext.getCurrentInstance(ctx);
-            if (c == null && mctx.isRefreshTransientBuildOnPSS() && 
-                    mctx.isRefreshingTransientBuild() && UIComponent.isCompositeComponent(parent))
+            boolean componentFoundInserted = false;
+            if (mctx.isRefreshingTransientBuild())
             {
-                String facetName = this.getFacetName(ctx, parent);
-                if (facetName == null)
+                c = ComponentSupport.findChildByTagId(parent, id);
+                if (c == null && mctx.isRefreshTransientBuildOnPSS() && 
+                        mctx.isRefreshingTransientBuild() && UIComponent.isCompositeComponent(parent))
                 {
-                    String targetClientId = (String) parent.getAttributes().get(InsertChildrenHandler.INSERT_CHILDREN_TARGET_ID);
-                    if (targetClientId != null)
+                    String facetName = this.getFacetName(ctx, parent);
+                    if (facetName == null)
                     {
-                        UIComponent targetComponent = parent.findComponent(targetClientId.substring(parent.getClientId().length()+1));
-                        if (targetComponent != null)
+                        String targetClientId = (String) parent.getAttributes().get(InsertChildrenHandler.INSERT_CHILDREN_TARGET_ID);
+                        if (targetClientId != null)
                         {
-                            c = ComponentSupport.findChildByTagId(targetComponent, id);
+                            UIComponent targetComponent = parent.findComponent(targetClientId.substring(parent.getClientId().length()+1));
+                            if (targetComponent != null)
+                            {
+                                c = ComponentSupport.findChildByTagId(targetComponent, id);
+                            }
+                        }
+                        if (c != null)
+                        {
+                            c.getAttributes().put(InsertChildrenHandler.USES_INSERT_CHILDREN, Boolean.TRUE);
+                            componentFoundInserted = true;
                         }
                     }
-                    if (c != null)
+                    else
                     {
-                        c.getAttributes().put(InsertChildrenHandler.USES_INSERT_CHILDREN, Boolean.TRUE);
-                        componentFoundInserted = true;
-                    }
-                }
-                else
-                {
-                    String targetClientId = (String) parent.getAttributes().get(InsertFacetHandler.INSERT_FACET_TARGET_ID+facetName);
-                    if (targetClientId != null)
-                    {
-                        UIComponent targetComponent = parent.findComponent(targetClientId.substring(parent.getClientId().length()+1));
-                        if (targetComponent != null)
+                        String targetClientId = (String) parent.getAttributes().get(InsertFacetHandler.INSERT_FACET_TARGET_ID+facetName);
+                        if (targetClientId != null)
                         {
-                            c = ComponentSupport.findChildByTagId(targetComponent, id);
-                            if (c != null)
+                            UIComponent targetComponent = parent.findComponent(targetClientId.substring(parent.getClientId().length()+1));
+                            if (targetComponent != null)
                             {
-                                c.getAttributes().put(InsertFacetHandler.USES_INSERT_FACET, Boolean.TRUE);
-                                componentFoundInserted = true;
+                                c = ComponentSupport.findChildByTagId(targetComponent, id);
+                                if (c != null)
+                                {
+                                    c.getAttributes().put(InsertFacetHandler.USES_INSERT_FACET, Boolean.TRUE);
+                                    componentFoundInserted = true;
+                                }
                             }
                         }
                     }
