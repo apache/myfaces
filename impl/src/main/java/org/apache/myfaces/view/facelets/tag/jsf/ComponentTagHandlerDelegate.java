@@ -263,6 +263,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         // first allow c to get populated
         _delegate.applyNextHandler(ctx, c);
 
+        boolean oldProcessingEvents = facesContext.isProcessingEvents();
         // finish cleaning up orphaned children
         if (componentFound)
         {
@@ -270,6 +271,10 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
 
             if (!componentFoundInserted)
             {
+                if (mctx.isRefreshingTransientBuild())
+                {
+                    facesContext.setProcessingEvents(false); 
+                }
                 if (facetName == null)
                 {
                     parent.getChildren().remove(c);
@@ -277,6 +282,10 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 else
                 {
                     ComponentSupport.removeFacet(ctx, parent, c, facetName);
+                }
+                if (mctx.isRefreshingTransientBuild())
+                {
+                    facesContext.setProcessingEvents(oldProcessingEvents);
                 }
             }
         }
@@ -345,6 +354,10 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             // add to the tree afterwards
             // this allows children to determine if it's
             // been part of the tree or not yet
+            if (componentFound && mctx.isRefreshingTransientBuild())
+            {
+                facesContext.setProcessingEvents(false); 
+            }
             if (facetName == null)
             {
                 parent.getChildren().add(c);
@@ -352,6 +365,10 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             else
             {
                 ComponentSupport.addFacet(ctx, parent, c, facetName);
+            }
+            if (componentFound && mctx.isRefreshingTransientBuild())
+            {
+                facesContext.setProcessingEvents(oldProcessingEvents);
             }
         }
         /*

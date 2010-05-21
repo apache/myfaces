@@ -66,13 +66,23 @@ public class InsertChildrenHandler extends TagHandler
             //Prevent deletion of components present on parentCompositeComponent. This components will not be changed.
             List<UIComponent> childList = new ArrayList<UIComponent>(parent.getChildren());
             
+            boolean oldProcessingEvents = ctx.getFacesContext().isProcessingEvents();
+            
             for (UIComponent tcChild : childList)
             {
                 if (tcChild.getAttributes().remove(USES_INSERT_CHILDREN) != null)
                 {
                     ComponentSupport.finalizeForDeletion(tcChild);
-                    parent.getChildren().remove(tcChild);
-                    parent.getChildren().add(tcChild);
+                    ctx.getFacesContext().setProcessingEvents(false);
+                    try
+                    {
+                        parent.getChildren().remove(tcChild);
+                        parent.getChildren().add(tcChild);
+                    }
+                    finally
+                    {
+                        ctx.getFacesContext().setProcessingEvents(oldProcessingEvents);
+                    }
                 }
             }
             return;
@@ -118,7 +128,7 @@ public class InsertChildrenHandler extends TagHandler
                 //All composite components are NamingContainer and the target is inside it, so we can remove the prefix.
                 _targetComponent = parentCompositeComponent.findComponent(_targetClientId.substring(parentCompositeComponent.getClientId().length()+1));
             }
-            
+
             if (parentCompositeComponent.getChildCount() <= 0)
             {
                 return;

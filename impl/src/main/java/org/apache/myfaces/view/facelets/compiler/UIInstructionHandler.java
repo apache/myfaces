@@ -182,13 +182,23 @@ final class UIInstructionHandler extends AbstractUIHandler
                 }                
                 c.getAttributes().put(ComponentSupport.MARK_CREATED, id);
             }
+            
+            boolean oldProcessingEvents = ctx.getFacesContext().isProcessingEvents();
             // finish cleaning up orphaned children
             if (componentFound)
             {
                 ComponentSupport.finalizeForDeletion(c);
                 if (!componentFoundInserted)
                 {
+                    if (mctx.isRefreshingTransientBuild())
+                    {
+                        ctx.getFacesContext().setProcessingEvents(false); 
+                    }
                     parent.getChildren().remove(c);
+                    if (mctx.isRefreshingTransientBuild())
+                    {
+                        ctx.getFacesContext().setProcessingEvents(oldProcessingEvents);
+                    }
                 }
             }
             if ( mctx.isRefreshingTransientBuild() 
@@ -231,7 +241,15 @@ final class UIInstructionHandler extends AbstractUIHandler
             }
             if (!componentFoundInserted)
             {
+                if (componentFound && mctx.isRefreshingTransientBuild())
+                {
+                    ctx.getFacesContext().setProcessingEvents(false); 
+                }
                 this.addComponent(ctx, parent, c);
+                if (componentFound && mctx.isRefreshingTransientBuild())
+                {
+                    ctx.getFacesContext().setProcessingEvents(oldProcessingEvents);
+                }
             }
         }
     }

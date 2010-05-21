@@ -295,7 +295,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             {
                 context.getAttributes().put(REFRESHING_TRANSIENT_BUILD, Boolean.TRUE);
                 
-                context.setProcessingEvents(false);
+                // In theory, this should be disabled on ComponentTagHandlerDelegate,
+                // otherwise we could lost PostAddToViewEvent / PreRemoveFromViewEvent
+                // caused by c:if effect or facelets cleanup algorithm
+                //context.setProcessingEvents(false);
             }
             // populate UIViewRoot
             _getFacelet(renderedViewId).apply(context, view);
@@ -308,7 +311,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             }
             if (refreshTransientBuild)
             {
-                context.setProcessingEvents(true);
+                //context.setProcessingEvents(true);
                 
                 if (!usePartialStateSavingOnThisView || refreshTransientBuildOnPSS)
                 {
