@@ -210,8 +210,6 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
         FaceletContext faceletContext = (FaceletContext) context.getAttributes().get(
                 FaceletContext.FACELET_CONTEXT_KEY);
         
-        String validatorId = _delegate.getValidatorConfig().getValidatorId();
-        
         // spec: if the disabled attribute is true, the validator should not be added.
         // in addition, the validatorId, if present, should be added to an exclusion
         // list on the parent component to prevent a default validator with the same
@@ -219,6 +217,7 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
         if (_delegate.isDisabled(faceletContext))
         {
             // tag is disabled --> add its validatorId to the parent's exclusion list
+            String validatorId = _delegate.getValidatorConfig().getValidatorId();
             if (validatorId != null && !"".equals(validatorId))
             {
                 List<String> exclusionList = (List<String>) parent.getAttributes()
