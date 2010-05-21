@@ -37,7 +37,6 @@ import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandlerDelegate;
 import javax.faces.view.facelets.ValidatorHandler;
 
-import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.compiler.FaceletsCompilerUtils;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
@@ -205,27 +204,6 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
         
         String validatorId = _delegate.getValidatorConfig().getValidatorId();
         
-        // check if the parent's exclusion list already contains the validatorId
-        List<String> exclusionList 
-                = (List<String>) parent.getAttributes().get(VALIDATOR_ID_EXCLUSION_LIST_KEY);
-        if (exclusionList != null && exclusionList.contains(validatorId))
-        {
-            // FIXME Mojarra does not do this at the moment, but the spec says:
-            // "[...] (the validatorId) should be added to an exclusion
-            // list on the parent component to prevent a default validator with the same
-            // id from beeing registered on the component."
-            // 
-            // You can test this with the following scenario:
-            // <h:inputText>
-            //     <f:validateBean disabled="true"/>
-            //     <f:validateBean />
-            // </h:inputText>
-            // --> the second <f:validateBean /> shouldn't be registered! -=Jakob Korherr=-
-            
-            // do not add the validator
-            return;
-        }
-        
         // spec: if the disabled attribute is true, the validator should not be added.
         // in addition, the validatorId, if present, should be added to an exclusion
         // list on the parent component to prevent a default validator with the same
@@ -235,6 +213,8 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
             // tag is disabled --> add its validatorId to the parent's exclusion list
             if (validatorId != null && !"".equals(validatorId))
             {
+                List<String> exclusionList = (List<String>) parent.getAttributes()
+                        .get(VALIDATOR_ID_EXCLUSION_LIST_KEY);
                 if (exclusionList == null)
                 {
                     exclusionList = new ArrayList<String>();
