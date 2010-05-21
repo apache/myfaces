@@ -37,6 +37,7 @@ import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandlerDelegate;
 import javax.faces.view.facelets.ValidatorHandler;
 
+import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.compiler.FaceletsCompilerUtils;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
@@ -192,7 +193,14 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
     @Override
     public MetaRuleset createMetaRuleset(Class type)
     {
-        return new MetaRulesetImpl(_delegate.getTag(), type).ignore("binding");
+        MetaRuleset metaRuleset = new MetaRulesetImpl(_delegate.getTag(), type);
+        
+        // ignore binding and disabled, because they are handled by DelegatingMetaTagHandler
+        metaRuleset.ignore(JSFAttr.BINDING_ATTR).ignore(JSFAttr.DISABLED_ATTR);
+        // ignore for, because it is handled by FaceletsAttachedObjectHandler
+        metaRuleset.ignore(JSFAttr.FOR_ATTR);
+        
+        return metaRuleset;
     }
 
     @SuppressWarnings("unchecked")
