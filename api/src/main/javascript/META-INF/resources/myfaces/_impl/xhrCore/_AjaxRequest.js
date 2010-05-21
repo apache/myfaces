@@ -28,6 +28,7 @@
  * Author: Ganesh Jung (latest modification by $Author: ganeshpuri $)
  * Version: $Revision: 1.4 $ $Date: 2009/05/31 09:16:44 $
  */
+/** @namespace myfaces._impl.xhrCore._AjaxRequest */
 myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", Object, {
 
     /*all instance vars can be set from the outside
@@ -86,7 +87,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", Ob
             /*namespace remapping for readability*/
             var _Lang = myfaces._impl._util._Lang;
             //we fetch in the standard arguments
-            _Lang.applyArguments(this, arguments);
+            _Lang.applyArgs(this, arguments);
 
             //if our response handler is not set
             if (!this._response) {
@@ -126,9 +127,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", Ob
             this._xhr.setRequestHeader(this._CONTENT_TYPE, this._contentType);
             this._xhr.setRequestHeader(this._HEAD_FACES_REQ, this._VAL_AJAX);
 
-            this._xhr.onreadystatechange = _Lang.hitch(this, this.requestCallback);
+            this._xhr.onreadystatechange = _Lang.hitch(this, this.callback);
             var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
-            _Impl.sendEvent(this._xhr, this._context, myfaces._impl.core.Impl._AJAX_STAGE_BEGIN);
+            _Impl.sendEvent(this._xhr, this._context, myfaces._impl.core.Impl.BEGIN);
             this._xhr.send(this._requestParameters);
             if (this._timeout && this._onTimeout) {
                 var timeoutId = window.setTimeout(this._onTimeout, this._timeout);
@@ -154,7 +155,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", Ob
      * Callback method to process the Ajax response
      * triggered by RequestQueue
      */
-    requestCallback : function() {
+    callback : function() {
         var READY_STATE_DONE = 4;
         try {
             var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
@@ -168,7 +169,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", Ob
                 }
             }
         } catch (e) {
-            this._onException(this._xhr, this._context, "myfaces._impl.xhrCore._AjaxRequest", "requestCallback", e);
+            this._onException(this._xhr, this._context, "myfaces._impl.xhrCore._AjaxRequest", "callback", e);
         }
     },
 

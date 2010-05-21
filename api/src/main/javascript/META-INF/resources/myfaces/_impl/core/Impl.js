@@ -12,6 +12,9 @@
  *  limitations under the License.
  *  under the License.
  */
+
+/** @namespace myfaces._impl.core.Impl*/
+/** @namespace myfaces._impl._util._ListenerQueue */
 myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Object, {
 
     //third option myfaces._impl.xhrCoreAjax which will be the new core impl for now
@@ -20,47 +23,47 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
     /**
      * external event listener queue!
      */
-    _eventListenerQueue : new (myfaces._impl.core._Runtime.getGlobalConfig("eventListenerQueue", myfaces._impl._util._ListenerQueue))(),
+    _evtListeners : new (myfaces._impl.core._Runtime.getGlobalConfig("eventListenerQueue", myfaces._impl._util._ListenerQueue))(),
 
     /**
      * external error listener queue!
      */
-    _errorListenerQueue : new (myfaces._impl.core._Runtime.getGlobalConfig("errorListenerQueue", myfaces._impl._util._ListenerQueue))(),
+    _errListeners : new (myfaces._impl.core._Runtime.getGlobalConfig("errorListenerQueue", myfaces._impl._util._ListenerQueue))(),
 
     /*CONSTANTS*/
 
     /*internal identifiers for options*/
-    _OPT_IDENT_ALL : "@all",
-    _OPT_IDENT_NONE : "@none",
-    _OPT_IDENT_THIS : "@this",
-    _OPT_IDENT_FORM : "@form",
+    IDENT_ALL : "@all",
+    IDENT_NONE : "@none",
+    IDENT_THIS : "@this",
+    IDENT_FORM : "@form",
 
     /*
      * [STATIC] constants
      */
 
-    _PROP_PARTIAL_SOURCE : "javax.faces.source",
-    _PROP_VIEWSTATE : "javax.faces.ViewState",
-    _PROP_AJAX : "javax.faces.partial.ajax",
-    _PROP_EXECUTE : "javax.faces.partial.execute",
-    _PROP_RENDER : "javax.faces.partial.render",
-    _PROP_EVENT : "javax.faces.partial.event",
+    P_PARTIAL_SOURCE : "javax.faces.source",
+    P_VIEWSTATE : "javax.faces.ViewState",
+    P_AJAX : "javax.faces.partial.ajax",
+    P_EXECUTE : "javax.faces.partial.execute",
+    P_RENDER : "javax.faces.partial.render",
+    P_EVT : "javax.faces.partial.event",
 
     /* message types */
-    _MSG_TYPE_ERROR : "error",
-    _MSG_TYPE_EVENT : "event",
+    ERROR : "error",
+    EVENT : "event",
 
     /* event emitting stages */
-    _AJAX_STAGE_BEGIN : "begin",
-    _AJAX_STAGE_COMPLETE : "complete",
-    _AJAX_STAGE_SUCCESS : "success",
+    BEGIN : "begin",
+    COMPLETE : "complete",
+    SUCCESS : "success",
 
     /*ajax errors spec 14.4.2*/
-    _ERROR_HTTPERROR : "httpError",
-    _ERROR_EMPTY_RESPONSE : "emptyResponse",
-    _ERROR_MALFORMEDXML : "malformedXML",
-    _ERROR_SERVER_ERROR : "serverError",
-    _ERROR_CLIENT_ERROR : "clientError",
+    HTTPERROR : "httpError",
+    EMPTY_RESPONSE : "emptyResponse",
+    MALFORMEDXML : "malformedXML",
+    SERVER_ERROR : "serverError",
+    CLIENT_ERROR : "clientError",
 
 
 
@@ -72,63 +75,24 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
      * @throws error in case of the given element not being of type form!
      * https://issues.apache.org/jira/browse/MYFACES-2110
      */
-    getViewState : function(formElement) {
+    getViewState : function(form) {
         /**
          *  typecheck assert!, we opt for strong typing here
          *  because it makes it easier to detect bugs
          */
-        if ('undefined' != typeof formElement && null != formElement) {
-            formElement = myfaces._impl._util._Lang.byId(formElement);
+        if (form) {
+            form = myfaces._impl._util._Lang.byId(form);
         }
 
-        if ('undefined' == typeof(formElement)
-                || null == formElement
-                || 'undefined' == typeof(formElement.nodeName)
-                || null == formElement.nodeName
-                || formElement.nodeName.toLowerCase() != "form") {
+        if (!form
+                || !form.nodeName
+                || form.nodeName.toLowerCase() != "form") {
             throw new Error("jsf.viewState: param value not of type form!");
         }
 
         var ajaxUtils = new myfaces._impl.xhrCore._AjaxUtils(0);
-        return ajaxUtils.encodeSubmittableFields(null, null, null, formElement, null);
+        return ajaxUtils.encodeSubmittableFields(null, null, null, form, null);
 
-    },
-
-    /**
-     * internal assertion check for the element parameter
-     * it cannot be null or undefined
-     * it must be either a string or a valid existing dom node
-     */
-    _assertElement : function(/*String|Dom Node*/ element) {
-        /*namespace remap for our local function context we mix the entire function namespace into
-         *a local function variable so that we do not have to write the entire namespace
-         *all the time
-         **/
-        var _Lang = myfaces._impl._util._Lang;
-
-        /**
-         * assert element
-         */
-        if ('undefined' == typeof( element ) || null == element) {
-            throw new Error("jsf.ajax, element must be set!");
-        }
-        //        if (!JSF2Utils.isString(element) && !(element instanceof Node)) {
-        //            throw new Error("jsf.ajax, element either must be a string or a dom node");
-        //        }
-
-        element = _Lang.byId(element);
-        if ('undefined' == typeof element || null == element) {
-            throw new Error("Element either must be a string to a or must be a valid dom node");
-        }
-    },
-
-    _assertFunction : function(func) {
-        if ('undefined' == typeof func || null == func) {
-            return;
-        }
-        if (!(func instanceof Function)) {
-            throw new Error("Functioncall " + func + " is not a function! ");
-        }
     },
 
     /**
@@ -142,11 +106,11 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
      *  <li> all requests must be queued with a client side request queue to ensure the request ordering!</li>
      * </ul>
      *
-     * @param {String|Node} element any dom element no matter being it html or jsf, from which the event is emitted
+     * @param {String|Node} elem any dom element no matter being it html or jsf, from which the event is emitted
      * @param {|Event|} event any javascript event supported by that object
      * @param {|Object|} options  map of options being pushed into the ajax cycle
      */
-    request : function(element, event, options) {
+    request : function(elem, event, options) {
 
         /*namespace remap for our local function context we mix the entire function namespace into
          *a local function variable so that we do not have to write the entire namespace
@@ -158,138 +122,147 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
          * we cross reference statically hence the mapping here
          * the entire mapping between the functions is stateless
          */
-        element = _Lang.byId(element);
-        event = ('undefined' == typeof event && window.event) ? window.event : event;
+        //null definitely means no event passed down so we skip the ie specific checks
+        if('undefined' == typeof event) {
+            event = window.event || null;
+        }
 
-        if ('undefined' != typeof element && null != element) {
+        elem = _Lang.byId(elem);
+
+        if (elem) {
             //detached element handling, we also store the element name
             //to get a fallback option in case the identifier is not determinable
             // anymore, in case of a framework induced detachment the element.name should
             // be shared if the identifier is not determinable anymore
-            elementId = ('undefined' != typeof element.id) ? element.id : null;
-            if ((elementId == null || elementId == '') && 'undefined' != typeof element.name) {
-                elementId = element.name;
+            elementId = elem.id || null;
+            if ((elementId == null || elementId == '') && elem.name) {
+                elementId = elem.name;
             }
         }
 
         /*assert if the onerror is set and once if it is set it must be of type function*/
-        this._assertFunction(options.onerror);
+        _Lang.assertType(options.onerror, "function");
         /*assert if the onevent is set and once if it is set it must be of type function*/
-        this._assertFunction(options.onevent);
+        _Lang.assertType(options.onevent, "function");
 
         /*
          * We make a copy of our options because
          * we should not touch the incoming params!
          */
-        var passThroughArguments = _Lang.mixMaps({}, options, true);
+        var passThrgh = _Lang.mixMaps({}, options, true);
 
         /*additional passthrough cleanup*/
         /*ie6 supportive code to prevent browser leaks*/
-        passThroughArguments.onevent = null;
-        delete passThroughArguments.onevent;
+        passThrgh.onevent = null;
+        delete passThrgh.onevent;
         /*ie6 supportive code to prevent browser leaks*/
-        passThroughArguments.onerror = null;
-        delete passThroughArguments.onerror;
+        passThrgh.onerror = null;
+        delete passThrgh.onerror;
 
-        if ('undefined' != typeof event && null != event) {
-            passThroughArguments[this._PROP_EVENT] = event.type;
+        if (event) {
+            passThrgh[this.P_EVT] = event.type;
         }
 
         /**
          * ajax pass through context with the source
          * onevent and onerror
          */
-        var ajaxContext = {};
-        ajaxContext.source = element;
-        ajaxContext.onevent = options.onevent;
-        ajaxContext.onerror = options.onerror;
+        var context = {};
+        context.source = elem;
+        context.onevent = options.onevent;
+        context.onerror = options.onerror;
 
         /**
          * fetch the parent form
          */
 
-        var sourceForm = myfaces._impl._util._Dom.fuzzyFormDetection(element);
-        var _Lang = myfaces._impl._util._Lang;
-        if (null == sourceForm && 'undefined' != typeof event && null != event) {
-            sourceForm = myfaces._impl._util._Dom.fuzzyFormDetection(_Lang.getEventTarget(event));
-            if (null == sourceForm) {
-                throw Error("Sourceform could not be determined, either because element is not attached to a form or we have multiple forms with named elements of the same identifier or name, stopping the ajax processing");
+        var form = myfaces._impl._util._Dom.fuzzyFormDetection(elem);
+
+        var formErr = "Sourceform could not be determined, either because element is not attached to a form or we have multiple forms with named elements of the same identifier or name, stopping the ajax processing";
+
+        if (!form && event) {
+            form = myfaces._impl._util._Dom.fuzzyFormDetection(_Lang.getEventTarget(event));
+            if (!form) {
+                throw Error(formErr);
             }
-        } else if (null == sourceForm) {
-            throw Error("Sourceform could not be determined, either because element is not attached to a form or we have multiple forms with named elements of the same identifier or name, stopping the ajax processing");
+        } else if (!form) {
+            throw Error(formErr);
         }
 
         /**
          * binding contract the javax.faces.source must be set
          */
-        passThroughArguments[this._PROP_PARTIAL_SOURCE] = elementId;
+        passThrgh[this.P_PARTIAL_SOURCE] = elementId;
 
         /**
          * javax.faces.partial.ajax must be set to true
          */
-        passThroughArguments[this._PROP_AJAX] = true;
+        passThrgh[this.P_AJAX] = true;
 
         /**
          * if execute or render exist
          * we have to pass them down as a blank delimited string representation
          * of an array of ids!
          */
-        if (_Lang.exists(passThroughArguments, "execute")) {
+        var exec, none, all, render = null;
+        if (passThrgh.execute) {
             /*the options must be a blank delimited list of strings*/
-            var execString = _Lang.arrayToString(passThroughArguments.execute, ' ');
-            var execNone = execString.indexOf(this._OPT_IDENT_NONE) != -1;
-            var execAll = execString.indexOf(this._OPT_IDENT_ALL) != -1;
-            if (!execNone && !execAll) {
-                execString = execString.replace(this._OPT_IDENT_FORM, sourceForm.id);
-                execString = execString.replace(this._OPT_IDENT_THIS, elementId);
+            exec = _Lang.arrToString(passThrgh.execute, ' ');
+            none = exec.indexOf(this.IDENT_NONE) != -1;
+            all = exec.indexOf(this.IDENT_ALL) != -1;
+            if (!none && !all) {
+                exec = exec.replace(this.IDENT_FORM, form.id);
+                exec = exec.replace(this.IDENT_THIS, elementId);
 
-                passThroughArguments[this._PROP_EXECUTE] = execString;
-            } else if (execAll) {
-                passThroughArguments[this._PROP_EXECUTE] = this._OPT_IDENT_ALL;
+                passThrgh[this.P_EXECUTE] = exec;
+            } else if (all) {
+                passThrgh[this.P_EXECUTE] = this.IDENT_ALL;
             }
 
-            passThroughArguments.execute = null;
+            passThrgh.execute = null;
             /*remap just in case we have a valid pointer to an existing object*/
-            delete passThroughArguments.execute;
+            delete passThrgh.execute;
         } else {
-            passThroughArguments[this._PROP_EXECUTE] = elementId;
+            passThrgh[this.P_EXECUTE] = elementId;
         }
 
-        if (_Lang.exists(passThroughArguments, "render")) {
-            var renderString = _Lang.arrayToString(passThroughArguments.render, ' ');
-            var renderNone = renderString.indexOf(this._OPT_IDENT_NONE) != -1;
-            var renderAll = renderString.indexOf(this._OPT_IDENT_ALL) != -1;
-            if (!renderNone && !renderAll) {
-                renderString = renderString.replace(this._OPT_IDENT_FORM, sourceForm.id);
-                renderString = renderString.replace(this._OPT_IDENT_THIS, elementId);
-                passThroughArguments[this._PROP_RENDER] = renderString;
-                passThroughArguments.render = null;
-            } else if (renderAll) {
-                passThroughArguments[this._PROP_RENDER] = this._OPT_IDENT_ALL;
+        if (passThrgh.render) {
+            render = _Lang.arrToString(passThrgh.render, ' ');
+            none = render.indexOf(this.IDENT_NONE) != -1;
+            all = render.indexOf(this.IDENT_ALL) != -1;
+            if (!none && !all) {
+                render = render.replace(this.IDENT_FORM, form.id);
+                render = render.replace(this.IDENT_THIS, elementId);
+                passThrgh[this.P_RENDER] = render;
+                passThrgh.render = null;
+            } else if (all) {
+                passThrgh[this.P_RENDER] = this.IDENT_ALL;
 
             }
-            delete passThroughArguments.render;
+            delete passThrgh.render;
         }
 
         //implementation specific options are added to the context for further processing
-        if ('undefined' != typeof passThroughArguments.myfaces && null != passThroughArguments.myfaces) {
-            ajaxContext.myfaces = passThroughArguments.myfaces;
-            delete passThroughArguments.myfaces;
+        if (passThrgh.myfaces) {
+            context.myfaces = passThrgh.myfaces;
+            delete passThrgh.myfaces;
         }
 
-        this._transport.xhrQueuedPost(element, sourceForm, ajaxContext, passThroughArguments);
+        this._transport.xhrQueuedPost(elem, form, context, passThrgh);
 
     },
 
     addOnError : function(/*function*/errorListener) {
         /*error handling already done in the assert of the queue*/
-        this._errorListenerQueue.enqueue(errorListener);
+        this._errListeners.enqueue(errorListener);
     },
 
     addOnEvent : function(/*function*/eventListener) {
         /*error handling already done in the assert of the queue*/
-        this._eventListenerQueue.enqueue(eventListener);
+        this._evtListeners.enqueue(eventListener);
     },
+
+
 
     /**
      * implementation triggering the error chain
@@ -313,10 +286,10 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         var eventData = {};
         //we keep this in a closure because we might reuse it for our serverErrorMessage
         var malFormedMessage = function() {
-            return ('undefined' != typeof name && name == myfaces._impl.core.Impl._ERROR_MALFORMEDXML) ? "The server response could not be parsed, the server has returned with a response which is not xml !" : "";
+            return (name && name === myfaces._impl.core.Impl.MALFORMEDXML) ? "The server response could not be parsed, the server has returned with a response which is not xml !" : "";
         };
 
-        eventData.type = this._MSG_TYPE_ERROR;
+        eventData.type = this.ERROR;
 
         eventData.status = name;
         eventData.serverErrorName = serverErrorName;
@@ -337,15 +310,15 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         }
 
         /*now we serve the queue as well*/
-        this._errorListenerQueue.broadcastEvent(eventData);
+        this._errListeners.broadcastEvent(eventData);
 
-        if (jsf.getProjectStage() === "Development" && this._errorListenerQueue.length() == 0) {
+        if (jsf.getProjectStage() === "Development" && this._errListeners.length() == 0) {
             var defaultErrorOutput = myfaces._impl.core._Runtime.getGlobalConfig("defaultErrorOutput", alert);
             var finalMessage = [];
 
-            finalMessage.push(('undefined' != typeof name && null != name) ? name : "");
-            finalMessage.push(('undefined' != typeof serverErrorName && null != serverErrorName) ? serverErrorName : "");
-            finalMessage.push(('undefined' != typeof serverErrorMessage && null != serverErrorMessage) ? serverErrorMessage : "");
+            finalMessage.push((name) ? name : "");
+            finalMessage.push((serverErrorName) ? serverErrorName : "");
+            finalMessage.push((serverErrorMessage) ? serverErrorMessage : "");
             finalMessage.push(malFormedMessage());
 
             defaultErrorOutput(finalMessage.join("-") + " Note, this message is only sent, because project stage is development and no " +
@@ -358,12 +331,12 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
      */
     sendEvent : function sendEvent(/*Object*/request, /*Object*/ context, /*event name*/ name) {
         var eventData = {};
-        eventData.type = this._MSG_TYPE_EVENT;
+        eventData.type = this.EVENT;
 
         eventData.status = name;
         eventData.source = context.source;
 
-        if (name !== this._AJAX_STAGE_BEGIN) {
+        if (name !== this.BEGIN) {
 
             try {
                 eventData.responseCode = request.status;
@@ -372,7 +345,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
 
             } catch (e) {
                 var impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
-                impl.sendError(request, context, this._ERROR_CLIENT_ERROR, "ErrorRetrievingResponse",
+                impl.sendError(request, context, this.CLIENT_ERROR, "ErrorRetrievingResponse",
                         "Parts of the response couldn't be retrieved when constructing the event data: " + e);
                 //client errors are not swallowed
                 throw e;
@@ -381,13 +354,13 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         }
 
         /**/
-        if (myfaces._impl._util._Lang.exists(context, "onevent")) {
+        if (context.onevent) {
             /*calling null to preserve the original scope*/
             context.onevent.call(null, eventData);
         }
 
         /*now we serve the queue as well*/
-        this._eventListenerQueue.broadcastEvent(eventData);
+        this._evtListeners.broadcastEvent(eventData);
     },
 
     /**
@@ -412,12 +385,10 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         {
             if (scriptTags[i].src.search(/\/javax\.faces\.resource\/jsf\.js.*ln=javax\.faces/) != -1)
             {
-                /* try to extract stage=XXX */
-                var result = scriptTags[i].src.match(/stage=([^&;]*)/);
                 if (result)
                 {
-                    /* we found stage=XXX */
-                    /* return only valid values of ProjectStage */
+                    // we found stage=XXX
+                    // return only valid values of ProjectStage
                     if (result[1] == "Production"
                             || result[1] == "Development"
                             || result[1] == "SystemTest"
@@ -428,7 +399,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
                 }
                 else
                 {
-                    /* we found the script, but there was no stage parameter --> Production */
+                    //we found the script, but there was no stage parameter --> Production
                     return "Production";
                 }
             }
@@ -478,7 +449,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         //assertions source either null or set as dom element:
 
         if ('undefined' == typeof source) {
-            throw new Error(" source must be defined");
+            throw new Error(" source must be defined or null");
             //allowed chain datatypes
         } else if ('function' == typeof source) {
             throw new Error(" source cannot be a function (probably source and event were not defined or set to null");
@@ -494,23 +465,22 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
             throw new Error(" an event must be passed down (either a an event object null or undefined) ");
         }
 
-        for (var loop = 2; loop < len; loop++) {
+        for (var cnt = 2; cnt < len; cnt++) {
             //we do not change the scope of the incoming functions
             //but we reuse the argument array capabilities of apply
-            var retVal;
+            var ret;
 
-            if ('function' == typeof arguments[loop]) {
-                retVal = arguments[loop].call(source, event);
+            if ('function' == typeof arguments[cnt]) {
+                ret = arguments[cnt].call(source, event);
             } else {
                 //either a function or a string can be passed in case of a string we have to wrap it into another function
-                retVal = new Function("event", arguments[loop]).call(source, event);
+                ret = new Function("event", arguments[cnt]).call(source, event);
             }
             //now if one function returns false in between we stop the execution of the cycle
             //here, note we do a strong comparison here to avoid constructs like 'false' or null triggering
-            if ('undefined' != typeof retVal && retVal === false) {
+            if (ret === false /*undefined check implicitly done here by using a strong compare*/) {
                 return false;
             }
-
         }
         return true;
 

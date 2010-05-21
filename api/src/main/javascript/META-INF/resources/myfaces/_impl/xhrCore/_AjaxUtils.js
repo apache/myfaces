@@ -17,11 +17,12 @@
  * Version: $Revision: 1.1 $ $Date: 2009/05/26 21:24:42 $
  *
  */
-
+/** @namespace myfaces._impl.xhrCore._AjaxUtils */
 myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Object, {
     /**
      * Constructor
-     * @param {String} alarmThreshold - Error Level
+     * @param {function} onException - exception handler
+     * @param {function} onWarning - warning handler
      */
     constructor_ : function(onException, onWarning) {
 
@@ -40,14 +41,14 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
     encodeSubmittableFields : function(request, context, item,
                                        parentItem, partialIds) {
         try {
-            if (parentItem == null) {
+            if (!parentItem) {
                 this._onWarning(request, context,"myfaces._impl.xhrCore._AjaxUtils" ,"encodeSubmittableFields "+"Html-Component is not nested in a Form-Tag");
                 return null;
             }
 
             var strBuf = [];
 
-            if (partialIds != null && partialIds.length > 0) {
+            if (partialIds && partialIds.length > 0) {
                 // recursivly check items
                 this.encodePartialSubmit(parentItem, false, partialIds, strBuf);
             } else {
@@ -59,7 +60,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
             }
 
             // if triggered by a Button send it along
-            if ('undefined' != typeof item && null != item && item.type != null && item.type.toLowerCase() == "submit") {
+            if (item && item.type && item.type.toLowerCase() == "submit") {
                 strBuf.push(encodeURIComponent(item.name));
                 strBuf.push("=");
                 strBuf.push(encodeURIComponent(item.value));
@@ -97,14 +98,14 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
             var id = curNode.id;
             var name = curNode.name;
 
-            var ppsElement = id && _Lang.arrayContains(partialIds, id);
-            return  ppsElement || (name != null && name == _Impl._PROP_VIEWSTATE);
+            var ppsElement = id && _Lang.contains(partialIds, id);
+            return  ppsElement || (name != null && name == _Impl.P_VIEWSTATE);
         };
 
         var nodes = _Dom.findAll(node, nodeFilter, true);
 
         if (nodes) {
-            for (cnt = 0; cnt < nodes.length; cnt++) {
+            for (var cnt = 0; cnt < nodes.length; cnt++) {
                 this.encodeElement(nodes[cnt], strBuf);
             }
         }
@@ -153,11 +154,11 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
      * @param {} strBuf -
      */
     encodeElement : function(element, strBuf) {
-        var elementName = (null != element.name || 'undefined' != typeof element.name) ? element.name : element.id;
-        var elementTagName = element.tagName.toLowerCase();
-        var elementType = element.type;
-        if (elementType != null) {
-            elementType = elementType.toLowerCase();
+        var name = (null != element.name || 'undefined' != typeof element.name) ? element.name : element.id;
+        var tagName = element.tagName.toLowerCase();
+        var elemType = element.type;
+        if (elemType != null) {
+            elemType = elemType.toLowerCase();
         }
 
         // routine for all elements
@@ -165,8 +166,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
         // - process only inputs, textareas and selects
         // - elements muest have attribute "name"
         // - elements must not be disabled
-        if (((elementTagName == "input" || elementTagName == "textarea" || elementTagName == "select") &&
-                (elementName != null && elementName != "")) && !element.disabled) {
+        if (((tagName == "input" || tagName == "textarea" || tagName == "select") &&
+                (name != null && name != "")) && !element.disabled) {
 
             // routine for select elements
             // rules:
@@ -176,7 +177,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
             // "name=DisplayValue"
             // - if select multi and multple selected => "name=value1&name=value2"
             // - if select and selectedIndex=-1 don't submit
-            if (elementTagName == "select") {
+            if (tagName == "select") {
                 // selectedIndex must be >= 0 sein to be submittet
                 if (element.selectedIndex >= 0) {
                     var uLen = element.options.length;
@@ -184,7 +185,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
                         // find all selected options
                         if (element.options[u].selected) {
                             var elementOption = element.options[u];
-                            strBuf.push(encodeURIComponent(elementName));
+                            strBuf.push(encodeURIComponent(name));
                             strBuf.push("=");
                             if (elementOption.getAttribute("value") != null) {
                                 strBuf.push(encodeURIComponent(elementOption.value));
@@ -201,10 +202,10 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
             // rules:
             // - don't submit no selects (processed above), buttons, reset buttons, submit buttons,
             // - submit checkboxes and radio inputs only if checked
-            if ((elementTagName != "select" && elementType != "button"
-                    && elementType != "reset" && elementType != "submit" && elementType != "image")
-                    && ((elementType != "checkbox" && elementType != "radio") || element.checked)) {
-                strBuf.push(encodeURIComponent(elementName));
+            if ((tagName != "select" && elemType != "button"
+                    && elemType != "reset" && elemType != "submit" && elemType != "image")
+                    && ((elemType != "checkbox" && elemType != "radio") || element.checked)) {
+                strBuf.push(encodeURIComponent(name));
                 strBuf.push("=");
                 strBuf.push(encodeURIComponent(element.value));
                 strBuf.push("&");

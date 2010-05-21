@@ -22,6 +22,7 @@
  * we use it internally for testing pages
  * which test the various functions of the framework
  */
+/** @namespace myfaces._impl._util._UnitTest*/
 myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._UnitTest", Object, {
 
     /**

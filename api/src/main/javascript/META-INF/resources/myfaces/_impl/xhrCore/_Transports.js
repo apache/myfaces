@@ -33,6 +33,7 @@
  *
  * or transport.xhrPost,transport.xhrGet  etc... in the future
  */
+/** @namespace myfaces._impl.xhrCore._Transports */
 myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
         , Object, {
 
@@ -55,7 +56,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
      * (This is the same limitation dojo class inheritance
      * where our inheritance pattern is derived from has)
      */
-    _queue: new myfaces._impl.xhrCore._AjaxRequestQueue(),
+    _q: new myfaces._impl.xhrCore._AjaxRequestQueue(),
 
     _threshold: "ERROR",
 
@@ -68,11 +69,11 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
      * @param {Node} source the source of this call
      * @param {Node} sourceForm the html form which is the source of this call
      * @param {Object} context (Map) the internal pass through context
-     * @param {Object} passThroughValues (Map) values to be passed through
+     * @param {Object} passThrgh (Map) values to be passed through
      **/
-    xhrQueuedPost : function(source, sourceForm, context, passThroughValues) {
-        this._queue.queueRequest(
-                new myfaces._impl.xhrCore._AjaxRequest(this._getArguments(source, sourceForm, context, passThroughValues)));
+    xhrQueuedPost : function(source, sourceForm, context, passThrgh) {
+        this._q.enqueue(
+                new myfaces._impl.xhrCore._AjaxRequest(this._getArguments(source, sourceForm, context, passThrgh)));
     },
 
     /**
@@ -82,7 +83,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
      * @param {XmlHttpRequest} context - the ajax context
      */
     response : function(request, context) {
-        this._queue._curReq._response.processResponse(request, context);
+        this._q._curReq._response.processResponse(request, context);
     },
 
     /**
@@ -93,18 +94,19 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
      * @param source the source of the request
      * @param sourceForm the sourceform
      * @param context   the context holding all values
-     * @param passThroughValues the passThrough values to be blended into the response
+     * @param passThrgh the passThrough values to be blended into the response
      */
-    _getArguments: function(source, sourceForm, context, passThroughValues) {
-        var _Runtime = myfaces._impl.core._Runtime;
-        var _getConfig = _Runtime.getLocalOrGlobalConfig;
+    _getArguments: function(source, sourceForm, context, passThrgh) {
+        var _RT = myfaces._impl.core._Runtime;
+        var _getConfig = _RT.getLocalOrGlobalConfig;
+        var _Lang = myfaces._impl._util._Lang;
 
-        var arguments = {
+        var ret = {
             "source": source,
             "sourceForm": sourceForm,
             "context": context,
-            "passThrough": passThroughValues,
-            "xhrQueue": this._queue,
+            "passThrough": passThrgh,
+            "xhrQueue": this._q,
 
             //standard done callback
             "onDone": this._Lang.hitch(this, this._stdOnDone),
@@ -123,19 +125,19 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
 
         //we now mix in the config settings which might either be set globally
         //or pushed in under the context myfaces.<contextValue> into the current request 
-        this._applyConfig(arguments, "alarmThreshold", this._PAR_ERRORLEVEL);
-        this._applyConfig(arguments, "queueSize", this._PAR_QUEUESIZE);
-        this._applyConfig(arguments, "timeout", this._PAR_TIMEOUT);
-        this._applyConfig(arguments, "delay", this._PAR_DELAY);
+        this._applyConfig(ret, "alarmThreshold", this._PAR_ERRORLEVEL);
+        this._applyConfig(ret, "queueSize", this._PAR_QUEUESIZE);
+        this._applyConfig(ret, "timeout", this._PAR_TIMEOUT);
+        this._applyConfig(ret, "delay", this._PAR_DELAY);
 
         //now partial page submit needs a different treatment
         //since pps == execute strings
         if (_getConfig(context, this._PAR_PPS, null) != null
-                && _Lang.exists(passThrough, myfaces._impl.core.Impl._PROP_EXECUTE)
-                && passThrough[myfaces._impl.core.Impl._PROP_EXECUTE].length > 0) {
-            arguments['partialIdsArray'] = passThrough[myfaces._impl.core.Impl._PROP_EXECUTE].split(" ");
+                && _Lang.exists(passThrgh, myfaces._impl.core.Impl.P_EXECUTE)
+                && passThrgh[myfaces._impl.core.Impl.P_EXECUTE].length > 0) {
+            ret['partialIdsArray'] = passThrgh[myfaces._impl.core.Impl.P_EXECUTE].split(" ");
         }
-        return arguments;
+        return ret;
     },
 
     /**
@@ -146,8 +148,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
      * @param srcParm the source param which is the key to our config setting
      */
     _applyConfig: function(destination, destParm, srcParm) {
-        var _Runtime = myfaces._impl.core._Runtime;
-        var _getConfig = _Runtime.getLocalOrGlobalConfig;
+        var _RT = myfaces._impl.core._Runtime;
+        var _getConfig = _RT.getLocalOrGlobalConfig;
         if (_getConfig(this._context, srcParm, null) != null) {
             destination[destParm] = _getConfig(this._context, srcParm, null);
         }
@@ -163,7 +165,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
     _stdOnDone: function(request, context) {
         this._loadImpl();
 
-        this._Impl.sendEvent(request, context, this._Impl._AJAX_STAGE_COMPLETE);
+        this._Impl.sendEvent(request, context, this._Impl.COMPLETE);
     },
 
     /**
@@ -177,8 +179,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
         this._loadImpl();
 
         this._Impl.response(request, context);
-        this._Impl.sendEvent(request, context, this._Impl._AJAX_STAGE_SUCCESS);
-        this._queue.processQueue();
+        this._Impl.sendEvent(request, context, this._Impl.SUCCESS);
+        this._q.processQueue();
 
     },
 
@@ -206,23 +208,17 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
             errorText = "Request failed with unknown status";
         }
         //_onError
-        this._Impl.sendError(request, context, myfaces._impl.core.Impl._ERROR_HTTPERROR,
-                myfaces._impl.core.Impl._ERROR_HTTPERROR, errorText);
+        this._Impl.sendError(request, context, this._Impl.HTTPERROR,
+                this._Impl.HTTPERROR, errorText);
     },
 
 
 
     /**
      * standard timeout handler
-     *
-     * @param request the xhr request object
-     * @param context the context holding all values for further processing
      */
-    _stdOnTimeout: function(request, context) {
-        var timeoutFunc = _Lang.hitch(this,
-                function() {
-                    this._queue._curReq.abort();
-                });
+    _stdOnTimeout: function() {
+        this._q._curReq.abort();
     },
 
     /**
@@ -239,13 +235,14 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
     _stdErrorHandler: function(request, context, sourceClass, func, exception) {
         this._loadImpl();
         
-        if (this._threshold == "ERROR") {
-            this._Impl.sendError(request, context, this._Impl._ERROR_CLIENT_ERROR, exception.name,
-                    "MyFaces ERROR:" + this._Lang.createErrorMessage(sourceClass, func, exception));
+        if (this._threshold == "ERROR" && !exception._processed) {
+            this._Impl.sendError(request, context, this._Impl.CLIENT_ERROR, exception.name,
+                    "MyFaces ERROR:" + this._Lang.createErrorMsg(sourceClass, func, exception));
         }
-        this._queue.cleanup();
+        this._q.cleanup();
         //we forward the exception, just in case so that the client
         //will receive it in any way
+        exception._processed = true;
         throw exception;
     },
 
@@ -262,8 +259,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
         this._loadImpl();
 
         if (this._threshold == "WARNING" || this._threshold == "ERROR") {
-            this._Impl.sendError(request, context, this._Impl._ERROR_CLIENT_ERROR, exception.name,
-                    "MyFaces WARNING:" + this._Lang.createErrorMessage(sourceClass, func, exception));
+            this._Impl.sendError(request, context, this._Impl.CLIENT_ERROR, exception.name,
+                    "MyFaces WARNING:" + this._Lang.createErrorMsg(sourceClass, func, exception));
         }
         this.destroy();
     },

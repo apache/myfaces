@@ -29,6 +29,13 @@
  * TODO selector shortcuts bei chrome abdrehen da knallt es
  *
  */
+/** @namespace myfaces._impl._util._Dom */
+
+/** @namespace NodeFilter */
+/** @namespace NodeFilter.FILTER_ACCEPT */
+/** @namespace NodeFilter.FILTER_SKIP */
+/** @namespace NodeFilter.FILTER_REJECT */
+/** @namespace NodeFilter.SHOW_ELEMENT */
 myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Object, {
     IE_QUIRKS_EVENTS : {
         "onabort": true,
@@ -59,8 +66,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      */
     runScripts: function(item) {
 
-        var executeScriptTag = myfaces._impl._util._Lang.hitch(this, function(item) {
-            if ('undefined' != typeof item.tagName && item.tagName.toLowerCase() == 'script') {
+        var execScrpt = myfaces._impl._util._Lang.hitch(this, function(item) {
+            if (item.tagName && item.tagName.toLowerCase() == 'script') {
 
                 if (typeof item.getAttribute('src') != 'undefined'
                         && item.getAttribute('src') != null
@@ -97,7 +104,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             var scriptElements = this.findByTagName(item, "script", true);
             if (scriptElements == null) return;
             for (var cnt = 0; cnt < scriptElements.length; cnt++) {
-                executeScriptTag(scriptElements[cnt]);
+                execScrpt(scriptElements[cnt]);
             }
         } finally {
             //the usual ie6 fix code
@@ -105,7 +112,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             //nulling closures helps somewhat to reduce
             //mem leaks, which are impossible to avoid
             //at this browser
-            executeScriptTag = null;
+            execScrpt = null;
         }
     },
 
@@ -114,7 +121,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      */
     deleteItem: function(itemIdToReplace) {
         var item = this.byId(itemIdToReplace);
-        if (item == null) {
+        if (!item) {
             throw Error("_Dom.deleteItem  Unknown Html-Component-ID: " + itemIdToReplace);
         }
 
@@ -129,20 +136,19 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param markup the markup for the replacement
      */
     outerHTML : function(item, markup) {
-        markup = myfaces._impl._util._Lang.trim(markup);
-        if ('undefined' == typeof item || null == item) {
+        if (!item) {
             throw Error("myfaces._impl._util._Dom.outerHTML: item must be passed down");
         }
-        if ('undefined' == typeof markup || null == markup) {
+        if (!markup) {
             throw Error("myfaces._impl._util._Dom.outerHTML: markup must be passed down");
         }
-
-        if (markup != "") {
+        markup = myfaces._impl._util._Lang.trim(markup);
+        if (markup !== "") {
             var evalNode = null;
 
             //w3c compliant browsers with proper contextual fragments
             var parentNode;
-            if (typeof window.Range != 'undefined'
+            if (window.Range
                     && typeof Range.prototype.createContextualFragment == 'function') {
                 var range = document.createRange();
                 range.setStartBefore(item);
@@ -203,8 +209,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      */
     findById : function(fragment, itemId) {
 
-        if(fragment === document) {
-            return document.getElementById(itemId);
+        if (fragment === document) {
+            return this.byId(itemId);
         }
 
         if (fragment.nodeType == 1 && fragment.querySelector) {
@@ -214,7 +220,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         }
 
         var filter = function(node) {
-            return 'undefined' != typeof node.id && node.id === itemId;
+            return node && node.id && node.id === itemId;
         };
         try {
             return this.findFirst(fragment, filter);
@@ -232,12 +238,12 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param filter a filter closure which either returns true or false depending on triggering or not
      */
     findFirst : function(fragment, filter) {
-        myfaces._impl._util._Lang._assertType(filter, "function");
+        myfaces._impl._util._Lang.assertType(filter, "function");
 
         if (document.createTreeWalker && NodeFilter) {
-            return this._iteratorBasedFindFirst(fragment, filter);
+            return this._iteratorFindFirst(fragment, filter);
         } else {
-            return this._recursionBasedFindFirst(fragment, filter);
+            return this._recursionFindFirst(fragment, filter);
         }
     },
 
@@ -249,13 +255,14 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param fragment the starting fragment
      * @param filter the filter to be applied to
      */
-    _recursionBasedFindFirst: function(fragment, filter) {
+    _recursionFindFirst: function(fragment, filter) {
         if (filter(fragment)) {
             return fragment;
         }
 
-        if (fragment.childNodes == null)
+        if (!fragment.childNodes) {
             return null;
+        }
 
         //sub-fragment usecases
         var child;
@@ -263,7 +270,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         var childLen = fragment.childNodes.length;
         for (cnt = 0; cnt < childLen; cnt++) {
             child = fragment.childNodes[cnt];
-            var item = this._recursionBasedFindFirst(child, filter);
+            var item = this._recursionFindFirst(child, filter);
             if (item != null)
                 return item;
         }
@@ -277,17 +284,18 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param fragment the fragment to be started from
      * @param filter the filter which has to be used
      */
-    _iteratorBasedFindFirst:function(fragment, filter) {
+    _iteratorFindFirst:function(fragment, filter) {
         if (filter(fragment)) {
             return fragment;
         }
         //we have a tree walker in place this allows for an optimized deep scan
-        var lastElementFound = null;
-        var treeWalkerfilter = function (node) {
-            return ((filter(node)) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP);
+
+        var walkerFilter = function (node) {
+            return (filter(node)) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
         };
-        var treeWalker = document.createTreeWalker(fragment, NodeFilter.SHOW_ELEMENT, treeWalkerfilter, false);
+        var treeWalker = document.createTreeWalker(fragment, NodeFilter.SHOW_ELEMENT, walkerFilter, false);
         if (treeWalker.nextNode()) {
+            /** @namespace treeWalker.currentNode */
             return treeWalker.currentNode;
         }
         return null;
@@ -310,12 +318,10 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     findByTagName : function(fragment, tagName, deepScan) {
         var _Lang = myfaces._impl._util._Lang;
 
-        if ('undefined' == typeof deepScan) {
-            deepScan = false;
-        }
+        deepScan = !!deepScan;
 
         var filter = function(node) {
-            return _Lang.exists(node, "tagName") && _Lang.equalsIgnoreCase(node.tagName, tagName);
+            return node.tagName && _Lang.equalsIgnoreCase(node.tagName, tagName);
         };
         try {
 
@@ -342,12 +348,10 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     findByName : function(fragment, name, deepScan) {
         var _Lang = myfaces._impl._util._Lang;
         var filter = function(node) {
-            return  _Lang.exists(node, "name") && _Lang.equalsIgnoreCase(node.name, name);
+            return  node.name && _Lang.equalsIgnoreCase(node.name, name);
         };
         try {
-            if ('undefined' == typeof deepScan) {
-                deepScan = false;
-            }
+            deepScan = !!deepScan;
 
             if (deepScan && fragment.querySelectorAll) {
                 var result = fragment.querySelectorAll("[name=" + name + "]");
@@ -388,9 +392,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             return false;
         });
         try {
-            if ('undefined' == typeof deepScan) {
-                deepScan = false;
-            }
+            deepScan = !!deepScan;
 
             //html5 getElementsByClassname
             if (fragment.getElementsByClassName && deepScan) {
@@ -405,7 +407,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
                 if (fragment.nodeType == 1 && filter(fragment)) {
                     result = (result == null) ? [] : result;
-                    result = _Lang.objToArrayl(result);
+                    result = _Lang.objToArray(result);
                     result.push(fragment);
                 }
                 return result;
@@ -433,12 +435,13 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      */
     findAll : function(rootNode, filter, deepScan) {
         var _Lang = myfaces._impl._util._Lang;
-        _Lang._assertType(filter, "function");
+        _Lang.assertType(filter, "function");
+        deepScan = !!deepScan;
 
         if (document.createTreeWalker && NodeFilter) {
-            return this._iteratorBasedSearchAll(rootNode, filter, deepScan);
+            return this._iteratorSearchAll(rootNode, filter, deepScan);
         } else {
-            return this._recursionBasedSearchAll(rootNode, filter, deepScan);
+            return this._recursionSearchAll(rootNode, filter, deepScan);
         }
 
     }
@@ -452,33 +455,28 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param filter the filter to be applied to
      * @param deepScan if set to true a deep scan is performed
      */
-    _recursionBasedSearchAll: function(rootNode, filter, deepScan) {
-        var _Lang = myfaces._impl._util._Lang;
-        var retVal = [];
+    _recursionSearchAll: function(rootNode, filter, deepScan) {
+        var ret = [];
         //fix the value to prevent undefined errors
-        if ('undefined' == typeof deepScan) {
-            deepScan = true;
-        }
 
         if (filter(rootNode)) {
-            retVal.push(rootNode);
-            if (!deepScan) return retVal;
+            ret.push(rootNode);
+            if (!deepScan) return ret;
         }
 
         //
-        if (!_Lang.exists(rootNode, "childNodes"))
-            return retVal;
+        if (!rootNode.childNodes) {
+            return ret;
+        }
 
         //subfragment usecases
 
-        var retValLen = retVal.length;
+        var retLen = ret.length;
         var childLen = rootNode.childNodes.length;
-        for (var cnt = 0; (deepScan || retValLen == 0) && cnt < childLen; cnt++) {
-            var childNode = rootNode.childNodes[cnt];
-            var subRetVals = this._recursionBasedSearchAll(childNode, filter, deepScan);
-            retVal = retVal.concat(subRetVals);
+        for (var cnt = 0; (deepScan || retLen == 0) && cnt < childLen; cnt++) {
+            ret = ret.concat(this._recursionSearchAll(rootNode.childNodes[cnt], filter, deepScan));
         }
-        return retVal;
+        return ret;
     }
     ,
 
@@ -494,13 +492,12 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param filter the iteration filter
      * @param deepScan if set to true a deep scan is performed
      */
-    _iteratorBasedSearchAll: function(rootNode, filter, deepScan) {
+    _iteratorSearchAll: function(rootNode, filter, deepScan) {
         var retVal = [];
         //Works on firefox and webkit, opera and ie have to use the slower fallback mechanis
         //we have a tree walker in place this allows for an optimized deep scan
-        var lastElementFound = null;
         if (filter(rootNode)) {
-            lastElementFound = rootNode;
+
             retVal.push(rootNode);
             if (!deepScan) {
                 return retVal;
@@ -508,7 +505,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         }
         //we use the reject mechanism to prevent a deep scan reject means any
         //child elements will be omitted from the scan
-        var treeWalkerfilter = function (node) {
+        var walkerFilter = function (node) {
             var retCode = (filter(node)) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
             retCode = (!deepScan && retCode == NodeFilter.FILTER_ACCEPT) ? NodeFilter.FILTER_REJECT : retCode;
             if (retCode == NodeFilter.FILTER_ACCEPT || retCode == NodeFilter.FILTER_REJECT) {
@@ -516,7 +513,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             }
             return retCode;
         };
-        var treeWalker = document.createTreeWalker(rootNode, NodeFilter.SHOW_ELEMENT, treeWalkerfilter, false);
+        var treeWalker = document.createTreeWalker(rootNode, NodeFilter.SHOW_ELEMENT, walkerFilter, false);
+        //noinspection StatementWithEmptyBodyJS
         while (treeWalker.nextNode());
         return retVal;
     }
@@ -525,20 +523,26 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     /**
      *
      * @param {Node} form
-     * @param {String} nameOrIdenitifier
+     * @param {String} nameId
      *
      * checks for a a element with the name or identifier of nameOrIdentifier
      * @returns the found node or null otherwise
      */
-    findFormElement : function(form, nameOrIdenitifier) {
+    findFormElement : function(form, nameId) {
+        if (!form) {
+            throw Error("_Dom.findFormElement a form node must be given");
+        }
+        if (!nameId) {
+            throw Error("_Dom.findFormElement an element or identifier must be given");
+        }
+
         var eLen = form.elements.length;
-        //TODO add iterator handlers here for browsers which allow dom filters and iterators
-        var _RT = myfaces._impl.core._Runtime;
+
 
         for (var e = 0; e < eLen; e++) {
             var elem = form.elements[e];
-            if (_RT.exists(elem,"name") && elem.name === nameOrIdenitifier) return elem;
-            if (_RT.exists(elem,"id") && elem.id === nameOrIdenitifier) return elem;
+            if (elem.name && elem.name === nameId) return elem;
+            if (elem.id && elem.id === nameId) return elem;
         } // end of for (formElements)
         return null;
     }
@@ -547,12 +551,20 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     /**
      * bugfixing for ie6 which does not cope properly with setAttribute
      */
-    setAttribute : function(domNode, attribute, value) {
+    setAttribute : function(node, attr, val) {
+
+        if (!node) {
+            throw Error("_Dom.setAttribute a  node must be given");
+        }
+        if (!attr) {
+            throw Error("_Dom.setAttribute an attribute must be given");
+        }
 
         //quirks mode and ie7 mode has the attributes problems ie8 standards mode behaves like
         //a good citizen
-        if (!myfaces._impl.core._Runtime.browser.isIE || myfaces._impl.core._Runtime.browser.isIE > 7) {
-            domNode.setAttribute(attribute, value);
+        var _Browser = myfaces._impl.core._Runtime.browser;
+        if (!_Browser.isIE || _Browser.isIE > 7) {
+            node.setAttribute(attr, val);
             return;
         }
         var _Lang = myfaces._impl._util._Lang;
@@ -578,44 +590,45 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
          The lowest common denominator tested within this code
          is IE6, older browsers for now are legacy!
          */
-        attribute = attribute.toLowerCase();
+        attr = attr.toLowerCase();
 
-        if (attribute === "class") {
-            domNode.setAttribute("className", value);
-        } else if (attribute === "for") {
+        if (attr === "class") {
+            node.setAttribute("className", val);
+        } else if (attr === "for") {
 
-            domNode.setAttribute("htmlFor", value);
-        } else if (attribute === "style") {
+            node.setAttribute("htmlFor", val);
+        } else if (attr === "style") {
             //We have to split the styles here and assign them one by one
-            var styleEntries = value.split(";");
-            var styleEntriesLen = styleEntries.length;
-            for (var loop = 0; loop < styleEntriesLen; loop++) {
-                var keyVal = styleEntries[loop].split(":");
+            var styles = val.split(";");
+            var stylesLen = styles.length;
+            for (var loop = 0; loop < stylesLen; loop++) {
+                var keyVal = styles[loop].split(":");
                 if (keyVal[0] != "" && keyVal[0] == "opacity") {
                     //special ie quirks handling for opacity
 
                     var opacityVal = Math.max(100, Math.round(parseFloat(keyVal[1]) * 10));
-                    domNode.style.setAttribute("filter", "alpha(opacity=" + opacityVal + ")");
+                    node.style.setAttribute("filter", "alpha(opacity=" + opacityVal + ")");
                     //if you need more hacks I would recommend
                     //to use the class attribute and conditional ie includes!
                 } else if (keyVal[0] != "") {
-                    domNode.style.setAttribute(keyVal[0], keyVal[1]);
+                    node.style.setAttribute(keyVal[0], keyVal[1]);
                 }
             }
         } else {
             //check if the attribute is an event, since this applies only
             //to quirks mode of ie anyway we can live with the standard html4/xhtml
             //ie supported events
-            if (this.IE_QUIRKS_EVENTS[attribute]) {
-                if (_Lang.isString(attribute)) {
-                    domNode.setAttribute(attribute, function(event) {
+            if (this.IE_QUIRKS_EVENTS[attr]) {
+                if (_Lang.isString(attr)) {
+                    //event resolves to window.event in ie
+                    node.setAttribute(attr, function() {
                         //event implicitly used
-                        return _Lang.globalEval(value);
+                        return _Lang.globalEval(val);
                     });
                 }
             } else {
                 //unknown cases we try to catch them via standard setAttributes
-                domNode.setAttribute(attribute, value);
+                node.setAttribute(attr, val);
             }
         }
     },
@@ -626,41 +639,42 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * 2 inputHidden fields with ID jsf_tree_64 & jsf_state_64 ->
      * http://www.arcknowledge.com/gmane.comp.jakarta.myfaces.devel/2005-09/msg01269.html
      *
-     * @param {String} itemIdOrName - ID of the HTML element located inside the form
+     * @param {String} nameId - ID of the HTML element located inside the form
      * @param {Node} form - form element containing the element
      * @param {boolean} nameSearch if set to true a search for name is also done
-     * @param {boolean} localSearchOnly if set to true a local search is performed only (a full document search is omitted)
+     * @param {boolean} localOnly if set to true a local search is performed only (a full document search is omitted)
      * @return {Object}   the element if found else null
      *
      */
-    getElementFromForm : function(itemIdOrName, form, nameSearch, localSearchOnly) {
+    getElementFromForm : function(nameId, form, nameSearch, localOnly) {
         var _Lang = myfaces._impl._util._Lang;
 
-        if ('undefined' == typeof form || form == null) {
-            return this.findById(document, itemIdOrName);
+        if (!nameId) {
+            throw Error("_Dom.getElementFromForm an item id or name must be given");
         }
 
+        if (!form) {
+            return this.byId(nameId);
+        }
 
-        var isNameSearch = ('undefined' == typeof nameSearch || nameSearch == null)? false: nameSearch;
-        var isLocalSearchOnly = ('undefined' == typeof localSearchOnly || localSearchOnly == null)? false: localSearchOnly;
-
-
-        var fLen = form.elements.length;
+        var isNameSearch = !!nameSearch;
+        var isLocalSearchOnly = !!localOnly;
 
         //we first check for a name entry!
-        if (isNameSearch && _Lang.exists(form, "elements." + itemIdOrName)) {
-            return form.elements[itemIdOrName];
+        if (isNameSearch && _Lang.exists(form, "elements." + nameId)) {
+            return form.elements[nameId];
         }
-        //if no name entry is found we check for an Id
-        var element = this.findById(form, itemIdOrName);
-        if(element != null)  {
+
+        //if no name entry is found we check for an Id but only in the form
+        var element = this.findById(form, nameId);
+        if (element) {
             return element;
         }
 
         // element not found inside the form -> try document.getElementById
-        // (kann be null if element doesn't exist)
+        // (can be null if element doesn't exist)
         if (!isLocalSearchOnly) {
-            return this.findById(document, itemIdOrName);
+            return this.byId(nameId);
         }
 
         return null;
@@ -697,37 +711,37 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * to support the integration of existing ajax libraries which do heavy dom manipulation on the
      * controls side (Dojos Dijit library for instance).
      *
-     * @param {Node} element - element as source, can be detached, undefined or null
+     * @param {Node} elem - element as source, can be detached, undefined or null
      *
      * @return either null or a form node if it could be determined
      */
-    fuzzyFormDetection : function(element) {
-        if (0 == document.forms.length) {
+    fuzzyFormDetection : function(elem) {
+        if (!document.forms || !document.forms.length) {
             return null;
         } else if (1 == document.forms.length) {
             return document.forms[0];
         }
-        if ('undefined' == typeof element || null == element) {
+        if (!elem) {
             return null;
         }
         var _Lang = myfaces._impl._util._Lang;
 
         //before going into the more complicated stuff we try the simple approach
-        if (!_Lang.isString(element)) {
-            return this.getParent(element, "form");
+        if (!_Lang.isString(elem)) {
+            return this.getParent(elem, "form");
         }
 
-        var submitIdentifier = (_Lang.exists(element, "id")) ? element.id : null;
-        var submitName = (_Lang.exists.exists(element, "name")) ? element.name : null;
+        var id = elem.id || null;
+        var name = elem.name || null;
         //a framework in a detachment case also can replace an existing identifier element
         // with a name element
-        submitName = ('undefined' == typeof submitName || null == submitName) ? submitIdentifier : submitName;
+        name = name || id;
         var foundForm;
 
-        if ('undefined' != typeof submitIdentifier && null != submitIdentifier && '' != submitIdentifier) {
+        if (id && '' != id) {
             //we have to assert that the element passed down is detached
-            var domElement = myfaces._impl._util._Lang.byId(submitIdentifier);
-            if ('undefined' != typeof domElement && null != domElement) {
+            var domElement = this.byId(id);
+            if (domElement) {
                 foundForm = this.getParent(domElement, "form");
                 if (null != foundForm) return foundForm;
             }
@@ -736,46 +750,42 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         /**
          * name check
          */
-        var foundElements = new Array();
+        var foundElements = [];
 
         /**
          * the lesser chance is the elements which have the same name
          * (which is the more likely case in case of a brute dom replacement)
          */
-        var namedFoundElements = document.getElementsByName(submitName);
-        if (null != namedFoundElements) {
-            for (var cnt = 0; cnt < namedFoundElements.length; cnt++) {
+        var nameElems = document.getElementsByName(name);
+        if (nameElems) {
+            for (var cnt = 0; cnt < nameElems.length && foundElements.length < 2; cnt++) {
                 // we already have covered the identifier case hence we only can deal with names,
-                foundForm = this.getParent(namedFoundElements[cnt], "form");
+                foundForm = this.getParent(nameElems[cnt], "form");
                 if (null != foundForm) {
                     foundElements.push(foundForm);
                 }
             }
         }
 
-        if (null == foundElements || 0 == foundElements.length || foundElements.length > 1) {
-            return null;
-        }
-
-        return foundElements[0];
+        return (1 == foundElements.length ) ? foundElements[0] : null;
     }
     ,
 
     /**
      * gets a parent of an item with a given tagname
      * @param {Node} item - child element
-     * @param {String} tagNameToSearchFor - TagName of parent element
+     * @param {String} tagName - TagName of parent element
      */
-    getParent : function(item, tagNameToSearchFor) {
+    getParent : function(item, tagName) {
 
-        if ('undefined' == typeof item || null == item) {
-            throw Error("myfaces._impl._util._Dom.getParent: item is null or undefined,this not allowed");
+        if (!item) {
+            throw Error("myfaces._impl._util._Dom.getParent: item must be set");
         }
 
         var _Lang = myfaces._impl._util._Lang;
         var searchClosure = function(parentItem) {
-            return parentItem != null && _Lang.exists(parentItem, "tagName")
-                    && _Lang.equalsIgnoreCase(parentItem.tagName, tagNameToSearchFor);
+            return parentItem && parentItem.tagName
+                    && _Lang.equalsIgnoreCase(parentItem.tagName, tagName);
         };
 
         return this.getFilteredParent(item, searchClosure);
@@ -790,21 +800,20 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param {function} filter the filter closure
      */
     getFilteredParent : function(item, filter) {
-        if ('undefined' == typeof item || null == item) {
-            throw Error("myfaces._impl._util._Dom.getParen: item is null or undefined,this not allowed");
+        if (!item) {
+            throw Error("myfaces._impl._util._Dom.getFilteredParent: item must be set");
+        }
+        if (!filter) {
+            throw Error("myfaces._impl._util._Dom.getFilteredParent: filter must be set");
         }
 
         //search parent tag parentName
-        var parentItem = ('undefined' != typeof item.parentNode) ? item.parentNode : null;
+        var parentItem = (item.parentNode) ? item.parentNode : null;
 
-        while ('undefined' != typeof parentItem && null != parentItem && !filter(parentItem)) {
+        while (parentItem && !filter(parentItem)) {
             parentItem = parentItem.parentNode;
         }
-        if ('undefined' != typeof parentItem && null != parentItem) {
-            return parentItem;
-        } else {
-            return null;
-        }
+        return (parentItem) ? parentItem : null;
     }
     ,
 
@@ -817,13 +826,20 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param filter the filter closure
      */
     getFilteredChild: function(item, filter) {
-        var childItems = item.childNodes;
-        if ('undefined' == typeof childItems || null == childItems) {
+        if (!item) {
+            throw Error("myfaces._impl._util._Dom.getFilteredChild: item must be set");
+        }
+        if (!filter) {
+            throw Error("myfaces._impl._util._Dom.getFilteredChild: filter must be set");
+        }
+
+        var childs = item.childNodes;
+        if (!childs) {
             return null;
         }
-        for (var c = 0, cLen = childItems.length; c < cLen; c++) {
-            if (filter(childItems[c])) {
-                return childItems[c];
+        for (var c = 0, cLen = childs.length; c < cLen; c++) {
+            if (filter(childs[c])) {
+                return childs[c];
             }
         }
         return null;
@@ -840,9 +856,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     getChild: function(item, childName, itemName) {
 
         function filter(node) {
-            return node.tagName != null
+            return node.tagName
                     && node.tagName.toLowerCase() == childName
-                    && (itemName == null || (itemName != null && itemName == node.getAttribute("name")));
+                    && (!itemName || (itemName && itemName == node.getAttribute("name")));
 
         }
 
@@ -946,20 +962,18 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * contains a set of CDATA blocks to one big string
      * @param {Node} node the node to concat its blocks for
      */
-    concatCDATABlocks
-            :
-            function(/*Node*/ node) {
-                var cDataBlock = [];
-                // response may contain several blocks
-                for (var i = 0; i < node.childNodes.length; i++) {
-                    cDataBlock.push(node.childNodes[i].data);
-                }
-                return cDataBlock.join('');
-            }
+    concatCDATABlocks : function(/*Node*/ node) {
+        var cDataBlock = [];
+        // response may contain several blocks
+        for (var i = 0; i < node.childNodes.length; i++) {
+            cDataBlock.push(node.childNodes[i].data);
+        }
+        return cDataBlock.join('');
+    }
     ,
 
-    byId: function(identifier) {
-        return myfaces._impl._util._Lang.byId(identifier);
+    byId: function(id) {
+        return myfaces._impl._util._Lang.byId(id);
     }
 })
         ;

@@ -17,6 +17,7 @@
  * Version: $Revision: 1.3 $ $Date: 2009/05/31 09:16:44 $
  *
  */
+/** @namespace myfaces._impl.xhrCore._AjaxRequestQueue */
 myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequestQueue", myfaces._impl._util._Queue, {
 
     /**
@@ -28,7 +29,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequestQueue
     /**
      * the standard constructur of our class
      */
-    constructor_: function(){
+    constructor_: function() {
         this._callSuper("constructor");
     },
 
@@ -36,17 +37,25 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequestQueue
      * delay request, then call enqueue
      * @param {Object} request (myfaces._impl.xhrCore._AjaxRequest) request to send
      */
-    queueRequest : function(request) {
+    enqueue : function(request) {
         if (typeof request._delay == "number") {
             this.clearDelayTimeout();
             var _Lang = myfaces._impl._util._Lang;
-            this.delayTimeoutId = window.setTimeout(
+            this._delayTimeoutId = window.setTimeout(
                     _Lang.hitch(this, function() {
                         this.clearDelayTimeout();
                         this.enqueue(request);
                     }), request._delay);
         } else {
-            this.enqueue(request);
+            if (this._curReq == null) {
+                this._curReq = request;
+                this._curReq.send();
+            } else {
+                this._callSuper("enqueue", request);
+                if (request._size != this._size) {
+                    this.setQueueSize(request._size);
+                }
+            }
         }
     },
 
@@ -56,38 +65,22 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequestQueue
      */
     clearDelayTimeout : function() {
         try {
-            if (typeof this.delayTimeoutId == "number") {
-                window.clearTimeout(this.delayTimeoutId);
-                delete this.delayTimeoutId;
+            if (typeof this._delayTimeoutId == "number") {
+                window.clearTimeout(this._delayTimeoutId);
+                delete this._delayTimeoutId;
             }
         } catch (e) {
             // already timed out
         }
     },
 
-    /**
-     * send a request or keep it in a queue
-     * @param {myfaces._impl.xhrCore._AjaxRequest} request - request to send
-     */
-    enqueue : function(request) {
-        if (this._curReq == null) {
-            this._curReq = request;
-            this._curReq.send();
-        } else {
-
-            this._callSuper("enqueue",request);
-            if (request._queueSize != this._queueSize) {
-                this.setQueueSize(request._queueSize);
-            }
-        }
-    },
 
     /**
      * process queue, send request, if exists
      */
     processQueue: function() {
         this._curReq = this.dequeue();
-        if (null != this._curReq) {
+        if (this._curReq) {
             this._curReq.send();
         }
     },

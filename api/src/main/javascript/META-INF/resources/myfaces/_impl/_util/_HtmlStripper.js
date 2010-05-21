@@ -55,6 +55,7 @@
  * </p>
  */
 
+/** @namespace myfaces._impl._util._HtmlStripper */
 myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._HtmlStripper", Object, {
     BEGIN_TAG: "html",
     END_TAG: "lmth",
@@ -83,17 +84,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._HtmlStripper", Obj
 
         this._tokenForward = 1;
 
-        if ('undefined' == typeof tagNameStart || null == tagNameStart) {
-            this.tagNameStart = this.BEGIN_TAG;
-        } else {
-            this.tagNameStart = tagNameStart;
-        }
-
-        if ('undefined' == typeof tagNameEnd || null == tagNameEnd) {
-            this.tagNameEnd = this.tagNameStart.split("").reverse().join("");
-        } else {
-            this.tagNameEnd = tagNameEnd.split("").reverse().join("");
-        }
+        this.tagNameStart = (!tagNameStart) ? this.BEGIN_TAG : tagNameStart;
+        this.tagNameEnd = (!tagNameEnd) ? this.tagNameStart.split("").reverse().join("") : tagNameEnd.split("").reverse().join("");
 
         this.handleInstructionBlock();
 
@@ -432,12 +424,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._HtmlStripper", Obj
 
         var keyValuePairs = {};
         var currentWord = [];
-        var currentKey = null;
-        var openKey = false;
-        var lastKey = null;
         while (this.tokens[this._tokenPos] != ">") {
-            var currentWord = this._fetchWord();
-            var token = this._getCurrentToken();
+            currentWord = this._fetchWord();
+            token = this._getCurrentToken();
 
             if (token == "=") {
                 this._tokenPos += this._tokenForward;
@@ -559,9 +548,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._HtmlStripper", Obj
      */
     handleComment : function(reverse) {
         this._assertValues(["-","-"]);
-        if ('undefined' == typeof reverse || null == reverse) {
-            reverse = false;
-        }
+        reverse = !!reverse;
 
         while (this._tokenPos < this.tokens.length - 3) {
             //lookahead3, to save some code
@@ -582,11 +569,11 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._HtmlStripper", Obj
                     token = this._getCurrentToken();
                     backTrackBuf.push(token);
                 }
-                backTrackBuf = backTrackBuf.join("");
+                var sBackTrackBuf = backTrackBuf.join("");
 
-                if (reverse && backTrackBuf == "<!--") {
+                if (reverse && sBackTrackBuf == "<!--") {
                     return;
-                } else if (!reverse && backTrackBuf == "-->") {
+                } else if (!reverse && sBackTrackBuf == "-->") {
                     return;
                 }
             } else {
@@ -610,7 +597,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._HtmlStripper", Obj
      */
     _skipBlank : function(skipVal) {
         var len = this.tokens.length;
-        if ('undefined' == typeof  skipVal || null == skipVal) {
+        if (!skipVal) {
             skipVal = 0;
         }
 
@@ -636,8 +623,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._HtmlStripper", Obj
         tagName.push(this._getCurrentToken());
         this._tokenPos += this._tokenForward;
 
-        tagName = tagName.join("").toLowerCase();
-        return tagName;
+        return tagName.join("").toLowerCase();
     }
 
 });

@@ -26,32 +26,42 @@
  space is not worth the loss of readability
  */
 
-myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Lang", Object, {
+//Intellij Warnings settings
+/** @namespace myfaces._impl._util._Lang */
+/** @namespace window.console */
+ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Lang", Object, {
 
-    fetchNamespace : function(namespacing) {
-        return myfaces._impl.core._Runtime.fetchNamespace(namespacing);
+    fetchNamespace : function(namespace) {
+        if(!namespace || !this.isString(namespace)) {
+            throw Error("_Lang.fetchNamespace namespace must be of type String");
+        }
+        return myfaces._impl.core._Runtime.fetchNamespace(namespace);
     },
 
-    reserveNamespace : function(namespacing) {
-        return myfaces._impl.core._Runtime.reserveNamespace(namespacing);
+    reserveNamespace : function(namespace) {
+        if(!this.isString(namespace)) {
+            throw Error("_Lang.reserveNamespace namespace must be of type String");
+        }
+        return myfaces._impl.core._Runtime.reserveNamespace(namespace);
     },
 
     globalEval : function(code) {
+        if(!this.isString(code)) {
+            throw Error("_Lang.globalEval code must be of type String");
+        }
         return myfaces._impl.core._Runtime.globalEval(code);
     },
 
     /**
      * cross port from the dojo lib
      * browser save event resolution
-     * @param event the event object
+     * @param evt the event object
      * (with a fallback for ie events if none is present)
      */
-    getEventTarget: function(event) {
-        if (!event) {
-            //ie6 and 7 fallback
-            event = window.event || {};
-        }
-        var t = (event.srcElement ? event.srcElement : (event.target ? event.target : null));
+    getEventTarget: function(evt) {
+        //ie6 and 7 fallback
+        evt = (!evt) ? window.event || {} : evt;
+        var t = (evt.srcElement ? evt.srcElement : (evt.target ? evt.target : null));
         while ((t) && (t.nodeType != 1)) {
             t = t.parentNode;
         }
@@ -61,8 +71,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Lang", Ob
     /**
      * check if an element exists in the root
      */
-    exists : function(root, element) {
-        return myfaces._impl.core._Runtime.exists(root, element);
+    exists : function(root, subNamespace) {
+        return myfaces._impl.core._Runtime.exists(root, subNamespace);
     },
 
     /**
@@ -107,10 +117,10 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Lang", Ob
      * @param {Object} reference the reference which has to be byIded
      */
     byId : function(/*object*/ reference) {
-        if (this.isString(reference)) {
-            return document.getElementById(reference);
+        if (!reference) {
+            throw Error("_Lang.byId , a reference node or identifier must be provided");
         }
-        return reference;
+        return (this.isString(reference)) ? document.getElementById(reference) : reference;
     },
 
     /**
@@ -122,31 +132,33 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Lang", Ob
      properties.
      * @param {int} offset the location in obj to start iterating from. Defaults to 0.
      Optional.
-     * @param {Array} startWith An array to pack with the properties of obj. If provided,
+     * @param {Array} packArr An array to pack with the properties of obj. If provided,
      properties in obj are appended at the end of startWith and
      startWith is the returned array.
      */
-    _toArray : function(obj, offset, startWith) {
-        //	summary:
-        //		Converts an array-like object (i.e. arguments, DOMCollection) to an
-        //		array. Returns a new Array with the elements of obj.
-        //	obj:
-        //		the object to "arrayify". We expect the object to have, at a
-        //		minimum, a length property which corresponds to integer-indexed
-        //		properties.
-        //	offset:
-        //		the location in obj to start iterating from. Defaults to 0.
-        //		Optional.
-        //	startWith:
-        //		An array to pack with the properties of obj. If provided,
-        //		properties in obj are appended at the end of startWith and
-        //		startWith is the returned array.
-        var arr = startWith || [];
-        for (var x = offset || 0; x < obj.length; x++) {
-            arr.push(obj[x]);
-        }
-        return arr; // Array
-    },
+    /*_toArray : function(obj, offset, packArr) {
+     //	summary:
+     //		Converts an array-like object (i.e. arguments, DOMCollection) to an
+     //		array. Returns a new Array with the elements of obj.
+     //	obj:
+     //		the object to "arrayify". We expect the object to have, at a
+     //		minimum, a length property which corresponds to integer-indexed
+     //		properties.
+     //	offset:
+     //		the location in obj to start iterating from. Defaults to 0.
+     //		Optional.
+     //	startWith:
+     //		An array to pack with the properties of obj. If provided,
+     //		properties in obj are appended at the end of startWith and
+     //		startWith is the returned array.
+     var arr = packArr || [];
+     //TODO add splicing here
+
+     for (var x = offset || 0; x < obj.length; x++) {
+     arr.push(obj[x]);
+     }
+     return arr; // Array
+     }, */
 
     /**
      * Helper function to provide a trim with a given splitter regular expression
@@ -172,12 +184,15 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Lang", Ob
         if (!this.isString(it)) {
             throw Error("myfaces._impl._util._Lang.strToArray param not of type string");
         }
-        var resultArr = it.split(splitter);
-        var len = resultArr.length;
-        for (var cnt = 0; cnt < len; cnt++) {
-            resultArr[cnt] = this.trim(resultArr[cnt]);
+        if (!splitter) {
+            throw Error("myfaces._impl._util._Lang.strToArray a splitter param must be provided which is either a tring or a regexp");
         }
-        return resultArr;
+        var retArr = it.split(splitter);
+        var len = retArr.length;
+        for (var cnt = 0; cnt < len; cnt++) {
+            retArr[cnt] = this.trim(retArr[cnt]);
+        }
+        return retArr;
     },
 
     /**
@@ -186,23 +201,14 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Lang", Ob
      * crossported from dojo
      */
     trim : function(/*string*/ str) {
-
+       if(!this.isString(str)) {
+            throw Error("_Lang.trim, parameter must be of type String");
+        }
         str = str.replace(/^\s\s*/, '');
         var ws = /\s/;
         var i = str.length;
         while (ws.test(str.charAt(--i)));
         return str.slice(0, i + 1);
-    },
-
-    /**
-     * Splits a string and fetches the last element of the String
-     * @param {String} theString the string to be splitted
-     * @param {String} delimiter a delimiting string regexp
-     *
-     */
-    splitAndGetLast : function(theString, delimiter) {
-        var arr = theString.split(delimiter);
-        return arr[arr.length - 1];
     },
 
     /**
@@ -276,11 +282,11 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Lang", Ob
     ,
 
     _hitchArgs : function(scope, method /*,...*/) {
-        var pre = this._toArray(arguments, 2);
+        var pre = this.objToArray(arguments, 2);
         var named = this.isString(method);
         return function() {
             // array-fy arguments
-            var args = this._toArray(arguments);
+            var args = this.objToArray(arguments);
             // locate our method
             var f = named ? (scope || this.global)[method] : method;
             // invoke with collected args
@@ -292,52 +298,59 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Lang", Ob
     /**
      * Helper function to merge two maps
      * into one
-     * @param {|Object|} destination the destination map
-     * @param {|Object|} source the source map
-     * @param {|boolean|} overwriteDest if set to true the destination is overwritten if the keys exist in both maps
+     * @param {|Object|} dest the destination map
+     * @param {|Object|} src the source map
+     * @param {|boolean|} overwrite if set to true the destination is overwritten if the keys exist in both maps
      **/
-    mixMaps : function(destination, source, overwriteDest) {
+    mixMaps : function(dest, src, overwrite) {
+        if(!dest || !src) {
+            throw Error("_Lang.mixMaps, both a source as well as a destination map must be provided");
+        }
+
         /**
          * mixing code depending on the state of dest and the overwrite param
          */
-        var _Lang = this;
-        var result = {};
+        var ret = {};
         var keyIdx = {};
         var key = null;
-        for (key in source) {
+        for (key in src) {
             /**
              *we always overwrite dest with source
              *unless overWrite is not set or source does not exist
              *but also only if dest exists otherwise source still is taken
              */
-            if (!overwriteDest) {
+            if (!overwrite) {
                 /**
                  *we use exists instead of booleans because we cannot rely
                  *on all values being non boolean, we would need an elvis
                  *operator in javascript to shorten this :-(
                  */
-                result[key] = _Lang.exists(dest, key) ? destination[key] : source[key];
+                ret[key] = this.exists(dest, key) ? dest[key] : src[key];
             } else {
-                result[key] = _Lang.exists(source, key) ? source[key] : destination[key];
+                ret[key] = this.exists(src, key) ? src[key] : dest[key];
             }
             keyIdx[key] = true;
         }
-        for (key in destination) {
+        for (key in dest) {
             /*if result.key does not exist we push in dest.key*/
-            result[key] = _Lang.exists(result, key) ? result[key] : destination[key];
+            ret[key] = this.exists(ret, key) ? ret[key] : dest[key];
         }
-        return result;
+        return ret;
     }
     ,
 
     /**
      * checks if an array contains an element
      * @param {Array} arr   array
-     * @param {String} string_name string to check for
+     * @param {String} str string to check for
      */
-    arrayContains : function(arr, string_name) {
-        for (var loop = 0; loop < arr.length; loop++) {
-            if (arr[loop] == string_name) {
+    contains : function(arr, str) {
+        if(!arr || !str) {
+            throw Error("_Lang.contains an array and a string must be provided");
+        }
+
+        for (var cnt = 0; cnt < arr.length; cnt++) {
+            if (arr[cnt] == str) {
                 return true;
             }
         }
@@ -355,34 +368,26 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Lang", Ob
      * TODO check if this is still needed it is somewhat outside of the scope of the function
      * and functionality wise dirty
      */
-    arrayToString : function(/*String or array*/ arr, /*string*/ delimiter) {
+    arrToString : function(/*String or array*/ arr, /*string*/ delimiter) {
+        if(!arr) {
+            throw Error("_Lang.arrayToString array must be set");
+        }
         if (this.isString(arr)) {
             return arr;
         }
-        var finalDelimiter = (null == delimiter) ? "\n" : delimiter;
 
-        var resultArr = [];
-        for (var cnt = 0; cnt < arr.length; cnt ++) {
-            if (this.isString(arr[cnt])) {
-                resultArr.push(((delimiter == null) ? ("[" + cnt + "] ") : "") + arr[cnt]);
-            } else {
-                resultArr.push(((delimiter == null) ? ("[" + cnt + "] ") : "") + arr[cnt].toString());
-            }
-        }
-        return resultArr.join(finalDelimiter);
-    }
-    ,
+        delimiter = delimiter || "\n";
+        return arr.join(delimiter);
+    },
 
     /**
      * general type assertion routine
      *
      * @param probe the probe to be checked for the correct type
-     * @param type the type to be checked for
+     * @param theType the type to be checked for
      */
-    _assertType : function(probe, type) {
-        if (type != typeof probe) {
-            throw Error("probe must be of type " + type);
-        }
+    assertType : function(probe, theType) {
+        return this.isString(theType) ? probe == typeof theType : probe instanceof theType;
     },
 
     /**
@@ -392,36 +397,19 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Lang", Ob
      */
     addOnLoad: function(func) {
         var oldonload = window.onload;
-        if (typeof window.onload != "function") {
-            window.onload = func;
-        } else {
-            window.onload = function() {
-                oldonload();
-                func();
-            }
-        }
-    },
-    /**
-     * Simple simple logging only triggering at
-     * firebug compatible logging consoles
-     *
-     * note: ;; means the code will be stripped
-     * from the production code by the build system
-     */
-    _logToContainer: function(styleClass /*+arguments*/, loggingArguments) {
-        var loggingContainer = document.getElementById("myfaces.logging");
-        if (loggingContainer) {
-            var element = document.createElement("div");
-            //element.className = styleClass;
-            element.innerHTML = loggingArguments.join(" ");
-            loggingContainer.appendChild(element);
-        }
+        window.onload = (!this.assertType( window.onload, "function")) ? func : function() {
+            oldonload();
+            func();
+        };
     },
 
-    objToArray: function(obj) {
 
+    objToArray: function(obj, offset, pack) {
+        //since offset is numeric we cannot use the shortcut due to 0 being false
+        var finalOffset = ('undefined' != typeof offset || null != offset) ? offset : 0;
+        var finalPack = pack || [];
         try {
-            return Array.prototype.slice.call(obj, 0);
+            return finalPack.concat(Array.prototype.slice.call(obj, finalOffset));
         } catch (e) {
             //ie8 (again as only browser) delivers for css 3 selectors a non convertible object
             //we have to do it the hard way
@@ -429,11 +417,10 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Lang", Ob
             //objects break the function is everything methodology of javascript
             //and do not implement apply call, or are pseudo arrays which cannot
             //be sliced
-            var retVal = [];
-            for (var cnt = 0; cnt < obj.length; cnt++) {
-                retVal.push(obj[cnt]);
+            for (var cnt = finalOffset; cnt < obj.length; cnt++) {
+                finalPack.push(obj[cnt]);
             }
-            return retVal;
+            return finalPack;
         }
 
     },
@@ -493,23 +480,30 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Lang", Ob
 
     /**
      * helper to automatically apply a delivered arguments map or array
-     * to its destination which has a field "_"<key>
+     * to its destination which has a field "_"<key> and a full field
      *
-     * @param destination the destination object
+     * @param dest the destination object
      * @param args the arguments array or map
      * @param argNames the argument names to be transferred
      */
-    applyArguments: function(destination, args, argNames) {
+    applyArgs: function(dest, args, argNames) {
         if (argNames) {
             for (var cnt = 0; cnt < args.length; cnt++) {
-                if ('undefined' != typeof destination["_" + argNames[cnt]]) {
-                    destination["_" + argNames[cnt]] = args[cnt];
+                //dest can be null or 0 hence no shortcut
+                if ('undefined' != typeof dest["_" + argNames[cnt]]) {
+                    dest["_" + argNames[cnt]] = args[cnt];
+                }
+                if ('undefined' != typeof dest[ argNames[cnt]]) {
+                    dest[argNames[cnt]] = args[cnt];
                 }
             }
         } else {
             for (var key in args) {
-                if ('undefined' != typeof destination["_" +key]) {
-                    destination["_" + key] = args[key];
+                if ('undefined' != typeof dest["_" + key]) {
+                    dest["_" + key] = args[key];
+                }
+                if ('undefined' != typeof dest[key]) {
+                    dest[key] = args[key];
                 }
             }
         }
@@ -521,20 +515,20 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Lang", Ob
      * @param func the function issuing the exception
      * @param error the error object itself (optional)
      */
-    createErrorMessage: function(sourceClass, func, error) {
-        var retVal = [];
+    createErrorMsg: function(sourceClass, func, error) {
+        var ret = [];
 
-        retVal.push(this.keyValToStr("Affected Class: ", sourceClass));
-        retVal.push(this.keyValToStr("Affected Method: ", func));
+        ret.push(this.keyValToStr("Affected Class: ", sourceClass));
+        ret.push(this.keyValToStr("Affected Method: ", func));
 
         if (error) {
-            retVal.push(this.keyValToStr("Error name: ", error.name ? error.name : "undefined"));
-            retVal.push(this.keyValToStr("Error message: ", error.message ? error.message : "undefined"));
-            retVal.push(this.keyValToStr("Error description: ", error.description ? error.description : "undefined"));
-            retVal.push(this.keyValToStr("Error number: ", 'undefined' != typeof error.number ? error.number : "undefined"));
-            retVal.push(this.keyValToStr("Error line number: ", 'undefined' != typeof error.lineNumber ? error.lineNumber : "undefined"));
+            ret.push(this.keyValToStr("Error name: ", error.name ? error.name : "undefined"));
+            ret.push(this.keyValToStr("Error message: ", error.message ? error.message : "undefined"));
+            ret.push(this.keyValToStr("Error description: ", error.description ? error.description : "undefined"));
+            ret.push(this.keyValToStr("Error number: ", 'undefined' != typeof error.number ? error.number : "undefined"));
+            ret.push(this.keyValToStr("Error line number: ", 'undefined' != typeof error.lineNumber ? error.lineNumber : "undefined"));
         }
-        return retVal.join("");
+        return ret.join("");
     },
 
     /**
@@ -544,54 +538,74 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Lang", Ob
      * @param delimiter the delimiter
      */
     keyValToStr: function(key, val, delimiter) {
-        var retVal = [];
-        retVal.push(key);
-        retVal.push(val);
+        var ret = [];
+        ret.push(key);
+        ret.push(val);
         if ('undefined' == typeof delimiter) {
             delimiter = "\n";
         }
-        retVal.push(delimiter);
-        return retVal.join("");
+        ret.push(delimiter);
+        return ret.join("");
     },
 
+
+    /**
+     * Simple simple logging only triggering at
+     * firebug compatible logging consoles
+     *
+     * note: ;; means the code will be stripped
+     * from the production code by the build system
+     */
+    _log: function(styleClass /*+arguments*/, args) {
+        var logHolder = document.getElementById("myfaces.logging");
+        if (logHolder) {
+            var elem = document.createElement("div");
+            //element.className = styleClass;
+            elem.innerHTML = this.objToArray(arguments, 1).join(" ");
+            logHolder.appendChild(elem);
+        }
+    },
 
     logLog: function(/*varargs*/) {
-        var argumentStr = this.objToArray(arguments).join(" ");
-        if (window.console && window.console.log) {
-            window.console.log(argumentStr);
+        var argStr = this.objToArray(arguments).join(" ");
+
+        var c = window.console;
+        if (c && c.log) {
+            c.log(argStr);
         }
-        this._logToContainer("logLog", ["Log:"].concat([argumentStr]));
+        this._log("logLog", "Log:" + argStr);
     },
     logDebug: function(/*varargs*/) {
-        var argumentStr = this.objToArray(arguments).join(" ");
-
-        if (window.console && window.console.debug) {
-            window.console.debug(argumentStr);
+        var argStr = this.objToArray(arguments).join(" ");
+        var c = window.console;
+        if (c && c.debug) {
+            c.debug(argStr);
         }
-        this._logToContainer("logDebug", ["Debug:"].concat([argumentStr]));
+        this._log("logDebug", "Debug:" + argStr);
     },
     logError: function(/*varargs*/) {
-        var argumentStr = this.objToArray(arguments).join(" ");
-
-        if (window.console && window.console.error) {
-            window.console.error(argumentStr);
+        var argStr = this.objToArray(arguments).join(" ");
+        var c = window.console;
+        if (c && c.error) {
+            c.error(argStr);
         }
-        this._logToContainer("logError", ["Error:"].concat([argumentStr]));
+        this._log("logError", "Error:" + argStr);
 
     },
     logInfo: function(/*varargs*/) {
-        var argumentStr = this.objToArray(arguments).join(" ");
-
-        if (window.console && window.console.info) {
-            window.console.info(argumentStr);
+        var argStr = this.objToArray(arguments).join(" ");
+        var c = window.console;
+        if (c && c.info) {
+            c.info(argStr);
         }
-        this._logToContainer("logInfo", ["Info:"].concat([argumentStr]));
+        this._log("logInfo", "Info:" + argStr);
     },
     logWarn: function(/*varargs*/) {
-        var argumentStr = this.objToArray(arguments).join(" ");
-        if (window.console && window.console.warn) {
-            window.console.warn(argumentStr);
+        var argStr = this.objToArray(arguments).join(" ");
+        var c = window.console;
+        if (c && c.warn) {
+            c.warn(argStr);
         }
-        this._logToContainer("logWarn", ["Warn:"].concat([argumentStr]));
+        this._log("logWarn", "Warn:" + argStr);
     }
 });

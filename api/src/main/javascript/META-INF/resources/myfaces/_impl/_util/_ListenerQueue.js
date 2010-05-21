@@ -12,6 +12,8 @@
  * idea:
  * var queue = new myfaces._impl._util._ListenerQueue();
  */
+
+/** @namespace myfaces._impl._util._ListenerQueue */
 myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._ListenerQueue", myfaces._impl._util._Queue, {
 
     constructor_: function() {
@@ -47,22 +49,6 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._ListenerQueue", my
     remove : function(/*function*/listener) {
         this._assertListener(listener);
         this._callSuper("remove");
-    },
-
-    /**
-     * generic broadcast with a number of arguments being passed down
-     * @param scope the execution scope for the event callback
-     * @param argument ,...*  the arguments list which has to be passed
-     *                  down the queue function
-     */
-    broadcastScopedEvent : function(scope, /*any*/argument) {
-        var _Lang = myfaces._impl._util._Lang;
-        var _args = _Lang.objToArray(arguments);
-
-        var broadCastFunc = function(element) {
-            element.apply(scope, Array.prototype.slice(_args, 1));
-        };
-        this.each(broadCastFunc);
     },
 
     /**
