@@ -75,7 +75,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                     // external script auto eval
                     //TODO fix the encoding here, we have to assume the src is the same encoding as the document
                     //or enforce auto
-                    myfaces._impl.core._Runtime.loadScript(item.getAttribute('src'), item.getAttribute('type'), false, "UTF-8");
+                    myfaces._impl.core._Runtime._loadScriptEval(item.getAttribute('src'), item.getAttribute('type'), false, "UTF-8");
                 } else {
                     // embedded script auto eval
                     var test = item.text;
