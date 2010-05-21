@@ -155,6 +155,13 @@ public class InsertFacetHandler extends TagHandler
             {
                 //All composite components are NamingContainer and the target is inside it, so we can remove the prefix.
                 _targetComponent = parentCompositeComponent.findComponent(_targetClientId.substring(parentCompositeComponent.getClientId().length()+1));
+                
+                if (_targetComponent == null)
+                {
+                    //Could happen in no org.apache.myfaces.REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE
+                    //In this case we cannot relocate, just return;
+                    return;
+                }
             }            
                         
             if (facetComponent != null)
