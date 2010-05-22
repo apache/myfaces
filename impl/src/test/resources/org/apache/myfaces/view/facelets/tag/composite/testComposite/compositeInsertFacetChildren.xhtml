@@ -25,9 +25,12 @@
 <composite:interface>
 </composite:interface>
 <composite:implementation>
-    <testComposite:compositeInsertFacetInner>
-        <composite:insertFacet name="header"/>
-    </testComposite:compositeInsertFacetInner>
+    <testComposite:compositeInsertChildrenInner>
+        <h:outputText value="BETA ">
+            <composite:insertFacet name="header"/>
+        </h:outputText>        
+        <composite:insertChildren />
+    </testComposite:compositeInsertChildrenInner>
 </composite:implementation>
 </body>
 </html>

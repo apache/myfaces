@@ -344,6 +344,33 @@ public class CompositeComponentTestCase extends FaceletTestCase
         assertNotNull(compositeComponent2);
         UIComponent facet2 = compositeComponent2.getFacet(UIComponent.COMPOSITE_FACET_NAME);
         assertNotNull(facet2);
+        assertEquals(1,facet2.getChildCount());
+        UIOutput targetComp = (UIOutput) facet2.getChildren().get(0);
+        UIComponent insertedFacet = targetComp.getFacet("header");
+        assertNotNull(insertedFacet);
+    }
+    
+    public void testCompositeInsertFacetChildren() throws Exception
+    {
+        HelloWorld helloWorld = new HelloWorld(); 
+        
+        facesContext.getExternalContext().getRequestMap().put("helloWorldBean",
+                helloWorld);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "testCompositeInsertFacetChildren.xhtml");
+        
+        UIComponent panelGroup1 = root.findComponent("testGroup1");
+        assertNotNull(panelGroup1);
+        UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.getChildren().get(0);
+        assertNotNull(compositeComponent1);
+        UIComponent facet1 = compositeComponent1.getFacet(UIComponent.COMPOSITE_FACET_NAME);
+        assertNotNull(facet1);
+        
+        UINamingContainer compositeComponent2 = (UINamingContainer) facet1.getChildren().get(0);
+        assertNotNull(compositeComponent2);
+        UIComponent facet2 = compositeComponent2.getFacet(UIComponent.COMPOSITE_FACET_NAME);
+        assertNotNull(facet2);
         assertEquals(3,facet2.getChildCount());
         UIComponent insertedFacet = facet2.getChildren().get(1).getFacet("header");
         assertNotNull(insertedFacet);
