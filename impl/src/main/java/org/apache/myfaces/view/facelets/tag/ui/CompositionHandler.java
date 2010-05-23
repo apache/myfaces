@@ -141,7 +141,7 @@ public final class CompositionHandler extends TagHandler implements TemplateClie
             }
             finally
             {
-                actx.popClient(this);
+                actx.popExtendedClient(this);
                 ctx.setVariableMapper(orig);
             }
         }

@@ -94,7 +94,7 @@ public final class InsertHandler extends TagHandler implements TemplateClient
         }
         finally
         {
-            actx.popClient(this);
+            actx.popExtendedClient(this);
         }
         if (!found)
         {

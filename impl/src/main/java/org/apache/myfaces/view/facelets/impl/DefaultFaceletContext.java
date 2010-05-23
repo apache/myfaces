@@ -47,6 +47,7 @@ import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.TemplateClient;
+import org.apache.myfaces.view.facelets.TemplateManager;
 import org.apache.myfaces.view.facelets.el.DefaultVariableMapper;
 import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
 
@@ -79,7 +80,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
 
     private final StringBuilder _uniqueIdBuilder = new StringBuilder(30);
 
-    private final List<TemplateManager> _clients;
+    private final LinkedList<TemplateManager> _clients;
 
     private final boolean _isBuildingCompositeComponentMetadata;
     
@@ -130,7 +131,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         _ctx = faces.getELContext();
         _ids = new HashMap<String, Integer>();
         _prefixes = new HashMap<Integer, Integer>();
-        _clients = new ArrayList<TemplateManager>(5);
+        _clients = new LinkedList<TemplateManager>();
         _faces = faces;
         _fnMapper = _ctx.getFunctionMapper();
         _varMapper = _ctx.getVariableMapper();
@@ -358,54 +359,71 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     //Begin methods from AbstractFaceletContext
 
     @Override
-    public void popClient(TemplateClient client)
+    public TemplateManager popClient(TemplateClient client)
     {
-        if (!this._clients.isEmpty())
-        {
-            Iterator<TemplateManager> itr = this._clients.iterator();
-            while (itr.hasNext())
-            {
-                if (itr.next().equals(client))
-                {
-                    itr.remove();
-                    return;
-                }
-            }
-        }
-        throw new IllegalStateException(client + " not found");
+        //if (!this._clients.isEmpty())
+        //{
+        //    Iterator<TemplateManager> itr = this._clients.iterator();
+        //    while (itr.hasNext())
+        //    {
+        //        if (itr.next().equals(client))
+        //        {
+        //            itr.remove();
+        //            return;
+        //        }
+        //    }
+        //}
+        //throw new IllegalStateException(client + " not found");
+        return _clients.removeFirst();
     }
 
     @Override
     public void pushClient(final TemplateClient client)
     {
-        this._clients.add(0, new TemplateManager(this._facelet, client, true));
+        //this._clients.add(0, new TemplateManager(this._facelet, client, true));
+        this._clients.addFirst(new TemplateManagerImpl(this._facelet, client, true));
     }
 
+    public TemplateManager popExtendedClient(TemplateClient client)
+    {
+        return _clients.removeLast();
+    }
+    
     @Override
     public void extendClient(final TemplateClient client)
     {
-        this._clients.add(new TemplateManager(this._facelet, client, false));
+        //this._clients.add(new TemplateManager(this._facelet, client, false));
+        this._clients.addLast(new TemplateManagerImpl(this._facelet, client, false));
     }
 
     @Override
     public boolean includeDefinition(UIComponent parent, String name)
             throws IOException, FaceletException, FacesException, ELException
     {
+        //boolean found = false;
+        //TemplateManager client;
+        //for (int i = 0, size = this._clients.size(); i < size && !found; i++)
+        //{
+        //    client = ((TemplateManager) this._clients.get(i));
+        //    if (client.equals(this._facelet))
+        //        continue;
+        //    found = client.apply(this, parent, name);
+        //}
+        //return found;
         boolean found = false;
         TemplateManager client;
-
-        for (int i = 0, size = this._clients.size(); i < size && !found; i++)
+        Iterator<TemplateManager> itr = _clients.iterator();
+        while (itr.hasNext() && !found)
         {
-            client = ((TemplateManager) this._clients.get(i));
+            client = itr.next();
             if (client.equals(this._facelet))
                 continue;
-            found = client.apply(this, parent, name);
+            found = ((TemplateManagerImpl)client).apply(this, parent, name);
         }
-
         return found;
     }
 
-    private final static class TemplateManager implements TemplateClient
+    private final static class TemplateManagerImpl extends TemplateManager implements TemplateClient
     {
         private final DefaultFacelet _owner;
 
@@ -415,7 +433,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
 
         private final Set<String> _names = new HashSet<String>();
 
-        public TemplateManager(DefaultFacelet owner, TemplateClient target,
+        public TemplateManagerImpl(DefaultFacelet owner, TemplateClient target,
                 boolean root)
         {
             this._owner = owner;

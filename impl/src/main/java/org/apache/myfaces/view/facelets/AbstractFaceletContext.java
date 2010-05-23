@@ -66,10 +66,16 @@ public abstract class AbstractFaceletContext extends FaceletContext
     public abstract void pushClient(TemplateClient client);
 
     /**
-     * Pop the last added TemplateClient
+     * Pop the last added pushed TemplateClient
      * @see TemplateClient
      */
-    public abstract void popClient(TemplateClient client);
+    public abstract TemplateManager popClient(TemplateClient client);
+    
+    /**
+     * Pop the last added extended TemplateClient
+     * @param client
+     */
+    public abstract TemplateManager popExtendedClient(TemplateClient client);
 
     public abstract void extendClient(TemplateClient client);
 
