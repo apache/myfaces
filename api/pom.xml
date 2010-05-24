@@ -48,17 +48,9 @@
 
 
             <plugin>
-                <!-- we have to enforce a version for now which works due to the alpha stage of the plugin -->
-                <!-- 
                 <artifactId>myfaces-javascript-plugin</artifactId>
                 <groupId>org.apache.myfaces.buildtools</groupId>
-                <version>1.0.1-SNAPSHOT</version>
-                 -->
-                <artifactId>javascript-maven-plugin</artifactId>
-                <groupId>org.codehaus.mojo.javascript</groupId>
-                <version>1.0-alpha-1-20090530.211438-7</version>
-                <!-- version>1.0-alpha-1-SNAPSHOT</version -->
-                                
+                <version>1.0.1</version>
                 <extensions>true</extensions>
                 <executions>
                      <execution>
