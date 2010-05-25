@@ -13,6 +13,8 @@
  *  under the License.
  */
 myfaces._impl.core._Runtime.loadScript("#{resource['org.apache.myfaces.core.impl.util:_Lang.js']}", null, null, "UTF-8");
+myfaces._impl.core._Runtime.loadScript("#{resource['org.apache.myfaces.core.impl.util:_ExtLang.js']}", null, null, "UTF-8");
+myfaces._impl.core._Runtime.loadScript("#{resource['org.apache.myfaces.core.impl.util:_UnitTest.js']}", null, null, "UTF-8");
 myfaces._impl.core._Runtime.loadScript("#{resource['org.apache.myfaces.core.impl.util:_Queue.js']}", null, null, "UTF-8");
 myfaces._impl.core._Runtime.loadScript("#{resource['org.apache.myfaces.core.impl.util:_ListenerQueue.js']}", null, null, "UTF-8");
 myfaces._impl.core._Runtime.loadScript("#{resource['org.apache.myfaces.core.impl.util:_Dom.js']}", null, null, "UTF-8");

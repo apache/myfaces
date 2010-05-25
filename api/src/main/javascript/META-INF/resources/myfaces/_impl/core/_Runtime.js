@@ -37,6 +37,10 @@
 (!myfaces._impl.core) ? myfaces._impl.core = {} : null;
 //now this is the only time we have to do this cascaded and manually
 //for the rest of the classes our reserveNamespace function will do the trick
+//Note, this class uses the classical closure approach (to save code)
+//it cannot be inherited by our inheritance mechanism, but must be delegated
+//if you want to derive from it
+//closures and prototype inheritance do not mix, closures and delegation however do
 if (!myfaces._impl.core._Runtime) {
     myfaces._impl.core._Runtime = new function() {
         //the rest of the namespaces can be handled by our namespace feature
@@ -192,7 +196,432 @@ if (!myfaces._impl.core._Runtime) {
             return true;
         };
 
-        this.browserDetection = function() {
+        /**
+         * check if an element exists in the root
+         * also allows to check for subelements
+         * usage
+         * this.exists(rootElem,"my.name.space")
+         * @param {Object} root the root element
+         * @param {String} subNms the namespace
+         */
+        this.exists = function(root, subNms) {
+            if (!root) {
+                return false;
+            }
+
+            //initial condition root set element not set or null
+            //equals to element exists
+            if (!subNms) {
+                return true;
+            }
+            //crossported from the dojo toolkit
+            // summary: determine if an object supports a given method
+            // description: useful for longer api chains where you have to test each object in the chain
+            var p = subNms.split(".");
+            var len = p.length;
+            for (var i = 0; i < len; i++) {
+                //the original dojo code here was false because
+                //they were testing against ! which bombs out on exists
+                //which has a value set to false
+                // (TODO send in a bugreport to the Dojo people)
+
+                if ('undefined' == typeof root[p[i]]) {
+                    return false;
+                } // Boolean
+                root = root[p[i]];
+            }
+            return true; // Boolean
+        };
+
+        /**
+         * fetches a global config entry
+         * @param {String} configName the name of the configuration entry
+         * @param {Object} defaultValue
+         *
+         * @return either the config entry or if none is given the default value
+         */
+        this.getGlobalConfig = function(configName, defaultValue) {
+            /*use(myfaces._impl._util)*/
+
+            if (_this.exists(myfaces, "config") && _this.exists(myfaces.config, configName)) {
+                return myfaces.config[configName];
+            }
+            return defaultValue;
+        };
+
+        /**
+         * gets the local or global options with local ones having higher priority
+         * if no local or global one was found then the default value is given back
+         *
+         * @param {String} configName the name of the configuration entry
+         * @param {String} localOptions the local options root for the configuration myfaces as default marker is added implicitely
+         *
+         * @param {Object} defaultValue
+         *
+         * @return either the config entry or if none is given the default value
+         */
+        this.getLocalOrGlobalConfig = function(localOptions, configName, defaultValue) {
+            /*use(myfaces._impl._util)*/
+
+            return (!_this.exists(localOptions, "myfaces." + configName)) ? _this.getGlobalConfig(configName, defaultValue) : localOptions.myfaces[configName];
+        };
+
+        /**
+         * encapsulated xhr object which tracks down various implementations
+         * of the xhr object in a browser independent fashion
+         * (ie pre 7 used to have non standard implementations because
+         * the xhr object standard came after IE had implemented it first
+         * newer ie versions adhere to the standard and all other new browsers do anyway)
+         *
+         * @return the xhr object according to the browser type
+         */
+        this.getXHRObject = function() {
+            //since this is a global object ie hates it if we do not check for undefined
+            if (window.XMLHttpRequest) {
+                return new XMLHttpRequest();
+            }
+            //IE
+            try {
+                return new ActiveXObject("Msxml2.XMLHTTP");
+            } catch (e) {
+
+            }
+            return new ActiveXObject('Microsoft.XMLHTTP');
+        };
+
+
+        /**
+         * loads a script and executes it under a global scope
+         * @param {String} src  the source of the script
+         * @param {String} type the type of the script
+         * @param {Boolean} defer  defer true or false, same as the javascript tag defer param
+         * @param {String} charSet the charset under which the script has to be loaded
+         */
+        this.loadScriptEval = function(src, type, defer, charSet) {
+            var xhr = _this.getXHRObject();
+            xhr.open("GET", src, false);
+
+            if (charSet) {
+                xhr.setRequestHeader("Content-Type", "application/x-javascript; charset:" + charSet);
+            }
+
+            xhr.send(null);
+
+            //since we are synchronous we do it after not with onReadyStateChange
+            if (xhr.readyState == 4) {
+                if (xhr.status == 200) {
+                    //defer also means we have to process after the ajax response
+                    //has been processed
+                    //we can achieve that with a small timeout, the timeout
+                    //triggers after the processing is done!
+                    if (!defer) {
+                        _this.globalEval(xhr.responseText.replace("\n", "\r\n") + "\r\n//@ sourceURL=" + src);
+                    } else {
+                        setTimeout(function() {
+                            _this.globalEval(xhr.responseText + "\r\n//@ sourceURL=" + src);
+                        }, 1);
+                    }
+                } else {
+                    throw Error(xhr.responseText);
+                }
+            } else {
+                throw Error("Loading of script " + src + " failed ");
+            }
+        };
+
+        /**
+         * load script functionality which utilizes the browser internal
+         * script loading capabilities
+         *
+         * @param {String} src  the source of the script
+         * @param {String} type the type of the script
+         * @param {Boolean} defer  defer true or false, same as the javascript tag defer param
+         * @param {String} charSet the charset under which the script has to be loaded
+         */
+        this.loadScriptByBrowser = function(src, type, defer, charSet) {
+            //if a head is already present then it is safer to simply
+            //use the body, some browsers prevent head alterations
+            //after the first initial rendering
+            var position = document.getElementsByTagName("body").length ? "body" : "head";
+
+            try {
+                var holder = document.getElementsByTagName(position)[0];
+                if ('undefined' == typeof holder || null == holder)
+                {
+                    holder = document.createElement(position);
+                    var html = document.getElementsByTagName("html");
+                    html.appendChild(holder);
+                }
+                var script = document.createElement("script");
+                script.type = type || "text/javascript";
+                script.src = src;
+                if (charSet) {
+                    script.charset = charSet;
+                }
+                if (defer) {
+                    script.defer = defer;
+                }
+                holder.appendChild(script);
+            } catch (e) {
+
+                return false;
+            }
+
+            return true;
+        };
+
+        this.loadScript = function(src, type, defer, charSet) {
+            if (!_this.loadScriptByBrowser(src, type, defer, charSet)) {
+                _this.loadScriptEval(src, type, defer, charSet);
+            }
+        };
+
+        //Base Patterns, Inheritance, Delegation and Singleton
+
+
+        /**
+         * delegation pattern
+         * usage:
+         * this.delegateObject("my.name.space", delegate,
+         * {
+         *  constructor_ :function(bla, bla1) {
+         *      this._callDelegate("constructor", bla1);
+         *  },
+         *  myFunc: function(yyy) {
+         *      DoSomething;
+         *      this._callDelegate("someOtherFunc", yyyy);
+         *  }
+         * });
+         *
+         * or
+         * usage var newClass = this.delegateObject(
+         * function (var1, var2) {
+         *  this._callDelegate("constructor", var1,var2);
+         * };
+         * ,delegateObject);
+         * newClass.prototype.myMethod = function(arg1) {
+         *      this._callDelegate("myMethod", arg1,"hello world");
+         *
+         *
+         * @param newCls the new class name to be generated
+         * @param delegateObj the delegation object
+         * @param protoFuncs the prototype functions which should be attached
+         * @param nmsFuncs the namespace functions which should be attached to the namespace
+         */
+        this.delegateObj = function(newCls, delegateObj, protoFuncs, nmsFuncs) {
+            if (!_this.isString(newCls)) {
+                throw Error("new class namespace must be of type String");
+            }
+
+            if ('function' != typeof newCls) {
+                newCls = _reserveClsNms(newCls, protoFuncs);
+                if (!newCls) return null;
+            }
+
+            //central delegation mapping core
+            var proto = newCls.prototype;
+
+            //the trick here is to isolate the entries to bind the
+            //keys in a private scope see
+            //http://www.ruzee.com/blog/2008/12/javascript-inheritance-via-prototypes-and-closures
+            for (var key in delegateObj) (function(key, delFn) {
+                //The isolation is needed otherwise the last _key assigend would be picked
+                //up internally
+                if (key && typeof delFn == "function") {
+                    proto[key] = function(/*arguments*/) {
+                        var ret = delFn.apply(delegateObj, arguments);
+                        if ('undefined' != ret) return ret;
+                    };
+                }
+            })(key, delegateObj[key]);
+
+            proto._delegateObj = delegateObj;
+            proto.constructor = newCls;
+
+            proto._callDelegate = function(methodName) {
+                var passThrough = (arguments.length == 1) ? [] : Array.prototype.slice.call(arguments, 1);
+                var ret = this._delegateObj[methodName].apply(this._delegateObj, passThrough);
+                if ('undefined' != ret) return ret;
+            };
+
+            //we now map the function map in
+            _applyFuncs(newCls, protoFuncs, true);
+            _applyFuncs(newCls, nmsFuncs, false);
+
+            return newCls;
+        };
+
+        /**
+         * prototype based delegation inheritance
+         *
+         * implements prototype delegaton inheritance dest <- a
+         *
+         * usage var newClass = this.extends( function (var1, var2) {
+         *                                          this._callSuper("constructor", var1,var2);
+         *                                     };
+         *                                  ,origClass);
+         *
+         *       newClass.prototype.myMethod = function(arg1) {
+         *              this._callSuper("myMethod", arg1,"hello world");
+         *       ....
+         *
+         * other option
+         *
+         * myfaces._impl._core._Runtime.extends("myNamespace.newClass", parent, {
+         *                              init: function() {constructor...},
+         *                              method1: function(f1, f2) {},
+         *                              method2: function(f1, f2,f3) {
+         *                                  this._callSuper("method2", F1,"hello world");
+         *                              }
+         *              });
+         *
+         * @param {function|String} newCls either a unnamed function which can be assigned later or a namespace
+         * @param {function} extendCls the function class to be extended
+         * @param {Object} protoFuncs (Map) an optional map of prototype functions which in case of overwriting a base function get an inherited method
+         *
+         * To explain further
+         * prototype functions:
+         *  newClass.prototype.<prototypeFunction>
+         * namspace function
+         *  newClass.<namespaceFunction> = function() {...}
+         */
+
+        this.extendClass = function(newCls, extendCls, protoFuncs, nmsFuncs) {
+            if (!_this.isString(newCls)) {
+                throw Error("new class namespace must be of type String");
+            }
+
+            if ('function' != typeof newCls) {
+                newCls = _reserveClsNms(newCls, protoFuncs);
+                if (!newCls) return null;
+            }
+            if (extendCls._mfProto) {
+                extendCls = extendCls._mfProto;
+            }
+
+            if (extendCls) {
+                newCls.prototype = new extendCls;
+                newCls.prototype.constructor = newCls;
+                newCls.prototype._parentCls = extendCls.prototype;
+
+                newCls.prototype._callSuper = function(methodName) {
+                    var passThrough = (arguments.length == 1) ? [] : Array.prototype.slice.call(arguments, 1);
+                    this._parentCls[methodName].apply(this, passThrough);
+                };
+            }
+
+            //we now map the function map in
+            _applyFuncs(newCls, protoFuncs, true);
+            //we could add inherited but that would make debugging harder
+            //see http://www.ruzee.com/blog/2008/12/javascript-inheritance-via-prototypes-and-closures on how to do it
+
+            _applyFuncs(newCls, nmsFuncs, false);
+
+            return newCls;
+        };
+
+
+
+        /**
+         * Extends a class and puts a singleton instance at the reserved namespace instead
+         * of its original class
+         *
+         * @param {function|String} newCls either a unnamed function which can be assigned later or a namespace
+         * @param {function} extendsCls the function class to be extended
+         * @param {Object} protoFuncs (Map) an optional map of prototype functions which in case of overwriting a base function get an inherited method
+         */
+        this.singletonExtendClass = function(newCls, extendsCls, protoFuncs, nmsFuncs) {
+            return _makeSingleton(this.extendClass, newCls, extendsCls, protoFuncs, nmsFuncs);
+        };
+
+        /**
+         * delegation pattern which attached singleton generation
+         *
+         * @param newCls the new namespace object to be generated as singletoin
+         * @param delegateObj the object which has to be delegated
+         * @param protoFuncs the prototype functions which are attached on prototype level
+         * @param nmsFuncs the functions which are attached on the classes namespace level
+         */
+        this.singletonDelegateObj = function(newCls, delegateObj, protoFuncs, nmsFuncs) {
+            return _makeSingleton(this.delegateObj, newCls, delegateObj, protoFuncs, nmsFuncs);
+        };
+
+        //since the object is self contained and only
+        //can be delegated we can work with real private
+        //functions here, the other parts of the
+        //system have to emulate them via _ prefixes
+        var _makeSingleton = function(ooFunc, newCls, delegateObj, protoFuncs, nmsFuncs) {
+            if (_this.fetchNamespace(newCls)) {
+                return null;
+            }
+            var clazz = ooFunc(newCls + "._mfProto", delegateObj, protoFuncs, nmsFuncs);
+            if (clazz != null) {
+                _this.applyToGlobalNamespace(newCls, new clazz());
+            }
+            _this.fetchNamespace(newCls)["_mfProto"] = clazz;
+        };
+
+        //internal class namespace reservation depending on the type (string or function)
+        var _reserveClsNms = function(newCls, protoFuncs) {
+            var constr = null;
+            if ('undefined' != typeof protoFuncs && null != protoFuncs) {
+                constr = ('undefined' != typeof null != protoFuncs['constructor_'] && null != protoFuncs['constructor_']) ? protoFuncs['constructor_'] : function() {
+                };
+            } else {
+                constr = function() {
+                };
+            }
+            if (!_this.reserveNamespace(newCls, constr)) {
+                return null;
+            }
+            newCls = _this.fetchNamespace(newCls);
+            return newCls;
+        };
+
+        var _applyFuncs = function (newCls, funcs, proto)
+        {
+            if (funcs) {
+                for (var key in funcs) {
+                    if (!proto)
+                        newCls[key] = funcs[key];
+                    else
+                        newCls.prototype[key] = funcs[key];
+                }
+            }
+        };
+
+        /**
+         * determines if the embedded scripts have to be evaled manually
+         * @return true if a browser combination is given which has to
+         * do a manual eval
+         * which is currently ie > 5.5, chrome, khtml, webkit safari
+         *
+         */
+        this.isManualScriptEval = function() {
+
+            var d = _this.browser;
+
+            return (_this.exists(d, "isIE") &&
+                    ( d.isIE > 5.5)) ||
+                    (_this.exists(d, "isKhtml") &&
+                            (d.isKhtml > 0)) ||
+                    (_this.exists(d, "isWebKit") &&
+                            (d.isWebKit > 0)) ||
+                    (_this.exists(d, "isSafari") &&
+                            (d.isSafari > 0));
+
+            //another way to determine this without direct user agent parsing probably could
+            //be to add an embedded script tag programmatically and check for the script variable
+            //set by the script if existing, the add went through an eval if not then we
+            //have to deal with it ourselves, this might be dangerous in case of the ie however
+            //so in case of ie we have to parse for all other browsers we can make a dynamic
+            //check if the browser does auto eval
+
+        };
+
+        //initial browser detection, we encapsule it in a closure
+        //to drop all temporary variables from ram as soon as possible
+        (function() {
             /**
              * browser detection code
              * cross ported from dojo 1.2
@@ -257,303 +686,7 @@ if (!myfaces._impl.core._Runtime) {
                     d.isIE = document.documentMode;
                 }
             }
-        };
+        })();
 
-        /**
-         * fetches a global config entry
-         * @param {String} configName the name of the configuration entry
-         * @param {Object} defaultValue
-         *
-         * @return either the config entry or if none is given the default value
-         */
-        this.getGlobalConfig = function(configName, defaultValue) {
-            /*use(myfaces._impl._util)*/
-
-            if (_this.exists(myfaces, "config") && _this.exists(myfaces.config, configName)) {
-                return myfaces.config[configName];
-            }
-            return defaultValue;
-        };
-
-        /**
-         * check if an element exists in the root
-         */
-        this.exists = function(root, name) {
-            if (!root) {
-                return false;
-            }
-
-            //initial condition root set element not set or null
-            //equals to element exists
-            if (!name) {
-                return true;
-            }
-            //crossported from the dojo toolkit
-            // summary: determine if an object supports a given method
-            // description: useful for longer api chains where you have to test each object in the chain
-            var p = name.split(".");
-            var len = p.length;
-            for (var i = 0; i < len; i++) {
-                //the original dojo code here was false because
-                //they were testing against ! which bombs out on exists
-                //which has a value set to false
-                // (TODO send in a bugreport to the Dojo people)
-
-                if ('undefined' == typeof root[p[i]]) {
-                    return false;
-                } // Boolean
-                root = root[p[i]];
-            }
-            return true; // Boolean
-        };
-
-        /**
-         * gets the local or global options with local ones having higher priority
-         * if no local or global one was found then the default value is given back
-         *
-         * @param {String} configName the name of the configuration entry
-         * @param {String} localOptions the local options root for the configuration myfaces as default marker is added implicitely
-         *
-         * @param {Object} defaultValue
-         *
-         * @return either the config entry or if none is given the default value
-         */
-        this.getLocalOrGlobalConfig = function(localOptions, configName, defaultValue) {
-            /*use(myfaces._impl._util)*/
-
-            return (!_this.exists(localOptions, "myfaces." + configName)) ? _this.getGlobalConfig(configName, defaultValue) : localOptions.myfaces[configName];
-        };
-
-        /**
-         * encapsulated xhr object which tracks down various implementations
-         * of the xhr object in a browser independent fashion
-         * (ie pre 7 used to have non standard implementations because
-         * the xhr object standard came after IE had implemented it first
-         * newer ie versions adhere to the standard and all other new browsers do anyway)
-         */
-        this.getXHRObject = function() {
-            //since this is a global object ie hates it if we do not check for undefined
-            if (window.XMLHttpRequest) {
-                return new XMLHttpRequest();
-            }
-            //IE
-            try {
-                return new ActiveXObject("Msxml2.XMLHTTP");
-            } catch (e) {
-
-            }
-            return new ActiveXObject('Microsoft.XMLHTTP');
-        };
-
-        /**
-         * [STATIC]
-         * loads a script and executes it under a global scope
-         * @param {String} src the source to be loaded
-         * @param {String} type the mime type of the script (currently ignored
-         * but in the long run it will be used)
-         */
-        this._loadScriptEval = function(src, type, defer, charSet) {
-            var xhr = _this.getXHRObject();
-            xhr.open("GET", src, false);
-
-            if (charSet) {
-                xhr.setRequestHeader("Content-Type", "application/x-javascript; charset:" + charSet);
-            }
-
-            xhr.send(null);
-
-            //since we are synchronous we do it after not with onReadyStateChange
-            if (xhr.readyState == 4) {
-                if (xhr.status == 200) {
-                    //defer also means we have to process after the ajax response
-                    //has been processed
-                    //we can achieve that with a small timeout, the timeout
-                    //triggers after the processing is done!
-                    if (!defer) {
-                        _this.globalEval(xhr.responseText.replace("\n", "\r\n") + "\r\n//@ sourceURL=" + src);
-                    } else {
-                        setTimeout(function() {
-                            _this.globalEval(xhr.responseText + "\r\n//@ sourceURL=" + src);
-                        }, 1);
-                    }
-                } else {
-                    throw Error(xhr.responseText);
-                }
-            } else {
-                throw Error("Loading of script " + src + " failed ");
-            }
-        };
-
-        this._loadScriptByBrowser = function(src, type, defer, charSet) {
-            //if a head is already present then it is safer to simply
-            //use the body, some browsers prevent head alterations
-            //after the first initial rendering
-            var position = document.getElementsByTagName("body").length ? "body" :"head";
-
-            try {
-                var holder = document.getElementsByTagName(position)[0];
-                if ('undefined' == typeof holder || null == holder)
-                {
-                    holder = document.createElement(position);
-                    var html = document.getElementsByTagName("html");
-                    html.appendChild(holder);
-                }
-                var script = document.createElement("script");
-                script.type = "text/javascript";
-                script.src = src;
-                if (defer) {
-                    script.defer = defer;
-                }
-                holder.appendChild(script);
-            } catch (e) {
-               
-               return false;
-            }
-
-            return true;
-        };
-
-        this.loadScript = function(src, type, defer, charSet) {
-            if (!_this._loadScriptByBrowser(src, type, defer, charSet)) {
-                _this._loadScriptEval(src, type, defer, charSet);
-            } 
-        };
-
-        /**
-         * Extends a class and puts a singleton instance at the reserved namespace instead
-         * of its original class
-         *
-         * @param {function|String} newCls either a unnamed function which can be assigned later or a namespace
-         * @param {function} extendsCls the function class to be extended
-         * @param {Object} protoFuncs (Map) an optional map of prototype functions which in case of overwriting a base function get an inherited method
-         */
-        this.singletonExtendClass = function(newCls, extendsCls, protoFuncs, nmsFuncs) {
-
-            if (!_this.isString(newCls)) {
-                throw Error("New class namespace must be of type string for static initialisation");
-            }
-            //namespace already declared we do not do anything further
-            if (_this.fetchNamespace(newCls)) {
-                return null;
-            }
-
-            var clazz = _this.extendClass(newCls, extendsCls, protoFuncs, nmsFuncs);
-            if (clazz != null) {
-                _this.applyToGlobalNamespace(newCls, new clazz());
-            }
-        };
-
-        /**
-         * prototype based delegation inheritance
-         *
-         * implements prototype delegaton inheritance dest <- a
-         *
-         * usage var newClass = this.extends(
-         * function (var1, var2) {
-         *  this.callSuper("constructor", var1,var2);
-         * };
-         * ,origClass);
-         * newClass.prototype.myMethod = function(arg1) {
-         *      this.callSuper("myMethod", arg1,"hello world");
-
-         other option
-         myfaces._impl._core._Runtime.extends("myNamespace.newClass", parent, {
-         init: function() {constructor...},
-         method1: function(f1, f2) {},
-         method2: function(f1, f2,f3)
-
-         });
-         *
-         * @param {function|String} newCls either a unnamed function which can be assigned later or a namespace
-         * @param {function} extendCls the function class to be extended
-         * @param {Object} protoFuncs (Map) an optional map of prototype functions which in case of overwriting a base function get an inherited method
-         *
-         * To explain further
-         * prototype functions:
-         *  newClass.prototype.<prototypeFunction>
-         * namspace function
-         *  newClass.<namespaceFunction> = function() {...}
-         */
-
-        this.extendClass = function(newCls, extendCls, protoFuncs, nmsFuncs) {
-            if (!this.isString(newCls)) {
-                throw Error("new class namespace must be of type String");
-            }
-
-            if ('function' != typeof newCls) {
-
-                var constr = null;
-                if ('undefined' != typeof protoFuncs && null != protoFuncs) {
-                    constr = ('undefined' != typeof null != protoFuncs['constructor_'] && null != protoFuncs['constructor_']) ? protoFuncs['constructor_'] : function() {
-                    };
-                } else {
-                    constr = function() {
-                    };
-                }
-                if (!_this.reserveNamespace(newCls, constr)) {
-                    return null;
-                }
-                newCls = _this.fetchNamespace(newCls);
-            }
-
-            if (extendCls) {
-                newCls.prototype = new extendCls;
-                newCls.prototype.constructor = newCls;
-                newCls.prototype.parent = extendCls.prototype;
-
-                newCls.prototype._callSuper = function(methodName) {
-                    var passThrough = (arguments.length == 1) ? [] : Array.prototype.slice.call(arguments, 1);
-                    this.parent[methodName].apply(this, passThrough);
-                };
-            }
-
-            var key;
-            //we now map the function map in
-            if (protoFuncs) {
-                for (key in protoFuncs) {
-                    if (key != "_callSuper") {
-                        newCls.prototype[key] = protoFuncs[key];
-                    }
-                }
-            }
-            if (nmsFuncs) {
-                for (key in nmsFuncs) {
-                    newCls[key] = nmsFuncs[key];
-                }
-            }
-            return newCls;
-        };
-
-        /**
-         * determines if the embedded scripts have to be evaled manually
-         * @return true if a browser combination is given which has to
-         * do a manual eval
-         * which is currently ie > 5.5, chrome, khtml, webkit safari
-         *
-         */
-        this.isManualScriptEval = function() {
-
-            var d = _this.browser;
-
-            return (_this.exists(d, "isIE") &&
-                    ( d.isIE > 5.5)) ||
-                    (_this.exists(d, "isKhtml") &&
-                            (d.isKhtml > 0)) ||
-                    (_this.exists(d, "isWebKit") &&
-                            (d.isWebKit > 0)) ||
-                    (_this.exists(d, "isSafari") &&
-                            (d.isSafari > 0));
-
-            //another way to determine this without direct user agent parsing probably could
-            //be to add an embedded script tag programmatically and check for the script variable
-            //set by the script if existing, the add went through an eval if not then we
-            //have to deal with it ourselves, this might be dangerous in case of the ie however
-            //so in case of ie we have to parse for all other browsers we can make a dynamic
-            //check if the browser does auto eval
-
-        };
-
-        _this.browserDetection();
     };
-
 }

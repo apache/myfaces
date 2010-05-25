@@ -29,27 +29,32 @@
 //Intellij Warnings settings
 /** @namespace myfaces._impl._util._Lang */
 /** @namespace window.console */
- myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Lang", Object, {
+myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", myfaces._impl.core._Runtime, {
+
+
 
     fetchNamespace : function(namespace) {
-        if(!namespace || !this.isString(namespace)) {
+        if (!namespace || !this.isString(namespace)) {
             throw Error("_Lang.fetchNamespace namespace must be of type String");
         }
-        return myfaces._impl.core._Runtime.fetchNamespace(namespace);
+        return this._callDelegate("fetchNamespace",namespace);
     },
 
     reserveNamespace : function(namespace) {
-        if(!this.isString(namespace)) {
+        if (!this.isString(namespace)) {
             throw Error("_Lang.reserveNamespace namespace must be of type String");
         }
-        return myfaces._impl.core._Runtime.reserveNamespace(namespace);
+        return this._callDelegate("reserveNamespace",namespace);
+        //return this._RT.reserveNamespace(namespace);
     },
 
     globalEval : function(code) {
-        if(!this.isString(code)) {
+        if (!this.isString(code)) {
             throw Error("_Lang.globalEval code must be of type String");
         }
-        return myfaces._impl.core._Runtime.globalEval(code);
+        return this._callDelegate("globalEval",code);
+
+        //return this._RT.globalEval(code);
     },
 
     /**
@@ -71,16 +76,16 @@
     /**
      * check if an element exists in the root
      */
-    exists : function(root, subNamespace) {
-        return myfaces._impl.core._Runtime.exists(root, subNamespace);
-    },
+    /*exists : function(root, subNamespace) {
+        return this._RT.exists(root, subNamespace);
+    },*/
 
     /**
-     @see myfaces._impl.core._Runtime.extendClass
+     @see this._RT.extendClass
      */
-    singletonExtendClass : function(newClass, extendsClass, functionMap, inherited) {
-        return myfaces._impl.core._Runtime.singletonExtendClass(newClass, extendsClass, functionMap, inherited);
-    },
+    /*singletonExtendClass : function(newClass, extendsClass, functionMap, inherited) {
+        return this._RT.singletonExtendClass(newClass, extendsClass, functionMap, inherited);
+    },*/
 
 
     /**
@@ -103,11 +108,11 @@
 
 
     /**
-     @see myfaces._impl.core._Runtime.extendClass
+     @see this._RT.extendClass
      */
-    extendClass : function(newClass, extendsClass, functionMap, inherited) {
-        return myfaces._impl.core._Runtime.extendClass(newClass, extendsClass, functionMap, inherited);
-    },
+    /*extendClass : function(newClass, extendsClass, functionMap, inherited) {
+        return this._RT.extendClass(newClass, extendsClass, functionMap, inherited);
+    },*/
 
     //core namespacing and inheritance done, now to the language extensions
 
@@ -188,7 +193,7 @@
             throw Error("myfaces._impl._util._Lang.strToArray a splitter param must be provided which is either a tring or a regexp");
         }
         var retArr = it.split(splitter);
-        var len = retArr.length;
+        //var len = retArr.length;
         for (var cnt = 0; cnt < len; cnt++) {
             retArr[cnt] = this.trim(retArr[cnt]);
         }
@@ -201,7 +206,7 @@
      * crossported from dojo
      */
     trim : function(/*string*/ str) {
-       if(!this.isString(str)) {
+        if (!this.isString(str)) {
             throw Error("_Lang.trim, parameter must be of type String");
         }
         str = str.replace(/^\s\s*/, '');
@@ -303,7 +308,7 @@
      * @param {|boolean|} overwrite if set to true the destination is overwritten if the keys exist in both maps
      **/
     mixMaps : function(dest, src, overwrite) {
-        if(!dest || !src) {
+        if (!dest || !src) {
             throw Error("_Lang.mixMaps, both a source as well as a destination map must be provided");
         }
 
@@ -345,7 +350,7 @@
      * @param {String} str string to check for
      */
     contains : function(arr, str) {
-        if(!arr || !str) {
+        if (!arr || !str) {
             throw Error("_Lang.contains an array and a string must be provided");
         }
 
@@ -369,7 +374,7 @@
      * and functionality wise dirty
      */
     arrToString : function(/*String or array*/ arr, /*string*/ delimiter) {
-        if(!arr) {
+        if (!arr) {
             throw Error("_Lang.arrayToString array must be set");
         }
         if (this.isString(arr)) {
@@ -397,7 +402,7 @@
      */
     addOnLoad: function(func) {
         var oldonload = window.onload;
-        window.onload = (!this.assertType( window.onload, "function")) ? func : function() {
+        window.onload = (!this.assertType(window.onload, "function")) ? func : function() {
             oldonload();
             func();
         };
@@ -432,51 +437,56 @@
      *
      * @param inColl
      */
-    /*  attachIterators : function (inColl ) {
-     var _coll = inColl;
+   /* collection : function (inColl) {
+        var _coll = inColl;
 
-     if(_coll instanceof Array) {
-     if(!_coll.each) {
-     _coll.each = function(closure) {
-     for(var cnt = 0; cnt < _coll.length; cnt++) {
-     closure(_coll[cnt]);
-     }
-     }
-     }
-     if(!_coll.filter) {
-     _coll.filter = function(closure) {
-     var retVal = [];
-     for(var cnt = 0; cnt < _coll.length; cnt++) {
-     var elem = closure(_coll[cnt]);
-     if(closure(elem)) {
-     retVal.push(elem)
-     }
-     }
-     }
-     }
+        if (_coll instanceof Array) {
+            if (!_coll.each) {
+                _coll.each = function(closure) {
+                    for (var cnt = 0; cnt < _coll.length; cnt++) {
+                        //if(caller.this) {
+                        //    closure.apply(caller.this, [cnt, _coll[cnt]]);
+                        //} else {
+                            closure(cnt, _coll[cnt]);
+                        //}
+                    }
+                }
+            }
+            if (!_coll.filter) {
+                _coll.filter = function(closure) {
 
-     } else {
-     if(!_coll.each) {
-     _coll.each = function(closure) {
-     for(var key in _coll.length) {
-     closure(key, _coll[key]);
-     }
-     }
-     }
-     if(!_coll.filter) {
-     _coll.filter = function(closure) {
-     var retVal = [];
-     for(var key in _coll.length) {
-     var elem = closure(_coll[key]);
-     if(closure(key, elem)) {
-     retVal.push(elem)
-     }
-     }
-     }
-     }
+                    var retVal = [];
+                    for (var cnt = 0; cnt < _coll.length; cnt++) {
+                        var elem = closure(_coll[cnt]);
+                        if (closure(cnt, elem)) {
+                            retVal.push(elem)
+                        }
+                    }
+                }
+            }
 
-     }
-     },  */
+        } else {
+            if (!_coll.each) {
+                _coll.each = function(closure) {
+                    for (var key in _coll.length) {
+                        closure(key, _coll[key]);
+                    }
+                }
+            }
+            if (!_coll.filter) {
+                _coll.filter = function(closure) {
+                    var retVal = [];
+                    for (var key in _coll.length) {
+                        var elem = closure(_coll[key]);
+                        if (closure(key, elem)) {
+                            retVal.push(elem)
+                        }
+                    }
+                }
+            }
+
+        }
+    },*/
 
     /**
      * helper to automatically apply a delivered arguments map or array
@@ -546,66 +556,6 @@
         }
         ret.push(delimiter);
         return ret.join("");
-    },
-
-
-    /**
-     * Simple simple logging only triggering at
-     * firebug compatible logging consoles
-     *
-     * note: ;; means the code will be stripped
-     * from the production code by the build system
-     */
-    _log: function(styleClass /*+arguments*/, args) {
-        var logHolder = document.getElementById("myfaces.logging");
-        if (logHolder) {
-            var elem = document.createElement("div");
-            //element.className = styleClass;
-            elem.innerHTML = this.objToArray(arguments, 1).join(" ");
-            logHolder.appendChild(elem);
-        }
-    },
-
-    logLog: function(/*varargs*/) {
-        var argStr = this.objToArray(arguments).join(" ");
-
-        var c = window.console;
-        if (c && c.log) {
-            c.log(argStr);
-        }
-        this._log("logLog", "Log:" + argStr);
-    },
-    logDebug: function(/*varargs*/) {
-        var argStr = this.objToArray(arguments).join(" ");
-        var c = window.console;
-        if (c && c.debug) {
-            c.debug(argStr);
-        }
-        this._log("logDebug", "Debug:" + argStr);
-    },
-    logError: function(/*varargs*/) {
-        var argStr = this.objToArray(arguments).join(" ");
-        var c = window.console;
-        if (c && c.error) {
-            c.error(argStr);
-        }
-        this._log("logError", "Error:" + argStr);
-
-    },
-    logInfo: function(/*varargs*/) {
-        var argStr = this.objToArray(arguments).join(" ");
-        var c = window.console;
-        if (c && c.info) {
-            c.info(argStr);
-        }
-        this._log("logInfo", "Info:" + argStr);
-    },
-    logWarn: function(/*varargs*/) {
-        var argStr = this.objToArray(arguments).join(" ");
-        var c = window.console;
-        if (c && c.warn) {
-            c.warn(argStr);
-        }
-        this._log("logWarn", "Warn:" + argStr);
     }
+   
 });

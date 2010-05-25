@@ -385,6 +385,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         {
             if (scriptTags[i].src.search(/\/javax\.faces\.resource\/jsf\.js.*ln=javax\.faces/) != -1)
             {
+                var result = scriptTags[i].src.match(/stage=([^&;]*)/);
                 if (result)
                 {
                     // we found stage=XXX

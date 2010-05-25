@@ -110,6 +110,12 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._Queue", Object, {
      * @param closure a closure which processes the element
      */
     each: function(closure) {
+        //we have a browser optimized ecmascript version present
+        //which again is all newer browsers except ie
+        if(Array.prototype.forEach) {
+           return (this._space)? this._q.slice(this._space).forEach( closure ): this._q.forEach( closure ) ;
+        }
+
         var len = this._q.length;
         for (var cnt = this._space; cnt < len; cnt++) {
             closure(this._q[cnt]);
@@ -127,6 +133,13 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._Queue", Object, {
     filter: function(closure) {
         var ret = [];
         var len = this._q.length;
+
+        //we have a browser optimized ecmascript version present
+        //which again is all newer browsers except ie        
+        if(Array.prototype.filter) {
+           return (this._space)? this._q.slice(this._space).filter( closure ): this._q.filter( closure );
+        }
+        
         for (var cnt = this._space; cnt < len; cnt++) {
             if (closure(this._q[cnt])) {
                 ret.push(this._q[cnt]);
