@@ -221,7 +221,7 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
      * a failsafe string determination method
      * (since in javascript String != "" typeof alone fails!)
      * @param it {|Object|} the object to be checked for being a string
-     * @return true in case of being a string false otherwise 
+     * @return true in case of being a string false otherwise
      */
     isString: function(/*anything*/ it) {
         //	summary:

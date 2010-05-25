@@ -142,7 +142,7 @@ if (!myfaces._impl.core._Runtime) {
          * a failsafe string determination method
          * (since in javascript String != "" typeof alone fails!)
          * @param it {|Object|} the object to be checked for being a string
-         * @return true in case of being a string false otherwise 
+         * @return true in case of being a string false otherwise
          */
         this.isString = function(/*anything*/ it) {
             //	summary:
