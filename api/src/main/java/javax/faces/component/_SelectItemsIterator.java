@@ -179,7 +179,7 @@ class _SelectItemsIterator implements Iterator<SelectItem>
                 else
                 {
                     Level level = Level.FINE;
-                    if (!FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Production))
+                    if (!_facesContext.isProjectStage(ProjectStage.Production))
                     {
                         level = Level.WARNING;
                     }

@@ -108,6 +108,8 @@ public abstract class UIComponentBase extends UIComponent
     private Map<String, List<ClientBehavior>> _behaviorsMap = null;
     private transient Map<String, List<ClientBehavior>> _unmodifiableBehaviorsMap = null;
     
+    transient Character _separatorChar;
+    
     public UIComponentBase()
     {
     }
@@ -498,6 +500,15 @@ public abstract class UIComponentBase extends UIComponent
             popComponentFromEL(context);
         }
     }
+    
+    char getSeparatorChar()
+    {
+        if (_separatorChar == null)
+        {
+            _separatorChar = Character.valueOf(UINamingContainer.getSeparatorChar(FacesContext.getCurrentInstance()));
+        }
+        return _separatorChar.charValue();
+    }
 
     /**
      * Standard method for finding other components by id, inherited by most UIComponent objects.
@@ -530,7 +541,7 @@ public abstract class UIComponentBase extends UIComponent
         if (expr.length() == 0)
             return null;
 
-        final char separatorChar = UINamingContainer.getSeparatorChar(FacesContext.getCurrentInstance());
+        final char separatorChar = getSeparatorChar();
         UIComponent findBase;
         if (expr.charAt(0) == separatorChar)
         {

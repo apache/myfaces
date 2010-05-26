@@ -91,7 +91,7 @@ public class ClientBehaviorBase extends BehaviorBase implements ClientBehavior
             throw new NullPointerException("behaviorContext");
         }
         
-        ClientBehaviorRenderer renderer = getRenderer(FacesContext.getCurrentInstance());
+        ClientBehaviorRenderer renderer = getRenderer(behaviorContext.getFacesContext());
         if (renderer != null)
         {
             // If a BehaviorRenderer is available for the specified behavior renderer type, this method delegates 

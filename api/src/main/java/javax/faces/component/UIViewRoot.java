@@ -240,7 +240,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      */
     public String createUniqueId()
     {
-        return createUniqueId(FacesContext.getCurrentInstance(), null);
+        return createUniqueId(getFacesContext(), null);
     }
 
     /**
@@ -568,7 +568,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     {
         // Call UIComponentBase.getRendersChildren() 
         // If PartialViewContext.isAjaxRequest()  returns true this method must return true.
-        PartialViewContext context = FacesContext.getCurrentInstance().getPartialViewContext();
+        PartialViewContext context = getFacesContext().getPartialViewContext();
 
         return (context.isAjaxRequest()) ? true : super.getRendersChildren();
     }
