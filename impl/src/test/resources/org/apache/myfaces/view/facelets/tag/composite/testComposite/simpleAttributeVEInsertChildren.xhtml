@@ -27,8 +27,8 @@
     <composite:attribute name="styleClass" />
     <composite:attribute name="customMethod" method-signature="String doSomething(String)"/>
 </composite:interface>
-<composite:implementation>
 <!-- ValueExpressions should survive a insertChildren and point to this composite component -->
+<composite:implementation>
 <testComposite:simpleAttributeVEInsertChildrenInner>
     <h:outputText id="text" value="#{cc.javaProperty}" style="#{cc.attrs.style}" styleClass="#{cc.attrs.styleClass}"/>
     <h:commandButton id="button" action="#{cc.attrs.customMethod}"/>
