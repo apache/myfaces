@@ -22,11 +22,16 @@ import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import javax.el.ELException;
 import javax.el.ValueExpression;
 import javax.el.VariableMapper;
+import javax.faces.FacesException;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.Resource;
 import javax.faces.component.ActionSource;
@@ -41,19 +46,27 @@ import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.facelets.ComponentConfig;
 import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
+import javax.faces.view.facelets.FaceletException;
+import javax.faces.view.facelets.FaceletHandler;
 import javax.faces.view.facelets.MetaRuleset;
 import javax.faces.view.facelets.Metadata;
 import javax.faces.view.facelets.TagException;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
+import org.apache.myfaces.view.facelets.TemplateContext;
+import org.apache.myfaces.view.facelets.TemplateClient;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
+import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ActionSourceRule;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentBuilderHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.tag.jsf.EditableValueHolderRule;
 import org.apache.myfaces.view.facelets.tag.jsf.ValueHolderRule;
 import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
+import org.apache.myfaces.view.facelets.tag.ui.DecorateHandler;
+import org.apache.myfaces.view.facelets.tag.ui.IncludeHandler;
+import org.apache.myfaces.view.facelets.tag.ui.InsertHandler;
 
 /**
  * This handler is responsible for apply composite components. It
@@ -64,7 +77,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
  * @version $Revision$ $Date$
  */
 public class CompositeComponentResourceTagHandler extends ComponentHandler
-    implements ComponentBuilderHandler
+    implements ComponentBuilderHandler, TemplateClient
 {
     /**
      * This key is used to keep the list of AttachedObjectHandlers
@@ -83,10 +96,19 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
     
     private Class<?> _lastType = Object.class;
     
+    protected volatile Map<String, FaceletHandler> _facetHandlersMap;
+    
+    protected final Collection<FaceletHandler> _componentHandlers;
+    
+    protected final Collection<FaceletHandler> _facetHandlers;
+    
     public CompositeComponentResourceTagHandler(ComponentConfig config, Resource resource)
     {
         super(config);
         _resource = resource;
+        _facetHandlers = TagHandlerUtils.findNextByType(nextHandler, javax.faces.view.facelets.FacetHandler.class, InsertFacetHandler.class);
+        _componentHandlers = TagHandlerUtils.findNextByType(nextHandler, javax.faces.view.facelets.ComponentHandler.class, 
+                InsertChildrenHandler.class, InsertHandler.class, DecorateHandler.class, IncludeHandler.class);
     }
 
     public UIComponent createComponent(FaceletContext ctx)
@@ -131,9 +153,11 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
     public void applyNextHandler(FaceletContext ctx, UIComponent c)
             throws IOException
     {
-        super.applyNextHandler(ctx, c);
+        //super.applyNextHandler(ctx, c);
         
         applyCompositeComponentFacelet(ctx,c);
+        
+        applyNextHandlerIfNotApplied(ctx, c);
 
         if (ComponentHandler.isNew(c))
         {
@@ -167,10 +191,76 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         }
     }
     
+    protected void applyNextHandlerIfNotApplied(FaceletContext ctx, UIComponent c)
+        throws IOException
+    {
+        //Apply all facelets not applied yet.
+        if (nextHandler instanceof javax.faces.view.facelets.CompositeFaceletHandler)
+        {
+            for (FaceletHandler handler : ((javax.faces.view.facelets.CompositeFaceletHandler)nextHandler).getHandlers())
+            {
+                if (handler instanceof javax.faces.view.facelets.FacetHandler)
+                {
+                    if (!c.getAttributes().containsKey(InsertFacetHandler.INSERT_FACET_USED+((javax.faces.view.facelets.FacetHandler)nextHandler).getFacetName(ctx)))
+                    {
+                        handler.apply(ctx, c);
+                    }
+                }
+                else if (handler instanceof javax.faces.view.facelets.ComponentHandler)
+                {
+                    if (!c.getAttributes().containsKey(InsertChildrenHandler.INSERT_CHILDREN_USED))
+                    {
+                        handler.apply(ctx, c);
+                    }
+                }
+                else if (handler instanceof InsertFacetHandler)
+                {
+                    if (!c.getAttributes().containsKey(InsertFacetHandler.INSERT_FACET_USED+((InsertFacetHandler)nextHandler).getFacetName(ctx)))
+                    {
+                        handler.apply(ctx, c);
+                    }
+                }
+                else
+                {
+                    handler.apply(ctx, c);
+                }
+            }
+        }
+        else
+        {
+            if (nextHandler instanceof javax.faces.view.facelets.FacetHandler)
+            {
+                if (!c.getAttributes().containsKey(InsertFacetHandler.INSERT_FACET_USED+((javax.faces.view.facelets.FacetHandler)nextHandler).getFacetName(ctx)))
+                {
+                    nextHandler.apply(ctx, c);
+                }
+            }
+            else if (nextHandler instanceof javax.faces.view.facelets.ComponentHandler)
+            {
+                if (!c.getAttributes().containsKey(InsertChildrenHandler.INSERT_CHILDREN_USED))
+                {
+                    nextHandler.apply(ctx, c);
+                }
+            }
+            else if (nextHandler instanceof InsertFacetHandler)
+            {
+                if (!c.getAttributes().containsKey(InsertFacetHandler.INSERT_FACET_USED+((InsertFacetHandler)nextHandler).getFacetName(ctx)))
+                {
+                    nextHandler.apply(ctx, c);
+                }
+            }
+            else
+            {
+                nextHandler.apply(ctx, c);
+            }
+        }        
+    }
+    
     protected void applyCompositeComponentFacelet(FaceletContext faceletContext, UIComponent compositeComponentBase) 
         throws IOException
     {
         FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(faceletContext);
+        AbstractFaceletContext actx = (AbstractFaceletContext) faceletContext;
         UIPanel compositeFacetPanel = (UIPanel) compositeComponentBase.getFacets().get(UIComponent.COMPOSITE_FACET_NAME);
         if (compositeFacetPanel == null)
         {
@@ -213,11 +303,12 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         try
         {
             faceletContext.setVariableMapper(new VariableMapperWrapper(orig));
-            
-            ((AbstractFaceletContext)faceletContext).applyCompositeComponent(compositeFacetPanel, _resource);
+            actx.pushCompositeComponentClient(this);
+            actx.applyCompositeComponent(compositeFacetPanel, _resource);
         }
         finally
         {
+            actx.popCompositeComponentClient();
             faceletContext.setVariableMapper(orig);
         }
     }
@@ -297,5 +388,75 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         }
         
         return m;
+    }
+    
+    public boolean apply(FaceletContext ctx, UIComponent parent, String name)
+            throws IOException, FacesException, FaceletException, ELException
+    {        
+        if (name != null)
+        {
+            //1. Initialize map used to retrieve facets
+            if (_facetHandlers == null || _facetHandlers.isEmpty())
+            {
+                return true;
+            }
+            
+            if (_facetHandlersMap == null)
+            {
+                Map<String, FaceletHandler> map = new HashMap<String, FaceletHandler>();
+                
+                for (FaceletHandler handler : _facetHandlers)
+                {
+                    if (handler instanceof javax.faces.view.facelets.FacetHandler )
+                    {
+                        map.put( ((javax.faces.view.facelets.FacetHandler)handler).getFacetName(ctx), handler);
+                    }
+                    else if (handler instanceof InsertFacetHandler)
+                    {
+                        map.put( ((InsertFacetHandler)handler).getFacetName(ctx), handler);
+                    }
+                }
+                _facetHandlersMap = map;
+            }
+
+            FaceletHandler handler = _facetHandlersMap.get(name);
+
+            if (handler != null)
+            {
+                AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+                TemplateContext itc = actx.popTemplateContext();
+                try
+                {
+                    handler.apply(ctx, parent);
+                }
+                finally
+                {
+                    actx.pushTemplateContext(itc);
+                }
+                return true;
+                
+            }
+            else
+            {
+                return true;
+            }
+        }
+        else
+        {
+            AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+            TemplateContext itc = actx.popTemplateContext();
+            try
+            {
+                for (FaceletHandler handler : _componentHandlers)
+                {
+                    handler.apply(ctx, parent);
+                }
+            }
+            finally
+            {
+                actx.pushTemplateContext(itc);
+            }
+            return true;
+        }
     }
 }

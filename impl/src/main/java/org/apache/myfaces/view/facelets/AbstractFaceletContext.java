@@ -139,5 +139,49 @@ public abstract class AbstractFaceletContext extends FaceletContext
      * @since 2.0
      */
     public abstract boolean isBuildingCompositeComponentMetadata();
-    
+
+    /**
+     * Pop the current composite component template client, removing the
+     * current template context from stack.
+     * 
+     * @since 2.0.1
+     */
+    public abstract void popCompositeComponentClient();
+
+    /**
+     * Push the composite component tag handler identified by client on 
+     * template context stack, triggering the creation of a new empty 
+     * TemplateContext, that will be used to resolve templates used 
+     * on that component later.
+     * 
+     * @since 2.0.1
+     */
+    public abstract void pushCompositeComponentClient(final TemplateClient client);
+
+    /**
+     * Push the passed template context instance onto the stack, so all
+     * slots to be resolved (using includeDefinition() call) will take
+     * into account the information there.
+     * 
+     * @since 2.0.1
+     */
+    public abstract void pushTemplateContext(TemplateContext templateContext);
+
+    /**
+     * Pop the passed template context instance from stack. This method is
+     * used by CompositeComponentResourceTagHandler to resolve templates
+     * according to the composite component level it is necessary.
+     * 
+     * @since 2.0.1
+     */
+    public abstract TemplateContext popTemplateContext();
+
+    /**
+     * This method resolve the current definition to be added by cc:insertChildren
+     * or cc:insertFacet.
+     *  
+     * @since 2.0.1
+     */
+    public abstract boolean includeCompositeComponentDefinition(UIComponent parent, String name)
+        throws IOException, FaceletException, FacesException, ELException;
 }

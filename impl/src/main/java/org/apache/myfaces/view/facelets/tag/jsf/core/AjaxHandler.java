@@ -37,6 +37,7 @@ import javax.faces.event.AjaxBehaviorListener;
 import javax.faces.view.BehaviorHolderAttachedObjectHandler;
 import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
+import javax.faces.view.facelets.FaceletHandler;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagAttributeException;
 import javax.faces.view.facelets.TagConfig;
@@ -45,13 +46,17 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
-import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
 import org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
+import org.apache.myfaces.view.facelets.tag.composite.InsertChildrenHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
+import org.apache.myfaces.view.facelets.tag.ui.DecorateHandler;
+import org.apache.myfaces.view.facelets.tag.ui.IncludeHandler;
+import org.apache.myfaces.view.facelets.tag.ui.InsertHandler;
 
 /**
  * This tag creates an instance of AjaxBehavior, and associates it with the nearest 
@@ -167,8 +172,9 @@ public class AjaxHandler extends TagHandler implements
         // <composite:interface> handler: traverse the tree for instances of 
         // ComponentHandler. If it is found, wrapMode is used otherwise
         // suppose f:ajax is the one wrapped by a component.
-        Collection<ComponentHandler> compHandlerList = 
-            TagHandlerUtils.findNextByType(nextHandler, ComponentHandler.class);
+        Collection<FaceletHandler> compHandlerList = 
+            TagHandlerUtils.findNextByType(nextHandler, ComponentHandler.class, 
+                    InsertChildrenHandler.class, InsertHandler.class, DecorateHandler.class, IncludeHandler.class);
         
         _wrapMode = !compHandlerList.isEmpty();
     }

@@ -70,4 +70,56 @@ public final class TagHandlerUtils
     {
         
     }
+
+    public static  Collection<FaceletHandler> findNextByType(FaceletHandler nextHandler, Class<?> ... type1)
+    {
+        List<FaceletHandler> found = new ArrayList<FaceletHandler>();
+        boolean isAssignable = false;
+        for (int i = 0; i < type1.length && !isAssignable; i++)
+        {
+            isAssignable = type1[i].isAssignableFrom(nextHandler.getClass()); 
+        }
+        if (isAssignable)
+        {
+            found.add((FaceletHandler)nextHandler);
+        }
+        else if (nextHandler instanceof javax.faces.view.facelets.CompositeFaceletHandler)
+        {            
+            for (FaceletHandler handler : ((javax.faces.view.facelets.CompositeFaceletHandler)nextHandler).getHandlers())
+            {
+                isAssignable = false;
+                for (int i = 0; i < type1.length && !isAssignable; i++)
+                {
+                    isAssignable = type1[i].isAssignableFrom(handler.getClass()); 
+                }
+                if (isAssignable)
+                {
+                    found.add((FaceletHandler)handler);
+                }
+            }
+        }
+        
+        return found;
+    }
+
+    public static  Collection<FaceletHandler> findNextByType(FaceletHandler nextHandler, Class<?> type1, Class<?> type2)
+    {
+        List<FaceletHandler> found = new ArrayList<FaceletHandler>();
+        if (type1.isAssignableFrom(nextHandler.getClass()) || type2.isAssignableFrom(nextHandler.getClass()))
+        {
+            found.add((FaceletHandler)nextHandler);
+        }
+        else if (nextHandler instanceof javax.faces.view.facelets.CompositeFaceletHandler)
+        {
+            for (FaceletHandler handler : ((javax.faces.view.facelets.CompositeFaceletHandler)nextHandler).getHandlers())
+            {
+                if (type1.isAssignableFrom(handler.getClass()) || type2.isAssignableFrom(handler.getClass()))
+                {
+                    found.add((FaceletHandler)handler);
+                }
+            }
+        }
+        
+        return found;
+    }
 }

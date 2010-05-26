@@ -45,7 +45,8 @@ import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.FaceletHandler;
 
-import org.apache.myfaces.view.facelets.Facelet;
+import org.apache.myfaces.view.facelets.AbstractFacelet;
+import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
@@ -56,7 +57,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
  * @author Jacob Hookom
  * @version $Id: DefaultFacelet.java,v 1.11 2008/07/13 19:01:52 rlubke Exp $
  */
-final class DefaultFacelet extends Facelet
+final class DefaultFacelet extends AbstractFacelet
 {
 
     //private static final Logger log = Logger.getLogger("facelets.facelet");
@@ -297,11 +298,11 @@ final class DefaultFacelet extends Facelet
      * @throws FaceletException
      * @throws ELException
      */
-    private void include(DefaultFaceletContext ctx, UIComponent parent) throws IOException, FacesException,
+    private void include(AbstractFaceletContext ctx, UIComponent parent) throws IOException, FacesException,
             FaceletException, ELException
     {
         this.refresh(parent);
-        _root.apply(new DefaultFaceletContext(ctx, this, false), parent);
+        _root.apply(new DefaultFaceletContext((DefaultFaceletContext)ctx, this, false), parent);
         this.markApplied(parent);
     }
 
@@ -322,7 +323,7 @@ final class DefaultFacelet extends Facelet
      * @throws FaceletException
      * @throws ELException
      */
-    public void include(DefaultFaceletContext ctx, UIComponent parent, String path) throws IOException, FacesException,
+    public void include(AbstractFaceletContext ctx, UIComponent parent, String path) throws IOException, FacesException,
             FaceletException, ELException
     {
         URL url = this.getRelativePath(path);
@@ -344,14 +345,14 @@ final class DefaultFacelet extends Facelet
      * @throws FaceletException
      * @throws ELException
      */
-    public void include(DefaultFaceletContext ctx, UIComponent parent, URL url) throws IOException, FacesException,
+    public void include(AbstractFaceletContext ctx, UIComponent parent, URL url) throws IOException, FacesException,
             FaceletException, ELException
     {
         DefaultFacelet f = (DefaultFacelet) _factory.getFacelet(url);
         f.include(ctx, parent);
     }
     
-    public void applyCompositeComponent(DefaultFaceletContext ctx, UIComponent parent, Resource resource) throws IOException, FacesException,
+    public void applyCompositeComponent(AbstractFaceletContext ctx, UIComponent parent, Resource resource) throws IOException, FacesException,
             FaceletException, ELException
     {
         // Here we are creating a facelet using the url provided by the resource.
@@ -373,7 +374,7 @@ final class DefaultFacelet extends Facelet
         
         this.refresh(parent);
         ComponentSupport.markForDeletion(parent);
-        f._root.apply(new DefaultFaceletContext(ctx, f, true), parent);
+        f._root.apply(new DefaultFaceletContext( (DefaultFaceletContext)ctx, f, true), parent);
         ComponentSupport.finalizeForDeletion(parent);
         this.markApplied(parent);
         

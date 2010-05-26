@@ -95,6 +95,7 @@ final class UIInstructionHandler extends AbstractUIHandler
             if (mctx.isRefreshingTransientBuild())
             {
                 c = ComponentSupport.findChildByTagId(parent, id);
+                /*
                 if (c == null && mctx.isRefreshTransientBuildOnPSS() && 
                         mctx.isRefreshingTransientBuild() && UIComponent.isCompositeComponent(parent))
                 {
@@ -134,6 +135,7 @@ final class UIInstructionHandler extends AbstractUIHandler
                         }
                     }
                 }
+                */
             }
             boolean componentFound = false;
             if (c != null)
@@ -201,6 +203,7 @@ final class UIInstructionHandler extends AbstractUIHandler
                     }
                 }
             }
+            /*
             if ( mctx.isRefreshingTransientBuild() 
                     && UIComponent.isCompositeComponent(parent))
             {
@@ -239,6 +242,7 @@ final class UIInstructionHandler extends AbstractUIHandler
                     }
                 }
             }
+            */
             if (!componentFoundInserted)
             {
                 if (componentFound && mctx.isRefreshingTransientBuild())

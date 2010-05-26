@@ -19,7 +19,6 @@
 package org.apache.myfaces.view.facelets.tag.jsf;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -51,8 +50,6 @@ import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
-import org.apache.myfaces.view.facelets.tag.composite.InsertChildrenHandler;
-import org.apache.myfaces.view.facelets.tag.composite.InsertFacetHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler;
 
@@ -149,6 +146,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
     
             // Check if the component was relocated using
             // composite:insertChildren or composite:insertFacet
+            /*
             if (c == null && UIComponent.isCompositeComponent(parent))
             {
                 if (facetName == null)
@@ -186,6 +184,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                     }
                 }
             }
+            */
         }
         boolean componentFound = false;
         if (c != null)
@@ -290,6 +289,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             }
         }
         
+        /*
         if (mctx.isRefreshingTransientBuild() && 
                 UIComponent.isCompositeComponent(parent))
         {
@@ -327,6 +327,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 }
             }
         }
+        */
 
         if (c instanceof ClientBehaviorHolder && !UIComponent.isCompositeComponent(c))
         {

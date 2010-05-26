@@ -52,9 +52,11 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 @JSFFaceletTag(name="composite:insertFacet")
 public class InsertFacetHandler extends TagHandler
 {
-    public static String USES_INSERT_FACET = "org.apache.myfaces.USES_INSERT_FACET";
-    public static String INSERT_FACET_TARGET_ID = "org.apache.myfaces.INSERT_FACET_TARGET_ID.";
-    public static String INSERT_FACET_ORDERING = "org.apache.myfaces.INSERT_FACET_ORDERING.";
+    //public static String USES_INSERT_FACET = "org.apache.myfaces.USES_INSERT_FACET";
+    //public static String INSERT_FACET_TARGET_ID = "org.apache.myfaces.INSERT_FACET_TARGET_ID.";
+    //public static String INSERT_FACET_ORDERING = "org.apache.myfaces.INSERT_FACET_ORDERING.";
+    
+    public static String INSERT_FACET_USED = "org.apache.myfaces.INSERT_FACET_USED.";
     
     /**
      * The name that identify the current facet.
@@ -80,7 +82,28 @@ public class InsertFacetHandler extends TagHandler
         _name = getRequiredAttribute("name");
         _required = getAttribute("required");
     }
+    
+    public String getFacetName(FaceletContext ctx)
+    {
+        return _name.getValue(ctx);
+    }
 
+    public void apply(FaceletContext ctx, UIComponent parent)
+            throws IOException
+    {
+        String facetName = _name.getValue(ctx);
+        
+        AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+        
+        UIComponent parentCompositeComponent = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
+        
+        actx.includeCompositeComponentDefinition(parent, facetName);
+        
+        parentCompositeComponent.getAttributes().put(INSERT_FACET_USED+facetName, Boolean.TRUE);
+        
+    }
+    
+    /*
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {
@@ -119,6 +142,7 @@ public class InsertFacetHandler extends TagHandler
                 new RelocateFacetListener(parent, facetName));
         parentCompositeComponent.subscribeToEvent(PostBuildComponentTreeOnRestoreViewEvent.class, 
                 new RelocateFacetListener(parent, facetName));
+        */
         /*
         if (ctx.getFacesContext().getAttributes().containsKey(
                 FaceletViewDeclarationLanguage.MARK_INITIAL_STATE_KEY))
@@ -126,8 +150,10 @@ public class InsertFacetHandler extends TagHandler
             parentCompositeComponent.subscribeToEvent(PostBuildComponentTreeOnRestoreViewEvent.class, 
                     new RelocateFacetListener(parent, facetName));
         }*/
+        /*
     }
-
+    */
+    /*
     public static final class RelocateFacetListener 
         implements ComponentSystemEventListener, StateHolder
     {
@@ -249,4 +275,5 @@ public class InsertFacetHandler extends TagHandler
             // no-op as listener is transient
         }
     }
+    */
 }

@@ -43,10 +43,12 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 
+import org.apache.myfaces.view.facelets.AbstractFacelet;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.TemplateClient;
+import org.apache.myfaces.view.facelets.TemplateContext;
 import org.apache.myfaces.view.facelets.TemplateManager;
 import org.apache.myfaces.view.facelets.el.DefaultVariableMapper;
 import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
@@ -67,8 +69,8 @@ final class DefaultFaceletContext extends AbstractFaceletContext
 
     private final ELContext _ctx;
 
-    private final DefaultFacelet _facelet;
-    private final List<DefaultFacelet> _faceletHierarchy;
+    private final AbstractFacelet _facelet;
+    private final List<AbstractFacelet> _faceletHierarchy;
 
     private VariableMapper _varMapper;
 
@@ -80,25 +82,29 @@ final class DefaultFaceletContext extends AbstractFaceletContext
 
     private final StringBuilder _uniqueIdBuilder = new StringBuilder(30);
 
-    private final LinkedList<TemplateManager> _clients;
+    //private final LinkedList<TemplateManager> _clients;
 
     private final boolean _isBuildingCompositeComponentMetadata;
     
     private final FaceletCompositionContext _mctx;
     
     private LinkedList<AjaxHandler> _ajaxHandlerStack;
+    
+    private final List<TemplateContext> _isolatedTemplateContext;
+    
+    private int _currentTemplateContext;
 
     public DefaultFaceletContext(DefaultFaceletContext ctx,
-            DefaultFacelet facelet, boolean ccWrap)
+            AbstractFacelet facelet, boolean ccWrap)
     {
         _ctx = ctx._ctx;
         _ids = ctx._ids;
         _prefixes = ctx._prefixes;
-        _clients = ctx._clients;
+        //_clients = ctx._clients;
         _faces = ctx._faces;
         _fnMapper = ctx._fnMapper;
         _varMapper = ctx._varMapper;
-        _faceletHierarchy = new ArrayList<DefaultFacelet>(ctx._faceletHierarchy
+        _faceletHierarchy = new ArrayList<AbstractFacelet>(ctx._faceletHierarchy
                 .size() + 1);
         _faceletHierarchy.addAll(ctx._faceletHierarchy);
         _faceletHierarchy.add(facelet);
@@ -119,6 +125,13 @@ final class DefaultFaceletContext extends AbstractFaceletContext
             // preserved.
             _ajaxHandlerStack = ctx._ajaxHandlerStack;
         }
+        
+        _isolatedTemplateContext = new ArrayList<TemplateContext>(ctx._isolatedTemplateContext.size()+1);
+        for (int i = 0; i <= ctx._currentTemplateContext; i++)
+        {
+            _isolatedTemplateContext.add(ctx._isolatedTemplateContext.get(i));
+        }
+        _currentTemplateContext = ctx._currentTemplateContext;
 
         //Update FACELET_CONTEXT_KEY on FacesContext attribute map, to 
         //reflect the current facelet context instance
@@ -126,12 +139,12 @@ final class DefaultFaceletContext extends AbstractFaceletContext
                 FaceletContext.FACELET_CONTEXT_KEY, this);
     }
 
-    public DefaultFaceletContext(FacesContext faces, DefaultFacelet facelet, FaceletCompositionContext mctx)
+    public DefaultFaceletContext(FacesContext faces, AbstractFacelet facelet, FaceletCompositionContext mctx)
     {
         _ctx = faces.getELContext();
         _ids = new HashMap<String, Integer>();
         _prefixes = new HashMap<Integer, Integer>();
-        _clients = new LinkedList<TemplateManager>();
+        //_clients = new LinkedList<TemplateManager>();
         _faces = faces;
         _fnMapper = _ctx.getFunctionMapper();
         _varMapper = _ctx.getVariableMapper();
@@ -139,12 +152,16 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         {
             _varMapper = new DefaultVariableMapper();
         }        
-        _faceletHierarchy = new ArrayList<DefaultFacelet>(1);
+        _faceletHierarchy = new ArrayList<AbstractFacelet>(1);
         _faceletHierarchy.add(facelet);
         _facelet = facelet;
         _isBuildingCompositeComponentMetadata = FaceletViewDeclarationLanguage.
             isBuildingCompositeComponentMetadata(faces);
         _mctx = mctx;
+        
+        _isolatedTemplateContext = new ArrayList<TemplateContext>(1);
+        _isolatedTemplateContext.add(new TemplateContextImpl());
+        _currentTemplateContext = 0;
 
         //Set FACELET_CONTEXT_KEY on FacesContext attribute map, to 
         //reflect the current facelet context instance
@@ -250,7 +267,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
                     _faceletHierarchy.size() * 30);
             for (int i = 0; i < _faceletHierarchy.size(); i++)
             {
-                DefaultFacelet facelet = _faceletHierarchy.get(i);
+                AbstractFacelet facelet = _faceletHierarchy.get(i);
                 builder.append(facelet.getAlias());
             }
 
@@ -374,26 +391,30 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         //    }
         //}
         //throw new IllegalStateException(client + " not found");
-        return _clients.removeFirst();
+        //return _clients.removeFirst();
+        return _isolatedTemplateContext.get(_currentTemplateContext).popClient();
     }
 
     @Override
     public void pushClient(final TemplateClient client)
     {
         //this._clients.add(0, new TemplateManager(this._facelet, client, true));
-        this._clients.addFirst(new TemplateManagerImpl(this._facelet, client, true));
+        //_clients.addFirst(new TemplateManagerImpl(this._facelet, client, true));
+        _isolatedTemplateContext.get(_currentTemplateContext).pushClient(this._facelet, client);
     }
 
     public TemplateManager popExtendedClient(TemplateClient client)
     {
-        return _clients.removeLast();
+        //return _clients.removeLast();
+        return _isolatedTemplateContext.get(_currentTemplateContext).popExtendedClient();
     }
     
     @Override
     public void extendClient(final TemplateClient client)
     {
         //this._clients.add(new TemplateManager(this._facelet, client, false));
-        this._clients.addLast(new TemplateManagerImpl(this._facelet, client, false));
+        //_clients.addLast(new TemplateManagerImpl(this._facelet, client, false));
+        _isolatedTemplateContext.get(_currentTemplateContext).extendClient(this._facelet, client);
     }
 
     @Override
@@ -410,19 +431,10 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         //    found = client.apply(this, parent, name);
         //}
         //return found;
-        boolean found = false;
-        TemplateManager client;
-        Iterator<TemplateManager> itr = _clients.iterator();
-        while (itr.hasNext() && !found)
-        {
-            client = itr.next();
-            if (client.equals(this._facelet))
-                continue;
-            found = ((TemplateManagerImpl)client).apply(this, parent, name);
-        }
-        return found;
+        return _isolatedTemplateContext.get(_currentTemplateContext).includeDefinition(this, this._facelet, parent, name);
     }
 
+    /*
     private final static class TemplateManagerImpl extends TemplateManager implements TemplateClient
     {
         private final DefaultFacelet _owner;
@@ -474,6 +486,176 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         {
             return this._root;
         }
+    }*/
+
+    /*
+    @Override
+    public TemplateManager popCompositeComponentClient(boolean cleanClientStack)
+    {
+        //if (!this._compositeComponentClients.isEmpty())
+        //{
+            //if (cleanClientStack)
+            //{
+            //    _clientsStack.get(_currentClientStack).clear();
+            //}
+            //_currentClientStack--;
+            //return this._compositeComponentClients.remove(0);
+        //}
+        if (_currentTemplateContext > 0)
+        {
+            TemplateManager tm = _isolatedTemplateContext.get(_currentTemplateContext).getCompositeComponentClient();
+            if (cleanClientStack)
+            {
+                _isolatedTemplateContext.get(_currentTemplateContext).clear();
+            }
+            _currentTemplateContext--;
+            return tm;
+        }
+        return null;
+    }
+    
+
+    @Override
+    public void pushCompositeComponentClient(final TemplateClient client)
+    {
+        //this._compositeComponentClients.add(0, new CompositeComponentTemplateManager(this._facelet, client));
+        //if (_currentClientStack + 1 <= _clientsStack.size())
+        //{
+        //    _clientsStack.add(new LinkedList<TemplateManager>());
+        //}
+        //_currentClientStack++;
+        if (_currentTemplateContext + 1 <= _isolatedTemplateContext.size())
+        {
+            _isolatedTemplateContext.add(new IsolatedTemplateContextImpl());
+        }
+        _currentTemplateContext++;
+        _isolatedTemplateContext.get(_currentTemplateContext).setCompositeComponentClient( new CompositeComponentTemplateManager(this._facelet, client));
+    }
+    
+    @Override
+    public void pushCompositeComponentClient(final TemplateManager client)
+    {
+        //this._compositeComponentClients.add(0, client);
+        //if (_currentClientStack + 1 < _clientsStack.size())
+        //{
+        //    _clientsStack.add(new LinkedList<TemplateManager>());
+        //}
+        //_currentClientStack++;
+        if (_currentTemplateContext + 1 < _isolatedTemplateContext.size())
+        {
+            _isolatedTemplateContext.add(new IsolatedTemplateContextImpl());
+        }
+        _currentTemplateContext++;
+        _isolatedTemplateContext.get(_currentTemplateContext).setCompositeComponentClient(client);
+    }*/
+    
+    @Override
+    public void pushCompositeComponentClient(final TemplateClient client)
+    {
+        TemplateContext itc = new TemplateContextImpl();
+        itc.setCompositeComponentClient(new CompositeComponentTemplateManager(this._facelet, client));
+        _isolatedTemplateContext.add(itc);
+        _currentTemplateContext++;
+    }
+    
+    @Override
+    public void popCompositeComponentClient()
+    {
+        if (_currentTemplateContext > 0)
+        {
+            _isolatedTemplateContext.remove(_currentTemplateContext);
+            _currentTemplateContext--;
+        }
+    }
+    
+    @Override
+    public void pushTemplateContext(TemplateContext client)
+    {
+        _isolatedTemplateContext.add(client);
+        _currentTemplateContext++;
+    }    
+
+    
+    @Override
+    public TemplateContext popTemplateContext()
+    {
+        if (_currentTemplateContext > 0)
+        {
+            TemplateContext itc = _isolatedTemplateContext.get(_currentTemplateContext);
+            _isolatedTemplateContext.remove(_currentTemplateContext);
+            _currentTemplateContext--;
+            return itc;
+        }
+        return null;
+    }
+
+    @Override
+    public boolean includeCompositeComponentDefinition(UIComponent parent, String name)
+            throws IOException, FaceletException, FacesException, ELException
+    {
+        //boolean found = false;
+        //TemplateManager client;
+
+        //for (int i = 0, size = this._compositeComponentClients.size(); i < size && !found; i++)
+        //{
+        //    client = ((TemplateManager) this._compositeComponentClients.get(i));
+        //    if (client.equals(this._facelet))
+        //        continue;
+        //    found = client.apply(this, parent, name);
+        //}
+
+        //return found;
+        TemplateClient ccClient = _isolatedTemplateContext.get(_currentTemplateContext).getCompositeComponentClient();
+        if (ccClient != null)
+        {
+            return ccClient.apply(this, parent, name);
+        }
+        return false;
+    }
+    
+    private final static class CompositeComponentTemplateManager extends TemplateManager implements TemplateClient
+    {
+        private final AbstractFacelet _owner;
+
+        protected final TemplateClient _target;
+
+        private final Set<String> _names = new HashSet<String>();
+
+        public CompositeComponentTemplateManager(AbstractFacelet owner, TemplateClient target)
+        {
+            this._owner = owner;
+            this._target = target;
+        }
+
+        public boolean apply(FaceletContext ctx, UIComponent parent, String name)
+                throws IOException, FacesException, FaceletException,
+                ELException
+        {
+            String testName = (name != null) ? name : "facelets._NULL_DEF_";
+            if (this._names.contains(testName))
+            {
+                return false;
+            }
+            else
+            {
+                this._names.add(testName);
+                boolean found = false;
+                found = this._target
+                        .apply(new DefaultFaceletContext(
+                                (DefaultFaceletContext) ctx, this._owner, false),
+                                parent, name);
+                this._names.remove(testName);
+                return found;
+            }
+        }
+
+        public boolean equals(Object o)
+        {
+            // System.out.println(this.owner.getAlias() + " == " +
+            // ((DefaultFacelet) o).getAlias());
+            return this._owner == o || this._target == o;
+        }
+
     }
     
     //End methods from AbstractFaceletContext

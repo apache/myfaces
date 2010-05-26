@@ -28,8 +28,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ComponentSystemEventListener;
-import javax.faces.event.PostAddToViewEvent;
-import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
@@ -37,7 +35,6 @@ import javax.faces.view.facelets.TagHandler;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
-import org.apache.myfaces.view.facelets.PostBuildComponentTreeOnRestoreViewEvent;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
@@ -47,9 +44,11 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 @JSFFaceletTag(name="composite:insertChildren")
 public class InsertChildrenHandler extends TagHandler
 {
-    public static String USES_INSERT_CHILDREN = "org.apache.myfaces.USES_INSERT_CHILDREN";
-    public static String INSERT_CHILDREN_TARGET_ID = "org.apache.myfaces.INSERT_CHILDREN_TARGET_ID";
-    public static String INSERT_CHILDREN_ORDERING = "org.apache.myfaces.INSERT_CHILDREN_ORDERING";
+    //public static String USES_INSERT_CHILDREN = "org.apache.myfaces.USES_INSERT_CHILDREN";
+    //public static String INSERT_CHILDREN_TARGET_ID = "org.apache.myfaces.INSERT_CHILDREN_TARGET_ID";
+    //public static String INSERT_CHILDREN_ORDERING = "org.apache.myfaces.INSERT_CHILDREN_ORDERING";
+    
+    public static String INSERT_CHILDREN_USED = "org.apache.myfaces.INSERT_CHILDREN_USED";
 
     public InsertChildrenHandler(TagConfig config)
     {
@@ -60,7 +59,20 @@ public class InsertChildrenHandler extends TagHandler
             throws IOException
     {
         UIComponent parentCompositeComponent = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
+        
+        AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+        
+        actx.includeCompositeComponentDefinition(parent, null);
+        
+        parentCompositeComponent.getAttributes().put(INSERT_CHILDREN_USED, Boolean.TRUE);
+    }
 
+    /*
+    public void apply(FaceletContext ctx, UIComponent parent)
+            throws IOException
+    {
+        UIComponent parentCompositeComponent = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
+        
         if (!ComponentHandler.isNew(parentCompositeComponent))
         {
             //Prevent deletion of components present on parentCompositeComponent. This components will not be changed.
@@ -92,6 +104,7 @@ public class InsertChildrenHandler extends TagHandler
                 new RelocateAllChildrenListener(parent, parent.getChildCount()));
         parentCompositeComponent.subscribeToEvent(PostBuildComponentTreeOnRestoreViewEvent.class,
                 new RelocateAllChildrenListener(parent, parent.getChildCount()));
+        */
         /*
         if (ctx.getFacesContext().getAttributes().containsKey(
                 FaceletViewDeclarationLanguage.MARK_INITIAL_STATE_KEY))
@@ -99,8 +112,11 @@ public class InsertChildrenHandler extends TagHandler
             parentCompositeComponent.subscribeToEvent(PostBuildComponentTreeOnRestoreViewEvent.class, 
                     new RelocateAllChildrenListener(parent, parent.getChildCount()));
         }*/
+    /*
     }
+    */
     
+    /*
     public static final class RelocateAllChildrenListener 
         implements ComponentSystemEventListener, StateHolder
     {
@@ -193,7 +209,7 @@ public class InsertChildrenHandler extends TagHandler
                 {
                     targetChildrenList.addAll(_childIndex, childList);
                 }
-            }
+            }*/
             
             // After check, the commented code is not necessary because at this 
             // point there is no any call to getClientId() yet. But it is better
@@ -211,6 +227,7 @@ public class InsertChildrenHandler extends TagHandler
                     regenerateUniqueIds(facesContext, (UniqueIdVendor) uniqueIdVendor, child);
                 }
             }*/
+        /*
         }
 
         public Object saveState(FacesContext context)
@@ -234,7 +251,7 @@ public class InsertChildrenHandler extends TagHandler
         {
             // no-op as listener is transient
         }
-
+        */
         /*
         private void regenerateUniqueIds(FacesContext facesContext, UniqueIdVendor uniqueIdVendor,  UIComponent comp)
         {
@@ -265,7 +282,9 @@ public class InsertChildrenHandler extends TagHandler
             }
         }
         */
+    /*
     }
+    */
 
     /*
     private static UniqueIdVendor findParentUniqueIdVendor(UIComponent component)
