@@ -605,21 +605,29 @@ public class UIData extends UIComponentBase implements NamingContainer
     {
         if (context == null)
             throw new NullPointerException("context");
-        if (!isRendered())
-            return;
-        setRowIndex(-1);
-        processFacets(context, PROCESS_DECODES);
-        processColumnFacets(context, PROCESS_DECODES);
-        processColumnChildren(context, PROCESS_DECODES);
-        setRowIndex(-1);
         try
         {
-            decode(context);
+            setCachedFacesContext(context);
+            if (!isRendered())
+                return;
+            setRowIndex(-1);
+            processFacets(context, PROCESS_DECODES);
+            processColumnFacets(context, PROCESS_DECODES);
+            processColumnChildren(context, PROCESS_DECODES);
+            setRowIndex(-1);
+            try
+            {
+                decode(context);
+            }
+            catch (RuntimeException e)
+            {
+                context.renderResponse();
+                throw e;
+            }
         }
-        catch (RuntimeException e)
+        finally
         {
-            context.renderResponse();
-            throw e;
+            setCachedFacesContext(null);
         }
     }
 
@@ -627,18 +635,26 @@ public class UIData extends UIComponentBase implements NamingContainer
     {
         if (context == null)
             throw new NullPointerException("context");
-        if (!isRendered())
-            return;
-        setRowIndex(-1);
-        processFacets(context, PROCESS_VALIDATORS);
-        processColumnFacets(context, PROCESS_VALIDATORS);
-        processColumnChildren(context, PROCESS_VALIDATORS);
-        setRowIndex(-1);
-
-        // check if an validation error forces the render response for our data
-        if (context.getRenderResponse())
+        try
         {
-            _isValidChilds = false;
+            setCachedFacesContext(context);
+            if (!isRendered())
+                return;
+            setRowIndex(-1);
+            processFacets(context, PROCESS_VALIDATORS);
+            processColumnFacets(context, PROCESS_VALIDATORS);
+            processColumnChildren(context, PROCESS_VALIDATORS);
+            setRowIndex(-1);
+    
+            // check if an validation error forces the render response for our data
+            if (context.getRenderResponse())
+            {
+                _isValidChilds = false;
+            }
+        }
+        finally
+        {
+            setCachedFacesContext(null);
         }
     }
 
@@ -646,17 +662,25 @@ public class UIData extends UIComponentBase implements NamingContainer
     {
         if (context == null)
             throw new NullPointerException("context");
-        if (!isRendered())
-            return;
-        setRowIndex(-1);
-        processFacets(context, PROCESS_UPDATES);
-        processColumnFacets(context, PROCESS_UPDATES);
-        processColumnChildren(context, PROCESS_UPDATES);
-        setRowIndex(-1);
-
-        if (context.getRenderResponse())
+        try
         {
-            _isValidChilds = false;
+            setCachedFacesContext(context);
+            if (!isRendered())
+                return;
+            setRowIndex(-1);
+            processFacets(context, PROCESS_UPDATES);
+            processColumnFacets(context, PROCESS_UPDATES);
+            processColumnChildren(context, PROCESS_UPDATES);
+            setRowIndex(-1);
+        
+            if (context.getRenderResponse())
+            {
+                _isValidChilds = false;
+            }
+        }
+        finally
+        {
+            setCachedFacesContext(null);
         }
     }
 

@@ -86,6 +86,7 @@ public abstract class UIComponentBase
     private UIComponent _parent = null;
     private boolean _transient = false;
 
+    private transient FacesContext _facesContext;
 
     public UIComponentBase()
     {
@@ -739,6 +740,8 @@ public abstract class UIComponentBase
     {
         if (context == null) throw new NullPointerException("context");
         try {
+            setCachedFacesContext(context);
+            
             if (!isRendered()) return;
             Renderer renderer = getRenderer(context);
             if (renderer != null)
@@ -748,17 +751,37 @@ public abstract class UIComponentBase
         } catch (Exception e) {
             throw new FacesException("Exception while calling encodeBegin on : "+getPathToComponent(this), e);
         }
+        finally
+        {
+            setCachedFacesContext(null);
+        }
     }
 
     public void encodeChildren(FacesContext context)
             throws IOException
     {
         if (context == null) throw new NullPointerException("context");
-        if (!isRendered()) return;
-        Renderer renderer = getRenderer(context);
-        if (renderer != null)
+        
+        boolean isCachedFacesContext = isCachedFacesContext();
+        try
         {
-            renderer.encodeChildren(context, this);
+            if (!isCachedFacesContext)
+            {
+                setCachedFacesContext(context);
+            }
+            if (!isRendered()) return;
+            Renderer renderer = getRenderer(context);
+            if (renderer != null)
+            {
+                renderer.encodeChildren(context, this);
+            }
+        }
+        finally
+        {
+            if (!isCachedFacesContext)
+            {
+                setCachedFacesContext(null);
+            }
         }
     }
 
@@ -767,6 +790,7 @@ public abstract class UIComponentBase
     {
         if (context == null) throw new NullPointerException("context");
         try {
+            setCachedFacesContext(context);
             if (!isRendered()) return;
 
             Renderer renderer = getRenderer(context);
@@ -776,6 +800,10 @@ public abstract class UIComponentBase
             }
         } catch (Exception e) {
             throw new FacesException("Exception while calling encodeEnd on : "+getPathToComponent(this), e);
+        }
+        finally
+        {
+            setCachedFacesContext(null);
         }
     }
 
@@ -836,21 +864,33 @@ public abstract class UIComponentBase
 
     public void processDecodes(FacesContext context)
     {
-        if (context == null) throw new NullPointerException("context");
-                if (!isRendered()) return;
-        for (Iterator it = getFacetsAndChildren(); it.hasNext(); )
-        {
-            UIComponent childOrFacet = (UIComponent)it.next();
-            childOrFacet.processDecodes(context);
-        }
+        if (context == null)
+            throw new NullPointerException("context");
+        
         try
         {
-            decode(context);
+            setCachedFacesContext(context);
+            
+            if (!isRendered()) return;
+            
+            for (Iterator it = getFacetsAndChildren(); it.hasNext(); )
+            {
+                UIComponent childOrFacet = (UIComponent)it.next();
+                childOrFacet.processDecodes(context);
+            }
+            try
+            {
+                decode(context);
+            }
+            catch (RuntimeException e)
+            {
+                context.renderResponse();
+                throw e;
+            }
         }
-        catch (RuntimeException e)
+        finally
         {
-            context.renderResponse();
-            throw e;
+            setCachedFacesContext(null);
         }
     }
 
@@ -858,12 +898,21 @@ public abstract class UIComponentBase
     public void processValidators(FacesContext context)
     {
         if (context == null) throw new NullPointerException("context");
-        if (!isRendered()) return;
-
-        for (Iterator it = getFacetsAndChildren(); it.hasNext(); )
+        
+        try
         {
-            UIComponent childOrFacet = (UIComponent)it.next();
-            childOrFacet.processValidators(context);
+            setCachedFacesContext(context);
+            if (!isRendered()) return;
+    
+            for (Iterator it = getFacetsAndChildren(); it.hasNext(); )
+            {
+                UIComponent childOrFacet = (UIComponent)it.next();
+                childOrFacet.processValidators(context);
+            }
+        }
+        finally
+        {
+            setCachedFacesContext(null);
         }
     }
 
@@ -879,12 +928,22 @@ public abstract class UIComponentBase
     public void processUpdates(FacesContext context)
     {
         if (context == null) throw new NullPointerException("context");
-        if (!isRendered()) return;
-
-        for (Iterator it = getFacetsAndChildren(); it.hasNext(); )
+        
+        try
         {
-            UIComponent childOrFacet = (UIComponent)it.next();
-            childOrFacet.processUpdates(context);
+            setCachedFacesContext(context);
+            
+            if (!isRendered()) return;
+    
+            for (Iterator it = getFacetsAndChildren(); it.hasNext(); )
+            {
+                UIComponent childOrFacet = (UIComponent)it.next();
+                childOrFacet.processUpdates(context);
+            }
+        }
+        finally
+        {
+            setCachedFacesContext(null);
         }
     }
 
@@ -983,7 +1042,14 @@ public abstract class UIComponentBase
 
     protected FacesContext getFacesContext()
     {
-        return FacesContext.getCurrentInstance();
+        if (_facesContext == null)
+        {
+            return FacesContext.getCurrentInstance();
+        }
+        else
+        {
+            return _facesContext;
+        }
     }
 
     protected Renderer getRenderer(FacesContext context)
@@ -1312,6 +1378,16 @@ public abstract class UIComponentBase
                 throw new IllegalArgumentException("Subsequent characters of component identifier must be a letter, a digit, an underscore ('_'), or a dash ('-')! But component identifier contains \""+chars[i]+"\"");
             }
         }
+    }
+
+    boolean isCachedFacesContext()
+    {
+        return _facesContext != null;
+    }
+    
+    void setCachedFacesContext(FacesContext facesContext)
+    {
+        _facesContext = facesContext;
     }
 
     //------------------ GENERATED CODE BEGIN (do not modify!) --------------------
