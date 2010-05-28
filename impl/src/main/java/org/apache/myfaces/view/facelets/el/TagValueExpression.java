@@ -28,6 +28,7 @@ import javax.el.ELException;
 import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
 import javax.el.ValueExpression;
+import javax.faces.FacesWrapper;
 import javax.faces.view.facelets.TagAttribute;
 
 /**
@@ -36,7 +37,7 @@ import javax.faces.view.facelets.TagAttribute;
  * @author Jacob Hookom
  * @version $Id: TagValueExpression.java,v 1.7 2008/07/13 19:01:42 rlubke Exp $
  */
-public class TagValueExpression extends ValueExpression implements Externalizable
+public class TagValueExpression extends ValueExpression implements Externalizable, FacesWrapper<ValueExpression>
 {
 
     private static final long serialVersionUID = 1L;
@@ -164,5 +165,10 @@ public class TagValueExpression extends ValueExpression implements Externalizabl
     public String toString()
     {
         return this.attr + ": " + this.orig;
+    }
+
+    public ValueExpression getWrapped()
+    {
+        return orig;
     }
 }

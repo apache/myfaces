@@ -22,15 +22,22 @@ package org.apache.myfaces.view.facelets.tag.composite;
 import java.io.StringWriter;
 
 import javax.el.MethodExpression;
+import javax.faces.component.UICommand;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIForm;
+import javax.faces.component.UIInput;
+import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.html.HtmlCommandButton;
 import javax.faces.component.html.HtmlOutputText;
+import javax.faces.event.ActionEvent;
+import javax.faces.event.ValueChangeEvent;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.bean.DummyBean;
 
 public class CompositeComponentAttributeTestCase extends FaceletTestCase
 {
@@ -161,5 +168,83 @@ public class CompositeComponentAttributeTestCase extends FaceletTestCase
         };
             
         HtmlCheckAttributesUtil.checkRenderedAttributes(attrs, sw.toString());
+    }
+    
+    
+    public void testSimpleMethodInvocation() throws Exception
+    {
+        DummyBean dummyBean = new DummyBean(); 
+        
+        facesContext.getExternalContext().getRequestMap().put("dummyBean",
+                dummyBean);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "testSimpleMethodInvocation.xhtml");
+        
+        UIComponent panelGroup1 = root.findComponent("testGroup1");
+        assertNotNull(panelGroup1);
+        UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.getChildren().get(0);
+        assertNotNull(compositeComponent1);
+        UIComponent facet1 = compositeComponent1.getFacet(UIComponent.COMPOSITE_FACET_NAME);
+        assertNotNull(facet1);
+        UINamingContainer compositeComponent2 = (UINamingContainer) facet1.getChildren().get(0);
+        assertNotNull(compositeComponent2);
+        UIComponent facet2 = compositeComponent2.getFacet(UIComponent.COMPOSITE_FACET_NAME);
+        assertNotNull(facet2);
+        UIForm form = (UIForm) facet2.findComponent("mainForm");
+        assertNotNull(form);
+        UICommand button1 = (UICommand) form.findComponent("button1");
+        assertNotNull(button1);
+        UICommand button2 = (UICommand) form.findComponent("button2");
+        assertNotNull(button2);
+        UICommand button3 = (UICommand) form.findComponent("button3");
+        assertNotNull(button3);
+        UIInput text1 = (UIInput) form.findComponent("text1");
+        assertNotNull(text1);
+        UIInput text2 = (UIInput) form.findComponent("text2");
+        assertNotNull(text2);
+
+        compositeComponent1.pushComponentToEL(facesContext, compositeComponent1);
+        facet1.pushComponentToEL(facesContext, facet1);
+        compositeComponent2.pushComponentToEL(facesContext, compositeComponent2);
+        facet2.pushComponentToEL(facesContext, facet2);
+        form.pushComponentToEL(facesContext, form);
+        
+        button1.pushComponentToEL(facesContext, button1);
+        button1.getActionExpression().invoke(facesContext.getELContext(), new Object[]{});
+        button1.popComponentFromEL(facesContext);
+
+        button2.pushComponentToEL(facesContext, button2);
+        button2.getActionListeners()[0].processAction(new ActionEvent(button2));
+        button2.popComponentFromEL(facesContext);
+
+        button3.pushComponentToEL(facesContext, button3);
+        button3.getActionExpression().invoke(facesContext.getELContext(), new Object[]{});
+        button3.popComponentFromEL(facesContext);
+
+        text1.pushComponentToEL(facesContext, text1);
+        text1.getValidators()[0].validate(facesContext, text1, "");
+        text1.popComponentFromEL(facesContext);
+
+        text2.pushComponentToEL(facesContext, text2);
+        text2.getValueChangeListeners()[0].processValueChange(new ValueChangeEvent(text2, "old", "new"));
+        text2.popComponentFromEL(facesContext);
+
+        form.popComponentFromEL(facesContext);
+        facet2.popComponentFromEL(facesContext);
+        compositeComponent2.popComponentFromEL(facesContext);
+        facet1.popComponentFromEL(facesContext);
+        compositeComponent1.popComponentFromEL(facesContext);
+        
+        
+        StringWriter sw = new StringWriter();
+        MockResponseWriter mrw = new MockResponseWriter(sw);
+        facesContext.setResponseWriter(mrw);
+
+        compositeComponent1.encodeAll(facesContext);
+
+        sw.flush();
+        
+        String resp = sw.toString();
     }
 }

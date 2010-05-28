@@ -66,29 +66,29 @@ final class RetargetMethodExpressionRule extends MetaRule
     {
         // ViewDeclarationLanguage.retargetMethodExpressions only works when a method-signature 
         // is defined, so we just have to apply this rule on that case. 
-        //if ("action".equals(name) || 
-        //    "actionListener".equals(name) ||
-        //    "validator".equals(name) ||
-        //    "valueChangeListener".equals(name))
-        //{
-        //    return new RetargetValueExpressionMapper(attribute, name);
-        //}
-        //else
-        //{
-        PropertyDescriptor propertyDescriptor = meta.getProperty(name);
-        //Type takes precedence over method-signature
-        if (propertyDescriptor != null && 
-                propertyDescriptor.getValue("type") == null)
+        if ("action".equals(name) || 
+            "actionListener".equals(name) ||
+            "validator".equals(name) ||
+            "valueChangeListener".equals(name))
         {
-            ValueExpression methodSignatureExpression = 
-                (ValueExpression) propertyDescriptor.getValue("method-signature");
-            
-            if (methodSignatureExpression != null)
+            return new RetargetValueExpressionMapper(attribute, name);
+        }
+        else
+        {
+            PropertyDescriptor propertyDescriptor = meta.getProperty(name);
+            //Type takes precedence over method-signature
+            if (propertyDescriptor != null && 
+                    propertyDescriptor.getValue("type") == null)
             {
-                return new RetargetValueExpressionMapper(attribute, name);
+                ValueExpression methodSignatureExpression = 
+                    (ValueExpression) propertyDescriptor.getValue("method-signature");
+                
+                if (methodSignatureExpression != null)
+                {
+                    return new RetargetValueExpressionMapper(attribute, name);
+                }
             }
         }
-        //}
         return null;
     }
 }

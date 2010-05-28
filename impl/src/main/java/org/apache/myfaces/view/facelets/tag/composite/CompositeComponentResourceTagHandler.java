@@ -128,10 +128,16 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                 ValueExpression ve = (ValueExpression) propertyDescriptor.getValue("required");
                 if (ve != null)
                 {
-                    // QUESTION: Almost positive that the value expression is supposed to evaluate to a boolean, but originally
-                    // the code assumed it to be a string.  Can someone verify what the right type is?
-                    // ANS: -= Leonardo Uribe =- Take a look at AttributeHandler. The correct type is Boolean, so we can cast safe 
-                    Boolean required = (Boolean) ve.getValue (facesContext.getELContext());
+                    Object value = ve.getValue (facesContext.getELContext());
+                    Boolean required = null;
+                    if (value instanceof Boolean)
+                    {
+                        required = (Boolean) value;
+                    }
+                    else
+                    {
+                        required = Boolean.getBoolean(value.toString());
+                    } 
                     
                     if (required != null && required.booleanValue())
                     {

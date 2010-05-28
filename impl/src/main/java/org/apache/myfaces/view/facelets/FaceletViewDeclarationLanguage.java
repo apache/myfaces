@@ -43,6 +43,7 @@ import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 import javax.el.VariableMapper;
 import javax.faces.FacesException;
+import javax.faces.FacesWrapper;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.Resource;
 import javax.faces.application.StateManager;
@@ -60,7 +61,6 @@ import javax.faces.event.ActionListener;
 import javax.faces.event.MethodExpressionActionListener;
 import javax.faces.event.MethodExpressionValueChangeListener;
 import javax.faces.event.PhaseId;
-import javax.faces.event.PostAddToViewEvent;
 import javax.faces.event.PreRemoveFromViewEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.event.ValueChangeListener;
@@ -98,8 +98,10 @@ import org.apache.myfaces.view.facelets.FaceletViewHandler.NullWriter;
 import org.apache.myfaces.view.facelets.compiler.Compiler;
 import org.apache.myfaces.view.facelets.compiler.SAXCompiler;
 import org.apache.myfaces.view.facelets.compiler.TagLibraryConfig;
-import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
-import org.apache.myfaces.view.facelets.el.ValueExpressionMethodExpression;
+import org.apache.myfaces.view.facelets.el.LocationMethodExpression;
+import org.apache.myfaces.view.facelets.el.LocationValueExpression;
+import org.apache.myfaces.view.facelets.el.TagMethodExpression;
+import org.apache.myfaces.view.facelets.el.TagValueExpression;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
 import org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory;
 import org.apache.myfaces.view.facelets.impl.DefaultResourceResolver;
@@ -132,6 +134,14 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     //private static final Log log = LogFactory.getLog(FaceletViewDeclarationLanguage.class);
     private static final Logger log = Logger.getLogger(FaceletViewDeclarationLanguage.class.getName());
 
+    private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
+
+    private static final Class<?>[] VALUE_CHANGE_LISTENER_SIGNATURE = new Class[]{ValueChangeEvent.class};
+    
+    private static final Class<?>[] ACTION_LISTENER_SIGNATURE = new Class[]{ActionEvent.class};
+    
+    private static final Class<?>[] VALIDATOR_SIGNATURE = new Class[]{FacesContext.class, UIComponent.class, Object.class};
+    
     public static final String CHARACTER_ENCODING_KEY = "javax.faces.request.charset";
 
     public final static long DEFAULT_REFRESH_PERIOD = 2;
@@ -808,11 +818,17 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         ValueExpression ve = (ValueExpression) propertyDescriptor.getValue("required");
                         if (ve != null)
                         {
-                            // QUESTION: Almost positive that the value expression is supposed to evaluate to a boolean, but originally
-                            // the code assumed it to be a string.  Can someone verify what the right type is?
-                            // ANS: -= Leonardo Uribe =- Take a look at AttributeHandler. The correct type is Boolean, so we can cast safe 
-                            Boolean required = (Boolean) ve.getValue (context.getELContext());
-                            
+                            Object requiredValue = ve.getValue (context.getELContext());
+                            Boolean required = null;
+                            if (requiredValue instanceof Boolean)
+                            {
+                                required = (Boolean) requiredValue;
+                            }
+                            else
+                            {
+                                required = Boolean.getBoolean(requiredValue.toString());
+                            }
+
                             if (required != null && required.booleanValue())
                             {
                                 if (log.isLoggable(Level.SEVERE))
@@ -827,16 +843,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                 String [] targetsArray = StringUtils.splitShortString(targets, ' ');
                 String attributeExpressionString = attributeNameValueExpression.getExpressionString();
                 MethodExpression methodExpression = null;
-                
-                // if the expression String contains a reference to the current composite
-                // component #{cc}, the MethodExpression has to be invoked indirectly (via
-                // a ValueExpression that points to the real MethodExpression). This happens
-                // when other composite components are nested in composite components' implementations.
-                if (CompositeComponentELUtils.isCompositeComponentExpression(attributeExpressionString))
-                {
-                    methodExpression = new ValueExpressionMethodExpression(attributeNameValueExpression);
-                }
-                
+                MethodExpression methodExpression2 = null;
+                                
                 if (isKnownMethod)
                 {
                     for (String target : targetsArray)
@@ -853,46 +861,33 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         if ("action".equals(attributeName))
                         {
                             // target is ActionSource2
-                            if (methodExpression == null)
-                            {
-                                methodExpression = context.getApplication().getExpressionFactory().
-                                        createMethodExpression(context.getELContext(),
-                                                attributeExpressionString, Object.class, new Class[]{});
-                            }
+                            methodExpression = reWrapMethodExpression(context.getApplication().getExpressionFactory().
+                                    createMethodExpression(context.getELContext(),
+                                            attributeExpressionString, Object.class, EMPTY_CLASS_ARRAY), attributeNameValueExpression);
                             
                             ((ActionSource2)innerComponent).setActionExpression(methodExpression);
                         }
                         else if ("actionListener".equals(attributeName))
                         {
                            // target is ActionSource2
-                            ActionListener actionListener = null;
-                            if (methodExpression == null)
-                            {
-                                methodExpression = context.getApplication().getExpressionFactory().
-                                        createMethodExpression(context.getELContext(),
-                                                attributeExpressionString, Void.TYPE, new Class[]{ActionEvent.class});
-                                actionListener = new MethodExpressionActionListener(methodExpression);
-                            }
-                            else
-                            {
-                                // FIXME this will maybe need changes, because the second methodExpression
-                                // is supposed to have zero args, but the underlying MethodExpression 
-                                // won't fulfill this requirement. -=Jakob Korherr=-
-                                actionListener = new MethodExpressionActionListener(methodExpression, methodExpression);
-                            }
+                            methodExpression = reWrapMethodExpression(context.getApplication().getExpressionFactory().
+                                    createMethodExpression(context.getELContext(),
+                                            attributeExpressionString, Void.TYPE, ACTION_LISTENER_SIGNATURE), attributeNameValueExpression);
                             
-                            ((ActionSource2)innerComponent).addActionListener(actionListener);
+                            methodExpression2 = reWrapMethodExpression(context.getApplication().getExpressionFactory().
+                                createMethodExpression(context.getELContext(),
+                                        attributeExpressionString, Void.TYPE, EMPTY_CLASS_ARRAY), attributeNameValueExpression);
+                            
+                            ((ActionSource2)innerComponent).addActionListener(
+                                    new MethodExpressionActionListener(methodExpression, methodExpression2));
                         }
                         else if ("validator".equals(attributeName))
                         {
                             // target is EditableValueHolder
-                            if (methodExpression == null)
-                            {
-                                methodExpression = context.getApplication().getExpressionFactory().
-                                        createMethodExpression(context.getELContext(),
-                                            attributeExpressionString, Void.TYPE, 
-                                            new Class[]{FacesContext.class, UIComponent.class, Object.class});
-                            }
+                            methodExpression = reWrapMethodExpression(context.getApplication().getExpressionFactory().
+                                    createMethodExpression(context.getELContext(),
+                                        attributeExpressionString, Void.TYPE, 
+                                        VALIDATOR_SIGNATURE), attributeNameValueExpression);
 
                             ((EditableValueHolder)innerComponent).addValidator(
                                     new MethodExpressionValidator(methodExpression));
@@ -900,24 +895,18 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         else if ("valueChangeListener".equals(attributeName))
                         {
                             // target is EditableValueHolder
-                            ValueChangeListener valueChangeListener = null;
-                            if (methodExpression == null)
-                            {
-                                methodExpression = context.getApplication().getExpressionFactory().
-                                        createMethodExpression(context.getELContext(),
-                                                attributeExpressionString, Void.TYPE, 
-                                                new Class[]{ValueChangeEvent.class});
-                                valueChangeListener = new MethodExpressionValueChangeListener(methodExpression);
-                            }
-                            else
-                            {
-                                // FIXME this will maybe need changes, because the second methodExpression
-                                // is supposed to have zero args, but the underlying MethodExpression 
-                                // won't fulfill this requirement. -=Jakob Korherr=-
-                                valueChangeListener = new MethodExpressionValueChangeListener(methodExpression, methodExpression);
-                            }
+                            methodExpression = reWrapMethodExpression(context.getApplication().getExpressionFactory().
+                                    createMethodExpression(context.getELContext(),
+                                            attributeExpressionString, Void.TYPE, 
+                                            VALUE_CHANGE_LISTENER_SIGNATURE), attributeNameValueExpression);
 
-                            ((EditableValueHolder)innerComponent).addValueChangeListener(valueChangeListener);
+                            methodExpression2 = reWrapMethodExpression(context.getApplication().getExpressionFactory().
+                                    createMethodExpression(context.getELContext(),
+                                            attributeExpressionString, Void.TYPE, 
+                                            EMPTY_CLASS_ARRAY), attributeNameValueExpression);
+
+                            ((EditableValueHolder)innerComponent).addValueChangeListener(
+                                    new MethodExpressionValueChangeListener(methodExpression, methodExpression2));
                         }
                     }
                 }
@@ -926,14 +915,14 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                     // composite:attribute targets property only has sense for action, actionListener,
                     // validator or valueChangeListener. This means we have to retarget the method expression
                     // to the topLevelComponent.
-                    if (methodExpression == null)
-                    {
-                        methodSignature = methodSignature.trim();
-                        methodExpression = context.getApplication().getExpressionFactory().
-                        createMethodExpression(context.getELContext(),
-                                attributeExpressionString, _getReturnType(methodSignature), 
-                                _getParameters(methodSignature));
-                    }
+                    methodSignature = methodSignature.trim();
+                    methodExpression = context.getApplication().getExpressionFactory().
+                            createMethodExpression(context.getELContext(),
+                                    attributeExpressionString, _getReturnType(methodSignature), 
+                                    _getParameters(methodSignature));
+                    
+                    methodExpression = reWrapMethodExpression(methodExpression, attributeNameValueExpression);
+                    
                     topLevelComponent.getAttributes().put(attributeName, methodExpression);
                 }
                 
@@ -941,6 +930,28 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                 // confusion when the same value is retrieved from the attribute map.
                 topLevelComponent.setValueExpression(attributeName, null);
             }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private MethodExpression reWrapMethodExpression(MethodExpression createdMethodExpression, ValueExpression originalValueExpression)
+    {
+        if (originalValueExpression instanceof LocationValueExpression)
+        {
+            return new LocationMethodExpression(
+                    ((LocationValueExpression)originalValueExpression).getLocation(), 
+                    reWrapMethodExpression(createdMethodExpression, 
+                            ((LocationValueExpression)originalValueExpression).getWrapped()));
+        }
+        else if (originalValueExpression instanceof FacesWrapper && 
+                ((FacesWrapper)originalValueExpression).getWrapped() instanceof ValueExpression)
+        {
+            return reWrapMethodExpression(createdMethodExpression, 
+                    (ValueExpression) ((FacesWrapper)originalValueExpression).getWrapped());
+        }
+        else
+        {
+            return createdMethodExpression;
         }
     }
     

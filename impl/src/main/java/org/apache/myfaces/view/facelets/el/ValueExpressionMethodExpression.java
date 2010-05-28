@@ -22,6 +22,7 @@ import javax.el.ELContext;
 import javax.el.MethodExpression;
 import javax.el.MethodInfo;
 import javax.el.ValueExpression;
+import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
 
 /**
@@ -33,7 +34,7 @@ import javax.faces.context.FacesContext;
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ValueExpressionMethodExpression extends MethodExpression
+public class ValueExpressionMethodExpression extends MethodExpression implements FacesWrapper<ValueExpression>
 {
     
     private static final long serialVersionUID = -2847633717581167765L;
@@ -91,4 +92,8 @@ public class ValueExpressionMethodExpression extends MethodExpression
         return (MethodExpression) valueExpression.getValue(context);
     }
 
+    public ValueExpression getWrapped()
+    {
+        return valueExpression;
+    }
 }

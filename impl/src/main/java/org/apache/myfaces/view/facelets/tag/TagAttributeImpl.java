@@ -346,6 +346,15 @@ public final class TagAttributeImpl extends TagAttribute
             ExpressionFactory f = ctx.getExpressionFactory();
             ValueExpression valueExpression = f.createValueExpression(ctx, this.value, type);
             
+            if (ExternalSpecifications.isUnifiedELAvailable())
+            {
+                valueExpression = new TagValueExpressionUEL(this, valueExpression);
+            }
+            else
+            {
+                valueExpression = new TagValueExpression(this, valueExpression);
+            }
+
             // if the ValueExpression contains a reference to the current composite
             // component, the Location also has to be stored in the ValueExpression 
             // to be able to resolve the right composite component (the one that was
@@ -363,14 +372,7 @@ public final class TagAttributeImpl extends TagAttribute
                 }
             }
             
-            if (ExternalSpecifications.isUnifiedELAvailable())
-            {
-                return new TagValueExpressionUEL(this, valueExpression);
-            }
-            else
-            {
-                return new TagValueExpression(this, valueExpression);
-            }
+            return valueExpression;
         }
         catch (Exception e)
         {

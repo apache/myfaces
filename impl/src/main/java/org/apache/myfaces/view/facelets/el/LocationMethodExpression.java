@@ -21,6 +21,7 @@ package org.apache.myfaces.view.facelets.el;
 import javax.el.ELContext;
 import javax.el.MethodExpression;
 import javax.el.MethodInfo;
+import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
 import javax.faces.view.Location;
 
@@ -39,7 +40,7 @@ import javax.faces.view.Location;
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class LocationMethodExpression extends MethodExpression
+public class LocationMethodExpression extends MethodExpression implements FacesWrapper<MethodExpression>
 {
 
     private static final long serialVersionUID = 1634644578979226893L;
@@ -112,4 +113,8 @@ public class LocationMethodExpression extends MethodExpression
         return delegate.isLiteralText();
     }
 
+    public MethodExpression getWrapped()
+    {
+        return delegate;
+    }
 }

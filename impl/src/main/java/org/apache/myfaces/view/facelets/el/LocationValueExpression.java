@@ -20,6 +20,7 @@ package org.apache.myfaces.view.facelets.el;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
+import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
 import javax.faces.view.Location;
 
@@ -38,7 +39,7 @@ import javax.faces.view.Location;
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class LocationValueExpression extends ValueExpression
+public class LocationValueExpression extends ValueExpression implements FacesWrapper<ValueExpression>
 {
     
     private static final long serialVersionUID = -5636849184764526288L;
@@ -147,5 +148,9 @@ public class LocationValueExpression extends ValueExpression
     {
         return delegate.isLiteralText();
     }
-    
+
+    public ValueExpression getWrapped()
+    {
+        return delegate;
+    }
 }
