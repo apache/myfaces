@@ -68,12 +68,10 @@ public class EnumConverter implements Converter, PartialStateHolder
         if (value == null)
             return null;
 
-        for (Object enumConstant : targetClass.getEnumConstants())
+        // check if the value is an instance of the enum class
+        if (targetClass.isInstance(value))
         {
-            if (enumConstant == value)
-            {
-                return ((Enum<?>) enumConstant).name();
-            }
+            return ((Enum<?>) value).name();
         }
         
         Object[] params =
