@@ -238,7 +238,7 @@ class _ComponentAttributesMap
         ValueExpression ve = _component.getValueExpression((String) key);
         if (ve != null)
         {
-            return ve.getValue(FacesContext.getCurrentInstance().getELContext());
+            return ve.getValue(_component.getFacesContext().getELContext());
         }
 
         // no value found
@@ -390,7 +390,7 @@ class _ComponentAttributesMap
         }
         catch (Exception e)
         {
-            FacesContext facesContext = FacesContext.getCurrentInstance();
+            FacesContext facesContext = _component.getFacesContext();
             throw new FacesException("Could not get property " + propertyDescriptor.getName() + " of component " + _component.getClientId(facesContext), e);
         }
     }
@@ -417,7 +417,7 @@ class _ComponentAttributesMap
         }
         catch (Exception e)
         {
-            FacesContext facesContext = FacesContext.getCurrentInstance();
+            FacesContext facesContext = _component.getFacesContext();
             throw new FacesException("Could not set property " + propertyDescriptor.getName() +
                     " of component " + _component.getClientId(facesContext) + " to value : " + value + " with type : " +
                     (value == null ? "null" : value.getClass().getName()), e);

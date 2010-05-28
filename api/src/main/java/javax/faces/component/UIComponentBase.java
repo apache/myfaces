@@ -88,7 +88,8 @@ public abstract class UIComponentBase
     private String _id = null;
     private UIComponent _parent = null;
     private boolean _transient = false;
-    
+
+    private transient FacesContext _facesContext;
     
     public UIComponentBase()
     {
@@ -290,7 +291,22 @@ public abstract class UIComponentBase
      * <code>invokeOnComponent</code> must be implemented in <code>UIComponentBase</code> too...
      */
     public boolean invokeOnComponent(FacesContext context, String clientId, ContextCallback callback) throws FacesException{
-        return super.invokeOnComponent(context, clientId, callback);
+        if (isCachedFacesContext())
+        {
+            return super.invokeOnComponent(context, clientId, callback);
+        }
+        else
+        {
+            try
+            {
+                setCachedFacesContext(context);
+                return super.invokeOnComponent(context, clientId, callback);
+            }
+            finally
+            {
+                setCachedFacesContext(null);
+            }
+        }
     }
 
     /**
@@ -575,6 +591,8 @@ public abstract class UIComponentBase
     {
         if (context == null) throw new NullPointerException("context");
         try {
+            setCachedFacesContext(context);
+            
             if (!isRendered()) return;
             Renderer renderer = getRenderer(context);
             if (renderer != null)
@@ -584,17 +602,37 @@ public abstract class UIComponentBase
         } catch (Exception ex) {
             throw new FacesException("Exception while calling encodeBegin on component : "+getPathToComponent(this), ex);
         }
+        finally
+        {
+            setCachedFacesContext(null);
+        }
     }
 
     public void encodeChildren(FacesContext context)
             throws IOException
     {
         if (context == null) throw new NullPointerException("context");
-        if (!isRendered()) return;
-        Renderer renderer = getRenderer(context);
-        if (renderer != null)
+        
+        boolean isCachedFacesContext = isCachedFacesContext();
+        try
         {
-            renderer.encodeChildren(context, this);
+            if (!isCachedFacesContext)
+            {
+                setCachedFacesContext(context);
+            }
+            if (!isRendered()) return;
+            Renderer renderer = getRenderer(context);
+            if (renderer != null)
+            {
+                renderer.encodeChildren(context, this);
+            }
+        }
+        finally
+        {
+            if (!isCachedFacesContext)
+            {
+                setCachedFacesContext(null);
+            }
         }
     }
 
@@ -603,6 +641,7 @@ public abstract class UIComponentBase
     {
         if (context == null) throw new NullPointerException("context");
         try {
+            setCachedFacesContext(context);
             if (!isRendered()) return;
             Renderer renderer = getRenderer(context);
             if (renderer != null)
@@ -611,6 +650,10 @@ public abstract class UIComponentBase
             }
         } catch (Exception ex) {
             throw new FacesException("Exception while calling encodeEnd on component : "+getPathToComponent(this), ex);
+        }
+        finally
+        {
+            setCachedFacesContext(null);
         }
     }
 
@@ -684,20 +727,32 @@ public abstract class UIComponentBase
 
     public void processDecodes(FacesContext context)
     {
-        if (context == null) throw new NullPointerException("context");
-        if (!isRendered()) return;
-        for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
-        {
-            it.next().processDecodes(context);
-        }
+        if (context == null)
+            throw new NullPointerException("context");
+        
         try
         {
-            decode(context);
+            setCachedFacesContext(context);
+            
+            if (!isRendered()) return;
+            
+            for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
+            {
+                it.next().processDecodes(context);
+            }
+            try
+            {
+                decode(context);
+            }
+            catch (RuntimeException e)
+            {
+                context.renderResponse();
+                throw e;
+            }
         }
-        catch (RuntimeException e)
+        finally
         {
-            context.renderResponse();
-            throw e;
+            setCachedFacesContext(null);
         }
     }
 
@@ -705,11 +760,19 @@ public abstract class UIComponentBase
     public void processValidators(FacesContext context)
     {
         if (context == null) throw new NullPointerException("context");
-        if (!isRendered()) return;
-
-        for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext(); )
+        try
         {
-            it.next().processValidators(context);
+            setCachedFacesContext(context);
+            if (!isRendered()) return;
+    
+            for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext(); )
+            {
+                it.next().processValidators(context);
+            }
+        }
+        finally
+        {
+            setCachedFacesContext(null);
         }
     }
 
@@ -725,11 +788,20 @@ public abstract class UIComponentBase
     public void processUpdates(FacesContext context)
     {
         if (context == null) throw new NullPointerException("context");
-        if (!isRendered()) return;
-
-        for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext(); )
+        
+        try
         {
-            it.next().processUpdates(context);
+            setCachedFacesContext(context);
+            if (!isRendered()) return;
+    
+            for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext(); )
+            {
+                it.next().processUpdates(context);
+            }
+        }
+        finally
+        {
+            setCachedFacesContext(null);
         }
     }
 
@@ -840,7 +912,14 @@ public abstract class UIComponentBase
 
     protected FacesContext getFacesContext()
     {
-        return FacesContext.getCurrentInstance();
+        if (_facesContext == null)
+        {
+            return FacesContext.getCurrentInstance();
+        }
+        else
+        {
+            return _facesContext;
+        }
     }
 
     protected Renderer getRenderer(FacesContext context)
@@ -1214,7 +1293,15 @@ public abstract class UIComponentBase
       return sb;
     }
 
-
+    boolean isCachedFacesContext()
+    {
+        return _facesContext != null;
+    }
+    
+    void setCachedFacesContext(FacesContext facesContext)
+    {
+        _facesContext = facesContext;
+    }
 
     //------------------ GENERATED CODE BEGIN (do not modify!) --------------------
 
