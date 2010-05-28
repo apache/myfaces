@@ -35,6 +35,8 @@ import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.component.behavior.Behavior;
 import javax.faces.component.behavior.ClientBehavior;
+import javax.faces.component.visit.VisitCallback;
+import javax.faces.component.visit.VisitContext;
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
@@ -108,7 +110,7 @@ public abstract class UIComponentBase extends UIComponent
     private Map<String, List<ClientBehavior>> _behaviorsMap = null;
     private transient Map<String, List<ClientBehavior>> _unmodifiableBehaviorsMap = null;
     
-    transient Character _separatorChar;
+    private transient FacesContext _facesContext;
     
     public UIComponentBase()
     {
@@ -413,28 +415,36 @@ public abstract class UIComponentBase extends UIComponent
             throw new NullPointerException("context");
         }
 
-        // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
-        pushComponentToEL(context, this);
-
-        if (isRendered())
+        try
         {
-            // If our rendered property is true, render the beginning of the current state of this UIComponent to the
-            // response contained in the specified FacesContext.
-
-            // Call Application.publishEvent(java.lang.Class, java.lang.Object), passing BeforeRenderEvent.class as
-            // the first argument and the component instance to be rendered as the second argument.
-
-            //The main issue we have here is that the listeners are normally just registered to UIComponent, how do we deal with inherited ones?
-            //We have to ask the EG
-            context.getApplication().publishEvent(context,  PreRenderComponentEvent.class, UIComponent.class, this);
-
-            Renderer renderer = getRenderer(context);
-            if (renderer != null)
+            setCachedFacesContext(context);
+            // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
+            pushComponentToEL(context, this);
+    
+            if (isRendered())
             {
-                // If a Renderer is associated with this UIComponent, the actual encoding will be delegated to
-                // Renderer.encodeBegin(FacesContext, UIComponent).
-                renderer.encodeBegin(context, this);
+                // If our rendered property is true, render the beginning of the current state of this UIComponent to the
+                // response contained in the specified FacesContext.
+    
+                // Call Application.publishEvent(java.lang.Class, java.lang.Object), passing BeforeRenderEvent.class as
+                // the first argument and the component instance to be rendered as the second argument.
+    
+                //The main issue we have here is that the listeners are normally just registered to UIComponent, how do we deal with inherited ones?
+                //We have to ask the EG
+                context.getApplication().publishEvent(context,  PreRenderComponentEvent.class, UIComponent.class, this);
+    
+                Renderer renderer = getRenderer(context);
+                if (renderer != null)
+                {
+                    // If a Renderer is associated with this UIComponent, the actual encoding will be delegated to
+                    // Renderer.encodeBegin(FacesContext, UIComponent).
+                    renderer.encodeBegin(context, this);
+                }
             }
+        }
+        finally
+        {
+            setCachedFacesContext(null);
         }
     }
 
@@ -446,28 +456,43 @@ public abstract class UIComponentBase extends UIComponent
             throw new NullPointerException("context");
         }
 
-        if (isRendered())
+        boolean isCachedFacesContext = isCachedFacesContext();
+        try
         {
-            // If our rendered property is true, render the child UIComponents of this UIComponent.
-
-            Renderer renderer = getRenderer(context);
-            if (renderer == null)
+            if (!isCachedFacesContext)
             {
-                // If no Renderer is associated with this UIComponent, iterate over each of the children of this
-                // component and call UIComponent.encodeAll(javax.faces.context.FacesContext).
-                if (getChildCount() > 0)
+                setCachedFacesContext(context);
+            }
+            if (isRendered())
+            {
+                // If our rendered property is true, render the child UIComponents of this UIComponent.
+    
+                Renderer renderer = getRenderer(context);
+                if (renderer == null)
                 {
-                    for (UIComponent child : getChildren())
+                    // If no Renderer is associated with this UIComponent, iterate over each of the children of this
+                    // component and call UIComponent.encodeAll(javax.faces.context.FacesContext).
+                    if (getChildCount() > 0)
                     {
-                        child.encodeAll(context);
+                        for (UIComponent child : getChildren())
+                        {
+                            child.encodeAll(context);
+                        }
                     }
                 }
+                else
+                {
+                    // If a Renderer is associated with this UIComponent, the actual encoding will be delegated to
+                    // Renderer.encodeChildren(FacesContext, UIComponent).
+                    renderer.encodeChildren(context, this);
+                }
             }
-            else
+        }
+        finally
+        {
+            if (!isCachedFacesContext)
             {
-                // If a Renderer is associated with this UIComponent, the actual encoding will be delegated to
-                // Renderer.encodeChildren(FacesContext, UIComponent).
-                renderer.encodeChildren(context, this);
+                setCachedFacesContext(null);
             }
         }
     }
@@ -481,6 +506,7 @@ public abstract class UIComponentBase extends UIComponent
             {
                 throw new NullPointerException("context");
             }
+            setCachedFacesContext(context);
             if (isRendered())
             {
                 // If our rendered property is true, render the ending of the current state of this UIComponent.
@@ -498,18 +524,10 @@ public abstract class UIComponentBase extends UIComponent
             // Call UIComponent.popComponentFromEL(javax.faces.context.FacesContext). before returning regardless
             // of the value of the rendered property.
             popComponentFromEL(context);
+            setCachedFacesContext(null);
         }
     }
     
-    char getSeparatorChar()
-    {
-        if (_separatorChar == null)
-        {
-            _separatorChar = Character.valueOf(UINamingContainer.getSeparatorChar(FacesContext.getCurrentInstance()));
-        }
-        return _separatorChar.charValue();
-    }
-
     /**
      * Standard method for finding other components by id, inherited by most UIComponent objects.
      * <p>
@@ -541,7 +559,7 @@ public abstract class UIComponentBase extends UIComponent
         if (expr.length() == 0)
             return null;
 
-        final char separatorChar = getSeparatorChar();
+        final char separatorChar = UINamingContainer.getSeparatorChar(getFacesContext());
         UIComponent findBase;
         if (expr.charAt(0) == separatorChar)
         {
@@ -937,7 +955,45 @@ public abstract class UIComponentBase extends UIComponent
     public boolean invokeOnComponent(FacesContext context, String clientId, ContextCallback callback)
             throws FacesException
     {
-        return super.invokeOnComponent(context, clientId, callback);
+        if (isCachedFacesContext())
+        {
+            return super.invokeOnComponent(context, clientId, callback);
+        }
+        else
+        {
+            try
+            {
+                setCachedFacesContext(context);
+                return super.invokeOnComponent(context, clientId, callback);
+            }
+            finally
+            {
+                setCachedFacesContext(null);
+            }
+        }
+    }
+    
+    
+
+    @Override
+    public boolean visitTree(VisitContext context, VisitCallback callback)
+    {
+        if (isCachedFacesContext())
+        {
+            return super.visitTree(context, callback);
+        }
+        else
+        {
+            try
+            {
+                setCachedFacesContext(context.getFacesContext());
+                return super.visitTree(context, callback);
+            }
+            finally
+            {
+                setCachedFacesContext(null);
+            }
+        }
     }
 
     /**
@@ -995,7 +1051,14 @@ public abstract class UIComponentBase extends UIComponent
     @Override
     protected FacesContext getFacesContext()
     {
-        return FacesContext.getCurrentInstance();
+        if (_facesContext == null)
+        {
+            return FacesContext.getCurrentInstance();
+        }
+        else
+        {
+            return _facesContext;
+        }
     }
 
     // FIXME: Notify EG for generic usage
@@ -1089,64 +1152,80 @@ public abstract class UIComponentBase extends UIComponent
     @Override
     public void processDecodes(FacesContext context)
     {
-        if (_isPhaseExecutable(context))
+        try
         {
-            // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
-            pushComponentToEL(context, this);
-
-            try
+            setCachedFacesContext(context);
+            if (_isPhaseExecutable(context))
             {
-                // Call the processDecodes() method of all facets and children of this UIComponent, in the order
-                // determined by a call to getFacetsAndChildren().
-                for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
-                {
-                    it.next().processDecodes(context);
-                }
-
+                // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
+                pushComponentToEL(context, this);
+    
                 try
                 {
-                    // Call the decode() method of this component.
-                    decode(context);
+                    // Call the processDecodes() method of all facets and children of this UIComponent, in the order
+                    // determined by a call to getFacetsAndChildren().
+                    for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
+                    {
+                        it.next().processDecodes(context);
+                    }
+    
+                    try
+                    {
+                        // Call the decode() method of this component.
+                        decode(context);
+                    }
+                    catch (RuntimeException e)
+                    {
+                        // If a RuntimeException is thrown during decode processing, call FacesContext.renderResponse()
+                        // and re-throw the exception.
+                        context.renderResponse();
+                        throw e;
+                    }
                 }
-                catch (RuntimeException e)
+                finally
                 {
-                    // If a RuntimeException is thrown during decode processing, call FacesContext.renderResponse()
-                    // and re-throw the exception.
-                    context.renderResponse();
-                    throw e;
+                    // Call UIComponent.popComponentFromEL(javax.faces.context.FacesContext) from inside of a finally
+                    // block, just before returning.
+    
+                    popComponentFromEL(context);
                 }
             }
-            finally
-            {
-                // Call UIComponent.popComponentFromEL(javax.faces.context.FacesContext) from inside of a finally
-                // block, just before returning.
-
-                popComponentFromEL(context);
-            }
+        }
+        finally
+        {
+            setCachedFacesContext(null);
         }
     }
 
     @Override
     public void processValidators(FacesContext context)
     {
-        if (_isPhaseExecutable(context))
+        try
         {
-            // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
-            pushComponentToEL(context, this);
-
-            try
+            setCachedFacesContext(context);
+            if (_isPhaseExecutable(context))
             {
-                // Call the processValidators() method of all facets and children of this UIComponent, in the order
-                // determined by a call to getFacetsAndChildren().
-                for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
+                // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
+                pushComponentToEL(context, this);
+    
+                try
                 {
-                    it.next().processValidators(context);
+                    // Call the processValidators() method of all facets and children of this UIComponent, in the order
+                    // determined by a call to getFacetsAndChildren().
+                    for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
+                    {
+                        it.next().processValidators(context);
+                    }
+                }
+                finally
+                {
+                    popComponentFromEL(context);
                 }
             }
-            finally
-            {
-                popComponentFromEL(context);
-            }
+        }
+        finally
+        {
+            setCachedFacesContext(null);
         }
     }
 
@@ -1161,26 +1240,34 @@ public abstract class UIComponentBase extends UIComponent
     @Override
     public void processUpdates(FacesContext context)
     {
-        if (_isPhaseExecutable(context))
+        try
         {
-            // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
-            pushComponentToEL(context, this);
-
-            try
+            setCachedFacesContext(context);
+            if (_isPhaseExecutable(context))
             {
-                // Call the processUpdates() method of all facets and children of this UIComponent, in the order
-                // determined by a call to getFacetsAndChildren().
-                for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
+                // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
+                pushComponentToEL(context, this);
+    
+                try
                 {
-                    it.next().processUpdates(context);
+                    // Call the processUpdates() method of all facets and children of this UIComponent, in the order
+                    // determined by a call to getFacetsAndChildren().
+                    for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
+                    {
+                        it.next().processUpdates(context);
+                    }
+                }
+                finally
+                {
+                    // After returning from the processUpdates() method on a child or facet, call
+                    // UIComponent.popComponentFromEL(javax.faces.context.FacesContext)
+                    popComponentFromEL(context);
                 }
             }
-            finally
-            {
-                // After returning from the processUpdates() method on a child or facet, call
-                // UIComponent.popComponentFromEL(javax.faces.context.FacesContext)
-                popComponentFromEL(context);
-            }
+        }
+        finally
+        {
+            setCachedFacesContext(null);
         }
     }
 
@@ -1980,6 +2067,16 @@ public abstract class UIComponentBase extends UIComponent
         return isRendered();
     }
 
+    boolean isCachedFacesContext()
+    {
+        return _facesContext != null;
+    }
+    
+    void setCachedFacesContext(FacesContext facesContext)
+    {
+        _facesContext = facesContext;
+    }
+    
     <T> T getExpressionValue(String attribute, T explizitValue, T defaultValueIfExpressionNull)
     {
         return _ComponentUtils.getExpressionValue(this, attribute, explizitValue, defaultValueIfExpressionNull);

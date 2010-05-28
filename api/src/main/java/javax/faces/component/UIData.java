@@ -305,105 +305,121 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         // searching for this component?
         boolean returnValue = this.getClientId(context).equals(clientId);
 
-        if (returnValue)
+        boolean isCachedFacesContext = isCachedFacesContext();
+        if (!isCachedFacesContext)
         {
-            try
-            {
-                callback.invokeContextCallback(context, this);
-            }
-            catch (Exception e)
-            {
-                throw new FacesException(e);
-            }
-            return returnValue;
-        }
-
-        // Now Look throught facets on this UIComponent
-        for (Iterator<UIComponent> it = this.getFacets().values().iterator(); !returnValue && it.hasNext();)
-        {
-            returnValue = it.next().invokeOnComponent(context, clientId, callback);
-        }
-
-        if (returnValue == true)
-        {
-            return returnValue;
+            setCachedFacesContext(context);
         }
         
-        // Now we have to check if it is searching an inner component
-        String baseClientId = super.getClientId(context);
-        
-        // is the component an inner component?
-        if (clientId.startsWith(baseClientId))
+        try
         {
-            // Check if the clientId for the component, which we 
-            // are looking for, has a rowIndex attached
-            char separator = UINamingContainer.getSeparatorChar(context);
-            String subId = clientId.substring(baseClientId.length() + 1);
-            //If the char next to baseClientId is the separator one and
-            //the subId matches the regular expression
-            if (clientId.charAt(baseClientId.length()) == separator && 
-                    subId.matches("[0-9]+"+separator+".*"))
+            if (returnValue)
             {
-                String clientRow = subId.substring(0, subId.indexOf(separator));
-    
-                //Now we save the current position
-                int oldRow = this.getRowIndex();
-                
-                // try-finally --> make sure, that the old row index is restored
                 try
                 {
-                    //The conversion is safe, because its already checked on the
-                    //regular expresion
-                    this.setRowIndex(Integer.parseInt(clientRow));
-                    
-                    // check, if the row is available
-                    if (!isRowAvailable())
-                    {
-                        return false;
-                    }
+                    callback.invokeContextCallback(context, this);
+                }
+                catch (Exception e)
+                {
+                    throw new FacesException(e);
+                }
+                return returnValue;
+            }
+    
+            // Now Look throught facets on this UIComponent
+            for (Iterator<UIComponent> it = this.getFacets().values().iterator(); !returnValue && it.hasNext();)
+            {
+                returnValue = it.next().invokeOnComponent(context, clientId, callback);
+            }
+    
+            if (returnValue == true)
+            {
+                return returnValue;
+            }
+            
+            // Now we have to check if it is searching an inner component
+            String baseClientId = super.getClientId(context);
+            
+            // is the component an inner component?
+            if (clientId.startsWith(baseClientId))
+            {
+                // Check if the clientId for the component, which we 
+                // are looking for, has a rowIndex attached
+                char separator = UINamingContainer.getSeparatorChar(context);
+                String subId = clientId.substring(baseClientId.length() + 1);
+                //If the char next to baseClientId is the separator one and
+                //the subId matches the regular expression
+                if (clientId.charAt(baseClientId.length()) == separator && 
+                        subId.matches("[0-9]+"+separator+".*"))
+                {
+                    String clientRow = subId.substring(0, subId.indexOf(separator));
         
-                    for (Iterator<UIComponent> it1 = getChildren().iterator(); 
-                            !returnValue && it1.hasNext();)
+                    //Now we save the current position
+                    int oldRow = this.getRowIndex();
+                    
+                    // try-finally --> make sure, that the old row index is restored
+                    try
                     {
-                        //recursive call to find the component
-                        returnValue = it1.next().invokeOnComponent(context, clientId, callback);
+                        //The conversion is safe, because its already checked on the
+                        //regular expresion
+                        this.setRowIndex(Integer.parseInt(clientRow));
+                        
+                        // check, if the row is available
+                        if (!isRowAvailable())
+                        {
+                            return false;
+                        }
+            
+                        for (Iterator<UIComponent> it1 = getChildren().iterator(); 
+                                !returnValue && it1.hasNext();)
+                        {
+                            //recursive call to find the component
+                            returnValue = it1.next().invokeOnComponent(context, clientId, callback);
+                        }
+                    }
+                    finally
+                    {
+                        //Restore the old position. Doing this prevent
+                        //side effects.
+                        this.setRowIndex(oldRow);
                     }
                 }
-                finally
+                else
                 {
-                    //Restore the old position. Doing this prevent
-                    //side effects.
-                    this.setRowIndex(oldRow);
+                    // MYFACES-2370: search the component in the childrens' facets too.
+                    // We have to check the childrens' facets here, because in MyFaces
+                    // the rowIndex is not attached to the clientId for the children of
+                    // facets of the UIColumns. However, in RI the rowIndex is 
+                    // attached to the clientId of UIColumns' Facets' children.
+                    for (Iterator<UIComponent> itChildren = this.getChildren().iterator();
+                            !returnValue && itChildren.hasNext();)
+                    {
+                        UIComponent child = itChildren.next();
+                        if (child instanceof UIColumn && clientId.equals(child.getClientId(context)))
+                        {
+                            try {
+                                callback.invokeContextCallback(context, child);
+                            } catch (Exception e) {
+                                throw new FacesException(e);
+                            }
+                            returnValue = true;
+                        }
+                        // process the child's facets
+                        for (Iterator<UIComponent> itChildFacets = child.getFacets().values().iterator(); 
+                                !returnValue && itChildFacets.hasNext();)
+                        {
+                            //recursive call to find the component
+                            returnValue = itChildFacets.next().invokeOnComponent(context, clientId, callback);
+                        }
+                    }
                 }
             }
-            else
+        }
+        finally
+        {
+            if (!isCachedFacesContext)
             {
-                // MYFACES-2370: search the component in the childrens' facets too.
-                // We have to check the childrens' facets here, because in MyFaces
-                // the rowIndex is not attached to the clientId for the children of
-                // facets of the UIColumns. However, in RI the rowIndex is 
-                // attached to the clientId of UIColumns' Facets' children.
-                for (Iterator<UIComponent> itChildren = this.getChildren().iterator();
-                        !returnValue && itChildren.hasNext();)
-                {
-                    UIComponent child = itChildren.next();
-                    if (child instanceof UIColumn && clientId.equals(child.getClientId(context)))
-                    {
-                        try {
-                            callback.invokeContextCallback(context, child);
-                        } catch (Exception e) {
-                            throw new FacesException(e);
-                        }
-                        returnValue = true;
-                    }
-                    // process the child's facets
-                    for (Iterator<UIComponent> itChildFacets = child.getFacets().values().iterator(); 
-                            !returnValue && itChildFacets.hasNext();)
-                    {
-                        //recursive call to find the component
-                        returnValue = itChildFacets.next().invokeOnComponent(context, clientId, callback);
-                    }
-                }
+                setCachedFacesContext(null);
             }
         }
 
@@ -812,23 +828,31 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         {
             throw new NullPointerException("context");
         }
-        if (!isRendered())
-        {
-            return;
-        }
-        setRowIndex(-1);
-        processFacets(context, PROCESS_DECODES);
-        processColumnFacets(context, PROCESS_DECODES);
-        processColumnChildren(context, PROCESS_DECODES);
-        setRowIndex(-1);
         try
         {
-            decode(context);
+            setCachedFacesContext(context);
+            if (!isRendered())
+            {
+                return;
+            }
+            setRowIndex(-1);
+            processFacets(context, PROCESS_DECODES);
+            processColumnFacets(context, PROCESS_DECODES);
+            processColumnChildren(context, PROCESS_DECODES);
+            setRowIndex(-1);
+            try
+            {
+                decode(context);
+            }
+            catch (RuntimeException e)
+            {
+                context.renderResponse();
+                throw e;
+            }
         }
-        catch (RuntimeException e)
+        finally
         {
-            context.renderResponse();
-            throw e;
+            setCachedFacesContext(null);
         }
     }
 
@@ -840,21 +864,29 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             throw new NullPointerException("context");
         }
 
-        if (!isRendered())
+        try
         {
-            return;
+            setCachedFacesContext(context);
+            if (!isRendered())
+            {
+                return;
+            }
+    
+            setRowIndex(-1);
+            processFacets(context, PROCESS_VALIDATORS);
+            processColumnFacets(context, PROCESS_VALIDATORS);
+            processColumnChildren(context, PROCESS_VALIDATORS);
+            setRowIndex(-1);
+    
+            // check if an validation error forces the render response for our data
+            if (context.getRenderResponse())
+            {
+                _isValidChilds = false;
+            }
         }
-
-        setRowIndex(-1);
-        processFacets(context, PROCESS_VALIDATORS);
-        processColumnFacets(context, PROCESS_VALIDATORS);
-        processColumnChildren(context, PROCESS_VALIDATORS);
-        setRowIndex(-1);
-
-        // check if an validation error forces the render response for our data
-        if (context.getRenderResponse())
+        finally
         {
-            _isValidChilds = false;
+            setCachedFacesContext(null);
         }
     }
 
@@ -865,19 +897,27 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         {
             throw new NullPointerException("context");
         }
-        if (!isRendered())
+        try
         {
-            return;
+            setCachedFacesContext(context);
+            if (!isRendered())
+            {
+                return;
+            }
+            setRowIndex(-1);
+            processFacets(context, PROCESS_UPDATES);
+            processColumnFacets(context, PROCESS_UPDATES);
+            processColumnChildren(context, PROCESS_UPDATES);
+            setRowIndex(-1);
+    
+            if (context.getRenderResponse())
+            {
+                _isValidChilds = false;
+            }
         }
-        setRowIndex(-1);
-        processFacets(context, PROCESS_UPDATES);
-        processColumnFacets(context, PROCESS_UPDATES);
-        processColumnChildren(context, PROCESS_UPDATES);
-        setRowIndex(-1);
-
-        if (context.getRenderResponse())
+        finally
         {
-            _isValidChilds = false;
+            setCachedFacesContext(null);
         }
     }
 
@@ -1171,6 +1211,11 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             return false;
         }
 
+        boolean isCachedFacesContext = isCachedFacesContext();
+        if (!isCachedFacesContext)
+        {
+            setCachedFacesContext(context.getFacesContext());
+        }
         // save the current row index
         int oldRowIndex = getRowIndex();
         // set row index to -1 to process the facets and to get the rowless clientId
@@ -1267,6 +1312,10 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             // pop the component from EL and restore the old row index
             popComponentFromEL(context.getFacesContext());
             setRowIndex(oldRowIndex);
+            if (!isCachedFacesContext)
+            {
+                setCachedFacesContext(null);
+            }
         }
 
         // Return false to allow the visiting to continue

@@ -243,7 +243,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                 ValueExpression ve = _component.getValueExpression((String) key);
                 if (ve != null)
                 {
-                    value = ve.getValue(FacesContext.getCurrentInstance().getELContext());
+                    value = ve.getValue(_component.getFacesContext().getELContext());
                 }
                 else
                 {
@@ -403,7 +403,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         }
         catch (Exception e)
         {
-            FacesContext facesContext = FacesContext.getCurrentInstance();
+            FacesContext facesContext = _component.getFacesContext();
             throw new FacesException("Could not get property " + propertyDescriptor.getName() + " of component " + _component.getClientId(facesContext), e);
         }
     }
@@ -430,7 +430,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         }
         catch (Exception e)
         {
-            FacesContext facesContext = FacesContext.getCurrentInstance();
+            FacesContext facesContext = _component.getFacesContext();
             throw new FacesException("Could not set property " + propertyDescriptor.getName() +
                     " of component " + _component.getClientId(facesContext) + " to value : " + value + " with type : " +
                     (value == null ? "null" : value.getClass().getName()), e);
